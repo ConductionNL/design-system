@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voice — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Three registers · the calibration set */
+  .registers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  @media (max-width: 1100px) { .registers { grid-template-columns: 1fr; } }
+
+  .register {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+    position: relative;
+  }
+  .register .marker {
+    position: absolute;
+    top: 0; left: var(--space-7);
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+    transform: translateY(-7px);
+    background: var(--accent);
+  }
+  .register.a { --accent: var(--c-cobalt-400); }
+  .register.b { --accent: var(--c-cobalt-700); }
+  .register.c { --accent: var(--c-orange-knvb); }
+
+  .register .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .register h3 {
+    font-size: 19px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .register .stance {
+    font-size: 13px; line-height: 1.5;
+    color: var(--c-cobalt-700);
+  }
+  .register .stance strong { color: var(--c-blue-cobalt); }
+  .register blockquote {
+    font-style: italic; color: var(--c-cobalt-700);
+    font-size: 13px; line-height: 1.5;
+    border-left: 2px solid var(--accent);
+    padding-left: var(--space-3);
+    margin: 0;
+  }
+  .register blockquote + blockquote { margin-top: 8px; }
+  .register .verdict {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em;
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--c-cobalt-50);
+  }
+  .register.a .verdict, .register.b .verdict { color: #AE1C28; }
+  .register.c .verdict { color: #2E9866; }
+  .register .verdict strong { color: var(--c-blue-cobalt); }
+
+  /* Rewrite recipes table */
+  .rewrites {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .rewrites table { width: 100%; border-collapse: collapse; }
+  .rewrites th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    font-weight: 500;
+  }
+  .rewrites td {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    font-size: 14px; line-height: 1.5;
+    width: 50%;
+  }
+  .rewrites td.before {
+    color: var(--c-cobalt-400);
+    font-style: italic;
+    text-decoration: line-through;
+    text-decoration-color: var(--c-cobalt-200);
+  }
+  .rewrites td.after {
+    color: var(--c-blue-cobalt);
+    font-weight: 500;
+  }
+  .rewrites td.after::before {
+    content: "→  ";
+    color: var(--c-orange-knvb);
+    font-weight: 600;
+  }
+
+  /* Golden rules */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  .rule {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .rule .num {
+    width: 28px; height: 32px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .rule .body { flex: 1; }
+  .rule .body strong {
+    color: var(--c-blue-cobalt);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .rule .body p {
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5;
+  }
+
+  /* Banned phrases */
+  .banned {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7) var(--space-8);
+    margin-top: var(--space-2);
+  }
+  .banned h4 {
+    font-size: 15px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    margin-bottom: var(--space-2);
+  }
+  .banned .pills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: var(--space-3);
+  }
+  .banned .pills span {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: white;
+    color: #AE1C28;
+    border: 1px solid var(--c-cobalt-200);
+    text-decoration: line-through;
+    font-style: italic;
+  }
+  .banned p {
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin-top: var(--space-3);
+  }
+  .banned p strong { color: var(--c-blue-cobalt); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">10 · Identity / Voice</div>
+      <h1 class="card-title">MKB-direct. Concrete. Short.</h1>
+    </div>
+    <p class="card-subtitle">Subject = a person, not a system. Verb = action, not existence. One claim per sentence. Less than 16 words.</p>
+  </div>
+
+  <div class="section-label">Three registers · which one we use, which two we don't</div>
+  <div class="registers">
+
+    <div class="register a">
+      <span class="marker"></span>
+      <div class="label">Register A · the procurement voice</div>
+      <h3>"De Oplossing ondersteunt het opslaan van zoekopdrachten."</h3>
+      <p class="stance">Depersonalised, defensible, legally safe — built for tender documents. Subject is always <em>"the Solution"</em>, never a human. Reads like a <strong>bestek</strong>, not a product.</p>
+      <blockquote>"De Oplossing biedt de mogelijkheid om sjablonen inclusief huisstijl centraal te configureren."</blockquote>
+      <blockquote>"De Oplossing dient benaderbaar te zijn via een fully qualified domain name."</blockquote>
+      <div class="verdict">Use? <strong>No.</strong> Reserved for documentation and detailed feature lists on app-detail pages.</div>
+    </div>
+
+    <div class="register b">
+      <span class="marker"></span>
+      <div class="label">Register B · the requirements voice</div>
+      <h3>"Het systeem moet alle intrekkingen opslaan."</h3>
+      <p class="stance">Functional requirements, imperative, testable. Subject is <em>"the system"</em>. One step further into robot territory than register A — and twice as anonymous.</p>
+      <blockquote>"Het systeem moet een controletrail bijhouden van alle kostentoewijzingen."</blockquote>
+      <blockquote>"Het systeem moet de afhankelijkheidsrelatie tussen lastenorders en invorderingsbeschikkingen registreren."</blockquote>
+      <div class="verdict">Use? <strong>No.</strong> Focuses on what the system <em>does</em>, not what the user <em>achieves</em>.</div>
+    </div>
+
+    <div class="register c">
+      <span class="marker"></span>
+      <div class="label">Register C · the user-story voice</div>
+      <h3>"Als gebruiker wil ik mijn zoekopdrachten opslaan, zodat ik ze later opnieuw kan gebruiken."</h3>
+      <p class="stance">A real person, a concrete goal, a motivation. With one tweak — drop the <em>"Als gebruiker"</em> wrapper — it lands exactly on Conduction's tone.</p>
+      <blockquote>"Als gebruiker wil ik filtering op content, zodat ik enkel relevante content tot mijn beschikking heb."</blockquote>
+      <blockquote>"Als gebruiker wil ik tickets toewijzen, zodat ik gericht aan een collega kan overdragen."</blockquote>
+      <div class="verdict">Use? <strong>Yes — but rewrite shorter.</strong> Address the reader directly. See recipes below.</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Rewrite recipes · authentic to website</div>
+  <div class="rewrites">
+    <table>
+      <thead><tr><th>Tender / requirement source</th><th>Conduction website</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="before">"De Oplossing ondersteunt het opslaan van zoekopdrachten."</td>
+          <td class="after">"Sla je zoekopdrachten op en gebruik ze later opnieuw."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing heeft één centrale beheeromgeving waarin autorisaties kunnen worden beheerd."</td>
+          <td class="after">"Beheer alle autorisaties op één plek."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing ondersteunt Single Sign On (SSO) authenticatie op basis van ADFS en SAML 2.0."</td>
+          <td class="after">"Log in met je bestaande account via SSO (ADFS, SAML 2.0)."</td>
+        </tr>
+        <tr>
+          <td class="before">"Het systeem moet een digitale inschrijfvoorziening bieden waarmee verzoeken kunnen worden ingediend."</td>
+          <td class="after">"Laat mensen zich digitaal inschrijven — zonder papierwerk."</td>
+        </tr>
+        <tr>
+          <td class="before">"Het systeem moet historische jaarrekeningen permanent archiveren."</td>
+          <td class="after">"Jaarrekeningen worden automatisch gearchiveerd — voorgoed vindbaar."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing biedt documentcreatiefunctionaliteit om documenten en e-mails op basis van sjablonen te creëren."</td>
+          <td class="after">"Genereer documenten en e-mails uit sjablonen — direct, zonder plug-in."</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">The seven rules · keep these in your head</div>
+  <div class="rules">
+    <div class="rule">
+      <div class="num">1</div>
+      <div class="body">
+        <strong>Subject = a person, not a system.</strong>
+        <p><em>"Je"</em> · <em>"jij"</em> · <em>"we"</em> beats <em>"de Oplossing"</em> · <em>"het systeem"</em> every time. Even when the system <em>does</em> the work, write it from the user's side.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">2</div>
+      <div class="body">
+        <strong>Verb = action, not existence.</strong>
+        <p><em>"Genereer"</em> beats <em>"heeft de mogelijkheid te genereren"</em>. <em>"Exporteer"</em> beats <em>"biedt export-functionaliteit"</em>. Active voice, no nominalisation.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">3</div>
+      <div class="body">
+        <strong>Result before motivation.</strong>
+        <p>User stories open with <em>"Als X wil ik Y zodat Z"</em> — flip it: <em>"Y — zodat Z."</em> Or just <em>"Y. Z."</em></p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">4</div>
+      <div class="body">
+        <strong>Less than 16 words.</strong>
+        <p>If the sentence runs past 16, split it. Two short sentences read faster than one long one — and they make every claim defensible on its own.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">5</div>
+      <div class="body">
+        <strong>Jargon needs context.</strong>
+        <p>WOO-coördinator? Fine, but explain it the first time. SAML? OK in tech-context. <em>Ketensamenwerking</em>? Never.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">6</div>
+      <div class="body">
+        <strong>Acronyms: spell out first, abbreviate after.</strong>
+        <p><em>"Wet open overheid (Woo)"</em> on first mention. After that, <em>"Woo"</em> alone. Don't make readers Google.</p>
+      </div>
+    </div>
+    <div class="rule" style="grid-column: span 2;">
+      <div class="num">7</div>
+      <div class="body">
+        <strong>One claim per sentence.</strong>
+        <p>Marketing sentences with multiple claims (<em>"snel, schaalbaar, veilig en betrouwbaar"</em>) get skipped. One claim, one sentence — the reader can verify each independently.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Banned phrases · the marketing-noise list</div>
+  <div class="banned">
+    <h4>Words that show up in tenders and don't show up on our site.</h4>
+    <p>Each one is a sign that a sentence is hiding behind generic language. Strip the word and check whether the sentence still works. If it does — the word was noise.</p>
+    <div class="pills">
+      <span>Digitale transformatie</span>
+      <span>Ketensamenwerking</span>
+      <span>Waardevolle inzichten</span>
+      <span>Toekomstbestendig</span>
+      <span>State-of-the-art</span>
+      <span>Platform dat…</span>
+      <span>Oplossing</span>
+      <span>Synergie</span>
+      <span>Proactief meedenken</span>
+    </div>
+    <p style="margin-top: var(--space-4);"><strong>Special case · "Oplossing".</strong> The word is fine in customer-facing translations of <em>"solution"</em>, but never as a generic stand-in for our product. We have <strong>apps</strong> and <strong>solutions</strong> — never <em>"the Solution"</em>.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

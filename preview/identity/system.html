@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>System rationale — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  .rationale-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+  }
+  @media (max-width: 1100px) { .rationale-grid { grid-template-columns: 1fr; } }
+  .rcard {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+  }
+  .rcard .stage {
+    height: 96px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .rcard .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .rcard h3 {
+    font-size: 22px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .rcard h3 .token {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--c-cobalt-400);
+    letter-spacing: 0.04em;
+    margin-left: 6px;
+  }
+  .rcard .why {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+  }
+  .rcard .why em { color: var(--c-blue-cobalt); font-style: italic; font-weight: 500; }
+  .rcard .alt {
+    margin-top: auto;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--c-cobalt-400);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--c-cobalt-50);
+  }
+  .rcard .alt strong { color: var(--c-blue-cobalt); }
+
+  /* Type sample stage */
+  .type-stage { background: var(--c-cobalt-50); flex-direction: column; padding: 12px; gap: 4px; height: 110px; }
+  .type-stage .heading { font-family: var(--conduction-typography-font-family-heading); font-size: 22px; font-weight: 700; letter-spacing: -0.015em; color: var(--c-blue-cobalt); }
+  .type-stage .body-text { font-family: var(--conduction-typography-font-family-body); font-size: 13px; color: var(--c-cobalt-700); }
+  .type-stage .code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
+
+  /* Hex variants strip */
+  .hex-strip {
+    background: var(--c-cobalt-50);
+    height: 110px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .hex-strip .row {
+    display: flex; gap: 12px;
+    align-items: center;
+  }
+  .hex-strip .h { width: 36px; height: 42px; clip-path: var(--hex-pointy-top); }
+  .hex-strip .x {
+    width: 36px; height: 42px;
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* close to flat-top */
+    transform: rotate(90deg);
+    background: var(--c-cobalt-200);
+    position: relative;
+  }
+  .hex-strip .x::after {
+    content: "✕";
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #AE1C28;
+    font-size: 18px;
+    font-weight: 700;
+    transform: rotate(-90deg);
+  }
+  .hex-strip .verdict {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.06em;
+    color: var(--c-cobalt-400);
+  }
+
+  /* Position-against-Dutch-palettes strip */
+  .palette-row {
+    display: flex; gap: 0;
+    height: 80px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-top: var(--space-3);
+  }
+  .palette-row > div {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 8px 10px;
+    color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.04em;
+  }
+  .palette-row .name { font-weight: 600; opacity: 0.95; }
+  .palette-row .hex { opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">10 · Identity / System rationale</div>
+      <h1 class="card-title">Why these colours, this type, this hex.</h1>
+    </div>
+    <p class="card-subtitle">Every system choice has a reason. Read this when something feels arbitrary — it isn't.</p>
+  </div>
+
+  <div class="section-label">Colour · why these and not the obvious alternatives</div>
+  <div class="rationale-grid">
+
+    <div class="rcard">
+      <div class="stage" style="background: #21468B;"></div>
+      <div class="label">Primary</div>
+      <h3>Cobalt blue <span class="token">#21468B</span></h3>
+      <p class="why">The Dutch flag's official blue — heavier than legacy SaaS blues, lighter than bank navy. It signals <em>trustworthy and Dutch</em> without being either nostalgic or government-grey. Fills 20% of any surface — the proportion is the rule, not just the hex.</p>
+      <div class="alt"><strong>Considered:</strong> Standard navy (#1E3A8A — too SaaS-tech-blue) · Inter-blue (#3B82F6 — too generic). Cobalt has Dutch identity built in.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: #F36C21;"></div>
+      <div class="label">Accent · 8% rule</div>
+      <h3>KNVB orange <span class="token">#F36C21</span></h3>
+      <p class="why">The Dutch national football team's orange — warm, instantly readable as Dutch, but <em>not Rijkshuisstijl</em>-orange (which would pull us into government-document territory). Capped at ~8% of any surface. Never a primary fill, never an interactive button background.</p>
+      <div class="alt"><strong>Considered:</strong> Rijkshuisstijl orange (#CB571B — too gemeente). Pantone Reflex Orange (#FF5800 — too loud). KNVB sits at the warm-Dutch sweet spot.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: #AE1C28;"></div>
+      <div class="label">Tertiary · sparingly</div>
+      <h3>Vermillion red <span class="token">#AE1C28</span></h3>
+      <p class="why">The Dutch flag's red. Rare — used for status (errors, deletions, banned-phrase callouts) and for the rare moment we want to invoke flag-energy without leaning on orange. Capped at ~2% of any surface.</p>
+      <div class="alt"><strong>Considered:</strong> Standard error-red (#DC2626 — generic). Vermillion has Dutch flag-warmth without being aggressive.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: linear-gradient(45deg, #0082C9, #1CAFFF);"></div>
+      <div class="label">Guest · ConNext context only</div>
+      <h3>Nextcloud blue <span class="token">#0082C9</span></h3>
+      <p class="why">Nextcloud's official blue. A <em>guest colour</em> in our system — used only when the context is ConNext-specific: the wordmark's <em>"Next"</em>, the kernel hex on platform diagrams, brand citations in copy. Never on functional <em>"next"</em> (next page, next year).</p>
+      <div class="alt"><strong>Rule:</strong> If you're styling a generic UI element, this isn't your colour. If you're citing Nextcloud the platform — it is.</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Position · against neighbouring Dutch palettes</div>
+  <div class="palette-row">
+    <div style="background: #154273;"><div class="name">Rijkshuisstijl</div><div class="hex">#154273</div></div>
+    <div style="background: #21468B;"><div class="name">Conduction</div><div class="hex">#21468B</div></div>
+    <div style="background: #2065A8;"><div class="name">PostNL</div><div class="hex">#2065A8</div></div>
+    <div style="background: #003366;"><div class="name">ABN AMRO</div><div class="hex">#003366</div></div>
+    <div style="background: #FF6900;"><div class="name">ING</div><div class="hex">#FF6900</div></div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 13px; color: var(--c-cobalt-400);">Cobalt sits deliberately between government-blue (too dark, too institutional) and corporate-blue (too generic, too SaaS). Heavier than commercial blues, lighter than national-government blues — the slot for a Dutch open-source product company.</p>
+
+  <div class="section-label">Type · Figtree + IBM Plex Mono</div>
+  <div class="rationale-grid">
+
+    <div class="rcard">
+      <div class="stage type-stage">
+        <span class="heading">Figtree · headings & body</span>
+        <span class="body-text">Round, calm, humanist sans-serif</span>
+        <span class="code">400 · 500 · 600 · 700</span>
+      </div>
+      <div class="label">Body + heading</div>
+      <h3>Figtree</h3>
+      <p class="why">Round terminals, neutral character, broad weight range. Reads <em>calm</em>, not corporate-cold. Open Font License (OFL) so it's bundleable. Works at 12px through display sizes without splitting personality.</p>
+      <div class="alt"><strong>Considered:</strong> Inter (too SaaS, terminals too pointy). Roboto (too Google). Manrope (too geometric). Figtree's roundness gives the brand its calm.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage type-stage">
+        <span class="code">$ cookies --reconfigure</span>
+        <span class="code"># IBM Plex Mono</span>
+        <span class="code">→ for code, eyebrows, meta</span>
+      </div>
+      <div class="label">Code + meta</div>
+      <h3>IBM Plex Mono</h3>
+      <p class="why">Generous x-height, readable at small sizes, has personality without being cute. Used for code blocks, eyebrows ("THE PLATFORM OVERVIEW"), code-style metadata, and our cookie-CLI prompt. OFL-licensed.</p>
+      <div class="alt"><strong>Considered:</strong> JetBrains Mono (slightly too techy). Source Code Pro (too neutral). Plex Mono has the right blend of authority + warmth.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: var(--c-cobalt-50); flex-direction: column; gap: 6px;">
+        <span style="font-family: var(--conduction-typography-font-family-heading); font-size: 32px; font-weight: 700; letter-spacing: -0.025em; color: var(--c-blue-cobalt); line-height: 1;">Aa</span>
+        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400);">9-step ramp · 12 → 48px + display</span>
+      </div>
+      <div class="label">Why no display font</div>
+      <h3>One family, more weights.</h3>
+      <p class="why">We don't ship a separate display font. Figtree at 700 with negative letter-spacing handles every headline up to 64px without splitting into a second typeface. Less to load, more consistency, fewer foundry-licence questions.</p>
+      <div class="alt"><strong>Decision:</strong> A display font is a <em>second brand voice</em>. We have one. Figtree carries the whole ramp.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: var(--c-cobalt-50); flex-direction: column; gap: 4px;">
+        <span style="font-family: var(--conduction-typography-font-family-body); font-size: 14px; color: var(--c-cobalt-700);">No ligatures</span>
+        <span style="font-family: var(--conduction-typography-font-family-body); font-size: 14px; color: var(--c-cobalt-700);">No alternates</span>
+        <span style="font-family: var(--conduction-typography-font-family-body); font-size: 14px; color: var(--c-cobalt-700);">No discretionary stylistic sets</span>
+      </div>
+      <div class="label">Type discipline</div>
+      <h3>OpenType features off by default.</h3>
+      <p class="why">Ligatures, swashes, alternates — all off. Why? They render inconsistently across platforms (especially WCAG screen readers + older PDFs), and they pull the eye in ways that hurt scannability. Web-rendered Figtree always reads as Figtree.</p>
+      <div class="alt"><strong>Exception:</strong> We turn on <code>tabular-nums</code> for numeric tables. Otherwise, <code>font-feature-settings: "liga" 0;</code> at the root.</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Hex motif · always pointy-top, never flat-top</div>
+  <div class="rationale-grid">
+
+    <div class="rcard">
+      <div class="stage hex-strip">
+        <div class="row">
+          <span class="h" style="background: var(--c-blue-cobalt);"></span>
+          <span class="h" style="background: var(--c-orange-knvb);"></span>
+          <span class="h" style="background: var(--c-mint-500);"></span>
+          <span class="h" style="background: var(--c-cobalt-400);"></span>
+          <span class="h" style="background: var(--c-cobalt-700);"></span>
+        </div>
+        <span class="verdict">POINTY-TOP · the only hex we ship</span>
+      </div>
+      <div class="label">The shape rule</div>
+      <h3>Pointy-top, every time.</h3>
+      <p class="why">No flat-top variants anywhere in the brand. The pointy-top hex carries through from app icons to bullets to status badges to pagination — anywhere a shape <em>means</em> something. Functional containers (buttons, inputs, cards) stay rectangular. <em>Hexagons indicate. Rectangles do.</em></p>
+      <div class="alt"><strong>Why not flat-top?</strong> Flat-top hexes read as honeycomb-cells, food-tech, biology — wrong industry signal. Pointy-top reads as crystal, modular system, deliberate construction.</div>
+    </div>
+
+    <div class="rcard">
+      <div class="stage" style="background: var(--c-cobalt-50); flex-direction: row; gap: 14px; padding: 0 24px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div style="width: 36px; height: 42px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); display: flex; align-items: center; justify-content: center; color: white;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg>
+          </div>
+          <span style="font-family: var(--conduction-typography-font-family-code); font-size: 9px; letter-spacing: 0.04em; color: var(--c-cobalt-400);">APP ICON</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div style="width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); margin-top: 11px;"></div>
+          <span style="font-family: var(--conduction-typography-font-family-code); font-size: 9px; letter-spacing: 0.04em; color: var(--c-cobalt-400);">STATUS</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div style="display: flex; gap: 3px; margin-top: 14px;">
+            <span style="width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-cobalt-200);"></span>
+            <span style="width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);"></span>
+            <span style="width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-cobalt-200);"></span>
+          </div>
+          <span style="font-family: var(--conduction-typography-font-family-code); font-size: 9px; letter-spacing: 0.04em; color: var(--c-cobalt-400);">PAGINATION</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div style="width: 28px; height: 32px; clip-path: var(--hex-pointy-top); background: var(--c-cobalt-700); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 11px; margin-top: 6px;">RV</div>
+          <span style="font-family: var(--conduction-typography-font-family-code); font-size: 9px; letter-spacing: 0.04em; color: var(--c-cobalt-400);">AVATAR</span>
+        </div>
+      </div>
+      <div class="label">The hex as system</div>
+      <h3>Bullets, badges, avatars, dividers.</h3>
+      <p class="why">A logo wrapper is just the start. The hex shows up as the bullet on every list, the status indicator next to every app, the avatar wrapper for every team member, the divider between sections, the timeline bead in step diagrams. <em>Anywhere a shape means something</em>, the hex is the shape.</p>
+      <div class="alt"><strong>Where it doesn't go:</strong> buttons, inputs, cards, modals, tables. Rectangles do the work; hexes do the indicating.</div>
+    </div>
+
+    <div class="rcard" style="grid-column: span 2;">
+      <div class="stage" style="background: white; border: 1px solid var(--c-cobalt-100); height: 120px; gap: 24px; padding: 0 32px; justify-content: flex-start;">
+        <div style="position: relative; width: 64px; height: 74px;">
+          <div style="position: absolute; inset: 0; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);"></div>
+          <div style="position: absolute; left: 38px; top: 14px; width: 48px; height: 56px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); opacity: 0.85;"></div>
+          <div style="position: absolute; left: 14px; top: 30px; width: 36px; height: 42px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); opacity: 0.85;"></div>
+        </div>
+        <div style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5;">Flat-isometric hex-prism style for all illustrations. No people, no faces, no characters. No stock photos, no 3D renders, no gradient backgrounds (except the Nextcloud-blue gradient on the kernel hex).</div>
+      </div>
+      <div class="label">Illustration direction</div>
+      <h3>Flat-isometric hex-prism. Reference: Honeycomb.io.</h3>
+      <p class="why">Hex-prisms — same pointy-top hex extruded with a slight isometric depth, flat shading, no Pixar lighting. Every illustration in the system uses this geometry, with pastel category palettes per face. Reference: Honeycomb's platform-overview diagram.</p>
+      <div class="alt"><strong>What we don't use:</strong> photography, 3D renders, mascot characters (OpenPeeps, Tom Froese-style figures), gradient backgrounds, neon lighting. The geometry carries the visual; we don't supplement it.</div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

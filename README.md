@@ -48,7 +48,8 @@ Three brands are visible across these surfaces, each with a defined role:
 | [`brand/assets/`](./brand/assets) | Conduction hexagon avatar (3 variants: cobalt-on-white, white-on-cobalt, transparent). |
 | [`preview/`](./preview) | Visual cards showing every token in context — type ramp, color, spacing, components, brand. **Start here:** [`preview/index.html`](./preview/index.html). |
 | [`preview/components/`](./preview/components) | Section-level building blocks (hero, platform overview, apps grid, pipeline flow, stats strip). Gallery: [`preview/components.html`](./preview/components.html). |
-| [`preview/pages/`](./preview/pages) | Full-page layouts composed from components (apps catalogue, solution page). Gallery: [`preview/pages.html`](./preview/pages.html). |
+| [`preview/pages/`](./preview/pages) | Full-page layouts composed from components (apps catalogue, apps grid, solution page). Gallery: [`preview/pages.html`](./preview/pages.html). |
+| [`preview/identity/`](./preview/identity) | Verbal brand foundation — values, audience, products, voice, visual rationale. Gallery: [`preview/identity/index.html`](./preview/identity/index.html). |
 
 ---
 
@@ -204,9 +205,17 @@ conduction-design-system/
 │  │  ├─ apps-grid.html                   ← filterable apps grid
 │  │  ├─ pipeline-flow.html               ← horizontal hex-prism pipeline
 │  │  └─ stats-strip.html                 ← four-up headline numbers band
-│  └─ pages/                          ← full-page HTML layouts
-│     ├─ apps-catalog.html                ← filterable apps catalogue page
-│     └─ solution-page.html               ← long-form solution writeup w/ sticky aside
+│  ├─ pages/                          ← full-page HTML layouts
+│  │  ├─ apps-catalog.html                ← filterable apps catalogue page
+│  │  ├─ apps-grid.html                   ← compact apps grid alternative
+│  │  └─ solution-page.html               ← long-form solution writeup w/ sticky aside + solution hex
+│  └─ identity/                       ← verbal brand foundation
+│     ├─ index.html                       ← identity gallery
+│     ├─ foundation.html                  ← values, what we build, the triad
+│     ├─ audience.html                    ← MKB / Gov / Dev tiers
+│     ├─ products.html                    ← apps × solutions, taglines, architecture
+│     ├─ voice.html                       ← registers, rewrite recipes, banned phrases
+│     └─ system.html                      ← visual rationale (why cobalt / Figtree / hex)
 └─ SKILL.md                           ← how to invoke this design system
 ```
 

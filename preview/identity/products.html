@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Products — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Apps vs Solutions contrast */
+  .terminology {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+  .term-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .term-card .accent {
+    width: 36px; height: 42px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px;
+    margin-bottom: var(--space-2);
+  }
+  .term-card.solution .accent { background: var(--c-orange-knvb); }
+  .term-card .word {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .term-card h3 {
+    font-size: 28px; font-weight: 700;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.015em;
+    margin-bottom: var(--space-2);
+  }
+  .term-card .def {
+    font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55;
+  }
+  .term-card .examples {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; color: var(--c-cobalt-400);
+    margin-top: var(--space-2);
+  }
+  .term-card .examples strong { color: var(--c-blue-cobalt); }
+
+  .relationship {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-8);
+    margin-top: var(--space-4);
+    font-size: 15px; color: var(--c-cobalt-700);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .relationship strong { color: var(--c-blue-cobalt); }
+  .relationship .rule {
+    font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt);
+    margin-top: var(--space-3);
+    border-left: 3px solid var(--c-orange-knvb);
+    padding-left: var(--space-4);
+    text-align: left;
+    max-width: 60ch;
+    margin-left: auto; margin-right: auto;
+  }
+
+  /* App taglines table */
+  .taglines {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .taglines table { width: 100%; border-collapse: collapse; }
+  .taglines th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    font-weight: 500;
+  }
+  .taglines td {
+    padding: var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    font-size: 14px;
+  }
+  .taglines td.app {
+    white-space: nowrap;
+    width: 1%;
+  }
+  .taglines td.app .row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .taglines td.app .h {
+    width: 24px; height: 28px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    flex-shrink: 0;
+  }
+  .taglines td.app strong {
+    color: var(--c-blue-cobalt);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .taglines td.tag-nl { font-style: italic; color: var(--c-cobalt-700); line-height: 1.5; }
+  .taglines td.tag-en { color: var(--c-cobalt-400); line-height: 1.5; font-size: 13px; }
+
+  /* 6-component architecture summary */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+  .arch-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    background: white;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .arch-card.kernel-card {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-color: var(--c-blue-cobalt);
+  }
+  .arch-card .h {
+    width: 32px; height: 37px;
+    clip-path: var(--hex-pointy-top);
+  }
+  .arch-card h4 {
+    font-size: 17px; font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--c-blue-cobalt);
+  }
+  .arch-card.kernel-card h4 { color: white; }
+  .arch-card .role {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--c-cobalt-400);
+    text-transform: uppercase;
+  }
+  .arch-card.kernel-card .role { color: rgba(255,255,255,0.7); }
+  .arch-card .apps {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: var(--space-2);
+  }
+  .arch-card .apps span {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    background: var(--c-cobalt-50);
+    color: var(--c-blue-cobalt);
+  }
+  .arch-card.kernel-card .apps span {
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+  .arch-card.muted { opacity: 0.7; border-style: dashed; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">10 · Identity / Products</div>
+      <h1 class="card-title">Apps. Solutions. One vocabulary.</h1>
+    </div>
+    <p class="card-subtitle">An app is software we ship. A solution is what a customer achieves with it. Don't conflate.</p>
+  </div>
+
+  <div class="section-label">Terminology · the apps-vs-solutions distinction</div>
+  <div class="terminology">
+    <div class="term-card app">
+      <div class="accent">A</div>
+      <div class="word">App</div>
+      <h3>Software we ship.</h3>
+      <p class="def">Concrete, installable, one-click from the Nextcloud app store. Has a name, a version, a maintainer, a GitHub repo.</p>
+      <p class="examples"><strong>e.g.</strong> OpenCatalogi · OpenRegister · OpenConnector · DocuDesk</p>
+    </div>
+    <div class="term-card solution">
+      <div class="accent">S</div>
+      <div class="word">Solution</div>
+      <h3>What a customer achieves.</h3>
+      <p class="def">A concrete outcome — a problem solved, a regulation met, a workflow live. Built <em>from</em> apps but isn't itself an app.</p>
+      <p class="examples"><strong>e.g.</strong> WOO compliance · Organisatieregister · Zaakafhandeling</p>
+    </div>
+  </div>
+  <div class="relationship">
+    One <strong>app</strong> can contribute to many <strong>solutions</strong>. One <strong>solution</strong> often combines several <strong>apps</strong>. We talk from both sides — apps for visitors who know what they want, solutions for visitors who have a problem.
+    <p class="rule">Never write <em>"our WOO app"</em> — there isn't one. Write <em>"our WOO solution, built on OpenCatalogi, OpenConnector, and DocuDesk."</em></p>
+  </div>
+
+  <div class="section-label">App taglines · MKB-direct, bilingual</div>
+  <div class="taglines">
+    <table>
+      <thead>
+        <tr><th>App</th><th>NL · primary</th><th>EN · secondary</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>OpenRegister</strong></div></td>
+          <td class="tag-nl">Alle objecten, registers en documenten op één plek — die jij zelf beheert.</td>
+          <td class="tag-en">One place for every record, object and document — fully under your control.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>OpenCatalogi</strong></div></td>
+          <td class="tag-nl">Maak je data vindbaar en herbruikbaar — ook buiten je organisatie.</td>
+          <td class="tag-en">Make your data discoverable and reusable — beyond your organisation too.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>OpenConnector</strong></div></td>
+          <td class="tag-nl">Koppel alles met alles — zonder vendor lock-in of dure integrator.</td>
+          <td class="tag-en">Connect anything to anything — without vendor lock-in or pricey integrators.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>DocuDesk</strong></div></td>
+          <td class="tag-nl">Brieven, contracten en exporten genereren zonder je documenten uit handen te geven.</td>
+          <td class="tag-en">Generate, sign and anonymise documents — without handing them to a third party.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>NLDesign Theme</strong></div></td>
+          <td class="tag-nl">Geef je Nextcloud de officiële uitstraling van NL Design System.</td>
+          <td class="tag-en">Bring the official look and feel of NL Design System to your Nextcloud.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h"></span><strong>MyDash</strong></div></td>
+          <td class="tag-nl">Bouw dashboards uit je eigen data — zonder dat IT eraan te pas komt.</td>
+          <td class="tag-en">Build dashboards from your own data — no IT ticket required.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h" style="background: var(--c-cobalt-700);"></span><strong>OpenCatalogi (Workplace)</strong></div></td>
+          <td class="tag-nl">Een centrale plek voor publicaties, datasets en API's — gepubliceerd waar je bezoekers zijn.</td>
+          <td class="tag-en">One place for publications, datasets and APIs — published where your audience lives.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h" style="background: var(--c-cobalt-700);"></span><strong>SoftwareCatalog</strong></div></td>
+          <td class="tag-nl">Krijg grip op welke software je draait — en welke je kwijt wilt.</td>
+          <td class="tag-en">See exactly which software you run — and which you can retire.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h" style="background: var(--c-cobalt-700);"></span><strong>PipelinQ</strong></div></td>
+          <td class="tag-nl">CRM, offertes en deals — in dezelfde Nextcloud waar je werkt.</td>
+          <td class="tag-en">CRM, quotes and deals — in the same Nextcloud you already work in.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h" style="background: var(--c-cobalt-700);"></span><strong>ZaakAfhandelApp</strong></div></td>
+          <td class="tag-nl">Burgers zien zelf de status van hun zaak — zonder dat ze hoeven te bellen.</td>
+          <td class="tag-en">Citizens track the status of their own case — no phone call required.</td>
+        </tr>
+        <tr>
+          <td class="app"><div class="row"><span class="h" style="background: var(--c-cobalt-700);"></span><strong>LarpingApp</strong></div></td>
+          <td class="tag-nl">Bouw werelden, beheer campagnes — voor live-action role-playing.</td>
+          <td class="tag-en">Build worlds, run campaigns — for live-action role-playing. Yes, really.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Source: <code>concurrentie-analyse/intelligence.db</code> — top features per app ranked by demand_score, synthesised into <em>"what it solves + what it saves you + what makes it different"</em>. Banned in taglines: <em>transformatie · synergie · ketensamenwerking · waardevol · toekomstbestendig · platform dat · state-of-the-art</em>.</p>
+
+  <div class="section-label">The architecture · six component-cards rotating around the kernel</div>
+  <div class="arch-grid">
+    <div class="arch-card kernel-card">
+      <div class="h" style="background: white;"></div>
+      <h4>Nextcloud</h4>
+      <div class="role">The kernel · centre</div>
+      <div class="apps"><span>Files</span><span>Mail</span><span>Cal</span><span>Talk</span><span>Office</span><span>SSO</span></div>
+    </div>
+    <div class="arch-card">
+      <div class="h" style="background: var(--c-blue-cobalt);"></div>
+      <h4>Technical Core</h4>
+      <div class="role">5 fundational apps</div>
+      <div class="apps"><span>OpenRegister</span><span>OpenConnector</span><span>DocuDesk</span><span>NLDesign</span><span>MyDash</span></div>
+    </div>
+    <div class="arch-card">
+      <div class="h" style="background: var(--c-cobalt-700);"></div>
+      <h4>Workplace Apps</h4>
+      <div class="role">9 user-facing apps</div>
+      <div class="apps"><span>OpenCatalogi</span><span>PipelinQ</span><span>Procest</span><span>ZaakAfhandel</span><span>DeciDesk</span><span>ShillinQ</span><span>Larping</span><span>OpenWoo</span><span>SoftwareCatalog</span></div>
+    </div>
+    <div class="arch-card">
+      <div class="h" style="background: #2E9866;"></div>
+      <h4>AI</h4>
+      <div class="role">Cross-cutting</div>
+      <div class="apps"><span>Automation</span><span>Agents</span><span>Intelligence</span></div>
+    </div>
+    <div class="arch-card">
+      <div class="h" style="background: var(--c-cobalt-400);"></div>
+      <h4>Integrated Apps</h4>
+      <div class="role">Third-party OSS</div>
+      <div class="apps"><span>OpenTalk</span><span>Matrix</span><span>n8n</span><span>OpenProject</span><span>XWiki</span><span>GitLab</span><span>Mattermost</span></div>
+    </div>
+    <div class="arch-card muted">
+      <div class="h" style="background: var(--c-cobalt-300);"></div>
+      <h4>App Builder</h4>
+      <div class="role">Coming soon</div>
+      <div class="apps"><span>Build</span><span>Customise</span><span>No-code</span></div>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-4); font-size: 13px; color: var(--c-cobalt-400); text-align: center;">See the live diagram in <a href="../components/platform-overview.html" style="color: var(--c-blue-cobalt);">components / platform-overview</a> — hover any app to see what it does.</p>
+
+</div>
+
+</body>
+</html>

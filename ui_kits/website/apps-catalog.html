@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apps catalogue — ConNext</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+/* ============================================================
+   Apps catalogue with filter sidebar
+   ----------------------------------------------------------------
+   The /apps page proper. Sticky filter rail on the left with four
+   facets (categorie, status, NL-versie, NLDS), a sortering control
+   above the grid, and the same app cards used on the homepage —
+   only here they're filterable and the grid is dense (3 columns
+   on wide, 2 on medium). Filters are exposed as native checkboxes
+   so screenreaders read them as a fieldset; they don't actually
+   filter in this static mock — the checked state shows the
+   resting visual.
+   ============================================================ */
+
+body { margin: 0; background: white; }
+
+/* ---- Top nav (mirrors platform-overview) ---- */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 56px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.nav .left { display: flex; align-items: center; gap: 44px; }
+.wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  color: var(--c-cobalt-700); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+}
+.nav-links a:hover, .nav-links a.current { color: var(--c-orange-knvb); }
+.nav-links a.current { font-weight: 600; }
+.nav .nav-ctas { display: flex; align-items: center; gap: 12px; }
+.nav .ghost { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
+.nav .cta { background: var(--c-blue-cobalt); color: white; padding: 9px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; text-decoration: none; }
+.nav .cta:hover { background: var(--c-cobalt-700); }
+
+/* ---- Page header strip ---- */
+.page-strip {
+  padding: 56px 56px 40px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.crumbs {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+  margin-bottom: 16px;
+}
+.crumbs a { color: var(--c-cobalt-400); text-decoration: none; }
+.crumbs a:hover { color: var(--c-orange-knvb); }
+.page-strip h1 {
+  font-size: 44px; line-height: 1.05; letter-spacing: -0.025em;
+  color: var(--c-blue-cobalt);
+  margin-bottom: 12px;
+  max-width: 18ch;
+}
+.page-strip p {
+  font-size: 17px; line-height: 1.55; color: var(--c-cobalt-700);
+  max-width: 64ch;
+}
+
+/* ---- Layout: sidebar + main ---- */
+.catalog {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 56px;
+  padding: 32px 56px 80px;
+  align-items: start;
+}
+
+/* ---- Filter sidebar ---- */
+.filters {
+  position: sticky;
+  top: 24px;
+}
+.facet { margin-bottom: 28px; }
+.facet h3 {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.facet-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.facet-list li {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  color: var(--c-cobalt-700);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.facet-list li:hover { color: var(--c-blue-cobalt); }
+.facet-list input[type="checkbox"] {
+  appearance: none;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--c-cobalt-300);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  background: white;
+  transition: all 120ms;
+}
+.facet-list input[type="checkbox"]:hover { border-color: var(--c-blue-cobalt); }
+.facet-list input[type="checkbox"]:checked {
+  background: var(--c-blue-cobalt);
+  border-color: var(--c-blue-cobalt);
+}
+.facet-list input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px; height: 9px;
+  border: solid white;
+  border-width: 0 1.6px 1.6px 0;
+  transform: rotate(45deg);
+}
+.facet-list .count {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+}
+.facet-list label { cursor: pointer; }
+
+.facet-clear {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--c-cobalt-400);
+  text-decoration: none;
+  margin-top: 8px;
+  border: none; background: none;
+  padding: 0; cursor: pointer;
+  font-family: inherit;
+}
+.facet-clear:hover { color: var(--c-orange-knvb); }
+
+/* ---- Toolbar above grid ---- */
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.toolbar .count-text {
+  font-size: 14px; color: var(--c-cobalt-700);
+}
+.toolbar .count-text b { color: var(--c-cobalt-900); font-weight: 700; }
+.toolbar .sort {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--c-cobalt-700);
+}
+.toolbar .sort select {
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--c-cobalt-900);
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-sm);
+  padding: 5px 28px 5px 10px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%2321468B' fill='none' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+}
+
+/* ---- Active filter chips ---- */
+.active-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 20px;
+}
+.active-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 8px 5px 12px;
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  font-size: 13px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--c-cobalt-100);
+}
+.active-chip button {
+  appearance: none; border: none; background: none;
+  cursor: pointer;
+  width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--c-cobalt-400);
+  border-radius: 50%;
+}
+.active-chip button:hover { background: var(--c-cobalt-100); color: var(--c-cobalt-700); }
+.active-chip button svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; }
+
+/* ---- Apps grid ---- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.app {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  transition: all 160ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+.app:hover {
+  border-color: var(--c-blue-cobalt);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-2px);
+}
+.app .top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px;
+}
+.app .icon-wrap {
+  width: 48px; height: 55px;
+  clip-path: var(--hex-pointy-top);
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.app .icon-wrap svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; }
+.app .badges { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-700);
+}
+.badge .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); display: inline-block; }
+.badge--stable .h { background: var(--c-mint-500); }
+.badge--beta   .h { background: var(--c-orange-knvb); }
+.badge--exp    .h { background: var(--c-cobalt-300); }
+
+.app .name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: var(--c-cobalt-900); }
+.app .tagline { font-size: 14px; line-height: 1.5; color: var(--c-cobalt-700); }
+
+.app .meta-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: auto; padding-top: 14px;
+  border-top: 1px solid var(--c-cobalt-100);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; color: var(--c-cobalt-400);
+}
+.meta-row .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--c-cobalt-300); }
+.meta-row .nlds {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--c-cobalt-700);
+  font-weight: 500;
+}
+.meta-row .nlds svg { width: 12px; height: 12px; stroke: var(--c-mint-500); stroke-width: 2; fill: none; }
+
+/* Coming-soon card variant */
+.app--soon {
+  background: var(--c-cobalt-50);
+  border-style: dashed;
+}
+.app--soon .name { color: var(--c-cobalt-400); }
+.app--soon .icon-wrap { background: var(--c-cobalt-200) !important; color: var(--c-cobalt-400); }
+.app--soon .meta-row { color: var(--c-cobalt-400); }
+
+</style>
+</head>
+<body>
+
+<!-- ===================== Nav ===================== -->
+<nav class="nav">
+  <div class="left">
+    <div class="wm">Con<span class="next-blue">Next</span></div>
+    <div class="nav-links">
+      <a href="#" class="current">Apps</a>
+      <a href="#">Solutions</a>
+      <a href="#">Docs</a>
+      <a href="#">Support</a>
+      <a href="#">About</a>
+    </div>
+  </div>
+  <div class="nav-ctas">
+    <a href="#" class="ghost">Demo</a>
+    <a href="#" class="cta">Install →</a>
+  </div>
+</nav>
+
+<!-- ===================== Page strip ===================== -->
+<section class="page-strip">
+  <div class="crumbs"><a href="#">Home</a> &nbsp;/&nbsp; Apps</div>
+  <h1>Twelve apps. All open-source.</h1>
+  <p>Every ConNext app installs from the <span class="next-blue">Nextcloud</span> app store. Filter by what you need — categorie, beta-status, Nederlandse versie, NLDS-compliantie. The catalogue updates as we ship.</p>
+</section>
+
+<!-- ===================== Catalog ===================== -->
+<div class="catalog">
+
+  <!-- ============== Filter sidebar ============== -->
+  <aside class="filters">
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0 0 28px">
+      <h3>Categorie</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="f-data" checked><label for="f-data">Data &amp; registers</label><span class="count">4</span></li>
+        <li><input type="checkbox" id="f-int"><label for="f-int">Integraties</label><span class="count">3</span></li>
+        <li><input type="checkbox" id="f-doc" checked><label for="f-doc">Documenten</label><span class="count">2</span></li>
+        <li><input type="checkbox" id="f-pro"><label for="f-pro">Processen</label><span class="count">2</span></li>
+        <li><input type="checkbox" id="f-view"><label for="f-view">Dashboards &amp; views</label><span class="count">1</span></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0 0 28px">
+      <h3>Status</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="s-stable" checked><label for="s-stable">Stable</label><span class="count">7</span></li>
+        <li><input type="checkbox" id="s-beta"><label for="s-beta">Beta</label><span class="count">3</span></li>
+        <li><input type="checkbox" id="s-exp"><label for="s-exp">Experimental</label><span class="count">2</span></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0 0 28px">
+      <h3>Nederlandse versie</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="nl-yes" checked><label for="nl-yes">NL beschikbaar</label><span class="count">10</span></li>
+        <li><input type="checkbox" id="nl-only"><label for="nl-only">NL-only</label><span class="count">2</span></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0">
+      <h3>Compliantie</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="c-nlds" checked><label for="c-nlds">NLDS-compliant</label><span class="count">8</span></li>
+        <li><input type="checkbox" id="c-woo"><label for="c-woo">WOO-ready</label><span class="count">5</span></li>
+        <li><input type="checkbox" id="c-eupl"><label for="c-eupl">EUPL-1.2</label><span class="count">12</span></li>
+      </ul>
+    </fieldset>
+
+    <button class="facet-clear">Clear all filters</button>
+  </aside>
+
+  <!-- ============== Main grid ============== -->
+  <main>
+    <div class="toolbar">
+      <div class="count-text"><b>9</b> of 12 apps · <span style="color:var(--c-cobalt-400)">3 hidden by filters</span></div>
+      <div class="sort">
+        <span style="color: var(--c-cobalt-400)">Sort by</span>
+        <select>
+          <option>Most installed</option>
+          <option>Recently updated</option>
+          <option>A → Z</option>
+          <option>Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="active-chips">
+      <span class="active-chip">Data &amp; registers <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+      <span class="active-chip">Documenten <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+      <span class="active-chip">Stable <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+      <span class="active-chip">NL beschikbaar <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+      <span class="active-chip">NLDS-compliant <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+    </div>
+
+    <div class="grid">
+
+      <!-- App 1 — OpenCatalogi -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-blue-cobalt);">
+            <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">OpenCatalogi</div>
+        <div class="tagline">Public software catalog. Datasets, APIs, and apps in one searchable place.</div>
+        <div class="meta-row">
+          <span>v2.4</span>
+          <span class="dot"></span>
+          <span>NL · EN</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 2 — OpenRegister -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-cobalt-700);">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">OpenRegister</div>
+        <div class="tagline">Schemas, registers, structured data objects — the typed-data backbone.</div>
+        <div class="meta-row">
+          <span>v3.1</span>
+          <span class="dot"></span>
+          <span>NL · EN</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 3 — DocuDesk -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-blue-cobalt);">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">DocuDesk</div>
+        <div class="tagline">Auto-classify, anonymise, and route inbound documents to the right folder.</div>
+        <div class="meta-row">
+          <span>v1.8</span>
+          <span class="dot"></span>
+          <span>NL · EN</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 4 — OpenZaak -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-cobalt-700);">
+            <svg viewBox="0 0 24 24"><path d="M9 11V7a3 3 0 0 1 6 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">OpenZaak</div>
+        <div class="tagline">Zaakafhandeling: case-management voor de Nederlandse overheid, ZGW-compliant.</div>
+        <div class="meta-row">
+          <span>v4.2</span>
+          <span class="dot"></span>
+          <span>NL-only</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 5 — OpenWOO -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-blue-cobalt);">
+            <svg viewBox="0 0 24 24"><path d="M5 4h12l4 4v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9 13h8M9 17h6M9 9h4"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">OpenWOO</div>
+        <div class="tagline">Wet Open Overheid-publicatie zonder externe leverancier — index, redaction, archief.</div>
+        <div class="meta-row">
+          <span>v2.0</span>
+          <span class="dot"></span>
+          <span>NL-only</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 6 — NLDesign Theme -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-cobalt-700);">
+            <svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M5 9h14M9 9v10"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">NLDesign Theme</div>
+        <div class="tagline">Past Nextcloud automatisch aan het Nederlandse overheids-design-system aan.</div>
+        <div class="meta-row">
+          <span>v1.4</span>
+          <span class="dot"></span>
+          <span>NL · EN</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+      <!-- App 7 — DocuFlow (beta, hidden by Stable filter — shown anyway as muted to acknowledge state) -->
+      <!-- (skipped to honour the active filter — placeholder kept simple) -->
+
+      <!-- App 8 — Coming soon: Larping -->
+      <div class="app app--soon">
+        <div class="top">
+          <div class="icon-wrap"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 12h6l3-7 3 14 3-7h3"/></svg></div>
+          <div class="badges">
+            <span class="badge"><span class="h" style="background: var(--c-cobalt-300);"></span>Coming Q2</span>
+          </div>
+        </div>
+        <div class="name">Larping</div>
+        <div class="tagline">Workflow &amp; process orchestration — visueel ontworpen, audit-logged, retry-safe.</div>
+        <div class="meta-row">
+          <span>not yet released</span>
+        </div>
+      </div>
+
+      <!-- App 9 — OpenIntegrator -->
+      <a href="#" class="app">
+        <div class="top">
+          <div class="icon-wrap" style="background: var(--c-blue-cobalt);">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+          </div>
+          <div class="badges">
+            <span class="badge badge--stable"><span class="h"></span>Stable</span>
+          </div>
+        </div>
+        <div class="name">OpenIntegrator</div>
+        <div class="tagline">REST, SOAP, file drops, message queues — verbind Nextcloud aan elk legacy systeem.</div>
+        <div class="meta-row">
+          <span>v2.7</span>
+          <span class="dot"></span>
+          <span>NL · EN</span>
+          <span class="dot"></span>
+          <span class="nlds"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>
+</content>
+<parameter name="asset">Apps catalogue (filter sidebar)

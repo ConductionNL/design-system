@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Components — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 120ms ease;
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  .btn-primary { background: var(--c-blue-cobalt); color: white; }
+  .btn-primary:hover { background: var(--c-cobalt-700); }
+  .btn-secondary { background: white; color: var(--c-blue-cobalt); border-color: var(--c-blue-cobalt); }
+  .btn-secondary:hover { background: var(--c-cobalt-50); }
+  .btn-ghost { background: transparent; color: var(--c-blue-cobalt); }
+  .btn-ghost:hover { background: var(--c-cobalt-50); }
+  .btn-danger { background: var(--c-red-vermillion); color: white; }
+  .btn-focus { box-shadow: 0 0 0 3px var(--c-orange-knvb); }
+
+  .button-row { display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; }
+
+  /* Hex badges (status) */
+  .hex-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-700);
+  }
+  .hex-badge .h {
+    width: 14px; height: 16px;
+    clip-path: var(--hex-pointy-top);
+  }
+  .badge-row { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+
+  /* Pill chips */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .chip.active { background: var(--c-blue-cobalt); color: white; }
+  .chip-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+  /* App cards */
+  .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .app-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: all 120ms ease;
+    cursor: pointer;
+    background: white;
+  }
+  .app-card:hover { border-color: var(--c-blue-cobalt); box-shadow: var(--shadow-2); }
+  .app-card .icon-wrap {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    margin-bottom: var(--space-4);
+  }
+  .app-card .icon-wrap svg { width: 22px; height: 22px; }
+  .app-card .name { font-weight: 600; font-size: 17px; margin-bottom: 4px; }
+  .app-card .desc { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; min-height: 42px; }
+  .app-card .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--c-cobalt-100); font-size: 12px; color: var(--c-cobalt-400); }
+
+  /* Form fields */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); max-width: 720px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--c-cobalt-700);
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-cobalt-200);
+    background: white;
+    color: var(--conduction-color-text-default);
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--c-blue-cobalt);
+    box-shadow: 0 0 0 3px rgba(243, 108, 33, 0.25);
+  }
+
+  /* Hex pagination */
+  .pagination { display: flex; gap: var(--space-2); align-items: center; }
+  .pagination .step {
+    width: 22px; height: 26px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-200);
+  }
+  .pagination .step.active { background: var(--c-blue-cobalt); }
+  .pagination .step.done { background: var(--c-cobalt-400); }
+
+  /* Alerts */
+  .alert {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border-left: 3px solid;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .alert.info { background: var(--c-cobalt-50); border-color: var(--c-blue-cobalt); }
+  .alert.warn { background: #FFF3EA; border-color: var(--c-orange-knvb); }
+  .alert.err { background: #FCE8EA; border-color: var(--c-red-vermillion); color: var(--c-cobalt-700); }
+  .alert strong { font-weight: 600; }
+
+  /* Divider with hex */
+  .hex-divider { display: flex; align-items: center; gap: var(--space-4); }
+  .hex-divider .line { flex: 1; height: 1px; background: var(--c-cobalt-200); }
+  .hex-divider .h {
+    width: 18px; height: 20px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .tag .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); }
+
+  .group { display: flex; flex-direction: column; gap: var(--space-4); }
+  .demo-frame { padding: var(--space-6); border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); background: white; }
+
+  /* ============================================================
+     Marketing surfaces — CTA banner, testimonial, feature stack
+     ============================================================ */
+
+  /* CTA banner — cobalt panel with floating hex prisms */
+  .cta-banner {
+    position: relative;
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 64px 56px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .cta-banner .ornament {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.05);
+    clip-path: var(--hex-pointy-top);
+  }
+  .cta-banner .ornament.o1 { width: 220px; height: 254px; top: -90px; right: -40px; transform: rotate(8deg); }
+  .cta-banner .ornament.o2 { width: 140px; height: 162px; bottom: -50px; left: 60px; background: rgba(255, 255, 255, 0.04); }
+  .cta-banner .ornament.o3 { width: 90px; height: 104px; bottom: 30px; left: -20px; background: rgba(255, 255, 255, 0.06); }
+  .cta-banner .ornament.o4 { width: 64px; height: 74px; top: 40px; left: 30%; background: var(--c-orange-knvb); opacity: 0.18; }
+  .cta-banner h2 {
+    position: relative;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
+    line-height: 1.15;
+  }
+  .cta-banner p {
+    position: relative;
+    font-size: 16px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+    max-width: 520px;
+    margin: 0 auto var(--space-6);
+  }
+  .cta-banner .actions {
+    position: relative;
+    display: inline-flex;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .cta-banner .btn-primary-on-dark {
+    background: white; color: var(--c-blue-cobalt);
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 12px 22px; border: none; border-radius: var(--radius-md);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .cta-banner .btn-primary-on-dark:hover { background: var(--c-cobalt-50); }
+  .cta-banner .btn-ghost-on-dark {
+    background: transparent; color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 11px 22px; border-radius: var(--radius-md);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    cursor: pointer;
+    transition: all 120ms;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .cta-banner .btn-ghost-on-dark:hover { background: rgba(255,255,255,0.08); border-color: white; }
+
+  /* Testimonial — split cobalt panel with cut transition */
+  .testimonial {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--c-blue-cobalt);
+    color: white;
+    position: relative;
+    min-height: 320px;
+  }
+  .testimonial .photo {
+    background: linear-gradient(135deg, var(--c-cobalt-200), var(--c-cobalt-400));
+    position: relative;
+    overflow: hidden;
+    /* Notch the right edge with a hex-derived cut */
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 78% 50%, 100% 65%, 100% 100%, 0 100%);
+  }
+  .testimonial .photo::after {
+    /* placeholder portrait — abstract figure */
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 60%; height: 70%;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(ellipse at center top, var(--c-cobalt-700) 0% 30%, transparent 31%),
+      linear-gradient(to bottom, var(--c-cobalt-700) 60%, var(--c-cobalt-800) 100%);
+    border-radius: 50% 50% 12px 12px / 35% 35% 12px 12px;
+  }
+  .testimonial .photo .frame-label {
+    position: absolute;
+    top: var(--space-4); left: var(--space-4);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    background: rgba(0,0,0,0.2);
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+  .testimonial .body {
+    position: relative;
+    padding: 56px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* Hex echo behind quote */
+  .testimonial .body::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 230px;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+  .testimonial .body::after {
+    content: "";
+    position: absolute;
+    bottom: -50px; right: 80px;
+    width: 140px; height: 162px;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+  .testimonial .quote-mark {
+    font-family: Georgia, serif;
+    font-size: 64px;
+    line-height: 0.8;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: var(--space-3);
+  }
+  .testimonial blockquote {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin: 0 0 var(--space-6);
+    max-width: 520px;
+    position: relative;
+  }
+  .testimonial .attr {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    font-size: 13px;
+    position: relative;
+  }
+  .testimonial .attr .name {
+    font-weight: 600;
+    color: white;
+  }
+  .testimonial .attr .sep {
+    width: 1px; height: 14px;
+    background: rgba(255,255,255,0.3);
+  }
+  .testimonial .attr .role {
+    color: rgba(255,255,255,0.7);
+  }
+  .testimonial .cta {
+    position: relative;
+    align-self: flex-start;
+    background: white;
+    color: var(--c-blue-cobalt);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    transition: background 120ms;
+  }
+  .testimonial .cta:hover { background: var(--c-cobalt-50); }
+
+  /* Feature stack — staggered cards behind a hero illustration panel */
+  .feature-stack {
+    position: relative;
+    padding-top: 28px; /* room for behind-cards to peek */
+  }
+  .feature-stack .behind {
+    position: absolute;
+    top: 0; left: 0; right: 80px;
+    height: 28px;
+    display: flex;
+    gap: 8px;
+  }
+  .feature-stack .behind .b {
+    flex: 1;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: var(--shadow-1);
+  }
+  .feature-stack .behind .b1 { background: var(--c-mint-300); }
+  .feature-stack .behind .b2 { background: var(--c-gold-300); }
+  .feature-stack .behind .b3 { background: var(--c-coral-300); }
+  .feature-stack .panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+    box-shadow: var(--shadow-2);
+    min-height: 360px;
+  }
+  .feature-stack .illo {
+    background: linear-gradient(135deg, var(--c-cobalt-50), var(--c-cobalt-100));
+    position: relative;
+    overflow: hidden;
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .feature-stack .illo .scene {
+    position: relative;
+    width: 100%; max-width: 360px;
+    aspect-ratio: 1.3;
+  }
+  .feature-stack .illo .h {
+    position: absolute;
+    background: white;
+    clip-path: var(--hex-pointy-top);
+    box-shadow: var(--shadow-1);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c-blue-cobalt);
+  }
+  .feature-stack .illo .h.center { width: 96px; height: 110px; left: 32%; top: 30%; }
+  .feature-stack .illo .h.center svg { width: 40px; height: 40px; }
+  .feature-stack .illo .h.tl { width: 56px; height: 64px; left: 5%; top: 38%; }
+  .feature-stack .illo .h.tr1 { width: 52px; height: 60px; right: 18%; top: 12%; background: var(--c-mint-100); color: var(--c-cobalt-700); }
+  .feature-stack .illo .h.tr2 { width: 48px; height: 56px; right: 8%; top: 42%; background: var(--c-gold-100); color: var(--c-cobalt-700); }
+  .feature-stack .illo .h.tr3 { width: 56px; height: 64px; right: 16%; top: 70%; background: var(--c-coral-100); color: var(--c-cobalt-700); }
+  .feature-stack .illo .h svg { width: 22px; height: 22px; }
+  .feature-stack .illo .connector {
+    position: absolute;
+    height: 2px;
+    background: repeating-linear-gradient(to right, var(--c-cobalt-300) 0 6px, transparent 6px 12px);
+  }
+  .feature-stack .illo .c1 { left: 18%; top: 52%; width: 14%; }
+  .feature-stack .illo .c2 { left: 50%; top: 28%; width: 18%; transform: rotate(-18deg); }
+  .feature-stack .illo .c3 { left: 50%; top: 50%; width: 22%; }
+  .feature-stack .illo .c4 { left: 50%; top: 72%; width: 18%; transform: rotate(18deg); }
+  .feature-stack .copy {
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .feature-stack .copy .eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-3);
+  }
+  .feature-stack .copy h3 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
+    line-height: 1.2;
+  }
+  .feature-stack .copy p {
+    font-size: 15px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto var(--space-6);
+  }
+  .feature-stack .copy .link {
+    color: var(--c-blue-cobalt);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    align-self: center;
+    border-bottom: 2px solid var(--c-orange-knvb);
+    padding-bottom: 2px;
+  }
+
+  /* ============================================================
+     Chat popover · floating helper
+     ============================================================ */
+  .chat-stage {
+    position: relative;
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    min-height: 580px;
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+  }
+  /* faint hex pattern in the stage corners */
+  .chat-stage::before,
+  .chat-stage::after {
+    content: "";
+    position: absolute;
+    width: 180px; height: 207px;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(33, 70, 139, 0.05);
+    pointer-events: none;
+  }
+  .chat-stage::before { top: -60px; left: -40px; }
+  .chat-stage::after  { bottom: -60px; right: -40px; transform: rotate(15deg); }
+  .chat-fab {
+    position: absolute;
+    bottom: 24px; right: 24px;
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-2);
+    cursor: pointer;
+  }
+  .chat-fab svg { width: 22px; height: 22px; }
+  .chat-popover {
+    position: absolute;
+    bottom: 100px; right: 24px;
+    width: 360px;
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow-2);
+    /* notched bottom-right corner — hex echo pointing toward the fab */
+    clip-path: var(--clip-cut-trbl-md);
+  }
+  .chat-popover .close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-popover .avatars {
+    display: flex;
+    margin-bottom: var(--space-5);
+  }
+  .chat-popover .avatars .av {
+    width: 40px; height: 46px;
+    clip-path: var(--hex-pointy-top);
+    border: 2px solid var(--c-blue-cobalt);
+    box-sizing: content-box;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-body);
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    margin-left: -10px;
+    position: relative;
+  }
+  .chat-popover .avatars .av:first-child { margin-left: 0; }
+  .chat-popover .avatars .av.a1 { background: var(--c-cobalt-700); }
+  .chat-popover .avatars .av.a2 { background: var(--c-orange-knvb); }
+  .chat-popover .avatars .av.a3 { background: var(--c-mint-500); }
+  .chat-popover .avatars .av.a3::after {
+    content: "";
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--c-mint-500);
+    border: 2px solid var(--c-blue-cobalt);
+  }
+  .chat-popover h3 {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    margin-bottom: var(--space-3);
+  }
+  .chat-popover p {
+    color: rgba(255,255,255,0.82);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: var(--space-5);
+  }
+  .chat-popover .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+  .chat-popover .action-btn {
+    background: white;
+    color: var(--c-blue-cobalt);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .chat-popover .action-btn:hover { background: var(--c-cobalt-50); }
+  .chat-popover .footnote {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+  .chat-popover .footnote a { color: rgba(255,255,255,0.85); text-decoration: underline; }
+
+  /* ============================================================
+     Testimonial row · mini quote cards in cobalt-50
+     ============================================================ */
+  .testi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-4);
+  }
+  .testi-card {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: relative;
+  }
+  /* Small offset to make the row feel hand-laid like the reference, not a rigid grid */
+  .testi-row .testi-card:nth-child(2) { transform: translateY(28px); }
+  .testi-row .testi-card:nth-child(4) { transform: translateY(16px); }
+  .testi-row .testi-card:nth-child(5) { transform: translateY(36px); }
+  .testi-card .qmark {
+    color: var(--c-orange-knvb);
+    font-family: Georgia, serif;
+    font-size: 28px;
+    line-height: 0.6;
+    font-weight: 700;
+    height: 14px;
+  }
+  .testi-card blockquote {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--c-cobalt-800);
+  }
+  .testi-card .who {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    align-items: start;
+    margin-top: auto;
+    padding-top: var(--space-3);
+  }
+  .testi-card .who .name {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--c-blue-cobalt);
+  }
+  .testi-card .who .role {
+    font-size: 11px;
+    color: var(--c-cobalt-700);
+    line-height: 1.4;
+    border-left: 1px solid var(--c-cobalt-200);
+    padding-left: var(--space-3);
+  }
+
+  /* ============================================================
+     Download / lead capture · split panel
+     ============================================================ */
+  .download-panel {
+    background: var(--c-cobalt-800);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 56px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .download-panel::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: 380px;
+    width: 200px; height: 230px;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+  .download-panel .pitch h3 {
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: var(--space-5);
+  }
+  .download-panel .pitch p {
+    color: rgba(255,255,255,0.72);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+    max-width: 460px;
+  }
+  .download-panel .form-card {
+    background: white;
+    color: var(--conduction-color-text-default);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    /* hex-cut on the top-left corner — points back at the pitch */
+    clip-path: var(--clip-cut-tlbr-lg);
+    position: relative;
+  }
+  .download-panel .form-card h4 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: var(--space-5);
+    color: var(--c-blue-cobalt);
+  }
+  .download-panel .form-card .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+  .download-panel .form-card input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-cobalt-200);
+    background: white;
+    color: var(--conduction-color-text-default);
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .download-panel .form-card input:focus {
+    outline: none;
+    border-color: var(--c-blue-cobalt);
+    box-shadow: 0 0 0 3px rgba(243, 108, 33, 0.25);
+  }
+  .download-panel .form-card .full { margin-bottom: var(--space-4); }
+  .download-panel .form-card .legal {
+    font-size: 11px;
+    color: var(--c-cobalt-700);
+    line-height: 1.5;
+    margin-bottom: var(--space-5);
+  }
+  .download-panel .form-card .legal a {
+    color: var(--c-blue-cobalt);
+    text-decoration: underline;
+  }
+  .download-panel .form-card button {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 12px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .download-panel .form-card button:hover { background: var(--c-cobalt-700); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">05 · Components</div>
+      <h1 class="card-title">Rectangles do, hexagons indicate.</h1>
+    </div>
+    <p class="card-subtitle">Functional containers (buttons, inputs, cards) stay rectangular. Status, order, and category get the hex.</p>
+  </div>
+
+  <!-- Buttons -->
+  <div class="section-label">Buttons</div>
+  <div class="demo-frame">
+    <div class="button-row">
+      <button class="btn btn-primary">Install from Nextcloud app store</button>
+      <button class="btn btn-secondary">Try the demo</button>
+      <button class="btn btn-ghost">Read the docs →</button>
+      <button class="btn btn-secondary btn-focus">Focused</button>
+      <button class="btn btn-danger">Delete</button>
+    </div>
+    <p class="token" style="margin-top: var(--space-4);">Primary uses cobalt fill. Focus ring is KNVB orange. Never an orange button fill.</p>
+  </div>
+
+  <!-- Hex badges -->
+  <div class="section-label">Status badges · pointy-top hex</div>
+  <div class="demo-frame">
+    <div class="badge-row">
+      <span class="hex-badge"><span class="h" style="background: var(--c-mint-500);"></span>Stable</span>
+      <span class="hex-badge"><span class="h" style="background: var(--c-orange-knvb);"></span>Beta</span>
+      <span class="hex-badge"><span class="h" style="background: var(--c-cobalt-300);"></span>Experimental</span>
+      <span class="hex-badge"><span class="h" style="background: var(--c-red-vermillion);"></span>Deprecated</span>
+      <span class="hex-badge"><span class="h" style="background: var(--c-gold-300);"></span>Preview</span>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="section-label">Filter chips · pill, never hex</div>
+  <div class="demo-frame">
+    <div class="chip-row">
+      <span class="chip active">All apps</span>
+      <span class="chip">Data</span>
+      <span class="chip">Processes</span>
+      <span class="chip">Connectors</span>
+      <span class="chip">AI</span>
+      <span class="chip">Documents</span>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div class="section-label">Category tags</div>
+  <div class="demo-frame">
+    <div class="chip-row">
+      <span class="tag"><span class="h" style="background: var(--c-coral-500);"></span>OPENCATALOGI</span>
+      <span class="tag"><span class="h" style="background: var(--c-lavender-500);"></span>OPENCONNECTOR</span>
+      <span class="tag"><span class="h" style="background: var(--c-gold-500);"></span>OPENREGISTER</span>
+      <span class="tag"><span class="h" style="background: var(--c-mint-500);"></span>DOCUDESK</span>
+    </div>
+  </div>
+
+  <!-- App cards -->
+  <div class="section-label">App cards</div>
+  <div class="app-grid">
+    <div class="app-card">
+      <div class="icon-wrap" style="background: var(--c-blue-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </div>
+      <div class="name">OpenCatalogi</div>
+      <div class="desc">Public software catalog — every app, every dataset, in one searchable index.</div>
+      <div class="meta-row">
+        <span class="hex-badge"><span class="h" style="background: var(--c-mint-500);"></span>Stable</span>
+        <span>v2.4 · OSS</span>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap" style="background: var(--c-cobalt-700);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+      </div>
+      <div class="name">OpenRegister</div>
+      <div class="desc">Schemas, registers, and data objects — the backbone for your app's structured data.</div>
+      <div class="meta-row">
+        <span class="hex-badge"><span class="h" style="background: var(--c-mint-500);"></span>Stable</span>
+        <span>v3.1 · OSS</span>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap" style="background: var(--c-cobalt-700);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+      </div>
+      <div class="name">OpenConnector</div>
+      <div class="desc">Connect Nextcloud to anything — REST, SOAP, GraphQL, file drops, message queues.</div>
+      <div class="meta-row">
+        <span class="hex-badge"><span class="h" style="background: var(--c-orange-knvb);"></span>Beta</span>
+        <span>v1.2 · OSS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forms -->
+  <div class="section-label">Form fields · rectangles always</div>
+  <div class="demo-frame">
+    <div class="form-grid">
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" value="je@bedrijf.nl">
+      </div>
+      <div class="field">
+        <label>Organisation</label>
+        <input type="text" placeholder="Conduction B.V.">
+      </div>
+      <div class="field">
+        <label>Use case</label>
+        <select><option>Public sector — WOO compliance</option><option>MKB — workspace</option></select>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea rows="2" placeholder="What are you trying to install?"></textarea>
+      </div>
+    </div>
+    <p class="token" style="margin-top: var(--space-4);">Focus ring is orange (3px), border becomes cobalt. WCAG AA contrast on placeholders.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="section-label">Hex pagination · install wizard, onboarding</div>
+  <div class="demo-frame" style="display: flex; align-items: center; justify-content: space-between;">
+    <div class="pagination">
+      <span class="step done"></span>
+      <span class="step done"></span>
+      <span class="step active"></span>
+      <span class="step"></span>
+      <span class="step"></span>
+    </div>
+    <span class="token">Step 3 of 5 — Configure schema</span>
+  </div>
+
+  <!-- Alerts -->
+  <div class="section-label">Alerts</div>
+  <div class="group">
+    <div class="alert info"><strong>Note —</strong> The Nextcloud app store install requires admin permissions on your instance.</div>
+    <div class="alert warn"><strong>Beta —</strong> OpenConnector v1.2 is in beta. Connector contracts may change before v2.</div>
+    <div class="alert err"><strong>Error —</strong> Schema validation failed: missing required field <code>oin</code>.</div>
+  </div>
+
+  <!-- Section divider · line broken by a hex -->
+  <div class="section-label">Section divider · line broken by a hex</div>
+  <div class="demo-frame">
+    <p style="margin-bottom: var(--space-6); font-size: 18px; line-height: 1.5;">Apps stay free and open-source.</p>
+    <div class="hex-divider">
+      <span class="line"></span>
+      <span class="h"></span>
+      <span class="line"></span>
+    </div>
+    <p style="margin-top: var(--space-6); font-size: 18px; line-height: 1.5;">Support is optional — a separate, transparent layer.</p>
+  </div>
+
+  <!-- ============================================================
+       Marketing surfaces
+       ============================================================ -->
+
+  <!-- CTA banner -->
+  <div class="section-label">CTA banner · cobalt panel with hex ornaments</div>
+  <div class="cta-banner">
+    <span class="ornament o1"></span>
+    <span class="ornament o2"></span>
+    <span class="ornament o3"></span>
+    <span class="ornament o4"></span>
+    <h2>Ready to install your first app?</h2>
+    <p>Drop OpenCatalogi or OpenRegister into your Nextcloud in two minutes. Open-source, no consultancy track, no lock-in.</p>
+    <div class="actions">
+      <button class="btn-primary-on-dark">Install from Nextcloud</button>
+      <a class="btn-ghost-on-dark" href="#">Book a demo</a>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Cobalt fill · hex prisms at 4–6% white · one orange echo at 18% · white primary · ghost-on-dark secondary</p>
+
+  <!-- Testimonial -->
+  <div class="section-label">Testimonial · split panel with hex-cut transition</div>
+  <div class="testimonial">
+    <div class="photo">
+      <span class="frame-label">Photo · placeholder</span>
+    </div>
+    <div class="body">
+      <span class="quote-mark">"</span>
+      <blockquote>Conduction's open-source apps replaced two SaaS subscriptions and a custom integration. We installed OpenCatalogi and OpenRegister in an afternoon.</blockquote>
+      <div class="attr">
+        <span class="name">Sanne de Vries</span>
+        <span class="sep"></span>
+        <span class="role">CTO, Gemeente Voorbeeld</span>
+      </div>
+      <a class="cta" href="#">Read the case study</a>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Photo cell uses a hex-derived notch on its right edge (point at 50%) so the join itself signals "Conduction" — no extra ornament needed</p>
+
+  <!-- Feature stack -->
+  <div class="section-label">Feature panel · stacked cards, hex-platform illustration</div>
+  <div class="feature-stack">
+    <div class="behind">
+      <span class="b b1"></span>
+      <span class="b b2"></span>
+      <span class="b b3"></span>
+    </div>
+    <div class="panel">
+      <div class="illo">
+        <div class="scene">
+          <span class="connector c1"></span>
+          <span class="connector c2"></span>
+          <span class="connector c3"></span>
+          <span class="connector c4"></span>
+          <span class="h tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+          <span class="h center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></span>
+          <span class="h tr1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span>
+          <span class="h tr2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <span class="h tr3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></span>
+        </div>
+      </div>
+      <div class="copy">
+        <div class="eyebrow">Open ecosystem</div>
+        <h3>Connect anything to Nextcloud.</h3>
+        <p>OpenConnector ships with REST, SOAP, GraphQL, file-drop and message-queue adapters. No vendor lock-in. Drop in your own connector when you need to — it's all open-source.</p>
+        <a class="link" href="#">Browse 40+ connectors →</a>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Behind-cards use category-family pastels (mint · gold · coral) · hex prisms in the illo carry app glyphs · dotted connectors echo the "wires between modules" metaphor</p>
+
+  <!-- Chat popover -->
+  <div class="section-label">Chat popover · floating helper with hex FAB</div>
+  <div class="chat-stage">
+    <div class="chat-popover">
+      <button class="close" aria-label="Close">×</button>
+      <div class="avatars">
+        <div class="av a1">RvZ</div>
+        <div class="av a2">SdV</div>
+        <div class="av a3">MK</div>
+      </div>
+      <h3>Hi there! Got a question about Conduction?</h3>
+      <p>Our team is online — usually replies within a few minutes during NL office hours. Pick what's on your mind:</p>
+      <div class="actions">
+        <button class="action-btn">Talk to a human</button>
+        <button class="action-btn">Help me pick an app</button>
+        <button class="action-btn">Book a 30-min walkthrough</button>
+      </div>
+      <p class="footnote">By chatting you agree to our <a href="#">privacy statement</a>. We don't store conversations longer than 30 days.</p>
+    </div>
+    <button class="chat-fab" aria-label="Open chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    </button>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">FAB is a hex prism (cobalt) instead of a circle. Popover uses cut-corner trbl, so the cut points down-right toward the FAB. Hex avatars (cobalt-700 / KNVB / mint with status dot) instead of circular ones.</p>
+
+  <!-- Testimonial row -->
+  <div class="section-label">Testimonial row · staggered mini-cards</div>
+  <div class="testi-row">
+    <div class="testi-card">
+      <span class="qmark">"</span>
+      <blockquote>OpenCatalogi gave us in two weeks what our previous integrator quoted for nine months.</blockquote>
+      <div class="who">
+        <span class="name">Sanne<br>de Vries</span>
+        <span class="role">CTO<br>Gemeente Voorbeeld</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <span class="qmark">"</span>
+      <blockquote>The schemas in OpenRegister mean we finally stopped writing migration scripts every quarter.</blockquote>
+      <div class="who">
+        <span class="name">Martijn<br>Kuipers</span>
+        <span class="role">Lead engineer<br>Provincie Zuid</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <span class="qmark">"</span>
+      <blockquote>One platform, real open-source, and a Dutch team that actually picks up the phone. Done.</blockquote>
+      <div class="who">
+        <span class="name">Robin van<br>Zandvoort</span>
+        <span class="role">IT-manager<br>Waterschap Noord</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <span class="qmark">"</span>
+      <blockquote>WOO compliance went from "scary project" to "checkbox" the moment we deployed Conduction.</blockquote>
+      <div class="who">
+        <span class="name">Esther<br>Janssen</span>
+        <span class="role">Privacy officer<br>Stadsdeel Zuid</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <span class="qmark">"</span>
+      <blockquote>OpenConnector saved a six-figure SaaS subscription. Now it's a one-time install.</blockquote>
+      <div class="who">
+        <span class="name">Kasper<br>Bakker</span>
+        <span class="role">CFO<br>Mediabedrijf BV</span>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Cards staggered vertically (translateY 0/28/0/16/36) for visual rhythm. Quote-mark in KNVB orange · vertical separator between name and role instead of avatars.</p>
+
+  <!-- Download / lead capture -->
+  <div class="section-label">Download / lead-capture panel · cut-corner form on cobalt-800</div>
+  <div class="download-panel">
+    <div class="pitch">
+      <h3>The 2026 Open-Source<br>Government Stack — report.</h3>
+      <p>Forty-two Dutch organisations, eighteen months of installs, what worked and what didn't. The full benchmark, with TCO numbers, migration paths, and which Conduction app maps onto which legacy SaaS.</p>
+      <p style="margin-bottom: 0;">PDF · 64 pages · Dutch + English · No paywall, no upsell.</p>
+    </div>
+    <div class="form-card">
+      <h4>Get the report</h4>
+      <div class="field-row">
+        <input type="text" placeholder="First name">
+        <input type="text" placeholder="Last name">
+      </div>
+      <div class="full">
+        <input type="email" placeholder="Work email">
+      </div>
+      <div class="full">
+        <input type="text" placeholder="Organisation">
+      </div>
+      <p class="legal">By downloading you agree to receive one follow-up email from Conduction. We don't share your details and you can unsubscribe in one click. <a href="#">Privacy statement</a>.</p>
+      <button>Send me the report</button>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Form card uses cut-corner-tlbr-lg so the top-left cut points back at the pitch headline · form lives on white inside cobalt-800 · single primary button, cobalt fill</p>
+
+</div>
+
+</body>
+</html>

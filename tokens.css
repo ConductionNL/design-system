@@ -1,0 +1,341 @@
+/* ============================================================
+   Conduction Design System — theme-conduction-2026
+   Generated from brand/tokens.json (DTCG)
+   ============================================================ */
+
+/* Fonts: Figtree (body+heading), IBM Plex Mono (code) — both OFL */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---------- Color primitives ---------- */
+  --c-blue-cobalt:        #21468B;  /* Dutch flag blue — primary brand */
+  --c-orange-knvb:        #F36C21;  /* KNVB orange — accent */
+  --c-red-vermillion:     #AE1C28;  /* Dutch flag red — sparingly */
+  --c-white:              #FFFFFF;
+  --c-nextcloud-blue:     #0082C9;  /* Nextcloud official */
+  --c-nextcloud-cyan:     #1CAFFF;  /* Nextcloud gradient end */
+  --gradient-nextcloud:   linear-gradient(45deg, #0082C9, #1CAFFF);
+
+  /* Cobalt tints — derived for surfaces, hex-prism faces, soft fills */
+  --c-cobalt-50:          #EEF2F8;
+  --c-cobalt-100:         #DCE3F0;
+  --c-cobalt-200:         #B6C2DD;
+  --c-cobalt-300:         #8095BD;
+  --c-cobalt-400:         #4D69A4;
+  --c-cobalt-500:         #21468B;  /* = primary */
+  --c-cobalt-600:         #1B3A75;
+  --c-cobalt-700:         #152D5C;
+  --c-cobalt-800:         #102246;
+  --c-cobalt-900:         #0A172F;
+
+  /* Pastel families for hex-prism categories (per visual-motifs.md)
+     Each family has FIVE roles for prism construction:
+       -50  ultra-light wash (ground / page bg accents)
+       -100 top-face fill (the "lit" face you see in plan view)
+       -300 left-face fill (the slightly shaded vertical face)
+       -500 right-face / stroke (the deeper vertical face + outlines)
+       -700 ink — text on prism, pill outline, chip text
+
+     PRISM-FAMILY POLICY (locked 2026-04):
+       Component prisms get ONE of: lavender, mint, forest, terracotta.
+       Kernel prism uses kernelblue (= Nextcloud's own brand blue).
+       Cobalt is brand chrome, NOT a prism family.
+       Coral, gold, gray are NOT prism families. They serve different jobs:
+         · coral  = KNVB-orange accent (focus, hover, single-use highlights). ≤ 8 % page area.
+         · gold   = "Conduction Certified" mark ONLY. Never on a generic prism.
+         · gray   = neutral surfaces / strokes. Not a category.
+  */
+
+  /* — Component family 1: lavender (process / workflow) — */
+  --c-lavender-50:        #F6F2FC;
+  --c-lavender-100:       #ECE6F8;
+  --c-lavender-300:       #B7A7E3;
+  --c-lavender-500:       #7E66C9;
+  --c-lavender-700:       #483982;
+
+  /* — Component family 2: mint (integrate / connect) — */
+  --c-mint-50:            #EAF7F0;
+  --c-mint-100:           #DCF1E6;
+  --c-mint-300:           #87CFA8;
+  --c-mint-500:           #2E9866;
+  --c-mint-700:           #155234;
+
+  /* — Component family 3: forest (data / trustworthy / NLDS-compliant)
+       Distinct from mint — deeper, denser, more "official." Use
+       this for prisms that handle data and registers. — */
+  --c-forest-50:          #EEF5EE;
+  --c-forest-100:         #D7E8D6;
+  --c-forest-300:         #7DAA7C;
+  --c-forest-500:         #3D7C3A;
+  --c-forest-700:         #1E461C;
+
+  /* — Component family 4: terracotta (documents / human work)
+       Tuned around the brand vermillion (#AE1C28) as its 700-deep,
+       so it ties to the Dutch flag without the "alarm" of pure red. — */
+  --c-terracotta-50:      #FBF1EE;
+  --c-terracotta-100:     #F4DCD3;
+  --c-terracotta-300:     #DA9D8A;
+  --c-terracotta-500:     #B25E48;
+  --c-terracotta-700:     #6E2A1C;
+
+  /* — Kernel family: kernelblue (= Nextcloud's own brand blue tints) — */
+  --c-kernelblue-50:      #E5F2FA;
+  --c-kernelblue-100:     #C8E5F5;
+  --c-kernelblue-300:     #67BEEA;
+  --c-kernelblue-500:     #0082C9;  /* Nextcloud blue */
+  --c-kernelblue-700:     #014C77;
+
+  /* ----- Reserved colors (NOT prism families) -----
+     Kept in tokens because they have specific jobs elsewhere. */
+
+  /* Coral = KNVB orange accent only — focus rings, hover, occasional highlight. */
+  --c-coral-50:           #FFF3ED;
+  --c-coral-100:          #FFE4DA;
+  --c-coral-300:          #FAB29C;
+  --c-coral-500:          #F36C21;  /* = KNVB */
+  --c-coral-700:          #9B3A0E;
+
+  /* Gold = Conduction Certified mark ONLY. Reserved for the cert avatar
+     and trustmark badges. Do not use as a generic family color. */
+  --c-gold-50:            #FDF8E8;
+  --c-gold-100:           #FBF1D5;
+  --c-gold-300:           #ECC668;
+  --c-gold-500:           #C99A1F;
+  --c-gold-700:           #765806;
+
+  /* Gray = neutral surfaces, strokes, side-box chrome. Not a category. */
+  --c-gray-50:            #F4F5F8;
+  --c-gray-100:           #ECEEF2;
+  --c-gray-300:           #B7BDC9;
+  --c-gray-500:           #6B7280;
+  --c-gray-700:           #3A4150;
+
+  /* Kernel family alias — points to kernelblue (Nextcloud).
+     The hex-prism API stays uniform: --c-kernel-{50,100,300,500,700} */
+  --c-kernel-50:          var(--c-kernelblue-50);
+  --c-kernel-100:         var(--c-kernelblue-100);
+  --c-kernel-300:         var(--c-kernelblue-300);
+  --c-kernel-500:         var(--c-kernelblue-500);
+  --c-kernel-700:         var(--c-kernelblue-700);
+
+  /* ---------- Semantic theme.conduction-2026 ---------- */
+  /* Brand */
+  --conduction-color-brand-primary:    var(--c-blue-cobalt);
+  --conduction-color-brand-secondary:  var(--c-orange-knvb);
+  --conduction-color-brand-tertiary:   var(--c-red-vermillion);
+  --conduction-color-brand-nextcloud:  var(--c-nextcloud-blue);
+
+  /* Background */
+  --conduction-color-background-default: var(--c-white);
+  --conduction-color-background-inverse: var(--c-blue-cobalt);
+  --conduction-color-background-muted:   var(--c-cobalt-50);
+
+  /* Text */
+  --conduction-color-text-default: var(--c-blue-cobalt);
+  --conduction-color-text-inverse: var(--c-white);
+  --conduction-color-text-accent:  var(--c-orange-knvb);
+  --conduction-color-text-muted:   var(--c-cobalt-400);
+
+  /* Link */
+  --conduction-color-link-default: var(--c-blue-cobalt);
+  --conduction-color-link-hover:   var(--c-orange-knvb);
+
+  /* Status */
+  --conduction-color-status-error: var(--c-red-vermillion);
+
+  /* Border */
+  --conduction-color-border-default: var(--c-cobalt-200);
+  --conduction-color-border-strong:  var(--c-blue-cobalt);
+
+  /* ---------- Typography primitives ---------- */
+  --conduction-typography-font-family-body:    'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --conduction-typography-font-family-heading: 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --conduction-typography-font-family-code:    'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  --fs-xs:   12px;
+  --fs-sm:   14px;
+  --fs-base: 16px;
+  --fs-lg:   18px;
+  --fs-xl:   20px;
+  --fs-2xl:  24px;
+  --fs-3xl:  32px;
+  --fs-4xl:  40px;
+  --fs-5xl:  48px;
+
+  --lh-tight:   1.2;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.75;
+
+  /* ---------- Spacing (proposed scope-B) ---------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ---------- Radii ---------- */
+  --radius-sm:    4px;
+  --radius-md:    6px;   /* default for buttons/inputs */
+  --radius-lg:    10px;
+  --radius-xl:    16px;
+  --radius-pill:  999px;
+
+  /* ---------- Shadows (subtle, brand-quiet) ---------- */
+  --shadow-1: 0 1px 2px rgba(33, 70, 139, 0.08);
+  --shadow-2: 0 2px 8px rgba(33, 70, 139, 0.10);
+  --shadow-3: 0 8px 24px rgba(33, 70, 139, 0.12);
+
+  /* ---------- Hex motif clip-paths ---------- */
+  --hex-pointy-top: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+  /* ---------- Cut-corner clip-paths ---------- */
+  /* Triangular bevels mimic the hex motif on rectangles —
+     use these instead of (or in addition to) border-radius for
+     panels, cards, hero containers, modals. Use the size-specific
+     vars below; the polygon strings are inlined per size because
+     polygon() does not re-resolve var() at use time. */
+  --cut-sm:  6px;
+  --cut-md: 10px;
+  --cut-lg: 16px;
+  --cut-xl: 24px;
+
+  /* Top-left + bottom-right cut — diagonal asymmetry, our default */
+  --clip-cut-tlbr-sm: polygon( 6px 0, 100% 0, 100% calc(100% -  6px), calc(100% -  6px) 100%, 0 100%, 0  6px);
+  --clip-cut-tlbr-md: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  --clip-cut-tlbr-lg: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  --clip-cut-tlbr-xl: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+  --clip-cut-tlbr:    var(--clip-cut-tlbr-md);
+
+  /* Top-right + bottom-left cut — mirror */
+  --clip-cut-trbl-sm: polygon(0 0, calc(100% -  6px) 0, 100%  6px, 100% 100%,  6px 100%, 0 calc(100% -  6px));
+  --clip-cut-trbl-md: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  --clip-cut-trbl-lg: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  --clip-cut-trbl-xl: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  --clip-cut-trbl:    var(--clip-cut-trbl-md);
+
+  /* All four corners cut */
+  --clip-cut-all-sm: polygon( 6px 0, calc(100% -  6px) 0, 100%  6px, 100% calc(100% -  6px), calc(100% -  6px) 100%,  6px 100%, 0 calc(100% -  6px), 0  6px);
+  --clip-cut-all-md: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  --clip-cut-all-lg: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px);
+  --clip-cut-all-xl: polygon(24px 0, calc(100% - 24px) 0, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0 calc(100% - 24px), 0 24px);
+  --clip-cut-all:    var(--clip-cut-all-md);
+}
+
+/* ============================================================
+   Base typography
+   ============================================================ */
+html { font-family: var(--conduction-typography-font-family-body); }
+body {
+  font-family: var(--conduction-typography-font-family-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--conduction-color-text-default);
+  background: var(--conduction-color-background-default);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--conduction-typography-font-family-heading);
+  color: var(--conduction-color-text-default);
+  line-height: var(--lh-tight);
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-5xl); font-weight: var(--fw-bold); letter-spacing: -0.02em; }
+h2 { font-size: var(--fs-4xl); font-weight: var(--fw-bold); letter-spacing: -0.015em; }
+h3 { font-size: var(--fs-3xl); font-weight: var(--fw-semibold); letter-spacing: -0.01em; }
+h4 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); }
+h5 { font-size: var(--fs-xl);  font-weight: var(--fw-semibold); }
+h6 { font-size: var(--fs-lg);  font-weight: var(--fw-semibold); }
+
+p  { margin: 0; text-wrap: pretty; }
+
+code, kbd, samp, pre {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 0.92em;
+}
+
+a {
+  color: var(--conduction-color-link-default);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: color 120ms ease;
+}
+a:hover { color: var(--conduction-color-link-hover); }
+
+/* ============================================================
+   Brand-citation: "Next" in Nextcloud-blue
+   ============================================================ */
+.next-blue { color: var(--conduction-color-brand-nextcloud); }
+
+/* ============================================================
+   Hex-pattern background utility
+   ----------------------------------------------------------------
+   A subtle pointy-top hexagon lattice for footers, section dividers,
+   empty states. The lattice itself is an inline SVG data-URI, tiled.
+   Use the convenience classes below or set the custom properties
+   directly on any element:
+
+     .hex-pattern               default cobalt-100 lines @ ~6% opacity
+     .hex-pattern--soft         barely-there (4%) — for footers
+     .hex-pattern--bold         visible (12%) — for empty states / dividers
+
+   Override:
+     style="--hex-pattern-color: #21468B; --hex-pattern-opacity: 0.08;"
+
+   The pattern repeats at 56px, which matches our spacing rhythm
+   (multiple of --space-4 / --space-8). Don't go below 4% opacity or
+   the texture disappears at small sizes; don't go above 14% or it
+   fights the foreground.
+   ============================================================ */
+.hex-pattern,
+.hex-pattern--soft,
+.hex-pattern--bold {
+  --hex-pattern-color:   var(--c-blue-cobalt);
+  --hex-pattern-opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'><g fill='none' stroke='%2321468B' stroke-width='1'><path d='M28 1 L55 16 L55 48 L28 63 L1 48 L1 16 Z'/><path d='M0 32 L1 32 M55 32 L56 32'/></g></svg>");
+  background-size: 56px 64px;
+  background-repeat: repeat;
+  /* layer the color tint via a mask: easier — lower the whole bg's opacity */
+  background-blend-mode: multiply;
+  position: relative;
+}
+.hex-pattern::before,
+.hex-pattern--soft::before,
+.hex-pattern--bold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: inherit;
+  background-size: inherit;
+  background-repeat: inherit;
+  opacity: var(--hex-pattern-opacity);
+}
+.hex-pattern--soft { --hex-pattern-opacity: 0.04; }
+.hex-pattern--bold { --hex-pattern-opacity: 0.12; }
+/* When applied to a container, the pseudo-element handles the texture
+   so foreground content doesn't get tinted. Make children stack above: */
+.hex-pattern > *,
+.hex-pattern--soft > *,
+.hex-pattern--bold > * { position: relative; z-index: 1; }
+/* Strip the base-image (we paint via ::before only) so blend-mode
+   doesn't double up: */
+.hex-pattern, .hex-pattern--soft, .hex-pattern--bold {
+  background-image: none;
+  background-blend-mode: normal;
+}

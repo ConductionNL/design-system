@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spacing — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Scale rows */
+  .scale-rows { display: flex; flex-direction: column; gap: var(--space-2); }
+  .scale-row {
+    display: grid;
+    grid-template-columns: 80px 80px 1fr 200px;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px dashed var(--c-cobalt-100);
+  }
+  .scale-row:last-child { border-bottom: none; }
+  .scale-row .name { font-weight: 600; font-size: 14px; }
+  .scale-row .px { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
+  .scale-row .bar { height: 16px; background: var(--c-blue-cobalt); border-radius: var(--radius-sm); }
+  .scale-row .use { font-size: 13px; color: var(--c-cobalt-700); text-align: right; }
+
+  /* Radii */
+  .radii { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-5); }
+  .radius-card {
+    border: 1px solid var(--c-cobalt-100);
+    padding: var(--space-5);
+    text-align: center;
+  }
+  .radius-card .box {
+    width: 80px; height: 80px;
+    background: var(--c-cobalt-100);
+    border: 2px solid var(--c-blue-cobalt);
+    margin: 0 auto var(--space-4);
+  }
+  .radius-card .name { font-weight: 600; font-size: 14px; }
+  .radius-card .px { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); margin-top: 2px; }
+  .radius-card .use { font-size: 12px; color: var(--c-cobalt-700); margin-top: var(--space-2); line-height: 1.4; }
+
+  /* Shadows */
+  .shadows { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); padding: var(--space-8) 0; background: var(--c-cobalt-50); border-radius: var(--radius-lg); }
+  .shadow-card {
+    margin: var(--space-6);
+    background: white;
+    height: 120px;
+    border-radius: var(--radius-md);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: var(--space-2);
+  }
+  .shadow-card .name { font-weight: 600; font-size: 14px; }
+  .shadow-card .px { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); }
+  .shadow-1 { box-shadow: var(--shadow-1); }
+  .shadow-2 { box-shadow: var(--shadow-2); }
+  .shadow-3 { box-shadow: var(--shadow-3); }
+
+  /* Hex shapes */
+  .shapes { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+  .shape-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+  }
+  .shape-card .visual {
+    height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: var(--space-4);
+  }
+  .shape-card .name { font-weight: 600; font-size: 14px; }
+  .shape-card .desc { font-size: 12px; color: var(--c-cobalt-400); margin-top: 4px; line-height: 1.4; }
+
+  .hex-pt-large {
+    width: 96px; height: 110px;
+    background: var(--c-blue-cobalt);
+    clip-path: var(--hex-pointy-top);
+  }
+  .hex-pt-stroke {
+    width: 96px; height: 110px;
+    background: white;
+    clip-path: var(--hex-pointy-top);
+    position: relative;
+  }
+  .hex-pt-stroke::before {
+    content: '';
+    position: absolute; inset: 2px;
+    background: var(--c-cobalt-50);
+    clip-path: var(--hex-pointy-top);
+  }
+  .hex-pt-pastel {
+    width: 96px; height: 110px;
+    background: var(--c-coral-300);
+    clip-path: var(--hex-pointy-top);
+  }
+  .hex-cluster {
+    position: relative;
+    width: 144px; height: 110px;
+  }
+  .hex-cluster div {
+    position: absolute;
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+  }
+  .hex-cluster .h1 { background: var(--c-coral-500); top: 0; left: 0; }
+  .hex-cluster .h2 { background: var(--c-cobalt-500); top: 0; left: 44px; }
+  .hex-cluster .h3 { background: var(--c-gold-300); top: 46px; left: 22px; }
+  .hex-cluster .h4 { background: var(--c-mint-300); top: 46px; left: 66px; }
+
+  /* Density layouts */
+  .density { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .density-card { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .density-card h5 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--c-cobalt-400); margin-bottom: var(--space-5); font-family: var(--conduction-typography-font-family-code); font-weight: 500; }
+
+  .demo-stack { display: flex; flex-direction: column; gap: var(--space-3); }
+  .demo-line { background: var(--c-cobalt-100); border-radius: var(--radius-sm); height: 12px; }
+  .demo-line.short { width: 60%; }
+  .demo-line.med { width: 80%; }
+
+  .grid-demo { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  .grid-demo > div { background: var(--c-cobalt-100); border-radius: var(--radius-md); height: 60px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">04 · Spacing</div>
+      <h1 class="card-title">A 4-pixel grid, with intent.</h1>
+    </div>
+    <p class="card-subtitle">Twelve spacing tokens. Five radii. Three shadows. Hexagons stay pointy-top — always.</p>
+  </div>
+
+  <!-- Scale -->
+  <div class="section-label">Spacing scale · base unit 4px</div>
+  <div class="scale-rows">
+    <div class="scale-row"><span class="name">space-1</span><span class="px">4px</span><div class="bar" style="width: 4px;"></div><span class="use">Hairline gaps · icon-text</span></div>
+    <div class="scale-row"><span class="name">space-2</span><span class="px">8px</span><div class="bar" style="width: 8px;"></div><span class="use">Tight inline groups</span></div>
+    <div class="scale-row"><span class="name">space-3</span><span class="px">12px</span><div class="bar" style="width: 12px;"></div><span class="use">Form-field internal padding</span></div>
+    <div class="scale-row"><span class="name">space-4</span><span class="px">16px</span><div class="bar" style="width: 16px;"></div><span class="use">Default gap · paragraph margins</span></div>
+    <div class="scale-row"><span class="name">space-5</span><span class="px">20px</span><div class="bar" style="width: 20px;"></div><span class="use">Card grid gap</span></div>
+    <div class="scale-row"><span class="name">space-6</span><span class="px">24px</span><div class="bar" style="width: 24px;"></div><span class="use">Card internal padding · stack</span></div>
+    <div class="scale-row"><span class="name">space-8</span><span class="px">32px</span><div class="bar" style="width: 32px;"></div><span class="use">Component group separation</span></div>
+    <div class="scale-row"><span class="name">space-10</span><span class="px">40px</span><div class="bar" style="width: 40px;"></div><span class="use">Section internal padding</span></div>
+    <div class="scale-row"><span class="name">space-12</span><span class="px">48px</span><div class="bar" style="width: 48px;"></div><span class="use">Card / page outer padding</span></div>
+    <div class="scale-row"><span class="name">space-16</span><span class="px">64px</span><div class="bar" style="width: 64px;"></div><span class="use">Section vertical rhythm</span></div>
+    <div class="scale-row"><span class="name">space-20</span><span class="px">80px</span><div class="bar" style="width: 80px;"></div><span class="use">Hero · page-top breathing room</span></div>
+    <div class="scale-row"><span class="name">space-24</span><span class="px">96px</span><div class="bar" style="width: 96px;"></div><span class="use">Major page section breaks</span></div>
+  </div>
+
+  <!-- Radii -->
+  <div class="section-label">Radii</div>
+  <div class="radii">
+    <div class="radius-card">
+      <div class="box" style="border-radius: var(--radius-sm);"></div>
+      <div class="name">radius-sm</div>
+      <div class="px">4px</div>
+      <div class="use">Tags, dense table cells</div>
+    </div>
+    <div class="radius-card">
+      <div class="box" style="border-radius: var(--radius-md);"></div>
+      <div class="name">radius-md ★</div>
+      <div class="px">6px</div>
+      <div class="use">Buttons, inputs · default</div>
+    </div>
+    <div class="radius-card">
+      <div class="box" style="border-radius: var(--radius-lg);"></div>
+      <div class="name">radius-lg</div>
+      <div class="px">10px</div>
+      <div class="use">Cards, panels</div>
+    </div>
+    <div class="radius-card">
+      <div class="box" style="border-radius: var(--radius-xl);"></div>
+      <div class="name">radius-xl</div>
+      <div class="px">16px</div>
+      <div class="use">Modals, hero containers</div>
+    </div>
+    <div class="radius-card">
+      <div class="box" style="border-radius: var(--radius-pill);"></div>
+      <div class="name">radius-pill</div>
+      <div class="px">999px</div>
+      <div class="use">Status pills, chip filters</div>
+    </div>
+  </div>
+
+  <!-- Shadows -->
+  <div class="section-label">Shadows · cobalt-tinted, never neutral grey</div>
+  <div class="shadows">
+    <div class="shadow-card shadow-1">
+      <span class="name">shadow-1</span>
+      <span class="px">0 1px 2px rgba(33,70,139,.08)</span>
+    </div>
+    <div class="shadow-card shadow-2">
+      <span class="name">shadow-2</span>
+      <span class="px">0 2px 8px rgba(33,70,139,.10)</span>
+    </div>
+    <div class="shadow-card shadow-3">
+      <span class="name">shadow-3</span>
+      <span class="px">0 8px 24px rgba(33,70,139,.12)</span>
+    </div>
+  </div>
+
+  <!-- Hex shapes -->
+  <div class="section-label">Hex shapes · always pointy-top</div>
+  <div class="shapes">
+    <div class="shape-card">
+      <div class="visual"><div class="hex-pt-large"></div></div>
+      <div class="name">Filled, cobalt</div>
+      <div class="desc">Avatars, primary status,<br>kernel hex on diagrams.</div>
+    </div>
+    <div class="shape-card">
+      <div class="visual"><div class="hex-pt-stroke"></div></div>
+      <div class="name">Outlined</div>
+      <div class="desc">Empty-state slots,<br>placeholder app icons.</div>
+    </div>
+    <div class="shape-card">
+      <div class="visual"><div class="hex-pt-pastel"></div></div>
+      <div class="name">Pastel face</div>
+      <div class="desc">Hex-prism category face<br>on illustrations.</div>
+    </div>
+    <div class="shape-card">
+      <div class="visual"><div class="hex-cluster"><div class="h1"></div><div class="h2"></div><div class="h3"></div><div class="h4"></div></div></div>
+      <div class="name">Cluster</div>
+      <div class="desc">App ecosystem, diagrams,<br>illustration scaffolds.</div>
+    </div>
+  </div>
+
+  <!-- Density patterns -->
+  <div class="section-label">Density patterns · spacing in context</div>
+  <div class="density">
+    <div class="density-card">
+      <h5>Form stack · gap space-3 (12px)</h5>
+      <div class="demo-stack" style="gap: 12px;">
+        <div class="demo-line med"></div>
+        <div class="demo-line"></div>
+        <div class="demo-line short"></div>
+      </div>
+    </div>
+    <div class="density-card">
+      <h5>Article stack · gap space-4 (16px)</h5>
+      <div class="demo-stack" style="gap: 16px;">
+        <div class="demo-line"></div>
+        <div class="demo-line med"></div>
+        <div class="demo-line short"></div>
+      </div>
+    </div>
+    <div class="density-card">
+      <h5>Card grid · gap space-5 (20px)</h5>
+      <div class="grid-demo" style="gap: 20px;">
+        <div></div><div></div><div></div>
+      </div>
+    </div>
+    <div class="density-card">
+      <h5>Section break · gap space-16 (64px)</h5>
+      <div class="demo-stack" style="gap: 64px;">
+        <div class="demo-line"></div>
+        <div class="demo-line med"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

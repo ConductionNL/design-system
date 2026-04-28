@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Colors — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Rationale tables */
+  .rationale {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+  .rationale-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    background: white;
+  }
+  .rationale-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-2);
+  }
+  .rationale-card .lead {
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    line-height: 1.55;
+    margin-bottom: var(--space-5);
+  }
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .compare th, .compare td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+  }
+  .compare th {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+  }
+  .compare td.col-name {
+    font-weight: 600;
+    color: var(--c-blue-cobalt);
+    white-space: nowrap;
+  }
+  .compare td.col-name .swatch-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .compare td.col-hex {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+  }
+  .compare tr.chosen {
+    background: var(--c-cobalt-50);
+  }
+  .compare tr.chosen td.col-name { color: var(--c-blue-cobalt); }
+  .compare tr.chosen td.col-name::after {
+    content: " ★";
+    color: var(--c-orange-knvb);
+  }
+  .compare td.verdict {
+    color: var(--c-cobalt-700);
+    line-height: 1.45;
+  }
+  .compare tr.fail td.verdict { color: #8C5A1F; }
+
+  /* Why list */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+  }
+  .why-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+  .why-card .num {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-3);
+  }
+  .why-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    line-height: 1.3;
+  }
+  .why-card p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--c-cobalt-700);
+  }
+
+  /* Position-against-others */
+  .neighbours {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+  }
+  .neighbour {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: white;
+  }
+  .neighbour .stripe {
+    display: flex;
+    height: 56px;
+  }
+  .neighbour .stripe > div { flex: 1; }
+  .neighbour.us { border-color: var(--c-blue-cobalt); border-width: 2px; }
+  .neighbour .body {
+    padding: var(--space-3) var(--space-4);
+  }
+  .neighbour .who {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .neighbour.us .who::after {
+    content: " · us";
+    color: var(--c-orange-knvb);
+    font-weight: 500;
+  }
+  .neighbour .note {
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+
+  /* Proportion bar */
+  .proportion {
+    display: grid;
+    grid-template-columns: 70fr 20fr 8fr 2fr;
+    height: 88px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .proportion > div {
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .proportion .pct { font-size: 22px; font-family: var(--conduction-typography-font-family-body); font-weight: 700; letter-spacing: -0.01em; }
+
+  /* Brand swatches */
+  .brand-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+  .swatch {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: white;
+  }
+  .swatch .chip { height: 144px; position: relative; }
+  .swatch .meta { padding: var(--space-4) var(--space-5); }
+  .swatch .name { font-weight: 600; font-size: 16px; }
+  .swatch .role { font-size: 13px; color: var(--c-cobalt-400); margin-top: 2px; }
+  .swatch .vals { display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-3); font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); }
+  .swatch .ratio {
+    position: absolute; right: 12px; top: 12px;
+    background: rgba(255,255,255,0.92);
+    color: var(--c-cobalt-700);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.04em;
+  }
+  .swatch .ratio.dark { background: rgba(0,0,0,0.4); color: white; }
+
+  /* Cobalt scale */
+  .scale { display: grid; grid-template-columns: repeat(10, 1fr); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--c-cobalt-100); }
+  .scale .step { aspect-ratio: 1 / 1.3; padding: var(--space-3); display: flex; flex-direction: column; justify-content: space-between; font-family: var(--conduction-typography-font-family-code); font-size: 10px; }
+  .scale .step .num { font-size: 13px; font-family: var(--conduction-typography-font-family-body); font-weight: 600; letter-spacing: -0.01em; }
+
+  /* Hex-prism families */
+  .families { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-5); }
+  .family { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .family .name { font-weight: 600; margin-bottom: var(--space-4); }
+  .family .hexes { display: flex; gap: var(--space-1); }
+  .family .hex { width: 28px; height: 32px; clip-path: var(--hex-pointy-top); }
+  .family .stops { display: flex; justify-content: space-between; gap: var(--space-1); font-family: var(--conduction-typography-font-family-code); font-size: 9px; color: var(--c-cobalt-400); margin-top: var(--space-2); }
+  .family .use { font-size: 12px; color: var(--c-cobalt-700); margin-top: var(--space-3); line-height: 1.4; }
+
+  /* Status row */
+  .status { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .status-item { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; align-items: center; gap: var(--space-4); }
+  .status-item .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .status-item .label { font-weight: 600; }
+  .status-item .meta { font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; font-family: var(--conduction-typography-font-family-code); }
+
+  /* Pairing rules */
+  .pairs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .pair-card { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--c-cobalt-100); }
+  .pair-card .demo { padding: var(--space-8); text-align: center; }
+  .pair-card .demo .big { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+  .pair-card .desc { padding: var(--space-4); font-size: 13px; background: white; color: var(--c-cobalt-700); border-top: 1px solid var(--c-cobalt-100); }
+  .pair-card .desc strong { color: var(--conduction-color-text-default); }
+
+  /* Brand citation example */
+  .citation {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">03 · Color</div>
+      <h1 class="card-title">Cobalt-first, with one accent.</h1>
+    </div>
+    <p class="card-subtitle">Dutch flag blue at the center. KNVB orange for accents. Vermillion for errors only. White holds 70% of every surface.</p>
+  </div>
+
+  <!-- Why these colors -->
+  <div class="section-label">Why these colors · the design rationale</div>
+  <div class="rationale">
+
+    <div class="rationale-card">
+      <h3>Why cobalt <span style="font-family: var(--conduction-typography-font-family-code); font-weight: 500; color: var(--c-cobalt-400);">#21468B</span>?</h3>
+      <p class="lead">Our legacy blue (<span style="font-family: var(--conduction-typography-font-family-code);">#4376FC</span>) read as "cloud / SaaS" — light, frisky, lacking weight. A product company that works with governments needs to project trust. Cobalt is the official blue of the Dutch flag — Dutch by birthright, dark enough to feel serious, light enough to stay blue, and AAA-contrast on white so it can carry body text.</p>
+
+      <table class="compare">
+        <thead>
+          <tr><th>Candidate</th><th>Hex</th><th>L%</th><th>On white</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr class="fail">
+            <td class="col-name"><span class="swatch-dot" style="background: #4376FC;"></span>Legacy</td>
+            <td class="col-hex">#4376FC</td>
+            <td class="col-hex">63%</td>
+            <td class="col-hex">3.99</td>
+            <td class="verdict">Too light, too "tech" — fails AA for body text.</td>
+          </tr>
+          <tr class="chosen">
+            <td class="col-name"><span class="swatch-dot" style="background: #21468B;"></span>Cobalt</td>
+            <td class="col-hex">#21468B</td>
+            <td class="col-hex">34%</td>
+            <td class="col-hex">9.05</td>
+            <td class="verdict">Dutch flag blue. Dark enough to be trustworthy, light enough to stay blue. AAA on white.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><span class="swatch-dot" style="background: #154273;"></span>NLDS Utrecht</td>
+            <td class="col-hex">#154273</td>
+            <td class="col-hex">27%</td>
+            <td class="col-hex">10.19</td>
+            <td class="verdict">Nice, but no flag association — reads as municipal design system.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><span class="swatch-dot" style="background: #01689B;"></span>Rijks-lint</td>
+            <td class="col-hex">#01689B</td>
+            <td class="col-hex">31%</td>
+            <td class="col-hex">6.07</td>
+            <td class="verdict">Strong government signal — confusing for us as a company.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><span class="swatch-dot" style="background: #0C2D48;"></span>Midnight</td>
+            <td class="col-hex">#0C2D48</td>
+            <td class="col-hex">17%</td>
+            <td class="col-hex">14.19</td>
+            <td class="verdict">Too dark — loses blue identity, drifts toward black.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rationale-card">
+      <h3>Why KNVB orange <span style="font-family: var(--conduction-typography-font-family-code); font-weight: 500; color: var(--c-cobalt-400);">#F36C21</span>?</h3>
+      <p class="lead">Three Dutch oranges considered. Rijkshuisstijl orange fails on three fronts at once: worst contrast on cobalt (under WCAG 3:1), highest positioning risk (reads as government), and darkest luminance — sinks into cobalt instead of popping. KNVB wins on harmony with cobalt and "Oranje" mass-appeal without the government baggage.</p>
+
+      <table class="compare">
+        <thead>
+          <tr><th>Candidate</th><th>Hex</th><th>On cobalt</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name"><span class="swatch-dot" style="background: #FF7F00;"></span>Wimpel</td>
+            <td class="col-hex">#FF7F00</td>
+            <td class="col-hex">3.58</td>
+            <td class="verdict">Pure orange, ceremonial / poster-feel. Vibrates against cobalt.</td>
+          </tr>
+          <tr class="fail">
+            <td class="col-name"><span class="swatch-dot" style="background: #E17000;"></span>Rijks</td>
+            <td class="col-hex">#E17000</td>
+            <td class="col-hex">2.82</td>
+            <td class="verdict">Fails contrast on cobalt. Reads as Rijkshuisstijl — confuses brand position.</td>
+          </tr>
+          <tr class="chosen">
+            <td class="col-name"><span class="swatch-dot" style="background: #F36C21;"></span>KNVB</td>
+            <td class="col-hex">#F36C21</td>
+            <td class="col-hex">3.01</td>
+            <td class="verdict">Slightly red-leaning, lower saturation. Warmer pairing with cobalt. "Oranje" without governmental weight.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="lead" style="margin-top: var(--space-5); margin-bottom: 0;">Cost we pay: ~0.57 contrast points less on cobalt. For icon and accent use that's fine (WCAG AA for non-text is 3:1). For larger elements that need to be readable, we use orange <em>on white</em> (4.96:1, AAA-large), not <em>on cobalt</em>.</p>
+    </div>
+
+  </div>
+
+  <!-- What orange means -->
+  <div class="section-label">What orange means for Conduction</div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="num">01 · Warmth</div>
+      <h4>People, not an institution.</h4>
+      <p>We're a company of humans, not a monolith. Orange carries the warmth and approachability that cobalt — by design — doesn't.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">02 · Identity</div>
+      <h4>"Oranje" without the government.</h4>
+      <p>National team, Koningsdag, Oranjegekte — recognised by everyone, owned by no agency. Mass-appeal Dutch identity without Rijks-association.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">03 · Optimism</div>
+      <h4>Pragmatic energy.</h4>
+      <p>Action, motion, "we build things that work". Counterweight to cobalt: cobalt carries structure and trust, orange carries movement.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">04 · Focus</div>
+      <h4>One thing at a time.</h4>
+      <p>In UI, orange pulls the eye to one thing per screen — the primary CTA highlight, the focus ring, the badge. Never two.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">05 · The 8% rule</div>
+      <h4>Accent, not co-star.</h4>
+      <p>Maximum 8% of any surface. Above 10%, orange starts competing with cobalt and loses its attention-pulling power. The number is the discipline.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">06 · Where it doesn't go</div>
+      <h4>No big fills, no body.</h4>
+      <p>No hero backgrounds, no sidebar fills, no card backgrounds, no body text on white. Orange is for accents and one-thing-per-screen highlights only.</p>
+    </div>
+  </div>
+
+  <!-- Position vs other Dutch brands -->
+  <div class="section-label">Position · against neighbouring Dutch palettes</div>
+  <p style="font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55; max-width: 720px; margin-bottom: var(--space-5);">Cobalt + KNVB-orange isn't unclaimed territory. Banks, government, sport — multiple Dutch identities live in this register. Our position sits in the gap between bank-navy (too dark, too corporate) and Rijks (too brown, too institutional). Bright enough to not feel corporate, dark enough to be trustworthy, warmer than government.</p>
+
+  <div class="neighbours">
+    <div class="neighbour us">
+      <div class="stripe">
+        <div style="background: #21468B;"></div>
+        <div style="background: #F36C21;"></div>
+      </div>
+      <div class="body">
+        <div class="who">Conduction 2026</div>
+        <div class="note">Cobalt L=34, KNVB H=22. Warm-professional, Dutch-accessible.</div>
+      </div>
+    </div>
+    <div class="neighbour">
+      <div class="stripe">
+        <div style="background: #000066;"></div>
+        <div style="background: #FF6600;"></div>
+      </div>
+      <div class="body">
+        <div class="who">Rabobank</div>
+        <div class="note">Navy L=20 (almost black). Bank-feel, not product-feel.</div>
+      </div>
+    </div>
+    <div class="neighbour">
+      <div class="stripe">
+        <div style="background: #000066;"></div>
+        <div style="background: #FF6200;"></div>
+      </div>
+      <div class="body">
+        <div class="who">ING</div>
+        <div class="note">Same dark register as Rabo. Modern fintech.</div>
+      </div>
+    </div>
+    <div class="neighbour">
+      <div class="stripe">
+        <div style="background: #154273;"></div>
+        <div style="background: #E17000;"></div>
+      </div>
+      <div class="body">
+        <div class="who">Rijkshuisstijl</div>
+        <div class="note">Orange darker, browner. Government — bewust uitgesloten.</div>
+      </div>
+    </div>
+    <div class="neighbour">
+      <div class="stripe">
+        <div style="background: #19284B;"></div>
+        <div style="background: #F36C21;"></div>
+      </div>
+      <div class="body">
+        <div class="who">KNVB · elftal</div>
+        <div class="note">Same orange — we borrow it, they don't borrow ours. Their navy is darker.</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; color: var(--c-cobalt-400); line-height: 1.5; margin-top: var(--space-4); max-width: 720px;">No neighbour shares <em>exactly</em> our pair, but a fast glance can read like Rabo, ING or "something governmental". Our distinction comes from <strong>proportion and application</strong> as much as hue: the 8% rule, the hex wrapper, Figtree, white dominance. Together those mark us — not the hex values alone.</p>
+
+  <!-- Proportion -->
+  <div class="section-label">Proportion · the 70 / 20 / 8 / 2 rule</div>
+  <div class="proportion">
+    <div style="background: white; color: var(--c-cobalt-400);"><span>White · #FFFFFF</span><span class="pct">70%</span></div>
+    <div style="background: var(--c-blue-cobalt); color: white;"><span>Cobalt · #21468B</span><span class="pct">20%</span></div>
+    <div style="background: var(--c-orange-knvb); color: white;"><span>Orange · #F36C21</span><span class="pct">8%</span></div>
+    <div style="background: var(--c-red-vermillion); color: white;"><span>Vermillion</span><span class="pct">2%</span></div>
+  </div>
+
+  <!-- Brand colors -->
+  <div class="section-label">Brand</div>
+  <div class="brand-swatches">
+    <div class="swatch">
+      <div class="chip" style="background: var(--c-blue-cobalt);"><span class="ratio dark">9.05 AAA</span></div>
+      <div class="meta">
+        <div class="name">Cobalt</div>
+        <div class="role">Primary · brand, structure, body text, CTAs</div>
+        <div class="vals"><span>#21468B</span><span>cobalt-500</span></div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background: var(--c-orange-knvb);"><span class="ratio">3.45 AA-large</span></div>
+      <div class="meta">
+        <div class="name">KNVB Orange</div>
+        <div class="role">Accent · focus rings, hover, badges</div>
+        <div class="vals"><span>#F36C21</span><span>coral-500</span></div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background: var(--c-red-vermillion);"><span class="ratio dark">6.83 AA</span></div>
+      <div class="meta">
+        <div class="name">Vermillion</div>
+        <div class="role">Tertiary · errors, destructive only</div>
+        <div class="vals"><span>#AE1C28</span><span>red</span></div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background: var(--gradient-nextcloud);"><span class="ratio dark">guest</span></div>
+      <div class="meta">
+        <div class="name">Nextcloud Blue</div>
+        <div class="role">Guest color · ConNext context only</div>
+        <div class="vals"><span>#0082C9 → #1CAFFF</span><span>nextcloud</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cobalt scale -->
+  <div class="section-label">Cobalt scale · derived for surfaces, fills, hex-prism faces</div>
+  <div class="scale">
+    <div class="step" style="background: var(--c-cobalt-50); color: var(--c-cobalt-700);"><span class="num">50</span><span>#EEF2F8</span></div>
+    <div class="step" style="background: var(--c-cobalt-100); color: var(--c-cobalt-700);"><span class="num">100</span><span>#DCE3F0</span></div>
+    <div class="step" style="background: var(--c-cobalt-200); color: var(--c-cobalt-800);"><span class="num">200</span><span>#B6C2DD</span></div>
+    <div class="step" style="background: var(--c-cobalt-300); color: white;"><span class="num">300</span><span>#8095BD</span></div>
+    <div class="step" style="background: var(--c-cobalt-400); color: white;"><span class="num">400</span><span>#4D69A4</span></div>
+    <div class="step" style="background: var(--c-cobalt-500); color: white;"><span class="num">500 ★</span><span>#21468B</span></div>
+    <div class="step" style="background: var(--c-cobalt-600); color: white;"><span class="num">600</span><span>#1B3A75</span></div>
+    <div class="step" style="background: var(--c-cobalt-700); color: white;"><span class="num">700</span><span>#152D5C</span></div>
+    <div class="step" style="background: var(--c-cobalt-800); color: white;"><span class="num">800</span><span>#102246</span></div>
+    <div class="step" style="background: var(--c-cobalt-900); color: white;"><span class="num">900</span><span>#0A172F</span></div>
+  </div>
+
+  <!-- Hex prism families -->
+  <div class="section-label">Hex-prism category families · pastel, for illustration faces</div>
+  <div class="families">
+    <div class="family">
+      <div class="name">Coral</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-coral-100);"></div>
+        <div class="hex" style="background: var(--c-coral-300);"></div>
+        <div class="hex" style="background: var(--c-coral-500);"></div>
+      </div>
+      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="use">Apps · OpenCatalogi family. KNVB orange tip.</div>
+    </div>
+    <div class="family">
+      <div class="name">Lavender</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-lavender-100);"></div>
+        <div class="hex" style="background: var(--c-lavender-300);"></div>
+        <div class="hex" style="background: var(--c-lavender-500);"></div>
+      </div>
+      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="use">Connectors · OpenConnector, integrations.</div>
+    </div>
+    <div class="family">
+      <div class="name">Gold</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-gold-100);"></div>
+        <div class="hex" style="background: var(--c-gold-300);"></div>
+        <div class="hex" style="background: var(--c-gold-500);"></div>
+      </div>
+      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="use">Data · OpenRegister, schemas, storage.</div>
+    </div>
+    <div class="family">
+      <div class="name">Mint</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-mint-100);"></div>
+        <div class="hex" style="background: var(--c-mint-300);"></div>
+        <div class="hex" style="background: var(--c-mint-500);"></div>
+      </div>
+      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="use">Processes · DocuDesk, AI, status: stable.</div>
+    </div>
+    <div class="family">
+      <div class="name">Gray</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-gray-100);"></div>
+        <div class="hex" style="background: var(--c-gray-300);"></div>
+        <div class="hex" style="background: var(--c-gray-500);"></div>
+      </div>
+      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="use">Neutrals · diagram supports, ambient elements.</div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="section-label">Status colors</div>
+  <div class="status">
+    <div class="status-item">
+      <div class="dot" style="background: var(--c-mint-500);"></div>
+      <div><div class="label">Stable</div><div class="meta">--c-mint-500 · #2E9866</div></div>
+    </div>
+    <div class="status-item">
+      <div class="dot" style="background: var(--c-orange-knvb);"></div>
+      <div><div class="label">Beta</div><div class="meta">--c-orange-knvb · #F36C21</div></div>
+    </div>
+    <div class="status-item">
+      <div class="dot" style="background: var(--c-red-vermillion);"></div>
+      <div><div class="label">Error · destructive</div><div class="meta">--c-red-vermillion · #AE1C28</div></div>
+    </div>
+  </div>
+
+  <!-- Pairs -->
+  <div class="section-label">Pairing rules</div>
+  <div class="pairs">
+    <div class="pair-card">
+      <div class="demo" style="background: var(--c-blue-cobalt); color: white;"><span class="big">Aa</span></div>
+      <div class="desc"><strong>Cobalt + white</strong> · Primary surface. AAA at 9.05:1. Default for inverted hero, footer, primary CTA.</div>
+    </div>
+    <div class="pair-card">
+      <div class="demo" style="background: white; color: var(--c-blue-cobalt); border-bottom: none;"><span class="big">Aa</span></div>
+      <div class="desc"><strong>White + cobalt body</strong> · Default page. Body text in cobalt rather than charcoal grey — owns the brand.</div>
+    </div>
+    <div class="pair-card">
+      <div class="demo" style="background: white;"><span class="big" style="color: var(--c-blue-cobalt);">Install <span style="color: var(--c-orange-knvb);">→</span></span></div>
+      <div class="desc"><strong>Orange as accent</strong> · One accent per screen — focus ring, hover state, or one badge. Never as a primary fill.</div>
+    </div>
+  </div>
+
+  <!-- Citation -->
+  <div class="section-label">Brand citation · "Next" in Nextcloud-blue</div>
+  <div class="citation">
+    Make <span class="next-blue">Nextcloud</span> your workspace.<br>
+    Welcome to Con<span class="next-blue">Next</span> — Conduction's apps for <span class="next-blue">Nextcloud</span>.
+  </div>
+  <p style="margin-top: var(--space-4); color: var(--c-cobalt-400); font-size: 13px;">Only the <em>"Next"</em> in <strong>ConNext</strong>, the brand-word "Nextcloud" in copy, and idiomatic "next" when it's directly about Nextcloud-as-platform. Not on functional "next" (next page, next year).</p>
+
+</div>
+
+</body>
+</html>

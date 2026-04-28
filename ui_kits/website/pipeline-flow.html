@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pipeline flow — horizontal hex-prism string</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+/* ============================================================
+   Pipeline flow — horizontal hex-prism variant
+   ----------------------------------------------------------------
+   The flattened cousin of the platform-overview cluster. Used in
+   inner sections (solution pages, how-it-works, sequence diagrams)
+   to show data moving through a series of apps as a left-to-right
+   pipeline. Same prism vocabulary, same families, same dotted
+   flow lines — but arranged on a single baseline.
+
+   Pattern: source-box → prism → prism → … → kernel → sink-box.
+   Use 3–6 prisms; beyond that the rhythm collapses.
+
+   Each "step" is a vertical column with:
+     · a kicker label above the prism (small mono-uppercase)
+     · the prism itself
+     · a single-sentence caption below
+   ============================================================ */
+
+body { margin: 0; background: white; padding: 56px 32px; }
+
+.section-head {
+  max-width: 900px; margin: 0 auto 40px;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--c-cobalt-400); margin-bottom: 16px;
+}
+.eyebrow .h { width: 11px; height: 13px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+.section-head h2 {
+  font-size: 36px; font-weight: 700; line-height: 1.05;
+  letter-spacing: -0.02em; color: var(--c-blue-cobalt);
+  margin-bottom: 12px;
+}
+.section-head p {
+  font-size: 17px; line-height: 1.55; color: var(--c-cobalt-700);
+  max-width: 60ch; margin: 0 auto;
+}
+
+/* ---- Pipeline canvas ---- */
+.pipeline-wrap { max-width: 1280px; margin: 0 auto; }
+.pipeline {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.pipeline .face-edge { stroke-width: 1.25; fill: none; opacity: 0.18; }
+.pipeline .flow {
+  stroke: var(--c-cobalt-300);
+  stroke-width: 1.5;
+  stroke-dasharray: 2.4 3.8;
+  fill: none;
+  opacity: 0.7;
+}
+.pipeline .ground {
+  fill: var(--c-cobalt-50);
+  stroke: var(--c-cobalt-100);
+  stroke-width: 1;
+}
+.pipeline .step-kicker {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  fill: var(--c-cobalt-400);
+}
+.pipeline .step-num {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  fill: var(--c-cobalt-400);
+}
+.pipeline .step-cap {
+  font-size: 13px;
+  fill: var(--c-cobalt-700);
+}
+.pipeline .step-cap-strong {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--c-cobalt-900);
+}
+.pipeline .endbox rect {
+  fill: white;
+  stroke: var(--c-cobalt-200);
+  stroke-width: 1;
+}
+.pipeline .endbox-label {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  fill: var(--c-cobalt-400);
+}
+.pipeline .endbox-item {
+  font-size: 12px;
+  fill: var(--c-cobalt-700);
+}
+.pipeline .endbox-icon {
+  fill: var(--c-cobalt-50);
+  stroke: var(--c-cobalt-200);
+}
+
+/* Caption block under the pipeline */
+.captions {
+  display: grid;
+  grid-template-columns: 180px repeat(4, 1fr) 180px;
+  gap: 20px;
+  max-width: 1280px; margin: 24px auto 0;
+}
+.captions .col {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-cobalt-700);
+  text-align: center;
+}
+.captions .col b {
+  display: block;
+  color: var(--c-cobalt-900);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.captions .col.spacer { /* aligns with end-boxes */ }
+
+</style>
+</head>
+<body>
+
+<div class="section-head">
+  <div class="eyebrow"><span class="h"></span>How it works</div>
+  <h2>From your data to your users — in one pipeline.</h2>
+  <p>Drop your existing data in. <span class="next-blue">Nextcloud</span> handles auth and storage. Four ConNext apps shape it into a service. Your users see a portal, an API, or both.</p>
+</div>
+
+<div class="pipeline-wrap">
+  <svg class="pipeline" viewBox="0 0 1280 360" aria-labelledby="pipeline-title">
+    <title id="pipeline-title">Horizontal pipeline — data sources, then four ConNext apps, then consumers</title>
+
+    <!-- Ground line under the prisms -->
+    <line x1="60" y1="270" x2="1220" y2="270" stroke="#DCE3F0" stroke-width="1"/>
+    <!-- Tiny tick under the kernel to anchor it -->
+    <ellipse cx="640" cy="272" rx="220" ry="6" fill="#EEF2F8"/>
+
+    <!-- ===== Source end-box (LEFT) ===== -->
+    <g class="endbox" transform="translate(40, 110)">
+      <rect x="0" y="0" width="140" height="170" rx="6"/>
+      <text class="endbox-label" x="14" y="24">SOURCES</text>
+      <g transform="translate(14, 42)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M6 11h10 M6 14h6" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Spreadsheets</text>
+      </g>
+      <g transform="translate(14, 72)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M7 7 h8 v8 h-8z M9 11 h4 M9 13 h4" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Databases</text>
+      </g>
+      <g transform="translate(14, 102)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M11 8a3 3 0 0 1 3 3h-6a3 3 0 0 1 3-3z M7 14h8" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">REST / SOAP</text>
+      </g>
+      <g transform="translate(14, 132)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M7 16V9l4-2 4 2v7z" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Legacy</text>
+      </g>
+    </g>
+
+    <!-- Flow: source → step 1 -->
+    <path class="flow" d="M 180 195 L 240 195"/>
+
+    <!-- ===== STEP 1: OpenConnector (mint / integrations) ===== -->
+    <g transform="translate(240, 130)">
+      <text class="step-num"    x="60" y="-12" text-anchor="middle">01</text>
+      <text class="step-kicker" x="60" y="2"  text-anchor="middle">INGEST</text>
+      <!-- prism -->
+      <g transform="translate(0, 14)">
+        <polygon class="face-left"  points="60,42 24,62 24,108 60,128" fill="#87CFA8"/>
+        <polygon class="face-right" points="60,42 96,62 96,108 60,128" fill="#2E9866"/>
+        <polygon class="face-top"   points="60,4 96,24 96,62 60,82 24,62 24,24" fill="#DCF1E6"/>
+        <polyline class="face-edge" points="60,42 24,62 60,82 96,62 60,42" stroke="#155234"/>
+        <polyline class="face-edge" points="60,82 60,128" stroke="#155234"/>
+        <text x="60" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#155234">Connector</text>
+        <text x="60" y="56" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.4" fill="#155234">INTEGRATIONS</text>
+      </g>
+    </g>
+
+    <!-- Flow: step 1 → step 2 -->
+    <path class="flow" d="M 360 195 L 420 195"/>
+
+    <!-- ===== STEP 2: OpenRegister (gray / schemas) ===== -->
+    <g transform="translate(420, 130)">
+      <text class="step-num"    x="60" y="-12" text-anchor="middle">02</text>
+      <text class="step-kicker" x="60" y="2"  text-anchor="middle">SHAPE</text>
+      <g transform="translate(0, 14)">
+        <polygon class="face-left"  points="60,42 24,62 24,108 60,128" fill="#B7BDC9"/>
+        <polygon class="face-right" points="60,42 96,62 96,108 60,128" fill="#6B7280"/>
+        <polygon class="face-top"   points="60,4 96,24 96,62 60,82 24,62 24,24" fill="#ECEEF2"/>
+        <polyline class="face-edge" points="60,42 24,62 60,82 96,62 60,42" stroke="#3A4150"/>
+        <polyline class="face-edge" points="60,82 60,128" stroke="#3A4150"/>
+        <text x="60" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#3A4150">Register</text>
+        <text x="60" y="56" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.4" fill="#3A4150">SCHEMAS</text>
+      </g>
+    </g>
+
+    <!-- Flow: step 2 → kernel -->
+    <path class="flow" d="M 540 195 L 580 195"/>
+
+    <!-- ===== KERNEL: Nextcloud (cobalt) — the centre of gravity ===== -->
+    <g transform="translate(580, 110)">
+      <text class="step-num"    x="60" y="8"   text-anchor="middle">PLATFORM</text>
+      <g transform="translate(-12, 30)">
+        <polygon class="face-left"  points="72,52 24,76 24,140 72,164" fill="#4D69A4"/>
+        <polygon class="face-right" points="72,52 120,76 120,140 72,164" fill="#152D5C"/>
+        <polygon class="face-top"   points="72,8 120,32 120,76 72,100 24,76 24,32" fill="#21468B"/>
+        <polyline class="face-edge" points="72,52 24,76 72,100 120,76 72,52" stroke="white" stroke-opacity="0.25"/>
+        <polyline class="face-edge" points="72,100 72,164" stroke="white" stroke-opacity="0.25"/>
+        <text x="72" y="50" text-anchor="middle" font-size="14" font-weight="700" fill="white" letter-spacing="-0.4">Nextcloud</text>
+        <text x="72" y="66" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" fill="white" opacity="0.85">KERNEL</text>
+        <rect x="20" y="78" width="104" height="16" rx="8" fill="white" fill-opacity="0.94"/>
+        <text x="72" y="89" text-anchor="middle" font-size="9" font-weight="600" fill="#1B3A75">files · users · auth</text>
+      </g>
+    </g>
+
+    <!-- Flow: kernel → step 3 -->
+    <path class="flow" d="M 720 195 L 760 195"/>
+
+    <!-- ===== STEP 3: OpenCatalogi (coral / data) ===== -->
+    <g transform="translate(760, 130)">
+      <text class="step-num"    x="60" y="-12" text-anchor="middle">03</text>
+      <text class="step-kicker" x="60" y="2"  text-anchor="middle">PUBLISH</text>
+      <g transform="translate(0, 14)">
+        <polygon class="face-left"  points="60,42 24,62 24,108 60,128" fill="#FAB29C"/>
+        <polygon class="face-right" points="60,42 96,62 96,108 60,128" fill="#F36C21"/>
+        <polygon class="face-top"   points="60,4 96,24 96,62 60,82 24,62 24,24" fill="#FFE4DA"/>
+        <polyline class="face-edge" points="60,42 24,62 60,82 96,62 60,42" stroke="#9B3A0E"/>
+        <polyline class="face-edge" points="60,82 60,128" stroke="#9B3A0E"/>
+        <text x="60" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9B3A0E">Catalogi</text>
+        <text x="60" y="56" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.4" fill="#9B3A0E">DATA</text>
+      </g>
+    </g>
+
+    <!-- Flow: step 3 → step 4 -->
+    <path class="flow" d="M 880 195 L 940 195"/>
+
+    <!-- ===== STEP 4: MyDash (lavender / views) ===== -->
+    <g transform="translate(940, 130)">
+      <text class="step-num"    x="60" y="-12" text-anchor="middle">04</text>
+      <text class="step-kicker" x="60" y="2"  text-anchor="middle">PORTAL</text>
+      <g transform="translate(0, 14)">
+        <polygon class="face-left"  points="60,42 24,62 24,108 60,128" fill="#B7A7E3"/>
+        <polygon class="face-right" points="60,42 96,62 96,108 60,128" fill="#7E66C9"/>
+        <polygon class="face-top"   points="60,4 96,24 96,62 60,82 24,62 24,24" fill="#ECE6F8"/>
+        <polyline class="face-edge" points="60,42 24,62 60,82 96,62 60,42" stroke="#483982"/>
+        <polyline class="face-edge" points="60,82 60,128" stroke="#483982"/>
+        <text x="60" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#483982">MyDash</text>
+        <text x="60" y="56" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.4" fill="#483982">VIEWS</text>
+      </g>
+    </g>
+
+    <!-- Flow: step 4 → sink -->
+    <path class="flow" d="M 1060 195 L 1100 195"/>
+
+    <!-- ===== Sink end-box (RIGHT) ===== -->
+    <g class="endbox" transform="translate(1100, 110)">
+      <rect x="0" y="0" width="140" height="170" rx="6"/>
+      <text class="endbox-label" x="14" y="24">CONSUMERS</text>
+      <g transform="translate(14, 42)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <circle cx="11" cy="10" r="2.5" stroke="#21468B" stroke-width="1.4" fill="none"/>
+        <path d="M7 17a4 4 0 0 1 8 0" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Citizens</text>
+      </g>
+      <g transform="translate(14, 72)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M7 11h8 M7 14h8 M11 8v8" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">APIs</text>
+      </g>
+      <g transform="translate(14, 102)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M7 9h8v8h-8z M7 13h8" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Embeds</text>
+      </g>
+      <g transform="translate(14, 132)">
+        <rect class="endbox-icon" x="0" y="0" width="22" height="22" rx="3"/>
+        <path d="M11 7v8 M7 11l4 4 4 -4 M7 17h8" stroke="#21468B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <text class="endbox-item" x="32" y="16">Open data</text>
+      </g>
+    </g>
+
+  </svg>
+
+  <!-- ===== Captions row aligned to each pipeline column ===== -->
+  <div class="captions">
+    <div class="col spacer"></div>
+    <div class="col">
+      <b>OpenConnector</b>
+      Pulls schemas, REST, SOAP, files. One adapter per source — point it, name it, ship.
+    </div>
+    <div class="col">
+      <b>OpenRegister</b>
+      Validates against schema, stores typed records. Versioned, audit-logged, queryable.
+    </div>
+    <div class="col">
+      <b>OpenCatalogi</b>
+      Publishes datasets with metadata. WOO-ready, OData-shaped, public or scoped.
+    </div>
+    <div class="col">
+      <b>MyDash</b>
+      Renders the consumer view. Per-tenant theming, NLDS-compliant, embeddable.
+    </div>
+    <div class="col spacer"></div>
+  </div>
+</div>
+
+</body>
+</html>
+</content>
+<parameter name="asset">Pipeline flow (horizontal hex-prism)

@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apps — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* === App-glyph framework === */
+  :root {
+    --app-cobalt: var(--c-blue-cobalt);
+    --app-cobalt-700: var(--c-cobalt-700);
+    --app-cobalt-900: #0A1628;
+    --app-vermillion: var(--c-red-vermillion);
+  }
+
+  .app-roster {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    background: white;
+    overflow: hidden;
+  }
+  .app-row.head {
+    background: white;
+    position: sticky; top: 0; z-index: 2;
+  }
+  .app-row.head .meta {
+    background: white;
+    padding: var(--space-3) var(--space-5);
+    display: flex; align-items: center;
+  }
+  .app-row.head .meta .label {
+    margin: 0;
+    font-size: 10px;
+    color: var(--c-cobalt-700);
+  }
+  .app-row.head .col {
+    padding: var(--space-3) var(--space-2);
+    border-right: 1px solid var(--c-cobalt-100);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    text-align: center;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .app-row.head .col:last-child { border-right: none; }
+  .app-row.head .head-cols {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .app-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .app-row:last-child { border-bottom: none; }
+  .app-row .meta {
+    padding: var(--space-6) var(--space-5);
+    border-right: 1px solid var(--c-cobalt-100);
+    background: var(--c-cobalt-50);
+  }
+  .app-row .meta .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-1);
+  }
+  .app-row .meta h3 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--c-blue-cobalt);
+    margin-bottom: var(--space-2);
+  }
+  .app-row .meta p {
+    font-size: 12px;
+    color: var(--c-cobalt-700);
+    line-height: 1.5;
+    margin-bottom: var(--space-3);
+  }
+  .app-row .meta .tag {
+    display: inline-block;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid var(--c-cobalt-200);
+    border-radius: 2px;
+  }
+
+  .app-treatments {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+  .treatment {
+    padding: var(--space-5) var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--c-cobalt-100);
+    min-height: 110px;
+  }
+  .treatment:last-child { border-right: none; }
+  .treatment .glyph {
+    width: 64px; height: 72px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .treatment .glyph svg { width: 28px; height: 28px; }
+
+  /* Treatment specs */
+  .t-hex-cobalt { background: var(--app-cobalt); color: white; clip-path: var(--hex-pointy-top); }
+  .t-hex-700 { background: var(--app-cobalt-700); color: white; clip-path: var(--hex-pointy-top); }
+  .t-hex-900 { background: var(--app-cobalt-900); color: white; clip-path: var(--hex-pointy-top); }
+  .t-hex-outline { background: white; color: var(--app-cobalt); clip-path: var(--hex-pointy-top); border: 2px solid var(--app-cobalt); box-sizing: border-box; }
+  /* Outline can't use clip-path AND have a real border that follows the path — fake it with two stacked elements */
+  .glyph.outline-wrap {
+    width: 64px; height: 72px;
+    background: var(--app-cobalt);
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .glyph.outline-wrap .inner {
+    width: 56px; height: 64px;
+    background: white;
+    color: var(--app-cobalt);
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .glyph.outline-wrap .inner svg { width: 26px; height: 26px; }
+
+  .t-square-cobalt {
+    width: 64px; height: 64px; border-radius: 14px;
+    background: var(--app-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-square-cut {
+    width: 64px; height: 64px;
+    background: var(--app-cobalt); color: white;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-mono {
+    width: 64px; height: 64px;
+    background: white; border: 1.5px solid var(--app-cobalt);
+    color: var(--app-cobalt);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Roobert', system-ui, sans-serif;
+    font-weight: 700; font-size: 24px;
+    letter-spacing: -0.02em;
+  }
+  .t-favicon {
+    width: 32px; height: 36px;
+    background: var(--app-cobalt); color: white;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-favicon svg { width: 18px; height: 18px; }
+
+  /* Avatar — a hex with the Roobert app letter, like a profile picture */
+  .t-avatar {
+    width: 64px; height: 72px;
+    background: var(--app-cobalt); color: white;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Roobert', system-ui, sans-serif;
+    font-weight: 700; font-size: 28px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Hero stack (the canonical OpenCatalogi big-glyph-with-app-name layout) */
+  .hero-stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+  .hero-stack {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8) var(--space-6);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .hero-stack.dark {
+    background: var(--app-cobalt-900);
+    border-color: var(--app-cobalt-900);
+    color: white;
+  }
+  .hero-stack.cobalt {
+    background: var(--app-cobalt);
+    border-color: var(--app-cobalt);
+    color: white;
+  }
+  .hero-stack .hero-glyph {
+    width: 96px; height: 108px;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-stack .hero-glyph svg { width: 44px; height: 44px; }
+  .hero-stack .name {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .hero-stack .tagline {
+    font-size: 13px; opacity: 0.75; line-height: 1.5;
+  }
+  .hero-stack .install {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.04em;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    margin-top: auto;
+    display: inline-flex; gap: 6px; align-items: center;
+  }
+  .hero-stack:not(.dark):not(.cobalt) .install {
+    background: var(--c-cobalt-50);
+    border-color: var(--c-cobalt-200);
+    color: var(--c-cobalt-700);
+  }
+  .hero-stack .install .dollar { color: var(--c-orange-knvb); }
+
+  /* Wordmark lockups */
+  .lockup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  .lockup {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5) var(--space-6);
+    display: flex; align-items: center; gap: var(--space-4);
+  }
+  .lockup .glyph-sm {
+    width: 40px; height: 46px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--app-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lockup .glyph-sm svg { width: 18px; height: 18px; }
+  .lockup .word {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-blue-cobalt);
+  }
+  .lockup .word .light { color: var(--c-cobalt-400); font-weight: 400; }
+
+  /* Don't / do gallery */
+  .donts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+  .dont {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    text-align: center;
+    background: white;
+  }
+  .dont .demo {
+    height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: var(--space-3);
+  }
+  .dont .verdict {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: var(--space-2);
+  }
+  .dont .verdict.no { background: #FEE; color: #B33; }
+  .dont .verdict.yes { background: #E8F5EE; color: #2A8451; }
+  .dont .why {
+    font-size: 12px;
+    color: var(--c-cobalt-700);
+    line-height: 1.45;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">07 · Apps</div>
+      <h1 class="card-title">Every app, every treatment.</h1>
+    </div>
+    <p class="card-subtitle">The full app glyph system. Six core apps. Five reusable treatments per app — pointy-top hex (the canonical one), 700 hex, 900 hex, square-rounded, cut-corner square, monogram. Plus favicons, avatars, hero lockups, and wordmark patterns.</p>
+  </div>
+
+  <!-- Roster grid: every app × every treatment -->
+  <div class="section-label">The roster · 6 apps × 6 treatments</div>
+  <div class="app-roster">
+
+    <div class="app-row head">
+      <div class="meta"><div class="label">App ↓ &nbsp; Treatment →</div></div>
+      <div class="head-cols">
+        <div class="col">Cobalt</div>
+        <div class="col">Black · 900</div>
+        <div class="col">Inversed</div>
+        <div class="col">Square · Cut</div>
+        <div class="col">Monogram</div>
+        <div class="col">Favicon · 32px</div>
+      </div>
+    </div>
+
+    <!-- OpenCatalogi -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · canonical cobalt</div>
+        <h3>OpenCatalogi</h3>
+        <p>The catalogue. Discover, install, and update apps from a federated registry of trusted publishers.</p>
+        <span class="tag">Cobalt · primary</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph t-hex-cobalt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap">
+            <div class="inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="border-color: var(--app-cobalt); color: var(--app-cobalt);">OC</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-favicon" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenRegister -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · cobalt-700</div>
+        <h3>OpenRegister</h3>
+        <p>Structured records. Form-driven data with versioning, permissions, and an event log per row.</p>
+        <span class="tag">Cobalt-700</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph t-hex-700">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap" style="background: var(--app-cobalt-700);">
+            <div class="inner" style="color: var(--app-cobalt-700);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: var(--app-cobalt-700);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="border-color: var(--app-cobalt-700); color: var(--app-cobalt-700);">OR</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-favicon" style="background: var(--app-cobalt-700);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenConnector -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · cobalt-700</div>
+        <h3>OpenConnector</h3>
+        <p>The integration plane. Pipe data between Conduction apps and any external API, with retries and observability.</p>
+        <span class="tag">Cobalt-700</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph t-hex-700">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap" style="background: var(--app-cobalt-700);">
+            <div class="inner" style="color: var(--app-cobalt-700);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: var(--app-cobalt-700);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="border-color: var(--app-cobalt-700); color: var(--app-cobalt-700); font-size: 18px;">OCn</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-favicon" style="background: var(--app-cobalt-700);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12l9-6M9 12l9 6"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DocuDesk -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · canonical cobalt</div>
+        <h3>DocuDesk</h3>
+        <p>Document workflows. Templates, signatures, and audit trails — the compliance app for public-sector teams.</p>
+        <span class="tag">Cobalt · primary</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph t-hex-cobalt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap">
+            <div class="inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="border-color: var(--app-cobalt); color: var(--app-cobalt);">DD</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-favicon" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MyDash -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · inverse</div>
+        <h3>MyDash</h3>
+        <p>The personal home. Each user's pinned apps, recent records, and tasks — the welcome screen of the stack.</p>
+        <span class="tag">Outline · inverse</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph outline-wrap">
+            <div class="inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-cobalt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: white; border: 2px solid var(--app-cobalt); color: var(--app-cobalt); box-sizing: border-box;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="background: var(--app-cobalt); color: white; border: none;">MD</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap" style="width: 32px; height: 36px; background: var(--app-cobalt);">
+            <div class="inner" style="width: 28px; height: 32px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenAI Bridge -->
+    <div class="app-row">
+      <div class="meta">
+        <div class="label">App · canonical cobalt</div>
+        <h3>OpenAI&nbsp;Bridge</h3>
+        <p>The model gateway. Bring your own LLM (OpenAI, Azure, Anthropic, or self-hosted) into Conduction apps with one auth.</p>
+        <span class="tag">Cobalt · primary</span>
+      </div>
+      <div class="app-treatments">
+        <div class="treatment">
+          <div class="glyph t-hex-cobalt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/><path d="M9 14h6M9 18h4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-hex-900">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/><path d="M9 14h6M9 18h4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph outline-wrap">
+            <div class="inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/><path d="M9 14h6M9 18h4"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-square-cut" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/><path d="M9 14h6M9 18h4"/></svg>
+          </div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-mono" style="border-color: var(--app-cobalt); color: var(--app-cobalt); font-size: 18px;">AI</div>
+        </div>
+        <div class="treatment">
+          <div class="glyph t-favicon" style="background: var(--app-cobalt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="margin-top: var(--space-5); color: var(--c-cobalt-400); font-size: 13px; max-width: 80ch;">★ MyDash defaults to <strong style="color: var(--c-cobalt-700);">outline</strong> because it sits next to user content and shouldn't compete with it. Every other app defaults to a <strong style="color: var(--c-cobalt-700);">filled hex</strong> in cobalt or cobalt-700.</p>
+
+  <!-- Hero lockups -->
+  <div class="section-label">Hero lockup · how an app introduces itself</div>
+  <div class="hero-stack-grid">
+    <div class="hero-stack">
+      <div class="hero-glyph t-hex-cobalt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </div>
+      <div>
+        <div class="tagline" style="margin-top: 6px;">Federated app discovery for Nextcloud. Install in two minutes; stay current.</div>
+      </div>
+      <div class="install"><span class="dollar">$</span> occ app:install opencatalogi</div>
+    </div>
+    <div class="hero-stack dark">
+      <div class="hero-glyph" style="background: var(--c-orange-knvb); color: white; clip-path: var(--hex-pointy-top);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+      </div>
+      <div>
+        <div class="tagline" style="margin-top: 6px;">Form-driven records. Versioned. Auditable. Yours.</div>
+      </div>
+      <div class="install"><span class="dollar">$</span> occ app:install openregister</div>
+    </div>
+    <div class="hero-stack cobalt">
+      <div class="hero-glyph" style="background: white; color: var(--app-cobalt); clip-path: var(--hex-pointy-top);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+      </div>
+      <div>
+        <div class="tagline" style="margin-top: 6px; opacity: 0.85;">One integration plane. Every Conduction app. Every external API.</div>
+      </div>
+      <div class="install"><span class="dollar">$</span> occ app:install openconnector</div>
+    </div>
+  </div>
+
+  <!-- Wordmark lockups -->
+  <div class="section-label">Wordmark lockups · sidebar &amp; nav</div>
+  <div class="lockup-grid">
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+      </div>
+      <div class="word"><span class="light">Open</span>Catalogi</div>
+    </div>
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
+      </div>
+      <div class="word"><span class="light">Open</span>Register</div>
+    </div>
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+      </div>
+      <div class="word"><span class="light">Open</span>Connector</div>
+    </div>
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </div>
+      <div class="word"><span class="light">Docu</span>Desk</div>
+    </div>
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      </div>
+      <div class="word"><span class="light">My</span>Dash</div>
+    </div>
+    <div class="lockup">
+      <div class="glyph-sm" style="background: var(--app-cobalt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/></svg>
+      </div>
+      <div class="word"><span class="light">OpenAI</span>&nbsp;Bridge</div>
+    </div>
+  </div>
+
+  <!-- Don't / Do -->
+  <div class="section-label">Don't · Do</div>
+  <div class="donts-grid">
+    <div class="dont">
+      <div class="demo">
+        <div style="width: 64px; height: 72px; background: linear-gradient(135deg, #00C2FF, #0078D4); clip-path: var(--hex-pointy-top); display: flex; align-items: center; justify-content: center; color: white;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 28px; height: 28px;"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+        </div>
+      </div>
+      <span class="verdict no">Don't</span>
+      <p class="why">Nextcloud-blue gradient. That's a guest color, reserved for the platform — never a Conduction app.</p>
+    </div>
+    <div class="dont">
+      <div class="demo">
+        <div style="width: 64px; height: 72px; background: var(--c-orange-knvb); clip-path: var(--hex-pointy-top); display: flex; align-items: center; justify-content: center; color: white;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 28px; height: 28px;"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+        </div>
+      </div>
+      <span class="verdict no">Don't</span>
+      <p class="why">Orange container. Orange is accent — for arrows, dollar signs, and one-letter highlights. Never a fill.</p>
+    </div>
+    <div class="dont">
+      <div class="demo">
+        <div style="width: 64px; height: 64px; background: var(--app-cobalt); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 28px; height: 28px;"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+        </div>
+      </div>
+      <span class="verdict no">Don't</span>
+      <p class="why">Pure circle. Wrong vocabulary — Conduction does hex (apps) and rectangle (UI), never round chips for an app.</p>
+    </div>
+    <div class="dont">
+      <div class="demo">
+        <div class="glyph t-hex-cobalt" style="width: 64px; height: 72px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+        </div>
+      </div>
+      <span class="verdict yes">Do</span>
+      <p class="why">Pointy-top hex, cobalt fill, white glyph. Stroke-only line art at 2px. This is the canonical app glyph.</p>
+    </div>
+  </div>
+
+  <!-- Tech specs -->
+  <div class="section-label">Tech specs</div>
+  <div class="rationale">
+    <div class="rationale-card">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: var(--space-3);">Glyph drawing</h3>
+      <ul style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.7; padding-left: 1.2em;">
+        <li>SVG, 24×24 viewBox, line-art only (<code>fill="none"</code>)</li>
+        <li><code>stroke-width: 2</code> at 80px container, <code>2.5</code> at favicon scale</li>
+        <li>Rounded line caps; integer coordinates wherever possible</li>
+        <li>One concept per glyph — never combine icons or stack symbols</li>
+      </ul>
+    </div>
+    <div class="rationale-card">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: var(--space-3);">Container rules</h3>
+      <ul style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.7; padding-left: 1.2em;">
+        <li>Pointy-top hex is canonical (<code>clip-path: var(--hex-pointy-top)</code>)</li>
+        <li>Square-cut for OS-level icons (Nextcloud app drawer, dock)</li>
+        <li>Outline reserved for MyDash and inverse contexts</li>
+        <li>900 hex for charcoal/dark sections; same glyph, no other change</li>
+      </ul>
+    </div>
+    <div class="rationale-card">
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: var(--space-3);">When the glyph isn't enough</h3>
+      <ul style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.7; padding-left: 1.2em;">
+        <li>Below 24px — drop the glyph, use the monogram</li>
+        <li>Email signature / favicon — favicon variant, no wordmark</li>
+        <li>Long product surfaces — wordmark lockup with the small hex</li>
+        <li>Hero pages — full hero stack, glyph at 96px</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

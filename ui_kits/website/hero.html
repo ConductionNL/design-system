@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hero — ConNext Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; }
+
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 64px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .nav .left { display: flex; align-items: center; gap: 48px; }
+  .wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: var(--c-cobalt-700); text-decoration: none; font-size: 15px; font-weight: 500; }
+  .nav-links a:hover { color: var(--c-orange-knvb); }
+  .nav .cta {
+    background: var(--c-blue-cobalt); color: white;
+    padding: 9px 18px; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; text-decoration: none;
+  }
+
+  .hero {
+    padding: 88px 64px 72px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+  .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+
+  .hero h1 {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--c-blue-cobalt);
+  }
+  .hero h1 .nx { color: var(--c-nextcloud-blue); }
+  .hero p.lede {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--c-cobalt-700);
+    margin-top: 24px;
+    max-width: 52ch;
+  }
+
+  .ctas { display: flex; gap: 16px; margin-top: 40px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 16px; font-weight: 500;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 120ms ease;
+  }
+  .btn-primary { background: var(--c-blue-cobalt); color: white; }
+  .btn-primary:hover { background: var(--c-cobalt-700); }
+  .btn-secondary { background: white; color: var(--c-blue-cobalt); border-color: var(--c-cobalt-200); }
+  .btn-secondary:hover { border-color: var(--c-blue-cobalt); }
+
+  .ctas .meta {
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 13px; color: var(--c-cobalt-400); margin-left: 8px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .ctas .meta strong { color: var(--c-cobalt-700); font-family: var(--conduction-typography-font-family-body); font-size: 14px; }
+
+  /* Hex prism cluster */
+  .cluster {
+    position: relative;
+    width: 100%;
+    height: 520px;
+  }
+  .hex-cell {
+    position: absolute;
+    width: 138px; height: 159px;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .hex-cell.kernel {
+    background: var(--c-blue-cobalt);
+    width: 196px; height: 226px;
+    box-shadow: 0 12px 32px rgba(33, 70, 139, 0.3);
+    z-index: 5;
+  }
+  .hex-cell .label {
+    position: absolute;
+    bottom: 18%;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .hex-cell .name { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .hex-cell .name.kernel-text { font-size: 20px; }
+
+  /* Honeycomb-style positioning — kernel center, 6 around it, no overlap */
+  .c-kernel { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  /* Top row */
+  .c-tl { left: 6%;  top: 6%;  background: var(--c-coral-300); color: var(--c-cobalt-800); }
+  .c-tr { left: 64%; top: 6%;  background: var(--c-blue-cobalt); }
+  /* Middle outer (level with kernel) */
+  .c-ml { left: 0%;  top: 50%; transform: translateY(-50%); background: var(--c-cobalt-700); }
+  .c-mr { left: 70%; top: 50%; transform: translateY(-50%); background: var(--c-gold-300); color: var(--c-cobalt-800); }
+  /* Bottom row */
+  .c-bl { left: 6%;  bottom: 6%; background: var(--c-lavender-300); color: var(--c-cobalt-800); }
+  .c-br { left: 64%; bottom: 6%; background: var(--c-mint-300);     color: var(--c-cobalt-800); }
+
+  /* Decorative bg hex */
+  .bg-hex {
+    position: absolute;
+    background: var(--c-cobalt-50);
+    clip-path: var(--hex-pointy-top);
+    z-index: -1;
+  }
+  .bg-hex.a { width: 280px; height: 322px; right: -80px; top: -100px; opacity: 0.7; }
+  .bg-hex.b { width: 180px; height: 207px; left: -40px; bottom: -60px; opacity: 0.5; }
+
+  /* Sub-hero strip */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding: 40px 64px;
+    border-top: 1px solid var(--c-cobalt-100);
+    background: var(--c-cobalt-50);
+  }
+  .strip .stat .num { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
+  .strip .stat .lbl { font-size: 13px; color: var(--c-cobalt-700); margin-top: 4px; line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="left">
+    <div class="wm">Con<span class="next-blue">Next</span></div>
+    <div class="nav-links">
+      <a href="#">Apps</a>
+      <a href="#">Solutions</a>
+      <a href="#">Docs</a>
+      <a href="#">Support</a>
+      <a href="#">About</a>
+    </div>
+  </div>
+  <a href="#" class="cta">Install →</a>
+</nav>
+
+<section class="hero">
+  <div class="bg-hex a"></div>
+  <div class="bg-hex b"></div>
+
+  <div>
+    <div class="eyebrow"><span class="h"></span>Open-source · MIT · No lock-in</div>
+    <h1>Make <span class="nx">Nextcloud</span> your workspace.</h1>
+    <p class="lede">Con<span class="next-blue">Next</span> brings data, processes, AI, and integrations to your <span class="next-blue">Nextcloud</span> — turning a file-sync platform into your actual workplace. Free apps, optional support, no upgrade nags.</p>
+
+    <div class="ctas">
+      <a href="#" class="btn btn-primary">Install from Nextcloud app store</a>
+      <a href="#" class="btn btn-secondary">Try the demo →</a>
+      <div class="meta">
+        <strong>2-minute install</strong>
+        <span>requires admin on your instance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cluster">
+    <div class="hex-cell c-tl">
+      <div>
+        <div class="name">Catalogi</div>
+        <div class="label">DATA</div>
+      </div>
+    </div>
+    <div class="hex-cell c-tr">
+      <div>
+        <div class="name">Register</div>
+        <div class="label">SCHEMAS</div>
+      </div>
+    </div>
+    <div class="hex-cell c-ml">
+      <div>
+        <div class="name">Connector</div>
+        <div class="label">INTEGRATIONS</div>
+      </div>
+    </div>
+    <div class="hex-cell kernel c-kernel">
+      <div>
+        <div class="name kernel-text">Nextcloud</div>
+        <div class="label">PLATFORM</div>
+      </div>
+    </div>
+    <div class="hex-cell c-mr">
+      <div>
+        <div class="name">DocuDesk</div>
+        <div class="label">DOCUMENTS</div>
+      </div>
+    </div>
+    <div class="hex-cell c-bl">
+      <div>
+        <div class="name">MyDash</div>
+        <div class="label">DASHBOARDS</div>
+      </div>
+    </div>
+    <div class="hex-cell c-br">
+      <div>
+        <div class="name">AI</div>
+        <div class="label">PROCESSES</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="stat"><div class="num">12</div><div class="lbl">apps in the ecosystem,<br>all open-source</div></div>
+  <div class="stat"><div class="num">2 min</div><div class="lbl">from app store install<br>to working solution</div></div>
+  <div class="stat"><div class="num">€0</div><div class="lbl">for the apps —<br>support is optional</div></div>
+  <div class="stat"><div class="num">MIT</div><div class="lbl">licensed, with no<br>vendor lock-in</div></div>
+</section>
+
+</body>
+</html>

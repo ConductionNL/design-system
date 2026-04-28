@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brand — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .logo-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .logo-card .stage {
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-card .stage img { height: 96px; width: auto; }
+  .logo-card .meta { padding: var(--space-5); background: white; border-top: 1px solid var(--c-cobalt-100); }
+  .logo-card .name { font-weight: 600; }
+  .logo-card .file { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); margin-top: 4px; }
+
+  /* Wordmarks */
+  .wordmark-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .wordmark-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .wordmark-card .stage {
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wordmark-card .meta { padding: var(--space-5); background: white; border-top: 1px solid var(--c-cobalt-100); font-size: 14px; }
+
+  .wordmark-connext {
+    font-family: var(--conduction-typography-font-family-body);
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -0.025em;
+    color: var(--c-blue-cobalt);
+    line-height: 1;
+  }
+  .wordmark-connext .next-blue { color: var(--conduction-color-brand-nextcloud); }
+  .wordmark-connext.inverse { color: white; }
+
+  /* Brand citation copy */
+  .copy-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .copy-card h5 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code); font-weight: 500; margin-bottom: var(--space-4); }
+  .copy-card .ex { font-size: 18px; line-height: 1.5; padding: var(--space-4) 0; border-bottom: 1px solid var(--c-cobalt-100); display: flex; gap: var(--space-4); align-items: flex-start; }
+  .copy-card .ex:last-child { border-bottom: none; }
+  .copy-card .ex .mark {
+    flex-shrink: 0;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    margin-top: 4px;
+  }
+  .ex .mark.yes { background: #DCF1E6; color: var(--c-mint-500); }
+  .ex .mark.no  { background: #FCE8EA; color: var(--c-red-vermillion); }
+
+  /* Brand triad */
+  .triad { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .triad-card { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .triad-card .role { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: var(--space-3); }
+  .triad-card .name { font-size: 22px; font-weight: 700; margin-bottom: var(--space-3); }
+  .triad-card .desc { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; margin-bottom: var(--space-4); }
+  .triad-card .vis {
+    height: 80px;
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: var(--space-4);
+  }
+  .triad-card .where { font-size: 12px; color: var(--c-cobalt-400); }
+
+  /* Voice table */
+  .voice {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .voice-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--c-cobalt-100); }
+  .voice-row:last-child { border-bottom: none; }
+  .voice-row > div { padding: var(--space-4) var(--space-5); font-size: 15px; line-height: 1.5; }
+  .voice-row > div:first-child { background: #FCE8EA; color: var(--c-cobalt-700); border-right: 1px solid var(--c-cobalt-100); }
+  .voice-row > div:last-child { background: #DCF1E6; color: var(--c-cobalt-900); }
+  .voice-header { font-family: var(--conduction-typography-font-family-code); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+
+  .never-do { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+  .never-do .item {
+    padding: var(--space-4);
+    background: #FCE8EA;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    border-left: 3px solid var(--c-red-vermillion);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">06 · Brand</div>
+      <h1 class="card-title">Three brands, in their lanes.</h1>
+    </div>
+    <p class="card-subtitle">Conduction is the company. ConNext is the product brand. Nextcloud is cited, not claimed.</p>
+  </div>
+
+  <!-- Brand triad -->
+  <div class="section-label">Brand triad — who shows up where</div>
+  <div class="triad">
+    <div class="triad-card">
+      <div class="role">Company</div>
+      <div class="name">Conduction</div>
+      <div class="vis">
+        <img src="../brand/assets/avatar-conduction-on-white.svg" alt="Conduction hex avatar" style="height: 64px;">
+      </div>
+      <div class="desc">Dutch open-source product company. Builds everything, signs contracts, employs people.</div>
+      <div class="where">About · Footer · Contracts · GitHub org</div>
+    </div>
+    <div class="triad-card">
+      <div class="role">Product</div>
+      <div class="name">Con<span class="next-blue">Next</span></div>
+      <div class="vis"><div class="wordmark-connext" style="font-size: 32px;">Con<span class="next-blue">Next</span></div></div>
+      <div class="desc">Public product brand for the Nextcloud-app ecosystem. Wordmark only — no separate logo.</div>
+      <div class="where">connext.conduction.nl · Hero · Marketing</div>
+    </div>
+    <div class="triad-card">
+      <div class="role">Host platform</div>
+      <div class="name">Nextcloud</div>
+      <div class="vis"><div style="background: var(--c-blue-cobalt); width: 56px; height: 64px; clip-path: var(--hex-pointy-top);"></div></div>
+      <div class="desc">The platform we build on. Cited (not claimed) — only the brand-word "<span class="next-blue">Nextcloud</span>" gets the citation color. The hex shape stays cobalt.</div>
+      <div class="where">Brand citation · Kernel hex on diagrams</div>
+    </div>
+  </div>
+
+  <!-- Conduction logos -->
+  <div class="section-label">Conduction hex avatar · 3 variants</div>
+  <div class="logo-grid">
+    <div class="logo-card">
+      <div class="stage" style="background: white;">
+        <img src="../brand/assets/avatar-conduction-on-white.svg" alt="Conduction on white">
+      </div>
+      <div class="meta">
+        <div class="name">On white · default</div>
+        <div class="file">brand/assets/avatar-conduction-on-white.svg</div>
+      </div>
+    </div>
+    <div class="logo-card">
+      <div class="stage" style="background: var(--c-blue-cobalt);">
+        <img src="../brand/assets/avatar-conduction-on-blue.svg" alt="Conduction on cobalt">
+      </div>
+      <div class="meta">
+        <div class="name">On cobalt · inverse</div>
+        <div class="file">brand/assets/avatar-conduction-on-blue.svg</div>
+      </div>
+    </div>
+    <div class="logo-card">
+      <div class="stage" style="background: repeating-conic-gradient(#EEF2F8 0% 25%, #FFFFFF 0% 50%) 50% / 24px 24px;">
+        <img src="../brand/assets/avatar-conduction.svg" alt="Conduction transparent">
+      </div>
+      <div class="meta">
+        <div class="name">Transparent</div>
+        <div class="file">brand/assets/avatar-conduction.svg</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ConNext wordmark -->
+  <div class="section-label">ConNext wordmark · "Next" always Nextcloud-blue</div>
+  <div class="wordmark-grid">
+    <div class="wordmark-card">
+      <div class="stage" style="background: white;">
+        <div class="wordmark-connext">Con<span class="next-blue">Next</span></div>
+      </div>
+      <div class="meta">Default · cobalt + Nextcloud-blue on white</div>
+    </div>
+    <div class="wordmark-card">
+      <div class="stage" style="background: var(--c-blue-cobalt);">
+        <div class="wordmark-connext inverse">Con<span class="next-blue">Next</span></div>
+      </div>
+      <div class="meta">Inverse · white + Nextcloud-blue on cobalt</div>
+    </div>
+  </div>
+
+  <!-- Conduction payoff -->
+  <div class="section-label">Conduction · payoff</div>
+  <div style="background: var(--c-blue-cobalt); border-radius: var(--radius-xl); padding: 64px 56px; color: white; display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center;">
+    <img src="../brand/assets/avatar-conduction-on-blue.svg" alt="Conduction" style="height: 112px;">
+    <div>
+      <div style="font-size: 40px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.1; color: white;">Conduction <span style="color: var(--c-orange-knvb);">·</span> Software that fits your work.</div>
+      <div style="margin-top: 16px; font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6);">Open-source · Dutch · MKB-direct · Built on <span class="next-blue">Nextcloud</span></div>
+    </div>
+  </div>
+  <div style="margin-top: var(--space-5); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-5);">
+    <div style="border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5);">
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: var(--space-3);">Primary payoff · NL</div>
+      <div style="font-size: 18px; font-weight: 600; line-height: 1.3;">Software die past bij je werk.</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); margin-top: 8px; line-height: 1.5;">Direct, MKB-toon. Voor product- en marketingpagina's.</div>
+    </div>
+    <div style="border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5);">
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: var(--space-3);">Primary payoff · EN</div>
+      <div style="font-size: 18px; font-weight: 600; line-height: 1.3;">Software that fits your work.</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); margin-top: 8px; line-height: 1.5;">Default outside NL. Concrete, not aspirational.</div>
+    </div>
+    <div style="border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5);">
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: var(--space-3);">Long form</div>
+      <div style="font-size: 16px; font-weight: 600; line-height: 1.4;">Open-source apps voor <span class="next-blue">Nextcloud</span>. Geen lock-in, geen consultancy-traject.</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); margin-top: 8px; line-height: 1.5;">When you need one sentence to say what we do.</div>
+    </div>
+  </div>
+
+  <!-- App-icon hexes -->
+  <div class="section-label">App icons · glyph in pointy-top hex wrapper</div>
+  <style>
+    .app-hex-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+    .app-hex { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-2); padding: var(--space-4) var(--space-3); border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); background: white; }
+    .app-hex .icon { width: 80px; height: 92px; clip-path: var(--hex-pointy-top); display: flex; align-items: center; justify-content: center; }
+    .app-hex .icon svg { width: 36px; height: 36px; }
+    .app-hex .name { font-size: 14px; font-weight: 600; color: var(--c-blue-cobalt); margin-top: var(--space-2); }
+    .app-hex .meta { font-family: var(--conduction-typography-font-family-code); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); }
+  </style>
+  <div class="app-hex-grid">
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-blue-cobalt); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </div>
+      <div class="name">OpenCatalogi</div>
+      <div class="meta">Cobalt</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-cobalt-700); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+      </div>
+      <div class="name">OpenRegister</div>
+      <div class="meta">Cobalt-700</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-cobalt-700); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>
+      </div>
+      <div class="name">OpenConnector</div>
+      <div class="meta">Cobalt-700</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-blue-cobalt); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+      </div>
+      <div class="name">DocuDesk</div>
+      <div class="meta">Cobalt</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: white; color: var(--c-blue-cobalt); border: 2px solid var(--c-blue-cobalt); box-sizing: border-box;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      </div>
+      <div class="name">MyDash</div>
+      <div class="meta">White · inverse</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-blue-cobalt); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/><path d="M9 14h6M9 18h4"/></svg>
+      </div>
+      <div class="name">OpenAI Bridge</div>
+      <div class="meta">Cobalt</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-cobalt-700); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="name">OpenTask</div>
+      <div class="meta">Cobalt-700</div>
+    </div>
+    <div class="app-hex">
+      <div class="icon" style="background: var(--c-red-vermillion); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      </div>
+      <div class="name">AlertHub</div>
+      <div class="meta">Vermillion · tertiary</div>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-4); color: var(--c-cobalt-400); font-size: 13px; max-width: 70ch;">App glyph is cobalt, cobalt-700, white-on-cobalt-outline, or vermillion. <strong style="color: var(--c-cobalt-700);">Never orange</strong> — orange is accent, not container. <strong style="color: var(--c-cobalt-700);">Never the Nextcloud cyan-blue gradient</strong> — that is a guest color reserved for the brand-word "Nextcloud" in copy and the kernel hex on platform diagrams, not for Conduction-built apps.</p>
+
+  <!-- Brand citation in copy -->
+  <div class="section-label">"Next" in Nextcloud-blue · brand citation</div>
+  <div class="copy-card">
+    <h5>When to apply <code>.next-blue</code></h5>
+    <div class="ex">
+      <span class="mark yes">YES</span>
+      <span>Welcome to Con<span class="next-blue">Next</span> — Conduction's apps for <span class="next-blue">Nextcloud</span>.</span>
+    </div>
+    <div class="ex">
+      <span class="mark yes">YES</span>
+      <span>Take <span class="next-blue">Nextcloud</span> to the <span class="next-blue">next</span> level.</span>
+    </div>
+    <div class="ex">
+      <span class="mark no">NO</span>
+      <span>Continue to the <em>next</em> page. <span style="color: var(--c-cobalt-400); font-size: 14px; margin-left: 8px;">— functional "next", not brand</span></span>
+    </div>
+    <div class="ex">
+      <span class="mark no">NO</span>
+      <span>The <em>next</em> release ships in Q2. <span style="color: var(--c-cobalt-400); font-size: 14px; margin-left: 8px;">— time-based "next", not brand</span></span>
+    </div>
+    <div class="ex">
+      <span class="mark no">NO</span>
+      <span>An a<em>nnex</em>ed sub-clause was added. <span style="color: var(--c-cobalt-400); font-size: 14px; margin-left: 8px;">— letter-string inside another word</span></span>
+    </div>
+  </div>
+
+  <!-- Voice -->
+  <div class="section-label">Voice — product-first, MKB-direct</div>
+  <div class="voice">
+    <div class="voice-row">
+      <div class="voice-header">Avoid · consultancy / government</div>
+      <div class="voice-header">Prefer · product / direct</div>
+    </div>
+    <div class="voice-row">
+      <div>"Wij ondersteunen u bij uw digitale transformatie."</div>
+      <div>"Installeer OpenCatalogi in 2 minuten."</div>
+    </div>
+    <div class="voice-row">
+      <div>"Onze implementatiemethodologie levert waardevolle inzichten."</div>
+      <div>"Deze app lost dit probleem op. Probeer het."</div>
+    </div>
+    <div class="voice-row">
+      <div>"Get started · Sign up · Start your trial"</div>
+      <div>"Install from Nextcloud app store"</div>
+    </div>
+    <div class="voice-row">
+      <div>"Samen werken we aan ketensamenwerking."</div>
+      <div>"OpenConnector verbindt Nextcloud met je andere systemen."</div>
+    </div>
+  </div>
+
+  <!-- Apps vs Solutions -->
+  <div class="section-label">Apps vs Solutions — say it right</div>
+  <div class="copy-card">
+    <div class="ex">
+      <span class="mark yes">APP</span>
+      <span><strong>OpenCatalogi</strong> — software we build and ship. Concrete, installable, has a version number.</span>
+    </div>
+    <div class="ex">
+      <span class="mark yes">SOLUTION</span>
+      <span><strong>WOO compliance</strong> — what a customer achieves with one or more apps. A goal, not a download.</span>
+    </div>
+    <div class="ex">
+      <span class="mark no">WRONG</span>
+      <span>"our WOO app" <span style="color: var(--c-cobalt-400); font-size: 14px; margin-left: 8px;">— there isn't one</span></span>
+    </div>
+    <div class="ex">
+      <span class="mark yes">RIGHT</span>
+      <span>"our WOO solution, built on OpenCatalogi and OpenConnector"</span>
+    </div>
+  </div>
+
+  <!-- Never -->
+  <div class="section-label">Never do</div>
+  <div class="never-do">
+    <div class="item">Stock photos of "diverse team meetings", handshakes, whiteboards.</div>
+    <div class="item">3D renders or gradient backgrounds (except Nextcloud's official cyan-blue, on the kernel hex).</div>
+    <div class="item">Other shades of blue on the Conduction logo.</div>
+    <div class="item">Orange as a primary button fill — cobalt owns that.</div>
+    <div class="item">Two orange accents on the same screen.</div>
+    <div class="item">Flat-top hexagons. Always pointy-top.</div>
+    <div class="item">Italics for emphasis. Use weight or color.</div>
+    <div class="item">"Get started", "Sign up", trial-urgency CTAs.</div>
+  </div>
+
+</div>
+
+</body>
+</html>

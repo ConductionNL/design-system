@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cut corners — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Demo blocks */
+  .demo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+  .demo {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+  }
+  .demo .stage {
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: var(--space-4);
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .demo .name { font-weight: 600; font-size: 14px; }
+  .demo .meta { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); margin-top: 2px; }
+  .demo .use { font-size: 12px; color: var(--c-cobalt-700); margin-top: var(--space-2); line-height: 1.4; }
+
+  .shape {
+    width: 120px; height: 92px;
+    background: var(--c-blue-cobalt);
+  }
+  .shape.tlbr { clip-path: var(--clip-cut-tlbr-lg); }
+  .shape.trbl { clip-path: var(--clip-cut-trbl-lg); }
+  .shape.all  { clip-path: var(--clip-cut-all-lg); }
+
+  /* Sizes */
+  .sizes { display: flex; gap: var(--space-5); align-items: center; }
+  .sizes .shape { width: 100px; height: 76px; background: var(--c-blue-cobalt); }
+  .sizes .s-sm { clip-path: var(--clip-cut-tlbr-sm); }
+  .sizes .s-md { clip-path: var(--clip-cut-tlbr-md); }
+  .sizes .s-lg { clip-path: var(--clip-cut-tlbr-lg); }
+  .sizes .s-xl { clip-path: var(--clip-cut-tlbr-xl); }
+
+  /* In-context examples */
+  .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+
+  /* Card with cut corners — show the cobalt panel itself (our hero example) on a light bg */
+  .cut-card-bg {
+    background: var(--c-cobalt-50);
+    padding: var(--space-8);
+    border-radius: var(--radius-lg);
+  }
+  .cut-card {
+    clip-path: var(--clip-cut-tlbr-xl);
+    background: var(--c-blue-cobalt);
+    color: white;
+    padding: var(--space-8);
+  }
+  .cut-card h4 { font-size: 20px; font-weight: 600; margin-bottom: var(--space-2); color: white; }
+  .cut-card p { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); }
+
+  /* Button with cut corners */
+  .cut-btn {
+    clip-path: var(--clip-cut-tlbr-sm);
+    background: var(--c-blue-cobalt);
+    color: white;
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 28px;
+    cursor: pointer;
+  }
+  .cut-btn.secondary {
+    background: var(--c-orange-knvb);
+  }
+
+  /* Hero panel with cut corners */
+  .cut-hero {
+    clip-path: var(--clip-cut-tlbr-xl);
+    background: var(--c-blue-cobalt);
+    color: white;
+    padding: 48px 40px;
+  }
+  .cut-hero .eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: var(--space-3);
+  }
+  .cut-hero h3 { color: white; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .cut-hero p { color: rgba(255,255,255,0.8); margin-top: var(--space-3); font-size: 14px; line-height: 1.5; }
+
+  /* Image well */
+  .well {
+    clip-path: var(--clip-cut-all-lg);
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, var(--c-coral-300), var(--c-coral-500));
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+
+  /* Code block */
+  pre.code {
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-800);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-3);
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  /* Rules */
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .rule-col { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .rule-col h5 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-cobalt-400); margin-bottom: var(--space-4); font-family: var(--conduction-typography-font-family-code); font-weight: 500; }
+  .rule-col ul { list-style: none; padding: 0; margin: 0; }
+  .rule-col li { padding: var(--space-2) 0; font-size: 14px; line-height: 1.5; }
+  .rule-col.yes li::before { content: "✓  "; color: var(--c-mint-500); }
+  .rule-col.no li::before { content: "✗  "; color: var(--c-red-vermillion); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">04b · Cut corners</div>
+      <h1 class="card-title">Triangular cutouts, not just radius.</h1>
+    </div>
+    <p class="card-subtitle">Slice a 45° triangle off opposite corners to echo the hex motif on rectangular surfaces — wells, panels, hero containers, callout cards.</p>
+  </div>
+
+  <!-- Variants -->
+  <div class="section-label">Variants</div>
+  <div class="demo-grid">
+    <div class="demo">
+      <div class="stage"><div class="shape tlbr"></div></div>
+      <div class="name">Top-left + Bottom-right</div>
+      <div class="meta">--clip-cut-tlbr</div>
+      <div class="use">Default. Diagonal asymmetry. Use 90% of the time.</div>
+    </div>
+    <div class="demo">
+      <div class="stage"><div class="shape trbl"></div></div>
+      <div class="name">Top-right + Bottom-left</div>
+      <div class="meta">--clip-cut-trbl</div>
+      <div class="use">Mirror. Use to balance a tlbr neighbour.</div>
+    </div>
+    <div class="demo">
+      <div class="stage"><div class="shape all"></div></div>
+      <div class="name">All four corners</div>
+      <div class="meta">--clip-cut-all</div>
+      <div class="use">Symmetrical. Image wells, badges, dense plates.</div>
+    </div>
+    <div class="demo">
+      <div class="stage" style="background: white; border: 1px dashed var(--c-cobalt-200);">
+        <div style="width: 120px; height: 92px; border-radius: var(--radius-lg); background: var(--c-cobalt-200);"></div>
+      </div>
+      <div class="name">Rounded — for comparison</div>
+      <div class="meta">border-radius</div>
+      <div class="use">Still default for buttons, inputs, content cards.</div>
+    </div>
+  </div>
+
+  <!-- Sizes -->
+  <div class="section-label">Cut sizes · scale with the element</div>
+  <div class="sizes">
+    <div class="shape s-sm"></div>
+    <div style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400);">--cut-sm · 6px<br>tags, chips</div>
+    <div class="shape s-md"></div>
+    <div style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400);">--cut-md · 10px<br>buttons, badges</div>
+    <div class="shape s-lg"></div>
+    <div style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400);">--cut-lg · 16px<br>cards, panels</div>
+    <div class="shape s-xl"></div>
+    <div style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400);">--cut-xl · 24px<br>hero plates</div>
+  </div>
+
+  <!-- In context -->
+  <div class="section-label">In context</div>
+  <div class="ex-grid">
+    <div>
+      <div class="cut-card-bg">
+        <div class="cut-card">
+          <h4>Cut-corner card</h4>
+          <p>A cobalt panel with triangles cut from top-left and bottom-right. The light background shows through — the visual echo of the hex motif on a rectangle.</p>
+        </div>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">--cut: 28px · clip: tlbr</p>
+    </div>
+    <div>
+      <div class="well">Image well · category face</div>
+      <p style="margin-top: var(--space-4); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">--cut: 18px · clip: all</p>
+    </div>
+    <div>
+      <div class="cut-hero">
+        <div class="eyebrow">Solution</div>
+        <h3>WOO compliance, by Friday.</h3>
+        <p>Three apps. Twenty minutes of setup. A working portal at your Nextcloud-hosted domain.</p>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">--cut: 32px · clip: tlbr · hero plate</p>
+    </div>
+    <div>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; padding-top: var(--space-3);">
+        <button class="cut-btn">Install from app store</button>
+        <button class="cut-btn secondary">Try the demo →</button>
+        <p style="font-size: 13px; color: var(--c-cobalt-700); margin-top: var(--space-3);">Buttons with cut corners read as branded, but stay rectilinear and clickable.</p>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">--cut: 8px · clip: tlbr</p>
+    </div>
+  </div>
+
+  <!-- How to use -->
+  <div class="section-label">How to use</div>
+<pre class="code">.panel {
+  clip-path: var(--clip-cut-tlbr-md);  /* top-left + bottom-right, 10px cut */
+  background: var(--c-blue-cobalt);
+  padding: 32px;
+}
+
+/* Direction */
+clip-path: var(--clip-cut-tlbr-md);  /* default — diagonal asymmetry */
+clip-path: var(--clip-cut-trbl-md);  /* mirror */
+clip-path: var(--clip-cut-all-md);   /* all four corners — image wells */
+
+/* Size — pair the same direction with -sm | -md | -lg | -xl
+   sm: 6px (buttons, badges)   ·   md: 10px (cards)
+   lg: 16px (panels, image wells)  ·   xl: 24px (hero plates) */</pre>
+
+  <!-- Rules -->
+  <div class="section-label">Rules</div>
+  <div class="rules">
+    <div class="rule-col yes">
+      <h5>Do</h5>
+      <ul>
+        <li>Use on hero plates, callout panels, image wells, solution badges</li>
+        <li>Match cut size to element scale (sm/md/lg/xl)</li>
+        <li>Default to tlbr — it has the most movement</li>
+        <li>Keep buttons mostly rounded; cut corners are accent treatment</li>
+        <li>Combine with a contrasting background to make cuts visible</li>
+      </ul>
+    </div>
+    <div class="rule-col no">
+      <h5>Don't</h5>
+      <ul>
+        <li>Mix cut corners and rounded corners on the same element</li>
+        <li>Cut input fields or text areas — keep typing surfaces calm</li>
+        <li>Use cut-all on text-heavy cards (the cuts eat content)</li>
+        <li>Cut more than ~25% of the element's shorter side</li>
+        <li>Combine cut corners with the hex shape on the same surface — pick one motif</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Side-box pattern — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+/* ============================================================
+   Side-box pattern
+   ----------------------------------------------------------------
+   The hex-prism is "the system." The side-box is "what feeds it"
+   or "what consumes it." This deliberate hierarchy — prisms vs
+   rectangles — keeps platform diagrams legible: one shape for
+   ConNext apps, a different shape for everything outside.
+
+   Anatomy:
+     · 1px cobalt-200 stroke, white fill, 6px radius
+     · header chip in mono-uppercase + cobalt-400, 12px from top
+     · stack of icon+label rows; each row is 22–28px tall
+     · icons are line-style Lucide-equivalents at stroke 1.5,
+       sitting in a 22–28px cobalt-50 rounded square
+     · max ~5 items per box; if you need more, split into two boxes
+   ============================================================ */
+
+.boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.boxes-grid .stage {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.boxes-grid .lab {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+}
+.boxes-grid .desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+  text-align: center;
+  max-width: 28ch;
+  margin: 0;
+}
+
+/* ===== The side-box itself ===== */
+.sidebox {
+  width: 220px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  padding: 14px 14px 16px;
+}
+.sidebox .chip {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin-bottom: 12px;
+}
+.sidebox .row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--c-cobalt-700);
+}
+.sidebox .ic-square {
+  width: 28px; height: 28px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-blue-cobalt);
+}
+.sidebox .ic-square svg {
+  width: 16px; height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Compact variant — 2-column inline */
+.sidebox--compact .row { grid-template-columns: 20px 1fr; gap: 8px; }
+.sidebox--compact .ic-square { width: 20px; height: 20px; }
+.sidebox--compact .ic-square svg { width: 12px; height: 12px; }
+/* Trailing chip slot — useful for "and N more" */
+.sidebox .more {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--c-cobalt-200);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+  text-align: center;
+}
+
+/* Don't / Do callouts */
+.donts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.dont, .do {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  background: white;
+}
+.dont { border-color: #f3d6d6; background: #fcf6f6; }
+.do   { border-color: #d6e9d8; background: #f6fbf7; }
+.dont h4, .do h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-family: var(--conduction-typography-font-family-code);
+  margin: 0 0 12px;
+}
+.dont h4 { color: #7a2222; }
+.do   h4 { color: #1f5c2f; }
+.dont p, .do p { font-size: 14px; line-height: 1.55; color: var(--c-cobalt-800); margin: 0; }
+
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="index.html" class="back">← Design system index</a>
+  <h1>Side-box</h1>
+  <p class="subtitle">The flat rectangle that flanks a hex-prism diagram. Sources go on the left; consumers go on the right; integrations sit anywhere a prism would feel wrong. The shape difference is the hierarchy: <b>prisms = apps you can install. Side-boxes = everything else.</b></p>
+</header>
+
+<main class="cards">
+
+  <!-- ============== ANATOMY ============== -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Three sizes, one anatomy</h2>
+      <p>White panel · cobalt-200 stroke · mono-uppercase chip header · icon+label rows. Don't add an outer shadow, don't fill the panel, don't make it bigger than the prisms it sits next to.</p>
+    </div>
+    <div class="boxes-grid">
+      <div class="stage">
+        <div class="sidebox">
+          <div class="chip">YOUR DATA</div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg></span>
+            <span>Spreadsheets</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/></svg></span>
+            <span>Databases</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><path d="M5 8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z M9 12h6"/></svg></span>
+            <span>REST &amp; SOAP</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><path d="M5 19V9l7-4 7 4v10z M9 19V13h6v6"/></svg></span>
+            <span>Legacy systems</span>
+          </div>
+        </div>
+        <p class="desc">Default — input side. Reads as "things that flow <b>into</b> the platform."</p>
+        <span class="lab">.sidebox · 220 × auto</span>
+      </div>
+
+      <div class="stage">
+        <div class="sidebox">
+          <div class="chip">CONSUMERS</div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3"/><path d="M6 19a6 6 0 0 1 12 0"/></svg></span>
+            <span>Citizens / klanten</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><path d="M5 12h14 M12 5v14 M7 7h10v10H7z"/></svg></span>
+            <span>Public APIs</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1"/><path d="M4 10h16"/></svg></span>
+            <span>Embedded portals</span>
+          </div>
+          <div class="row">
+            <span class="ic-square"><svg viewBox="0 0 24 24"><path d="M12 4v12 M7 11l5 5 5-5 M5 20h14"/></svg></span>
+            <span>Open data feeds</span>
+          </div>
+        </div>
+        <p class="desc">Output side — what the platform produces, where it lands.</p>
+        <span class="lab">.sidebox · 220 × auto</span>
+      </div>
+
+      <div class="stage">
+        <div class="sidebox sidebox--compact">
+          <div class="chip">AUTH</div>
+          <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3"/><path d="M6 19a6 6 0 0 1 12 0"/></svg></span><span>DigiD</span></div>
+          <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3"/><path d="M6 19a6 6 0 0 1 12 0"/></svg></span><span>eHerkenning</span></div>
+          <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><path d="M7 11h10v6H7z M9 11V8a3 3 0 0 1 6 0v3"/></svg></span><span>SAML</span></div>
+          <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M9 12l2 2 4-4"/></svg></span><span>OAuth 2</span></div>
+          <div class="more">+ 3 more</div>
+        </div>
+        <p class="desc">Compact — when the diagram is dense and you need a tight column. Trailing "+ N more" instead of a long list.</p>
+        <span class="lab">.sidebox--compact</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== DO / DON'T ============== -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Where the rectangle pulls its weight</h2>
+      <p>The shape difference between hex and rectangle is doing real work. Don't muddy it.</p>
+    </div>
+    <div class="donts">
+      <div class="do">
+        <h4>Do</h4>
+        <p>Use a side-box for anything <b>not built by Conduction</b>: data sources, identity providers, downstream APIs, third-party SaaS, your customers, citizens, regulators. The rectangle says "external."</p>
+      </div>
+      <div class="dont">
+        <h4>Don't</h4>
+        <p>Don't put a Conduction app inside a side-box because the diagram got crowded. If the cluster won't fit, swap the radial cluster for the horizontal pipeline-flow variant.</p>
+      </div>
+      <div class="do">
+        <h4>Do</h4>
+        <p>Cap rows at <b>5</b>. If you need more, use the compact variant with a "+ N more" footer, or split into two side-boxes labeled by sub-category.</p>
+      </div>
+      <div class="dont">
+        <h4>Don't</h4>
+        <p>Don't switch the side-box stroke to KNVB orange to "highlight" it. Side-boxes are intentionally quieter than the prisms — that's the whole hierarchy.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
+</content>
+<parameter name="asset">Side-box pattern

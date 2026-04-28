@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cookie CLI — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --term-bg: #0A0F1A;
+    --term-bg-2: #060912;
+    --term-fg: #C9D4E5;
+    --term-fg-dim: #5F6E86;
+    --term-fg-muted: #3F4960;
+    --term-accent: var(--c-orange-knvb);
+    --term-cobalt: #6892D9;
+    --term-green: #5FE39A;
+    --term-red: #FF6B7A;
+    --term-yellow: #F7C76F;
+  }
+
+  /* Page chrome */
+  .stage-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    border: 1px solid var(--c-cobalt-100);
+    margin-bottom: var(--space-6);
+  }
+
+  /* The terminal popup */
+  .term {
+    background: var(--term-bg);
+    color: var(--term-fg);
+    border: 1px solid #1A2540;
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px rgba(33, 70, 139, 0.12),
+      0 24px 64px -16px rgba(10, 23, 47, 0.45),
+      0 0 64px -8px rgba(33, 70, 139, 0.18),
+      inset 0 0 80px rgba(0, 0, 0, 0.4);
+    font-family: "IBM Plex Mono", "VT323", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  /* CRT scanlines */
+  .term::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.025) 0,
+      rgba(255,255,255,0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* CRT vignette */
+  .term::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.45) 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .term-bar {
+    background: var(--term-bg-2);
+    padding: 10px 14px;
+    border-bottom: 1px solid #15203A;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--term-fg-dim);
+    position: relative;
+    z-index: 4;
+  }
+  .term-bar .dots { display: flex; gap: 6px; }
+  .term-bar .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .term-bar .dot.r { background: #4A2330; border: 1px solid #6B2E3F; }
+  .term-bar .dot.y { background: #4A3F1B; border: 1px solid #6B5B26; }
+  .term-bar .dot.g { background: #1F3F2C; border: 1px solid #2D5C40; }
+  .term-bar .title {
+    flex: 1; text-align: center;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  .term-bar .title b { color: var(--term-fg); font-weight: 500; }
+  .term-bar .badge {
+    color: var(--term-fg-muted);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .term-body {
+    padding: 22px 26px 24px;
+    position: relative;
+    z-index: 1;
+    /* subtle glow on text */
+    text-shadow: 0 0 1px rgba(201, 212, 229, 0.4);
+  }
+
+  .ascii {
+    color: var(--term-cobalt);
+    font-size: 14px;
+    line-height: 0.95;
+    white-space: pre;
+    margin-bottom: var(--space-4);
+    text-shadow: 0 0 8px rgba(104, 146, 217, 0.6), 0 0 1px rgba(201,212,229,0.4);
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+  .ascii .accent { color: var(--term-cobalt); text-shadow: 0 0 10px rgba(104, 146, 217, 0.6); }
+  .ascii .accent2 { color: var(--term-accent); text-shadow: 0 0 10px rgba(243, 108, 33, 0.7); font-weight: 700; }
+  .ascii .brand {
+    color: var(--term-fg);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 6px rgba(201,212,229,0.4);
+  }
+  .ascii .brand-sub {
+    color: var(--term-fg-dim);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-line {
+    color: var(--term-fg-muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-top: 1px dashed #1F2A45;
+    border-bottom: 1px dashed #1F2A45;
+    padding: 6px 0;
+    margin-bottom: var(--space-4);
+    display: flex; justify-content: space-between;
+  }
+  .header-line .v { color: var(--term-cobalt); }
+
+  .prompt { color: var(--term-fg); }
+  .prompt .user { color: var(--term-green); }
+  .prompt .host { color: var(--term-cobalt); }
+  .prompt .path { color: var(--term-yellow); }
+  .prompt .sigil { color: var(--term-fg-muted); }
+  .prompt .cmd { color: var(--term-fg); }
+
+  .cmt { color: var(--term-fg-muted); }
+  .em { color: var(--term-fg); }
+  .accent { color: var(--term-accent); }
+  .ok { color: var(--term-green); }
+  .warn { color: var(--term-yellow); }
+
+  .section-title {
+    color: var(--term-cobalt);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: var(--space-4) 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #1A2540;
+  }
+
+  .opts {
+    list-style: none;
+    margin: 8px 0;
+    padding: 0;
+  }
+  .opts li {
+    display: grid;
+    grid-template-columns: 22px 28px 1fr auto;
+    gap: 10px;
+    align-items: baseline;
+    padding: 6px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 80ms;
+  }
+  .opts li:hover { background: rgba(104,146,217,0.08); }
+  .opts li[data-required] { cursor: not-allowed; opacity: 0.7; }
+  .opts li[data-required]:hover { background: transparent; }
+
+  .opts .key {
+    color: var(--term-accent);
+    font-weight: 600;
+  }
+  .opts .check {
+    width: 22px; height: 22px;
+    border: 1px solid var(--term-fg-muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: transparent;
+    background: var(--term-bg-2);
+  }
+  .opts li.on .check { color: var(--term-green); border-color: var(--term-green); text-shadow: 0 0 6px rgba(95, 227, 154, 0.6); }
+  .opts li[data-required] .check {
+    color: var(--term-fg-muted); border-color: var(--term-fg-muted);
+    background: rgba(255,255,255,0.04);
+  }
+  .opts .label { color: var(--term-fg); }
+  .opts .label .desc { display: block; color: var(--term-fg-muted); font-size: 12px; margin-top: 2px; }
+  .opts .tag {
+    font-size: 10px;
+    color: var(--term-fg-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid #1F2A45;
+    padding: 1px 6px;
+    border-radius: 2px;
+    align-self: center;
+  }
+  .opts li.on .tag { color: var(--term-green); border-color: rgba(95,227,154,0.4); }
+
+  .actions-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px dashed #1F2A45;
+  }
+  .term-btn {
+    background: transparent;
+    border: 1px solid var(--term-fg-muted);
+    color: var(--term-fg);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 8px 14px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 100ms;
+  }
+  .term-btn:hover {
+    border-color: var(--term-cobalt);
+    color: var(--term-cobalt);
+    background: rgba(104,146,217,0.06);
+  }
+  .term-btn.primary {
+    border-color: var(--term-accent);
+    color: var(--term-accent);
+  }
+  .term-btn.primary:hover {
+    background: rgba(243,108,33,0.1);
+    box-shadow: 0 0 12px rgba(243,108,33,0.2);
+  }
+  .term-btn .key {
+    color: var(--term-accent);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .term-btn.primary .key { color: var(--term-bg-2); background: var(--term-accent); padding: 0 4px; border-radius: 2px; }
+
+  .actions-row .spacer { flex: 1; }
+  .actions-row .footnote {
+    font-size: 10px;
+    color: var(--term-fg-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--term-fg);
+    margin-left: 4px;
+    transform: translateY(2px);
+    animation: blink 1.05s steps(2, jump-none) infinite;
+    box-shadow: 0 0 6px rgba(201, 212, 229, 0.4);
+  }
+  @keyframes blink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+
+  .typed { display: inline-block; }
+
+  /* Embedded mode (popup style — sits over a faded site) */
+  .stage-popup {
+    position: relative;
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10);
+    border: 1px solid var(--c-cobalt-100);
+    overflow: hidden;
+    min-height: 600px;
+  }
+  .stage-popup .fake-page {
+    position: absolute;
+    inset: 0;
+    padding: var(--space-10);
+    opacity: 0.55;
+    filter: blur(0.4px);
+    pointer-events: none;
+  }
+  .stage-popup .fake-page h2 {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--c-blue-cobalt);
+    line-height: 1.05;
+    max-width: 14ch;
+    margin-bottom: var(--space-4);
+  }
+  .stage-popup .fake-page p {
+    font-size: 17px;
+    color: var(--c-cobalt-700);
+    max-width: 50ch;
+    line-height: 1.55;
+  }
+  .stage-popup .fake-page .nav {
+    display: flex; gap: var(--space-6);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    margin-bottom: var(--space-12);
+    font-family: var(--conduction-typography-font-family-code);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .stage-popup .term {
+    position: relative;
+    z-index: 5;
+    margin-top: var(--space-4);
+  }
+  .stage-popup .scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 50% 60%, rgba(10,15,26,0.4), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Variants section */
+  .variant-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+  .variant-grid .term {
+    max-width: none;
+    font-size: 12px;
+  }
+  .variant-grid .term-body { padding: 16px 18px 18px; }
+  .variant-grid .ascii { font-size: 8px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">07 · Cookie CLI</div>
+      <h1 class="card-title">Cookies, but make it terminal.</h1>
+    </div>
+    <p class="card-subtitle">An open-source-native cookie banner for an open-source-native company. Old-school CLI feel, ASCII Conduction logo, keyboard-first. Looks like the rest of the brand wishes it could.</p>
+  </div>
+
+  <!-- Hero popup state -->
+  <div class="section-label">In context · sitting over the page</div>
+  <div class="stage-popup">
+    <div class="fake-page">
+      <div class="nav">
+        <span>Apps</span><span>Solutions</span><span>Docs</span><span>About</span>
+      </div>
+      <h2>The open-source<br>workspace stack.</h2>
+      <p>Conduction's apps run on your Nextcloud — the same one you already host. No vendor lock-in, no migration, no "cloud-native rewrite" project plan.</p>
+    </div>
+    <div class="scrim"></div>
+
+    <!-- Terminal popup -->
+    <div class="term" id="cookie-term">
+      <div class="term-bar">
+        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+        <div class="title">— <b>conduction.nl</b> · cookie-consent — bash —</div>
+        <span class="badge">80×24</span>
+      </div>
+      <div class="term-body">
+<div class="ascii">
+    <span class="accent">__</span>       <span class="brand">Conduction</span>
+   <span class="accent">/  \</span>      <span class="brand-sub">cookie-consent · v2.4.0</span>
+  <span class="accent">/    \</span>  
+ <span class="accent">/      \</span> 
+<span class="accent">|</span> <span class="accent2"> ___  </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">/ __\ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| /   </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| \__ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">\___/ </span> <span class="accent">|</span>
+ <span class="accent">\      /</span> 
+  <span class="accent">\    /</span>  
+   <span class="accent">\  /</span>   
+    <span class="accent">\/</span>    
+</div>
+
+        <div class="header-line">
+          <span>cookie-consent · interactive</span>
+          <span class="v">v2.4.0 · GDPR / AVG / TTDSG</span>
+        </div>
+
+        <p style="margin-bottom: var(--space-3);"><span class="cmt"># We use cookies. Below is the full list — pick what you're OK with.</span><br>
+        <span class="cmt"># Strictly necessary cookies cannot be disabled (the site won't work without them).</span></p>
+
+        <div class="prompt" style="margin-bottom: 6px;"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">cat ./cookies.toml</span></div>
+
+        <ul class="opts" id="cookie-opts">
+          <li class="on" data-required data-key="essential">
+            <span class="key">[1]</span>
+            <span class="check">✓</span>
+            <span class="label">essential
+              <span class="desc">Session, CSRF token, language preference. Strictly necessary.</span>
+            </span>
+            <span class="tag">required</span>
+          </li>
+          <li data-key="analytics">
+            <span class="key">[2]</span>
+            <span class="check">✓</span>
+            <span class="label">analytics
+              <span class="desc">Self-hosted Plausible. Aggregate, anonymous, no third parties.</span>
+            </span>
+            <span class="tag">opt-in</span>
+          </li>
+          <li data-key="preferences">
+            <span class="key">[3]</span>
+            <span class="check">✓</span>
+            <span class="label">preferences
+              <span class="desc">Remembers theme, language, and which docs sections you collapsed.</span>
+            </span>
+            <span class="tag">opt-in</span>
+          </li>
+          <li data-key="marketing">
+            <span class="key">[4]</span>
+            <span class="check">✓</span>
+            <span class="label">marketing
+              <span class="desc">Attribution for our newsletter and webinar sign-ups. No ad networks.</span>
+            </span>
+            <span class="tag">opt-in</span>
+          </li>
+        </ul>
+
+        <p class="cmt" style="margin-top: var(--space-3); font-size: 11px;"># Hit a number to toggle, or use the buttons below.<br># Full policy: <span class="ok">https://conduction.nl/privacy</span></p>
+
+        <div class="actions-row">
+          <button class="term-btn primary" data-act="accept"><span class="key">A</span>Accept all</button>
+          <button class="term-btn" data-act="save"><span class="key">S</span>Save selection</button>
+          <button class="term-btn" data-act="reject"><span class="key">R</span>Reject non-essential</button>
+          <span class="spacer"></span>
+          <span class="footnote">↵ saves · esc rejects</span>
+        </div>
+
+        <div class="prompt" style="margin-top: var(--space-3);"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">_</span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: var(--space-4); color: var(--c-cobalt-400); font-size: 13px;">Sits centred over a softly-blurred page. CRT scanlines + radial vignette + cobalt-flavoured glow. ASCII logo uses cobalt for letterforms with a single KNVB-orange "V" accent — the brand colour rules survive even at 8-bit.</p>
+
+  <!-- Variant states -->
+  <div class="section-label">States · saved · rejected</div>
+  <div class="variant-grid">
+    <div class="term">
+      <div class="term-bar">
+        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+        <div class="title">— <b>conduction.nl</b> · saved —</div>
+        <span class="badge">ok</span>
+      </div>
+      <div class="term-body">
+<div class="ascii">
+    <span class="accent">__</span>       <span class="brand">Conduction</span>
+   <span class="accent">/  \</span>      <span class="brand-sub">cookie-consent · v2.4.0</span>
+  <span class="accent">/    \</span>  
+ <span class="accent">/      \</span> 
+<span class="accent">|</span> <span class="accent2"> ___  </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">/ __\ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| /   </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| \__ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">\___/ </span> <span class="accent">|</span>
+ <span class="accent">\      /</span> 
+  <span class="accent">\    /</span>  
+   <span class="accent">\  /</span>   
+    <span class="accent">\/</span>    
+</div>
+        <div class="prompt"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">save --consent essential,analytics</span></div>
+        <p style="margin-top: 6px;"><span class="ok">✓</span> Wrote <span class="em">.cookies/consent.json</span> · 2 cookies enabled · 2 disabled</p>
+        <p class="cmt" style="font-size: 11px;"># Change anytime via the footer link. Stored locally for 12 months.</p>
+        <div class="prompt" style="margin-top: 6px;"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">_</span><span class="cursor"></span></div>
+      </div>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+        <div class="title">— <b>conduction.nl</b> · rejected —</div>
+        <span class="badge">essential only</span>
+      </div>
+      <div class="term-body">
+<div class="ascii">
+    <span class="accent">__</span>       <span class="brand">Conduction</span>
+   <span class="accent">/  \</span>      <span class="brand-sub">cookie-consent · v2.4.0</span>
+  <span class="accent">/    \</span>  
+ <span class="accent">/      \</span> 
+<span class="accent">|</span> <span class="accent2"> ___  </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">/ __\ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| /   </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| \__ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">\___/ </span> <span class="accent">|</span>
+ <span class="accent">\      /</span> 
+  <span class="accent">\    /</span>  
+   <span class="accent">\  /</span>   
+    <span class="accent">\/</span>    
+</div>
+        <div class="prompt"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">save --reject-non-essential</span></div>
+        <p style="margin-top: 6px;"><span class="warn">!</span> Only essential cookies set · respect.</p>
+        <p class="cmt" style="font-size: 11px;"># The site works fine. Some niceties (saved language, dashboards) won't persist.</p>
+        <div class="prompt" style="margin-top: 6px;"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">_</span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini variant — footer reopen -->
+  <div class="section-label">Footer link · reopens the prompt</div>
+  <div class="stage-card" style="display: flex; align-items: center; gap: var(--space-6); padding: var(--space-5) var(--space-6);">
+    <span style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400);">conduction.nl &middot; footer:</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+      <span style="color: var(--c-cobalt-700);">$</span>
+      <a href="#" style="color: var(--c-blue-cobalt); text-decoration: none; border-bottom: 1px dashed var(--c-cobalt-300);">cookies --reconfigure</a>
+    </span>
+    <span style="margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400);">no graphic icons. no "manage preferences" euphemism. one command.</span>
+  </div>
+
+  <!-- Design notes -->
+  <div class="section-label">Why this works for Conduction</div>
+  <div class="rationale">
+    <div class="rationale-card">
+      <h3 style="font-size: 17px; font-weight: 600; margin-bottom: var(--space-3);">It signals what we are.</h3>
+      <p style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;">Open-source, technical-first, transparent. A team that ships software writes <em>files</em>, not "experiences". A cookie banner that looks like the terminal you'd actually configure it from says: this is by people who run their own servers. Auf-deutsch self-hosted, no Cookiebot SaaS, no opaque consent string.</p>
+    </div>
+    <div class="rationale-card">
+      <h3 style="font-size: 17px; font-weight: 600; margin-bottom: var(--space-3);">It respects the reader.</h3>
+      <p style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;">Three options on the action row, equal weight. Reject-non-essential is not hidden behind two clicks. No dark patterns, no "Confirm my choices" euphemism, no pre-ticked marketing checkbox. AVG/GDPR-compliant by design, not by lawyer-bolted-on banner.</p>
+    </div>
+  </div>
+
+  <!-- ASCII logo block -->
+  <div class="section-label">The ASCII Conduction logo · standalone</div>
+  <div class="term" style="max-width: 760px;">
+    <div class="term-bar">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <div class="title">— ascii.txt —</div>
+      <span class="badge">utf-8</span>
+    </div>
+    <div class="term-body" style="padding: 28px 26px;">
+<div class="ascii" style="font-size: 12px;">
+    <span class="accent">__</span>       <span class="brand">Conduction</span>
+   <span class="accent">/  \</span>      <span class="brand-sub">cookie-consent · v2.4.0</span>
+  <span class="accent">/    \</span>  
+ <span class="accent">/      \</span> 
+<span class="accent">|</span> <span class="accent2"> ___  </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">/ __\ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| /   </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">| \__ </span> <span class="accent">|</span>
+<span class="accent">|</span> <span class="accent2">\___/ </span> <span class="accent">|</span>
+ <span class="accent">\      /</span> 
+  <span class="accent">\    /</span>  
+   <span class="accent">\  /</span>   
+    <span class="accent">\/</span>    
+</div>
+      <p class="cmt" style="font-size: 11px;"># Use this on /robots.txt comments, server MOTD, CLI tool banners, README art.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Toggle cookie options + key shortcuts
+  const opts = document.querySelectorAll('#cookie-opts li');
+  opts.forEach(li => {
+    li.addEventListener('click', () => {
+      if (li.dataset.required) return;
+      li.classList.toggle('on');
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    if (['1','2','3','4'].includes(k)) {
+      const li = document.querySelector(`#cookie-opts li[data-key]:nth-child(${k})`);
+      if (li && !li.dataset.required) li.classList.toggle('on');
+    }
+    if (k === 'a') document.querySelectorAll('#cookie-opts li').forEach(l => l.classList.add('on'));
+    if (k === 'r') document.querySelectorAll('#cookie-opts li').forEach(l => { if (!l.dataset.required) l.classList.remove('on'); });
+  });
+</script>
+
+</body>
+</html>

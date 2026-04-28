@@ -77,10 +77,10 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 }
 .diagram-grid {
   display: grid;
-  grid-template-columns: 1fr 280px 1fr;
+  grid-template-columns: 1fr 320px 1fr;
   grid-template-rows: auto auto;
   column-gap: 32px;
-  row-gap: 56px;
+  row-gap: 80px;
   align-items: start;
   position: relative;
   z-index: 1;
@@ -92,36 +92,38 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   grid-row: 1 / span 2;
   align-self: center;
   justify-self: center;
-  width: 220px;
-  height: 254px;
+  width: 320px;
+  aspect-ratio: 1.732 / 2;     /* regular pointy-top hex: width/height = √3/2 */
   clip-path: var(--hex-pointy-top);
   background: var(--gradient-nextcloud);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   color: white;
   text-align: center;
-  padding: 0 24px;
+  padding: 0 32px;
   position: relative;
   z-index: 2;
 }
-.kernel .name {
-  font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+.kernel .kernel-logo {
+  width: 140px;
+  height: auto;
+  margin-bottom: 14px;
 }
 .kernel .role {
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-  margin-top: 6px; opacity: 0.85;
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0.85;
 }
 .kernel .pills {
   display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
-  margin-top: 14px;
+  margin-top: 16px;
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 10px; color: rgba(255,255,255,0.92);
+  font-size: 11px; color: rgba(255,255,255,0.92);
 }
 .kernel .pills span {
   background: rgba(255,255,255,0.15);
   border-radius: var(--radius-pill);
-  padding: 3px 8px;
+  padding: 3px 9px;
   white-space: nowrap;
 }
 
@@ -185,18 +187,18 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 /* ---- Component hex (the "title tag") ---- */
 .box-hex {
   position: absolute;
-  width: 78px; height: 90px;
+  width: 130px;
+  aspect-ratio: 1.732 / 2;     /* regular pointy-top hex */
   clip-path: var(--hex-pointy-top);
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   color: white;
-  font-size: 10px; font-weight: 600;
+  font-size: 13px; font-weight: 600;
   letter-spacing: 0.04em; text-transform: uppercase;
-  line-height: 1.15;
-  padding: 0 8px;
+  line-height: 1.2;
+  padding: 0 12px;
   z-index: 3;     /* hex sits BELOW the list-box */
-  /* Slight shadow so the hex reads as a separate layer */
-  filter: drop-shadow(0 2px 4px rgba(33, 70, 139, 0.2));
+  filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
 }
 
 /* Component family tints */
@@ -212,11 +214,12 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box.workplace  { grid-column: 1; grid-row: 2; justify-self: end; min-width: 240px; max-width: 280px; }
 .box.integrated { grid-column: 3; grid-row: 2; justify-self: start; min-width: 220px; max-width: 260px; }
 
-/* Per-box hex placement — protrudes toward the kernel */
-.box.tech-core  .box-hex { right: -68px; top: 50%; transform: translateY(-50%); }
-.box.workplace  .box-hex { right: -68px; top: 50%; transform: translateY(-50%); }
-.box.ai         .box-hex { left:  -68px; top: 50%; transform: translateY(-50%); }
-.box.integrated .box-hex { left:  -68px; top: 50%; transform: translateY(-50%); }
+/* Per-box hex placement — protrudes ~70% past the box, ~30% covered by it,
+   reaching ~60px into the kernel area. */
+.box.tech-core  .box-hex { right: -91px; top: 50%; transform: translateY(-50%); }
+.box.workplace  .box-hex { right: -91px; top: 50%; transform: translateY(-50%); }
+.box.ai         .box-hex { left:  -91px; top: 50%; transform: translateY(-50%); }
+.box.integrated .box-hex { left:  -91px; top: 50%; transform: translateY(-50%); }
 
 /* App Builder spans full row, muted treatment */
 .box.app-builder {
@@ -230,8 +233,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   padding-top: 28px;
 }
 .box.app-builder .box-hex {
-  left: 50%; top: -45px; transform: translateX(-50%);
-  filter: drop-shadow(0 -2px 4px rgba(33, 70, 139, 0.15));
+  left: 50%; top: -75px; transform: translateX(-50%);
+  filter: drop-shadow(0 -2px 6px rgba(33, 70, 139, 0.18));
 }
 .box.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }
 .box.app-builder .row .desc { font-style: normal; }
@@ -362,7 +365,7 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
     <!-- Nextcloud kernel (centre) -->
     <div class="kernel">
-      <div class="name">Nextcloud</div>
+      <img class="kernel-logo" src="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud">
       <div class="role">Platform · Kernel</div>
       <div class="pills">
         <span>Files</span><span>Mail</span><span>Cal</span><span>Talk</span><span>Office</span><span>SSO</span>

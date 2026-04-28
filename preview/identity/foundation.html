@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foundation — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Values grid */
+  .values {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 1100px) { .values { grid-template-columns: repeat(2, 1fr); } }
+  .value-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .value-card .glyph {
+    width: 36px; height: 42px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .value-card .name { font-size: 18px; font-weight: 600; color: var(--c-blue-cobalt); letter-spacing: -0.005em; }
+  .value-card .desc { font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5; }
+
+  /* What we build · two-column layout */
+  .what-we-build {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .narrative {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+  .narrative h3 { font-size: 22px; font-weight: 600; color: var(--c-blue-cobalt); margin-bottom: var(--space-3); letter-spacing: -0.01em; }
+  .narrative p { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.6; margin-bottom: var(--space-3); }
+  .narrative p:last-child { margin-bottom: 0; }
+  .narrative .pull {
+    font-size: 18px; font-weight: 600; color: var(--c-blue-cobalt); line-height: 1.4; letter-spacing: -0.01em;
+    border-left: 3px solid var(--c-orange-knvb);
+    padding-left: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+
+  .revenue-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  .revenue-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    background: white;
+  }
+  .revenue-card .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-2);
+  }
+  .revenue-card h4 { font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt); margin-bottom: var(--space-2); }
+  .revenue-card p { font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55; }
+  .revenue-card.support { border-left: 3px solid var(--c-blue-cobalt); }
+  .revenue-card.services { border-left: 3px solid var(--c-orange-knvb); }
+  .revenue-card .meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    margin-top: var(--space-3);
+  }
+
+  /* Triad · three-brand relationship */
+  .triad {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+  .triad-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    display: flex; flex-direction: column; gap: var(--space-3);
+    text-align: center;
+    align-items: center;
+  }
+  .triad-card .mark {
+    width: 56px; height: 64px;
+    margin-bottom: var(--space-2);
+  }
+  .triad-card .mark-hex {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 700; font-size: 24px;
+    margin-bottom: var(--space-2);
+  }
+  .triad-card .role {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .triad-card .name { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: var(--c-blue-cobalt); }
+  .triad-card .desc { font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55; }
+
+  .triad-line {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-8);
+    text-align: center;
+    margin-top: var(--space-4);
+    font-size: 22px; font-weight: 600; letter-spacing: -0.015em;
+    color: var(--c-blue-cobalt);
+  }
+  .triad-line .nx { color: var(--c-nextcloud-blue); }
+
+  /* Component cards summary (tiny grid) */
+  .six-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); }
+  @media (max-width: 1100px) { .six-cards { grid-template-columns: repeat(3, 1fr); } }
+  .six-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-align: center;
+    background: white;
+  }
+  .six-card .h {
+    width: 28px; height: 32px; margin: 0 auto var(--space-2);
+    clip-path: var(--hex-pointy-top);
+  }
+  .six-card .label {
+    font-size: 12px; font-weight: 600; color: var(--c-blue-cobalt); letter-spacing: -0.005em;
+  }
+  .six-card .count {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400); margin-top: 2px;
+  }
+  .six-card.muted { opacity: 0.7; border-style: dashed; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">10 · Identity / Foundation</div>
+      <h1 class="card-title">A Dutch open-source product company.</h1>
+    </div>
+    <p class="card-subtitle">Apps that install themselves. Optional support. No vendor lock-in. Built on Nextcloud.</p>
+  </div>
+
+  <div class="section-label">Five values · all Dutch</div>
+  <div class="values">
+    <div class="value-card">
+      <div class="glyph">🇳🇱</div>
+      <div class="name">Trots Nederlands</div>
+      <div class="desc">We design from Dutch standards — NL Design System, Common Ground, API-first principles — and we say so.</div>
+    </div>
+    <div class="value-card">
+      <div class="glyph">↗</div>
+      <div class="name">Innovatief</div>
+      <div class="desc">Open source, API-first, federated data models. We lead, we don't follow.</div>
+    </div>
+    <div class="value-card">
+      <div class="glyph">⚡</div>
+      <div class="name">Handelsgedreven</div>
+      <div class="desc">Pragmatic, goal-oriented, results-first. Solutions that work — not demos that impress.</div>
+    </div>
+    <div class="value-card">
+      <div class="glyph">€</div>
+      <div class="name">Penny-wise</div>
+      <div class="desc">Open source, reuse, frugal with public funds. The same discipline that defines our software.</div>
+    </div>
+    <div class="value-card">
+      <div class="glyph">✓</div>
+      <div class="name">Betrouwbaar</div>
+      <div class="desc">Stable, transparent, predictable. The deeper-blue palette underlines it. Trust isn't decorative.</div>
+    </div>
+  </div>
+
+  <div class="section-label">What we build · apps, not engagements</div>
+  <div class="what-we-build">
+    <div class="narrative">
+      <h3>The shift: from project shop to product company.</h3>
+      <p>Historically Conduction's work came out of <em>projects, training, and advice</em> — engagements where a customer hired us to build, implement, or guide. That work still exists, but it's not what Conduction is about anymore.</p>
+      <p class="pull">Conduction is a product company. We build an ecosystem of cooperating Nextcloud apps — and customers can use them <em>without ever talking to us</em>.</p>
+      <p>Download from the Nextcloud app store, install, done. All apps are <strong>always free and open source</strong> — no Community/Enterprise split, no feature-gating, no "Pro" tier.</p>
+      <p>We earn our keep through two supporting layers around the ecosystem — see right. Both are <strong>secondary, never leading</strong>: every brand surface (website, print, decks) leads with the apps and the ecosystem. Support and Services are explained honestly where relevant, never as a forced funnel or upgrade pressure.</p>
+    </div>
+    <div class="revenue-stack">
+      <div class="revenue-card support">
+        <div class="label">Revenue layer · 1</div>
+        <h4>Support</h4>
+        <p>Optional safety net on top of the free software. Helpdesk plus proactive telemetry-based outreach. Two tiers — Standard and Premium — billed per app × per user × per year.</p>
+        <div class="meta">"Support" in customer language · "SLA" only in contract language</div>
+      </div>
+      <div class="revenue-card services">
+        <div class="label">Revenue layer · 2</div>
+        <h4>Services</h4>
+        <p>Project-based work with a published rate card. Development €125/hr · Consultancy €150/hr · Training (online: free, on-site: €1,000–1,200 per half-day) · Certification per certificate. Optional €15K strippenkaart with 10% discount.</p>
+        <div class="meta">For customers whose needs go beyond install + Support</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">The triad · three brands, three lanes</div>
+  <div class="triad">
+    <div class="triad-card">
+      <div class="mark-hex" style="background: var(--c-blue-cobalt);">C</div>
+      <div class="role">The company</div>
+      <div class="name">Conduction</div>
+      <div class="desc">The Dutch open-source product company that builds everything. Always visible: About, footer, contracts. Hexagon avatar.</div>
+    </div>
+    <div class="triad-card">
+      <div class="mark" style="display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; letter-spacing: -0.025em; color: var(--c-blue-cobalt);">Con<span style="color: var(--c-nextcloud-blue);">Next</span></div>
+      <div class="role">The product brand</div>
+      <div class="name">ConNext</div>
+      <div class="desc">The public product brand for the Conduction-on-Nextcloud ecosystem. Pure positioning — typographic wordmark, no separate code base.</div>
+    </div>
+    <div class="triad-card">
+      <div class="mark-hex" style="background: var(--gradient-nextcloud);">☁</div>
+      <div class="role">The platform</div>
+      <div class="name">Nextcloud</div>
+      <div class="desc">The host platform ConNext extends — from <em>office suite</em> to <em>workplace</em>. Cited, not claimed. Its blue is a guest colour in our system.</div>
+    </div>
+  </div>
+  <div class="triad-line">ConNext is a <strong>Conduction</strong> proposition for <strong class="nx">Nextcloud</strong>.</div>
+
+  <div class="section-label">The architecture · six component-cards rotating around the kernel</div>
+  <div class="six-cards">
+    <div class="six-card"><div class="h" style="background: var(--gradient-nextcloud);"></div><div class="label">Nextcloud</div><div class="count">the kernel</div></div>
+    <div class="six-card"><div class="h" style="background: var(--c-blue-cobalt);"></div><div class="label">Technical Core</div><div class="count">5 apps</div></div>
+    <div class="six-card"><div class="h" style="background: var(--c-cobalt-700);"></div><div class="label">Workplace</div><div class="count">9 apps</div></div>
+    <div class="six-card"><div class="h" style="background: #2E9866;"></div><div class="label">AI</div><div class="count">3 apps</div></div>
+    <div class="six-card"><div class="h" style="background: var(--c-cobalt-400);"></div><div class="label">Integrated</div><div class="count">7 apps</div></div>
+    <div class="six-card muted"><div class="h" style="background: var(--c-cobalt-300);"></div><div class="label">App Builder</div><div class="count">coming soon</div></div>
+  </div>
+  <p style="margin-top: var(--space-4); font-size: 13px; color: var(--c-cobalt-400); text-align: center;">See the diagram in <a href="../components/platform-overview.html" style="color: var(--c-blue-cobalt);">components / platform-overview</a>.</p>
+
+</div>
+
+</body>
+</html>

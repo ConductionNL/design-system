@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Audience — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Three-tier audience grid */
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+  @media (max-width: 1100px) { .tiers { grid-template-columns: 1fr; } }
+
+  .tier {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex; flex-direction: column;
+    gap: var(--space-5);
+    position: relative;
+    overflow: hidden;
+  }
+  .tier::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+    background: var(--accent);
+  }
+  .tier.primary { --accent: var(--c-orange-knvb); }
+  .tier.secondary { --accent: var(--c-cobalt-400); }
+  .tier.tertiary { --accent: var(--c-cobalt-300); }
+
+  .tier-head { display: flex; align-items: center; gap: var(--space-3); }
+  .tier-num {
+    width: 32px; height: 37px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--accent);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .tier-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .tier h3 { font-size: 22px; font-weight: 600; color: var(--c-blue-cobalt); letter-spacing: -0.01em; line-height: 1.2; }
+  .tier .role-meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+    margin-top: -2px;
+  }
+
+  .tier .quote {
+    font-style: italic;
+    color: var(--c-cobalt-700);
+    font-size: 14px; line-height: 1.5;
+    border-left: 2px solid var(--accent);
+    padding-left: var(--space-3);
+  }
+
+  .tier .stats { display: flex; gap: var(--space-4); font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.04em; }
+  .tier .stats strong { display: block; color: var(--c-blue-cobalt); font-family: var(--conduction-typography-font-family-body); font-weight: 600; font-size: 14px; }
+
+  .tier-block { display: flex; flex-direction: column; gap: var(--space-2); }
+  .tier-block-head {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .tier-block ul { margin: 0; padding-left: 18px; }
+  .tier-block li {
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  /* Honest framing band */
+  .honest {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    margin-top: var(--space-6);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-8);
+    align-items: center;
+  }
+  @media (max-width: 1100px) { .honest { grid-template-columns: 1fr; } }
+  .honest h3 { font-size: 22px; font-weight: 600; color: var(--c-blue-cobalt); margin-bottom: var(--space-3); letter-spacing: -0.01em; }
+  .honest p { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.6; }
+
+  .ratio-bar {
+    display: flex;
+    height: 56px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-top: var(--space-3);
+  }
+  .ratio-bar > div {
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 14px;
+    letter-spacing: -0.005em;
+  }
+  .ratio-bar .now-gov { flex: 6; background: var(--c-cobalt-400); }
+  .ratio-bar .now-mkb { flex: 3; background: var(--c-orange-knvb); }
+  .ratio-bar .now-dev { flex: 1; background: var(--c-cobalt-300); }
+  .ratio-bar.future .now-gov { flex: 3; }
+  .ratio-bar.future .now-mkb { flex: 6; }
+  .ratio-bar.future .now-dev { flex: 1; }
+  .ratio-meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+    margin-top: var(--space-2);
+    display: flex; justify-content: space-between;
+  }
+
+  /* CTA hierarchy table */
+  .cta-hierarchy {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .cta-hierarchy table { width: 100%; border-collapse: collapse; }
+  .cta-hierarchy th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    font-weight: 500;
+  }
+  .cta-hierarchy td {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5;
+  }
+  .cta-hierarchy td.tier-tag { white-space: nowrap; }
+  .cta-hierarchy td.tier-tag .badge {
+    display: inline-block;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    color: white;
+    font-weight: 600;
+  }
+  .cta-hierarchy td strong { color: var(--c-blue-cobalt); font-weight: 600; }
+  .cta-hierarchy td .micro { font-size: 12px; color: var(--c-cobalt-400); display: block; margin-top: 2px; font-family: var(--conduction-typography-font-family-code); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">10 · Identity / Audience</div>
+      <h1 class="card-title">Three audiences. In tiers, not in equal weight.</h1>
+    </div>
+    <p class="card-subtitle">Where we're going (MKB), where most of our customers still are (government), and who keeps the OSS alive (developers). Honest about the difference.</p>
+  </div>
+
+  <div class="section-label">The three tiers</div>
+  <div class="tiers">
+
+    <div class="tier primary">
+      <div class="tier-head">
+        <span class="tier-num">1</span>
+        <span class="tier-label">Primary · Where we're going</span>
+      </div>
+      <div>
+        <h3>MKB decision-maker / IT-lead</h3>
+        <div class="role-meta">Small + medium business · 10–500 employees</div>
+      </div>
+      <p class="quote">"We need to be WOO-compliant" · "We want one register platform" · "Just give me the install button."</p>
+      <div class="stats">
+        <span>Budget<strong>Limited</strong></span>
+        <span>Decision<strong>Days–weeks</strong></span>
+        <span>Channel<strong>Google</strong></span>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They come with</div>
+        <ul>
+          <li>A concrete problem, not a roadmap</li>
+          <li>No prior knowledge of Conduction</li>
+          <li>An expectation to evaluate it themselves</li>
+        </ul>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They need</div>
+        <ul>
+          <li>Clear problem recognition</li>
+          <li>Concrete solution, not a methodology</li>
+          <li>A direct route to <strong style="color: var(--c-blue-cobalt);">Install from Nextcloud app store</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tier secondary">
+      <div class="tier-head">
+        <span class="tier-num">2</span>
+        <span class="tier-label">Secondary · Where most are</span>
+      </div>
+      <div>
+        <h3>Government decision-maker</h3>
+        <div class="role-meta">Municipalities, joint ventures · existing customer base</div>
+      </div>
+      <p class="quote">"We have a project in mind, and we'd like to talk about implementation, training, BIO compliance…"</p>
+      <div class="stats">
+        <span>Budget<strong>Procurement</strong></span>
+        <span>Decision<strong>Months</strong></span>
+        <span>Channel<strong>Existing relation</strong></span>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They come with</div>
+        <ul>
+          <li>Prior knowledge of Conduction</li>
+          <li>Multiple stakeholders, BIO/inkoop process</li>
+          <li>A wish for both apps and hands-on support</li>
+        </ul>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They need</div>
+        <ul>
+          <li>Apps positioned clearly (no tech-jargon wall)</li>
+          <li>A discrete route to <strong style="color: var(--c-blue-cobalt);">Services / contact</strong> when they want it</li>
+          <li>Compliance signals where they apply</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tier tertiary">
+      <div class="tier-head">
+        <span class="tier-num">3</span>
+        <span class="tier-label">Tertiary · Who keeps it alive</span>
+      </div>
+      <div>
+        <h3>Developer / integrator</h3>
+        <div class="role-meta">OSS contributors · system integrators</div>
+      </div>
+      <p class="quote">"Where's the API spec? What's the license? Show me the source."</p>
+      <div class="stats">
+        <span>Channel<strong>GitHub, docs</strong></span>
+        <span>Speed<strong>Minutes</strong></span>
+        <span>Wants<strong>Direct links</strong></span>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They come with</div>
+        <ul>
+          <li>Building or integrating something</li>
+          <li>An expectation that the answer is one click away</li>
+          <li>Zero patience for marketing prose</li>
+        </ul>
+      </div>
+      <div class="tier-block">
+        <div class="tier-block-head">They need</div>
+        <ul>
+          <li>Direct links to <strong style="color: var(--c-blue-cobalt);">GitHub</strong>, <strong style="color: var(--c-blue-cobalt);">docs.conduction.nl</strong>, license</li>
+          <li>API references and contribution guides</li>
+          <li>Nothing else — don't try to convert them</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Honest about the gap · today vs the direction</div>
+  <div class="honest">
+    <div>
+      <h3>Government is still the majority. MKB is the goal.</h3>
+      <p>We're not pretending. Most of our current customers are government — municipalities, joint ventures — and they've been with us for years. They're welcome and they stay welcome. But Conduction's centre of gravity is shifting, and the product, the voice, and the marketing reflect that. We tell both stories without disowning either.</p>
+    </div>
+    <div>
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase;">Customer base · today</div>
+      <div class="ratio-bar">
+        <div class="now-gov">Gov 60%</div>
+        <div class="now-mkb">MKB 30%</div>
+        <div class="now-dev">Dev 10%</div>
+      </div>
+      <div class="ratio-meta"><span>≈ illustrative</span><span>—</span></div>
+
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase; margin-top: var(--space-4);">Where we're heading</div>
+      <div class="ratio-bar future">
+        <div class="now-gov">Gov 30%</div>
+        <div class="now-mkb">MKB 60%</div>
+        <div class="now-dev">Dev 10%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">How the tiers shape the surface · CTA hierarchy</div>
+  <div class="cta-hierarchy">
+    <table>
+      <thead><tr><th>Tier</th><th>Primary CTA</th><th>Secondary CTA</th><th>Voice register</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="tier-tag"><span class="badge" style="background: var(--c-orange-knvb);">Primary</span></td>
+          <td><strong>Install from Nextcloud app store</strong><span class="micro">Cobalt-fill, large, every page</span></td>
+          <td>Try the demo →<span class="micro">Ghost button</span></td>
+          <td>Direct "je", concrete outcomes, no jargon</td>
+        </tr>
+        <tr>
+          <td class="tier-tag"><span class="badge" style="background: var(--c-cobalt-400);">Secondary</span></td>
+          <td>Same as primary<span class="micro">Apps stay the front door</span></td>
+          <td><strong>Talk to us about Services</strong><span class="micro">Discrete, in footer + Services page</span></td>
+          <td>Slightly more formal, references compliance, training paths</td>
+        </tr>
+        <tr>
+          <td class="tier-tag"><span class="badge" style="background: var(--c-cobalt-300);">Tertiary</span></td>
+          <td><strong>GitHub →</strong><span class="micro">Top-right of nav, on every page</span></td>
+          <td>docs.conduction.nl<span class="micro">Footer link</span></td>
+          <td>Technical, code-block-heavy, no ramp-up</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: var(--space-4); font-size: 13px; color: var(--c-cobalt-400);"><strong style="color: var(--c-blue-cobalt);">Anti-pattern:</strong> over-funnelling. We don't gate the apps behind contact forms, we don't add upgrade pressure, and we don't turn developer-tier visitors into marketing leads. The job of the site is to get the right person to the right destination — fast.</p>
+
+</div>
+
+</body>
+</html>

@@ -7,33 +7,25 @@
 <link rel="stylesheet" href="../../tokens.css">
 <style>
 /* ============================================================
-   Platform overview — diagram-IS-the-hero
+   Platform overview — kernel + five component-cards
    ----------------------------------------------------------------
-   Architecture:
-     · ONE kernel prism in Nextcloud-blue (centre, larger)
-     · FOUR component prisms (Data, Documents, Process, Integrate)
-       arranged so they physically OVERLAP the kernel — like petals
-       on a flower, or the Honeycomb Intelligence reference. The
-       overlap is the diagram's whole point: components ARE part of
-       the kernel, not satellites of it.
-     · Each component prism has its component name inside, and a
-       SIDE-PILL STACK floating off the prism with the actual app
-       names (lavender prism "Process" → pills: Larping · OpenZaak)
-     · No side-boxes, no source/sink rectangles in the hero. Those
-       belong on inner pages (pipeline-flow).
-
-   Family policy locked 2026-04:
-     · Kernel    = kernelblue (Nextcloud's own blue)
-     · Data      = forest
-     · Documents = terracotta
-     · Process   = lavender
-     · Integrate = mint
-     · Coral / gold / gray are NOT prism families.
+   Architecture (canonical per app-architecture.md, 2026-04-28):
+     · ONE Nextcloud kernel hex (centre, large, Nextcloud-blue gradient)
+     · FIVE component list-boxes around the kernel:
+         - Technical Core
+         - Workplace Apps
+         - AI
+         - Integrated Apps
+         - App Builder (coming soon, muted)
+     · Each list-box: eyebrow label + bordered card + list of apps,
+       each app row is a small hex glyph + app name.
+     · Dashed connectors from each list-box to the kernel.
+     · Pointy-top hexes only (per system rules). No 3D prisms.
    ============================================================ */
 
 body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
-/* ---- Top nav (deliberately minimal — diagram is the hero) ---- */
+/* ---- Top nav ---- */
 .nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px 56px;
@@ -44,8 +36,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .nav-links { display: flex; gap: 28px; }
 .nav-links a { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
 .nav-links a:hover { color: var(--c-orange-knvb); }
-.nav .nav-ctas { display: flex; align-items: center; gap: 12px; }
-.nav .ghost { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
 .nav .cta {
   background: var(--c-blue-cobalt); color: white;
   padding: 9px 16px; border-radius: var(--radius-md);
@@ -53,8 +43,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 }
 .nav .cta:hover { background: var(--c-cobalt-700); }
 
-/* ---- Hero stage ---- */
-.hero { padding: 56px 0 32px; }
+/* ---- Hero ---- */
+.hero { padding: 56px 0 24px; }
 
 .product-label {
   display: flex; align-items: center; justify-content: center;
@@ -63,96 +53,209 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--c-cobalt-400); margin-bottom: 16px;
 }
-.product-label .h { width: 11px; height: 13px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+.product-label .h {
+  width: 11px; height: 13px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb);
+}
 
 .hero h1 {
-  font-size: 48px; font-weight: 700; line-height: 1.05; letter-spacing: -0.025em;
+  font-size: 48px; font-weight: 700; line-height: 1.08; letter-spacing: -0.025em;
   color: var(--c-blue-cobalt);
-  text-align: center; max-width: 820px; margin: 0 auto 8px;
+  text-align: center; max-width: 820px; margin: 0 auto 16px;
 }
 .hero h1 .nx { color: var(--c-nextcloud-blue); }
 .hero .subhead {
   text-align: center;
   font-size: 17px; line-height: 1.55; color: var(--c-cobalt-700);
-  max-width: 56ch; margin: 0 auto 32px;
+  max-width: 60ch; margin: 0 auto 16px;
 }
 
-/* Diagram canvas */
-.diagram-wrap { position: relative; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-.diagram { width: 100%; height: auto; display: block; }
+/* ---- Diagram ---- */
+.diagram {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 56px 16px;
+}
+.diagram-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 96px;
+  row-gap: 40px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
 
-.diagram .face-edge { stroke-width: 1.25; fill: none; opacity: 0.20; }
-
-/* App-pill connector lines — short, ending at a small dot on the prism */
-.diagram .pill-line { stroke: var(--c-cobalt-300); stroke-width: 1.2; fill: none; opacity: 0.55; }
-.diagram .pill-anchor { fill: var(--c-cobalt-400); }
-
-/* App pills: white-rounded with cobalt ink */
-.diagram .pill rect {
-  fill: white;
+/* Connector SVG layer sits behind the cards */
+.connectors {
+  position: absolute;
+  inset: 48px 56px 16px;
+  width: calc(100% - 112px);
+  height: calc(100% - 64px);
+  z-index: 0;
+  pointer-events: none;
+}
+.connectors line {
   stroke: var(--c-cobalt-200);
-  stroke-width: 1;
-  filter: drop-shadow(0 1px 2px rgba(33,70,139,0.06));
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
 }
-.diagram .pill text {
-  font-size: 12.5px;
-  font-weight: 500;
-  fill: var(--c-cobalt-800);
-}
-.diagram .pill .ic-square {
-  fill: var(--c-cobalt-50);
-  stroke: var(--c-cobalt-200);
-  stroke-width: 1;
-}
-.diagram .pill .ic { stroke: var(--c-cobalt-700); stroke-width: 1.4; fill: none; stroke-linecap: round; }
 
-/* Hover spotlight */
-.diagram .node, .diagram .pill { transition: opacity 220ms ease, transform 220ms ease; cursor: default; }
-.diagram-wrap:has(.node[data-id]:hover) .node[data-id]  { opacity: 0.30; }
-.diagram-wrap:has(.node[data-id]:hover) .node[data-id]:hover,
-.diagram-wrap:has(.node[data-id]:hover) .node.kernel,
-.diagram-wrap:has(.node[data-id]:hover) .pill[data-cluster] { opacity: 1; }
-.diagram-wrap:has(.node[data-id="data"]:hover)      .pill[data-cluster="data"],
-.diagram-wrap:has(.node[data-id="docs"]:hover)      .pill[data-cluster="docs"],
-.diagram-wrap:has(.node[data-id="process"]:hover)   .pill[data-cluster="process"],
-.diagram-wrap:has(.node[data-id="integrate"]:hover) .pill[data-cluster="integrate"] { opacity: 1; }
-.diagram-wrap:has(.node[data-id]:hover) .pill[data-cluster] { opacity: 0.30; }
+/* Kernel — single flat pointy-top hex, Nextcloud blue */
+.kernel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: center;
+  width: 220px;
+  height: 254px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--gradient-nextcloud);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 0 24px;
+}
+.kernel .name {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+}
+.kernel .role {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  margin-top: 6px; opacity: 0.85;
+}
+.kernel .pills {
+  display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
+  margin-top: 14px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; color: rgba(255,255,255,0.92);
+}
+.kernel .pills span {
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-pill);
+  padding: 3px 8px;
+  white-space: nowrap;
+}
 
-/* CTA bar */
-.cta-bar {
-  display: flex; justify-content: center; align-items: center; gap: 16px;
-  padding: 24px 24px 0; flex-wrap: wrap;
+/* List-box — small bordered card with eyebrow + app list */
+.box {
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-1);
+}
+.box .eyebrow {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.box .eyebrow .dot {
+  width: 8px; height: 9px; clip-path: var(--hex-pointy-top);
+}
+.box .row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+  font-size: 13px; color: var(--c-cobalt-700);
+}
+.box .row + .row { border-top: 1px solid var(--c-cobalt-50); }
+.box .row .glyph {
+  width: 18px; height: 21px;
+  clip-path: var(--hex-pointy-top);
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white;
+}
+.box .row .glyph svg {
+  width: 11px; height: 11px;
+  stroke-width: 2; stroke: currentColor; fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.box .row .name { font-weight: 500; }
+.box .row .meta {
+  margin-left: auto;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; color: var(--c-cobalt-400);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* Component family tints (using existing tokens / pastels from system) */
+.fam-core      .eyebrow .dot, .fam-core      .row .glyph { background: var(--c-blue-cobalt); }
+.fam-workplace .eyebrow .dot, .fam-workplace .row .glyph { background: var(--c-cobalt-700); }
+.fam-ai        .eyebrow .dot, .fam-ai        .row .glyph { background: #2E9866; /* mint-500 */ }
+.fam-integrate .eyebrow .dot, .fam-integrate .row .glyph { background: var(--c-cobalt-400); }
+.fam-builder   .eyebrow .dot, .fam-builder   .row .glyph { background: var(--c-cobalt-300); }
+
+/* Grid placement of boxes around the kernel */
+.box.tech-core  { grid-column: 1; grid-row: 1; justify-self: end; min-width: 240px; max-width: 280px; }
+.box.ai         { grid-column: 3; grid-row: 1; justify-self: start; min-width: 220px; max-width: 260px; }
+.box.workplace  { grid-column: 1; grid-row: 2; justify-self: end; min-width: 240px; max-width: 280px; }
+.box.integrated { grid-column: 3; grid-row: 2; justify-self: start; min-width: 220px; max-width: 260px; }
+
+/* App Builder spans full row, muted treatment */
+.box.app-builder {
+  grid-column: 1 / span 3;
+  grid-row: 3;
+  max-width: 540px;
+  margin: 8px auto 0;
+  border-style: dashed;
+  background: var(--c-cobalt-50);
+  opacity: 0.85;
+}
+.box.app-builder .eyebrow .badge {
+  margin-left: auto;
+  background: var(--c-orange-knvb);
+  color: white;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.08em;
+}
+.box.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }
+
+/* ---- CTA cluster ---- */
+.cta-row {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin: 40px 0 8px;
+  flex-wrap: wrap;
 }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 500;
+  font-size: 15px; font-weight: 500; text-decoration: none;
   padding: 13px 22px; border-radius: var(--radius-md);
-  text-decoration: none; border: 1px solid transparent;
-  transition: all 120ms ease;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 140ms ease;
 }
 .btn-primary { background: var(--c-blue-cobalt); color: white; }
 .btn-primary:hover { background: var(--c-cobalt-700); }
-.btn-secondary { background: white; color: var(--c-blue-cobalt); border-color: var(--c-cobalt-200); }
+.btn-secondary { background: white; color: var(--c-blue-cobalt); border: 1px solid var(--c-cobalt-200); }
 .btn-secondary:hover { border-color: var(--c-blue-cobalt); }
-.cta-note {
+.cta-meta {
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 12px; color: var(--c-cobalt-400); letter-spacing: 0.04em;
+  font-size: 12px; color: var(--c-cobalt-400);
+  letter-spacing: 0.06em;
 }
 
-/* Legend strip */
+/* ---- Bottom legend ---- */
 .legend {
-  display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 18px 28px;
-  margin: 40px auto 0; max-width: 1100px; padding: 0 24px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 28px;
+  padding: 32px 56px 56px;
+  font-size: 13px; color: var(--c-cobalt-700);
 }
-.legend-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--c-cobalt-700); }
-.legend-dot { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); display: inline-block; }
-.legend-item b { color: var(--c-cobalt-900); font-weight: 600; }
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-item .dot { width: 9px; height: 10px; clip-path: var(--hex-pointy-top); }
+.legend-item strong { color: var(--c-blue-cobalt); font-weight: 600; }
+.legend-item span { color: var(--c-cobalt-400); }
 </style>
 </head>
 <body>
 
-<!-- ===================== Nav ===================== -->
 <nav class="nav">
   <div class="left">
     <div class="wm">Con<span class="next-blue">Next</span></div>
@@ -164,266 +267,130 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       <a href="#">About</a>
     </div>
   </div>
-  <div class="nav-ctas">
-    <a href="#" class="ghost">Demo</a>
-    <a href="#" class="cta">Install →</a>
-  </div>
+  <a href="#" class="cta">Install →</a>
 </nav>
 
-<!-- ===================== Hero ===================== -->
 <section class="hero">
-
   <div class="product-label"><span class="h"></span>The platform overview</div>
-  <h1>Four components. Eight apps. One <span class="nx">Nextcloud</span>.</h1>
-  <p class="subhead">Hover any component to see the apps it ships. Every app installs from the Nextcloud app store in two minutes.</p>
-
-  <div class="diagram-wrap">
-    <svg class="diagram" viewBox="0 0 1200 720" aria-labelledby="diagram-title">
-      <title id="diagram-title">ConNext platform overview — four component prisms overlapping a Nextcloud kernel, with app pills</title>
-
-      <!-- =====================================================
-           Prism geometry reference
-           Each prism is built from 3 polygons + 2 outline polylines.
-           Pointy-top hex viewed in ~30° isometric, viewBox per-prism
-           computed in absolute coords below.
-           Component prism (size M):  width 220, height 254
-             top face:    pointy-top hex with vertices
-                          (cx, cy-110), (cx+95, cy-55), (cx+95, cy+55),
-                          (cx, cy+110), (cx-95, cy+55), (cx-95, cy-55)
-                          ... but for OVERLAPPING composition we use
-                          a SHORTER prism so faces still read.
-           Kernel prism (size XL): scaled ~1.55× of component.
-           ===================================================== -->
-
-      <!-- =====================================================
-           KERNEL (Nextcloud) — drawn FIRST so component prisms
-           overlap on top of it.
-           Centre at (600, 380). Large: half-w 145, half-h 168.
-           ===================================================== -->
-      <g class="node kernel" transform="translate(600, 380)">
-        <!-- left face -->
-        <polygon
-          points="0,0 -125,72 -125,182 0,254"
-          fill="var(--c-kernelblue-300)"/>
-        <!-- right face -->
-        <polygon
-          points="0,0 125,72 125,182 0,254"
-          fill="var(--c-kernelblue-700)"/>
-        <!-- top face -->
-        <polygon
-          points="0,-145 125,-72 125,72 0,145 -125,72 -125,-72"
-          fill="var(--c-kernelblue-500)"/>
-        <polyline class="face-edge"
-          points="0,0 -125,72 0,145 125,72 0,0" stroke="white" stroke-opacity="0.32"/>
-        <polyline class="face-edge"
-          points="0,145 0,254" stroke="white" stroke-opacity="0.32"/>
-
-        <!-- kernel label & sublabel & feature pill -->
-        <text x="0" y="-30" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="26" font-weight="700"
-              fill="white" letter-spacing="-0.5">Nextcloud</text>
-        <text x="0" y="-6" text-anchor="middle"
-              font-family="ui-monospace, monospace" font-size="11"
-              letter-spacing="2.2" fill="white" opacity="0.9">PLATFORM · KERNEL</text>
-        <rect x="-90" y="20" width="180" height="28" rx="14"
-              fill="white" fill-opacity="0.95"/>
-        <text x="0" y="38" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="12.5" font-weight="600"
-              fill="var(--c-kernelblue-700)" letter-spacing="0.3">files · users · auth · sharing</text>
-      </g>
-
-      <!-- =====================================================
-           COMPONENT PRISMS — drawn AFTER kernel so they overlap.
-           Four positions arranged like compass petals around the
-           kernel; each prism's centre is offset so the prism's
-           inner edge crosses INTO the kernel's outer edge by ~25px.
-           Size: half-w 88, half-h 110. Total prism height ~230.
-           ===================================================== -->
-
-      <!-- ─── DATA (forest, top-left) ─── -->
-      <g class="node" data-id="data" transform="translate(370, 240)">
-        <polygon points="0,0 -76,44 -76,154 0,198" fill="var(--c-forest-300)"/>
-        <polygon points="0,0 76,44 76,154 0,198" fill="var(--c-forest-700)"/>
-        <polygon points="0,-110 76,-66 76,44 0,88 -76,44 -76,-66" fill="var(--c-forest-500)"/>
-        <polyline class="face-edge"
-          points="0,0 -76,44 0,88 76,44 0,0" stroke="white" stroke-opacity="0.32"/>
-        <polyline class="face-edge"
-          points="0,88 0,198" stroke="white" stroke-opacity="0.32"/>
-        <text x="0" y="-32" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="18" font-weight="700"
-              fill="white" letter-spacing="-0.3">Data</text>
-        <text x="0" y="-12" text-anchor="middle"
-              font-family="ui-monospace, monospace" font-size="9.5"
-              letter-spacing="1.8" fill="white" opacity="0.85">REGISTERS · CATALOGS</text>
-      </g>
-
-      <!-- ─── INTEGRATE (mint, top-right) ─── -->
-      <g class="node" data-id="integrate" transform="translate(830, 240)">
-        <polygon points="0,0 -76,44 -76,154 0,198" fill="var(--c-mint-300)"/>
-        <polygon points="0,0 76,44 76,154 0,198" fill="var(--c-mint-700)"/>
-        <polygon points="0,-110 76,-66 76,44 0,88 -76,44 -76,-66" fill="var(--c-mint-500)"/>
-        <polyline class="face-edge"
-          points="0,0 -76,44 0,88 76,44 0,0" stroke="white" stroke-opacity="0.32"/>
-        <polyline class="face-edge"
-          points="0,88 0,198" stroke="white" stroke-opacity="0.32"/>
-        <text x="0" y="-32" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="18" font-weight="700"
-              fill="white" letter-spacing="-0.3">Integrate</text>
-        <text x="0" y="-12" text-anchor="middle"
-              font-family="ui-monospace, monospace" font-size="9.5"
-              letter-spacing="1.8" fill="white" opacity="0.85">CONNECTORS · APIs</text>
-      </g>
-
-      <!-- ─── DOCUMENTS (terracotta, bottom-left) ─── -->
-      <g class="node" data-id="docs" transform="translate(370, 520)">
-        <polygon points="0,0 -76,44 -76,154 0,198" fill="var(--c-terracotta-300)"/>
-        <polygon points="0,0 76,44 76,154 0,198" fill="var(--c-terracotta-700)"/>
-        <polygon points="0,-110 76,-66 76,44 0,88 -76,44 -76,-66" fill="var(--c-terracotta-500)"/>
-        <polyline class="face-edge"
-          points="0,0 -76,44 0,88 76,44 0,0" stroke="white" stroke-opacity="0.32"/>
-        <polyline class="face-edge"
-          points="0,88 0,198" stroke="white" stroke-opacity="0.32"/>
-        <text x="0" y="-32" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="18" font-weight="700"
-              fill="white" letter-spacing="-0.3">Documents</text>
-        <text x="0" y="-12" text-anchor="middle"
-              font-family="ui-monospace, monospace" font-size="9.5"
-              letter-spacing="1.8" fill="white" opacity="0.85">FILES · WOO</text>
-      </g>
-
-      <!-- ─── PROCESS (lavender, bottom-right) ─── -->
-      <g class="node" data-id="process" transform="translate(830, 520)">
-        <polygon points="0,0 -76,44 -76,154 0,198" fill="var(--c-lavender-300)"/>
-        <polygon points="0,0 76,44 76,154 0,198" fill="var(--c-lavender-700)"/>
-        <polygon points="0,-110 76,-66 76,44 0,88 -76,44 -76,-66" fill="var(--c-lavender-500)"/>
-        <polyline class="face-edge"
-          points="0,0 -76,44 0,88 76,44 0,0" stroke="white" stroke-opacity="0.32"/>
-        <polyline class="face-edge"
-          points="0,88 0,198" stroke="white" stroke-opacity="0.32"/>
-        <text x="0" y="-32" text-anchor="middle"
-              font-family="Figtree, sans-serif" font-size="18" font-weight="700"
-              fill="white" letter-spacing="-0.3">Process</text>
-        <text x="0" y="-12" text-anchor="middle"
-              font-family="ui-monospace, monospace" font-size="9.5"
-              letter-spacing="1.8" fill="white" opacity="0.85">CASES · WORKFLOW</text>
-      </g>
-
-      <!-- =====================================================
-           APP PILLS — float OFF each component prism, with a
-           short connector line. Pattern from the Honeycomb
-           Intelligence reference. Each pill is icon + label.
-           ===================================================== -->
-
-      <!-- ─── DATA pills (top-left → fan to upper-left) ─── -->
-      <g class="pill" data-cluster="data">
-        <path class="pill-line" d="M 290 220 C 240 200, 210 190, 175 175"/>
-        <circle class="pill-anchor" cx="290" cy="220" r="2.5"/>
-        <rect x="50" y="158" width="138" height="32" rx="16"/>
-        <g transform="translate(60, 168)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M3 9h8 M3 12h6"/>
-        </g>
-        <text x="84" y="178">OpenCatalogi</text>
-      </g>
-      <g class="pill" data-cluster="data">
-        <path class="pill-line" d="M 296 256 C 250 256, 220 260, 190 264"/>
-        <circle class="pill-anchor" cx="296" cy="256" r="2.5"/>
-        <rect x="50" y="246" width="138" height="32" rx="16"/>
-        <g transform="translate(60, 256)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M3 4h8v6H3z M3 8h8"/>
-        </g>
-        <text x="84" y="266">OpenRegister</text>
-      </g>
-
-      <!-- ─── INTEGRATE pills (top-right → fan to upper-right) ─── -->
-      <g class="pill" data-cluster="integrate">
-        <path class="pill-line" d="M 910 220 C 960 200, 990 190, 1025 175"/>
-        <circle class="pill-anchor" cx="910" cy="220" r="2.5"/>
-        <rect x="1012" y="158" width="138" height="32" rx="16"/>
-        <g transform="translate(1022, 168)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M3 7h8 M5 4l-2 3 2 3 M9 4l2 3 -2 3"/>
-        </g>
-        <text x="1046" y="178">OpenConnector</text>
-      </g>
-      <g class="pill" data-cluster="integrate">
-        <path class="pill-line" d="M 904 256 C 950 256, 980 260, 1010 264"/>
-        <circle class="pill-anchor" cx="904" cy="256" r="2.5"/>
-        <rect x="1012" y="246" width="148" height="32" rx="16"/>
-        <g transform="translate(1022, 256)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M4 7a3 3 0 0 1 6 0 M5 9l-2 2 2 2 M9 9l2 2 -2 2"/>
-        </g>
-        <text x="1046" y="266">OpenIntegrator</text>
-      </g>
-
-      <!-- ─── DOCUMENTS pills (bottom-left → fan to lower-left) ─── -->
-      <g class="pill" data-cluster="docs">
-        <path class="pill-line" d="M 296 504 C 240 510, 210 520, 175 535"/>
-        <circle class="pill-anchor" cx="296" cy="504" r="2.5"/>
-        <rect x="50" y="520" width="138" height="32" rx="16"/>
-        <g transform="translate(60, 530)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M4 3h6v8H4z M4 6h6"/>
-        </g>
-        <text x="84" y="540">DocuDesk</text>
-      </g>
-      <g class="pill" data-cluster="docs">
-        <path class="pill-line" d="M 290 540 C 240 564, 210 584, 175 600"/>
-        <circle class="pill-anchor" cx="290" cy="540" r="2.5"/>
-        <rect x="50" y="608" width="138" height="32" rx="16"/>
-        <g transform="translate(60, 618)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M3 11l3-6 4 8 4-4"/>
-        </g>
-        <text x="84" y="628">OpenWOO</text>
-      </g>
-
-      <!-- ─── PROCESS pills (bottom-right → fan to lower-right) ─── -->
-      <g class="pill" data-cluster="process">
-        <path class="pill-line" d="M 910 504 C 960 510, 990 520, 1025 535"/>
-        <circle class="pill-anchor" cx="910" cy="504" r="2.5"/>
-        <rect x="1012" y="520" width="138" height="32" rx="16"/>
-        <g transform="translate(1022, 530)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M3 7l3 3 5-5"/>
-        </g>
-        <text x="1046" y="540">Larping</text>
-      </g>
-      <g class="pill" data-cluster="process">
-        <path class="pill-line" d="M 904 540 C 960 564, 990 584, 1025 600"/>
-        <circle class="pill-anchor" cx="904" cy="540" r="2.5"/>
-        <rect x="1012" y="608" width="138" height="32" rx="16"/>
-        <g transform="translate(1022, 618)">
-          <rect class="ic-square" x="0" y="0" width="14" height="14" rx="3"/>
-          <path class="ic" d="M4 4h6v6H4z M7 7l3 3"/>
-        </g>
-        <text x="1046" y="628">OpenZaak</text>
-      </g>
-
-    </svg>
-  </div>
-
-  <!-- ===================== CTA bar ===================== -->
-  <div class="cta-bar">
-    <a href="#" class="btn btn-primary">Install from Nextcloud app store</a>
-    <a href="#" class="btn btn-secondary">Try the demo →</a>
-    <span class="cta-note">2-minute install · admin required</span>
-  </div>
-
-  <!-- ===================== Legend ===================== -->
-  <div class="legend">
-    <span class="legend-item"><span class="legend-dot" style="background: var(--c-kernelblue-500)"></span><b>Nextcloud</b> · the kernel</span>
-    <span class="legend-item"><span class="legend-dot" style="background: var(--c-forest-500)"></span><b>Data</b> · OpenCatalogi · OpenRegister</span>
-    <span class="legend-item"><span class="legend-dot" style="background: var(--c-mint-500)"></span><b>Integrate</b> · OpenConnector · OpenIntegrator</span>
-    <span class="legend-item"><span class="legend-dot" style="background: var(--c-terracotta-500)"></span><b>Documents</b> · DocuDesk · OpenWOO</span>
-    <span class="legend-item"><span class="legend-dot" style="background: var(--c-lavender-500)"></span><b>Process</b> · Larping · OpenZaak</span>
-  </div>
-
+  <h1>Five components. Twenty-four apps. One <span class="nx">Nextcloud</span> kernel.</h1>
+  <p class="subhead">Every Conduction app slots into one of five component-cards. All of them run on the Nextcloud platform — files, mail, calendar, identity — that your team already trusts.</p>
 </section>
+
+<section class="diagram">
+  <svg class="connectors" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+    <!-- top-left → kernel, top-right → kernel, bottom-left → kernel, bottom-right → kernel -->
+    <line x1="280" y1="120" x2="600" y2="280"></line>
+    <line x1="920" y1="120" x2="600" y2="280"></line>
+    <line x1="280" y1="380" x2="600" y2="320"></line>
+    <line x1="920" y1="380" x2="600" y2="320"></line>
+    <!-- kernel → app-builder (vertical) -->
+    <line x1="600" y1="440" x2="600" y2="540"></line>
+  </svg>
+
+  <div class="diagram-grid">
+
+    <!-- Technical Core (top-left) -->
+    <div class="box tech-core fam-core">
+      <div class="eyebrow"><span class="dot"></span>Technical Core</div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+        <span class="name">OpenRegister</span><span class="meta">Data</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span>
+        <span class="name">OpenConnector</span><span class="meta">Integrate</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+        <span class="name">DocuDesk</span><span class="meta">Docs</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span>
+        <span class="name">NLDesign Theme</span><span class="meta">Theme</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+        <span class="name">MyDash</span><span class="meta">Dash</span>
+      </div>
+    </div>
+
+    <!-- AI (top-right) -->
+    <div class="box ai fam-ai">
+      <div class="eyebrow"><span class="dot"></span>AI</div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/><path d="M21 4v5h-5"/></svg></span>
+        <span class="name">Automation</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg></span>
+        <span class="name">Agents</span>
+      </div>
+      <div class="row">
+        <span class="glyph"><svg viewBox="0 0 24 24"><path d="M9.5 2A4.5 4.5 0 0 0 5 6.5v.5a4 4 0 0 0-2 7v3a4 4 0 0 0 4 4h.5"/><path d="M14.5 2A4.5 4.5 0 0 1 19 6.5v.5a4 4 0 0 1 2 7v3a4 4 0 0 1-4 4h-.5"/><path d="M9.5 2v20M14.5 2v20"/></svg></span>
+        <span class="name">Intelligence</span>
+      </div>
+    </div>
+
+    <!-- Nextcloud kernel (centre) -->
+    <div class="kernel">
+      <div class="name">Nextcloud</div>
+      <div class="role">Platform · Kernel</div>
+      <div class="pills">
+        <span>Files</span><span>Mail</span><span>Cal</span><span>Talk</span><span>Office</span><span>SSO</span>
+      </div>
+    </div>
+
+    <!-- Workplace Apps (bottom-left) -->
+    <div class="box workplace fam-workplace">
+      <div class="eyebrow"><span class="dot"></span>Workplace Apps</div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span><span class="name">OpenCatalogi</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span class="name">PipelinQ</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="name">Procest</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span><span class="name">ZaakAfhandelApp</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><span class="name">DeciDesk</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="name">ShillinQ</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg></span><span class="name">LarpingApp</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="name">OpenWoo</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span><span class="name">SoftwareCatalog</span></div>
+    </div>
+
+    <!-- Integrated Apps (bottom-right) -->
+    <div class="box integrated fam-integrate">
+      <div class="eyebrow"><span class="dot"></span>Integrated Apps</div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7zM14 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></span><span class="name">OpenTalk</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></span><span class="name">Matrix</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></span><span class="name">n8n</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="name">OpenProject</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19h16M4 19l4-3 4 3 4-3 4 3"/></svg></span><span class="name">XWiki</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2L2 8l10 14 10-14z"/></svg></span><span class="name">GitLab</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="name">Mattermost</span></div>
+    </div>
+
+    <!-- App Builder (full-width, muted, coming soon) -->
+    <div class="box app-builder fam-builder">
+      <div class="eyebrow"><span class="dot"></span>App Builder<span class="badge">COMING SOON</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></span><span class="name">Build your own apps</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span><span class="name">Customise ConNext apps</span></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><span class="name">No code — just configure</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="cta-row">
+  <a href="#" class="btn btn-primary">Install from Nextcloud app store</a>
+  <a href="#" class="btn btn-secondary">Try the demo →</a>
+  <span class="cta-meta">2-minute install · admin required</span>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="dot" style="background: var(--c-nextcloud-blue);"></span><strong>Nextcloud</strong><span>· the kernel</span></span>
+  <span class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span><strong>Technical Core</strong><span>· OpenRegister, OpenConnector, DocuDesk, NLDesign, MyDash</span></span>
+  <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-700);"></span><strong>Workplace Apps</strong><span>· 9 apps</span></span>
+  <span class="legend-item"><span class="dot" style="background: #2E9866;"></span><strong>AI</strong><span>· Automation, Agents, Intelligence</span></span>
+  <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-400);"></span><strong>Integrated</strong><span>· OpenTalk, Matrix, n8n, OpenProject, XWiki, GitLab, Mattermost</span></span>
+  <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-300);"></span><strong>App Builder</strong><span>· coming soon</span></span>
+</div>
 
 </body>
 </html>
-</content>
-<parameter name="asset">Platform overview hero

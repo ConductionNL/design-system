@@ -7,20 +7,16 @@
 <link rel="stylesheet" href="../../tokens.css">
 <style>
 /* ============================================================
-   Platform overview — kernel + five component-cards
+   Platform overview — kernel + five component-hexes + lists
    ----------------------------------------------------------------
-   Architecture (canonical per app-architecture.md, 2026-04-28):
-     · ONE Nextcloud kernel hex (centre, large, Nextcloud-blue gradient)
-     · FIVE component list-boxes around the kernel:
-         - Technical Core
-         - Workplace Apps
-         - AI
-         - Integrated Apps
-         - App Builder (coming soon, muted)
-     · Each list-box: eyebrow label + bordered card + list of apps,
-       each app row is a small hex glyph + app name.
-     · Dashed connectors from each list-box to the kernel.
-     · Pointy-top hexes only (per system rules). No 3D prisms.
+   Three-layer composition:
+     1. Nextcloud kernel hex (centre, large, gradient).
+     2. Five component HEXES with title — one per component-card,
+        positioned to slightly overlap the kernel.
+     3. Five list-boxes (one per component) — each slightly
+        overlapping its component hex.
+   Hovering an app row rolls out a one-line description.
+   Pointy-top hexes only.
    ============================================================ */
 
 body { margin: 0; background: white; color: var(--c-cobalt-700); }
@@ -76,32 +72,18 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 48px 56px 16px;
+  padding: 56px 56px 24px;
+  overflow: visible;
 }
 .diagram-grid {
   display: grid;
   grid-template-columns: 1fr 280px 1fr;
   grid-template-rows: auto auto;
-  column-gap: 96px;
-  row-gap: 40px;
+  column-gap: 32px;
+  row-gap: 56px;
   align-items: start;
   position: relative;
   z-index: 1;
-}
-
-/* Connector SVG layer sits behind the cards */
-.connectors {
-  position: absolute;
-  inset: 48px 56px 16px;
-  width: calc(100% - 112px);
-  height: calc(100% - 64px);
-  z-index: 0;
-  pointer-events: none;
-}
-.connectors line {
-  stroke: var(--c-cobalt-200);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 6;
 }
 
 /* Kernel — single flat pointy-top hex, Nextcloud blue */
@@ -119,6 +101,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   color: white;
   text-align: center;
   padding: 0 24px;
+  position: relative;
+  z-index: 2;
 }
 .kernel .name {
   font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
@@ -141,28 +125,23 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   white-space: nowrap;
 }
 
-/* List-box — small bordered card with eyebrow + app list */
+/* List-box — bordered card with rows of apps */
 .box {
   background: white;
   border: 1px solid var(--c-cobalt-200);
   border-radius: var(--radius-md);
-  padding: 16px 18px;
+  padding: 18px 20px;
   box-shadow: var(--shadow-1);
-}
-.box .eyebrow {
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--c-cobalt-400);
-  margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.box .eyebrow .dot {
-  width: 8px; height: 9px; clip-path: var(--hex-pointy-top);
+  position: relative;
+  z-index: 4;     /* list-box sits ABOVE its component hex */
 }
 .box .row {
   display: flex; align-items: center; gap: 10px;
   padding: 6px 0;
   font-size: 13px; color: var(--c-cobalt-700);
+  cursor: default;
+  flex-wrap: wrap;
+  position: relative;
 }
 .box .row + .row { border-top: 1px solid var(--c-cobalt-50); }
 .box .row .glyph {
@@ -177,7 +156,7 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   stroke-width: 2; stroke: currentColor; fill: none;
   stroke-linecap: round; stroke-linejoin: round;
 }
-.box .row .name { font-weight: 500; }
+.box .row .name { font-weight: 500; transition: color 140ms ease; }
 .box .row .meta {
   margin-left: auto;
   font-family: var(--conduction-typography-font-family-code);
@@ -185,12 +164,47 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   letter-spacing: 0.06em; text-transform: uppercase;
 }
 
-/* Component family tints (using existing tokens / pastels from system) */
-.fam-core      .eyebrow .dot, .fam-core      .row .glyph { background: var(--c-blue-cobalt); }
-.fam-workplace .eyebrow .dot, .fam-workplace .row .glyph { background: var(--c-cobalt-700); }
-.fam-ai        .eyebrow .dot, .fam-ai        .row .glyph { background: #2E9866; /* mint-500 */ }
-.fam-integrate .eyebrow .dot, .fam-integrate .row .glyph { background: var(--c-cobalt-400); }
-.fam-builder   .eyebrow .dot, .fam-builder   .row .glyph { background: var(--c-cobalt-300); }
+/* App description — rolls out on hover */
+.box .row .desc {
+  flex-basis: 100%;
+  max-height: 0;
+  overflow: hidden;
+  padding-left: 28px;
+  color: var(--c-cobalt-400);
+  font-size: 12px;
+  line-height: 1.5;
+  transition: max-height 220ms ease, padding 220ms ease;
+}
+.box .row:hover .desc {
+  max-height: 80px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+}
+.box .row:hover .name { color: var(--c-blue-cobalt); }
+
+/* ---- Component hex (the "title tag") ---- */
+.box-hex {
+  position: absolute;
+  width: 78px; height: 90px;
+  clip-path: var(--hex-pointy-top);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: white;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  line-height: 1.15;
+  padding: 0 8px;
+  z-index: 3;     /* hex sits BELOW the list-box */
+  /* Slight shadow so the hex reads as a separate layer */
+  filter: drop-shadow(0 2px 4px rgba(33, 70, 139, 0.2));
+}
+
+/* Component family tints */
+.fam-core      .box-hex, .fam-core      .row .glyph { background: var(--c-blue-cobalt); }
+.fam-workplace .box-hex, .fam-workplace .row .glyph { background: var(--c-cobalt-700); }
+.fam-ai        .box-hex, .fam-ai        .row .glyph { background: #2E9866; }
+.fam-integrate .box-hex, .fam-integrate .row .glyph { background: var(--c-cobalt-400); }
+.fam-builder   .box-hex, .fam-builder   .row .glyph { background: var(--c-cobalt-300); }
 
 /* Grid placement of boxes around the kernel */
 .box.tech-core  { grid-column: 1; grid-row: 1; justify-self: end; min-width: 240px; max-width: 280px; }
@@ -198,26 +212,43 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box.workplace  { grid-column: 1; grid-row: 2; justify-self: end; min-width: 240px; max-width: 280px; }
 .box.integrated { grid-column: 3; grid-row: 2; justify-self: start; min-width: 220px; max-width: 260px; }
 
+/* Per-box hex placement — protrudes toward the kernel */
+.box.tech-core  .box-hex { right: -68px; top: 50%; transform: translateY(-50%); }
+.box.workplace  .box-hex { right: -68px; top: 50%; transform: translateY(-50%); }
+.box.ai         .box-hex { left:  -68px; top: 50%; transform: translateY(-50%); }
+.box.integrated .box-hex { left:  -68px; top: 50%; transform: translateY(-50%); }
+
 /* App Builder spans full row, muted treatment */
 .box.app-builder {
   grid-column: 1 / span 3;
   grid-row: 3;
   max-width: 540px;
-  margin: 8px auto 0;
+  margin: 24px auto 0;
   border-style: dashed;
   background: var(--c-cobalt-50);
-  opacity: 0.85;
+  opacity: 0.92;
+  padding-top: 28px;
 }
-.box.app-builder .eyebrow .badge {
-  margin-left: auto;
-  background: var(--c-orange-knvb);
-  color: white;
-  font-size: 9px;
-  padding: 2px 7px;
-  border-radius: var(--radius-pill);
-  letter-spacing: 0.08em;
+.box.app-builder .box-hex {
+  left: 50%; top: -45px; transform: translateX(-50%);
+  filter: drop-shadow(0 -2px 4px rgba(33, 70, 139, 0.15));
 }
 .box.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }
+.box.app-builder .row .desc { font-style: normal; }
+.box.app-builder .row:hover .name { color: var(--c-cobalt-700); }
+.box.app-builder .badge {
+  position: absolute;
+  top: -8px; right: 16px;
+  background: var(--c-orange-knvb);
+  color: white;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.08em;
+  z-index: 5;
+}
 
 /* ---- CTA cluster ---- */
 .cta-row {
@@ -273,61 +304,59 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 <section class="hero">
   <div class="product-label"><span class="h"></span>The platform overview</div>
   <h1>Five components. Twenty-four apps. One <span class="nx">Nextcloud</span> kernel.</h1>
-  <p class="subhead">Every Conduction app slots into one of five component-cards. All of them run on the Nextcloud platform — files, mail, calendar, identity — that your team already trusts.</p>
+  <p class="subhead">Every Conduction app slots into one of five component-cards. All of them run on the Nextcloud platform — files, mail, calendar, identity — that your team already trusts. Hover any app to see what it does.</p>
 </section>
 
 <section class="diagram">
-  <svg class="connectors" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
-    <!-- top-left → kernel, top-right → kernel, bottom-left → kernel, bottom-right → kernel -->
-    <line x1="280" y1="120" x2="600" y2="280"></line>
-    <line x1="920" y1="120" x2="600" y2="280"></line>
-    <line x1="280" y1="380" x2="600" y2="320"></line>
-    <line x1="920" y1="380" x2="600" y2="320"></line>
-    <!-- kernel → app-builder (vertical) -->
-    <line x1="600" y1="440" x2="600" y2="540"></line>
-  </svg>
-
   <div class="diagram-grid">
 
     <!-- Technical Core (top-left) -->
     <div class="box tech-core fam-core">
-      <div class="eyebrow"><span class="dot"></span>Technical Core</div>
+      <div class="box-hex">Technical<br>Core</div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
         <span class="name">OpenRegister</span><span class="meta">Data</span>
+        <div class="desc">Schema-driven object store with audit trail. The data foundation underneath every workplace app.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span>
         <span class="name">OpenConnector</span><span class="meta">Integrate</span>
+        <div class="desc">API gateway for everything outside Nextcloud — REST, SOAP, GraphQL, webhooks. Maps and transforms between systems.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
         <span class="name">DocuDesk</span><span class="meta">Docs</span>
+        <div class="desc">Generate, anonymise, sign, and template documents. The documents-and-forms layer.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span>
         <span class="name">NLDesign Theme</span><span class="meta">Theme</span>
+        <div class="desc">NL Design System tokens applied across every Conduction app. Government-compliant theming, drop-in.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
         <span class="name">MyDash</span><span class="meta">Dash</span>
+        <div class="desc">Dashboard builder with role-based access. Workflow automation across registers.</div>
       </div>
     </div>
 
     <!-- AI (top-right) -->
     <div class="box ai fam-ai">
-      <div class="eyebrow"><span class="dot"></span>AI</div>
+      <div class="box-hex">AI</div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/><path d="M21 4v5h-5"/></svg></span>
         <span class="name">Automation</span>
+        <div class="desc">Trigger flows from any data event. Schedule jobs, fire webhooks, run scripts.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg></span>
         <span class="name">Agents</span>
+        <div class="desc">Conversational agents grounded in your registers. No vendor lock-in on the LLM.</div>
       </div>
       <div class="row">
         <span class="glyph"><svg viewBox="0 0 24 24"><path d="M9.5 2A4.5 4.5 0 0 0 5 6.5v.5a4 4 0 0 0-2 7v3a4 4 0 0 0 4 4h.5"/><path d="M14.5 2A4.5 4.5 0 0 1 19 6.5v.5a4 4 0 0 1 2 7v3a4 4 0 0 1-4 4h-.5"/><path d="M9.5 2v20M14.5 2v20"/></svg></span>
         <span class="name">Intelligence</span>
+        <div class="desc">Cross-register insights and anomaly detection. Privacy-first, on-prem option.</div>
       </div>
     </div>
 
@@ -342,36 +371,37 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
     <!-- Workplace Apps (bottom-left) -->
     <div class="box workplace fam-workplace">
-      <div class="eyebrow"><span class="dot"></span>Workplace Apps</div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span><span class="name">OpenCatalogi</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span class="name">PipelinQ</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="name">Procest</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span><span class="name">ZaakAfhandelApp</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><span class="name">DeciDesk</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="name">ShillinQ</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg></span><span class="name">LarpingApp</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="name">OpenWoo</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span><span class="name">SoftwareCatalog</span></div>
+      <div class="box-hex">Workplace<br>Apps</div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span><span class="name">OpenCatalogi</span><div class="desc">Federated data catalogue. Datasets, APIs, software inventory, WOO-publication ready.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span class="name">PipelinQ</span><div class="desc">CRM with quotes, contacts, and deal-flow. Built on OpenRegister.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="name">Procest</span><div class="desc">Case-management for VTH and citizen processes. Form-driven, BPMN-ready.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span><span class="name">ZaakAfhandelApp</span><div class="desc">Citizen-facing case-status portal. Connects directly to your municipal Zaaksysteem.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><span class="name">DeciDesk</span><div class="desc">Decision-support and board management. Voting, agendas, document trails.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="name">ShillinQ</span><div class="desc">ERP layer — bookkeeping, invoicing, expense tracking. Open-source alternative to Exact / AFAS.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg></span><span class="name">LarpingApp</span><div class="desc">Worldbuilding and campaign-management for live-action role-playing. Yes really.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="name">OpenWoo</span><div class="desc">WOO-compliant publication flow. Active disclosure, queryable archive.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span><span class="name">SoftwareCatalog</span><div class="desc">IT-asset management — software inventory, licenses, contracts, vendor registry.</div></div>
     </div>
 
     <!-- Integrated Apps (bottom-right) -->
     <div class="box integrated fam-integrate">
-      <div class="eyebrow"><span class="dot"></span>Integrated Apps</div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7zM14 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></span><span class="name">OpenTalk</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></span><span class="name">Matrix</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></span><span class="name">n8n</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="name">OpenProject</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19h16M4 19l4-3 4 3 4-3 4 3"/></svg></span><span class="name">XWiki</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2L2 8l10 14 10-14z"/></svg></span><span class="name">GitLab</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="name">Mattermost</span></div>
+      <div class="box-hex">Integrated<br>Apps</div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7zM14 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></span><span class="name">OpenTalk</span><div class="desc">Open-source video conferencing. Drop-in replacement for Zoom and Teams.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></span><span class="name">Matrix</span><div class="desc">Federated chat protocol. End-to-end encrypted, decentralised.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></span><span class="name">n8n</span><div class="desc">Workflow automation, no-code flows. The Zapier of self-hosting.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="name">OpenProject</span><div class="desc">Project management — Gantt charts, agile boards, time tracking.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19h16M4 19l4-3 4 3 4-3 4 3"/></svg></span><span class="name">XWiki</span><div class="desc">Wiki and structured documentation. Macros, templates, federation.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2L2 8l10 14 10-14z"/></svg></span><span class="name">GitLab</span><div class="desc">Git hosting, CI/CD, issue tracking. Self-hosted DevOps.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="name">Mattermost</span><div class="desc">Self-hosted Slack alternative for teams that need their messaging on-prem.</div></div>
     </div>
 
     <!-- App Builder (full-width, muted, coming soon) -->
     <div class="box app-builder fam-builder">
-      <div class="eyebrow"><span class="dot"></span>App Builder<span class="badge">COMING SOON</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></span><span class="name">Build your own apps</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span><span class="name">Customise ConNext apps</span></div>
-      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><span class="name">No code — just configure</span></div>
+      <div class="box-hex">App<br>Builder</div>
+      <span class="badge">COMING SOON</span>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></span><span class="name">Build your own apps</span><div class="desc">Compose Nextcloud apps from the Technical Core. Visual schema designer, no boilerplate.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span><span class="name">Customise ConNext apps</span><div class="desc">Fork-free customisation of any ConNext app. Override on top of the upstream.</div></div>
+      <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><span class="name">No code — just configure</span><div class="desc">Configuration-only changes survive upgrades. No technical debt for end users.</div></div>
     </div>
 
   </div>

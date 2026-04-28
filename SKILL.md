@@ -6,7 +6,7 @@ This is the Conduction Design System (`theme-conduction-2026`). Use it for any n
 
 1. **Read [`README.md`](./README.md).** All the rules — voice, brand triad, visual proportion, hex motif system — live there. Don't shortcut this.
 2. **Browse [`preview/index.html`](./preview/index.html)** to see the system in context: type ramp, color, spacing, components, brand.
-3. **Look at [`ui_kits/website/`](./ui_kits/website/)** before you build a new page — there's already a hero, apps grid, and solution page you can lift from.
+3. **Look at [`preview/components/`](./preview/components/) and [`preview/pages/`](./preview/pages/)** before you build something new — there's already a hero, platform overview, apps grid, pipeline-flow, stats strip, apps catalogue, and solution page you can lift from. Their gallery views live at [`preview/components.html`](./preview/components.html) and [`preview/pages.html`](./preview/pages.html).
 
 ## How to use the tokens
 

@@ -46,8 +46,9 @@ Three brands are visible across these surfaces, each with a defined role:
 | [`tokens.css`](./tokens.css) | All design tokens (color, type, spacing, radii, shadows, hex clip-paths) as CSS custom properties. Drop-in. |
 | [`brand/tokens.json`](./brand/tokens.json) | Same tokens in W3C DTCG format — for Style Dictionary, Tokens Studio, Figma plugins. |
 | [`brand/assets/`](./brand/assets) | Conduction hexagon avatar (3 variants: cobalt-on-white, white-on-cobalt, transparent). |
-| [`preview/`](./preview) | Visual cards showing every token in context — type ramp, color, spacing, components, brand. **Start here.** |
-| [`ui_kits/website/`](./ui_kits/website) | ConNext website UI kit — buttons, app cards, hex grid, hero patterns, navigation. |
+| [`preview/`](./preview) | Visual cards showing every token in context — type ramp, color, spacing, components, brand. **Start here:** [`preview/index.html`](./preview/index.html). |
+| [`preview/components/`](./preview/components) | Section-level building blocks (hero, platform overview, apps grid, pipeline flow, stats strip). Gallery: [`preview/components.html`](./preview/components.html). |
+| [`preview/pages/`](./preview/pages) | Full-page layouts composed from components (apps catalogue, solution page). Gallery: [`preview/pages.html`](./preview/pages.html). |
 
 ---
 
@@ -194,16 +195,42 @@ conduction-design-system/
 │  ├─ type.html                       ← Figtree + IBM Plex Mono ramp
 │  ├─ colors.html                     ← palette swatches with usage rules
 │  ├─ spacing.html                    ← spacing scale, radii, shadows, hex shapes
-│  ├─ components.html                 ← buttons, badges, app cards, hex pagination
-│  └─ brand.html                      ← logos, ConNext wordmark, brand citation
-├─ ui_kits/
-│  └─ website/                        ← ConNext website UI kit
-│     ├─ index.html                       ← live overview of all website frames
-│     ├─ hero.html                        ← hero w/ hex-prism ecosystem cluster
-│     ├─ apps-grid.html                   ← filterable apps catalogue
+│  ├─ components.html                 ← buttons, badges, app cards, hex pagination + page-level components
+│  ├─ brand.html                      ← logos, ConNext wordmark, brand citation
+│  ├─ pages.html                      ← gallery of full-page layouts
+│  ├─ components/                     ← page-level component HTML files
+│  │  ├─ hero.html                        ← hero w/ hex-prism ecosystem cluster
+│  │  ├─ platform-overview.html           ← platform-as-honeycomb visual
+│  │  ├─ apps-grid.html                   ← filterable apps grid
+│  │  ├─ pipeline-flow.html               ← horizontal hex-prism pipeline
+│  │  └─ stats-strip.html                 ← four-up headline numbers band
+│  └─ pages/                          ← full-page HTML layouts
+│     ├─ apps-catalog.html                ← filterable apps catalogue page
 │     └─ solution-page.html               ← long-form solution writeup w/ sticky aside
 └─ SKILL.md                           ← how to invoke this design system
 ```
+
+---
+
+## Local development
+
+The site is plain static HTML — no build step, no runtime. To work on it locally with the same paths as production (`https://designsystem.conduction.nl/` redirects to `preview/`), serve the folder over a local HTTP server. Don't open files via `file://` — the root redirect and a couple of relative paths only behave correctly under HTTP.
+
+**Recommended — VS Code Live Server.** Install the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) (Ritwick Dey), then right-click [`index.html`](./index.html) → **"Open with Live Server"** (or click **"Go Live"** in the status bar). The browser opens at `http://127.0.0.1:5500/` and auto-reloads on every save.
+
+**One-line alternatives if you don't use VS Code:**
+
+```bash
+python3 -m http.server 8000     # zero install on most Linux/macOS
+npx serve -l 8000               # if you have Node
+php -S localhost:8000           # if you have PHP
+```
+
+Then open `http://localhost:8000/`. Live reload only with VS Code's extension or `npx live-server`.
+
+**Notes:**
+- Google Fonts (Figtree + IBM Plex Mono) are CDN-loaded by [`tokens.css`](./tokens.css). Offline they fall back to system fonts.
+- The site is published from `main` via GitHub Pages — push to `main` and changes go live within ~30 seconds.
 
 ---
 

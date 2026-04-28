@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Partner cards — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body {
+    margin: 0;
+    background: var(--c-cobalt-50);
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-700);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.4fr;
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+
+  /* Shared partner-card chrome */
+  .partner-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 160ms ease;
+    position: relative;
+  }
+  .partner-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+
+  .pc-tier {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+  }
+
+  .pc-avatar {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  .pc-name {
+    font-size: 22px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .pc-role {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--c-cobalt-400);
+    margin-top: 2px;
+  }
+
+  .pc-desc {
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    line-height: 1.55;
+  }
+
+  .pc-foot {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--c-cobalt-50);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px;
+  }
+  .pc-foot a {
+    color: var(--c-blue-cobalt);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 140ms ease;
+  }
+  .pc-foot a:hover { color: var(--c-orange-knvb); }
+  .pc-foot .meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    letter-spacing: 0.05em;
+  }
+
+  /* Tier-specific colour treatments */
+  .partner-card.tier-partner .pc-tier {
+    background: var(--c-cobalt-50);
+    color: var(--c-blue-cobalt);
+  }
+
+  .partner-card.tier-certified {
+    border: 1.5px solid #C9A227;
+    background: linear-gradient(180deg, #FFFCF2 0%, white 60%);
+  }
+  .partner-card.tier-certified .pc-tier {
+    background: linear-gradient(135deg, #E5C447 0%, #C9A227 50%, #8B6914 100%);
+    color: white;
+  }
+  .partner-card.tier-certified .pc-avatar {
+    background: linear-gradient(135deg, #E5C447 0%, #C9A227 45%, #8B6914 100%);
+  }
+
+  .partner-card.tier-strategic {
+    background: var(--c-blue-cobalt);
+    color: rgba(255,255,255,0.85);
+    border-color: var(--c-blue-cobalt);
+  }
+  .partner-card.tier-strategic .pc-tier {
+    background: var(--c-orange-knvb);
+    color: white;
+  }
+  .partner-card.tier-strategic .pc-name { color: white; }
+  .partner-card.tier-strategic .pc-role { color: rgba(255,255,255,0.6); }
+  .partner-card.tier-strategic .pc-desc { color: rgba(255,255,255,0.75); }
+  .partner-card.tier-strategic .pc-foot { border-top-color: rgba(255,255,255,0.12); }
+  .partner-card.tier-strategic .pc-foot a { color: white; }
+  .partner-card.tier-strategic .pc-foot a:hover { color: var(--c-orange-knvb); }
+  .partner-card.tier-strategic .pc-foot .meta { color: rgba(255,255,255,0.5); }
+  .partner-card.tier-strategic .pc-avatar.dual {
+    width: 84px;
+  }
+  .partner-card.tier-strategic .pc-avatar-dual {
+    display: flex; gap: -10px; align-items: center;
+  }
+  .partner-card.tier-strategic .pc-avatar-dual .h {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 18px;
+  }
+  .partner-card.tier-strategic .pc-avatar-dual .h:nth-child(1) {
+    background: white; color: var(--c-blue-cobalt);
+  }
+  .partner-card.tier-strategic .pc-avatar-dual .h:nth-child(2) {
+    background: var(--c-orange-knvb);
+    margin-left: -16px;
+    z-index: -1;
+  }
+
+  /* Apps-used pill row on strategic */
+  .pc-apps {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 4px;
+  }
+  .pc-apps .pill {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+  }
+</style>
+</head>
+<body>
+
+<div class="grid">
+
+  <!-- Standard Partner -->
+  <a class="partner-card tier-partner" href="#">
+    <span class="pc-tier">Partner</span>
+    <div class="pc-avatar" style="background: var(--c-blue-cobalt);">A</div>
+    <div>
+      <div class="pc-name">Acme Hosting</div>
+      <div class="pc-role">Managed Nextcloud · Utrecht</div>
+    </div>
+    <div class="pc-desc">Hosts Conduction apps for 40+ municipalities across the Netherlands. Specialises in BIO-compliant managed Nextcloud.</div>
+    <div class="pc-foot">
+      <a href="#">acmehosting.nl →</a>
+      <span class="meta">Since 2022</span>
+    </div>
+  </a>
+
+  <!-- Certified Partner (gold) -->
+  <a class="partner-card tier-certified" href="#">
+    <span class="pc-tier">Certified</span>
+    <div class="pc-avatar">B</div>
+    <div>
+      <div class="pc-name">Belmont IT</div>
+      <div class="pc-role">Implementation · Eindhoven</div>
+    </div>
+    <div class="pc-desc">Conduction-certified implementation partner. Trained on the Technical Core, OpenRegister specialist, multilingual support team.</div>
+    <div class="pc-foot">
+      <a href="#">belmont-it.com →</a>
+      <span class="meta">Certified · 2026</span>
+    </div>
+  </a>
+
+  <!-- Strategic Partner -->
+  <a class="partner-card tier-strategic" href="#">
+    <span class="pc-tier">Strategic</span>
+    <div class="pc-avatar-dual">
+      <span class="h">C</span>
+      <span class="h">N</span>
+    </div>
+    <div>
+      <div class="pc-name">Civic Networks</div>
+      <div class="pc-role">Co-development · Den Haag · Brussels</div>
+    </div>
+    <div class="pc-desc">Strategic co-development partner. Civic Networks contributes upstream to OpenRegister and OpenConnector and runs joint procurement frameworks for ~120 government customers across NL and BE.</div>
+    <div class="pc-apps">
+      <span class="pill">OpenRegister</span><span class="pill">OpenConnector</span><span class="pill">DocuDesk</span>
+    </div>
+    <div class="pc-foot">
+      <a href="#">civic-networks.eu →</a>
+      <span class="meta">Strategic · since 2024</span>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>

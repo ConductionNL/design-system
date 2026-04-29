@@ -279,14 +279,22 @@
     }
 
     _updateProgress() {
-      const rect = this.getBoundingClientRect();
+      /* Anchor on the kernel hex's centre — that's the user's "the diagram
+         is here" point. Anchoring on `this` is wrong because the host has
+         240px of top-padding before any visible content, so its rect.top
+         crosses the viewport long before the kernel appears. */
+      const target = this.querySelector('.kernel') || this;
+      const rect = target.getBoundingClientRect();
       const vh = window.innerHeight || document.documentElement.clientHeight;
+      const centre = rect.top + rect.height / 2;
 
-      /* Trigger window: progress runs 0 → 1 as the diagram's top edge moves
-         from the viewport bottom up to ~30% of the viewport height. */
+      /* Trigger window: progress runs 0 → 1 as the kernel centre moves from
+         the viewport bottom (vh) up to the viewport centre (vh * 0.5).
+         Beyond the centre, progress stays at 1; below the viewport, 0.
+         Scrolling back up reverses the mapping. */
       const start = vh;
-      const end   = vh * 0.3;
-      const p = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+      const end   = vh * 0.5;
+      const p = Math.max(0, Math.min(1, (start - centre) / (start - end)));
 
       /* Stage progress (each stage clamped 0..1).
            hex   covers 0.00 → 0.40 (move + fade in)

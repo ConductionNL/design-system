@@ -220,6 +220,49 @@
 }
 .gm-tile.found .gm-tile__score { color: var(--c-orange-knvb); }
 
+/* Hover hint — short location-flavoured pointer ("eat your cookies",
+   "sink the fleet at the bottom of any page") shown on tile hover. */
+.gm-tile { cursor: help; }
+.gm-tile__hint {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  width: max-content;
+  max-width: 200px;
+  background: var(--c-cobalt-900);
+  border: 1px solid var(--c-orange-knvb);
+  color: white;
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-family: var(--conduction-typography-font-family-base, 'Inter', system-ui, sans-serif);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(4px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.gm-tile__hint::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-top-color: var(--c-orange-knvb);
+}
+.gm-tile:hover .gm-tile__hint,
+.gm-tile:focus-within .gm-tile__hint {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .game-modal__cta {
   font-size: 13px;
   line-height: 1.45;

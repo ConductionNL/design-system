@@ -70,37 +70,38 @@
   const COOKIE_DAYS = 365;
 
   // Five game slots. The first three are wired today; the last two
-  // ship as locked teasers (clue copy chosen so a player who finds the
-  // others has a hint where to keep clicking).
+  // ship as locked teasers. `clue` is shown as a hover tooltip on the
+  // tile in the grid — keep it short, location-flavoured, and a little
+  // playful so the reader knows where to keep digging.
   const GAMES = [
     {
       id: 'boats',
       name: 'Canal armada',
-      clue: 'Click the boats drifting in the footer. Sink the battleship to win.',
+      clue: 'Sink the fleet at the bottom of any page.',
       icon: '<path d="M3 14h18M3 14l1 4a3 3 0 0 0 3 2h10a3 3 0 0 0 3-2l1-4M5 14V8h14v6M9 4h6v4H9z"/>',
     },
     {
       id: 'hexrain',
       name: 'Twelve apps',
-      clue: 'Catch every app icon as it falls — once each, no doubles.',
+      clue: 'Catch the apps as they fall on the front door.',
       icon: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 8l3 1.7v3.4L12 14.8l-3-1.7V9.7z"/>',
     },
     {
       id: 'invaders',
       name: 'Cookie invaders',
-      clue: "There's a terminal hiding in the cookie banner. Try `game.exe`.",
+      clue: 'Eat your cookies.',
       icon: '<rect x="5" y="6" width="14" height="10" rx="1"/><path d="M3 18h18M9 14v2M15 14v2M9 9h0M15 9h0"/>',
     },
     {
       id: 'mystery1',
       name: '???',
-      clue: 'Hidden somewhere on the site. Keep exploring.',
+      clue: 'Keep digging — we\'re not telling.',
       icon: null,
     },
     {
       id: 'mystery2',
       name: '???',
-      clue: 'Hidden somewhere on the site. Keep exploring.',
+      clue: 'Keep digging — we\'re not telling.',
       icon: null,
     },
   ];
@@ -166,7 +167,12 @@
       }
       tile.appendChild(score);
 
-      tile.title = found ? (g.clue) : g.clue;
+      // Custom hover hint — pointer to where the game is hiding.
+      const hint = document.createElement('span');
+      hint.className = 'gm-tile__hint';
+      hint.textContent = g.clue;
+      tile.appendChild(hint);
+
       grid.appendChild(tile);
     }
   }
@@ -187,7 +193,7 @@
       } else if (foundCount === 0) {
         cta.textContent = 'Five mini-games are hidden across this site. You just found one.';
       } else {
-        cta.innerHTML = '<strong>' + remaining + '</strong> more ' + (remaining === 1 ? 'game' : 'games') + ' hidden somewhere on the site. Keep clicking around.';
+        cta.innerHTML = '<strong>' + remaining + '</strong> more ' + (remaining === 1 ? 'game' : 'games') + ' hidden somewhere on the site. Keep digging around.';
       }
     }
     return foundCount;

@@ -49,6 +49,24 @@
   .canal-footer .h-e { width: 57px; height: 126px; }
   .canal-footer .house.flipped { transform: scaleX(-1); }
 
+  /* "House #14" — the Conduction office. Centre of the skyline, painted
+     in light cobalt blue with a small white house-number next to the door. */
+  .canal-footer .house-conduction .house path { fill: var(--c-blue-cobalt); }
+  .canal-footer .house-conduction::after {
+    content: '14';
+    position: absolute;
+    bottom: 8px;
+    left: calc(50% + 12px);
+    color: white;
+    font-family: var(--conduction-typography-font-family-base, 'Inter', system-ui, sans-serif);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    z-index: 2;
+    pointer-events: none;
+  }
+
   /* ---- Kade (gray quay) with bikes + cars drifting along it ---- */
   .canal-footer .kade {
     position: relative;
@@ -548,6 +566,9 @@
       skyline.appendChild(wrap);
       total += widths[pick];
     }
+    // Tag the middle house as the Conduction office (#14, cobalt blue).
+    const all = skyline.querySelectorAll('.house-wrap');
+    if (all.length) all[Math.floor(all.length / 2)].classList.add('house-conduction');
   }
 
   // ----- 2. Random per-item drift speeds -----

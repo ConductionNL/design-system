@@ -231,12 +231,17 @@
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('aria-hidden', 'true');
     for (const f of flows) {
-      const a = anchor(f.from);
-      const b = anchor(f.to);
-      if (!a || !b) continue;
       const path = document.createElementNS(NS, 'path');
       path.setAttribute('class', 'flow-line');
-      path.setAttribute('d', pathFor(f.shape, a, b, f.clearance));
+      if (f.path) {
+        // Custom raw path overrides shape-based routing.
+        path.setAttribute('d', f.path);
+      } else {
+        const a = anchor(f.from);
+        const b = anchor(f.to);
+        if (!a || !b) continue;
+        path.setAttribute('d', pathFor(f.shape, a, b, f.clearance));
+      }
       if (f.color) path.setAttribute('stroke', f.color);
       svg.appendChild(path);
     }
@@ -333,6 +338,11 @@
             shape:     child.getAttribute('shape') || 'l-h',
             color:     child.getAttribute('color') || '',
             clearance: Number.isFinite(cl) ? cl : 0,
+            // Raw SVG `d` string for custom multi-bend routes that don't
+            // fit any built-in shape. Coords are kernel-relative (origin
+            // at kernel centre, same system as anchor(...)). When
+            // present, it overrides shape/from/to.
+            path: child.getAttribute('path') || '',
           });
         }
       }

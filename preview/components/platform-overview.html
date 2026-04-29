@@ -174,6 +174,12 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       <pd-item name="OpenWoo" meta="WOO" desc="WOO-compliant publication flow. Active disclosure, queryable archive.">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
       </pd-item>
+      <pd-item name="ZaakAfhandelApp" meta="Zaken" desc="Citizen-facing case-status portal. Connects directly to your municipal Zaaksysteem.">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+      </pd-item>
+      <pd-item name="Anonimiseren" meta="Privacy" desc="Privacy-by-design pipeline. Auto-redact PII from documents and exports before publication or sharing.">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M9 8h6"/></svg>
+      </pd-item>
     </pd-list>
 
     <!-- Workspace Apps (bottom-left corner) — generic apps that the
@@ -187,9 +193,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </pd-item>
       <pd-item name="Procest" meta="Cases" desc="Case-management for VTH and citizen processes. Form-driven, BPMN-ready.">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-      </pd-item>
-      <pd-item name="ZaakAfhandelApp" meta="Zaken" desc="Citizen-facing case-status portal. Connects directly to your municipal Zaaksysteem.">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
       </pd-item>
       <pd-item name="DeciDesk" meta="Boards" desc="Decision-support and board management. Voting, agendas, document trails.">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
@@ -258,12 +261,27 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </pd-item>
     </pd-list>
 
-    <!-- Animated orange dashed flow connectors all converging on Workspace
-         Apps. The c-bracket-bottom needs extra clearance (150) to route
-         around the App Builder hex sitting between the two anchors. -->
-    <pd-flow from="top-left:left"      to="bottom-left:left"   shape="c-bracket-left"></pd-flow>
-    <pd-flow from="bottom-center:left" to="bottom-left:bottom" shape="l-h"></pd-flow>
-    <pd-flow from="bottom-right:bottom" to="bottom-left:bottom" shape="c-bracket-bottom" clearance="150"></pd-flow>
+    <!-- Animated orange dashed flow connectors converging on Workspace
+         Apps. Brackets route around the lists, not just the hexes:
+           - c-bracket-left  at x=-545: outside Tech-Core / Workspace lists.
+           - c-bracket-bottom at y=476: below the App Builder list (y=440).
+           - l-h via the kernel underside (App Builder).
+    -->
+    <pd-flow from="top-left:left"        to="bottom-left:left"   shape="c-bracket-left"   clearance="261"></pd-flow>
+    <pd-flow from="bottom-center:left"   to="bottom-left:bottom" shape="l-h"></pd-flow>
+    <pd-flow from="bottom-right:bottom"  to="bottom-left:bottom" shape="c-bracket-bottom" clearance="280"></pd-flow>
+    <!-- Tech-Core top peak → Solutions top peak, routed over the kernel
+         and above the Nextcloud-workspace list (y=-391). -->
+    <pd-flow from="top-left:top"         to="top-right:top"      shape="c-bracket-top"    clearance="240"></pd-flow>
+    <!-- Tech-Core bottom peak → Workspace top peak: short straight vertical
+         bridging the two stacked corner hexes on the left column. -->
+    <pd-flow from="top-left:bottom"      to="bottom-left:top"    shape="straight"></pd-flow>
+    <!-- Workspace LEFT → Solutions TOP: routes around the left side past
+         the Tech-Core / Workspace lists (x=-545), then over the top above
+         the Nextcloud-workspace list (y=-516), then down into Solutions
+         top peak. Uses raw `path` because no single c-bracket clears the
+         tech-core list at x=-509 in the vertical leg. -->
+    <pd-flow path="M -284 104 L -545 104 L -545 -516 L 204 -516 L 204 -196.5"></pd-flow>
 
   </platform-diagram>
 </div>
@@ -277,8 +295,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 <div class="legend">
   <span class="legend-item"><span class="dot" style="background: var(--c-nextcloud-blue);"></span><strong>Nextcloud</strong><span>· the workspace</span></span>
   <span class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span><strong>Technical Core</strong><span>· OpenRegister, OpenConnector, DocuDesk, NLDesign, MyDash</span></span>
-  <span class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span><strong>Workspace Apps</strong><span>· 8 apps</span></span>
-  <span class="legend-item"><span class="dot" style="background: #2E9866;"></span><strong>Solutions</strong><span>· OpenWoo (more soon)</span></span>
+  <span class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span><strong>Workspace Apps</strong><span>· 7 apps</span></span>
+  <span class="legend-item"><span class="dot" style="background: #E34234;"></span><strong>Solutions</strong><span>· OpenWoo, ZaakAfhandelApp, Anonimiseren</span></span>
   <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-400);"></span><strong>Integrated</strong><span>· OpenTalk, Matrix, n8n, OpenProject, XWiki, GitLab, Mattermost, Windmill, Open-Xchange, Mistral, Claude</span></span>
   <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-300);"></span><strong>App Builder</strong><span>· coming soon</span></span>
 </div>

@@ -115,18 +115,7 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   font-family: var(--conduction-typography-font-family-code);
   font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   opacity: 0.85;
-}
-.kernel .pills {
-  display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
-  margin-top: 16px;
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 11px; color: rgba(255,255,255,0.92);
-}
-.kernel .pills span {
-  background: rgba(255,255,255,0.15);
-  border-radius: var(--radius-pill);
-  padding: 3px 9px;
-  white-space: nowrap;
+  margin-top: 14px;
 }
 
 /* Outer wrapper — anchors the absolutely-positioned hex tag */
@@ -231,6 +220,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .kernel-corner-hex.fam-integrate                         { background: var(--c-cobalt-400); }
 .fam-builder   .box-hex, .fam-builder   .row .glyph,
 .kernel-corner-hex.fam-builder                           { background: var(--c-cobalt-300); }
+.fam-nextcloud .box-hex, .fam-nextcloud .row .glyph,
+.kernel-corner-hex.fam-nextcloud                         { background: var(--c-nextcloud-blue); }
 
 /* Grid placement of wrappers around the kernel.
    Row-1 wraps align to the row's bottom and row-2 wraps to the top, so all
@@ -265,10 +256,12 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
    Kernel here is 416px tall → 25% from centre = 104px above/below.
    Each hex is shifted an extra 24px outward so the four component hexes
    form a clean rectangle around the kernel. */
-.kernel-corner-hex.tech-core  { justify-self: start; transform: translate(calc(-50% - 24px), -104px); }
-.kernel-corner-hex.ai         { justify-self: end;   transform: translate(calc(50%  + 24px), -104px); }
-.kernel-corner-hex.workplace  { justify-self: start; transform: translate(calc(-50% - 24px),  104px); }
-.kernel-corner-hex.integrated { justify-self: end;   transform: translate(calc(50%  + 24px),  104px); }
+.kernel-corner-hex.tech-core   { justify-self: start;  transform: translate(calc(-50% - 24px), -104px); }
+.kernel-corner-hex.ai          { justify-self: end;    transform: translate(calc(50%  + 24px), -104px); }
+.kernel-corner-hex.workplace   { justify-self: start;  transform: translate(calc(-50% - 24px),  104px); }
+.kernel-corner-hex.integrated  { justify-self: end;    transform: translate(calc(50%  + 24px),  104px); }
+/* App Builder hex centred on kernel's bottom peak (50%, 100%) + 24px outward */
+.kernel-corner-hex.app-builder { justify-self: center; align-self: center; transform: translateY(calc(208px + 24px)); }
 
 /* List-box wraps shift 24px inward (toward kernel) so the lists follow
    the same alignment pattern as the hexes — keeping the visual "frame"
@@ -279,24 +272,29 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box-wrap.ai,
 .box-wrap.integrated { transform: translateX(-24px); }
 
-/* App Builder spans full row, muted treatment */
+/* Kernel-attachment lists — workspace-functions (above kernel) and app-builder
+   (below kernel). Both share the kernel's grid cell and translate vertically
+   so they sit just past the kernel's top/bottom peak (with 24px outward gap). */
+.box-wrap.nextcloud-workspace,
 .box-wrap.app-builder {
-  grid-column: 1 / span 3;
-  grid-row: 3;
-  max-width: 540px;
-  margin: 24px auto 0;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: center;
   width: 100%;
+  max-width: 280px;
 }
+/* List bottom edge sits 24px above kernel top peak */
+.box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 232px)); }
+/* List top edge sits 24px below the App Builder hex's bottom edge.
+   Hex centre at kernel.center + 232; hex bottom at +232 + 92.5 = +324.5.
+   Add 24px gap → list top at kernel.center + 348.5. */
+.box-wrap.app-builder { transform: translateY(calc(50% + 348.5px)); }
+
 .box-wrap.app-builder .box {
   border-style: dashed;
   background: var(--c-cobalt-50);
   opacity: 0.92;
-  padding-top: 28px;
-}
-.box-wrap.app-builder .box-hex {
-  /* Hex's bottom peak (50%, 100%) sits on the box's top-centre */
-  left: 50%; top: 0; transform: translate(-50%, -100%);
-  filter: drop-shadow(0 -2px 6px rgba(33, 70, 139, 0.18));
 }
 .box-wrap.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }
 .box-wrap.app-builder .row .desc { font-style: normal; }
@@ -368,7 +366,7 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
 <section class="hero">
   <div class="product-label"><span class="h"></span>The platform overview</div>
-  <h1>Five components. Twenty-four apps. One <span class="nx">Nextcloud</span> kernel.</h1>
+  <h1>Five components. Twenty-four apps. One <span class="nx">Nextcloud</span> workspace.</h1>
   <p class="subhead">Every Conduction app slots into one of five component-cards. All of them run on the Nextcloud platform — files, mail, calendar, identity — that your team already trusts. Hover any app to see what it does.</p>
 </section>
 
@@ -427,12 +425,21 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </div>
     </div>
 
-    <!-- Nextcloud kernel (centre) -->
+    <!-- Nextcloud workspace (centre kernel) -->
     <div class="kernel">
       <img class="kernel-logo" src="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud">
-      <div class="role">Platform · Kernel</div>
-      <div class="pills">
-        <span>Files</span><span>Mail</span><span>Cal</span><span>Talk</span><span>Office</span><span>SSO</span>
+      <div class="role">Workspace</div>
+    </div>
+
+    <!-- Nextcloud function list — sits above the kernel, attached at top peak -->
+    <div class="box-wrap nextcloud-workspace fam-nextcloud">
+      <div class="box">
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="name">Files</span><div class="desc">Sync, share, and version any file. The cornerstone of every Nextcloud workspace.</div></div>
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="name">Mail</span><div class="desc">IMAP and SMTP mailbox right inside Nextcloud — no separate desktop client.</div></div>
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="name">Calendar</span><div class="desc">CalDAV-backed shared calendars with free-busy across teams.</div></div>
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="name">Talk</span><div class="desc">End-to-end-encrypted chat, voice, video — entirely on your own servers.</div></div>
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg></span><span class="name">Office</span><div class="desc">Collabora-powered docs, sheets, and slides. Real-time co-editing, no Google.</div></div>
+        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="name">SSO</span><div class="desc">SAML 2.0 / OIDC / LDAP single sign-on. Bring your existing identity provider.</div></div>
       </div>
     </div>
 
@@ -442,6 +449,7 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
     <div class="kernel-corner-hex ai fam-ai">AI</div>
     <div class="kernel-corner-hex workplace fam-workplace">Workplace<br>Apps</div>
     <div class="kernel-corner-hex integrated fam-integrate">Integrated<br>Apps</div>
+    <div class="kernel-corner-hex app-builder fam-builder">App<br>Builder</div>
 
     <!-- Workplace Apps (bottom-left) -->
     <div class="box-wrap workplace fam-workplace">
@@ -471,9 +479,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </div>
     </div>
 
-    <!-- App Builder (full-width, muted, coming soon) -->
+    <!-- App Builder list — sits below the kernel, attached at bottom peak -->
     <div class="box-wrap app-builder fam-builder">
-      <div class="box-hex">App<br>Builder</div>
       <span class="badge">COMING SOON</span>
       <div class="box">
         <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></span><span class="name">Build your own apps</span><div class="desc">Compose Nextcloud apps from the Technical Core. Visual schema designer, no boilerplate.</div></div>

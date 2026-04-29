@@ -31,118 +31,242 @@
   }
   .page-strip p strong { color: var(--c-blue-cobalt); font-weight: 600; }
 
-  .tiers {
-    max-width: 1280px; margin: 64px auto 0;
-    padding: 0 64px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .tier {
-    border: 1px solid var(--c-cobalt-100);
-    border-radius: var(--radius-lg);
-    padding: 36px 32px;
-    background: white;
-    display: flex; flex-direction: column;
-    position: relative;
-  }
-  .tier.recommended {
-    border: 2px solid var(--c-blue-cobalt);
-    box-shadow: var(--shadow-2);
-  }
-  .tier .recommended-pill {
-    position: absolute;
-    top: -14px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--c-blue-cobalt);
-    color: white;
+  /* Section scaffolding */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 64px; }
+  .section.alt { background: var(--c-cobalt-50); max-width: none; padding: 0; }
+  .section.alt .inner { max-width: 1280px; margin: 0 auto; padding: 80px 64px; }
+  .section-head { margin-bottom: 40px; max-width: 56ch; }
+  .section-head .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
     font-family: var(--conduction-typography-font-family-code);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: var(--radius-pill);
-  }
-  .tier .tier-name {
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--c-cobalt-400);
     margin-bottom: 12px;
   }
-  .tier h3 {
-    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
-    color: var(--c-cobalt-900); margin: 0 0 8px;
-  }
-  .tier .price {
-    font-size: 16px; color: var(--c-cobalt-700);
-    margin-bottom: 24px;
-  }
-  .tier .price .num { font-size: 28px; font-weight: 700; color: var(--c-blue-cobalt); }
-  .tier .price .per { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
-  .tier .lede {
-    font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55;
-    margin: 0 0 28px;
-  }
-  .tier ul {
-    list-style: none; padding: 0; margin: 0 0 32px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .tier ul li {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; color: var(--c-cobalt-800); line-height: 1.5;
-  }
-  .tier ul li .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); flex-shrink: 0; margin-top: 5px; }
-  .tier .cta {
-    margin-top: auto;
-    display: block; text-align: center;
-    border: 1px solid var(--c-cobalt-200);
-    color: var(--c-blue-cobalt);
-    background: white;
-    padding: 14px 20px;
-    border-radius: var(--radius-md);
-    font-weight: 500; font-size: 15px;
-    text-decoration: none;
-  }
-  .tier.recommended .cta {
-    background: var(--c-blue-cobalt); color: white;
-    border: none;
+  .section-head .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .section-head h2 {
+    font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--c-cobalt-900); margin: 0;
   }
 
-  /* Matrix */
-  .matrix {
-    max-width: 1280px; margin: 96px auto;
-    padding: 0 64px;
-  }
-  .matrix h2 {
-    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
-    color: var(--c-cobalt-900); margin: 0 0 32px;
-  }
-  .matrix table {
-    width: 100%; border-collapse: collapse;
+  /* How it works — three steps */
+  .how-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .how-step {
+    background: white;
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    padding: 32px;
+    position: relative;
   }
-  .matrix th, .matrix td {
-    padding: 16px 20px;
-    text-align: left;
-    font-size: 14px;
-    border-bottom: 1px solid var(--c-cobalt-100);
+  .how-step .num {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px;
+    margin-bottom: 18px;
   }
-  .matrix th {
-    background: var(--c-cobalt-50);
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--c-cobalt-700);
-    font-weight: 500;
+  .how-step.tier-2 .num { background: var(--c-orange-knvb); }
+  .how-step.tier-3 .num { background: var(--c-cobalt-700); }
+  .how-step h3 {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 10px;
   }
-  .matrix th:not(:first-child), .matrix td:not(:first-child) { text-align: center; }
-  .matrix td:first-child { font-weight: 500; color: var(--c-cobalt-900); }
-  .matrix tr:last-child td { border-bottom: none; }
-  .matrix .yes { color: var(--c-mint-500); font-weight: 700; }
-  .matrix .dash { color: var(--c-cobalt-300); }
+  .how-step p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6; margin: 0; }
 
-  /* FAQ */
+  /* Tier explainer */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .tier-explain {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+  .tier-explain .tier-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    color: white;
+    background: var(--c-cobalt-700);
+    margin-bottom: 18px;
+  }
+  .tier-explain.certified .tier-pill { background: var(--c-gold-500); color: var(--c-cobalt-900); }
+  .tier-explain.strategic .tier-pill { background: var(--c-blue-cobalt); }
+  .tier-explain h3 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 12px;
+  }
+  .tier-explain p {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6;
+    margin: 0 0 20px;
+  }
+  .tier-explain ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .tier-explain li {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 13px; color: var(--c-cobalt-800);
+  }
+  .tier-explain li .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); flex-shrink: 0; margin-top: 5px; }
+
+  /* Partner directory */
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 24px; align-items: stretch; }
+  .partner-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex; flex-direction: column; gap: 16px;
+    box-shadow: var(--shadow-1);
+    text-decoration: none; color: inherit;
+    transition: all 160ms ease;
+    position: relative;
+  }
+  .partner-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .pc-tier {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    background: var(--c-cobalt-50); color: var(--c-cobalt-700);
+  }
+  .partner-card.certified .pc-tier { background: var(--c-gold-500); color: var(--c-cobalt-900); }
+  .partner-card.strategic { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
+  .partner-card.strategic .pc-tier { background: white; color: var(--c-blue-cobalt); }
+  .pc-avatar {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-50);
+    color: var(--c-blue-cobalt);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; letter-spacing: -0.01em;
+  }
+  .partner-card.certified .pc-avatar { background: var(--c-gold-500); color: var(--c-cobalt-900); }
+  .partner-card.strategic .pc-avatar { background: white; color: var(--c-blue-cobalt); }
+  .pc-name { font-size: 18px; font-weight: 700; color: var(--c-cobalt-900); }
+  .partner-card.strategic .pc-name { color: white; }
+  .pc-summary { font-size: 14px; line-height: 1.55; color: var(--c-cobalt-700); }
+  .partner-card.strategic .pc-summary { color: rgba(255,255,255,0.78); }
+  .pc-apps {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--c-cobalt-100);
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .partner-card.strategic .pc-apps { border-top-color: rgba(255,255,255,0.18); }
+  .pc-apps .app-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .partner-card.strategic .pc-apps .app-pill { background: rgba(255,255,255,0.12); color: white; }
+  .pc-apps .app-pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .partner-card.strategic .pc-apps .app-pill .h { background: var(--c-orange-knvb); }
+
+  /* Two-form section */
+  .forms { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .form-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+  }
+  .form-card.dark {
+    background: var(--c-cobalt-900); color: white; border-color: var(--c-cobalt-900);
+  }
+  .form-card .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 12px;
+  }
+  .form-card.dark .eyebrow { color: rgba(255,255,255,0.6); }
+  .form-card .eyebrow .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .form-card h3 {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 12px;
+    line-height: 1.2;
+  }
+  .form-card.dark h3 { color: white; }
+  .form-card .lede {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin: 0 0 24px;
+    max-width: 44ch;
+  }
+  .form-card.dark .lede { color: rgba(255,255,255,0.72); }
+
+  .field { margin-bottom: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 6px;
+  }
+  .form-card.dark .field label { color: rgba(255,255,255,0.55); }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit; font-size: 14px;
+    padding: 11px 14px;
+    border: 1px solid var(--c-cobalt-200);
+    border-radius: var(--radius-md);
+    background: white;
+    color: var(--c-cobalt-900);
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .form-card.dark .field input,
+  .form-card.dark .field select,
+  .form-card.dark .field textarea {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.18);
+    color: white;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--c-blue-cobalt);
+    box-shadow: 0 0 0 3px rgba(243, 108, 33, 0.25);
+  }
+  .form-card.dark .field input:focus,
+  .form-card.dark .field select:focus,
+  .form-card.dark .field textarea:focus {
+    border-color: white;
+    box-shadow: 0 0 0 3px rgba(243, 108, 33, 0.4);
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  .form-card .legal {
+    font-size: 12px; color: var(--c-cobalt-400);
+    line-height: 1.5;
+    margin: 16px 0 18px;
+  }
+  .form-card.dark .legal { color: rgba(255,255,255,0.5); }
+  .form-card .submit {
+    background: var(--c-blue-cobalt); color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: var(--radius-md);
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .form-card.dark .submit {
+    background: white; color: var(--c-blue-cobalt);
+  }
+  .form-card .submit:hover { background: var(--c-cobalt-700); }
+  .form-card.dark .submit:hover { background: var(--c-cobalt-50); }
+
+  /* FAQ — kept tight */
   .faq {
     max-width: 880px; margin: 96px auto;
     padding: 0 64px;
@@ -182,109 +306,294 @@
 
 <section class="page-strip">
   <div class="crumbs"><a href="landing.html">Home</a> &nbsp;/&nbsp; Support</div>
-  <h1>Apps are free.<br>Support is a separate, transparent layer.</h1>
-  <p>Every ConNext app installs free from the Nextcloud app store. <strong>No paywall, no upgrade nag.</strong> If you want a response time, an SLA, or someone Dutch on the phone, here's exactly what that costs and what's in it.</p>
+  <h1>Support runs through partners.<br>The apps stay free.</h1>
+  <p>Conduction builds and maintains the apps — every one of them is open-source on GitHub and free from the Nextcloud app store. <strong>The day-to-day support, the implementation hours, the SLA contracts</strong> — that all sits with our partners. Pick the partner that matches your sector and your scale.</p>
 </section>
 
-<section class="tiers">
-
-  <div class="tier">
-    <div class="tier-name">Self-serve</div>
-    <h3>Community.</h3>
-    <div class="price"><span class="num">€0</span> <span class="per">forever</span></div>
-    <p class="lede">For evaluation, MKB pilots, and anyone who's comfortable in GitHub. Best-effort response from the maintainers and the wider community.</p>
-    <ul>
-      <li><span class="h"></span>All twelve apps, full source</li>
-      <li><span class="h"></span>GitHub Issues, public discussions</li>
-      <li><span class="h"></span>Community Discord</li>
-      <li><span class="h"></span>Public docs, how-tos, recipes</li>
-      <li><span class="h"></span>NLDS-compliant releases</li>
-    </ul>
-    <a href="#" class="cta">Install from app store</a>
+<!-- How it works -->
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow"><span class="h"></span>How support works</div>
+    <h2>Three paths, picked by what you need.</h2>
   </div>
-
-  <div class="tier recommended">
-    <span class="recommended-pill">Most chosen</span>
-    <div class="tier-name">Standard</div>
-    <h3>Business hours.</h3>
-    <div class="price"><span class="num">€1.250</span> <span class="per">per maand</span></div>
-    <p class="lede">For organisations running ConNext in production. Two-business-day response, named contact, and a quarterly upgrade review.</p>
-    <ul>
-      <li><span class="h"></span>Everything in Community</li>
-      <li><span class="h"></span>2-business-day response (NL hours)</li>
-      <li><span class="h"></span>Named technical contact</li>
-      <li><span class="h"></span>Quarterly upgrade review</li>
-      <li><span class="h"></span>Private Slack with maintainers</li>
-      <li><span class="h"></span>Hot-fix backports for one major</li>
-    </ul>
-    <a href="#" class="cta">Talk to sales →</a>
+  <div class="how-row">
+    <div class="how-step">
+      <div class="num">01</div>
+      <h3>Try it yourself.</h3>
+      <p>Install from the app store. Read the docs. Ask questions in the public GitHub Issues or community Discord. Most MKB and pilot users never need anything else — and that's free, forever.</p>
+    </div>
+    <div class="how-step tier-2">
+      <div class="num">02</div>
+      <h3>Find a partner.</h3>
+      <p>Running ConNext in production, or planning to? A partner deploys, configures, and supports the stack for you. Hourly, retainer, or project-based — whatever your contracting team prefers.</p>
+    </div>
+    <div class="how-step tier-3">
+      <div class="num">03</div>
+      <h3>Strategic engagement.</h3>
+      <p>Mission-critical workloads, multi-app rollouts, or government tenders go through Strategic partners — co-developing with Conduction's engineers and shaping the roadmap.</p>
+    </div>
   </div>
-
-  <div class="tier">
-    <div class="tier-name">Strategic</div>
-    <h3>Partner.</h3>
-    <div class="price"><span class="num">€4.500</span> <span class="per">per maand</span></div>
-    <p class="lede">For ministries, provinces, and groups running mission-critical workloads. 4-hour response, dedicated engineer, design-review hours.</p>
-    <ul>
-      <li><span class="h"></span>Everything in Standard</li>
-      <li><span class="h"></span>4-hour response, 24/5 (NL+BE)</li>
-      <li><span class="h"></span>Dedicated maintenance engineer</li>
-      <li><span class="h"></span>8h/maand design-review</li>
-      <li><span class="h"></span>Roadmap input + early-access</li>
-      <li><span class="h"></span>Custom NLDS profile work</li>
-    </ul>
-    <a href="#" class="cta">Talk to sales →</a>
-  </div>
-
 </section>
 
-<section class="matrix">
-  <h2>What's included.</h2>
-  <table>
-    <thead>
-      <tr><th>Feature</th><th>Community</th><th>Standard</th><th>Strategic</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>All twelve open-source apps</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
-      <tr><td>Public docs &amp; recipes</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
-      <tr><td>Response SLA</td><td class="dash">—</td><td>2 business days</td><td>4 hours, 24/5</td></tr>
-      <tr><td>Named contact</td><td class="dash">—</td><td class="yes">●</td><td class="yes">●</td></tr>
-      <tr><td>Private support channel</td><td class="dash">—</td><td>Slack</td><td>Slack + phone</td></tr>
-      <tr><td>Hot-fix backports</td><td class="dash">—</td><td>1 major</td><td>2 majors</td></tr>
-      <tr><td>Quarterly upgrade review</td><td class="dash">—</td><td class="yes">●</td><td class="yes">●</td></tr>
-      <tr><td>Dedicated engineer</td><td class="dash">—</td><td class="dash">—</td><td class="yes">●</td></tr>
-      <tr><td>Design-review hours</td><td class="dash">—</td><td class="dash">—</td><td>8h/maand</td></tr>
-      <tr><td>Custom NLDS profile work</td><td class="dash">—</td><td class="dash">—</td><td class="yes">●</td></tr>
-    </tbody>
-  </table>
+<!-- Tier explainer -->
+<section class="section alt">
+  <div class="inner">
+    <div class="section-head">
+      <div class="eyebrow"><span class="h"></span>Three partner tiers</div>
+      <h2>What each badge means.</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier-explain">
+        <span class="tier-pill">Partner</span>
+        <h3>Partner.</h3>
+        <p>Has installed ConNext apps in production at one or more customers. Self-trained on the docs. Listed in the public directory.</p>
+        <ul>
+          <li><span class="h"></span>Public listing in the directory</li>
+          <li><span class="h"></span>Community Slack access</li>
+          <li><span class="h"></span>Quarterly partner office hours</li>
+        </ul>
+      </div>
+      <div class="tier-explain certified">
+        <span class="tier-pill">Certified</span>
+        <h3>Certified.</h3>
+        <p>Engineering team has passed our certification on at least three core apps. Customers see the gold avatar in the directory and on quotes.</p>
+        <ul>
+          <li><span class="h"></span>Everything in Partner</li>
+          <li><span class="h"></span>Certified gold avatar</li>
+          <li><span class="h"></span>Co-branded case-study slot</li>
+          <li><span class="h"></span>Pre-release access (one minor)</li>
+        </ul>
+      </div>
+      <div class="tier-explain strategic">
+        <span class="tier-pill">Strategic</span>
+        <h3>Strategic.</h3>
+        <p>Joint roadmap commitments and shared engineering. Reserved for a small number of partners — by invitation, with quarterly business reviews.</p>
+        <ul>
+          <li><span class="h"></span>Everything in Certified</li>
+          <li><span class="h"></span>Joint roadmap planning</li>
+          <li><span class="h"></span>Engineering hours from Conduction</li>
+          <li><span class="h"></span>Co-sale on government tenders</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- Partner directory -->
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow"><span class="h"></span>The directory</div>
+    <h2>Featured partners.</h2>
+  </div>
+  <div class="grid">
+    <a href="#" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">AH</div>
+      <div class="pc-name">Acme Hosting</div>
+      <div class="pc-summary">Nextcloud-conformiteit hoster uit Nijmegen. Hosts ConNext for 8 mid-sized municipalities, includes WOO portal in their default config.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+      </div>
+    </a>
+    <a href="#" class="partner-card certified">
+      <span class="pc-tier">Certified</span>
+      <div class="pc-avatar">B</div>
+      <div class="pc-name">Belmont IT</div>
+      <div class="pc-summary">Public sector implementation partner in Eastern Europe. OpenConnector specialists, multilingual support team.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenConnector</span>
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+      </div>
+    </a>
+    <a href="#" class="partner-card strategic">
+      <span class="pc-tier">Strategic</span>
+      <div class="pc-avatar">CN</div>
+      <div class="pc-name">Civic Networks</div>
+      <div class="pc-summary">Strategic on ConNext + Nextcloud. Co-development on OpenZaak, 2 dedicated engineers contributing upstream, joint government tender lead in 2026.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenZaak</span>
+        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+      </div>
+    </a>
+
+    <a href="#" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">SL</div>
+      <div class="pc-name">Software Leeuw</div>
+      <div class="pc-summary">Friese MKB-integrator. Workspace-installs (MyDash + OpenRegister) voor ZZP'ers en kleine bedrijven, 50+ live deployments.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>MyDash</span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+      </div>
+    </a>
+    <a href="#" class="partner-card certified">
+      <span class="pc-tier">Certified</span>
+      <div class="pc-avatar">DC</div>
+      <div class="pc-name">Delta Cyber</div>
+      <div class="pc-summary">NEN-7510 + ISO-27001 specialists for healthcare. Five engineers certified on DocuDesk for zorg-document-handling.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+      </div>
+    </a>
+    <a href="#" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">VG</div>
+      <div class="pc-name">Vrije Gemeente IT</div>
+      <div class="pc-summary">Coöperatieve IT-club voor lokale overheden. ConNext-stack op zes gemeenten in Zeeland en West-Brabant, voornamelijk WOO en software-catalogus.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+        <span class="app-pill"><span class="h"></span>OpenWOO</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- Two forms -->
+<section class="section alt">
+  <div class="inner">
+    <div class="section-head">
+      <div class="eyebrow"><span class="h"></span>Get in touch</div>
+      <h2>Two doors. Pick the one that fits.</h2>
+    </div>
+    <div class="forms">
+
+      <form class="form-card">
+        <div class="eyebrow"><span class="h"></span>I need help</div>
+        <h3>Match me with a partner.</h3>
+        <p class="lede">Tell us what you're trying to do. We'll route the request to one to three partners that fit your sector, scale, and the apps you have in mind. No commission, no exclusivity.</p>
+        <div class="field-row">
+          <div class="field">
+            <label>First name</label>
+            <input type="text" placeholder="Sanne">
+          </div>
+          <div class="field">
+            <label>Last name</label>
+            <input type="text" placeholder="de Vries">
+          </div>
+        </div>
+        <div class="field">
+          <label>Work email</label>
+          <input type="email" placeholder="je@bedrijf.nl">
+        </div>
+        <div class="field">
+          <label>Organisation</label>
+          <input type="text" placeholder="Gemeente, MKB, ziekenhuis…">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Sector</label>
+            <select>
+              <option>Publieke sector</option>
+              <option>MKB</option>
+              <option>Zorg</option>
+              <option>Onderwijs</option>
+              <option>Anders</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Apps in mind</label>
+            <select>
+              <option>Niet zeker — adviseer me</option>
+              <option>OpenCatalogi</option>
+              <option>OpenRegister</option>
+              <option>OpenConnector</option>
+              <option>DocuDesk</option>
+              <option>Combinatie</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>What are you trying to do?</label>
+          <textarea placeholder="Bijv: WOO-publicatie inrichten op onze huidige Nextcloud, met koppeling naar ons DMS."></textarea>
+        </div>
+        <p class="legal">By submitting you agree to be contacted by Conduction once and by up to three matching partners. We share only what you typed above. <a href="#">Privacy statement</a>.</p>
+        <button type="submit" class="submit">Find me a partner →</button>
+      </form>
+
+      <form class="form-card dark">
+        <div class="eyebrow"><span class="h"></span>I want to be a partner</div>
+        <h3>Apply to the partner program.</h3>
+        <p class="lede">If your team installs and operates ConNext apps for clients, the Partner tier is open — no fee, no exclusivity. The bar is one production deployment and a public reference.</p>
+        <div class="field-row">
+          <div class="field">
+            <label>Company name</label>
+            <input type="text" placeholder="Acme Hosting">
+          </div>
+          <div class="field">
+            <label>Country</label>
+            <input type="text" placeholder="NL · BE · DE">
+          </div>
+        </div>
+        <div class="field">
+          <label>Contact email</label>
+          <input type="email" placeholder="partners@yourcompany.nl">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Production deployments</label>
+            <select>
+              <option>1</option>
+              <option>2–5</option>
+              <option>6–10</option>
+              <option>10+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tier you're applying for</label>
+            <select>
+              <option>Partner</option>
+              <option>Certified</option>
+              <option>Strategic (by invitation)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Apps you deploy &amp; operate</label>
+          <input type="text" placeholder="OpenCatalogi · OpenRegister · …">
+        </div>
+        <div class="field">
+          <label>Public reference (URL)</label>
+          <input type="url" placeholder="https://gemeente-x.nl/woo">
+        </div>
+        <p class="legal">We review applications within five business days. Approved partners get a directory listing, a Slack invite, and a slot in the next quarterly office hours.</p>
+        <button type="submit" class="submit">Submit application →</button>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
 <section class="faq">
   <h2>FAQ.</h2>
 
   <details open>
-    <summary>If the apps are free, what am I paying for?</summary>
-    <p>Time and a phone number. Support buys you a contracted response window, a named human to reach, and the engineering hours behind hot-fixes and design reviews. The apps themselves stay open-source, EUPL-licensed, and free — that doesn't change between tiers.</p>
+    <summary>If the apps are free, what does support cost?</summary>
+    <p>Whatever the partner you pick charges. Conduction sets no minimum and takes no commission. Some partners do hourly (€95–€140), some sell retainers, some do fixed-price implementation projects. The directory shows each partner's typical engagement model.</p>
   </details>
 
   <details>
-    <summary>Can I switch tiers without re-installing?</summary>
-    <p>Yes. Tiers are a contract layer; the apps keep running unchanged. Upgrade or downgrade with one calendar month's notice.</p>
+    <summary>Why doesn't Conduction sell support directly?</summary>
+    <p>Two reasons. First, we'd be too small to staff 24/5 SLAs across NL, BE, and DE — partners closer to the customer do it better. Second, it keeps us out of competition with the partners who actually build customer relationships, so we can stay focused on the apps and the platform.</p>
   </details>
 
   <details>
-    <summary>Do you sell hosting?</summary>
-    <p>No. ConNext apps run on your Nextcloud — managed by you, by your hoster, or by a Nextcloud Strategic partner. We point you at the right one if you don't have one yet.</p>
+    <summary>Can a partner from another country work with my organisation?</summary>
+    <p>Yes — partners aren't restricted by geography. Country is a hint in the directory, not a fence. A Friese MKB partner can work with a Brabants ziekenhuis if the fit is right.</p>
   </details>
 
   <details>
-    <summary>What's the licence?</summary>
-    <p>EUPL-1.2 — the European Union Public Licence. Compatible with GPL/AGPL, recognised by Dutch government tenders, and explicit about contribution back to the commons. The full text ships with every app.</p>
+    <summary>What if no partner fits what I need?</summary>
+    <p>Submit the form anyway. If we genuinely can't match you to a partner, Conduction's engineers can do a paid scoping engagement to work out the best path — and we'll typically introduce a partner partway through the project.</p>
   </details>
 
   <details>
-    <summary>How fast does Strategic actually respond?</summary>
-    <p>Median first-response time over the last twelve months: 38 minutes during NL+BE office hours. The 4-hour figure is the contractual ceiling, not the average.</p>
+    <summary>What's the certification process for partners?</summary>
+    <p>One certified engineer has to complete the per-app practicals (deploy, configure, debug). Certifications are app-specific — Certified on DocuDesk doesn't make you Certified on OpenRegister. We retest every twelve months as the apps evolve.</p>
   </details>
 
 </section>

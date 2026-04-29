@@ -233,25 +233,28 @@ platform-diagram .box-wrap.solutions  { grid-column: 3; grid-row: 1; justify-sel
 platform-diagram .box-wrap.workspace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
 platform-diagram .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
 
-/* List inner corner anchors to the midpoint of the corresponding hex side
-   (then nudges 12-15px inward so the list overlaps the hex slightly).
-   The (-/+ 80px * (1 - --pd-list-progress)) term is the scroll-entrance
-   shift: at progress=1 it's 0 (settled position); at progress=0 the list
-   starts 80px further outward and fades from 0 → 1 opacity. */
+/* List inner corner anchors near the midpoint of the corresponding hex side,
+   nudged inward so the list overlaps its hex by ~30-40px on both axes.
+   The y-translates are picked so top and bottom rows have matching visual
+   overlap (top:65, bottom:135) — without this, the bottom lists' larger
+   item counts pulled them deeper into their hexes than the top lists.
+   The (±80px * (1 - --pd-list-progress)) term is the scroll-entrance
+   shift: at progress=1 it's 0 (settled); at progress=0 lists start 80px
+   further outward and fade from 0 → 1 opacity. */
 platform-diagram .box-wrap.tech-core    {
-  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))),  35px);
+  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))),  65px);
   opacity: var(--pd-list-progress);
 }
 platform-diagram .box-wrap.solutions    {
-  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))),  35px);
+  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))),  65px);
   opacity: var(--pd-list-progress);
 }
 platform-diagram .box-wrap.workspace    {
-  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))), 100px);
+  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))), 135px);
   opacity: var(--pd-list-progress);
 }
 platform-diagram .box-wrap.integrated   {
-  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))), 100px);
+  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))), 135px);
   opacity: var(--pd-list-progress);
 }
 

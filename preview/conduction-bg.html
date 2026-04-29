@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conduction background — Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* ===== Conduction background — reusable parallax honeycomb layer =====
+     Drop <div class="conduction-bg" aria-hidden="true"></div> as the first
+     child of any position:relative + overflow:hidden container. The page-end
+     script hydrates each instance with depth-tiered hexes that parallax on
+     scroll and breathe in opacity. Hexes are always pointy-top — never
+     rotated — per huisstijl. */
+  .conduction-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .conduction-bg .hex {
+    position: absolute;
+    clip-path: var(--hex-pointy-top);
+    will-change: transform, opacity;
+    transform: translate(-50%, -50%);
+    animation: hex-breathe var(--dur, 14s) ease-in-out var(--delay, 0s) infinite;
+  }
+  @keyframes hex-breathe {
+    0%, 100% { opacity: var(--opa-min, 0.04); }
+    50%      { opacity: var(--opa-max, 0.18); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .conduction-bg .hex { animation: none; opacity: var(--opa-max, 0.12); }
+  }
+
+  /* ===== Doc-only chrome ===== */
+  .stage {
+    position: relative;
+    overflow: hidden;
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 96px 64px;
+    text-align: center;
+  }
+  .stage h3 {
+    position: relative;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .stage p {
+    position: relative;
+    font-size: 16px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+  .stage .scroll-hint {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .stage .scroll-hint .h {
+    width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+  }
+
+  /* Tier inspector */
+  .tiers { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4); }
+  .tier-card {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+  }
+  .tier-card .sample {
+    width: 100%;
+    height: 96px;
+    background: var(--c-blue-cobalt);
+    border-radius: var(--radius-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  .tier-card .sample .h {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    clip-path: var(--hex-pointy-top);
+  }
+  .tier-card .label { font-weight: 600; font-size: 14px; color: var(--c-cobalt-900); }
+  .tier-card .meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    line-height: 1.5;
+  }
+
+  /* Code block */
+  .code {
+    background: var(--c-cobalt-900);
+    color: rgba(255,255,255,0.92);
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code .c { color: #7C9CC9; }                 /* comment   */
+  .code .k { color: #F2A93B; }                 /* keyword   */
+  .code .s { color: #A0E0B6; }                 /* string    */
+  .code .n { color: #F2A93B; }                 /* number    */
+
+  /* Rules */
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  .rule-col {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+  }
+  .rule-col h5 { font-size: 16px; font-weight: 600; margin-bottom: var(--space-3); }
+  .rule-col ul { list-style: none; padding: 0; margin: 0; }
+  .rule-col li { font-size: 14px; line-height: 1.6; color: var(--c-cobalt-700); padding-left: 24px; position: relative; }
+  .rule-col.yes li::before { content: "✓  "; color: var(--c-mint-500); position: absolute; left: 0; }
+  .rule-col.no  li::before { content: "✗  "; color: var(--c-red-vermillion); position: absolute; left: 0; }
+
+  /* In-context — illustrate the no-rotate rule */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  .compare-card {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+  .compare-card .stage-mini {
+    height: 200px;
+    background: var(--c-blue-cobalt);
+    border-radius: var(--radius-sm);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--space-3);
+  }
+  .compare-card .stage-mini .h {
+    position: absolute;
+    width: 80px; height: 92px;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(255,255,255,0.2);
+    top: 50%; left: 50%;
+  }
+  .compare-card.yes .stage-mini .h { transform: translate(-50%, -50%); }
+  .compare-card.no  .stage-mini .h { transform: translate(-50%, -50%) rotate(18deg); }
+  .compare-card .caption {
+    font-size: 13px; color: var(--c-cobalt-700);
+  }
+  .compare-card .verdict {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+  .compare-card.yes .verdict { color: var(--c-mint-500); }
+  .compare-card.no  .verdict { color: var(--c-red-vermillion); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">Motif · Conduction background</div>
+      <h1 class="card-title">A honeycomb depth field that breathes.</h1>
+    </div>
+    <p class="card-subtitle">Drop-in parallax backdrop for cobalt sections. Smaller hexes sit deeper — they move slower on scroll and fade gentler. The field always reads as the brand without ever competing with the foreground.</p>
+  </div>
+
+  <!-- Live demo -->
+  <div class="section-label">Live demo · scroll the page to see the parallax</div>
+  <div class="stage" data-conduction-bg-host>
+    <div class="conduction-bg" aria-hidden="true"></div>
+    <h3>The Conduction background.</h3>
+    <p>Eighteen hexes across five depth tiers. Smaller = farther = slower parallax + gentler breath. One orange accent. All pointy-top, always.</p>
+    <span class="scroll-hint"><span class="h"></span>Scroll up and down</span>
+  </div>
+
+  <!-- Tiers -->
+  <div class="section-label">Five depth tiers · size, opacity, parallax</div>
+  <div class="tiers">
+    <div class="tier-card">
+      <div class="sample"><span class="h" style="width: 28px; height: 32px; opacity: 0.10;"></span></div>
+      <div class="label">Far · 0.10</div>
+      <div class="meta">32–56 px<br>opacity 0.03 → 0.10<br>weight 5</div>
+    </div>
+    <div class="tier-card">
+      <div class="sample"><span class="h" style="width: 44px; height: 51px; opacity: 0.13;"></span></div>
+      <div class="label">Distant · 0.25</div>
+      <div class="meta">56–96 px<br>opacity 0.04 → 0.13<br>weight 4</div>
+    </div>
+    <div class="tier-card">
+      <div class="sample"><span class="h" style="width: 60px; height: 69px; opacity: 0.16;"></span></div>
+      <div class="label">Mid · 0.45</div>
+      <div class="meta">96–150 px<br>opacity 0.05 → 0.16<br>weight 3</div>
+    </div>
+    <div class="tier-card">
+      <div class="sample"><span class="h" style="width: 76px; height: 88px; opacity: 0.18;"></span></div>
+      <div class="label">Near · 0.65</div>
+      <div class="meta">150–220 px<br>opacity 0.07 → 0.18<br>weight 2</div>
+    </div>
+    <div class="tier-card">
+      <div class="sample"><span class="h" style="width: 88px; height: 102px; opacity: 0.20;"></span></div>
+      <div class="label">Front · 0.85</div>
+      <div class="meta">220–300 px<br>opacity 0.08 → 0.20<br>weight 1</div>
+    </div>
+  </div>
+
+  <!-- Pointy-top rule -->
+  <div class="section-label">Always pointy-top · never rotate</div>
+  <div class="compare">
+    <div class="compare-card yes">
+      <div class="stage-mini"><span class="h"></span></div>
+      <div class="verdict">Do</div>
+      <div class="caption">Pointy-top, vertex up. The huisstijl rule applies to every hex, decoration included. Movement comes from parallax and opacity — never from rotation.</div>
+    </div>
+    <div class="compare-card no">
+      <div class="stage-mini"><span class="h"></span></div>
+      <div class="verdict">Don't</div>
+      <div class="caption">Tilted hexes feel improvisational. The hex is the brand mark — keep it stable, vertex up. If a scene feels too rigid, vary size and depth, not angle.</div>
+    </div>
+  </div>
+
+  <!-- How to use -->
+  <div class="section-label">How to use</div>
+  <div class="code"><span class="c">&lt;!-- 1. Drop the layer as the first child of a position:relative + overflow:hidden parent --&gt;</span>
+&lt;section <span class="k">class</span>=<span class="s">"cta-banner"</span>&gt;
+  &lt;div <span class="k">class</span>=<span class="s">"conduction-bg"</span> <span class="k">aria-hidden</span>=<span class="s">"true"</span>&gt;&lt;/div&gt;
+  &lt;h2&gt;Pick an app. Install it. Done.&lt;/h2&gt;
+  …
+&lt;/section&gt;
+
+<span class="c">/* 2. Copy the CSS */</span>
+.conduction-bg { <span class="k">position</span>: absolute; <span class="k">inset</span>: <span class="n">0</span>; <span class="k">overflow</span>: hidden; <span class="k">pointer-events</span>: none; }
+.conduction-bg .hex {
+  <span class="k">position</span>: absolute;
+  <span class="k">clip-path</span>: <span class="k">var</span>(<span class="s">--hex-pointy-top</span>);
+  <span class="k">will-change</span>: transform, opacity;
+  <span class="k">transform</span>: translate(<span class="n">-50%</span>, <span class="n">-50%</span>);
+  <span class="k">animation</span>: hex-breathe <span class="k">var</span>(<span class="s">--dur</span>, <span class="n">14s</span>) ease-in-out <span class="k">var</span>(<span class="s">--delay</span>, <span class="n">0s</span>) infinite;
+}
+<span class="k">@keyframes</span> hex-breathe {
+  <span class="n">0%</span>, <span class="n">100%</span> { <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-min</span>, <span class="n">0.04</span>); }
+  <span class="n">50%</span>      { <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-max</span>, <span class="n">0.18</span>); }
+}
+<span class="k">@media</span> (prefers-reduced-motion: reduce) {
+  .conduction-bg .hex { <span class="k">animation</span>: none; <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-max</span>, <span class="n">0.12</span>); }
+}
+
+<span class="c">/* 3. Hydrate with the script — see &lt;script&gt; tag at the bottom of this page.
+   It builds 18 hexes per .conduction-bg, drives parallax on scroll, and
+   gates work behind IntersectionObserver. */</span></div>
+
+  <!-- Anatomy -->
+  <div class="section-label">Anatomy</div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6);">
+    <div style="background: var(--c-cobalt-50); border-radius: var(--radius-md); padding: var(--space-5);">
+      <div style="font-weight: 600; font-size: 14px; margin-bottom: var(--space-2);">Parallax</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;">
+        <code style="font-family: var(--conduction-typography-font-family-code); font-size: 12px;">translateY = -offset · depth · 0.4</code><br>
+        Offset is the section's centre vs. viewport centre. Depth scales the move. Tier 0.10 hexes drift 4× slower than tier 0.85 — the small ones <em>feel</em> distant.
+      </div>
+    </div>
+    <div style="background: var(--c-cobalt-50); border-radius: var(--radius-md); padding: var(--space-5);">
+      <div style="font-weight: 600; font-size: 14px; margin-bottom: var(--space-2);">Breath</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;">
+        Each hex's opacity ease-in-outs between <code style="font-family: var(--conduction-typography-font-family-code); font-size: 12px;">--opa-min</code> and <code style="font-family: var(--conduction-typography-font-family-code); font-size: 12px;">--opa-max</code> on an 11–18 s cycle. Random negative delays so they're already mid-cycle on load — the field never pulses in unison.
+      </div>
+    </div>
+    <div style="background: var(--c-cobalt-50); border-radius: var(--radius-md); padding: var(--space-5);">
+      <div style="font-weight: 600; font-size: 14px; margin-bottom: var(--space-2);">Performance</div>
+      <div style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;">
+        IntersectionObserver gates the rAF scroll handler — zero work when the section is offscreen. <code style="font-family: var(--conduction-typography-font-family-code); font-size: 12px;">prefers-reduced-motion</code> disables both parallax and breath; hexes still render statically.
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div class="section-label">Rules</div>
+  <div class="rules">
+    <div class="rule-col yes">
+      <h5>Do</h5>
+      <ul>
+        <li>Use it on cobalt CTAs, hero plates, and section closers — places that already feel like brand surface</li>
+        <li>Keep every hex pointy-top — depth comes from size + opacity, never from rotation</li>
+        <li>Place exactly one orange accent per scene; the rest are white at 0.03–0.20 opacity</li>
+        <li>Cap the field at ~18 hexes — past that the breath stops feeling calm</li>
+        <li>Always set <code>pointer-events: none</code> on the layer so foreground actions stay clickable</li>
+        <li>Honour <code>prefers-reduced-motion</code> — the layer is decorative, never load-bearing</li>
+      </ul>
+    </div>
+    <div class="rule-col no">
+      <h5>Don't</h5>
+      <ul>
+        <li>Don't rotate hexes for "movement" — that breaks the huisstijl</li>
+        <li>Don't push opacity above ~0.25; the field is backdrop, not pattern</li>
+        <li>Don't stack two conduction-bg layers on the same section — one field per surface</li>
+        <li>Don't combine with the cut-corners motif on the same surface — pick one</li>
+        <li>Don't use it on light surfaces; the white-on-cobalt contrast is the whole effect</li>
+        <li>Don't speed up the breath cycle below ~10 s — the field starts to flicker</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* Conduction background: depth-tiered hex parallax + slow breathe.
+     Smaller hex → smaller depth → smaller parallax translate → reads as "farther away".
+     Hexes are always pointy-top — never rotated — per huisstijl. */
+  (function () {
+    const TIERS = [
+      { d: 0.10, sMin: 32,  sMax: 56,  oMin: 0.03, oMax: 0.10, w: 5 },
+      { d: 0.25, sMin: 56,  sMax: 96,  oMin: 0.04, oMax: 0.13, w: 4 },
+      { d: 0.45, sMin: 96,  sMax: 150, oMin: 0.05, oMax: 0.16, w: 3 },
+      { d: 0.65, sMin: 150, sMax: 220, oMin: 0.07, oMax: 0.18, w: 2 },
+      { d: 0.85, sMin: 220, sMax: 300, oMin: 0.08, oMax: 0.20, w: 1 },
+    ];
+    const HEX_COUNT = 18;
+    const PARALLAX_FACTOR = 0.4;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const rand = (a, b) => Math.random() * (b - a) + a;
+    const pickTier = () => {
+      const total = TIERS.reduce((s, t) => s + t.w, 0);
+      let r = Math.random() * total;
+      for (const t of TIERS) { if ((r -= t.w) <= 0) return t; }
+      return TIERS[0];
+    };
+
+    function buildHex(orange) {
+      const tier = pickTier();
+      const size = rand(tier.sMin, tier.sMax);
+      const hex = document.createElement('span');
+      hex.className = 'hex';
+      hex.style.width = size + 'px';
+      hex.style.height = (size * 1.1547) + 'px';
+      hex.style.left = rand(-5, 105) + '%';
+      hex.style.top = rand(-25, 125) + '%';
+      hex.style.background = orange ? 'var(--c-orange-knvb)' : '#ffffff';
+      hex.style.setProperty('--opa-min', tier.oMin.toFixed(3));
+      hex.style.setProperty('--opa-max', (orange ? Math.min(tier.oMax + 0.05, 0.28) : tier.oMax).toFixed(3));
+      hex.style.setProperty('--dur', rand(11, 18).toFixed(1) + 's');
+      hex.style.setProperty('--delay', rand(-18, 0).toFixed(1) + 's');
+      hex.dataset.depth = tier.d;
+      return hex;
+    }
+
+    document.querySelectorAll('.conduction-bg').forEach(bg => {
+      const section = bg.parentElement;
+      const hexes = [];
+      for (let i = 0; i < HEX_COUNT; i++) {
+        const orange = (i === Math.floor(HEX_COUNT / 2));
+        const hex = buildHex(orange);
+        bg.appendChild(hex);
+        hexes.push(hex);
+      }
+      if (reduceMotion) return;
+
+      let visible = false;
+      let ticking = false;
+
+      const update = () => {
+        const rect = section.getBoundingClientRect();
+        const offset = (rect.top + rect.height / 2) - window.innerHeight / 2;
+        for (const h of hexes) {
+          const d = parseFloat(h.dataset.depth);
+          const ty = -offset * d * PARALLAX_FACTOR;
+          h.style.transform = `translate(-50%, -50%) translateY(${ty.toFixed(1)}px)`;
+        }
+        ticking = false;
+      };
+
+      const onScroll = () => {
+        if (!visible || ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      };
+
+      const io = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) update();
+      }, { rootMargin: '300px 0px' });
+      io.observe(section);
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    });
+  })();
+</script>
+
+</body>
+</html>

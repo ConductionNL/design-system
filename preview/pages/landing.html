@@ -452,7 +452,6 @@
       hex.style.setProperty('--dur', rand(11, 18).toFixed(1) + 's');
       hex.style.setProperty('--delay', rand(-18, 0).toFixed(1) + 's');
       hex.dataset.depth = tier.d;
-      hex.dataset.rot = rand(-15, 15).toFixed(1);
       return hex;
     }
 
@@ -465,10 +464,7 @@
         bg.appendChild(hex);
         hexes.push(hex);
       }
-      if (reduceMotion) {
-        hexes.forEach(h => { h.style.transform = `translate(-50%, -50%) rotate(${h.dataset.rot}deg)`; });
-        return;
-      }
+      if (reduceMotion) return; /* CSS transform: translate(-50%, -50%) handles the rest */
 
       let visible = false;
       let ticking = false;
@@ -479,7 +475,7 @@
         for (const h of hexes) {
           const d = parseFloat(h.dataset.depth);
           const ty = -offset * d * PARALLAX_FACTOR;
-          h.style.transform = `translate(-50%, -50%) translateY(${ty.toFixed(1)}px) rotate(${h.dataset.rot}deg)`;
+          h.style.transform = `translate(-50%, -50%) translateY(${ty.toFixed(1)}px)`;
         }
         ticking = false;
       };

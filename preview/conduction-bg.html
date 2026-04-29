@@ -5,29 +5,8 @@
 <title>Conduction background — Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="preview.css">
+<link rel="stylesheet" href="conduction-bg.css">
 <style>
-  /* ===== Conduction background — reusable parallax honeycomb layer =====
-     Drop <div class="conduction-bg" aria-hidden="true"></div> as the first
-     child of any position:relative + overflow:hidden container. The page-end
-     script hydrates each instance with depth-tiered hexes that parallax on
-     scroll and breathe in opacity. Hexes are always pointy-top — never
-     rotated — per huisstijl. */
-  .conduction-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-  .conduction-bg .hex {
-    position: absolute;
-    clip-path: var(--hex-pointy-top);
-    will-change: transform, opacity;
-    transform: translate(-50%, -50%);
-    animation: hex-breathe var(--dur, 14s) ease-in-out var(--delay, 0s) infinite;
-  }
-  @keyframes hex-breathe {
-    0%, 100% { opacity: var(--opa-min, 0.04); }
-    50%      { opacity: var(--opa-max, 0.18); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .conduction-bg .hex { animation: none; opacity: var(--opa-max, 0.12); }
-  }
-
   /* ===== Doc-only chrome ===== */
   .stage {
     position: relative;
@@ -37,7 +16,19 @@
     border-radius: var(--radius-xl);
     padding: 96px 64px;
     text-align: center;
+    isolation: isolate;
   }
+  .stage > h3, .stage > p, .stage > .scroll-hint { position: relative; z-index: 1; }
+  .stage.on-light {
+    background: white;
+    color: var(--c-cobalt-900);
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .stage.on-light h3 { color: var(--c-cobalt-900); }
+  .stage.on-light p  { color: var(--c-cobalt-700); }
+  .stage.on-light .scroll-hint { color: var(--c-cobalt-400); }
+  .stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .stage-grid .stage { padding: 56px 40px; }
   .stage h3 {
     position: relative;
     color: white;
@@ -180,16 +171,24 @@
       <div class="card-eyebrow">Motif · Conduction background</div>
       <h1 class="card-title">A honeycomb depth field that breathes.</h1>
     </div>
-    <p class="card-subtitle">Drop-in parallax backdrop for cobalt sections. Smaller hexes sit deeper — they move slower on scroll and fade gentler. The field always reads as the brand without ever competing with the foreground.</p>
+    <p class="card-subtitle">Drop-in parallax backdrop for any brand surface. Smaller hexes sit deeper — they move slower on scroll and fade gentler. Two themes: white hexes on cobalt (default) and cobalt hexes on white (<code>.on-light</code>). The field always reads as the brand without ever competing with the foreground.</p>
   </div>
 
   <!-- Live demo -->
-  <div class="section-label">Live demo · scroll the page to see the parallax</div>
-  <div class="stage" data-conduction-bg-host>
-    <div class="conduction-bg" aria-hidden="true"></div>
-    <h3>The Conduction background.</h3>
-    <p>Eighteen hexes across five depth tiers. Smaller = farther = slower parallax + gentler breath. One orange accent. All pointy-top, always.</p>
-    <span class="scroll-hint"><span class="h"></span>Scroll up and down</span>
+  <div class="section-label">Live demo · two themes, scroll the page to see the parallax</div>
+  <div class="stage-grid">
+    <div class="stage">
+      <div class="conduction-bg" aria-hidden="true"></div>
+      <h3>Default · on cobalt.</h3>
+      <p>White hexes on a cobalt surface. Use behind CTA banners, testimonial cobalt halves, download forms.</p>
+      <span class="scroll-hint"><span class="h"></span>Scroll up and down</span>
+    </div>
+    <div class="stage on-light">
+      <div class="conduction-bg on-light" aria-hidden="true"></div>
+      <h3>On-light · on white.</h3>
+      <p>Cobalt hexes on a white surface. Use behind heroes, full-bleed pages, soft cobalt-50 stages. Opacity is auto-scaled so cobalt-on-white reads as a veil, not a pattern.</p>
+      <span class="scroll-hint"><span class="h"></span>Scroll up and down</span>
+    </div>
   </div>
 
   <!-- Tiers -->
@@ -239,33 +238,26 @@
 
   <!-- How to use -->
   <div class="section-label">How to use</div>
-  <div class="code"><span class="c">&lt;!-- 1. Drop the layer as the first child of a position:relative + overflow:hidden parent --&gt;</span>
+  <div class="code"><span class="c">&lt;!-- 1. Include the stylesheet and hydrator once per page --&gt;</span>
+&lt;link <span class="k">rel</span>=<span class="s">"stylesheet"</span> <span class="k">href</span>=<span class="s">"conduction-bg.css"</span>&gt;
+&lt;script <span class="k">src</span>=<span class="s">"conduction-bg.js"</span> defer&gt;&lt;/script&gt;
+
+<span class="c">&lt;!-- 2. Drop the layer as the first child of a position:relative + overflow:hidden parent --&gt;</span>
 &lt;section <span class="k">class</span>=<span class="s">"cta-banner"</span>&gt;
   &lt;div <span class="k">class</span>=<span class="s">"conduction-bg"</span> <span class="k">aria-hidden</span>=<span class="s">"true"</span>&gt;&lt;/div&gt;
   &lt;h2&gt;Pick an app. Install it. Done.&lt;/h2&gt;
   …
 &lt;/section&gt;
 
-<span class="c">/* 2. Copy the CSS */</span>
-.conduction-bg { <span class="k">position</span>: absolute; <span class="k">inset</span>: <span class="n">0</span>; <span class="k">overflow</span>: hidden; <span class="k">pointer-events</span>: none; }
-.conduction-bg .hex {
-  <span class="k">position</span>: absolute;
-  <span class="k">clip-path</span>: <span class="k">var</span>(<span class="s">--hex-pointy-top</span>);
-  <span class="k">will-change</span>: transform, opacity;
-  <span class="k">transform</span>: translate(<span class="n">-50%</span>, <span class="n">-50%</span>);
-  <span class="k">animation</span>: hex-breathe <span class="k">var</span>(<span class="s">--dur</span>, <span class="n">14s</span>) ease-in-out <span class="k">var</span>(<span class="s">--delay</span>, <span class="n">0s</span>) infinite;
-}
-<span class="k">@keyframes</span> hex-breathe {
-  <span class="n">0%</span>, <span class="n">100%</span> { <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-min</span>, <span class="n">0.04</span>); }
-  <span class="n">50%</span>      { <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-max</span>, <span class="n">0.18</span>); }
-}
-<span class="k">@media</span> (prefers-reduced-motion: reduce) {
-  .conduction-bg .hex { <span class="k">animation</span>: none; <span class="k">opacity</span>: <span class="k">var</span>(<span class="s">--opa-max</span>, <span class="n">0.12</span>); }
-}
+<span class="c">&lt;!-- 3. For light surfaces (white, cobalt-50) add the on-light theme class --&gt;</span>
+&lt;section <span class="k">class</span>=<span class="s">"hero"</span>&gt;
+  &lt;div <span class="k">class</span>=<span class="s">"conduction-bg on-light"</span> <span class="k">aria-hidden</span>=<span class="s">"true"</span>&gt;&lt;/div&gt;
+  …
+&lt;/section&gt;
 
-<span class="c">/* 3. Hydrate with the script — see &lt;script&gt; tag at the bottom of this page.
-   It builds 18 hexes per .conduction-bg, drives parallax on scroll, and
-   gates work behind IntersectionObserver. */</span></div>
+<span class="c">/* Optional dataset hooks */</span>
+&lt;div <span class="k">class</span>=<span class="s">"conduction-bg"</span> <span class="k">data-count</span>=<span class="s">"24"</span>&gt;&lt;/div&gt;  <span class="c">/* override hex count, default 18 */</span>
+&lt;div <span class="k">class</span>=<span class="s">"conduction-bg"</span> <span class="k">style</span>=<span class="s">"--cbg-accent: var(--c-mint-500);"</span>&gt;&lt;/div&gt;  <span class="c">/* override accent colour */</span></div>
 
   <!-- Anatomy -->
   <div class="section-label">Anatomy</div>
@@ -297,22 +289,23 @@
     <div class="rule-col yes">
       <h5>Do</h5>
       <ul>
-        <li>Use it on cobalt CTAs, hero plates, and section closers — places that already feel like brand surface</li>
+        <li>Use it on CTA banners, heroes, testimonials, downloads — places that already feel like brand surface</li>
+        <li>Pick the right theme: default for cobalt / cobalt-800, <code>.on-light</code> for white / cobalt-50</li>
         <li>Keep every hex pointy-top — depth comes from size + opacity, never from rotation</li>
-        <li>Place exactly one orange accent per scene; the rest are white at 0.03–0.20 opacity</li>
+        <li>One orange accent per scene; the hydrator places it in the middle of the tier mix automatically</li>
+        <li>Wrap the host in <code>position: relative; overflow: hidden; isolation: isolate</code></li>
         <li>Cap the field at ~18 hexes — past that the breath stops feeling calm</li>
-        <li>Always set <code>pointer-events: none</code> on the layer so foreground actions stay clickable</li>
-        <li>Honour <code>prefers-reduced-motion</code> — the layer is decorative, never load-bearing</li>
+        <li>Honour <code>prefers-reduced-motion</code> — the layer is decorative, never load-bearing (hydrator handles this)</li>
       </ul>
     </div>
     <div class="rule-col no">
       <h5>Don't</h5>
       <ul>
         <li>Don't rotate hexes for "movement" — that breaks the huisstijl</li>
-        <li>Don't push opacity above ~0.25; the field is backdrop, not pattern</li>
+        <li>Don't push opacity above ~0.20 on dark or ~0.12 on light; the field is backdrop, not pattern</li>
         <li>Don't stack two conduction-bg layers on the same section — one field per surface</li>
         <li>Don't combine with the cut-corners motif on the same surface — pick one</li>
-        <li>Don't use it on light surfaces; the white-on-cobalt contrast is the whole effect</li>
+        <li>Don't use the default (white) theme on a light surface — switch to <code>.on-light</code></li>
         <li>Don't speed up the breath cycle below ~10 s — the field starts to flicker</li>
       </ul>
     </div>
@@ -320,91 +313,7 @@
 
 </div>
 
-<script>
-  /* Conduction background: depth-tiered hex parallax + slow breathe.
-     Smaller hex → smaller depth → smaller parallax translate → reads as "farther away".
-     Hexes are always pointy-top — never rotated — per huisstijl. */
-  (function () {
-    const TIERS = [
-      { d: 0.10, sMin: 32,  sMax: 56,  oMin: 0.03, oMax: 0.10, w: 5 },
-      { d: 0.25, sMin: 56,  sMax: 96,  oMin: 0.04, oMax: 0.13, w: 4 },
-      { d: 0.45, sMin: 96,  sMax: 150, oMin: 0.05, oMax: 0.16, w: 3 },
-      { d: 0.65, sMin: 150, sMax: 220, oMin: 0.07, oMax: 0.18, w: 2 },
-      { d: 0.85, sMin: 220, sMax: 300, oMin: 0.08, oMax: 0.20, w: 1 },
-    ];
-    const HEX_COUNT = 18;
-    const PARALLAX_FACTOR = 0.4;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const rand = (a, b) => Math.random() * (b - a) + a;
-    const pickTier = () => {
-      const total = TIERS.reduce((s, t) => s + t.w, 0);
-      let r = Math.random() * total;
-      for (const t of TIERS) { if ((r -= t.w) <= 0) return t; }
-      return TIERS[0];
-    };
-
-    function buildHex(orange) {
-      const tier = pickTier();
-      const size = rand(tier.sMin, tier.sMax);
-      const hex = document.createElement('span');
-      hex.className = 'hex';
-      hex.style.width = size + 'px';
-      hex.style.height = (size * 1.1547) + 'px';
-      hex.style.left = rand(-5, 105) + '%';
-      hex.style.top = rand(-25, 125) + '%';
-      hex.style.background = orange ? 'var(--c-orange-knvb)' : '#ffffff';
-      hex.style.setProperty('--opa-min', tier.oMin.toFixed(3));
-      hex.style.setProperty('--opa-max', (orange ? Math.min(tier.oMax + 0.05, 0.28) : tier.oMax).toFixed(3));
-      hex.style.setProperty('--dur', rand(11, 18).toFixed(1) + 's');
-      hex.style.setProperty('--delay', rand(-18, 0).toFixed(1) + 's');
-      hex.dataset.depth = tier.d;
-      return hex;
-    }
-
-    document.querySelectorAll('.conduction-bg').forEach(bg => {
-      const section = bg.parentElement;
-      const hexes = [];
-      for (let i = 0; i < HEX_COUNT; i++) {
-        const orange = (i === Math.floor(HEX_COUNT / 2));
-        const hex = buildHex(orange);
-        bg.appendChild(hex);
-        hexes.push(hex);
-      }
-      if (reduceMotion) return;
-
-      let visible = false;
-      let ticking = false;
-
-      const update = () => {
-        const rect = section.getBoundingClientRect();
-        const offset = (rect.top + rect.height / 2) - window.innerHeight / 2;
-        for (const h of hexes) {
-          const d = parseFloat(h.dataset.depth);
-          const ty = -offset * d * PARALLAX_FACTOR;
-          h.style.transform = `translate(-50%, -50%) translateY(${ty.toFixed(1)}px)`;
-        }
-        ticking = false;
-      };
-
-      const onScroll = () => {
-        if (!visible || ticking) return;
-        ticking = true;
-        requestAnimationFrame(update);
-      };
-
-      const io = new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting;
-        if (visible) update();
-      }, { rootMargin: '300px 0px' });
-      io.observe(section);
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
-      update();
-    });
-  })();
-</script>
+<script src="conduction-bg.js" defer></script>
 
 </body>
 </html>

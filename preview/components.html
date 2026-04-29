@@ -5,6 +5,7 @@
 <title>Components — Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="preview.css">
+<link rel="stylesheet" href="conduction-bg.css">
 <style>
   /* Buttons */
   .btn {
@@ -235,6 +236,7 @@
     color: white;
     position: relative;
     min-height: 320px;
+    isolation: isolate;
   }
   .testimonial .photo {
     background: linear-gradient(135deg, var(--c-cobalt-200), var(--c-cobalt-400));
@@ -273,25 +275,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-  /* Hex echo behind quote */
-  .testimonial .body::before {
-    content: "";
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 230px;
-    clip-path: var(--hex-pointy-top);
-    background: rgba(255,255,255,0.04);
-    pointer-events: none;
-  }
-  .testimonial .body::after {
-    content: "";
-    position: absolute;
-    bottom: -50px; right: 80px;
-    width: 140px; height: 162px;
-    clip-path: var(--hex-pointy-top);
-    background: rgba(255,255,255,0.03);
-    pointer-events: none;
   }
   .testimonial .quote-mark {
     font-family: Georgia, serif;
@@ -463,19 +446,8 @@
     min-height: 580px;
     overflow: hidden;
     border: 1px solid var(--c-cobalt-100);
+    isolation: isolate;
   }
-  /* faint hex pattern in the stage corners */
-  .chat-stage::before,
-  .chat-stage::after {
-    content: "";
-    position: absolute;
-    width: 180px; height: 207px;
-    clip-path: var(--hex-pointy-top);
-    background: rgba(33, 70, 139, 0.05);
-    pointer-events: none;
-  }
-  .chat-stage::before { top: -60px; left: -40px; }
-  .chat-stage::after  { bottom: -60px; right: -40px; transform: rotate(15deg); }
   .chat-fab {
     position: absolute;
     bottom: 24px; right: 24px;
@@ -654,16 +626,10 @@
     align-items: center;
     position: relative;
     overflow: hidden;
+    isolation: isolate;
   }
-  .download-panel::before {
-    content: "";
-    position: absolute;
-    top: -80px; right: 380px;
-    width: 200px; height: 230px;
-    clip-path: var(--hex-pointy-top);
-    background: rgba(255,255,255,0.03);
-    pointer-events: none;
-  }
+  .download-panel .pitch,
+  .download-panel .form-card { position: relative; z-index: 1; }
   .download-panel .pitch h3 {
     color: white;
     font-size: 32px;
@@ -921,6 +887,7 @@
   <!-- Testimonial -->
   <div class="section-label">Testimonial · split panel with hex-cut transition</div>
   <div class="testimonial">
+    <div class="conduction-bg" aria-hidden="true"></div>
     <div class="photo">
       <span class="frame-label">Photo · placeholder</span>
     </div>
@@ -972,6 +939,7 @@
   <!-- Chat popover -->
   <div class="section-label">Chat popover · floating helper with hex FAB</div>
   <div class="chat-stage">
+    <div class="conduction-bg on-light" aria-hidden="true"></div>
     <div class="chat-popover">
       <button class="close" aria-label="Close">×</button>
       <div class="avatars">
@@ -1043,6 +1011,7 @@
   <!-- Download / lead capture -->
   <div class="section-label">Download / lead-capture panel · cut-corner form on cobalt-800</div>
   <div class="download-panel">
+    <div class="conduction-bg" aria-hidden="true"></div>
     <div class="pitch">
       <h3>The 2026 Open-Source<br>Government Stack — report.</h3>
       <p>Forty-two Dutch organisations, eighteen months of installs, what worked and what didn't. The full benchmark, with TCO numbers, migration paths, and which Conduction app maps onto which legacy SaaS.</p>
@@ -1205,5 +1174,6 @@
   </div>
 </div>
 
+<script src="conduction-bg.js" defer></script>
 </body>
 </html>

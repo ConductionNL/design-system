@@ -158,6 +158,16 @@
     goSunk.textContent = String(game.sunkTotal);
     goPanel.classList.add('show');
     hud.classList.remove('active');
+    // Notify the gaming modal (if mounted) so it can update the cookie
+    // and reveal the cross-site progress panel.
+    window.dispatchEvent(new CustomEvent('connext:gameend', {
+      detail: {
+        id: 'boats',
+        won: victory,
+        score: game.sunkTotal,
+        summary: game.sunkTotal + ' boat' + (game.sunkTotal === 1 ? '' : 's') + ' sunk',
+      },
+    }));
   }
 
   function resetGame() {
@@ -175,6 +185,10 @@
     startGame();
   }
   goRestart.addEventListener('click', resetGame);
+  // Modal "Play again" button can also restart this game from anywhere.
+  window.addEventListener('connext:gamereplay', (e) => {
+    if (e.detail?.id === 'boats') resetGame();
+  });
 
   // ===== Pace knobs — driven by the further of (time elapsed) and (score lost) =====
   function progress() {

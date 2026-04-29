@@ -1154,6 +1154,7 @@ Cookie shortcuts (always live):
       this.lives = 3;
       this.wave = 1;
       this.gameOver = false;
+      this._endEmitted = false;
       this.player = { x: Math.floor(COLS / 2) - 1 };
       this.lasers = [];
       this.bombs = [];
@@ -1250,6 +1251,21 @@ Cookie shortcuts (always live):
         this.graceTicks = 12;
       }
 
+      // First tick after gameOver flips on, fire `connext:gameend` so the
+      // gaming-modal component can record discovery + score in its cookie.
+      if (this.gameOver && !this._endEmitted) {
+        this._endEmitted = true;
+        const won = this.ufos.every(u => !u.alive); // rare clean-sweep win
+        window.dispatchEvent(new CustomEvent('connext:gameend', {
+          detail: {
+            id: 'invaders',
+            won,
+            score: this.score,
+            summary: this.score + ' pts · wave ' + this.wave,
+          },
+        }));
+      }
+
       this.render();
     }
 
@@ -1330,9 +1346,16 @@ Cookie shortcuts (always live):
     }
   }
 
+  // The gaming-modal "Play again" button fires this on the live game's id.
+  window.addEventListener('connext:gamereplay', (e) => {
+    if (e.detail && e.detail.id === 'invaders' && game) game.restart();
+  });
+
   // boot: render empty input
   renderInput();
 </script>
+
+<script src="components/game-modal.js" defer></script>
 
 </body>
 </html>

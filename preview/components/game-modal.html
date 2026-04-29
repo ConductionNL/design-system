@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Game-modal — ConNext Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="game-modal.css">
+<style>
+  body { margin: 0; background: white; padding: 40px; font-family: 'Inter', system-ui; }
+  body .demo-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  body .demo-buttons button { padding: 10px 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- Game-modal markup. When this file is included onto a page via include.js,
+     only the body content below is hoisted. The modal is hidden until a game
+     fires `connext:gameend`; game-modal.js takes over from there. -->
+
+<div class="game-modal" id="connext-game-modal" role="dialog" aria-modal="true" aria-labelledby="gm-title" hidden>
+  <div class="game-modal__overlay" data-close></div>
+  <div class="game-modal__panel">
+    <button type="button" class="game-modal__close" data-close aria-label="Close">×</button>
+    <p class="game-modal__eyebrow" data-eyebrow>Mini-game complete</p>
+    <h2 class="game-modal__title" id="gm-title" data-title>Nice run.</h2>
+    <p class="game-modal__subtitle" data-subtitle></p>
+    <span class="game-modal__score-pill" data-score-pill hidden></span>
+
+    <div class="game-modal__progress">
+      <div class="game-modal__progress-label">
+        <span><strong data-progress-found>0</strong> / 5 mini-games found</span>
+        <span data-progress-percent>0%</span>
+      </div>
+      <div class="game-modal__progress-bar">
+        <div class="game-modal__progress-fill" data-progress-fill></div>
+      </div>
+    </div>
+
+    <div class="game-modal__grid" data-grid></div>
+
+    <p class="game-modal__cta" data-cta>Two more games are hidden somewhere on the site. Keep clicking.</p>
+
+    <div class="game-modal__actions">
+      <button type="button" class="game-modal__btn game-modal__btn--secondary" data-close>Close</button>
+      <button type="button" class="game-modal__btn game-modal__btn--primary" data-replay>Play again</button>
+    </div>
+  </div>
+</div>
+
+<!-- Demo buttons (only visible on the standalone preview page; harmless when
+     included into a host since they sit outside the .game-modal element). -->
+<div class="demo-buttons">
+  <button onclick="window.dispatchEvent(new CustomEvent('connext:gameend',{detail:{id:'boats',won:true,score:47,summary:'47 boats sunk'}}))">Trigger boats win</button>
+  <button onclick="window.dispatchEvent(new CustomEvent('connext:gameend',{detail:{id:'hexrain',won:false,score:7,summary:'7 / 12 collected'}}))">Trigger hexrain lose</button>
+  <button onclick="window.dispatchEvent(new CustomEvent('connext:gameend',{detail:{id:'invaders',won:true,score:1200,summary:'1 200 pts'}}))">Trigger invaders</button>
+  <button onclick="document.cookie='connext_minigames=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';location.reload()">Reset cookie</button>
+</div>
+
+<script src="game-modal.js" defer></script>
+
+</body>
+</html>

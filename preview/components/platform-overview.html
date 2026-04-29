@@ -268,16 +268,21 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 /* App Builder hex centred on kernel's bottom peak (50%, 100%) + 24px outward */
 .kernel-corner-hex.app-builder { justify-self: center; align-self: center; transform: translateY(calc(208px + 24px)); }
 
-/* List-box wraps sit at their grid columns' inner edges (no inward shift) —
-   pushing them slightly outward gives the corner hexes more breathing room
-   between the list-boxes and the kernel.
-   Hover lifts each list-box and adds a stronger shadow for depth. */
+/* List-box wraps anchor their inner corner to the corresponding component
+   hex's outer vertex — the same pattern hexes use against the kernel.
+   Math: hex outer vertex sits 40px outward (x) and ~38/98px past the
+   list's current corner (y), depending on which row.
+   Hover lift moves the inner .box (kept independent of these wrap shifts). */
 .box-wrap.tech-core,
 .box-wrap.workplace,
 .box-wrap.ai,
 .box-wrap.integrated {
   transition: transform 160ms ease;
 }
+.box-wrap.tech-core    { transform: translate(-40px, 38px); }
+.box-wrap.ai           { transform: translate( 40px, 38px); }
+.box-wrap.workplace    { transform: translate(-40px, 98px); }
+.box-wrap.integrated   { transform: translate( 40px, 98px); }
 .box-wrap.tech-core .box,
 .box-wrap.ai .box,
 .box-wrap.workplace .box,
@@ -326,10 +331,9 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 }
 /* Sits above the corner cards (tech-core / ai) by translating further up */
 .box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 432px)); }
-/* List top edge sits 24px below the App Builder hex's bottom edge.
-   Hex centre at kernel.center + 232; hex bottom at +232 + 92.5 = +324.5.
-   Add 24px gap → list top at kernel.center + 348.5. */
-.box-wrap.app-builder { transform: translateY(calc(50% + 348.5px)); }
+/* App Builder list: top-centre at hex's bottom peak (50%, 100%) — the
+   same corner-anchor pattern. Hex bottom peak at kernel.center + 324.5. */
+.box-wrap.app-builder { transform: translateY(calc(50% + 324.5px)); }
 
 .box-wrap.app-builder .box {
   border-style: dashed;

@@ -59,18 +59,24 @@
   .head .btn-ghost { color: var(--c-cobalt-700); font-size: 14px; font-weight: 500; text-decoration: none; }
   .head .btn-ghost:hover { color: var(--c-orange-knvb); }
 
-  /* Partner hex avatar — same proportion as app-detail's app-hex */
+  /* Partner hex avatar — wrapper provides the tier-coloured ring; the
+     inner hex hosts the logo on a white surface. Wrapper-and-inner because
+     CSS box-shadow doesn't follow clip-path, so a ring drawn that way
+     would render as strips on the sides instead of following the hex. */
   .partner-hex {
     width: 360px; height: 416px;
     clip-path: var(--hex-pointy-top);
-    background: var(--c-blue-cobalt);
-    color: white;
+    background: var(--c-orange-knvb);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: 152px;
-    letter-spacing: -0.04em;
-    line-height: 1;
   }
+  .partner-hex .inner {
+    width: 348px; height: 402px;
+    clip-path: var(--hex-pointy-top);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .partner-hex img { width: 240px; height: 240px; object-fit: contain; image-rendering: -webkit-optimize-contrast; }
 
   /* Body grid */
   .body-grid {
@@ -223,13 +229,14 @@
   .other-card .mini-avatar {
     width: 44px; height: 50px;
     clip-path: var(--hex-pointy-top);
-    background: var(--c-cobalt-50); color: var(--c-blue-cobalt);
+    background: white;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    font-weight: 700; font-size: 16px;
+    overflow: hidden;
   }
-  .other-card.certified .mini-avatar { background: var(--c-gold-500); color: var(--c-cobalt-900); }
-  .other-card.strategic .mini-avatar { background: var(--c-blue-cobalt); color: white; }
+  .other-card .mini-avatar img { max-width: 28px; max-height: 28px; object-fit: contain; }
+  .other-card.certified .mini-avatar { box-shadow: inset 0 0 0 2px var(--c-gold-500); }
+  .other-card.strategic .mini-avatar { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); }
   .other-card .name { font-size: 15px; font-weight: 600; color: var(--c-cobalt-900); margin-bottom: 4px; }
   .other-card .why { font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5; }
 </style>
@@ -256,7 +263,7 @@
       <a href="support.html" class="btn-ghost">All partners →</a>
     </div>
   </div>
-  <div class="partner-hex">A</div>
+  <div class="partner-hex"><div class="inner"><img src="../../brand/assets/partners/acato.png" alt="Acato logo"></div></div>
 </header>
 
 <div class="body-grid">
@@ -387,21 +394,21 @@
   </div>
   <div class="other-row">
     <a href="partner-detail.html" class="other-card certified">
-      <div class="mini-avatar">C</div>
+      <div class="mini-avatar"><img src="../../brand/assets/partners/centric.png" alt="Centric logo"></div>
       <div>
         <div class="name">Centric</div>
         <div class="why">Enterprise-rollouts voor grote gemeenten en uitvoeringsorganisaties. Officieel <span class="next-blue">Nextcloud</span>-distributeur.</div>
       </div>
     </a>
     <a href="partner-detail.html" class="other-card certified">
-      <div class="mini-avatar">TG</div>
+      <div class="mini-avatar"><img src="../../brand/assets/partners/goodcloud.png" alt="The Goodcloud logo"></div>
       <div>
         <div class="name">The Goodcloud</div>
         <div class="why">Beheerd <span class="next-blue">Nextcloud</span>-hosting voor MKB en non-profits, NL-only datacenters. Officieel <span class="next-blue">Nextcloud</span>-distributeur.</div>
       </div>
     </a>
     <a href="partner-detail.html" class="other-card">
-      <div class="mini-avatar">OG</div>
+      <div class="mini-avatar"><img src="../../brand/assets/partners/open-gemeenten.png" alt="Open Gemeenten logo"></div>
       <div>
         <div class="name">Open Gemeenten</div>
         <div class="why">Coöperatieve community van gemeenten — ideaal voor wie zelf engineering-capaciteit heeft maar gedeelde implementatie-patronen wil.</div>

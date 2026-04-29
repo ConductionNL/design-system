@@ -95,7 +95,7 @@
   .value p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0; }
 
   /* Team */
-  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .person {
     background: white;
     border: 1px solid var(--c-cobalt-100);
@@ -116,27 +116,62 @@
   .person .name { font-size: 16px; font-weight: 700; color: var(--c-cobalt-900); margin-bottom: 4px; }
   .person .role { font-size: 13px; color: var(--c-cobalt-700); }
 
-  /* Timeline */
-  .timeline { display: flex; flex-direction: column; gap: 24px; max-width: 720px; }
+  /* Timeline — vertical cobalt line on the left with a pointy-top hex
+     marker at every milestone, year labels in KNVB orange. */
+  .timeline {
+    position: relative;
+    display: flex; flex-direction: column;
+    gap: 48px;
+    max-width: 760px;
+    padding-left: 56px;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--c-orange-knvb) 0,
+      var(--c-cobalt-200) 16px,
+      var(--c-cobalt-200) calc(100% - 16px),
+      var(--c-orange-knvb) 100%
+    );
+  }
   .milestone {
+    position: relative;
     display: grid;
-    grid-template-columns: 96px 1fr;
+    grid-template-columns: 88px 1fr;
     gap: 24px;
     align-items: start;
   }
+  /* Pointy-top hex marker — sits on the line. */
+  .milestone::before {
+    content: "";
+    position: absolute;
+    left: -56px;
+    top: 4px;
+    width: 18px; height: 21px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    box-shadow: 0 0 0 4px white;
+  }
   .milestone .year {
     font-family: var(--conduction-typography-font-family-code);
-    font-size: 14px; letter-spacing: 0.04em;
+    font-size: 16px; letter-spacing: 0.04em;
     color: var(--c-orange-knvb);
-    font-weight: 600;
-    padding-top: 4px;
+    font-weight: 700;
+    padding-top: 2px;
   }
   .milestone .what h4 {
-    font-size: 18px; font-weight: 700; color: var(--c-cobalt-900);
-    margin: 0 0 6px;
+    font-size: 20px; font-weight: 700; color: var(--c-cobalt-900);
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
   }
   .milestone .what p {
-    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6;
     margin: 0; max-width: 56ch;
   }
 
@@ -184,7 +219,7 @@
   <div>
     <div class="eyebrow"><span class="h"></span>The company</div>
     <h1>We're Conduction. We build the apps you read about on this site.</h1>
-    <p class="lede">A Dutch open-source product company in The Hague. Twelve apps shipping under EUPL-1.2, twelve people on the team, one product mission: an open ecosystem of <span class="next-blue">Nextcloud</span> apps that solve concrete problems for MKB and overheid.</p>
+    <p class="lede">A Dutch open-source product company in The Hague. Twelve apps shipping under EUPL-1.2, nine people on the team, one product mission: an open ecosystem of <span class="next-blue">Nextcloud</span> apps that solve concrete problems for MKB and overheid.</p>
     <div class="meta-row">
       <span class="item"><span class="h"></span>Founded 2019</span>
       <span class="item"><span class="h"></span>The Hague, NL</span>
@@ -223,17 +258,18 @@
   <div class="inner">
     <div class="section-head">
       <div class="eyebrow"><span class="h"></span>The team</div>
-      <h2>Twelve people. The Hague. Mostly Dutch.</h2>
+      <h2>Nine people. The Hague.<br>Solution architects, developers, ops.</h2>
     </div>
     <div class="team-grid">
-      <div class="person"><div class="avatar">RvL</div><div class="name">Ruben van der Linde</div><div class="role">Founder · Eng lead</div></div>
-      <div class="person"><div class="avatar">SdV</div><div class="name">Sanne de Vries</div><div class="role">Product · OpenRegister</div></div>
-      <div class="person"><div class="avatar">MK</div><div class="name">Martijn Kuipers</div><div class="role">Connectors · Integrations</div></div>
-      <div class="person"><div class="avatar">EJ</div><div class="name">Esther Janssen</div><div class="role">Compliance · NLDS</div></div>
-      <div class="person"><div class="avatar">RvZ</div><div class="name">Robin van Zandvoort</div><div class="role">DocuDesk · Design</div></div>
-      <div class="person"><div class="avatar">KB</div><div class="name">Kasper Bakker</div><div class="role">MyDash · Frontend</div></div>
-      <div class="person"><div class="avatar">JdJ</div><div class="name">Jolien de Jong</div><div class="role">Support · Strategic</div></div>
-      <div class="person"><div class="avatar">+5</div><div class="name">Plus five more.</div><div class="role">See the team page →</div></div>
+      <div class="person"><div class="avatar">Ru</div><div class="name">Ruben</div><div class="role">Solution architect · technology lead</div></div>
+      <div class="person"><div class="avatar">Ma</div><div class="name">Marleen</div><div class="role">Research &amp; strategy · creative</div></div>
+      <div class="person"><div class="avatar">Re</div><div class="name">Remco</div><div class="role">Sales &amp; operations lead</div></div>
+      <div class="person"><div class="avatar">Mk</div><div class="name">Mark</div><div class="role">Solution architect · gemeenten</div></div>
+      <div class="person"><div class="avatar">Ro</div><div class="name">Robert</div><div class="role">Developer · puzzle-solver</div></div>
+      <div class="person"><div class="avatar">Wi</div><div class="name">Wilco</div><div class="role">Developer · teamplayer</div></div>
+      <div class="person"><div class="avatar">Ba</div><div class="name">Barry</div><div class="role">Developer · aanpakker</div></div>
+      <div class="person"><div class="avatar">Rk</div><div class="name">Remko</div><div class="role">Frontend · UX details</div></div>
+      <div class="person"><div class="avatar">Th</div><div class="name">Thijn</div><div class="role">Frontend · problem-solver</div></div>
     </div>
   </div>
 </section>

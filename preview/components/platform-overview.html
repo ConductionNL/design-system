@@ -5,18 +5,11 @@
 <title>Platform overview — ConNext hero</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="_lib/platform-diagram.css">
 <style>
 /* ============================================================
-   Platform overview — kernel + five component-hexes + lists
-   ----------------------------------------------------------------
-   Three-layer composition:
-     1. Nextcloud kernel hex (centre, large, gradient).
-     2. Five component HEXES with title — one per component-card,
-        positioned to slightly overlap the kernel.
-     3. Five list-boxes (one per component) — each slightly
-        overlapping its component hex.
-   Hovering an app row rolls out a one-line description.
-   Pointy-top hexes only.
+   Platform overview — page chrome around the <platform-diagram>.
+   The diagram itself is a reusable Web Component (see _lib/).
    ============================================================ */
 
 body { margin: 0; background: white; color: var(--c-cobalt-700); }
@@ -67,343 +60,11 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   max-width: 60ch; margin: 0 auto 16px;
 }
 
-/* ---- Diagram ---- */
-.diagram {
-  position: relative;
+/* ---- Diagram outer frame (the scrollable rail around the component) ---- */
+.diagram-frame {
   max-width: 1280px;
   margin: 0 auto;
-  /* extra top + bottom padding to accommodate the kernel-attached
-     workspace + app-builder lists, which translate above and below
-     the grid via CSS transforms. */
-  padding: 240px 56px 320px;
-  overflow: visible;
-}
-.diagram-grid {
-  display: grid;
-  grid-template-columns: 1fr 360px 1fr;
-  grid-template-rows: auto auto;
-  column-gap: 64px;
-  row-gap: 240px;     /* room for the corner-anchored hexes — they extend ~162px above/below their wrap */
-  align-items: start;
-  position: relative;
-  z-index: 1;
-}
-
-/* Kernel — single flat pointy-top hex, Nextcloud blue.
-   aspect-ratio at √3/2 (high precision) keeps all six sides equal. */
-.kernel {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  justify-self: center;
-  box-sizing: border-box;          /* so padding doesn't break the √3/2 ratio used by the clip-path */
-  width: 360px;
-  aspect-ratio: 1.7320508 / 2;
-  clip-path: var(--hex-pointy-top);
-  background: var(--gradient-nextcloud);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  color: white;
-  text-align: center;
-  padding: 0 32px;
-  position: relative;
-  z-index: 1;     /* lowest: hex tags overlap on top, list-boxes also above */
-}
-.kernel .kernel-logo {
-  width: 140px;
-  height: auto;
-  margin-bottom: 14px;
-}
-.kernel .role {
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
-  opacity: 0.85;
-  margin-top: 14px;
-}
-
-/* Outer wrapper — anchors the absolutely-positioned hex tag */
-.box-wrap {
-  position: relative;
-}
-
-/* List-box — bordered card with rows of apps */
-.box {
-  background: white;
-  border: 1px solid var(--c-cobalt-200);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-1);
-  position: relative;
-  z-index: 3;     /* list-box covers the hex's interior overlap */
-}
-.box .row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 6px 0;
-  font-size: 13px; color: var(--c-cobalt-700);
-  cursor: default;
-  flex-wrap: wrap;
-  position: relative;
-}
-.box .row + .row { border-top: 1px solid var(--c-cobalt-50); }
-.box .row .glyph {
-  width: 18px; height: 21px;
-  clip-path: var(--hex-pointy-top);
-  flex-shrink: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: white;
-}
-.box .row .glyph svg {
-  width: 11px; height: 11px;
-  stroke-width: 2; stroke: currentColor; fill: none;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-/* Brand glyphs: real app logos rendered in their own brand colour.
-   Drop the hex clip so the brand marks aren't cropped at the corners; use a
-   subtle rounded square (standard app-icon presentation) instead. */
-.box .row .glyph.brand {
-  background: white !important;
-  clip-path: none;
-  width: 20px; height: 20px;
-  border-radius: 5px;
-  box-shadow: inset 0 0 0 1px var(--c-cobalt-50);
-}
-.box .row .glyph.brand svg {
-  width: 14px; height: 14px;
-  stroke: none;
-}
-.box .row .glyph.brand svg > * { fill: currentColor; stroke: none; }
-.box .row .name { font-weight: 500; transition: color 140ms ease; }
-.box .row .meta {
-  margin-left: auto;
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 10px; color: var(--c-cobalt-400);
-  letter-spacing: 0.06em; text-transform: uppercase;
-}
-
-/* App description — appears as an absolute-positioned tooltip below the row,
-   so hover doesn't change the box's height (keeps neighbouring components still). */
-.box .row .desc {
-  position: absolute;
-  top: calc(100% - 4px);
-  left: 28px;
-  right: 8px;
-  background: var(--c-cobalt-700);
-  color: rgba(255,255,255,0.95);
-  font-size: 12px;
-  line-height: 1.45;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgba(33, 70, 139, 0.18);
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-  transition: opacity 140ms ease, transform 140ms ease;
-  z-index: 8;
-  white-space: normal;
-}
-.box .row:hover .desc {
-  opacity: 1;
-  transform: translateY(0);
-}
-.box .row:hover .name { color: var(--c-blue-cobalt); }
-
-/* ---- Component hex (the "title tag") ----
-   Positioned so each list-box's inner corner sits on the midpoint of one
-   hex side. Bigger and mathematically regular via precise √3/2 aspect ratio. */
-.box-hex {
-  position: absolute;
-  box-sizing: border-box;          /* same fix — keep border-box at √3/2 so clip-path renders a regular hex */
-  width: 160px;
-  aspect-ratio: 1.7320508 / 2;
-  clip-path: var(--hex-pointy-top);
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-  color: white;
-  font-size: 14px; font-weight: 600;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  line-height: 1.2;
-  padding: 0 14px;
-  z-index: 2;     /* above kernel (z=1), below list-box (z=3) */
-  filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
-}
-
-/* Component family tints */
-.fam-core      .box-hex, .fam-core      .row .glyph,
-.kernel-corner-hex.fam-core                              { background: var(--c-blue-cobalt); }
-.fam-workplace .box-hex, .fam-workplace .row .glyph,
-.kernel-corner-hex.fam-workplace                         { background: var(--c-blue-cobalt); }
-.fam-ai        .box-hex, .fam-ai        .row .glyph,
-.kernel-corner-hex.fam-ai                                { background: #2E9866; }
-.fam-integrate .box-hex, .fam-integrate .row .glyph,
-.kernel-corner-hex.fam-integrate                         { background: var(--c-cobalt-400); }
-.fam-builder   .box-hex, .fam-builder   .row .glyph,
-.kernel-corner-hex.fam-builder                           { background: var(--c-cobalt-300); }
-/* App Builder hex specifically: KNVB orange (overrides fam-builder default) */
-.kernel-corner-hex.app-builder                           { background: var(--c-orange-knvb); }
-.fam-nextcloud .box-hex, .fam-nextcloud .row .glyph,
-.kernel-corner-hex.fam-nextcloud                         { background: var(--c-nextcloud-blue); }
-
-/* Grid placement of wrappers around the kernel.
-   Row-1 wraps align to the row's bottom and row-2 wraps to the top, so all
-   four corner-anchor hexes meet at the same y on each side of the kernel. */
-.box-wrap.tech-core  { grid-column: 1; grid-row: 1; justify-self: end;   align-self: end;   min-width: 240px; max-width: 280px; width: 100%; }
-.box-wrap.ai         { grid-column: 3; grid-row: 1; justify-self: start; align-self: end;   min-width: 220px; max-width: 260px; width: 100%; }
-.box-wrap.workplace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
-.box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
-
-/* All four component hexes sit on the kernel's polygon corners.
-   They live as direct children of .diagram-grid (siblings of .kernel) and
-   share the kernel's grid cell so they're independent of the list-box wraps. */
-.kernel-corner-hex {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  width: 160px;
-  aspect-ratio: 1.7320508 / 2;
-  box-sizing: border-box;
-  clip-path: var(--hex-pointy-top);
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-  color: white;
-  font-size: 14px; font-weight: 600;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  line-height: 1.2;
-  padding: 0 14px;
-  z-index: 2;
-  filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
-}
-/* Kernel polygon corners sit at 25% (top) and 75% (bottom) of kernel height.
-   Kernel here is 416px tall → 25% from centre = 104px above/below.
-   Each hex is shifted an extra 24px outward so the four component hexes
-   form a clean rectangle around the kernel. */
-.kernel-corner-hex.tech-core   { justify-self: start;  transform: translate(calc(-50% - 24px), -104px); }
-.kernel-corner-hex.ai          { justify-self: end;    transform: translate(calc(50%  + 24px), -104px); }
-.kernel-corner-hex.workplace   { justify-self: start;  transform: translate(calc(-50% - 24px),  104px); }
-.kernel-corner-hex.integrated  { justify-self: end;    transform: translate(calc(50%  + 24px),  104px); }
-/* App Builder hex centred on kernel's bottom peak (50%, 100%) + 24px outward */
-.kernel-corner-hex.app-builder { justify-self: center; align-self: center; transform: translateY(calc(208px + 24px)); }
-
-/* List-box wraps anchor their inner corner to the corresponding component
-   hex's outer vertex — the same pattern hexes use against the kernel.
-   Math: hex outer vertex sits 40px outward (x) and ~38/98px past the
-   list's current corner (y), depending on which row.
-   Hover lift moves the inner .box (kept independent of these wrap shifts). */
-.box-wrap.tech-core,
-.box-wrap.workplace,
-.box-wrap.ai,
-.box-wrap.integrated {
-  transition: transform 160ms ease;
-}
-/* List inner corner anchors to the midpoint of the corresponding hex side
-   (instead of the vertex), then nudges 12-15px inward so the list overlaps
-   the hex slightly — the same hex.center-on-kernel.side pattern, repeated. */
-.box-wrap.tech-core    { transform: translate( 15px,  35px); }
-.box-wrap.ai           { transform: translate(-15px,  35px); }
-.box-wrap.workplace    { transform: translate( 15px, 100px); }
-.box-wrap.integrated   { transform: translate(-15px, 100px); }
-.box-wrap.tech-core .box,
-.box-wrap.ai .box,
-.box-wrap.workplace .box,
-.box-wrap.integrated .box,
-.box-wrap.app-builder .box,
-.box-wrap.nextcloud-workspace .box {
-  transition: box-shadow 160ms ease, transform 160ms ease;
-}
-.box-wrap.tech-core:hover .box,
-.box-wrap.ai:hover .box,
-.box-wrap.workplace:hover .box,
-.box-wrap.integrated:hover .box,
-.box-wrap.app-builder:hover .box,
-.box-wrap.nextcloud-workspace:hover .box {
-  box-shadow: var(--shadow-3);
-  transform: translateY(-2px);
-}
-
-/* Component hexes get a hover lift too. The translateY in their existing
-   transform is preserved per-variant via custom properties so the hover
-   can stack on top. */
-.kernel-corner-hex {
-  transition: filter 160ms ease, transform 220ms ease;
-  cursor: default;
-}
-.kernel-corner-hex:hover {
-  filter: drop-shadow(0 6px 14px rgba(33, 70, 139, 0.32));
-}
-.kernel-corner-hex.tech-core:hover   { transform: translate(calc(-50% - 24px), calc(-104px - 4px)); }
-.kernel-corner-hex.ai:hover          { transform: translate(calc(50%  + 24px), calc(-104px - 4px)); }
-.kernel-corner-hex.workplace:hover   { transform: translate(calc(-50% - 24px), calc( 104px - 4px)); }
-.kernel-corner-hex.integrated:hover  { transform: translate(calc(50%  + 24px), calc( 104px - 4px)); }
-.kernel-corner-hex.app-builder:hover { transform: translateY(calc(208px + 24px - 4px)); }
-
-/* Kernel-attachment lists — workspace-functions (above kernel) and app-builder
-   (below kernel). Both share the kernel's grid cell and translate vertically
-   so they sit just past the kernel's top/bottom peak (with 24px outward gap). */
-.box-wrap.nextcloud-workspace,
-.box-wrap.app-builder {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  justify-self: center;
-  width: 100%;
-  max-width: 280px;
-}
-/* Bottom edge overlaps kernel hex top peak by 24px — mirror of the
-   side-midpoint inward-overlap pattern. (Kernel centre is row centre, kernel
-   half-height = 208px, so bottom-of-panel = row_centre - 208 + 24 = -184px.) */
-.box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 184px)); }
-/* App Builder list: top-centre at app-builder hex's bottom peak, then 24px
-   inward so it overlaps the hex slightly (matching the side-midpoint pattern). */
-.box-wrap.app-builder { transform: translateY(calc(50% + 300.5px)); }
-
-/* ---- Flow connectors ---- Animated orange dashed lines that imply data
-   flow from Technical Core (top-left) and App Builder (bottom-centre) into
-   Workplace Apps (left-mid). Positioned in the kernel's grid cell so coords
-   are kernel-relative and stay aligned at any viewport.
-   All segments are strictly horizontal or vertical (no diagonals). */
-.flow-overlay {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  justify-self: center;
-  width: 680px;
-  height: 560px;
-  pointer-events: none;
-  z-index: 3;
-  overflow: visible;
-}
-.flow-overlay .flow-line {
-  fill: none;
-  stroke: var(--c-orange-knvb);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 6 6;
-  animation: flow-dash 1.4s linear infinite;
-}
-@keyframes flow-dash {
-  to { stroke-dashoffset: -12; }   /* one dash+gap cycle, in path-direction */
-}
-
-.box-wrap.app-builder .box {
-  border-style: dashed;
-  background: var(--c-cobalt-50);
-  opacity: 0.92;
-}
-.box-wrap.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }
-.box-wrap.app-builder .row .desc { font-style: normal; }
-.box-wrap.app-builder .row:hover .name { color: var(--c-cobalt-700); }
-.box-wrap.app-builder .badge {
-  position: absolute;
-  top: -8px; right: 16px;
-  background: var(--c-orange-knvb);
-  color: white;
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 9px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: var(--radius-pill);
-  letter-spacing: 0.08em;
-  z-index: 4;
+  padding: 0 56px;
 }
 
 /* ---- CTA cluster ---- */
@@ -463,140 +124,138 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   <p class="subhead">Every Conduction app slots into one of five component-cards. All of them run on the Nextcloud platform — files, mail, calendar, identity — that your team already trusts. Hover any app to see what it does.</p>
 </section>
 
-<section class="diagram">
-  <div class="diagram-grid">
+<div class="diagram-frame">
+  <platform-diagram>
 
-    <!-- Technical Core (top-left) -->
-    <div class="box-wrap tech-core fam-core">
-      <div class="box">
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
-          <span class="name">OpenRegister</span><span class="meta">Data</span>
-          <div class="desc">Schema-driven object store with audit trail. The data foundation underneath every workplace app.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span>
-          <span class="name">OpenConnector</span><span class="meta">Integrate</span>
-          <div class="desc">API gateway for everything outside Nextcloud — REST, SOAP, GraphQL, webhooks. Maps and transforms between systems.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
-          <span class="name">DocuDesk</span><span class="meta">Docs</span>
-          <div class="desc">Generate, anonymise, sign, and template documents. The documents-and-forms layer.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span>
-          <span class="name">NLDesign Theme</span><span class="meta">Theme</span>
-          <div class="desc">NL Design System tokens applied across every Conduction app. Government-compliant theming, drop-in.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
-          <span class="name">MyDash</span><span class="meta">Dash</span>
-          <div class="desc">Dashboard builder with role-based access. Workflow automation across registers.</div>
-        </div>
-      </div>
-    </div>
+    <!-- Centre kernel -->
+    <pd-kernel logo="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud" role="Workspace"></pd-kernel>
 
-    <!-- AI (top-right) -->
-    <div class="box-wrap ai fam-ai">
-      <div class="box">
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/><path d="M21 4v5h-5"/></svg></span>
-          <span class="name">Automation</span>
-          <div class="desc">Trigger flows from any data event. Schedule jobs, fire webhooks, run scripts.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg></span>
-          <span class="name">Agents</span>
-          <div class="desc">Conversational agents grounded in your registers. No vendor lock-in on the LLM.</div>
-        </div>
-        <div class="row">
-          <span class="glyph"><svg viewBox="0 0 24 24"><path d="M9.5 2A4.5 4.5 0 0 0 5 6.5v.5a4 4 0 0 0-2 7v3a4 4 0 0 0 4 4h.5"/><path d="M14.5 2A4.5 4.5 0 0 1 19 6.5v.5a4 4 0 0 1 2 7v3a4 4 0 0 1-4 4h-.5"/><path d="M9.5 2v20M14.5 2v20"/></svg></span>
-          <span class="name">Intelligence</span>
-          <div class="desc">Cross-register insights and anomaly detection. Privacy-first, on-prem option.</div>
-        </div>
-      </div>
-    </div>
+    <!-- Nextcloud functions — attached to kernel's top peak (no hex tag) -->
+    <pd-list position="top" family="nextcloud">
+      <pd-item name="Files" desc="Sync, share, and version any file. The cornerstone of every Nextcloud workspace.">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </pd-item>
+      <pd-item name="Mail" desc="IMAP and SMTP mailbox right inside Nextcloud — no separate desktop client.">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      </pd-item>
+      <pd-item name="Calendar" desc="CalDAV-backed shared calendars with free-busy across teams.">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </pd-item>
+      <pd-item name="Talk" desc="End-to-end-encrypted chat, voice, video — entirely on your own servers.">
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+      </pd-item>
+      <pd-item name="Office" desc="Collabora-powered docs, sheets, and slides. Real-time co-editing, no Google.">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Nextcloud workspace (centre kernel) -->
-    <div class="kernel">
-      <img class="kernel-logo" src="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud">
-      <div class="role">Workspace</div>
-    </div>
+    <!-- Technical Core (top-left corner) -->
+    <pd-list position="top-left" family="core" label="Technical&#10;Core">
+      <pd-item name="OpenRegister" meta="Data" desc="Schema-driven object store with audit trail. The data foundation underneath every workplace app.">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+      </pd-item>
+      <pd-item name="OpenConnector" meta="Integrate" desc="API gateway for everything outside Nextcloud — REST, SOAP, GraphQL, webhooks. Maps and transforms between systems.">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+      </pd-item>
+      <pd-item name="DocuDesk" meta="Docs" desc="Generate, anonymise, sign, and template documents. The documents-and-forms layer.">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </pd-item>
+      <pd-item name="NLDesign Theme" meta="Theme" desc="NL Design System tokens applied across every Conduction app. Government-compliant theming, drop-in.">
+        <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg>
+      </pd-item>
+      <pd-item name="MyDash" meta="Dash" desc="Dashboard builder with role-based access. Workflow automation across registers.">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Flow connectors: orange dashed lines flowing into Workplace Apps.
-         viewBox is kernel-relative (origin at kernel centre) so coords match
-         the same arithmetic the corner hexes use (cx=±204 left/right of
-         kernel, cy=±104 top/bottom; app-builder cx=-80 cy=+232; hex w=160
-         h=185 so peaks ±92.5, side midpoints at ±80). -->
-    <svg class="flow-overlay" viewBox="-340 -220 680 560" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <!-- Tech Core hex left-side midpoint → Workplace hex left-side midpoint
-           (left-side C-bracket: out-left, down, back-in-right). -->
-      <path class="flow-line" d="M -284 -104 L -320 -104 L -320 104 L -284 104"/>
-      <!-- App Builder hex left-side midpoint → Workplace hex bottom peak
-           (L-bend below kernel: in-left then up). -->
-      <path class="flow-line" d="M -160 232 L -204 232 L -204 196.5"/>
-    </svg>
+    <!-- AI (top-right corner) -->
+    <pd-list position="top-right" family="ai" label="AI">
+      <pd-item name="Automation" desc="Trigger flows from any data event. Schedule jobs, fire webhooks, run scripts.">
+        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/><path d="M21 4v5h-5"/></svg>
+      </pd-item>
+      <pd-item name="Agents" desc="Conversational agents grounded in your registers. No vendor lock-in on the LLM.">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg>
+      </pd-item>
+      <pd-item name="Intelligence" desc="Cross-register insights and anomaly detection. Privacy-first, on-prem option.">
+        <svg viewBox="0 0 24 24"><path d="M9.5 2A4.5 4.5 0 0 0 5 6.5v.5a4 4 0 0 0-2 7v3a4 4 0 0 0 4 4h.5"/><path d="M14.5 2A4.5 4.5 0 0 1 19 6.5v.5a4 4 0 0 1 2 7v3a4 4 0 0 1-4 4h-.5"/><path d="M9.5 2v20M14.5 2v20"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Nextcloud function list — sits above the kernel, attached at top peak -->
-    <div class="box-wrap nextcloud-workspace fam-nextcloud">
-      <div class="box">
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="name">Files</span><div class="desc">Sync, share, and version any file. The cornerstone of every Nextcloud workspace.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="name">Mail</span><div class="desc">IMAP and SMTP mailbox right inside Nextcloud — no separate desktop client.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="name">Calendar</span><div class="desc">CalDAV-backed shared calendars with free-busy across teams.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></span><span class="name">Talk</span><div class="desc">End-to-end-encrypted chat, voice, video — entirely on your own servers.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg></span><span class="name">Office</span><div class="desc">Collabora-powered docs, sheets, and slides. Real-time co-editing, no Google.</div></div>
-      </div>
-    </div>
+    <!-- Workplace Apps (bottom-left corner) -->
+    <pd-list position="bottom-left" family="workplace" label="Workplace&#10;Apps">
+      <pd-item name="OpenCatalogi" desc="Federated data catalogue. Datasets, APIs, software inventory, WOO-publication ready.">
+        <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>
+      </pd-item>
+      <pd-item name="PipelinQ" desc="CRM with quotes, contacts, and deal-flow. Built on OpenRegister.">
+        <svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+      </pd-item>
+      <pd-item name="Procest" desc="Case-management for VTH and citizen processes. Form-driven, BPMN-ready.">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      </pd-item>
+      <pd-item name="ZaakAfhandelApp" desc="Citizen-facing case-status portal. Connects directly to your municipal Zaaksysteem.">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+      </pd-item>
+      <pd-item name="DeciDesk" desc="Decision-support and board management. Voting, agendas, document trails.">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+      </pd-item>
+      <pd-item name="ShillinQ" desc="ERP layer — bookkeeping, invoicing, expense tracking. Open-source alternative to Exact / AFAS.">
+        <svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </pd-item>
+      <pd-item name="LarpingApp" desc="Worldbuilding and campaign-management for live-action role-playing. Yes really.">
+        <svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg>
+      </pd-item>
+      <pd-item name="OpenWoo" desc="WOO-compliant publication flow. Active disclosure, queryable archive.">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      </pd-item>
+      <pd-item name="SoftwareCatalog" desc="IT-asset management — software inventory, licenses, contracts, vendor registry.">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Component hex tags, centred on the kernel's four corners (top-left,
-         top-right, bottom-left, bottom-right) with a 24px outward shift. -->
-    <div class="kernel-corner-hex tech-core fam-core">Technical<br>Core</div>
-    <div class="kernel-corner-hex ai fam-ai">AI</div>
-    <div class="kernel-corner-hex workplace fam-workplace">Workplace<br>Apps</div>
-    <div class="kernel-corner-hex integrated fam-integrate">Integrated<br>Apps</div>
-    <div class="kernel-corner-hex app-builder fam-builder">App<br>Builder</div>
+    <!-- Integrated Apps (bottom-right corner) — brand-coloured glyphs -->
+    <pd-list position="bottom-right" family="integrate" label="Integrated&#10;Apps">
+      <pd-item name="OpenTalk" brand-color="#00485C" desc="Open-source video conferencing. Drop-in replacement for Zoom and Teams.">
+        <svg viewBox="0 0 24 24" aria-label="OpenTalk"><circle cx="11" cy="12.5" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18.5" cy="6.5" r="2.5" style="fill: #D2E245"/></svg>
+      </pd-item>
+      <pd-item name="Matrix" brand-color="#000000" desc="Federated chat protocol. End-to-end encrypted, decentralised.">
+        <svg viewBox="0 0 24 24" aria-label="Matrix"><path d="M.632.55v22.9H2.28V24H0V0h2.28v.55zm7.043 7.26v1.157h.033c.309-.443.683-.784 1.117-1.024.433-.245.936-.365 1.5-.365.54 0 1.033.107 1.481.314.448.208.785.582 1.02 1.108.254-.374.6-.706 1.034-.992.434-.287.95-.43 1.546-.43.453 0 .872.056 1.26.167.388.11.716.286.993.53.276.245.489.559.646.951.152.392.23.863.23 1.417v5.728h-2.349V11.52c0-.286-.01-.559-.032-.812a1.755 1.755 0 0 0-.18-.66 1.106 1.106 0 0 0-.438-.448c-.194-.11-.457-.166-.785-.166-.332 0-.6.064-.803.189a1.38 1.38 0 0 0-.48.499 1.946 1.946 0 0 0-.231.696 5.56 5.56 0 0 0-.06.785v4.768h-2.35v-4.8c0-.254-.004-.503-.018-.752a2.074 2.074 0 0 0-.143-.688 1.052 1.052 0 0 0-.415-.503c-.194-.125-.476-.19-.854-.19-.111 0-.259.024-.439.074-.18.051-.36.143-.53.282-.171.138-.319.337-.439.595-.12.259-.18.6-.18 1.02v4.966H5.46V7.81zm15.693 15.64V.55H21.72V0H24v24h-2.28v-.55z"/></svg>
+      </pd-item>
+      <pd-item name="n8n" brand-color="#EA4B71" desc="Workflow automation, no-code flows. The Zapier of self-hosting.">
+        <svg viewBox="0 0 24 24" aria-label="n8n"><path d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></svg>
+      </pd-item>
+      <pd-item name="OpenProject" brand-color="#0770B8" desc="Project management — Gantt charts, agile boards, time tracking.">
+        <svg viewBox="0 0 24 24" aria-label="OpenProject"><path d="M19.35.37h-1.86a4.628 4.628 0 0 0-4.652 4.624v5.609H4.652A4.628 4.628 0 0 0 0 15.23v3.721c0 2.569 2.083 4.679 4.652 4.679h1.86c2.57 0 4.652-2.11 4.652-4.679v-3.72c0-.063 0-.158-.005-.158H8.373v3.88c0 1.026-.835 1.886-1.861 1.886h-1.86c-1.027 0-1.861-.864-1.861-1.886V15.23a1.839 1.839 0 0 1 1.86-1.833h14.697c2.57 0 4.652-2.11 4.652-4.679V4.997A4.628 4.628 0 0 0 19.35.37Zm1.861 8.345c0 1.026-.835 1.886-1.861 1.886h-3.721V4.997a1.839 1.839 0 0 1 1.86-1.833h1.86a1.839 1.839 0 0 1 1.862 1.833zm-8.373 9.706a.236.236 0 0 0 0 .03c0 .746.629 1.344 1.396 1.344.767 0 1.395-.594 1.395-1.34a.188.188 0 0 0 0-.034v-3.35h-2.791z"/></svg>
+      </pd-item>
+      <pd-item name="XWiki" brand desc="Wiki and structured documentation. Macros, templates, federation.">
+        <svg viewBox="0 0 192 192" aria-label="XWiki"><path style="fill: #008fd4" d="M36.1,103.1a6.75,6.75,0,0,0,6.74-6.75h0A6.75,6.75,0,0,0,36.1,89.6H6.75A6.75,6.75,0,0,0,0,96.35H0a6.75,6.75,0,0,0,6.75,6.75Z"/><path style="fill: #ed1c24" d="M89.6,156.61a6.75,6.75,0,0,1,6.75-6.75h0a6.75,6.75,0,0,1,6.75,6.75V186a6.75,6.75,0,0,1-6.75,6.75h0A6.75,6.75,0,0,1,89.6,186Z"/><path style="fill: #8cc63f" d="M89.6,6.74A6.75,6.75,0,0,1,96.35,0h0a6.75,6.75,0,0,1,6.75,6.74V36.09a6.75,6.75,0,0,1-6.75,6.75h0a6.75,6.75,0,0,1-6.75-6.75Z"/><path style="fill: #626366" d="M112.36,96l56.72-65.91a12,12,0,1,0-18.26-15.71L96.47,77.5,42.12,14.34A12,12,0,1,0,23.86,30.05L80.58,96,23.86,161.87a12,12,0,1,0,18.26,15.72l54.35-63.16,54.35,63.16a12,12,0,0,0,18.26-15.72Z"/><path style="fill: #f78d1e" d="M185.17,103.25a6.75,6.75,0,0,0,6.74-6.75h0a6.75,6.75,0,0,0-6.74-6.75H155.82a6.75,6.75,0,0,0-6.75,6.75h0a6.75,6.75,0,0,0,6.75,6.75Z"/></svg>
+      </pd-item>
+      <pd-item name="GitLab" brand-color="#FC6D26" desc="Git hosting, CI/CD, issue tracking. Self-hosted DevOps.">
+        <svg viewBox="0 0 24 24" aria-label="GitLab"><path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></svg>
+      </pd-item>
+      <pd-item name="Mattermost" brand-color="#0058CC" desc="Self-hosted Slack alternative for teams that need their messaging on-prem.">
+        <svg viewBox="0 0 24 24" aria-label="Mattermost"><path d="M12.081 0C7.048-.034 2.339 3.125.637 8.153c-2.125 6.276 1.24 13.086 7.516 15.21 6.276 2.125 13.086-1.24 15.21-7.516 1.727-5.1-.172-10.552-4.311-13.557l.126 2.547c2.065 2.282 2.88 5.512 1.852 8.549-1.534 4.532-6.594 6.915-11.3 5.321-4.708-1.593-7.28-6.559-5.745-11.092 1.031-3.046 3.655-5.121 6.694-5.67l1.642-1.94A4.87 4.87 0 0 0 12.08 0zm3.528 1.094a.284.284 0 0 0-.123.024l-.004.001a.33.33 0 0 0-.109.071c-.145.142-.657.828-.657.828L13.6 3.4l-1.3 1.585-2.232 2.776s-1.024 1.278-.798 2.851c.226 1.574 1.396 2.34 2.304 2.648.907.307 2.302.408 3.438-.704 1.135-1.112 1.098-2.75 1.098-2.75l-.087-3.56-.07-2.05-.047-1.775s.01-.856-.02-1.057a.33.33 0 0 0-.035-.107l-.006-.012-.007-.011a.277.277 0 0 0-.229-.14z"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Workplace Apps (bottom-left) -->
-    <div class="box-wrap workplace fam-workplace">
-      <div class="box">
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span><span class="name">OpenCatalogi</span><div class="desc">Federated data catalogue. Datasets, APIs, software inventory, WOO-publication ready.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span class="name">PipelinQ</span><div class="desc">CRM with quotes, contacts, and deal-flow. Built on OpenRegister.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><span class="name">Procest</span><div class="desc">Case-management for VTH and citizen processes. Form-driven, BPMN-ready.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span><span class="name">ZaakAfhandelApp</span><div class="desc">Citizen-facing case-status portal. Connects directly to your municipal Zaaksysteem.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><span class="name">DeciDesk</span><div class="desc">Decision-support and board management. Voting, agendas, document trails.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="name">ShillinQ</span><div class="desc">ERP layer — bookkeeping, invoicing, expense tracking. Open-source alternative to Exact / AFAS.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg></span><span class="name">LarpingApp</span><div class="desc">Worldbuilding and campaign-management for live-action role-playing. Yes really.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="name">OpenWoo</span><div class="desc">WOO-compliant publication flow. Active disclosure, queryable archive.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span><span class="name">SoftwareCatalog</span><div class="desc">IT-asset management — software inventory, licenses, contracts, vendor registry.</div></div>
-      </div>
-    </div>
+    <!-- App Builder (bottom-centre, hex below kernel) -->
+    <pd-list position="bottom-center" family="builder" label="App&#10;Builder" badge="COMING SOON">
+      <pd-item name="Build your own apps" desc="Compose Nextcloud apps from the Technical Core. Visual schema designer, no boilerplate.">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg>
+      </pd-item>
+      <pd-item name="Customise ConNext apps" desc="Fork-free customisation of any ConNext app. Override on top of the upstream.">
+        <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg>
+      </pd-item>
+      <pd-item name="No code — just configure" desc="Configuration-only changes survive upgrades. No technical debt for end users.">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </pd-item>
+    </pd-list>
 
-    <!-- Integrated Apps (bottom-right) -->
-    <div class="box-wrap integrated fam-integrate">
-      <div class="box">
-        <div class="row"><span class="glyph brand" style="color: #00485C"><svg viewBox="0 0 24 24" aria-label="OpenTalk"><circle cx="11" cy="12.5" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18.5" cy="6.5" r="2.5" style="fill: #D2E245"/></svg></span><span class="name">OpenTalk</span><div class="desc">Open-source video conferencing. Drop-in replacement for Zoom and Teams.</div></div>
-        <div class="row"><span class="glyph brand" style="color: #000000"><svg viewBox="0 0 24 24" aria-label="Matrix"><path d="M.632.55v22.9H2.28V24H0V0h2.28v.55zm7.043 7.26v1.157h.033c.309-.443.683-.784 1.117-1.024.433-.245.936-.365 1.5-.365.54 0 1.033.107 1.481.314.448.208.785.582 1.02 1.108.254-.374.6-.706 1.034-.992.434-.287.95-.43 1.546-.43.453 0 .872.056 1.26.167.388.11.716.286.993.53.276.245.489.559.646.951.152.392.23.863.23 1.417v5.728h-2.349V11.52c0-.286-.01-.559-.032-.812a1.755 1.755 0 0 0-.18-.66 1.106 1.106 0 0 0-.438-.448c-.194-.11-.457-.166-.785-.166-.332 0-.6.064-.803.189a1.38 1.38 0 0 0-.48.499 1.946 1.946 0 0 0-.231.696 5.56 5.56 0 0 0-.06.785v4.768h-2.35v-4.8c0-.254-.004-.503-.018-.752a2.074 2.074 0 0 0-.143-.688 1.052 1.052 0 0 0-.415-.503c-.194-.125-.476-.19-.854-.19-.111 0-.259.024-.439.074-.18.051-.36.143-.53.282-.171.138-.319.337-.439.595-.12.259-.18.6-.18 1.02v4.966H5.46V7.81zm15.693 15.64V.55H21.72V0H24v24h-2.28v-.55z"/></svg></span><span class="name">Matrix</span><div class="desc">Federated chat protocol. End-to-end encrypted, decentralised.</div></div>
-        <div class="row"><span class="glyph brand" style="color: #EA4B71"><svg viewBox="0 0 24 24" aria-label="n8n"><path d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></svg></span><span class="name">n8n</span><div class="desc">Workflow automation, no-code flows. The Zapier of self-hosting.</div></div>
-        <div class="row"><span class="glyph brand" style="color: #0770B8"><svg viewBox="0 0 24 24" aria-label="OpenProject"><path d="M19.35.37h-1.86a4.628 4.628 0 0 0-4.652 4.624v5.609H4.652A4.628 4.628 0 0 0 0 15.23v3.721c0 2.569 2.083 4.679 4.652 4.679h1.86c2.57 0 4.652-2.11 4.652-4.679v-3.72c0-.063 0-.158-.005-.158H8.373v3.88c0 1.026-.835 1.886-1.861 1.886h-1.86c-1.027 0-1.861-.864-1.861-1.886V15.23a1.839 1.839 0 0 1 1.86-1.833h14.697c2.57 0 4.652-2.11 4.652-4.679V4.997A4.628 4.628 0 0 0 19.35.37Zm1.861 8.345c0 1.026-.835 1.886-1.861 1.886h-3.721V4.997a1.839 1.839 0 0 1 1.86-1.833h1.86a1.839 1.839 0 0 1 1.862 1.833zm-8.373 9.706a.236.236 0 0 0 0 .03c0 .746.629 1.344 1.396 1.344.767 0 1.395-.594 1.395-1.34a.188.188 0 0 0 0-.034v-3.35h-2.791z"/></svg></span><span class="name">OpenProject</span><div class="desc">Project management — Gantt charts, agile boards, time tracking.</div></div>
-        <div class="row"><span class="glyph brand"><svg viewBox="0 0 192 192" aria-label="XWiki"><path style="fill: #008fd4" d="M36.1,103.1a6.75,6.75,0,0,0,6.74-6.75h0A6.75,6.75,0,0,0,36.1,89.6H6.75A6.75,6.75,0,0,0,0,96.35H0a6.75,6.75,0,0,0,6.75,6.75Z"/><path style="fill: #ed1c24" d="M89.6,156.61a6.75,6.75,0,0,1,6.75-6.75h0a6.75,6.75,0,0,1,6.75,6.75V186a6.75,6.75,0,0,1-6.75,6.75h0A6.75,6.75,0,0,1,89.6,186Z"/><path style="fill: #8cc63f" d="M89.6,6.74A6.75,6.75,0,0,1,96.35,0h0a6.75,6.75,0,0,1,6.75,6.74V36.09a6.75,6.75,0,0,1-6.75,6.75h0a6.75,6.75,0,0,1-6.75-6.75Z"/><path style="fill: #626366" d="M112.36,96l56.72-65.91a12,12,0,1,0-18.26-15.71L96.47,77.5,42.12,14.34A12,12,0,1,0,23.86,30.05L80.58,96,23.86,161.87a12,12,0,1,0,18.26,15.72l54.35-63.16,54.35,63.16a12,12,0,0,0,18.26-15.72Z"/><path style="fill: #f78d1e" d="M185.17,103.25a6.75,6.75,0,0,0,6.74-6.75h0a6.75,6.75,0,0,0-6.74-6.75H155.82a6.75,6.75,0,0,0-6.75,6.75h0a6.75,6.75,0,0,0,6.75,6.75Z"/></svg></span><span class="name">XWiki</span><div class="desc">Wiki and structured documentation. Macros, templates, federation.</div></div>
-        <div class="row"><span class="glyph brand" style="color: #FC6D26"><svg viewBox="0 0 24 24" aria-label="GitLab"><path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></svg></span><span class="name">GitLab</span><div class="desc">Git hosting, CI/CD, issue tracking. Self-hosted DevOps.</div></div>
-        <div class="row"><span class="glyph brand" style="color: #0058CC"><svg viewBox="0 0 24 24" aria-label="Mattermost"><path d="M12.081 0C7.048-.034 2.339 3.125.637 8.153c-2.125 6.276 1.24 13.086 7.516 15.21 6.276 2.125 13.086-1.24 15.21-7.516 1.727-5.1-.172-10.552-4.311-13.557l.126 2.547c2.065 2.282 2.88 5.512 1.852 8.549-1.534 4.532-6.594 6.915-11.3 5.321-4.708-1.593-7.28-6.559-5.745-11.092 1.031-3.046 3.655-5.121 6.694-5.67l1.642-1.94A4.87 4.87 0 0 0 12.08 0zm3.528 1.094a.284.284 0 0 0-.123.024l-.004.001a.33.33 0 0 0-.109.071c-.145.142-.657.828-.657.828L13.6 3.4l-1.3 1.585-2.232 2.776s-1.024 1.278-.798 2.851c.226 1.574 1.396 2.34 2.304 2.648.907.307 2.302.408 3.438-.704 1.135-1.112 1.098-2.75 1.098-2.75l-.087-3.56-.07-2.05-.047-1.775s.01-.856-.02-1.057a.33.33 0 0 0-.035-.107l-.006-.012-.007-.011a.277.277 0 0 0-.229-.14z"/></svg></span><span class="name">Mattermost</span><div class="desc">Self-hosted Slack alternative for teams that need their messaging on-prem.</div></div>
-      </div>
-    </div>
+    <!-- Animated orange dashed flow connectors into Workplace Apps -->
+    <pd-flow from="top-left:left"      to="bottom-left:left"   shape="c-bracket-left"></pd-flow>
+    <pd-flow from="bottom-center:left" to="bottom-left:bottom" shape="l-h"></pd-flow>
 
-    <!-- App Builder list — sits below the kernel, attached at bottom peak -->
-    <div class="box-wrap app-builder fam-builder">
-      <span class="badge">COMING SOON</span>
-      <div class="box">
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></span><span class="name">Build your own apps</span><div class="desc">Compose Nextcloud apps from the Technical Core. Visual schema designer, no boilerplate.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></span><span class="name">Customise ConNext apps</span><div class="desc">Fork-free customisation of any ConNext app. Override on top of the upstream.</div></div>
-        <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><span class="name">No code — just configure</span><div class="desc">Configuration-only changes survive upgrades. No technical debt for end users.</div></div>
-      </div>
-    </div>
-
-  </div>
-</section>
+  </platform-diagram>
+</div>
 
 <div class="cta-row">
   <a href="#" class="btn btn-primary">Install from Nextcloud app store</a>
@@ -613,5 +272,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   <span class="legend-item"><span class="dot" style="background: var(--c-cobalt-300);"></span><strong>App Builder</strong><span>· coming soon</span></span>
 </div>
 
+<script src="_lib/platform-diagram.js"></script>
 </body>
 </html>

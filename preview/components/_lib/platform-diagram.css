@@ -17,7 +17,31 @@
    module; the same class names get hashed automatically.
    ============================================================ */
 
-platform-diagram { display: block; position: relative; }
+platform-diagram {
+  display: block;
+  position: relative;
+
+  /* Scroll-linked entrance progress (0 = far out / invisible, 1 = settled).
+     Defaults are 1 so the diagram looks normal without JS. The scroll
+     handler in platform-diagram.js writes these on every scroll, so
+     scrolling up reverses the entrance.
+     Stages overlap intentionally:
+       hex   covers 0.00 → 0.40 of the entrance window
+       list  covers 0.30 → 0.75
+       flow  covers 0.75 → 1.00 */
+  --pd-hex-progress:  1;
+  --pd-list-progress: 1;
+  --pd-flow-progress: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Force settled state regardless of any value JS might write. */
+  platform-diagram {
+    --pd-hex-progress:  1 !important;
+    --pd-list-progress: 1 !important;
+    --pd-flow-progress: 1 !important;
+  }
+}
 
 /* ---- Diagram grid ---- */
 platform-diagram .diagram-grid {
@@ -54,6 +78,9 @@ platform-diagram .kernel {
   padding: 0 32px;
   position: relative;
   z-index: 1;
+  /* Subtle scale + fade with hex progress (0.92 → 1.00). */
+  transform: scale(calc(0.92 + 0.08 * var(--pd-hex-progress)));
+  opacity: var(--pd-hex-progress);
 }
 platform-diagram .kernel-logo { width: 140px; height: auto; margin-bottom: 14px; }
 platform-diagram .kernel .role {
@@ -172,7 +199,9 @@ platform-diagram .kernel-corner-hex {
   padding: 0 14px;
   z-index: 2;
   filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
-  transition: filter 160ms ease, transform 220ms ease;
+  /* Transform is driven by scroll progress; no transition (would smear
+     every scroll tick). Filter still transitions for hover shadow lift. */
+  transition: filter 160ms ease;
   cursor: default;
 }
 platform-diagram .kernel-corner-hex:hover { filter: drop-shadow(0 6px 14px rgba(33, 70, 139, 0.32)); }
@@ -182,10 +211,10 @@ platform-diagram .kernel-corner-hex:hover { filter: drop-shadow(0 6px 14px rgba(
    diagram for a different domain. */
 platform-diagram .fam-core      .glyph,
 platform-diagram .kernel-corner-hex.fam-core      { background: var(--c-blue-cobalt); }
-platform-diagram .fam-workplace  .glyph,
-platform-diagram .kernel-corner-hex.fam-workplace { background: var(--c-blue-cobalt); }
-platform-diagram .fam-ai         .glyph,
-platform-diagram .kernel-corner-hex.fam-ai        { background: #2E9866; }
+platform-diagram .fam-workspace  .glyph,
+platform-diagram .kernel-corner-hex.fam-workspace { background: var(--c-blue-cobalt); }
+platform-diagram .fam-solutions  .glyph,
+platform-diagram .kernel-corner-hex.fam-solutions { background: #2E9866; }
 platform-diagram .fam-integrate  .glyph,
 platform-diagram .kernel-corner-hex.fam-integrate { background: var(--c-cobalt-400); }
 platform-diagram .fam-builder    .glyph,
@@ -196,41 +225,110 @@ platform-diagram .fam-nextcloud  .glyph,
 platform-diagram .kernel-corner-hex.fam-nextcloud { background: var(--c-nextcloud-blue); }
 
 /* ---- Position-specific placement ----
-   tech-core / ai sit on the kernel's top corners; workplace / integrated
+   tech-core / ai sit on the kernel's top corners; workspace / integrated
    on the bottom corners. Translates use the kernel-relative arithmetic
    documented at the top of this file. */
 platform-diagram .box-wrap.tech-core  { grid-column: 1; grid-row: 1; justify-self: end;   align-self: end;   min-width: 240px; max-width: 280px; width: 100%; }
-platform-diagram .box-wrap.ai         { grid-column: 3; grid-row: 1; justify-self: start; align-self: end;   min-width: 220px; max-width: 260px; width: 100%; }
-platform-diagram .box-wrap.workplace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
+platform-diagram .box-wrap.solutions  { grid-column: 3; grid-row: 1; justify-self: start; align-self: end;   min-width: 220px; max-width: 260px; width: 100%; }
+platform-diagram .box-wrap.workspace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
 platform-diagram .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
 
-platform-diagram .box-wrap.tech-core,
-platform-diagram .box-wrap.workplace,
-platform-diagram .box-wrap.ai,
-platform-diagram .box-wrap.integrated { transition: transform 160ms ease; }
-
 /* List inner corner anchors to the midpoint of the corresponding hex side
-   (instead of the vertex), then nudges 12-15px inward so the list overlaps
-   the hex slightly. */
-platform-diagram .box-wrap.tech-core    { transform: translate( 15px,  35px); }
-platform-diagram .box-wrap.ai           { transform: translate(-15px,  35px); }
-platform-diagram .box-wrap.workplace    { transform: translate( 15px, 100px); }
-platform-diagram .box-wrap.integrated   { transform: translate(-15px, 100px); }
+   (then nudges 12-15px inward so the list overlaps the hex slightly).
+   The (-/+ 80px * (1 - --pd-list-progress)) term is the scroll-entrance
+   shift: at progress=1 it's 0 (settled position); at progress=0 the list
+   starts 80px further outward and fades from 0 → 1 opacity. */
+platform-diagram .box-wrap.tech-core    {
+  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))),  35px);
+  opacity: var(--pd-list-progress);
+}
+platform-diagram .box-wrap.solutions    {
+  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))),  35px);
+  opacity: var(--pd-list-progress);
+}
+platform-diagram .box-wrap.workspace    {
+  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))), 100px);
+  opacity: var(--pd-list-progress);
+}
+platform-diagram .box-wrap.integrated   {
+  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))), 100px);
+  opacity: var(--pd-list-progress);
+}
 
 /* Corner hex placement around the kernel polygon (top-left, top-right,
-   bottom-left, bottom-right). 24px outward from the kernel edge. */
-platform-diagram .kernel-corner-hex.tech-core   { justify-self: start;  transform: translate(calc(-50% - 24px), -104px); }
-platform-diagram .kernel-corner-hex.ai          { justify-self: end;    transform: translate(calc(50%  + 24px), -104px); }
-platform-diagram .kernel-corner-hex.workplace   { justify-self: start;  transform: translate(calc(-50% - 24px),  104px); }
-platform-diagram .kernel-corner-hex.integrated  { justify-self: end;    transform: translate(calc(50%  + 24px),  104px); }
+   bottom-left, bottom-right). 24px outward from the kernel edge.
+   The (±120px * (1 - --pd-hex-progress)) terms are the scroll-entrance
+   shift: hexes start 120px further outward + 100px further from kernel
+   centre, fade in as progress goes 0 → 1. Hover preserves the shift so
+   the lift composes correctly during entrance. */
+platform-diagram .kernel-corner-hex.tech-core   {
+  justify-self: start;
+  transform: translate(
+    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
+    calc(-104px      + (-100px * (1 - var(--pd-hex-progress))))
+  );
+  opacity: var(--pd-hex-progress);
+}
+platform-diagram .kernel-corner-hex.solutions   {
+  justify-self: end;
+  transform: translate(
+    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
+    calc(-104px      + (-100px * (1 - var(--pd-hex-progress))))
+  );
+  opacity: var(--pd-hex-progress);
+}
+platform-diagram .kernel-corner-hex.workspace   {
+  justify-self: start;
+  transform: translate(
+    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
+    calc( 104px      + ( 100px * (1 - var(--pd-hex-progress))))
+  );
+  opacity: var(--pd-hex-progress);
+}
+platform-diagram .kernel-corner-hex.integrated  {
+  justify-self: end;
+  transform: translate(
+    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
+    calc( 104px      + ( 100px * (1 - var(--pd-hex-progress))))
+  );
+  opacity: var(--pd-hex-progress);
+}
 /* App Builder hex centred on kernel's bottom peak + 24px outward */
-platform-diagram .kernel-corner-hex.app-builder { justify-self: center; align-self: center; transform: translateY(calc(208px + 24px)); }
+platform-diagram .kernel-corner-hex.app-builder {
+  justify-self: center;
+  align-self: center;
+  transform: translateY(calc(208px + 24px + (120px * (1 - var(--pd-hex-progress)))));
+  opacity: var(--pd-hex-progress);
+}
 
-platform-diagram .kernel-corner-hex.tech-core:hover   { transform: translate(calc(-50% - 24px), calc(-104px - 4px)); }
-platform-diagram .kernel-corner-hex.ai:hover          { transform: translate(calc(50%  + 24px), calc(-104px - 4px)); }
-platform-diagram .kernel-corner-hex.workplace:hover   { transform: translate(calc(-50% - 24px), calc( 104px - 4px)); }
-platform-diagram .kernel-corner-hex.integrated:hover  { transform: translate(calc(50%  + 24px), calc( 104px - 4px)); }
-platform-diagram .kernel-corner-hex.app-builder:hover { transform: translateY(calc(208px + 24px - 4px)); }
+/* Hover lift composed on top of entrance shift */
+platform-diagram .kernel-corner-hex.tech-core:hover   {
+  transform: translate(
+    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
+    calc(-104px - 4px + (-100px * (1 - var(--pd-hex-progress))))
+  );
+}
+platform-diagram .kernel-corner-hex.solutions:hover   {
+  transform: translate(
+    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
+    calc(-104px - 4px + (-100px * (1 - var(--pd-hex-progress))))
+  );
+}
+platform-diagram .kernel-corner-hex.workspace:hover   {
+  transform: translate(
+    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
+    calc( 104px - 4px + ( 100px * (1 - var(--pd-hex-progress))))
+  );
+}
+platform-diagram .kernel-corner-hex.integrated:hover  {
+  transform: translate(
+    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
+    calc( 104px - 4px + ( 100px * (1 - var(--pd-hex-progress))))
+  );
+}
+platform-diagram .kernel-corner-hex.app-builder:hover {
+  transform: translateY(calc(208px + 24px - 4px + (120px * (1 - var(--pd-hex-progress)))));
+}
 
 /* Kernel-attachment lists — workspace-functions (above kernel) and
    app-builder (below kernel). Both share the kernel's grid cell and
@@ -246,9 +344,15 @@ platform-diagram .box-wrap.app-builder {
 }
 /* Bottom edge overlaps kernel hex top peak by 24px (mirror of side-midpoint
    inward-overlap pattern). Math: row_centre - kernel_half_height (208) + 24 = -184. */
-platform-diagram .box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 184px)); }
+platform-diagram .box-wrap.nextcloud-workspace {
+  transform: translateY(calc(-50% - 184px + (-80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+}
 /* App Builder list: top-centre at app-builder hex's bottom peak + 24px inward overlap */
-platform-diagram .box-wrap.app-builder { transform: translateY(calc(50% + 300.5px)); }
+platform-diagram .box-wrap.app-builder {
+  transform: translateY(calc(50% + 300.5px + (80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+}
 
 /* App Builder list: dashed coming-soon styling */
 platform-diagram .box-wrap.app-builder .box {
@@ -290,6 +394,8 @@ platform-diagram .flow-overlay {
   pointer-events: none;
   z-index: 3;
   overflow: visible;
+  /* Scroll-entrance: fade in last, after hexes & lists are in place. */
+  opacity: var(--pd-flow-progress);
 }
 platform-diagram .flow-overlay .flow-line {
   fill: none;
@@ -303,3 +409,8 @@ platform-diagram .flow-overlay .flow-line {
 @keyframes pd-flow-dash {
   to { stroke-dashoffset: -12; }   /* one dash+gap cycle, in path-direction */
 }
+
+/* The scroll-entrance animation is fully expressed inline above via the
+   `--pd-hex-progress`, `--pd-list-progress`, `--pd-flow-progress` custom
+   properties. JS writes them on every scroll (rAF-throttled) so scrolling
+   up reverses the entrance. There is no discrete state machine. */

@@ -51,8 +51,8 @@
   const POSITION_CLASS = {
     'top':           'nextcloud-workspace',
     'top-left':      'tech-core',
-    'top-right':     'ai',
-    'bottom-left':   'workplace',
+    'top-right':     'solutions',
+    'bottom-left':   'workspace',
     'bottom-right':  'integrated',
     'bottom-center': 'app-builder',
   };
@@ -88,7 +88,12 @@
     return { x: c.cx + s.dx, y: c.cy + s.dy };
   }
 
-  function pathFor(shape, a, b) {
+  function pathFor(shape, a, b, clearance) {
+    /* `clearance` is how far past the further endpoint the bracket runs
+       (in kernel-relative px). Defaults to 36 — enough to clear an
+       adjacent hex's own outline. Bump it (e.g. 150) when routing around
+       a hex that sits between the two anchors. */
+    const c = (typeof clearance === 'number' && clearance > 0) ? clearance : 36;
     switch (shape) {
       case 'l-h':
       case 'l-bend':
@@ -98,19 +103,19 @@
       case 'l-bend-v':
         return `M ${a.x} ${a.y} L ${a.x} ${b.y} L ${b.x} ${b.y}`;
       case 'c-bracket-left': {
-        const x = Math.min(a.x, b.x) - 36;
+        const x = Math.min(a.x, b.x) - c;
         return `M ${a.x} ${a.y} L ${x} ${a.y} L ${x} ${b.y} L ${b.x} ${b.y}`;
       }
       case 'c-bracket-right': {
-        const x = Math.max(a.x, b.x) + 36;
+        const x = Math.max(a.x, b.x) + c;
         return `M ${a.x} ${a.y} L ${x} ${a.y} L ${x} ${b.y} L ${b.x} ${b.y}`;
       }
       case 'c-bracket-top': {
-        const y = Math.min(a.y, b.y) - 36;
+        const y = Math.min(a.y, b.y) - c;
         return `M ${a.x} ${a.y} L ${a.x} ${y} L ${b.x} ${y} L ${b.x} ${b.y}`;
       }
       case 'c-bracket-bottom': {
-        const y = Math.max(a.y, b.y) + 36;
+        const y = Math.max(a.y, b.y) + c;
         return `M ${a.x} ${a.y} L ${a.x} ${y} L ${b.x} ${y} L ${b.x} ${b.y}`;
       }
       case 'straight':
@@ -231,7 +236,7 @@
       if (!a || !b) continue;
       const path = document.createElementNS(NS, 'path');
       path.setAttribute('class', 'flow-line');
-      path.setAttribute('d', pathFor(f.shape, a, b));
+      path.setAttribute('d', pathFor(f.shape, a, b, f.clearance));
       if (f.color) path.setAttribute('stroke', f.color);
       svg.appendChild(path);
     }
@@ -243,6 +248,57 @@
       if (this._rendered) return;
       this._rendered = true;
       this._build();
+      this._setupScrollProgress();
+    }
+
+    disconnectedCallback() {
+      if (this._teardownScroll) this._teardownScroll();
+    }
+
+    /* Scroll-linked entrance: writes --pd-hex-progress / --pd-list-progress /
+       --pd-flow-progress on `this` based on where the diagram sits in the
+       viewport. Scrolling up reverses the entrance because the same mapping
+       runs in reverse. rAF-throttled so we coalesce wheel/touch bursts. */
+    _setupScrollProgress() {
+      const reduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;  /* CSS defaults to 1 — diagram stays settled */
+
+      let raf = null;
+      const tick = () => { raf = null; this._updateProgress(); };
+      const onScroll = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
+      window.addEventListener('scroll',  onScroll, { passive: true });
+      window.addEventListener('resize',  onScroll, { passive: true });
+      this._teardownScroll = () => {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+        if (raf) cancelAnimationFrame(raf);
+      };
+      this._updateProgress();
+    }
+
+    _updateProgress() {
+      const rect = this.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+
+      /* Trigger window: progress runs 0 → 1 as the diagram's top edge moves
+         from the viewport bottom up to ~30% of the viewport height. */
+      const start = vh;
+      const end   = vh * 0.3;
+      const p = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+
+      /* Stage progress (each stage clamped 0..1).
+           hex   covers 0.00 → 0.40 (move + fade in)
+           list  covers 0.30 → 0.75 (slide + fade in after hexes)
+           flow  covers 0.75 → 1.00 (fade in last) */
+      const hex  = Math.max(0, Math.min(1, (p - 0.00) / 0.40));
+      const list = Math.max(0, Math.min(1, (p - 0.30) / 0.45));
+      const flow = Math.max(0, Math.min(1, (p - 0.75) / 0.25));
+
+      this.style.setProperty('--pd-hex-progress',  String(hex));
+      this.style.setProperty('--pd-list-progress', String(list));
+      this.style.setProperty('--pd-flow-progress', String(flow));
     }
 
     _build() {
@@ -262,11 +318,13 @@
         } else if (tag === 'pd-list') {
           lists.push(parseList(child));
         } else if (tag === 'pd-flow') {
+          const cl = parseFloat(child.getAttribute('clearance'));
           flows.push({
-            from:  child.getAttribute('from'),
-            to:    child.getAttribute('to'),
-            shape: child.getAttribute('shape') || 'l-h',
-            color: child.getAttribute('color') || '',
+            from:      child.getAttribute('from'),
+            to:        child.getAttribute('to'),
+            shape:     child.getAttribute('shape') || 'l-h',
+            color:     child.getAttribute('color') || '',
+            clearance: Number.isFinite(cl) ? cl : 0,
           });
         }
       }

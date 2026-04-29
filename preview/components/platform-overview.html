@@ -355,6 +355,35 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
    inward so it overlaps the hex slightly (matching the side-midpoint pattern). */
 .box-wrap.app-builder { transform: translateY(calc(50% + 300.5px)); }
 
+/* ---- Flow connectors ---- Animated orange dashed lines that imply data
+   flow from Technical Core (top-left) and App Builder (bottom-centre) into
+   Workplace Apps (left-mid). Positioned in the kernel's grid cell so coords
+   are kernel-relative and stay aligned at any viewport.
+   All segments are strictly horizontal or vertical (no diagonals). */
+.flow-overlay {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: center;
+  width: 680px;
+  height: 560px;
+  pointer-events: none;
+  z-index: 3;
+  overflow: visible;
+}
+.flow-overlay .flow-line {
+  fill: none;
+  stroke: var(--c-orange-knvb);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 6 6;
+  animation: flow-dash 1.4s linear infinite;
+}
+@keyframes flow-dash {
+  to { stroke-dashoffset: -12; }   /* one dash+gap cycle, in path-direction */
+}
+
 .box-wrap.app-builder .box {
   border-style: dashed;
   background: var(--c-cobalt-50);
@@ -494,6 +523,20 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       <img class="kernel-logo" src="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud">
       <div class="role">Workspace</div>
     </div>
+
+    <!-- Flow connectors: orange dashed lines flowing into Workplace Apps.
+         viewBox is kernel-relative (origin at kernel centre) so coords match
+         the same arithmetic the corner hexes use (cx=±204 left/right of
+         kernel, cy=±104 top/bottom; app-builder cx=-80 cy=+232; hex w=160
+         h=185 so peaks ±92.5, side midpoints at ±80). -->
+    <svg class="flow-overlay" viewBox="-340 -220 680 560" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <!-- Tech Core hex left-side midpoint → Workplace hex left-side midpoint
+           (left-side C-bracket: out-left, down, back-in-right). -->
+      <path class="flow-line" d="M -284 -104 L -320 -104 L -320 104 L -284 104"/>
+      <!-- App Builder hex left-side midpoint → Workplace hex bottom peak
+           (L-bend below kernel: in-left then up). -->
+      <path class="flow-line" d="M -160 232 L -204 232 L -204 196.5"/>
+    </svg>
 
     <!-- Nextcloud function list — sits above the kernel, attached at top peak -->
     <div class="box-wrap nextcloud-workspace fam-nextcloud">

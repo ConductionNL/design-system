@@ -77,23 +77,24 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 }
 .diagram-grid {
   display: grid;
-  grid-template-columns: 1fr 320px 1fr;
+  grid-template-columns: 1fr 360px 1fr;
   grid-template-rows: auto auto;
-  column-gap: 32px;
+  column-gap: 56px;
   row-gap: 80px;
   align-items: start;
   position: relative;
   z-index: 1;
 }
 
-/* Kernel — single flat pointy-top hex, Nextcloud blue */
+/* Kernel — single flat pointy-top hex, Nextcloud blue.
+   aspect-ratio at √3/2 (high precision) keeps all six sides equal. */
 .kernel {
   grid-column: 2;
   grid-row: 1 / span 2;
   align-self: center;
   justify-self: center;
-  width: 320px;
-  aspect-ratio: 1.732 / 2;     /* regular pointy-top hex: width/height = √3/2 */
+  width: 360px;
+  aspect-ratio: 1.7320508 / 2;
   clip-path: var(--hex-pointy-top);
   background: var(--gradient-nextcloud);
   display: flex; flex-direction: column;
@@ -171,37 +172,48 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   letter-spacing: 0.06em; text-transform: uppercase;
 }
 
-/* App description — rolls out on hover */
+/* App description — appears as an absolute-positioned tooltip below the row,
+   so hover doesn't change the box's height (keeps neighbouring components still). */
 .box .row .desc {
-  flex-basis: 100%;
-  max-height: 0;
-  overflow: hidden;
-  padding-left: 28px;
-  color: var(--c-cobalt-400);
+  position: absolute;
+  top: calc(100% - 4px);
+  left: 28px;
+  right: 8px;
+  background: var(--c-cobalt-700);
+  color: rgba(255,255,255,0.95);
   font-size: 12px;
-  line-height: 1.5;
-  transition: max-height 220ms ease, padding 220ms ease;
+  line-height: 1.45;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(33, 70, 139, 0.18);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+  z-index: 8;
+  white-space: normal;
 }
 .box .row:hover .desc {
-  max-height: 80px;
-  padding-top: 4px;
-  padding-bottom: 6px;
+  opacity: 1;
+  transform: translateY(0);
 }
 .box .row:hover .name { color: var(--c-blue-cobalt); }
 
-/* ---- Component hex (the "title tag") ---- */
+/* ---- Component hex (the "title tag") ----
+   Positioned so each list-box's inner corner sits on the midpoint of one
+   hex side. Bigger and mathematically regular via precise √3/2 aspect ratio. */
 .box-hex {
   position: absolute;
-  width: 130px;
-  aspect-ratio: 1.732 / 2;     /* regular pointy-top hex */
+  width: 160px;
+  aspect-ratio: 1.7320508 / 2;
   clip-path: var(--hex-pointy-top);
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   color: white;
-  font-size: 13px; font-weight: 600;
+  font-size: 14px; font-weight: 600;
   letter-spacing: 0.04em; text-transform: uppercase;
   line-height: 1.2;
-  padding: 0 12px;
+  padding: 0 14px;
   z-index: 2;     /* above kernel (z=1), below list-box (z=3) */
   filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
 }
@@ -219,12 +231,17 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box-wrap.workplace  { grid-column: 1; grid-row: 2; justify-self: end; min-width: 240px; max-width: 280px; width: 100%; }
 .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; min-width: 220px; max-width: 260px; width: 100%; }
 
-/* Per-wrap hex placement — protrudes ~70% past the box, ~30% behind it,
-   reaching ~59px into the kernel area. */
-.box-wrap.tech-core  .box-hex { right: -91px; top: 50%; transform: translateY(-50%); }
-.box-wrap.workplace  .box-hex { right: -91px; top: 50%; transform: translateY(-50%); }
-.box-wrap.ai         .box-hex { left:  -91px; top: 50%; transform: translateY(-50%); }
-.box-wrap.integrated .box-hex { left:  -91px; top: 50%; transform: translateY(-50%); }
+/* Per-wrap hex placement — each list-box's inner corner anchors to the
+   midpoint of one of the hex's six sides:
+     · tech-core  → bottom-right corner ↔ hex top-left side midpoint   (25%, 12.5%)
+     · ai         → bottom-left  corner ↔ hex top-right side midpoint  (75%, 12.5%)
+     · workplace  → top-right    corner ↔ hex bottom-left side midpoint (25%, 87.5%)
+     · integrated → top-left     corner ↔ hex bottom-right side midpoint (75%, 87.5%)
+*/
+.box-wrap.tech-core  .box-hex { left: 100%; top: 100%; transform: translate(-25%, -12.5%); }
+.box-wrap.ai         .box-hex { left: 0;    top: 100%; transform: translate(-75%, -12.5%); }
+.box-wrap.workplace  .box-hex { left: 100%; top: 0;    transform: translate(-25%, -87.5%); }
+.box-wrap.integrated .box-hex { left: 0;    top: 0;    transform: translate(-75%, -87.5%); }
 
 /* App Builder spans full row, muted treatment */
 .box-wrap.app-builder {
@@ -241,7 +258,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   padding-top: 28px;
 }
 .box-wrap.app-builder .box-hex {
-  left: 50%; top: -75px; transform: translateX(-50%);
+  /* Hex's bottom peak (50%, 100%) sits on the box's top-centre */
+  left: 50%; top: 0; transform: translate(-50%, -100%);
   filter: drop-shadow(0 -2px 6px rgba(33, 70, 139, 0.18));
 }
 .box-wrap.app-builder .row { color: var(--c-cobalt-400); font-style: italic; }

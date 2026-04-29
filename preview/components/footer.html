@@ -9,22 +9,19 @@
   body { margin: 0; background: white; }
 
   /* ============================================================
-     Canal footer — Amsterdam trapgevel skyline above the water,
-     footer content sitting IN the water (cobalt-900). The 30°/60°
-     sharp-line angles of the pointy-top hex re-appear as the
-     stepped gables and the small hex finials/windows that crown
-     each house — same hex grammar used everywhere else in the
-     design system, just rotated into architecture.
+     Canal footer — Amsterdam trapgevel skyline standing on the
+     water, footer content sitting in the canal below.
 
-     Five distinct trapgevel symbols tile across the skyline:
-       hA — 3-step narrow, hex finial
-       hB — 4-step wide, pointed crown + hex window
-       hC — 5-step tall, hex finial
-       hD — 3-step squat, bell ornament
-       hE — 4-step with crowning hex finial + hex window in gable
-     A vertically-flipped, low-opacity copy renders below the
-     waterline as the canal reflection. Three hex-zigzag ripple
-     lines flow horizontally across the surface.
+     Five distinct trapgevel symbols (3/4/5-step gables, narrow/
+     wide/squat variants) tile flush across the skyline so the
+     facades share walls the way real Amsterdam canal rows do.
+     The 30°/60° hex angles re-appear as the gable steps and the
+     hex finials/windows that crown each house — same pointy-top
+     hex grammar used everywhere else, rotated into architecture.
+
+     Three big slow hex-zigzag waves drift across the water area
+     behind the footer content. The text columns sit on solid
+     cobalt-900 so readability stays clean.
      ============================================================ */
 
   .canal-footer {
@@ -35,30 +32,48 @@
   .canal-footer .skyline {
     display: block;
     width: 100%;
-    height: 320px;
-    margin-bottom: -1px;
+    height: 150px;
+    margin-bottom: -1px;       /* avoid hairline seam against .water */
   }
-  .canal-footer .skyline .ripples path {
-    stroke-dasharray: 6 14;
-    animation: canal-ripple 9s linear infinite;
-  }
-  .canal-footer .skyline .ripples .ripple-2 { animation-duration: 13s; animation-direction: reverse; }
-  .canal-footer .skyline .ripples .ripple-3 { animation-duration: 17s; }
-  @keyframes canal-ripple { to { stroke-dashoffset: -200; } }
 
   .canal-footer .water {
     background: var(--c-cobalt-900);
-    padding: 16px 56px 28px;
+    padding: 56px 56px 28px;
     position: relative;
+    overflow: hidden;
   }
-  .canal-footer .water::before {
-    content: '';
+  .canal-footer .canal-waves {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 60px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    opacity: 0.11;
+    z-index: 0;
   }
+  .canal-footer .canal-waves path {
+    fill: none;
+    stroke: white;
+    stroke-width: 2;
+    stroke-linejoin: miter;     /* sharp hex apex */
+    stroke-linecap: round;
+  }
+  .canal-footer .canal-waves .w1 {
+    stroke-dasharray: 14 22;
+    animation: canal-wave-flow 60s linear infinite;
+  }
+  .canal-footer .canal-waves .w2 {
+    stroke-dasharray: 18 28;
+    animation: canal-wave-flow 110s linear infinite reverse;
+  }
+  .canal-footer .canal-waves .w3 {
+    stroke-dasharray: 22 36;
+    animation: canal-wave-flow 160s linear infinite;
+  }
+  @keyframes canal-wave-flow { to { stroke-dashoffset: -360; } }
+
+  .canal-footer .footer-grid,
+  .canal-footer .legal-bar { position: relative; z-index: 1; }
 
   .canal-footer .footer-grid {
     display: grid;
@@ -66,7 +81,6 @@
     gap: 48px;
     max-width: 1280px;
     margin: 0 auto 48px;
-    position: relative;
   }
   .canal-footer .brand .wm {
     font-size: 22px;
@@ -126,7 +140,6 @@
     font-size: 12px;
     color: rgba(255,255,255,0.55);
     font-family: var(--conduction-typography-font-family-code);
-    position: relative;
   }
   .canal-footer .legal-bar .left, .canal-footer .legal-bar .right {
     display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
@@ -144,7 +157,7 @@
 
 <footer class="canal-footer" aria-label="Site footer">
 
-  <svg class="skyline" viewBox="0 0 1400 320" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <svg class="skyline" viewBox="0 0 1400 150" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
       <!-- House A: 3-step narrow, w=80 h=200, hex finial on flat crown -->
       <g id="hA">
@@ -220,72 +233,59 @@
         <rect x="68" y="145" width="14" height="20" fill="rgba(255,236,180,0.4)"/>
         <rect x="39.5" y="175" width="16" height="34" fill="rgba(255,236,180,0.2)"/>
       </g>
-
-      <!-- Vertical fade applied to the reflection so it dissolves into the water -->
-      <linearGradient id="reflectFade" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="var(--c-cobalt-900)" stop-opacity="0"/>
-        <stop offset="100%" stop-color="var(--c-cobalt-900)" stop-opacity="1"/>
-      </linearGradient>
     </defs>
 
-    <!-- Water base (cobalt-900 below the waterline) -->
-    <rect x="0" y="240" width="1400" height="80" fill="var(--c-cobalt-900)"/>
-
-    <!-- Reflection: the same skyline, vertically flipped about y=240, low opacity -->
-    <g opacity="0.18" transform="matrix(1 0 0 -1 0 480)">
-      <use href="#hA" x="20" y="40"/>
-      <use href="#hB" x="108" y="20"/>
-      <use href="#hC" x="214" y="0"/>
-      <use href="#hD" x="292" y="70"/>
-      <use href="#hE" x="388" y="30"/>
-      <use href="#hA" x="491" y="40"/>
-      <use href="#hC" x="577" y="0"/>
-      <use href="#hD" x="655" y="70"/>
-      <use href="#hB" x="751" y="20"/>
-      <use href="#hA" x="859" y="40"/>
-      <use href="#hE" x="945" y="30"/>
-      <use href="#hC" x="1048" y="0"/>
-      <use href="#hD" x="1124" y="70"/>
-      <use href="#hB" x="1222" y="20"/>
-      <use href="#hA" x="1328" y="40"/>
+    <!-- Skyline: 27 trapgevels tiled flush from x=0 to x=2325 in symbol
+         coords, sharing walls the way real Amsterdam canal rows do. The
+         whole group is scale(0.6) so the houses display smaller — letting
+         many more facades fit across the same width. translate(0, 6) keeps
+         their bottoms anchored at the waterline (y=150) after scaling. -->
+    <g class="houses" transform="translate(0 6) scale(0.6)">
+      <use href="#hA" x="0"    y="40"/>
+      <use href="#hB" x="80"   y="20"/>
+      <use href="#hC" x="180"  y="0"/>
+      <use href="#hD" x="250"  y="70"/>
+      <use href="#hE" x="340"  y="30"/>
+      <use href="#hC" x="435"  y="0"/>
+      <use href="#hA" x="505"  y="40"/>
+      <use href="#hD" x="585"  y="70"/>
+      <use href="#hB" x="675"  y="20"/>
+      <use href="#hE" x="775"  y="30"/>
+      <use href="#hA" x="870"  y="40"/>
+      <use href="#hC" x="950"  y="0"/>
+      <use href="#hD" x="1020" y="70"/>
+      <use href="#hE" x="1110" y="30"/>
+      <use href="#hB" x="1205" y="20"/>
+      <use href="#hA" x="1305" y="40"/>
+      <use href="#hC" x="1385" y="0"/>
+      <use href="#hA" x="1455" y="40"/>
+      <use href="#hB" x="1535" y="20"/>
+      <use href="#hD" x="1635" y="70"/>
+      <use href="#hE" x="1725" y="30"/>
+      <use href="#hC" x="1820" y="0"/>
+      <use href="#hA" x="1890" y="40"/>
+      <use href="#hD" x="1970" y="70"/>
+      <use href="#hB" x="2060" y="20"/>
+      <use href="#hE" x="2160" y="30"/>
+      <use href="#hC" x="2255" y="0"/>
     </g>
 
-    <!-- Skyline: trapgevel houses bottom-anchored at y=240 (the waterline) -->
-    <g class="houses">
-      <use href="#hA" x="20" y="40"/>
-      <use href="#hB" x="108" y="20"/>
-      <use href="#hC" x="214" y="0"/>
-      <use href="#hD" x="292" y="70"/>
-      <use href="#hE" x="388" y="30"/>
-      <use href="#hA" x="491" y="40"/>
-      <use href="#hC" x="577" y="0"/>
-      <use href="#hD" x="655" y="70"/>
-      <use href="#hB" x="751" y="20"/>
-      <use href="#hA" x="859" y="40"/>
-      <use href="#hE" x="945" y="30"/>
-      <use href="#hC" x="1048" y="0"/>
-      <use href="#hD" x="1124" y="70"/>
-      <use href="#hB" x="1222" y="20"/>
-      <use href="#hA" x="1328" y="40"/>
-    </g>
-
-    <!-- Waterline / quay edge -->
-    <line x1="0" y1="240" x2="1400" y2="240" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-
-    <!-- Hex-line ripples — three zigzag waves with 60°/120° apex angles
-         (the same sharp-line angle the pointy-top hex uses). Animated dash
-         flow makes the canal feel alive without being noisy. -->
-    <g class="ripples" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none" stroke-linecap="round">
-      <path class="ripple-1" d="M 0,254 L 12,251 L 24,254 L 36,251 L 48,254 L 60,251 L 72,254 L 84,251 L 96,254 L 108,251 L 120,254 L 132,251 L 144,254 L 156,251 L 168,254 L 180,251 L 192,254 L 204,251 L 216,254 L 228,251 L 240,254 L 252,251 L 264,254 L 276,251 L 288,254 L 300,251 L 312,254 L 324,251 L 336,254 L 348,251 L 360,254 L 372,251 L 384,254 L 396,251 L 408,254 L 420,251 L 432,254 L 444,251 L 456,254 L 468,251 L 480,254 L 492,251 L 504,254 L 516,251 L 528,254 L 540,251 L 552,254 L 564,251 L 576,254 L 588,251 L 600,254 L 612,251 L 624,254 L 636,251 L 648,254 L 660,251 L 672,254 L 684,251 L 696,254 L 708,251 L 720,254 L 732,251 L 744,254 L 756,251 L 768,254 L 780,251 L 792,254 L 804,251 L 816,254 L 828,251 L 840,254 L 852,251 L 864,254 L 876,251 L 888,254 L 900,251 L 912,254 L 924,251 L 936,254 L 948,251 L 960,254 L 972,251 L 984,254 L 996,251 L 1008,254 L 1020,251 L 1032,254 L 1044,251 L 1056,254 L 1068,251 L 1080,254 L 1092,251 L 1104,254 L 1116,251 L 1128,254 L 1140,251 L 1152,254 L 1164,251 L 1176,254 L 1188,251 L 1200,254 L 1212,251 L 1224,254 L 1236,251 L 1248,254 L 1260,251 L 1272,254 L 1284,251 L 1296,254 L 1308,251 L 1320,254 L 1332,251 L 1344,254 L 1356,251 L 1368,254 L 1380,251 L 1392,254"/>
-      <path class="ripple-2" d="M 0,272 L 16,268 L 32,272 L 48,268 L 64,272 L 80,268 L 96,272 L 112,268 L 128,272 L 144,268 L 160,272 L 176,268 L 192,272 L 208,268 L 224,272 L 240,268 L 256,272 L 272,268 L 288,272 L 304,268 L 320,272 L 336,268 L 352,272 L 368,268 L 384,272 L 400,268 L 416,272 L 432,268 L 448,272 L 464,268 L 480,272 L 496,268 L 512,272 L 528,268 L 544,272 L 560,268 L 576,272 L 592,268 L 608,272 L 624,268 L 640,272 L 656,268 L 672,272 L 688,268 L 704,272 L 720,268 L 736,272 L 752,268 L 768,272 L 784,268 L 800,272 L 816,268 L 832,272 L 848,268 L 864,272 L 880,268 L 896,272 L 912,268 L 928,272 L 944,268 L 960,272 L 976,268 L 992,272 L 1008,268 L 1024,272 L 1040,268 L 1056,272 L 1072,268 L 1088,272 L 1104,268 L 1120,272 L 1136,268 L 1152,272 L 1168,268 L 1184,272 L 1200,268 L 1216,272 L 1232,268 L 1248,272 L 1264,268 L 1280,272 L 1296,268 L 1312,272 L 1328,268 L 1344,272 L 1360,268 L 1376,272 L 1392,268"/>
-      <path class="ripple-3" d="M 0,290 L 20,287 L 40,290 L 60,287 L 80,290 L 100,287 L 120,290 L 140,287 L 160,290 L 180,287 L 200,290 L 220,287 L 240,290 L 260,287 L 280,290 L 300,287 L 320,290 L 340,287 L 360,290 L 380,287 L 400,290 L 420,287 L 440,290 L 460,287 L 480,290 L 500,287 L 520,290 L 540,287 L 560,290 L 580,287 L 600,290 L 620,287 L 640,290 L 660,287 L 680,290 L 700,287 L 720,290 L 740,287 L 760,290 L 780,287 L 800,290 L 820,287 L 840,290 L 860,287 L 880,290 L 900,287 L 920,290 L 940,287 L 960,290 L 980,287 L 1000,290 L 1020,287 L 1040,290 L 1060,287 L 1080,290 L 1100,287 L 1120,290 L 1140,287 L 1160,290 L 1180,287 L 1200,290 L 1220,287 L 1240,290 L 1260,287 L 1280,290 L 1300,287 L 1320,290 L 1340,287 L 1360,290 L 1380,287 L 1400,290"/>
-    </g>
-
-    <!-- Reflection fades into the deep — gradient overlay across the water -->
-    <rect x="0" y="240" width="1400" height="80" fill="url(#reflectFade)" opacity="0.55"/>
+    <!-- Quay edge / waterline at the bottom of the visible viewBox -->
+    <line x1="0" y1="149" x2="1400" y2="149" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
   </svg>
 
   <div class="water">
+
+    <!-- Big slow hex-zigzag waves drifting through the canal behind the
+         text. Three layers at decreasing wavelengths so the far waves
+         feel deeper. preserveAspectRatio=none lets them stretch with
+         the water area's height (which depends on content). -->
+    <svg class="canal-waves" viewBox="0 0 1400 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path class="w1" d="M 0,96 L 140,82 L 280,96 L 420,82 L 560,96 L 700,82 L 840,96 L 980,82 L 1120,96 L 1260,82 L 1400,96"/>
+      <path class="w2" d="M 0,206 L 180,182 L 360,206 L 540,182 L 720,206 L 900,182 L 1080,206 L 1260,182 L 1400,200"/>
+      <path class="w3" d="M 0,362 L 220,332 L 440,362 L 660,332 L 880,362 L 1100,332 L 1320,362 L 1400,348"/>
+    </svg>
+
     <div class="footer-grid">
       <div class="brand">
         <div class="wm">Con<span class="next-blue">Next</span></div>

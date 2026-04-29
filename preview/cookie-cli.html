@@ -351,6 +351,118 @@
   }
   .variant-grid .term-body { padding: 16px 18px 18px; }
   .variant-grid .ascii { font-size: 8px; }
+
+  /* Interactive shell additions */
+  #shell-mode { position: relative; }
+  #active-prompt { position: relative; cursor: text; }
+
+  /* Always-visible faint placeholder while the input is empty.
+     Sibling element after the cursor so it doesn't inherit the blink. */
+  #prompt-hint { display: none; }
+  #active-prompt.is-empty #prompt-hint {
+    display: inline;
+    margin-left: 12px;
+    color: var(--term-fg-muted);
+    opacity: 0.6;
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+  #active-prompt.is-empty #prompt-hint::before {
+    content: 'type here · try `help` or `ls`';
+  }
+
+  /* Custom tooltip — appears instantly on hover, no native delay */
+  #active-prompt::before {
+    content: 'you can type here ;)';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    background: var(--term-bg-2);
+    color: var(--term-yellow);
+    padding: 4px 9px;
+    border: 1px solid #2A3858;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 140ms ease-out, transform 140ms ease-out;
+    transform: translateY(4px);
+    text-shadow: 0 0 6px rgba(247, 199, 111, 0.45);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    z-index: 6;
+  }
+  #active-prompt:hover::before {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #dynamic-output { white-space: pre-wrap; }
+  #dynamic-output .out-block { margin-top: 4px; margin-bottom: 4px; }
+  #dynamic-output .ls-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px 18px;
+    margin: 4px 0;
+  }
+  #dynamic-output .ls-exec { color: var(--term-accent); font-weight: 600; text-shadow: 0 0 6px rgba(243,108,33,0.5); }
+  #dynamic-output .ls-dir  { color: var(--term-cobalt); }
+  #dynamic-output .ls-hidden { color: var(--term-fg-muted); }
+  #dynamic-output .ls-file { color: var(--term-fg); }
+  #dynamic-output pre {
+    margin: 4px 0;
+    font-family: inherit;
+    color: var(--term-fg-dim);
+    white-space: pre-wrap;
+  }
+  #typed-input { color: var(--term-fg); }
+
+  /* Space Invaders mode */
+  #game-container { padding-top: 4px; }
+  .game-hud {
+    display: flex; gap: 18px; align-items: center;
+    border-top: 1px dashed #1F2A45;
+    border-bottom: 1px dashed #1F2A45;
+    padding: 6px 0;
+    margin-bottom: 8px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .game-hud .hud-label { color: var(--term-fg-muted); font-size: 10px; }
+  .game-hud .hud-val   { color: var(--term-fg); font-weight: 600; }
+  .game-screen {
+    font-family: "IBM Plex Mono", "VT323", monospace;
+    font-size: 14px;
+    line-height: 1.0;
+    letter-spacing: 0.06em;
+    white-space: pre;
+    padding: 8px 0;
+    margin: 0;
+    color: var(--term-fg);
+    background: rgba(6, 9, 18, 0.5);
+    border: 1px solid #15203A;
+    border-radius: 4px;
+    padding: 10px 12px;
+    overflow: hidden;
+  }
+  .game-footer {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px dashed #1F2A45;
+    font-size: 11px;
+    color: var(--term-fg-muted);
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .g-ufo    { color: var(--term-cobalt); text-shadow: 0 0 6px rgba(104,146,217,0.55); }
+  .g-player { color: var(--term-green);  text-shadow: 0 0 6px rgba(95,227,154,0.55); font-weight: 600; }
+  .g-laser  { color: var(--term-accent); text-shadow: 0 0 8px rgba(243,108,33,0.95); font-weight: 700; }
+  .g-bomb   { color: var(--term-red);    text-shadow: 0 0 6px rgba(255,107,122,0.6); }
+  .g-boom   { color: var(--term-yellow); text-shadow: 0 0 10px rgba(247,199,111,0.85); font-weight: 700; }
+  .g-shield { color: var(--term-fg-muted); }
 </style>
 </head>
 <body>
@@ -438,15 +550,24 @@
 
         <p class="cmt" style="margin-top: var(--space-3); font-size: 11px;"># Hit a number to toggle, or use the buttons below.<br># Full policy: <span class="ok">https://conduction.nl/privacy</span></p>
 
-        <div class="actions-row">
+        <div class="actions-row" id="cookie-actions">
           <button class="term-btn primary" data-act="accept"><span class="key">A</span>Accept all</button>
           <button class="term-btn" data-act="save"><span class="key">S</span>Save selection</button>
           <button class="term-btn" data-act="reject"><span class="key">R</span>Reject non-essential</button>
           <span class="spacer"></span>
-          <span class="footnote">↵ saves · esc rejects</span>
+          <span class="footnote">↵ saves · esc rejects · try <span class="ok">help</span></span>
         </div>
 
-        <div class="prompt" style="margin-top: var(--space-3);"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">_</span><span class="cursor"></span></div>
+        <div id="shell-mode">
+          <div id="dynamic-output"></div>
+          <div class="prompt" id="active-prompt" style="margin-top: var(--space-3);"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span id="typed-input" class="cmd"></span><span class="cursor" id="prompt-cursor"></span><span id="prompt-hint"></span></div>
+        </div>
+
+        <div id="game-container" style="display:none;">
+          <div class="game-hud" id="game-hud"></div>
+          <pre class="game-screen" id="game-screen"></pre>
+          <div class="game-footer" id="game-footer"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -543,24 +664,671 @@
 </div>
 
 <script>
-  // Toggle cookie options + key shortcuts
-  const opts = document.querySelectorAll('#cookie-opts li');
-  opts.forEach(li => {
+  /* ============================================================
+   * Cookie CLI — interactive shell + Space Invaders ("game.exe")
+   * ============================================================
+   * - Numbers 1-4 always toggle cookie options (the original brief)
+   * - Anything else types into the prompt; Enter executes the command
+   * - `ls`, `cat`, `pwd`, `help`, `clear`, etc. mimic a tiny shell
+   * - `game.exe` (or `./game.exe`) launches Space Invaders inside the
+   *   modal, with cobalt UFOs and KNVB-orange lasers
+   * ============================================================ */
+
+  /* ---------- cookie option toggling (kept) ---------- */
+  const cookieOpts = document.querySelectorAll('#cookie-opts li');
+  cookieOpts.forEach(li => {
     li.addEventListener('click', () => {
       if (li.dataset.required) return;
       li.classList.toggle('on');
     });
   });
 
+  /* ---------- shell elements ---------- */
+  const shellMode      = document.getElementById('shell-mode');
+  const dynamicOutput  = document.getElementById('dynamic-output');
+  const activePrompt   = document.getElementById('active-prompt');
+  const typedInput     = document.getElementById('typed-input');
+  const promptCursor   = document.getElementById('prompt-cursor');
+  const gameContainer  = document.getElementById('game-container');
+  const gameScreen     = document.getElementById('game-screen');
+  const gameHud        = document.getElementById('game-hud');
+  const gameFooter     = document.getElementById('game-footer');
+  const cookieActions  = document.getElementById('cookie-actions');
+
+  /* "you can type here ;)" hover hint over the prompt area */
+  activePrompt.title = 'you can type here ;)';
+  activePrompt.style.cursor = 'text';
+  shellMode.title = 'you can type here ;)';
+
+  let inputBuffer = '';
+  let mode = 'shell'; // 'shell' | 'game'
+  let game = null;
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+  }
+
+  function renderInput() {
+    typedInput.textContent = inputBuffer;
+    activePrompt.classList.toggle('is-empty', inputBuffer.length === 0);
+  }
+
+  function promptHtml(cmd) {
+    return `<div class="prompt"><span class="user">you</span><span class="sigil">@</span><span class="host">conduction.nl</span><span class="sigil">:</span><span class="path">~</span><span class="sigil">$</span> <span class="cmd">${escapeHtml(cmd)}</span></div>`;
+  }
+
+  function appendBlock(html) {
+    const d = document.createElement('div');
+    d.className = 'out-block';
+    d.innerHTML = html;
+    dynamicOutput.appendChild(d);
+    // keep prompt in view
+    requestAnimationFrame(() => {
+      activePrompt.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  /* ---------- fake filesystem ---------- */
+  const FS = {
+    files: [
+      { name: 'README.md',    type: 'file',   size: 421,   exec: false },
+      { name: 'cookies.toml', type: 'file',   size: 847,   exec: false },
+      { name: 'game.exe',     type: 'file',   size: 6320,  exec: true  },
+      { name: 'index.html',   type: 'file',   size: 312,   exec: false },
+      { name: 'preferences',  type: 'dir',    size: 64,    exec: false },
+      { name: 'privacy.md',   type: 'file',   size: 198,   exec: false },
+      { name: 'snake.txt',    type: 'file',   size: 142,   exec: false },
+      { name: '.config',      type: 'dir',    size: 64,    exec: false, hidden: true },
+      { name: '.bashrc',      type: 'file',   size: 88,    exec: false, hidden: true },
+    ]
+  };
+
+  const FILE_CONTENTS = {
+    'README.md': `# conduction.nl
+
+This is the company website. We use cookies for:
+  - essential functions (always on)
+  - aggregate analytics (Plausible, self-hosted)
+  - your preferences
+  - lightweight attribution
+
+Pick what you're OK with above. Or hit a number key.
+
+PS: there's a game.exe in here somewhere if you're bored.
+    Try \`ls\` to find it.`,
+    'cookies.toml': `# cookies.toml — generated by cookie-consent v2.4.0
+# https://conduction.nl/privacy
+
+[essential]
+required = true
+description = "Session, CSRF token, language preference."
+
+[analytics]
+required = false
+description = "Self-hosted Plausible. Aggregate, anonymous."
+
+[preferences]
+required = false
+description = "Theme, language, collapsed docs sections."
+
+[marketing]
+required = false
+description = "Newsletter / webinar attribution. No ad networks."`,
+    'privacy.md': `# privacy
+
+We do not sell, share, or rent your data.
+Self-hosted analytics. Self-hosted everything.
+
+Full policy: https://conduction.nl/privacy`,
+    'snake.txt': `S      .--.
+\\    /    \\
+ \\__/  ..  \\____
+       \`'        \\___
+                     \`---,
+                          \`-,
+sssssssssssssssssssssssssssss\`-_`,
+    'index.html': `<!doctype html>
+<html><head><title>conduction.nl</title></head>
+<body><h1>The open-source workspace stack.</h1></body>
+</html>`,
+    '.bashrc': `export PS1='you@conduction.nl:\\w\\$ '
+alias ll='ls -la'
+# tip: try \`./game.exe\``,
+  };
+
+  /* ---------- ls renderers ---------- */
+  function renderLs(args) {
+    const showHidden = args.some(a => a === '-a' || a === '-la' || a === '-al');
+    const longList   = args.some(a => a === '-l' || a === '-la' || a === '-al');
+    const items = FS.files.filter(f => showHidden || !f.hidden);
+
+    if (longList) {
+      const rows = [];
+      rows.push('total ' + items.length);
+      const fmt = (f) => {
+        const perms = f.type === 'dir' ? 'drwxr-xr-x' : (f.exec ? '-rwxr-xr-x' : '-rw-r--r--');
+        const size  = String(f.size).padStart(6);
+        const date  = 'Apr 28 10:23';
+        const cls   = f.type === 'dir' ? 'ls-dir' : (f.exec ? 'ls-exec' : (f.hidden ? 'ls-hidden' : 'ls-file'));
+        const name  = f.type === 'dir' ? `${f.name}/` : (f.exec ? `${f.name}*` : f.name);
+        return `${perms}  1 you  staff ${size}  ${date}  <span class="${cls}">${escapeHtml(name)}</span>`;
+      };
+      items.forEach(f => rows.push(fmt(f)));
+      return `<pre>${rows.join('\n')}</pre>`;
+    }
+
+    const cells = items.map(f => {
+      const cls = f.type === 'dir' ? 'ls-dir' : (f.exec ? 'ls-exec' : (f.hidden ? 'ls-hidden' : 'ls-file'));
+      const display = f.type === 'dir' ? `${f.name}/` : (f.exec ? `${f.name}*` : f.name);
+      return `<span class="${cls}">${escapeHtml(display)}</span>`;
+    }).join('');
+    return `<div class="ls-grid">${cells}</div>`;
+  }
+
+  /* ---------- command dispatch ---------- */
+  function exec(raw) {
+    const trimmed = raw.trim();
+    appendBlock(promptHtml(raw));
+    if (!trimmed) return;
+
+    const parts = trimmed.split(/\s+/);
+    const cmd   = parts[0];
+    const args  = parts.slice(1);
+
+    switch (cmd) {
+      case 'ls':
+      case 'dir':
+        appendBlock(renderLs(args));
+        break;
+
+      case 'll':
+        appendBlock(renderLs(['-la']));
+        break;
+
+      case 'pwd':
+        appendBlock('<pre>/home/you</pre>');
+        break;
+
+      case 'whoami':
+        appendBlock('<pre>you</pre>');
+        break;
+
+      case 'cd':
+        if (!args[0] || args[0] === '~' || args[0] === '/home/you') {
+          appendBlock('');
+        } else if (args[0] === '..' || args[0] === '/') {
+          appendBlock('<pre><span class="warn">cd: permission denied — you live here.</span></pre>');
+        } else {
+          const target = args[0].replace(/\/$/, '');
+          const found = FS.files.find(f => f.name === target);
+          if (found && found.type === 'dir') {
+            appendBlock(`<pre><span class="cmt"># pretend you cd'd into ${escapeHtml(target)}/. it's empty.</span></pre>`);
+          } else {
+            appendBlock(`<pre><span class="warn">cd: ${escapeHtml(args[0])}: no such directory</span></pre>`);
+          }
+        }
+        break;
+
+      case 'cat':
+      case 'less':
+      case 'more': {
+        if (!args[0]) { appendBlock(`<pre><span class="warn">${cmd}: missing operand</span></pre>`); break; }
+        const target = args[0].replace(/^\.\//, '');
+        if (target === 'cookies.toml' || target === './cookies.toml') {
+          appendBlock(`<pre>${escapeHtml(FILE_CONTENTS['cookies.toml'])}</pre><p class="cmt" style="font-size: 11px;"># …or just use the [1]-[4] keys above to toggle.</p>`);
+        } else if (FILE_CONTENTS[target]) {
+          appendBlock(`<pre>${escapeHtml(FILE_CONTENTS[target])}</pre>`);
+        } else if (target === 'game.exe') {
+          appendBlock('<pre><span class="warn">cat: game.exe: binary file. try `./game.exe` to run it instead.</span></pre>');
+        } else {
+          appendBlock(`<pre><span class="warn">${cmd}: ${escapeHtml(args[0])}: no such file or directory</span></pre>`);
+        }
+        break;
+      }
+
+      case 'echo':
+        appendBlock(`<pre>${escapeHtml(args.join(' '))}</pre>`);
+        break;
+
+      case 'date':
+        appendBlock(`<pre>${escapeHtml(new Date().toString())}</pre>`);
+        break;
+
+      case 'clear':
+      case 'cls':
+        dynamicOutput.innerHTML = '';
+        break;
+
+      case 'help':
+      case '?':
+        appendBlock(`<pre>Available commands:
+  <span class="ok">ls</span> [-l|-la|-a]   list directory contents
+  <span class="ok">pwd</span>              print working directory
+  <span class="ok">cd</span> &lt;dir&gt;         change directory
+  <span class="ok">cat</span> &lt;file&gt;       print a file
+  <span class="ok">whoami</span>           print current user
+  <span class="ok">date</span>             show current date
+  <span class="ok">echo</span> &lt;text&gt;      print text
+  <span class="ok">clear</span>            clear the terminal
+  <span class="ok">help</span>             show this message
+  <span class="ok">exit</span>             quit current program
+
+Cookie shortcuts (always live):
+  <span class="accent">[1]</span> essential   <span class="cmt">(required)</span>
+  <span class="accent">[2]</span> analytics
+  <span class="accent">[3]</span> preferences
+  <span class="accent">[4]</span> marketing
+
+<span class="cmt"># Tip: there's something fun in here. Try \`ls\` first.</span></pre>`);
+        break;
+
+      case 'exit':
+      case 'quit':
+      case 'logout':
+        appendBlock('<pre><span class="cmt"># nice try — there is no exit. just close the tab.</span></pre>');
+        break;
+
+      case 'sudo':
+        appendBlock('<pre><span class="warn">sudo: you are already root in your own browser tab. relax.</span></pre>');
+        break;
+
+      case 'rm':
+        appendBlock('<pre><span class="warn">rm: refusing to delete things in a demo terminal.</span></pre>');
+        break;
+
+      case 'man':
+        if (args[0]) {
+          appendBlock(`<pre>No manual entry for ${escapeHtml(args[0])}. Try <span class="ok">help</span>.</pre>`);
+        } else {
+          appendBlock('<pre>What manual page do you want? Try <span class="ok">help</span>.</pre>');
+        }
+        break;
+
+      case 'game.exe':
+      case './game.exe':
+      case 'game':
+      case './game':
+        startGame();
+        break;
+
+      default:
+        appendBlock(`<pre><span class="warn">bash: ${escapeHtml(cmd)}: command not found</span><span class="cmt">  · type <span class="ok">help</span> for a list</span></pre>`);
+    }
+  }
+
+  /* ---------- key handling ---------- */
   document.addEventListener('keydown', (e) => {
-    const k = e.key.toLowerCase();
+    if (mode === 'game') {
+      handleGameKey(e);
+      return;
+    }
+
+    // Don't capture if user is typing into a real input/textarea/contenteditable
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+
+    // Avoid eating modifier combos (so cmd-r, ctrl-c etc. still work)
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    const k = e.key;
+
+    // Numbers 1-4 always toggle cookies
     if (['1','2','3','4'].includes(k)) {
       const li = document.querySelector(`#cookie-opts li[data-key]:nth-child(${k})`);
       if (li && !li.dataset.required) li.classList.toggle('on');
+      e.preventDefault();
+      return;
     }
-    if (k === 'a') document.querySelectorAll('#cookie-opts li').forEach(l => l.classList.add('on'));
-    if (k === 'r') document.querySelectorAll('#cookie-opts li').forEach(l => { if (!l.dataset.required) l.classList.remove('on'); });
+
+    if (k === 'Enter') {
+      const cmd = inputBuffer;
+      inputBuffer = '';
+      renderInput();
+      exec(cmd);
+      e.preventDefault();
+      return;
+    }
+
+    if (k === 'Backspace') {
+      inputBuffer = inputBuffer.slice(0, -1);
+      renderInput();
+      e.preventDefault();
+      return;
+    }
+
+    if (k === 'Escape') {
+      inputBuffer = '';
+      renderInput();
+      e.preventDefault();
+      return;
+    }
+
+    if (k === 'Tab') {
+      // tiny tab-complete: fill in game.exe if input matches a prefix
+      const candidates = ['game.exe', 'help', 'ls', 'cat ', 'clear', 'pwd', 'whoami', 'echo ', 'cookies.toml'];
+      const match = candidates.find(c => c.startsWith(inputBuffer) && c !== inputBuffer);
+      if (match) { inputBuffer = match; renderInput(); }
+      e.preventDefault();
+      return;
+    }
+
+    if (k.length === 1) {
+      inputBuffer += k;
+      renderInput();
+      e.preventDefault();
+    }
   });
+
+  /* ---------- action buttons (still wired) ---------- */
+  cookieActions.querySelector('[data-act="accept"]').addEventListener('click', () => {
+    document.querySelectorAll('#cookie-opts li').forEach(l => l.classList.add('on'));
+    appendBlock('<pre><span class="ok">✓</span> All cookies accepted.</pre>');
+  });
+  cookieActions.querySelector('[data-act="save"]').addEventListener('click', () => {
+    const enabled = [...document.querySelectorAll('#cookie-opts li.on')].map(l => l.dataset.key).join(',');
+    appendBlock(`<pre><span class="ok">✓</span> Saved consent: <span class="em">${escapeHtml(enabled || 'essential')}</span></pre>`);
+  });
+  cookieActions.querySelector('[data-act="reject"]').addEventListener('click', () => {
+    document.querySelectorAll('#cookie-opts li').forEach(l => { if (!l.dataset.required) l.classList.remove('on'); });
+    appendBlock('<pre><span class="warn">!</span> Only essential cookies kept.</pre>');
+  });
+
+  /* ============================================================
+   * Space Invaders — ASCII, cobalt UFOs, orange lasers
+   * ============================================================ */
+
+  const COLS = 48;
+  const ROWS = 14;
+
+  function startGame() {
+    appendBlock('<pre><span class="cmt">Loading game.exe ...</span>\n<span class="ok">[OK]</span> CONDUCTION SPACE INVADERS v0.1</pre>');
+    setTimeout(() => {
+      mode = 'game';
+      shellMode.style.display = 'none';
+      cookieActions.style.display = 'none';
+      gameContainer.style.display = '';
+      game = new SpaceInvaders();
+    }, 250);
+  }
+
+  function exitGame() {
+    if (game) game.stop();
+    game = null;
+    mode = 'shell';
+    gameContainer.style.display = 'none';
+    cookieActions.style.display = '';
+    shellMode.style.display = '';
+    appendBlock('<pre><span class="cmt"># thanks for playing. back to your regularly scheduled cookies.</span></pre>');
+  }
+
+  function handleGameKey(e) {
+    if (game) game.onKey(e);
+  }
+
+  class SpaceInvaders {
+    constructor() {
+      this.score = 0;
+      this.lives = 3;
+      this.wave = 1;
+      this.gameOver = false;
+      this.paused = false;
+      this.player = { x: Math.floor(COLS / 2) - 1 };
+      this.lasers = [];
+      this.bombs = [];
+      this.ufos = [];
+      this.ufoDir = 1;
+      this.ufoSpeed = 9;
+      this.tickCount = 0;
+      this.graceTicks = 18; // ~1.6s before bombs start dropping
+      this.spawnUfos();
+      this.interval = setInterval(() => this.tick(), 90);
+      this.render();
+    }
+
+    spawnUfos() {
+      this.ufos = [];
+      const rows = 3, cols = 6;
+      const spacing = 7;
+      const xStart = Math.floor((COLS - (cols - 1) * spacing - 3) / 2);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          this.ufos.push({
+            x: xStart + c * spacing,
+            y: 1 + r * 2,
+            alive: true,
+            exploding: 0,
+            row: r,
+          });
+        }
+      }
+    }
+
+    onKey(e) {
+      if (this.gameOver) {
+        if (e.key === 'r' || e.key === 'R') { this.restart(); e.preventDefault(); return; }
+        if (e.key === 'Escape' || e.key === 'q' || e.key === 'Enter') { exitGame(); e.preventDefault(); return; }
+        return;
+      }
+      switch (e.key) {
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          this.player.x = Math.max(0, this.player.x - 2);
+          e.preventDefault(); break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          this.player.x = Math.min(COLS - 3, this.player.x + 2);
+          e.preventDefault(); break;
+        case ' ':
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          this.fire(); e.preventDefault(); break;
+        case 'Escape':
+        case 'q':
+        case 'Q':
+          exitGame(); e.preventDefault(); break;
+        case 'p':
+        case 'P':
+          this.paused = !this.paused; e.preventDefault(); this.render(); break;
+      }
+    }
+
+    fire() {
+      if (this.lasers.length >= 3) return;
+      this.lasers.push({ x: this.player.x + 1, y: ROWS - 2 });
+    }
+
+    stop() {
+      clearInterval(this.interval);
+    }
+
+    restart() {
+      this.score = 0;
+      this.lives = 3;
+      this.wave = 1;
+      this.gameOver = false;
+      this.player = { x: Math.floor(COLS / 2) - 1 };
+      this.lasers = [];
+      this.bombs = [];
+      this.ufoSpeed = 9;
+      this.tickCount = 0;
+      this.graceTicks = 18;
+      this.spawnUfos();
+      this.render();
+    }
+
+    tick() {
+      if (this.gameOver || this.paused) return;
+      this.tickCount++;
+
+      // lasers up every tick
+      this.lasers.forEach(l => l.y -= 1);
+      this.lasers = this.lasers.filter(l => l.y >= 0);
+
+      // bombs down every 2 ticks
+      if (this.tickCount % 2 === 0) {
+        this.bombs.forEach(b => b.y += 1);
+        this.bombs = this.bombs.filter(b => b.y < ROWS);
+      }
+
+      // UFOs march
+      if (this.tickCount % this.ufoSpeed === 0) {
+        const alive = this.ufos.filter(u => u.alive);
+        if (alive.length) {
+          const minX = Math.min(...alive.map(u => u.x));
+          const maxX = Math.max(...alive.map(u => u.x));
+          if (this.ufoDir === 1 && maxX + 3 >= COLS) {
+            this.ufoDir = -1;
+            alive.forEach(u => u.y += 1);
+          } else if (this.ufoDir === -1 && minX <= 0) {
+            this.ufoDir = 1;
+            alive.forEach(u => u.y += 1);
+          } else {
+            alive.forEach(u => u.x += this.ufoDir);
+          }
+        }
+      }
+
+      // random bombs (with a short grace period so the player can settle in)
+      if (this.graceTicks > 0) {
+        this.graceTicks--;
+      } else {
+        const aliveUfos = this.ufos.filter(u => u.alive);
+        const bombChance = 0.035 + (this.wave - 1) * 0.01;
+        if (aliveUfos.length && this.bombs.length < 4 && Math.random() < bombChance) {
+          const u = aliveUfos[Math.floor(Math.random() * aliveUfos.length)];
+          this.bombs.push({ x: u.x + 1, y: u.y + 1 });
+        }
+      }
+
+      // laser vs ufo
+      this.lasers.forEach(l => {
+        this.ufos.forEach(u => {
+          if (!u.alive) return;
+          if (l.y === u.y && l.x >= u.x && l.x <= u.x + 2) {
+            u.alive = false;
+            u.exploding = 2;
+            l.dead = true;
+            this.score += 10 * (3 - u.row);
+            const remaining = this.ufos.filter(uu => uu.alive).length;
+            this.ufoSpeed = Math.max(2, 8 - Math.floor((18 - remaining) / 3));
+          }
+        });
+      });
+      this.lasers = this.lasers.filter(l => !l.dead);
+
+      // decay explosions
+      this.ufos.forEach(u => { if (u.exploding > 0) u.exploding -= 1; });
+
+      // bombs vs player
+      this.bombs.forEach(b => {
+        if (b.y === ROWS - 1 && b.x >= this.player.x && b.x <= this.player.x + 2) {
+          b.dead = true;
+          this.lives -= 1;
+          if (this.lives <= 0) this.gameOver = true;
+        }
+      });
+      this.bombs = this.bombs.filter(b => !b.dead);
+
+      // ufo reaches player row
+      if (this.ufos.some(u => u.alive && u.y >= ROWS - 1)) {
+        this.gameOver = true;
+      }
+
+      // wave clear
+      if (this.ufos.every(u => !u.alive && u.exploding === 0)) {
+        this.wave += 1;
+        this.spawnUfos();
+        this.ufoSpeed = Math.max(3, 9 - this.wave);
+        this.graceTicks = 12;
+      }
+
+      this.render();
+    }
+
+    render() {
+      const grid = [];
+      const meta = [];
+      for (let y = 0; y < ROWS; y++) {
+        grid.push(Array(COLS).fill(' '));
+        meta.push(Array(COLS).fill(''));
+      }
+      const set = (y, x, c, t) => {
+        if (y >= 0 && y < ROWS && x >= 0 && x < COLS) { grid[y][x] = c; meta[y][x] = t; }
+      };
+
+      this.ufos.forEach(u => {
+        if (u.alive) {
+          set(u.y, u.x,     '<', 'ufo');
+          set(u.y, u.x + 1, 'O', 'ufo');
+          set(u.y, u.x + 2, '>', 'ufo');
+        } else if (u.exploding > 0) {
+          set(u.y, u.x,     '*', 'boom');
+          set(u.y, u.x + 1, '#', 'boom');
+          set(u.y, u.x + 2, '*', 'boom');
+        }
+      });
+
+      this.lasers.forEach(l => set(l.y, l.x, '|', 'laser'));
+      this.bombs.forEach(b => set(b.y, b.x, '*', 'bomb'));
+
+      set(ROWS - 1, this.player.x,     '<', 'player');
+      set(ROWS - 1, this.player.x + 1, 'A', 'player');
+      set(ROWS - 1, this.player.x + 2, '>', 'player');
+
+      let html = '';
+      for (let y = 0; y < ROWS; y++) {
+        let line = '';
+        let runT = '', runS = '';
+        const flush = () => {
+          if (!runS) return;
+          if (runT) line += `<span class="g-${runT}">${escapeHtml(runS)}</span>`;
+          else line += escapeHtml(runS);
+          runS = '';
+        };
+        for (let x = 0; x < COLS; x++) {
+          if (meta[y][x] === runT) {
+            runS += grid[y][x];
+          } else {
+            flush();
+            runT = meta[y][x];
+            runS = grid[y][x];
+          }
+        }
+        flush();
+        html += line + '\n';
+      }
+      gameScreen.innerHTML = html;
+
+      const livesIcons = '<A> '.repeat(Math.max(0, this.lives)).trim() || '—';
+      gameHud.innerHTML = `
+        <span class="hud-label">SCORE</span> <span class="hud-val g-laser">${String(this.score).padStart(4,'0')}</span>
+        <span class="hud-label">LIVES</span> <span class="hud-val g-player">${escapeHtml(livesIcons)}</span>
+        <span class="hud-label">WAVE</span>  <span class="hud-val">${this.wave}</span>
+        <span style="margin-left:auto" class="hud-label">conduction · space-invaders.exe</span>
+      `;
+
+      if (this.gameOver) {
+        const won = this.ufos.every(u => !u.alive);
+        gameFooter.innerHTML = won
+          ? '<span class="ok">--- YOU WIN. all UFOs grounded. press [R] to restart, [ESC] to exit ---</span>'
+          : '<span class="warn">--- GAME OVER --- press [R] to restart, [ESC] to exit ---</span>';
+      } else if (this.paused) {
+        gameFooter.innerHTML = '<span class="warn">-- paused -- press [P] to resume</span>';
+      } else if (this.graceTicks > 0) {
+        gameFooter.innerHTML = '<span class="ok">-- READY --</span> <span class="cmt">defend the cookies. fire orange lasers at the cobalt UFOs.</span>';
+      } else {
+        gameFooter.innerHTML = '<span class="cmt"># [← →] move &nbsp; [space] fire orange laser &nbsp; [P] pause &nbsp; [ESC] exit</span>';
+      }
+    }
+  }
+
+  // boot: render empty input
+  renderInput();
 </script>
 
 </body>

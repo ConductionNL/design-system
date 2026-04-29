@@ -35,7 +35,7 @@
   .canal-footer .house-wrap {
     position: relative;
     flex-shrink: 0;
-    margin-right: -1px;        /* overlap kills the AA seam between houses */
+    margin-right: -2px;        /* 2-px overlap closes the AA seam between facades */
   }
   .canal-footer .house {
     display: block;
@@ -48,34 +48,6 @@
   .canal-footer .h-d { width: 54px; height: 102px; }
   .canal-footer .h-e { width: 57px; height: 126px; }
   .canal-footer .house.flipped { transform: scaleX(-1); }
-
-  /* Dutch flag on a flagpole rising from the gable. Pure CSS — pole = ::before
-     (1px cobalt line), flag = ::after (3 horizontal stripes via gradient). */
-  .canal-footer .house-wrap.with-flag::before {
-    content: '';
-    position: absolute;
-    bottom: calc(100% - 2px);
-    left: 50%;
-    width: 1px;
-    height: 14px;
-    background: var(--c-cobalt-900);
-    z-index: 1;
-  }
-  .canal-footer .house-wrap.with-flag::after {
-    content: '';
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: calc(50% + 1px);
-    width: 9px;
-    height: 5px;
-    background: linear-gradient(
-      to bottom,
-      #AE1C28 0%, #AE1C28 33.3%,
-      #FFFFFF 33.3%, #FFFFFF 66.6%,
-      #21468B 66.6%, #21468B 100%
-    );
-    z-index: 1;
-  }
 
   /* ---- Kade (gray quay) with bikes + cars drifting along it ---- */
   .canal-footer .kade {
@@ -100,10 +72,12 @@
     bottom: 4px;
     will-change: transform;
   }
-  .canal-footer .ki-bike-1 { animation: ki-drift-r 22s linear infinite; }
-  .canal-footer .ki-car-1  { animation: ki-drift-l 30s linear infinite; animation-delay: -7s;  bottom: 6px; }
-  .canal-footer .ki-bike-2 { animation: ki-drift-l 26s linear infinite; animation-delay: -14s; }
-  .canal-footer .ki-car-2  { animation: ki-drift-r 34s linear infinite; animation-delay: -19s; bottom: 6px; }
+  /* Per-item animation directions; durations + delays come from inline-style
+     (set by the script so they're random + slow). */
+  .canal-footer .ki-bike-1 { animation: ki-drift-r 90s linear infinite; }
+  .canal-footer .ki-bike-2 { animation: ki-drift-l 90s linear infinite; }
+  .canal-footer .ki-car-1  { animation: ki-drift-l 100s linear infinite; bottom: 6px; }
+  .canal-footer .ki-car-2  { animation: ki-drift-r 100s linear infinite; bottom: 6px; }
   @keyframes ki-drift-r {
     from { transform: translateX(-60px); }
     to   { transform: translateX(100vw); }
@@ -136,11 +110,13 @@
     bottom: 6px;
     will-change: transform;
   }
-  .canal-footer .ci-cruise { animation: ci-drift-r 95s linear infinite; bottom: 12px; }
-  .canal-footer .ci-sloep  { animation: ci-drift-l 70s linear infinite; animation-delay: -25s; bottom: 18px; }
-  .canal-footer .ci-row    { animation: ci-drift-r 130s linear infinite; animation-delay: -55s; bottom: 22px; }
-  .canal-footer .ci-swim   { animation: ci-drift-r 210s linear infinite; animation-delay: -110s; bottom: 32px; }
-  .canal-footer .ci-hover  { animation: ci-drift-l 55s linear infinite; animation-delay: -12s; bottom: 8px; }
+  .canal-footer .ci-cruise    { animation: ci-drift-r 220s linear infinite; bottom: 12px; }
+  .canal-footer .ci-sloep     { animation: ci-drift-l 160s linear infinite; bottom: 18px; }
+  .canal-footer .ci-row       { animation: ci-drift-r 260s linear infinite; bottom: 22px; }
+  .canal-footer .ci-swim      { animation: ci-drift-r 400s linear infinite; bottom: 32px; }
+  .canal-footer .ci-hover     { animation: ci-drift-l 120s linear infinite; bottom: 8px;  }
+  .canal-footer .ci-periscope { animation: ci-drift-r 320s linear infinite; bottom: 4px;  }
+  .canal-footer .ci-whale     { animation: ci-drift-l 280s linear infinite; bottom: 14px; }
   @keyframes ci-drift-r {
     from { transform: translateX(-260px); }
     to   { transform: translateX(calc(100vw + 60px)); }
@@ -353,6 +329,24 @@
         <line x1="0"  y1="8" x2="3"  y2="8" stroke="var(--c-orange-knvb)" stroke-width="0.7" opacity="0.4"/>
       </svg>
 
+      <!-- Periscope of a submerged sub — only the bent head sticks out -->
+      <svg class="ci ci-periscope" width="14" height="26" viewBox="-3 -2 18 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="4" width="2" height="18" fill="var(--c-orange-knvb)"/>
+        <rect x="0" y="0" width="9" height="3" fill="var(--c-orange-knvb)"/>
+        <rect x="4" y="3" width="2" height="2" fill="var(--c-orange-knvb)"/>
+        <ellipse cx="5" cy="24" rx="7" ry="0.9" fill="var(--c-orange-knvb)" opacity="0.5"/>
+      </svg>
+
+      <!-- Whale: only the back, tail and a small spout above the surface -->
+      <svg class="ci ci-whale" width="76" height="18" viewBox="-3 -4 82 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M 0,12 Q 0,4 26,3 Q 54,2 64,7 L 72,4 L 68,9 L 72,14 L 64,11 Q 54,14 26,14 Q 6,14 0,12 Z" fill="var(--c-orange-knvb)"/>
+        <g opacity="0.55" stroke="var(--c-orange-knvb)" stroke-width="1" stroke-linecap="round">
+          <line x1="22" y1="2"  x2="20" y2="-3"/>
+          <line x1="25" y1="2"  x2="25" y2="-4"/>
+          <line x1="28" y1="2"  x2="30" y2="-3"/>
+        </g>
+      </svg>
+
       <!-- Hovercraft carrying the Conduction hex logo -->
       <svg class="ci ci-hover" width="74" height="26" viewBox="0 -4 74 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <ellipse cx="37" cy="22" rx="37" ry="2.5" fill="var(--c-orange-knvb)" opacity="0.4"/>
@@ -522,20 +516,23 @@
 
 <script>
 (function () {
-  const skyline = document.querySelector('.canal-footer .skyline');
-  if (!skyline) return;
+  const root = document.querySelector('.canal-footer');
+  if (!root) return;
+
+  // ----- 1. Randomise the skyline (random house bricks) -----
+  const skyline = root.querySelector('.skyline');
   const types = ['h-a', 'h-b', 'h-c', 'h-d', 'h-e'];
   const widths = { 'h-a': 48, 'h-b': 60, 'h-c': 42, 'h-d': 54, 'h-e': 57 };
 
-  function build() {
+  function buildSkyline() {
     skyline.innerHTML = '';
     let total = 0;
     const target = window.innerWidth + 200;
     let prev = null;
     while (total < target) {
       let pick;
-      // Pick a random house type, but with a strong bias against repeating
-      // the same one twice in a row so the canal row feels organic.
+      // Bias against repeating the same house twice in a row so the canal
+      // row feels organic.
       do {
         pick = types[(Math.random() * types.length) | 0];
       } while (pick === prev && Math.random() < 0.7);
@@ -546,18 +543,49 @@
       const wrap = document.createElement('div');
       wrap.className = 'house-wrap';
       wrap.appendChild(tpl.content.cloneNode(true));
-      // ~22% of houses fly the Dutch flag from a flagpole over the gable
-      if (Math.random() < 0.22) wrap.classList.add('with-flag');
-      // ~30% of houses get a horizontal flip — adds asymmetry to the row
+      // ~30% of houses get a horizontal flip — adds asymmetry to the row.
       if (Math.random() < 0.30) wrap.querySelector('svg').classList.add('flipped');
       skyline.appendChild(wrap);
       total += widths[pick];
     }
   }
-  build();
-  // Re-roll on resize so the canal stays full-width and visually fresh.
+
+  // ----- 2. Random per-item drift speeds -----
+  // Each ki/ci item picks a fresh duration in its own range every page-load,
+  // plus a random negative delay so they all start mid-flight rather than
+  // bunched up at the left edge.
+  const speeds = {
+    'ki-bike-1': [55, 95],
+    'ki-bike-2': [60, 100],
+    'ki-car-1':  [70, 120],
+    'ki-car-2':  [75, 130],
+    'ci-cruise':    [180, 280],
+    'ci-sloep':     [120, 200],
+    'ci-row':       [200, 320],
+    'ci-swim':      [320, 480],
+    'ci-hover':     [90, 150],
+    'ci-periscope': [240, 380],
+    'ci-whale':     [220, 340],
+  };
+  function rollSpeeds() {
+    Object.entries(speeds).forEach(([cls, [lo, hi]]) => {
+      const el = root.querySelector('.' + cls);
+      if (!el) return;
+      const dur = lo + Math.random() * (hi - lo);
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's';
+    });
+  }
+
+  buildSkyline();
+  rollSpeeds();
+
+  // Re-roll on resize so the canal stays full-width and the speeds shuffle.
   let t;
-  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(build, 200); });
+  window.addEventListener('resize', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { buildSkyline(); rollSpeeds(); }, 200);
+  });
 })();
 </script>
 

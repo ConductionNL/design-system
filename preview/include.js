@@ -31,7 +31,28 @@
         document.head.appendChild(clone);
       });
 
-      el.outerHTML = doc.body.innerHTML;
+      // Pull scripts out of the body before we splat the markup in:
+      // scripts inserted via innerHTML are inert (browser security), so
+      // we re-create them as live <script> elements after.
+      const body = doc.body.cloneNode(true);
+      const scripts = [...body.querySelectorAll('script')];
+      scripts.forEach((s) => s.remove());
+
+      el.outerHTML = body.innerHTML;
+
+      // Re-attach scripts as live elements so inline code (e.g. the
+      // canal-footer skyline randomiser) actually executes. Order is
+      // preserved by chaining `load` events on src scripts.
+      for (const s of scripts) {
+        const live = document.createElement('script');
+        for (const attr of s.attributes) live.setAttribute(attr.name, attr.value);
+        if (s.src) {
+          live.async = false;
+        } else {
+          live.textContent = s.textContent;
+        }
+        document.body.appendChild(live);
+      }
     } catch (err) {
       el.innerHTML = '<!-- include failed: ' + url + ' (' + err.message + ') -->';
       console.error('include.js failed for', url, err);

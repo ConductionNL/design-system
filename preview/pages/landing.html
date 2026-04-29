@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ConNext — open-source apps for Nextcloud</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); }
+
+  /* ===== Hero ===== */
+  .hero {
+    padding: 96px 64px 88px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 72px;
+    align-items: center;
+  }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+  .hero .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .hero h1 {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    margin: 0 0 24px;
+    color: var(--c-cobalt-900);
+  }
+  .hero .lede {
+    font-size: 21px;
+    color: var(--c-cobalt-700);
+    line-height: 1.5;
+    max-width: 52ch;
+    margin: 0 0 32px;
+  }
+  .hero .actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .hero .btn-primary {
+    background: var(--c-blue-cobalt); color: white;
+    padding: 14px 24px; border-radius: var(--radius-md);
+    font-weight: 500; font-size: 15px; text-decoration: none;
+  }
+  .hero .btn-primary:hover { background: var(--c-cobalt-700); }
+  .hero .btn-secondary {
+    background: white; color: var(--c-blue-cobalt);
+    border: 1px solid var(--c-cobalt-200);
+    padding: 13px 22px; border-radius: var(--radius-md);
+    font-weight: 500; font-size: 15px; text-decoration: none;
+  }
+  .hero .btn-ghost {
+    color: var(--c-cobalt-700); font-size: 14px; font-weight: 500;
+    text-decoration: none;
+  }
+  .hero .btn-ghost:hover { color: var(--c-orange-knvb); }
+
+  /* hex-prism scene — six apps clustering around a Nextcloud kernel */
+  .hex-scene {
+    position: relative;
+    aspect-ratio: 1.05;
+    width: 100%;
+  }
+  .hex-scene .h {
+    position: absolute;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    box-shadow: var(--shadow-2);
+  }
+  .hex-scene .h svg { width: 36px; height: 36px; stroke: currentColor; stroke-width: 1.6; fill: none; }
+  .hex-scene .h .label {
+    position: absolute;
+    bottom: -22px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-700);
+  }
+  .hex-scene .h.kernel {
+    width: 168px; height: 194px;
+    background: linear-gradient(135deg, var(--c-nextcloud-blue), var(--c-nextcloud-cyan));
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+  .hex-scene .h.kernel svg { width: 60px; height: 60px; }
+  .hex-scene .h.kernel .label { color: white; bottom: 18px; font-weight: 600; }
+  .hex-scene .h.app {
+    width: 96px; height: 110px;
+    background: var(--c-blue-cobalt);
+  }
+  .hex-scene .h.app.a1 { left: 4%; top: 8%; }
+  .hex-scene .h.app.a2 { right: 6%; top: 4%; background: var(--c-cobalt-700); }
+  .hex-scene .h.app.a3 { right: 0%; top: 44%; background: var(--c-orange-knvb); }
+  .hex-scene .h.app.a4 { right: 10%; bottom: 6%; background: var(--c-cobalt-700); }
+  .hex-scene .h.app.a5 { left: 0%; bottom: 8%; }
+  .hex-scene .h.app.a6 { left: 6%; top: 42%; background: var(--c-cobalt-700); }
+
+  /* ===== Stats strip ===== */
+  .strip {
+    background: var(--c-cobalt-50);
+    border-top: 1px solid var(--c-cobalt-100);
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .strip .strip-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 64px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .strip .stat .num { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); line-height: 1; }
+  .strip .stat .lbl { font-size: 14px; color: var(--c-cobalt-700); margin-top: 8px; line-height: 1.4; }
+
+  /* ===== Section scaffolding ===== */
+  .section { max-width: 1280px; margin: 0 auto; padding: 96px 64px; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 64px; margin-bottom: 48px; }
+  .section-head .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 12px;
+  }
+  .section-head .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .section-head h2 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--c-cobalt-900);
+    margin: 0;
+    max-width: 18ch;
+  }
+  .section-head .lede {
+    font-size: 17px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 50ch;
+  }
+
+  /* ===== Platform overview · honeycomb visual ===== */
+  .platform { background: var(--c-cobalt-50); padding: 96px 64px; }
+  .platform-inner { max-width: 1280px; margin: 0 auto; }
+  .honeycomb {
+    margin: 56px auto 0;
+    width: 720px;
+    height: 480px;
+    position: relative;
+  }
+  .honeycomb .hex {
+    position: absolute;
+    width: 144px; height: 166px;
+    clip-path: var(--hex-pointy-top);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 0 12px;
+    font-size: 13px;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+  .honeycomb .hex .label-eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .honeycomb .hex.kernel {
+    background: linear-gradient(135deg, var(--c-nextcloud-blue), var(--c-nextcloud-cyan));
+    left: 288px; top: 157px;
+    z-index: 2;
+    width: 192px; height: 222px;
+  }
+  .honeycomb .hex.app1 { background: var(--c-blue-cobalt);    left: 144px; top: 32px; }
+  .honeycomb .hex.app2 { background: var(--c-blue-cobalt);    left: 432px; top: 32px; }
+  .honeycomb .hex.app3 { background: var(--c-cobalt-700);     left: 0;     top: 282px; }
+  .honeycomb .hex.app4 { background: var(--c-cobalt-700);     left: 576px; top: 282px; }
+  .honeycomb .hex.app5 { background: var(--c-orange-knvb);    left: 144px; top: 282px; }
+  .honeycomb .hex.app6 { background: var(--c-cobalt-700);     left: 432px; top: 282px; }
+
+  /* ===== Apps preview row ===== */
+  .apps-preview { padding: 96px 64px; max-width: 1280px; margin: 0 auto; }
+  .apps-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .app-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    text-decoration: none; color: inherit;
+    transition: all 160ms ease;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .app-card:hover { border-color: var(--c-blue-cobalt); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .app-card .icon-wrap {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .app-card .icon-wrap svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .app-card .name { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--c-cobalt-900); }
+  .app-card .tagline { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; }
+  .app-card .meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: auto; padding-top: 16px; border-top: 1px solid var(--c-cobalt-100);
+    font-size: 12px; color: var(--c-cobalt-400);
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .app-card .badge { display: inline-flex; align-items: center; gap: 6px; }
+  .app-card .badge .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
+  .apps-preview .see-all {
+    margin-top: 32px;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--c-blue-cobalt); font-weight: 600; font-size: 15px;
+    text-decoration: none;
+    border-bottom: 2px solid var(--c-orange-knvb);
+    padding-bottom: 2px;
+  }
+
+  /* ===== CTA banner ===== */
+  .cta {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px 96px;
+  }
+  .cta-banner {
+    position: relative;
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 72px 64px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .cta-banner .ornament { position: absolute; pointer-events: none; clip-path: var(--hex-pointy-top); background: rgba(255,255,255,0.05); }
+  .cta-banner .ornament.o1 { width: 240px; height: 277px; top: -100px; right: -50px; transform: rotate(8deg); }
+  .cta-banner .ornament.o2 { width: 160px; height: 184px; bottom: -60px; left: 80px; background: rgba(255,255,255,0.04); }
+  .cta-banner .ornament.o4 { width: 72px; height: 83px; top: 48px; left: 30%; background: var(--c-orange-knvb); opacity: 0.18; }
+  .cta-banner h2 {
+    position: relative; color: white;
+    font-size: 40px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.15;
+    margin: 0 0 12px;
+  }
+  .cta-banner p {
+    position: relative;
+    font-size: 17px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+  .cta-banner .actions { position: relative; display: inline-flex; gap: 14px; align-items: center; }
+  .cta-banner .btn-on-dark {
+    background: white; color: var(--c-blue-cobalt);
+    font-size: 14px; font-weight: 600;
+    padding: 13px 24px; border-radius: var(--radius-md);
+    text-decoration: none;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .cta-banner .btn-ghost-on-dark {
+    color: white; font-size: 14px; font-weight: 600;
+    padding: 12px 24px; border-radius: var(--radius-md);
+    border: 1px solid rgba(255,255,255,0.4);
+    text-decoration: none;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .cta-banner .btn-ghost-on-dark:hover { background: rgba(255,255,255,0.08); border-color: white; }
+</style>
+</head>
+<body data-current="">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="copy">
+    <div class="eyebrow"><span class="h"></span>Twelve open-source apps · one Nextcloud</div>
+    <h1>Install your stack.<br>In two minutes.</h1>
+    <p class="lede">Twelve open-source apps that plug into <span class="next-blue">Nextcloud</span>. Catalogs, registers, integrations, document handling — pick what you need from the app store and you're working today. No methodology workshop. No lock-in.</p>
+    <div class="actions">
+      <a href="#" class="btn-primary">Install from Nextcloud app store</a>
+      <a href="#" class="btn-secondary">Try the demo</a>
+      <a href="#" class="btn-ghost">View on GitHub →</a>
+    </div>
+  </div>
+  <div class="hex-scene">
+    <span class="h kernel"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 4.4 3.6 8 8 10 4.4-2 8-5.6 8-10V6l-8-4z"/></svg><span class="label">Nextcloud</span></span>
+    <span class="h app a1"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg><span class="label">Catalogi</span></span>
+    <span class="h app a2"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg><span class="label">Register</span></span>
+    <span class="h app a3"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg><span class="label">Connector</span></span>
+    <span class="h app a4"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="label">DocuDesk</span></span>
+    <span class="h app a5"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/></svg><span class="label">MyDash</span></span>
+    <span class="h app a6"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4v3"/><rect x="6" y="9" width="12" height="13" rx="2"/></svg><span class="label">AI Bridge</span></span>
+  </div>
+</section>
+
+<!-- ===== Stats strip ===== -->
+<section class="strip">
+  <div class="strip-inner">
+    <div class="stat"><div class="num">12</div><div class="lbl">apps in the ecosystem,<br>all open-source</div></div>
+    <div class="stat"><div class="num">2 min</div><div class="lbl">from app store install<br>to working solution</div></div>
+    <div class="stat"><div class="num">€0</div><div class="lbl">for the apps —<br>support is optional</div></div>
+    <div class="stat"><div class="num">EUPL</div><div class="lbl">licensed, no vendor<br>lock-in, ever</div></div>
+  </div>
+</section>
+
+<!-- ===== Platform overview ===== -->
+<section class="platform">
+  <div class="platform-inner">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow"><span class="h"></span>The platform</div>
+        <h2>Five components.<br>Twenty-four apps. One <span class="next-blue">Nextcloud</span> kernel.</h2>
+      </div>
+      <p class="lede">Every ConNext app plugs into one of five categories around the Nextcloud kernel — files, cobalt, identity. All of them run on the same platform: files, calendar, identity. That's your install one app to see what it costs.</p>
+    </div>
+
+    <div class="honeycomb">
+      <div class="hex kernel">
+        <div class="label-eyebrow">Kernel</div>
+        Nextcloud
+      </div>
+      <div class="hex app1"><div class="label-eyebrow">Data</div>OpenRegister</div>
+      <div class="hex app2"><div class="label-eyebrow">Catalog</div>OpenCatalogi</div>
+      <div class="hex app3"><div class="label-eyebrow">Documents</div>DocuDesk</div>
+      <div class="hex app4"><div class="label-eyebrow">Dashboards</div>MyDash</div>
+      <div class="hex app5"><div class="label-eyebrow">Integrations</div>OpenConnector</div>
+      <div class="hex app6"><div class="label-eyebrow">AI</div>OpenAI Bridge</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Featured apps ===== -->
+<section class="apps-preview">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow"><span class="h"></span>Most installed</div>
+      <h2>Three apps that ship the most outcomes.</h2>
+    </div>
+    <p class="lede">Start with the apps that solve a concrete problem on day one. They're all stable, all NLDS-compliant, all installable from the Nextcloud app store.</p>
+  </div>
+
+  <div class="apps-row">
+    <a href="app-detail.html" class="app-card">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></div>
+      <div class="name">OpenCatalogi</div>
+      <div class="tagline">Public software catalog. Every app, dataset, and API in your organisation — searchable in one place.</div>
+      <div class="meta">
+        <span class="badge"><span class="h"></span>STABLE</span>
+        <span>v2.4 · NL · EN</span>
+      </div>
+    </a>
+    <a href="app-detail.html" class="app-card">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg></div>
+      <div class="name">OpenRegister</div>
+      <div class="tagline">Schemas, registers, structured data objects — the typed-data backbone for every other app.</div>
+      <div class="meta">
+        <span class="badge"><span class="h"></span>STABLE</span>
+        <span>v3.1 · NL · EN</span>
+      </div>
+    </a>
+    <a href="app-detail.html" class="app-card">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></div>
+      <div class="name">OpenConnector</div>
+      <div class="tagline">Connect Nextcloud to anything — REST, SOAP, GraphQL, file drops, message queues. No middleware.</div>
+      <div class="meta">
+        <span class="badge"><span class="h" style="background: var(--c-orange-knvb);"></span>BETA</span>
+        <span>v1.2 · NL · EN</span>
+      </div>
+    </a>
+  </div>
+
+  <a href="apps-catalog.html" class="see-all">Browse all twelve apps →</a>
+</section>
+
+<!-- ===== CTA banner ===== -->
+<section class="cta">
+  <div class="cta-banner">
+    <span class="ornament o1"></span>
+    <span class="ornament o2"></span>
+    <span class="ornament o4"></span>
+    <h2>Pick an app. Install it. Done.</h2>
+    <p>Drop OpenCatalogi or OpenRegister into your Nextcloud in two minutes. Open-source, no consultancy track, no lock-in.</p>
+    <div class="actions">
+      <a href="apps-catalog.html" class="btn-on-dark">Install from app store</a>
+      <a href="#" class="btn-ghost-on-dark">Book a demo</a>
+    </div>
+  </div>
+</section>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

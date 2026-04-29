@@ -6,43 +6,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../tokens.css">
 <style>
-  body { margin: 0; }
+  body { margin: 0; background: white; }
 
-  .site-footer {
-    background: var(--c-cobalt-900);
+  /* ============================================================
+     Canal footer — Amsterdam trapgevel skyline above the water,
+     footer content sitting IN the water (cobalt-900). The 30°/60°
+     sharp-line angles of the pointy-top hex re-appear as the
+     stepped gables and the small hex finials/windows that crown
+     each house — same hex grammar used everywhere else in the
+     design system, just rotated into architecture.
+
+     Five distinct trapgevel symbols tile across the skyline:
+       hA — 3-step narrow, hex finial
+       hB — 4-step wide, pointed crown + hex window
+       hC — 5-step tall, hex finial
+       hD — 3-step squat, bell ornament
+       hE — 4-step with crowning hex finial + hex window in gable
+     A vertically-flipped, low-opacity copy renders below the
+     waterline as the canal reflection. Three hex-zigzag ripple
+     lines flow horizontally across the surface.
+     ============================================================ */
+
+  .canal-footer {
+    position: relative;
     color: white;
-    padding: 72px 56px 32px;
+    isolation: isolate;
   }
-  .site-footer .footer-grid {
+  .canal-footer .skyline {
+    display: block;
+    width: 100%;
+    height: 320px;
+    margin-bottom: -1px;
+  }
+  .canal-footer .skyline .ripples path {
+    stroke-dasharray: 6 14;
+    animation: canal-ripple 9s linear infinite;
+  }
+  .canal-footer .skyline .ripples .ripple-2 { animation-duration: 13s; animation-direction: reverse; }
+  .canal-footer .skyline .ripples .ripple-3 { animation-duration: 17s; }
+  @keyframes canal-ripple { to { stroke-dashoffset: -200; } }
+
+  .canal-footer .water {
+    background: var(--c-cobalt-900);
+    padding: 16px 56px 28px;
+    position: relative;
+  }
+  .canal-footer .water::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    pointer-events: none;
+  }
+
+  .canal-footer .footer-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
     gap: 48px;
     max-width: 1280px;
-    margin: 0 auto 56px;
+    margin: 0 auto 48px;
+    position: relative;
   }
-  .site-footer .brand .wm {
+  .canal-footer .brand .wm {
     font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: white;
-    margin-bottom: 12px;
+    margin: 0 0 12px;
   }
-  .site-footer .brand p {
+  .canal-footer .next-blue { color: var(--c-nextcloud-blue); }
+  .canal-footer .brand p {
     font-size: 14px;
     line-height: 1.55;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.7);
     max-width: 32ch;
     margin: 0 0 24px;
   }
-  .site-footer .brand .triad {
+  .canal-footer .brand .triad {
     display: flex; gap: 16px;
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.55);
   }
-  .site-footer .brand .triad .h {
+  .canal-footer .brand .triad .h {
     width: 10px; height: 12px;
     clip-path: var(--hex-pointy-top);
     background: var(--c-orange-knvb);
@@ -50,24 +99,24 @@
     margin-right: 6px;
     vertical-align: middle;
   }
-  .site-footer h4 {
+  .canal-footer h4 {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.55);
     font-weight: 500;
     margin: 0 0 16px;
   }
-  .site-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-  .site-footer ul a {
-    color: rgba(255,255,255,0.82);
+  .canal-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .canal-footer ul a {
+    color: rgba(255,255,255,0.85);
     text-decoration: none;
     font-size: 14px;
   }
-  .site-footer ul a:hover { color: var(--c-orange-knvb); }
+  .canal-footer ul a:hover { color: var(--c-orange-knvb); }
 
-  .site-footer .legal-bar {
+  .canal-footer .legal-bar {
     border-top: 1px solid rgba(255,255,255,0.1);
     max-width: 1280px;
     margin: 0 auto;
@@ -75,84 +124,230 @@
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 16px;
     font-size: 12px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.55);
     font-family: var(--conduction-typography-font-family-code);
+    position: relative;
   }
-  .site-footer .legal-bar .left, .site-footer .legal-bar .right {
+  .canal-footer .legal-bar .left, .canal-footer .legal-bar .right {
     display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
   }
-  .site-footer .legal-bar a { color: rgba(255,255,255,0.65); text-decoration: none; }
-  .site-footer .legal-bar a:hover { color: var(--c-orange-knvb); }
-  .site-footer .nlds-badge {
+  .canal-footer .legal-bar a { color: rgba(255,255,255,0.65); text-decoration: none; }
+  .canal-footer .legal-bar a:hover { color: var(--c-orange-knvb); }
+  .canal-footer .nlds-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    color: rgba(255,255,255,0.82);
+    color: rgba(255,255,255,0.85);
   }
-  .site-footer .nlds-badge svg { width: 12px; height: 12px; stroke: var(--c-mint-500); stroke-width: 2; fill: none; }
+  .canal-footer .nlds-badge svg { width: 12px; height: 12px; stroke: var(--c-mint-500, #2E9866); stroke-width: 2; fill: none; }
 </style>
 </head>
 <body>
 
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div class="brand">
-      <div class="wm">Con<span class="next-blue">Next</span></div>
-      <p>Open-source apps for <span class="next-blue">Nextcloud</span>. Built and maintained by Conduction in Amsterdam — released under EUPL-1.2.</p>
-      <div class="triad"><span><span class="h"></span>Conduction · ConNext · <span class="next-blue">Nextcloud</span></span></div>
+<footer class="canal-footer" aria-label="Site footer">
+
+  <svg class="skyline" viewBox="0 0 1400 320" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- House A: 3-step narrow, w=80 h=200, hex finial on flat crown -->
+      <g id="hA">
+        <path d="M 0,200 L 0,38 L 8,38 L 8,26 L 16,26 L 16,14 L 24,14 L 24,8 L 56,8 L 56,14 L 64,14 L 64,26 L 72,26 L 72,38 L 80,38 L 80,200 Z" fill="var(--c-cobalt-900)"/>
+        <polygon points="40,-1 44,1 44,5 40,7 36,5 36,1" fill="var(--c-orange-knvb)" opacity="0.7"/>
+        <rect x="22" y="68" width="10" height="16" fill="rgba(255,236,180,0.85)"/>
+        <rect x="48" y="68" width="10" height="16" fill="rgba(255,255,255,0.06)"/>
+        <rect x="22" y="98" width="10" height="16" fill="rgba(255,255,255,0.06)"/>
+        <rect x="48" y="98" width="10" height="16" fill="rgba(255,236,180,0.45)"/>
+        <rect x="22" y="128" width="10" height="16" fill="rgba(255,255,255,0.06)"/>
+        <rect x="48" y="128" width="10" height="16" fill="rgba(255,255,255,0.06)"/>
+        <rect x="32" y="160" width="16" height="34" fill="rgba(255,236,180,0.18)"/>
+      </g>
+
+      <!-- House B: 4-step wide, w=100 h=220, pointed crown + hex window in gable -->
+      <g id="hB">
+        <path d="M 0,220 L 0,58 L 8,58 L 8,47 L 16,47 L 16,36 L 24,36 L 24,25 L 32,25 L 32,14 L 50,4 L 68,14 L 68,25 L 76,25 L 76,36 L 84,36 L 84,47 L 92,47 L 92,58 L 100,58 L 100,220 Z" fill="var(--c-cobalt-900)"/>
+        <polygon points="50,28 54,30 54,34 50,36 46,34 46,30" fill="rgba(255,236,180,0.55)"/>
+        <rect x="14" y="80" width="14" height="20" fill="rgba(255,236,180,0.7)"/>
+        <rect x="43" y="80" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="72" y="80" width="14" height="20" fill="rgba(255,236,180,0.4)"/>
+        <rect x="14" y="115" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="43" y="115" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="72" y="115" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="14" y="150" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="43" y="150" width="14" height="20" fill="rgba(255,236,180,0.55)"/>
+        <rect x="72" y="150" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="42" y="180" width="16" height="34" fill="rgba(255,236,180,0.2)"/>
+      </g>
+
+      <!-- House C: 5-step very tall narrow, w=70 h=240, hex finial -->
+      <g id="hC">
+        <path d="M 0,240 L 0,48 L 5,48 L 5,41 L 10,41 L 10,34 L 15,34 L 15,27 L 20,27 L 20,20 L 25,20 L 25,15 L 45,15 L 45,20 L 50,20 L 50,27 L 55,27 L 55,34 L 60,34 L 60,41 L 65,41 L 65,48 L 70,48 L 70,240 Z" fill="var(--c-cobalt-900)"/>
+        <polygon points="35,8 38,10 38,13 35,15 32,13 32,10" fill="var(--c-orange-knvb)" opacity="0.6"/>
+        <rect x="14" y="70" width="12" height="18" fill="rgba(255,236,180,0.4)"/>
+        <rect x="44" y="70" width="12" height="18" fill="rgba(255,236,180,0.7)"/>
+        <rect x="14" y="100" width="12" height="18" fill="rgba(255,255,255,0.06)"/>
+        <rect x="44" y="100" width="12" height="18" fill="rgba(255,255,255,0.06)"/>
+        <rect x="14" y="130" width="12" height="18" fill="rgba(255,236,180,0.55)"/>
+        <rect x="44" y="130" width="12" height="18" fill="rgba(255,255,255,0.06)"/>
+        <rect x="14" y="160" width="12" height="18" fill="rgba(255,255,255,0.06)"/>
+        <rect x="44" y="160" width="12" height="18" fill="rgba(255,255,255,0.06)"/>
+        <rect x="27" y="200" width="16" height="34" fill="rgba(255,236,180,0.18)"/>
+      </g>
+
+      <!-- House D: 3-step squat with bell ornament, w=90 h=170 -->
+      <g id="hD">
+        <path d="M 0,170 L 0,30 L 8,30 L 8,20 L 16,20 L 16,10 L 24,10 L 24,4 L 66,4 L 66,10 L 74,10 L 74,20 L 82,20 L 82,30 L 90,30 L 90,170 Z" fill="var(--c-cobalt-900)"/>
+        <line x1="45" y1="-8" x2="45" y2="-2" stroke="var(--c-orange-knvb)" stroke-width="1" opacity="0.5"/>
+        <circle cx="45" cy="0" r="2.5" fill="var(--c-orange-knvb)" opacity="0.65"/>
+        <rect x="12" y="60" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="38" y="60" width="14" height="20" fill="rgba(255,236,180,0.7)"/>
+        <rect x="64" y="60" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="12" y="100" width="14" height="20" fill="rgba(255,236,180,0.45)"/>
+        <rect x="38" y="100" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="64" y="100" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="37" y="130" width="16" height="34" fill="rgba(255,236,180,0.2)"/>
+      </g>
+
+      <!-- House E: 4-step with hex window in gable, w=95 h=210 -->
+      <g id="hE">
+        <path d="M 0,210 L 0,55 L 8,55 L 8,44 L 16,44 L 16,33 L 24,33 L 24,22 L 32,22 L 32,11 L 35,11 L 35,6 L 59,6 L 59,11 L 63,11 L 63,22 L 71,22 L 71,33 L 79,33 L 79,44 L 87,44 L 87,55 L 95,55 L 95,210 Z" fill="var(--c-cobalt-900)"/>
+        <polygon points="47,1 51,3 51,6 47,8 43,6 43,3" fill="var(--c-orange-knvb)" opacity="0.55"/>
+        <polygon points="47.5,28 53,31 53,37 47.5,40 42,37 42,31" fill="rgba(255,236,180,0.55)"/>
+        <rect x="13" y="75" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="40" y="75" width="14" height="20" fill="rgba(255,236,180,0.5)"/>
+        <rect x="68" y="75" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="13" y="110" width="14" height="20" fill="rgba(255,236,180,0.65)"/>
+        <rect x="40" y="110" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="68" y="110" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="13" y="145" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="40" y="145" width="14" height="20" fill="rgba(255,255,255,0.06)"/>
+        <rect x="68" y="145" width="14" height="20" fill="rgba(255,236,180,0.4)"/>
+        <rect x="39.5" y="175" width="16" height="34" fill="rgba(255,236,180,0.2)"/>
+      </g>
+
+      <!-- Vertical fade applied to the reflection so it dissolves into the water -->
+      <linearGradient id="reflectFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="var(--c-cobalt-900)" stop-opacity="0"/>
+        <stop offset="100%" stop-color="var(--c-cobalt-900)" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Water base (cobalt-900 below the waterline) -->
+    <rect x="0" y="240" width="1400" height="80" fill="var(--c-cobalt-900)"/>
+
+    <!-- Reflection: the same skyline, vertically flipped about y=240, low opacity -->
+    <g opacity="0.18" transform="matrix(1 0 0 -1 0 480)">
+      <use href="#hA" x="20" y="40"/>
+      <use href="#hB" x="108" y="20"/>
+      <use href="#hC" x="214" y="0"/>
+      <use href="#hD" x="292" y="70"/>
+      <use href="#hE" x="388" y="30"/>
+      <use href="#hA" x="491" y="40"/>
+      <use href="#hC" x="577" y="0"/>
+      <use href="#hD" x="655" y="70"/>
+      <use href="#hB" x="751" y="20"/>
+      <use href="#hA" x="859" y="40"/>
+      <use href="#hE" x="945" y="30"/>
+      <use href="#hC" x="1048" y="0"/>
+      <use href="#hD" x="1124" y="70"/>
+      <use href="#hB" x="1222" y="20"/>
+      <use href="#hA" x="1328" y="40"/>
+    </g>
+
+    <!-- Skyline: trapgevel houses bottom-anchored at y=240 (the waterline) -->
+    <g class="houses">
+      <use href="#hA" x="20" y="40"/>
+      <use href="#hB" x="108" y="20"/>
+      <use href="#hC" x="214" y="0"/>
+      <use href="#hD" x="292" y="70"/>
+      <use href="#hE" x="388" y="30"/>
+      <use href="#hA" x="491" y="40"/>
+      <use href="#hC" x="577" y="0"/>
+      <use href="#hD" x="655" y="70"/>
+      <use href="#hB" x="751" y="20"/>
+      <use href="#hA" x="859" y="40"/>
+      <use href="#hE" x="945" y="30"/>
+      <use href="#hC" x="1048" y="0"/>
+      <use href="#hD" x="1124" y="70"/>
+      <use href="#hB" x="1222" y="20"/>
+      <use href="#hA" x="1328" y="40"/>
+    </g>
+
+    <!-- Waterline / quay edge -->
+    <line x1="0" y1="240" x2="1400" y2="240" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+
+    <!-- Hex-line ripples — three zigzag waves with 60°/120° apex angles
+         (the same sharp-line angle the pointy-top hex uses). Animated dash
+         flow makes the canal feel alive without being noisy. -->
+    <g class="ripples" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none" stroke-linecap="round">
+      <path class="ripple-1" d="M 0,254 L 12,251 L 24,254 L 36,251 L 48,254 L 60,251 L 72,254 L 84,251 L 96,254 L 108,251 L 120,254 L 132,251 L 144,254 L 156,251 L 168,254 L 180,251 L 192,254 L 204,251 L 216,254 L 228,251 L 240,254 L 252,251 L 264,254 L 276,251 L 288,254 L 300,251 L 312,254 L 324,251 L 336,254 L 348,251 L 360,254 L 372,251 L 384,254 L 396,251 L 408,254 L 420,251 L 432,254 L 444,251 L 456,254 L 468,251 L 480,254 L 492,251 L 504,254 L 516,251 L 528,254 L 540,251 L 552,254 L 564,251 L 576,254 L 588,251 L 600,254 L 612,251 L 624,254 L 636,251 L 648,254 L 660,251 L 672,254 L 684,251 L 696,254 L 708,251 L 720,254 L 732,251 L 744,254 L 756,251 L 768,254 L 780,251 L 792,254 L 804,251 L 816,254 L 828,251 L 840,254 L 852,251 L 864,254 L 876,251 L 888,254 L 900,251 L 912,254 L 924,251 L 936,254 L 948,251 L 960,254 L 972,251 L 984,254 L 996,251 L 1008,254 L 1020,251 L 1032,254 L 1044,251 L 1056,254 L 1068,251 L 1080,254 L 1092,251 L 1104,254 L 1116,251 L 1128,254 L 1140,251 L 1152,254 L 1164,251 L 1176,254 L 1188,251 L 1200,254 L 1212,251 L 1224,254 L 1236,251 L 1248,254 L 1260,251 L 1272,254 L 1284,251 L 1296,254 L 1308,251 L 1320,254 L 1332,251 L 1344,254 L 1356,251 L 1368,254 L 1380,251 L 1392,254"/>
+      <path class="ripple-2" d="M 0,272 L 16,268 L 32,272 L 48,268 L 64,272 L 80,268 L 96,272 L 112,268 L 128,272 L 144,268 L 160,272 L 176,268 L 192,272 L 208,268 L 224,272 L 240,268 L 256,272 L 272,268 L 288,272 L 304,268 L 320,272 L 336,268 L 352,272 L 368,268 L 384,272 L 400,268 L 416,272 L 432,268 L 448,272 L 464,268 L 480,272 L 496,268 L 512,272 L 528,268 L 544,272 L 560,268 L 576,272 L 592,268 L 608,272 L 624,268 L 640,272 L 656,268 L 672,272 L 688,268 L 704,272 L 720,268 L 736,272 L 752,268 L 768,272 L 784,268 L 800,272 L 816,268 L 832,272 L 848,268 L 864,272 L 880,268 L 896,272 L 912,268 L 928,272 L 944,268 L 960,272 L 976,268 L 992,272 L 1008,268 L 1024,272 L 1040,268 L 1056,272 L 1072,268 L 1088,272 L 1104,268 L 1120,272 L 1136,268 L 1152,272 L 1168,268 L 1184,272 L 1200,268 L 1216,272 L 1232,268 L 1248,272 L 1264,268 L 1280,272 L 1296,268 L 1312,272 L 1328,268 L 1344,272 L 1360,268 L 1376,272 L 1392,268"/>
+      <path class="ripple-3" d="M 0,290 L 20,287 L 40,290 L 60,287 L 80,290 L 100,287 L 120,290 L 140,287 L 160,290 L 180,287 L 200,290 L 220,287 L 240,290 L 260,287 L 280,290 L 300,287 L 320,290 L 340,287 L 360,290 L 380,287 L 400,290 L 420,287 L 440,290 L 460,287 L 480,290 L 500,287 L 520,290 L 540,287 L 560,290 L 580,287 L 600,290 L 620,287 L 640,290 L 660,287 L 680,290 L 700,287 L 720,290 L 740,287 L 760,290 L 780,287 L 800,290 L 820,287 L 840,290 L 860,287 L 880,290 L 900,287 L 920,290 L 940,287 L 960,290 L 980,287 L 1000,290 L 1020,287 L 1040,290 L 1060,287 L 1080,290 L 1100,287 L 1120,290 L 1140,287 L 1160,290 L 1180,287 L 1200,290 L 1220,287 L 1240,290 L 1260,287 L 1280,290 L 1300,287 L 1320,290 L 1340,287 L 1360,290 L 1380,287 L 1400,290"/>
+    </g>
+
+    <!-- Reflection fades into the deep — gradient overlay across the water -->
+    <rect x="0" y="240" width="1400" height="80" fill="url(#reflectFade)" opacity="0.55"/>
+  </svg>
+
+  <div class="water">
+    <div class="footer-grid">
+      <div class="brand">
+        <div class="wm">Con<span class="next-blue">Next</span></div>
+        <p>Open-source apps for <span class="next-blue">Nextcloud</span>. Built and maintained by Conduction in Amsterdam — released under EUPL-1.2.</p>
+        <div class="triad"><span><span class="h"></span>Conduction · ConNext · <span class="next-blue">Nextcloud</span></span></div>
+      </div>
+      <div>
+        <h4>Apps</h4>
+        <ul>
+          <li><a href="#">OpenCatalogi</a></li>
+          <li><a href="#">OpenRegister</a></li>
+          <li><a href="#">OpenConnector</a></li>
+          <li><a href="#">DocuDesk</a></li>
+          <li><a href="#">All twelve apps →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Solutions</h4>
+        <ul>
+          <li><a href="#">WOO compliance</a></li>
+          <li><a href="#">Zaakafhandeling</a></li>
+          <li><a href="#">Software catalog</a></li>
+          <li><a href="#">MKB workspace</a></li>
+          <li><a href="#">All solutions →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Docs</a></li>
+          <li><a href="#">Demo environment</a></li>
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">Roadmap</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Conduction</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="support.html">Find a partner</a></li>
+          <li><a href="support.html">Become a partner</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
     </div>
-    <div>
-      <h4>Apps</h4>
-      <ul>
-        <li><a href="#">OpenCatalogi</a></li>
-        <li><a href="#">OpenRegister</a></li>
-        <li><a href="#">OpenConnector</a></li>
-        <li><a href="#">DocuDesk</a></li>
-        <li><a href="#">All twelve apps →</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Solutions</h4>
-      <ul>
-        <li><a href="#">WOO compliance</a></li>
-        <li><a href="#">Zaakafhandeling</a></li>
-        <li><a href="#">Software catalog</a></li>
-        <li><a href="#">MKB workspace</a></li>
-        <li><a href="#">All solutions →</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Resources</h4>
-      <ul>
-        <li><a href="#">Docs</a></li>
-        <li><a href="#">Demo environment</a></li>
-        <li><a href="#">GitHub</a></li>
-        <li><a href="#">Roadmap</a></li>
-        <li><a href="#">Changelog</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Conduction</h4>
-      <ul>
-        <li><a href="about.html">About</a></li>
-        <li><a href="support.html">Find a partner</a></li>
-        <li><a href="support.html">Become a partner</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+
+    <div class="legal-bar">
+      <div class="left">
+        <span>© 2026 Conduction B.V.</span>
+        <a href="#">Privacy</a>
+        <a href="#">Cookies</a>
+        <a href="#">EUPL-1.2</a>
+      </div>
+      <div class="right">
+        <span class="nlds-badge"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS-compliant</span>
+        <a href="#">github.com/ConductionNL</a>
+      </div>
     </div>
   </div>
 
-  <div class="legal-bar">
-    <div class="left">
-      <span>© 2026 Conduction B.V.</span>
-      <a href="#">Privacy</a>
-      <a href="#">Cookies</a>
-      <a href="#">EUPL-1.2</a>
-    </div>
-    <div class="right">
-      <span class="nlds-badge"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-9"/></svg>NLDS-compliant</span>
-      <a href="#">github.com/ConductionNL</a>
-    </div>
-  </div>
 </footer>
 
 </body>

@@ -240,10 +240,26 @@
     overflow: hidden;
     text-align: center;
   }
-  .cta-banner .ornament { position: absolute; pointer-events: none; clip-path: var(--hex-pointy-top); background: rgba(255,255,255,0.05); }
-  .cta-banner .ornament.o1 { width: 240px; height: 277px; top: -100px; right: -50px; transform: rotate(8deg); }
-  .cta-banner .ornament.o2 { width: 160px; height: 184px; bottom: -60px; left: 80px; background: rgba(255,255,255,0.04); }
-  .cta-banner .ornament.o4 { width: 72px; height: 83px; top: 48px; left: 30%; background: var(--c-orange-knvb); opacity: 0.18; }
+  /* ===== Conduction background — reusable parallax honeycomb layer =====
+     Drop <div class="conduction-bg" aria-hidden="true"></div> as the first child
+     of any position:relative + overflow:hidden container. JS at bottom of page
+     hydrates it with depth-tiered hexes that parallax on scroll and breathe in opacity. */
+  .conduction-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .conduction-bg .hex {
+    position: absolute;
+    clip-path: var(--hex-pointy-top);
+    will-change: transform, opacity;
+    transform: translate(-50%, -50%);
+    animation: hex-breathe var(--dur, 14s) ease-in-out var(--delay, 0s) infinite;
+  }
+  @keyframes hex-breathe {
+    0%, 100% { opacity: var(--opa-min, 0.04); }
+    50%      { opacity: var(--opa-max, 0.18); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .conduction-bg .hex { animation: none; opacity: var(--opa-max, 0.12); }
+  }
+
   .cta-banner h2 {
     position: relative; color: white;
     font-size: 40px; font-weight: 700;
@@ -385,9 +401,7 @@
 <!-- ===== CTA banner ===== -->
 <section class="cta">
   <div class="cta-banner">
-    <span class="ornament o1"></span>
-    <span class="ornament o2"></span>
-    <span class="ornament o4"></span>
+    <div class="conduction-bg" aria-hidden="true"></div>
     <h2>Pick an app. Install it. Done.</h2>
     <p>Drop OpenCatalogi or OpenRegister into your <span class="next-blue">Nextcloud</span> in two minutes. Open-source, no consultancy track, no lock-in.</p>
     <div class="actions">
@@ -400,5 +414,93 @@
 <div data-include="../components/footer.html"></div>
 
 <script src="../include.js"></script>
+<script>
+  /* Conduction background: depth-tiered hex parallax + slow breathe.
+     Smaller hex → smaller depth → smaller parallax translate → reads as "farther away". */
+  (function () {
+    const TIERS = [
+      { d: 0.10, sMin: 32,  sMax: 56,  oMin: 0.03, oMax: 0.10, w: 5 },
+      { d: 0.25, sMin: 56,  sMax: 96,  oMin: 0.04, oMax: 0.13, w: 4 },
+      { d: 0.45, sMin: 96,  sMax: 150, oMin: 0.05, oMax: 0.16, w: 3 },
+      { d: 0.65, sMin: 150, sMax: 220, oMin: 0.07, oMax: 0.18, w: 2 },
+      { d: 0.85, sMin: 220, sMax: 300, oMin: 0.08, oMax: 0.20, w: 1 },
+    ];
+    const HEX_COUNT = 18;
+    const PARALLAX_FACTOR = 0.4;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const rand = (a, b) => Math.random() * (b - a) + a;
+    const pickTier = () => {
+      const total = TIERS.reduce((s, t) => s + t.w, 0);
+      let r = Math.random() * total;
+      for (const t of TIERS) { if ((r -= t.w) <= 0) return t; }
+      return TIERS[0];
+    };
+
+    function buildHex(orange) {
+      const tier = pickTier();
+      const size = rand(tier.sMin, tier.sMax);
+      const hex = document.createElement('span');
+      hex.className = 'hex';
+      hex.style.width = size + 'px';
+      hex.style.height = (size * 1.1547) + 'px';
+      hex.style.left = rand(-5, 105) + '%';
+      hex.style.top = rand(-25, 125) + '%';
+      hex.style.background = orange ? 'var(--c-orange-knvb)' : '#ffffff';
+      hex.style.setProperty('--opa-min', tier.oMin.toFixed(3));
+      hex.style.setProperty('--opa-max', (orange ? Math.min(tier.oMax + 0.05, 0.28) : tier.oMax).toFixed(3));
+      hex.style.setProperty('--dur', rand(11, 18).toFixed(1) + 's');
+      hex.style.setProperty('--delay', rand(-18, 0).toFixed(1) + 's');
+      hex.dataset.depth = tier.d;
+      hex.dataset.rot = rand(-15, 15).toFixed(1);
+      return hex;
+    }
+
+    document.querySelectorAll('.conduction-bg').forEach(bg => {
+      const section = bg.parentElement;
+      const hexes = [];
+      for (let i = 0; i < HEX_COUNT; i++) {
+        const orange = (i === Math.floor(HEX_COUNT / 2));
+        const hex = buildHex(orange);
+        bg.appendChild(hex);
+        hexes.push(hex);
+      }
+      if (reduceMotion) {
+        hexes.forEach(h => { h.style.transform = `translate(-50%, -50%) rotate(${h.dataset.rot}deg)`; });
+        return;
+      }
+
+      let visible = false;
+      let ticking = false;
+
+      const update = () => {
+        const rect = section.getBoundingClientRect();
+        const offset = (rect.top + rect.height / 2) - window.innerHeight / 2;
+        for (const h of hexes) {
+          const d = parseFloat(h.dataset.depth);
+          const ty = -offset * d * PARALLAX_FACTOR;
+          h.style.transform = `translate(-50%, -50%) translateY(${ty.toFixed(1)}px) rotate(${h.dataset.rot}deg)`;
+        }
+        ticking = false;
+      };
+
+      const onScroll = () => {
+        if (!visible || ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      };
+
+      const io = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) update();
+      }, { rootMargin: '300px 0px' });
+      io.observe(section);
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    });
+  })();
+</script>
 </body>
 </html>

@@ -223,6 +223,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .kernel-corner-hex.fam-integrate                         { background: var(--c-cobalt-400); }
 .fam-builder   .box-hex, .fam-builder   .row .glyph,
 .kernel-corner-hex.fam-builder                           { background: var(--c-cobalt-300); }
+/* App Builder hex specifically: KNVB orange (overrides fam-builder default) */
+.kernel-corner-hex.app-builder                           { background: var(--c-orange-knvb); }
 .fam-nextcloud .box-hex, .fam-nextcloud .row .glyph,
 .kernel-corner-hex.fam-nextcloud                         { background: var(--c-nextcloud-blue); }
 
@@ -266,14 +268,49 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 /* App Builder hex centred on kernel's bottom peak (50%, 100%) + 24px outward */
 .kernel-corner-hex.app-builder { justify-self: center; align-self: center; transform: translateY(calc(208px + 24px)); }
 
-/* List-box wraps shift 24px inward (toward kernel) so the lists follow
-   the same alignment pattern as the hexes — keeping the visual "frame"
-   tight around the kernel. The component hexes are now siblings of the
-   kernel (not children of these wraps), so the shift doesn't move them. */
+/* List-box wraps sit at their grid columns' inner edges (no inward shift) —
+   pushing them slightly outward gives the corner hexes more breathing room
+   between the list-boxes and the kernel.
+   Hover lifts each list-box and adds a stronger shadow for depth. */
 .box-wrap.tech-core,
-.box-wrap.workplace  { transform: translateX(24px); }
+.box-wrap.workplace,
 .box-wrap.ai,
-.box-wrap.integrated { transform: translateX(-24px); }
+.box-wrap.integrated {
+  transition: transform 160ms ease;
+}
+.box-wrap.tech-core .box,
+.box-wrap.ai .box,
+.box-wrap.workplace .box,
+.box-wrap.integrated .box,
+.box-wrap.app-builder .box,
+.box-wrap.nextcloud-workspace .box {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+.box-wrap.tech-core:hover .box,
+.box-wrap.ai:hover .box,
+.box-wrap.workplace:hover .box,
+.box-wrap.integrated:hover .box,
+.box-wrap.app-builder:hover .box,
+.box-wrap.nextcloud-workspace:hover .box {
+  box-shadow: var(--shadow-3);
+  transform: translateY(-2px);
+}
+
+/* Component hexes get a hover lift too. The translateY in their existing
+   transform is preserved per-variant via custom properties so the hover
+   can stack on top. */
+.kernel-corner-hex {
+  transition: filter 160ms ease, transform 220ms ease;
+  cursor: default;
+}
+.kernel-corner-hex:hover {
+  filter: drop-shadow(0 6px 14px rgba(33, 70, 139, 0.32));
+}
+.kernel-corner-hex.tech-core:hover   { transform: translate(calc(-50% - 24px), calc(-104px - 4px)); }
+.kernel-corner-hex.ai:hover          { transform: translate(calc(50%  + 24px), calc(-104px - 4px)); }
+.kernel-corner-hex.workplace:hover   { transform: translate(calc(-50% - 24px), calc( 104px - 4px)); }
+.kernel-corner-hex.integrated:hover  { transform: translate(calc(50%  + 24px), calc( 104px - 4px)); }
+.kernel-corner-hex.app-builder:hover { transform: translateY(calc(208px + 24px - 4px)); }
 
 /* Kernel-attachment lists — workspace-functions (above kernel) and app-builder
    (below kernel). Both share the kernel's grid cell and translate vertically
@@ -287,8 +324,8 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   width: 100%;
   max-width: 280px;
 }
-/* List bottom edge sits 24px above kernel top peak */
-.box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 232px)); }
+/* Sits above the corner cards (tech-core / ai) by translating further up */
+.box-wrap.nextcloud-workspace { transform: translateY(calc(-50% - 432px)); }
 /* List top edge sits 24px below the App Builder hex's bottom edge.
    Hex centre at kernel.center + 232; hex bottom at +232 + 92.5 = +324.5.
    Add 24px gap → list top at kernel.center + 348.5. */

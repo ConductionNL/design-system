@@ -221,11 +221,16 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 }
 
 /* Component family tints */
-.fam-core      .box-hex, .fam-core      .row .glyph { background: var(--c-blue-cobalt); }
-.fam-workplace .box-hex, .fam-workplace .row .glyph { background: var(--c-blue-cobalt); }
-.fam-ai        .box-hex, .fam-ai        .row .glyph { background: #2E9866; }
-.fam-integrate .box-hex, .fam-integrate .row .glyph { background: var(--c-cobalt-400); }
-.fam-builder   .box-hex, .fam-builder   .row .glyph { background: var(--c-cobalt-300); }
+.fam-core      .box-hex, .fam-core      .row .glyph,
+.kernel-corner-hex.fam-core                              { background: var(--c-blue-cobalt); }
+.fam-workplace .box-hex, .fam-workplace .row .glyph,
+.kernel-corner-hex.fam-workplace                         { background: var(--c-blue-cobalt); }
+.fam-ai        .box-hex, .fam-ai        .row .glyph,
+.kernel-corner-hex.fam-ai                                { background: #2E9866; }
+.fam-integrate .box-hex, .fam-integrate .row .glyph,
+.kernel-corner-hex.fam-integrate                         { background: var(--c-cobalt-400); }
+.fam-builder   .box-hex, .fam-builder   .row .glyph,
+.kernel-corner-hex.fam-builder                           { background: var(--c-cobalt-300); }
 
 /* Grid placement of wrappers around the kernel.
    Row-1 wraps align to the row's bottom and row-2 wraps to the top, so all
@@ -235,17 +240,39 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box-wrap.workplace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
 .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
 
-/* Per-wrap hex placement — each list-box's inner corner anchors to the
-   midpoint of one of the hex's six sides:
-     · tech-core  → bottom-right corner ↔ hex top-left side midpoint   (25%, 12.5%)
-     · ai         → bottom-left  corner ↔ hex top-right side midpoint  (75%, 12.5%)
-     · workplace  → top-right    corner ↔ hex bottom-left side midpoint (25%, 87.5%)
-     · integrated → top-left     corner ↔ hex bottom-right side midpoint (75%, 87.5%)
+/* Top-row hex placement — list-box's inner corner anchors to the midpoint
+   of one of the hex's sides:
+     · tech-core → bottom-right corner ↔ hex top-left side midpoint (25%, 12.5%)
+     · ai        → bottom-left  corner ↔ hex top-right side midpoint (75%, 12.5%)
 */
 .box-wrap.tech-core  .box-hex { left: 100%; top: 100%; transform: translate(-25%, -12.5%); }
 .box-wrap.ai         .box-hex { left: 0;    top: 100%; transform: translate(-75%, -12.5%); }
-.box-wrap.workplace  .box-hex { left: 100%; top: 0;    transform: translate(-25%, -87.5%); }
-.box-wrap.integrated .box-hex { left: 0;    top: 0;    transform: translate(-75%, -87.5%); }
+
+/* Bottom-row hexes (workplace + integrated) sit centred on the kernel's
+   bottom-left and bottom-right corners. They live as direct children of
+   .diagram-grid (siblings of .kernel) and share the kernel's grid cell. */
+.kernel-corner-hex {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 160px;
+  aspect-ratio: 1.7320508 / 2;
+  box-sizing: border-box;
+  clip-path: var(--hex-pointy-top);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: white;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  line-height: 1.2;
+  padding: 0 14px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
+}
+/* Kernel polygon's bottom corners sit at 75% of kernel height from the top
+   (= 25% below kernel center). Kernel here is 416px tall → 25% = 104px. */
+.kernel-corner-hex.workplace  { justify-self: start; transform: translate(-50%, 104px); }
+.kernel-corner-hex.integrated { justify-self: end;   transform: translate(50%,  104px); }
 
 /* App Builder spans full row, muted treatment */
 .box-wrap.app-builder {
@@ -406,9 +433,12 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </div>
     </div>
 
+    <!-- Bottom-row hex tags, centred on the kernel's bottom corners -->
+    <div class="kernel-corner-hex workplace fam-workplace">Workplace<br>Apps</div>
+    <div class="kernel-corner-hex integrated fam-integrate">Integrated<br>Apps</div>
+
     <!-- Workplace Apps (bottom-left) -->
     <div class="box-wrap workplace fam-workplace">
-      <div class="box-hex">Workplace<br>Apps</div>
       <div class="box">
         <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span><span class="name">OpenCatalogi</span><div class="desc">Federated data catalogue. Datasets, APIs, software inventory, WOO-publication ready.</div></div>
         <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span class="name">PipelinQ</span><div class="desc">CRM with quotes, contacts, and deal-flow. Built on OpenRegister.</div></div>
@@ -424,7 +454,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
     <!-- Integrated Apps (bottom-right) -->
     <div class="box-wrap integrated fam-integrate">
-      <div class="box-hex">Integrated<br>Apps</div>
       <div class="box">
         <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7zM14 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></span><span class="name">OpenTalk</span><div class="desc">Open-source video conferencing. Drop-in replacement for Zoom and Teams.</div></div>
         <div class="row"><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></span><span class="name">Matrix</span><div class="desc">Federated chat protocol. End-to-end encrypted, decentralised.</div></div>

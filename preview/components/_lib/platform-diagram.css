@@ -235,19 +235,20 @@ platform-diagram .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-sel
 
 /* List inner corner anchors near the midpoint of the corresponding hex side,
    nudged inward so the list overlaps its hex on both axes. Top lists are
-   anchored to row 1 bottom (align-self: end), so a positive translateY
-   pushes them down toward the hex below. Bottom lists are anchored to
-   row 2 top (align-self: start), so a positive translateY pushes them
-   down away from the hex above — kept small to keep the list close.
+   anchored to row 1 bottom (align-self: end) — translateY is negative so
+   the list bottom lands at the hex's top-right (or top-left) vertex,
+   mirroring the bottom-row docking. Bottom lists are anchored to row 2
+   top (align-self: start) with a small positive translateY so the list
+   top lands at the hex's bottom-right (or bottom-left) vertex.
    The (±80px * (1 - --pd-list-progress)) term is the scroll-entrance
    shift: at progress=1 it's 0 (settled); at progress=0 lists start 80px
    further outward and fade from 0 → 1 opacity. */
 platform-diagram .box-wrap.tech-core    {
-  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))),  50px);
+  transform: translate(calc( 15px + (-80px * (1 - var(--pd-list-progress)))), -30px);
   opacity: var(--pd-list-progress);
 }
 platform-diagram .box-wrap.solutions    {
-  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))),  50px);
+  transform: translate(calc(-15px + ( 80px * (1 - var(--pd-list-progress)))), -30px);
   opacity: var(--pd-list-progress);
 }
 platform-diagram .box-wrap.workspace    {

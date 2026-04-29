@@ -111,7 +111,35 @@
   .tier-explain li .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); flex-shrink: 0; margin-top: 5px; }
 
   /* Partner directory */
-  .grid { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 24px; align-items: stretch; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+  .grid .partner-card.become {
+    grid-column: span 2;
+    background: var(--c-cobalt-50);
+    border: 1px dashed var(--c-cobalt-300);
+    box-shadow: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px;
+  }
+  .grid .partner-card.become:hover { border-color: var(--c-blue-cobalt); transform: none; box-shadow: var(--shadow-1); }
+  .grid .partner-card.become .become-eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 8px;
+  }
+  .grid .partner-card.become h4 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 6px;
+  }
+  .grid .partner-card.become p {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin: 0 0 14px;
+    max-width: 56ch;
+  }
+  .grid .partner-card.become .arrow {
+    color: var(--c-blue-cobalt); font-weight: 600; font-size: 14px;
+  }
   .partner-card {
     background: white;
     border: 1px solid var(--c-cobalt-100);
@@ -170,6 +198,9 @@
   .partner-card.strategic .pc-apps .app-pill { background: rgba(255,255,255,0.12); color: white; }
   .pc-apps .app-pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
   .partner-card.strategic .pc-apps .app-pill .h { background: var(--c-orange-knvb); }
+  /* Nextcloud-supplier pill: keeps the Nextcloud-blue dot regardless of card tier, brand-cited text. */
+  .pc-apps .app-pill.nextcloud .h,
+  .partner-card.strategic .pc-apps .app-pill.nextcloud .h { background: var(--c-nextcloud-blue); }
 
   /* Two-form section */
   .forms { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -307,7 +338,7 @@
 <section class="page-strip">
   <div class="crumbs"><a href="landing.html">Home</a> &nbsp;/&nbsp; Support</div>
   <h1>Support runs through partners.<br>The apps stay free.</h1>
-  <p>Conduction builds and maintains the apps — every one of them is open-source on GitHub and free from the Nextcloud app store. <strong>The day-to-day support, the implementation hours, the SLA contracts</strong> — that all sits with our partners. Pick the partner that matches your sector and your scale.</p>
+  <p>Conduction builds and maintains the apps — every one of them is open-source on GitHub and free from the <span class="next-blue">Nextcloud</span> app store. <strong>The day-to-day support, the implementation hours, the SLA contracts</strong> — that all sits with our partners. Pick the partner that matches your sector and your scale.</p>
 </section>
 
 <!-- How it works -->
@@ -386,69 +417,135 @@
     <h2>Featured partners.</h2>
   </div>
   <div class="grid">
-    <a href="#" class="partner-card">
-      <span class="pc-tier">Partner</span>
-      <div class="pc-avatar">AH</div>
-      <div class="pc-name">Acme Hosting</div>
-      <div class="pc-summary">Nextcloud-conformiteit hoster uit Nijmegen. Hosts ConNext for 8 mid-sized municipalities, includes WOO portal in their default config.</div>
+
+    <!-- ============== Strategic (1) ============== -->
+    <a href="partner-detail.html" class="partner-card strategic">
+      <span class="pc-tier">Strategic</span>
+      <div class="pc-avatar">A</div>
+      <div class="pc-name">Acato</div>
+      <div class="pc-summary">Nederlandse open-source specialist uit Almere. Bouwt en host <span class="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen, met focus op AVG-compliance en NLDS. Strategisch partner op hosting + stack-implementatie en gezamenlijke roadmap.</div>
       <div class="pc-apps">
-        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
         <span class="app-pill"><span class="h"></span>OpenRegister</span>
-      </div>
-    </a>
-    <a href="#" class="partner-card certified">
-      <span class="pc-tier">Certified</span>
-      <div class="pc-avatar">B</div>
-      <div class="pc-name">Belmont IT</div>
-      <div class="pc-summary">Public sector implementation partner in Eastern Europe. OpenConnector specialists, multilingual support team.</div>
-      <div class="pc-apps">
-        <span class="app-pill"><span class="h"></span>OpenConnector</span>
+        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
         <span class="app-pill"><span class="h"></span>DocuDesk</span>
       </div>
     </a>
-    <a href="#" class="partner-card strategic">
-      <span class="pc-tier">Strategic</span>
-      <div class="pc-avatar">CN</div>
-      <div class="pc-name">Civic Networks</div>
-      <div class="pc-summary">Strategic on ConNext + Nextcloud. Co-development on OpenZaak, 2 dedicated engineers contributing upstream, joint government tender lead in 2026.</div>
+
+    <!-- ============== Certified (4) ============== -->
+    <a href="partner-detail.html" class="partner-card certified">
+      <span class="pc-tier">Certified</span>
+      <div class="pc-avatar">C</div>
+      <div class="pc-name">Centric</div>
+      <div class="pc-summary">Eén van Nederlands grootste software-leveranciers voor de publieke sector. Officieel <span class="next-blue">Nextcloud</span>-distributeur — Centric-klanten krijgen ConNext-apps geïntegreerd in hun bestaande Centric-omgeving.</div>
       <div class="pc-apps">
+        <span class="app-pill nextcloud"><span class="h"></span><span class="next-blue">Nextcloud</span></span>
         <span class="app-pill"><span class="h"></span>OpenZaak</span>
-        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
         <span class="app-pill"><span class="h"></span>OpenRegister</span>
         <span class="app-pill"><span class="h"></span>DocuDesk</span>
       </div>
     </a>
 
-    <a href="#" class="partner-card">
+    <a href="partner-detail.html" class="partner-card certified">
+      <span class="pc-tier">Certified</span>
+      <div class="pc-avatar">Px</div>
+      <div class="pc-name">Proculix</div>
+      <div class="pc-summary">Nederlandse leverancier van zaak- en procesmanagement-software. Officieel <span class="next-blue">Nextcloud</span>-distributeur; certified op DocuDesk en OpenConnector voor procesintegraties bij gemeenten en uitvoeringsorganisaties.</div>
+      <div class="pc-apps">
+        <span class="app-pill nextcloud"><span class="h"></span><span class="next-blue">Nextcloud</span></span>
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+        <span class="app-pill"><span class="h"></span>OpenConnector</span>
+      </div>
+    </a>
+
+    <a href="partner-detail.html" class="partner-card certified">
+      <span class="pc-tier">Certified</span>
+      <div class="pc-avatar">TG</div>
+      <div class="pc-name">The Goodcloud</div>
+      <div class="pc-summary">Nederlandse <span class="next-blue">Nextcloud</span>-hoster voor MKB en non-profits. Officieel Nextcloud-distributeur; levert beheerde omgevingen met ConNext-apps pre-installed, privacy-eerst hosting in NL.</div>
+      <div class="pc-apps">
+        <span class="app-pill nextcloud"><span class="h"></span><span class="next-blue">Nextcloud</span></span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+        <span class="app-pill"><span class="h"></span>MyDash</span>
+      </div>
+    </a>
+
+    <!-- ============== Partner (6) ============== -->
+    <a href="partner-detail.html" class="partner-card">
       <span class="pc-tier">Partner</span>
-      <div class="pc-avatar">SL</div>
-      <div class="pc-name">Software Leeuw</div>
-      <div class="pc-summary">Friese MKB-integrator. Workspace-installs (MyDash + OpenRegister) voor ZZP'ers en kleine bedrijven, 50+ live deployments.</div>
+      <div class="pc-avatar">B</div>
+      <div class="pc-name">BCT</div>
+      <div class="pc-summary">Nederlandse leverancier van document- en zaaksysteem-software voor de overheid. BCT-implementaties praten via OpenConnector met de ConNext-registers.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenConnector</span>
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+        <span class="app-pill"><span class="h"></span>OpenZaak</span>
+      </div>
+    </a>
+
+    <a href="partner-detail.html" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">OG</div>
+      <div class="pc-name">Open Gemeenten</div>
+      <div class="pc-summary">Coöperatieve community van gemeenten die samen open-source software ontwikkelen en delen. Levert OpenZaak-implementaties bij aangesloten gemeenten en draagt patches terug naar upstream.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenZaak</span>
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+        <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+      </div>
+    </a>
+
+    <a href="partner-detail.html" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">Ex</div>
+      <div class="pc-name">Exxcellence</div>
+      <div class="pc-summary">Nederlandse softwarebouwer gespecialiseerd in zaakafhandeling en burger-portaal-toepassingen. Reference-deploys op OpenZaak v4.x bij meerdere middelgrote gemeenten.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenZaak</span>
+        <span class="app-pill"><span class="h"></span>DocuDesk</span>
+      </div>
+    </a>
+
+    <a href="partner-detail.html" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">Y</div>
+      <div class="pc-name">YARD</div>
+      <div class="pc-summary">Digital design- en development-bureau uit Utrecht. Ontwerpt en bouwt klantgerichte digitale producten op <span class="next-blue">Nextcloud</span> voor gemeenten en publieke organisaties.</div>
       <div class="pc-apps">
         <span class="app-pill"><span class="h"></span>MyDash</span>
-        <span class="app-pill"><span class="h"></span>OpenRegister</span>
-      </div>
-    </a>
-    <a href="#" class="partner-card certified">
-      <span class="pc-tier">Certified</span>
-      <div class="pc-avatar">DC</div>
-      <div class="pc-name">Delta Cyber</div>
-      <div class="pc-summary">NEN-7510 + ISO-27001 specialists for healthcare. Five engineers certified on DocuDesk for zorg-document-handling.</div>
-      <div class="pc-apps">
-        <span class="app-pill"><span class="h"></span>DocuDesk</span>
-        <span class="app-pill"><span class="h"></span>OpenRegister</span>
-      </div>
-    </a>
-    <a href="#" class="partner-card">
-      <span class="pc-tier">Partner</span>
-      <div class="pc-avatar">VG</div>
-      <div class="pc-name">Vrije Gemeente IT</div>
-      <div class="pc-summary">Coöperatieve IT-club voor lokale overheden. ConNext-stack op zes gemeenten in Zeeland en West-Brabant, voornamelijk WOO en software-catalogus.</div>
-      <div class="pc-apps">
         <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
-        <span class="app-pill"><span class="h"></span>OpenWOO</span>
       </div>
     </a>
+
+    <a href="partner-detail.html" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">iO</div>
+      <div class="pc-name">iO</div>
+      <div class="pc-summary">Internationaal digital agency met Nederlandse vestiging in Amsterdam. Integreert ConNext-apps in bredere klantreis-trajecten voor publieke en semi-publieke organisaties.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenConnector</span>
+        <span class="app-pill"><span class="h"></span>MyDash</span>
+      </div>
+    </a>
+
+    <a href="partner-detail.html" class="partner-card">
+      <span class="pc-tier">Partner</span>
+      <div class="pc-avatar">S2</div>
+      <div class="pc-name">Shift2</div>
+      <div class="pc-summary">Nederlands development-bureau gespecialiseerd in <span class="next-blue">Nextcloud</span> en open source. Implementeert ConNext-stacks bij MKB-klanten en gemeenten in midden-Nederland.</div>
+      <div class="pc-apps">
+        <span class="app-pill"><span class="h"></span>OpenRegister</span>
+        <span class="app-pill"><span class="h"></span>MyDash</span>
+      </div>
+    </a>
+
+    <!-- ============== Become-a-partner CTA, fills the trailing slot ============== -->
+    <a href="#become-a-partner" class="partner-card become">
+      <div class="become-eyebrow">+ More partners coming</div>
+      <h4>Run ConNext for customers? Get listed.</h4>
+      <p>Production deployment plus a public reference is all it takes for the Partner tier. Apply through the form below — no fee, no exclusivity.</p>
+      <span class="arrow">Apply to the partner program →</span>
+    </a>
+
   </div>
 </section>
 
@@ -514,7 +611,7 @@
         <button type="submit" class="submit">Find me a partner →</button>
       </form>
 
-      <form class="form-card dark">
+      <form class="form-card dark" id="become-a-partner">
         <div class="eyebrow"><span class="h"></span>I want to be a partner</div>
         <h3>Apply to the partner program.</h3>
         <p class="lede">If your team installs and operates ConNext apps for clients, the Partner tier is open — no fee, no exclusivity. The bar is one production deployment and a public reference.</p>

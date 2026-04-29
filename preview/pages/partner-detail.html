@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Acato — ConNext partner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); }
+
+  /* Crumb */
+  .crumb {
+    max-width: 1280px; margin: 0 auto;
+    padding: 24px 64px 0;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .crumb a { color: var(--c-cobalt-400); text-decoration: none; }
+  .crumb a:hover { color: var(--c-orange-knvb); }
+  .crumb .sep { margin: 0 8px; color: var(--c-cobalt-200); }
+
+  /* Hero */
+  .head {
+    max-width: 1280px; margin: 0 auto;
+    padding: 40px 64px 56px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 64px;
+    align-items: start;
+  }
+  .head .badge-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; }
+  .head .tier-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    color: white;
+    background: var(--c-blue-cobalt);
+  }
+  .head .meta-pill {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; color: var(--c-cobalt-400);
+  }
+  .head h1 {
+    font-size: 64px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+    color: var(--c-cobalt-900);
+    margin: 0 0 20px;
+  }
+  .head .tagline {
+    font-size: 20px; line-height: 1.5; color: var(--c-cobalt-700);
+    max-width: 60ch; margin: 0 0 32px;
+  }
+  .head .actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .head .btn-primary { background: var(--c-blue-cobalt); color: white; padding: 14px 24px; border-radius: var(--radius-md); font-weight: 500; font-size: 15px; text-decoration: none; }
+  .head .btn-secondary { background: white; color: var(--c-blue-cobalt); border: 1px solid var(--c-cobalt-200); padding: 13px 22px; border-radius: var(--radius-md); font-weight: 500; font-size: 15px; text-decoration: none; }
+  .head .btn-ghost { color: var(--c-cobalt-700); font-size: 14px; font-weight: 500; text-decoration: none; }
+  .head .btn-ghost:hover { color: var(--c-orange-knvb); }
+
+  /* Partner hex avatar — same proportion as app-detail's app-hex */
+  .partner-hex {
+    width: 360px; height: 416px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 152px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  /* Body grid */
+  .body-grid {
+    max-width: 1280px; margin: 0 auto;
+    padding: 32px 64px 80px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* Section */
+  .section {
+    max-width: 1280px; margin: 0 auto;
+    padding: 64px 64px;
+  }
+  .section.alt { background: var(--c-cobalt-50); max-width: none; padding-left: 0; padding-right: 0; }
+  .section.alt .inner { max-width: 1280px; margin: 0 auto; padding: 64px 64px; }
+  .section-head { margin-bottom: 40px; }
+  .section-head .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 12px;
+  }
+  .section-head .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .section-head h2 {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--c-cobalt-900); margin: 0; max-width: 24ch;
+  }
+
+  /* Specialties (apps + sectors) */
+  .specialties { display: flex; flex-direction: column; gap: 32px; }
+  .specialty {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 24px;
+  }
+  .specialty .glyph {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-50);
+    color: var(--c-blue-cobalt);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .specialty .glyph svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .specialty h3 {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 8px;
+  }
+  .specialty p { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.6; margin: 0; }
+
+  /* Sticky aside */
+  .aside { position: sticky; top: 24px; }
+  .aside-card {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 20px;
+    background: white;
+  }
+  .aside-card h5 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: 0 0 16px;
+  }
+  .aside-card .talk-btn {
+    display: block;
+    background: var(--c-blue-cobalt); color: white;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 500; text-decoration: none; font-size: 15px;
+  }
+  .aside-card .secondary-btn {
+    display: block;
+    border: 1px solid var(--c-cobalt-200);
+    color: var(--c-blue-cobalt);
+    text-align: center;
+    padding: 13px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 500; text-decoration: none; font-size: 14px;
+    margin-top: 8px;
+  }
+  .aside-card ul { list-style: none; padding: 0; margin: 0; }
+  .aside-card li {
+    padding: 10px 0; font-size: 14px;
+    display: flex; gap: 10px; align-items: center;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .aside-card li:last-child { border-bottom: none; }
+  .aside-card li svg { width: 16px; height: 16px; stroke: var(--c-cobalt-400); stroke-width: 2; fill: none; flex-shrink: 0; }
+  .aside-card li .label { color: var(--c-cobalt-700); }
+  .aside-card li .val {
+    margin-left: auto;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; color: var(--c-cobalt-700);
+  }
+  .aside-card li .val a { color: var(--c-cobalt-700); text-decoration: none; }
+  .aside-card li .val a:hover { color: var(--c-orange-knvb); }
+
+  /* Customer references */
+  .references { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ref-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ref-card .sector-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    background: var(--c-cobalt-50);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    align-self: flex-start;
+  }
+  .ref-card .name { font-size: 17px; font-weight: 700; color: var(--c-cobalt-900); margin: 0; }
+  .ref-card .what { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; margin: 0; }
+  .ref-card .stack { display: flex; gap: 6px; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid var(--c-cobalt-100); }
+  .ref-card .stack .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .ref-card .stack .pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+
+  /* Other partners */
+  .other-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .other-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    text-decoration: none; color: inherit;
+    display: flex; gap: 14px; align-items: flex-start;
+    transition: all 160ms ease;
+  }
+  .other-card:hover { border-color: var(--c-blue-cobalt); transform: translateY(-1px); }
+  .other-card .mini-avatar {
+    width: 44px; height: 50px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-50); color: var(--c-blue-cobalt);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700; font-size: 16px;
+  }
+  .other-card.certified .mini-avatar { background: var(--c-gold-500); color: var(--c-cobalt-900); }
+  .other-card.strategic .mini-avatar { background: var(--c-blue-cobalt); color: white; }
+  .other-card .name { font-size: 15px; font-weight: 600; color: var(--c-cobalt-900); margin-bottom: 4px; }
+  .other-card .why { font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5; }
+</style>
+</head>
+<body data-current="support">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<div class="crumb">
+  <a href="support.html">Support</a><span class="sep">/</span>Acato
+</div>
+
+<header class="head">
+  <div class="head-content">
+    <div class="badge-row">
+      <span class="tier-pill">Strategic partner</span>
+      <span class="meta-pill">Founded 2008 · Almere, NL · 24 employees</span>
+    </div>
+    <h1>Acato.</h1>
+    <p class="tagline">Nederlandse open-source specialist uit Almere. Bouwt en host <span class="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen — al meer dan tien jaar — met een sterke focus op AVG-compliance, NLDS-conformiteit, en lange-termijn beheer. Strategisch partner voor de complete ConNext-stack.</p>
+    <div class="actions">
+      <a href="#" class="btn-primary">Talk to Acato</a>
+      <a href="#" class="btn-secondary">Visit acato.nl →</a>
+      <a href="support.html" class="btn-ghost">All partners →</a>
+    </div>
+  </div>
+  <div class="partner-hex">A</div>
+</header>
+
+<div class="body-grid">
+
+  <main class="specialties">
+
+    <div class="specialty">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+      <div>
+        <h3>Hosting + stack management.</h3>
+        <p>Beheerde <span class="next-blue">Nextcloud</span>-omgevingen op infrastructuur in Nederland. Acato neemt de hele stack onder beheer — <span class="next-blue">Nextcloud</span>, ConNext-apps, achterliggende database, backup en disaster recovery — met SLA-gegarandeerde response binnen NL-kantooruren.</p>
+      </div>
+    </div>
+
+    <div class="specialty">
+      <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div>
+        <h3>AVG &amp; NLDS-conformiteit.</h3>
+        <p>Acato implementeert ConNext-stacks die voldoen aan de AVG, het Nederlandse Overheids-Design-System (NLDS), en de Baseline Informatiebeveiliging Overheid (BIO). Inclusief dataclassificatie, audit-logging, en jaarlijkse penetratie-testen.</p>
+      </div>
+    </div>
+
+    <div class="specialty">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M5 4h14v14H5z"/><path d="M5 9h14M9 9v9"/></svg></div>
+      <div>
+        <h3>Implementation projects.</h3>
+        <p>Van eerste discovery-workshop tot live productie-deploy: Acato neemt het volledige implementatie-traject voor zijn rekening. WOO-portalen, register-migraties, OpenConnector-koppelingen, MyDash-dashboards — typisch acht tot zestien weken doorlooptijd.</p>
+      </div>
+    </div>
+
+    <div class="specialty">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 4.4 3.6 8 8 10 4.4-2 8-5.6 8-10V6l-8-4z"/></svg></div>
+      <div>
+        <h3>Roadmap collaboration.</h3>
+        <p>Als strategisch partner draagt Acato eigen engineering-uren bij aan de ConNext-roadmap. Twee Acato-engineers committen direct upstream op OpenRegister en DocuDesk; klant-feedback van Acato-deployments stuurt mee aan onze quarterly product-reviews.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="aside">
+    <div class="aside-card">
+      <h5>Talk to this partner</h5>
+      <a href="#" class="talk-btn">Request a call</a>
+      <a href="#" class="secondary-btn">Email Acato →</a>
+    </div>
+    <div class="aside-card">
+      <h5>Contact</h5>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="label">Office</span>
+          <span class="val">Almere, NL</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+          <span class="label">Email</span>
+          <span class="val"><a href="#">info@acato.nl</a></span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2z"/></svg>
+          <span class="label">Phone</span>
+          <span class="val">+31 36 540 0040</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="label">Site</span>
+          <span class="val"><a href="#">acato.nl</a></span>
+        </li>
+      </ul>
+    </div>
+    <div class="aside-card">
+      <h5>Apps they ship</h5>
+      <ul>
+        <li><span class="label">OpenRegister</span><span class="val">v3.x · all profiles</span></li>
+        <li><span class="label">OpenCatalogi</span><span class="val">v2.x · NL-EN</span></li>
+        <li><span class="label">DocuDesk</span><span class="val">v1.x · zorg pack</span></li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Customer references -->
+<section class="section alt">
+  <div class="inner">
+    <div class="section-head">
+      <div class="eyebrow"><span class="h"></span>Where Acato runs ConNext</div>
+      <h2>Selected customer references.</h2>
+    </div>
+    <div class="references">
+      <div class="ref-card">
+        <span class="sector-tag">Publieke sector</span>
+        <h3 class="name">Gemeente Almere</h3>
+        <p class="what">WOO-portaal in productie sinds Q3 2024. Acato beheert de stack en de doorlopende publicatie-pijplijn vanuit het bestaande DMS.</p>
+        <div class="stack">
+          <span class="pill"><span class="h"></span>OpenCatalogi</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </div>
+      <div class="ref-card">
+        <span class="sector-tag">Zorg</span>
+        <h3 class="name">Tergooi MC</h3>
+        <p class="what">DocuDesk + OpenRegister voor inkomende patiëntcorrespondentie. NEN-7510 audit door Acato voor de gehele stack.</p>
+        <div class="stack">
+          <span class="pill"><span class="h"></span>DocuDesk</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </div>
+      <div class="ref-card">
+        <span class="sector-tag">Publieke sector</span>
+        <h3 class="name">Provincie Flevoland</h3>
+        <p class="what">Open data-catalogus over alle directie-registraties; gefedereerd naar data.overheid.nl. Acato deed migratie + beheer.</p>
+        <div class="stack">
+          <span class="pill"><span class="h"></span>OpenCatalogi</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Other partners -->
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow"><span class="h"></span>Other partners you might consider</div>
+    <h2>Different fit, same ecosystem.</h2>
+  </div>
+  <div class="other-row">
+    <a href="partner-detail.html" class="other-card certified">
+      <div class="mini-avatar">C</div>
+      <div>
+        <div class="name">Centric</div>
+        <div class="why">Enterprise-rollouts voor grote gemeenten en uitvoeringsorganisaties. Officieel <span class="next-blue">Nextcloud</span>-distributeur.</div>
+      </div>
+    </a>
+    <a href="partner-detail.html" class="other-card certified">
+      <div class="mini-avatar">TG</div>
+      <div>
+        <div class="name">The Goodcloud</div>
+        <div class="why">Beheerd <span class="next-blue">Nextcloud</span>-hosting voor MKB en non-profits, NL-only datacenters. Officieel <span class="next-blue">Nextcloud</span>-distributeur.</div>
+      </div>
+    </a>
+    <a href="partner-detail.html" class="other-card">
+      <div class="mini-avatar">OG</div>
+      <div>
+        <div class="name">Open Gemeenten</div>
+        <div class="why">Coöperatieve community van gemeenten — ideaal voor wie zelf engineering-capaciteit heeft maar gedeelde implementatie-patronen wil.</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

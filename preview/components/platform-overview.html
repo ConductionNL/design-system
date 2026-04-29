@@ -240,17 +240,9 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 .box-wrap.workplace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
 .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
 
-/* Top-row hex placement — list-box's inner corner anchors to the midpoint
-   of one of the hex's sides:
-     · tech-core → bottom-right corner ↔ hex top-left side midpoint (25%, 12.5%)
-     · ai        → bottom-left  corner ↔ hex top-right side midpoint (75%, 12.5%)
-*/
-.box-wrap.tech-core  .box-hex { left: 100%; top: 100%; transform: translate(-25%, -12.5%); }
-.box-wrap.ai         .box-hex { left: 0;    top: 100%; transform: translate(-75%, -12.5%); }
-
-/* Bottom-row hexes (workplace + integrated) sit centred on the kernel's
-   bottom-left and bottom-right corners. They live as direct children of
-   .diagram-grid (siblings of .kernel) and share the kernel's grid cell. */
+/* All four component hexes sit on the kernel's polygon corners.
+   They live as direct children of .diagram-grid (siblings of .kernel) and
+   share the kernel's grid cell so they're independent of the list-box wraps. */
 .kernel-corner-hex {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -269,12 +261,23 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
   z-index: 2;
   filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
 }
-/* Kernel polygon's bottom corners sit at 75% of kernel height from the top
-   (= 25% below kernel centre). Kernel here is 416px tall → 25% = 104px.
-   Each hex is shifted an extra 24px outward so it lines up horizontally
-   with the corresponding top-row hex (tech-core / ai) anchored to its list-box. */
-.kernel-corner-hex.workplace  { justify-self: start; transform: translate(calc(-50% - 24px), 104px); }
-.kernel-corner-hex.integrated { justify-self: end;   transform: translate(calc(50%  + 24px), 104px); }
+/* Kernel polygon corners sit at 25% (top) and 75% (bottom) of kernel height.
+   Kernel here is 416px tall → 25% from centre = 104px above/below.
+   Each hex is shifted an extra 24px outward so the four component hexes
+   form a clean rectangle around the kernel. */
+.kernel-corner-hex.tech-core  { justify-self: start; transform: translate(calc(-50% - 24px), -104px); }
+.kernel-corner-hex.ai         { justify-self: end;   transform: translate(calc(50%  + 24px), -104px); }
+.kernel-corner-hex.workplace  { justify-self: start; transform: translate(calc(-50% - 24px),  104px); }
+.kernel-corner-hex.integrated { justify-self: end;   transform: translate(calc(50%  + 24px),  104px); }
+
+/* List-box wraps shift 24px inward (toward kernel) so the lists follow
+   the same alignment pattern as the hexes — keeping the visual "frame"
+   tight around the kernel. The component hexes are now siblings of the
+   kernel (not children of these wraps), so the shift doesn't move them. */
+.box-wrap.tech-core,
+.box-wrap.workplace  { transform: translateX(24px); }
+.box-wrap.ai,
+.box-wrap.integrated { transform: translateX(-24px); }
 
 /* App Builder spans full row, muted treatment */
 .box-wrap.app-builder {
@@ -374,7 +377,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
     <!-- Technical Core (top-left) -->
     <div class="box-wrap tech-core fam-core">
-      <div class="box-hex">Technical<br>Core</div>
       <div class="box">
         <div class="row">
           <span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
@@ -406,7 +408,6 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 
     <!-- AI (top-right) -->
     <div class="box-wrap ai fam-ai">
-      <div class="box-hex">AI</div>
       <div class="box">
         <div class="row">
           <span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/><path d="M21 4v5h-5"/></svg></span>
@@ -435,7 +436,10 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
       </div>
     </div>
 
-    <!-- Bottom-row hex tags, centred on the kernel's bottom corners -->
+    <!-- Component hex tags, centred on the kernel's four corners (top-left,
+         top-right, bottom-left, bottom-right) with a 24px outward shift. -->
+    <div class="kernel-corner-hex tech-core fam-core">Technical<br>Core</div>
+    <div class="kernel-corner-hex ai fam-ai">AI</div>
     <div class="kernel-corner-hex workplace fam-workplace">Workplace<br>Apps</div>
     <div class="kernel-corner-hex integrated fam-integrate">Integrated<br>Apps</div>
 

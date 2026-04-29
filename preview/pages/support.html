@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Support — ConNext</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); }
+
+  .page-strip {
+    padding: 56px 64px 40px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+    max-width: 1280px; margin: 0 auto;
+  }
+  .crumbs {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.06em; color: var(--c-cobalt-400);
+    margin-bottom: 16px;
+  }
+  .crumbs a { color: var(--c-cobalt-400); text-decoration: none; }
+  .crumbs a:hover { color: var(--c-orange-knvb); }
+  .page-strip h1 {
+    font-size: 48px; line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--c-cobalt-900); margin: 0 0 16px;
+    max-width: 22ch;
+  }
+  .page-strip p {
+    font-size: 18px; line-height: 1.55; color: var(--c-cobalt-700);
+    max-width: 64ch;
+  }
+  .page-strip p strong { color: var(--c-blue-cobalt); font-weight: 600; }
+
+  .tiers {
+    max-width: 1280px; margin: 64px auto 0;
+    padding: 0 64px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .tier {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    background: white;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .tier.recommended {
+    border: 2px solid var(--c-blue-cobalt);
+    box-shadow: var(--shadow-2);
+  }
+  .tier .recommended-pill {
+    position: absolute;
+    top: -14px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--c-blue-cobalt);
+    color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+  }
+  .tier .tier-name {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 12px;
+  }
+  .tier h3 {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 8px;
+  }
+  .tier .price {
+    font-size: 16px; color: var(--c-cobalt-700);
+    margin-bottom: 24px;
+  }
+  .tier .price .num { font-size: 28px; font-weight: 700; color: var(--c-blue-cobalt); }
+  .tier .price .per { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
+  .tier .lede {
+    font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin: 0 0 28px;
+  }
+  .tier ul {
+    list-style: none; padding: 0; margin: 0 0 32px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .tier ul li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--c-cobalt-800); line-height: 1.5;
+  }
+  .tier ul li .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); flex-shrink: 0; margin-top: 5px; }
+  .tier .cta {
+    margin-top: auto;
+    display: block; text-align: center;
+    border: 1px solid var(--c-cobalt-200);
+    color: var(--c-blue-cobalt);
+    background: white;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 500; font-size: 15px;
+    text-decoration: none;
+  }
+  .tier.recommended .cta {
+    background: var(--c-blue-cobalt); color: white;
+    border: none;
+  }
+
+  /* Matrix */
+  .matrix {
+    max-width: 1280px; margin: 96px auto;
+    padding: 0 64px;
+  }
+  .matrix h2 {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 32px;
+  }
+  .matrix table {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .matrix th, .matrix td {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .matrix th {
+    background: var(--c-cobalt-50);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    font-weight: 500;
+  }
+  .matrix th:not(:first-child), .matrix td:not(:first-child) { text-align: center; }
+  .matrix td:first-child { font-weight: 500; color: var(--c-cobalt-900); }
+  .matrix tr:last-child td { border-bottom: none; }
+  .matrix .yes { color: var(--c-mint-500); font-weight: 700; }
+  .matrix .dash { color: var(--c-cobalt-300); }
+
+  /* FAQ */
+  .faq {
+    max-width: 880px; margin: 96px auto;
+    padding: 0 64px;
+  }
+  .faq h2 {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 32px;
+  }
+  .faq details {
+    border-bottom: 1px solid var(--c-cobalt-100);
+    padding: 20px 0;
+  }
+  .faq summary {
+    font-size: 17px; font-weight: 600;
+    color: var(--c-cobalt-900);
+    cursor: pointer;
+    list-style: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; font-size: 22px; color: var(--c-cobalt-400);
+    font-weight: 400;
+    transition: transform 200ms;
+  }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq p {
+    font-size: 15px; color: var(--c-cobalt-700); line-height: 1.6;
+    margin: 12px 0 0;
+    max-width: 64ch;
+  }
+</style>
+</head>
+<body data-current="support">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<section class="page-strip">
+  <div class="crumbs"><a href="landing.html">Home</a> &nbsp;/&nbsp; Support</div>
+  <h1>Apps are free.<br>Support is a separate, transparent layer.</h1>
+  <p>Every ConNext app installs free from the Nextcloud app store. <strong>No paywall, no upgrade nag.</strong> If you want a response time, an SLA, or someone Dutch on the phone, here's exactly what that costs and what's in it.</p>
+</section>
+
+<section class="tiers">
+
+  <div class="tier">
+    <div class="tier-name">Self-serve</div>
+    <h3>Community.</h3>
+    <div class="price"><span class="num">€0</span> <span class="per">forever</span></div>
+    <p class="lede">For evaluation, MKB pilots, and anyone who's comfortable in GitHub. Best-effort response from the maintainers and the wider community.</p>
+    <ul>
+      <li><span class="h"></span>All twelve apps, full source</li>
+      <li><span class="h"></span>GitHub Issues, public discussions</li>
+      <li><span class="h"></span>Community Discord</li>
+      <li><span class="h"></span>Public docs, how-tos, recipes</li>
+      <li><span class="h"></span>NLDS-compliant releases</li>
+    </ul>
+    <a href="#" class="cta">Install from app store</a>
+  </div>
+
+  <div class="tier recommended">
+    <span class="recommended-pill">Most chosen</span>
+    <div class="tier-name">Standard</div>
+    <h3>Business hours.</h3>
+    <div class="price"><span class="num">€1.250</span> <span class="per">per maand</span></div>
+    <p class="lede">For organisations running ConNext in production. Two-business-day response, named contact, and a quarterly upgrade review.</p>
+    <ul>
+      <li><span class="h"></span>Everything in Community</li>
+      <li><span class="h"></span>2-business-day response (NL hours)</li>
+      <li><span class="h"></span>Named technical contact</li>
+      <li><span class="h"></span>Quarterly upgrade review</li>
+      <li><span class="h"></span>Private Slack with maintainers</li>
+      <li><span class="h"></span>Hot-fix backports for one major</li>
+    </ul>
+    <a href="#" class="cta">Talk to sales →</a>
+  </div>
+
+  <div class="tier">
+    <div class="tier-name">Strategic</div>
+    <h3>Partner.</h3>
+    <div class="price"><span class="num">€4.500</span> <span class="per">per maand</span></div>
+    <p class="lede">For ministries, provinces, and groups running mission-critical workloads. 4-hour response, dedicated engineer, design-review hours.</p>
+    <ul>
+      <li><span class="h"></span>Everything in Standard</li>
+      <li><span class="h"></span>4-hour response, 24/5 (NL+BE)</li>
+      <li><span class="h"></span>Dedicated maintenance engineer</li>
+      <li><span class="h"></span>8h/maand design-review</li>
+      <li><span class="h"></span>Roadmap input + early-access</li>
+      <li><span class="h"></span>Custom NLDS profile work</li>
+    </ul>
+    <a href="#" class="cta">Talk to sales →</a>
+  </div>
+
+</section>
+
+<section class="matrix">
+  <h2>What's included.</h2>
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Community</th><th>Standard</th><th>Strategic</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>All twelve open-source apps</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>Public docs &amp; recipes</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>Response SLA</td><td class="dash">—</td><td>2 business days</td><td>4 hours, 24/5</td></tr>
+      <tr><td>Named contact</td><td class="dash">—</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>Private support channel</td><td class="dash">—</td><td>Slack</td><td>Slack + phone</td></tr>
+      <tr><td>Hot-fix backports</td><td class="dash">—</td><td>1 major</td><td>2 majors</td></tr>
+      <tr><td>Quarterly upgrade review</td><td class="dash">—</td><td class="yes">●</td><td class="yes">●</td></tr>
+      <tr><td>Dedicated engineer</td><td class="dash">—</td><td class="dash">—</td><td class="yes">●</td></tr>
+      <tr><td>Design-review hours</td><td class="dash">—</td><td class="dash">—</td><td>8h/maand</td></tr>
+      <tr><td>Custom NLDS profile work</td><td class="dash">—</td><td class="dash">—</td><td class="yes">●</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="faq">
+  <h2>FAQ.</h2>
+
+  <details open>
+    <summary>If the apps are free, what am I paying for?</summary>
+    <p>Time and a phone number. Support buys you a contracted response window, a named human to reach, and the engineering hours behind hot-fixes and design reviews. The apps themselves stay open-source, EUPL-licensed, and free — that doesn't change between tiers.</p>
+  </details>
+
+  <details>
+    <summary>Can I switch tiers without re-installing?</summary>
+    <p>Yes. Tiers are a contract layer; the apps keep running unchanged. Upgrade or downgrade with one calendar month's notice.</p>
+  </details>
+
+  <details>
+    <summary>Do you sell hosting?</summary>
+    <p>No. ConNext apps run on your Nextcloud — managed by you, by your hoster, or by a Nextcloud Strategic partner. We point you at the right one if you don't have one yet.</p>
+  </details>
+
+  <details>
+    <summary>What's the licence?</summary>
+    <p>EUPL-1.2 — the European Union Public Licence. Compatible with GPL/AGPL, recognised by Dutch government tenders, and explicit about contribution back to the commons. The full text ships with every app.</p>
+  </details>
+
+  <details>
+    <summary>How fast does Strategic actually respond?</summary>
+    <p>Median first-response time over the last twelve months: 38 minutes during NL+BE office hours. The 4-hour figure is the contractual ceiling, not the average.</p>
+  </details>
+
+</section>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

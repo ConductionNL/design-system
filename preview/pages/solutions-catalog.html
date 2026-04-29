@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Solutions — ConNext</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); }
+
+  /* Page strip */
+  .page-strip {
+    padding: 56px 64px 40px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+    max-width: 1280px; margin: 0 auto;
+  }
+  .crumbs {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.06em; color: var(--c-cobalt-400);
+    margin-bottom: 16px;
+  }
+  .crumbs a { color: var(--c-cobalt-400); text-decoration: none; }
+  .crumbs a:hover { color: var(--c-orange-knvb); }
+  .page-strip h1 {
+    font-size: 48px; line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--c-cobalt-900); margin: 0 0 16px;
+    max-width: 22ch;
+  }
+  .page-strip p {
+    font-size: 18px; line-height: 1.55; color: var(--c-cobalt-700);
+    max-width: 64ch;
+  }
+  .page-strip p strong { color: var(--c-blue-cobalt); font-weight: 600; }
+
+  /* Layout */
+  .catalog {
+    max-width: 1280px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    padding: 32px 64px 96px;
+    align-items: start;
+  }
+
+  /* Filter sidebar (lifted from faceted-filters component) */
+  .filters { position: sticky; top: 24px; }
+  .facet { margin-bottom: 28px; }
+  .facet h3 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--c-cobalt-400); font-weight: 500;
+    margin: 0 0 10px;
+  }
+  .facet-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .facet-list li {
+    display: grid; grid-template-columns: 18px 1fr auto;
+    gap: 10px; align-items: center;
+    font-size: 14px; color: var(--c-cobalt-700);
+    cursor: pointer; padding: 4px 0;
+  }
+  .facet-list input[type="checkbox"] {
+    appearance: none; width: 16px; height: 16px;
+    border: 1.5px solid var(--c-cobalt-300); border-radius: 3px;
+    background: white; position: relative; cursor: pointer;
+    transition: all 120ms;
+  }
+  .facet-list input[type="checkbox"]:checked {
+    background: var(--c-blue-cobalt); border-color: var(--c-blue-cobalt);
+  }
+  .facet-list input[type="checkbox"]:checked::after {
+    content: ""; position: absolute;
+    left: 4px; top: 1px; width: 5px; height: 9px;
+    border: solid white; border-width: 0 1.6px 1.6px 0;
+    transform: rotate(45deg);
+  }
+  .facet-list .count {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; color: var(--c-cobalt-400);
+  }
+  .facet-clear {
+    border: none; background: none; padding: 0;
+    margin-top: 8px; cursor: pointer;
+    font-family: inherit; font-size: 13px; color: var(--c-cobalt-400);
+  }
+  .facet-clear:hover { color: var(--c-orange-knvb); }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+    font-size: 14px; color: var(--c-cobalt-700);
+  }
+  .toolbar b { color: var(--c-cobalt-900); font-weight: 700; }
+
+  /* Solution grid */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .solution {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    text-decoration: none; color: inherit;
+    display: flex; flex-direction: column; gap: 18px;
+    transition: all 160ms ease;
+  }
+  .solution:hover { border-color: var(--c-blue-cobalt); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .solution .top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 18px;
+  }
+  .solution .icon-hex {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .solution .icon-hex svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .solution.public .icon-hex { background: var(--c-blue-cobalt); }
+  .solution.mkb .icon-hex { background: var(--c-cobalt-700); }
+  .solution.health .icon-hex { background: var(--c-orange-knvb); }
+  .solution .sector-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    background: var(--c-cobalt-50);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+  }
+  .solution h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--c-cobalt-900); margin: 0; }
+  .solution .outcome { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0; }
+  .solution .built-on {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .solution .built-on .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .solution .built-on .pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+</style>
+</head>
+<body data-current="solutions">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<section class="page-strip">
+  <div class="crumbs"><a href="landing.html">Home</a> &nbsp;/&nbsp; Solutions</div>
+  <h1>Solutions: what you achieve, not what we sell.</h1>
+  <p>An <strong>app</strong> is software we ship. A <strong>solution</strong> is the outcome you reach by installing one or two of those apps and configuring them. Filter by sector or goal — every solution links back to the apps it's built on, so you know exactly what gets installed.</p>
+</section>
+
+<div class="catalog">
+
+  <aside class="filters">
+    <fieldset class="facet" style="border:none;padding:0;margin:0 0 28px">
+      <h3>Sector</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="s-public" checked><label for="s-public">Publieke sector</label><span class="count">5</span></li>
+        <li><input type="checkbox" id="s-mkb"><label for="s-mkb">MKB</label><span class="count">3</span></li>
+        <li><input type="checkbox" id="s-health"><label for="s-health">Zorg</label><span class="count">2</span></li>
+        <li><input type="checkbox" id="s-edu"><label for="s-edu">Onderwijs</label><span class="count">1</span></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0 0 28px">
+      <h3>Doel</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="g-comp" checked><label for="g-comp">Compliance</label><span class="count">4</span></li>
+        <li><input type="checkbox" id="g-int"><label for="g-int">Integratie</label><span class="count">3</span></li>
+        <li><input type="checkbox" id="g-rep"><label for="g-rep">Rapportage</label><span class="count">2</span></li>
+        <li><input type="checkbox" id="g-flow"><label for="g-flow">Workflow</label><span class="count">2</span></li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="facet" style="border:none;padding:0;margin:0">
+      <h3>Status</h3>
+      <ul class="facet-list">
+        <li><input type="checkbox" id="t-prod" checked><label for="t-prod">Productie-ready</label><span class="count">7</span></li>
+        <li><input type="checkbox" id="t-pilot"><label for="t-pilot">Pilot</label><span class="count">3</span></li>
+      </ul>
+    </fieldset>
+
+    <button class="facet-clear">Clear all filters</button>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div><b>9</b> of 11 solutions · <span style="color:var(--c-cobalt-400)">2 hidden by filters</span></div>
+      <div>Sort by <strong>Most installed</strong></div>
+    </div>
+
+    <div class="grid">
+
+      <a href="solution-page.html" class="solution public">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><path d="M12 3l9 4v5c0 5-4 8-9 9-5-1-9-4-9-9V7l9-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <span class="sector-tag">Publieke sector</span>
+        </div>
+        <h3>WOO compliance, by Friday.</h3>
+        <p class="outcome">Live WOO portal at your hosted Nextcloud — every law category becomes a register, every register publishes through OpenCatalogi, every connector ingests from your DMS.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>OpenCatalogi</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+          <span class="pill"><span class="h"></span>OpenConnector</span>
+        </div>
+      </a>
+
+      <a href="solution-page.html" class="solution public">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><path d="M9 11V7a3 3 0 0 1 6 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg></div>
+          <span class="sector-tag">Publieke sector</span>
+        </div>
+        <h3>Zaakafhandeling on Nextcloud.</h3>
+        <p class="outcome">Replace your case-management SaaS with ZGW-compliant zaakafhandeling running on the same Nextcloud you already log in to. ZGW APIs, archief koppelvlakken, audit trail.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>OpenZaak</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+          <span class="pill"><span class="h"></span>DocuDesk</span>
+        </div>
+      </a>
+
+      <a href="solution-page.html" class="solution public">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg></div>
+          <span class="sector-tag">Publieke sector</span>
+        </div>
+        <h3>Software catalog for the gemeente.</h3>
+        <p class="outcome">A public software catalogue — apps, datasets, APIs your organisation uses — searchable in one place, federated to data.overheid.nl.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>OpenCatalogi</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </a>
+
+      <a href="solution-page.html" class="solution mkb">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
+          <span class="sector-tag">MKB</span>
+        </div>
+        <h3>MKB workspace in two minutes.</h3>
+        <p class="outcome">Files, calendar, talk, dashboards — your full open-source workspace on Nextcloud, with MyDash on top so the team sees what matters from day one.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>MyDash</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </a>
+
+      <a href="solution-page.html" class="solution mkb">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></div>
+          <span class="sector-tag">MKB</span>
+        </div>
+        <h3>One legacy ERP, every modern tool.</h3>
+        <p class="outcome">OpenConnector pulls from your ERP, fills typed registers, and exposes an API to whatever your team uses today — Notion, Slack, n8n. No middleware, no migration.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>OpenConnector</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </a>
+
+      <a href="solution-page.html" class="solution health">
+        <div class="top">
+          <div class="icon-hex"><svg viewBox="0 0 24 24"><path d="M12 2L2 7v6c0 5 3 9 10 11 7-2 10-6 10-11V7L12 2z"/><path d="M9 12h6M12 9v6"/></svg></div>
+          <span class="sector-tag">Zorg</span>
+        </div>
+        <h3>NEN-7510 + zorgmail in one stack.</h3>
+        <p class="outcome">A zorg-instelling-ready Nextcloud — NEN-7510 audit, zorgmail integration, and DocuDesk to anonymise inbound zorgcorrespondentie before it touches your registers.</p>
+        <div class="built-on">
+          <span class="pill"><span class="h"></span>DocuDesk</span>
+          <span class="pill"><span class="h"></span>OpenRegister</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+</div>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

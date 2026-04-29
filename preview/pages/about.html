@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>About Conduction — ConNext</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); }
+
+  /* Hero — Conduction branded */
+  .hero {
+    max-width: 1280px; margin: 0 auto;
+    padding: 56px 64px 64px;
+    display: grid;
+    grid-template-columns: 1.1fr 360px;
+    gap: 64px;
+    align-items: center;
+  }
+  .crumbs {
+    grid-column: 1 / -1;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.06em; color: var(--c-cobalt-400);
+    margin-bottom: 8px;
+  }
+  .crumbs a { color: var(--c-cobalt-400); text-decoration: none; }
+  .crumbs a:hover { color: var(--c-orange-knvb); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 20px;
+  }
+  .hero .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .hero h1 {
+    font-size: 56px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+    color: var(--c-cobalt-900); margin: 0 0 24px;
+  }
+  .hero .lede {
+    font-size: 20px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 56ch; margin: 0 0 28px;
+  }
+  .hero .meta-row {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    color: var(--c-cobalt-700);
+  }
+  .hero .meta-row .item { display: flex; align-items: center; gap: 8px; }
+  .hero .meta-row .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .hero img.avatar {
+    width: 280px; height: auto;
+    justify-self: center;
+  }
+
+  /* Section scaffolding */
+  .section { max-width: 1280px; margin: 0 auto; padding: 80px 64px; }
+  .section.alt { background: var(--c-cobalt-50); max-width: none; padding: 0; }
+  .section.alt .inner { max-width: 1280px; margin: 0 auto; padding: 80px 64px; }
+  .section-head { margin-bottom: 40px; max-width: 50ch; }
+  .section-head .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 12px;
+  }
+  .section-head .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .section-head h2 {
+    font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--c-cobalt-900); margin: 0;
+  }
+
+  /* Values */
+  .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .value {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+  .value .glyph {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .value .glyph svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .value h3 {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 10px;
+  }
+  .value p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0; }
+
+  /* Team */
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .person {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .person .avatar {
+    width: 72px; height: 83px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-weight: 700; font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .person .name { font-size: 16px; font-weight: 700; color: var(--c-cobalt-900); margin-bottom: 4px; }
+  .person .role { font-size: 13px; color: var(--c-cobalt-700); }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 24px; max-width: 720px; }
+  .milestone {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .milestone .year {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 14px; letter-spacing: 0.04em;
+    color: var(--c-orange-knvb);
+    font-weight: 600;
+    padding-top: 4px;
+  }
+  .milestone .what h4 {
+    font-size: 18px; font-weight: 700; color: var(--c-cobalt-900);
+    margin: 0 0 6px;
+  }
+  .milestone .what p {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin: 0; max-width: 56ch;
+  }
+
+  /* Contact strip */
+  .contact-strip {
+    background: var(--c-cobalt-900);
+    color: white;
+  }
+  .contact-strip .inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 64px 64px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .contact-strip h2 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 16px; color: white; }
+  .contact-strip p { font-size: 16px; line-height: 1.55; color: rgba(255,255,255,0.78); margin: 0; max-width: 50ch; }
+  .contact-strip .channels { display: flex; flex-direction: column; gap: 12px; }
+  .contact-strip .channels a {
+    display: flex; align-items: center; gap: 14px;
+    color: white; text-decoration: none;
+    background: rgba(255,255,255,0.06);
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    transition: background 120ms;
+  }
+  .contact-strip .channels a:hover { background: rgba(255,255,255,0.12); }
+  .contact-strip .channels svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .contact-strip .channels .dest {
+    margin-left: auto;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+  }
+</style>
+</head>
+<body data-current="about">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<section class="hero">
+  <div class="crumbs"><a href="landing.html">Home</a> &nbsp;/&nbsp; About</div>
+  <div>
+    <div class="eyebrow"><span class="h"></span>The company</div>
+    <h1>We're Conduction. We build the apps you read about on this site.</h1>
+    <p class="lede">A Dutch open-source product company in The Hague. Twelve apps shipping under EUPL-1.2, twelve people on the team, one product mission: an open ecosystem of Nextcloud apps that solve concrete problems for MKB and overheid.</p>
+    <div class="meta-row">
+      <span class="item"><span class="h"></span>Founded 2019</span>
+      <span class="item"><span class="h"></span>The Hague, NL</span>
+      <span class="item"><span class="h"></span>Conduction B.V.</span>
+      <span class="item"><span class="h"></span>EUPL-1.2 only</span>
+    </div>
+  </div>
+  <img class="avatar" src="../../brand/assets/avatar-conduction-on-white.svg" alt="Conduction hex avatar">
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow"><span class="h"></span>What we believe</div>
+    <h2>Three rules that decide what we build.</h2>
+  </div>
+  <div class="values">
+    <div class="value">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+      <h3>Open by default.</h3>
+      <p>Every line of code we ship is EUPL-1.2 on GitHub. Issues, releases, roadmap discussions — all public. The day you uninstall is as easy as the day you installed.</p>
+    </div>
+    <div class="value">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 4.4 3.6 8 8 10 4.4-2 8-5.6 8-10V6l-8-4z"/></svg></div>
+      <h3>Build on Nextcloud.</h3>
+      <p>We don't replace your platform; we plug into the one you already log in to every morning. Files, identity, calendar, Talk — Nextcloud has it. We add the typed-data layer on top.</p>
+    </div>
+    <div class="value">
+      <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3>Concrete outcomes, not transformatie.</h3>
+      <p>We won't sell you a roadmap workshop. We'll install OpenCatalogi in 2 minutes and you'll have a working catalogue this afternoon. The problem is shipping software, not strategy decks.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="inner">
+    <div class="section-head">
+      <div class="eyebrow"><span class="h"></span>The team</div>
+      <h2>Twelve people. The Hague. Mostly Dutch.</h2>
+    </div>
+    <div class="team-grid">
+      <div class="person"><div class="avatar">RvL</div><div class="name">Ruben van der Linde</div><div class="role">Founder · Eng lead</div></div>
+      <div class="person"><div class="avatar">SdV</div><div class="name">Sanne de Vries</div><div class="role">Product · OpenRegister</div></div>
+      <div class="person"><div class="avatar">MK</div><div class="name">Martijn Kuipers</div><div class="role">Connectors · Integrations</div></div>
+      <div class="person"><div class="avatar">EJ</div><div class="name">Esther Janssen</div><div class="role">Compliance · NLDS</div></div>
+      <div class="person"><div class="avatar">RvZ</div><div class="name">Robin van Zandvoort</div><div class="role">DocuDesk · Design</div></div>
+      <div class="person"><div class="avatar">KB</div><div class="name">Kasper Bakker</div><div class="role">MyDash · Frontend</div></div>
+      <div class="person"><div class="avatar">JdJ</div><div class="name">Jolien de Jong</div><div class="role">Support · Strategic</div></div>
+      <div class="person"><div class="avatar">+5</div><div class="name">Plus five more.</div><div class="role">See the team page →</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow"><span class="h"></span>Origin</div>
+    <h2>From consultancy to product company.</h2>
+  </div>
+  <div class="timeline">
+    <div class="milestone">
+      <span class="year">2019</span>
+      <div class="what">
+        <h4>Conduction B.V. founded.</h4>
+        <p>Started as a Dutch government consultancy — building one-off ZGW integrations for gemeenten. Realised most clients needed the same five things.</p>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="year">2021</span>
+      <div class="what">
+        <h4>First open-source apps.</h4>
+        <p>OpenCatalogi and OpenRegister released as Nextcloud apps under EUPL-1.2. Two pilot municipalities adopt the stack inside a quarter.</p>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="year">2023</span>
+      <div class="what">
+        <h4>The pivot.</h4>
+        <p>Stopped taking client-specific consulting. Re-organised the company around twelve open-source products, public roadmap, and three support tiers. Same team, very different shape.</p>
+      </div>
+    </div>
+    <div class="milestone">
+      <span class="year">2026</span>
+      <div class="what">
+        <h4>ConNext.</h4>
+        <p>The twelve apps brought under one product brand. <span class="next-blue">connext.conduction.nl</span> launches as the public surface; Conduction stays the company name behind the contracts and the hex avatar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-strip">
+  <div class="inner">
+    <div>
+      <h2>Talk to us.</h2>
+      <p>The team picks up the phone during NL office hours. For everything else, we're a GitHub issue away.</p>
+    </div>
+    <div class="channels">
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>github.com/ConductionNL<span class="dest">→</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>linkedin.com/company/conduction<span class="dest">→</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>info@conduction.nl<span class="dest">→</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Lange Voorhout, Den Haag<span class="dest">→</span></a>
+    </div>
+  </div>
+</section>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

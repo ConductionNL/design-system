@@ -267,6 +267,139 @@
     color: rgba(255,255,255,0.85);
   }
   .canal-footer .nlds-badge svg { width: 12px; height: 12px; stroke: var(--c-mint-500, #2E9866); stroke-width: 2; fill: none; }
+
+  /* ============================================================
+     Mini-game HUD: timer (30s) + counter (100 → 0). Lives in the
+     top-right of the canal band. Hidden until the player sinks
+     their first boat — first sink kicks the game off. Every sink
+     (including the original fleet drifting at page load) ticks
+     the counter down by 1; the counter flashes orange on each tick.
+
+     Boss waves trigger off counter milestones:
+       - score === 10  → cruise-ship swarm (5 ships, HP 5 each)
+       - score === 1   → battleship boss (HP 10)
+     Spawned boats use Web Animations API so their drift duration
+     can scale with the per-game speed multiplier.
+     ============================================================ */
+  .canal-footer .game-hud {
+    position: absolute;
+    top: 14px;
+    right: 56px;
+    z-index: 3;
+    display: flex;
+    gap: 36px;
+    font-family: var(--conduction-typography-font-family-code);
+    color: white;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 240ms ease, transform 240ms ease;
+  }
+  .canal-footer .game-hud.active { opacity: 1; transform: translateY(0); }
+  .canal-footer .game-hud .hud-block { text-align: right; }
+  .canal-footer .game-hud .hud-num {
+    display: block;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    transition: color 200ms ease;
+    /* Dark glow keeps the digits legible while bosses drift behind them. */
+    text-shadow: 0 1px 10px rgba(11,32,73,0.95), 0 0 4px rgba(11,32,73,0.7);
+  }
+  .canal-footer .game-hud .hud-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+    text-shadow: 0 1px 6px rgba(11,32,73,0.95);
+  }
+  .canal-footer .game-hud .hud-counter.tick .hud-num { animation: hud-tick 420ms ease; }
+  @keyframes hud-tick {
+    0%   { transform: scale(1);    color: white; }
+    35%  { transform: scale(1.45); color: var(--c-orange-knvb); }
+    100% { transform: scale(1);    color: white; }
+  }
+  .canal-footer .game-hud .hud-timer.urgent .hud-num {
+    color: #ff5544;
+    animation: hud-pulse 800ms ease infinite;
+  }
+  @keyframes hud-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+  }
+
+  /* Game-over panel — appears below the HUD when timer hits 0
+     or the counter reaches 0 (battleship sunk = victory). */
+  .canal-footer .game-over {
+    position: absolute;
+    top: 14px;
+    right: 56px;
+    z-index: 4;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: var(--conduction-typography-font-family-code);
+    color: white;
+    pointer-events: auto;
+    text-align: right;
+    display: none;
+    min-width: 160px;
+  }
+  .canal-footer .game-over.show { display: block; }
+  .canal-footer .game-over .go-title {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin: 0 0 6px;
+  }
+  .canal-footer .game-over .go-stat {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .canal-footer .game-over button {
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--c-orange-knvb);
+    color: var(--c-cobalt-900);
+    border: 0;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .canal-footer .game-over button:hover { filter: brightness(1.1); }
+
+  /* Boss ships sit one layer above their spawned siblings so the
+     cruise-swarm and battleship draw on top of the regular drift. */
+  .canal-footer .ci.boss { z-index: 2; }
+
+  /* Damage flash on a multi-HP ship hit — pure filter so we don't
+     fight the WAAPI translateX animation. */
+  .canal-footer .ci.damaged { animation: ci-damage 240ms ease; }
+  @keyframes ci-damage {
+    0%, 100% { filter: none; }
+    35%      { filter: brightness(2.6) saturate(0.4) drop-shadow(0 0 6px rgba(255,255,255,0.7)); }
+  }
+
+  /* HP pips above bosses — orange dots that fade out on each hit. */
+  .canal-footer .ci .hp-pips .pip {
+    transition: opacity 200ms ease, fill 200ms ease;
+  }
+  .canal-footer .ci .hp-pips .pip.hit {
+    opacity: 0.18;
+    fill: rgba(255,255,255,0.4);
+  }
 </style>
 </head>
 <body>
@@ -414,6 +547,26 @@
           <line x1="56" y1="22" x2="60" y2="22"/>
         </g>
       </svg>
+    </div>
+
+    <!-- Mini-game HUD: timer + counter. Fades in on the first boat sunk;
+         every sink (original fleet, spawned drift, bosses) ticks counter -1. -->
+    <div class="game-hud" aria-live="polite" aria-label="Boat-sinking mini game">
+      <div class="hud-block hud-counter">
+        <span class="hud-num" data-counter>100</span>
+        <span class="hud-label">Boats left</span>
+      </div>
+      <div class="hud-block hud-timer">
+        <span class="hud-num" data-timer>30</span>
+        <span class="hud-label">Seconds</span>
+      </div>
+    </div>
+
+    <!-- Mini-game over panel: shown on timer-out or when the counter hits 0. -->
+    <div class="game-over" role="dialog" aria-label="Mini game over">
+      <p class="go-title" data-go-title>Time's up</p>
+      <p class="go-stat"><span data-go-sunk>0</span> sunk</p>
+      <button type="button" data-restart>Play again</button>
     </div>
 
     <!-- Big slow hex-zigzag waves drifting through the canal behind the text -->
@@ -585,15 +738,109 @@
   </svg>
 </template>
 
+<!-- Sailing ship — HP 2. Tall mast with three stacked sails + a red pennant. -->
+<template id="tpl-ship-sailing">
+  <svg class="ci ci-sailing" width="100" height="60" viewBox="-4 -42 108 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M 0,12 L 6,16 L 90,16 L 96,12 L 96,8 L 0,8 Z" fill="var(--c-orange-knvb)"/>
+    <line x1="0" y1="11" x2="-4" y2="6" stroke="var(--c-orange-knvb)" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="48" y1="8" x2="48" y2="-40" stroke="#3a4553" stroke-width="1.4"/>
+    <rect x="44.5" y="-30" width="7" height="2.5" fill="#3a4553"/>
+    <line x1="22" y1="-12" x2="74" y2="-12" stroke="#3a4553" stroke-width="0.9"/>
+    <path d="M 24,-12 Q 48,-7 72,-12 L 72,4 Q 48,8 24,4 Z" fill="rgba(255,247,210,0.92)"/>
+    <line x1="24" y1="-26" x2="72" y2="-26" stroke="#3a4553" stroke-width="0.9"/>
+    <path d="M 26,-26 Q 48,-22 70,-26 L 70,-13 Q 48,-9 26,-13 Z" fill="rgba(255,247,210,0.92)"/>
+    <line x1="34" y1="-38" x2="62" y2="-38" stroke="#3a4553" stroke-width="0.9"/>
+    <path d="M 35,-38 Q 48,-35 61,-38 L 61,-28 Q 48,-25 35,-28 Z" fill="rgba(255,247,210,0.92)"/>
+    <path d="M 48,-40 L 58,-39 L 56,-37 L 58,-35 L 48,-36 Z" fill="#AE1C28"/>
+  </svg>
+</template>
+
+<!-- Cargo ship — HP 3. Long hull stacked with multi-coloured containers. -->
+<template id="tpl-ship-cargo">
+  <svg class="ci ci-cargo" width="180" height="44" viewBox="0 -28 180 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M 0,14 L 6,16 L 174,16 L 180,14 L 180,10 L 0,10 Z" fill="var(--c-orange-knvb)"/>
+    <g>
+      <rect x="14"  y="0"   width="14" height="9" fill="#C8482F"/>
+      <rect x="30"  y="0"   width="14" height="9" fill="var(--c-cobalt-900)"/>
+      <rect x="46"  y="0"   width="14" height="9" fill="rgba(255,247,210,0.9)"/>
+      <rect x="62"  y="0"   width="14" height="9" fill="#C8482F"/>
+      <rect x="78"  y="0"   width="14" height="9" fill="var(--c-cobalt-900)"/>
+      <rect x="94"  y="0"   width="14" height="9" fill="rgba(255,247,210,0.9)"/>
+      <rect x="110" y="0"   width="14" height="9" fill="#C8482F"/>
+      <rect x="14"  y="-9"  width="14" height="9" fill="var(--c-cobalt-900)"/>
+      <rect x="30"  y="-9"  width="14" height="9" fill="rgba(255,247,210,0.9)"/>
+      <rect x="62"  y="-9"  width="14" height="9" fill="var(--c-cobalt-900)"/>
+      <rect x="94"  y="-9"  width="14" height="9" fill="#C8482F"/>
+      <rect x="14"  y="-18" width="14" height="9" fill="rgba(255,247,210,0.9)"/>
+      <rect x="62"  y="-18" width="14" height="9" fill="#C8482F"/>
+    </g>
+    <rect x="138" y="-18" width="22" height="27" fill="#5a6573"/>
+    <rect x="142" y="-14" width="14" height="3" fill="rgba(255,247,210,0.85)"/>
+    <rect x="142" y="-9"  width="14" height="3" fill="rgba(255,247,210,0.6)"/>
+    <rect x="142" y="-4"  width="14" height="3" fill="rgba(255,247,210,0.6)"/>
+    <rect x="146" y="-26" width="8" height="8" fill="#3a4553"/>
+    <rect x="146" y="-22" width="8" height="2" fill="var(--c-orange-knvb)"/>
+  </svg>
+</template>
+
+<!-- Frigate — HP 4. Smaller naval ship: gray hull, single turret, bridge, smokestack. -->
+<template id="tpl-ship-frigate">
+  <svg class="ci ci-frigate" width="130" height="36" viewBox="0 -20 130 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M 0,14 L 6,16 L 124,16 L 130,14 L 130,10 L 0,10 Z" fill="#5a6573"/>
+    <rect x="0" y="9" width="130" height="1.4" fill="var(--c-orange-knvb)"/>
+    <rect x="14" y="6" width="14" height="4" rx="1.5" fill="#6a7583"/>
+    <line x1="21" y1="8" x2="40" y2="6" stroke="#3a4553" stroke-width="1.6" stroke-linecap="round"/>
+    <rect x="42" y="-2" width="48" height="12" fill="#6a7583"/>
+    <rect x="58" y="-12" width="16" height="10" fill="#7a8593"/>
+    <rect x="60" y="-9" width="12" height="2.5" fill="rgba(255,247,210,0.85)"/>
+    <line x1="66" y1="-12" x2="66" y2="-18" stroke="#3a4553" stroke-width="1"/>
+    <rect x="82" y="-7" width="6" height="5" fill="#3a4553"/>
+    <rect x="82" y="-5" width="6" height="1.5" fill="var(--c-orange-knvb)"/>
+    <rect x="100" y="6" width="14" height="4" rx="1.5" fill="#6a7583"/>
+  </svg>
+</template>
+
+<!-- Battleship boss — HP 10. Final wave: gray hull, twin turrets, bridge tower, mast. -->
+<template id="tpl-battleship">
+  <svg class="ci ci-battleship boss" width="220" height="56" viewBox="0 -22 220 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M 0,18 L 8,28 L 212,28 L 220,18 L 220,12 L 0,12 Z" fill="#4a5663"/>
+    <rect x="0" y="11" width="220" height="2" fill="var(--c-orange-knvb)"/>
+    <rect x="50" y="0" width="120" height="12" fill="#5a6573"/>
+    <rect x="92" y="-12" width="36" height="12" fill="#6a7583"/>
+    <rect x="96" y="-9" width="28" height="3" fill="rgba(255,247,210,0.85)"/>
+    <rect x="138" y="-7" width="10" height="7" fill="#3a4553"/>
+    <rect x="138" y="-4" width="10" height="2" fill="var(--c-orange-knvb)"/>
+    <line x1="110" y1="-12" x2="110" y2="-20" stroke="#3a4553" stroke-width="1.4"/>
+    <rect x="22" y="6" width="22" height="6" rx="2" fill="#6a7583"/>
+    <line x1="32" y1="9" x2="56" y2="6" stroke="#3a4553" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="32" y1="9" x2="8"  y2="6" stroke="#3a4553" stroke-width="2.2" stroke-linecap="round"/>
+    <rect x="176" y="6" width="22" height="6" rx="2" fill="#6a7583"/>
+    <line x1="186" y1="9" x2="210" y2="6" stroke="#3a4553" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="186" y1="9" x2="162" y2="6" stroke="#3a4553" stroke-width="2.2" stroke-linecap="round"/>
+    <g class="hp-pips" transform="translate(58, -18)">
+      <circle class="pip" cx="0"  cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="11" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="22" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="33" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="44" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="55" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="66" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="77" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="88" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+      <circle class="pip" cx="99" cy="0" r="2.4" fill="var(--c-orange-knvb)"/>
+    </g>
+  </svg>
+</template>
+
 <script>
 (function () {
   const root = document.querySelector('.canal-footer');
   if (!root) return;
 
-  // ----- 1. Randomise the skyline (random house bricks) -----
+  // ===== Skyline (random row of trapgevels) =====
   const skyline = root.querySelector('.skyline');
-  const types = ['h-a', 'h-b', 'h-c', 'h-d', 'h-e'];
-  const widths = { 'h-a': 48, 'h-b': 60, 'h-c': 42, 'h-d': 54, 'h-e': 57 };
+  const houseTypes  = ['h-a', 'h-b', 'h-c', 'h-d', 'h-e'];
+  const houseWidths = { 'h-a': 48, 'h-b': 60, 'h-c': 42, 'h-d': 54, 'h-e': 57 };
 
   function buildSkyline() {
     skyline.innerHTML = '';
@@ -602,33 +849,25 @@
     let prev = null;
     while (total < target) {
       let pick;
-      // Bias against repeating the same house twice in a row so the canal
-      // row feels organic.
       do {
-        pick = types[(Math.random() * types.length) | 0];
+        pick = houseTypes[(Math.random() * houseTypes.length) | 0];
       } while (pick === prev && Math.random() < 0.7);
       prev = pick;
-
       const tpl = document.getElementById('tpl-' + pick);
       if (!tpl) continue;
       const wrap = document.createElement('div');
       wrap.className = 'house-wrap';
       wrap.appendChild(tpl.content.cloneNode(true));
-      // ~30% of houses get a horizontal flip — adds asymmetry to the row.
       if (Math.random() < 0.30) wrap.querySelector('svg').classList.add('flipped');
       skyline.appendChild(wrap);
-      total += widths[pick];
+      total += houseWidths[pick];
     }
-    // Tag the middle house as the Conduction office (#14, cobalt blue).
     const all = skyline.querySelectorAll('.house-wrap');
     if (all.length) all[Math.floor(all.length / 2)].classList.add('house-conduction');
   }
 
-  // ----- 2. Random per-item drift speeds -----
-  // Each ki/ci item picks a fresh duration in its own range every page-load,
-  // plus a random negative delay so they all start mid-flight rather than
-  // bunched up at the left edge.
-  const speeds = {
+  // ===== Random per-item drift speeds for the initial fleet =====
+  const initialDriftSpeeds = {
     'ki-bike-1': [55, 95],
     'ki-bike-2': [60, 100],
     'ki-car-1':  [70, 120],
@@ -642,7 +881,7 @@
     'ci-whale':     [220, 340],
   };
   function rollSpeeds() {
-    Object.entries(speeds).forEach(([cls, [lo, hi]]) => {
+    Object.entries(initialDriftSpeeds).forEach(([cls, [lo, hi]]) => {
       const el = root.querySelector('.' + cls);
       if (!el) return;
       const dur = lo + Math.random() * (hi - lo);
@@ -651,22 +890,331 @@
     });
   }
 
-  // ----- 3. Conduction office (#14) opens Google Maps -----
+  // ===== Conduction office (#14) opens Google Maps =====
   const MAPS_URL = 'https://maps.google.com/?q=Lauriergracht+14h+Amsterdam';
   function wireConductionHouse() {
     const house = root.querySelector('.house-conduction');
     if (!house) return;
     house.title = 'Conduction — Lauriergracht 14h, 1016 RL Amsterdam';
-    house.addEventListener('click', () => {
-      window.open(MAPS_URL, '_blank', 'noopener');
-    });
+    house.addEventListener('click', () => window.open(MAPS_URL, '_blank', 'noopener'));
   }
 
-  // ----- 4. Click a boat to sink it -----
-  // The drift animation puts a translateX(...) on the SVG. To sink without
-  // teleporting, we read the current X from the computed transform, freeze
-  // it, then run a Web Animations API keyframe set that adds Y-drop +
-  // rotate + fade on top of that frozen X.
+  // ===========================================================
+  // Mini-game. First sink starts a 30-second timer + counter
+  // countdown from 100. As the score drops, new ship types unlock
+  // and the spawn rate / drift speed both ramp up.
+  //
+  // LEVELS:
+  //   100→81  drift fleet only            calm, ~1.4s/spawn
+  //   80→61   + sailing ships  (HP 2)     ~1.0s/spawn
+  //   60→41   + cargo ships    (HP 3)     ~0.7s/spawn
+  //   40→21   + frigates       (HP 4)     ~0.5s/spawn, 2 at a time
+  //   20→11   + cruise-bosses  (HP 5)     ~0.3s/spawn, 2-3 at a time
+  //   10→2    cruise swarm + chaos        ~0.2s/spawn, 3 at a time
+  //   1       battleship boss  (HP 10)    regular spawns paused
+  // ===========================================================
+
+  const canalItems     = root.querySelector('.canal-items');
+  const hud            = root.querySelector('.game-hud');
+  const hudCounter     = root.querySelector('[data-counter]');
+  const hudTimer       = root.querySelector('[data-timer]');
+  const hudCounterBlock = root.querySelector('.hud-counter');
+  const hudTimerBlock   = root.querySelector('.hud-timer');
+  const goPanel        = root.querySelector('.game-over');
+  const goTitle        = root.querySelector('[data-go-title]');
+  const goSunk         = root.querySelector('[data-go-sunk]');
+  const goRestart      = root.querySelector('[data-restart]');
+
+  let game;
+
+  function newGameState() {
+    return {
+      started: false,
+      over: false,
+      score: 100,
+      timeLeft: 30,
+      sunkTotal: 0,
+      swarmTriggered: false,
+      bossTriggered: false,
+      bossActive: false,
+      timerInt: null,
+      spawnTimer: null,
+    };
+  }
+  game = newGameState();
+  window.__minigame = game; // exposed for testing
+
+  function updateHud() {
+    hudCounter.textContent = String(Math.max(0, game.score));
+    hudTimer.textContent   = String(Math.max(0, game.timeLeft));
+    if (game.timeLeft <= 5 && game.started) hudTimerBlock.classList.add('urgent');
+    else hudTimerBlock.classList.remove('urgent');
+  }
+
+  function flashCounter() {
+    hudCounterBlock.classList.remove('tick');
+    void hudCounterBlock.offsetWidth;
+    hudCounterBlock.classList.add('tick');
+  }
+
+  function startGame() {
+    if (game.started || game.over) return;
+    game.started = true;
+    hud.classList.add('active');
+    updateHud();
+    game.timerInt = setInterval(() => {
+      if (game.over) return;
+      game.timeLeft -= 1;
+      updateHud();
+      if (game.timeLeft <= 0) endGame(false);
+    }, 1000);
+    scheduleNextSpawn();
+  }
+
+  function endGame(victory) {
+    if (game.over) return;
+    game.over = true;
+    if (game.timerInt) clearInterval(game.timerInt);
+    if (game.spawnTimer) clearTimeout(game.spawnTimer);
+    goTitle.textContent = victory ? 'Victory!' : "Time's up";
+    goSunk.textContent = String(game.sunkTotal);
+    goPanel.classList.add('show');
+    hud.classList.remove('active');
+  }
+
+  function resetGame() {
+    if (game.timerInt) clearInterval(game.timerInt);
+    if (game.spawnTimer) clearTimeout(game.spawnTimer);
+    canalItems.querySelectorAll('.ci[data-spawned], .ci[data-sinking]').forEach(el => el.remove());
+    game = newGameState();
+    window.__minigame = game;
+    hudTimerBlock.classList.remove('urgent');
+    goPanel.classList.remove('show');
+    updateHud();
+    wireOriginalBoats();
+    // Restart kicks off immediately — without this the player would face an
+    // empty canal until the spawn loop produced its first boat.
+    startGame();
+  }
+  goRestart.addEventListener('click', resetGame);
+
+  // ===== Pace knobs — driven by the further of (time elapsed) and (score lost) =====
+  function progress() {
+    const tTime  = game.started ? (30 - game.timeLeft) / 30 : 0;
+    const tScore = (100 - game.score) / 100;
+    return Math.max(tTime, tScore);
+  }
+  function getSpawnInterval() {
+    if (game.bossActive) return 9999;
+    return Math.max(140, 1400 - progress() * 1260);
+  }
+  function getSpeedMult() {
+    return 1 + progress() * 4; // 1× → 5×
+  }
+  function getSpawnCount() {
+    const s = game.score;
+    if (s <= 10) return 3;
+    if (s <= 40) return 2;
+    return 1;
+  }
+
+  // ===== Spawn pool — bigger ships unlock as the score drops =====
+  function pickSpawnType() {
+    const s = game.score;
+    const pool = [];
+    pool.push({ type: 'sloep',     hp: 1, w: 4 });
+    pool.push({ type: 'row',       hp: 1, w: 3 });
+    pool.push({ type: 'swim',      hp: 1, w: 1 });
+    pool.push({ type: 'hover',     hp: 1, w: 2 });
+    pool.push({ type: 'periscope', hp: 1, w: 1 });
+    pool.push({ type: 'whale',     hp: 1, w: 1 });
+    pool.push({ type: 'cruise',    hp: 1, w: 2 });
+    if (s <= 80) pool.push({ type: 'sailing', hp: 2, w: 3 });
+    if (s <= 60) pool.push({ type: 'cargo',   hp: 3, w: 3 });
+    if (s <= 40) pool.push({ type: 'frigate', hp: 4, w: 3 });
+    if (s <= 20) pool.push({ type: 'cruise',  hp: 5, w: 2, boss: true });
+    let total = 0;
+    for (const x of pool) total += x.w;
+    let r = Math.random() * total;
+    for (const x of pool) {
+      r -= x.w;
+      if (r <= 0) return x;
+    }
+    return pool[0];
+  }
+
+  function scheduleNextSpawn() {
+    if (game.over) return;
+    const interval = getSpawnInterval();
+    game.spawnTimer = setTimeout(() => {
+      if (!game.over && !game.bossActive) {
+        const count = getSpawnCount();
+        for (let i = 0; i < count; i++) {
+          const pick = pickSpawnType();
+          spawnBoat(pick.type, { hp: pick.hp, boss: pick.boss });
+        }
+      }
+      scheduleNextSpawn();
+    }, interval);
+  }
+
+  // ===== Spawn a single boat (clone or template), drive drift via WAAPI =====
+  function spawnBoat(type, opts) {
+    opts = opts || {};
+    let clone;
+    if (type === 'battleship' || type === 'sailing' || type === 'cargo' || type === 'frigate') {
+      const tplId = type === 'battleship' ? 'tpl-battleship' : ('tpl-ship-' + type);
+      const tpl = document.getElementById(tplId);
+      if (!tpl) return null;
+      clone = tpl.content.firstElementChild.cloneNode(true);
+    } else {
+      const orig = root.querySelector('.ci-' + type);
+      if (!orig) return null;
+      clone = orig.cloneNode(true);
+      clone.style.animation = 'none';
+    }
+    clone.dataset.spawned = '1';
+    delete clone.dataset.wired;
+    delete clone.dataset.sinking;
+
+    if (opts.boss) {
+      clone.classList.add('boss');
+      // Cruise-boss = upscale the regular cruise SVG so it reads as bigger.
+      if (type === 'cruise') {
+        clone.setAttribute('width', '184');
+        clone.setAttribute('height', '44');
+      }
+    }
+    if (opts.hp && opts.hp > 1) {
+      clone.dataset.hp = String(opts.hp);
+      addHpPips(clone, opts.hp);
+    }
+
+    canalItems.appendChild(clone);
+
+    // Stagger small-drift items vertically so they don't line up; bigger
+    // hulled ships keep their template-prescribed waterline.
+    if (!opts.boss && type !== 'cruise' && type !== 'sailing' && type !== 'cargo' && type !== 'frigate') {
+      clone.style.bottom = (4 + Math.random() * 28) + 'px';
+    } else if (type === 'sailing' || type === 'cargo' || type === 'frigate') {
+      clone.style.bottom = '4px';
+    }
+
+    const w = window.innerWidth;
+    const fromRight = Math.random() < 0.5;
+    const startX = fromRight ? (w + 100) : -300;
+    const endX   = fromRight ? -300 : (w + 100);
+    const dur = (baseDurationFor(type, opts) * 1000) / getSpeedMult();
+    const anim = clone.animate(
+      [{ transform: 'translateX(' + startX + 'px)' },
+       { transform: 'translateX(' + endX + 'px)' }],
+      { duration: dur, easing: 'linear', fill: 'forwards' }
+    );
+    clone._anim = anim;
+    anim.onfinish = () => { if (!clone.dataset.sinking) clone.remove(); };
+
+    clone.addEventListener('click', () => onShipClick(clone));
+    return clone;
+  }
+
+  function baseDurationFor(type, opts) {
+    if (type === 'battleship') return 32;
+    if (opts && opts.boss)     return 30; // cruise-boss
+    if (type === 'cargo')      return 26;
+    if (type === 'sailing')    return 22;
+    if (type === 'frigate')    return 18;
+    if (type === 'whale' || type === 'periscope') return 24;
+    if (type === 'swim')       return 30;
+    if (type === 'cruise')     return 22;
+    if (type === 'sloep' || type === 'row') return 18;
+    if (type === 'hover')      return 14;
+    return 18;
+  }
+
+  // Pip row inside the ship's SVG — placed near the top of the viewBox so
+  // they read as little orange "health" dots above the deck.
+  function addHpPips(el, hp) {
+    if (el.querySelector('.hp-pips')) return; // template already provides them
+    const ns = 'http://www.w3.org/2000/svg';
+    const vb = (el.getAttribute('viewBox') || '0 0 100 30').split(/\s+/).map(Number);
+    const vx = vb[0], vy = vb[1], vw = vb[2];
+    const g = document.createElementNS(ns, 'g');
+    g.setAttribute('class', 'hp-pips');
+    const pipR = 1.6;
+    const pipGap = 4.4;
+    const totalW = (hp - 1) * pipGap;
+    const startPx = vx + (vw - totalW) / 2;
+    const py = vy + 2.6;
+    for (let i = 0; i < hp; i++) {
+      const c = document.createElementNS(ns, 'circle');
+      c.setAttribute('class', 'pip');
+      c.setAttribute('cx', String(startPx + i * pipGap));
+      c.setAttribute('cy', String(py));
+      c.setAttribute('r', String(pipR));
+      c.setAttribute('fill', 'var(--c-orange-knvb)');
+      g.appendChild(c);
+    }
+    el.appendChild(g);
+  }
+
+  // ===== Click handling: damage on multi-HP, sink on HP→0 =====
+  function onShipClick(el) {
+    if (game.over || el.dataset.sinking) return;
+    let hp = parseInt(el.dataset.hp || '1', 10);
+    if (hp > 1) {
+      hp -= 1;
+      el.dataset.hp = String(hp);
+      const pips = el.querySelectorAll('.hp-pips .pip');
+      for (let i = pips.length - 1; i >= 0; i--) {
+        if (!pips[i].classList.contains('hit')) {
+          pips[i].classList.add('hit');
+          break;
+        }
+      }
+      el.classList.remove('damaged');
+      void el.offsetWidth;
+      el.classList.add('damaged');
+      setTimeout(() => el.classList.remove('damaged'), 240);
+      if (!game.started) startGame();
+      return;
+    }
+    sinkBoat(el);
+    onShipSunk();
+  }
+
+  function onShipSunk() {
+    game.sunkTotal += 1;
+    game.score = Math.max(0, game.score - 1);
+    updateHud();
+    flashCounter();
+    if (!game.started && !game.over) startGame();
+    if (game.score === 10 && !game.swarmTriggered) {
+      game.swarmTriggered = true;
+      triggerCruiseSwarm();
+    }
+    if (game.score === 1 && !game.bossTriggered) {
+      game.bossTriggered = true;
+      triggerBattleship();
+    }
+    if (game.score <= 0) endGame(true);
+  }
+
+  function triggerCruiseSwarm() {
+    let i = 0;
+    (function next() {
+      if (game.over) return;
+      spawnBoat('cruise', { boss: true, hp: 5 });
+      i++;
+      if (i < 5) setTimeout(next, 600);
+    })();
+  }
+
+  function triggerBattleship() {
+    game.bossActive = true;
+    spawnBoat('battleship', { boss: true, hp: 10 });
+  }
+
+  // ===== Sink animation (drop + tilt + fade) =====
   function sinkBoat(el) {
     if (el.dataset.sinking) return;
     el.dataset.sinking = '1';
@@ -676,40 +1224,42 @@
       x = m.m41 || 0;
     } catch (e) { /* keep x=0 */ }
     el.style.animation = 'none';
+    if (el._anim) try { el._anim.cancel(); } catch (e) {}
     el.style.transform = 'translateX(' + x + 'px)';
-    // Force a reflow before the new animation starts.
     void el.offsetWidth;
+    const dur = el.classList.contains('boss') ? 3000 : 2200;
     const anim = el.animate(
       [
-        { transform: 'translateX(' + x + 'px) translateY(0) rotate(0deg)',   opacity: 1 },
-        { transform: 'translateX(' + x + 'px) translateY(6px) rotate(4deg)', opacity: 1, offset: 0.25 },
-        { transform: 'translateX(' + x + 'px) translateY(36px) rotate(-6deg)', opacity: 0.5, offset: 0.7 },
-        { transform: 'translateX(' + x + 'px) translateY(72px) rotate(14deg)', opacity: 0 }
+        { transform: 'translateX(' + x + 'px) translateY(0) rotate(0deg)',     opacity: 1 },
+        { transform: 'translateX(' + x + 'px) translateY(8px) rotate(5deg)',   opacity: 1, offset: 0.25 },
+        { transform: 'translateX(' + x + 'px) translateY(40px) rotate(-7deg)', opacity: 0.5, offset: 0.7 },
+        { transform: 'translateX(' + x + 'px) translateY(80px) rotate(15deg)', opacity: 0 }
       ],
-      { duration: 2400, easing: 'cubic-bezier(.4,.1,.7,.4)', fill: 'forwards' }
+      { duration: dur, easing: 'cubic-bezier(.4,.1,.7,.4)', fill: 'forwards' }
     );
     anim.finished.then(() => el.remove()).catch(() => {});
   }
-  function wireBoats() {
+
+  function wireOriginalBoats() {
     root.querySelectorAll('.canal-items .ci').forEach((b) => {
       if (b.dataset.wired) return;
       b.dataset.wired = '1';
       b.title = 'click to sink';
-      b.addEventListener('click', () => sinkBoat(b));
+      b.addEventListener('click', () => onShipClick(b));
     });
   }
 
+  // ===== Bootstrap =====
   buildSkyline();
   rollSpeeds();
   wireConductionHouse();
-  wireBoats();
+  wireOriginalBoats();
+  updateHud();
 
-  // Re-roll on resize so the canal stays full-width and the speeds shuffle.
-  // Re-wire the (newly cloned) Conduction house each time too.
-  let t;
+  let resizeT;
   window.addEventListener('resize', () => {
-    clearTimeout(t);
-    t = setTimeout(() => { buildSkyline(); rollSpeeds(); wireConductionHouse(); }, 200);
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { buildSkyline(); rollSpeeds(); wireConductionHouse(); }, 200);
   });
 })();
 </script>

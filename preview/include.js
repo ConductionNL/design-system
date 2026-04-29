@@ -17,16 +17,33 @@
 
   await Promise.all([...placeholders].map(async (el) => {
     const url = el.getAttribute('data-include');
+    // Absolute URL of the included file — used to resolve any sibling
+    // <link href> / <script src> paths into the host's coordinate space,
+    // since the host page may live at a different depth than the include.
+    const sourceUrl = new URL(url, document.baseURI);
+    const idBase = 'inc-' + url.replace(/[^a-z0-9]+/gi, '-');
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      doc.head.querySelectorAll('style').forEach((styleEl) => {
-        const id = 'inc-style-' + url.replace(/[^a-z0-9]+/gi, '-');
+      doc.head.querySelectorAll('style').forEach((styleEl, i) => {
+        const id = idBase + '-style-' + i;
         if (document.getElementById(id)) return;
         const clone = styleEl.cloneNode(true);
+        clone.id = id;
+        document.head.appendChild(clone);
+      });
+
+      // External stylesheets must be rewritten before insertion: the href
+      // is relative to the included file's directory, not the host's.
+      doc.head.querySelectorAll('link[rel="stylesheet"]').forEach((linkEl, i) => {
+        const id = idBase + '-link-' + i;
+        if (document.getElementById(id)) return;
+        const clone = linkEl.cloneNode(true);
+        const rawHref = linkEl.getAttribute('href');
+        if (rawHref) clone.href = new URL(rawHref, sourceUrl).href;
         clone.id = id;
         document.head.appendChild(clone);
       });
@@ -42,11 +59,14 @@
 
       // Re-attach scripts as live elements so inline code (e.g. the
       // canal-footer skyline randomiser) actually executes. Order is
-      // preserved by chaining `load` events on src scripts.
+      // preserved by chaining `load` events on src scripts. External
+      // src paths get the same relative-to-source rewrite as <link>.
       for (const s of scripts) {
         const live = document.createElement('script');
         for (const attr of s.attributes) live.setAttribute(attr.name, attr.value);
-        if (s.src) {
+        const rawSrc = s.getAttribute('src');
+        if (rawSrc) {
+          live.src = new URL(rawSrc, sourceUrl).href;
           live.async = false;
         } else {
           live.textContent = s.textContent;

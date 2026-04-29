@@ -110,7 +110,7 @@
       started: false,
       over: false,
       score: 100,
-      timeLeft: 30,
+      timeLeft: 60,
       sunkTotal: 0,
       swarmTriggered: false,
       bossTriggered: false,
@@ -178,7 +178,7 @@
 
   // ===== Pace knobs — driven by the further of (time elapsed) and (score lost) =====
   function progress() {
-    const tTime  = game.started ? (30 - game.timeLeft) / 30 : 0;
+    const tTime  = game.started ? (60 - game.timeLeft) / 60 : 0;
     const tScore = (100 - game.score) / 100;
     return Math.max(tTime, tScore);
   }

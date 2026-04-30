@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Deck template · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../print/print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* Each slide renders at the slide-token aspect, 16:9 landscape.
+     On screen we scale them to a fixed width per row; in print
+     they take a full @page each. */
+  .slide {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    background: white;
+    color: var(--c-cobalt-900);
+    box-shadow: 0 12px 32px rgba(33,70,139,0.18), 0 2px 6px rgba(33,70,139,0.10);
+    position: relative;
+    overflow: hidden;
+    font-family: var(--conduction-typography-font-family-body);
+  }
+
+  /* Page-number micro-strip — bottom-right of every slide */
+  .slide .pgnum {
+    position: absolute;
+    bottom: 8mm; right: 12mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; letter-spacing: 0.08em;
+    color: var(--c-cobalt-400);
+    z-index: 5;
+  }
+  .slide.dark .pgnum { color: rgba(255,255,255,0.55); }
+
+  /* Brand crumb — top-left, very quiet */
+  .slide .crumb {
+    position: absolute;
+    top: 8mm; left: 12mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    z-index: 5;
+  }
+  .slide.dark .crumb { color: rgba(255,255,255,0.55); }
+
+  /* ============ Layout 01 · Title ============ */
+  .slide-01 { background: var(--c-cobalt-900); color: white; padding: 28mm 24mm; display: flex; flex-direction: column; justify-content: center; }
+  .slide-01 .accent { width: 18mm; height: 20.7mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); margin-bottom: 12mm; }
+  .slide-01 h1 { font-size: 56pt; font-weight: 700; letter-spacing: -0.025em; line-height: 1.02; max-width: 22ch; }
+  .slide-01 .sub { font-size: 16pt; color: rgba(255,255,255,0.7); margin-top: 8mm; max-width: 50ch; line-height: 1.4; }
+  .slide-01 .meta {
+    margin-top: 16mm;
+    display: flex; gap: 18mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9pt; color: rgba(255,255,255,0.6); letter-spacing: 0.08em;
+  }
+  .slide-01 .meta strong { display: block; font-family: var(--conduction-typography-font-family-body); font-size: 13pt; color: white; margin-top: 1mm; letter-spacing: -0.005em; }
+
+  /* ============ Layout 02 · Agenda ============ */
+  .slide-02 { padding: 22mm 24mm; }
+  .slide-02 h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 10mm; }
+  .slide-02 .items { display: flex; flex-direction: column; gap: 4mm; }
+  .slide-02 .item { display: grid; grid-template-columns: 12mm 1fr 36mm; align-items: center; gap: 6mm; padding: 3mm 0; border-bottom: 0.3mm solid var(--c-cobalt-100); }
+  .slide-02 .item:last-child { border-bottom: 0; }
+  .slide-02 .num { width: 12mm; height: 13.8mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); color: white; display: flex; align-items: center; justify-content: center; font-family: var(--conduction-typography-font-family-code); font-size: 11pt; font-weight: 600; }
+  .slide-02 .item.active .num { background: var(--c-orange-knvb); }
+  .slide-02 .item .h { font-size: 16pt; font-weight: 600; }
+  .slide-02 .item .b { font-size: 11pt; color: var(--c-cobalt-700); margin-top: 1mm; line-height: 1.4; }
+  .slide-02 .time { font-family: var(--conduction-typography-font-family-code); font-size: 11pt; color: var(--c-orange-knvb); text-align: right; letter-spacing: 0.04em; }
+
+  /* ============ Layout 03 · Content ============ */
+  .slide-03 { padding: 22mm 24mm; display: flex; flex-direction: column; }
+  .slide-03 h2 { font-size: 32pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 8mm; max-width: 28ch; }
+  .slide-03 .body { font-size: 14pt; line-height: 1.55; max-width: 80ch; }
+  .slide-03 .body p { margin: 0 0 4mm; }
+  .slide-03 ul { list-style: none; padding: 0; margin: 4mm 0 0; }
+  .slide-03 li { font-size: 13pt; line-height: 1.5; padding-left: 8mm; position: relative; margin-bottom: 3mm; }
+  .slide-03 li::before { content: ""; position: absolute; left: 0; top: 2.5mm; width: 4mm; height: 4.6mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+
+  /* ============ Layout 04 · Two-column ============ */
+  .slide-04 { padding: 22mm 24mm; }
+  .slide-04 h2 { font-size: 26pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 8mm; }
+  .slide-04 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+  .slide-04 .col h3 { font-size: 14pt; font-weight: 600; margin-bottom: 4mm; color: var(--c-blue-cobalt); }
+  .slide-04 .col p { font-size: 12pt; line-height: 1.55; margin-bottom: 3mm; }
+  .slide-04 .col .label-mono { font-family: var(--conduction-typography-font-family-code); font-size: 9pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 2mm; }
+
+  /* ============ Layout 05 · Full-bleed quote ============ */
+  .slide-05 { background: var(--c-blue-cobalt); color: white; padding: 30mm 36mm; display: flex; flex-direction: column; justify-content: center; }
+  .slide-05 .quote { font-size: 36pt; font-weight: 600; line-height: 1.2; letter-spacing: -0.015em; max-width: 26ch; }
+  .slide-05 .quote::before { content: "\201C"; color: var(--c-orange-knvb); display: block; font-size: 80pt; line-height: 0.6; margin-bottom: 6mm; font-family: serif; }
+  .slide-05 .attr { font-size: 14pt; color: rgba(255,255,255,0.7); margin-top: 12mm; letter-spacing: 0.01em; }
+  .slide-05 .attr strong { color: white; font-weight: 600; }
+
+  /* ============ Layout 06 · App spotlight ============ */
+  .slide-06 { padding: 22mm 24mm; display: grid; grid-template-columns: 80mm 1fr; gap: 20mm; align-items: center; }
+  .slide-06 .glyph { width: 80mm; height: 92mm; }
+  .slide-06 .glyph img { width: 100%; height: 100%; }
+  .slide-06 .body h2 { font-size: 36pt; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4mm; }
+  .slide-06 .body .tag { font-size: 14pt; color: var(--c-cobalt-700); margin-bottom: 8mm; line-height: 1.4; max-width: 36em; }
+  .slide-06 .body ul { list-style: none; padding: 0; margin: 0; }
+  .slide-06 .body li { font-size: 13pt; line-height: 1.5; padding-left: 8mm; position: relative; margin-bottom: 3mm; }
+  .slide-06 .body li::before { content: ""; position: absolute; left: 0; top: 2.5mm; width: 4mm; height: 4.6mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+
+  /* ============ Layout 07 · Comparison ============ */
+  .slide-07 { padding: 22mm 24mm; }
+  .slide-07 h2 { font-size: 26pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 8mm; }
+  .slide-07 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .slide-07 .col { padding: 8mm 8mm; border-radius: 2mm; }
+  .slide-07 .col-good { background: var(--c-mint-50); border: 0.3mm solid var(--c-mint-300); }
+  .slide-07 .col-bad  { background: var(--c-terracotta-50); border: 0.3mm solid var(--c-terracotta-300); }
+  .slide-07 .col h3 { font-size: 14pt; font-weight: 600; margin-bottom: 4mm; }
+  .slide-07 .col-good h3 { color: var(--c-mint-700); }
+  .slide-07 .col-bad h3  { color: var(--c-terracotta-700); }
+  .slide-07 .col ul { list-style: none; padding: 0; margin: 0; }
+  .slide-07 .col li { font-size: 12pt; line-height: 1.5; padding-left: 6mm; position: relative; margin-bottom: 2.5mm; }
+  .slide-07 .col-good li::before { content: "\2713"; position: absolute; left: 0; color: var(--c-mint-700); font-weight: 700; }
+  .slide-07 .col-bad  li::before { content: "\00D7"; position: absolute; left: 0; color: var(--c-terracotta-700); font-weight: 700; font-size: 14pt; line-height: 1.2; }
+
+  /* ============ Layout 08 · Logo wall ============ */
+  .slide-08 { padding: 22mm 24mm; display: flex; flex-direction: column; justify-content: center; }
+  .slide-08 .label { font-family: var(--conduction-typography-font-family-code); font-size: 10pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 8mm; }
+  .slide-08 h2 { font-size: 24pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 12mm; max-width: 24ch; }
+  .slide-08 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8mm; }
+  .slide-08 .cell { aspect-ratio: 2/1; background: var(--c-cobalt-50); border-radius: 1mm; display: flex; align-items: center; justify-content: center; padding: 4mm; }
+  .slide-08 .cell img { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(100%); opacity: 0.65; transition: all 200ms; }
+  .slide-08 .cell.featured img { filter: none; opacity: 1; }
+  .slide-08 .cell.featured { background: white; border: 0.3mm solid var(--c-blue-cobalt); }
+
+  /* ============ Layout 09 · Stats strip ============ */
+  .slide-09 { background: var(--c-cobalt-50); padding: 22mm 24mm; display: flex; flex-direction: column; justify-content: center; }
+  .slide-09 h2 { font-size: 22pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 12mm; max-width: 24ch; }
+  .slide-09 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16mm; }
+  .slide-09 .stat .big { font-size: 84pt; font-weight: 700; color: var(--c-blue-cobalt); line-height: 0.9; letter-spacing: -0.04em; font-feature-settings: "tnum"; font-family: var(--conduction-typography-font-family-code); }
+  .slide-09 .stat:nth-child(2) .big { color: var(--c-orange-knvb); }
+  .slide-09 .stat .lbl { font-family: var(--conduction-typography-font-family-code); font-size: 11pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-700); margin-top: 4mm; }
+  .slide-09 .stat .b { font-size: 11pt; color: var(--c-cobalt-700); margin-top: 2mm; line-height: 1.4; }
+
+  /* ============ Layout 10 · Section divider ============ */
+  .slide-10 { background: var(--c-cobalt-900); color: white; padding: 30mm 36mm; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .slide-10::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 80% 30%, rgba(255,255,255,0.06) 0 30mm, transparent 31mm),
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.04) 0 24mm, transparent 25mm);
+    pointer-events: none;
+  }
+  .slide-10 .num { font-family: var(--conduction-typography-font-family-code); font-size: 96pt; font-weight: 500; color: var(--c-orange-knvb); line-height: 0.9; letter-spacing: -0.04em; }
+  .slide-10 .title { font-size: 32pt; font-weight: 600; margin-top: 6mm; letter-spacing: -0.015em; }
+  .slide-10 .lede { font-size: 14pt; color: rgba(255,255,255,0.7); margin-top: 4mm; max-width: 50ch; line-height: 1.4; }
+
+  /* ============ Layout 11 · Image / hero ============ */
+  .slide-11 { background: linear-gradient(135deg, var(--c-cobalt-900), var(--c-blue-cobalt)); position: relative; color: white; padding: 24mm; display: flex; flex-direction: column; justify-content: flex-end; }
+  .slide-11::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 18% 25%, rgba(255,255,255,0.10) 0 30mm, transparent 31mm),
+      radial-gradient(circle at 50% 60%, rgba(255,255,255,0.08) 0 38mm, transparent 39mm),
+      radial-gradient(circle at 82% 28%, rgba(255,255,255,0.07) 0 26mm, transparent 27mm),
+      radial-gradient(circle at 35% 78%, rgba(255,255,255,0.06) 0 22mm, transparent 23mm);
+  }
+  .slide-11 .accent { position: absolute; top: 30%; right: 18%; width: 36mm; height: 41mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); opacity: 0.92; }
+  .slide-11 .caption { position: relative; z-index: 1; }
+  .slide-11 .caption .label { font-family: var(--conduction-typography-font-family-code); font-size: 10pt; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 2mm; }
+  .slide-11 .caption .h { font-size: 22pt; font-weight: 600; max-width: 32ch; line-height: 1.2; letter-spacing: -0.015em; }
+
+  /* ============ Layout 12 · Contact / closing ============ */
+  .slide-12 { padding: 22mm 24mm; display: flex; flex-direction: column; }
+  .slide-12 h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 4mm; }
+  .slide-12 .lede { font-size: 14pt; color: var(--c-cobalt-700); margin-bottom: 12mm; max-width: 60ch; line-height: 1.4; }
+  .slide-12 .nexts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin-bottom: 12mm; }
+  .slide-12 .nc { background: var(--c-cobalt-50); padding: 5mm 6mm; border-left: 1.5mm solid var(--c-orange-knvb); border-radius: 0 1mm 1mm 0; }
+  .slide-12 .nc .n { font-family: var(--conduction-typography-font-family-code); font-size: 8pt; letter-spacing: 0.08em; color: var(--c-cobalt-400); margin-bottom: 1mm; }
+  .slide-12 .nc .h { font-size: 12pt; font-weight: 600; margin-bottom: 1.5mm; }
+  .slide-12 .nc .b { font-size: 9.5pt; color: var(--c-cobalt-700); line-height: 1.45; margin-bottom: 2mm; }
+  .slide-12 .nc .meta { font-family: var(--conduction-typography-font-family-code); font-size: 8pt; color: var(--c-orange-knvb); letter-spacing: 0.04em; }
+  .slide-12 .nc .meta strong { color: var(--c-cobalt-700); }
+  .slide-12 .people { margin-top: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6mm; }
+  .slide-12 .p { display: grid; grid-template-columns: 16mm 1fr; gap: 4mm; align-items: center; }
+  .slide-12 .av { width: 16mm; height: 18.4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11pt; }
+  .slide-12 .pwho .n { font-size: 12pt; font-weight: 600; }
+  .slide-12 .pwho .r { font-size: 10pt; color: var(--c-cobalt-700); }
+  .slide-12 .pwho .c { font-family: var(--conduction-typography-font-family-code); font-size: 9pt; color: var(--c-cobalt-700); margin-top: 1mm; }
+
+  /* ============ Preview chrome ============ */
+  .deck-row { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; max-width: 1280px; margin: 0 auto; padding: 0 var(--space-12); }
+  .slide-wrap { display: flex; flex-direction: column; gap: var(--space-2); flex-shrink: 0; }
+  .slide-wrap .cap { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.04em; color: var(--c-cobalt-700); }
+  .slide-wrap .cap strong { color: var(--c-cobalt-900); }
+  .slide-wrap .why { font-size: 12px; color: var(--c-cobalt-700); max-width: var(--slide-w); line-height: 1.5; }
+  .slide-wrap .why strong { color: var(--c-orange-knvb); }
+
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    .deck-row { padding: 0 !important; max-width: none !important; }
+    .slide-wrap > .cap, .slide-wrap > .why { display: none; }
+    .slide-wrap { gap: 0; }
+    .slide { box-shadow: none; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../print/index.html">Print</a> &nbsp;/&nbsp; <a href="index.html">Decks</a> &nbsp;/&nbsp; Template</div>
+  <h1>Deck template</h1>
+  <p class="lead">Twelve layouts in one HTML file, 16:9 landscape (1280&times;720). One canonical deck, an in-house pitch for "Open registers voor Acme BV". Each slide carries a one-line "why" caption underneath. Print to PDF; later we export the same content to .pptx.</p>
+</div>
+
+<div class="deck-row" style="row-gap: var(--space-12);">
+
+  <!-- 01 Title -->
+  <div class="slide-wrap">
+    <section class="slide slide-01 dark">
+      <div class="crumb">Conduction &middot; pitch deck &middot; v2026.04</div>
+      <span class="accent"></span>
+      <h1>Open registers voor Acme BV.</h1>
+      <p class="sub">Hoe we 142 spreadsheets verbouwen tot &eacute;&eacute;n auditbaar register, in zeven weken.</p>
+      <div class="meta">
+        <span>Wanneer<strong>30 april 2026</strong></span>
+        <span>Voor<strong>Marleen de Vries</strong></span>
+        <span>Door<strong>Ruben van der Linde</strong></span>
+      </div>
+      <span class="pgnum">01 / 12</span>
+    </section>
+    <div class="cap"><strong>01 &middot; Title</strong> &middot; opens the deck</div>
+    <div class="why"><strong>Why:</strong> cobalt-900 ground signals "this is the cover", one orange hex carries the brand, no logo, no fluff. Title ends with a period, finished thought.</div>
+  </div>
+
+  <!-- 02 Agenda -->
+  <div class="slide-wrap">
+    <section class="slide slide-02">
+      <span class="crumb">Conduction &middot; agenda</span>
+      <h2>Wat we vandaag doornemen.</h2>
+      <div class="items">
+        <div class="item active"><span class="num">01</span><div><div class="h">Wat we vonden</div><div class="b">142 spreadsheets, 9 mappen, 2 mensen met pensioen.</div></div><span class="time">5 min</span></div>
+        <div class="item"><span class="num">02</span><div><div class="h">Waar OpenRegister past</div><div class="b">Vijf entiteiten, schema, audit-trail.</div></div><span class="time">10 min</span></div>
+        <div class="item"><span class="num">03</span><div><div class="h">Aanpak en tijdlijn</div><div class="b">Sprintplan, 7 weken tot live.</div></div><span class="time">10 min</span></div>
+        <div class="item"><span class="num">04</span><div><div class="h">Risico's en wat we niet doen</div><div class="b">Eerlijk over scope.</div></div><span class="time">5 min</span></div>
+        <div class="item"><span class="num">05</span><div><div class="h">Vragen en volgende stappen</div><div class="b">Wie doet wat, wanneer.</div></div><span class="time">10 min</span></div>
+      </div>
+      <span class="pgnum">02 / 12</span>
+    </section>
+    <div class="cap"><strong>02 &middot; Agenda</strong> &middot; with time estimates</div>
+    <div class="why"><strong>Why:</strong> time per item respects the audience. Active item is orange; the rest cobalt. Five items max, scannable in 5 seconds.</div>
+  </div>
+
+  <!-- 03 Content -->
+  <div class="slide-wrap">
+    <section class="slide slide-03">
+      <span class="crumb">Conduction &middot; wat we vonden</span>
+      <h2>Versiebeheer doe je niet in de bestandsnaam.</h2>
+      <div class="body">
+        <p>142 spreadsheets, in 9 mappen, beheerd door 4 mensen. Drie mensen weten welk veld optioneel is, twee zijn met pensioen. De urgentie zit niet in een audit, maar in vakanties.</p>
+        <ul>
+          <li>9 mappen, 142 bestanden, 17 verschillende kolomvolgordes.</li>
+          <li>Geen automatische backups buiten de Z-schijf.</li>
+          <li>Permissies per persoon, niet per rol, vakantieproof = nee.</li>
+        </ul>
+      </div>
+      <span class="pgnum">03 / 12</span>
+    </section>
+    <div class="cap"><strong>03 &middot; Content</strong> &middot; the workhorse</div>
+    <div class="why"><strong>Why:</strong> the title ends with a period and is the answer (not the topic). Bullets carry hex-orange markers, one claim per line, MKB-direct.</div>
+  </div>
+
+  <!-- 04 Two-column -->
+  <div class="slide-wrap">
+    <section class="slide slide-04">
+      <span class="crumb">Conduction &middot; voor en na</span>
+      <h2>Excel vs. OpenRegister.</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="label-mono">Nu &middot; Excel + Z-schijf</div>
+          <h3>Knelpunten</h3>
+          <p>Versies in bestandsnamen (klanten_v3_FINAL_def.xlsx). Permissies per persoon. Geen audit-trail. Drie kolommen voor BSN, drie formaten. Backup is wat Henk ergens op een NAS deed.</p>
+        </div>
+        <div class="col">
+          <div class="label-mono">Straks &middot; OpenRegister</div>
+          <h3>Wat verandert</h3>
+          <p>Schema-validatie, audit-trail per record, rollen per entiteit. Eén waarheid, &eacute;&eacute;n versie. API voor de rapportages. Backups in Nextcloud. Je legt het uit aan een nieuwe collega in 10 minuten.</p>
+        </div>
+      </div>
+      <span class="pgnum">04 / 12</span>
+    </section>
+    <div class="cap"><strong>04 &middot; Two-column</strong> &middot; compare / contrast</div>
+    <div class="why"><strong>Why:</strong> equal-weight columns, headers stacked. Mono "kicker" labels above each column for orientation, before / after without arrows.</div>
+  </div>
+
+  <!-- 05 Quote -->
+  <div class="slide-wrap">
+    <section class="slide slide-05 dark">
+      <span class="crumb">Conduction &middot; klant</span>
+      <p class="quote">We hebben er gewoon een Excel van gemaakt omdat het systeem dat we hadden niet meedeed.</p>
+      <div class="attr"><strong>Henk Bakker</strong> &middot; beheerder klantregister, Acme BV</div>
+      <span class="pgnum">05 / 12</span>
+    </section>
+    <div class="cap"><strong>05 &middot; Full-bleed quote</strong> &middot; customer voice</div>
+    <div class="why"><strong>Why:</strong> cobalt ground, big serif quote-mark in orange (the only place serif appears). Used sparingly, never two in a row.</div>
+  </div>
+
+  <!-- 06 App spotlight -->
+  <div class="slide-wrap">
+    <section class="slide slide-06">
+      <span class="crumb">Conduction &middot; oplossing</span>
+      <div class="glyph"><img src="../../brand/assets/apps/openregister-hex.svg" alt="OpenRegister"></div>
+      <div class="body">
+        <h2>OpenRegister.</h2>
+        <p class="tag">Structured records voor Nextcloud. Form-driven data met versies, permissies en een event-log per rij.</p>
+        <ul>
+          <li>Schema versionable, voeg een veld toe zonder migratie.</li>
+          <li>Permissies per rol, vakantieproof.</li>
+          <li>Importeert je 142 spreadsheets zonder een week consultancy.</li>
+          <li>Audit-trail per record, klaar voor de WOO.</li>
+        </ul>
+      </div>
+      <span class="pgnum">06 / 12</span>
+    </section>
+    <div class="cap"><strong>06 &middot; App spotlight</strong> &middot; one slide per app</div>
+    <div class="why"><strong>Why:</strong> hex glyph at 80mm dominates the left, content right. The app's name ends with a period, becomes the headline.</div>
+  </div>
+
+  <!-- 07 Comparison -->
+  <div class="slide-wrap">
+    <section class="slide slide-07">
+      <span class="crumb">Conduction &middot; vergelijking</span>
+      <h2>Met Conduction / zonder.</h2>
+      <div class="cols">
+        <div class="col col-good">
+          <h3>Met Conduction</h3>
+          <ul>
+            <li>OpenRegister live in 7 weken</li>
+            <li>Schema in main, audit-trail uit de doos</li>
+            <li>Vaste prijs, geen open einde</li>
+            <li>Open-source, geen vendor lock-in</li>
+            <li>API + standaard UI, dashboards los</li>
+          </ul>
+        </div>
+        <div class="col col-bad">
+          <h3>Zonder</h3>
+          <ul>
+            <li>Excels blijven groeien, beheer kost meer tijd</li>
+            <li>Audit door PWC: 4 weken voorwerk per jaar</li>
+            <li>Vacatures vacant, kennis met pensioen</li>
+            <li>Vendor SaaS: 18&times; per jaar, NL hosting onduidelijk</li>
+            <li>Excel-macro's vergrendelen je aan persoon X</li>
+          </ul>
+        </div>
+      </div>
+      <span class="pgnum">07 / 12</span>
+    </section>
+    <div class="cap"><strong>07 &middot; Comparison</strong> &middot; honest, not gloating</div>
+    <div class="why"><strong>Why:</strong> mint = good, terracotta = the alternative reality. Same number of bullets, equal weight, no triumph. The reader compares, doesn't get sold.</div>
+  </div>
+
+  <!-- 08 Logo wall -->
+  <div class="slide-wrap">
+    <section class="slide slide-08">
+      <span class="crumb">Conduction &middot; klanten en partners</span>
+      <span class="label">Vertrouwd door</span>
+      <h2>Gemeenten, samenwerkingen en partners die met onze apps werken.</h2>
+      <div class="grid">
+        <div class="cell"><img src="../../brand/assets/partners/acato.png" alt="Acato"></div>
+        <div class="cell featured"><img src="../../brand/assets/partners/bct.png" alt="BCT"></div>
+        <div class="cell"><img src="../../brand/assets/partners/centric.png" alt="Centric"></div>
+        <div class="cell"><img src="../../brand/assets/partners/exxellence.png" alt="Exxellence"></div>
+        <div class="cell"><img src="../../brand/assets/partners/goodcloud.png" alt="GoodCloud"></div>
+        <div class="cell"><img src="../../brand/assets/partners/io.webp" alt="IO"></div>
+        <div class="cell"><img src="../../brand/assets/partners/open-gemeenten.png" alt="Open Gemeenten"></div>
+        <div class="cell"><img src="../../brand/assets/partners/sendent.png" alt="Sendent"></div>
+      </div>
+      <span class="pgnum">08 / 12</span>
+    </section>
+    <div class="cap"><strong>08 &middot; Logo wall</strong> &middot; greyscale by default</div>
+    <div class="why"><strong>Why:</strong> all logos greyscale at 65% opacity; the one we want to highlight goes full colour with a cobalt outline. Avoids the "every logo screaming" effect.</div>
+  </div>
+
+  <!-- 09 Stats strip -->
+  <div class="slide-wrap">
+    <section class="slide slide-09">
+      <span class="crumb">Conduction &middot; in cijfers</span>
+      <h2>Drie getallen, &eacute;&eacute;n verhaal.</h2>
+      <div class="stats">
+        <div class="stat"><div class="big">142</div><div class="lbl">Spreadsheets</div><div class="b">in 9 mappen, allemaal door &eacute;&eacute;n register vervangen.</div></div>
+        <div class="stat"><div class="big">7</div><div class="lbl">Weken</div><div class="b">van eerste werksessie tot OpenRegister live op productie.</div></div>
+        <div class="stat"><div class="big">4</div><div class="lbl">Rollen</div><div class="b">vakantieproof permissies, niet per persoon.</div></div>
+      </div>
+      <span class="pgnum">09 / 12</span>
+    </section>
+    <div class="cap"><strong>09 &middot; Stats strip</strong> &middot; real numbers, not order-of-magnitude</div>
+    <div class="why"><strong>Why:</strong> Plex Mono digits at 84pt, tabular numerals. Middle stat is orange (the one we want to anchor on). 142, 7, 4, never "ongeveer 100+", "snel", "veel".</div>
+  </div>
+
+  <!-- 10 Section divider -->
+  <div class="slide-wrap">
+    <section class="slide slide-10 dark">
+      <span class="crumb">Conduction</span>
+      <span class="num">02</span>
+      <div class="title">De aanpak.</div>
+      <p class="lede">Hoe we van 142 spreadsheets naar &eacute;&eacute;n auditbaar register komen, in zeven weken, met &eacute;&eacute;n eigenaar per sprint.</p>
+      <span class="pgnum">10 / 12</span>
+    </section>
+    <div class="cap"><strong>10 &middot; Section divider</strong> &middot; resets attention</div>
+    <div class="why"><strong>Why:</strong> giant orange number in Plex Mono, section title with a period, optional one-line lede. One per chapter, never two in a row.</div>
+  </div>
+
+  <!-- 11 Image / hero -->
+  <div class="slide-wrap">
+    <section class="slide slide-11 dark">
+      <span class="crumb">Conduction &middot; ecosystem</span>
+      <span class="accent"></span>
+      <div class="caption">
+        <div class="label">Honeycomb backdrop</div>
+        <div class="h">Vijf apps, &eacute;&eacute;n stack. Op je eigen Nextcloud-server, AGPL.</div>
+      </div>
+      <span class="pgnum">11 / 12</span>
+    </section>
+    <div class="cap"><strong>11 &middot; Image / hero</strong> &middot; the deck's only "loud" slide</div>
+    <div class="why"><strong>Why:</strong> full-bleed honeycomb gradient with one orange accent hex. Caption in the corner. Use sparingly, exists to break rhythm before a stat or close.</div>
+  </div>
+
+  <!-- 12 Closing / contact -->
+  <div class="slide-wrap">
+    <section class="slide slide-12">
+      <span class="crumb">Conduction &middot; volgende stappen</span>
+      <h2>Wat is volgende.</h2>
+      <p class="lede">Drie stappen, &eacute;&eacute;n eigenaar per stap, &eacute;&eacute;n datum. Geen "we komen er op terug", concrete bewegingen die deze week kunnen.</p>
+      <div class="nexts">
+        <div class="nc"><div class="n">01 &middot; deze week</div><div class="h">Schema-werksessie</div><div class="b">2 uur met Henk en Marleen, vijf entiteiten vastgelegd.</div><div class="meta"><strong>Eigenaar</strong> Ruben &middot; <strong>Voor</strong> 7 mei</div></div>
+        <div class="nc"><div class="n">02 &middot; week 2</div><div class="h">Pilot-import</div><div class="b">3 zwaarste spreadsheets in staging, validatierapport.</div><div class="meta"><strong>Eigenaar</strong> Mark &middot; <strong>Voor</strong> 14 mei</div></div>
+        <div class="nc"><div class="n">03 &middot; week 3</div><div class="h">Go/No-go</div><div class="b">30 min, jullie + wij, beslissen op basis van pilot.</div><div class="meta"><strong>Eigenaar</strong> Marleen &middot; <strong>Voor</strong> 21 mei</div></div>
+      </div>
+      <div class="people">
+        <div class="p">
+          <div class="av">RvdL</div>
+          <div class="pwho"><div class="n">Ruben van der Linde</div><div class="r">CTO</div><div class="c">ruben@conduction.nl &middot; +31 70 756 1240</div></div>
+        </div>
+        <div class="p">
+          <div class="av" style="background: var(--c-orange-knvb);">Mvd</div>
+          <div class="pwho"><div class="n">Marleen van der Berg</div><div class="r">Connecting, sharp</div><div class="c">marleen@conduction.nl</div></div>
+        </div>
+      </div>
+      <span class="pgnum">12 / 12</span>
+    </section>
+    <div class="cap"><strong>12 &middot; Closing</strong> &middot; never just "thank you"</div>
+    <div class="why"><strong>Why:</strong> three concrete next steps with owner and date, plus two faces (hex avatars). The deck closes with a calendar invite, not a feeling.</div>
+  </div>
+
+</div>
+
+<aside class="spark" style="position: static; max-width: 760px; margin: var(--space-16) auto var(--space-12); padding: var(--space-8);">
+  <div class="label">Why the deck looks this way</div>
+  <h2>Twelve layouts, one rhythm</h2>
+  <p class="lede">A pitch deck has 20 minutes to land an idea. The structure has to do half the work; the layouts are tuned for that.</p>
+  <ul>
+    <li><strong>Title ends with a period.</strong> Every cover, every section, every closing. A sentence with a period is a finished thought, not a topic label.</li>
+    <li><strong>Agenda has time estimates.</strong> "5 min", "10 min", visible in the agenda. Respects the audience's clock and lets them grade your pacing as you go.</li>
+    <li><strong>One orange accent per slide.</strong> Title hex, comparison kicker, stats middle column, divider number, accent hex on hero. Never two; the eye knows where to land.</li>
+    <li><strong>Plex Mono on every number, kicker, page-num.</strong> Tabular numerals align by default. Stats slide reads like a balance sheet; section divider reads like a chapter index.</li>
+    <li><strong>Mint vs terracotta on comparisons.</strong> Same family pair as our prism palette. Mint = good (data we trust). Terracotta = honest about pain. No green/red, no triumph.</li>
+    <li><strong>Greyscale logo wall, one in colour.</strong> The wall doesn't shout, the featured logo does. Cobalt outline marks the one we're spotlighting.</li>
+    <li><strong>Closing is "Wat is volgende".</strong> Three actions, one owner per action, one date per action. Audience leaves with a calendar invite, not a "thank you" slide.</li>
+    <li><strong>Hex avatars instead of headshots in the closing.</strong> Saves slide space, keeps the brand motif consistent, and works even if a presenter joins last-minute (just a monogram).</li>
+    <li><strong>Page-num always bottom-right, in mono.</strong> "07 / 12" tells the audience how much is left. Reduces the "is this almost over" anxiety that kills attention.</li>
+  </ul>
+  <div class="footer-note">16:9 (1280&times;720) &middot; --slide-w / --slide-h tokens &middot; print to PDF for sharing &middot; .pptx export deferred &middot; one HTML, twelve sections, scriptable</div>
+</aside>
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Slogans, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Section heading group */
+  .group-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: var(--space-6);
+    margin: var(--space-12) 0 var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .group-head:first-of-type { margin-top: 0; }
+  .group-head h2 {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .group-head .when {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    text-align: right;
+  }
+
+  /* Featured slogan, full-width pull-quote */
+  .featured {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-9) var(--space-10);
+    margin-bottom: var(--space-6);
+    position: relative;
+    overflow: hidden;
+  }
+  .featured .quote-mark {
+    position: absolute;
+    top: -12px; left: 24px;
+    font-size: 120px;
+    color: var(--c-orange-knvb);
+    font-weight: 700;
+    line-height: 1;
+    font-family: Georgia, serif;
+  }
+  .featured .text {
+    position: relative; z-index: 1;
+    font-size: 36px; font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: white;
+    margin: 0;
+    max-width: 24ch;
+  }
+  .featured .text .accent { color: var(--c-orange-knvb); }
+  .featured .meta {
+    position: relative; z-index: 1;
+    margin-top: var(--space-5);
+    display: flex; gap: var(--space-6);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .featured .meta strong { color: white; font-weight: 500; }
+
+  /* Slogan grid */
+  .slogan-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  @media (max-width: 900px) { .slogan-grid { grid-template-columns: 1fr; } }
+  .slogan {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-7);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .slogan .text {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--c-blue-cobalt);
+    margin: 0;
+  }
+  .slogan .text.en {
+    font-size: 18px; font-weight: 600;
+    color: var(--c-cobalt-700);
+    margin-top: -4px;
+  }
+  .slogan .why {
+    font-size: 13px;
+    color: var(--c-cobalt-700);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .slogan .meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--c-cobalt-50);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .slogan .meta a {
+    color: var(--c-cobalt-400);
+    text-decoration: none;
+  }
+  .slogan .meta a:hover { color: var(--c-orange-knvb); }
+  .slogan .meta .tag-audience {
+    color: var(--c-blue-cobalt);
+    font-weight: 600;
+  }
+
+  /* Banned patterns block */
+  .banned {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7) var(--space-8);
+  }
+  .banned-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+  }
+  @media (max-width: 700px) { .banned-grid { grid-template-columns: 1fr; } }
+  .banned-pair {
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  .banned-pair .bad {
+    font-size: 16px;
+    color: var(--c-cobalt-400);
+    text-decoration: line-through;
+    text-decoration-color: var(--c-red-vermillion);
+    text-decoration-thickness: 1.5px;
+  }
+  .banned-pair .arrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    margin-left: var(--space-3);
+  }
+  .banned-pair .good {
+    font-size: 17px;
+    color: var(--c-blue-cobalt);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* Submission CTA */
+  .submit-cta {
+    margin-top: var(--space-10);
+    padding: var(--space-7) var(--space-8);
+    border: 1px dashed var(--c-cobalt-300);
+    border-radius: var(--radius-lg);
+    background: var(--c-cobalt-50);
+    text-align: center;
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+  }
+  .submit-cta strong { color: var(--c-blue-cobalt); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">06 · Identiteit / Slogans</div>
+      <h1 class="card-title">Kort en raak. Een werkende verzameling.</h1>
+    </div>
+    <p class="card-subtitle">Slogans die we al ergens gebruiken, plus de regels die ze maken. Eén claim, weinig woorden, geen jargon.</p>
+  </div>
+
+  <!-- Featured: the position slogan -->
+  <div class="featured">
+    <span class="quote-mark">"</span>
+    <p class="text">Conduction builds. <span class="accent">Partners deliver.</span></p>
+    <div class="meta">
+      <span><strong>Position</strong> · who we are vs partners</span>
+      <span><strong>Audience</strong> · MKB · Overheid</span>
+      <span><strong>Used in</strong> · app-detail, solution-page, support</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Positionering · waarom Conduction Conduction is
+       ============================================================ -->
+  <div class="group-head">
+    <h2>Positionering · waarom Conduction Conduction is</h2>
+    <span class="when">Hero, About, eerste alinea</span>
+  </div>
+
+  <div class="slogan-grid">
+
+    <div class="slogan">
+      <p class="text">We bouwen apps. Partners installeren ze.</p>
+      <p class="text en">We build apps. Partners install them.</p>
+      <p class="why">De kortste vorm van het Conduction-businessmodel. Apps als product, services bij partners.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB · Overheid</span>
+        <span><a href="../pages/support.html">support.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Demo's doen partners, niet Conduction.</p>
+      <p class="text en">Get a demo via a partner.</p>
+      <p class="why">De CTA-vorm van bovenstaande regel. Stuurt direct naar de partnerpagina, geen omweg via een verkoopgesprek.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB</span>
+        <span><a href="products.html">products.html</a></span>
+        <span>CTA</span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Open source. Free. GDPR by default.</p>
+      <p class="text en">Open source. Gratis. AVG-compliant.</p>
+      <p class="why">Onze drie echte verkoopargumenten. Vervangt "NLDS-compliant" als sales pitch. NLDS is een feit, geen propositie.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB · Overheid</span>
+        <span><a href="../pages/landing.html">landing.html</a></span>
+        <span><a href="../pages/app-detail.html">app-detail.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Geen consultancy. Apps die je installeert.</p>
+      <p class="text en">No consultancy track. No lock-in.</p>
+      <p class="why">Tegenover de implementatiebureaus die ons concurreren. Apps zijn af, je hoeft geen project te starten om ze te gebruiken.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB</span>
+        <span><a href="../pages/landing.html">landing.html</a></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       Producten · apps versus solutions
+       ============================================================ -->
+  <div class="group-head">
+    <h2>Producten · apps versus solutions</h2>
+    <span class="when">Section heads, navigatie, taglines</span>
+  </div>
+
+  <div class="slogan-grid">
+
+    <div class="slogan">
+      <p class="text">Apps. Solutions. Eén vocabulaire.</p>
+      <p class="text en">Apps. Solutions. One vocabulary.</p>
+      <p class="why">De kernregel uit producten-identiteit. Apps zijn wat we shippen, solutions zijn wat klanten ermee bereiken. Nooit door elkaar.</p>
+      <div class="meta">
+        <span class="tag-audience">Iedereen</span>
+        <span><a href="products.html">products.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Pick an app. Install it. Done.</p>
+      <p class="text en">Kies een app. Installeer 'm. Klaar.</p>
+      <p class="why">Drie woorden, drie zinnen. Ritme + concrete actie. De installeer-eerst-mentaliteit in zijn meest compacte vorm.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB</span>
+        <span><a href="../pages/landing.html">CTA banner</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Twelve apps. All open source.</p>
+      <p class="text en">Twaalf apps. Allemaal open source.</p>
+      <p class="why">De apps-catalog hero. Telt af, geen kwalificaties. "All" doet het werk; geen "een aantal" of "veel".</p>
+      <div class="meta">
+        <span class="tag-audience">Developer · MKB</span>
+        <span><a href="../pages/apps-catalog.html">apps-catalog.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Wat je bereikt, niet wat we verkopen.</p>
+      <p class="text en">What you achieve, not what we sell.</p>
+      <p class="why">De solutions-catalog hero. Frame om "Solutions" als uitkomst, niet als product-label. Werkt ook als positionering tegen pakketverkopers.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB · Overheid</span>
+        <span><a href="../pages/solutions-catalog.html">solutions-catalog.html</a></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       App + solution-hero's · concrete propositie per app
+       ============================================================ -->
+  <div class="group-head">
+    <h2>App- en solution-hero's · concreet, één claim</h2>
+    <span class="when">Detail-pagina h1</span>
+  </div>
+
+  <div class="slogan-grid">
+
+    <div class="slogan">
+      <p class="text">Make Nextcloud your workspace.</p>
+      <p class="text en">Maak van Nextcloud je werkplek.</p>
+      <p class="why">De ConNext landing-hero. Zegt direct wat het doet, en op welke fundament het draait. Geen "platform dat", geen "ecosysteem".</p>
+      <div class="meta">
+        <span class="tag-audience">MKB</span>
+        <span><a href="../components/hero.html">hero.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Schemas you write once.</p>
+      <p class="text en">Schema's die je één keer schrijft.</p>
+      <p class="why">OpenRegister's belofte: het ontwerp blijft, de migraties verdwijnen. Concreet pijnpunt + concrete uitkomst, in vier woorden.</p>
+      <div class="meta">
+        <span class="tag-audience">Developer · MKB</span>
+        <span><a href="../pages/app-detail.html">OpenRegister</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">WOO compliance, by Friday.</p>
+      <p class="text en">WOO-compliant, vrijdag live.</p>
+      <p class="why">De WOO-solution-hero. Belooft een datum (binnen een werkweek) tegen een wettelijke verplichting. Onmogelijk te negeren door een gemeentebestuurder.</p>
+      <div class="meta">
+        <span class="tag-audience">Overheid</span>
+        <span><a href="../pages/solution-page.html">solution-page.html</a></span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Support runs through partners.<br>The apps stay free.</p>
+      <p class="text en">Support loopt via partners. De apps blijven gratis.</p>
+      <p class="why">De support-page hero. Twee zinnen verklaren het businessmodel zonder een woord aan uitleg. Frees apps + paid services, in tien woorden.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB · Overheid</span>
+        <span><a href="../pages/support.html">support.html</a></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       CTA-knoppen · actie + onderwerp
+       ============================================================ -->
+  <div class="group-head">
+    <h2>CTA-knoppen · actie + onderwerp, geen vage kreten</h2>
+    <span class="when">Buttons, links, cards</span>
+  </div>
+
+  <div class="slogan-grid">
+
+    <div class="slogan">
+      <p class="text">Install from the Nextcloud app store</p>
+      <p class="text en">Installeren via de Nextcloud app store</p>
+      <p class="why">De primaire CTA op elke pagina. Letterlijk de actie + de plek. Geen "Get started", geen "Learn more". Mensen weten waar ze terechtkomen.</p>
+      <div class="meta">
+        <span class="tag-audience">Iedereen</span>
+        <span>Primary</span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Get a demo via a partner</p>
+      <p class="text en">Vraag een demo aan bij een partner</p>
+      <p class="why">Vervangt "Book a demo" en "Try the demo" overal. Bevat het werkwoord ("get/vraag aan") en het object ("demo via partner") zodat de bedoeling duidelijk is.</p>
+      <div class="meta">
+        <span class="tag-audience">MKB · Overheid</span>
+        <span>Secondary</span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">Browse all twelve apps →</p>
+      <p class="text en">Bekijk alle twaalf apps →</p>
+      <p class="why">Tel-actie + concrete reikwijdte. "All twelve" doet het werk; geen "more" of "additional".</p>
+      <div class="meta">
+        <span class="tag-audience">MKB</span>
+        <span>Tertiary</span>
+      </div>
+    </div>
+
+    <div class="slogan">
+      <p class="text">View on GitHub →</p>
+      <p class="text en">Bekijk op GitHub →</p>
+      <p class="why">Voor de developer-tier. Direct naar de bron, geen omweg via een marketing-funnel.</p>
+      <div class="meta">
+        <span class="tag-audience">Developer</span>
+        <span>Ghost</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       Verbannen patronen · van inkooptaal naar MKB-direct
+       ============================================================ -->
+  <div class="group-head">
+    <h2>Verbannen patronen · wat je nooit schrijft</h2>
+    <span class="when">Herschrijfrecepten</span>
+  </div>
+
+  <div class="banned">
+    <p style="font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0;">
+      Slogans worden gemaakt door <strong style="color: var(--c-blue-cobalt);">niet</strong> te schrijven. Deze patronen verraden inkooptaal of AI-tekst. Voor elk een korter alternatief.
+    </p>
+    <div class="banned-grid">
+
+      <div class="banned-pair">
+        <span class="bad">"De Oplossing biedt documentcreatiefunctionaliteit op basis van sjablonen."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">"Genereer documenten uit sjablonen, direct, zonder plug-in."</span>
+      </div>
+
+      <div class="banned-pair">
+        <span class="bad">"State-of-the-art platform dat digitale transformatie versnelt."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">"Twaalf apps die in twee minuten op je Nextcloud draaien."</span>
+      </div>
+
+      <div class="banned-pair">
+        <span class="bad">"Boek een demo voor een persoonlijk gesprek."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">"Vraag een demo aan bij een partner."</span>
+      </div>
+
+      <div class="banned-pair">
+        <span class="bad">"Volledig NLDS-compliant en toekomstbestendig."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">"Open source. Gratis. AVG-compliant by default."</span>
+      </div>
+
+      <div class="banned-pair">
+        <span class="bad">"Onze WOO-app voor gemeenten."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">"Onze WOO-solution, gebouwd op OpenCatalogi en OpenConnector."</span>
+      </div>
+
+      <div class="banned-pair">
+        <span class="bad">"Synergetische ketensamenwerking voor waardevolle inzichten."</span>
+        <span class="arrow">↓ herschrijf</span>
+        <span class="good">— gewoon weglaten. Begin opnieuw met één concrete claim.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Submission rules -->
+  <div class="submit-cta">
+    <p style="margin: 0 0 8px;"><strong>Een nieuwe slogan toevoegen?</strong></p>
+    <p style="margin: 0;">Onder de zestien woorden. Eén claim. Geen <em>oplossing</em>, geen <em>platform</em>, geen <em>transformatie</em>. Schrijf NL én EN, of laat één weg als de andere verraadt dat het een vertaling is. Plak de plek waar je 'm gebruikt in de meta-regel, dan weten we waar de slogan voor staat.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -12,13 +12,17 @@
        y=12.5 (also type B) appears above. Result: the logo is one
        hex in a continuous comb that flows above and below.
 
-       One white overlay masks the outcome-block band (y between
-       45 and 102 mm) so the cobalt-50 'wat je krijgt' panel sits
-       on a clean ground. The wordmark text 'Conduction' renders
-       on top of the watermark via the host page, no SVG mask
-       needed (an empty wordmark slot was breaking the comb's
-       visual flow). The visible Conduction logo polygons sit on
-       top of the grid at the (26.93, 26) cell. -->
+       No mask rects: the outcome-block, sign-online and other
+       content panels in the host page each carry their own solid
+       background (cobalt-50, cobalt-900, mint-50, terracotta-50)
+       and naturally cover the comb behind them via z-index. A
+       prior version had a white rect at (0, 45, 210, 57) that
+       clipped the bottom 2.5mm of the hex row above the outcome
+       block, leaving cropped hex apexes; removing it lets the
+       comb flow uninterrupted under all content.
+
+       The visible Conduction logo polygons sit on top of the
+       grid at the (26.93, 26) cell. -->
   <defs>
     <polygon id="hx" points="0,-8 6.928,-4 6.928,4 0,8 -6.928,4 -6.928,-4"/>
     <pattern id="hexgrid" x="11.34" y="26" width="15.59" height="27" patternUnits="userSpaceOnUse">
@@ -32,9 +36,6 @@
        stylesheet at the bottom of the host file clips to one
        A4 page anyway. -->
   <rect width="210" height="600" fill="url(#hexgrid)"/>
-
-  <!-- Mask: outcome-block band -->
-  <rect x="0" y="45" width="210" height="57" fill="#FFFFFF"/>
 
   <!-- Conduction logo at the (26.93, 26) cell -->
   <g transform="translate(26.93 26) scale(0.08)">

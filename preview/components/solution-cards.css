@@ -1,0 +1,65 @@
+/* Solution cards — canonical card pattern for solutions in a catalogue.
+   Sector modifier (.public / .mkb / .health) tints the icon hex. Used
+   on solutions-catalog and on any other surface that lists solutions
+   in a 2-up grid. Pages link this file; do not re-inline. */
+
+.solution-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+.solution {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column; gap: 18px;
+  transition: all 160ms ease;
+}
+.solution:hover { border-color: var(--c-blue-cobalt); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+
+.solution .top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 18px;
+}
+.solution .icon-hex {
+  width: 56px; height: 64px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt); color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.solution .icon-hex svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+/* Sector tints for the icon hex. */
+.solution.public .icon-hex { background: var(--c-blue-cobalt); }
+.solution.mkb .icon-hex    { background: var(--c-cobalt-700); }
+.solution.health .icon-hex { background: var(--c-orange-knvb); }
+
+.solution .sector-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-cobalt-700);
+  background: var(--c-cobalt-50);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.solution h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+.solution .outcome { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0; }
+
+.solution .built-on {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--c-cobalt-100);
+}
+.solution .built-on .pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-700);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-family: var(--conduction-typography-font-family-code);
+}
+.solution .built-on .pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }

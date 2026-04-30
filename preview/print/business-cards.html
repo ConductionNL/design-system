@@ -9,13 +9,16 @@
 <style>
   body { background: var(--c-cobalt-50); padding: 0; }
 
-  /* The card itself — 85mm x 55mm. The cut-out diagonal is set
-     to the same 30° angle as the bottom-right side of a pointy-top
-     hex, so the hex element in the corner sits with one side
-     parallel to the cut. Cut runs 4mm vertically by 4*sqrt(3)mm
-     (~6.93mm) horizontally; ratio gives slope -1/sqrt(3).
-     The cut mirrors front-to-back: front bottom-right, back
-     bottom-left. */
+  /* The card itself — 85mm x 55mm. The cut-out diagonal runs at
+     the same 30° angle as the bottom-right side of a pointy-top
+     hex; cut sized so the perpendicular gap from the hex side to
+     the cut equals the 2mm inset on the bottom + right edges.
+
+     Geometry (R=10.35mm hex, 2mm inset):
+       diagonal_margin = (m*(sqrt(3)+1)/sqrt(3) + R/2 - h_cut) * sqrt(3)/2
+       Solve for diagonal_margin = m = 2mm  ->  h_cut ≈ 6.02mm
+     Rounded to h_cut = 6mm, w_cut = 6*sqrt(3) ≈ 10.39mm. Margins
+     all read as ~2mm now. The cut mirrors front-to-back. */
   .card-bc {
     width: var(--card-w);
     height: var(--card-h);
@@ -24,10 +27,10 @@
     position: relative;
   }
   .bc-front {
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4mm), calc(100% - 6.93mm) 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6mm), calc(100% - 10.39mm) 100%, 0 100%);
   }
   .bc-back {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 6.93mm 100%, 0 calc(100% - 4mm));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10.39mm 100%, 0 calc(100% - 6mm));
   }
   /* ---- Front face ---- */
   .bc-front {

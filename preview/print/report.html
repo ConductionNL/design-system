@@ -88,10 +88,10 @@
     min-height: var(--paper-a4-h);
     position: relative;
   }
-  /* Gray honeycomb veil behind the body, in line with the
-     .conduction-bg on-light theme. Pinned to absolute mm so
-     hex sizes don't stretch with content overflow. */
-  .body-page::before {
+  /* Hex veil only on the summary page (the FIRST page after the
+     cover, where the management-summary panel lives). Subsequent
+     body pages stay plain white so the content reads cleanly. */
+  .summary-page::before {
     content: "";
     position: absolute;
     top: 0; left: 0;
@@ -102,7 +102,7 @@
     pointer-events: none;
     z-index: 0;
   }
-  .body-page > * { position: relative; z-index: 1; }
+  .summary-page > * { position: relative; z-index: 1; }
 
   /* Management summary panel — first thing the reader sees on the
      body page. White box with a cobalt-edge mark (style cousins:
@@ -343,7 +343,7 @@
 
         <!-- Body -->
         <div>
-          <div class="paper paper--A4 body-page">
+          <div class="paper paper--A4 body-page summary-page">
             <div class="running">
               <span># Open registers Acme BV</span>
               <span class="doc-id">CND-2026-042 &middot; p. 02</span>
@@ -368,6 +368,21 @@
               </div>
             </div>
 
+            <div class="pagefoot-r">
+              <span>conduction.nl &middot; #CND-2026-042</span>
+              <span class="hex-row"><span class="active"></span><span></span><span></span></span>
+            </div>
+          </div>
+          <span class="specimen-label">Summary page &middot; gray hex veil &middot; signed by consultant</span>
+        </div>
+
+        <!-- Body content page (plain white) -->
+        <div>
+          <div class="paper paper--A4 body-page">
+            <div class="running">
+              <span># Open registers Acme BV</span>
+              <span class="doc-id">CND-2026-042 &middot; p. 03</span>
+            </div>
             <h2>Wat we vonden</h2>
             <p>142 spreadsheets, in 9 mappen, beheerd door 4 mensen. Geen versiebeheer. Drie mensen weten welk veld optioneel is, twee zijn met pensioen.</p>
             <p>De urgentie zit niet in een audit, maar in vakanties. Als Henk afwezig is, weet niemand welke kolom het juiste BSN-formaat heeft.</p>
@@ -463,10 +478,10 @@
           <span class="specimen-label">Cover template &middot; cat-process (lavender) shown</span>
         </div>
         <div>
-          <div class="paper paper--A4 body-page">
+          <div class="paper paper--A4 body-page summary-page">
             <div class="running">
               <span># {{ chapter }}</span>
-              <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
+              <span class="doc-id">{{ #ID }} &middot; p. 02</span>
             </div>
 
             <div class="management-summary">
@@ -486,6 +501,22 @@
                 </div>
                 <div class="meta">Opgesteld<strong>{{ DD month YYYY }}</strong></div>
               </div>
+            </div>
+
+            <div class="pagefoot-r">
+              <span>conduction.nl &middot; {{ #ID }}</span>
+              <span class="hex-row"><span class="active"></span><span></span><span></span></span>
+            </div>
+          </div>
+          <span class="specimen-label">Summary template &middot; gray hex veil &middot; signed by consultant</span>
+        </div>
+
+        <!-- Body content template (plain white) -->
+        <div>
+          <div class="paper paper--A4 body-page">
+            <div class="running">
+              <span># {{ chapter }}</span>
+              <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
             </div>
 
             <h2>{{ Section heading }}</h2>

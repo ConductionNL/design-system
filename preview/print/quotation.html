@@ -123,10 +123,16 @@
   .totals .row { display: flex; justify-content: space-between; padding: 1.5mm 0; }
   .totals .row.grand { font-size: 12pt; padding: 3mm 0; border-top: 0.4mm solid var(--c-cobalt-900); margin-top: 1.5mm; color: var(--c-cobalt-900); font-weight: 600; }
 
-  .validity-stamp {
+  /* Validity stamp sits inside .sign-online (deadline anchor +
+     action belong together). Vertically centred on the right of
+     the cobalt panel; sticks 6mm beyond the panel's right edge
+     so it 'overlaps' the container. */
+  .sign-online .validity-stamp {
     position: absolute;
-    bottom: 24mm; right: 18mm;
-    width: 28mm; height: 32mm;
+    top: 50%;
+    right: 6mm;
+    transform: translateY(-50%);
+    width: 30mm; height: 34.6mm;
     clip-path: var(--hex-pointy-top);
     background: var(--c-orange-knvb);
     color: white;
@@ -135,21 +141,23 @@
     font-size: 7pt; letter-spacing: 0.06em; text-transform: uppercase;
     text-align: center;
     line-height: 1.2;
-    /* Sit above the sign-online panel and signoff-zone — the
-       stamp is the deadline anchor, nothing should obscure it. */
     z-index: 5;
   }
   .validity-stamp .big { font-family: var(--conduction-typography-font-family-body); font-size: 16pt; font-weight: 700; letter-spacing: -0.02em; margin-top: 1mm; }
 
-  /* Online-sign call-to-action — leads with the digital path,
-     paper signature boxes follow underneath as the fallback. */
+  /* Online-sign call-to-action. Copy + button stacked on the
+     left of the cobalt-900 panel; the orange validity-stamp hex
+     sits in the right portion of the same container, overlapping
+     it. The hex is the deadline anchor, the panel is the action,
+     they belong together visually. */
   .sign-online {
+    position: relative;
     margin-top: 8mm;
     background: var(--c-cobalt-900);
     color: white;
-    padding: 6mm 8mm;
+    padding: 6mm 50mm 6mm 8mm;   /* extra right padding reserves the hex slot */
     border-radius: 1mm;
-    display: grid; grid-template-columns: 1fr auto; gap: 8mm; align-items: center;
+    min-height: 38mm;
   }
   .sign-online .h {
     font-family: var(--conduction-typography-font-family-code);
@@ -161,6 +169,7 @@
   .sign-online .fine { font-size: 8.5pt; color: var(--c-cobalt-200); margin-top: 2mm; line-height: 1.5; }
   .sign-online .sign-cta {
     display: inline-block;
+    margin-top: 4mm;
     padding: 3.5mm 7mm;
     background: var(--c-orange-knvb);
     color: white;
@@ -298,15 +307,13 @@
           <div class="row grand"><span>Totaal incl. btw</span><span>€ 14.036,00</span></div>
         </div>
 
-        <span class="validity-stamp">Geldig tot<span class="big">14 mei</span></span>
-
         <div class="sign-online">
-          <div>
-            <div class="h">Akkoord geven</div>
+          <div class="copy">
             <div class="lede">Teken online, eenmalige link, geen account nodig.</div>
             <div class="fine">Of zet handtekeningen onder deze pagina en mail terug naar ruben@conduction.nl.</div>
+            <a class="sign-cta" href="https://sign.conduction.nl/CND-Q-2026-018">Onderteken online</a>
           </div>
-          <a class="sign-cta" href="https://sign.conduction.nl/CND-Q-2026-018">Onderteken online</a>
+          <span class="validity-stamp">Geldig tot<span class="big">14 mei</span></span>
         </div>
 
         <div class="signoff-zone">
@@ -359,14 +366,13 @@
           <div class="row"><span>Btw 21%</span><span>€ {{ vat }}</span></div>
           <div class="row grand"><span>Totaal incl. btw</span><span>€ {{ total }}</span></div>
         </div>
-        <span class="validity-stamp">Geldig tot<span class="big">{{ datum }}</span></span>
         <div class="sign-online">
-          <div>
-            <div class="h">Akkoord geven</div>
+          <div class="copy">
             <div class="lede">Teken online, eenmalige link, geen account nodig.</div>
             <div class="fine">Of zet handtekeningen onder deze pagina en mail terug naar {{ author email }}.</div>
+            <a class="sign-cta" href="https://sign.conduction.nl/{{ #ID }}">Onderteken online</a>
           </div>
-          <a class="sign-cta" href="https://sign.conduction.nl/{{ #ID }}">Onderteken online</a>
+          <span class="validity-stamp">Geldig tot<span class="big">{{ datum }}</span></span>
         </div>
         <div class="signoff-zone">
           <div class="box">

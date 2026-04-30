@@ -26,6 +26,12 @@
     margin: 56px auto 0;
     padding: 0 var(--space-12);
     display: flex; flex-wrap: wrap; gap: var(--space-2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--c-cobalt-50);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
   }
   .toc a {
     display: inline-flex; align-items: center; gap: var(--space-2);
@@ -45,8 +51,9 @@
 
   .section {
     max-width: 1280px;
-    margin: 56px auto 0;
+    margin: 32px auto 0;
     padding: 0 var(--space-12);
+    scroll-margin-top: 72px;
   }
   .section h2 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); margin-bottom: var(--space-2); }
   .section .desc { color: var(--c-cobalt-700); font-size: var(--fs-sm); max-width: 60ch; margin-bottom: var(--space-6); }
@@ -69,7 +76,7 @@
     color: inherit;
     position: relative;
   }
-  .asset:hover { border-color: var(--c-blue-cobalt); box-shadow: var(--shadow-2); }
+  .asset:hover { border-color: var(--c-blue-cobalt); box-shadow: var(--shadow-2); transform: translateY(-1px); }
   .asset .thumb {
     aspect-ratio: 1;
     background: var(--c-cobalt-50);
@@ -81,11 +88,21 @@
     padding: var(--space-3);
   }
   .asset .thumb.dark { background: var(--c-cobalt-900); }
+  .asset .thumb.blue { background: var(--c-blue-cobalt); }
+  .asset .thumb.white { background: white; border: 1px solid var(--c-cobalt-100); }
+  .asset .thumb.checker { background-image: linear-gradient(45deg, #f4f6fa 25%, transparent 25%), linear-gradient(-45deg, #f4f6fa 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f4f6fa 75%), linear-gradient(-45deg, transparent 75%, #f4f6fa 75%); background-size: 12px 12px; background-position: 0 0, 0 6px, 6px -6px, -6px 0; background-color: white; }
   .asset .thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .asset .thumb svg { max-width: 100%; max-height: 100%; }
   .asset .name { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--c-cobalt-900); line-height: 1.3; }
   .asset .meta { font-family: var(--conduction-typography-font-family-code); font-size: 10px; color: var(--c-cobalt-400); letter-spacing: 0.04em; text-transform: uppercase; }
-  .asset .dl-icon { position: absolute; top: var(--space-2); right: var(--space-2); width: 24px; height: 24px; border-radius: 50%; background: var(--c-blue-cobalt); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 120ms; }
+  .asset .dl-icon {
+    position: absolute; top: 8px; right: 8px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--c-blue-cobalt); color: white;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 120ms;
+    box-shadow: var(--shadow-2);
+  }
   .asset:hover .dl-icon { opacity: 1; }
 
   .footer {
@@ -115,8 +132,8 @@
 
 <nav class="toc">
   <a href="#logos">Logos <span class="count">5</span></a>
-  <a href="#hexes">Hexes <span class="count">15</span></a>
-  <a href="#apps">App glyphs <span class="count">5</span></a>
+  <a href="#hexes">Hexes <span class="count">9</span></a>
+  <a href="#apps">App glyphs <span class="count">18</span></a>
   <a href="#badges">Status badges <span class="count">3</span></a>
   <a href="#icons">Icons <span class="count">7</span></a>
   <a href="#diagrams">Diagrams <span class="count">5</span></a>
@@ -125,26 +142,168 @@
   <a href="#partners">Partners <span class="count">11</span></a>
 </nav>
 
-<!-- Each <section> is filled in phase 3 with real asset thumbnails. The
-     anchor structure here is the spine; thumbnails get appended once the
-     SVG files exist on disk under brand/assets/. -->
-<section class="section" id="logos"><h2>Logos</h2><p class="desc">Conduction avatars and the official Nextcloud logo. Use the gold-on-white avatar for "Conduction Certified" partners only.</p><div class="gallery" data-cat="logos"><span style="grid-column: 1 / -1; color: var(--c-cobalt-400); font-size: var(--fs-sm); padding: var(--space-6); text-align: center; background: white; border-radius: var(--radius-md); border: 1px dashed var(--c-cobalt-200);">Filled in phase 3 &middot; thumbnails point at <code>brand/assets/*.svg</code></span></div></section>
+<!-- ============ Logos ============ -->
+<section class="section" id="logos">
+  <h2>Logos</h2>
+  <p class="desc">Conduction avatars and the official Nextcloud logo. Use the gold-on-white avatar for "Conduction Certified" partners only.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/avatar-conduction.svg" download="conduction-avatar.svg">
+      <div class="thumb white"><img src="../../brand/assets/avatar-conduction.svg" alt="Conduction avatar"></div>
+      <div class="name">Conduction avatar</div><div class="meta">SVG &middot; canonical</div>
+      <span class="dl-icon">&darr;</span>
+    </a>
+    <a class="asset" href="../../brand/assets/avatar-conduction-on-white.svg" download="conduction-avatar-on-white.svg">
+      <div class="thumb white"><img src="../../brand/assets/avatar-conduction-on-white.svg" alt="Conduction avatar on white"></div>
+      <div class="name">Avatar on white</div><div class="meta">SVG &middot; light bg</div>
+      <span class="dl-icon">&darr;</span>
+    </a>
+    <a class="asset" href="../../brand/assets/avatar-conduction-on-blue.svg" download="conduction-avatar-on-blue.svg">
+      <div class="thumb blue"><img src="../../brand/assets/avatar-conduction-on-blue.svg" alt="Conduction avatar on blue"></div>
+      <div class="name">Avatar on cobalt</div><div class="meta">SVG &middot; dark bg</div>
+      <span class="dl-icon">&darr;</span>
+    </a>
+    <a class="asset" href="../../brand/assets/avatar-conduction-gold-on-white.svg" download="conduction-avatar-gold.svg">
+      <div class="thumb white"><img src="../../brand/assets/avatar-conduction-gold-on-white.svg" alt="Conduction certified gold avatar"></div>
+      <div class="name">Avatar gold (certified)</div><div class="meta">SVG &middot; partners only</div>
+      <span class="dl-icon">&darr;</span>
+    </a>
+    <a class="asset" href="../../brand/assets/nextcloud-logo.svg" download="nextcloud-logo.svg">
+      <div class="thumb white"><img src="../../brand/assets/nextcloud-logo.svg" alt="Nextcloud logo"></div>
+      <div class="name">Nextcloud logo</div><div class="meta">SVG &middot; platform mark</div>
+      <span class="dl-icon">&darr;</span>
+    </a>
+  </div>
+</section>
 
-<section class="section" id="hexes"><h2>Hexes</h2><p class="desc">Pointy-top hexes in five sizes and the brand colour set. Drop one straight into a deck or report header.</p><div class="gallery" data-cat="hexes"></div></section>
+<!-- ============ Hexes ============ -->
+<section class="section" id="hexes">
+  <h2>Hexes</h2>
+  <p class="desc">Pointy-top hexes in the brand colour set. Drop one straight into a deck or report header. 100&times;115 viewBox, scales freely.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/hexes/hex-cobalt.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-cobalt.svg" alt="Cobalt hex"></div><div class="name">Cobalt</div><div class="meta">SVG &middot; #21468B</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-cobalt-700.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-cobalt-700.svg" alt="Cobalt-700 hex"></div><div class="name">Cobalt-700</div><div class="meta">SVG &middot; #152D5C</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-cobalt-900.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-cobalt-900.svg" alt="Cobalt-900 hex"></div><div class="name">Cobalt-900</div><div class="meta">SVG &middot; #0A172F</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-orange.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-orange.svg" alt="Orange hex"></div><div class="name">KNVB orange</div><div class="meta">SVG &middot; once per scene</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-mint.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-mint.svg" alt="Mint hex"></div><div class="name">Mint</div><div class="meta">SVG &middot; #2E9866</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-lavender.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-lavender.svg" alt="Lavender hex"></div><div class="name">Lavender</div><div class="meta">SVG &middot; #7E66C9</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-terracotta.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-terracotta.svg" alt="Terracotta hex"></div><div class="name">Terracotta</div><div class="meta">SVG &middot; #B25E48</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-forest.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-forest.svg" alt="Forest hex"></div><div class="name">Forest</div><div class="meta">SVG &middot; #3D7C3A</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-nextcloud.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-nextcloud.svg" alt="Nextcloud-blue hex"></div><div class="name">Nextcloud blue</div><div class="meta">SVG &middot; #0082C9</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/hexes/hex-outline-cobalt.svg" download><div class="thumb"><img src="../../brand/assets/hexes/hex-outline-cobalt.svg" alt="White hex with cobalt outline"></div><div class="name">Outline cobalt</div><div class="meta">SVG &middot; for dark bg</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="apps"><h2>App glyphs</h2><p class="desc">OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, MyDash. Hex tile, square, and monogram treatments per app.</p><div class="gallery" data-cat="apps"></div></section>
+<!-- ============ Apps ============ -->
+<section class="section" id="apps">
+  <h2>App glyphs</h2>
+  <p class="desc">OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, MyDash, OpenAI Bridge. Hex tile (canonical), square (with cut corner) and monogram circle treatments per app.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/apps/opencatalogi-hex.svg" download><div class="thumb"><img src="../../brand/assets/apps/opencatalogi-hex.svg" alt="OpenCatalogi hex"></div><div class="name">OpenCatalogi</div><div class="meta">SVG &middot; hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/opencatalogi-square.svg" download><div class="thumb"><img src="../../brand/assets/apps/opencatalogi-square.svg" alt="OpenCatalogi square"></div><div class="name">OpenCatalogi</div><div class="meta">SVG &middot; square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/opencatalogi-mono.svg" download><div class="thumb white"><img src="../../brand/assets/apps/opencatalogi-mono.svg" alt="OpenCatalogi monogram"></div><div class="name">OpenCatalogi</div><div class="meta">SVG &middot; mono OC</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openregister-hex.svg" download><div class="thumb"><img src="../../brand/assets/apps/openregister-hex.svg" alt="OpenRegister hex"></div><div class="name">OpenRegister</div><div class="meta">SVG &middot; hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openregister-square.svg" download><div class="thumb"><img src="../../brand/assets/apps/openregister-square.svg" alt="OpenRegister square"></div><div class="name">OpenRegister</div><div class="meta">SVG &middot; square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openregister-mono.svg" download><div class="thumb white"><img src="../../brand/assets/apps/openregister-mono.svg" alt="OpenRegister monogram"></div><div class="name">OpenRegister</div><div class="meta">SVG &middot; mono OR</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openconnector-hex.svg" download><div class="thumb"><img src="../../brand/assets/apps/openconnector-hex.svg" alt="OpenConnector hex"></div><div class="name">OpenConnector</div><div class="meta">SVG &middot; hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openconnector-square.svg" download><div class="thumb"><img src="../../brand/assets/apps/openconnector-square.svg" alt="OpenConnector square"></div><div class="name">OpenConnector</div><div class="meta">SVG &middot; square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openconnector-mono.svg" download><div class="thumb white"><img src="../../brand/assets/apps/openconnector-mono.svg" alt="OpenConnector monogram"></div><div class="name">OpenConnector</div><div class="meta">SVG &middot; mono OCn</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/docudesk-hex.svg" download><div class="thumb"><img src="../../brand/assets/apps/docudesk-hex.svg" alt="DocuDesk hex"></div><div class="name">DocuDesk</div><div class="meta">SVG &middot; hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/docudesk-square.svg" download><div class="thumb"><img src="../../brand/assets/apps/docudesk-square.svg" alt="DocuDesk square"></div><div class="name">DocuDesk</div><div class="meta">SVG &middot; square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/docudesk-mono.svg" download><div class="thumb white"><img src="../../brand/assets/apps/docudesk-mono.svg" alt="DocuDesk monogram"></div><div class="name">DocuDesk</div><div class="meta">SVG &middot; mono DD</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/mydash-hex.svg" download><div class="thumb white"><img src="../../brand/assets/apps/mydash-hex.svg" alt="MyDash hex outline"></div><div class="name">MyDash</div><div class="meta">SVG &middot; outline hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/mydash-square.svg" download><div class="thumb white"><img src="../../brand/assets/apps/mydash-square.svg" alt="MyDash square"></div><div class="name">MyDash</div><div class="meta">SVG &middot; outline square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/mydash-mono.svg" download><div class="thumb"><img src="../../brand/assets/apps/mydash-mono.svg" alt="MyDash monogram"></div><div class="name">MyDash</div><div class="meta">SVG &middot; mono MD</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openai-bridge-hex.svg" download><div class="thumb"><img src="../../brand/assets/apps/openai-bridge-hex.svg" alt="OpenAI Bridge hex"></div><div class="name">OpenAI Bridge</div><div class="meta">SVG &middot; hex</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openai-bridge-square.svg" download><div class="thumb"><img src="../../brand/assets/apps/openai-bridge-square.svg" alt="OpenAI Bridge square"></div><div class="name">OpenAI Bridge</div><div class="meta">SVG &middot; square</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/apps/openai-bridge-mono.svg" download><div class="thumb white"><img src="../../brand/assets/apps/openai-bridge-mono.svg" alt="OpenAI Bridge monogram"></div><div class="name">OpenAI Bridge</div><div class="meta">SVG &middot; mono AI</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="badges"><h2>Status badges</h2><p class="desc">Stable, Beta, Coming-soon. Mint, lavender, terracotta hexes with code-mono labels.</p><div class="gallery" data-cat="badges"></div></section>
+<!-- ============ Badges ============ -->
+<section class="section" id="badges">
+  <h2>Status badges</h2>
+  <p class="desc">Stable, Beta, Coming-soon. Mint, lavender, terracotta hexes with code-mono labels. Drop next to any app or feature reference.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/badges/status-stable.svg" download><div class="thumb white"><img src="../../brand/assets/badges/status-stable.svg" alt="Stable badge"></div><div class="name">Stable</div><div class="meta">SVG &middot; mint family</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/badges/status-beta.svg" download><div class="thumb white"><img src="../../brand/assets/badges/status-beta.svg" alt="Beta badge"></div><div class="name">Beta</div><div class="meta">SVG &middot; lavender family</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/badges/status-coming.svg" download><div class="thumb white"><img src="../../brand/assets/badges/status-coming.svg" alt="Coming soon badge"></div><div class="name">Coming soon</div><div class="meta">SVG &middot; terracotta family</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="icons"><h2>Icons</h2><p class="desc">Check, warning, info, lock, user, document, hex-bullet. Stroke-only, 24px grid, tokens-aware.</p><div class="gallery" data-cat="icons"></div></section>
+<!-- ============ Icons ============ -->
+<section class="section" id="icons">
+  <h2>Icons</h2>
+  <p class="desc">Stroke-only, 24px grid, 2px stroke. Cobalt by default, override <code>stroke</code> to retint.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/icons/check.svg" download><div class="thumb"><img src="../../brand/assets/icons/check.svg" alt="Check icon"></div><div class="name">Check</div><div class="meta">SVG &middot; 24x24</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/warning.svg" download><div class="thumb"><img src="../../brand/assets/icons/warning.svg" alt="Warning icon"></div><div class="name">Warning</div><div class="meta">SVG &middot; orange stroke</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/info.svg" download><div class="thumb"><img src="../../brand/assets/icons/info.svg" alt="Info icon"></div><div class="name">Info</div><div class="meta">SVG &middot; 24x24</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/lock.svg" download><div class="thumb"><img src="../../brand/assets/icons/lock.svg" alt="Lock icon"></div><div class="name">Lock</div><div class="meta">SVG &middot; 24x24</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/user.svg" download><div class="thumb"><img src="../../brand/assets/icons/user.svg" alt="User icon"></div><div class="name">User</div><div class="meta">SVG &middot; 24x24</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/document.svg" download><div class="thumb"><img src="../../brand/assets/icons/document.svg" alt="Document icon"></div><div class="name">Document</div><div class="meta">SVG &middot; 24x24</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/icons/hex-bullet.svg" download><div class="thumb"><img src="../../brand/assets/icons/hex-bullet.svg" alt="Hex bullet icon"></div><div class="name">Hex bullet</div><div class="meta">SVG &middot; orange fill</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="diagrams"><h2>Diagram parts</h2><p class="desc">Pipeline arrow, hex-prism stacks (lavender / mint / forest / terracotta), swatch-strip header. Lift into a slide as-is.</p><div class="gallery" data-cat="diagrams"></div></section>
+<!-- ============ Diagrams ============ -->
+<section class="section" id="diagrams">
+  <h2>Diagram parts</h2>
+  <p class="desc">Pipeline arrow, hex-prism stacks (lavender / mint / forest / terracotta). Lift into a slide as-is, or stack the prisms left-to-right for a four-app platform diagram.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/diagrams/pipeline-arrow.svg" download><div class="thumb white"><img src="../../brand/assets/diagrams/pipeline-arrow.svg" alt="Pipeline arrow"></div><div class="name">Pipeline arrow</div><div class="meta">SVG &middot; 320x80</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/diagrams/hex-prism-lavender.svg" download><div class="thumb white"><img src="../../brand/assets/diagrams/hex-prism-lavender.svg" alt="Lavender hex prism"></div><div class="name">Hex prism lavender</div><div class="meta">SVG &middot; process</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/diagrams/hex-prism-mint.svg" download><div class="thumb white"><img src="../../brand/assets/diagrams/hex-prism-mint.svg" alt="Mint hex prism"></div><div class="name">Hex prism mint</div><div class="meta">SVG &middot; integrate</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/diagrams/hex-prism-forest.svg" download><div class="thumb white"><img src="../../brand/assets/diagrams/hex-prism-forest.svg" alt="Forest hex prism"></div><div class="name">Hex prism forest</div><div class="meta">SVG &middot; data</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/diagrams/hex-prism-terracotta.svg" download><div class="thumb white"><img src="../../brand/assets/diagrams/hex-prism-terracotta.svg" alt="Terracotta hex prism"></div><div class="name">Hex prism terracotta</div><div class="meta">SVG &middot; documents</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="templates"><h2>Templates</h2><p class="desc">Cover-page wrap, section divider, honeycomb backdrop. Drop into the front of any deliverable.</p><div class="gallery" data-cat="templates"></div></section>
+<!-- ============ Templates ============ -->
+<section class="section" id="templates">
+  <h2>Templates</h2>
+  <p class="desc">Cover-page wrap, section divider, honeycomb backdrop. Drop into the front of any deliverable. Title and subtitle are <code>{{ placeholder }}</code> markers, replace and re-export.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/templates/cover-page.svg" download><div class="thumb white"><img src="../../brand/assets/templates/cover-page.svg" alt="Report cover page"></div><div class="name">Cover page</div><div class="meta">SVG &middot; A4 portrait</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/templates/section-divider.svg" download><div class="thumb white"><img src="../../brand/assets/templates/section-divider.svg" alt="Section divider"></div><div class="name">Section divider</div><div class="meta">SVG &middot; A5 landscape</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/backgrounds/honeycomb-backdrop.svg" download><div class="thumb"><img src="../../brand/assets/backgrounds/honeycomb-backdrop.svg" alt="Honeycomb backdrop"></div><div class="name">Honeycomb backdrop</div><div class="meta">SVG &middot; 800x450</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="team"><h2>Team headshots</h2><p class="desc">Cropped studio photos for the about page, decks, and email signatures. PNGs at 512&times;512 nominal.</p><div class="gallery" data-cat="team"></div></section>
+<!-- ============ Team ============ -->
+<section class="section" id="team">
+  <h2>Team headshots</h2>
+  <p class="desc">Cropped studio photos, used on the about page and in deck closing slides. PNG; the source 512&times;512 squares are committed alongside.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/team/ruben.png" download><div class="thumb"><img src="../../brand/assets/team/ruben.png" alt="Ruben"></div><div class="name">Ruben</div><div class="meta">PNG &middot; CTO</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/marleen.png" download><div class="thumb"><img src="../../brand/assets/team/marleen.png" alt="Marleen"></div><div class="name">Marleen</div><div class="meta">PNG &middot; creative</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/remco.png" download><div class="thumb"><img src="../../brand/assets/team/remco.png" alt="Remco"></div><div class="name">Remco</div><div class="meta">PNG &middot; sales / ops</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/mark.png" download><div class="thumb"><img src="../../brand/assets/team/mark.png" alt="Mark"></div><div class="name">Mark</div><div class="meta">PNG &middot; architect</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/robert.png" download><div class="thumb"><img src="../../brand/assets/team/robert.png" alt="Robert"></div><div class="name">Robert</div><div class="meta">PNG &middot; developer</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/wilco.png" download><div class="thumb"><img src="../../brand/assets/team/wilco.png" alt="Wilco"></div><div class="name">Wilco</div><div class="meta">PNG &middot; teamplayer</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/barry.png" download><div class="thumb"><img src="../../brand/assets/team/barry.png" alt="Barry"></div><div class="name">Barry</div><div class="meta">PNG &middot; team</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/remko.png" download><div class="thumb"><img src="../../brand/assets/team/remko.png" alt="Remko"></div><div class="name">Remko</div><div class="meta">PNG &middot; team</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/team/thijn.png" download><div class="thumb"><img src="../../brand/assets/team/thijn.png" alt="Thijn"></div><div class="name">Thijn</div><div class="meta">PNG &middot; team</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
-<section class="section" id="partners"><h2>Partner marks</h2><p class="desc">Acato, BCT, Centric, Exxellence, GoodCloud, IO, Open Gemeenten, ProColix, Sendent, Shift2, Yard. Greyscale by default; use the colour mark only when the partner is the page subject.</p><div class="gallery" data-cat="partners"></div></section>
+<!-- ============ Partners ============ -->
+<section class="section" id="partners">
+  <h2>Partner marks</h2>
+  <p class="desc">Acato, BCT, Centric, Exxellence, GoodCloud, IO, Open Gemeenten, ProColix, Sendent, Shift2, Yard. Use the colour mark only when the partner is the page subject; otherwise greyscale.</p>
+  <div class="gallery">
+    <a class="asset" href="../../brand/assets/partners/acato.png" download><div class="thumb white"><img src="../../brand/assets/partners/acato.png" alt="Acato"></div><div class="name">Acato</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/bct.png" download><div class="thumb white"><img src="../../brand/assets/partners/bct.png" alt="BCT"></div><div class="name">BCT</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/centric.png" download><div class="thumb white"><img src="../../brand/assets/partners/centric.png" alt="Centric"></div><div class="name">Centric</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/exxellence.png" download><div class="thumb white"><img src="../../brand/assets/partners/exxellence.png" alt="Exxellence"></div><div class="name">Exxellence</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/goodcloud.png" download><div class="thumb white"><img src="../../brand/assets/partners/goodcloud.png" alt="GoodCloud"></div><div class="name">GoodCloud</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/io.webp" download><div class="thumb white"><img src="../../brand/assets/partners/io.webp" alt="IO"></div><div class="name">IO</div><div class="meta">WEBP</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/open-gemeenten.png" download><div class="thumb white"><img src="../../brand/assets/partners/open-gemeenten.png" alt="Open Gemeenten"></div><div class="name">Open Gemeenten</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/procolix.png" download><div class="thumb white"><img src="../../brand/assets/partners/procolix.png" alt="ProColix"></div><div class="name">ProColix</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/sendent.png" download><div class="thumb white"><img src="../../brand/assets/partners/sendent.png" alt="Sendent"></div><div class="name">Sendent</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/shift2.png" download><div class="thumb white"><img src="../../brand/assets/partners/shift2.png" alt="Shift2"></div><div class="name">Shift2</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+    <a class="asset" href="../../brand/assets/partners/yard.png" download><div class="thumb white"><img src="../../brand/assets/partners/yard.png" alt="Yard"></div><div class="name">Yard</div><div class="meta">PNG</div><span class="dl-icon">&darr;</span></a>
+  </div>
+</section>
 
 <div class="footer">
   <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>

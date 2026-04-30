@@ -9,15 +9,23 @@
 <style>
   body { background: var(--c-cobalt-50); padding: 0; }
 
-  /* The card itself — 85mm x 55mm. Two sides side-by-side in preview. */
+  /* The card itself — 85mm x 55mm. Two sides side-by-side in preview.
+     The cut-out mirrors front-to-back: front cuts bottom-right, back
+     cuts bottom-left, so when the physical card flips the bevel
+     stays in the same place. The hex element on each face sits at
+     that same corner and shares its border with the cut. */
   .card-bc {
     width: var(--card-w);
     height: var(--card-h);
     box-shadow: 0 12px 32px rgba(33, 70, 139, 0.18), 0 2px 6px rgba(33, 70, 139, 0.10);
     overflow: hidden;
     position: relative;
-    /* Subtle hex cut on the bottom-right corner — the rectangle "indicates" via a single hex tell */
+  }
+  .bc-front {
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6mm), calc(100% - 6mm) 100%, 0 100%);
+  }
+  .bc-back {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 6mm 100%, 0 calc(100% - 6mm));
   }
   /* ---- Front face ---- */
   .bc-front {
@@ -39,43 +47,48 @@
     margin-top: auto;
   }
   .bc-front .contact span { display: block; }
+  /* Orange hex sits at the bottom-right corner sharing the cut.
+     Card's clip-path bevels the corner, so the hex's bottom-right
+     tip is clipped along the same diagonal — visually one shared
+     edge between accent and cut. */
   .bc-front .accent-hex {
     position: absolute;
-    width: 8mm; height: 9.2mm;
+    width: 18mm; height: 20.7mm;
     clip-path: var(--hex-pointy-top);
     background: var(--c-orange-knvb);
-    top: 5mm; right: 5mm;
+    bottom: 0; right: 0;
   }
 
-  /* ---- Back face ---- */
+  /* ---- Back face ----
+     Monogram hex sits at bottom-left, sharing the (mirrored) cut.
+     QR + caption pinned top-right. Solutions list fills the upper-
+     left region. */
   .bc-back {
     background: white;
     padding: 4.5mm 5mm;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4mm;
-    align-items: stretch;
+    position: relative;
   }
-  .bc-back .left { display: flex; flex-direction: column; justify-content: space-between; }
   .bc-back .monogram-hex {
-    width: 14mm; height: 16mm;
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 18mm; height: 20.7mm;
     clip-path: var(--hex-pointy-top);
     background: var(--c-blue-cobalt);
     color: white;
     display: flex; align-items: center; justify-content: center;
     font-family: var(--conduction-typography-font-family-body);
-    font-size: 11pt; font-weight: 700; letter-spacing: -0.02em;
+    font-size: 12pt; font-weight: 700; letter-spacing: -0.02em;
   }
-  .bc-back .solutions { font-size: 6pt; line-height: 1.6; color: var(--c-cobalt-700); }
-  .bc-back .solutions .h { font-family: var(--conduction-typography-font-family-code); font-size: 5pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 1mm; }
-  .bc-back .solutions .item { display: flex; gap: 1.5mm; align-items: baseline; }
-  .bc-back .solutions .item::before { content: ""; width: 1.4mm; height: 1.6mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; transform: translateY(0.5mm); display: block; }
+  .bc-back .qr-wrap {
+    position: absolute;
+    top: 4.5mm; right: 5mm;
+    display: flex; flex-direction: column; align-items: center;
+  }
   .bc-back .qr {
-    width: 32mm; height: 32mm;
-    align-self: center;
+    width: 26mm; height: 26mm;
     background: white;
     border: 0.3mm solid var(--c-cobalt-100);
-    padding: 1.5mm;
+    padding: 1.2mm;
     display: flex; align-items: center; justify-content: center;
   }
   .bc-back .qr img, .bc-back .qr svg { width: 100%; height: 100%; }
@@ -86,7 +99,15 @@
     text-align: center;
     margin-top: 1mm;
   }
-  .bc-back .qr-wrap { display: flex; flex-direction: column; }
+  .bc-back .solutions {
+    font-size: 6pt; line-height: 1.6; color: var(--c-cobalt-700);
+    /* Sit in the upper-left, narrow column to clear the QR on the
+       right and the monogram hex below. */
+    width: 42mm;
+  }
+  .bc-back .solutions .h { font-family: var(--conduction-typography-font-family-code); font-size: 5pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 1mm; }
+  .bc-back .solutions .item { display: flex; gap: 1.5mm; align-items: baseline; }
+  .bc-back .solutions .item::before { content: ""; width: 1.4mm; height: 1.6mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; transform: translateY(0.5mm); display: block; }
 
   .todo {
     margin-top: var(--space-12);
@@ -144,19 +165,17 @@
 
       <div>
         <div class="card-bc bc-back">
-          <div class="left">
-            <div class="monogram-hex">RvdL</div>
-            <div class="solutions">
-              <div class="h">Wat we bouwen</div>
-              <div class="item">Apps op Nextcloud</div>
-              <div class="item">Open registers &amp; catalogi</div>
-              <div class="item">Documentwerk dat klopt</div>
-            </div>
+          <div class="solutions">
+            <div class="h">Wat we bouwen</div>
+            <div class="item">Apps op Nextcloud</div>
+            <div class="item">Open registers &amp; catalogi</div>
+            <div class="item">Documentwerk dat klopt</div>
           </div>
           <div class="qr-wrap">
             <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="QR for LinkedIn invite"></div>
             <div class="qr-caption">Connect on LinkedIn</div>
           </div>
+          <span class="monogram-hex">RvdL</span>
         </div>
         <span class="specimen-label">Back · solutions + LinkedIn</span>
       </div>

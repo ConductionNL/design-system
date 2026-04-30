@@ -37,7 +37,8 @@
     padding-bottom: 5mm; margin-bottom: 6mm;
   }
   .invoice-head .brand { display: flex; align-items: center; gap: 4mm; }
-  .invoice-head .brand .hex { width: 9mm; height: 10.4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .invoice-head .brand .logo { width: 11mm; height: 11mm; flex-shrink: 0; }
+  .invoice-head .brand .logo img { width: 100%; height: 100%; display: block; }
   .invoice-head .brand .word { font-size: 14pt; font-weight: 700; letter-spacing: -0.01em; }
   .invoice-head .doctype {
     font-family: var(--conduction-typography-font-family-code);
@@ -136,6 +137,20 @@
   .pay-strip .fine {
     font-size: 8.5pt; color: var(--c-cobalt-200); line-height: 1.5; margin-top: 2mm;
   }
+  .pay-strip .pay-cta {
+    display: inline-block;
+    margin-top: 3mm;
+    padding: 3mm 6mm;
+    background: var(--c-orange-knvb);
+    color: white;
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 10pt; font-weight: 600;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    border-radius: 0.8mm;
+    clip-path: var(--clip-cut-tlbr-sm);
+  }
+  .pay-strip .pay-cta::after { content: " \2192"; }
   .pay-strip .qr-pay { width: 32mm; height: 32mm; background: white; padding: 1.5mm; }
   .pay-strip .qr-pay img { width: 100%; height: 100%; }
   .pay-strip .qr-cap {
@@ -191,7 +206,7 @@
       <span class="specimen-label" style="margin-bottom: var(--space-3)">Filled example &middot; Acme BV &middot; Nederlands</span>
       <div class="paper paper--A4 invoice">
         <div class="invoice-head">
-          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="brand"><span class="logo"><img src="../../brand/assets/avatar-conduction-on-white.svg" alt="Conduction logo"></span><span class="word">Conduction</span></div>
           <div class="doctype">Factuur<div class="id">CND-INV-2026-118</div></div>
         </div>
 
@@ -249,9 +264,10 @@
             <div class="h">Betaling</div>
             <div class="iban">{{ IBAN, te bevestigen }}</div>
             <div class="fine">T.n.v. Conduction BV &middot; o.v.v. <strong>CND-INV-2026-118</strong> &middot; binnen 30 dagen</div>
+            <a class="pay-cta" href="https://pay.conduction.nl/CND-INV-2026-118">Betaal online</a>
           </div>
           <div>
-            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="Pay link QR (placeholder)"></div>
+            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="QR opens pay.conduction.nl/CND-INV-2026-118"></div>
             <div class="qr-cap">scan to pay</div>
           </div>
         </div>
@@ -273,7 +289,7 @@
       <span class="specimen-label" style="margin-bottom: var(--space-3)">Empty template &middot; placeholders only</span>
       <div class="paper paper--A4 invoice">
         <div class="invoice-head">
-          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="brand"><span class="logo"><img src="../../brand/assets/avatar-conduction-on-white.svg" alt="Conduction logo"></span><span class="word">Conduction</span></div>
           <div class="doctype">Factuur<div class="id">{{ #ID }}</div></div>
         </div>
         <div class="opener">
@@ -304,9 +320,10 @@
             <div class="h">Betaling</div>
             <div class="iban">{{ IBAN }}</div>
             <div class="fine">T.n.v. Conduction BV &middot; o.v.v. <strong>{{ #ID }}</strong> &middot; binnen {{ termijn }}</div>
+            <a class="pay-cta" href="https://pay.conduction.nl/{{ #ID }}">Betaal online</a>
           </div>
           <div>
-            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="Pay link QR placeholder"></div>
+            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="QR opens pay.conduction.nl"></div>
             <div class="qr-cap">scan to pay</div>
           </div>
         </div>

@@ -17,6 +17,9 @@
  *     <pd-list position="bottom-center" family="builder" label="App Builder" badge="COMING SOON">
  *       ...
  *     </pd-list>
+ *     <pd-list position="bottom-right" family="integrate" label="Integrated Apps" columns="2">
+ *       ...   <!-- columns≥2 splits items into N side-by-side columns -->
+ *     </pd-list>
  *     <pd-flow from="top-left:left" to="bottom-left:left" shape="c-bracket-left"></pd-flow>
  *     <pd-flow from="bottom-center:left" to="bottom-left:bottom" shape="l-h"></pd-flow>
  *   </platform-diagram>
@@ -141,11 +144,13 @@
         glyph:      svg ? svg.cloneNode(true) : null,
       });
     }
+    const cols = parseInt(el.getAttribute('columns') || '1', 10);
     return {
       position: el.getAttribute('position'),
       family:   el.getAttribute('family') || '',
       label:    el.getAttribute('label') || '',
       badge:    el.getAttribute('badge') || '',
+      columns:  Number.isFinite(cols) && cols > 1 ? cols : 1,
       items,
     };
   }
@@ -154,7 +159,8 @@
     const wrap = document.createElement('div');
     const positionClass = POSITION_CLASS[list.position] || list.position;
     const familyClass   = list.family ? `fam-${list.family}` : '';
-    wrap.className = `box-wrap ${positionClass} ${familyClass}`.trim();
+    const colsClass     = list.columns > 1 ? `cols-${list.columns}` : '';
+    wrap.className = `box-wrap ${positionClass} ${familyClass} ${colsClass}`.trim();
 
     if (list.badge) {
       const badge = document.createElement('span');
@@ -164,9 +170,9 @@
     }
 
     const box = document.createElement('div');
-    box.className = 'box';
+    box.className = 'box' + (list.columns > 1 ? ` cols-${list.columns}` : '');
 
-    for (const item of list.items) {
+    function makeRow(item) {
       const row = document.createElement('div');
       row.className = 'row';
 
@@ -195,7 +201,25 @@
         row.appendChild(desc);
       }
 
-      box.appendChild(row);
+      return row;
+    }
+
+    if (list.columns > 1) {
+      // Split items across N columns, filling top-to-bottom (col 1 first).
+      // Each column wraps its rows so .row + .row borders only apply within
+      // a single column.
+      const perCol = Math.ceil(list.items.length / list.columns);
+      for (let c = 0; c < list.columns; c++) {
+        const col = document.createElement('div');
+        col.className = 'col';
+        const start = c * perCol;
+        for (const item of list.items.slice(start, start + perCol)) {
+          col.appendChild(makeRow(item));
+        }
+        if (col.childElementCount > 0) box.appendChild(col);
+      }
+    } else {
+      for (const item of list.items) box.appendChild(makeRow(item));
     }
 
     wrap.appendChild(box);

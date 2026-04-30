@@ -118,6 +118,13 @@ platform-diagram .row {
   position: relative;
 }
 platform-diagram .row + .row { border-top: 1px solid var(--c-cobalt-50); }
+
+/* Multi-column box: rows are wrapped in <.col> so the .row+.row border only
+   draws within a single column. The columns sit side by side with a thin
+   divider between them. */
+platform-diagram .box.cols-2 { display: flex; gap: 16px; padding: 14px 16px; }
+platform-diagram .box.cols-2 .col { flex: 1 1 0; min-width: 0; }
+platform-diagram .box.cols-2 .col + .col { border-left: 1px solid var(--c-cobalt-50); padding-left: 16px; }
 platform-diagram .row .name { font-weight: 500; transition: color 140ms ease; }
 platform-diagram .row .meta {
   margin-left: auto;
@@ -232,6 +239,8 @@ platform-diagram .box-wrap.tech-core  { grid-column: 1; grid-row: 1; justify-sel
 platform-diagram .box-wrap.solutions  { grid-column: 3; grid-row: 1; justify-self: start; align-self: end;   min-width: 220px; max-width: 260px; width: 100%; }
 platform-diagram .box-wrap.workspace  { grid-column: 1; grid-row: 2; justify-self: end;   align-self: start; min-width: 240px; max-width: 280px; width: 100%; }
 platform-diagram .box-wrap.integrated { grid-column: 3; grid-row: 2; justify-self: start; align-self: start; min-width: 220px; max-width: 260px; width: 100%; }
+/* 2-column variant needs more horizontal room — grows leftward into the gap */
+platform-diagram .box-wrap.integrated.cols-2 { max-width: 460px; }
 
 /* List inner corner anchors near the midpoint of the corresponding hex side,
    nudged inward so the list overlaps its hex on both axes. Top lists are

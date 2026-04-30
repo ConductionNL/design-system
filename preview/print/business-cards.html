@@ -9,11 +9,13 @@
 <style>
   body { background: var(--c-cobalt-50); padding: 0; }
 
-  /* The card itself — 85mm x 55mm. Two sides side-by-side in preview.
-     The cut-out mirrors front-to-back: front cuts bottom-right, back
-     cuts bottom-left, so when the physical card flips the bevel
-     stays in the same place. The hex element on each face sits at
-     that same corner and shares its border with the cut. */
+  /* The card itself — 85mm x 55mm. The cut-out diagonal is set
+     to the same 30° angle as the bottom-right side of a pointy-top
+     hex, so the hex element in the corner sits with one side
+     parallel to the cut. Cut runs 4mm vertically by 4*sqrt(3)mm
+     (~6.93mm) horizontally; ratio gives slope -1/sqrt(3).
+     The cut mirrors front-to-back: front bottom-right, back
+     bottom-left. */
   .card-bc {
     width: var(--card-w);
     height: var(--card-h);
@@ -22,10 +24,10 @@
     position: relative;
   }
   .bc-front {
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6mm), calc(100% - 6mm) 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4mm), calc(100% - 6.93mm) 100%, 0 100%);
   }
   .bc-back {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 6mm 100%, 0 calc(100% - 6mm));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 6.93mm 100%, 0 calc(100% - 4mm));
   }
   /* ---- Front face ---- */
   .bc-front {
@@ -47,16 +49,15 @@
     margin-top: auto;
   }
   .bc-front .contact span { display: block; }
-  /* Orange hex sits at the bottom-right corner sharing the cut.
-     Card's clip-path bevels the corner, so the hex's bottom-right
-     tip is clipped along the same diagonal — visually one shared
-     edge between accent and cut. */
+  /* Orange hex sits at bottom-right with a 2mm inset; its
+     bottom-right side runs parallel to (and ~2mm inside of) the
+     card's cut diagonal. */
   .bc-front .accent-hex {
     position: absolute;
     width: 18mm; height: 20.7mm;
     clip-path: var(--hex-pointy-top);
     background: var(--c-orange-knvb);
-    bottom: 0; right: 0;
+    bottom: 2mm; right: 2mm;
   }
 
   /* ---- Back face ----
@@ -68,9 +69,12 @@
     padding: 4.5mm 5mm;
     position: relative;
   }
+  /* Cobalt monogram hex inset 2mm from bottom-left, mirror of the
+     front orange hex. Bottom-left side runs parallel to the
+     mirrored cut. */
   .bc-back .monogram-hex {
     position: absolute;
-    bottom: 0; left: 0;
+    bottom: 2mm; left: 2mm;
     width: 18mm; height: 20.7mm;
     clip-path: var(--hex-pointy-top);
     background: var(--c-blue-cobalt);

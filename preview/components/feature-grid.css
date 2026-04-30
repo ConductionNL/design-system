@@ -1,0 +1,116 @@
+/* Feature grid — compact, multi-column list of spec-grade features.
+   Use when an app has 10 to 60+ features that don't all warrant a USP
+   block. Each item shows a status hex + a short label always; the full
+   description reveals on hover and on keyboard focus.
+
+   Status hex (default mint = stable):
+     <span class="h"></span>            stable
+     <span class="h beta"></span>       beta
+     <span class="h soon"></span>       coming soon
+
+   Optional <h4 class="group"> headers split the grid into named sections.
+
+   Markup pattern:
+     <div class="feature-grid">
+       <h4 class="group">Core capabilities</h4>
+       <div class="item" tabindex="0" title="Full description, also for screen readers.">
+         <span class="h"></span>
+         <span class="label">Short label</span>
+         <span class="tip">Full description, shown on hover/focus.</span>
+       </div>
+       ...
+     </div>
+*/
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 32px;
+  align-items: start;
+}
+
+.feature-grid .group {
+  grid-column: 1 / -1;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin: 24px 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.feature-grid .group:first-child { margin-top: 0; }
+
+.feature-grid .item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--c-cobalt-800);
+  cursor: help;
+  outline: none;
+  border-radius: var(--radius-sm);
+  transition: background 140ms ease;
+}
+.feature-grid .item:hover,
+.feature-grid .item:focus-visible {
+  background: var(--c-cobalt-50);
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.feature-grid .item .h {
+  width: 10px; height: 12px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+.feature-grid .item .h.beta { background: var(--c-orange-knvb); }
+.feature-grid .item .h.soon { background: var(--c-cobalt-300); }
+
+.feature-grid .item .label {
+  flex: 1;
+  line-height: 1.3;
+}
+
+/* Tooltip: appears above the item on hover or keyboard focus.
+   Native `title` on the .item gives screen readers and touch users a
+   fallback. */
+.feature-grid .item .tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: var(--c-cobalt-900);
+  color: white;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.5;
+  width: max-content;
+  max-width: 280px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  transform: translateY(4px);
+  z-index: 20;
+  box-shadow: var(--shadow-2);
+  font-weight: 400;
+}
+.feature-grid .item .tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  border: 6px solid transparent;
+  border-top-color: var(--c-cobalt-900);
+}
+.feature-grid .item:hover .tip,
+.feature-grid .item:focus-visible .tip {
+  opacity: 1;
+  transform: translateY(0);
+}

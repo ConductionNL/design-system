@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../tokens.css">
 <link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="../components/partner-cards.css">
 <style>
   body { margin: 0; background: white; }
 
@@ -111,108 +112,9 @@
   }
   .tier-explain li .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); flex-shrink: 0; margin-top: 5px; }
 
-  /* Partner directory */
+  /* Partner directory grid (cards themselves live in components/partner-cards.css). */
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
-  .grid .partner-card.become {
-    grid-column: span 2;
-    background: var(--c-cobalt-50);
-    border: 1px dashed var(--c-cobalt-300);
-    box-shadow: none;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 32px;
-  }
-  .grid .partner-card.become:hover { border-color: var(--c-blue-cobalt); transform: none; box-shadow: var(--shadow-1); }
-  .grid .partner-card.become .become-eyebrow {
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--c-cobalt-400);
-    margin-bottom: 8px;
-  }
-  .grid .partner-card.become h4 {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
-    color: var(--c-cobalt-900); margin: 0 0 6px;
-  }
-  .grid .partner-card.become p {
-    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
-    margin: 0 0 14px;
-    max-width: 56ch;
-  }
-  .grid .partner-card.become .arrow {
-    color: var(--c-blue-cobalt); font-weight: 600; font-size: 14px;
-  }
-  .partner-card {
-    background: white;
-    border: 1px solid var(--c-cobalt-100);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    display: flex; flex-direction: column; gap: 16px;
-    box-shadow: var(--shadow-1);
-    text-decoration: none; color: inherit;
-    transition: all 160ms ease;
-    position: relative;
-  }
-  .partner-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
-  .pc-tier {
-    position: absolute;
-    top: 16px; right: 16px;
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 4px 9px;
-    border-radius: var(--radius-pill);
-    font-weight: 600;
-    background: var(--c-cobalt-50); color: var(--c-cobalt-700);
-  }
-  .partner-card.certified .pc-tier { background: var(--c-gold-500); color: var(--c-cobalt-900); }
-  .partner-card.strategic { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
-  .partner-card.strategic .pc-tier { background: white; color: var(--c-blue-cobalt); }
-  /* Logo lock-up, height-capped, width-capped, on a subtle white panel so
-     dark / transparent logos still read on the Strategic (cobalt-fill) card.
-     The tier pill in the top-right corner conveys tier; the avatar doesn't. */
-  .pc-avatar {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    background: white;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    height: 36px;
-    box-sizing: content-box;
-  }
-  .pc-avatar img {
-    max-height: 36px;
-    max-width: 140px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
-  }
-  .pc-name { font-size: 18px; font-weight: 700; color: var(--c-cobalt-900); }
-  .partner-card.strategic .pc-name { color: white; }
-  .pc-summary { font-size: 14px; line-height: 1.55; color: var(--c-cobalt-700); }
-  .partner-card.strategic .pc-summary { color: rgba(255,255,255,0.78); }
-  .pc-apps {
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid var(--c-cobalt-100);
-    display: flex; gap: 6px; flex-wrap: wrap;
-  }
-  .partner-card.strategic .pc-apps { border-top-color: rgba(255,255,255,0.18); }
-  .pc-apps .app-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--c-cobalt-50);
-    color: var(--c-cobalt-700);
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    font-size: 12px;
-    font-family: var(--conduction-typography-font-family-code);
-  }
-  .partner-card.strategic .pc-apps .app-pill { background: rgba(255,255,255,0.12); color: white; }
-  .pc-apps .app-pill .h { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
-  .partner-card.strategic .pc-apps .app-pill .h { background: var(--c-orange-knvb); }
-  /* Nextcloud-supplier pill: real Nextcloud logo + brand-cited text, with native tooltip on hover. */
-  .pc-apps .app-pill.nextcloud { cursor: help; }
-  .pc-apps .app-pill.nextcloud img { width: 14px; height: 14px; display: block; flex-shrink: 0; }
+  .grid .partner-card.become { grid-column: span 2; }
 
   /* Two-form section */
   .forms { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -431,7 +333,7 @@
   <div class="grid">
 
     <!-- ============== Strategic (1) ============== -->
-    <a href="partner-detail.html" class="partner-card strategic">
+    <a href="partner-detail.html" class="partner-card tier-strategic">
       <span class="pc-tier">Strategic</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/acato.png" alt="Acato logo"></div>
       <div class="pc-name">Acato</div>
@@ -444,7 +346,7 @@
     </a>
 
     <!-- ============== Certified (4) ============== -->
-    <a href="partner-detail.html" class="partner-card certified">
+    <a href="partner-detail.html" class="partner-card tier-certified">
       <span class="pc-tier">Certified</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/centric.png" alt="Centric logo"></div>
       <div class="pc-name">Centric</div>
@@ -457,7 +359,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card certified">
+    <a href="partner-detail.html" class="partner-card tier-certified">
       <span class="pc-tier">Certified</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/procolix.png" alt="Procolix logo"></div>
       <div class="pc-name">Procolix</div>
@@ -469,7 +371,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card certified">
+    <a href="partner-detail.html" class="partner-card tier-certified">
       <span class="pc-tier">Certified</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/goodcloud.png" alt="The Goodcloud logo"></div>
       <div class="pc-name">The Goodcloud</div>
@@ -482,7 +384,7 @@
     </a>
 
     <!-- ============== Partner (6) ============== -->
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/bct.png" alt="BCT logo"></div>
       <div class="pc-name">BCT</div>
@@ -494,7 +396,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/open-gemeenten.png" alt="Open Gemeenten logo"></div>
       <div class="pc-name">Open Gemeenten</div>
@@ -506,7 +408,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/exxellence.png" alt="Exxellence logo"></div>
       <div class="pc-name">Exxellence</div>
@@ -517,7 +419,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/yard.png" alt="YARD logo"></div>
       <div class="pc-name">YARD</div>
@@ -528,7 +430,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/io.webp" alt="iO logo"></div>
       <div class="pc-name">iO</div>
@@ -539,7 +441,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/shift2.png" alt="Shift2 logo"></div>
       <div class="pc-name">Shift2</div>
@@ -550,7 +452,7 @@
       </div>
     </a>
 
-    <a href="partner-detail.html" class="partner-card">
+    <a href="partner-detail.html" class="partner-card tier-partner">
       <span class="pc-tier">Partner</span>
       <div class="pc-avatar"><img src="../../brand/assets/partners/sendent.png" alt="Sendent logo"></div>
       <div class="pc-name">Sendent</div>

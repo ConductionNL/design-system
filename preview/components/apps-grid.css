@@ -1,0 +1,63 @@
+/* App cards — canonical card for app previews. Used in the apps-row
+   on the landing page, in the apps-grid component, and anywhere else
+   we list apps in a 3-up grid. Pages link this file; do not re-inline.
+
+   The richer apps-catalog grid uses its own .app pattern with a
+   filter-aware badges column. That layout is intentionally distinct
+   and stays inlined on apps-catalog.html for now. */
+
+.app-card {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-decoration: none; color: inherit;
+  transition: all 160ms ease;
+  display: flex; flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+}
+.app-card:hover { border-color: var(--c-blue-cobalt); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+
+.app-card .icon-wrap {
+  width: 56px; height: 64px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.app-card .icon-wrap svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+.app-card .name { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.app-card .tagline,
+.app-card .desc { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.5; }
+
+.app-card .meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto; padding-top: 20px;
+  border-top: 1px solid var(--c-cobalt-100);
+}
+
+/* Status hex-badge (Stable / Beta / Experimental). */
+.app-card .hex-badge,
+.app-card .badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--c-cobalt-700);
+}
+.app-card .hex-badge .h,
+.app-card .badge .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
+
+.app-card .ver { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
+
+.app-card .install {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--c-blue-cobalt); font-weight: 500; font-size: 14px;
+  text-decoration: none;
+  margin-top: 4px;
+}
+.app-card:hover .install { color: var(--c-orange-knvb); }
+.app-card .install span.arrow { transition: transform 160ms; }
+.app-card:hover .install span.arrow { transform: translateX(3px); }

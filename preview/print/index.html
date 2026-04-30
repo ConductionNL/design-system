@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conduction Design System · Print</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); }
+
+  .hero {
+    background: var(--conduction-color-background-inverse);
+    color: white;
+    padding: 80px 64px 64px;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: rgba(255,255,255,0.6); text-decoration: none; }
+  .hero .crumb a:hover { color: white; }
+  .hero h1 { color: white; font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; max-width: 18ch; }
+  .hero p { color: rgba(255,255,255,0.8); font-size: 18px; margin-top: var(--space-5); max-width: 64ch; line-height: 1.5; }
+  .hero .meta { display: flex; gap: var(--space-8); margin-top: var(--space-8); font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: rgba(255,255,255,0.6); flex-wrap: wrap; }
+  .hero .meta span strong { display: block; color: white; font-family: var(--conduction-typography-font-family-body); font-size: 15px; font-weight: 600; margin-top: 4px; }
+
+  .group-label {
+    max-width: 1280px;
+    margin: 64px auto 0;
+    padding: 0 var(--space-12);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-4);
+  }
+
+  .grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  .tile {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-1);
+    transition: all 160ms ease;
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+    border: 1px solid transparent;
+    min-height: 220px;
+  }
+  .tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); border-color: var(--c-cobalt-200); }
+  .tile.todo { background: var(--c-cobalt-50); pointer-events: none; opacity: 0.7; }
+  .tile.todo .pill { background: var(--c-cobalt-100); color: var(--c-cobalt-700); }
+  .tile .row { display: flex; align-items: center; justify-content: space-between; }
+  .tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
+  .tile h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .tile p { color: var(--c-cobalt-700); font-size: 13px; line-height: 1.45; }
+  .tile .pill { display: inline-block; align-self: flex-start; font-family: var(--conduction-typography-font-family-code); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: var(--radius-pill); background: var(--c-cobalt-50); color: var(--c-cobalt-700); }
+  .tile .visual { margin-top: auto; height: 70px; display: flex; align-items: center; gap: var(--space-2); }
+  .arrow { color: var(--c-cobalt-400); font-size: 18px; transition: transform 160ms; }
+  .tile:hover .arrow { color: var(--c-orange-knvb); transform: translateX(4px); }
+
+  /* Mini-mock visuals — tiny representations of each artefact. */
+  .mock-card { width: 92px; height: 56px; background: var(--c-blue-cobalt); border-radius: 3px; padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between; }
+  .mock-card .mc-name { color: white; font-size: 8px; font-weight: 700; }
+  .mock-card .mc-role { color: rgba(255,255,255,0.7); font-size: 6px; }
+  .mock-card .mc-qr { width: 14px; height: 14px; background: white; border-radius: 1px; align-self: flex-end; }
+  .mock-paper { width: 56px; height: 76px; background: white; border: 1px solid var(--c-cobalt-200); border-radius: 2px; padding: 5px; display: flex; flex-direction: column; gap: 2px; }
+  .mock-paper .mp-h { height: 6px; background: var(--c-blue-cobalt); border-radius: 1px; width: 50%; }
+  .mock-paper .mp-l { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
+  .mock-paper .mp-foot { margin-top: auto; height: 3px; background: var(--c-orange-knvb); border-radius: 1px; width: 30%; }
+  .mock-env { width: 100px; height: 60px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-200); border-radius: 2px; position: relative; }
+  .mock-env::after { content: ""; position: absolute; inset: 0; border-bottom: 30px solid var(--c-cobalt-100); border-left: 50px solid transparent; border-right: 50px solid transparent; height: 0; }
+  .mock-banner { width: 32px; height: 76px; background: var(--c-blue-cobalt); border-radius: 2px; display: flex; align-items: flex-start; justify-content: center; padding-top: 5px; }
+  .mock-banner span { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: white; }
+  .mock-slide { width: 100px; height: 56px; background: var(--c-cobalt-900); border-radius: 3px; padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between; }
+  .mock-slide .ms-t { color: white; font-size: 8px; font-weight: 600; }
+  .mock-slide .ms-d { display: flex; gap: 2px; }
+  .mock-slide .ms-d span { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: rgba(255,255,255,0.4); }
+  .mock-slide .ms-d span:first-child { background: var(--c-orange-knvb); }
+  .mock-sig { width: 100%; max-width: 180px; height: 50px; background: white; border: 1px solid var(--c-cobalt-100); border-radius: 3px; padding: 6px 8px; display: flex; gap: 6px; align-items: center; }
+  .mock-sig .ms-av { width: 32px; height: 32px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .mock-sig .ms-text { display: flex; flex-direction: column; gap: 2px; }
+  .mock-sig .ms-text .l1 { height: 5px; width: 60px; background: var(--c-cobalt-700); border-radius: 1px; }
+  .mock-sig .ms-text .l2 { height: 3px; width: 50px; background: var(--c-cobalt-400); border-radius: 1px; }
+  .mock-sig .ms-text .l3 { height: 3px; width: 40px; background: var(--c-orange-knvb); border-radius: 1px; }
+
+  .footer {
+    max-width: 1280px;
+    margin: 80px auto 64px;
+    padding: 0 var(--space-12);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .footer code { font-family: var(--conduction-typography-font-family-code); }
+  .footer a { color: var(--c-cobalt-400); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Print</div>
+  <h1>Print &amp; deck artefacts.</h1>
+  <p>The paper side of the kit. Business cards, letterhead, reports, quotations, invoices, envelopes, leave-behind one-pagers, app fact-sheets, banners, deck templates, and email signatures. Tokens-driven HTML you can print to PDF today, ready for bleed-aware press output later. Edit a token, every artefact updates.</p>
+  <div class="meta">
+    <span>Format<strong>HTML &rarr; PDF</strong></span>
+    <span>Sizes<strong>A4 · 85&times;55mm · C5 · 16:9</strong></span>
+    <span>Bleed<strong>0mm now &rarr; 3mm later</strong></span>
+    <span>Languages<strong>NL + EN</strong></span>
+  </div>
+</div>
+
+<div class="group-label">Stationery &amp; identity</div>
+
+<div class="grid">
+
+  <a class="tile" href="business-cards.html">
+    <div class="row"><span class="num">11.01</span><span class="arrow">&rarr;</span></div>
+    <h3>Business cards</h3>
+    <p>85&times;55mm, one front + back layout, QR to LinkedIn, one card per team member. Example card live, others slated.</p>
+    <span class="pill">85 &times; 55 mm</span>
+    <div class="visual"><div class="mock-card"><span class="mc-name">Conduction</span><div style="display:flex; align-items:flex-end; justify-content:space-between;"><span class="mc-role">Ruben<br>CTO</span><span class="mc-qr"></span></div></div></div>
+  </a>
+
+  <a class="tile" href="letterhead.html">
+    <div class="row"><span class="num">11.02</span><span class="arrow">&rarr;</span></div>
+    <h3>Letterhead</h3>
+    <p>A4 portrait. Cobalt header, hex-line footer, kvk &amp; btw block. Continuation page strips the header.</p>
+    <span class="pill">A4 &middot; 210 &times; 297 mm</span>
+    <div class="visual"><div class="mock-paper"><div class="mp-h"></div><div class="mp-l"></div><div class="mp-l" style="width:80%"></div><div class="mp-l"></div><div class="mp-l" style="width:60%"></div><div class="mp-foot"></div></div></div>
+  </a>
+
+  <a class="tile" href="envelope.html">
+    <div class="row"><span class="num">11.03</span><span class="arrow">&rarr;</span></div>
+    <h3>Envelopes</h3>
+    <p>C5 (folded A4) and C4 (flat A4). Sender block top-left, hex motif on flap, postage clear-zone respected.</p>
+    <span class="pill">C5 &middot; C4 &middot; DL</span>
+    <div class="visual"><div class="mock-env"></div></div>
+  </a>
+
+  <a class="tile" href="email-signature.html">
+    <div class="row"><span class="num">11.04</span><span class="arrow">&rarr;</span></div>
+    <h3>Email signature</h3>
+    <p>HTML-table layout for Outlook + Gmail. Hex avatar, name, role, contact lines, NL/EN one-liner. Copy-paste ready.</p>
+    <span class="pill">Outlook &middot; Gmail safe</span>
+    <div class="visual"><div class="mock-sig"><div class="ms-av"></div><div class="ms-text"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div></div></div>
+  </a>
+
+</div>
+
+<div class="group-label">Documents</div>
+
+<div class="grid">
+
+  <a class="tile" href="report.html">
+    <div class="row"><span class="num">11.05</span><span class="arrow">&rarr;</span></div>
+    <h3>Report</h3>
+    <p>Cover page, content body with running header, dedicated back page. Template version + filled "Acme BV" example.</p>
+    <span class="pill">A4 &middot; cover + body + back</span>
+    <div class="visual"><div class="mock-paper"><div class="mp-h" style="width:80%"></div><div class="mp-l"></div><div class="mp-l" style="width:50%"></div><div style="height:18px; background: var(--c-blue-cobalt); border-radius:1px; margin-top:auto;"></div></div></div>
+  </a>
+
+  <a class="tile" href="quotation.html">
+    <div class="row"><span class="num">11.06</span><span class="arrow">&rarr;</span></div>
+    <h3>Quotation</h3>
+    <p>Offerte. Line-items, btw breakdown, validity, signature box. Template + filled example, NL + EN.</p>
+    <span class="pill">A4 &middot; NL + EN</span>
+    <div class="visual"><div class="mock-paper"><div class="mp-h" style="width:60%"></div><div class="mp-l" style="width:90%; height:3px"></div><div class="mp-l" style="width:90%; height:3px"></div><div class="mp-l" style="width:90%; height:3px"></div><div class="mp-l" style="width:50%; height:4px; background: var(--c-orange-knvb)"></div></div></div>
+  </a>
+
+  <a class="tile" href="invoice.html">
+    <div class="row"><span class="num">11.07</span><span class="arrow">&rarr;</span></div>
+    <h3>Invoice</h3>
+    <p>Factuur. Invoice number, IBAN, payment terms, btw block. Template + filled example, NL + EN.</p>
+    <span class="pill">A4 &middot; NL + EN</span>
+    <div class="visual"><div class="mock-paper"><div class="mp-h" style="width:50%"></div><div class="mp-l" style="height:3px"></div><div class="mp-l" style="height:3px; width:80%"></div><div class="mp-l" style="height:3px"></div><div style="margin-top:auto; height:6px; background:var(--c-blue-cobalt); border-radius:1px;"></div></div></div>
+  </a>
+
+  <a class="tile" href="one-pager.html">
+    <div class="row"><span class="num">11.08</span><span class="arrow">&rarr;</span></div>
+    <h3>Leave-behind one-pager</h3>
+    <p>A4 double-sided. NL on the front, EN on the back, identical content. "Wat is Conduction" for in-person hand-off.</p>
+    <span class="pill">A4 &middot; double-sided</span>
+    <div class="visual"><div class="mock-paper"><div class="mp-h"></div><div class="mp-l"></div><div class="mp-l"></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:2px; flex:1;"><div style="background: var(--c-cobalt-100); border-radius:1px;"></div><div style="background: var(--c-blue-cobalt); border-radius:1px;"></div></div></div></div>
+  </a>
+
+  <a class="tile" href="app-factsheet.html">
+    <div class="row"><span class="num">11.09</span><span class="arrow">&rarr;</span></div>
+    <h3>App fact-sheet</h3>
+    <p>Single A4 per app. Hex glyph, three-line tagline, what it does, who it's for, install link. Generic template + OpenCatalogi example.</p>
+    <span class="pill">A4 &middot; one per app</span>
+    <div class="visual"><div class="mock-paper"><div style="display:flex; gap:3px; align-items:center;"><span style="width:10px; height:12px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);"></span><div class="mp-h" style="width:50%; flex:1"></div></div><div class="mp-l"></div><div class="mp-l" style="width:80%"></div><div class="mp-l" style="width:70%"></div><div class="mp-l" style="width:60%"></div></div></div>
+  </a>
+
+</div>
+
+<div class="group-label">Decks &amp; signage</div>
+
+<div class="grid">
+
+  <a class="tile" href="../decks/index.html" style="grid-column: span 2;">
+    <div class="row"><span class="num">11.10</span><span class="arrow">&rarr;</span></div>
+    <h3>Slide decks</h3>
+    <p>Twelve layouts in one template, 16:9 landscape. Title, agenda, content, two-column, full-bleed quote, app spotlight, comparison, customer logo wall, stats strip, section divider, closing, contact. Lift the layout you need.</p>
+    <span class="pill">12 layouts &middot; 16:9</span>
+    <div class="visual" style="gap: var(--space-3);">
+      <div class="mock-slide"><span class="ms-t">Title slide</span><div class="ms-d"><span></span><span></span><span></span></div></div>
+      <div class="mock-slide" style="background: white; border: 1px solid var(--c-cobalt-200);"><span class="ms-t" style="color: var(--c-blue-cobalt);">Two-column</span><div class="ms-d" style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px;"><div style="height:14px; background: var(--c-cobalt-100); border-radius:1px;"></div><div style="height:14px; background: var(--c-cobalt-100); border-radius:1px;"></div></div></div>
+      <div class="mock-slide" style="background: var(--c-blue-cobalt);"><span class="ms-t">Full-bleed quote</span><div class="ms-d"><span style="background:white; opacity: 0.4;"></span></div></div>
+    </div>
+  </a>
+
+  <a class="tile" href="banner.html">
+    <div class="row"><span class="num">11.11</span><span class="arrow">&rarr;</span></div>
+    <h3>Banners</h3>
+    <p>Roll-up (85&times;200cm), event backdrop (3&times;2m), and the social header set: LinkedIn, X, Facebook. Same kit, three pixel densities.</p>
+    <span class="pill">Print + web</span>
+    <div class="visual" style="gap: var(--space-2);"><div class="mock-banner"><span></span></div><div class="mock-banner" style="height: 50px; background: var(--c-cobalt-700);"><span></span></div><div class="mock-banner" style="height: 30px; width: 80px; background: linear-gradient(45deg, var(--c-nextcloud-blue), var(--c-nextcloud-cyan));"><span></span></div></div>
+  </a>
+
+</div>
+
+<div class="footer">
+  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span><a href="../index.html">&larr; Back to system</a></span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conduction Design System · Decks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); }
+
+  .hero {
+    background: var(--conduction-color-background-inverse);
+    color: white;
+    padding: 80px 64px 64px;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: rgba(255,255,255,0.6); text-decoration: none; }
+  .hero h1 { color: white; font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
+  .hero p { color: rgba(255,255,255,0.8); font-size: 18px; margin-top: var(--space-5); max-width: 64ch; line-height: 1.5; }
+  .hero .meta { display: flex; gap: var(--space-8); margin-top: var(--space-8); font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: rgba(255,255,255,0.6); flex-wrap: wrap; }
+  .hero .meta span strong { display: block; color: white; font-family: var(--conduction-typography-font-family-body); font-size: 15px; font-weight: 600; margin-top: 4px; }
+
+  .lead {
+    max-width: 1280px; margin: 64px auto 0; padding: 0 var(--space-12);
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-8);
+  }
+  .lead h2 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); }
+  .lead .meta { font-family: var(--conduction-typography-font-family-code); font-size: var(--fs-xs); color: var(--c-cobalt-400); letter-spacing: 0.06em; }
+
+  .cta {
+    max-width: 1280px; margin: var(--space-6) auto 0; padding: 0 var(--space-12);
+    display: flex; gap: var(--space-3);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: 10px 18px; border-radius: var(--radius-md);
+    font-size: var(--fs-sm); font-weight: var(--fw-medium);
+    text-decoration: none; transition: all 120ms;
+  }
+  .btn-primary { background: var(--c-blue-cobalt); color: white; }
+  .btn-primary:hover { background: var(--c-cobalt-700); color: white; }
+  .btn-secondary { background: white; color: var(--c-blue-cobalt); border: 1px solid var(--c-cobalt-200); }
+  .btn-secondary:hover { border-color: var(--c-blue-cobalt); }
+
+  .grid {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  .layout-tile {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .layout-tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
+  .layout-tile h3 { font-size: var(--fs-base); font-weight: var(--fw-semibold); }
+  .layout-tile p { color: var(--c-cobalt-700); font-size: var(--fs-xs); line-height: 1.5; }
+  .layout-tile .preview {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--c-cobalt-50);
+    position: relative;
+    margin-bottom: var(--space-2);
+  }
+
+  /* Layout previews — every slide layout in miniature */
+  .pv { position: absolute; inset: 0; padding: 12%; display: flex; flex-direction: column; }
+
+  .pv-title { background: var(--c-cobalt-900); justify-content: center; align-items: flex-start; }
+  .pv-title .l1 { color: white; font-size: 9px; font-weight: 700; line-height: 1.1; }
+  .pv-title .l2 { color: rgba(255,255,255,0.6); font-size: 7px; margin-top: 2px; }
+  .pv-title .hex { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); margin-bottom: 6px; }
+
+  .pv-agenda { background: white; padding: 10%; }
+  .pv-agenda .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 6px; }
+  .pv-agenda .item { display: flex; gap: 4px; align-items: center; margin-bottom: 3px; }
+  .pv-agenda .item .num { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .pv-agenda .item .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; flex: 1; }
+
+  .pv-content { background: white; padding: 10%; }
+  .pv-content .h { width: 50%; height: 5px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-content .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; margin-bottom: 2px; }
+
+  .pv-two { background: white; padding: 10%; }
+  .pv-two .h { width: 50%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-two .row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+  .pv-two .col { background: var(--c-cobalt-50); border-radius: 2px; padding: 4px; }
+  .pv-two .col .ln { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
+
+  .pv-quote { background: var(--c-blue-cobalt); padding: 12%; justify-content: center; }
+  .pv-quote .q { color: white; font-size: 10px; font-weight: 600; line-height: 1.2; font-style: italic; }
+  .pv-quote .a { color: rgba(255,255,255,0.7); font-size: 7px; margin-top: 4px; }
+
+  .pv-app { background: white; padding: 10%; flex-direction: row; gap: 8px; align-items: center; }
+  .pv-app .glyph { width: 30%; aspect-ratio: 1; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .pv-app .body { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .pv-app .body .h { height: 5px; background: var(--c-cobalt-900); border-radius: 1px; width: 60%; }
+  .pv-app .body .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
+
+  .pv-compare { background: white; padding: 10%; }
+  .pv-compare .h { width: 40%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 5px; }
+  .pv-compare .row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; flex: 1; }
+  .pv-compare .col-good { background: var(--c-mint-50); border-radius: 2px; padding: 4px; }
+  .pv-compare .col-bad { background: var(--c-terracotta-50); border-radius: 2px; padding: 4px; }
+  .pv-compare .col-good .b, .pv-compare .col-bad .b { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
+
+  .pv-logos { background: white; padding: 10%; justify-content: center; }
+  .pv-logos .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 8px; }
+  .pv-logos .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .pv-logos .row span { aspect-ratio: 2/1; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); border-radius: 1px; }
+
+  .pv-stats { background: var(--c-cobalt-50); padding: 10%; }
+  .pv-stats .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex: 1; align-content: center; }
+  .pv-stats .stat { text-align: center; }
+  .pv-stats .big { font-size: 14px; font-weight: 700; color: var(--c-blue-cobalt); line-height: 1; }
+  .pv-stats .lbl { font-size: 5px; color: var(--c-cobalt-400); margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .pv-divider { background: var(--c-cobalt-900); padding: 12%; justify-content: center; }
+  .pv-divider .num { font-size: 18px; font-weight: 700; color: var(--c-orange-knvb); line-height: 1; font-family: var(--conduction-typography-font-family-code); }
+  .pv-divider .lbl { color: white; font-size: 9px; font-weight: 600; margin-top: 4px; }
+
+  .pv-image { background: linear-gradient(135deg, var(--c-cobalt-700), var(--c-blue-cobalt)); padding: 12%; align-items: flex-end; }
+  .pv-image .lbl { color: white; font-size: 8px; font-weight: 600; }
+  .pv-image .ln { color: rgba(255,255,255,0.7); font-size: 6px; margin-top: 2px; }
+
+  .pv-closing { background: var(--c-cobalt-900); padding: 12%; justify-content: center; align-items: center; text-align: center; }
+  .pv-closing .h { color: white; font-size: 11px; font-weight: 700; }
+  .pv-closing .l { color: rgba(255,255,255,0.6); font-size: 6px; margin-top: 4px; }
+
+  .pv-contact { background: white; padding: 10%; }
+  .pv-contact .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 6px; }
+  .pv-contact .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; margin: 0; max-width: none; }
+  .pv-contact .person { display: flex; gap: 3px; align-items: center; }
+  .pv-contact .av { width: 9px; height: 11px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .pv-contact .lines { flex: 1; }
+  .pv-contact .lines .a { height: 2px; background: var(--c-cobalt-700); border-radius: 1px; width: 70%; }
+  .pv-contact .lines .b { height: 2px; background: var(--c-orange-knvb); border-radius: 1px; width: 50%; margin-top: 1px; }
+
+  .footer {
+    max-width: 1280px;
+    margin: 80px auto 64px;
+    padding: 0 var(--space-12);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .footer code { font-family: var(--conduction-typography-font-family-code); }
+  .footer a { color: var(--c-cobalt-400); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../print/index.html">Print</a> &nbsp;/&nbsp; Decks</div>
+  <h1>Slide deck templates.</h1>
+  <p>Twelve layouts, one HTML file. 16:9 landscape, tokens-driven, every slide is a <code>section.slide</code> you can lift, edit, and re-order. Print to PDF for sharing, export to .pptx later. Same hex motif, same orange-once-per-screen rule, same Figtree.</p>
+  <div class="meta">
+    <span>Aspect<strong>16:9 (1280&times;720)</strong></span>
+    <span>Layouts<strong>12</strong></span>
+    <span>Output<strong>HTML &rarr; PDF (now) &middot; .pptx (later)</strong></span>
+  </div>
+</div>
+
+<div class="lead">
+  <h2>Twelve layouts</h2>
+  <span class="meta">deck-template.html</span>
+</div>
+
+<div class="cta">
+  <a class="btn btn-primary" href="template.html">Open the deck &rarr;</a>
+  <a class="btn btn-secondary" href="template.html" target="_blank">Open in new tab</a>
+</div>
+
+<div class="grid">
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-title"><div class="hex"></div><div class="l1">Build dashboards from your own data</div><div class="l2">Conduction &middot; April 2026</div></div></div>
+    <span class="num">01 &middot; Title</span>
+    <h3>Title slide</h3>
+    <p>Cobalt-900 ground, orange hex, headline + presenter line. Always opens the deck.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-agenda"><div class="h"></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln" style="width:60%"></span></div></div></div>
+    <span class="num">02 &middot; Agenda</span>
+    <h3>Agenda</h3>
+    <p>Numbered hex bullets, 3 to 6 items. Use to set expectations and to navigate back to mid-deck.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-content"><div class="h"></div><div class="ln"></div><div class="ln" style="width:90%"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div></div></div>
+    <span class="num">03 &middot; Content</span>
+    <h3>Content</h3>
+    <p>The workhorse. H2 + body copy or bullets. Underused on purpose, reach for two-column or app spotlight first.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-two"><div class="h"></div><div class="row"><div class="col"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:80%"></span></div><div class="col"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:60%"></span></div></div></div></div>
+    <span class="num">04 &middot; Two-column</span>
+    <h3>Two-column</h3>
+    <p>Compare, contrast, before/after. Headers stacked above each column; equal weight.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-quote"><div class="q">&ldquo;Eindelijk &eacute;&eacute;n plek&hellip;&rdquo;</div><div class="a">&mdash; Marleen, gemeente X</div></div></div>
+    <span class="num">05 &middot; Quote</span>
+    <h3>Full-bleed quote</h3>
+    <p>Customer voice. White text on cobalt, attribution muted. Used sparingly, never two in a row.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-app"><div class="glyph"></div><div class="body"><div class="h"></div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div></div></div></div>
+    <span class="num">06 &middot; App spotlight</span>
+    <h3>App spotlight</h3>
+    <p>Hex glyph left, name + tagline + three bullets right. One slide per app. Reuse for partner spotlight.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-compare"><div class="h"></div><div class="row"><div class="col-good"><span class="b"></span><span class="b"></span><span class="b" style="width:70%"></span></div><div class="col-bad"><span class="b"></span><span class="b"></span><span class="b" style="width:60%"></span></div></div></div></div>
+    <span class="num">07 &middot; Comparison</span>
+    <h3>Comparison</h3>
+    <p>Mint vs terracotta panels. "Met Conduction" / "Zonder Conduction" or pros/cons. Honest, not gloating.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-logos"><div class="h"></div><div class="row"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
+    <span class="num">08 &middot; Logo wall</span>
+    <h3>Customer / partner logos</h3>
+    <p>Eight to twelve marks, equal size. Greyscale by default, colour only on the hovered/featured one.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-stats"><div class="row"><div class="stat"><div class="big">39k</div><div class="lbl">Tenders</div></div><div class="stat"><div class="big">73</div><div class="lbl">Clusters</div></div><div class="stat"><div class="big">6</div><div class="lbl">Apps</div></div></div></div></div>
+    <span class="num">09 &middot; Stats strip</span>
+    <h3>Stats strip</h3>
+    <p>Three numbers, three labels. Big cobalt digits, small uppercase labels. Use real numbers, not order-of-magnitude.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-divider"><div class="num">02</div><div class="lbl">De aanpak</div></div></div>
+    <span class="num">10 &middot; Section divider</span>
+    <h3>Section divider</h3>
+    <p>Big number, section title. Resets attention between deck chapters. One per chapter, never two in a row.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-image"><div class="lbl">Honeycomb backdrop</div><div class="ln">caption goes here</div></div></div>
+    <span class="num">11 &middot; Image / hero</span>
+    <h3>Image / hero</h3>
+    <p>Full-bleed photo or honeycomb backdrop, caption in the corner. The deck's only "loud" layout.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-contact"><div class="h"></div><div class="grid"><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div></div></div></div>
+    <span class="num">12 &middot; Contact</span>
+    <h3>Contact / closing</h3>
+    <p>Two to four people, hex avatars, name + role + email. Last slide of every deck.</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span><a href="../index.html">&larr; Back to system</a> &nbsp;&middot;&nbsp; <a href="../print/index.html">Up to Print</a></span>
+</div>
+
+</body>
+</html>

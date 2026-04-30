@@ -1,140 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="210mm" height="297mm" role="img" aria-label="Quotation honeycomb watermark">
-  <title>Quotation watermark, R=14 grid centred on the brand-block logo</title>
-  <!-- R=14 grid, drawn-R=8. Hex bounding 13.86 x 16 mm, exactly
-       the same as the brand-block logo container in the page CSS.
-       The grid is shifted so a type-A hex centre lands at
-       (26.93, 26) mm, the centre of the brand-block logo's
-       18mm padding-top + 20mm padding-left + 13.86/16 size box.
-       That makes the logo render IN a hex slot of the pattern,
-       not overlaid on top of it.
+  <title>Quotation watermark, tight comb anchored on the brand-block logo</title>
+  <!-- Tight honeycomb. R_grid = 9, drawn-R = 8, so the hex-to-hex
+       gap is (R_grid - drawn) * sqrt(3) = 1.73 mm, which roughly
+       matches the white inset between the cobalt frame and the C
+       inside the logo. Drawn hexes are still 13.86 x 16 mm,
+       identical to the brand-block logo's bounding box.
 
-       Empty zone for the outcome block: rows y=47, 68, 89 are
-       skipped so the cobalt-50 "wat je krijgt" panel sits on a
-       clean ground. The logo-position hex (26.93, 26) is also
-       skipped because the page renders the brand-block logo
-       there with the same drawing primitives. -->
+       Pattern is anchored at x=11.34, y=26 so a type-A hex centre
+       lands exactly on the logo position (26.93, 26). Type-B
+       row sits 13.5 mm below at y=39.5, and the previous row at
+       y=12.5 (also type B) appears above. Result: the logo is one
+       hex in a continuous comb that flows above and below.
+
+       Two white overlays mask out the cells we want clear:
+         - the outcome-block band (y between 45 and 102 mm), so
+           the cobalt-50 'wat je krijgt' panel sits on a clean
+           ground;
+         - the wordmark slot on the logo row (y 18-34, x 38-80),
+           so 'Conduction' has no hex strokes behind it.
+       The visible Conduction logo polygons sit on top of the
+       grid at the (26.93, 26) cell. -->
   <defs>
     <polygon id="hx" points="0,-8 6.928,-4 6.928,4 0,8 -6.928,4 -6.928,-4"/>
+    <pattern id="hexgrid" x="11.34" y="26" width="15.59" height="27" patternUnits="userSpaceOnUse">
+      <use href="#hx" x="0" y="0" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+      <use href="#hx" x="7.795" y="13.5" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+    </pattern>
   </defs>
 
-  <g fill="none" stroke="#DCE3F0" stroke-width="0.4">
-    <!-- Row 0 (type A, y=26) — logo cell at cx=26.93 drawn below -->
-    <use href="#hx" x="2.68"   y="26"/>
-    <use href="#hx" x="51.18"  y="26"/>
-    <use href="#hx" x="75.43"  y="26"/>
-    <use href="#hx" x="99.68"  y="26"/>
-    <use href="#hx" x="123.93" y="26"/>
-    <use href="#hx" x="148.18" y="26"/>
-    <use href="#hx" x="172.43" y="26"/>
-    <use href="#hx" x="196.68" y="26"/>
+  <!-- Honeycomb across the whole A4 -->
+  <rect width="210" height="297" fill="url(#hexgrid)"/>
 
-    <!-- Rows y=47, 68, 89 SKIPPED — outcome block. -->
+  <!-- Mask: outcome-block band -->
+  <rect x="0" y="45" width="210" height="57" fill="#FFFFFF"/>
 
-    <!-- Row 4 (type A, y=110) -->
-    <use href="#hx" x="2.68"   y="110"/>
-    <use href="#hx" x="26.93"  y="110"/>
-    <use href="#hx" x="51.18"  y="110"/>
-    <use href="#hx" x="75.43"  y="110"/>
-    <use href="#hx" x="99.68"  y="110"/>
-    <use href="#hx" x="123.93" y="110"/>
-    <use href="#hx" x="148.18" y="110"/>
-    <use href="#hx" x="172.43" y="110"/>
-    <use href="#hx" x="196.68" y="110"/>
+  <!-- Mask: wordmark slot on the logo row -->
+  <rect x="38" y="18" width="42" height="16" fill="#FFFFFF"/>
 
-    <!-- Row 5 (type B, y=131) -->
-    <use href="#hx" x="14.805" y="131"/>
-    <use href="#hx" x="39.054" y="131"/>
-    <use href="#hx" x="63.303" y="131"/>
-    <use href="#hx" x="87.552" y="131"/>
-    <use href="#hx" x="111.801" y="131"/>
-    <use href="#hx" x="136.050" y="131"/>
-    <use href="#hx" x="160.299" y="131"/>
-    <use href="#hx" x="184.548" y="131"/>
-    <use href="#hx" x="208.797" y="131"/>
-
-    <!-- Row 6 (type A, y=152) -->
-    <use href="#hx" x="2.68"   y="152"/>
-    <use href="#hx" x="26.93"  y="152"/>
-    <use href="#hx" x="51.18"  y="152"/>
-    <use href="#hx" x="75.43"  y="152"/>
-    <use href="#hx" x="99.68"  y="152"/>
-    <use href="#hx" x="123.93" y="152"/>
-    <use href="#hx" x="148.18" y="152"/>
-    <use href="#hx" x="172.43" y="152"/>
-    <use href="#hx" x="196.68" y="152"/>
-
-    <!-- Row 7 (type B, y=173) -->
-    <use href="#hx" x="14.805" y="173"/>
-    <use href="#hx" x="39.054" y="173"/>
-    <use href="#hx" x="63.303" y="173"/>
-    <use href="#hx" x="87.552" y="173"/>
-    <use href="#hx" x="111.801" y="173"/>
-    <use href="#hx" x="136.050" y="173"/>
-    <use href="#hx" x="160.299" y="173"/>
-    <use href="#hx" x="184.548" y="173"/>
-    <use href="#hx" x="208.797" y="173"/>
-
-    <!-- Row 8 (type A, y=194) -->
-    <use href="#hx" x="2.68"   y="194"/>
-    <use href="#hx" x="26.93"  y="194"/>
-    <use href="#hx" x="51.18"  y="194"/>
-    <use href="#hx" x="75.43"  y="194"/>
-    <use href="#hx" x="99.68"  y="194"/>
-    <use href="#hx" x="123.93" y="194"/>
-    <use href="#hx" x="148.18" y="194"/>
-    <use href="#hx" x="172.43" y="194"/>
-    <use href="#hx" x="196.68" y="194"/>
-
-    <!-- Row 9 (type B, y=215) -->
-    <use href="#hx" x="14.805" y="215"/>
-    <use href="#hx" x="39.054" y="215"/>
-    <use href="#hx" x="63.303" y="215"/>
-    <use href="#hx" x="87.552" y="215"/>
-    <use href="#hx" x="111.801" y="215"/>
-    <use href="#hx" x="136.050" y="215"/>
-    <use href="#hx" x="160.299" y="215"/>
-    <use href="#hx" x="184.548" y="215"/>
-    <use href="#hx" x="208.797" y="215"/>
-
-    <!-- Row 10 (type A, y=236) -->
-    <use href="#hx" x="2.68"   y="236"/>
-    <use href="#hx" x="26.93"  y="236"/>
-    <use href="#hx" x="51.18"  y="236"/>
-    <use href="#hx" x="75.43"  y="236"/>
-    <use href="#hx" x="99.68"  y="236"/>
-    <use href="#hx" x="123.93" y="236"/>
-    <use href="#hx" x="148.18" y="236"/>
-    <use href="#hx" x="172.43" y="236"/>
-    <use href="#hx" x="196.68" y="236"/>
-
-    <!-- Row 11 (type B, y=257) -->
-    <use href="#hx" x="14.805" y="257"/>
-    <use href="#hx" x="39.054" y="257"/>
-    <use href="#hx" x="63.303" y="257"/>
-    <use href="#hx" x="87.552" y="257"/>
-    <use href="#hx" x="111.801" y="257"/>
-    <use href="#hx" x="136.050" y="257"/>
-    <use href="#hx" x="160.299" y="257"/>
-    <use href="#hx" x="184.548" y="257"/>
-    <use href="#hx" x="208.797" y="257"/>
-
-    <!-- Row 12 (type A, y=278) -->
-    <use href="#hx" x="2.68"   y="278"/>
-    <use href="#hx" x="26.93"  y="278"/>
-    <use href="#hx" x="51.18"  y="278"/>
-    <use href="#hx" x="75.43"  y="278"/>
-    <use href="#hx" x="99.68"  y="278"/>
-    <use href="#hx" x="123.93" y="278"/>
-    <use href="#hx" x="148.18" y="278"/>
-    <use href="#hx" x="172.43" y="278"/>
-    <use href="#hx" x="196.68" y="278"/>
-  </g>
-
-  <!-- Logo cell at the brand-block position (26.93, 26). Drawn with
-       the same three-polygon vocabulary as a watermark hex, scaled
-       0.08 to land inside the R=8 cell. The page HTML keeps an
-       empty 13.86x16mm spacer at this position so the wordmark
-       beside it lines up; the visible logo is provided here. -->
+  <!-- Conduction logo at the (26.93, 26) cell -->
   <g transform="translate(26.93 26) scale(0.08)">
     <polygon fill="#21468B" points="0,-100 86.6,-50 86.6,50 0,100 -86.6,50 -86.6,-50"/>
     <polygon fill="#FFFFFF" points="0,-74.5 64.5,-37.3 64.5,37.3 0,74.5 -64.5,37.3 -64.5,-37.3"/>

@@ -86,6 +86,102 @@
     color: var(--c-cobalt-900);
     display: flex; flex-direction: column;
     min-height: var(--paper-a4-h);
+    position: relative;
+  }
+  /* Gray honeycomb veil behind the body, in line with the
+     .conduction-bg on-light theme. Pinned to absolute mm so
+     hex sizes don't stretch with content overflow. */
+  .body-page::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 210mm; height: 600mm;
+    background-image: url("../../brand/assets/backgrounds/honeycomb-page.svg");
+    background-repeat: no-repeat;
+    background-size: 210mm 600mm;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .body-page > * { position: relative; z-index: 1; }
+
+  /* Management summary panel — first thing the reader sees on the
+     body page. White box with a cobalt-edge mark (style cousins:
+     quotation .outcome-block, invoice .opener), one paragraph,
+     three hex bullets, signed by the consultant who wrote the
+     report. Personal, MKB-direct register: the document arrives
+     with a person attached, not an anonymous deliverable. */
+  .management-summary {
+    background: white;
+    border: 0.3mm solid var(--c-cobalt-100);
+    border-left: 1.2mm solid var(--c-blue-cobalt);
+    padding: 6mm 8mm;
+    margin-bottom: 8mm;
+    border-radius: 0 1mm 1mm 0;
+  }
+  .management-summary .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    margin-bottom: 2mm;
+  }
+  .management-summary h2 {
+    font-size: 14pt; font-weight: 700; line-height: 1.25;
+    margin: 0 0 3mm; letter-spacing: -0.005em;
+  }
+  .management-summary p {
+    font-size: 10pt; line-height: 1.55; margin: 0 0 4mm;
+  }
+  .management-summary ul {
+    list-style: none; padding: 0; margin: 0 0 6mm;
+    display: grid; gap: 1.5mm;
+  }
+  .management-summary li {
+    font-size: 9.5pt; line-height: 1.5;
+    padding-left: 5mm; position: relative;
+  }
+  .management-summary li::before {
+    content: ""; position: absolute; left: 0; top: 1.7mm;
+    width: 2.4mm; height: 2.7mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+  .management-summary .signed-by {
+    margin-top: 5mm;
+    padding-top: 4mm;
+    border-top: 0.3mm solid var(--c-cobalt-100);
+    display: grid;
+    grid-template-columns: 14mm 1fr auto;
+    gap: 4mm; align-items: center;
+  }
+  .management-summary .signed-by .av {
+    width: 14mm; height: 16mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 9pt; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .management-summary .signed-by .who {
+    display: flex; flex-direction: column; gap: 0.5mm;
+  }
+  .management-summary .signed-by .who .name {
+    font-size: 10pt; font-weight: 600; color: var(--c-cobalt-900);
+  }
+  .management-summary .signed-by .who .role {
+    font-size: 8pt; color: var(--c-cobalt-700);
+  }
+  .management-summary .signed-by .meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.06em; color: var(--c-cobalt-400);
+    text-align: right;
+    line-height: 1.4;
+  }
+  .management-summary .signed-by .meta strong {
+    display: block;
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 9pt; color: var(--c-cobalt-900); font-weight: 500;
+    margin-top: 0.5mm; letter-spacing: -0.005em;
   }
   .body-page .running {
     font-family: var(--conduction-typography-font-family-code);
@@ -252,6 +348,26 @@
               <span># Open registers Acme BV</span>
               <span class="doc-id">CND-2026-042 &middot; p. 02</span>
             </div>
+
+            <div class="management-summary">
+              <div class="h">Samenvatting voor management</div>
+              <h2>Vakantieproof toegang tot je klantregister, in zeven weken.</h2>
+              <p>Acme heeft op dit moment 142 Excel-bestanden waar drie mensen de logica van kennen. Twee zijn met pensioen. Met OpenRegister krijgen vier rollen elk hun eigen view, schema-validatie, en een audit-trail uit de doos. Hardware blijft op je eigen Nextcloud.</p>
+              <ul>
+                <li><strong>Probleem:</strong> kennis zit bij personen, niet bij rollen. Bij vakanties stopt het werk.</li>
+                <li><strong>Aanpak:</strong> OpenRegister + 5 entiteiten + 4 rollen, zeven weken tot live, vaste prijs.</li>
+                <li><strong>Wat je ervoor terugkrijgt:</strong> &eacute;&eacute;n waarheid, audit-klaar, vakantieproof, geen vendor lock-in.</li>
+              </ul>
+              <div class="signed-by">
+                <div class="av">RvdL</div>
+                <div class="who">
+                  <span class="name">Ruben van der Linde</span>
+                  <span class="role">CTO &middot; Conduction</span>
+                </div>
+                <div class="meta">Opgesteld<strong>30 april 2026</strong></div>
+              </div>
+            </div>
+
             <h2>Wat we vonden</h2>
             <p>142 spreadsheets, in 9 mappen, beheerd door 4 mensen. Geen versiebeheer. Drie mensen weten welk veld optioneel is, twee zijn met pensioen.</p>
             <p>De urgentie zit niet in een audit, maar in vakanties. Als Henk afwezig is, weet niemand welke kolom het juiste BSN-formaat heeft.</p>
@@ -352,6 +468,26 @@
               <span># {{ chapter }}</span>
               <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
             </div>
+
+            <div class="management-summary">
+              <div class="h">Samenvatting voor management</div>
+              <h2>{{ Outcome sentence with period. }}</h2>
+              <p>{{ One paragraph, two to three sentences. Person-voice; explains the situation, the move, and what changes. }}</p>
+              <ul>
+                <li><strong>Probleem:</strong> {{ what's broken now, one line }}</li>
+                <li><strong>Aanpak:</strong> {{ what we're doing about it, one line }}</li>
+                <li><strong>Wat je ervoor terugkrijgt:</strong> {{ the outcome, one line }}</li>
+              </ul>
+              <div class="signed-by">
+                <div class="av">{{ in }}</div>
+                <div class="who">
+                  <span class="name">{{ Author name }}</span>
+                  <span class="role">{{ role }} &middot; Conduction</span>
+                </div>
+                <div class="meta">Opgesteld<strong>{{ DD month YYYY }}</strong></div>
+              </div>
+            </div>
+
             <h2>{{ Section heading }}</h2>
             <p>{{ Lead-in paragraph, two short sentences. }}</p>
             <h3>{{ Subhead }}</h3>

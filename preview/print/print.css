@@ -1,0 +1,142 @@
+/* ============================================================
+   Conduction Print, shared chrome
+   ----------------------------------------------------------------
+   Every paper artefact lives in a "stage" that shows the paper at
+   true scale beside a Spark sidebar explaining why it's designed
+   that way. The print stylesheet at the bottom of this file hides
+   the chrome so only the paper makes it onto the page.
+
+   Each artefact still owns its own @page rule (page sizes vary),
+   but the chrome / spark / preview rules live here once.
+   ============================================================ */
+
+/* ---- Wrapper chrome ---- */
+.chrome { max-width: 1280px; margin: 0 auto; padding: var(--space-10) var(--space-12) var(--space-6); }
+.chrome .crumb {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-cobalt-400); margin-bottom: var(--space-3);
+}
+.chrome .crumb a { color: var(--c-cobalt-400); text-decoration: none; }
+.chrome .crumb a:hover { color: var(--c-blue-cobalt); }
+.chrome h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
+.chrome .lead { color: var(--c-cobalt-700); font-size: 17px; margin-top: var(--space-2); max-width: 64ch; line-height: 1.5; }
+
+.stage {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-12) var(--space-12);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* When the paper is full-bleed and wide (banners, decks) skip the sidebar grid */
+.stage.full { grid-template-columns: 1fr; }
+
+/* The label below each preview specimen — captions the variant */
+.specimen-label {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  display: block;
+  margin-top: var(--space-3);
+}
+
+/* ---- Spark sidebar — the "why we built it this way" panel ---- */
+.spark {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-cobalt-100);
+  padding: var(--space-6);
+  position: sticky; top: var(--space-6);
+}
+.spark .label {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-orange-knvb);
+  margin-bottom: var(--space-2);
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.spark .label::before {
+  content: "";
+  width: 10px; height: 12px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb);
+  display: block;
+}
+.spark h2 {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.01em;
+}
+.spark p.lede {
+  color: var(--c-cobalt-700);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  margin-bottom: var(--space-4);
+}
+.spark ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.spark li {
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--c-cobalt-900);
+  padding-left: var(--space-4);
+  position: relative;
+}
+.spark li::before {
+  content: "";
+  position: absolute; left: 0; top: 7px;
+  width: 8px; height: 9.2px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt);
+}
+.spark li strong { color: var(--c-cobalt-900); }
+.spark .footer-note {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-cobalt-100);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; color: var(--c-cobalt-400); line-height: 1.5;
+}
+
+/* Cards-row utility — for putting two specimens side-by-side */
+.cards-row { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; }
+.cards-row > div { display: flex; flex-direction: column; }
+
+/* ---- Paper-page generic ----
+   Every page artefact (.paper) renders to its true mm size with a
+   subtle on-screen shadow. The .paper--A4, .paper--A5 modifiers set
+   the box dimensions; per-page CSS handles the inside layout. */
+.paper {
+  background: white;
+  box-shadow: 0 12px 32px rgba(33, 70, 139, 0.18), 0 2px 6px rgba(33, 70, 139, 0.10);
+  position: relative;
+  overflow: hidden;
+}
+.paper--A4   { width: var(--paper-a4-w); min-height: var(--paper-a4-h); }
+.paper--A5-l { width: var(--paper-a5-h); height: var(--paper-a5-w); } /* landscape */
+.paper--C5   { width: var(--env-c5-w); height: var(--env-c5-h); }
+.paper--C4   { width: var(--env-c4-w); height: var(--env-c4-h); }
+
+/* Two A4 sheets side-by-side scale, or stacked on small screens */
+.paper-flow { display: flex; flex-direction: column; gap: var(--space-8); }
+.paper-row  { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; }
+
+/* ---- Hex bullet utility for inside paper artefacts ---- */
+.hex-bullet { display: inline-block; width: 1.4mm; height: 1.6mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; vertical-align: 0.3mm; }
+
+/* ============ Print ============ */
+@media print {
+  body { background: white !important; padding: 0 !important; margin: 0 !important; }
+  .chrome, .spark, .specimen-label, .todo, .preview-only { display: none !important; }
+  .stage { padding: 0 !important; gap: 0 !important; grid-template-columns: 1fr !important; max-width: none !important; }
+  .cards-row, .paper-row, .paper-flow { gap: 0 !important; }
+  .paper { box-shadow: none !important; page-break-after: always; }
+  .paper:last-child { page-break-after: auto; }
+}

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Envelopes · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* C5 envelope, 229x162mm. Cobalt outside; flap drawn as a triangle on top. */
+  .env {
+    background: var(--c-blue-cobalt);
+    color: white;
+    position: relative;
+    padding: 14mm 16mm;
+    overflow: visible;
+  }
+  .env--c5 { width: var(--env-c5-w); height: var(--env-c5-h); }
+  .env--c4 { width: var(--env-c4-w); height: var(--env-c4-h); }
+
+  /* The "flap" is a translucent triangle showing the back, fold-line is decorative */
+  .env::after {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(10,23,47,0.55), transparent);
+    pointer-events: none;
+  }
+
+  .env .sender {
+    position: relative; z-index: 2;
+    display: flex; align-items: flex-start; gap: 4mm;
+    color: white;
+  }
+  .env .sender .ascii {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6pt; line-height: 1; color: rgba(255,255,255,0.7);
+    white-space: pre;
+  }
+  .env .sender .who {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; line-height: 1.5; color: rgba(255,255,255,0.85);
+  }
+  .env .sender .who strong { color: white; font-weight: 600; }
+
+  .env .recipient {
+    position: absolute;
+    left: 50%; top: 58%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 11pt; line-height: 1.5;
+    background: rgba(255,255,255,0.06);
+    border: 0.3mm solid rgba(255,255,255,0.18);
+    padding: 6mm 8mm;
+    min-width: 90mm;
+    z-index: 2;
+    border-radius: 1mm;
+  }
+  .env .recipient .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 2mm;
+  }
+
+  /* Hex motif on the back / flap area — visible on closed envelope as a subtle relief */
+  .env .motif {
+    position: absolute;
+    bottom: 6mm; right: 12mm;
+    display: flex; gap: 2mm; align-items: center;
+    z-index: 2;
+  }
+  .env .motif .h {
+    width: 6mm; height: 6.9mm;
+    clip-path: var(--hex-pointy-top);
+    background: rgba(255,255,255,0.18);
+  }
+  .env .motif .h.accent { background: var(--c-orange-knvb); opacity: 0.85; }
+
+  .env .stamp-zone {
+    position: absolute;
+    top: 8mm; right: 10mm;
+    width: 32mm; height: 24mm;
+    border: 0.3mm dashed rgba(255,255,255,0.4);
+    z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 5pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  @media print {
+    @page { size: 229mm 162mm; margin: 0; }
+    .env::after { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Envelopes</div>
+  <h1>Envelopes</h1>
+  <p class="lead">C5 (folded A4) and C4 (flat A4). Cobalt outside, hex motif at the bottom-right, ASCII Conduction tag in the sender block. The envelope is the brand before the recipient opens it.</p>
+</div>
+
+<div class="stage">
+  <div class="paper-flow">
+    <div>
+      <div class="paper env env--c5">
+        <div class="sender">
+          <pre class="ascii">+---+
+|CND|
++---+</pre>
+          <div class="who">
+            <strong>Conduction BV</strong><br>
+            Maria Montessorilaan 3<br>
+            2719 DB Zoetermeer
+          </div>
+        </div>
+        <div class="stamp-zone">Stamp</div>
+        <div class="recipient">
+          <div class="label">Aan</div>
+          Gemeente Voorbeeld<br>
+          Postbus 100<br>
+          1234 AA Voorbeelderwijk
+        </div>
+        <div class="motif">
+          <span class="h"></span><span class="h accent"></span><span class="h"></span>
+        </div>
+      </div>
+      <span class="specimen-label">C5 &middot; 229 &times; 162 mm &middot; folded A4</span>
+    </div>
+
+    <div>
+      <div class="paper env env--c4">
+        <div class="sender">
+          <pre class="ascii">+---+
+|CND|
++---+</pre>
+          <div class="who">
+            <strong>Conduction BV</strong><br>
+            Maria Montessorilaan 3<br>
+            2719 DB Zoetermeer
+          </div>
+        </div>
+        <div class="stamp-zone">Stamp</div>
+        <div class="recipient" style="top: 55%;">
+          <div class="label">Aan</div>
+          Stichting Voorbeeld<br>
+          T.a.v. directie<br>
+          Postbus 200<br>
+          5678 BB Voorbeeldelaan
+        </div>
+        <div class="motif">
+          <span class="h"></span><span class="h"></span><span class="h accent"></span><span class="h"></span><span class="h"></span>
+        </div>
+      </div>
+      <span class="specimen-label">C4 &middot; 324 &times; 229 mm &middot; flat A4</span>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>The envelope shouldn't whisper</h2>
+    <p class="lede">Most envelopes are white with a logo in the corner. Ours flip the contrast: cobalt outside, white inside the address window, brand-loud before the letter is even opened.</p>
+    <ul>
+      <li><strong>Cobalt as the surface.</strong> A Conduction envelope is recognisable from across the post-room. White-with-logo blends in; cobalt with a hex motif doesn't.</li>
+      <li><strong>ASCII sender mark.</strong> A 3-line ASCII Conduction box in the top-left, our cookie-CLI heritage stays present even on paper. Recipients who have seen our cookie prompt smile when they see it again.</li>
+      <li><strong>Address in a glassy panel, not just printed.</strong> A semi-transparent panel with a faint border lifts the recipient text off the cobalt without losing it, and signals "this is the important part."</li>
+      <li><strong>Stamp zone is dashed, not assumed.</strong> A clear region on the top-right respects the postal worker's clear-zone for franking. Pragmatic, not decorative.</li>
+      <li><strong>Hex motif as a tell.</strong> 3 hexes (C5) or 5 hexes (C4) at the bottom-right, one orange. Ties the envelope to the rest of the brand without competing with the address.</li>
+      <li><strong>"Aan", not "Address".</strong> Same MKB-direct rule as the letterhead. Dutch first.</li>
+    </ul>
+    <div class="footer-note">C5 = 229&times;162mm &middot; C4 = 324&times;229mm &middot; DL token plumbed for follow-up &middot; bleed 0, will need 3mm + crop marks for press</div>
+  </aside>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Business cards · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* The card itself — 85mm x 55mm. Two sides side-by-side in preview. */
+  .card-bc {
+    width: var(--card-w);
+    height: var(--card-h);
+    box-shadow: 0 12px 32px rgba(33, 70, 139, 0.18), 0 2px 6px rgba(33, 70, 139, 0.10);
+    overflow: hidden;
+    position: relative;
+    /* Subtle hex cut on the bottom-right corner — the rectangle "indicates" via a single hex tell */
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6mm), calc(100% - 6mm) 100%, 0 100%);
+  }
+  /* ---- Front face ---- */
+  .bc-front {
+    background: var(--c-blue-cobalt);
+    color: white;
+    padding: 6mm 6mm 5mm;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .bc-front .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .bc-front .wordmark { font-family: var(--conduction-typography-font-family-body); font-size: 11pt; font-weight: 700; letter-spacing: -0.01em; }
+  .bc-front .ascii {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 5pt; line-height: 1; color: rgba(255,255,255,0.45);
+    white-space: pre;
+  }
+  .bc-front .name { font-size: 14pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin-top: 4mm; }
+  .bc-front .role { font-size: 7pt; color: rgba(255,255,255,0.75); margin-top: 1.2mm; max-width: 50mm; line-height: 1.3; }
+  .bc-front .contact {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6pt; line-height: 1.5; color: rgba(255,255,255,0.85);
+    margin-top: auto;
+  }
+  .bc-front .contact span { display: block; }
+  .bc-front .accent-hex {
+    position: absolute;
+    width: 8mm; height: 9.2mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    top: 5mm; right: 5mm;
+  }
+
+  /* ---- Back face ---- */
+  .bc-back {
+    background: white;
+    padding: 4.5mm 5mm;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4mm;
+    align-items: stretch;
+  }
+  .bc-back .left { display: flex; flex-direction: column; justify-content: space-between; }
+  .bc-back .monogram-hex {
+    width: 14mm; height: 16mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 11pt; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .bc-back .solutions { font-size: 6pt; line-height: 1.6; color: var(--c-cobalt-700); }
+  .bc-back .solutions .h { font-family: var(--conduction-typography-font-family-code); font-size: 5pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 1mm; }
+  .bc-back .solutions .item { display: flex; gap: 1.5mm; align-items: baseline; }
+  .bc-back .solutions .item::before { content: ""; width: 1.4mm; height: 1.6mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; transform: translateY(0.5mm); display: block; }
+  .bc-back .qr {
+    width: 32mm; height: 32mm;
+    align-self: center;
+    background: white;
+    border: 0.3mm solid var(--c-cobalt-100);
+    padding: 1.5mm;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bc-back .qr img, .bc-back .qr svg { width: 100%; height: 100%; }
+  .bc-back .qr-caption {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 5pt; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    text-align: center;
+    margin-top: 1mm;
+  }
+  .bc-back .qr-wrap { display: flex; flex-direction: column; }
+
+  .todo {
+    margin-top: var(--space-12);
+    padding: var(--space-6);
+    background: white;
+    border: 1px dashed var(--c-cobalt-200);
+    border-radius: var(--radius-lg);
+  }
+  .todo h3 { font-size: var(--fs-lg); font-weight: var(--fw-semibold); margin-bottom: var(--space-2); }
+  .todo p { color: var(--c-cobalt-700); font-size: var(--fs-sm); }
+  .todo ul { list-style: none; padding: 0; margin-top: var(--space-3); display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-2); }
+  .todo li { padding: var(--space-2) var(--space-3); background: var(--c-cobalt-50); border-radius: var(--radius-sm); font-size: var(--fs-sm); display: flex; justify-content: space-between; align-items: center; }
+  .todo li .pending { font-family: var(--conduction-typography-font-family-code); font-size: 10px; color: var(--c-cobalt-400); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ============ Print ============ */
+  @media print {
+    @page { size: 85mm 55mm; margin: 0; }
+    .card-bc { clip-path: none !important; page-break-after: always; }
+    /* Add bleed later: swap @page to size: calc(85mm + 2*var(--bleed)) calc(55mm + 2*var(--bleed)); */
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Business cards</div>
+  <h1>Business cards</h1>
+  <p class="lead">85&times;55mm, two sides. The front carries identity in cobalt with a single orange-hex accent. The back works harder than most cards: monogram hex, three solutions in NL, LinkedIn-invite QR. Phones go unanswered, LinkedIn DMs land.</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="cards-row">
+      <div>
+        <div class="card-bc bc-front">
+          <span class="accent-hex"></span>
+          <div class="top">
+            <span class="wordmark">Conduction</span>
+            <pre class="ascii"> ___
+/   \
+\___/</pre>
+          </div>
+          <div>
+            <div class="name">Ruben van der Linde</div>
+            <div class="role">Lateral thinker and the brain behind the tech.</div>
+          </div>
+          <div class="contact">
+            <span>ruben@conduction.nl</span>
+            <span>+31 70 756 1240</span>
+            <span>conduction.nl</span>
+          </div>
+        </div>
+        <span class="specimen-label">Front · cobalt face</span>
+      </div>
+
+      <div>
+        <div class="card-bc bc-back">
+          <div class="left">
+            <div class="monogram-hex">RvdL</div>
+            <div class="solutions">
+              <div class="h">Wat we bouwen</div>
+              <div class="item">Apps op Nextcloud</div>
+              <div class="item">Open registers &amp; catalogi</div>
+              <div class="item">Documentwerk dat klopt</div>
+            </div>
+          </div>
+          <div class="qr-wrap">
+            <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="QR for LinkedIn invite"></div>
+            <div class="qr-caption">Connect on LinkedIn</div>
+          </div>
+        </div>
+        <span class="specimen-label">Back · solutions + LinkedIn</span>
+      </div>
+    </div>
+
+    <div class="todo">
+      <h3>Other team members &mdash; queued</h3>
+      <p>One example card (Ruben) is committed; the other 8 cards are slated for a batch run once the LinkedIn URL per person is filled in. The card layout is parametric, name + role + email + monogram + LinkedIn-QR are the only per-person fields.</p>
+      <ul>
+        <li>Marleen <span class="pending">queued</span></li>
+        <li>Remco <span class="pending">queued</span></li>
+        <li>Mark <span class="pending">queued</span></li>
+        <li>Robert <span class="pending">queued</span></li>
+        <li>Wilco <span class="pending">queued</span></li>
+        <li>Barry <span class="pending">queued</span></li>
+        <li>Remko <span class="pending">queued</span></li>
+        <li>Thijn <span class="pending">queued</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>The card has to earn the back</h2>
+    <p class="lede">Most cards are 85&times;55mm of identity on the front and dead space on the back. Ours uses both sides and treats the back as the working surface.</p>
+    <ul>
+      <li><strong>QR is a LinkedIn invite, not a phone link.</strong> People who have your number may not call you. A LinkedIn DM lands and starts a conversation, that's the modern handshake.</li>
+      <li><strong>One orange hex, one place.</strong> The accent is the eye-catcher in the top-right. Every other surface stays cobalt, the hierarchy is loud where it matters.</li>
+      <li><strong>Solutions, not skills.</strong> Three NL-direct lines on the back, what we build, not what we know. Fits the MKB-direct voice.</li>
+      <li><strong>Monogram as a hex crest.</strong> Initials inside a pointy-top hex doubles as a personal mark and a brand tell, pocketable identity.</li>
+      <li><strong>Plex Mono on contact lines.</strong> The CLI heritage of Conduction shows up in the typography. Email and phone read like a terminal record, not a marketing label.</li>
+      <li><strong>One small ASCII flourish.</strong> A three-line ASCII Conduction mark in the top-right. A nod to the cookie-CLI; designers skip it, developers smile at it.</li>
+      <li><strong>Cut corner, not full hex.</strong> A 6mm bottom-right cut, the rectangle that "indicates" via a single hex tell. Rectangles do, hexagons indicate.</li>
+    </ul>
+    <div class="footer-note">85&times;55mm &middot; bleed 0 (--bleed token), flip to 3mm before press &middot; LinkedIn QR generated to brand/assets/qr/linkedin-conduction.svg</div>
+  </aside>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Banners · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* Banners are large, so we render them at scale and let the
+     page scroll. Each banner is on a 1:N preview ratio. */
+
+  /* ---- Roll-up: 850 x 2000mm (real), shown at 1:5 = 170 x 400mm preview ---- */
+  .rollup {
+    width: 170mm; height: 400mm;
+    background: var(--c-blue-cobalt);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(33,70,139,0.18), 0 2px 6px rgba(33,70,139,0.10);
+  }
+  .rollup::before {
+    /* Honeycomb backdrop for the upper third */
+    content: ""; position: absolute;
+    top: -10mm; left: -10mm; right: -10mm; height: 50%;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 0 18mm, transparent 19mm),
+      radial-gradient(circle at 75% 18%, rgba(255,255,255,0.08) 0 12mm, transparent 13mm),
+      radial-gradient(circle at 60% 65%, rgba(255,255,255,0.05) 0 22mm, transparent 23mm);
+    pointer-events: none;
+  }
+  .rollup .top { padding: 22mm 16mm 0; position: relative; z-index: 1; }
+  .rollup .top .word { font-size: 26pt; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .rollup .top .crumb {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6mm;
+  }
+
+  .rollup .accent-hex {
+    position: absolute;
+    width: 28mm; height: 32mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    top: 110mm; right: 16mm;
+    z-index: 2;
+  }
+  .rollup .accent-hex .label {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    line-height: 1.2; text-align: center;
+  }
+  .rollup .accent-hex .label .big {
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 12pt; font-weight: 700; letter-spacing: -0.02em; margin-top: 1mm;
+  }
+
+  .rollup .headline {
+    position: absolute;
+    top: 170mm; left: 16mm; right: 16mm;
+    font-size: 30pt; font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: white;
+    z-index: 1;
+  }
+  .rollup .sub {
+    position: absolute;
+    top: 240mm; left: 16mm; right: 16mm;
+    font-size: 12pt; line-height: 1.45;
+    color: rgba(255,255,255,0.85);
+    max-width: 110mm;
+    z-index: 1;
+  }
+
+  .rollup .apps-row {
+    position: absolute;
+    bottom: 60mm; left: 16mm; right: 16mm;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    z-index: 1;
+  }
+  .rollup .apps-row .app {
+    background: rgba(255,255,255,0.06);
+    border: 0.3mm solid rgba(255,255,255,0.18);
+    padding: 4mm 5mm;
+    border-radius: 1.5mm;
+    display: flex; flex-direction: column; gap: 1.5mm;
+  }
+  .rollup .apps-row .app .h {
+    width: 8mm; height: 9.2mm; clip-path: var(--hex-pointy-top);
+    background: white;
+  }
+  .rollup .apps-row .app .h img { width: 100%; height: 100%; }
+  .rollup .apps-row .app .name { font-size: 9pt; font-weight: 600; color: white; }
+  .rollup .apps-row .app .desc { font-size: 7pt; color: rgba(255,255,255,0.72); line-height: 1.3; }
+
+  .rollup .foot {
+    position: absolute;
+    bottom: 12mm; left: 16mm; right: 16mm;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 1;
+  }
+  .rollup .foot .url { font-family: var(--conduction-typography-font-family-code); font-size: 11pt; letter-spacing: 0.04em; color: white; }
+  .rollup .foot .qr { width: 22mm; height: 22mm; background: white; padding: 1mm; }
+  .rollup .foot .qr img { width: 100%; height: 100%; }
+
+  /* ---- Roll-up single-app variant ---- */
+  .rollup--app .accent-hex { background: var(--c-orange-knvb); }
+  .rollup--app .feature-list {
+    position: absolute;
+    top: 220mm; left: 16mm; right: 16mm; bottom: 60mm;
+    display: flex; flex-direction: column; gap: 4mm;
+    z-index: 1;
+  }
+  .rollup--app .feature-list .feat {
+    display: grid; grid-template-columns: 9mm 1fr; gap: 4mm; align-items: start;
+  }
+  .rollup--app .feature-list .feat .num {
+    width: 9mm; height: 10.4mm; clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; font-weight: 600;
+  }
+  .rollup--app .feature-list .feat .body .h { font-size: 11pt; font-weight: 600; color: white; line-height: 1.2; }
+  .rollup--app .feature-list .feat .body .b { font-size: 8.5pt; color: rgba(255,255,255,0.72); line-height: 1.4; margin-top: 1mm; }
+  .rollup--app .glyph-big {
+    position: absolute;
+    top: 170mm; left: 16mm;
+    width: 32mm; height: 36.8mm;
+  }
+  .rollup--app .glyph-big img { width: 100%; height: 100%; }
+
+  /* ---- Event backdrop: 3000 x 2000mm at 1:10 = 300 x 200mm ---- */
+  .event-backdrop {
+    width: 300mm; height: 200mm;
+    background: var(--c-cobalt-900);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-3);
+  }
+  .event-backdrop::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(255,255,255,0.10) 0 24mm, transparent 25mm),
+      radial-gradient(circle at 50% 70%, rgba(255,255,255,0.06) 0 32mm, transparent 33mm),
+      radial-gradient(circle at 85% 30%, rgba(255,255,255,0.08) 0 22mm, transparent 23mm);
+    pointer-events: none;
+  }
+  .event-backdrop .accent {
+    position: absolute;
+    top: 50mm; right: 60mm;
+    width: 36mm; height: 41mm; clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+  }
+  .event-backdrop .word {
+    position: absolute;
+    bottom: 36mm; left: 36mm;
+    font-size: 60pt; font-weight: 700; letter-spacing: -0.025em;
+    color: white;
+    line-height: 1;
+  }
+  .event-backdrop .url {
+    position: absolute;
+    bottom: 18mm; left: 36mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 14pt; color: rgba(255,255,255,0.7); letter-spacing: 0.04em;
+  }
+
+  /* ---- Social banners (real pixel sizes) ---- */
+  .social { display: flex; flex-direction: column; gap: var(--space-6); }
+  .social-card { background: white; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--c-cobalt-100); }
+  .social-card .meta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: var(--fs-xs); letter-spacing: 0.06em; color: var(--c-cobalt-400);
+    margin-bottom: var(--space-3);
+  }
+  .social-card .canvas { display: block; max-width: 100%; }
+
+  /* LinkedIn header — team in honeycomb */
+  .li-header {
+    width: 100%;
+    aspect-ratio: 1584 / 396;
+    background: var(--c-blue-cobalt);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .li-header::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 8% 30%, rgba(255,255,255,0.12) 0 8%, transparent 9%),
+      radial-gradient(circle at 26% 65%, rgba(255,255,255,0.08) 0 6%, transparent 7%),
+      radial-gradient(circle at 42% 25%, rgba(255,255,255,0.10) 0 7%, transparent 8%),
+      radial-gradient(circle at 58% 70%, rgba(255,255,255,0.06) 0 5%, transparent 6%),
+      radial-gradient(circle at 74% 30%, rgba(255,255,255,0.10) 0 7%, transparent 8%);
+  }
+  .li-header .accent {
+    position: absolute;
+    width: 8%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    top: 28%; left: 90%;
+  }
+  .li-header .text {
+    position: absolute;
+    top: 30%; left: 6%;
+    color: white;
+    z-index: 1;
+  }
+  .li-header .text .h1 { font-size: clamp(20px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .li-header .text .h2 { font-size: clamp(11px, 1.6vw, 18px); color: rgba(255,255,255,0.75); margin-top: 1%; max-width: 60%; }
+
+  /* X header — orange-accent backdrop alone */
+  .x-header {
+    width: 100%;
+    aspect-ratio: 1500 / 500;
+    background: var(--c-cobalt-900);
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .x-header::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 35%, rgba(255,255,255,0.08) 0 10%, transparent 11%),
+      radial-gradient(circle at 55% 60%, rgba(255,255,255,0.06) 0 12%, transparent 13%);
+  }
+  .x-header .accent-big {
+    position: absolute;
+    width: 22%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    right: 8%; top: 18%;
+  }
+  .x-header .text {
+    position: absolute; left: 6%; bottom: 20%;
+    color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: clamp(11px, 2vw, 22px); letter-spacing: 0.06em;
+  }
+
+  /* Facebook header — title block */
+  .fb-header {
+    width: 100%;
+    aspect-ratio: 820 / 312;
+    background: var(--c-blue-cobalt);
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .fb-header .word {
+    position: absolute; left: 5%; top: 28%;
+    color: white;
+    font-size: clamp(20px, 4vw, 38px); font-weight: 700; letter-spacing: -0.02em;
+  }
+  .fb-header .url {
+    position: absolute; left: 5%; bottom: 20%;
+    color: rgba(255,255,255,0.7);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: clamp(10px, 1.5vw, 16px);
+  }
+  .fb-header .accent {
+    position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+    width: 16%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+  }
+
+  .group { margin-top: var(--space-12); }
+  .group .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-4);
+  }
+
+  @media print { @page { size: 850mm 2000mm; margin: 0; } /* default = roll-up */ }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Banners</div>
+  <h1>Banners</h1>
+  <p class="lead">Two roll-up variants (all-apps and a single-app feature roll), an event backdrop, and the social header set (LinkedIn, X, Facebook). All previewed at scale; print sizes are the real-world targets in the tokens. The orange-once-per-screen rule is enforced everywhere.</p>
+</div>
+
+<div class="stage full">
+
+  <div class="group">
+    <div class="h">01 &middot; Roll-up &middot; all apps &middot; 850 &times; 2000 mm (preview at 1:5)</div>
+    <div class="paper-row">
+      <div>
+        <div class="rollup">
+          <div class="top">
+            <span class="word">Conduction</span>
+            <div class="crumb">Apps op Nextcloud</div>
+          </div>
+          <span class="accent-hex">
+            <span class="label">conduction.nl<span class="big">/apps</span></span>
+          </span>
+          <div class="headline">Vijf apps. &Eacute;&eacute;n stack. Geen lock-in.</div>
+          <div class="sub">OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, MyDash. Installeer wat je nodig hebt, draai het op je eigen server.</div>
+          <div class="apps-row">
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/opencatalogi-hex.svg" alt=""></span><span class="name">OpenCatalogi</span><span class="desc">De catalogus.</span></div>
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/openregister-hex.svg" alt=""></span><span class="name">OpenRegister</span><span class="desc">Structured records.</span></div>
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/openconnector-hex.svg" alt=""></span><span class="name">OpenConnector</span><span class="desc">Integraties.</span></div>
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/docudesk-hex.svg" alt=""></span><span class="name">DocuDesk</span><span class="desc">Documenten.</span></div>
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/mydash-hex.svg" alt=""></span><span class="name">MyDash</span><span class="desc">Persoonlijke startpagina.</span></div>
+            <div class="app"><span class="h"><img src="../../brand/assets/apps/openai-bridge-hex.svg" alt=""></span><span class="name">OpenAI Bridge</span><span class="desc">Model gateway.</span></div>
+          </div>
+          <div class="foot">
+            <span class="url">conduction.nl</span>
+            <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="LinkedIn QR"></div>
+          </div>
+        </div>
+        <span class="specimen-label">All-apps roll-up &middot; the platform overview, never two of these in one room</span>
+      </div>
+
+      <div>
+        <div class="rollup rollup--app">
+          <div class="top">
+            <span class="word" style="font-size: 18pt;">OpenCatalogi</span>
+            <div class="crumb">De catalogus &middot; van Conduction</div>
+          </div>
+          <div class="glyph-big"><img src="../../brand/assets/apps/opencatalogi-hex.svg" alt=""></div>
+          <span class="accent-hex">
+            <span class="label">github<span class="big">.com</span></span>
+          </span>
+          <div class="headline" style="top: 220mm;">Vind, installeer, update.</div>
+          <div class="sub" style="top: 260mm;">Een gefedereerde catalogus voor je Nextcloud-apps en publieke registers. Open-source, AGPL, klaar in een middag.</div>
+          <div class="feature-list" style="top: 300mm;">
+            <div class="feat"><span class="num">01</span><div class="body"><div class="h">Federated discovery</div><div class="b">Zie wat andere gemeenten draaien, in &eacute;&eacute;n catalogus.</div></div></div>
+            <div class="feat"><span class="num">02</span><div class="body"><div class="h">Audit-trail per publicatie</div><div class="b">WOO-proof uit de doos, geen aparte logger nodig.</div></div></div>
+            <div class="feat"><span class="num">03</span><div class="body"><div class="h">Schema-validatie</div><div class="b">App-spec wordt afgedwongen, geen kapotte metadata.</div></div></div>
+            <div class="feat"><span class="num">04</span><div class="body"><div class="h">Werkt met OpenRegister</div><div class="b">Structured records onder de catalogus, automatisch.</div></div></div>
+          </div>
+          <div class="foot">
+            <span class="url">conduction.nl/opencatalogi</span>
+            <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="QR"></div>
+          </div>
+        </div>
+        <span class="specimen-label">Single-app feature roll-up &middot; OpenCatalogi shown &middot; one per app, swap content for siblings</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="h">02 &middot; Event backdrop &middot; 3000 &times; 2000 mm (preview at 1:10)</div>
+    <div class="event-backdrop">
+      <span class="accent"></span>
+      <div class="word">Conduction.</div>
+      <div class="url">conduction.nl &middot; github.com/ConductionNL</div>
+    </div>
+    <span class="specimen-label">Event backdrop &middot; one statement, one accent &middot; visible across a hall</span>
+  </div>
+
+  <div class="group">
+    <div class="h">03 &middot; Social header set</div>
+    <div class="social">
+      <div class="social-card">
+        <div class="meta">LinkedIn cover &middot; 1584 &times; 396 px</div>
+        <div class="li-header">
+          <span class="accent"></span>
+          <div class="text">
+            <div class="h1">Apps op Nextcloud die je zelf draait.</div>
+            <div class="h2">Conduction bouwt vijf open-source apps. AGPL, MIT-OFL. Op je eigen server.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="meta">X header &middot; 1500 &times; 500 px</div>
+        <div class="x-header">
+          <span class="accent-big"></span>
+          <div class="text">$ conduction install OpenCatalogi</div>
+        </div>
+      </div>
+
+      <div class="social-card">
+        <div class="meta">Facebook cover &middot; 820 &times; 312 px</div>
+        <div class="fb-header">
+          <div class="word">Conduction</div>
+          <div class="url">conduction.nl</div>
+          <span class="accent"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="spark" style="position: static; margin-top: var(--space-12); max-width: 720px;">
+    <div class="label">Why we built it this way</div>
+    <h2>One statement per surface, no exceptions</h2>
+    <p class="lede">Most banners try to say five things. Ours say one. The difference between a roll-up that sells and a roll-up that's wallpaper is whether someone can read it from across a hall in 1.5 seconds.</p>
+    <ul>
+      <li><strong>Two roll-up variants, not one.</strong> An all-apps roll-up tells the platform story; a single-app roll-up does feature depth. Same chassis, different role at a stand.</li>
+      <li><strong>Single-app roll-up has numbered features in hexes.</strong> Four hex-stamped features with one-line descriptions. Buyers scan the numbers, slow down on the hex they care about.</li>
+      <li><strong>One orange hex, always at eye level.</strong> Pinned at ~110mm from the top so a 170cm visitor can read it without looking up. The hex carries the call-to-action ("conduction.nl/apps", "github.com").</li>
+      <li><strong>Honeycomb backdrop in the upper third.</strong> Brand-recognisable from across a venue without competing with the headline. Lower two-thirds stay clean for content.</li>
+      <li><strong>QR at the bottom-right.</strong> A LinkedIn-invite QR for visitors who want to follow up. We trade business cards for DMs at events.</li>
+      <li><strong>Event backdrop says ONE word + ONE url.</strong> "Conduction." with a period, then the URL. Anything more clutters; the backdrop is the photo opportunity, not the brochure.</li>
+      <li><strong>Social headers are a set, not three random images.</strong> LinkedIn = team-feel honeycomb, X = terminal-style command, Facebook = title block. Together they form a recognisable campaign across feeds.</li>
+      <li><strong>Plex Mono on URLs.</strong> Every URL is in code-mono, recognisable across all formats. Reinforces the open-source identity in a glance.</li>
+    </ul>
+    <div class="footer-note">Roll-up 850&times;2000mm &middot; event backdrop 3000&times;2000mm &middot; LinkedIn 1584&times;396 &middot; X 1500&times;500 &middot; Facebook 820&times;312 &middot; all sizes plumbed via tokens</div>
+  </aside>
+
+</div>
+
+</body>
+</html>

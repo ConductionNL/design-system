@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invoice · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  .invoice {
+    padding: 18mm 20mm 20mm;
+    color: var(--c-cobalt-900);
+    display: flex; flex-direction: column;
+    min-height: var(--paper-a4-h);
+    position: relative;
+  }
+  /* Subtle hex watermark, present but quiet */
+  .invoice::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='92' viewBox='0 0 80 92'><polygon points='40,3 75,23 75,69 40,89 5,69 5,23' fill='none' stroke='%23DCE3F0' stroke-width='1'/></svg>");
+    background-repeat: repeat;
+    background-size: 60mm 69mm;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .invoice > * { position: relative; z-index: 1; }
+
+  .invoice-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    padding-bottom: 5mm; margin-bottom: 6mm;
+  }
+  .invoice-head .brand { display: flex; align-items: center; gap: 4mm; }
+  .invoice-head .brand .hex { width: 9mm; height: 10.4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .invoice-head .brand .word { font-size: 14pt; font-weight: 700; letter-spacing: -0.01em; }
+  .invoice-head .doctype {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    text-align: right;
+  }
+  .invoice-head .doctype .id { font-size: 12pt; color: var(--c-cobalt-900); margin-top: 1mm; letter-spacing: 0.04em; }
+
+  /* Person-voice opener — invoice as a relationship moment */
+  .opener {
+    background: var(--c-cobalt-50);
+    border-left: 1.2mm solid var(--c-blue-cobalt);
+    padding: 5mm 7mm;
+    margin-bottom: 6mm;
+    border-radius: 0 1mm 1mm 0;
+    font-size: 10pt;
+    line-height: 1.55;
+  }
+  .opener .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    margin-bottom: 1.5mm;
+  }
+  .opener p { margin: 0; }
+
+  .meta-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6mm;
+    margin-bottom: 6mm;
+    font-size: 8.5pt;
+  }
+  .meta-row > div { display: flex; flex-direction: column; }
+  .meta-row .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .meta-row .v { font-weight: 600; color: var(--c-cobalt-900); margin-top: 0.5mm; font-family: var(--conduction-typography-font-family-code); font-feature-settings: "tnum"; }
+
+  .recipient { font-size: 9.5pt; line-height: 1.5; margin-bottom: 6mm; }
+  .recipient .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+
+  table.lines { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 4mm; }
+  table.lines thead th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: 2mm 2mm 2mm 0;
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    font-weight: 500;
+  }
+  table.lines tbody td {
+    padding: 3mm 2mm 3mm 0;
+    vertical-align: top;
+    border-bottom: 0.2mm solid var(--c-cobalt-100);
+  }
+  table.lines td.num, table.lines th.num { text-align: right; font-family: var(--conduction-typography-font-family-code); font-feature-settings: "tnum"; }
+  table.lines tbody tr:last-child td { border-bottom: 0; }
+  table.lines .deliver { font-size: 8.5pt; color: var(--c-cobalt-700); margin-top: 0.5mm; line-height: 1.4; }
+
+  .totals {
+    margin-left: auto;
+    width: 80mm;
+    font-family: var(--conduction-typography-font-family-code); font-feature-settings: "tnum";
+    font-size: 9.5pt;
+  }
+  .totals .row { display: flex; justify-content: space-between; padding: 1.5mm 0; }
+  .totals .row.grand { font-size: 14pt; padding: 3mm 0; border-top: 0.4mm solid var(--c-cobalt-900); margin-top: 1.5mm; color: var(--c-cobalt-900); font-weight: 600; }
+
+  .pay-strip {
+    margin-top: 6mm;
+    background: var(--c-cobalt-900);
+    color: white;
+    padding: 6mm 8mm;
+    border-radius: 1mm;
+    display: grid; grid-template-columns: 1fr 32mm; gap: 8mm; align-items: center;
+  }
+  .pay-strip .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: 1.5mm;
+  }
+  .pay-strip .iban {
+    font-family: var(--conduction-typography-font-family-code);
+    font-feature-settings: "tnum";
+    font-size: 12pt; color: white; letter-spacing: 0.04em; font-weight: 500;
+  }
+  .pay-strip .fine {
+    font-size: 8.5pt; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 2mm;
+  }
+  .pay-strip .qr-pay { width: 32mm; height: 32mm; background: white; padding: 1.5mm; }
+  .pay-strip .qr-pay img { width: 100%; height: 100%; }
+  .pay-strip .qr-cap {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6.5pt; color: rgba(255,255,255,0.65);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-align: center;
+    margin-top: 1mm;
+  }
+
+  /* "Wat is volgende" — the future-looking footer */
+  .next-up {
+    margin-top: 6mm;
+    border: 0.3mm solid var(--c-cobalt-100);
+    border-left: 1.2mm solid var(--c-mint-500);
+    padding: 5mm 7mm;
+    background: var(--c-mint-50);
+  }
+  .next-up .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-mint-700);
+    margin-bottom: 2mm;
+  }
+  .next-up p { font-size: 9.5pt; line-height: 1.55; color: var(--c-cobalt-900); margin: 0; }
+  .next-up p strong { color: var(--c-mint-700); }
+
+  .invoice-foot {
+    margin-top: auto;
+    padding-top: 6mm;
+    border-top: 0.3mm solid var(--c-cobalt-100);
+    display: flex; justify-content: space-between;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+  }
+
+  @media print { @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Invoice</div>
+  <h1>Invoice</h1>
+  <p class="lead">A4 portrait. The invoice opens with a person-voice thank-you, lines describe what was delivered (not just hours), and the page closes with what's next, what we're working on this sprint. Plex Mono tabular numerals throughout. The invoice is a relationship moment, not a transaction.</p>
+</div>
+
+<div class="stage">
+  <div class="paper-flow">
+    <!-- Filled NL example -->
+    <div>
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Filled example &middot; Acme BV &middot; Nederlands</span>
+      <div class="paper paper--A4 invoice">
+        <div class="invoice-head">
+          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="doctype">Factuur<div class="id">CND-INV-2026-118</div></div>
+        </div>
+
+        <div class="opener">
+          <div class="h">Bedankt</div>
+          <p>Marleen, dank voor de samenwerking deze sprint. Het schema voor het klantregister staat, de pilot-import draait, en we hebben drie validatieregels gevonden die je oude proces niet had. Goed werk samen.</p>
+        </div>
+
+        <div class="meta-row">
+          <div><span class="h">Factuurdatum</span><span class="v">30 apr 2026</span></div>
+          <div><span class="h">Vervaldatum</span><span class="v">30 mei 2026</span></div>
+          <div><span class="h">Termijn</span><span class="v">30 dagen</span></div>
+          <div><span class="h">Sprint</span><span class="v">2026-W17</span></div>
+        </div>
+
+        <div class="recipient">
+          <span class="h">Aan</span><br>
+          Acme BV &middot; T.a.v. Marleen de Vries, IT-lead<br>
+          Postbus 100, 1234 AA Voorbeelderwijk &middot; KvK 12345678
+        </div>
+
+        <table class="lines">
+          <thead>
+            <tr>
+              <th>Wat we bouwden</th>
+              <th class="num" style="width: 18mm;">Uren</th>
+              <th class="num" style="width: 22mm;">Per uur</th>
+              <th class="num" style="width: 26mm;">Subtotaal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Schema-werksessie en commit<div class="deliver">Vijf entiteiten vastgelegd, OpenRegister-schema in main.</div></td>
+              <td class="num">8</td><td class="num">€ 145</td><td class="num">€ 1.160</td>
+            </tr>
+            <tr>
+              <td>Pilot-import + validatierapport<div class="deliver">Drie zwaarste spreadsheets in staging, 17 fouten gerapporteerd.</div></td>
+              <td class="num">14</td><td class="num">€ 145</td><td class="num">€ 2.030</td>
+            </tr>
+            <tr>
+              <td>Documentatie + handover-sessie<div class="deliver">Schema- en API-docs in docs.conduction.nl, 2 uur sessie met Henk.</div></td>
+              <td class="num">4</td><td class="num">€ 145</td><td class="num">€ 580</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="row"><span>Subtotaal</span><span>€ 3.770,00</span></div>
+          <div class="row"><span>Btw 21%</span><span>€ 791,70</span></div>
+          <div class="row grand"><span>Te voldoen</span><span>€ 4.561,70</span></div>
+        </div>
+
+        <div class="pay-strip">
+          <div>
+            <div class="h">Betaling</div>
+            <div class="iban">NL62 RABO 0123 4567 89</div>
+            <div class="fine">T.n.v. Conduction BV &middot; o.v.v. <strong>CND-INV-2026-118</strong> &middot; binnen 30 dagen</div>
+          </div>
+          <div>
+            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="Pay link QR (placeholder)"></div>
+            <div class="qr-cap">scan to pay</div>
+          </div>
+        </div>
+
+        <div class="next-up">
+          <div class="h">Wat is volgende</div>
+          <p>Sprint 2026-W18 staat ingepland: <strong>rollen + UI</strong>. We koppelen je vier gebruikersrollen aan OpenRegister, beheerders krijgen de UI live op je eigen Nextcloud. Heb je een backup van de huidige Excel-permissies? Stuur die naar mark@conduction.nl, dan zijn we sneller klaar.</p>
+        </div>
+
+        <div class="invoice-foot">
+          <span>Conduction BV &middot; KvK 50615773 &middot; BTW NL852825897B01</span>
+          <span>conduction.nl &middot; +31 70 756 1240</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty NL template -->
+    <div style="margin-top: var(--space-12);">
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Empty template &middot; placeholders only</span>
+      <div class="paper paper--A4 invoice">
+        <div class="invoice-head">
+          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="doctype">Factuur<div class="id">{{ #ID }}</div></div>
+        </div>
+        <div class="opener">
+          <div class="h">Bedankt</div>
+          <p>{{ Naam }}, {{ persoonlijke openingszin, twee zinnen max, refereert aan wat deze sprint is opgeleverd. }}</p>
+        </div>
+        <div class="meta-row">
+          <div><span class="h">Factuurdatum</span><span class="v">{{ DD mmm YYYY }}</span></div>
+          <div><span class="h">Vervaldatum</span><span class="v">{{ DD mmm YYYY }}</span></div>
+          <div><span class="h">Termijn</span><span class="v">{{ 30 dagen }}</span></div>
+          <div><span class="h">Sprint</span><span class="v">{{ YYYY-W## }}</span></div>
+        </div>
+        <div class="recipient"><span class="h">Aan</span><br>{{ Bedrijfsnaam }} &middot; T.a.v. {{ naam, rol }}<br>{{ adres }} &middot; KvK {{ nr }}</div>
+        <table class="lines">
+          <thead><tr><th>Wat we bouwden</th><th class="num">Uren</th><th class="num">Per uur</th><th class="num">Subtotaal</th></tr></thead>
+          <tbody>
+            <tr><td>{{ Werk }}<div class="deliver">{{ Concrete uitkomst, één zin. }}</div></td><td class="num">{{ h }}</td><td class="num">€ {{ rate }}</td><td class="num">€ {{ subtotal }}</td></tr>
+            <tr><td>{{ Werk }}<div class="deliver">{{ Concrete uitkomst. }}</div></td><td class="num">{{ h }}</td><td class="num">€ {{ rate }}</td><td class="num">€ {{ subtotal }}</td></tr>
+          </tbody>
+        </table>
+        <div class="totals">
+          <div class="row"><span>Subtotaal</span><span>€ {{ subtotal }}</span></div>
+          <div class="row"><span>Btw 21%</span><span>€ {{ vat }}</span></div>
+          <div class="row grand"><span>Te voldoen</span><span>€ {{ total }}</span></div>
+        </div>
+        <div class="pay-strip">
+          <div>
+            <div class="h">Betaling</div>
+            <div class="iban">{{ IBAN }}</div>
+            <div class="fine">T.n.v. Conduction BV &middot; o.v.v. <strong>{{ #ID }}</strong> &middot; binnen {{ termijn }}</div>
+          </div>
+          <div>
+            <div class="qr-pay"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="Pay link QR placeholder"></div>
+            <div class="qr-cap">scan to pay</div>
+          </div>
+        </div>
+        <div class="next-up">
+          <div class="h">Wat is volgende</div>
+          <p>{{ Sprintvoorvertoning, één alinea. Wat de volgende sprint oplevert, of een actie van de klant die ons helpt sneller klaar te zijn. }}</p>
+        </div>
+        <div class="invoice-foot"><span>Conduction BV &middot; KvK 50615773 &middot; BTW NL852825897B01</span><span>conduction.nl</span></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>An invoice can be a love letter</h2>
+    <p class="lede">Most invoices are cold: number, amount, IBAN, please pay. Ours opens with a thank-you, describes outcomes (not hours), and closes with what's next. The invoice arrives, the relationship continues.</p>
+    <ul>
+      <li><strong>Person-voice opener.</strong> "Marleen, dank voor de samenwerking..." A two-sentence cobalt-edge panel that names the person and the work. Pre-empts the "this feels transactional" reflex.</li>
+      <li><strong>Lines show what was delivered.</strong> "8 hours" is invisible to the buyer; "Vijf entiteiten vastgelegd, schema in main" tells the CFO what was bought. Easier to approve, easier to defend internally.</li>
+      <li><strong>Sprint number in the meta-row.</strong> Treats the work as a known unit, not an open-ended task. Pairs the invoice with a body of evidence the buyer already has.</li>
+      <li><strong>"Wat is volgende" footer in mint.</strong> A future-looking panel: what next sprint delivers, or a small ask that helps. The invoice is also a status update.</li>
+      <li><strong>Pay-strip in cobalt-900.</strong> The dark band makes the IBAN unmissable. QR placeholder is wired for an iDEAL link when we adopt one, the file is committed today as a LinkedIn QR.</li>
+      <li><strong>Hex watermark.</strong> A faint pointy-top tile pattern at 35% opacity, present but quiet. Brand-consistent without competing with the data.</li>
+      <li><strong>Plex Mono on every number.</strong> Tabular numerals align by default; the invoice reads like a balance sheet, distinctive and trustworthy.</li>
+    </ul>
+    <div class="footer-note">A4 &middot; NL canonical &middot; --bleed 0 &middot; iDEAL QR slated, currently uses the LinkedIn QR as placeholder so the layout slot is real</div>
+  </aside>
+</div>
+
+</body>
+</html>

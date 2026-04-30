@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quotation · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  .quote {
+    padding: 18mm 20mm 20mm;
+    color: var(--c-cobalt-900);
+    display: flex; flex-direction: column;
+    min-height: var(--paper-a4-h);
+  }
+
+  .quote-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    padding-bottom: 5mm; margin-bottom: 8mm;
+  }
+  .quote-head .brand { display: flex; align-items: center; gap: 4mm; }
+  .quote-head .brand .hex { width: 9mm; height: 10.4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .quote-head .brand .word { font-size: 14pt; font-weight: 700; letter-spacing: -0.01em; }
+  .quote-head .doctype {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    text-align: right;
+  }
+  .quote-head .doctype .id { font-size: 12pt; color: var(--c-cobalt-900); margin-top: 1mm; letter-spacing: 0.04em; }
+
+  /* The TL;DR comes BEFORE the line items */
+  .outcome-block {
+    background: var(--c-cobalt-50);
+    border-left: 1.2mm solid var(--c-orange-knvb);
+    padding: 6mm 8mm;
+    margin-bottom: 6mm;
+    border-radius: 0 1mm 1mm 0;
+  }
+  .outcome-block .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    margin-bottom: 2mm;
+  }
+  .outcome-block h2 { font-size: 16pt; font-weight: 700; line-height: 1.2; margin: 0 0 3mm; letter-spacing: -0.005em; }
+  .outcome-block ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5mm; }
+  .outcome-block li { font-size: 10pt; line-height: 1.5; padding-left: 5mm; position: relative; }
+  .outcome-block li::before { content: ""; position: absolute; left: 0; top: 1.7mm; width: 2.4mm; height: 2.7mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+
+  .meta-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6mm;
+    margin-bottom: 6mm;
+    font-size: 8.5pt;
+  }
+  .meta-row > div { display: flex; flex-direction: column; }
+  .meta-row .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .meta-row .v { font-weight: 600; color: var(--c-cobalt-900); margin-top: 0.5mm; }
+
+  .recipient { font-size: 9.5pt; line-height: 1.5; margin-bottom: 6mm; }
+  .recipient .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+
+  table.lines { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 4mm; }
+  table.lines thead th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: 2mm 2mm 2mm 0;
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    font-weight: 500;
+  }
+  table.lines tbody td {
+    padding: 3mm 2mm 3mm 0;
+    vertical-align: top;
+    border-bottom: 0.2mm solid var(--c-cobalt-100);
+  }
+  table.lines td.num, table.lines th.num { text-align: right; font-family: var(--conduction-typography-font-family-code); font-feature-settings: "tnum"; }
+  table.lines tbody tr:last-child td { border-bottom: 0; }
+  table.lines .deliver { font-size: 8.5pt; color: var(--c-cobalt-700); margin-top: 0.5mm; line-height: 1.4; }
+
+  .totals {
+    margin-left: auto;
+    width: 80mm;
+    font-family: var(--conduction-typography-font-family-code); font-feature-settings: "tnum";
+    font-size: 9.5pt;
+  }
+  .totals .row { display: flex; justify-content: space-between; padding: 1.5mm 0; }
+  .totals .row.grand { font-size: 12pt; padding: 3mm 0; border-top: 0.4mm solid var(--c-cobalt-900); margin-top: 1.5mm; color: var(--c-cobalt-900); font-weight: 600; }
+
+  .not-included {
+    margin-top: 6mm;
+    background: white;
+    border: 0.3mm solid var(--c-cobalt-100);
+    border-left: 1.2mm solid var(--c-red-vermillion);
+    padding: 5mm 7mm;
+  }
+  .not-included .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-red-vermillion);
+    margin-bottom: 2mm;
+  }
+  .not-included ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 1mm; }
+  .not-included li { font-size: 9pt; line-height: 1.5; color: var(--c-cobalt-700); padding-left: 4mm; position: relative; }
+  .not-included li::before { content: "—"; position: absolute; left: 0; color: var(--c-red-vermillion); font-family: var(--conduction-typography-font-family-code); }
+
+  .validity-stamp {
+    position: absolute;
+    bottom: 24mm; right: 18mm;
+    width: 28mm; height: 32mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    color: white;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.06em; text-transform: uppercase;
+    text-align: center;
+    line-height: 1.2;
+    transform: rotate(-6deg);
+  }
+  .validity-stamp .big { font-family: var(--conduction-typography-font-family-body); font-size: 16pt; font-weight: 700; letter-spacing: -0.02em; margin-top: 1mm; }
+
+  .signoff-zone {
+    margin-top: 8mm;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10mm;
+  }
+  .signoff-zone .box {
+    border-top: 0.3mm solid var(--c-cobalt-700);
+    padding-top: 2mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.06em; color: var(--c-cobalt-400);
+  }
+  .signoff-zone .box .name { font-family: var(--conduction-typography-font-family-body); font-size: 9pt; color: var(--c-cobalt-900); margin-top: 1mm; font-weight: 500; }
+
+  .quote-foot {
+    margin-top: auto;
+    padding-top: 6mm;
+    border-top: 0.3mm solid var(--c-cobalt-100);
+    display: flex; justify-content: space-between;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+  }
+
+  @media print { @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Quotation</div>
+  <h1>Quotation</h1>
+  <p class="lead">A4 portrait, NL canonical (EN reflowed). The outcome block leads, the line items follow, "wat zit er niet bij" closes the page. A validity-stamp hex tells you when this offer expires. Filled "Acme BV" example below the empty template.</p>
+</div>
+
+<div class="stage">
+  <div class="paper-flow">
+    <!-- Filled NL example -->
+    <div>
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Filled example &middot; Acme BV &middot; Nederlands</span>
+      <div class="paper paper--A4 quote" style="position: relative;">
+        <div class="quote-head">
+          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="doctype">Offerte<div class="id">CND-Q-2026-018</div></div>
+        </div>
+
+        <div class="outcome-block">
+          <div class="h">Wat je krijgt</div>
+          <h2>Eén auditbaar register voor Acme BV, in zeven weken live.</h2>
+          <ul>
+            <li>Vijf entiteiten in OpenRegister, met schema-validatie en audit-trail.</li>
+            <li>Import van 142 bestaande spreadsheets, validatiefouten zichtbaar.</li>
+            <li>Rolgebaseerde permissies, vakantieproof.</li>
+          </ul>
+        </div>
+
+        <div class="meta-row">
+          <div><span class="h">Datum</span><span class="v">30 april 2026</span></div>
+          <div><span class="h">Geldig tot</span><span class="v">14 mei 2026</span></div>
+          <div><span class="h">Doorlooptijd</span><span class="v">7 weken</span></div>
+          <div><span class="h">Betaling</span><span class="v">30/40/30</span></div>
+        </div>
+
+        <div class="recipient">
+          <span class="h">Aan</span><br>
+          Acme BV &middot; T.a.v. Marleen de Vries, IT-lead<br>
+          Postbus 100, 1234 AA Voorbeelderwijk
+        </div>
+
+        <table class="lines">
+          <thead>
+            <tr>
+              <th>Werk &amp; uitkomst</th>
+              <th class="num" style="width: 18mm;">Uren</th>
+              <th class="num" style="width: 22mm;">Per uur</th>
+              <th class="num" style="width: 26mm;">Subtotaal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Schema-werksessie<div class="deliver">Vijf entiteiten vastgelegd, OpenRegister-schema commit-klaar.</div></td>
+              <td class="num">8</td><td class="num">€ 145</td><td class="num">€ 1.160</td>
+            </tr>
+            <tr>
+              <td>Pilot-import + validatie<div class="deliver">Drie zwaarste spreadsheets in staging, validatierapport.</div></td>
+              <td class="num">16</td><td class="num">€ 145</td><td class="num">€ 2.320</td>
+            </tr>
+            <tr>
+              <td>Rollen + UI<div class="deliver">Permissies per rol, OpenRegister UI live op interne URL.</div></td>
+              <td class="num">24</td><td class="num">€ 145</td><td class="num">€ 3.480</td>
+            </tr>
+            <tr>
+              <td>Migratie + go-live<div class="deliver">142 spreadsheets gemigreerd, productie-OpenRegister, training.</div></td>
+              <td class="num">32</td><td class="num">€ 145</td><td class="num">€ 4.640</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="row"><span>Subtotaal</span><span>€ 11.600,00</span></div>
+          <div class="row"><span>Btw 21%</span><span>€ 2.436,00</span></div>
+          <div class="row grand"><span>Totaal incl. btw</span><span>€ 14.036,00</span></div>
+        </div>
+
+        <div class="not-included">
+          <div class="h">Wat zit er niet bij</div>
+          <ul>
+            <li>Hardware of hosting (we werken op jouw Nextcloud-server, of we adviseren een hosting-partner).</li>
+            <li>Migratie van data ouder dan 5 jaar, behalve op verzoek per uurtarief.</li>
+            <li>Maatwerk-rapportages, OpenRegister levert API + standaard UI, dashboards bouwen we los.</li>
+            <li>Gebruikerstrainingen voorbij 1 sessie van 2 uur.</li>
+          </ul>
+        </div>
+
+        <span class="validity-stamp">Geldig tot<span class="big">14 mei</span></span>
+
+        <div class="signoff-zone">
+          <div class="box">Voor akkoord opdrachtgever<div class="name">Marleen de Vries, Acme BV</div></div>
+          <div class="box">Namens Conduction<div class="name">Ruben van der Linde, CTO</div></div>
+        </div>
+
+        <div class="quote-foot">
+          <span>Conduction BV &middot; KvK 50615773 &middot; BTW NL852825897B01</span>
+          <span>conduction.nl &middot; +31 70 756 1240</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty NL template -->
+    <div style="margin-top: var(--space-12);">
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Empty template &middot; placeholders only</span>
+      <div class="paper paper--A4 quote" style="position: relative;">
+        <div class="quote-head">
+          <div class="brand"><span class="hex"></span><span class="word">Conduction</span></div>
+          <div class="doctype">Offerte<div class="id">{{ #ID }}</div></div>
+        </div>
+        <div class="outcome-block">
+          <div class="h">Wat je krijgt</div>
+          <h2>{{ One-sentence outcome with period. }}</h2>
+          <ul><li>{{ Concrete deliverable 1 }}</li><li>{{ Concrete deliverable 2 }}</li><li>{{ Concrete deliverable 3 }}</li></ul>
+        </div>
+        <div class="meta-row">
+          <div><span class="h">Datum</span><span class="v">{{ DD month YYYY }}</span></div>
+          <div><span class="h">Geldig tot</span><span class="v">{{ DD month YYYY }}</span></div>
+          <div><span class="h">Doorlooptijd</span><span class="v">{{ X weken }}</span></div>
+          <div><span class="h">Betaling</span><span class="v">{{ 30/40/30 of bij oplevering }}</span></div>
+        </div>
+        <div class="recipient"><span class="h">Aan</span><br>{{ Bedrijfsnaam }} &middot; T.a.v. {{ naam, rol }}<br>{{ adres }}</div>
+        <table class="lines">
+          <thead><tr><th>Werk &amp; uitkomst</th><th class="num">Uren</th><th class="num">Per uur</th><th class="num">Subtotaal</th></tr></thead>
+          <tbody>
+            <tr><td>{{ Werk }}<div class="deliver">{{ Concrete uitkomst, één zin. }}</div></td><td class="num">{{ h }}</td><td class="num">€ {{ rate }}</td><td class="num">€ {{ subtotal }}</td></tr>
+            <tr><td>{{ Werk }}<div class="deliver">{{ Concrete uitkomst. }}</div></td><td class="num">{{ h }}</td><td class="num">€ {{ rate }}</td><td class="num">€ {{ subtotal }}</td></tr>
+          </tbody>
+        </table>
+        <div class="totals">
+          <div class="row"><span>Subtotaal</span><span>€ {{ subtotal }}</span></div>
+          <div class="row"><span>Btw 21%</span><span>€ {{ vat }}</span></div>
+          <div class="row grand"><span>Totaal incl. btw</span><span>€ {{ total }}</span></div>
+        </div>
+        <div class="not-included">
+          <div class="h">Wat zit er niet bij</div>
+          <ul><li>{{ Out-of-scope item 1 }}</li><li>{{ Out-of-scope item 2 }}</li><li>{{ Out-of-scope item 3 }}</li></ul>
+        </div>
+        <span class="validity-stamp">Geldig tot<span class="big">{{ datum }}</span></span>
+        <div class="signoff-zone">
+          <div class="box">Voor akkoord opdrachtgever<div class="name">{{ naam }}</div></div>
+          <div class="box">Namens Conduction<div class="name">{{ naam, rol }}</div></div>
+        </div>
+        <div class="quote-foot"><span>Conduction BV &middot; KvK 50615773 &middot; BTW NL852825897B01</span><span>conduction.nl</span></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>The price is not the point</h2>
+    <p class="lede">Most quotes lead with line items. Buyers scan for the total and miss the value. Ours leads with the outcome (one sentence, three deliverables) so the value is on the table before the price is.</p>
+    <ul>
+      <li><strong>Outcome block, top of page.</strong> A cobalt-50 panel with an orange edge, "Wat je krijgt" + one sentence + three deliverables. Skim-readable; the lead-in is decided before the buyer reaches the table.</li>
+      <li><strong>Line items show what was delivered, not just hours.</strong> Every row has a small "Concrete uitkomst" sub-line. "8 hours" tells you nothing; "Vijf entiteiten vastgelegd, OpenRegister-schema commit-klaar" tells you everything.</li>
+      <li><strong>"Wat zit er niet bij" is on the same page.</strong> A vermillion-edge panel listing what's out of scope. Honesty up front prevents friction at sprint 3.</li>
+      <li><strong>Validity stamp as a hex.</strong> A rotated orange hex pinned to the bottom-right with "Geldig tot 14 mei" inside. Memorable, brand-fitting, and physically points to the deadline.</li>
+      <li><strong>Plex Mono numerals.</strong> Tabular numerals in IBM Plex Mono on every euro figure, alignment is automatic, the table reads like a balance sheet.</li>
+      <li><strong>Two signature boxes, equal weight.</strong> Opdrachtgever en Conduction side-by-side. Not "please sign here", a mutual commitment.</li>
+      <li><strong>30/40/30 betalingsschema as default.</strong> Surfaced in the meta-row, no buried payment-terms paragraph.</li>
+    </ul>
+    <div class="footer-note">A4 &middot; NL canonical, EN reflowed (same structure) &middot; --bleed 0 &middot; placeholders use {{ }} for search-replace</div>
+  </aside>
+</div>
+
+</body>
+</html>

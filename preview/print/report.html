@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Report · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* ---- Report cover ---- */
+  .cover {
+    background: var(--c-cobalt-900);
+    color: white;
+    padding: 36mm 22mm 22mm;
+    display: flex; flex-direction: column;
+    height: var(--paper-a4-h);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover .category-mark {
+    position: absolute;
+    top: 22mm; right: 22mm;
+    width: 18mm; height: 20.7mm;
+    clip-path: var(--hex-pointy-top);
+  }
+  /* Category prism colour decides the cover hex tint —
+     - data    => forest
+     - process => lavender
+     - documents => terracotta
+     - integrate => mint */
+  .cover.cat-data .category-mark { background: var(--c-forest-500); }
+  .cover.cat-process .category-mark { background: var(--c-lavender-500); }
+  .cover.cat-documents .category-mark { background: var(--c-terracotta-500); }
+  .cover.cat-integrate .category-mark { background: var(--c-mint-500); }
+
+  .cover .crumb-mono {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .cover h1 {
+    font-size: 38pt; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-top: 14mm;
+    color: white;
+  }
+  .cover .sub {
+    font-size: 13pt; color: rgba(255,255,255,0.78);
+    margin-top: 6mm;
+    max-width: 22ch;
+    line-height: 1.4;
+  }
+  .cover .meta {
+    margin-top: auto;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8mm;
+    padding-top: 12mm;
+    border-top: 0.3mm solid rgba(255,255,255,0.18);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; color: rgba(255,255,255,0.55);
+    letter-spacing: 0.06em;
+  }
+  .cover .meta strong {
+    display: block;
+    font-family: var(--conduction-typography-font-family-body);
+    font-size: 11pt; color: white; margin-top: 2mm; letter-spacing: -0.005em;
+  }
+  /* Honeycomb backdrop in the cover bottom-third */
+  .cover::after {
+    content: ""; position: absolute; right: -20mm; bottom: -20mm;
+    width: 90mm; height: 90mm;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06) 0 12mm, transparent 13mm),
+      radial-gradient(circle at 70% 50%, rgba(255,255,255,0.04) 0 14mm, transparent 15mm),
+      radial-gradient(circle at 30% 80%, rgba(255,255,255,0.05) 0 10mm, transparent 11mm);
+    pointer-events: none;
+  }
+
+  /* ---- Body page ---- */
+  .body-page {
+    padding: 16mm 22mm 22mm;
+    color: var(--c-cobalt-900);
+    display: flex; flex-direction: column;
+    min-height: var(--paper-a4-h);
+  }
+  .body-page .running {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    padding-bottom: 2mm;
+    margin-bottom: 10mm;
+    display: flex; justify-content: space-between;
+  }
+  .body-page .running .doc-id { color: var(--c-orange-knvb); }
+
+  .body-page h2 {
+    font-size: 18pt; font-weight: 700; letter-spacing: -0.01em;
+    margin: 0 0 4mm;
+  }
+  .body-page h3 {
+    font-size: 11pt; font-weight: 600;
+    margin: 6mm 0 2mm;
+    color: var(--c-cobalt-700);
+  }
+  .body-page p { font-size: 10pt; line-height: 1.6; margin: 0 0 3mm; }
+  .body-page blockquote {
+    border-left: 0.8mm solid var(--c-orange-knvb);
+    padding: 1mm 5mm;
+    margin: 5mm 0;
+    font-size: 10pt; line-height: 1.55;
+    color: var(--c-cobalt-700);
+  }
+  .body-page .callout {
+    background: var(--c-cobalt-50);
+    border-left: 0.8mm solid var(--c-blue-cobalt);
+    padding: 4mm 5mm;
+    margin: 5mm 0;
+    font-size: 9.5pt;
+    line-height: 1.55;
+  }
+  .body-page .callout .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-700);
+    margin-bottom: 1.5mm;
+  }
+  .body-page ul { padding-left: 5mm; margin: 0 0 3mm; }
+  .body-page li { font-size: 10pt; line-height: 1.55; margin-bottom: 1.2mm; }
+
+  .pagefoot-r {
+    margin-top: auto;
+    padding-top: 5mm;
+    border-top: 0.3mm solid var(--c-cobalt-100);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+  }
+  .pagefoot-r .hex-row { display: flex; gap: 1mm; }
+  .pagefoot-r .hex-row span { width: 2.4mm; height: 2.8mm; clip-path: var(--hex-pointy-top); background: var(--c-cobalt-100); }
+  .pagefoot-r .hex-row span.active { background: var(--c-blue-cobalt); }
+
+  /* ---- Back page ---- */
+  .back-page {
+    background: var(--c-cobalt-50);
+    padding: 22mm;
+    display: flex; flex-direction: column; gap: 8mm;
+    height: var(--paper-a4-h);
+  }
+  .back-page h2 {
+    font-size: 22pt; font-weight: 700; letter-spacing: -0.015em;
+    margin: 0 0 2mm;
+  }
+  .back-page .sub { font-size: 11pt; color: var(--c-cobalt-700); margin-bottom: 6mm; max-width: 50ch; line-height: 1.5; }
+
+  .next-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; }
+  .next-card {
+    background: white; border-radius: 2mm;
+    padding: 6mm 5mm;
+    border-left: 1.5mm solid var(--c-orange-knvb);
+    display: flex; flex-direction: column; gap: 2mm;
+  }
+  .next-card .num {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; color: var(--c-cobalt-400);
+  }
+  .next-card .h { font-size: 11pt; font-weight: 600; color: var(--c-cobalt-900); }
+  .next-card .body { font-size: 9pt; color: var(--c-cobalt-700); line-height: 1.45; }
+  .next-card .meta-line {
+    margin-top: auto; padding-top: 3mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; color: var(--c-cobalt-400); letter-spacing: 0.06em;
+  }
+  .next-card .meta-line strong { color: var(--c-cobalt-700); font-weight: 600; }
+
+  .contact-block {
+    margin-top: auto;
+    background: white;
+    padding: 8mm 10mm;
+    border-radius: 2mm;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 6mm; align-items: center;
+  }
+  .contact-block .av {
+    width: 16mm; height: 18.4mm;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11pt; font-weight: 700;
+  }
+  .contact-block .who h3 { font-size: 13pt; font-weight: 700; margin: 0 0 1mm; }
+  .contact-block .who p { font-size: 9pt; color: var(--c-cobalt-700); margin: 0; }
+  .contact-block .who .lines {
+    margin-top: 2mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; color: var(--c-cobalt-700); line-height: 1.5;
+  }
+  .contact-block .qr { width: 22mm; height: 22mm; background: white; border: 0.3mm solid var(--c-cobalt-100); padding: 1mm; }
+  .contact-block .qr img { width: 100%; height: 100%; }
+
+  .back-foot {
+    text-align: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Report</div>
+  <h1>Report</h1>
+  <p class="lead">A4 portrait. Three sheets per report: cover with category-tinted hex, body page with markdown-style running header and hex pagination, back page that's actually useful, three "next steps" with owner + date plus a contact card. Filled "Acme BV" example below the empty template.</p>
+</div>
+
+<div class="stage">
+  <div class="paper-flow">
+    <!-- ============ Filled example: Data report ============ -->
+    <div>
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Filled example &middot; data category &middot; "Open registers Acme BV"</span>
+      <div class="paper-row">
+        <!-- Cover -->
+        <div>
+          <div class="paper paper--A4 cover cat-data">
+            <span class="category-mark"></span>
+            <div class="crumb-mono">Conduction &middot; Quick scan &middot; #CND-2026-042</div>
+            <h1>Open registers voor Acme BV.</h1>
+            <p class="sub">Hoe we 142 spreadsheets verbouwen tot &eacute;&eacute;n auditbaar register.</p>
+            <div class="meta">
+              <span>Datum<strong>30 april 2026</strong></span>
+              <span>Voor<strong>Marleen de Vries, IT-lead</strong></span>
+              <span>Door<strong>Ruben van der Linde</strong></span>
+            </div>
+          </div>
+          <span class="specimen-label">Cover &middot; cat-data &middot; forest hex</span>
+        </div>
+
+        <!-- Body -->
+        <div>
+          <div class="paper paper--A4 body-page">
+            <div class="running">
+              <span># Open registers Acme BV</span>
+              <span class="doc-id">CND-2026-042 &middot; p. 02</span>
+            </div>
+            <h2>Wat we vonden</h2>
+            <p>142 spreadsheets, in 9 mappen, beheerd door 4 mensen. Geen versiebeheer. Drie mensen weten welk veld optioneel is, twee zijn met pensioen.</p>
+            <p>De urgentie zit niet in een audit, maar in vakanties. Als Henk afwezig is, weet niemand welke kolom het juiste BSN-formaat heeft.</p>
+
+            <blockquote>"We hebben er gewoon een Excel van gemaakt omdat het systeem dat we hadden niet meedeed." &mdash; Henk, beheerder klantregister</blockquote>
+
+            <h3>Waar OpenRegister past</h3>
+            <p>Eén register, vijf entiteiten (klant, contract, factuur, contactpersoon, locatie). Schemavalidatie, audit-trail, rollen per entiteit.</p>
+            <ul>
+              <li>Schema versionable, je kunt een veld toevoegen zonder migratie.</li>
+              <li>Permissies per rol, niet per persoon, vakantieproof.</li>
+              <li>Importeert je 142 spreadsheets zonder een week consultancy.</li>
+            </ul>
+
+            <div class="callout">
+              <div class="h">Wat we niet doen</div>
+              We bouwen je CRM niet over. OpenRegister is voor data die je kunt definiëren en valideren, niet voor 360-graden verkoopflows. Voor dat soort werk verwijzen we door.
+            </div>
+
+            <h3>Tijdlijn</h3>
+            <p>Schema sprint (week 1&ndash;2). Import + audit (week 3&ndash;4). Rollen + UI (week 5&ndash;6). Live (week 7).</p>
+
+            <div class="pagefoot-r">
+              <span>conduction.nl &middot; #CND-2026-042</span>
+              <span class="hex-row"><span></span><span class="active"></span><span></span></span>
+            </div>
+          </div>
+          <span class="specimen-label">Body &middot; running header is markdown-style #</span>
+        </div>
+
+        <!-- Back -->
+        <div>
+          <div class="paper paper--A4 back-page">
+            <div>
+              <h2>Wat is volgende.</h2>
+              <p class="sub">Drie stappen, &eacute;&eacute;n eigenaar per stap, &eacute;&eacute;n datum. Geen "we kunnen aanbieden", concrete bewegingen die nu kunnen.</p>
+            </div>
+
+            <div class="next-grid">
+              <div class="next-card">
+                <span class="num">01 &middot; deze week</span>
+                <span class="h">Schema-werksessie</span>
+                <span class="body">Twee uur met Henk en Marleen, we leggen je vijf entiteiten vast. Output: een werkend OpenRegister-schema.</span>
+                <span class="meta-line"><strong>Eigenaar</strong> Ruben &middot; <strong>Voor</strong> 7 mei</span>
+              </div>
+              <div class="next-card">
+                <span class="num">02 &middot; week 2</span>
+                <span class="h">Pilot-import</span>
+                <span class="body">We importeren je drie zwaarste spreadsheets in een staging-OpenRegister. Validatiefouten worden zichtbaar.</span>
+                <span class="meta-line"><strong>Eigenaar</strong> Mark &middot; <strong>Voor</strong> 14 mei</span>
+              </div>
+              <div class="next-card">
+                <span class="num">03 &middot; week 3</span>
+                <span class="h">Go/No-go gesprek</span>
+                <span class="body">30 minuten, jullie en wij. Op basis van de pilot beslissen we of we doorgaan met sprints 2&ndash;7 of stoppen.</span>
+                <span class="meta-line"><strong>Eigenaar</strong> Marleen &middot; <strong>Voor</strong> 21 mei</span>
+              </div>
+            </div>
+
+            <div class="contact-block">
+              <div class="av">RvdL</div>
+              <div class="who">
+                <h3>Ruben van der Linde</h3>
+                <p>CTO, Conduction</p>
+                <div class="lines">ruben@conduction.nl<br>+31 70 756 1240</div>
+              </div>
+              <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="LinkedIn QR"></div>
+            </div>
+
+            <div class="back-foot">Conduction BV &middot; conduction.nl &middot; this report is a working document, mark it up</div>
+          </div>
+          <span class="specimen-label">Back &middot; "wat is volgende" + contact + LinkedIn QR</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Empty template ============ -->
+    <div style="margin-top: var(--space-12);">
+      <span class="specimen-label" style="margin-bottom: var(--space-3)">Empty template &middot; placeholders only &middot; pick a category to set the cover hex</span>
+      <div class="paper-row">
+        <div>
+          <div class="paper paper--A4 cover cat-process">
+            <span class="category-mark"></span>
+            <div class="crumb-mono">Conduction &middot; {{ doc-type }} &middot; {{ #ID }}</div>
+            <h1>{{ Title goes here. }}</h1>
+            <p class="sub">{{ One-line lede, the answer up front. }}</p>
+            <div class="meta">
+              <span>Datum<strong>{{ DD month YYYY }}</strong></span>
+              <span>Voor<strong>{{ Recipient + role }}</strong></span>
+              <span>Door<strong>{{ Author + role }}</strong></span>
+            </div>
+          </div>
+          <span class="specimen-label">Cover template &middot; cat-process (lavender) shown</span>
+        </div>
+        <div>
+          <div class="paper paper--A4 body-page">
+            <div class="running">
+              <span># {{ chapter }}</span>
+              <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
+            </div>
+            <h2>{{ Section heading }}</h2>
+            <p>{{ Lead-in paragraph, two short sentences. }}</p>
+            <h3>{{ Subhead }}</h3>
+            <p>{{ One claim per sentence. Under 16 words. Active voice. }}</p>
+            <ul><li>{{ Bullet 1 }}</li><li>{{ Bullet 2 }}</li><li>{{ Bullet 3 }}</li></ul>
+            <div class="callout"><div class="h">Wat we niet doen</div>{{ Honest disclosure of what's out of scope. }}</div>
+            <div class="pagefoot-r"><span>conduction.nl &middot; {{ #ID }}</span><span class="hex-row"><span class="active"></span><span></span><span></span></span></div>
+          </div>
+          <span class="specimen-label">Body template</span>
+        </div>
+        <div>
+          <div class="paper paper--A4 back-page">
+            <div><h2>{{ What's next. }}</h2><p class="sub">{{ One-line framing. }}</p></div>
+            <div class="next-grid">
+              <div class="next-card"><span class="num">01 &middot; {{ when }}</span><span class="h">{{ Action }}</span><span class="body">{{ One-sentence detail. }}</span><span class="meta-line"><strong>Eigenaar</strong> {{ name }} &middot; <strong>Voor</strong> {{ date }}</span></div>
+              <div class="next-card"><span class="num">02 &middot; {{ when }}</span><span class="h">{{ Action }}</span><span class="body">{{ One-sentence detail. }}</span><span class="meta-line"><strong>Eigenaar</strong> {{ name }} &middot; <strong>Voor</strong> {{ date }}</span></div>
+              <div class="next-card"><span class="num">03 &middot; {{ when }}</span><span class="h">{{ Action }}</span><span class="body">{{ One-sentence detail. }}</span><span class="meta-line"><strong>Eigenaar</strong> {{ name }} &middot; <strong>Voor</strong> {{ date }}</span></div>
+            </div>
+            <div class="contact-block">
+              <div class="av">{{ in }}</div>
+              <div class="who"><h3>{{ Author name }}</h3><p>{{ role }}, Conduction</p><div class="lines">{{ email }}<br>{{ phone }}</div></div>
+              <div class="qr"><img src="../../brand/assets/qr/linkedin-conduction.svg" alt="LinkedIn QR"></div>
+            </div>
+            <div class="back-foot">{{ Closing line, e.g. mark it up }}</div>
+          </div>
+          <span class="specimen-label">Back template</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>The cover tells you what kind of report this is</h2>
+    <p class="lede">A consultant's report has to be readable in 30 seconds and useful for 30 weeks. Cover signals category. Body is markdown-shaped. Back page is the meeting agenda for next week, not a contact form.</p>
+    <ul>
+      <li><strong>Category prism on the cover.</strong> The hex top-right is forest (data), lavender (process), terracotta (documents), or mint (integrate). Pile six reports on a desk and you can see at a glance which is the data one.</li>
+      <li><strong>Title is a sentence with a period.</strong> "Open registers voor Acme BV." reads like a finished thought, not a category label.</li>
+      <li><strong>Markdown running header.</strong> "<code># Chapter title</code>" in Plex Mono. Treats the report as a document checked into a repo, not a one-off PDF.</li>
+      <li><strong>"Wat we niet doen" callout.</strong> Every body page can hold a honesty box. Builds trust faster than three claims.</li>
+      <li><strong>Hex-pagination.</strong> Three honeycomb cells at the bottom, one filled. Tells you where you are without "page 2 of 3" boilerplate.</li>
+      <li><strong>Back page is "wat is volgende".</strong> Three concrete actions, owner per action, date per action. The reader leaves the meeting with a calendar invite, not a feeling.</li>
+      <li><strong>Contact card with a hex monogram.</strong> Same monogram pattern as the business card, the brand is consistent across paper sizes.</li>
+      <li><strong>"This report is a working document, mark it up."</strong> A footer that gives the reader permission to scribble. Reports that don't get marked up don't get used.</li>
+    </ul>
+    <div class="footer-note">A4 &times; 3 sheets &middot; cover + body + back &middot; --bleed 0 &middot; placeholders use {{ }} markers, search-replace ready</div>
+  </aside>
+</div>
+
+</body>
+</html>

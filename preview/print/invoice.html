@@ -16,16 +16,20 @@
     min-height: var(--paper-a4-h);
     position: relative;
   }
-  /* Honeycomb watermark, full A4. Real point-up tiling with a few
-     scattered orange-fill accents. Solid colours only (cobalt-100
-     stroke + orange fill); no fill-opacity, no gradients. */
+  /* Honeycomb watermark — same chassis as the quotation. Grid
+     anchored so a hex slot lands on the brand-block logo position
+     (26.93, 26 mm); the SVG draws the Conduction logo into that
+     cell so the page brand block keeps an empty 13.86x16mm spacer.
+     Pinned to absolute mm dimensions, 600mm tall to cover content
+     overflow. */
   .invoice::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background-image: url("../../brand/assets/backgrounds/honeycomb-watermark.svg");
+    top: 0; left: 0;
+    width: 210mm; height: 600mm;
+    background-image: url("../../brand/assets/backgrounds/honeycomb-quotation.svg");
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 210mm 600mm;
     pointer-events: none;
     z-index: 0;
   }
@@ -33,13 +37,13 @@
 
   .invoice-head {
     display: flex; justify-content: space-between; align-items: flex-start;
-    border-bottom: 0.3mm solid var(--c-cobalt-100);
     padding-bottom: 5mm; margin-bottom: 6mm;
   }
-  .invoice-head .brand { display: flex; align-items: center; gap: 4mm; }
-  .invoice-head .brand .logo { width: 11mm; height: 11mm; flex-shrink: 0; }
-  .invoice-head .brand .logo img { width: 100%; height: 100%; display: block; }
-  .invoice-head .brand .word { font-size: 14pt; font-weight: 700; letter-spacing: -0.01em; }
+  .invoice-head .brand { display: flex; align-items: center; gap: 5mm; }
+  /* Logo cell is drawn by the watermark; this span is a 13.86x16mm
+     transparent spacer reserving the slot so the wordmark lines up. */
+  .invoice-head .brand .logo { width: 13.86mm; height: 16mm; flex-shrink: 0; }
+  .invoice-head .brand .word { font-size: 18pt; font-weight: 700; letter-spacing: -0.01em; }
   .invoice-head .doctype {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
@@ -178,10 +182,12 @@
   .next-up p { font-size: 9.5pt; line-height: 1.55; color: var(--c-cobalt-900); margin: 0; }
   .next-up p strong { color: var(--c-mint-700); }
 
+  /* Foot pinned to absolute page bottom — same as the quotation;
+     the watermark behind it provides the visual separation, no
+     border line above. */
   .invoice-foot {
-    margin-top: auto;
-    padding-top: 6mm;
-    border-top: 0.3mm solid var(--c-cobalt-100);
+    position: absolute;
+    left: 20mm; right: 20mm; bottom: 12mm;
     display: flex; justify-content: space-between;
     font-family: var(--conduction-typography-font-family-code);
     font-size: 7pt; color: var(--c-cobalt-400);
@@ -206,7 +212,7 @@
       <span class="specimen-label" style="margin-bottom: var(--space-3)">Filled example &middot; Acme BV &middot; Nederlands</span>
       <div class="paper paper--A4 invoice">
         <div class="invoice-head">
-          <div class="brand"><span class="logo"><img src="../../brand/assets/avatar-conduction.svg" alt="Conduction logo"></span><span class="word">Conduction</span></div>
+          <div data-include="../components/_brand-block.html"></div>
           <div class="doctype">Factuur<div class="id">CND-INV-2026-118</div></div>
         </div>
 
@@ -289,7 +295,7 @@
       <span class="specimen-label" style="margin-bottom: var(--space-3)">Empty template &middot; placeholders only</span>
       <div class="paper paper--A4 invoice">
         <div class="invoice-head">
-          <div class="brand"><span class="logo"><img src="../../brand/assets/avatar-conduction.svg" alt="Conduction logo"></span><span class="word">Conduction</span></div>
+          <div data-include="../components/_brand-block.html"></div>
           <div class="doctype">Factuur<div class="id">{{ #ID }}</div></div>
         </div>
         <div class="opener">
@@ -353,5 +359,6 @@
   </aside>
 </div>
 
+<script src="../include.js"></script>
 </body>
 </html>

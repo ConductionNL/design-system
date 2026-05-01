@@ -10,11 +10,26 @@
   body { background: var(--c-cobalt-50); padding: 0; }
 
   .factsheet {
-    padding: 18mm 18mm 16mm;
+    padding: 18mm 18mm 22mm;
     color: var(--c-cobalt-900);
     display: flex; flex-direction: column;
     min-height: var(--paper-a4-h);
+    position: relative;
   }
+  /* Same hex veil as the report summary page — gray cobalt-100
+     strokes behind body content, kit-consistent. */
+  .factsheet::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 210mm; height: 600mm;
+    background-image: url("../../brand/assets/backgrounds/honeycomb-page.svg");
+    background-repeat: no-repeat;
+    background-size: 210mm 600mm;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .factsheet > * { position: relative; z-index: 1; }
 
   .factsheet .top-bar {
     font-family: var(--conduction-typography-font-family-code);
@@ -122,10 +137,12 @@
   .install-strip .qr { width: 32mm; height: 32mm; background: white; padding: 1.5mm; }
   .install-strip .qr img { width: 100%; height: 100%; }
 
+  /* Foot pinned to absolute page bottom, same chassis as
+     quotation/invoice/report. No border above; the watermark
+     provides the separation. */
   .fact-foot {
-    margin-top: auto;
-    padding-top: 6mm;
-    border-top: 0.3mm solid var(--c-cobalt-100);
+    position: absolute;
+    left: 18mm; right: 18mm; bottom: 12mm;
     display: flex; justify-content: space-between;
     font-family: var(--conduction-typography-font-family-code);
     font-size: 7pt; color: var(--c-cobalt-400);

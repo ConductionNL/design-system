@@ -11,12 +11,33 @@
 
   /* ---- Manpage one-pager ---- */
   .manpage {
-    padding: 18mm 18mm 16mm;
+    padding: 18mm 18mm 22mm;
     color: var(--c-cobalt-900);
     font-size: 9.5pt; line-height: 1.5;
     display: flex; flex-direction: column;
     min-height: var(--paper-a4-h);
+    position: relative;
   }
+  /* Hex veil — gray cobalt-100 stroke pattern on the NL face,
+     white-on-cobalt scatter on the EN dark face. Same chassis as
+     the report summary + app fact-sheet. */
+  .manpage::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 210mm; height: 600mm;
+    background-image: url("../../brand/assets/backgrounds/honeycomb-page.svg");
+    background-repeat: no-repeat;
+    background-size: 210mm 600mm;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .manpage--en::before {
+    background-image: url("../../brand/assets/backgrounds/honeycomb-scatter.svg");
+    background-position: center;
+    background-size: cover;
+  }
+  .manpage > * { position: relative; z-index: 1; }
   .manpage--en { background: var(--c-cobalt-900); color: white; }
   .manpage--en .h, .manpage--en .label, .manpage--en code, .manpage--en .footer-line { color: var(--c-cobalt-100); }
   .manpage--en .h { color: var(--c-orange-knvb); }
@@ -91,16 +112,16 @@
   }
   .manpage--en table td:first-child { color: var(--c-cobalt-200); }
 
+  /* Footer pinned to absolute page bottom, kit-consistent. No top
+     border — the watermark provides the separation. */
   .footer-line {
-    margin-top: auto;
-    padding-top: 6mm;
-    border-top: 0.3mm solid var(--c-cobalt-100);
+    position: absolute;
+    left: 18mm; right: 18mm; bottom: 12mm;
     font-family: var(--conduction-typography-font-family-code);
     font-size: 7pt; letter-spacing: 0.06em;
     color: var(--c-cobalt-400);
     display: flex; justify-content: space-between;
   }
-  .manpage--en .footer-line { border-top-color: var(--c-cobalt-700); }
 
   @media print {
     @page { size: A4; margin: 0; }

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cn-domain-tree · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  .specimen.tall { min-height: 320px; padding: 0; align-items: stretch; }
+  .specimen.tall cn-domain-tree { width: 100%; }
+
+  pre {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: var(--space-3) 0 0;
+  }
+  pre .tag  { color: #93B5E0; }
+  pre .attr { color: #F7C76F; }
+  pre .str  { color: #5FE39A; }
+  pre .com  { color: #5F6E86; font-style: italic; }
+
+  .legend-dot {
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+    display: inline-block;
+  }
+
+  .rationale {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+  }
+  .rationale .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-2);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .rationale .label::before {
+    content: ""; width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: block;
+  }
+  .rationale h2 {
+    font-size: var(--fs-xl); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .rationale .lede {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm); line-height: 1.55;
+    margin-bottom: var(--space-4);
+  }
+  .rationale ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .rationale li {
+    font-size: var(--fs-sm); line-height: 1.5;
+    color: var(--c-cobalt-900);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .rationale li::before {
+    content: "";
+    position: absolute; left: 0; top: 7px;
+    width: 8px; height: 9.2px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+  .rationale li code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .rationale .footer-note {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--c-cobalt-100);
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.6;
+  }
+  .rationale .footer-note strong {
+    display: block; color: var(--c-cobalt-900);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 4px; margin-top: var(--space-3);
+  }
+  .rationale .footer-note strong:first-child { margin-top: 0; }
+</style>
+<script type="module" src="../../diagrams/src/index.js"></script>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">11.03 · Diagrams / cn-domain-tree</div>
+      <h1 class="card-title">&lt;cn-domain-tree&gt;</h1>
+    </div>
+    <p class="card-subtitle">Vertical apex-and-branches layout for one-to-many domain maps. Wraps an apex hex and a row of branch hexes with the kit's standard connectors. Multi-trunk diagrams stack two or more <cn-domain-tree> elements.</p>
+  </div>
+
+  <div class="section-label">Single trunk · the canonical case</div>
+  <div class="specimen tall">
+    <cn-domain-tree>
+      <cn-hex slot="apex" size="xl">
+        <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+        conduction.nl
+      </cn-hex>
+      <cn-hex size="lg">connext</cn-hex>
+      <cn-hex size="lg">[product]</cn-hex>
+      <cn-hex size="lg" color="orange">apps</cn-hex>
+    </cn-domain-tree>
+  </div>
+  <pre><span class="tag">&lt;cn-domain-tree&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">slot</span>=<span class="str">"apex"</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"lg"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"lg"</span><span class="tag">&gt;</span>[product]<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"lg"</span> <span class="attr">color</span>=<span class="str">"orange"</span><span class="tag">&gt;</span>apps<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;/cn-domain-tree&gt;</span></pre>
+
+  <div class="section-label">Compact · sub-trunks with tighter spacing</div>
+  <div class="specimen tall">
+    <cn-domain-tree compact>
+      <cn-hex slot="apex" size="lg" color="commonground">commonground.nu</cn-hex>
+      <cn-hex size="md" color="commonground" variant="outline">[client]</cn-hex>
+    </cn-domain-tree>
+  </div>
+  <pre><span class="tag">&lt;cn-domain-tree</span> <span class="attr">compact</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">slot</span>=<span class="str">"apex"</span> <span class="attr">size</span>=<span class="str">"lg"</span> <span class="attr">color</span>=<span class="str">"commonground"</span><span class="tag">&gt;</span>commonground.nu<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">color</span>=<span class="str">"commonground"</span> <span class="attr">variant</span>=<span class="str">"outline"</span><span class="tag">&gt;</span>[client]<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;/cn-domain-tree&gt;</span></pre>
+
+  <div class="section-label">Multi-trunk · stack two trees + share a legend</div>
+  <div class="specimen tall" style="background: var(--c-cobalt-50); border-radius: var(--radius-lg); padding: 0; flex-direction: column;">
+    <cn-domain-tree style="width: 100%;">
+      <cn-hex slot="apex" size="xl">conduction.nl</cn-hex>
+      <cn-hex size="lg">connext</cn-hex>
+      <cn-hex size="lg">[product]</cn-hex>
+      <cn-hex size="lg" color="orange">apps</cn-hex>
+    </cn-domain-tree>
+    <cn-domain-tree compact style="width: 100%; border-top: 1px solid white;">
+      <cn-hex slot="apex" size="lg" color="commonground">commonground.nu</cn-hex>
+      <cn-hex size="md" color="commonground" variant="outline">[client]</cn-hex>
+
+      <span slot="legend"><span class="legend-dot" style="background: var(--c-blue-cobalt);"></span>Conduction &middot; cobalt</span>
+      <span slot="legend"><span class="legend-dot" style="background: var(--c-orange-knvb);"></span>Click-here accent</span>
+      <span slot="legend"><span class="legend-dot" style="background: var(--c-commonground-yellow);"></span>Common Ground &middot; yellow</span>
+    </cn-domain-tree>
+  </div>
+  <pre><span class="com">&lt;!-- Two trees stacked share a legend on the lower one --&gt;</span>
+<span class="tag">&lt;cn-domain-tree&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">slot</span>=<span class="str">"apex"</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"lg"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
+  ...
+<span class="tag">&lt;/cn-domain-tree&gt;</span>
+<span class="tag">&lt;cn-domain-tree</span> <span class="attr">compact</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">slot</span>=<span class="str">"apex"</span> ...<span class="tag">&gt;</span>commonground.nu<span class="tag">&lt;/cn-hex&gt;</span>
+  ...
+  <span class="tag">&lt;span</span> <span class="attr">slot</span>=<span class="str">"legend"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/cn-domain-tree&gt;</span></pre>
+
+  <div class="section-label">API · slots</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Slot</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>apex</code></td><td>The trunk hex. Required. Centred above the connector. Typically a <code>&lt;cn-hex size="xl"&gt;</code> or <code>size="lg"</code>.</td></tr>
+        <tr><td><code>(default)</code></td><td>Branch hexes. Rendered in a centred horizontal row below the connector. Pass any number; they wrap on narrow viewports.</td></tr>
+        <tr><td><code>legend</code></td><td>Optional legend chips at the bottom. Each chip is a child element with its own dot/swatch + label.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">API · attributes</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Attribute</th><th>Values</th><th>Default</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>compact</code></td><td>boolean (presence)</td><td>absent</td><td>Tighter vertical spacing. Use for sub-trunks (e.g. <code>commonground.nu</code> below the main conduction.nl tree).</td></tr>
+        <tr><td><code>tone</code></td><td><code>cobalt</code> · <code>dim</code></td><td><code>cobalt</code></td><td>Connector line shade. <code>tone="dim"</code> uses cobalt-100 instead of cobalt-200; useful when the apex is a light family.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Why we built it this way</div>
+  <div class="rationale">
+    <div class="label">Pattern · trunk and branches</div>
+    <h2>Layout component, content stays with the caller</h2>
+    <p class="lede">cn-domain-tree owns only the structure: apex above, connector, branches below, optional legend. The hexes themselves stay <code>&lt;cn-hex&gt;</code> elements, fully styled by the caller. No prop forwarding, no JSON config, no DSL.</p>
+    <ul>
+      <li><strong>Slots over props.</strong> The apex is a slot, branches are the default slot, legend is a slot. Any HTML works inside any slot — including future <code>&lt;cn-hex-prism&gt;</code> apexes when those make sense.</li>
+      <li><strong>One trunk per element.</strong> Multi-trunk diagrams (conduction.nl + commonground.nu) stack two cn-domain-tree elements vertically. This keeps the API tiny and the layout predictable.</li>
+      <li><strong>Compact attribute, not a custom variant.</strong> <code>compact</code> reduces vertical padding and connector height. Use it on sub-trunks so the visual hierarchy tracks the topology.</li>
+      <li><strong>Connectors are styled by tone, not by colour name.</strong> <code>tone="dim"</code> works whether the apex is cobalt, commonground-yellow, or any future family. The component does not encode brand decisions.</li>
+      <li><strong>Legend slot collects multiple items.</strong> Slot <code>legend</code> accepts any number of children — the component just lays them out horizontally below the tree with a divider above.</li>
+    </ul>
+    <div class="footer-note">
+      <strong>Uses</strong>
+      <a href="cn-hex.html" style="color: var(--c-cobalt-700);">cn-hex</a> as the canonical apex / branch element. Works with anything else that has a similar size/shape.
+
+      <strong>Used by</strong>
+      <a href="../identity/websites.html" style="color: var(--c-cobalt-700);">identity / Websites</a>, the conduction.nl + commonground.nu domain map.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -68,22 +68,17 @@
   .pill.dynamic      { background: var(--c-orange-knvb);         color: white; }
   .pill.commonground { background: var(--c-commonground-yellow); color: var(--c-cobalt-900); }
 
-  /* ---- Diagram block ---- */
-  .diagram {
+  /* ---- Diagram wrap ---- */
+  .diagram-wrap {
     background: var(--c-cobalt-50);
     border-radius: var(--radius-lg);
-    padding: var(--space-9) var(--space-7);
-    display: flex; flex-direction: column;
-    align-items: center;
-    gap: var(--space-5);
-    overflow-x: auto;
+    overflow: hidden;
   }
-  .diagram-row { display: flex; align-items: center; justify-content: center; gap: var(--space-7); flex-wrap: wrap; }
-  .connector { height: 32px; width: 1px; background: var(--c-cobalt-200); }
-
-  .legend { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--c-cobalt-100); width: 100%; justify-content: center; }
-  .legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: 13px; color: var(--c-cobalt-700); }
-  .legend-item .dot { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); }
+  .diagram-wrap [slot="legend"] .dot {
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+    display: inline-block;
+  }
 
   .diagram-note {
     font-family: var(--conduction-typography-font-family-code);
@@ -314,15 +309,12 @@
        ============================================================ -->
   <div class="section-label">De domein-boom</div>
 
-  <div class="diagram">
-    <cn-hex size="xl">
-      <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
-      conduction.nl
-    </cn-hex>
-
-    <div class="connector"></div>
-
-    <div class="diagram-row">
+  <div class="diagram-wrap">
+    <cn-domain-tree>
+      <cn-hex slot="apex" size="xl">
+        <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+        conduction.nl
+      </cn-hex>
       <cn-hex size="lg" interactive>
         <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
         connext
@@ -335,27 +327,22 @@
         <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         apps
       </cn-hex>
-    </div>
+    </cn-domain-tree>
 
-    <div class="connector"></div>
+    <cn-domain-tree compact>
+      <cn-hex slot="apex" size="lg" color="commonground">
+        <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 2v20M2 12h20" stroke-opacity="0.5"/></svg>
+        commonground.nu
+      </cn-hex>
+      <cn-hex size="md" color="commonground" variant="outline">[client]</cn-hex>
 
-    <cn-hex size="lg" color="commonground">
-      <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 2v20M2 12h20" stroke-opacity="0.5"/></svg>
-      commonground.nu
-    </cn-hex>
-
-    <div class="connector"></div>
-
-    <cn-hex size="md" color="commonground" variant="outline">[client]</cn-hex>
-
-    <div class="legend">
-      <div class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span>Conduction · cobalt</div>
-      <div class="legend-item"><span class="dot" style="background: var(--c-orange-knvb);"></span>De ene oranje accent · waar je wilt dat de bezoeker klikt</div>
-      <div class="legend-item"><span class="dot" style="background: var(--c-commonground-yellow);"></span>Common Ground · geel</div>
-    </div>
+      <span slot="legend"><span class="dot" style="background: var(--c-blue-cobalt);"></span>Conduction &middot; cobalt</span>
+      <span slot="legend"><span class="dot" style="background: var(--c-orange-knvb);"></span>De ene oranje accent &middot; waar je wilt dat de bezoeker klikt</span>
+      <span slot="legend"><span class="dot" style="background: var(--c-commonground-yellow);"></span>Common Ground &middot; geel</span>
+    </cn-domain-tree>
   </div>
 
-  <p class="diagram-note">Gerenderd met <a href="../diagrams/cn-hex.html">&lt;cn-hex&gt;</a>. Vervangen door <code>&lt;cn-domain-tree&gt;</code> zodra dat component af is.</p>
+  <p class="diagram-note">Gerenderd met <a href="../diagrams/cn-domain-tree.html">&lt;cn-domain-tree&gt;</a> + <a href="../diagrams/cn-hex.html">&lt;cn-hex&gt;</a>.</p>
 
   <!-- ============================================================
        How we set it up

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cn-side-box · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  .specimen.tall { min-height: 280px; gap: var(--space-7); }
+
+  /* Side-box rows. Children are plain elements; cn-side-box renders the
+     icon-square-and-label layout from CSS. */
+  .row {
+    /* Slotted children inherit grid layout from cn-side-box's shadow CSS,
+       so we only need the inline content here. */
+  }
+  .ic-square {
+    width: 28px; height: 28px;
+    background: var(--c-cobalt-50);
+    border: 1px solid var(--c-cobalt-200);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c-blue-cobalt);
+  }
+  .ic-square svg {
+    width: 16px; height: 16px;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Compact variant rows shrink the icon square */
+  cn-side-box[compact] .ic-square { width: 20px; height: 20px; }
+  cn-side-box[compact] .ic-square svg { width: 12px; height: 12px; }
+
+  pre {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; line-height: 1.6;
+    overflow-x: auto;
+    margin: var(--space-3) 0 0;
+  }
+  pre .tag  { color: #93B5E0; }
+  pre .attr { color: #F7C76F; }
+  pre .str  { color: #5FE39A; }
+
+  .rationale {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+  }
+  .rationale .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-2);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .rationale .label::before {
+    content: ""; width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: block;
+  }
+  .rationale h2 {
+    font-size: var(--fs-xl); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .rationale .lede {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm); line-height: 1.55;
+    margin-bottom: var(--space-4);
+  }
+  .rationale ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .rationale li {
+    font-size: var(--fs-sm); line-height: 1.5;
+    color: var(--c-cobalt-900);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .rationale li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 8px; height: 9.2px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+</style>
+<script type="module" src="../../diagrams/src/index.js"></script>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">11.06 · Diagrams / cn-side-box</div>
+      <h1 class="card-title">&lt;cn-side-box&gt;</h1>
+    </div>
+    <p class="card-subtitle">The flat rectangle that flanks a hex-prism diagram. Sources go on the left, consumers go on the right, integrations sit anywhere a prism would feel wrong. The shape difference is the hierarchy: prisms are apps you can install; side-boxes are everything else.</p>
+  </div>
+
+  <div class="section-label">Three sizes · default, default, compact</div>
+  <div class="specimen tall">
+    <cn-side-box header="YOUR DATA">
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M4 9h16M4 15h16"/></svg></span>Spreadsheets</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/></svg></span>Databases</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>REST &amp; SOAP</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>Legacy systems</div>
+    </cn-side-box>
+
+    <cn-side-box header="CONSUMERS">
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></span>Citizens / klanten</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span>Public APIs</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 19v2M18 19v2M2 9h20"/></svg></span>Embedded portals</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg></span>Open data feeds</div>
+    </cn-side-box>
+
+    <cn-side-box header="AUTH" compact>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></span>DigiD</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>eHerkenning</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg></span>SAML</div>
+      <div class="row"><span class="ic-square"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>OAuth 2</div>
+      <span slot="footer">+ 3 more</span>
+    </cn-side-box>
+  </div>
+  <pre><span class="tag">&lt;cn-side-box</span> <span class="attr">header</span>=<span class="str">"YOUR DATA"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"row"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"ic-square"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/span&gt;</span>
+    Spreadsheets
+  <span class="tag">&lt;/div&gt;</span>
+  ...
+<span class="tag">&lt;/cn-side-box&gt;</span></pre>
+
+  <div class="section-label">API · slots</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Slot</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>(default)</code></td><td>Rows of icon + label. Each row is a div with a <code>.ic-square</code> wrapper for the icon and the label text inline.</td></tr>
+        <tr><td><code>footer</code></td><td>Optional dashed-divider line at the bottom. Used for "+ N more" overflow lists.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">API · attributes</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Attribute</th><th>Values</th><th>Default</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>header</code></td><td>any string</td><td>(empty)</td><td>Uppercase chip label at the top. Use one or two short words; gets letter-spaced and rendered in cobalt-400.</td></tr>
+        <tr><td><code>compact</code></td><td>boolean (presence)</td><td>absent</td><td>Tighter row padding and smaller icon squares. Use for dense diagrams or sub-lists.</td></tr>
+        <tr><td><code>width</code></td><td><code>sm</code> (180px) · <code>md</code> (220px) · <code>lg</code> (260px), or any CSS length</td><td><code>md</code></td><td>Box width. Sized for readable rows; do not stretch beyond <code>lg</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Why we built it this way</div>
+  <div class="rationale">
+    <div class="label">Pattern · prisms = apps, boxes = everything else</div>
+    <h2>The shape carries the hierarchy</h2>
+    <p class="lede">A hex-prism is something you can install. A side-box is something you can't. That visual distinction is non-negotiable; bending it muddies the diagram.</p>
+    <ul>
+      <li><strong>White panel, cobalt-200 stroke, 6px radius.</strong> Quiet styling so the eye lands on the prisms first. Side-boxes never compete.</li>
+      <li><strong>Header chip is a string attribute.</strong> Mono-uppercase, cobalt-400, letter-spaced. The component renders it; the user writes one short label.</li>
+      <li><strong>Rows are slotted content.</strong> Use any HTML — typically a square icon wrapper + label text. Five rows max; if you need more, switch to <code>compact</code> with a <code>+ N more</code> footer.</li>
+      <li><strong>Three widths, no full-width.</strong> Side-boxes never stretch. They flank prisms and stay narrower than the prism cluster they support.</li>
+      <li><strong>Cobalt-only ink.</strong> No family colours on side-boxes; that visual real estate belongs to the prisms.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -21,13 +21,13 @@ Every Conduction diagram follows the same brand rules: pointy-top hexes, fixed p
 
 | Component | Status | Purpose |
 | --- | --- | --- |
-| `<cn-hex>` | Available | Pointy-top hex primitive. Supports label + icon, sizes, colour variants, interactive state. |
-| `<cn-hex-prism>` | Planned | 3D isometric prism. The atomic unit for ConNext platform diagrams. |
-| `<cn-platform>` | Planned | Nextcloud kernel + orbiting app hexes. |
-| `<cn-pipeline>` | Planned | Horizontal flow with arrows between prisms. |
-| `<cn-side-box>` | Planned | Rectangle-feed-prism pattern; one shape inside, another outside. |
-| `<cn-honeycomb-bg>` | Planned | Parallax honeycomb backdrop. |
-| `<cn-domain-tree>` | Planned | Domain / subdomain map for the identity pages. |
+| `<cn-hex>` | Available | Pointy-top hex primitive. Label + icon, nine colours, four sizes, solid or outline, optional interactive state. |
+| `<cn-hex-prism>` | Available | 3D isometric prism. Six families, four sizes, slots for label / icon / kicker / pills, coming-state badge. |
+| `<cn-domain-tree>` | Available | Vertical apex-and-branches layout for one-to-many domain maps. Slot-driven; multi-trunk diagrams stack two trees. |
+| `<cn-platform>` | Available | Kernel-plus-orbiting-apps cluster. Six neighbours in a hex ring around a central kernel. |
+| `<cn-pipeline>` | Available | Horizontal flow of stages with auto-inserted arrow connectors. Three arrow tones. |
+| `<cn-side-box>` | Available | Rectangle-feed-prism pattern. Header chip + icon-and-label rows. Three widths, optional compact + footer. |
+| `<cn-honeycomb-bg>` | Available | Honeycomb backdrop wrapper. Theme + accent + density attributes. Parallax in v2. |
 
 ## Usage
 

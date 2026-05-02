@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cn-pipeline · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  .specimen.tall { min-height: 280px; padding: 0; align-items: stretch; }
+  .specimen.tall cn-pipeline { width: 100%; }
+
+  pre {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; line-height: 1.6;
+    overflow-x: auto;
+    margin: var(--space-3) 0 0;
+  }
+  pre .tag  { color: #93B5E0; }
+  pre .attr { color: #F7C76F; }
+  pre .str  { color: #5FE39A; }
+
+  .rationale {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+  }
+  .rationale .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-2);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .rationale .label::before {
+    content: ""; width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: block;
+  }
+  .rationale h2 {
+    font-size: var(--fs-xl); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .rationale .lede {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm); line-height: 1.55;
+    margin-bottom: var(--space-4);
+  }
+  .rationale ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .rationale li {
+    font-size: var(--fs-sm); line-height: 1.5;
+    color: var(--c-cobalt-900);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .rationale li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 8px; height: 9.2px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+  .rationale li code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 5px; border-radius: 3px;
+  }
+</style>
+<script type="module" src="../../diagrams/src/index.js"></script>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">11.05 · Diagrams / cn-pipeline</div>
+      <h1 class="card-title">&lt;cn-pipeline&gt;</h1>
+    </div>
+    <p class="card-subtitle">Horizontal flow of stages connected by arrows. The flattened cousin of cn-platform; used in solution pages and how-it-works sections to show data moving left-to-right through a series of apps.</p>
+  </div>
+
+  <div class="section-label">Canonical · prisms with dotted arrows</div>
+  <div class="specimen tall">
+    <cn-pipeline>
+      <cn-hex-prism family="coral" size="md">
+        Source
+        <span slot="kicker">DATA</span>
+      </cn-hex-prism>
+      <cn-hex-prism family="lavender" size="md">
+        Connector
+        <span slot="kicker">CONNECT</span>
+      </cn-hex-prism>
+      <cn-hex-prism family="cobalt" size="md">
+        Kernel
+        <span slot="kicker">PROCESS</span>
+      </cn-hex-prism>
+      <cn-hex-prism family="mint" size="md">
+        Sink
+        <span slot="kicker">DELIVER</span>
+      </cn-hex-prism>
+      <span slot="caption">Data &middot; connect &middot; process &middot; deliver</span>
+    </cn-pipeline>
+  </div>
+  <pre><span class="tag">&lt;cn-pipeline&gt;</span>
+  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"coral"</span><span class="tag">&gt;</span>Source<span class="tag">&lt;/cn-hex-prism&gt;</span>
+  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"lavender"</span><span class="tag">&gt;</span>Connector<span class="tag">&lt;/cn-hex-prism&gt;</span>
+  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"cobalt"</span><span class="tag">&gt;</span>Kernel<span class="tag">&lt;/cn-hex-prism&gt;</span>
+  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"mint"</span><span class="tag">&gt;</span>Sink<span class="tag">&lt;/cn-hex-prism&gt;</span>
+<span class="tag">&lt;/cn-pipeline&gt;</span></pre>
+
+  <div class="section-label">Solid arrows · for production diagrams</div>
+  <div class="specimen tall">
+    <cn-pipeline tone="solid">
+      <cn-hex-prism family="coral" size="md">Catalogi</cn-hex-prism>
+      <cn-hex-prism family="gold" size="md">Register</cn-hex-prism>
+      <cn-hex-prism family="lavender" size="md">Connector</cn-hex-prism>
+    </cn-pipeline>
+  </div>
+
+  <div class="section-label">With flat hexes · simpler stages</div>
+  <div class="specimen tall">
+    <cn-pipeline tone="dim">
+      <cn-hex size="lg" color="orange">Lead</cn-hex>
+      <cn-hex size="lg">Qualify</cn-hex>
+      <cn-hex size="lg" color="mint">Won</cn-hex>
+      <span slot="caption">A simple sales funnel</span>
+    </cn-pipeline>
+  </div>
+
+  <div class="section-label">API · slots</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Slot</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>(default)</code></td><td>Pipeline stages, in left-to-right order. Pass any number; the component inserts arrow connectors between consecutive pairs.</td></tr>
+        <tr><td><code>caption</code></td><td>Optional uppercase line under the row. Used for a one-sentence summary like <em>"Data · process · users"</em>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">API · attributes</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Attribute</th><th>Values</th><th>Default</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>tone</code></td><td><code>dotted</code> · <code>solid</code> · <code>dim</code></td><td><code>dotted</code></td><td>Arrow style. Dotted for soft / conceptual flows; solid for production diagrams; dim for subtle background flows.</td></tr>
+        <tr><td><code>align</code></td><td><code>start</code> · <code>center</code> · <code>end</code></td><td><code>center</code></td><td>Vertical alignment of stages along the baseline. Use <code>end</code> when stages have very different heights.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Why we built it this way</div>
+  <div class="rationale">
+    <div class="label">Flow · a row of stages</div>
+    <h2>Arrows are part of the layout, not the content</h2>
+    <p class="lede">cn-pipeline reads its own children, slot-assigns each, and inserts an arrow connector between consecutive pairs in the shadow DOM. The user writes plain stages; the arrows appear automatically.</p>
+    <ul>
+      <li><strong>Slot-assignment via JS, not user markup.</strong> The user writes <code>&lt;cn-hex-prism&gt;</code> children; the component sets their <code>slot</code> attribute to <code>step-N</code>. No <code>&lt;cn-step&gt;</code> wrapper required.</li>
+      <li><strong>MutationObserver on children.</strong> Adding or removing stages re-renders the row with the right arrow count. Animation later, declarative now.</li>
+      <li><strong>Three arrow tones, no per-arrow customisation.</strong> One pipeline gets one tone. Different sections use different cn-pipeline elements with different tones if needed.</li>
+      <li><strong>Wraps to vertical on small screens.</strong> Below 700px, rows wrap and arrows rotate 90° to keep the flow readable on phones.</li>
+      <li><strong>Children stay free.</strong> Use any element, hex or prism, sized however. The pipeline owns spacing; the children own appearance.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

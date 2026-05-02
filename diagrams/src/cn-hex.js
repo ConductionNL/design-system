@@ -9,7 +9,8 @@
  *   icon      — icon SVG / image, sits above the label by default
  *
  * Attributes
- *   color       cobalt | orange | mint | lavender | terracotta | forest | nextcloud | red
+ *   color       cobalt | orange | mint | lavender | terracotta | forest |
+ *               nextcloud | commonground | red
  *               (default: cobalt)
  *   size        sm | md | lg | xl  or any CSS length (default: md = 64px)
  *   variant     solid | outline      (default: solid)
@@ -20,19 +21,24 @@
  * (the natural 2/√3 height/width ratio of a regular pointy-top hex). The
  * label-content layer sits in an inner safe-area hex inscribed in the outer
  * shape, so labels and icons stay clear of the points.
+ *
+ * Ink colour: white on every brand fill except commonground (yellow), which
+ * gets cobalt-900 ink so the label hits AA contrast against the saturated
+ * yellow.
  */
 
 const SIZES = { sm: 40, md: 64, lg: 96, xl: 128 };
 
 const COLORS = {
-  cobalt:     'var(--c-blue-cobalt)',
-  orange:     'var(--c-orange-knvb)',
-  mint:       'var(--c-mint-500)',
-  lavender:   'var(--c-lavender-500)',
-  terracotta: 'var(--c-terracotta-500)',
-  forest:     'var(--c-forest-500)',
-  nextcloud:  'var(--c-nextcloud-blue)',
-  red:        'var(--c-red-vermillion)',
+  cobalt:       { fill: 'var(--c-blue-cobalt)',         ink: '#fff' },
+  orange:       { fill: 'var(--c-orange-knvb)',         ink: '#fff' },
+  mint:         { fill: 'var(--c-mint-500)',            ink: '#fff' },
+  lavender:     { fill: 'var(--c-lavender-500)',        ink: '#fff' },
+  terracotta:   { fill: 'var(--c-terracotta-500)',      ink: '#fff' },
+  forest:       { fill: 'var(--c-forest-500)',          ink: '#fff' },
+  nextcloud:    { fill: 'var(--c-nextcloud-blue)',      ink: '#fff' },
+  commonground: { fill: 'var(--c-commonground-yellow)', ink: 'var(--c-cobalt-900)' },
+  red:          { fill: 'var(--c-red-vermillion)',      ink: '#fff' },
 };
 
 class CnHex extends HTMLElement {
@@ -80,10 +86,10 @@ class CnHex extends HTMLElement {
     const sizePx = SIZES[sizeAttr] ? `${SIZES[sizeAttr]}px` : sizeAttr;
 
     const isOutline = variant === 'outline';
-    const fill = isOutline ? 'transparent' : brand;
-    const stroke = isOutline ? brand : 'transparent';
+    const fill = isOutline ? 'transparent' : brand.fill;
+    const stroke = isOutline ? brand.fill : 'transparent';
     const strokeW = isOutline ? 4 : 0;
-    const ink = isOutline ? brand : '#fff';
+    const ink = isOutline ? brand.fill : brand.ink;
 
     this.shadowRoot.innerHTML = `
       <style>

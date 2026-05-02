@@ -6,37 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../preview.css">
 <style>
-  body { padding: 0; background: var(--c-cobalt-50); }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 64px var(--space-12) var(--space-12); }
-
-  /* ---- Page chrome ---- */
-  .crumb {
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--c-cobalt-400);
-    margin-bottom: var(--space-3);
-  }
-  .crumb a { color: var(--c-cobalt-400); text-decoration: none; }
-  .crumb a:hover { color: var(--c-blue-cobalt); }
-  h1 { font-size: 56px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; max-width: 18ch; color: var(--c-blue-cobalt); margin: 0; }
-  .lede { font-size: 19px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: var(--space-5); max-width: 64ch; }
-  .lede a { color: var(--c-blue-cobalt); }
-
-  /* ---- Section labels ---- */
-  .section-label {
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--c-cobalt-400);
-    margin: var(--space-12) 0 var(--space-4);
-    display: flex; align-items: center; gap: var(--space-2);
-  }
-  .section-label::before {
-    content: ""; width: 11px; height: 13px;
-    clip-path: var(--hex-pointy-top);
-    background: var(--c-orange-knvb);
-  }
-
-  /* ---- Domain grid ---- */
+  /* ---- Domain grid · what we publish where ---- */
   .domain-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -53,9 +23,9 @@
     gap: var(--space-4);
     position: relative;
   }
-  .domain-card.dynamic { border-left: 4px solid var(--c-orange-knvb); }
-  .domain-card.static { border-left: 4px solid var(--c-blue-cobalt); }
-  .domain-card.client { border-left: 4px solid var(--c-mint-500); }
+  .domain-card.dynamic      { border-left: 4px solid var(--c-orange-knvb); }
+  .domain-card.static       { border-left: 4px solid var(--c-blue-cobalt); }
+  .domain-card.commonground { border-left: 4px solid var(--c-commonground-yellow); }
 
   .domain-card .url {
     font-family: var(--conduction-typography-font-family-code);
@@ -64,7 +34,7 @@
     letter-spacing: -0.005em;
   }
   .domain-card .role {
-    font-size: 14px; line-height: 1.5;
+    font-size: 14px; line-height: 1.55;
     color: var(--c-cobalt-700);
   }
   .domain-card .role strong { color: var(--c-cobalt-900); }
@@ -82,45 +52,49 @@
     font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--c-cobalt-400);
     align-self: center;
+    margin: 0;
   }
   .domain-card .meta dd {
     margin: 0;
     color: var(--c-cobalt-900);
   }
   .domain-card .pill {
-    display: inline-block;
+    display: inline-block; align-self: flex-start;
     font-family: var(--conduction-typography-font-family-code);
     font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
     padding: 3px 8px; border-radius: var(--radius-pill);
   }
-  .pill.static  { background: var(--c-cobalt-100);  color: var(--c-cobalt-700); }
-  .pill.dynamic { background: var(--c-orange-knvb); color: white; }
-  .pill.client  { background: var(--c-mint-500);    color: white; }
+  .pill.static       { background: var(--c-cobalt-100);          color: var(--c-cobalt-700); }
+  .pill.dynamic      { background: var(--c-orange-knvb);         color: white; }
+  .pill.commonground { background: var(--c-commonground-yellow); color: var(--c-cobalt-900); }
 
   /* ---- Diagram block ---- */
   .diagram {
-    background: white;
-    border: 1px solid var(--c-cobalt-100);
+    background: var(--c-cobalt-50);
     border-radius: var(--radius-lg);
     padding: var(--space-9) var(--space-7);
     display: flex; flex-direction: column;
     align-items: center;
-    gap: var(--space-7);
+    gap: var(--space-5);
     overflow-x: auto;
   }
   .diagram-row { display: flex; align-items: center; justify-content: center; gap: var(--space-7); flex-wrap: wrap; }
+  .connector { height: 32px; width: 1px; background: var(--c-cobalt-200); }
 
-  /* connector line; an inline SVG underlay would be cleaner once cn-domain-tree exists */
-  .connector {
-    height: 32px;
-    width: 1px;
-    background: var(--c-cobalt-200);
-  }
-  .legend { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-3); }
+  .legend { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--c-cobalt-100); width: 100%; justify-content: center; }
   .legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: 13px; color: var(--c-cobalt-700); }
   .legend-item .dot { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); }
 
-  /* ---- Setup grid ---- */
+  .diagram-note {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    color: var(--c-cobalt-400);
+    margin-top: var(--space-3);
+    text-align: center;
+  }
+  .diagram-note a { color: var(--c-cobalt-700); }
+
+  /* ---- Setup grid · two stacks side by side ---- */
   .setup-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -138,17 +112,18 @@
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
     margin-bottom: var(--space-3);
+    font-weight: 600;
   }
-  .stack-card.static .stack-label { color: var(--c-blue-cobalt); }
+  .stack-card.static  .stack-label { color: var(--c-blue-cobalt); }
   .stack-card.dynamic .stack-label { color: var(--c-orange-knvb); }
   .stack-card h3 {
-    font-size: 24px; font-weight: 600;
+    font-size: 22px; font-weight: 600;
     color: var(--c-blue-cobalt);
     letter-spacing: -0.01em;
     margin-bottom: var(--space-4);
   }
   .stack-card p {
-    font-size: 15px; line-height: 1.55;
+    font-size: 14px; line-height: 1.55;
     color: var(--c-cobalt-700);
     margin-bottom: var(--space-4);
   }
@@ -176,7 +151,7 @@
     color: var(--c-cobalt-900);
   }
 
-  /* ---- Constraint callout ---- */
+  /* ---- Constraint callout · the "why" panel ---- */
   .callout {
     background: var(--c-cobalt-900);
     color: white;
@@ -190,11 +165,13 @@
     margin-bottom: var(--space-2);
   }
   .callout h3 {
-    font-size: 28px; font-weight: 600;
+    font-size: 26px; font-weight: 600;
     letter-spacing: -0.01em; margin-bottom: var(--space-4);
     color: white;
+    line-height: 1.2;
   }
-  .callout p { font-size: 15px; line-height: 1.55; color: var(--c-cobalt-100); margin-bottom: var(--space-3); max-width: 80ch; }
+  .callout h3 em { color: var(--c-orange-knvb); font-style: normal; }
+  .callout p { font-size: 14px; line-height: 1.6; color: var(--c-cobalt-100); margin-bottom: var(--space-3); max-width: 80ch; }
   .callout p:last-child { margin-bottom: 0; }
   .callout code {
     font-family: var(--conduction-typography-font-family-code);
@@ -206,24 +183,26 @@
   }
   .callout a { color: var(--c-orange-knvb); }
 
-  /* ---- Steps ---- */
+  /* ---- Three setup steps ---- */
   .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-5);
+  }
+  @media (max-width: 1100px) { .steps { grid-template-columns: 1fr; } }
+  .step {
     background: white;
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-lg);
-    padding: var(--space-7);
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: var(--space-6);
+    padding: var(--space-6);
   }
-  @media (max-width: 1100px) { .steps { grid-template-columns: 1fr; } }
   .step .num {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--c-orange-knvb);
     margin-bottom: var(--space-2);
   }
-  .step h4 { font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt); margin-bottom: var(--space-2); }
+  .step h4 { font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt); margin-bottom: var(--space-2); letter-spacing: -0.005em; }
   .step p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55; }
   .step code {
     font-family: var(--conduction-typography-font-family-code);
@@ -233,33 +212,25 @@
     border-radius: 3px;
     color: var(--c-cobalt-900);
   }
-
-  /* ---- Footer link bar ---- */
-  .nav-back {
-    margin-top: var(--space-12);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--c-cobalt-100);
-    display: flex; justify-content: space-between; align-items: center;
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 13px; color: var(--c-cobalt-400);
-  }
-  .nav-back a { color: var(--c-cobalt-700); text-decoration: none; }
-  .nav-back a:hover { color: var(--c-blue-cobalt); }
 </style>
 <script type="module" src="../../diagrams/src/index.js"></script>
 </head>
 <body>
 
-<div class="wrap">
+<div class="card">
 
-  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Identiteit</a> &nbsp;/&nbsp; Websites</div>
-  <h1>Waar we wat plaatsen.</h1>
-  <p class="lede">Conduction draait op zes domeinen. Elk domein doet één ding, voor één publiek, op één hostingstack. Deze pagina legt uit wat waar staat, hoe we het opzetten, en waarom de stack zo gesplitst is.</p>
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">07 · Identiteit / Websites</div>
+      <h1 class="card-title">Waar we wat plaatsen.</h1>
+    </div>
+    <p class="card-subtitle">Zes domeinen, twee hostingstacks. Elk domein doet één ding voor één publiek. Deze pagina legt uit wat waar staat, hoe we het opzetten, en waarom de stack zo gesplitst is.</p>
+  </div>
 
   <!-- ============================================================
        What we publish where
        ============================================================ -->
-  <div class="section-label">Wat we waar plaatsen</div>
+  <div class="section-label">Wat we waar plaatsen · zes domeinen</div>
 
   <div class="domain-grid">
 
@@ -311,10 +282,10 @@
       </dl>
     </div>
 
-    <div class="domain-card static">
-      <span class="pill static">Static · Docusaurus</span>
+    <div class="domain-card commonground">
+      <span class="pill commonground">Common Ground · Docusaurus</span>
       <div class="url">commonground.nu</div>
-      <p class="role"><strong>Hostingpropositie.</strong> Voor klanten die hun eigen Nextcloud-omgeving willen, beheerd door ons. Apex-domein, dus eigen GitHub Pages-repo met eigen CNAME.</p>
+      <p class="role"><strong>Hostingpropositie.</strong> Voor klanten die hun eigen Nextcloud-omgeving willen, beheerd door ons. Apex-domein, dus eigen GitHub Pages-repo met eigen CNAME. Brand-kleur is <a href="https://commonground.nl/" style="color: var(--c-cobalt-700);">Common Ground-geel</a>, niet kobalt: dit is de Common Ground-tak, geen Conduction-tak.</p>
       <dl class="meta">
         <dt>Publiek</dt><dd>IT-leads, overheid</dd>
         <dt>Inhoud</dt><dd>Hosting, beheer, prijzen</dd>
@@ -323,8 +294,8 @@
       </dl>
     </div>
 
-    <div class="domain-card client">
-      <span class="pill client">Live · Nextcloud per klant</span>
+    <div class="domain-card commonground">
+      <span class="pill commonground">Common Ground · Live Nextcloud</span>
       <div class="url">[client].commonground.nu</div>
       <p class="role"><strong>Klantomgeving.</strong> Echte Nextcloud-instances per klant. Geen GitHub Pages, geen statische bouw. Live applicatie met data, gebruikers, integraties. Dit is de werkende software, niet de propositie.</p>
       <dl class="meta">
@@ -367,30 +338,28 @@
 
     <div class="connector"></div>
 
-    <cn-hex size="lg">
-      <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20" stroke-opacity="0.5"/><circle cx="12" cy="12" r="9"/></svg>
+    <cn-hex size="lg" color="commonground">
+      <svg slot="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 2v20M2 12h20" stroke-opacity="0.5"/></svg>
       commonground.nu
     </cn-hex>
 
     <div class="connector"></div>
 
-    <cn-hex size="md" color="mint">
-      [client]
-    </cn-hex>
+    <cn-hex size="md" color="commonground" variant="outline">[client]</cn-hex>
 
     <div class="legend">
-      <div class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span>Static · Docusaurus op GitHub Pages</div>
+      <div class="legend-item"><span class="dot" style="background: var(--c-blue-cobalt);"></span>Conduction · cobalt</div>
       <div class="legend-item"><span class="dot" style="background: var(--c-orange-knvb);"></span>De ene oranje accent · waar je wilt dat de bezoeker klikt</div>
-      <div class="legend-item"><span class="dot" style="background: var(--c-mint-500);"></span>Live Nextcloud per klant</div>
+      <div class="legend-item"><span class="dot" style="background: var(--c-commonground-yellow);"></span>Common Ground · geel</div>
     </div>
   </div>
 
-  <p style="font-size: 14px; color: var(--c-cobalt-400); margin-top: var(--space-3); font-family: var(--conduction-typography-font-family-code);">Gerenderd met <a href="../diagrams/cn-hex.html" style="color: var(--c-cobalt-700);">&lt;cn-hex&gt;</a>. Vervangen door <code style="font-family: inherit;">&lt;cn-domain-tree&gt;</code> zodra dat component af is.</p>
+  <p class="diagram-note">Gerenderd met <a href="../diagrams/cn-hex.html">&lt;cn-hex&gt;</a>. Vervangen door <code>&lt;cn-domain-tree&gt;</code> zodra dat component af is.</p>
 
   <!-- ============================================================
        How we set it up
        ============================================================ -->
-  <div class="section-label">Hoe we de site opzetten</div>
+  <div class="section-label">Hoe we de site opzetten · twee stacks</div>
 
   <div class="setup-grid">
 
@@ -403,7 +372,7 @@
         <li><strong>Shared <code>@conduction/docusaurus-preset</code>.</strong> Eén npm-package met de brand-tokens, theme, navbar, footer. Elke site importeert hem; visuele consistentie zonder mono-repo.</li>
         <li><strong>CNAME-bestand per repo.</strong> De custom-domain-naam staat in <code>static/CNAME</code>. GitHub leest hem bij elke deploy.</li>
         <li><strong>DNS via registrar.</strong> A-records van het subdomein naar de GitHub Pages-IP's. Apex-domein eenmalig geverifieerd op org-niveau, alle subdomeinen erven die verificatie.</li>
-        <li><strong>Auto-deploy via Actions.</strong> Push naar <code>main</code> → workflow bouwt → publiceert naar <code>gh-pages</code>-branch → live binnen één tot twee minuten.</li>
+        <li><strong>Auto-deploy via Actions.</strong> Push naar <code>main</code> bouwt en publiceert naar <code>gh-pages</code>. Live binnen één tot twee minuten.</li>
       </ul>
     </div>
 
@@ -427,8 +396,8 @@
   <div class="section-label">Waarom de splitsing zo is</div>
 
   <div class="callout">
-    <div class="label">GitHub Pages, de restrictie</div>
-    <h3>Eén CNAME per repo. Geen wildcards. Daarom <em style="color: var(--c-orange-knvb); font-style: normal;">N repos voor N subdomeinen</em>.</h3>
+    <div class="label">GitHub Pages · de restrictie</div>
+    <h3>Eén CNAME per repo. Geen wildcards. Daarom <em>N repos voor N subdomeinen</em>.</h3>
     <p>GitHub Pages bindt precies één custom domain aan elke repo, via het <code>CNAME</code>-bestand in de root. Wildcards (<code>*.conduction.nl</code>) worden expliciet afgeraden door GitHub vanwege domain-takeover-risico's. Eén Docusaurus-build kan dus geen meerdere subdomeinen serveren.</p>
     <p>Dat zou een rommelige stapel repos kunnen worden. Daarom delen ze allemaal het <code>@conduction/docusaurus-preset</code>-package. Brand-tokens, navbar, footer, theme: alles komt uit één plek. Eén design-bug fixen in de preset, alle sites profiteren bij de volgende build.</p>
     <p>De CMS-route via OpenCatalogi heeft die restrictie niet, daar serveert één Nextcloud-instance vanzelf alle eigen content. Maar dat geldt alleen waar we ook echt CMS-werk doen. Docs en marketing-content blijven static, want statisch is sneller, goedkoper en betrouwbaarder. <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">GitHub Pages docs</a>.</p>
@@ -459,11 +428,6 @@
       <p>Voeg de standaard <code>.github/workflows/deploy.yml</code> toe (publiceert naar <code>gh-pages</code>). Zet GitHub Pages in repo-settings op die branch. Apex-domein <code>conduction.nl</code> is al eenmalig geverifieerd op org-niveau, dus DNS-checks werken meteen.</p>
     </div>
 
-  </div>
-
-  <div class="nav-back">
-    <span>Identity · Websites</span>
-    <span><a href="index.html">&larr; Terug naar Identiteit</a></span>
   </div>
 
 </div>

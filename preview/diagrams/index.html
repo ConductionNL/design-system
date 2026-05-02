@@ -5,118 +5,180 @@
 <title>Diagrams · Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../preview.css">
-<link rel="stylesheet" href="../print/print.css">
 <style>
-  body { background: var(--c-cobalt-50); padding: 0; }
-
-  /* The diagrams hub re-uses the print chassis (.chrome / .stage / .spark)
-     so per-component pages feel identical to the print artefact pages. */
-
-  .stage.full-doc { grid-template-columns: 1fr; padding-top: 0; }
-  .stage.full-doc .panel {
-    background: white;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--c-cobalt-100);
-    padding: var(--space-7);
-    margin-bottom: var(--space-6);
-  }
-
+  /* ---- Brand-rules grid ---- */
   .rules-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-5);
-    margin-top: var(--space-5);
   }
+  @media (max-width: 1100px) { .rules-grid { grid-template-columns: 1fr; } }
   .rule {
-    padding: var(--space-4) var(--space-5);
-    background: var(--c-cobalt-50);
-    border-radius: var(--radius-md);
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
     border-left: 3px solid var(--c-blue-cobalt);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
   }
   .rule.accent { border-left-color: var(--c-orange-knvb); }
-  .rule h4 { font-size: var(--fs-base); font-weight: 600; margin-bottom: var(--space-1); }
-  .rule p { color: var(--c-cobalt-700); font-size: var(--fs-sm); line-height: 1.5; }
+  .rule h3 {
+    font-size: var(--fs-base); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.005em;
+    margin-bottom: var(--space-2);
+  }
+  .rule p {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+  .rule code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--c-cobalt-900);
+  }
 
-  /* Walk-through layout — each step is a row: visual on the left, code on the right. */
+  /* ---- Walk-through ---- */
+  .walk {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .walk-intro {
+    padding: var(--space-6) var(--space-7);
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-base);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--c-cobalt-100);
+    max-width: 80ch;
+  }
   .walk-step {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-6);
-    align-items: stretch;
-    margin-top: var(--space-7);
-    padding-top: var(--space-7);
+    gap: 0;
     border-top: 1px solid var(--c-cobalt-100);
   }
-  .walk-step:first-of-type { border-top: none; padding-top: var(--space-5); }
+  .walk-step:first-of-type { border-top: none; }
+  .walk-step .text  { padding: var(--space-7); }
+  .walk-step .visual {
+    background: var(--c-cobalt-50);
+    padding: var(--space-7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+    min-height: 200px;
+  }
   .walk-step .num {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--c-orange-knvb);
     margin-bottom: var(--space-2);
   }
-  .walk-step h3 { font-size: var(--fs-lg); font-weight: 600; margin-bottom: var(--space-2); letter-spacing: -0.01em; }
-  .walk-step p { color: var(--c-cobalt-700); font-size: var(--fs-sm); line-height: 1.55; }
-  .walk-step .visual {
+  .walk-step h3 {
+    font-size: var(--fs-lg); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .walk-step p {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+    margin-bottom: var(--space-3);
+  }
+  .walk-step code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
     background: var(--c-cobalt-50);
-    border-radius: var(--radius-md);
-    padding: var(--space-7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-5);
-    min-height: 220px;
-    flex-wrap: wrap;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--c-cobalt-900);
   }
   .walk-step pre {
+    margin-top: var(--space-4);
     background: var(--c-cobalt-900);
     color: var(--c-cobalt-100);
     border-radius: var(--radius-md);
-    padding: var(--space-5);
+    padding: var(--space-4) var(--space-5);
     font-family: var(--conduction-typography-font-family-code);
     font-size: 12px;
     line-height: 1.6;
     overflow-x: auto;
-    margin: 0;
   }
-  .walk-step pre .tag { color: #93B5E0; }
+  .walk-step pre .tag  { color: #93B5E0; }
   .walk-step pre .attr { color: #F7C76F; }
-  .walk-step pre .str { color: #5FE39A; }
-  .walk-step pre .com { color: #5F6E86; font-style: italic; }
+  .walk-step pre .str  { color: #5FE39A; }
+  .walk-step pre .com  { color: #5F6E86; font-style: italic; }
+  @media (max-width: 1100px) {
+    .walk-step { grid-template-columns: 1fr; }
+  }
 
-  /* Component grid — tiles for each <cn-*> component, built or planned */
+  .walk-outro {
+    padding: var(--space-6) var(--space-7);
+    border-top: 1px solid var(--c-cobalt-100);
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+  .walk-outro code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--c-cobalt-900);
+  }
+
+  /* ---- Component reference grid ---- */
   .component-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--space-5);
-    margin-top: var(--space-5);
   }
   .comp-tile {
     background: white;
     border: 1px solid var(--c-cobalt-100);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
     text-decoration: none;
     color: inherit;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    min-height: 200px;
+    min-height: 220px;
     transition: all 160ms ease;
   }
   .comp-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); border-color: var(--c-cobalt-200); }
-  .comp-tile.todo { opacity: 0.7; pointer-events: none; background: var(--c-cobalt-50); border-style: dashed; }
+  .comp-tile.todo {
+    background: var(--c-cobalt-50);
+    border-style: dashed;
+    pointer-events: none;
+    opacity: 0.75;
+  }
   .comp-tile .preview {
-    height: 80px;
+    height: 96px;
     display: flex; align-items: center; justify-content: center;
     background: var(--c-cobalt-50);
     border-radius: var(--radius-sm);
   }
   .comp-tile.todo .preview { background: white; }
-  .comp-tile h4 { font-size: var(--fs-base); font-weight: 600; }
-  .comp-tile code {
+  .comp-tile h3 {
+    font-size: var(--fs-base); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.005em;
+  }
+  .comp-tile h3 code {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 12px;
     color: var(--c-cobalt-400);
+    font-weight: 400;
+    margin-left: 6px;
   }
   .comp-tile p {
     font-size: 13px;
@@ -137,76 +199,82 @@
 </head>
 <body>
 
-<div class="chrome">
-  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Diagrams</div>
-  <h1>Diagrams.</h1>
-  <p class="lead">Brand-strict diagram primitives as web components. Every shape is a pointy-top hex, every colour comes from the palette, every animation respects the brand. Drop the module into any HTML page; works in plain HTML, Vue, React, Docusaurus, Nextcloud apps. <a href="../../diagrams/README.md">Package readme</a>.</p>
-</div>
+<div class="card">
 
-<div class="stage full-doc">
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">11 · Diagrams</div>
+      <h1 class="card-title">Diagram component set.</h1>
+    </div>
+    <p class="card-subtitle">Brand-strict diagram primitives as web components. Drop the module into any HTML page; works in plain HTML, Vue, React, Docusaurus, Nextcloud apps. <a href="../../diagrams/README.md">Package readme</a>.</p>
+  </div>
 
   <!-- ============================================================
        Brand rules
        ============================================================ -->
-  <div class="panel">
-    <div class="section-label">Brand rules · the non-negotiables</div>
-    <div class="rules-grid">
-      <div class="rule">
-        <h4>Pointy-top only</h4>
-        <p>Hexes never rotate. The point is at the top, always. Flat-top hexes belong to other brands.</p>
-      </div>
-      <div class="rule">
-        <h4>Solid colours only</h4>
-        <p>No gradients on the shape itself. No rgba alpha. Backgrounds can be hex polygons; the shape stays one colour.</p>
-      </div>
-      <div class="rule accent">
-        <h4>One orange per scene</h4>
-        <p>KNVB orange is the highlight. Use it once per diagram, on the node you want the eye to land on. Never as a primary fill.</p>
-      </div>
-      <div class="rule">
-        <h4>Fixed palette</h4>
-        <p>cobalt, orange, mint, lavender, terracotta, forest, nextcloud-blue, red. No off-brand colours. Components reject anything else.</p>
-      </div>
-      <div class="rule">
-        <h4>Hexes indicate, rectangles do</h4>
-        <p>Hex prisms are "the system". Rectangles (side-boxes) are what feeds it or consumes it. The shape carries hierarchy.</p>
-      </div>
-      <div class="rule">
-        <h4>Composition over configuration</h4>
-        <p>Diagrams are composed from <code>&lt;cn-*&gt;</code> elements. Each element renders one shape. The diagram is the layout of those shapes.</p>
-      </div>
+  <div class="section-label">Brand rules · the non-negotiables</div>
+  <div class="rules-grid">
+    <div class="rule">
+      <h3>Pointy-top only</h3>
+      <p>Hexes never rotate. The point is at the top, always. Flat-top hexes belong to other brands.</p>
+    </div>
+    <div class="rule">
+      <h3>Solid colours only</h3>
+      <p>No gradients on the shape itself. No rgba alpha. Backgrounds can be hex polygons; the shape stays one colour.</p>
+    </div>
+    <div class="rule accent">
+      <h3>One orange per scene</h3>
+      <p>KNVB orange is the highlight. Use it once per diagram, on the node you want the eye to land on. Never as a primary fill.</p>
+    </div>
+    <div class="rule">
+      <h3>Fixed palette</h3>
+      <p>cobalt, orange, mint, lavender, terracotta, forest, nextcloud, commonground, red. No off-brand colours. The component rejects anything else.</p>
+    </div>
+    <div class="rule">
+      <h3>Hexes indicate, rectangles do</h3>
+      <p>Hex prisms are "the system". Rectangles (side-boxes) are what feeds it or consumes it. The shape carries hierarchy.</p>
+    </div>
+    <div class="rule">
+      <h3>Composition over configuration</h3>
+      <p>Diagrams are composed from <code>&lt;cn-*&gt;</code> elements. Each element renders one shape. The diagram is the layout of those shapes.</p>
     </div>
   </div>
 
   <!-- ============================================================
        Walk-through
        ============================================================ -->
-  <div class="panel">
-    <div class="section-label">Walk-through · build a domain map in four steps</div>
-    <p style="color: var(--c-cobalt-700); font-size: var(--fs-base); line-height: 1.55; margin-top: var(--space-3); max-width: 64ch;">A worked example. We will build the same diagram that lives on <a href="../identity/domains.html">identity / domains</a>: a brand apex with two externally-linked product surfaces. Every step shows the visual on the left and the code on the right. You will write only HTML, no JavaScript.</p>
+  <div class="section-label">Walk-through · build a domain map in four steps</div>
+
+  <div class="walk">
+
+    <div class="walk-intro">
+      A worked example. We will build the same diagram that lives on <a href="../identity/websites.html">identity / websites</a>: a brand apex with two externally-linked product surfaces. Every step shows the visual on the left and the code on the right. You will write only HTML, no JavaScript.
+    </div>
 
     <!-- Step 1 -->
     <div class="walk-step">
-      <div>
+      <div class="text">
         <div class="num">Step 01</div>
         <h3>Place the apex hex</h3>
-        <p>Start with the brand. <code>conduction.nl</code> is the root of everything; render it as a large cobalt hex with the brand-mark slot. Cobalt is the default colour, so no <code>color</code> attribute is needed.</p>
-        <p>The label is plain text in the default slot.</p>
+        <p>Start with the brand. <code>conduction.nl</code> is the root of everything; render it as a large cobalt hex. Cobalt is the default colour, so no <code>color</code> attribute is needed. The label is plain text in the default slot.</p>
+        <pre><span class="com">&lt;!-- the apex --&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span></pre>
       </div>
       <div class="visual">
         <cn-hex size="xl">conduction.nl</cn-hex>
       </div>
     </div>
-    <pre><span class="com">&lt;!-- Step 1: the apex --&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span></pre>
 
     <!-- Step 2 -->
     <div class="walk-step">
-      <div>
+      <div class="text">
         <div class="num">Step 02</div>
         <h3>Add the product surfaces</h3>
-        <p>Two products link out from the apex: <code>connext.conduction.nl</code> (the platform proposition) and <code>apps.conduction.nl</code> (the app store). Render them as medium hexes flanking the apex.</p>
-        <p>We are still using the default cobalt; the diagram reads as one family.</p>
+        <p>Two products link out from the apex: <code>connext.conduction.nl</code> (the platform proposition) and <code>apps.conduction.nl</code> (the app store). Render them as medium hexes flanking the apex. Still using the default cobalt; the diagram reads as one family.</p>
+        <pre><span class="com">&lt;!-- flanking products --&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>apps<span class="tag">&lt;/cn-hex&gt;</span></pre>
       </div>
       <div class="visual">
         <cn-hex size="md">connext</cn-hex>
@@ -214,18 +282,17 @@
         <cn-hex size="md">apps</cn-hex>
       </div>
     </div>
-    <pre><span class="com">&lt;!-- Step 2: flanking products --&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>apps<span class="tag">&lt;/cn-hex&gt;</span></pre>
 
     <!-- Step 3 -->
     <div class="walk-step">
-      <div>
+      <div class="text">
         <div class="num">Step 03</div>
         <h3>Land the orange accent</h3>
-        <p>One node should be the eye-catcher. The app store is what we want visitors to click, so we promote it with <code>color="orange"</code>. This is the one orange-per-scene rule, in practice.</p>
-        <p>Notice that we never write a hex code; the colour name is the API.</p>
+        <p>One node should be the eye-catcher. The app store is what we want visitors to click, so we promote it with <code>color="orange"</code>. This is the one-orange-per-scene rule, in practice. Notice that we never write a hex code; the colour name is the API.</p>
+        <pre><span class="com">&lt;!-- one orange accent --&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">color</span>=<span class="str">"orange"</span><span class="tag">&gt;</span>apps<span class="tag">&lt;/cn-hex&gt;</span></pre>
       </div>
       <div class="visual">
         <cn-hex size="md">connext</cn-hex>
@@ -233,18 +300,18 @@
         <cn-hex size="md" color="orange">apps</cn-hex>
       </div>
     </div>
-    <pre><span class="com">&lt;!-- Step 3: one orange accent --&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span><span class="tag">&gt;</span>connext<span class="tag">&lt;/cn-hex&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>conduction.nl<span class="tag">&lt;/cn-hex&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">color</span>=<span class="str">"orange"</span><span class="tag">&gt;</span>apps<span class="tag">&lt;/cn-hex&gt;</span></pre>
 
     <!-- Step 4 -->
     <div class="walk-step">
-      <div>
+      <div class="text">
         <div class="num">Step 04</div>
         <h3>Icons for clarity, interactive for clickability</h3>
-        <p>Add an icon SVG to the <code>icon</code> slot to make each surface scannable at a glance. Add <code>interactive</code> on nodes that link out, you get hover scale, focus ring, and Enter/Space activation.</p>
-        <p>The icon and label co-exist; default layout stacks them vertically.</p>
+        <p>Add an icon SVG to the <code>icon</code> slot to make each surface scannable at a glance. Add <code>interactive</code> on nodes that link out, you get hover scale, focus ring, and Enter/Space activation. The icon and label co-exist; default layout stacks them vertically.</p>
+        <pre><span class="com">&lt;!-- icons + interactive on the linking nodes --&gt;</span>
+<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">interactive</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;svg</span> <span class="attr">slot</span>=<span class="str">"icon"</span> ...<span class="tag">&gt;</span>...<span class="tag">&lt;/svg&gt;</span>
+  connext
+<span class="tag">&lt;/cn-hex&gt;</span></pre>
       </div>
       <div class="visual">
         <cn-hex size="md" interactive>
@@ -261,105 +328,73 @@
         </cn-hex>
       </div>
     </div>
-    <pre><span class="com">&lt;!-- Step 4: icons + interactive on the linking nodes --&gt;</span>
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">interactive</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;svg</span> <span class="attr">slot</span>=<span class="str">"icon"</span> <span class="attr">viewBox</span>=<span class="str">"0 0 24 24"</span> ...<span class="tag">&gt;</span>...<span class="tag">&lt;/svg&gt;</span>
-  connext
-<span class="tag">&lt;/cn-hex&gt;</span>
 
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"xl"</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;svg</span> <span class="attr">slot</span>=<span class="str">"icon"</span> ...<span class="tag">&gt;</span>...<span class="tag">&lt;/svg&gt;</span>
-  conduction.nl
-<span class="tag">&lt;/cn-hex&gt;</span>
+    <div class="walk-outro">
+      That is the whole technique. Lay out shapes, pick colours by name, add slots for icons, mark the clickable ones <code>interactive</code>. The connections between hexes (lines, arrows, branches) come from the next-up components: <code>&lt;cn-hex-prism&gt;</code> for system nodes, <code>&lt;cn-domain-tree&gt;</code> for the layout itself. Until those land, you compose by hand with flexbox and SVG lines.
+    </div>
 
-<span class="tag">&lt;cn-hex</span> <span class="attr">size</span>=<span class="str">"md"</span> <span class="attr">color</span>=<span class="str">"orange"</span> <span class="attr">interactive</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;svg</span> <span class="attr">slot</span>=<span class="str">"icon"</span> ...<span class="tag">&gt;</span>...<span class="tag">&lt;/svg&gt;</span>
-  apps
-<span class="tag">&lt;/cn-hex&gt;</span></pre>
-
-    <p style="color: var(--c-cobalt-700); font-size: var(--fs-sm); margin-top: var(--space-7); padding-top: var(--space-6); border-top: 1px solid var(--c-cobalt-100); line-height: 1.55;">That is the whole technique. Lay out shapes, pick colours by name, add slots for icons, mark the clickable ones <code>interactive</code>. The connections between hexes (lines, arrows, branches) come from the next-up components: <code>&lt;cn-hex-prism&gt;</code> for system nodes, <code>&lt;cn-domain-tree&gt;</code> for the layout itself. Until those land, you compose by hand with flexbox and SVG lines.</p>
   </div>
 
   <!-- ============================================================
        Component reference
        ============================================================ -->
-  <div class="panel">
-    <div class="section-label">The set · seven components, one built today</div>
-    <div class="component-grid">
+  <div class="section-label">The set · seven components, one built today</div>
+  <div class="component-grid">
 
-      <a class="comp-tile built" href="cn-hex.html">
-        <div class="preview">
-          <cn-hex size="md">Hex</cn-hex>
-        </div>
-        <h4>cn-hex <code>&lt;cn-hex&gt;</code></h4>
-        <span class="pill">Built</span>
-        <p>The pointy-top hex primitive. Label + icon, eight colours, four sizes, solid or outline, optional interactive state.</p>
-      </a>
-
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-hex-prism <code>&lt;cn-hex-prism&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>The 3D isometric prism. Three faces, family-tinted, the atomic unit for ConNext platform diagrams.</p>
+    <a class="comp-tile built" href="cn-hex.html">
+      <div class="preview">
+        <cn-hex size="md">Hex</cn-hex>
       </div>
+      <h3>cn-hex <code>&lt;cn-hex&gt;</code></h3>
+      <span class="pill">Built</span>
+      <p>The pointy-top hex primitive. Label + icon, nine colours, four sizes, solid or outline, optional interactive state.</p>
+    </a>
 
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-platform <code>&lt;cn-platform&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>Nextcloud kernel surrounded by orbiting app hexes. The canonical "what is ConNext" diagram.</p>
-      </div>
-
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-pipeline <code>&lt;cn-pipeline&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>Horizontal flow: hex prisms connected by arrows. Data → processing → users.</p>
-      </div>
-
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-side-box <code>&lt;cn-side-box&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>The rectangle-feed-prism pattern. Rectangles do, hexagons indicate; this component encodes the hierarchy.</p>
-      </div>
-
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-honeycomb-bg <code>&lt;cn-honeycomb-bg&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>Parallax honeycomb backdrop. Smaller hexes deeper, drift slower. One orange accent per scene, never competes.</p>
-      </div>
-
-      <div class="comp-tile todo">
-        <div class="preview"></div>
-        <h4>cn-domain-tree <code>&lt;cn-domain-tree&gt;</code></h4>
-        <span class="pill">Planned</span>
-        <p>The domain / subdomain map for the identity pages. Conduction.nl on top, products and stores branching out.</p>
-      </div>
-
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-hex-prism <code>&lt;cn-hex-prism&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>The 3D isometric prism. Three faces, family-tinted, the atomic unit for ConNext platform diagrams.</p>
     </div>
-  </div>
-</div>
 
-<aside class="spark" style="max-width: 1280px; margin: 0 auto var(--space-12); padding: var(--space-6) var(--space-7);">
-  <div class="label">Why we built it this way</div>
-  <h2>One render path, many surfaces</h2>
-  <p class="lede">Diagrams show up everywhere: the kit, the website, product docs, the CMS, internal apps. They all need to look identical. Building once and shipping as web components is the only way to keep that promise.</p>
-  <ul>
-    <li><strong>No third-party diagram library.</strong> Mermaid, drawio, React Flow all force compromises against the brand (rounded boxes, fixed palettes, gradient drop-shadows). We render shapes ourselves so every hex is a hex.</li>
-    <li><strong>Web components, not framework components.</strong> Plain HTML pages can use them. Vue 2 apps (nextcloud-vue) can use them. React (Docusaurus) can use them. Future Lit-based work can use them. One implementation, every surface.</li>
-    <li><strong>No build step until we publish.</strong> Drop a <code>&lt;script type="module"&gt;</code> tag and start composing. The kit ships today, npm later.</li>
-    <li><strong>Composition over configuration.</strong> A diagram is HTML. You write hexes, you arrange them. No DSL, no JSON schema, no canvas. The browser is the renderer.</li>
-    <li><strong>Animation is opt-in.</strong> CSS handles hover and transitions. Web Animations API handles keyframes when needed. Motion One ships with <code>cn-platform</code> when we orchestrate sequences. The base hex animates nothing it does not need to.</li>
-  </ul>
-  <div class="footer-note">
-    <strong style="color: var(--c-cobalt-900); display: block; margin-bottom: 4px;">Uses</strong>
-    <a href="cn-hex.html" style="color: var(--c-cobalt-700);">cn-hex</a>
-    &middot; <span style="color: var(--c-cobalt-400);">cn-hex-prism (planned)</span>
-    &middot; <span style="color: var(--c-cobalt-400);">cn-domain-tree (planned)</span>
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-platform <code>&lt;cn-platform&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>Nextcloud kernel surrounded by orbiting app hexes. The canonical "what is ConNext" diagram.</p>
+    </div>
+
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-pipeline <code>&lt;cn-pipeline&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>Horizontal flow: hex prisms connected by arrows. Data → processing → users.</p>
+    </div>
+
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-side-box <code>&lt;cn-side-box&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>The rectangle-feed-prism pattern. Rectangles do, hexagons indicate; this component encodes the hierarchy.</p>
+    </div>
+
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-honeycomb-bg <code>&lt;cn-honeycomb-bg&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>Parallax honeycomb backdrop. Smaller hexes deeper, drift slower. One orange accent per scene, never competes.</p>
+    </div>
+
+    <div class="comp-tile todo">
+      <div class="preview"></div>
+      <h3>cn-domain-tree <code>&lt;cn-domain-tree&gt;</code></h3>
+      <span class="pill">Planned</span>
+      <p>The domain / subdomain map for the identity pages. Conduction.nl on top, products and stores branching out.</p>
+    </div>
+
   </div>
-</aside>
+
+</div>
 
 </body>
 </html>

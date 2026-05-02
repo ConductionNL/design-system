@@ -4,85 +4,72 @@
 <meta charset="utf-8">
 <title>Identiteit, Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../preview.css">
 <style>
-  body { margin: 0; background: var(--c-cobalt-50); padding: 64px; font-family: var(--conduction-typography-font-family-body); }
-  .wrap { max-width: 1280px; margin: 0 auto; }
-  .header { margin-bottom: 56px; }
-  .eyebrow { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .eyebrow .h { width: 11px; height: 13px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
-  h1 { font-size: 56px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; max-width: 16ch; color: var(--c-blue-cobalt); margin: 0; }
-  .lede { font-size: 19px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: 20px; max-width: 60ch; }
-  .lede a { color: var(--c-blue-cobalt); }
+  /* Hub chassis: body runs full-bleed so the hero hits the edges */
+  body { padding: 0; }
 
-  /* Writing-style summary block */
+  /* Style-block panel sits between the hero and the tile grid */
   .style-block {
+    max-width: 1280px;
+    margin: 64px auto 0;
+    padding: 0 var(--space-12);
+  }
+  .style-block .panel {
     background: white;
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-lg);
-    padding: 32px 40px;
-    margin: 40px 0 48px;
+    padding: var(--space-9) var(--space-10);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: var(--space-10);
   }
-  @media (max-width: 900px) { .style-block { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) {
+    .style-block .panel { grid-template-columns: 1fr; gap: var(--space-7); }
+  }
   .style-block h2 {
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--c-cobalt-400);
     font-weight: 600;
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-3);
   }
   .style-block h3 {
     font-size: 17px; font-weight: 600;
     color: var(--c-blue-cobalt);
     letter-spacing: -0.005em;
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-2);
   }
   .style-block p, .style-block li { font-size: 14px; line-height: 1.55; color: var(--c-cobalt-700); }
-  .style-block p { margin: 0 0 8px; }
-  .style-block ul { margin: 4px 0 0; padding-left: 18px; }
+  .style-block p { margin: 0 0 var(--space-2); }
+  .style-block ul { margin: var(--space-1) 0 0; padding-left: 18px; }
   .style-block li { margin-bottom: 4px; }
   .style-block strong { color: var(--c-blue-cobalt); }
-  .style-block .col + .col { border-left: 1px solid var(--c-cobalt-50); padding-left: 40px; }
-  @media (max-width: 900px) { .style-block .col + .col { border-left: 0; padding-left: 0; border-top: 1px solid var(--c-cobalt-50); padding-top: 24px; } }
-
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .tile {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    text-decoration: none;
-    color: inherit;
-    box-shadow: var(--shadow-1);
-    transition: all 160ms ease;
-    display: flex; flex-direction: column;
-    gap: 16px;
-    border: 1px solid transparent;
+  .style-block .col + .col {
+    border-left: 1px solid var(--c-cobalt-50);
+    padding-left: var(--space-10);
   }
-  .tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); border-color: var(--c-cobalt-200); }
-  .tile .row { display: flex; align-items: center; justify-content: space-between; }
-  .tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
-  .tile h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; color: var(--c-blue-cobalt); }
-  .tile p { color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5; }
-  .tile .visual { height: 80px; display: flex; align-items: center; gap: 12px; margin-top: auto; }
-  .tile .arrow { color: var(--c-cobalt-400); font-size: 22px; transition: transform 160ms; }
-  .tile:hover .arrow { color: var(--c-orange-knvb); transform: translateX(4px); }
-
-  .hex { width: 36px; height: 42px; clip-path: var(--hex-pointy-top); }
+  @media (max-width: 900px) {
+    .style-block .col + .col { border-left: 0; padding-left: 0; border-top: 1px solid var(--c-cobalt-50); padding-top: var(--space-6); }
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header class="header">
-    <div class="eyebrow"><span class="h"></span>Identiteit</div>
-    <h1>Wie we zijn.<br>Voor wie we bouwen.</h1>
-    <p class="lede">Het verbale fundament van de brand: waardes, positionering, doelgroep. De tegenhanger van de visuele <a href="../brand.html">brand</a> en <a href="../components.html">components</a>. Dit is hoe elke pagina, deck en contract moet klinken, onder de typografie en kleur.</p>
-  </header>
+<div class="hero">
+  <div class="eyebrow">Identiteit</div>
+  <h1>Wie we zijn.<br>Voor wie we bouwen.</h1>
+  <p>Het verbale fundament van de brand: waardes, positionering, doelgroep. De tegenhanger van de visuele <a href="../brand.html" style="color: var(--c-orange-knvb);">brand</a> en <a href="../components.html" style="color: var(--c-orange-knvb);">components</a>. Dit is hoe elke pagina, deck en contract moet klinken, onder de typografie en kleur.</p>
+  <div class="meta">
+    <span>Doelgroep<strong>MKB-primair</strong></span>
+    <span>Talen<strong>NL + EN, gelijkwaardig</strong></span>
+    <span>Toon<strong>Direct, concreet, kort</strong></span>
+    <span>Sub-pagina's<strong>7 onderwerpen</strong></span>
+  </div>
+</div>
 
-  <section class="style-block">
+<section class="style-block">
+  <div class="panel">
     <div class="col">
       <h2>Voor wie we schrijven</h2>
       <h3>MKB-primair. Overheid-secundair. Developer-tertiair.</h3>
@@ -92,7 +79,7 @@
         <li><strong>Secundair · Overheid.</strong> De huidige klantenbasis. Compliance-signalen waar van toepassing, een discrete route naar Services.</li>
         <li><strong>Tertiair · Developer.</strong> Directe links naar GitHub, docs en licentie. Verder niets, probeer ze niet te converteren.</li>
       </ul>
-      <p style="margin-top: 12px;">Dieper in <a href="audience.html">Doelgroep</a>.</p>
+      <p style="margin-top: var(--space-3);">Dieper in <a href="audience.html" style="color: var(--c-blue-cobalt);">Doelgroep</a>.</p>
     </div>
     <div class="col">
       <h2>Hoe we schrijven</h2>
@@ -101,98 +88,103 @@
       <ul>
         <li><strong>Talen.</strong> Nederlands én Engels zijn vereist en gelijkwaardig. Schrijf beide met dezelfde zorg, geen vertaling-als-bijzaak.</li>
         <li><strong>"Je" / "jij"</strong> in het Nederlands, nooit "u". Plain, concrete English at the same level.</li>
-        <li><strong>Geen em-dashes (—).</strong> Vervang door een punt, komma, of dubbele punt. Korte zinnen lezen toch sneller. Em-dashes verraden AI-tekst.</li>
+        <li><strong>Geen em-dashes (—).</strong> Vervang door een punt, komma, of dubbele punt. Korte zinnen lezen toch sneller.</li>
         <li><strong>Sentence case</strong> in koppen, geen Title Case. Eén claim per bullet.</li>
         <li><strong>Verbannen woorden.</strong> Geen <em>digitale transformatie</em>, <em>ketensamenwerking</em>, <em>state-of-the-art</em>, <em>de Oplossing</em>.</li>
       </ul>
-      <p style="margin-top: 12px;">Dieper in <a href="voice.html">Toon</a>.</p>
+      <p style="margin-top: var(--space-3);">Dieper in <a href="voice.html" style="color: var(--c-blue-cobalt);">Toon</a>.</p>
     </div>
-  </section>
-
-  <div class="grid">
-
-    <a class="tile" href="foundation.html">
-      <div class="row"><span class="num">01</span><span class="arrow">→</span></div>
-      <h3>Fundament</h3>
-      <p>Wie we zijn. Wat we bouwen. De Conduction × ConNext × Nextcloud-driehoek. App-ecosysteem, geen consultancy. Vijf Nederlandse waardes die overal terugkomen.</p>
-      <div class="visual">
-        <div class="hex" style="background: var(--c-blue-cobalt);"></div>
-        <div style="font-size: 32px; font-weight: 700; letter-spacing: -0.025em; color: var(--c-blue-cobalt);">Con<span style="color: var(--c-nextcloud-blue);">Next</span></div>
-        <div class="hex" style="background: var(--gradient-nextcloud);"></div>
-      </div>
-    </a>
-
-    <a class="tile" href="audience.html">
-      <div class="row"><span class="num">02</span><span class="arrow">→</span></div>
-      <h3>Doelgroep</h3>
-      <p>Drie doelgroepen in tiers. MKB-primair (waar we naartoe gaan). Overheid-secundair (waar het merendeel van onze klanten nog zit). Developer-tertiair (die de OSS levend houdt).</p>
-      <div class="visual" style="gap: 8px;">
-        <div class="hex" style="background: var(--c-orange-knvb); width: 44px; height: 50px;"></div>
-        <div class="hex" style="background: var(--c-cobalt-400); width: 32px; height: 37px; opacity: 0.85;"></div>
-        <div class="hex" style="background: var(--c-cobalt-300); width: 24px; height: 28px; opacity: 0.7;"></div>
-        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.08em; align-self: center;">MKB · GOV · DEV</span>
-      </div>
-    </a>
-
-    <a class="tile" href="products.html">
-      <div class="row"><span class="num">03</span><span class="arrow">→</span></div>
-      <h3>Producten</h3>
-      <p>Apps versus solutions: terminologie, de regel, en 11 NL+EN-taglines. De 6-component-architectuur gemapt op apps.</p>
-      <div class="visual" style="gap: 8px;">
-        <div class="hex" style="background: var(--c-blue-cobalt); width: 36px; height: 42px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;">A</div>
-        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 14px; color: var(--c-cobalt-400); align-self: center;">×</span>
-        <div class="hex" style="background: var(--c-orange-knvb); width: 36px; height: 42px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;">S</div>
-        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.08em; align-self: center; margin-left: var(--space-3);">apps × solutions</span>
-      </div>
-    </a>
-
-    <a class="tile" href="voice.html">
-      <div class="row"><span class="num">04</span><span class="arrow">→</span></div>
-      <h3>Toon</h3>
-      <p>Drie registers, slechts één gebruiken we. Herschrijf-recepten van inkooptaal naar MKB-direct. Zeven gouden regels. Negen verbannen woorden.</p>
-      <div class="visual" style="gap: 6px; flex-direction: column; align-items: flex-start; height: 100px;">
-        <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); text-decoration: line-through; text-decoration-color: var(--c-cobalt-200);">"De Oplossing biedt…"</div>
-        <div style="font-size: 13px; color: var(--c-blue-cobalt); font-weight: 500;">→ "Beheer het op één plek."</div>
-      </div>
-    </a>
-
-    <a class="tile" href="system.html" style="grid-column: span 2;">
-      <div class="row"><span class="num">05</span><span class="arrow">→</span></div>
-      <h3>Systeem-rationale</h3>
-      <p>Waarom kobalt en geen navy. Waarom KNVB-oranje en geen Rijkshuisstijl. Waarom Figtree en geen Inter. Waarom pointy-top hexes en nooit flat-top. De reden achter elke systeemkeuze.</p>
-      <div class="visual" style="gap: var(--space-3); height: 80px;">
-        <div style="width: 56px; height: 56px; background: #21468B; border-radius: var(--radius-sm);"></div>
-        <div style="width: 28px; height: 56px; background: #F36C21; border-radius: var(--radius-sm);"></div>
-        <div style="width: 14px; height: 56px; background: #AE1C28; border-radius: var(--radius-sm);"></div>
-        <div style="width: 8px; height: 56px; background: var(--gradient-nextcloud); border-radius: var(--radius-sm);"></div>
-        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; align-self: center; margin-left: var(--space-3);">70 / 20 / 8 / 2</span>
-      </div>
-    </a>
-
-    <a class="tile" href="slogans.html" style="grid-column: span 2;">
-      <div class="row"><span class="num">06</span><span class="arrow">→</span></div>
-      <h3>Slogans</h3>
-      <p>Werkende verzameling van pakkende regels. Positionering, producten, app- en solution-hero's, CTA's, verbannen patronen. Eén claim, weinig woorden. "Conduction builds, partners deliver." als ankerregel.</p>
-      <div class="visual" style="gap: var(--space-4); height: 80px; flex-direction: column; align-items: flex-start; justify-content: center;">
-        <div style="font-size: 18px; font-weight: 700; color: var(--c-blue-cobalt); letter-spacing: -0.01em; line-height: 1.15;">Conduction builds.<br><span style="color: var(--c-orange-knvb);">Partners deliver.</span></div>
-      </div>
-    </a>
-
-    <a class="tile" href="websites.html" style="grid-column: span 2;">
-      <div class="row"><span class="num">07</span><span class="arrow">→</span></div>
-      <h3>Websites</h3>
-      <p>Waar we wat plaatsen. Zes domeinen, twee hostingstacks: Docusaurus op GitHub Pages voor docs en marketing, OpenCatalogi op Nextcloud voor CMS en de app store. Inclusief hoe je een nieuw subdomein opzet.</p>
-      <div class="visual" style="gap: var(--space-3); height: 80px; align-items: center;">
-        <div class="hex" style="background: var(--c-blue-cobalt); width: 32px; height: 37px;"></div>
-        <div class="hex" style="background: var(--c-blue-cobalt); width: 44px; height: 50px;"></div>
-        <div class="hex" style="background: var(--c-orange-knvb); width: 56px; height: 64px;"></div>
-        <div class="hex" style="background: var(--c-blue-cobalt); width: 44px; height: 50px;"></div>
-        <div class="hex" style="background: var(--c-mint-500); width: 32px; height: 37px;"></div>
-        <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; align-self: center; margin-left: var(--space-3);">6 domeinen · 2 stacks</span>
-      </div>
-    </a>
-
   </div>
+</section>
+
+<div class="hub-grid">
+
+  <a class="tile" href="foundation.html">
+    <div class="row"><span class="num">01</span><span class="arrow">→</span></div>
+    <h3>Fundament</h3>
+    <p>Wie we zijn. Wat we bouwen. De Conduction × ConNext × Nextcloud-driehoek. App-ecosysteem, geen consultancy. Vijf Nederlandse waardes die overal terugkomen.</p>
+    <div class="visual">
+      <span class="hex" style="background: var(--c-blue-cobalt); width: 36px; height: 42px;"></span>
+      <span style="font-size: 32px; font-weight: 700; letter-spacing: -0.025em; color: var(--c-blue-cobalt);">Con<span style="color: var(--c-nextcloud-blue);">Next</span></span>
+      <span class="hex" style="background: var(--gradient-nextcloud); width: 36px; height: 42px;"></span>
+    </div>
+  </a>
+
+  <a class="tile" href="audience.html">
+    <div class="row"><span class="num">02</span><span class="arrow">→</span></div>
+    <h3>Doelgroep</h3>
+    <p>Drie doelgroepen in tiers. MKB-primair (waar we naartoe gaan). Overheid-secundair (waar het merendeel van onze klanten nog zit). Developer-tertiair (die de OSS levend houdt).</p>
+    <div class="visual" style="gap: 8px;">
+      <span class="hex" style="background: var(--c-orange-knvb); width: 44px; height: 50px;"></span>
+      <span class="hex" style="background: var(--c-cobalt-400); width: 32px; height: 37px; opacity: 0.85;"></span>
+      <span class="hex" style="background: var(--c-cobalt-300); width: 24px; height: 28px; opacity: 0.7;"></span>
+      <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.08em; align-self: center;">MKB · GOV · DEV</span>
+    </div>
+  </a>
+
+  <a class="tile" href="products.html">
+    <div class="row"><span class="num">03</span><span class="arrow">→</span></div>
+    <h3>Producten</h3>
+    <p>Apps versus solutions: terminologie, de regel, en 11 NL+EN-taglines. De 6-component-architectuur gemapt op apps.</p>
+    <div class="visual" style="gap: 8px;">
+      <span class="hex" style="background: var(--c-blue-cobalt); width: 36px; height: 42px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;">A</span>
+      <span style="font-family: var(--conduction-typography-font-family-code); font-size: 14px; color: var(--c-cobalt-400); align-self: center;">×</span>
+      <span class="hex" style="background: var(--c-orange-knvb); width: 36px; height: 42px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;">S</span>
+      <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.08em; align-self: center; margin-left: var(--space-3);">apps × solutions</span>
+    </div>
+  </a>
+
+  <a class="tile" href="voice.html">
+    <div class="row"><span class="num">04</span><span class="arrow">→</span></div>
+    <h3>Toon</h3>
+    <p>Drie registers, slechts één gebruiken we. Herschrijf-recepten van inkooptaal naar MKB-direct. Zeven gouden regels. Negen verbannen woorden.</p>
+    <div class="visual" style="gap: 6px; flex-direction: column; align-items: flex-start; height: 80px;">
+      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); text-decoration: line-through; text-decoration-color: var(--c-cobalt-200);">"De Oplossing biedt…"</div>
+      <div style="font-size: 13px; color: var(--c-blue-cobalt); font-weight: 500;">→ "Beheer het op één plek."</div>
+    </div>
+  </a>
+
+  <a class="tile" href="system.html" style="grid-column: span 2;">
+    <div class="row"><span class="num">05</span><span class="arrow">→</span></div>
+    <h3>Systeem-rationale</h3>
+    <p>Waarom kobalt en geen navy. Waarom KNVB-oranje en geen Rijkshuisstijl. Waarom Figtree en geen Inter. Waarom pointy-top hexes en nooit flat-top. De reden achter elke systeemkeuze.</p>
+    <div class="visual" style="gap: var(--space-3); height: 80px;">
+      <span style="width: 56px; height: 56px; background: #21468B; border-radius: var(--radius-sm);"></span>
+      <span style="width: 28px; height: 56px; background: #F36C21; border-radius: var(--radius-sm);"></span>
+      <span style="width: 14px; height: 56px; background: #AE1C28; border-radius: var(--radius-sm);"></span>
+      <span style="width: 8px; height: 56px; background: var(--gradient-nextcloud); border-radius: var(--radius-sm);"></span>
+      <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; align-self: center; margin-left: var(--space-3);">70 / 20 / 8 / 2</span>
+    </div>
+  </a>
+
+  <a class="tile" href="slogans.html" style="grid-column: span 2;">
+    <div class="row"><span class="num">06</span><span class="arrow">→</span></div>
+    <h3>Slogans</h3>
+    <p>Werkende verzameling van pakkende regels. Positionering, producten, app- en solution-hero's, CTA's, verbannen patronen. Eén claim, weinig woorden. "Conduction builds, partners deliver." als ankerregel.</p>
+    <div class="visual" style="gap: var(--space-4); height: 80px; flex-direction: column; align-items: flex-start; justify-content: center;">
+      <div style="font-size: 18px; font-weight: 700; color: var(--c-blue-cobalt); letter-spacing: -0.01em; line-height: 1.15;">Conduction builds.<br><span style="color: var(--c-orange-knvb);">Partners deliver.</span></div>
+    </div>
+  </a>
+
+  <a class="tile" href="websites.html" style="grid-column: span 2;">
+    <div class="row"><span class="num">07</span><span class="arrow">→</span></div>
+    <h3>Websites</h3>
+    <p>Waar we wat plaatsen. Zes domeinen, twee hostingstacks: Docusaurus op GitHub Pages voor docs en marketing, OpenCatalogi op Nextcloud voor CMS en de app store. Inclusief hoe je een nieuw subdomein opzet.</p>
+    <div class="visual" style="gap: var(--space-3); height: 80px; align-items: center;">
+      <span class="hex" style="background: var(--c-blue-cobalt); width: 32px; height: 37px;"></span>
+      <span class="hex" style="background: var(--c-blue-cobalt); width: 44px; height: 50px;"></span>
+      <span class="hex" style="background: var(--c-orange-knvb); width: 56px; height: 64px;"></span>
+      <span class="hex" style="background: var(--c-blue-cobalt); width: 44px; height: 50px;"></span>
+      <span class="hex" style="background: var(--c-commonground-yellow); width: 32px; height: 37px;"></span>
+      <span style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; align-self: center; margin-left: var(--space-3);">6 domeinen · 2 stacks</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="hub-footer">
+  <span>Identiteit · 7 sub-pagina's</span>
+  <span><a href="../index.html">&larr; Terug naar het systeem</a></span>
 </div>
 
 </body>

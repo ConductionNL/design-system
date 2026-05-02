@@ -4,17 +4,21 @@
 <meta charset="utf-8">
 <title>Pages, Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="preview.css">
 <style>
-  body { margin: 0; background: var(--c-cobalt-50); padding: 64px; }
-  .wrap { max-width: 1280px; margin: 0 auto; }
-  .header { margin-bottom: 56px; }
-  .eyebrow { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 12px; }
-  h1 { font-size: 56px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; max-width: 16ch; }
-  .lede { font-size: 19px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: 20px; max-width: 60ch; }
+  /* Hub chassis: body runs full-bleed so the hero hits the edges */
+  body { padding: 0; }
 
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .tile {
+  /* Iframe-preview tile pattern, same idea as components.html .component-tile */
+  .preview-tile-grid {
+    max-width: 1280px;
+    margin: 64px auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+  .preview-tile {
     background: white;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -24,8 +28,8 @@
     transition: all 160ms ease;
     display: flex; flex-direction: column;
   }
-  .tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
-  .tile .preview {
+  .preview-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
+  .preview-tile .preview {
     container-type: inline-size;
     width: 100%;
     height: 400px;
@@ -34,10 +38,9 @@
     border-bottom: 1px solid var(--c-cobalt-100);
     position: relative;
   }
-  .tile iframe {
+  .preview-tile iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 1440px;
     height: 900px;
     border: none;
@@ -45,94 +48,119 @@
     transform-origin: top left;
     pointer-events: none;
   }
-  .tile .meta { padding: 24px 28px; }
-  .tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
-  .tile h3 { font-size: 22px; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
-  .tile p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: 8px; }
+  .preview-tile .meta { padding: 24px 28px; }
+  .preview-tile .num {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    letter-spacing: 0.06em;
+  }
+  .preview-tile h3 {
+    font-size: 22px; font-weight: 600;
+    margin-top: 6px;
+    letter-spacing: -0.01em;
+    color: var(--c-blue-cobalt);
+  }
+  .preview-tile p {
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    line-height: 1.5;
+    margin-top: 8px;
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header class="header">
-    <div class="eyebrow">Page templates · connext.conduction.nl</div>
-    <h1>Full-page layouts.</h1>
-    <p class="lede">Complete pages composed from components, chrome, content, footer. Each is a standalone HTML file you can clone, lift, or hand to a developer. For the building blocks, see <a href="components.html">components</a>.</p>
-  </header>
-
-  <div class="grid">
-    <a class="tile" href="pages/landing.html">
-      <div class="preview"><iframe src="pages/landing.html"></iframe></div>
-      <div class="meta">
-        <div class="num">01 · Marketing</div>
-        <h3>Landing page</h3>
-        <p>The homepage of <span class="next-blue">connext.conduction.nl</span>. Composes hero with hex-prism scene, stats strip, platform-as-honeycomb, featured apps, and CTA banner.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/apps-catalog.html">
-      <div class="preview"><iframe src="pages/apps-catalog.html"></iframe></div>
-      <div class="meta">
-        <div class="num">02 · Index</div>
-        <h3>Apps catalogue</h3>
-        <p>Filterable catalogue with the faceted-filters sidebar, sort toolbar, active-chip strip, and app cards. The "pick an app" entry point.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/app-detail.html">
-      <div class="preview"><iframe src="pages/app-detail.html"></iframe></div>
-      <div class="meta">
-        <div class="num">03 · Detail</div>
-        <h3>App detail</h3>
-        <p>Single-app page (OpenRegister as the worked example), hex glyph, status + version, install CTAs, feature blocks, sticky install aside, "pairs well with" row.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/solutions-catalog.html">
-      <div class="preview"><iframe src="pages/solutions-catalog.html"></iframe></div>
-      <div class="meta">
-        <div class="num">04 · Index</div>
-        <h3>Solutions catalogue</h3>
-        <p>Filterable solutions index, sector + goal facets, solution cards with "built on X apps" pills. Mirrors the apps catalogue pattern but leads with outcome.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/solution-page.html">
-      <div class="preview"><iframe src="pages/solution-page.html"></iframe></div>
-      <div class="meta">
-        <div class="num">05 · Detail</div>
-        <h3>Solution page</h3>
-        <p>Long-form writeup, breadcrumb, apps-used strip, hex-numbered steps, sticky install aside. Demonstrates the apps-vs-solutions terminology in practice.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/support.html">
-      <div class="preview"><iframe src="pages/support.html"></iframe></div>
-      <div class="meta">
-        <div class="num">06 · Ecosystem</div>
-        <h3>Support &amp; partners</h3>
-        <p>Support runs through partners, Conduction doesn't sell it directly. Three-step explainer, partner-tier badges, full directory, and twin "find a partner" + "become a partner" forms.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/partner-detail.html">
-      <div class="preview"><iframe src="pages/partner-detail.html"></iframe></div>
-      <div class="meta">
-        <div class="num">07 · Detail</div>
-        <h3>Partner detail</h3>
-        <p>Single-partner page (Acato as the worked example), hex initial, tier pill, specialties, sticky contact aside, customer references, "other partners you might consider" row.</p>
-      </div>
-    </a>
-
-    <a class="tile" href="pages/about.html">
-      <div class="preview"><iframe src="pages/about.html"></iframe></div>
-      <div class="meta">
-        <div class="num">08 · Company</div>
-        <h3>About Conduction</h3>
-        <p>Conduction-branded, the company behind the apps. Hex avatar hero, three values, team grid with hex avatars, origin timeline, dark contact strip.</p>
-      </div>
-    </a>
+<div class="hero">
+  <div class="crumb"><a href="index.html">Design system</a> &nbsp;/&nbsp; Pages</div>
+  <h1>Full-page layouts.</h1>
+  <p>Complete pages composed from components, chrome, content, footer. Each is a standalone HTML file you can clone, lift, or hand to a developer. For the building blocks, see <a href="components.html" style="color: var(--c-orange-knvb);">components</a>.</p>
+  <div class="meta">
+    <span>Layouts<strong>8 pages</strong></span>
+    <span>Chrome<strong>top-navbar + footer</strong></span>
+    <span>Composition<strong>preview/components/</strong></span>
   </div>
+</div>
+
+<div class="preview-tile-grid">
+
+  <a class="preview-tile" href="pages/landing.html">
+    <div class="preview"><iframe src="pages/landing.html"></iframe></div>
+    <div class="meta">
+      <div class="num">01 · Marketing</div>
+      <h3>Landing page</h3>
+      <p>The homepage of <span class="next-blue">connext.conduction.nl</span>. Composes hero with hex-prism scene, stats strip, platform-as-honeycomb, featured apps, and CTA banner.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/apps-catalog.html">
+    <div class="preview"><iframe src="pages/apps-catalog.html"></iframe></div>
+    <div class="meta">
+      <div class="num">02 · Index</div>
+      <h3>Apps catalogue</h3>
+      <p>Filterable catalogue with the faceted-filters sidebar, sort toolbar, active-chip strip, and app cards. The "pick an app" entry point.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/app-detail.html">
+    <div class="preview"><iframe src="pages/app-detail.html"></iframe></div>
+    <div class="meta">
+      <div class="num">03 · Detail</div>
+      <h3>App detail</h3>
+      <p>Single-app page (OpenRegister as the worked example), hex glyph, status + version, install CTAs, feature blocks, sticky install aside, "pairs well with" row.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/solutions-catalog.html">
+    <div class="preview"><iframe src="pages/solutions-catalog.html"></iframe></div>
+    <div class="meta">
+      <div class="num">04 · Index</div>
+      <h3>Solutions catalogue</h3>
+      <p>Filterable solutions index, sector + goal facets, solution cards with "built on X apps" pills. Mirrors the apps catalogue pattern but leads with outcome.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/solution-page.html">
+    <div class="preview"><iframe src="pages/solution-page.html"></iframe></div>
+    <div class="meta">
+      <div class="num">05 · Detail</div>
+      <h3>Solution page</h3>
+      <p>Long-form writeup, breadcrumb, apps-used strip, hex-numbered steps, sticky install aside. Demonstrates the apps-vs-solutions terminology in practice.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/support.html">
+    <div class="preview"><iframe src="pages/support.html"></iframe></div>
+    <div class="meta">
+      <div class="num">06 · Ecosystem</div>
+      <h3>Support &amp; partners</h3>
+      <p>Support runs through partners, Conduction doesn't sell it directly. Three-step explainer, partner-tier badges, full directory, and twin "find a partner" + "become a partner" forms.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/partner-detail.html">
+    <div class="preview"><iframe src="pages/partner-detail.html"></iframe></div>
+    <div class="meta">
+      <div class="num">07 · Detail</div>
+      <h3>Partner detail</h3>
+      <p>Single-partner page (Acato as the worked example), hex initial, tier pill, specialties, sticky contact aside, customer references, "other partners you might consider" row.</p>
+    </div>
+  </a>
+
+  <a class="preview-tile" href="pages/about.html">
+    <div class="preview"><iframe src="pages/about.html"></iframe></div>
+    <div class="meta">
+      <div class="num">08 · Company</div>
+      <h3>About Conduction</h3>
+      <p>Conduction-branded, the company behind the apps. Hex avatar hero, three values, team grid with hex avatars, origin timeline, dark contact strip.</p>
+    </div>
+  </a>
+
+</div>
+
+<div class="hub-footer">
+  <span>Pages · 8 layouts</span>
+  <span><a href="index.html">&larr; Back to system</a></span>
 </div>
 
 </body>

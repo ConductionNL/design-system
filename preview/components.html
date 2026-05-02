@@ -698,6 +698,96 @@
     cursor: pointer;
   }
   .download-panel .form-card button:hover { background: var(--c-cobalt-700); }
+
+  /* Page-level component grid · iframe-tile pattern */
+  .component-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+  .component-tile {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 160ms ease;
+    display: flex; flex-direction: column;
+  }
+  .component-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
+  .component-tile .preview {
+    height: 280px;
+    overflow: hidden;
+    background: var(--c-cobalt-50);
+    border-bottom: 1px solid var(--c-cobalt-100);
+    position: relative;
+  }
+  .component-tile.span-2 .preview { height: 360px; }
+  .component-tile iframe {
+    width: 1440px;
+    height: 1000px;
+    border: none;
+    transform: scale(0.4);
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+  .component-tile.compact iframe {
+    width: 1200px;
+    height: 220px;
+    transform: scale(0.6);
+  }
+  .component-tile .meta { padding: var(--space-6) var(--space-7); }
+  .component-tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
+  .component-tile h3 { font-size: 22px; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
+  .component-tile p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: 8px; }
+
+  /* Diagrams CTA banner · cobalt-900 panel + orange button */
+  .diagrams-cta {
+    margin-top: var(--space-12);
+    padding: var(--space-7) var(--space-8);
+    background: var(--c-cobalt-900);
+    color: white;
+    border-radius: var(--radius-lg);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  .diagrams-cta .eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-200);
+    margin-bottom: var(--space-2);
+  }
+  .diagrams-cta h2 {
+    color: white;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .diagrams-cta p {
+    color: var(--c-cobalt-100);
+    font-size: 15px; line-height: 1.55;
+    max-width: 60ch;
+  }
+  .diagrams-cta code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .diagrams-cta .cta {
+    background: var(--c-orange-knvb);
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+  }
 </style>
 </head>
 <body>
@@ -1023,50 +1113,6 @@
   </div>
   <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Form card uses cut-corner-tlbr-lg so the top-left cut points back at the pitch headline · form lives on white inside cobalt-800 · single primary button, cobalt fill</p>
 
-<style>
-  .component-tiles {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
-  }
-  .component-tile {
-    background: white;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-1);
-    text-decoration: none;
-    color: inherit;
-    transition: all 160ms ease;
-    display: flex; flex-direction: column;
-  }
-  .component-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
-  .component-tile .preview {
-    height: 280px;
-    overflow: hidden;
-    background: var(--c-cobalt-50);
-    border-bottom: 1px solid var(--c-cobalt-100);
-    position: relative;
-  }
-  .component-tile.span-2 .preview { height: 360px; }
-  .component-tile iframe {
-    width: 1440px;
-    height: 1000px;
-    border: none;
-    transform: scale(0.4);
-    transform-origin: 0 0;
-    pointer-events: none;
-  }
-  .component-tile.compact iframe {
-    width: 1200px;
-    height: 220px;
-    transform: scale(0.6);
-  }
-  .component-tile .meta { padding: var(--space-6) var(--space-7); }
-  .component-tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
-  .component-tile h3 { font-size: 22px; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
-  .component-tile p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; margin-top: 8px; }
-</style>
-
   <div class="section-label">Page-level components · standalone HTML files in <code>preview/components/</code></div>
 
   <div class="component-tiles">
@@ -1224,13 +1270,14 @@
     </a>
   </div>
 
-  <div style="max-width: 1280px; margin: var(--space-12) auto 0; padding: var(--space-7) var(--space-8); background: var(--c-cobalt-900); color: white; border-radius: var(--radius-lg); display: grid; grid-template-columns: 1fr auto; gap: var(--space-6); align-items: center;">
+  <div class="section-label">Beyond components · the diagram set</div>
+  <div class="diagrams-cta">
     <div>
-      <div style="font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-2);">Beyond components</div>
-      <h2 style="color: white; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: var(--space-3);">These atoms compose into diagrams.</h2>
-      <p style="color: var(--c-cobalt-100); font-size: 15px; line-height: 1.55; max-width: 60ch;">Hex prisms, platform overviews, pipelines, domain trees. Built as framework-agnostic web components so the same render path runs in plain HTML, Vue, React, Docusaurus, and Nextcloud apps. <code style="font-family: var(--conduction-typography-font-family-code); font-size: 13px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">&lt;cn-hex&gt;</code> is shipped; six more planned.</p>
+      <div class="eyebrow">Web component primitives</div>
+      <h2>These atoms compose into diagrams.</h2>
+      <p>Hex prisms, platform overviews, pipelines, domain trees. Built as framework-agnostic web components so the same render path runs in plain HTML, Vue, React, Docusaurus, and Nextcloud apps. <code>&lt;cn-hex&gt;</code> is shipped; six more planned.</p>
     </div>
-    <a href="diagrams/index.html" style="background: var(--c-orange-knvb); color: white; text-decoration: none; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; white-space: nowrap;">Diagram set &rarr;</a>
+    <a class="cta" href="diagrams/index.html">Diagram set &rarr;</a>
   </div>
 </div>
 

@@ -1,4 +1,23 @@
-/* Preview card chrome — used by all preview/*.html cards */
+/* ============================================================
+   Conduction Design System, kit chassis
+   ----------------------------------------------------------------
+   Three canonical chassis patterns, one shared style sheet.
+
+     CARD chassis   .card + .card-header + .card-eyebrow + .card-title
+                    Content / spec / docs pages. The default.
+
+     HUB chassis    .hero + .hub-grid + .tile
+                    Landing / index pages that grid into sub-pages.
+
+     CHROME chassis .chrome + .stage + .spark
+                    Print artefacts (paper at true scale + rationale).
+                    Defined in print/print.css, lifted into preview.css
+                    once .spark went global.
+
+   Plus shared atoms used by any chassis:
+     .section-label, .specimen, .api-block + .api, .crumb, .lead
+   ============================================================ */
+
 @import url("../tokens.css");
 @import url("../typography.css");
 
@@ -10,6 +29,9 @@ body {
   min-height: 100vh;
 }
 
+/* ============================================================
+   CARD chassis, content pages
+   ============================================================ */
 .card {
   background: var(--c-white);
   border-radius: var(--radius-xl);
@@ -44,6 +66,129 @@ body {
   max-width: 40ch;
 }
 
+/* ============================================================
+   HUB chassis, landing / index pages
+   ----------------------------------------------------------------
+   Body padding is reset to zero so the hero can run full-bleed
+   to the edges of the viewport. Hub pages set body { padding: 0; }
+   in their own style block to opt in.
+   ============================================================ */
+.hero {
+  background: var(--conduction-color-background-inverse);
+  color: white;
+  padding: 80px 64px 64px;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+.hero.lg { padding: 96px 64px 80px; }
+.hero .crumb {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-cobalt-200);
+  margin-bottom: var(--space-4);
+}
+.hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
+.hero .crumb a:hover { color: white; }
+.hero .eyebrow {
+  color: var(--c-cobalt-200);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+.hero h1 {
+  color: white;
+  font-size: 56px; font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.02em;
+  max-width: 18ch;
+}
+.hero.lg h1 {
+  font-size: 72px; max-width: 14ch;
+  letter-spacing: -0.025em;
+}
+.hero p {
+  color: var(--c-cobalt-100);
+  font-size: 18px;
+  margin-top: var(--space-5);
+  max-width: 64ch;
+  line-height: 1.5;
+}
+.hero.lg p { font-size: 20px; margin-top: var(--space-6); max-width: 60ch; }
+.hero .meta {
+  display: flex; gap: var(--space-8);
+  margin-top: var(--space-8);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; color: var(--c-cobalt-200);
+  flex-wrap: wrap;
+}
+.hero.lg .meta { margin-top: var(--space-10); }
+.hero .meta span strong {
+  display: block;
+  color: white;
+  font-family: var(--conduction-typography-font-family-body);
+  font-size: 15px; font-weight: 600;
+  margin-top: 4px;
+}
+.hero.lg .meta span strong { font-size: 16px; }
+
+.hub-grid {
+  max-width: 1280px;
+  margin: 64px auto;
+  padding: 0 var(--space-12);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+}
+
+.tile {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-1);
+  transition: all 160ms ease;
+  display: flex; flex-direction: column;
+  gap: var(--space-4);
+  border: 1px solid transparent;
+}
+.tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); border-color: var(--c-cobalt-200); }
+.tile.todo {
+  background: var(--c-cobalt-50);
+  border-style: dashed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.tile .row { display: flex; align-items: center; justify-content: space-between; }
+.tile .num {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px; letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+}
+.tile h3 {
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--c-blue-cobalt);
+}
+.tile p { color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5; }
+.tile .visual { height: 80px; display: flex; align-items: center; gap: var(--space-2); }
+.tile .arrow { color: var(--c-cobalt-400); font-size: 22px; transition: transform 160ms; }
+.tile:hover .arrow { color: var(--c-orange-knvb); transform: translateX(4px); }
+
+.hub-footer {
+  max-width: 1280px;
+  margin: 80px auto 64px;
+  padding: 0 var(--space-12);
+  color: var(--c-cobalt-400);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.hub-footer code { font-family: var(--conduction-typography-font-family-code); }
+.hub-footer a { color: var(--c-cobalt-400); }
+
+/* ============================================================
+   Shared atoms, used inside any chassis
+   ============================================================ */
 .section-label {
   font-family: var(--conduction-typography-font-family-code);
   font-size: var(--fs-xs);
@@ -54,6 +199,128 @@ body {
 }
 .section-label:first-child { margin-top: 0; }
 
-.token { font-family: var(--conduction-typography-font-family-code); font-size: var(--fs-xs); color: var(--c-cobalt-400); }
+/* Specimen, neutral demo container (cobalt-50 bg, centered content) */
+.specimen {
+  background: var(--c-cobalt-50);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--space-5);
+  min-height: 160px;
+  flex-wrap: wrap;
+}
+
+/* API table, used on component reference pages */
+.api-block {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.api-block + .api-block { margin-top: var(--space-5); }
+.api {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.api th {
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  font-weight: 500;
+  background: var(--c-cobalt-50);
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.api td {
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--c-cobalt-50);
+  vertical-align: top;
+  line-height: 1.5;
+  color: var(--c-cobalt-900);
+}
+.api code {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  background: var(--c-cobalt-50);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--c-cobalt-900);
+}
+
+/* Spark aside, "why we built it this way" rationale block */
+.spark {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-cobalt-100);
+  padding: var(--space-6);
+}
+.spark.sticky { position: sticky; top: var(--space-6); }
+.spark .label {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-orange-knvb);
+  margin-bottom: var(--space-2);
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.spark .label::before {
+  content: "";
+  width: 10px; height: 12px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb);
+  display: block;
+}
+.spark h2 {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.01em;
+}
+.spark p.lede {
+  color: var(--c-cobalt-700);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  margin-bottom: var(--space-4);
+}
+.spark ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+  gap: var(--space-3);
+}
+.spark li {
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--c-cobalt-900);
+  padding-left: var(--space-4);
+  position: relative;
+}
+.spark li::before {
+  content: "";
+  position: absolute; left: 0; top: 7px;
+  width: 8px; height: 9.2px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt);
+}
+.spark li strong { color: var(--c-cobalt-900); }
+.spark .footer-note {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-cobalt-100);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+.token {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: var(--fs-xs);
+  color: var(--c-cobalt-400);
+}
 
 .hex { clip-path: var(--hex-pointy-top); display: inline-block; }

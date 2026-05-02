@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chassis · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Three-up overview of the canonical chassis */
+  .chassis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  @media (max-width: 1100px) { .chassis-grid { grid-template-columns: 1fr; } }
+
+  .chassis-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .chassis-card .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-1);
+  }
+  .chassis-card h3 {
+    font-size: 22px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+  }
+  .chassis-card p {
+    font-size: 14px; line-height: 1.55;
+    color: var(--c-cobalt-700);
+  }
+  .chassis-card .preview {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--space-3) 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .chassis-card .preview .mock {
+    width: 80%;
+    background: white;
+    border-radius: 6px;
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+  }
+  .chassis-card .preview .mock-card { padding: 8px 12px; }
+  .chassis-card .preview .mock-card .head { height: 6px; width: 50%; background: var(--c-cobalt-100); border-radius: 2px; margin-bottom: 4px; }
+  .chassis-card .preview .mock-card .title { height: 10px; width: 70%; background: var(--c-blue-cobalt); border-radius: 2px; margin-bottom: 6px; }
+  .chassis-card .preview .mock-card .body { height: 4px; width: 90%; background: var(--c-cobalt-100); border-radius: 2px; margin-bottom: 3px; }
+  .chassis-card .preview .mock-card .body.short { width: 60%; }
+  .chassis-card .preview .mock-hub .hero {
+    background: var(--c-cobalt-900) !important;
+    border-radius: 0 !important;
+    padding: 6px 10px !important;
+  }
+  .chassis-card .preview .mock-hub .hero-title { height: 8px; width: 60%; background: white; border-radius: 2px; margin-bottom: 3px; }
+  .chassis-card .preview .mock-hub .hero-body { height: 3px; width: 80%; background: rgba(255,255,255,0.6); border-radius: 2px; }
+  .chassis-card .preview .mock-hub .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 6px; background: var(--c-cobalt-50); }
+  .chassis-card .preview .mock-hub .tiles span { height: 14px; background: white; border: 1px solid var(--c-cobalt-100); border-radius: 3px; }
+  .chassis-card .preview .mock-chrome .crumb { height: 4px; width: 30%; background: var(--c-cobalt-200); border-radius: 2px; margin: 6px 10px 4px; }
+  .chassis-card .preview .mock-chrome .h1 { height: 8px; width: 60%; background: var(--c-cobalt-900); border-radius: 2px; margin: 0 10px 8px; }
+  .chassis-card .preview .mock-chrome .stage { display: grid; grid-template-columns: 1fr 60px; gap: 4px; padding: 4px 10px; }
+  .chassis-card .preview .mock-chrome .paper { height: 50px; background: white; border: 1px solid var(--c-cobalt-100); border-radius: 2px; }
+  .chassis-card .preview .mock-chrome .spark { background: white; border: 1px solid var(--c-cobalt-100); border-radius: 2px; padding: 3px; display: flex; flex-direction: column; gap: 2px; }
+  .chassis-card .preview .mock-chrome .spark .row { height: 3px; background: var(--c-cobalt-100); border-radius: 1px; }
+  .chassis-card .preview .mock-chrome .spark .row.acc { background: var(--c-orange-knvb); width: 60%; }
+
+  .chassis-card pre {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    line-height: 1.5;
+    padding: var(--space-4);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    margin-top: auto;
+  }
+  .chassis-card pre .tag { color: #93B5E0; }
+  .chassis-card pre .attr { color: #F7C76F; }
+  .chassis-card pre .str { color: #5FE39A; }
+
+  /* Atom inventory list */
+  .atoms-list {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .atoms-list table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .atoms-list th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .atoms-list td {
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    line-height: 1.55;
+    color: var(--c-cobalt-900);
+  }
+  .atoms-list td code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--c-cobalt-900);
+  }
+
+  /* Page roster table */
+  .roster {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .roster table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .roster th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .roster td {
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    line-height: 1.55;
+    color: var(--c-cobalt-900);
+  }
+  .roster td code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+  }
+  .roster .pill {
+    display: inline-block;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+  .roster .pill.card   { background: var(--c-cobalt-100); color: var(--c-cobalt-700); }
+  .roster .pill.hub    { background: var(--c-cobalt-900); color: white; }
+  .roster .pill.chrome { background: var(--c-orange-knvb); color: white; }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">12 · Chassis</div>
+      <h1 class="card-title">Three chassis. One kit.</h1>
+    </div>
+    <p class="card-subtitle">Every page in the design system uses one of three canonical chassis patterns. Pick by role, never invent a new one. The shared atoms (.section-label, .specimen, .tile, .spark, .api-block) are built once in <code>preview.css</code> and used across all three.</p>
+  </div>
+
+  <div class="section-label">The three chassis · pick by role</div>
+  <div class="chassis-grid">
+
+    <!-- Card chassis -->
+    <div class="chassis-card">
+      <div class="label">Chassis A</div>
+      <h3>Card</h3>
+      <p>The default. Content, docs, spec pages, and component reference. One white card with a header (eyebrow + title + right-aligned subtitle), then section-labels and content blocks.</p>
+      <div class="preview">
+        <div class="mock mock-card">
+          <div class="head"></div>
+          <div class="title"></div>
+          <div class="body"></div>
+          <div class="body short"></div>
+          <div class="body"></div>
+        </div>
+      </div>
+      <pre><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"card"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"card-header"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"card-eyebrow"</span><span class="tag">&gt;</span>NN · …<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;h1</span> <span class="attr">class</span>=<span class="str">"card-title"</span><span class="tag">&gt;</span>Title<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"section-label"</span><span class="tag">&gt;</span>SECTION<span class="tag">&lt;/div&gt;</span>
+  …
+<span class="tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- Hub chassis -->
+    <div class="chassis-card">
+      <div class="label">Chassis B</div>
+      <h3>Hub</h3>
+      <p>Landing and index pages that grid into sub-pages. Cobalt-900 hero with crumb + h1 + lede + meta strip, then a hub-grid of tiles. Top-level <a href="index.html">index</a>, identity, pages, print/index, downloads, decks, diagrams.</p>
+      <div class="preview">
+        <div class="mock mock-hub">
+          <div class="hero">
+            <div class="hero-title"></div>
+            <div class="hero-body"></div>
+          </div>
+          <div class="tiles">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+      <pre><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"hero"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"crumb"</span><span class="tag">&gt;</span>… / …<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Title.<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;p&gt;</span>Lede…<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"hub-grid"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">class</span>=<span class="str">"tile"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/a&gt;</span>
+  …
+<span class="tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- Chrome chassis -->
+    <div class="chassis-card">
+      <div class="label">Chassis C</div>
+      <h3>Chrome</h3>
+      <p>Print artefacts. Lightweight chrome with crumb + h1 + lede, then a two-column stage (paper specimen on the left, "why we built it this way" spark aside on the right). Defined in <code>print/print.css</code>.</p>
+      <div class="preview">
+        <div class="mock mock-chrome">
+          <div class="crumb"></div>
+          <div class="h1"></div>
+          <div class="stage">
+            <div class="paper"></div>
+            <div class="spark">
+              <div class="row"></div>
+              <div class="row"></div>
+              <div class="row acc"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pre><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"chrome"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"crumb"</span><span class="tag">&gt;</span>… / …<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Artefact<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"stage"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"paper"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;aside</span> <span class="attr">class</span>=<span class="str">"spark"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/aside&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+    </div>
+
+  </div>
+
+  <div class="section-label">Shared atoms · used inside any chassis</div>
+  <div class="atoms-list">
+    <table>
+      <thead><tr><th>Class</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>.card-header</code> / <code>.card-eyebrow</code> / <code>.card-title</code> / <code>.card-subtitle</code></td><td>Page header pattern for the card chassis. Eyebrow on the left + right-aligned subtitle in a flex row.</td></tr>
+        <tr><td><code>.section-label</code></td><td>Uppercase code-font block header. Marks every content section inside any chassis.</td></tr>
+        <tr><td><code>.tile</code></td><td>White card grid item used by every hub. Adds <code>.todo</code> for greyed/dashed planned state.</td></tr>
+        <tr><td><code>.specimen</code></td><td>Neutral cobalt-50 demo container for live element samples. Used on type, color, components, diagrams reference pages.</td></tr>
+        <tr><td><code>.api-block</code> / <code>.api</code></td><td>API table for component reference pages. Cobalt-50 header row, sentence-case body cells.</td></tr>
+        <tr><td><code>.spark</code></td><td>"Why we built it this way" rationale aside. Add <code>.sticky</code> when used inside a 2-column stage.</td></tr>
+        <tr><td><code>.diagrams-cta</code></td><td>Cobalt-900 panel with eyebrow + h2 + lede + orange button. Used on components.html to link out to diagrams.</td></tr>
+        <tr><td><code>.hub-footer</code></td><td>Bottom-of-hub link strip with breadcrumb-style nav back to parent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Page roster · which page uses which chassis</div>
+  <div class="roster">
+    <table>
+      <thead><tr><th>Chassis</th><th>Pages</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="pill card">Card</span></td>
+          <td>
+            <code><a href="apps.html">apps</a></code> ·
+            <code><a href="brand.html">brand</a></code> ·
+            <code><a href="colors.html">colors</a></code> ·
+            <code><a href="components.html">components</a></code> ·
+            <code><a href="spacing.html">spacing</a></code> ·
+            <code><a href="type.html">type</a></code> ·
+            <code><a href="conduction-bg.html">conduction-bg</a></code> ·
+            <code><a href="cookie-cli.html">cookie-cli</a></code> ·
+            <code><a href="cut-corners.html">cut-corners</a></code> ·
+            <code><a href="hex-prism.html">hex-prism</a></code> ·
+            <code><a href="side-box.html">side-box</a></code> ·
+            <code><a href="diagrams/index.html">diagrams</a></code> ·
+            <code><a href="diagrams/cn-hex.html">diagrams/cn-hex</a></code> ·
+            <code><a href="identity/audience.html">identity/audience</a></code> ·
+            <code><a href="identity/foundation.html">identity/foundation</a></code> ·
+            <code><a href="identity/products.html">identity/products</a></code> ·
+            <code><a href="identity/slogans.html">identity/slogans</a></code> ·
+            <code><a href="identity/system.html">identity/system</a></code> ·
+            <code><a href="identity/voice.html">identity/voice</a></code> ·
+            <code><a href="identity/websites.html">identity/websites</a></code>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="pill hub">Hub</span></td>
+          <td>
+            <code><a href="index.html">index</a></code> ·
+            <code><a href="identity/index.html">identity</a></code> ·
+            <code><a href="pages.html">pages</a></code> ·
+            <code><a href="print/index.html">print</a></code> ·
+            <code><a href="downloads/index.html">downloads</a></code> ·
+            <code><a href="decks/index.html">decks</a></code>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="pill chrome">Chrome</span></td>
+          <td>Every page in <code>print/</code> (business-cards, letterhead, envelope, invoice, quotation, report, app-factsheet, one-pager, banner, plus the email artefacts) and <code>decks/template.html</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Why three, not one</div>
+  <div class="atoms-list" style="border: none; background: transparent;">
+    <p style="padding: 0; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.6; max-width: 76ch;">A single chassis would force compromises. The card pattern reads as documentation, with breathing room and a printed-spec feel. The hub pattern is built for visual punch, dark hero, sub-page tiles, almost a landing page in miniature. The chrome pattern is meant to disappear at print time, leaving only the paper. Each chassis is the right tool for its job. Mixing them inside a single page is what made the kit feel inconsistent before this normalisation.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

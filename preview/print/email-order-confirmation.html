@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Email · order confirmation · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+  .email-shell { background: white; border-radius: var(--radius-md); padding: var(--space-6); border: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); margin-bottom: var(--space-4); }
+  .email-shell .meta-row { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); margin-bottom: var(--space-3); display: flex; gap: var(--space-6); flex-wrap: wrap; }
+  .email-shell .meta-row strong { color: var(--c-cobalt-900); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Emails &nbsp;/&nbsp; Email &middot; order confirmation</div>
+  <h1>Email &middot; order confirmation</h1>
+  <p class="lead">Bevestiging-email na een getekende offerte. "Wat je krijgt" lead-in zoals email-quotation, maar nu in vol-tekst, drie hex-bullet deliverables, kick-off-datum prominent, aanspreekpunten onderaan. Mint-groene header want dit is "go".</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="email-shell">
+      <div class="meta-row">
+        <span><strong>Subject</strong> Bevestigd: {{ OPDRACHT_TITEL }} &middot; kick-off {{ KICKOFF_DATUM }}</span>
+        <span><strong>From</strong> {{ AFZENDER_EMAIL }}</span>
+        <span><strong>To</strong> {{ KLANT_EMAIL }}</span>
+      </div>
+
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" width="600" style="border-collapse:collapse; font-family: 'Figtree', Helvetica, Arial, sans-serif; color: #0A172F; max-width: 600px; width: 100%; background: #FFFFFF;">
+
+        <tr>
+          <td style="background: #2E9866; padding: 22px 28px; color: #FFFFFF;">
+            <div style="font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85;">Bevestigd &middot; OB-{{ JAAR }}-{{ NUMMER }}</div>
+            <div style="font-size: 22px; font-weight: 700; margin-top: 4px; letter-spacing: -0.01em;">We zijn aan de slag, {{ CONTACT_VOORNAAM }}.</div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 24px 28px;">
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55;">Je hebt offerte <strong>{{ OFFERTE_NR }}</strong> getekend. Ik bevestig de afspraken hieronder, zodat ze op één plek staan voor allebei.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 0 28px 12px;">
+            <div style="font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #4D69A4; margin-bottom: 8px;">Wat we leveren</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="padding-left: 20px; position: relative; margin-bottom: 8px; font-size: 14px; line-height: 1.5;">
+                <span style="position: absolute; left: 0; top: 6px; width: 8px; height: 9.2px; background: #2E9866; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                <strong>{{ DELIVERABLE_1 }}.</strong> Eén regel per ding, lezer in onderwerp.
+              </li>
+              <li style="padding-left: 20px; position: relative; margin-bottom: 8px; font-size: 14px; line-height: 1.5;">
+                <span style="position: absolute; left: 0; top: 6px; width: 8px; height: 9.2px; background: #2E9866; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                <strong>{{ DELIVERABLE_2 }}.</strong> Concreet werkwoord-vorig.
+              </li>
+              <li style="padding-left: 20px; position: relative; margin-bottom: 8px; font-size: 14px; line-height: 1.5;">
+                <span style="position: absolute; left: 0; top: 6px; width: 8px; height: 9.2px; background: #2E9866; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                <strong>{{ DELIVERABLE_3 }}.</strong> Optioneel; verwijder als niet van toepassing.
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 12px 28px;">
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation" width="100%" style="background: #EEF2F8;">
+              <tr>
+                <td style="padding: 12px 16px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px;">
+                  <div style="color: #4D69A4; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Kick-off</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">{{ KICKOFF_DATUM }}</div>
+                </td>
+                <td style="padding: 12px 16px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px;">
+                  <div style="color: #4D69A4; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Eindoplevering</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">{{ EINDDATUM }}</div>
+                </td>
+                <td style="padding: 12px 16px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px;">
+                  <div style="color: #4D69A4; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Bedrag</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">€ {{ BEDRAG }}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 12px 28px 24px;">
+            <a href="{{ KICKOFF_LINK }}" style="display: inline-block; background: #21468B; color: #FFFFFF; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 15px;">Kick-off in mijn agenda &rarr;</a>
+            <p style="margin: 12px 0 0; font-size: 13px; color: #152D5C;">De volledige opdrachtbevestiging zit als PDF bij deze mail. Bewaar hem; we gebruiken hem als werkdocument.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 0 28px 28px; border-top: 1px solid #DCE3F0;">
+            <p style="margin: 16px 0 8px; font-size: 14px; color: #152D5C;">Vragen of moet er iets aangepast voor we starten? Bel of mail mij direct.</p>
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top: 10px;">
+              <tr>
+                <td style="padding-right: 12px;">
+                  <span style="display: inline-block; width: 36px; height: 42px; background: #21468B; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                </td>
+                <td>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">{{ AFZENDER_NAAM }}</div>
+                  <div style="font-size: 12px; color: #4D69A4;">{{ AFZENDER_ROL }} &middot; Conduction</div>
+                  <div style="font-size: 12px; font-family: 'IBM Plex Mono', Menlo, monospace; color: #152D5C; margin-top: 2px;">{{ AFZENDER_TEL }} &middot; {{ AFZENDER_EMAIL }}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="background: #0A172F; padding: 14px 28px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 10px; color: #B6C2DD; letter-spacing: 0.04em;">
+            Conduction B.V. &middot; KvK 76741850 &middot; BTW NL860784241B01 &middot; Lauriergracht 14h, 1016 RR Amsterdam
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div class="specimen-label">Email &middot; order confirmation &middot; mint-groene header signaleert "go"</div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>Bevestiging klinkt anders dan factuur of aanmaning</h2>
+    <p class="lede">Mint-groene header en mint-bullet hexes signaleren "we zijn er, het loopt". Anders dan email-invoice (cobalt) of email-reminder (oranje). Klant herkent in één blik welke fase deze mail is.</p>
+    <ul>
+      <li><strong>Mint-groen, geen cobalt.</strong> Cobalt is brand-default; mint is "go / bevestigd / stable". Past bij de status-badge convention uit components.html.</li>
+      <li><strong>Drie deliverables, geen volledige scope-list.</strong> De PDF is volledig; de email is samenvatting. Lezer scant en weet "ja dat klopt".</li>
+      <li><strong>Datums + bedrag in één strip.</strong> Kick-off / einde / bedrag. Wat de klant het meest wil weten zit op één regel.</li>
+      <li><strong>Kick-off-knop in agenda, geen "klik hier".</strong> Concrete actie die direct iets in de wereld doet (calendar-event aanmaken).</li>
+      <li><strong>Persoon onderaan, mens-naar-mens.</strong> Geen "team@" of noreply. De buyer reply't naar een mens.</li>
+    </ul>
+    <div class="footer-note">600px width &middot; Outlook + Gmail safe &middot; chassis sibling van email-invoice + email-quotation &middot; mint-green follows the status-badge convention &middot; PDF attachment is order-confirmation.html (printed)</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="email-invoice.html">email-invoice</a> chassis &middot;
+        <a href="order-confirmation.html">order-confirmation</a> as the attached PDF &middot;
+        <a href="quotation.html">quotation</a> as the upstream document &middot;
+        <code>--c-mint-500</code> for the "go" header &middot;
+        MKB-direct copy from <a href="../identity/voice.html">voice</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../include.js"></script>
+</body>
+</html>

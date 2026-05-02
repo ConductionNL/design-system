@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Email · reminder · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+  .email-shell { background: white; border-radius: var(--radius-md); padding: var(--space-6); border: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); margin-bottom: var(--space-4); }
+  .email-shell .meta-row { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); margin-bottom: var(--space-3); display: flex; gap: var(--space-6); flex-wrap: wrap; }
+  .email-shell .meta-row strong { color: var(--c-cobalt-900); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Emails &nbsp;/&nbsp; Email &middot; reminder</div>
+  <h1>Email &middot; reminder</h1>
+  <p class="lead">Vriendelijke herinnering-email bij een overdue invoice. Drie escalatie-niveaus die overeenkomen met de paper-reminder. Eén-knop CTA, IBAN-link onder, persoon onderaan. Outlook + Gmail safe table-layout.</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="email-shell">
+      <div class="meta-row">
+        <span><strong>Subject</strong> Herinnering: factuur {{ INVOICE_NR }} &middot; niveau {{ NIVEAU }}</span>
+        <span><strong>From</strong> {{ AFZENDER_EMAIL }}</span>
+        <span><strong>To</strong> {{ KLANT_EMAIL }}</span>
+      </div>
+
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" width="600" style="border-collapse:collapse; font-family: 'Figtree', Helvetica, Arial, sans-serif; color: #0A172F; max-width: 600px; width: 100%; background: #FFFFFF;">
+
+        <tr>
+          <td style="background: #F36C21; padding: 22px 28px; color: #FFFFFF;">
+            <div style="font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8;">Niveau {{ NIVEAU }} &middot; herinnering</div>
+            <div style="font-size: 22px; font-weight: 700; margin-top: 4px; letter-spacing: -0.01em;">Factuur {{ INVOICE_NR }} staat nog open</div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 24px 28px;">
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55;">Beste {{ CONTACT_VOORNAAM }},</p>
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55;">Niveau {{ NIVEAU }} kort: factuur <strong>{{ INVOICE_NR }}</strong> van € {{ BEDRAG }} verviel op {{ VERVALDATUM }}. Niveau 1 is "misschien gemist", niveau 2 is "deze week graag", niveau 3 is "binnen 7 dagen of we geven uit handen".</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 0 28px 12px;">
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation" width="100%" style="background: #EEF2F8; border-left: 3px solid #F36C21;">
+              <tr>
+                <td style="padding: 14px 18px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px;">
+                  <div style="color: #4D69A4; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Bedrag</div>
+                  <div style="font-size: 18px; font-weight: 700; color: #0A172F;">€ {{ BEDRAG }}</div>
+                </td>
+                <td style="padding: 14px 18px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px;">
+                  <div style="color: #4D69A4; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Vervaldatum</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">{{ VERVALDATUM }}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 12px 28px 24px;">
+            <a href="{{ BETAAL_LINK }}" style="display: inline-block; background: #21468B; color: #FFFFFF; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 15px;">Betaal online &rarr;</a>
+            <p style="margin: 12px 0 0; font-size: 13px; color: #152D5C;">Of maak het bedrag over op IBAN <strong>{{ IBAN }}</strong> tnv Conduction B.V. onder vermelding van <code style="font-family: 'IBM Plex Mono', monospace;">{{ INVOICE_NR }}</code>.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding: 0 28px 28px; border-top: 1px solid #DCE3F0;">
+            <p style="margin: 16px 0 8px; font-size: 14px; color: #152D5C;">Klopt iets niet, of is er een blokkade die we kunnen oplossen? Bel of mail mij direct.</p>
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top: 10px;">
+              <tr>
+                <td style="padding-right: 12px;">
+                  <span style="display: inline-block; width: 36px; height: 42px; background: #21468B; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                </td>
+                <td>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A172F;">{{ AFZENDER_NAAM }}</div>
+                  <div style="font-size: 12px; color: #4D69A4;">{{ AFZENDER_ROL }} &middot; Conduction</div>
+                  <div style="font-size: 12px; font-family: 'IBM Plex Mono', Menlo, monospace; color: #152D5C; margin-top: 2px;">{{ AFZENDER_TEL }} &middot; {{ AFZENDER_EMAIL }}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="background: #0A172F; padding: 14px 28px; font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 10px; color: #B6C2DD; letter-spacing: 0.04em;">
+            Conduction B.V. &middot; KvK 76741850 &middot; BTW NL860784241B01 &middot; Lauriergracht 14h, 1016 RR Amsterdam
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div class="specimen-label">Email &middot; reminder &middot; orange header signals niveau-{{ NIVEAU }}</div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>Eén template, drie tonen, oranje als consistente tell</h2>
+    <p class="lede">Net als de paper-reminder: één layout, drie tonen. Oranje header is "actie nodig"; de niveau-pill in de filepath geeft 1 / 2 / 3 aan. Eén CTA-knop, één IBAN-fallback, één mens onderaan.</p>
+    <ul>
+      <li><strong>Oranje header, geen rode.</strong> Rood is voor errors en destructive; oranje is voor "actie nodig". Past bij de eerste-niveau-toon ook al gaat het over geld.</li>
+      <li><strong>Bedrag-blok in eigen panel.</strong> Cobalt-50 met oranje linkerrand. Zelfde pattern als de paper-reminder; de buyer ziet "ja dit is dezelfde aanmaning" als ze beide ontvangen.</li>
+      <li><strong>Eén knop, één link, één persoon.</strong> "Betaal online" + IBAN-fallback + naam-met-telefoonnummer. Drie wegen, geen menu van zes.</li>
+      <li><strong>Persoon-signature, geen noreply.</strong> Reply naar een mens, niet naar een ticket-systeem.</li>
+      <li><strong>Cobalt-900 footer met KvK + BTW.</strong> Juridische volledigheid zonder de body te belasten.</li>
+    </ul>
+    <div class="footer-note">600px width &middot; Outlook + Gmail safe table-layout &middot; clip-path-rendered hex avatar degrades to a square in legacy Outlook (acceptable fallback) &middot; chassis sibling van email-invoice</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="email-invoice.html">email-invoice</a> chassis &middot;
+        <a href="reminder.html">reminder</a> as the paper sibling &middot;
+        <a href="invoice.html">invoice</a> as the source document &middot;
+        <code>--c-orange-knvb</code> for "actie nodig" &middot;
+        MKB-direct copy from <a href="../identity/voice.html">voice</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../include.js"></script>
+</body>
+</html>

@@ -183,13 +183,14 @@
   }
   .callout a { color: var(--c-orange-knvb); }
 
-  /* ---- Three setup steps ---- */
+  /* ---- Four setup steps ---- */
   .steps {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: var(--space-5);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
   }
-  @media (max-width: 1100px) { .steps { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px)  { .steps { grid-template-columns: 1fr; } }
   .step {
     background: white;
     border: 1px solid var(--c-cobalt-100);
@@ -391,6 +392,62 @@
   </div>
 
   <!-- ============================================================
+       Multi-language · Docusaurus i18n
+       ============================================================ -->
+  <div class="section-label">Meertalig &middot; nl, en, de, fr</div>
+
+  <div class="setup-grid">
+
+    <div class="stack-card static">
+      <div class="stack-label">Configuratie</div>
+      <h3>Vier talen, één build</h3>
+      <p>Docusaurus 3 ondersteunt meertaligheid native. Eén build genereert alle vier de talen in dezelfde <code>build/</code>-output. Nederlands is default en woont op de root; de overige talen krijgen een sub-pad: <code>/en/</code>, <code>/de/</code>, <code>/fr/</code>. Marketingtekst en docs zijn dus altijd in vier talen beschikbaar zonder aparte deploys.</p>
+      <ul>
+        <li><strong>defaultLocale: 'nl'</strong>. Nederlands op <code>/</code>, schoonste URL, matcht "we leiden in NL".</li>
+        <li><strong>localeConfigs</strong> per taal: htmlLang, label voor de switcher, richting (allemaal ltr).</li>
+        <li><strong>trailingSlash: true</strong>. Expliciet zetten, anders breekt hreflang op GitHub Pages.</li>
+        <li><strong>localeDropdown</strong> in de navbar. Eén regel toevoegen aan <code>themeConfig.navbar.items</code>.</li>
+        <li><strong>hreflang</strong> komt automatisch. Docusaurus emitteert <code>&lt;link rel="alternate"&gt;</code> per taal, op elke pagina, zonder config.</li>
+      </ul>
+    </div>
+
+    <div class="stack-card static">
+      <div class="stack-label">Vertaalproces</div>
+      <h3>Eerst NL, dan de rest</h3>
+      <p>Vertalingen leven in <code>i18n/&lt;locale&gt;/</code> per site. Markdown-bestanden komen in <code>i18n/de/docusaurus-plugin-content-docs/current/</code>; UI-strings in <code>code.json</code>. Ontbreekt een vertaling, dan valt Docusaurus terug op de defaultLocale. Pagina's blijven dus altijd vindbaar; de fallback is geen 404.</p>
+      <ul>
+        <li><strong>npm run write-translations -- --locale fr</strong>. Genereert JSON met alle navbar-, sidebar- en theme-strings die nog vertaald moeten worden.</li>
+        <li><strong>Crowdin of git</strong>. Beide werken. Crowdin voor team-vertalers (eigen UI), git voor developer-vertalers (PR's).</li>
+        <li><strong>Beslis vooraf</strong>. Migreren van git naar Crowdin halverwege betekent alle keys opnieuw matchen.</li>
+        <li><strong>Tracking-discipline</strong>. Niet leunen op de fallback; voeg <code>npm run write-translations</code> aan een CI-check toe zodat ontbrekende keys PR's breken, niet productie.</li>
+        <li><strong>Build-tijd</strong>. Schaalt lineair, ~3 tot 4 keer een single-locale build. Op GitHub Actions blijven we ruim binnen de gratis minuten.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p style="font-size: 14px; color: var(--c-cobalt-700); margin-top: var(--space-5); line-height: 1.55; max-width: 76ch;">
+    Configuratie hoort thuis in <code style="font-family: var(--conduction-typography-font-family-code); font-size: 12px; background: var(--c-cobalt-50); padding: 1px 6px; border-radius: 3px; color: var(--c-cobalt-900);">@conduction/docusaurus-preset</code>. Eén i18n-blok daar, alle vijf à zes sites blijven in lockstep. Sjabloon-instellingen voor het preset:
+  </p>
+
+  <pre style="background: var(--c-cobalt-900); color: var(--c-cobalt-100); border-radius: var(--radius-md); padding: var(--space-5); font-family: var(--conduction-typography-font-family-code); font-size: 12px; line-height: 1.6; overflow-x: auto; margin: var(--space-3) 0 0;"><span style="color: #5F6E86;">// docusaurus.config.js</span>
+i18n: {
+  defaultLocale: <span style="color: #5FE39A;">'nl'</span>,
+  locales: [<span style="color: #5FE39A;">'nl'</span>, <span style="color: #5FE39A;">'en'</span>, <span style="color: #5FE39A;">'de'</span>, <span style="color: #5FE39A;">'fr'</span>],
+  localeConfigs: {
+    nl: { label: <span style="color: #5FE39A;">'Nederlands'</span>, htmlLang: <span style="color: #5FE39A;">'nl-NL'</span> },
+    en: { label: <span style="color: #5FE39A;">'English'</span>,    htmlLang: <span style="color: #5FE39A;">'en-GB'</span> },
+    de: { label: <span style="color: #5FE39A;">'Deutsch'</span>,    htmlLang: <span style="color: #5FE39A;">'de-DE'</span> },
+    fr: { label: <span style="color: #5FE39A;">'Français'</span>,   htmlLang: <span style="color: #5FE39A;">'fr-FR'</span> },
+  },
+},
+trailingSlash: <span style="color: #F7C76F;">true</span>,</pre>
+
+  <p style="font-size: 13px; color: var(--c-cobalt-400); margin-top: var(--space-3); font-family: var(--conduction-typography-font-family-code);">
+    Bron: <a href="https://docusaurus.io/docs/i18n/introduction" style="color: var(--c-cobalt-700);">Docusaurus i18n introduction</a> &middot; <a href="https://docusaurus.io/docs/i18n/tutorial" style="color: var(--c-cobalt-700);">i18n tutorial</a>
+  </p>
+
+  <!-- ============================================================
        The constraint callout
        ============================================================ -->
   <div class="section-label">Waarom de splitsing zo is</div>
@@ -406,26 +463,32 @@
   <!-- ============================================================
        Setup steps
        ============================================================ -->
-  <div class="section-label">Een nieuw subdomein opzetten · drie stappen</div>
+  <div class="section-label">Een nieuw subdomein opzetten · vier stappen</div>
 
   <div class="steps">
 
     <div class="step">
       <div class="num">Stap 01</div>
       <h4>Repo + CNAME</h4>
-      <p>Maak een nieuwe repo onder <code>ConductionNL/</code>. Scaffold een Docusaurus-site met <code>npx create-docusaurus@latest</code>. Voeg <code>static/CNAME</code> toe met daarin je subdomein-naam: <code>nieuw.conduction.nl</code>.</p>
+      <p>Maak een nieuwe repo onder <code>ConductionNL/</code>. Scaffold een Docusaurus-site met <code>npx create-docusaurus@latest</code>. Voeg <code>static/CNAME</code> toe met je subdomein: <code>nieuw.conduction.nl</code>.</p>
     </div>
 
     <div class="step">
       <div class="num">Stap 02</div>
       <h4>Preset + DNS</h4>
-      <p>Installeer <code>@conduction/docusaurus-preset</code> en zet hem in <code>docusaurus.config.js</code>. Brand, kleuren, typografie en navbar werken meteen. Voeg het A-record toe op de DNS van conduction.nl, naar de GitHub Pages-IP's.</p>
+      <p>Installeer <code>@conduction/docusaurus-preset</code> en zet hem in <code>docusaurus.config.js</code>. Brand, kleuren en typografie werken meteen. Voeg het A-record toe op de DNS, naar de GitHub Pages-IP's.</p>
     </div>
 
     <div class="step">
       <div class="num">Stap 03</div>
+      <h4>i18n + content</h4>
+      <p>Het preset levert het i18n-blok mee (nl/en/de/fr). Vertaal eerst NL, daarna de rest in <code>i18n/&lt;locale&gt;/</code>. Run <code>npm run write-translations -- --locale &lt;x&gt;</code> om UI-strings te genereren.</p>
+    </div>
+
+    <div class="step">
+      <div class="num">Stap 04</div>
       <h4>Workflow + verify</h4>
-      <p>Voeg de standaard <code>.github/workflows/deploy.yml</code> toe (publiceert naar <code>gh-pages</code>). Zet GitHub Pages in repo-settings op die branch. Apex-domein <code>conduction.nl</code> is al eenmalig geverifieerd op org-niveau, dus DNS-checks werken meteen.</p>
+      <p>Voeg <code>.github/workflows/deploy.yml</code> toe (publiceert naar <code>gh-pages</code>). Zet GitHub Pages in repo-settings op die branch. Apex-domein is al geverifieerd op org-niveau; DNS-checks werken meteen.</p>
     </div>
 
   </div>

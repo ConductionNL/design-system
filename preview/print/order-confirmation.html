@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Order confirmation · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  .letter { padding: 22mm 22mm 24mm; display: flex; flex-direction: column; min-height: var(--paper-a4-h); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); font-size: 10.5pt; line-height: 1.5; }
+  .filepath { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.06em; color: var(--c-cobalt-400); border-bottom: 0.3mm solid var(--c-cobalt-100); padding-bottom: 1.5mm; margin-bottom: 6mm; }
+  .filepath .nx { color: var(--c-cobalt-700); }
+  .filepath .accent { color: var(--c-mint-500); }
+
+  .meta-strip { display: grid; grid-template-columns: 1fr auto; gap: 6mm; font-size: 8pt; color: var(--c-cobalt-700); margin-bottom: 8mm; }
+  .meta-strip .right { font-family: var(--conduction-typography-font-family-code); color: var(--c-cobalt-400); text-align: right; line-height: 1.6; }
+  .meta-strip .right b { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; }
+
+  .subject { font-size: 13pt; font-weight: 700; color: var(--c-blue-cobalt); margin-bottom: 6mm; letter-spacing: -0.01em; }
+  .subject .badge {
+    display: inline-block; vertical-align: 2px;
+    background: var(--c-mint-500); color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 1mm 3mm; border-radius: 999px;
+    margin-right: 3mm;
+    font-weight: 500;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin-bottom: 6mm; }
+  .grid-2 .h { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 1.5mm; }
+  .grid-2 .v { font-size: 9.5pt; line-height: 1.45; }
+
+  .scope { background: var(--c-cobalt-50); padding: 4mm 5mm; border-radius: 1mm; margin-bottom: 6mm; }
+  .scope .h { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin-bottom: 2mm; }
+  .scope ul { padding-left: 0; margin: 0; list-style: none; display: flex; flex-direction: column; gap: 1.5mm; }
+  .scope li { padding-left: 5mm; position: relative; font-size: 9.5pt; line-height: 1.45; }
+  .scope li::before { content: ''; position: absolute; left: 0; top: 1.5mm; width: 1.4mm; height: 1.6mm; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
+
+  .schedule { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-bottom: 6mm; }
+  .schedule .col { background: white; border: 0.3mm solid var(--c-cobalt-100); padding: 3mm 4mm; border-radius: 1mm; }
+  .schedule .col .num { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.08em; color: var(--c-cobalt-400); }
+  .schedule .col .when { font-size: 12pt; font-weight: 700; color: var(--c-blue-cobalt); margin: 1mm 0; }
+  .schedule .col .what { font-size: 8.5pt; color: var(--c-cobalt-700); line-height: 1.4; }
+
+  .body p { margin: 0 0 4mm; max-width: 100mm; }
+  .sign-off { margin-top: auto; padding-top: 8mm; }
+  .sign-off .who { font-weight: 600; }
+  .sign-off .role { font-size: 9pt; color: var(--c-cobalt-700); }
+
+  .footer-strip { border-top: 0.3mm solid var(--c-cobalt-100); margin-top: 8mm; padding-top: 4mm; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; font-family: var(--conduction-typography-font-family-code); font-size: 7pt; color: var(--c-cobalt-400); letter-spacing: 0.04em; }
+  .footer-strip b { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; display: block; margin-bottom: 1mm; }
+
+  @media print { @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Letters &nbsp;/&nbsp; Order confirmation</div>
+  <h1>Order confirmation &middot; opdrachtbevestiging</h1>
+  <p class="lead">Bevestiging na een getekende offerte. Wat we leveren, wanneer, voor welk bedrag, en wie de aanspreekpunten zijn. Geen factuur en geen contract; dit is het werkdocument waar de klant naar terug-grijpt als ze willen weten "wat hadden we ook alweer afgesproken".</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="paper paper--A4">
+      <div class="letter">
+
+        <div class="filepath">
+          conduction.nl &middot; <span class="nx">brieven</span> &middot; order-confirmation &middot; <span class="accent">{{ KENMERK }}</span>
+        </div>
+
+        <div class="meta-strip">
+          <div>{{ STAD }}, {{ DATUM }}</div>
+          <div class="right">
+            Bevestiging<b>OB-{{ JAAR }}-{{ NUMMER }}</b>
+            Refereert offerte<b>{{ OFFERTE_NR }}</b>
+          </div>
+        </div>
+
+        <div class="subject">
+          <span class="badge">Bevestigd</span>
+          {{ OPDRACHT_TITEL }}
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="h">Opdrachtgever</div>
+            <div class="v"><strong>{{ KLANT_NAAM }}</strong><br>{{ CONTACT_NAAM }}<br>{{ CONTACT_EMAIL }}</div>
+          </div>
+          <div>
+            <div class="h">Conduction</div>
+            <div class="v"><strong>{{ AFZENDER_NAAM }}</strong><br>{{ AFZENDER_ROL }}<br>{{ AFZENDER_EMAIL }}</div>
+          </div>
+        </div>
+
+        <div class="scope">
+          <div class="h">Wat we gaan leveren</div>
+          <ul>
+            <li>{{ DELIVERABLE_1 }}. Eén regel per ding, lezer in onderwerp.</li>
+            <li>{{ DELIVERABLE_2 }}. Concreet, geen "ondersteunen bij".</li>
+            <li>{{ DELIVERABLE_3 }}. Optioneel; verwijder als niet van toepassing.</li>
+          </ul>
+        </div>
+
+        <div class="schedule">
+          <div class="col">
+            <div class="num">Stap 01</div>
+            <div class="when">{{ KICKOFF_DATUM }}</div>
+            <div class="what">Kick-off &middot; werkomgeving + toegang</div>
+          </div>
+          <div class="col">
+            <div class="num">Stap 02</div>
+            <div class="when">{{ MIDDEN_DATUM }}</div>
+            <div class="what">Tussenoplevering &middot; review met de klant</div>
+          </div>
+          <div class="col">
+            <div class="num">Stap 03</div>
+            <div class="when">{{ EINDDATUM }}</div>
+            <div class="what">Definitieve oplevering &middot; transitie naar beheer</div>
+          </div>
+        </div>
+
+        <div class="body">
+          <p>Bedrag conform offerte {{ OFFERTE_NR }}: <strong>€ {{ BEDRAG }} excl. btw</strong>. Facturatie {{ BETAALSCHEMA }}.</p>
+
+          <p>{{ EXTRA_AFSPRAAK }}. Optionele alinea voor specifieke voorwaarden, planning-randvoorwaarden, of leveranciers van derden.</p>
+
+          <p>Heb je vragen of wil je iets aanpassen? Bel of mail {{ AFZENDER_VOORNAAM }} direct, geen formulier nodig.</p>
+
+          <p>Met vriendelijke groet,</p>
+        </div>
+
+        <div class="sign-off">
+          <div class="who">{{ AFZENDER_NAAM }}</div>
+          <div class="role">{{ AFZENDER_ROL }} &middot; Conduction</div>
+        </div>
+
+        <div class="footer-strip">
+          <div><b>Conduction B.V.</b>Lauriergracht 14h<br>1016 RR Amsterdam</div>
+          <div><b>Contact</b>+31 85 303 6840<br>info@conduction.nl</div>
+          <div><b>Registratie</b>KvK 76741850<br>BTW NL860784241B01</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="specimen-label">Order confirmation &middot; sjabloon, NL canoniek</div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>Niet de offerte, niet de factuur, het werkdocument</h2>
+    <p class="lede">De offerte is de aanbieding, de factuur is het juridische bewijs. De order confirmation is wat de klant openhoudt op het tweede scherm tijdens de uitvoering: "wat hadden we ook alweer afgesproken".</p>
+    <ul>
+      <li><strong>Eén pagina, drie blokken.</strong> Wie + wie, wat we leveren, wanneer. Geen vier-pagina inkoopdocument; één scrollloze pagina.</li>
+      <li><strong>Mint-groene accent, niet oranje.</strong> Bevestiging is "go", niet "let op". Mint markeert het bevestigde scope-blok en de "Bevestigd"-pill bij het onderwerp.</li>
+      <li><strong>Drie planning-stappen, geen Gantt.</strong> Kick-off / tussen / einde. MKB-buyers willen geen project-management-software-export.</li>
+      <li><strong>Refereert naar offerte, dupliceert geen prijzen.</strong> Bedrag wordt genoemd; line-items niet. Eén bron van waarheid voor scope.</li>
+      <li><strong>Persoon onderaan, telefoonnummer in footer.</strong> Een mens, geen support-portal-URL.</li>
+    </ul>
+    <div class="footer-note">A4 &middot; NL canonical &middot; --bleed 0 &middot; sits between quotation (offerte) and invoice (factuur) in de werkstroom &middot; placeholders use {{ }}</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="letterhead.html">letterhead</a> chassis &middot;
+        <a href="quotation.html">quotation</a> as the upstream document &middot;
+        <a href="invoice.html">invoice</a> as the downstream document &middot;
+        <a href="email-order-confirmation.html">email-order-confirmation</a> as the deliverable wrapper &middot;
+        <code>--c-mint-500</code> for the "go" accent &middot;
+        <code>.paper--A4</code>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../include.js"></script>
+</body>
+</html>

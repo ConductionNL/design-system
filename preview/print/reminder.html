@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Reminder · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  .letter { padding: 22mm 22mm 24mm; display: flex; flex-direction: column; min-height: var(--paper-a4-h); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); font-size: 10.5pt; line-height: 1.5; }
+
+  .filepath { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.06em; color: var(--c-cobalt-400); border-bottom: 0.3mm solid var(--c-cobalt-100); padding-bottom: 1.5mm; margin-bottom: 6mm; }
+  .filepath .nx { color: var(--c-cobalt-700); }
+  .filepath .accent { color: var(--c-orange-knvb); }
+
+  .level-strip { display: flex; gap: 3mm; margin-bottom: 6mm; }
+  .level-strip .pill {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 1.5mm 3mm; border-radius: 999px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-400);
+  }
+  .level-strip .pill.active { background: var(--c-orange-knvb); color: white; }
+
+  .meta-strip { display: grid; grid-template-columns: 1fr auto; gap: 6mm; font-size: 8pt; color: var(--c-cobalt-700); margin-bottom: 8mm; }
+  .meta-strip .right { font-family: var(--conduction-typography-font-family-code); color: var(--c-cobalt-400); text-align: right; line-height: 1.6; }
+  .meta-strip .right b { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; }
+
+  .recipient { margin-bottom: 8mm; line-height: 1.5; }
+  .recipient .name { font-weight: 600; }
+
+  .subject { font-size: 13pt; font-weight: 700; color: var(--c-blue-cobalt); margin-bottom: 6mm; letter-spacing: -0.01em; }
+
+  .invoice-block {
+    background: var(--c-cobalt-50);
+    border-left: 0.6mm solid var(--c-orange-knvb);
+    padding: 4mm 5mm;
+    margin-bottom: 6mm;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt;
+  }
+  .invoice-block .label { color: var(--c-cobalt-400); font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1mm; }
+  .invoice-block .value { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; font-size: 11pt; }
+
+  .body p { margin: 0 0 4mm; max-width: 100mm; }
+  .body p:last-child { margin-bottom: 0; }
+
+  .sign-off { margin-top: auto; padding-top: 12mm; }
+  .sign-off .who { font-weight: 600; }
+  .sign-off .role { font-size: 9pt; color: var(--c-cobalt-700); }
+
+  .footer-strip { border-top: 0.3mm solid var(--c-cobalt-100); margin-top: 8mm; padding-top: 4mm; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; font-family: var(--conduction-typography-font-family-code); font-size: 7pt; color: var(--c-cobalt-400); letter-spacing: 0.04em; }
+  .footer-strip b { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; display: block; margin-bottom: 1mm; }
+
+  @media print { @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Letters &nbsp;/&nbsp; Reminder</div>
+  <h1>Reminder &middot; aanmaning</h1>
+  <p class="lead">Vriendelijke herinnering bij overdue invoice. Drie escalatie-niveaus: 14 dagen (vriendelijk), 30 dagen (concreet), 60 dagen (laatste keer voor incasso). Toon escaleert; layout blijft hetzelfde.</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="paper paper--A4">
+      <div class="letter">
+
+        <div class="filepath">
+          conduction.nl &middot; <span class="nx">brieven</span> &middot; reminder &middot; <span class="accent">level-{{ NIVEAU }}</span>
+        </div>
+
+        <div class="level-strip">
+          <span class="pill {{ active_op_14d }}">14 dagen &middot; vriendelijk</span>
+          <span class="pill {{ active_op_30d }}">30 dagen &middot; concreet</span>
+          <span class="pill {{ active_op_60d }}">60 dagen &middot; laatste keer</span>
+        </div>
+
+        <div class="meta-strip">
+          <div>{{ STAD }}, {{ DATUM }}</div>
+          <div class="right">
+            Onze referentie<b>HER-{{ INVOICE_NR }}-{{ NIVEAU }}</b>
+          </div>
+        </div>
+
+        <div class="recipient">
+          <div class="name">{{ KLANT_NAAM }}</div>
+          <div>T.a.v. {{ CONTACT_NAAM }}</div>
+          <div>{{ STRAAT }} &middot; {{ POSTCODE }} {{ STAD }}</div>
+        </div>
+
+        <div class="subject">Herinnering: factuur {{ INVOICE_NR }} nog open</div>
+
+        <div class="invoice-block">
+          <div>
+            <div class="label">Factuur</div>
+            <div class="value">{{ INVOICE_NR }}</div>
+          </div>
+          <div>
+            <div class="label">Vervaldatum</div>
+            <div class="value">{{ VERVALDATUM }}</div>
+          </div>
+          <div>
+            <div class="label">Bedrag</div>
+            <div class="value">€ {{ BEDRAG }}</div>
+          </div>
+        </div>
+
+        <div class="body">
+          <p>Beste {{ CONTACT_VOORNAAM }},</p>
+
+          <p><strong>Niveau 1 (14 dagen, vriendelijk):</strong> Misschien is hij gemist. Factuur {{ INVOICE_NR }} is op {{ VERVALDATUM }} verlopen. Klopt iets niet, laat het weten.</p>
+
+          <p><strong>Niveau 2 (30 dagen, concreet):</strong> De factuur staat 30 dagen open. Wil je het bedrag deze week voldoen, of is er een blokkade die we kunnen oplossen.</p>
+
+          <p><strong>Niveau 3 (60 dagen, laatste keer):</strong> Dit is de laatste herinnering voor we de vordering uit handen geven. Voldoe binnen 7 dagen of bel ons om een betalingsregeling af te spreken.</p>
+
+          <p>Betaalgegevens staan op de oorspronkelijke factuur of klik <a href="#">hier om online te betalen</a>.</p>
+
+          <p>Met vriendelijke groet,</p>
+        </div>
+
+        <div class="sign-off">
+          <div class="who">{{ AFZENDER_NAAM }}</div>
+          <div class="role">{{ AFZENDER_ROL }} &middot; Conduction</div>
+        </div>
+
+        <div class="footer-strip">
+          <div><b>Conduction B.V.</b>Lauriergracht 14h<br>1016 RR Amsterdam</div>
+          <div><b>Contact</b>+31 85 303 6840<br>info@conduction.nl</div>
+          <div><b>Bank</b>{{ IBAN }}<br>tnv Conduction B.V.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="specimen-label">Reminder &middot; sjabloon &middot; één layout, drie tonen</div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>Eén layout, drie tonen, geen drie templates</h2>
+    <p class="lede">Aanmaningen zijn één template met een niveau-pill bovenaan. Layout, branding en chrome blijven gelijk; alleen de body-tekst en het level-pill veranderen. Klant herkent het document direct, ook bij herhaald lezen.</p>
+    <ul>
+      <li><strong>Drie pills, één actief.</strong> 14d / 30d / 60d. De actieve pill wordt KNVB-oranje; de andere twee blijven cobalt-50. Eén-blik signaal "in welke fase zit ik".</li>
+      <li><strong>Invoice-block in oranje accent.</strong> Linkerrand cobalt → oranje als visuele tell dat dit "actie-vereist" is. Eén oranje per scene-regel respecteert.</li>
+      <li><strong>Toon escaleert, taal niet.</strong> Geen incasso-formaliteit op niveau 1 of 2. Pas op niveau 3 wordt de juridische escalatie genoemd. Voor MKB-buyers werkt vriendelijk-volhardend beter dan stevig-meteen.</li>
+      <li><strong>Geen "hopelijk gaat het goed".</strong> MKB-direct. Onderwerp is het probleem; opening is over de factuur, niet over het weer.</li>
+      <li><strong>Eén concrete actie per niveau.</strong> Bel, betaal, regel. Geen menu van vier opties.</li>
+    </ul>
+    <div class="footer-note">A4 &middot; NL canonical &middot; --bleed 0 &middot; placeholders use {{ }} markers &middot; level-strip is the only visual delta tussen de drie versies</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="letterhead.html">letterhead</a> chassis &middot;
+        <a href="invoice.html">invoice</a> as the source document &middot;
+        <a href="email-reminder.html">email-reminder</a> as the digital sibling &middot;
+        <a href="../identity/voice.html">voice</a> for tone-by-niveau &middot;
+        <code>.paper--A4</code>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../include.js"></script>
+</body>
+</html>

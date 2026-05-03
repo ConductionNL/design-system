@@ -22,6 +22,11 @@
  *   <CtaBanner title="Ready to install?" />
  */
 
+/* Atomic primitives, also exported as their own subpath for direct
+   `import {HexBullet} from '@conduction/docusaurus-preset/components/primitives';`
+   imports if a site only needs the atoms. */
+export * from './primitives';
+
 export {default as Hero} from './Hero/Hero.jsx';
 export {default as StatsStrip} from './StatsStrip/StatsStrip.jsx';
 export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';

@@ -18,7 +18,8 @@
  *   />
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import styles from './CtaBanner.module.css';
 
 export default function CtaBanner({
@@ -27,9 +28,23 @@ export default function CtaBanner({
   primaryCta,
   secondaryCta,
 }) {
+  const isBrowser = useIsBrowser();
+
+  /* Hydrate the conduction-bg honeycomb pattern on the client. The
+     module is loaded site-side via a <link>+<script> in <Head>; here
+     we just ask the existing hydrator to scan for any new mounts. */
+  useEffect(() => {
+    if (isBrowser && typeof window !== 'undefined' && window.ConductionBg?.hydrate) {
+      window.ConductionBg.hydrate();
+    }
+  }, [isBrowser]);
+
   return (
     <section className={styles.section}>
       <div className={styles.banner}>
+        <div className={styles.bg} aria-hidden="true">
+          <div className="conduction-bg" />
+        </div>
         {title && <h2 className={styles.title}>{title}</h2>}
         {lede && <p className={styles.lede}>{lede}</p>}
 

@@ -1,0 +1,57 @@
+# =============================================================
+# Conduction design system, local dev orchestration
+# -------------------------------------------------------------
+# Spins up the Docusaurus sites in containers so testing matches
+# what GitHub Pages will eventually serve. Hot-reload works via
+# bind-mount; node_modules stay in named volumes per workspace
+# so the host machine's empty folders do not shadow them.
+#
+# From the repo root:
+#   docker compose up                  # build + start connext
+#   docker compose up -d               # detached
+#   docker compose logs -f connext     # tail the dev server
+#   docker compose down                # stop + remove
+#
+# To wire connext into the local Nextcloud (for the future
+# OpenCatalogi content plugin), uncomment the networks block at
+# the bottom and the matching service-level networks key. Set
+# OPENCATALOGI_URL to http://nextcloud:80/... so the container
+# reaches Nextcloud via Docker DNS instead of localhost:8080.
+# =============================================================
+
+services:
+
+  connext:
+    build:
+      context: .
+      dockerfile: sites/connext/Dockerfile
+    image: conduction/connext:dev
+    container_name: conduction-connext
+    ports:
+      - "3000:3000"
+    volumes:
+      # Source bind-mount so saves trigger Docusaurus hot-reload
+      - .:/app
+      # Anonymous volumes shadow the host's (empty) node_modules
+      - /app/node_modules
+      - /app/diagrams/node_modules
+      - /app/docusaurus-preset/node_modules
+      - /app/sites/connext/node_modules
+      # Docusaurus build cache; speeds up restart
+      - /app/sites/connext/.docusaurus
+    environment:
+      # Local default. Override via .env when wiring to the live Nextcloud:
+      #   OPENCATALOGI_URL=http://nextcloud:80/index.php/apps/openregister/api
+      - OPENCATALOGI_URL=${OPENCATALOGI_URL:-http://localhost:8080/index.php/apps/openregister/api}
+      - CHOKIDAR_USEPOLLING=true
+    # Uncomment the next two lines to attach to the local Nextcloud network.
+    # The network name comes from `docker network ls`; for nextcloud-docker-dev
+    # it is typically `master_default`.
+    # networks:
+    #   - nextcloud-net
+    restart: unless-stopped
+
+# networks:
+#   nextcloud-net:
+#     external: true
+#     name: master_default

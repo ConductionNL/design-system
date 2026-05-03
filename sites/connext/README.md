@@ -4,6 +4,27 @@ The Docusaurus 3 site for [connext.conduction.nl](https://connext.conduction.nl)
 
 ## Local development
 
+Two ways to run the dev server: **Docker** (recommended; matches CI + production) or **bare Node** (faster iteration if your host already has Node 18+).
+
+### Option A, Docker (recommended)
+
+From the design-system repo root:
+
+```bash
+docker compose up                # build + start the connext container
+                                  # → http://localhost:3000
+
+docker compose up -d              # detached mode
+docker compose logs -f connext    # tail the dev server
+docker compose down               # stop + clean up
+```
+
+The container bind-mounts the repo source, so saves to `sites/connext/`, `diagrams/`, or `docusaurus-preset/` trigger Docusaurus hot-reload automatically. Node modules live in named Docker volumes; the host stays clean.
+
+To wire the container to your local Nextcloud (for the future OpenCatalogi content plugin), uncomment the `networks:` block in [docker-compose.yml](../../docker-compose.yml) and set `OPENCATALOGI_URL=http://nextcloud:80/index.php/apps/openregister/api` in a `.env` file at the repo root.
+
+### Option B, bare Node
+
 From the design-system repo root:
 
 ```bash

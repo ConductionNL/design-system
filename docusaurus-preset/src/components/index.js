@@ -43,3 +43,4 @@ export {default as PairCard, PairRow} from './PairCard/PairCard.jsx';
 export {default as FeatureList, FeatureItem} from './FeatureList/FeatureList.jsx';
 export {default as HowSteps, HowStep} from './HowSteps/HowSteps.jsx';
 export {default as EmployeeCard, TeamGrid} from './EmployeeCard/EmployeeCard.jsx';
+export {default as DetailHero} from './DetailHero/DetailHero.jsx';

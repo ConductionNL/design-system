@@ -106,10 +106,9 @@ function createConfig(opts) {
     );
   }
 
-  const customCss = [
-    require.resolve('./css/brand.css'),
-    ...(opts.customCss || []),
-  ];
+  /* brand.css is injected globally by the theme plugin (./theme.js) via
+     getClientModules(), so customCss carries site-specific CSS only. */
+  const customCss = opts.customCss || [];
 
   return {
     title: opts.title,
@@ -146,6 +145,11 @@ function createConfig(opts) {
         },
       ],
     ],
+
+    /* Brand theme: registers ./theme/* swizzles (Navbar, Footer, …)
+       and auto-loads brand.css. Site-specific themes can be added by
+       passing themes: [...] in opts (this default is replaced wholesale). */
+    themes: opts.themes || [require.resolve('./theme.js')],
 
     themeConfig: Object.assign(
       {

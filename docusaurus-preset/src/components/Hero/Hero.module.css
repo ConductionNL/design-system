@@ -1,0 +1,148 @@
+/**
+ * <Hero /> styles. Mirrors preview/components/hero.html.
+ *
+ * Two-column grid: left copy column, right visual column. Stacks
+ * vertically below 900px. Brand-locked typography (Figtree title,
+ * Plex Mono eyebrow + meta) and CTA pair.
+ */
+
+.hero {
+  padding: 88px 64px 72px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: white;
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 56px 24px 48px;
+    gap: 32px;
+  }
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin-bottom: 24px;
+}
+
+.eyebrowHex {
+  width: 12px;
+  height: 14px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb);
+  display: inline-block;
+}
+
+.title {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--c-blue-cobalt);
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .title { font-size: 44px; }
+}
+
+.title :global(.next-blue) { color: var(--c-nextcloud-blue); }
+.title :global(.cg-yellow) { color: var(--c-commonground-yellow); }
+
+.lede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--c-cobalt-700);
+  margin-top: 24px;
+  max-width: 52ch;
+}
+.lede :global(.next-blue) { color: var(--c-nextcloud-blue); }
+.lede :global(.cg-yellow) { color: var(--c-commonground-yellow); }
+
+.ctas {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 120ms ease;
+}
+
+.btnPrimary {
+  background: var(--c-blue-cobalt);
+  color: white;
+}
+.btnPrimary:hover {
+  background: var(--c-cobalt-700);
+  color: white;
+  text-decoration: none;
+}
+
+.btnSecondary {
+  background: white;
+  color: var(--c-blue-cobalt);
+  border-color: var(--c-cobalt-200);
+}
+.btnSecondary:hover {
+  border-color: var(--c-blue-cobalt);
+  color: var(--c-blue-cobalt);
+  text-decoration: none;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--c-cobalt-400);
+  margin-left: 8px;
+  font-family: var(--conduction-typography-font-family-code);
+}
+.meta strong {
+  color: var(--c-cobalt-700);
+  font-family: var(--conduction-typography-font-family-body);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Visual column. Children own their own sizing; this just provides a
+   hosting container so cn-platform / cn-hex / etc. centre nicely. */
+.visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 0;
+}
+.visual > * {
+  width: 100%;
+}

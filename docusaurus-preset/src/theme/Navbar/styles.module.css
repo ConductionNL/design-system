@@ -1,0 +1,114 @@
+/**
+ * Navbar swizzle styles. Mirrors preview/components/top-navbar.html in
+ * the design-system kit. CSS Modules so class names don't collide with
+ * Docusaurus's Infima rules.
+ */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 56px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+
+.wordmark {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-blue-cobalt);
+  text-decoration: none;
+}
+.wordmark:hover { color: var(--c-blue-cobalt); text-decoration: none; }
+
+.links {
+  display: flex;
+  gap: 28px;
+}
+
+.link {
+  color: var(--c-cobalt-700);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 160ms ease;
+}
+.link:hover {
+  color: var(--c-orange-knvb);
+  text-decoration: none;
+}
+.linkActive {
+  color: var(--c-orange-knvb);
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ghost {
+  color: var(--c-cobalt-700);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+.ghost:hover {
+  color: var(--c-orange-knvb);
+  text-decoration: none;
+}
+
+.cta {
+  background: var(--c-blue-cobalt);
+  color: white;
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 160ms ease;
+}
+.cta:hover {
+  background: var(--c-cobalt-700);
+  color: white;
+  text-decoration: none;
+}
+
+/* Locale dropdown integration. Override Infima's defaults so it sits
+   inline with the other right-side items. */
+.localeWrapper :global(.dropdown) {
+  font-size: 14px;
+}
+.localeWrapper :global(.navbar__link) {
+  color: var(--c-cobalt-700);
+  font-weight: 500;
+  padding: 0 8px;
+}
+.localeWrapper :global(.navbar__link:hover) {
+  color: var(--c-orange-knvb);
+}
+
+/* Responsive collapse, simplified for v1.
+   TODO: hamburger menu like the design-system mock. */
+@media (max-width: 900px) {
+  .nav {
+    padding: 16px 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .left { gap: 16px; }
+  .links { gap: 16px; }
+  .ctas { gap: 8px; }
+}

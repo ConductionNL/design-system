@@ -53,5 +53,41 @@
   will add the .current class to the matching link after the navbar is injected.
 -->
 
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount as Docusaurus theme swizzle</h2>
+  <p>The Conduction preset replaces Docusaurus's default Infima navbar with this pattern through <code>theme/Navbar/index.jsx</code>. Sites configure the items via <code>themeConfig.navbar</code>; the chrome stays locked.</p>
+  <h3>docusaurus.config.js</h3>
+  <pre><code>const {createConfig} = require('@conduction/docusaurus-preset');
+
+module.exports = createConfig({
+  title: 'ConNext',
+  url: 'https://connext.conduction.nl',
+  navbar: {
+    title: 'ConNext',
+    items: [
+      {to: '/apps',      label: 'Apps',      position: 'left'},
+      {to: '/solutions', label: 'Solutions', position: 'left'},
+      {to: '/docs/intro',label: 'Docs',      position: 'left'},
+      {to: '/support',   label: 'Support',   position: 'left'},
+      {to: '/about',     label: 'About',     position: 'left'},
+      {type: 'localeDropdown',                position: 'right'},
+      {to: '/partners',  label: 'Partners',  position: 'right'},
+      {to: '/install',   label: 'Install',   position: 'right', cta: true},
+    ],
+  },
+});</code></pre>
+  <h3>Item shape</h3>
+  <ul class="ru-props">
+    <li><code>to</code> internal route (Link)</li>
+    <li><code>href</code> external link (a tag)</li>
+    <li><code>label</code> display text</li>
+    <li><code>position</code> left | right</li>
+    <li><code>cta</code> true renders cobalt-fill primary CTA</li>
+    <li><code>type</code> localeDropdown for the language switcher</li>
+  </ul>
+</aside>
+
 </body>
 </html>

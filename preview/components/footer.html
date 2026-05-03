@@ -442,5 +442,38 @@
 
 <script src="footer.js" defer></script>
 
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount as Docusaurus theme swizzle</h2>
+  <p>The Conduction preset ships the canal scene as <code>theme/Footer/index.jsx</code>. Sites configure the link grid through <code>themeConfig.footer.links</code>; the skyline, kade, boats, and wave layer come from <code>canal-footer.css</code> + <code>canal-footer.js</code> loaded on every page that uses the preset.</p>
+  <h3>docusaurus.config.js</h3>
+  <pre><code>const {createConfig} = require('@conduction/docusaurus-preset');
+
+module.exports = createConfig({
+  title: 'ConNext',
+  url: 'https://connext.conduction.nl',
+  footer: {
+    links: [
+      {title: 'Apps', items: [
+        {label: 'OpenCatalogi',  href: 'https://opencatalogi...'},
+        {label: 'OpenRegister',  href: 'https://openregister...'},
+        /* ... */
+      ]},
+      {title: 'Solutions', items: [...]},
+      {title: 'Resources', items: [...]},
+      {title: 'Conduction', items: [...]},
+    ],
+    copyright: 'Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · Lauriergracht 14h, 1016 RR Amsterdam · 2026',
+  },
+});</code></pre>
+  <h3>Static assets the swizzle expects</h3>
+  <ul class="ru-props">
+    <li><code>/lib/canal-footer.css</code> scoped under <code>.canal-footer</code></li>
+    <li><code>/lib/canal-footer.js</code> randomises the skyline + drives the boat-game</li>
+    <li>Templates for houses (5) + ships (4) ride below the footer as raw HTML so canal-footer.js can <code>.content</code>-clone them — the swizzle injects them via <code>dangerouslySetInnerHTML</code>.</li>
+  </ul>
+</aside>
+
 </body>
 </html>

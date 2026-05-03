@@ -25,3 +25,5 @@
 export {default as Hero} from './Hero/Hero.jsx';
 export {default as StatsStrip} from './StatsStrip/StatsStrip.jsx';
 export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';
+export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
+export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';

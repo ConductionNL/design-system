@@ -1,38 +1,48 @@
 /**
- * <StatsStrip /> styles. Mirrors preview/components/stats-strip.html.
- *
- * Cobalt-50 band, four equal-width tiles, big cobalt numerals over
- * small cobalt-700 labels. Stacks to 2-up below 700px.
+ * <StatsStrip /> styles. Mirrors the .strip section in
+ * preview/pages/landing.html: cobalt-50 band with top + bottom
+ * cobalt-100 borders, four-up grid inside a 1280px max-width
+ * inner container.
  */
 
 .strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  padding: 40px 64px;
-  border-top: 1px solid var(--c-cobalt-100);
   background: var(--c-cobalt-50);
+  border-top: 1px solid var(--c-cobalt-100);
+  border-bottom: 1px solid var(--c-cobalt-100);
   font-family: var(--conduction-typography-font-family-body);
 }
 
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 64px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
 @media (max-width: 900px) {
-  .strip { grid-template-columns: repeat(2, 1fr); padding: 32px 24px; gap: 24px; }
+  .inner {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 32px 24px;
+    gap: 24px;
+  }
 }
 @media (max-width: 500px) {
-  .strip { grid-template-columns: 1fr; }
+  .inner { grid-template-columns: 1fr; }
 }
 
 .value {
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--c-blue-cobalt);
-  line-height: 1.05;
+  line-height: 1;
 }
 
 .label {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--c-cobalt-700);
-  margin-top: 4px;
+  margin-top: 8px;
   line-height: 1.4;
 }

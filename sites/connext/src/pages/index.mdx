@@ -1,44 +1,137 @@
 ---
-title: The open-source workspace stack
-description: ConNext, the platform proposition for Conduction's app ecosystem on Nextcloud.
+title: ConNext, open-source apps for Nextcloud
+description: Twelve open-source apps that plug into Nextcloud. Catalogs, registers, integrations, document handling, pick what you need from the app store and you're working today.
 hide_table_of_contents: true
 ---
 
-import Layout from '@theme/Layout';
-import {Hero, StatsStrip, CtaBanner} from '@conduction/docusaurus-preset/components';
+import Head from '@docusaurus/Head';
+import {Hero, StatsStrip, PlatformOverview, AppsPreview, CtaBanner} from '@conduction/docusaurus-preset/components';
+
+<Head>
+  <link rel="stylesheet" href="/lib/platform-diagram.css" />
+  <link rel="stylesheet" href="/lib/hex-rain.css" />
+  <script src="/lib/platform-diagram.js" defer />
+  <script src="/lib/hex-rain.js" defer />
+</Head>
 
 <Hero
-  eyebrow="Open-source · EUPL-1.2 · No lock-in"
-  title={<>Make <span className="next-blue">Nextcloud</span> your workspace.</>}
-  lede={<>Con<span className="next-blue">Next</span> brings data, processes, AI, and integrations to your <span className="next-blue">Nextcloud</span>, turning a file-sync platform into your actual workplace. Free apps, optional support, no upgrade nags.</>}
-  primaryCta={{label: 'Install from Nextcloud app store', href: '/apps'}}
-  secondaryCta={{label: 'Get a demo via a partner', href: '/partners'}}
-  meta={{primary: '2-minute install', secondary: 'requires admin on your instance'}}
+  eyebrow={<>Twelve open-source apps · one <span className="next-blue">Nextcloud</span></>}
+  title={<>Install your stack.<br/>In two minutes.</>}
+  lede={<>Twelve open-source apps that plug into <span className="next-blue">Nextcloud</span>. Catalogs, registers, integrations, document handling, pick what you need from the app store and you're working today. No methodology workshop. No lock-in.</>}
+  primaryCta={{label: <>Install from <span className="next-blue">Nextcloud</span> app store</>, href: '/apps'}}
+  secondaryCta={{label: 'Get a demo via a partner', href: '/support'}}
+  tertiaryCta={{label: 'View on GitHub', href: 'https://github.com/ConductionNL'}}
 >
-  <cn-platform ground>
-    <cn-hex-prism slot="apex" family="cobalt" size="lg">
-      <span slot="kicker">WORKSPACE</span>
-      Nextcloud
-    </cn-hex-prism>
-    <cn-hex-prism family="coral" size="md"><span slot="kicker">DATA</span>Catalogi</cn-hex-prism>
-    <cn-hex-prism family="gold" size="md"><span slot="kicker">DATA</span>Register</cn-hex-prism>
-    <cn-hex-prism family="lavender" size="md"><span slot="kicker">CONNECT</span>Connector</cn-hex-prism>
-    <cn-hex-prism family="mint" size="md"><span slot="kicker">DOCS</span>DocuDesk</cn-hex-prism>
-    <cn-hex-prism family="coral" size="md"><span slot="kicker">DATA</span>MyDash</cn-hex-prism>
-    <cn-hex-prism family="lavender" size="md"><span slot="kicker">AI</span>OpenAI</cn-hex-prism>
-  </cn-platform>
+  <div className="hex-rain" aria-label="Twelve apps mini-game, click each falling icon to collect the app"></div>
 </Hero>
 
 <StatsStrip stats={[
   { value: '12', label: <>apps in the ecosystem,<br/>all open-source</> },
   { value: '2 min', label: <>from app store install<br/>to working solution</> },
   { value: '€0', label: <>for the apps,<br/>support is optional</> },
-  { value: 'EUPL', label: <>licensed, with no<br/>vendor lock-in</> },
+  { value: 'EUPL', label: <>licensed, no vendor<br/>lock-in, ever</> },
 ]} />
+
+<PlatformOverview
+  eyebrow="The platform"
+  title={<>Five components.<br/>Twenty-four apps. One <span className="next-blue">Nextcloud</span> workspace.</>}
+  lede={<>Every ConNext app plugs into one of five categories around the <span className="next-blue">Nextcloud</span> workspace, files, mail, calendar, talk, office. All of them run on the platform your team already trusts. Hover any app to see what it does.</>}
+>
+  <platform-diagram>
+    <pd-workspace logo="/img/nextcloud-logo.svg" alt="Nextcloud" role="Workspace"></pd-workspace>
+
+    <pd-list position="top" family="nextcloud">
+      <pd-item name="Files" meta="Files" desc="Sync, share, and version any file. The cornerstone of every Nextcloud workspace."><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></pd-item>
+      <pd-item name="Mail" meta="Mail" desc="IMAP and SMTP mailbox right inside Nextcloud."><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></pd-item>
+      <pd-item name="Calendar" meta="Cal" desc="CalDAV-backed shared calendars with free-busy across teams."><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></pd-item>
+      <pd-item name="Talk" meta="Comms" desc="End-to-end-encrypted chat, voice, video, entirely on your own servers."><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></pd-item>
+      <pd-item name="Office" meta="Docs" desc="Collabora-powered docs, sheets, and slides. Real-time co-editing."><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg></pd-item>
+      <pd-item name="Contacts" meta="People" desc="CardDAV address book, shared, group-aware, syncs to phone and desktop."><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7 18a5 5 0 0 1 10 0"/></svg></pd-item>
+      <pd-item name="Notes" meta="Notes" desc="Markdown notes, synced and searchable across every device."><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg></pd-item>
+      <pd-item name="Tasks" meta="Todos" desc="CalDAV-backed to-do lists. Assign, schedule, and tick off."><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 12l3 3 7-7"/></svg></pd-item>
+      <pd-item name="Deck" meta="Boards" desc="Kanban boards for projects, sprints, and personal task flows."><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 8v10"/></svg></pd-item>
+    </pd-list>
+
+    <pd-list position="top-left" family="core" label={"Technical\nCore"}>
+      <pd-item name="OpenRegister" meta="Data" desc="Schema-driven object store with audit trail. The data foundation underneath every workspace app."><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></pd-item>
+      <pd-item name="OpenCatalogi" meta="Catalog" desc="Federated data catalogue. Datasets, APIs, software inventory."><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></pd-item>
+      <pd-item name="OpenConnector" meta="Integrate" desc="API gateway, REST, SOAP, GraphQL, webhooks."><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></pd-item>
+      <pd-item name="DocuDesk" meta="Docs" desc="Generate, anonymise, sign, and template documents."><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></pd-item>
+      <pd-item name="NLDesign Theme" meta="Theme" desc="NL Design System tokens applied across every Conduction app."><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></pd-item>
+      <pd-item name="MyDash" meta="Dashboard" desc="Dashboard builder with role-based access."><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></pd-item>
+    </pd-list>
+
+    <pd-list position="top-right" family="solutions" label="Solutions">
+      <pd-item name="OpenWoo" meta="WOO" desc="WOO-compliant publication flow. Active disclosure, queryable archive."><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></pd-item>
+      <pd-item name="ZaakAfhandelApp" meta="Zaken" desc="Citizen-facing case-status portal."><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></pd-item>
+      <pd-item name="Anonimiseren" meta="Privacy" desc="Privacy-by-design pipeline. Auto-redact PII before publication."><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M9 8h6"/></svg></pd-item>
+    </pd-list>
+
+    <pd-list position="bottom-left" family="workspace" label={"Workspace\nApps"}>
+      <pd-item name="PipelinQ" meta="CRM" desc="CRM with quotes, contacts, and deal-flow."><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></pd-item>
+      <pd-item name="Procest" meta="Cases" desc="Case-management for VTH and citizen processes."><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></pd-item>
+      <pd-item name="DeciDesk" meta="Boards" desc="Decision-support and board management."><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></pd-item>
+      <pd-item name="ShillinQ" meta="ERP" desc="Bookkeeping, invoicing, expense tracking."><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></pd-item>
+      <pd-item name="LarpingApp" meta="Larp" desc="Worldbuilding and campaign-management."><svg viewBox="0 0 24 24"><path d="M14 4l-4 6 4 6"/><path d="M10 4l4 6-4 6"/><circle cx="12" cy="20" r="2"/></svg></pd-item>
+      <pd-item name="SoftwareCatalog" meta="Assets" desc="IT-asset management, software inventory, licenses, contracts."><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></pd-item>
+    </pd-list>
+
+    <pd-list position="bottom-right" family="integrate" label={"Integrated\nApps"} columns="2">
+      <pd-item name="OpenTalk" meta="Video" brand-color="#00485C" desc="Open-source video conferencing."><svg viewBox="0 0 24 24"><circle cx="11" cy="12.5" r="7" fill="none" stroke="currentColor" strokeWidth="2.5"/><circle cx="18.5" cy="6.5" r="2.5" style={{fill: '#D2E245'}}/></svg></pd-item>
+      <pd-item name="n8n" meta="Flows" brand-color="#EA4B71" desc="Workflow automation, no-code flows."><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg></pd-item>
+      <pd-item name="Mattermost" meta="Teams" brand-color="#0058CC" desc="Self-hosted Slack alternative."><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/></svg></pd-item>
+      <pd-item name="Keycloak" meta="SSO" brand-color="#DB3327" desc="Identity and access management. SSO, OIDC, SAML."><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="4"/><path d="M13 12h8M17 12v3M21 12v3"/></svg></pd-item>
+    </pd-list>
+
+    <pd-list position="bottom-center" family="builder" label={"App\nBuilder"} badge="COMING SOON">
+      <pd-item name="Build your own apps" desc="Compose Nextcloud apps from the Technical Core."><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4l-7 7v3h3l7-7a4 4 0 0 0 5.4-5.4z"/><path d="M5 19l3-3"/></svg></pd-item>
+      <pd-item name="Customise ConNext apps" desc="Fork-free customisation of any ConNext app."><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M14 14l-3-3-7 7v3h3l7-7"/></svg></pd-item>
+      <pd-item name="No code, just configure" desc="Configuration-only changes survive upgrades."><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></pd-item>
+    </pd-list>
+
+    <pd-flow from="top-left:bottom" to="bottom-left:top" shape="straight"></pd-flow>
+    <pd-flow from="bottom-center:left" to="bottom-left:bottom" shape="l-h"></pd-flow>
+    <pd-flow from="bottom-right:bottom" to="bottom-left:bottom" shape="c-bracket-bottom" clearance="280"></pd-flow>
+    <pd-flow from="top-left:top" to="top-right:top" shape="c-bracket-top" clearance="240"></pd-flow>
+  </platform-diagram>
+</PlatformOverview>
+
+<AppsPreview
+  eyebrow="Most installed"
+  title="Three apps that ship the most outcomes."
+  lede={<>Start with the apps that solve a concrete problem on day one. They're all stable, open source, GDPR-compliant, free to install from the <span className="next-blue">Nextcloud</span> app store.</>}
+  apps={[
+    {
+      name: 'OpenCatalogi',
+      tagline: 'Public software catalog. Every app, dataset, and API in your organisation, searchable in one place.',
+      status: 'STABLE',
+      version: 'v2.4 · NL · EN',
+      href: '/apps/opencatalogi',
+      icon: <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>,
+    },
+    {
+      name: 'OpenRegister',
+      tagline: 'Schemas, registers, structured data objects, the typed-data backbone for every other app.',
+      status: 'STABLE',
+      version: 'v3.1 · NL · EN',
+      href: '/apps/openregister',
+      icon: <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>,
+    },
+    {
+      name: 'OpenConnector',
+      tagline: <>Connect <span className="next-blue">Nextcloud</span> to anything, REST, SOAP, GraphQL, file drops, message queues. No middleware.</>,
+      status: 'BETA',
+      version: 'v1.2 · NL · EN',
+      href: '/apps/openconnector',
+      icon: <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg>,
+    },
+  ]}
+  seeAll={{label: 'Browse all twelve apps', href: '/apps'}}
+/>
 
 <CtaBanner
   title="Pick an app. Install it. Done."
   lede={<>Drop OpenCatalogi or OpenRegister into your <span className="next-blue">Nextcloud</span> in two minutes. Open-source, no consultancy track, no lock-in.</>}
   primaryCta={{label: 'Install from app store', href: '/apps'}}
-  secondaryCta={{label: 'Get a demo via a partner', href: '/partners'}}
+  secondaryCta={{label: 'Get a demo via a partner', href: '/support'}}
 />

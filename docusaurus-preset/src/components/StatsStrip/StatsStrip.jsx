@@ -25,12 +25,14 @@ export default function StatsStrip({stats = []}) {
 
   return (
     <section className={styles.strip} aria-label="Key statistics">
-      {stats.map((stat, i) => (
-        <div key={i} className={styles.stat}>
-          <div className={styles.value}>{stat.value}</div>
-          <div className={styles.label}>{stat.label}</div>
-        </div>
-      ))}
+      <div className={styles.inner}>
+        {stats.map((stat, i) => (
+          <div key={i} className={styles.stat}>
+            <div className={styles.value}>{stat.value}</div>
+            <div className={styles.label}>{stat.label}</div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

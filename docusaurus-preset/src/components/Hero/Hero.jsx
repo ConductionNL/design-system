@@ -1,23 +1,27 @@
 /**
  * <Hero />
  *
- * Two-column landing hero. Left column: optional eyebrow, headline,
- * lede paragraph, CTA cluster with optional inline meta. Right column:
- * children (typically a cn-platform diagram, but anything fits).
+ * Two-column landing hero, mirrors preview/pages/landing.html exactly.
+ * Left column: optional eyebrow, headline, lede paragraph, action
+ * cluster (primary + secondary + ghost + optional meta). Right column:
+ * children (typically <div className="hex-rain"/>, a cn-platform
+ * diagram, or any visual that fills the row).
  *
- * Mirrors preview/components/hero.html in the design-system kit.
+ * Each CTA has the shape { label, href }. The ghost CTA renders as a
+ * plain link with an arrow; the meta block is a vertical "headline +
+ * subhead" caption that sits inline with the actions.
  *
  * Usage in MDX:
  *
  *   <Hero
- *     eyebrow="Open-source · MIT · No lock-in"
- *     title={<>Make <span className="next-blue">Nextcloud</span> your workspace.</>}
- *     lede="ConNext brings data, processes, AI, and integrations to your Nextcloud."
- *     primaryCta={{ label: "Install from Nextcloud app store", href: "/install" }}
- *     secondaryCta={{ label: "Get a demo via a partner", href: "/partners" }}
- *     meta={{ primary: "2-minute install", secondary: "requires admin on your instance" }}
+ *     eyebrow={<>Twelve open-source apps · one <span className="next-blue">Nextcloud</span></>}
+ *     title={<>Install your stack.<br/>In two minutes.</>}
+ *     lede={<>Twelve open-source apps that plug into <span className="next-blue">Nextcloud</span>...</>}
+ *     primaryCta={{label: "Install from Nextcloud app store", href: "/apps"}}
+ *     secondaryCta={{label: "Get a demo via a partner", href: "/partners"}}
+ *     tertiaryCta={{label: "View on GitHub", href: "https://github.com/..."}}
  *   >
- *     <cn-platform ground>...</cn-platform>
+ *     <div className="hex-rain" aria-label="..."></div>
  *   </Hero>
  */
 
@@ -31,6 +35,7 @@ export default function Hero({
   lede,
   primaryCta,
   secondaryCta,
+  tertiaryCta,
   meta,
   children,
 }) {
@@ -59,16 +64,21 @@ export default function Hero({
         {title && <h1 className={styles.title}>{title}</h1>}
         {lede && <p className={styles.lede}>{lede}</p>}
 
-        {(primaryCta || secondaryCta || meta) && (
-          <div className={styles.ctas}>
+        {(primaryCta || secondaryCta || tertiaryCta || meta) && (
+          <div className={styles.actions}>
             {primaryCta && (
-              <a href={primaryCta.href || '#'} className={`${styles.btn} ${styles.btnPrimary}`}>
+              <a href={primaryCta.href || '#'} className={styles.btnPrimary}>
                 {primaryCta.label}
               </a>
             )}
             {secondaryCta && (
-              <a href={secondaryCta.href || '#'} className={`${styles.btn} ${styles.btnSecondary}`}>
-                {secondaryCta.label} →
+              <a href={secondaryCta.href || '#'} className={styles.btnSecondary}>
+                {secondaryCta.label}
+              </a>
+            )}
+            {tertiaryCta && (
+              <a href={tertiaryCta.href || '#'} className={styles.btnGhost}>
+                {tertiaryCta.label} →
               </a>
             )}
             {meta && (

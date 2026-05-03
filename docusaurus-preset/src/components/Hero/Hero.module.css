@@ -1,34 +1,34 @@
 /**
- * <Hero /> styles. Mirrors preview/components/hero.html.
- *
- * Two-column grid: left copy column, right visual column. Stacks
- * vertically below 900px. Brand-locked typography (Figtree title,
- * Plex Mono eyebrow + meta) and CTA pair.
+ * <Hero /> styles. Mirrors preview/pages/landing.html .hero section
+ * exactly: 1.1fr/1fr grid inside a 1280px max-width container, 72px
+ * headline, lede 21px, three actions (primary + secondary + ghost),
+ * right column stretches to fill so .hex-rain can occupy 520px+ tall.
  */
 
 .hero {
-  padding: 88px 64px 72px;
+  padding: 0 64px;
+  max-width: 1280px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  background: white;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 72px;
   font-family: var(--conduction-typography-font-family-body);
 }
 
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
-    padding: 56px 24px 48px;
+    padding: 0 24px;
     gap: 32px;
   }
 }
 
 .copy {
-  display: flex;
-  flex-direction: column;
+  padding-block: 96px;
+  align-self: center;
+}
+@media (max-width: 900px) {
+  .copy { padding-block: 56px; }
 }
 
 .eyebrow {
@@ -42,6 +42,8 @@
   color: var(--c-cobalt-400);
   margin-bottom: 24px;
 }
+.eyebrow :global(.next-blue) { color: var(--c-nextcloud-blue); }
+.eyebrow :global(.cg-yellow) { color: var(--c-commonground-yellow); }
 
 .eyebrowHex {
   width: 12px;
@@ -52,69 +54,79 @@
 }
 
 .title {
-  font-size: 64px;
+  font-size: 72px;
   font-weight: 700;
-  line-height: 1.02;
   letter-spacing: -0.025em;
-  color: var(--c-blue-cobalt);
-  margin: 0;
+  line-height: 1.02;
+  margin: 0 0 24px;
+  color: var(--c-cobalt-900);
 }
-@media (max-width: 700px) {
-  .title { font-size: 44px; }
-}
+@media (max-width: 1100px) { .title { font-size: 56px; } }
+@media (max-width: 700px)  { .title { font-size: 44px; } }
 
 .title :global(.next-blue) { color: var(--c-nextcloud-blue); }
 .title :global(.cg-yellow) { color: var(--c-commonground-yellow); }
 
 .lede {
-  font-size: 19px;
-  line-height: 1.55;
+  font-size: 21px;
   color: var(--c-cobalt-700);
-  margin-top: 24px;
+  line-height: 1.5;
   max-width: 52ch;
+  margin: 0 0 32px;
 }
+@media (max-width: 700px) { .lede { font-size: 17px; } }
 .lede :global(.next-blue) { color: var(--c-nextcloud-blue); }
 .lede :global(.cg-yellow) { color: var(--c-commonground-yellow); }
 
-.ctas {
+.actions {
   display: flex;
-  gap: 16px;
-  margin-top: 40px;
+  gap: 14px;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 14px 24px;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  border: 1px solid transparent;
-  transition: all 120ms ease;
 }
 
 .btnPrimary {
   background: var(--c-blue-cobalt);
   color: white;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 120ms ease;
 }
 .btnPrimary:hover {
   background: var(--c-cobalt-700);
   color: white;
   text-decoration: none;
 }
+.btnPrimary :global(.next-blue) { color: var(--c-nextcloud-cyan); }
 
 .btnSecondary {
   background: white;
   color: var(--c-blue-cobalt);
-  border-color: var(--c-cobalt-200);
+  border: 1px solid var(--c-cobalt-200);
+  padding: 13px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  transition: border-color 120ms ease;
 }
 .btnSecondary:hover {
   border-color: var(--c-blue-cobalt);
   color: var(--c-blue-cobalt);
+  text-decoration: none;
+}
+
+.btnGhost {
+  color: var(--c-cobalt-700);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.btnGhost:hover {
+  color: var(--c-orange-knvb);
   text-decoration: none;
 }
 
@@ -134,15 +146,13 @@
   font-weight: 600;
 }
 
-/* Visual column. Children own their own sizing; this just provides a
-   hosting container so cn-platform / cn-hex / etc. centre nicely. */
+/* Visual column, default 'stretch' so children with min-height
+   (e.g. .hex-rain at 520px) fill the row evenly with the copy column. */
 .visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   min-height: 0;
 }
 .visual > * {
   width: 100%;
+  height: 100%;
 }

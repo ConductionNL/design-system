@@ -1,0 +1,111 @@
+/**
+ * Conduction brand for Docusaurus 3.
+ *
+ * Imports the canonical tokens (palette, typography, hex clip-paths)
+ * and maps them onto Docusaurus's Infima CSS variables. The result:
+ * Docusaurus chrome (navbar, sidebar, code blocks, buttons) renders
+ * in cobalt + KNVB orange + Plex Mono, without theme-swizzling.
+ *
+ * Sites can append their own customCss to override anything below.
+ */
+
+@import "./tokens.css";
+
+/* ============================================================
+   Infima primary palette → cobalt
+   ============================================================ */
+:root {
+  --ifm-color-primary:           var(--c-blue-cobalt);
+  --ifm-color-primary-dark:      var(--c-cobalt-600);
+  --ifm-color-primary-darker:    var(--c-cobalt-700);
+  --ifm-color-primary-darkest:   var(--c-cobalt-800);
+  --ifm-color-primary-light:     var(--c-cobalt-400);
+  --ifm-color-primary-lighter:   var(--c-cobalt-300);
+  --ifm-color-primary-lightest:  var(--c-cobalt-200);
+
+  /* Accent → KNVB orange (links, CTAs, focus ring) */
+  --ifm-link-color:              var(--c-orange-knvb);
+  --ifm-link-hover-color:        var(--c-cobalt-700);
+  --ifm-button-color:             white;
+
+  /* Typography → Figtree body, Plex Mono code */
+  --ifm-font-family-base:        var(--conduction-typography-font-family-body);
+  --ifm-font-family-monospace:   var(--conduction-typography-font-family-code);
+  --ifm-heading-color:           var(--c-cobalt-900);
+
+  /* Code blocks */
+  --ifm-code-font-size:          92%;
+  --ifm-code-background:         var(--c-cobalt-50);
+  --ifm-pre-background:          var(--c-cobalt-900);
+  --ifm-pre-color:               var(--c-cobalt-100);
+
+  /* Sidebar + navbar surfaces */
+  --ifm-navbar-background-color: white;
+  --ifm-navbar-shadow:           0 1px 0 var(--c-cobalt-100);
+  --ifm-toc-border-color:        var(--c-cobalt-100);
+
+  /* Footer cobalt-900 panel */
+  --ifm-footer-background-color: var(--c-cobalt-900);
+  --ifm-footer-color:            var(--c-cobalt-200);
+  --ifm-footer-link-color:       white;
+  --ifm-footer-title-color:      var(--c-cobalt-200);
+
+  /* Spacing rhythm reused from tokens */
+  --ifm-spacing-horizontal:      var(--space-6);
+  --ifm-spacing-vertical:        var(--space-6);
+  --ifm-line-height-base:        1.55;
+}
+
+[data-theme='dark'] {
+  --ifm-background-color:        var(--c-cobalt-900);
+  --ifm-background-surface-color: var(--c-cobalt-800);
+  --ifm-color-primary:           var(--c-cobalt-300);
+  --ifm-color-primary-light:     var(--c-cobalt-200);
+  --ifm-link-color:              var(--c-orange-knvb);
+  --ifm-heading-color:           white;
+  --ifm-font-color-base:         var(--c-cobalt-100);
+  --ifm-code-background:         var(--c-cobalt-800);
+}
+
+/* ============================================================
+   Brand tells, applied site-wide
+   ============================================================ */
+
+/* Pointy-top hex utility (mirrors design-system .hex) */
+.cn-hex-clip { clip-path: var(--hex-pointy-top); display: inline-block; }
+
+/* Brand citation, "Next" in Nextcloud-blue */
+.next-blue { color: var(--conduction-color-brand-nextcloud); }
+
+/* Brand citation, "Common Ground" in CG-yellow */
+.cg-yellow { color: var(--conduction-color-brand-commonground); }
+
+/* Buttons inherit brand-primary fill */
+.button--primary {
+  background-color: var(--c-blue-cobalt);
+  border-color: var(--c-blue-cobalt);
+  color: white;
+}
+.button--primary:hover {
+  background-color: var(--c-cobalt-700);
+  border-color: var(--c-cobalt-700);
+  color: white;
+}
+
+/* Focus ring is KNVB orange, never default Infima blue */
+*:focus-visible {
+  outline: 2px solid var(--c-orange-knvb);
+  outline-offset: 2px;
+}
+
+/* Headings keep the brand letter-spacing */
+h1, h2, h3 { letter-spacing: -0.02em; }
+
+/* Links underline via cobalt-200 by default; orange on hover */
+a:not(.navbar__link):not(.footer__link-item):not(.button) {
+  text-decoration-color: var(--c-cobalt-200);
+  text-underline-offset: 2px;
+}
+a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
+  text-decoration-color: var(--c-orange-knvb);
+}

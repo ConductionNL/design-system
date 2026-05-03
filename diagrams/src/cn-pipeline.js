@@ -8,7 +8,7 @@
  *   <cn-pipeline>
  *     <cn-hex-prism family="coral">Source</cn-hex-prism>
  *     <cn-hex-prism family="lavender">Process</cn-hex-prism>
- *     <cn-hex-prism family="cobalt">Kernel</cn-hex-prism>
+ *     <cn-hex-prism family="cobalt">Workspace</cn-hex-prism>
  *     <cn-hex-prism family="mint">Sink</cn-hex-prism>
  *   </cn-pipeline>
  *

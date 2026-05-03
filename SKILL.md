@@ -47,13 +47,13 @@ For Style Dictionary / Tokens Studio / Figma plugins, use [`brand/tokens.json`](
 |---|---|---|
 | **Conduction** | Hex avatar | About, Footer, Contracts, GitHub org |
 | **ConNext** | Wordmark only | `connext.conduction.nl`, marketing |
-| **Nextcloud** | Cited, not claimed | Brand citation in copy, kernel hex on diagrams |
+| **Nextcloud** | Cited, not claimed | Brand citation in copy, workspace hex on diagrams |
 
 ## Imagery
 
 - **Flat-isometric hex-prism style** for all illustrations (reference: honeycomb.io platform diagrams).
 - No people, no faces, no characters.
-- No stock photos, no 3D renders, no gradient backgrounds (except Nextcloud's official cyan-blue gradient on the kernel hex).
+- No stock photos, no 3D renders, no gradient backgrounds (except Nextcloud's official cyan-blue gradient on the workspace hex).
 - Lucide icons (line, stroke 2, 24px) for UI iconography.
 - App glyphs go inside the pointy-top hex wrapper; cobalt or white, never orange.
 

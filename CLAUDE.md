@@ -62,9 +62,11 @@ The full discussion lives in [preview/identity/voice.html](preview/identity/voic
 
 These signal that a sentence is hiding behind generic language. If you can delete the word and the sentence still works, it was noise.
 
-`Digitale transformatie` · `Ketensamenwerking` · `Waardevolle inzichten` · `Toekomstbestendig` · `State-of-the-art` · `Platform dat…` · `Oplossing` · `Synergie` · `Proactief meedenken`
+`Digitale transformatie` · `Ketensamenwerking` · `Waardevolle inzichten` · `Toekomstbestendig` · `State-of-the-art` · `Platform dat…` · `Oplossing` · `Synergie` · `Proactief meedenken` · `Kernel`
 
 Exception: **"Oplossing"** is fine as a customer-side translation of "solution". It is never our generic product term. We have **apps** and **solutions**, never "de Oplossing".
+
+Replacement: **"Kernel" → "workspace"**. Kernel reads as tech-jargon (OS / Linux kernel) and locks out MKB readers. Nextcloud already calls itself a workspace; we cite that. Use *"six apps, one workspace, all open-source"*, not *"one kernel"*. In API names, the centre slot is `slot="apex"` (same convention as `cn-domain-tree`), never `slot="kernel"`.
 
 ## Apps versus solutions
 

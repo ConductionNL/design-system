@@ -1,12 +1,14 @@
 /**
- * <cn-platform> — kernel-plus-orbiting-apps cluster.
+ * <cn-platform> — workspace-plus-orbiting-apps cluster.
  *
- * The canonical "what is ConNext" diagram: a Nextcloud kernel at the
- * centre, six application prisms arranged in a hex ring around it.
- * Used on landing pages, product overviews, ecosystem visualisations.
+ * The canonical "what is ConNext" diagram: a Nextcloud workspace at
+ * the centre, six application prisms arranged in a hex ring around
+ * it. Used on landing pages, product overviews, ecosystem visuals.
  *
  * Slots
- *   kernel   — central element; required (typically a cobalt cn-hex-prism)
+ *   apex     — central element; required (typically a cobalt cn-hex-prism).
+ *              Same slot name as cn-domain-tree; "kernel" is a banned
+ *              word in the brand vocabulary, see identity/voice.html.
  *   default  — orbiting apps; up to six, positioned in this order:
  *              top-left, top-right, left, right, bottom-left, bottom-right
  *   caption  — optional small text under the cluster
@@ -17,8 +19,8 @@
  *              Background of the surrounding stage.
  *
  * The component owns only layout + ground + optional connector ring.
- * Each child element keeps its own styling, so kernels can be hex
- * prisms or flat hexes interchangeably.
+ * Each child element keeps its own styling, so the apex element can
+ * be a hex prism or a flat hex interchangeably.
  */
 
 class CnPlatform extends HTMLElement {
@@ -68,8 +70,8 @@ class CnPlatform extends HTMLElement {
           z-index: 1;
         }
 
-        /* Kernel sits dead centre */
-        ::slotted([slot="kernel"]) {
+        /* Apex (workspace) sits dead centre */
+        ::slotted([slot="apex"]) {
           grid-column: 3;
           grid-row: 2;
         }
@@ -122,7 +124,7 @@ class CnPlatform extends HTMLElement {
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto;
           }
-          ::slotted([slot="kernel"]) { grid-column: 1 / -1; grid-row: 1; }
+          ::slotted([slot="apex"]) { grid-column: 1 / -1; grid-row: 1; }
           ::slotted(:nth-child(1):not([slot])),
           ::slotted(:nth-child(2):not([slot])),
           ::slotted(:nth-child(3):not([slot])),
@@ -138,7 +140,7 @@ class CnPlatform extends HTMLElement {
       <div class="stage">
         ${ground ? '<div class="ground"></div>' : ''}
         <div class="grid">
-          <slot name="kernel"></slot>
+          <slot name="apex"></slot>
           <slot></slot>
         </div>
         <div class="caption"><slot name="caption"></slot></div>

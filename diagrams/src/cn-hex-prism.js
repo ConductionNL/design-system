@@ -4,7 +4,7 @@
  * The atomic unit for ConNext platform diagrams. A pointy-top hexagon
  * extruded ~30° in isometric view, three faces tinted from one family
  * palette: top = family-100 (lit), left = family-300, right = family-500,
- * ink = family-700. Six families ship: cobalt (kernel only), coral,
+ * ink = family-700. Six families ship: cobalt (workspace only), coral,
  * lavender, gold, mint, gray.
  *
  * Slots

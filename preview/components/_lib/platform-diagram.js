@@ -1,9 +1,9 @@
 /*
- * <platform-diagram> — declarative kernel + corner-hexes + lists + flows.
+ * <platform-diagram> — declarative workspace + corner-hexes + lists + flows.
  *
  * Authoring shape:
  *   <platform-diagram>
- *     <pd-kernel logo="..." role="Workspace" alt="Nextcloud"></pd-kernel>
+ *     <pd-workspace logo="..." role="Workspace" alt="Nextcloud"></pd-workspace>
  *     <pd-list position="top" family="nextcloud">
  *       <pd-item name="Files" desc="Sync, share, and version any file.">
  *         <svg viewBox="0 0 24 24"><path d="..."/></svg>
@@ -60,7 +60,7 @@
     'bottom-center': 'app-builder',
   };
 
-  // Hex centres in kernel-relative coords (px).
+  // Hex centres in workspace-relative coords (px).
   // Derived from the layout in platform-diagram.css — keep in sync if the
   // hex placement ever changes.
   const HEX_CENTRES = {
@@ -93,7 +93,7 @@
 
   function pathFor(shape, a, b, clearance) {
     /* `clearance` is how far past the further endpoint the bracket runs
-       (in kernel-relative px). Defaults to 36 — enough to clear an
+       (in workspace-relative px). Defaults to 36 — enough to clear an
        adjacent hex's own outline. Bump it (e.g. 150) when routing around
        a hex that sits between the two anchors. */
     const c = (typeof clearance === 'number' && clearance > 0) ? clearance : 36;
@@ -231,7 +231,7 @@
     const positionClass = POSITION_CLASS[list.position] || list.position;
     const familyClass   = list.family ? `fam-${list.family}` : '';
     const hex = document.createElement('div');
-    hex.className = `kernel-corner-hex ${positionClass} ${familyClass}`.trim();
+    hex.className = `workspace-corner-hex ${positionClass} ${familyClass}`.trim();
     // Allow newline in label to render a <br>; otherwise straight text.
     if (list.label.includes('\n')) {
       list.label.split('\n').forEach((line, i) => {
@@ -249,8 +249,8 @@
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('class', 'flow-overlay');
     // Symmetric viewBox: x∈[-340,+340], y∈[-325,+325]. The SVG element is
-    // centred in the kernel's grid cell, so SVG (0,0) lands exactly on the
-    // kernel centre and path coords match the kernel-relative arithmetic.
+    // centred in the workspace's grid cell, so SVG (0,0) lands exactly on the
+    // workspace centre and path coords match the workspace-relative arithmetic.
     svg.setAttribute('viewBox', '-340 -325 680 650');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('aria-hidden', 'true');
@@ -308,16 +308,16 @@
     }
 
     _updateProgress() {
-      /* Anchor on the kernel hex's centre — that's the user's "the diagram
+      /* Anchor on the workspace hex's centre — that's the user's "the diagram
          is here" point. Anchoring on `this` is wrong because the host has
          240px of top-padding before any visible content, so its rect.top
-         crosses the viewport long before the kernel appears. */
-      const target = this.querySelector('.kernel') || this;
+         crosses the viewport long before the workspace appears. */
+      const target = this.querySelector('.workspace') || this;
       const rect = target.getBoundingClientRect();
       const vh = window.innerHeight || document.documentElement.clientHeight;
       const centre = rect.top + rect.height / 2;
 
-      /* Trigger window: progress runs 0 → 1 as the kernel centre moves from
+      /* Trigger window: progress runs 0 → 1 as the workspace centre moves from
          the viewport bottom (vh) up to the viewport centre (vh * 0.5).
          Beyond the centre, progress stays at 1; below the viewport, 0.
          Scrolling back up reverses the mapping. */
@@ -340,14 +340,14 @@
 
     _build() {
       // 1. Read declarative config from the light-DOM children.
-      let kernel = null;
+      let workspace = null;
       const lists = [];
       const flows = [];
 
       for (const child of [...this.children]) {
         const tag = child.tagName.toLowerCase();
-        if (tag === 'pd-kernel') {
-          kernel = {
+        if (tag === 'pd-workspace') {
+          workspace = {
             logo: child.getAttribute('logo') || '',
             role: child.getAttribute('role') || '',
             alt:  child.getAttribute('alt')  || '',
@@ -363,8 +363,8 @@
             color:     child.getAttribute('color') || '',
             clearance: Number.isFinite(cl) ? cl : 0,
             // Raw SVG `d` string for custom multi-bend routes that don't
-            // fit any built-in shape. Coords are kernel-relative (origin
-            // at kernel centre, same system as anchor(...)). When
+            // fit any built-in shape. Coords are workspace-relative (origin
+            // at workspace centre, same system as anchor(...)). When
             // present, it overrides shape/from/to.
             path: child.getAttribute('path') || '',
           });
@@ -376,18 +376,18 @@
       const grid = document.createElement('div');
       grid.className = 'diagram-grid';
 
-      if (kernel) {
+      if (workspace) {
         const k = document.createElement('div');
-        k.className = 'kernel';
+        k.className = 'workspace';
         const img = document.createElement('img');
-        img.className = 'kernel-logo';
-        if (kernel.logo) img.src = kernel.logo;
-        img.alt = kernel.alt;
+        img.className = 'workspace-logo';
+        if (workspace.logo) img.src = workspace.logo;
+        img.alt = workspace.alt;
         k.appendChild(img);
-        if (kernel.role) {
+        if (workspace.role) {
           const r = document.createElement('div');
           r.className = 'role';
-          r.textContent = kernel.role;
+          r.textContent = workspace.role;
           k.appendChild(r);
         }
         grid.appendChild(k);

@@ -2,9 +2,9 @@
  * Homepage for connext.conduction.nl.
  *
  * Demonstrates the brand chassis (cobalt hero) plus the diagram set
- * (cn-platform with kernel + orbiting apps). Real content will be
- * authored in OpenCatalogi once the content plugin lands; for now
- * this is the brand sanity check.
+ * (cn-platform with the Nextcloud workspace + orbiting apps). Real
+ * content will be authored in OpenCatalogi once the content plugin
+ * lands; for now this is the brand sanity check.
  */
 import React, { useEffect } from 'react';
 import Layout from '@theme/Layout';
@@ -37,8 +37,8 @@ export default function Home() {
         <h2>The platform, in one diagram</h2>
         {isBrowser && (
           <cn-platform ground>
-            <cn-hex-prism slot="kernel" family="cobalt" size="lg">
-              <span slot="kicker">KERNEL</span>
+            <cn-hex-prism slot="apex" family="cobalt" size="lg">
+              <span slot="kicker">WORKSPACE</span>
               Nextcloud
             </cn-hex-prism>
 
@@ -66,7 +66,7 @@ export default function Home() {
               <span slot="kicker">AI</span>
               OpenAI
             </cn-hex-prism>
-            <span slot="caption">Six apps · one kernel · all open-source</span>
+            <span slot="caption">Six apps · one workspace · all open-source</span>
           </cn-platform>
         )}
 

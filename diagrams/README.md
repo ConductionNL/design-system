@@ -24,7 +24,7 @@ Every Conduction diagram follows the same brand rules: pointy-top hexes, fixed p
 | `<cn-hex>` | Available | Pointy-top hex primitive. Label + icon, nine colours, four sizes, solid or outline, optional interactive state. |
 | `<cn-hex-prism>` | Available | 3D isometric prism. Six families, four sizes, slots for label / icon / kicker / pills, coming-state badge. |
 | `<cn-domain-tree>` | Available | Vertical apex-and-branches layout for one-to-many domain maps. Slot-driven; multi-trunk diagrams stack two trees. |
-| `<cn-platform>` | Available | Kernel-plus-orbiting-apps cluster. Six neighbours in a hex ring around a central kernel. |
+| `<cn-platform>` | Available | Workspace-plus-orbiting-apps cluster. Six neighbours in a hex ring around a central apex (typically a cobalt cn-hex-prism representing the Nextcloud workspace). |
 | `<cn-pipeline>` | Available | Horizontal flow of stages with auto-inserted arrow connectors. Three arrow tones. |
 | `<cn-side-box>` | Available | Rectangle-feed-prism pattern. Header chip + icon-and-label rows. Three widths, optional compact + footer. |
 | `<cn-honeycomb-bg>` | Available | Honeycomb backdrop wrapper. Theme + accent + density attributes. Parallax in v2. |

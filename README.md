@@ -15,7 +15,7 @@ This kit documents how Conduction looks, sounds, and behaves on every surface, w
 - **Hexagon as a system, not just a logo wrapper.** Bullets, pagination, status badges, avatars, dividers, timeline beads, anywhere a shape *means* something. Functional containers (inputs, buttons, cards) stay rectangular.
 - **Always pointy-top.** No flat-top hexes anywhere in the brand.
 - **Figtree + IBM Plex Mono.** Round, calm, humanist. No serif display, no ligatures.
-- **Nextcloud blue is a guest color**, only in ConNext context (the wordmark, the kernel hex, brand-citation in copy).
+- **Nextcloud blue is a guest color**, only in ConNext context (the wordmark, the workspace hex, brand-citation in copy).
 - **Product-first tone.** MKB-direct ("je", concrete outcomes), not government-formal ("u", abstract ambition).
 
 ---
@@ -105,7 +105,7 @@ The primary CTA on every product page is **"Install from Nextcloud app store."**
 | **8%**  | KNVB orange `#F36C21` | Accents, focus rings, hover, one badge per screen |
 | **2%**  | Vermillion `#AE1C28` | Errors, destructive only |
 
-**Plus** Nextcloud blue `#0082C9` (~5% in ConNext context only): the *Next* in the wordmark, brand-citation of "Nextcloud" in copy, the kernel hex on platform diagrams.
+**Plus** Nextcloud blue `#0082C9` (~5% in ConNext context only): the *Next* in the wordmark, brand-citation of "Nextcloud" in copy, the workspace hex on platform diagrams.
 
 Cobalt-on-white = **9.05:1 contrast (WCAG AAA)**, yes, you can use cobalt for body text.
 
@@ -147,7 +147,7 @@ For diagrams that need humans (About, testimonials), prefer text-only or abstrac
 ### What we never do visually
 
 - ❌ Stock photos of "diverse team meeting", handshakes, whiteboards
-- ❌ 3D renders, gradient backgrounds (except Nextcloud's official cyan-blue gradient, only on the kernel hex)
+- ❌ 3D renders, gradient backgrounds (except Nextcloud's official cyan-blue gradient, only on the workspace hex)
 - ❌ Other shades of blue on the logo
 - ❌ Orange as a primary button fill (cobalt owns that)
 - ❌ Two orange accents on the same screen
@@ -163,7 +163,7 @@ For diagrams that need humans (About, testimonials), prefer text-only or abstrac
 
 **Lucide** ([lucide.dev](https://lucide.dev)) is the standard icon library, ISC-licensed, line-style, broad peer adoption. Use stroke-width 2, 24px default size, `currentColor` for tinting. Icons are visual aids, not load-bearing, every icon-only button gets an `aria-label`.
 
-For app icons specifically: each app gets its own glyph **inside the pointy-top hexagon wrapper** in `brand/assets/`. App glyph hex fill is **cobalt**, **cobalt-700**, **white-on-cobalt outline**, or **vermillion**. Never orange (orange is accent, not container). Never the Nextcloud cyan-blue gradient, that's a *guest color* reserved for the brand-word "Nextcloud" in copy and the kernel hex on platform diagrams, not for Conduction-built apps.
+For app icons specifically: each app gets its own glyph **inside the pointy-top hexagon wrapper** in `brand/assets/`. App glyph hex fill is **cobalt**, **cobalt-700**, **white-on-cobalt outline**, or **vermillion**. Never orange (orange is accent, not container). Never the Nextcloud cyan-blue gradient, that's a *guest color* reserved for the brand-word "Nextcloud" in copy and the workspace hex on platform diagrams, not for Conduction-built apps.
 
 ---
 

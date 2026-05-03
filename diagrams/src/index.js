@@ -13,7 +13,7 @@
  *   <cn-hex>            — pointy-top hex primitive (label + icon)
  *   <cn-hex-prism>      — 3D isometric prism, the atomic unit for platform diagrams
  *   <cn-domain-tree>    — vertical apex-and-branches layout for domain maps
- *   <cn-platform>       — kernel-plus-orbiting-apps cluster
+ *   <cn-platform>       — workspace-plus-orbiting-apps cluster
  *   <cn-pipeline>       — horizontal flow of stages connected by arrows
  *   <cn-side-box>       — rectangle-feed-prism pattern for non-app surfaces
  *   <cn-honeycomb-bg>   — honeycomb backdrop wrapper for hero scenes

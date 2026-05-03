@@ -11,6 +11,10 @@
  * plain link with an arrow; the meta block is a vertical "headline +
  * subhead" caption that sits inline with the actions.
  *
+ * Composes from primitives:
+ *   <Eyebrow/>  for the orange-bullet caption
+ *   <Button/>   for the three action variants (primary/secondary/ghost)
+ *
  * Usage in MDX:
  *
  *   <Hero
@@ -27,6 +31,8 @@
 
 import React, {useEffect} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import Eyebrow from '../primitives/Eyebrow';
+import Button from '../primitives/Button';
 import styles from './Hero.module.css';
 
 export default function Hero({
@@ -55,31 +61,26 @@ export default function Hero({
   return (
     <section className={styles.hero}>
       <div className={styles.copy}>
-        {eyebrow && (
-          <div className={styles.eyebrow}>
-            <span className={styles.eyebrowHex} aria-hidden="true"></span>
-            {eyebrow}
-          </div>
-        )}
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && <h1 className={styles.title}>{title}</h1>}
         {lede && <p className={styles.lede}>{lede}</p>}
 
         {(primaryCta || secondaryCta || tertiaryCta || meta) && (
           <div className={styles.actions}>
             {primaryCta && (
-              <a href={primaryCta.href || '#'} className={styles.btnPrimary}>
+              <Button variant="primary" href={primaryCta.href || '#'}>
                 {primaryCta.label}
-              </a>
+              </Button>
             )}
             {secondaryCta && (
-              <a href={secondaryCta.href || '#'} className={styles.btnSecondary}>
+              <Button variant="secondary" href={secondaryCta.href || '#'}>
                 {secondaryCta.label}
-              </a>
+              </Button>
             )}
             {tertiaryCta && (
-              <a href={tertiaryCta.href || '#'} className={styles.btnGhost}>
+              <Button variant="ghost" href={tertiaryCta.href || '#'}>
                 {tertiaryCta.label} →
-              </a>
+              </Button>
             )}
             {meta && (
               <div className={styles.meta}>

@@ -7,6 +7,10 @@
  * Mirrors the .apps-preview section in preview/pages/landing.html,
  * with .app-card cards from preview/components/apps-grid.css.
  *
+ * Composes from primitives:
+ *   <SectionHead/>  for the eyebrow + title + lede pattern
+ *   <HexBullet/>    for the status dot inside each <AppCard/> meta
+ *
  * Usage in MDX:
  *
  *   <AppsPreview
@@ -29,6 +33,8 @@
  */
 
 import React from 'react';
+import HexBullet from '../primitives/HexBullet';
+import SectionHead from '../primitives/SectionHead';
 import styles from './AppsPreview.module.css';
 
 function AppCard({app}) {
@@ -44,7 +50,7 @@ function AppCard({app}) {
       <div className={styles.meta}>
         {app.status && (
           <span className={styles.badge}>
-            <span className={styles.badgeHex} style={{background: statusColor}} aria-hidden="true"></span>
+            <HexBullet size="sm" color={statusColor} />
             {app.status}
           </span>
         )}
@@ -58,18 +64,7 @@ export default function AppsPreview({eyebrow, title, lede, apps = [], seeAll}) {
   return (
     <section className={styles.section}>
       {(eyebrow || title || lede) && (
-        <div className={styles.head}>
-          <div>
-            {eyebrow && (
-              <div className={styles.eyebrow}>
-                <span className={styles.eyebrowHex} aria-hidden="true"></span>
-                {eyebrow}
-              </div>
-            )}
-            {title && <h2 className={styles.title}>{title}</h2>}
-          </div>
-          {lede && <p className={styles.lede}>{lede}</p>}
-        </div>
+        <SectionHead eyebrow={eyebrow} title={title} lede={lede} />
       )}
 
       <div className={styles.row}>

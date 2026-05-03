@@ -42,3 +42,4 @@ export {default as ReferenceCard, ReferenceGrid} from './ReferenceCard/Reference
 export {default as PairCard, PairRow} from './PairCard/PairCard.jsx';
 export {default as FeatureList, FeatureItem} from './FeatureList/FeatureList.jsx';
 export {default as HowSteps, HowStep} from './HowSteps/HowSteps.jsx';
+export {default as EmployeeCard, TeamGrid} from './EmployeeCard/EmployeeCard.jsx';

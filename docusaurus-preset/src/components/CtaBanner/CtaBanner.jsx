@@ -8,6 +8,11 @@
  * Mirrors the cta-banner section in preview/pages/landing.html and
  * the .cta-banner mock in preview/components.html.
  *
+ * Composition:
+ *   - <Button variant="on-dark-primary" />  for the white pill
+ *   - <Button variant="on-dark-secondary" /> for the bordered ghost
+ *   - <ConductionBg />                       for the parallax hex layer
+ *
  * Usage in MDX:
  *
  *   <CtaBanner
@@ -18,8 +23,9 @@
  *   />
  */
 
-import React, {useEffect} from 'react';
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import React from 'react';
+import ConductionBg from '../ConductionBg/ConductionBg';
+import Button from '../primitives/Button';
 import styles from './CtaBanner.module.css';
 
 export default function CtaBanner({
@@ -28,37 +34,24 @@ export default function CtaBanner({
   primaryCta,
   secondaryCta,
 }) {
-  const isBrowser = useIsBrowser();
-
-  /* Hydrate the conduction-bg honeycomb pattern on the client. The
-     module is loaded site-side via a <link>+<script> in <Head>; here
-     we just ask the existing hydrator to scan for any new mounts. */
-  useEffect(() => {
-    if (isBrowser && typeof window !== 'undefined' && window.ConductionBg?.hydrate) {
-      window.ConductionBg.hydrate();
-    }
-  }, [isBrowser]);
-
   return (
     <section className={styles.section}>
       <div className={styles.banner}>
-        <div className={styles.bg} aria-hidden="true">
-          <div className="conduction-bg" />
-        </div>
+        <ConductionBg />
         {title && <h2 className={styles.title}>{title}</h2>}
         {lede && <p className={styles.lede}>{lede}</p>}
 
         {(primaryCta || secondaryCta) && (
           <div className={styles.actions}>
             {primaryCta && (
-              <a href={primaryCta.href || '#'} className={styles.primary}>
+              <Button variant="on-dark-primary" href={primaryCta.href || '#'}>
                 {primaryCta.label}
-              </a>
+              </Button>
             )}
             {secondaryCta && (
-              <a href={secondaryCta.href || '#'} className={styles.secondary}>
+              <Button variant="on-dark-secondary" href={secondaryCta.href || '#'}>
                 {secondaryCta.label}
-              </a>
+              </Button>
             )}
           </div>
         )}

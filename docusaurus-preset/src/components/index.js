@@ -41,3 +41,4 @@ export {default as PartnerCard, PartnerGrid, BecomePartner} from './PartnerCard/
 export {default as ReferenceCard, ReferenceGrid} from './ReferenceCard/ReferenceCard.jsx';
 export {default as PairCard, PairRow} from './PairCard/PairCard.jsx';
 export {default as FeatureList, FeatureItem} from './FeatureList/FeatureList.jsx';
+export {default as HowSteps, HowStep} from './HowSteps/HowSteps.jsx';

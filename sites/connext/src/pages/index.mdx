@@ -4,17 +4,12 @@ description: Twelve open-source apps that plug into Nextcloud. Catalogs, registe
 hide_table_of_contents: true
 ---
 
-import Head from '@docusaurus/Head';
-import {Hero, StatsStrip, PlatformOverview, PlatformDiagram, AppsPreview, CtaBanner} from '@conduction/docusaurus-preset/components';
+import {Hero, StatsStrip, PlatformOverview, PlatformDiagram, HexRain, AppsPreview, CtaBanner} from '@conduction/docusaurus-preset/components';
 
-<Head>
-  {/* hex-rain still ships as a runtime asset for the hero's mini-game.
-      ConductionBg is a real component (used inside CtaBanner); no Head
-      tags needed for it. PlatformDiagram lazy-loads its own runtime
-      via Head from the component itself. */}
-  <link rel="stylesheet" href="/lib/hex-rain.css" />
-  <script src="/lib/hex-rain.js" defer />
-</Head>
+{/* All runtime assets are now wrapped in real React components:
+    HexRain (hero mini-game), PlatformDiagram (platform overview),
+    ConductionBg (CTA panel). Each component lazy-loads its own
+    CSS/JS via Head. No top-level Head boilerplate needed here. */}
 
 <Hero
   eyebrow={<>Twelve open-source apps · one <span className="next-blue">Nextcloud</span></>}
@@ -24,7 +19,7 @@ import {Hero, StatsStrip, PlatformOverview, PlatformDiagram, AppsPreview, CtaBan
   secondaryCta={{label: 'Get a demo via a partner', href: '/support'}}
   tertiaryCta={{label: 'View on GitHub', href: 'https://github.com/ConductionNL'}}
 >
-  <div className="hex-rain" aria-label="Twelve apps mini-game, click each falling icon to collect the app"></div>
+  <HexRain />
 </Hero>
 
 <StatsStrip stats={[

@@ -46,5 +46,6 @@ export {default as EmployeeCard, TeamGrid} from './EmployeeCard/EmployeeCard.jsx
 export {default as DetailHero} from './DetailHero/DetailHero.jsx';
 export {default as ConductionBg} from './ConductionBg/ConductionBg.jsx';
 export {default as PlatformDiagram} from './PlatformDiagram/PlatformDiagram.jsx';
+export {default as HexRain} from './HexRain/HexRain.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

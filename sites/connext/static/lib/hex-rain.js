@@ -31,7 +31,11 @@
     const rand = (a, b) => Math.random() * (b - a) + a;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    document.querySelectorAll('.hex-rain').forEach((container) => {
+    /* Wrap the per-container init in a named function so we can expose
+       it as window.HexRain.hydrate() for SPA route changes that mount
+       fresh .hex-rain nodes. The dataset.rainHydrated guard makes
+       repeated calls a no-op for already-mounted containers. */
+    function hydrateContainer(container) {
       if (container.dataset.rainHydrated === '1') return;
       container.dataset.rainHydrated = '1';
 
@@ -262,5 +266,19 @@
         );
         anim.finished.then(() => hex.remove()).catch(() => {});
       }
-    });
+    }
+
+    function init() {
+      document.querySelectorAll('.hex-rain').forEach(hydrateContainer);
+    }
+
+    /* SPA-friendly: expose so React/MDX components can re-trigger after
+       route changes without double-hydrating already-hydrated nodes. */
+    window.HexRain = {hydrate: init};
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   })();

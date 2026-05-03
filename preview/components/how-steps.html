@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How steps, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body { margin: 0; background: white; padding: 56px 64px; font-family: var(--conduction-typography-font-family-body); }
+  .frame { max-width: 1200px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .step {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    position: relative;
+  }
+  .step .num {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px;
+    margin-bottom: 18px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .step.tier-1 .num { background: var(--c-blue-cobalt); }
+  .step.tier-2 .num { background: var(--c-orange-knvb); }
+  .step.tier-3 .num { background: var(--c-cobalt-700); }
+  .step h3 {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .step p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6; margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">How steps · numbered process row, surfaced from /support and /install</div>
+
+  <div class="row">
+    <div class="step tier-1">
+      <div class="num">1</div>
+      <h3>Read the docs first.</h3>
+      <p>Every app at <strong>docs.conduction.nl</strong> ships with installation, configuration, schema, and recipe guides. The /docs section covers what we'd answer first in support tickets.</p>
+    </div>
+    <div class="step tier-2">
+      <div class="num">2</div>
+      <h3>Open a GitHub issue.</h3>
+      <p>For bugs, feature requests, and questions that aren't in the docs. We triage daily on the <strong>ConductionNL</strong> org. Public issues stay public, security issues go through coordinated disclosure.</p>
+    </div>
+    <div class="step tier-3">
+      <div class="num">3</div>
+      <h3>Talk to a partner.</h3>
+      <p>For implementations, hosting, and regulated rollouts. Partners take it from "I want this" to "this is in production". The <strong>/partners</strong> directory lists every certified team.</p>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;HowSteps/&gt;</code></h2>
+  <p>Numbered process-step row used wherever a flow goes "three things, in this order": /support help-routing, /install onboarding, the partner-programme tiers explainer. Children auto-number; the hex-num tints alternately by tier (cobalt, orange, cobalt-700).</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {HowSteps, HowStep} from '@conduction/docusaurus-preset/components';
+
+&lt;HowSteps&gt;
+  &lt;HowStep title="Read the docs first."&gt;
+    Every app at docs.conduction.nl ships with installation, configuration,
+    schema, and recipe guides.
+  &lt;/HowStep&gt;
+  &lt;HowStep title="Open a GitHub issue."&gt;
+    For bugs, feature requests, and questions that aren't in the docs.
+  &lt;/HowStep&gt;
+  &lt;HowStep title="Talk to a partner."&gt;
+    For implementations, hosting, and regulated rollouts.
+  &lt;/HowStep&gt;
+&lt;/HowSteps&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>columns</code> 2 | 3 | 4 (default 3)</li>
+    <li><code>HowStep.number</code> auto-derived if omitted</li>
+    <li><code>HowStep.tier</code> 1 | 2 | 3, override the auto-tint</li>
+    <li><code>HowStep.title</code> h3 title</li>
+    <li><code>HowStep.children</code> body (block-safe div, MDX-friendly)</li>
+  </ul>
+</aside>
+
+</body>
+</html>

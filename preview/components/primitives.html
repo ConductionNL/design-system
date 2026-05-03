@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Primitives, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+  }
+  .frame { max-width: 1200px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+  .intro {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 16px;
+    max-width: 26ch;
+  }
+  .lede {
+    font-size: 17px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 60ch; margin: 0 0 56px;
+  }
+
+  /* Primitive demo block */
+  .demo {
+    margin: 0 0 56px;
+    padding: 0;
+  }
+  .demo-name {
+    font-size: 24px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900); margin: 0 0 4px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .demo-name code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 16px; color: var(--c-blue-cobalt); font-weight: 500;
+  }
+  .demo-line {
+    font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 70ch; margin: 0 0 20px;
+  }
+  .demo-frame {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex; gap: 24px; flex-wrap: wrap; align-items: center;
+  }
+  .demo-frame.tinted-white { background: white; border: 1px solid var(--c-cobalt-100); }
+
+  /* For the demos themselves, vendored versions of the primitive CSS so
+     the kit page looks identical without bringing in the React component. */
+  .p-hex { display: inline-block; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .p-hex-sm { width: 8px;  height: 9px; }
+  .p-hex-md { width: 12px; height: 14px; }
+  .p-hex-lg { width: 44px; height: 50px; }
+
+  .p-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+
+  .p-card {
+    background: white; border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg); padding: 20px;
+    color: var(--c-cobalt-700);
+    font-size: 14px;
+    max-width: 240px;
+  }
+  .p-card-ghost { background: transparent; border-style: dashed; border-color: var(--c-cobalt-200); }
+  .p-card-inverse { background: var(--c-cobalt-900); border-color: var(--c-cobalt-700); color: white; }
+
+  .p-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--radius-pill);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--c-cobalt-50); color: var(--c-cobalt-700);
+  }
+  .p-pill-solid { background: var(--c-blue-cobalt); color: white; }
+
+  .p-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid transparent; border-radius: var(--radius-md);
+    font-weight: 500; text-decoration: none; padding: 13px 22px; font-size: 15px;
+  }
+  .p-btn-primary { background: var(--c-blue-cobalt); color: white; }
+  .p-btn-secondary { background: white; color: var(--c-blue-cobalt); border-color: var(--c-cobalt-200); }
+  .p-btn-ghost { background: transparent; color: var(--c-cobalt-700); padding: 4px 8px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">Primitives · the seven atoms every component composes from</div>
+  <h1 class="intro">Seven primitives, one source.</h1>
+  <p class="lede">These atoms surfaced when porting the kit to React. Each one appears in three or more component CSS files; centralising them removes the temptation to duplicate <code>clip-path: var(--hex-pointy-top)</code> in every new component.</p>
+
+  <!-- HexBullet -->
+  <div class="demo">
+    <h2 class="demo-name">HexBullet <code>&lt;HexBullet/&gt;</code></h2>
+    <p class="demo-line">The 12×14 (or 8×9, or 44×50) pointy-top clip-path hexagon. Used as the bullet inside eyebrows, status badges, footer triad, and pill chips. Pointy-top, never rotated, solid colour fill.</p>
+    <div class="demo-frame">
+      <span class="p-hex p-hex-sm"></span>
+      <span class="p-hex p-hex-md"></span>
+      <span class="p-hex p-hex-lg"></span>
+      <span class="p-hex p-hex-md" style="background: var(--c-blue-cobalt)"></span>
+      <span class="p-hex p-hex-md" style="background: var(--c-mint-500)"></span>
+    </div>
+  </div>
+
+  <!-- Eyebrow -->
+  <div class="demo">
+    <h2 class="demo-name">Eyebrow <code>&lt;Eyebrow/&gt;</code></h2>
+    <p class="demo-line">Uppercase Plex Mono caption sitting above section headings. Optional leading <code>&lt;HexBullet/&gt;</code> in KNVB orange.</p>
+    <div class="demo-frame">
+      <div class="p-eyebrow"><span class="p-hex p-hex-md"></span>The platform</div>
+      <div class="p-eyebrow"><span class="p-hex p-hex-md"></span>Most installed</div>
+      <div class="p-eyebrow"><span class="p-hex p-hex-md"></span>What you get on day one</div>
+    </div>
+  </div>
+
+  <!-- Section -->
+  <div class="demo">
+    <h2 class="demo-name">Section <code>&lt;Section/&gt;</code></h2>
+    <p class="demo-line">The 1280px max-width 64px-padded section wrapper that every page in <code>preview/pages/*</code> uses. Background variants: default (white), tinted (cobalt-50), inverse (cobalt). Spacing variants: default 96px, tight 48px, flush 0.</p>
+    <div class="demo-frame" style="display: block;">
+      <div style="background: white; padding: 24px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px dashed var(--c-cobalt-200); text-align: center;">background="default" · spacing="default"</div>
+      <div style="background: var(--c-cobalt-50); padding: 24px; border-radius: var(--radius-md); margin-bottom: 12px; text-align: center;">background="tinted"</div>
+      <div style="background: var(--c-blue-cobalt); padding: 24px; border-radius: var(--radius-md); color: white; text-align: center;">background="inverse"</div>
+    </div>
+  </div>
+
+  <!-- SectionHead -->
+  <div class="demo">
+    <h2 class="demo-name">SectionHead <code>&lt;SectionHead/&gt;</code></h2>
+    <p class="demo-line">The eyebrow + h2 + lede block used at the top of every section. Splits left (eyebrow + h2) from right (lede) on a 1.1fr/1fr grid. Single column under 900px.</p>
+    <div class="demo-frame" style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: end;">
+      <div>
+        <div class="p-eyebrow" style="margin-bottom: 12px"><span class="p-hex p-hex-md"></span>Most installed</div>
+        <div style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: var(--c-cobalt-900);">Three apps that ship the most outcomes.</div>
+      </div>
+      <div style="font-size: 15px; color: var(--c-cobalt-700); line-height: 1.55;">Start with the apps that solve a concrete problem on day one. They're all stable, GDPR-compliant, free to install.</div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="demo">
+    <h2 class="demo-name">Card <code>&lt;Card/&gt;</code></h2>
+    <p class="demo-line">White container with cobalt-100 border, radius-lg corners, configurable padding. Three tones: surface (default), ghost (dashed), inverse (cobalt-900). Renders as <code>&lt;a&gt;</code> when href is provided.</p>
+    <div class="demo-frame" style="background: var(--c-cobalt-50)">
+      <div class="p-card">surface · default tone, 20px padding, white background, cobalt-100 border</div>
+      <div class="p-card p-card-ghost">ghost · transparent + dashed border, for empty-state CTAs</div>
+      <div class="p-card p-card-inverse">inverse · cobalt-900 with white type, for footer modules</div>
+    </div>
+  </div>
+
+  <!-- Pill -->
+  <div class="demo">
+    <h2 class="demo-name">Pill <code>&lt;Pill/&gt;</code></h2>
+    <p class="demo-line">Inline-flex pill chip with optional leading <code>&lt;HexBullet/&gt;</code>. Used for status badges (STABLE / BETA), built-on app tags, sector labels, version tags.</p>
+    <div class="demo-frame">
+      <span class="p-pill"><span class="p-hex p-hex-sm" style="background: var(--c-mint-500)"></span>Stable</span>
+      <span class="p-pill"><span class="p-hex p-hex-sm" style="background: var(--c-orange-knvb)"></span>Beta</span>
+      <span class="p-pill"><span class="p-hex p-hex-sm" style="background: var(--c-cobalt-300)"></span>Coming soon</span>
+      <span class="p-pill p-pill-solid">Strategic</span>
+      <span class="p-pill" style="background: var(--c-gold-500); color: var(--c-cobalt-900)">Certified</span>
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="demo">
+    <h2 class="demo-name">Button <code>&lt;Button/&gt;</code></h2>
+    <p class="demo-line">Three brand variants (primary / secondary / ghost) plus on-dark inversions for use inside cobalt CTA panels. Renders as <code>&lt;a&gt;</code> when href is provided, <code>&lt;button&gt;</code> otherwise.</p>
+    <div class="demo-frame">
+      <a href="#" class="p-btn p-btn-primary">Install from app store</a>
+      <a href="#" class="p-btn p-btn-secondary">Read the docs</a>
+      <a href="#" class="p-btn p-btn-ghost">View on GitHub →</a>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Import any primitive from the same barrel</h2>
+  <p>All seven primitives ship as named exports from <code>@conduction/docusaurus-preset/components</code> (or the <code>/primitives</code> subpath if a site only needs the atoms). Every higher-level component in the kit composes from these.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {
+  HexBullet, Eyebrow, Section, SectionHead, Card, Pill, Button,
+} from '@conduction/docusaurus-preset/components';
+
+&lt;Section background="tinted" spacing="default"&gt;
+  &lt;SectionHead
+    eyebrow="Most installed"
+    title="Three apps that ship the most outcomes."
+    lede="Start with the apps that solve a concrete problem on day one."
+  /&gt;
+  &lt;div&gt;
+    &lt;Card padding="lg"&gt;
+      &lt;Pill bullet bulletColor="var(--c-mint-500)"&gt;Stable&lt;/Pill&gt;
+      &lt;h3&gt;OpenRegister&lt;/h3&gt;
+      &lt;Button variant="primary" href="/install"&gt;Install&lt;/Button&gt;
+      &lt;Button variant="ghost" href="https://github.com/..."&gt;View on GitHub →&lt;/Button&gt;
+    &lt;/Card&gt;
+  &lt;/div&gt;
+&lt;/Section&gt;</code></pre>
+  <h3>Why these seven?</h3>
+  <ul class="ru-props">
+    <li><code>HexBullet</code> appeared in 15+ component CSS files</li>
+    <li><code>Eyebrow</code> appeared in 6+ component CSS files</li>
+    <li><code>Section</code> shape repeats across every full page</li>
+    <li><code>SectionHead</code> repeats on every catalogue / detail page</li>
+    <li><code>Card</code> appears in 6 component files (cards, partners, refs, pairs, employees, apps)</li>
+    <li><code>Pill</code> appears in 3 component files (refs, solutions, partners)</li>
+    <li><code>Button</code> appears across hero, cta, top-navbar, app-detail</li>
+  </ul>
+</aside>
+
+</body>
+</html>

@@ -28,7 +28,10 @@ services:
     image: conduction/connext:dev
     container_name: conduction-connext
     ports:
-      - "3000:3000"
+      # Host port 3100 (3000 + 3030 are typically used by other Conduction
+      # dev containers, e.g. openregister UIs). Change via .env if needed:
+      #   CONNEXT_PORT=3200 docker compose up
+      - "${CONNEXT_PORT:-3100}:3000"
     volumes:
       # Source bind-mount so saves trigger Docusaurus hot-reload
       - .:/app

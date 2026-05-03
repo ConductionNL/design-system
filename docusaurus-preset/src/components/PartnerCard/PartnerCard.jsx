@@ -1,0 +1,100 @@
+/**
+ * <PartnerCard /> + <PartnerGrid />
+ *
+ * Partner card from preview/components/partner-cards.html.
+ *
+ * Three tiers:
+ *   - partner   (default, white panel + cobalt-50 tier pill)
+ *   - certified (white panel + gold tier pill)
+ *   - strategic (cobalt-fill inverse + white tier pill)
+ *
+ * Visual structure:
+ *   ┌─────────────────────────────┐
+ *   │ [logo plate]      TIER     │
+ *   │ Name                        │
+ *   │ Summary paragraph           │
+ *   │ ──────────                  │
+ *   │ ⬢ App  ⬢ App  ⬢ App         │  ← apps-used pills
+ *   └─────────────────────────────┘
+ *
+ * The companion <BecomePartner/> card slots into the trailing grid
+ * cell as the call-to-action.
+ *
+ * Usage:
+ *
+ *   <PartnerGrid>
+ *     <PartnerCard
+ *       href="/partners/yard"
+ *       tier="partner"
+ *       name="YARD"
+ *       logo="/img/partners/yard.png"
+ *       summary={<>Digital design- en development-bureau uit Utrecht...</>}
+ *       apps={['MyDash', 'OpenCatalogi']}
+ *     />
+ *     <BecomePartner href="/partners/become" />
+ *   </PartnerGrid>
+ */
+
+import React from 'react';
+import HexBullet from '../primitives/HexBullet';
+import styles from './PartnerCard.module.css';
+
+const TIER_LABELS = {partner: 'Partner', certified: 'Certified', strategic: 'Strategic'};
+
+export function PartnerGrid({columns = 3, children, className}) {
+  const composed = [styles.grid, styles['cols-' + columns], className].filter(Boolean).join(' ');
+  return <div className={composed}>{children}</div>;
+}
+
+export default function PartnerCard({
+  href,
+  tier = 'partner',
+  name,
+  logo,
+  logoAlt,
+  summary,
+  apps = [],
+  className,
+}) {
+  const composed = [
+    styles.card,
+    styles['tier-' + tier],
+    className,
+  ].filter(Boolean).join(' ');
+  const Tag = href ? 'a' : 'div';
+  const bulletColor = tier === 'strategic' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)';
+
+  return (
+    <Tag href={href} className={composed}>
+      <span className={styles.tier}>{TIER_LABELS[tier] || tier}</span>
+      {logo && (
+        <div className={styles.avatar}>
+          <img src={logo} alt={logoAlt || name + ' logo'} />
+        </div>
+      )}
+      {name && <div className={styles.name}>{name}</div>}
+      {summary && <div className={styles.summary}>{summary}</div>}
+      {apps.length > 0 && (
+        <div className={styles.apps}>
+          {apps.map((app, i) => (
+            <span key={i} className={styles.appPill}>
+              <HexBullet size="sm" color={bulletColor} />
+              {app}
+            </span>
+          ))}
+        </div>
+      )}
+    </Tag>
+  );
+}
+
+export function BecomePartner({href, eyebrow = 'Become a partner', title, body, ctaLabel}) {
+  return (
+    <a href={href} className={[styles.card, styles.become].join(' ')}>
+      <div className={styles.becomeEyebrow}>{eyebrow}</div>
+      {title && <h4 className={styles.becomeTitle}>{title}</h4>}
+      {body && <p className={styles.becomeBody}>{body}</p>}
+      {ctaLabel && <span className={styles.becomeArrow}>{ctaLabel} →</span>}
+    </a>
+  );
+}

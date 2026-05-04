@@ -7,14 +7,18 @@
  * stage number and uppercase kicker sit above the prism; nothing
  * sits below — pure hexes only. Steps are separated by an animated
  * dotted flow line. Optional `start` / `end` slots take source /
- * consumer end-boxes whose items can be plain strings or
- * {label, icon} objects.
+ * consumer end-boxes (plain text list, no icons).
  *
- * Family palette mirrors the kit's pipeline-flow.html exactly so the
- * website and kit read as one diagram. Family is auto-detected from
- * the step's name (OpenConnector → mint, OpenRegister → gray,
- * OpenCatalogi → coral, MyDash → lavender, Nextcloud → cobalt) and
- * can be overridden per-step via the `family` prop.
+ * Family palette follows the locked PRISM-FAMILY POLICY in tokens.css:
+ *   mint        integrate / connect    (OpenConnector)
+ *   forest      data / registers       (OpenRegister)
+ *   terracotta  documents / search     (OpenCatalogi)
+ *   lavender    process / views        (MyDash)
+ *   workspace   Nextcloud workspace    (centre platform hex)
+ *
+ * Coral, gray, and gold are reserved for non-prism use and are not
+ * available as families here. Family is auto-detected from the step's
+ * name, override per-step via the `family` prop.
  *
  * Usage in MDX:
  *
@@ -25,72 +29,58 @@
  *       {number: '02', kicker: 'Store',     name: 'OpenRegister'},
  *       {number: '03', kicker: 'Catalogue', name: 'OpenCatalogi'},
  *     ]}
- *     end={{label: 'Consumers', items: [
- *       {label: 'Open Tilburg', icon: <svg .../>},
- *       'Residents',
- *       'open.overheid.nl',
- *     ]}}
+ *     end={{label: 'Consumers', items: ['Open Tilburg portal', 'Residents', 'open.overheid.nl']}}
  *   />
  */
 
 import React from 'react';
 import styles from './Pipeline.module.css';
 
-/* Family palette, kit-identical. Each preset has top (lightest), left
-   (mid), right (darkest), edge (outline + body text). Cobalt is the
-   workspace family; its text is white + edge is white-translucent. */
+/* Locked PRISM-FAMILY POLICY palette (tokens.css 2026-04). Each preset
+   has top (lit, 100), left (mid, 300), right (deep, 500), and ink (700)
+   for outline + body text. Cobalt is brand chrome, NOT a prism family,
+   so the workspace hex uses the workspace-blue family instead. */
 const FAMILY_COLORS = {
-  mint:     { top: '#DCF1E6', left: '#87CFA8', right: '#2E9866', edge: '#155234', text: '#155234' },
-  gray:     { top: '#ECEEF2', left: '#B7BDC9', right: '#6B7280', edge: '#3A4150', text: '#3A4150' },
-  coral:    { top: '#FFE4DA', left: '#FAB29C', right: '#F36C21', edge: '#9B3A0E', text: '#9B3A0E' },
-  lavender: { top: '#ECE6F8', left: '#B7A7E3', right: '#7E66C9', edge: '#483982', text: '#483982' },
-  cobalt:   { top: '#21468B', left: '#4D69A4', right: '#152D5C', edge: 'rgba(255,255,255,0.25)', text: '#FFFFFF' },
+  mint:       { top: '#DCF1E6', left: '#87CFA8', right: '#2E9866', ink: '#155234' },
+  forest:     { top: '#D7E8D6', left: '#7DAA7C', right: '#3D7C3A', ink: '#1E461C' },
+  terracotta: { top: '#F4DCD3', left: '#DA9D8A', right: '#B25E48', ink: '#6E2A1C' },
+  lavender:   { top: '#ECE6F8', left: '#B7A7E3', right: '#7E66C9', ink: '#483982' },
+  workspace:  { top: '#C8E5F5', left: '#67BEEA', right: '#0082C9', ink: '#014C77' },
 };
 
 function inferFamily(name) {
   const n = (name || '').toLowerCase();
   if (n.includes('connector')) return 'mint';
-  if (n.includes('register')) return 'gray';
-  if (n.includes('catalog')) return 'coral';
+  if (n.includes('register')) return 'forest';
+  if (n.includes('catalog')) return 'terracotta';
   if (n.includes('mydash') || n.includes('dashboard')) return 'lavender';
-  if (n.includes('nextcloud') || n.includes('workspace') || n.includes('platform')) return 'cobalt';
-  return 'gray';
+  if (n.includes('nextcloud') || n.includes('workspace') || n.includes('platform')) return 'workspace';
+  return 'forest';
 }
 
-/* Strip the "Open" prefix so the prism face shows a 7-9 char label
-   (Connector / Register / Catalogi) that fits the 72px-wide top face.
-   Falls back to the original name if it's already short. */
-function shortName(name) {
-  if (!name) return '';
-  if (/^Open[A-Z]/.test(name)) return name.slice(4);
-  return name;
-}
-
-/* Family label rendered as the secondary line inside the prism. Kept
-   short, uppercase mono; meant to match the kicker character of the
-   kit hero diagram (INTEGRATIONS / SCHEMAS / DATA / VIEWS). */
+/* Family label rendered as the secondary line inside the prism. Short,
+   uppercase mono. Maps the family role to a single-word descriptor. */
 const FAMILY_LABEL = {
-  mint:     'INTEGRATIONS',
-  gray:     'SCHEMAS',
-  coral:    'DATA',
-  lavender: 'VIEWS',
-  cobalt:   'WORKSPACE',
+  mint:       'INTEGRATE',
+  forest:     'DATA',
+  terracotta: 'SEARCH',
+  lavender:   'VIEWS',
+  workspace:  'WORKSPACE',
 };
 
 function HexPrism({name, family}) {
-  const c = FAMILY_COLORS[family] || FAMILY_COLORS.gray;
-  const display = shortName(name);
+  const c = FAMILY_COLORS[family] || FAMILY_COLORS.forest;
   const sub = FAMILY_LABEL[family];
   return (
     <svg viewBox="0 0 120 132" className={styles.prism} aria-hidden="true">
       <polygon points="60,4 96,24 96,62 60,82 24,62 24,24" fill={c.top} />
       <polygon points="60,42 24,62 24,108 60,128" fill={c.left} />
       <polygon points="60,42 96,62 96,108 60,128" fill={c.right} />
-      <polyline points="60,42 24,62 60,82 96,62 60,42" stroke={c.edge} strokeWidth="1.25" fill="none" opacity="0.18" />
-      <polyline points="60,82 60,128" stroke={c.edge} strokeWidth="1.25" fill="none" opacity="0.18" />
-      <text x="60" y="46" textAnchor="middle" fontSize="11" fontWeight="700" fill={c.text}>{display}</text>
+      <polyline points="60,42 24,62 60,82 96,62 60,42" stroke={c.ink} strokeWidth="1.25" fill="none" opacity="0.18" />
+      <polyline points="60,82 60,128" stroke={c.ink} strokeWidth="1.25" fill="none" opacity="0.18" />
+      <text x="60" y="48" textAnchor="middle" fontSize="9.5" fontWeight="700" fill={c.ink} letterSpacing="-0.02em">{name}</text>
       {sub && (
-        <text x="60" y="60" textAnchor="middle" fontFamily="ui-monospace, Menlo, monospace" fontSize="7" letterSpacing="1.4" fill={c.text}>
+        <text x="60" y="62" textAnchor="middle" fontFamily="ui-monospace, Menlo, monospace" fontSize="7" letterSpacing="1.4" fill={c.ink}>
           {sub}
         </text>
       )}
@@ -109,18 +99,6 @@ export function PipelineStep({number, kicker, name, family, className}) {
   );
 }
 
-/* Default rounded-square icon shown next to end-box items when the
-   caller doesn't pass a custom icon. Matches the kit's `.endbox-icon`:
-   cobalt-50 fill, cobalt-200 stroke, with a small doc-style glyph. */
-function DefaultEndIcon() {
-  return (
-    <svg viewBox="0 0 22 22" aria-hidden="true">
-      <rect x="0.5" y="0.5" width="21" height="21" rx="3" fill="var(--c-cobalt-50)" stroke="var(--c-cobalt-200)" strokeWidth="1" />
-      <path d="M6 8h10 M6 11h10 M6 14h6" stroke="var(--c-cobalt-700)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function EndBox({label, items = [], side}) {
   return (
     <div className={[styles.end, styles['end-' + side]].join(' ')}>
@@ -128,14 +106,7 @@ function EndBox({label, items = [], side}) {
       <ul className={styles.endList}>
         {items.map((it, i) => {
           const item = typeof it === 'string' ? {label: it} : (it || {});
-          return (
-            <li key={i}>
-              <span className={styles.endIcon}>
-                {item.icon || <DefaultEndIcon />}
-              </span>
-              <span>{item.label}</span>
-            </li>
-          );
+          return <li key={i}>{item.label}</li>;
         })}
       </ul>
     </div>

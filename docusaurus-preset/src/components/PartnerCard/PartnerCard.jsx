@@ -47,15 +47,45 @@ export function PartnerGrid({columns = 3, children, className}) {
 }
 
 export default function PartnerCard({
+  variant = 'full',
   href,
   tier = 'partner',
   name,
   logo,
   logoAlt,
   summary,
+  why,
   apps = [],
   className,
 }) {
+  /* Compact "other" variant: small mini-avatar (44x50 hex) on the
+     left, name + why on the right. Used at the bottom of partner-
+     detail pages to point to a handful of related partners. The
+     mini-avatar gets a tier-coloured ring to echo the tier styling
+     on the full card. */
+  if (variant === 'other') {
+    const composed = [
+      styles.other,
+      styles['tier-' + tier],
+      className,
+    ].filter(Boolean).join(' ');
+    const Tag = href ? 'a' : 'div';
+    return (
+      <Tag href={href} className={composed}>
+        {logo && (
+          <div className={styles.miniAvatar}>
+            <img src={logo} alt={logoAlt || name + ' logo'} />
+          </div>
+        )}
+        <div>
+          {name && <div className={styles.otherName}>{name}</div>}
+          {(why || summary) && <div className={styles.otherWhy}>{why || summary}</div>}
+        </div>
+      </Tag>
+    );
+  }
+
+  /* Default: full partner card */
   const composed = [
     styles.card,
     styles['tier-' + tier],

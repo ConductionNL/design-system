@@ -1,5 +1,5 @@
 # =============================================================
-# sites/connext, Docusaurus 3 dev container
+# sites/www, Docusaurus 3 dev container
 # -------------------------------------------------------------
 # Build context is the design-system monorepo root, so npm
 # install resolves @conduction/diagrams + @conduction/docusaurus-
@@ -20,7 +20,7 @@ WORKDIR /app
 COPY package.json ./
 COPY diagrams/package.json ./diagrams/
 COPY docusaurus-preset/package.json ./docusaurus-preset/
-COPY sites/connext/package.json ./sites/connext/
+COPY sites/www/package.json ./sites/www/
 
 # npm 10 ships with Node 20; supports workspaces natively
 RUN npm install --include=dev
@@ -32,5 +32,5 @@ COPY . .
 EXPOSE 3000
 
 # Docusaurus dev server, bound to 0.0.0.0 so the host can reach it
-WORKDIR /app/sites/connext
+WORKDIR /app/sites/www
 CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "3000"]

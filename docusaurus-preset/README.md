@@ -116,7 +116,7 @@ Once the OpenCatalogi plugin is built, the dev workflow becomes:
 cd ~/nextcloud-docker-dev && docker compose up -d
 
 # Start Docusaurus, pointing at localhost:8080
-cd ~/.../sites/connext
+cd ~/.../sites/www
 OPENCATALOGI_URL=http://localhost:8080/index.php/apps/openregister/api npm start
 ```
 

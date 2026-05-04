@@ -7,16 +7,16 @@
 # so the host machine's empty folders do not shadow them.
 #
 # From the repo root:
-#   docker compose up                  # build + start connext
+#   docker compose up                  # build + start www
 #   docker compose up -d               # detached
-#   docker compose logs -f connext     # tail the dev server
+#   docker compose logs -f www         # tail the dev server
 #   docker compose down                # stop + remove
 #
-# To wire connext into the local Nextcloud (for the future
-# OpenCatalogi content plugin), uncomment the networks block at
-# the bottom and the matching service-level networks key. Set
-# OPENCATALOGI_URL to http://nextcloud:80/... so the container
-# reaches Nextcloud via Docker DNS instead of localhost:8080.
+# To wire www into the local Nextcloud (for the future OpenCatalogi
+# content plugin), uncomment the networks block at the bottom and
+# the matching service-level networks key. Set OPENCATALOGI_URL to
+# http://nextcloud:80/... so the container reaches Nextcloud via
+# Docker DNS instead of localhost:8080.
 # =============================================================
 
 services:
@@ -40,17 +40,17 @@ services:
       - ./.github/kit-caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     restart: unless-stopped
 
-  connext:
+  www:
     build:
       context: .
-      dockerfile: sites/connext/Dockerfile
-    image: conduction/connext:dev
-    container_name: conduction-connext
+      dockerfile: sites/www/Dockerfile
+    image: conduction/www:dev
+    container_name: conduction-www
     ports:
       # Host port 3100 (3000 + 3030 are typically used by other Conduction
       # dev containers, e.g. openregister UIs). Change via .env if needed:
-      #   CONNEXT_PORT=3200 docker compose up
-      - "${CONNEXT_PORT:-3100}:3000"
+      #   WWW_PORT=3200 docker compose up
+      - "${WWW_PORT:-3100}:3000"
     volumes:
       # Source bind-mount so saves trigger Docusaurus hot-reload
       - .:/app
@@ -58,9 +58,9 @@ services:
       - /app/node_modules
       - /app/diagrams/node_modules
       - /app/docusaurus-preset/node_modules
-      - /app/sites/connext/node_modules
+      - /app/sites/www/node_modules
       # Docusaurus build cache; speeds up restart
-      - /app/sites/connext/.docusaurus
+      - /app/sites/www/.docusaurus
     environment:
       # Local default. Override via .env when wiring to the live Nextcloud:
       #   OPENCATALOGI_URL=http://nextcloud:80/index.php/apps/openregister/api

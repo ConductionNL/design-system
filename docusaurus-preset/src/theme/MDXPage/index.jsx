@@ -10,7 +10,7 @@
  * edges.
  *
  * Brand rule: pages with `hide_table_of_contents: true` (every page in
- * sites/connext/src/pages/) render full-width. Section components own
+ * sites/www/src/pages/) render full-width. Section components own
  * their own `max-width: 1280px; margin: 0 auto` rules, so the marketing
  * surfaces look right. Pages that DO show a TOC keep the standard
  * Docusaurus container behaviour so the docs side stays consistent.

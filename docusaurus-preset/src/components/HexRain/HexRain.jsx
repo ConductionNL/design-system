@@ -10,7 +10,7 @@
  * progress panel.
  *
  * Mirrors preview/pages/landing.html .hex-rain. The actual game logic
- * lives in sites/connext/static/lib/hex-rain.js (266 lines of canvas-
+ * lives in sites/www/static/lib/hex-rain.js (266 lines of canvas-
  * style imperative work that earns its place in plain JS, not JSX).
  * This React wrapper:
  *   - Renders the mount point with the right class names so the

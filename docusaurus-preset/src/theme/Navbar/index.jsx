@@ -2,19 +2,90 @@
  * Brand Navbar swizzle.
  *
  * Replaces Docusaurus's default Infima navbar with the Conduction
- * top-navbar pattern: ConNext wordmark + nav links + Partners + Install.
+ * top-navbar pattern: brand wordmark + nav links + Partners + Install.
  * Navigation items come from themeConfig.navbar.items (configured by
- * the consuming site); the chrome (typography, spacing, brand citation
- * on "Next") stays locked in this component.
+ * the consuming site); the chrome (typography, spacing, brand citation)
+ * stays locked in this component.
+ *
+ * Brand wordmark switches based on pathname so a single Conduction hub
+ * can host vanity sub-brand entry points:
+ *
+ *   /connext, /nl/connext           → "Con<Next>" with next-blue accent
+ *   /commonground, /nl/commonground → "Common <Ground>" with cg-yellow accent
+ *   anything else                   → navbar.title (e.g. "Conduction")
+ *
+ * The home link follows the brand: clicking the wordmark while on a
+ * sub-brand section keeps you in that section. Outside a sub-brand
+ * section it goes to the site root.
  *
  * Mirrors preview/components/top-navbar.html in the design-system kit.
  */
 
 import React from 'react';
 import Link from '@docusaurus/Link';
+import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem';
 import styles from './styles.module.css';
+
+/**
+ * Sub-brand entries for the Conduction hub. Order matters only if a
+ * pathname could match multiple brands (it cannot, today).
+ */
+const SUB_BRANDS = [
+  {
+    name: 'connext',
+    match: /^(?:\/nl)?\/connext(?:\/|$)/,
+    home: '/connext',
+    wordmark: (
+      <>
+        Con<span className="next-blue">Next</span>
+      </>
+    ),
+  },
+  {
+    name: 'commonground',
+    match: /^(?:\/nl)?\/commonground(?:\/|$)/,
+    home: '/commonground',
+    wordmark: (
+      <>
+        Common <span className="cg-yellow">Ground</span>
+      </>
+    ),
+  },
+];
+
+/**
+ * Pick the wordmark + home target for the current pathname. Falls back
+ * to title-based detection so a site whose primary brand is a sub-brand
+ * (e.g. navbar.title === 'ConNext') still gets the styled wordmark.
+ */
+function brandFor(pathname, title) {
+  for (const b of SUB_BRANDS) {
+    if (b.match.test(pathname)) return {wordmark: b.wordmark, home: b.home};
+  }
+  if (title === 'ConNext') {
+    return {
+      wordmark: (
+        <>
+          Con<span className="next-blue">Next</span>
+        </>
+      ),
+      home: '/',
+    };
+  }
+  if (title === 'Common Ground') {
+    return {
+      wordmark: (
+        <>
+          Common <span className="cg-yellow">Ground</span>
+        </>
+      ),
+      home: '/',
+    };
+  }
+  return {wordmark: title, home: '/'};
+}
 
 /**
  * Render a single navbar item. The brand top-navbar supports a small
@@ -70,7 +141,9 @@ function NavItem({item, location}) {
 
 export default function Navbar() {
   const {navbar} = useThemeConfig();
+  const location = useLocation();
   const items = navbar.items || [];
+  const brand = brandFor(location.pathname, navbar.title);
 
   /* Split into "left links" (regular nav) and "right CTAs" (locale,
      external links, install button). The brand pattern groups them
@@ -81,22 +154,18 @@ export default function Navbar() {
   return (
     <nav className={styles.nav} role="navigation" aria-label="Main">
       <div className={styles.left}>
-        <Link to="/" className={styles.wordmark}>
-          {navbar.title === 'ConNext' ? (
-            <>Con<span className="next-blue">Next</span></>
-          ) : (
-            navbar.title
-          )}
+        <Link to={brand.home} className={styles.wordmark}>
+          {brand.wordmark}
         </Link>
         <div className={styles.links}>
           {leftItems.map((item, i) => (
-            <NavItem key={i} item={item} />
+            <NavItem key={i} item={item} location={location} />
           ))}
         </div>
       </div>
       <div className={styles.ctas}>
         {rightItems.map((item, i) => (
-          <NavItem key={i} item={item} />
+          <NavItem key={i} item={item} location={location} />
         ))}
       </div>
     </nav>

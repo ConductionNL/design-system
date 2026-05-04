@@ -7,7 +7,7 @@
  * as further away) and breathe in opacity.
  *
  * Mirrors preview/conduction-bg.html in the kit. The runtime-script
- * version still ships under sites/connext/static/lib/ for plain-HTML
+ * version still ships under sites/www/static/lib/ for plain-HTML
  * surfaces (the preview pages); this React component is the canonical
  * way to use the pattern from MDX or any Docusaurus swizzle.
  *

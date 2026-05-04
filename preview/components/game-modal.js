@@ -52,7 +52,7 @@
             '<div class="game-modal__progress-fill" data-progress-fill></div>' +
           '</div>' +
         '</div>' +
-        '<div class="game-modal__grid" data-grid></div>' +
+        '<ul class="game-modal__grid" data-grid></ul>' +
         '<p class="game-modal__cta" data-cta>Five mini-games are hidden across this site.</p>' +
         '<div class="game-modal__actions">' +
           '<button type="button" class="game-modal__btn game-modal__btn--secondary" data-close>Close</button>' +
@@ -69,41 +69,14 @@
   const COOKIE = 'connext_minigames';
   const COOKIE_DAYS = 365;
 
-  // Five game slots. The first three are wired today; the last two
-  // ship as locked teasers. `clue` is shown as a hover tooltip on the
-  // tile in the grid — keep it short, location-flavoured, and a little
-  // playful so the reader knows where to keep digging.
+  // Five game slots. Labels mirror the React <GameModal/> in the
+  // docusaurus-preset so the kit and the website read identically.
   const GAMES = [
-    {
-      id: 'boats',
-      name: 'Canal armada',
-      clue: 'Sink the fleet at the bottom of any page.',
-      icon: '<path d="M3 14h18M3 14l1 4a3 3 0 0 0 3 2h10a3 3 0 0 0 3-2l1-4M5 14V8h14v6M9 4h6v4H9z"/>',
-    },
-    {
-      id: 'hexrain',
-      name: 'Twelve apps',
-      clue: 'Catch the apps as they fall on the front door.',
-      icon: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 8l3 1.7v3.4L12 14.8l-3-1.7V9.7z"/>',
-    },
-    {
-      id: 'invaders',
-      name: 'Cookie invaders',
-      clue: 'Eat your cookies.',
-      icon: '<rect x="5" y="6" width="14" height="10" rx="1"/><path d="M3 18h18M9 14v2M15 14v2M9 9h0M15 9h0"/>',
-    },
-    {
-      id: 'mystery1',
-      name: '???',
-      clue: 'Keep digging — we\'re not telling.',
-      icon: null,
-    },
-    {
-      id: 'mystery2',
-      name: '???',
-      clue: 'Keep digging — we\'re not telling.',
-      icon: null,
-    },
+    { id: 'hexrain',  label: 'Twelve apps · hex rain' },
+    { id: 'boats',    label: 'Sink the boats · footer canal' },
+    { id: 'invaders', label: 'Hex-vaders · TBD' },
+    { id: 'domino',   label: 'Hex-domino · TBD' },
+    { id: 'tetris',   label: 'Hex-tris · TBD' },
   ];
 
   // ---- Cookie helpers ----
@@ -131,49 +104,28 @@
   function setText(el, text) { if (el) el.textContent = text; }
 
   // ---- Render helpers ----
-  function renderGrid(state, justUnlockedId) {
+  // Vertical list: small hex bullet (cobalt-200, mint-500 if found) +
+  // game label. No mystery `?` tiles, no hover tooltips — the kit now
+  // matches the website preset's leaner reveal.
+  function renderGrid(state, _justUnlockedId) {
     const grid = $('[data-grid]');
     if (!grid) return;
     grid.innerHTML = '';
     for (const g of GAMES) {
-      const entry = state[g.id];
-      const found = !!(entry && entry.found);
-      const tile = document.createElement('div');
-      tile.className = 'gm-tile' + (found ? ' found' : '') + (g.id === justUnlockedId ? ' just-unlocked' : '');
+      const found = !!(state[g.id] && state[g.id].found);
+      const item = document.createElement('li');
+      item.className = 'gm-tile' + (found ? ' found' : '');
 
-      const hex = document.createElement('div');
+      const hex = document.createElement('span');
       hex.className = 'gm-tile__hex';
-      if (found && g.icon) {
-        hex.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + g.icon + '</svg>';
-      } else {
-        const m = document.createElement('span');
-        m.className = 'gm-mystery';
-        m.textContent = '?';
-        hex.appendChild(m);
-      }
-      tile.appendChild(hex);
+      hex.setAttribute('aria-hidden', 'true');
+      item.appendChild(hex);
 
-      const name = document.createElement('p');
-      name.className = 'gm-tile__name';
-      name.textContent = found ? g.name : '???';
-      tile.appendChild(name);
+      const label = document.createElement('span');
+      label.textContent = g.label;
+      item.appendChild(label);
 
-      const score = document.createElement('span');
-      score.className = 'gm-tile__score';
-      if (found) {
-        score.textContent = entry.summary || ('best ' + (entry.best ?? '—'));
-      } else {
-        score.textContent = 'locked';
-      }
-      tile.appendChild(score);
-
-      // Custom hover hint — pointer to where the game is hiding.
-      const hint = document.createElement('span');
-      hint.className = 'gm-tile__hint';
-      hint.textContent = g.clue;
-      tile.appendChild(hint);
-
-      grid.appendChild(tile);
+      grid.appendChild(item);
     }
   }
 
@@ -189,26 +141,21 @@
     if (cta) {
       const remaining = GAMES.length - foundCount;
       if (remaining === 0) {
-        cta.innerHTML = '<strong>All five mini-games discovered.</strong> Nicely done.';
-      } else if (foundCount === 0) {
-        cta.textContent = 'Five mini-games are hidden across this site. You just found one.';
+        cta.textContent = 'All five found. You read the kit.';
       } else {
-        cta.innerHTML = '<strong>' + remaining + '</strong> more ' + (remaining === 1 ? 'game' : 'games') + ' hidden somewhere on the site. Keep digging around.';
+        cta.textContent = remaining + ' more game' + (remaining === 1 ? '' : 's') + ' hidden somewhere. Keep clicking.';
       }
     }
     return foundCount;
   }
 
   // ---- Header copy per game-end event ----
-  function setHeader(detail, isNewlyFound) {
-    const game = GAMES.find(g => g.id === detail.id);
-    const eyebrow = isNewlyFound ? 'New mini-game found!' : (detail.won ? 'Mini-game cleared' : 'Mini-game complete');
-    const title = isNewlyFound
-      ? (game ? game.name : 'Hidden game')
-      : (detail.won ? 'Nice run.' : 'Time to try again.');
-    const subtitle = detail.won
-      ? (game ? game.clue : 'You won.')
-      : (game ? game.clue : 'Better luck next round.');
+  function setHeader(detail, _isNewlyFound) {
+    const eyebrow = detail.won ? 'Mini-game complete' : 'Game over';
+    const title = detail.title || (detail.won ? 'Nice run.' : "That's all of them.");
+    const subtitle = detail.subtitle || (detail.won
+      ? "You've cleared a hidden ConNext mini-game."
+      : "Try again any time, the rain doesn't stop.");
     setText($('[data-eyebrow]'), eyebrow);
     setText($('[data-title]'), title);
     setText($('[data-subtitle]'), subtitle);

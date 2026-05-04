@@ -50,5 +50,6 @@ export {default as HexRain} from './HexRain/HexRain.jsx';
 export {default as Pipeline, PipelineStep} from './Pipeline/Pipeline.jsx';
 export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFilters.jsx';
 export {default as CookieCli} from './CookieCli/CookieCli.jsx';
+export {default as GameModal} from './GameModal/GameModal.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

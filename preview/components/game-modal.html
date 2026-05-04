@@ -59,5 +59,41 @@
 
 <script src="game-modal.js" defer></script>
 
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage" style="margin-top: 80px;">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;GameModal/&gt;</code></h2>
+  <p>End-of-game dialog. Listens for <code>connext:gameend</code> CustomEvents on the window, opens with the supplied copy, tracks total games found in localStorage so the cross-site progress bar is consistent. Mount once per layout, not per page.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {GameModal} from '@conduction/docusaurus-preset/components';
+
+{/* Mount once on the layout */}
+&lt;GameModal /&gt;
+
+{/* Fired by HexRain, the canal-footer boats, future invaders */}
+window.dispatchEvent(new CustomEvent('connext:gameend', {
+  detail: {
+    id: 'hexrain',
+    won: true,
+    score: 12,
+    summary: '12 / 12 collected'
+  }
+}));</code></pre>
+  <h3>Event detail shape</h3>
+  <ul class="ru-props">
+    <li><code>id</code> game identifier (matches the <code>games</code> table for progress)</li>
+    <li><code>won</code> bool. Won games count toward the progress bar.</li>
+    <li><code>score</code> number, displayed if present</li>
+    <li><code>summary</code> string, shown in the score pill (overrides <code>score</code> alone)</li>
+    <li><code>title</code> override the default "Nice run." / "That's all of them."</li>
+    <li><code>subtitle</code> override the default "You've cleared a hidden ConNext mini-game."</li>
+  </ul>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>games</code> array of {id, label} for the progress grid</li>
+  </ul>
+  <p>The Play-again button fires <code>connext:gamereplay</code> on the window with <code>{id}</code> in the detail; the playing component subscribes and re-inits.</p>
+</aside>
+
 </body>
 </html>

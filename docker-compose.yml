@@ -21,6 +21,25 @@
 
 services:
 
+  # =====================================================================
+  # kit - the design-system kit (preview/*.html) served as static files
+  # ---------------------------------------------------------------------
+  # Production is GitHub Pages on main at https://designsystem.conduction.nl
+  # Locally we use Caddy's file_server to serve the same tree on port 8090,
+  # so the kit pages have a stable URL when you're iterating on a component
+  # spec page next to the React side. No build step; bind-mount the repo
+  # and reload the browser to see changes.
+  # =====================================================================
+  kit:
+    image: caddy:2-alpine
+    container_name: conduction-kit
+    ports:
+      - "${KIT_PORT:-8090}:80"
+    volumes:
+      - .:/srv:ro
+      - ./.github/kit-caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    restart: unless-stopped
+
   connext:
     build:
       context: .

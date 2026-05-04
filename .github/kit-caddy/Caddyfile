@@ -1,0 +1,48 @@
+# Caddy config for the design-system kit local server.
+# Serves the repo root at http://localhost:${KIT_PORT:-8090}/, so:
+#   /                                      browse the kit tree
+#   /preview/pages/landing.html            full landing page
+#   /preview/components/primitives.html    primitives spec
+#   /preview/identity/voice.html           verbal-brand pages
+#
+# Produces the same surface as GitHub Pages serves at
+# https://designsystem.conduction.nl, just bound to a local port.
+#
+# Hot-reload here is browser-driven (refresh the tab); the docker-compose
+# bind-mount means edits to preview/*.html are visible on the next refresh,
+# no container restart needed.
+
+:80 {
+	root * /srv
+	file_server browse
+	encode zstd gzip
+
+	# Map directory request to /index.html where it exists, fall back to
+	# the directory listing otherwise.
+	try_files {path} {path}/index.html
+
+	# Serve .html as text/html, .css as text/css, etc. Caddy does this by
+	# default for known extensions; explicit override here for the kit's
+	# common types.
+	@svg path *.svg
+	header @svg Content-Type "image/svg+xml"
+
+	@css path *.css
+	header @css Content-Type "text/css"
+
+	# Cache-Control: 5 minutes for HTML so the dev loop is responsive,
+	# longer for static assets.
+	@html path *.html /
+	header @html Cache-Control "public, max-age=300"
+
+	@assets path *.png *.jpg *.jpeg *.webp *.svg *.css *.js *.woff *.woff2
+	header @assets Cache-Control "public, max-age=3600"
+
+	# CORS for cross-origin testing (e.g. when iframing into the connext
+	# site or when the kit page itself loads a font from a CDN).
+	header Access-Control-Allow-Origin "*"
+
+	# Friendly index for the repo root.
+	@root path /
+	rewrite @root /preview/components.html
+}

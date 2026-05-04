@@ -23,6 +23,7 @@ import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import {useThemeConfig} from '@docusaurus/theme-common';
+import GameModal from '../../components/GameModal/GameModal';
 
 function FooterLink({label, href, to}) {
   if (href) {
@@ -280,6 +281,11 @@ export default function Footer() {
           skyline (5 trapgevel variants) and to spawn boats during the
           mini-game (sailing ship, cargo, frigate, battleship boss). */}
       <FooterTemplates />
+
+      {/* Cross-game completion dialog. Listens for connext:gameend (HexRain,
+          canal mini-game) and reports the result with replay + cross-game
+          progress. Position: fixed via CSS module so it overlays the page. */}
+      <GameModal />
     </>
   );
 }

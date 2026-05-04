@@ -117,7 +117,7 @@ def main():
 
     apps = []
     for repo in repos:
-        if repo.get("archived") or repo.get("fork") or repo.get("disabled"):
+        if repo.get("archived") or repo.get("disabled"):
             continue
         info_xml = fetch_text(
             f"https://raw.githubusercontent.com/{repo['full_name']}/{repo['default_branch']}/appinfo/info.xml"

@@ -29,6 +29,7 @@
 import React from 'react';
 import HexBullet from '../primitives/HexBullet';
 import Button from '../primitives/Button';
+import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
 import styles from './DetailHero.module.css';
 
 export default function DetailHero({
@@ -44,7 +45,11 @@ export default function DetailHero({
   icon,
   iconColor,
   className,
+  appId,
+  downloads,
 }) {
+  const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
+
   return (
     <section className={[styles.head, className].filter(Boolean).join(' ')}>
       {crumb && Array.isArray(crumb) && (
@@ -69,7 +74,7 @@ export default function DetailHero({
 
       <div className={styles.headInner}>
         <div className={styles.copy}>
-          {(status || version || locales) && (
+          {(status || version || locales || dlCount > 0) && (
             <div className={styles.badgeRow}>
               {status && (
                 <span className={styles.badge}>
@@ -79,6 +84,18 @@ export default function DetailHero({
               )}
               {version && <span className={[styles.badge, styles.versionBadge].join(' ')}>{version}</span>}
               {locales && <span className={[styles.badge, styles.versionBadge].join(' ')}>{locales}</span>}
+              {dlCount > 0 && (
+                <span
+                  className={[styles.badge, styles.downloadsBadge].join(' ')}
+                  title="Total release-asset downloads from GitHub. Updated weekdays at 09:00."
+                  data-app-downloads={appId || ''}
+                >
+                  <svg className={styles.downloadIcon} viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/>
+                  </svg>
+                  {formatDownloads(dlCount)} downloads
+                </span>
+              )}
             </div>
           )}
 

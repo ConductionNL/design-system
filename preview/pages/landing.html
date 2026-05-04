@@ -202,9 +202,12 @@
     margin: 0 auto;
     padding: 48px 64px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 32px;
   }
+  @media (max-width: 1100px) { .strip .strip-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 700px)  { .strip .strip-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 32px 24px; } }
+  @media (max-width: 480px)  { .strip .strip-inner { grid-template-columns: 1fr; } }
   .strip .stat .num { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); line-height: 1; }
   .strip .stat .lbl { font-size: 14px; color: var(--c-cobalt-700); margin-top: 8px; line-height: 1.4; }
 
@@ -324,6 +327,7 @@
     <div class="stat"><div class="num">2 min</div><div class="lbl" data-i18n="landing.stats.install">from app store install<br>to working solution</div></div>
     <div class="stat"><div class="num">€0</div><div class="lbl" data-i18n="landing.stats.cost">for the apps,<br>support is optional</div></div>
     <div class="stat"><div class="num">EUPL</div><div class="lbl" data-i18n="landing.stats.license">licensed, no vendor<br>lock-in, ever</div></div>
+    <div class="stat"><div class="num" data-total-downloads>34,547</div><div class="lbl" data-i18n="landing.stats.downloads">downloads,<br>and counting</div></div>
   </div>
 </section>
 
@@ -738,5 +742,6 @@
   })();
 </script>
 <script src="../i18n.js" defer></script>
+<script src="../components/_lib/downloads.js" defer></script>
 </body>
 </html>

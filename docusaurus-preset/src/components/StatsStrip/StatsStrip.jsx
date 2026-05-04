@@ -25,7 +25,7 @@ export default function StatsStrip({stats = []}) {
 
   return (
     <section className={styles.strip} aria-label="Key statistics">
-      <div className={styles.inner}>
+      <div className={styles.inner} style={{'--stats-count': stats.length}}>
         {stats.map((stat, i) => (
           <div key={i} className={styles.stat}>
             <div className={styles.value}>{stat.value}</div>

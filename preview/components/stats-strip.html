@@ -10,12 +10,15 @@
 
   .strip {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 32px;
     padding: 40px 64px;
     border-top: 1px solid var(--c-cobalt-100);
     background: var(--c-cobalt-50);
   }
+  @media (max-width: 1100px) { .strip { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .strip { grid-template-columns: repeat(2, 1fr); padding: 32px 24px; } }
+  @media (max-width: 480px)  { .strip { grid-template-columns: 1fr; } }
   .strip .stat .num { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
   .strip .stat .lbl { font-size: 13px; color: var(--c-cobalt-700); margin-top: 4px; line-height: 1.4; }
 </style>
@@ -26,22 +29,27 @@
   <div class="stat"><div class="num">12</div><div class="lbl">apps in the ecosystem,<br>all open-source</div></div>
   <div class="stat"><div class="num">2 min</div><div class="lbl">from app store install<br>to working solution</div></div>
   <div class="stat"><div class="num">€0</div><div class="lbl">for the apps,<br>support is optional</div></div>
-  <div class="stat"><div class="num">MIT</div><div class="lbl">licensed, with no<br>vendor lock-in</div></div>
+  <div class="stat"><div class="num">EUPL</div><div class="lbl">licensed, no vendor<br>lock-in, ever</div></div>
+  <div class="stat"><div class="num" data-total-downloads>34,547</div><div class="lbl">downloads,<br>and counting</div></div>
 </section>
+
+<script src="_lib/downloads.js" defer></script>
 
 <link rel="stylesheet" href="_react-usage.css">
 <aside class="react-usage">
   <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
   <h2>Mount in MDX as <code>&lt;StatsStrip/&gt;</code></h2>
-  <p>Cobalt-50 band with up to four big-number stats. Auto-collapses to 2-up under 900px and 1-up under 500px.</p>
+  <p>Cobalt-50 band with N big-number stats. The grid grows to fit the array length and collapses to 2-up under 900px, 1-up under 500px.</p>
   <h3>Import &amp; example</h3>
   <pre><code>import {StatsStrip} from '@conduction/docusaurus-preset/components';
+import {totalDownloads, formatDownloads} from '@conduction/docusaurus-preset/data';
 
 &lt;StatsStrip stats={[
   {value: '12',    label: 'apps in the ecosystem, all open-source'},
   {value: '2 min', label: 'from app store install to working solution'},
   {value: '€0',    label: 'for the apps, support is optional'},
   {value: 'EUPL',  label: 'licensed, no vendor lock-in, ever'},
+  {value: formatDownloads(totalDownloads), label: 'downloads, and counting'},
 ]} /&gt;</code></pre>
   <h3>Props</h3>
   <ul class="ru-props">

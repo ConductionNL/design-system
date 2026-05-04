@@ -40,6 +40,15 @@
   }
   .badge .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
   .badge.version { color: var(--c-cobalt-400); }
+  .badge.downloads {
+    color: var(--c-blue-cobalt);
+    background: var(--c-cobalt-50);
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    letter-spacing: 0.04em;
+  }
+  .badge.downloads svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   h1.title {
     font-size: 64px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
@@ -80,6 +89,10 @@
         <span class="badge"><span class="h"></span>Stable</span>
         <span class="badge version">v3.1</span>
         <span class="badge version">NL · EN</span>
+        <span class="badge downloads" title="Total release-asset downloads from GitHub. Updated weekdays at 09:00.">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+          <span data-app-downloads="openregister">9,805</span> downloads
+        </span>
       </div>
       <h1 class="title">OpenRegister</h1>
       <p class="tagline">Schemas, registers, structured data objects. The typed-data backbone underneath every other ConNext app, and the install you reach for first.</p>
@@ -99,11 +112,12 @@
 <aside class="react-usage">
   <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
   <h2>Mount in MDX as <code>&lt;DetailHero/&gt;</code></h2>
-  <p>Two-column 1fr/360px hero shared by every detail page in the kit. Left column: crumb + status badge + version + h1 + tagline + 3 CTAs. Right column: 360x416 cobalt hex with the page-subject's icon.</p>
+  <p>Two-column 1fr/360px hero shared by every detail page in the kit. Left column: crumb + status badge + version + h1 + tagline + 3 CTAs. Right column: 360x416 cobalt hex with the page-subject's icon. Pass <code>appId</code> and the badge row picks up the live download count from data/app-downloads.json.</p>
   <h3>Import &amp; example</h3>
   <pre><code>import {DetailHero} from '@conduction/docusaurus-preset/components';
 
 &lt;DetailHero
+  appId="openregister"
   crumb={[{label: 'Apps', href: '/apps'}, 'OpenRegister']}
   status={{label: 'Stable', color: 'var(--c-mint-500)'}}
   version="v3.1"
@@ -118,6 +132,8 @@
 /&gt;</code></pre>
   <h3>Props</h3>
   <ul class="ru-props">
+    <li><code>appId</code> looks up the download count from data/app-downloads.json (rebuilt every weekday)</li>
+    <li><code>downloads</code> override the auto-lookup with an explicit number</li>
     <li><code>crumb</code> array of {label, href} or strings</li>
     <li><code>status</code> {label, color} for the leading hex-bullet badge</li>
     <li><code>version</code> Plex Mono caption next to the status</li>
@@ -129,6 +145,8 @@
     <li><code>iconColor</code> override the cobalt hex fill (e.g. white for partner logos)</li>
   </ul>
 </aside>
+
+<script src="_lib/downloads.js" defer></script>
 
 </body>
 </html>

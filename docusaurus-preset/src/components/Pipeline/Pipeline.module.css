@@ -2,17 +2,19 @@
  * <Pipeline /> styles. Layout-grid version of the pipeline-flow.html
  * pattern. Horizontal at >=1100px, stacks vertically below.
  *
- * Each step renders a 3D hex-prism (top + left + right faces) coloured
- * by family, with the "01" stage number and uppercase kicker stacked
- * above. Nothing sits below — pure hexes only. Steps connect via
- * animated dotted flow lines that move left-to-right.
+ * Each step renders a flat pointy-top hex coloured by family, with
+ * the "01" stage number and uppercase kicker stacked above and an
+ * explanatory name + caption below. A single animated dotted flow
+ * line runs full-width behind the hex row, threading through the hex
+ * equator. The hexes sit above the line via z-index so their fills
+ * occlude the dashes behind them.
  */
 
 .pipeline {
   display: grid;
   grid-template-columns: minmax(160px, 220px) 1fr minmax(160px, 220px);
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
   font-family: var(--conduction-typography-font-family-body);
   max-width: 1280px;
   margin: 0 auto;
@@ -21,7 +23,10 @@
   .pipeline { grid-template-columns: 1fr; }
 }
 
+/* Steps row. Position relative so the ::before line can absolute-
+   position itself across the row. */
 .steps {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -31,9 +36,68 @@
   .steps { flex-direction: column; align-items: stretch; gap: 24px; }
 }
 
-/* Step: stage number + kicker above the prism, prism below. Pure
-   hexes — no name or caption text. */
+/* Full-width animated dotted line. Sits at the hex's vertical centre
+   so it threads through every hex tile. Hexes use z-index:1 so they
+   render above the line and visually occlude the dashes behind them. */
+.steps::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Hex midline calc: viewBox 0 0 120 86, midline y=43, prism renders
+     at ~100px tall (max-width 140 × aspect 86/120) so midline is ~50px
+     from SVG top. Above the SVG the step stacks num (~14) + kicker
+     (~14) + 8px margin = ~36px → midline lands at ~86px from steps top.
+     Less 1px so the 2px line is centred. */
+  top: 85px;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--c-cobalt-300) 0 5px,
+    transparent 5px 10px
+  );
+  background-size: 10px 100%;
+  background-repeat: repeat-x;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+  animation: flow-shift 0.9s linear infinite;
+}
+@keyframes flow-shift {
+  from { background-position: 0 0; }
+  to   { background-position: 10px 0; }
+}
+@media (max-width: 1100px) {
+  .steps::before {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 2px;
+    height: auto;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--c-cobalt-300) 0 5px,
+      transparent 5px 10px
+    );
+    background-size: 100% 10px;
+    background-repeat: repeat-y;
+    transform: translateX(-50%);
+    animation: flow-shift-vert 0.9s linear infinite;
+  }
+}
+@keyframes flow-shift-vert {
+  from { background-position: 0 0; }
+  to   { background-position: 0 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .steps::before { animation: none; }
+}
+
+/* Step: stage above hex, hex in middle, name + caption below. */
 .step {
+  position: relative;
+  z-index: 1;
   flex: 1 1 0;
   min-width: 0;
   text-align: center;
@@ -60,8 +124,6 @@
   margin-bottom: 8px;
 }
 
-/* The hex-prism SVG. Fixed max width so the geometry doesn't squash on
-   narrow steps; svg viewBox handles internal scaling. */
 .prism {
   width: 100%;
   max-width: 140px;
@@ -69,68 +131,38 @@
   display: block;
 }
 
-/* Animated dotted flow line. Implemented as a repeating linear-gradient
-   so background-position can shift the dashes left-to-right (or
-   top-to-bottom in the mobile vertical layout). The line sits at the
-   prism's vertical centre via margin-top on wide screens. */
-.flow {
-  flex: 0 0 auto;
-  align-self: flex-start;
-  width: 36px;
-  /* Align horizontally with the hex's left/right vertices (the
-     "equator" of the prism), where the side faces meet the top
-     diamond. In viewBox (0 0 120 132) those vertices sit at y=62.
-     Prism renders at 154px tall, so equator = 62/132 × 154 ≈ 72px
-     from the SVG top. The step stacks num (~14) + kicker (~14) + 8px
-     margin = ~36px above the SVG, putting the equator at ~108px from
-     the step top; less 1px to centre the 2px line. */
-  margin-top: 109px;
-  height: 2px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--c-cobalt-300) 0 5px,
-    transparent 5px 10px
-  );
-  background-size: 10px 100%;
-  background-repeat: repeat-x;
-  opacity: 0.7;
-  animation: flow-shift 0.9s linear infinite;
+/* Explanatory text under the hex — bold app name + caption sentence,
+   matching the kit's `.captions .col` block beneath pipeline-flow.html. */
+.name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-cobalt-900);
+  margin-top: 16px;
 }
-@keyframes flow-shift {
-  from { background-position: 0 0; }
-  to   { background-position: 10px 0; }
-}
-@media (max-width: 1100px) {
-  .flow {
-    width: 2px;
-    height: 28px;
-    margin: 0 auto;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      var(--c-cobalt-300) 0 5px,
-      transparent 5px 10px
-    );
-    background-size: 100% 10px;
-    background-repeat: repeat-y;
-    animation: flow-shift-vert 0.9s linear infinite;
-  }
-}
-@keyframes flow-shift-vert {
-  from { background-position: 0 0; }
-  to   { background-position: 0 10px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .flow { animation: none; }
+.caption {
+  font-size: 13px;
+  color: var(--c-cobalt-700);
+  line-height: 1.5;
+  max-width: 26ch;
+  margin: 6px auto 0;
 }
 
-/* End columns (sources / consumers). Plain text layout — no wrapper
-   box, no border, no background. Just a label above a list. */
+/* End boxes (sources / consumers). Cobalt-50 ground + cobalt-100
+   border, kit-identical. Each item gets a small rounded-square icon
+   next to the label. */
 .end {
-  padding: 18px 0;
-  align-self: stretch;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  align-self: start;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Pull the wrapper down so the SOURCES/CONSUMERS label sits roughly
+     level with the per-step kicker text (which lands ~36px below the
+     pipeline top). */
+  margin-top: 18px;
 }
 
 .endLabel {
@@ -150,6 +182,25 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.endList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 13px;
   color: var(--c-cobalt-700);
+}
+
+.endIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.endIcon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
 }

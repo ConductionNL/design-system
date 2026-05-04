@@ -1,16 +1,16 @@
 /**
  * <Pipeline /> styles. Layout-grid version of the pipeline-flow.html
- * pattern. Horizontal at >=900px, stacks vertically below.
+ * pattern. Horizontal at >=1100px, stacks vertically below.
  *
  * Each step renders a 3D hex-prism (top + left + right faces) coloured
- * by family, with the "01" number, uppercase kicker, full app name and
- * caption stacked above and below. Steps connect via dotted flow lines
- * matching the kit's `.pipeline .flow` style.
+ * by family, with the "01" stage number and uppercase kicker stacked
+ * above. Nothing sits below — pure hexes only. Steps connect via
+ * animated dotted flow lines that move left-to-right.
  */
 
 .pipeline {
   display: grid;
-  grid-template-columns: minmax(140px, 200px) 1fr minmax(140px, 200px);
+  grid-template-columns: minmax(160px, 220px) 1fr minmax(160px, 220px);
   gap: 24px;
   align-items: stretch;
   font-family: var(--conduction-typography-font-family-body);
@@ -31,7 +31,8 @@
   .steps { flex-direction: column; align-items: stretch; gap: 24px; }
 }
 
-/* Step: number + kicker above the prism, full name + caption below */
+/* Step: stage number + kicker above the prism, prism below. Pure
+   hexes — no name or caption text. */
 .step {
   flex: 1 1 0;
   min-width: 0;
@@ -68,46 +69,56 @@
   display: block;
 }
 
-.name {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--c-cobalt-900);
-  margin-top: 4px;
-}
-
-.caption {
-  font-size: 13px;
-  color: var(--c-cobalt-700);
-  line-height: 1.45;
-  max-width: 26ch;
-  margin: 6px auto 0;
-}
-
-/* Dotted flow line between steps — matches `.pipeline .flow` from the
-   kit (cobalt-300 dash, 0.7 opacity). On wide screens it sits at the
-   prism's vertical centre via flex align. */
+/* Animated dotted flow line. Implemented as a repeating linear-gradient
+   so background-position can shift the dashes left-to-right (or
+   top-to-bottom in the mobile vertical layout). The line sits at the
+   prism's vertical centre via margin-top on wide screens. */
 .flow {
   flex: 0 0 auto;
   align-self: stretch;
   width: 36px;
-  margin-top: 56px;     /* eyeballed to land on the prism's mid-line */
-  height: 0;
-  border-top: 1.5px dashed var(--c-cobalt-300);
+  margin-top: 56px;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--c-cobalt-300) 0 5px,
+    transparent 5px 10px
+  );
+  background-size: 10px 100%;
+  background-repeat: repeat-x;
   opacity: 0.7;
+  animation: flow-shift 0.9s linear infinite;
+}
+@keyframes flow-shift {
+  from { background-position: 0 0; }
+  to   { background-position: 10px 0; }
 }
 @media (max-width: 1100px) {
   .flow {
-    width: 0;
-    height: 24px;
+    width: 2px;
+    height: 28px;
     margin: 0 auto;
-    border-top: 0;
-    border-left: 1.5px dashed var(--c-cobalt-300);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--c-cobalt-300) 0 5px,
+      transparent 5px 10px
+    );
+    background-size: 100% 10px;
+    background-repeat: repeat-y;
+    animation: flow-shift-vert 0.9s linear infinite;
   }
 }
+@keyframes flow-shift-vert {
+  from { background-position: 0 0; }
+  to   { background-position: 0 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow { animation: none; }
+}
 
-/* End boxes (sources / consumers) — match the kit's `.endbox` rect:
-   light cobalt-50 ground, cobalt-100 stroke, label above an item list. */
+/* End boxes (sources / consumers). Cobalt-50 ground + cobalt-100
+   border, kit-identical. Each item gets a small rounded-square icon
+   next to the label. */
 .end {
   background: var(--c-cobalt-50);
   border: 1px solid var(--c-cobalt-100);
@@ -125,7 +136,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-cobalt-400);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-weight: 500;
 }
 
@@ -135,7 +146,26 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+.endList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 13px;
   color: var(--c-cobalt-700);
+}
+
+.endIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.endIcon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
 }

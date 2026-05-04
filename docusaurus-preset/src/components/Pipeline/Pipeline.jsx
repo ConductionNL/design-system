@@ -3,10 +3,12 @@
  *
  * Horizontal pipeline of hex-prism steps, mirroring
  * preview/components/pipeline-flow.html. Each step renders as a 3D
- * hex-prism (top + left + right faces) coloured by family, with the
- * "01" number, uppercase kicker, app name and caption stacked
- * above/below. Steps are separated by dotted flow lines. Optional
- * `start` / `end` slots take source / consumer end-boxes.
+ * hex-prism (top + left + right faces) coloured by family. The "01"
+ * stage number and uppercase kicker sit above the prism; nothing
+ * sits below — pure hexes only. Steps are separated by an animated
+ * dotted flow line. Optional `start` / `end` slots take source /
+ * consumer end-boxes whose items can be plain strings or
+ * {label, icon} objects.
  *
  * Family palette mirrors the kit's pipeline-flow.html exactly so the
  * website and kit read as one diagram. Family is auto-detected from
@@ -19,11 +21,15 @@
  *   <Pipeline
  *     start={{label: 'Sources', items: ['XLNS', 'Joomla', 'OpenZaak', 'RX']}}
  *     steps={[
- *       {number: '01', kicker: 'Ingest',    name: 'OpenConnector', caption: 'Pulls Woo-records from your DMS.'},
- *       {number: '02', kicker: 'Store',     name: 'OpenRegister',  caption: 'One typed register per category.'},
- *       {number: '03', kicker: 'Catalogue', name: 'OpenCatalogi',  caption: 'Indexes every register.'},
+ *       {number: '01', kicker: 'Ingest',    name: 'OpenConnector'},
+ *       {number: '02', kicker: 'Store',     name: 'OpenRegister'},
+ *       {number: '03', kicker: 'Catalogue', name: 'OpenCatalogi'},
  *     ]}
- *     end={{label: 'Consumers', items: ['Open Tilburg portal', 'Residents', 'open.overheid.nl']}}
+ *     end={{label: 'Consumers', items: [
+ *       {label: 'Open Tilburg', icon: <svg .../>},
+ *       'Residents',
+ *       'open.overheid.nl',
+ *     ]}}
  *   />
  */
 
@@ -92,16 +98,26 @@ function HexPrism({name, family}) {
   );
 }
 
-export function PipelineStep({number, kicker, name, caption, family, className}) {
+export function PipelineStep({number, kicker, name, family, className}) {
   const fam = family || inferFamily(name);
   return (
     <div className={[styles.step, className].filter(Boolean).join(' ')}>
       {number && <div className={styles.num}>{number}</div>}
       {kicker && <div className={styles.kicker}>{kicker}</div>}
       <HexPrism name={name} family={fam} />
-      {name && <div className={styles.name}>{name}</div>}
-      {caption && <div className={styles.caption}>{caption}</div>}
     </div>
+  );
+}
+
+/* Default rounded-square icon shown next to end-box items when the
+   caller doesn't pass a custom icon. Matches the kit's `.endbox-icon`:
+   cobalt-50 fill, cobalt-200 stroke, with a small doc-style glyph. */
+function DefaultEndIcon() {
+  return (
+    <svg viewBox="0 0 22 22" aria-hidden="true">
+      <rect x="0.5" y="0.5" width="21" height="21" rx="3" fill="var(--c-cobalt-50)" stroke="var(--c-cobalt-200)" strokeWidth="1" />
+      <path d="M6 8h10 M6 11h10 M6 14h6" stroke="var(--c-cobalt-700)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -110,7 +126,17 @@ function EndBox({label, items = [], side}) {
     <div className={[styles.end, styles['end-' + side]].join(' ')}>
       {label && <div className={styles.endLabel}>{label}</div>}
       <ul className={styles.endList}>
-        {items.map((it, i) => <li key={i}>{it}</li>)}
+        {items.map((it, i) => {
+          const item = typeof it === 'string' ? {label: it} : (it || {});
+          return (
+            <li key={i}>
+              <span className={styles.endIcon}>
+                {item.icon || <DefaultEndIcon />}
+              </span>
+              <span>{item.label}</span>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

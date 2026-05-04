@@ -42,7 +42,10 @@
 	# site or when the kit page itself loads a font from a CDN).
 	header Access-Control-Allow-Origin "*"
 
-	# Friendly index for the repo root: the kit's overview landing.
-	@root path /
-	rewrite @root /preview/index.html
+	# Friendly redirect for the repo root: the kit's overview landing
+	# at /preview/. We use redir (302) instead of rewrite so the
+	# browser URL changes to /preview/ and relative paths inside the
+	# kit pages (preview.css, brand/assets/..., etc) resolve against
+	# the right base.
+	redir / /preview/ 302
 }

@@ -47,7 +47,7 @@ export {default as DetailHero} from './DetailHero/DetailHero.jsx';
 export {default as ConductionBg} from './ConductionBg/ConductionBg.jsx';
 export {default as PlatformDiagram} from './PlatformDiagram/PlatformDiagram.jsx';
 export {default as HexRain} from './HexRain/HexRain.jsx';
-export {default as Pipeline, PipelineStep} from './Pipeline/Pipeline.jsx';
+export {default as Pipeline, PipelineStep, IconList} from './Pipeline/Pipeline.jsx';
 export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFilters.jsx';
 export {default as CookieCli} from './CookieCli/CookieCli.jsx';
 export {default as GameModal} from './GameModal/GameModal.jsx';

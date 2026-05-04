@@ -74,7 +74,7 @@ module.exports = createConfig({
         ],
       },
     ],
-    copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · Lauriergracht 14h, 1016 RR Amsterdam · ${new Date().getFullYear()}`,
+    copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · Lauriergracht 14h, 1016 RR Amsterdam · © ${new Date().getFullYear()}`,
   },
 
   customCss: [require.resolve('./src/css/site.css')],

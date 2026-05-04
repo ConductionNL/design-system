@@ -75,9 +75,16 @@
    prism's vertical centre via margin-top on wide screens. */
 .flow {
   flex: 0 0 auto;
-  align-self: stretch;
+  align-self: flex-start;
   width: 36px;
-  margin-top: 56px;
+  /* Align horizontally with the hex's left/right vertices (the
+     "equator" of the prism), where the side faces meet the top
+     diamond. In viewBox (0 0 120 132) those vertices sit at y=62.
+     Prism renders at 154px tall, so equator = 62/132 × 154 ≈ 72px
+     from the SVG top. The step stacks num (~14) + kicker (~14) + 8px
+     margin = ~36px above the SVG, putting the equator at ~108px from
+     the step top; less 1px to centre the 2px line. */
+  margin-top: 109px;
   height: 2px;
   background-image: repeating-linear-gradient(
     to right,
@@ -116,14 +123,10 @@
   .flow { animation: none; }
 }
 
-/* End boxes (sources / consumers). Cobalt-50 ground + cobalt-100
-   border, kit-identical. Each item gets a small rounded-square icon
-   next to the label. */
+/* End columns (sources / consumers). Plain text layout — no wrapper
+   box, no border, no background. Just a label above a list. */
 .end {
-  background: var(--c-cobalt-50);
-  border: 1px solid var(--c-cobalt-100);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
+  padding: 18px 0;
   align-self: stretch;
   display: flex;
   flex-direction: column;

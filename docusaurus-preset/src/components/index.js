@@ -58,5 +58,6 @@ export {default as GameModal} from './GameModal/GameModal.jsx';
    diagram set in @conduction/diagrams. The bare web components still
    work in plain HTML; the wrappers are the React-friendly version. */
 export {Hex, HexPrism, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg} from './Diagrams/Diagrams.jsx';
+export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

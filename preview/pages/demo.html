@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Local demo, ConNext</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="../components/apps-grid.css">
+<link rel="stylesheet" href="../components/pair-cards.css">
+<style>
+  body { margin: 0; background: white; font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-700); }
+
+  /* Crumb */
+  .crumb {
+    max-width: 1280px; margin: 0 auto;
+    padding: 24px 64px 0;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+
+  /* Section frame */
+  .section { max-width: 1280px; margin: 0 auto; padding: 96px 64px; }
+  .section.tinted { background: var(--c-cobalt-50); max-width: none; padding-left: 0; padding-right: 0; }
+  .section.tinted .inner { max-width: 1280px; margin: 0 auto; padding: 96px 64px; }
+
+  .head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: end; margin-bottom: 48px; }
+  .head.stack { display: block; }
+  .head.stack .lede { max-width: 60ch; margin-top: 16px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+  .eyebrow .h { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  h1.title {
+    font-size: 64px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+    margin: 0 0 20px; color: var(--c-cobalt-900);
+  }
+  h2.title {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--c-cobalt-900); margin: 0;
+  }
+  .lede { font-size: 17px; color: var(--c-cobalt-700); line-height: 1.55; margin: 0; }
+  .lede.large { font-size: 22px; line-height: 1.5; max-width: 60ch; margin: 0 0 32px; }
+
+  /* Hero actions */
+  .actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--c-blue-cobalt); color: white;
+    padding: 14px 24px; border-radius: var(--radius-md);
+    font-weight: 500; font-size: 15px; text-decoration: none;
+  }
+  .btn-secondary {
+    background: white; color: var(--c-blue-cobalt);
+    border: 1px solid var(--c-cobalt-200);
+    padding: 13px 22px; border-radius: var(--radius-md);
+    font-weight: 500; font-size: 15px; text-decoration: none;
+  }
+
+  /* HowSteps */
+  .how-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+  .how-step {
+    background: white; border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg); padding: 32px;
+  }
+  .how-step .num {
+    width: 48px; height: 56px;
+    clip-path: var(--hex-pointy-top);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px;
+    margin-bottom: 18px;
+    font-family: var(--conduction-typography-font-family-code);
+  }
+  .how-step.tier-1 .num { background: var(--c-blue-cobalt); }
+  .how-step.tier-2 .num { background: var(--c-orange-knvb); }
+  .how-step.tier-3 .num { background: var(--c-cobalt-700); }
+  .how-step h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--c-cobalt-900); }
+  .how-step p { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6; margin: 0; }
+
+  /* Compose block */
+  .compose {
+    background: var(--c-cobalt-900);
+    color: rgba(255, 247, 210, 0.92);
+    padding: 28px 32px;
+    border-radius: var(--radius-lg);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 32px 0;
+    overflow-x: auto;
+    box-shadow: 0 12px 32px -8px rgba(10, 23, 47, 0.45);
+  }
+  .compose .file {
+    display: inline-block;
+    background: rgba(255, 247, 210, 0.08);
+    color: var(--c-orange-knvb);
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .compose pre { margin: 0; }
+  .compose .comment { color: rgba(255, 247, 210, 0.55); font-style: italic; }
+  .compose .keyword { color: #6892D9; }
+  .compose .string  { color: #5FE39A; }
+
+  /* Feature list */
+  .feature-list { display: flex; flex-direction: column; gap: 32px; }
+  .feature {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 24px;
+  }
+  .feature .glyph {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-50);
+    color: var(--c-blue-cobalt);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .feature .glyph svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .feature h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 8px; color: var(--c-cobalt-900); }
+  .feature p { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.6; margin: 0; }
+
+  /* Pair row */
+  .pair-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+
+  /* CTA banner */
+  .cta {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px 96px;
+  }
+  .cta-banner {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 72px 64px;
+    text-align: center;
+  }
+  .cta-banner h2 { color: white; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 12px; }
+  .cta-banner p { font-size: 17px; color: rgba(255, 255, 255, 0.78); line-height: 1.5; max-width: 560px; margin: 0 auto 32px; }
+  .cta-banner .actions { display: inline-flex; gap: 14px; justify-content: center; }
+  .cta-banner .btn-on-dark-primary {
+    background: white; color: var(--c-blue-cobalt);
+    padding: 13px 24px; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .cta-banner .btn-on-dark-secondary {
+    color: white; padding: 12px 24px; border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body data-current="">
+
+<div data-include="../components/top-navbar.html"></div>
+
+<div class="crumb">Local demo</div>
+
+<section class="section">
+  <div class="eyebrow"><span class="h"></span><span data-i18n="demo.eyebrow">Local demo</span></div>
+  <h1 class="title" data-i18n="demo.title">Want a demo? Run it yourself.</h1>
+  <p class="lede large" data-i18n="demo.lede">
+    De apps zijn open source, de install is gratis, de runtime past in een docker-compose-bestand.
+    Drie commando's en je draait <span class="next-blue">Nextcloud</span> + ConNext op je laptop.
+    Geen partner-traject, geen sales-call, geen kalender-invite. Demo voor je koffie afkoelt.
+  </p>
+  <div class="actions">
+    <a href="#docker-compose" class="btn-primary" data-i18n="demo.cta.show">Show me the compose file</a>
+    <a href="https://docs.nextcloud.com/server/latest/admin_manual/installation/docker.html" target="_blank" rel="noopener" class="btn-secondary" data-i18n="demo.cta.docs">Read the Nextcloud docs</a>
+  </div>
+</section>
+
+<section class="section tinted">
+  <div class="inner">
+    <div class="head stack">
+      <div class="eyebrow"><span class="h"></span><span data-i18n="demo.howitworks.eyebrow">How it works</span></div>
+      <h2 class="title" data-i18n="demo.howitworks.title">Drie stappen, vijftien minuten.</h2>
+      <p class="lede" data-i18n="demo.howitworks.lede">Nextcloud start binnen drie minuten. De ConNext-apps installeren zichzelf via de officiële app-store. Je hebt een werkende stack voor je tweede koffie.</p>
+    </div>
+    <div class="how-row">
+      <div class="how-step tier-1">
+        <div class="num">1</div>
+        <h3 data-i18n="demo.step1.title">Drop the docker-compose.yml in een lege map.</h3>
+        <p data-i18n="demo.step1.body">Het bestand hieronder volstaat: Nextcloud + Postgres + Redis. Sla op als <strong>docker-compose.yml</strong>, en run <strong>docker compose up -d</strong>. Open <strong>http://localhost:8080</strong> en kies een admin-naam en wachtwoord.</p>
+      </div>
+      <div class="how-step tier-2">
+        <div class="num">2</div>
+        <h3 data-i18n="demo.step2.title">Open de Nextcloud app store.</h3>
+        <p data-i18n="demo.step2.body">Inloggen als admin, klik je avatar rechtsboven, kies <strong>Apps</strong>. De ConNext-apps staan onder <strong>Integration</strong> en <strong>Office &amp; text</strong>. Eén klik per app installeert.</p>
+      </div>
+      <div class="how-step tier-3">
+        <div class="num">3</div>
+        <h3 data-i18n="demo.step3.title">Configureer en speel.</h3>
+        <p data-i18n="demo.step3.body">OpenRegister levert een schema-bootstrap met voorbeelddata. OpenCatalogi indexeert de eerste registers. MyDash bouwt een dashboard van wat je hebt. Je kunt nu rondklikken zoals een bestaande klant.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="docker-compose">
+  <div class="head stack">
+    <div class="eyebrow"><span class="h"></span><span data-i18n="demo.compose.eyebrow">The compose file</span></div>
+    <h2 class="title" data-i18n="demo.compose.title">Eén bestand, drie services.</h2>
+    <p class="lede" data-i18n="demo.compose.lede">Postgres voor de data, Redis voor de cache, Nextcloud voor het werk. Allemaal officiële images. Geen custom build, geen Dockerfile. Past in een Slack-bericht.</p>
+  </div>
+
+  <div class="compose" role="region" aria-label="docker-compose.yml">
+    <span class="file">docker-compose.yml</span>
+<pre><span class="keyword">services</span>:
+  <span class="keyword">db</span>:
+    <span class="keyword">image</span>: <span class="string">postgres:16-alpine</span>
+    <span class="keyword">restart</span>: unless-stopped
+    <span class="keyword">volumes</span>:
+      - db:/var/lib/postgresql/data
+    <span class="keyword">environment</span>:
+      POSTGRES_DB: <span class="string">nextcloud</span>
+      POSTGRES_USER: <span class="string">nextcloud</span>
+      POSTGRES_PASSWORD: <span class="string">nextcloud</span>
+
+  <span class="keyword">redis</span>:
+    <span class="keyword">image</span>: <span class="string">redis:7-alpine</span>
+    <span class="keyword">restart</span>: unless-stopped
+
+  <span class="keyword">nextcloud</span>:
+    <span class="keyword">image</span>: <span class="string">nextcloud:latest</span>
+    <span class="keyword">restart</span>: unless-stopped
+    <span class="keyword">depends_on</span>: [db, redis]
+    <span class="keyword">ports</span>:
+      - <span class="string">"8080:80"</span>
+    <span class="keyword">volumes</span>:
+      - nextcloud:/var/www/html
+      - ./apps:/var/www/html/custom_apps   <span class="comment"># optional: drop ConNext apps here for offline install</span>
+    <span class="keyword">environment</span>:
+      POSTGRES_HOST: db
+      POSTGRES_DB: <span class="string">nextcloud</span>
+      POSTGRES_USER: <span class="string">nextcloud</span>
+      POSTGRES_PASSWORD: <span class="string">nextcloud</span>
+      REDIS_HOST: redis
+      NEXTCLOUD_TRUSTED_DOMAINS: <span class="string">"localhost"</span>
+
+<span class="keyword">volumes</span>:
+  db:
+  nextcloud:</pre>
+  </div>
+
+  <div class="compose" role="region" aria-label="bash commands" style="margin-top: 16px;">
+<pre><span class="comment"># one-time setup</span>
+docker compose up -d
+
+<span class="comment"># tail the logs while Nextcloud bootstraps</span>
+docker compose logs -f nextcloud
+
+<span class="comment"># stop + clear (start fresh)</span>
+docker compose down -v</pre>
+  </div>
+</section>
+
+<section class="section tinted">
+  <div class="inner">
+    <div class="head stack">
+      <div class="eyebrow"><span class="h"></span><span data-i18n="demo.pickapps.eyebrow">Pick the apps</span></div>
+      <h2 class="title" data-i18n="demo.pickapps.title">Drie installs voor de eerste demo.</h2>
+      <p class="lede" data-i18n="demo.pickapps.lede">Onze suggestie: begin met OpenRegister (de typed-data backbone), OpenCatalogi (publieke surface), en OpenConnector (haalt voorbeelddata binnen). Vijftien minuten samen, en je ziet de pipeline werken.</p>
+    </div>
+
+    <div class="pair-row">
+      <a class="pair-card" href="app-detail.html">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <div>
+          <div class="name">OpenRegister</div>
+          <div class="why">Install eerst. De typed-data foundation; alle andere apps lezen ervan af.</div>
+        </div>
+      </a>
+      <a class="pair-card" href="app-detail.html">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></div>
+        <div>
+          <div class="name">OpenCatalogi</div>
+          <div class="why">Surface elk register als een doorzoekbare publieke entry. Federation naar data.overheid.nl.</div>
+        </div>
+      </a>
+      <a class="pair-card" href="app-detail.html">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></div>
+        <div>
+          <div class="name">OpenConnector</div>
+          <div class="why">Trekt voorbeelddata binnen via REST/SOAP/file drops. Alle 12 apps profiteren.</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="head stack">
+    <div class="eyebrow"><span class="h"></span><span data-i18n="demo.youget.eyebrow">What you get</span></div>
+    <h2 class="title" data-i18n="demo.youget.title">Een werkende stack die je kunt vertrouwen.</h2>
+    <p class="lede" data-i18n="demo.youget.lede">Geen pre-baked screencast, geen demo-omgeving die offline kan. Je ziet exact wat een echte klant ziet, draaiend op jouw hardware. Bewaar de compose-file en laat het maandag aan een collega zien.</p>
+  </div>
+
+  <div class="feature-list" style="margin-top: 48px;">
+    <div class="feature">
+      <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+      <div>
+        <h3>Drie minuten van compose-up tot login.</h3>
+        <p><code>docker compose up -d</code> trekt 's eerste keer 750&nbsp;MB binnen en boot daarna binnen drie minuten. Volgende boots gaan in seconden.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg></div>
+      <div>
+        <h3>Officiële Nextcloud-image.</h3>
+        <p>Geen custom Dockerfile. Wat je lokaal draait is identiek aan wat een klant in productie gebruikt. Versies, security-patches, alles via Nextcloud's release-cadence.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg></div>
+      <div>
+        <h3>Apps via de officiële app store.</h3>
+        <p>Geen lokale build. De ConNext-apps installeren zichzelf via de Nextcloud app-store, hetzelfde pad als productie. Geen "demo-only"-magie.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div>
+        <h3>Voorbeelddata via OpenRegister.</h3>
+        <p>OpenRegister levert schema-bootstrap met voorbeeld-records. Je ziet typed data, audit log, citation-stable IDs werken vanaf de eerste minuut.</p>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg></div>
+      <div>
+        <h3>Reset is één commando.</h3>
+        <p><code>docker compose down -v</code> verwijdert volumes en reset alles. Twee minuten later draai je opnieuw, schoon, klaar voor de volgende test.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-banner">
+    <h2 data-i18n="demo.outro.title">Want a demo? Het draait op je laptop.</h2>
+    <p data-i18n="demo.outro.lede">Drie commando's, één Nextcloud, alle ConNext apps. Geen sales-call nodig. Stuur de docker-compose naar een collega als je het samen wilt zien.</p>
+    <div class="actions">
+      <a href="apps-catalog.html" class="btn-on-dark-primary" data-i18n="demo.outro.cta1">Browse the apps</a>
+      <a href="support.html" class="btn-on-dark-secondary" data-i18n="demo.outro.cta2">Talk to a partner anyway</a>
+    </div>
+  </div>
+</section>
+
+<div data-include="../components/footer.html"></div>
+
+<script src="../include.js"></script>
+</body>
+</html>

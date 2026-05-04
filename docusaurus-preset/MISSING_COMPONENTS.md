@@ -17,6 +17,7 @@ when its CSS rule appeared in three or more component files.
 - **Card** — `primitives/Card.jsx`. White / cobalt-100 / radius-lg. Tones: surface (default), ghost (dashed), inverse (cobalt-900).
 - **Pill** — `primitives/Pill.jsx`. Mono-caps chip with optional bullet. Status badges, app tags, sector labels.
 - **Button** — `primitives/Button.jsx`. Primary / secondary / ghost + on-dark variants for cobalt CTA panels.
+- **NextBlue / CgYellow / KnvbOrange** — `primitives/BrandCitation.jsx`. Type-checked wrappers around the global `next-blue` / `cg-yellow` / `knvb-orange` CSS classes. Replaces ad-hoc `<span className="next-blue">Nextcloud</span>` with `<NextBlue>Nextcloud</NextBlue>`.
 
 ## Composite components (Batches 2–3)
 
@@ -30,7 +31,7 @@ Most consume one or more primitives.
 - **AppsPreview / AppCard** — `AppsPreview/AppsPreview.jsx`. Static 3-up apps grid. Composes SectionHead + HexBullet.
 - **AppsGrid** — `AppsGrid/AppsGrid.jsx`. Filterable apps catalogue with category chips. Reuses AppCard.
 - **SolutionCard / SolutionGrid** — `SolutionCard/SolutionCard.jsx`. Sector-tinted solution cards. Composes Pill.
-- **PartnerCard / PartnerGrid / BecomePartner** — `PartnerCard/PartnerCard.jsx`. Three tiers (partner, certified, strategic).
+- **PartnerCard / PartnerGrid / BecomePartner** — `PartnerCard/PartnerCard.jsx`. Three tiers (partner, certified, strategic). Plus `variant="other"` for the compact mini-avatar card used on partner-detail pages.
 - **ReferenceCard / ReferenceGrid** — `ReferenceCard/ReferenceCard.jsx`. Customer-reference cards on partner-detail pages.
 - **PairCard / PairRow** — `PairCard/PairCard.jsx`. Compact "related item" cards on app- and solution-detail pages.
 - **EmployeeCard / TeamGrid** — `EmployeeCard/EmployeeCard.jsx`. Three variants (compact, photo, detail) for the /about team grid.
@@ -44,11 +45,25 @@ Most consume one or more primitives.
 - **HexRain** — `HexRain/HexRain.jsx`. The "twelve apps" mini-game in the hero column. Lazy-loads the runtime via Head.
 - **GameModal** — `GameModal/GameModal.jsx`. End-of-game dialog with cross-game progress tracking. Subscribes to `connext:gameend` events.
 - **CookieCli** — `CookieCli/CookieCli.jsx`. Terminal-styled cookie consent banner with localStorage persistence.
+- **ComposeBlock** — `ComposeBlock/ComposeBlock.jsx`. Branded code block (cobalt-900 + Plex Mono + filename pill + copy button). For docker-compose, bash recipes, and any verbatim copy-paste content. Used on `/demo`.
 
-## Site chrome (theme swizzles)
+## Diagram-set web-component wrappers
+
+Thin React wrappers around the framework-agnostic web components in `@conduction/diagrams`. Lazy-import the runtime, type-checked observed-attribute props, slot-based children pass through.
+
+- **Hex** wraps `<cn-hex>` (color, size, variant, layout, interactive)
+- **HexPrism** wraps `<cn-hex-prism>` (family, size, state)
+- **Platform** wraps `<cn-platform>` (ground)
+- **DomainTree** wraps `<cn-domain-tree>`
+- **DiagramPipeline** wraps `<cn-pipeline>` (renamed from Pipeline to avoid the components/Pipeline name collision)
+- **SideBox** wraps `<cn-side-box>`
+- **HoneycombBg** wraps `<cn-honeycomb-bg>`
+
+## Theme swizzles
 
 - **Navbar** — `theme/Navbar/index.jsx`. Replaces Docusaurus's default Infima navbar. Items come from `themeConfig.navbar`.
 - **Footer canal scene** — `theme/Footer/index.jsx`. Full canal scene (Amsterdam trapgevel skyline, kade with bikes/cars, cobalt canal with orange boats, brand block + link grid riding on the water). Templates injected via `dangerouslySetInnerHTML` so the runtime can `.content`-clone them.
+- **MDXPage** — `theme/MDXPage/index.jsx`. Drops the Docusaurus default `col col--8 col--offset-2` wrapper for pages with `hide_table_of_contents: true`, so marketing surfaces render full-width. Adds the `marketing-page` class on `<main>` so `brand.css` can zero-out stray top margins (no gap between navbar and hero).
 
 ## Open gaps
 

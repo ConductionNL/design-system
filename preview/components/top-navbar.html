@@ -27,6 +27,49 @@
   .nav .ghost { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
   .nav .cta { background: var(--c-blue-cobalt); color: white; padding: 9px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; text-decoration: none; }
   .nav .cta:hover { background: var(--c-cobalt-700); }
+
+  /* ---- Locale switcher ---- */
+  .locale {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--c-cobalt-700);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    transition: background 120ms ease;
+  }
+  .locale:hover { background: var(--c-cobalt-50); }
+  .locale > svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .locale > .caret { width: 10px; height: 10px; opacity: 0.6; }
+
+  .locale-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    padding: 6px;
+    min-width: 140px;
+    display: none;
+    z-index: 100;
+  }
+  .locale[data-open="1"] .locale-menu { display: block; }
+  .locale-menu a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--c-cobalt-700);
+    font-size: 14px;
+  }
+  .locale-menu a:hover { background: var(--c-cobalt-50); color: var(--c-blue-cobalt); }
+  .locale-menu a.current { color: var(--c-blue-cobalt); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -43,10 +86,51 @@
     </div>
   </div>
   <div class="nav-ctas">
+    <button type="button" class="locale" aria-haspopup="menu" aria-expanded="false" data-locale-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.6 9h16.8M3.6 15h16.8M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <span data-locale-current>NL</span>
+      <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="locale-menu" role="menu" aria-label="Language">
+        <a href="?lang=nl" data-locale="nl" class="current" role="menuitem">Nederlands</a>
+        <a href="?lang=en" data-locale="en" role="menuitem">English</a>
+      </div>
+    </button>
     <a href="support.html" class="ghost">Partners</a>
     <a href="#" class="cta">Install →</a>
   </div>
 </nav>
+
+<script>
+  /* Locale switcher: click toggles the menu, click outside or Escape
+     closes it. The actual translation strategy is layered on top by
+     each surface (Docusaurus i18n on connext, querystring + dictionary
+     on the kit's static pages). The button just exposes the choice. */
+  (function () {
+    const root = document.querySelector('[data-locale-toggle]');
+    if (!root) return;
+    const current = root.querySelector('[data-locale-current]');
+
+    /* Read ?lang=… from the URL so the trigger label and active item
+       reflect the current selection. Default is NL per huisstijl. */
+    const params = new URLSearchParams(window.location.search);
+    const lang = (params.get('lang') || 'nl').toLowerCase();
+    if (current) current.textContent = lang.toUpperCase();
+    root.querySelectorAll('[data-locale]').forEach((a) => {
+      a.classList.toggle('current', a.dataset.locale === lang);
+    });
+
+    function open() { root.dataset.open = '1'; root.setAttribute('aria-expanded', 'true'); }
+    function close() { delete root.dataset.open; root.setAttribute('aria-expanded', 'false'); }
+
+    root.addEventListener('click', (e) => {
+      if (e.target.closest('[data-locale]')) return; /* let link navigate */
+      e.stopPropagation();
+      root.dataset.open === '1' ? close() : open();
+    });
+    document.addEventListener('click', () => close());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  })();
+</script>
 
 <!--
   Pages set <body data-current="apps|solutions|docs|support|about"> and include.js

@@ -48,5 +48,6 @@ export {default as ConductionBg} from './ConductionBg/ConductionBg.jsx';
 export {default as PlatformDiagram} from './PlatformDiagram/PlatformDiagram.jsx';
 export {default as HexRain} from './HexRain/HexRain.jsx';
 export {default as Pipeline, PipelineStep} from './Pipeline/Pipeline.jsx';
+export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFilters.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

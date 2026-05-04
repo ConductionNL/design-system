@@ -155,5 +155,51 @@
   <button class="facet-clear">Clear all filters</button>
 </aside>
 
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;FacetedFilters/&gt;</code></h2>
+  <p>Sidebar panel of facet checkbox lists. Controlled component: pass <code>selected</code> + <code>onChange</code> from a parent state. The <code>&lt;FilterChip/&gt;</code> companion renders an active-chip strip above the results so users can pop selections one by one.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {useState, useMemo} from 'react';
+import {FacetedFilters, SolutionGrid, SolutionCard} from '@conduction/docusaurus-preset/components';
+
+const SOLUTIONS = [/* ... */];
+
+function FilterableSolutions() {
+  const [selected, setSelected] = useState({});
+  const filtered = useMemo(
+    () =&gt; SOLUTIONS.filter(s =&gt; matchesFilters(s, selected)),
+    [selected]
+  );
+
+  const facets = [
+    {key: 'sector', label: 'Sector', items: [
+      {value: 'public', label: 'Publieke sector', count: 5},
+      {value: 'mkb',    label: 'MKB',             count: 3},
+      {value: 'health', label: 'Zorg',            count: 2},
+    ]},
+    {key: 'goals', label: 'Doel', items: [/* ... */]},
+  ];
+
+  return (
+    &lt;div style={{display: 'grid', gridTemplateColumns: '240px 1fr', gap: 56}}&gt;
+      &lt;FacetedFilters facets={facets} selected={selected} onChange={setSelected} /&gt;
+      &lt;SolutionGrid columns={2}&gt;
+        {filtered.map(s =&gt; &lt;SolutionCard key={s.href} {...s} /&gt;)}
+      &lt;/SolutionGrid&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>facets</code> array of {key, label, items: [{value, label, count?}]}</li>
+    <li><code>selected</code> object keyed by facet.key, value is an array of selected values</li>
+    <li><code>onChange</code> setter callback (selected =&gt; ...)</li>
+    <li><code>clearLabel</code> override the "Clear all filters" button copy</li>
+  </ul>
+  <p>Fields can be single-valued (<code>s.sector === 'public'</code>) or array-valued (<code>s.goals.includes('compliance')</code>); the filter logic lives in the parent so callers control match semantics.</p>
+</aside>
+
 </body>
 </html>

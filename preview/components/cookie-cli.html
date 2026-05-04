@@ -123,5 +123,43 @@
   </div>
 </div>
 
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage" style="margin-top: 80px;">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;CookieCli/&gt;</code></h2>
+  <p>Self-managing privacy banner. Persists the user's choice in localStorage under <code>conduction:cookie-cli</code>. Re-renders only after a page calls <code>window.ConductionCookieCli.reset()</code>, so the prompt isn't sticky after a decision.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {CookieCli} from '@conduction/docusaurus-preset/components';
+
+&lt;CookieCli
+  siteHost="conduction.nl"
+  categories={[
+    {key: 'essential',   label: 'essential',   tag: 'required', required: true,  defaultOn: true},
+    {key: 'analytics',   label: 'analytics',   tag: 'opt-in',                    defaultOn: true},
+    {key: 'preferences', label: 'preferences', tag: 'opt-in'},
+    {key: 'marketing',   label: 'marketing',   tag: 'opt-in'},
+  ]}
+  onAccept={(selected) =&gt; {
+    /* selected = {essential: true, analytics: true, preferences: false, marketing: false} */
+    if (selected.analytics) loadPlausible();
+  }}
+/&gt;</code></pre>
+  <h3>Keyboard shortcuts</h3>
+  <ul class="ru-props">
+    <li><code>A</code> Accept all</li>
+    <li><code>S</code> Save current selection</li>
+    <li><code>R</code> Reject non-essential</li>
+    <li><code>1-9</code> Toggle category by number</li>
+  </ul>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>siteHost</code> string in the prompt (default 'conduction.nl')</li>
+    <li><code>categories</code> array of {key, label, tag?, required?, defaultOn?}</li>
+    <li><code>onAccept</code> callback(selected =&gt; ...) on every save</li>
+  </ul>
+  <h3>Re-prompt</h3>
+  <p>Privacy pages can call <code>window.ConductionCookieCli.reset()</code> to clear the stored choice and re-show the banner. <code>window.ConductionCookieCli.get()</code> returns the current selection (or null) for showing the choice somewhere on the privacy page.</p>
+</aside>
+
 </body>
 </html>

@@ -197,29 +197,14 @@ platform-diagram .glyph.brand svg {
 platform-diagram .glyph.brand svg > * { fill: currentColor; stroke: none; }
 
 /* ---- Corner-anchor (named) hex tag ---- */
+/* Hidden by default per design feedback: the family-label hex behind
+   each list reads as visual noise around the white .box. The list's
+   own contents (the rows + meta) carry enough category signal already.
+   To re-enable for a specific surface, override
+   .workspace-corner-hex { display: flex } at the consumer level. */
 platform-diagram .workspace-corner-hex {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  width: 160px;
-  aspect-ratio: 1.7320508 / 2;
-  box-sizing: border-box;
-  clip-path: var(--hex-pointy-top);
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-  color: white;
-  font-size: 14px; font-weight: 600;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  line-height: 1.2;
-  padding: 0 14px;
-  z-index: 2;
-  filter: drop-shadow(0 2px 6px rgba(33, 70, 139, 0.22));
-  /* Transform is driven by scroll progress; no transition (would smear
-     every scroll tick). Filter still transitions for hover shadow lift. */
-  transition: filter 160ms ease;
-  cursor: default;
+  display: none;
 }
-platform-diagram .workspace-corner-hex:hover { filter: drop-shadow(0 6px 14px rgba(33, 70, 139, 0.32)); }
 
 /* ---- Family colour tints ---- Apply to .box-hex, glyph, and corner hex.
    Mirrors the family palette; one place to swap when you fork the

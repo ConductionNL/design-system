@@ -51,5 +51,12 @@ export {default as Pipeline, PipelineStep} from './Pipeline/Pipeline.jsx';
 export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFilters.jsx';
 export {default as CookieCli} from './CookieCli/CookieCli.jsx';
 export {default as GameModal} from './GameModal/GameModal.jsx';
+
+/* Diagram-set web-component React wrappers (cn-hex, cn-hex-prism,
+   cn-platform, cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg).
+   Type-checked, autocompletable React surface for the framework-agnostic
+   diagram set in @conduction/diagrams. The bare web components still
+   work in plain HTML; the wrappers are the React-friendly version. */
+export {Hex, HexPrism, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg} from './Diagrams/Diagrams.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

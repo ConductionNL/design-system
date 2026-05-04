@@ -57,10 +57,19 @@ export default function MDXPage(props) {
      widths and bleed to the edges where the design calls for it. */
   const isMarketing = !!hideTableOfContents;
 
+  /* Marketing pages get article-margin: 0 so the first section of the
+     page (Hero, Section, etc.) sits flush against the navbar. The
+     default Infima styling on <article> would otherwise leave a small
+     top margin between the navbar's border and the page's first row,
+     which the user-flagged screenshot showed on the connext landing.
+     Docs pages keep the default margin so the heading rhythm reads
+     correctly. */
+  const articleStyle = isMarketing ? {margin: 0, padding: 0} : undefined;
+
   const inner = (
     <>
       <ContentVisibility metadata={metadata} />
-      <article>
+      <article style={articleStyle}>
         <MDXContent>
           <MDXPageContent />
         </MDXContent>
@@ -94,8 +103,12 @@ export default function MDXPage(props) {
         />
         {isMarketing ? (
           /* Marketing surface: no container, no col-8. The page's
-             section components own their own widths. */
-          <main>{inner}</main>
+             section components own their own widths. The
+             `marketing-page` class lets brand.css zero-out any stray
+             top margin/padding so the first section sits flush
+             against the navbar (no gap between navbar and hex-rain
+             hero). */
+          <main className="marketing-page">{inner}</main>
         ) : (
           /* Docs / TOC surface: standard Docusaurus container. */
           <main className="container container--fluid margin-vert--lg">

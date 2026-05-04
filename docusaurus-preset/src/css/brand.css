@@ -105,6 +105,22 @@
 /* Headings keep the brand letter-spacing */
 h1, h2, h3 { letter-spacing: -0.02em; }
 
+/* Marketing pages (frontmatter: hide_table_of_contents: true) get a
+   flush top edge: no main/article/MDXContent margins between the
+   navbar's bottom border and the page's first section. The MDXPage
+   swizzle attaches the .marketing-page class on <main>; rules below
+   zero-out everything that could add a stray gap. Doc pages keep the
+   default Infima rhythm. */
+main.marketing-page,
+main.marketing-page > article,
+main.marketing-page article > div {
+  margin: 0;
+  padding: 0;
+}
+main.marketing-page article > div > :first-child {
+  margin-top: 0;
+}
+
 /* Links underline via cobalt-200 by default; orange on hover */
 a:not(.navbar__link):not(.footer__link-item):not(.button) {
   text-decoration-color: var(--c-cobalt-200);

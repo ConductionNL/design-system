@@ -22,7 +22,9 @@ import React, {useEffect} from 'react';
 import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
+import {brandFor} from '../brand.jsx';
 import GameModal from '../../components/GameModal/GameModal';
 
 function FooterLink({label, href, to}) {
@@ -42,8 +44,15 @@ function FooterLink({label, href, to}) {
 }
 
 export default function Footer() {
-  const {footer} = useThemeConfig();
+  const {footer, navbar} = useThemeConfig();
   const isBrowser = useIsBrowser();
+  const location = useLocation();
+  /* Brand switch follows the pathname: /connext or /commonground sections
+     show their styled wordmark and slot themselves into the triad row.
+     Outside sub-brand sections the wordmark falls back to the navbar
+     title (the parent brand, typically "Conduction"). */
+  const brand = brandFor(location.pathname, navbar?.title);
+  const wordmark = brand ? brand.wordmark : (navbar?.title || 'Conduction');
 
   /* Re-trigger the canal-footer.js init on SPA navigations after the
      Layout swap. The script's IIFE only runs once on first DOMContentLoaded,
@@ -214,13 +223,16 @@ export default function Footer() {
 
           <div className="footer-grid">
             <div className="brand">
-              <div className="wm">Con<span className="next-blue">Next</span></div>
+              <div className="wm">{wordmark}</div>
               <p>
                 Open-source apps for <span className="next-blue">Nextcloud</span>. Built and
                 maintained by Conduction in Amsterdam, released under EUPL-1.2.
               </p>
               <div className="triad">
-                <span><span className="h"></span>Conduction · ConNext · <span className="next-blue">Nextcloud</span></span>
+                <span>
+                  <span className="h"></span>
+                  Conduction{brand && <> · {brand.label}</>} · <span className="next-blue">Nextcloud</span>
+                </span>
               </div>
               <div className="socials">
                 <a href="https://github.com/ConductionNL" aria-label="GitHub" target="_blank" rel="noopener noreferrer">

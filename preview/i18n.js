@@ -57,11 +57,19 @@
 
   function applyDict(dict) {
     if (!dict) return;
-    /* Text content */
+    /* Text content. Values containing < or & are treated as inline
+       HTML so dictionary authors can preserve brand-citation spans
+       (e.g. "Eén <span class='next-blue'>Nextcloud</span>"). All
+       other values go through textContent for safety. */
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
       const val = get(dict, key);
-      if (val != null) el.textContent = val;
+      if (val == null) return;
+      if (val.indexOf('<') !== -1 || val.indexOf('&') !== -1) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
     });
     /* HTML attributes via data-i18n-attr="attr:key[, attr:key]" */
     document.querySelectorAll('[data-i18n-attr]').forEach((el) => {

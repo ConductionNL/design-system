@@ -105,19 +105,38 @@
 /* Headings keep the brand letter-spacing */
 h1, h2, h3 { letter-spacing: -0.02em; }
 
-/* Marketing pages (frontmatter: hide_table_of_contents: true) get a
-   flush top edge: no main/article/MDXContent margins between the
-   navbar's bottom border and the page's first section. The MDXPage
-   swizzle attaches the .marketing-page class on <main>; rules below
-   zero-out everything that could add a stray gap. Doc pages keep the
-   default Infima rhythm. */
+/* Marketing pages (frontmatter: hide_table_of_contents: true) get
+   a flush top edge AND full-width sections. The MDXPage swizzle
+   attaches the .marketing-page class on <main>; the rules below:
+     1. Zero out every margin/padding between <main> and the first
+        section so the navbar's bottom border touches the Hero's
+        top edge.
+     2. Override Infima's .markdown vertical-rhythm rules so h1,
+        h2, h3 inside the Hero / SectionHead don't grab a 3rem
+        margin-top from the doc-page rhythm.
+     3. Force the .markdown wrapper itself to render at the page's
+        full width so .strip / .banner sections with their own
+        full-bleed backgrounds (cobalt-50 stats band, cobalt CTA
+        panel) actually bleed to the viewport edges instead of
+        being pinned to the central col-8 width. */
 main.marketing-page,
 main.marketing-page > article,
-main.marketing-page article > div {
-  margin: 0;
-  padding: 0;
+main.marketing-page > article > .theme-doc-markdown,
+main.marketing-page > article > div,
+main.marketing-page .markdown {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+  width: 100%;
 }
-main.marketing-page article > div > :first-child {
+/* Zero-out the Infima vertical-rhythm rules that target headings inside
+   .markdown so the marketing pages don't inherit doc-page spacing. */
+main.marketing-page .markdown > :first-child,
+main.marketing-page .markdown h1:first-child,
+main.marketing-page .markdown h1,
+main.marketing-page .markdown h2,
+main.marketing-page .markdown h3,
+main.marketing-page .markdown > * {
   margin-top: 0;
 }
 

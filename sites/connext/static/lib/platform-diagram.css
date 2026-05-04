@@ -196,14 +196,38 @@ platform-diagram .glyph.brand svg {
 }
 platform-diagram .glyph.brand svg > * { fill: currentColor; stroke: none; }
 
-/* ---- Corner-anchor (named) hex tag ---- */
-/* Hidden by default per design feedback: the family-label hex behind
-   each list reads as visual noise around the white .box. The list's
-   own contents (the rows + meta) carry enough category signal already.
-   To re-enable for a specific surface, override
-   .workspace-corner-hex { display: flex } at the consumer level. */
+/* ---- Corner-anchor (named) category label ---- */
+/* Per design feedback: keep the family-label TEXT (so each list has a
+   readable category like "WORKSPACE APPS" / "TECHNICAL CORE") but drop
+   the big blue hex shape behind it (it read as visual noise around the
+   white .box). Renders as a small Plex Mono caps label sitting above
+   each list, no hex backdrop. */
 platform-diagram .workspace-corner-hex {
-  display: none;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  /* No fixed width / clip-path / background — just tight text */
+  background: transparent !important;
+  filter: none;
+  width: auto;
+  height: auto;
+  aspect-ratio: auto;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--c-cobalt-700);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 1.2;
+  z-index: 2;
+  cursor: default;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 /* ---- Family colour tints ---- Apply to .box-hex, glyph, and corner hex.
@@ -268,74 +292,45 @@ platform-diagram .box-wrap.integrated   {
    shift: hexes start 120px further outward + 100px further from workspace
    centre, fade in as progress goes 0 → 1. Hover preserves the shift so
    the lift composes correctly during entrance. */
+/* Position the text label above each list (no hex shape; the math
+   below is for text, not for the old 160x185 hex). The label sits in
+   the same grid cell as its list, justified to the same edge, with a
+   small upward/outward translate so it floats above the white .box.
+   Opacity ties to list-progress so labels fade in with their lists. */
 platform-diagram .workspace-corner-hex.tech-core   {
-  justify-self: start;
-  transform: translate(
-    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
-    calc(-104px      + (-100px * (1 - var(--pd-hex-progress))))
-  );
-  opacity: var(--pd-hex-progress);
+  grid-column: 1; grid-row: 1; justify-self: end; align-self: end;
+  transform: translate(0, calc(-104px + (-80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+  padding-right: 8px;
 }
 platform-diagram .workspace-corner-hex.solutions   {
-  justify-self: end;
-  transform: translate(
-    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
-    calc(-104px      + (-100px * (1 - var(--pd-hex-progress))))
-  );
-  opacity: var(--pd-hex-progress);
+  grid-column: 3; grid-row: 1; justify-self: start; align-self: end;
+  transform: translate(0, calc(-104px + (-80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+  padding-left: 8px;
 }
 platform-diagram .workspace-corner-hex.workspace   {
-  justify-self: start;
-  transform: translate(
-    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
-    calc( 104px      + ( 100px * (1 - var(--pd-hex-progress))))
-  );
-  opacity: var(--pd-hex-progress);
+  grid-column: 1; grid-row: 2; justify-self: end; align-self: start;
+  transform: translate(0, calc(-12px + (80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+  padding-right: 8px;
 }
 platform-diagram .workspace-corner-hex.integrated  {
-  justify-self: end;
-  transform: translate(
-    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
-    calc( 104px      + ( 100px * (1 - var(--pd-hex-progress))))
-  );
-  opacity: var(--pd-hex-progress);
+  grid-column: 3; grid-row: 2; justify-self: start; align-self: start;
+  transform: translate(0, calc(-12px + (80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
+  padding-left: 8px;
 }
-/* App Builder hex centred on workspace's bottom peak + 24px outward */
 platform-diagram .workspace-corner-hex.app-builder {
-  justify-self: center;
-  align-self: center;
-  transform: translateY(calc(208px + 24px + (120px * (1 - var(--pd-hex-progress)))));
-  opacity: var(--pd-hex-progress);
+  grid-column: 2; grid-row: 1 / span 2; justify-self: center; align-self: end;
+  transform: translateY(calc(20px + (80px * (1 - var(--pd-list-progress)))));
+  opacity: var(--pd-list-progress);
 }
 
 /* Hover lift composed on top of entrance shift */
-platform-diagram .workspace-corner-hex.tech-core:hover   {
-  transform: translate(
-    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
-    calc(-104px - 4px + (-100px * (1 - var(--pd-hex-progress))))
-  );
-}
-platform-diagram .workspace-corner-hex.solutions:hover   {
-  transform: translate(
-    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
-    calc(-104px - 4px + (-100px * (1 - var(--pd-hex-progress))))
-  );
-}
-platform-diagram .workspace-corner-hex.workspace:hover   {
-  transform: translate(
-    calc(-50% - 24px + (-120px * (1 - var(--pd-hex-progress)))),
-    calc( 104px - 4px + ( 100px * (1 - var(--pd-hex-progress))))
-  );
-}
-platform-diagram .workspace-corner-hex.integrated:hover  {
-  transform: translate(
-    calc( 50% + 24px + ( 120px * (1 - var(--pd-hex-progress)))),
-    calc( 104px - 4px + ( 100px * (1 - var(--pd-hex-progress))))
-  );
-}
-platform-diagram .workspace-corner-hex.app-builder:hover {
-  transform: translateY(calc(208px + 24px - 4px + (120px * (1 - var(--pd-hex-progress)))));
-}
+/* No :hover lift on the labels: pointer-events: none on the parent
+   means hover doesn't fire on them anyway, and the old 4px lift was
+   tuned for the hex shape, not text. */
 
 /* Workspace-attachment lists — workspace-functions (above workspace) and
    app-builder (below workspace). Both share the workspace's grid cell and

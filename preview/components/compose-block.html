@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compose block, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body { margin: 0; background: white; padding: 56px 64px; font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-700); }
+  .frame { max-width: 720px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 24px;
+  }
+  .intro {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 16px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 60ch; margin: 0 0 32px;
+  }
+
+  /* Vendored copy of <ComposeBlock /> styles for the visual demo */
+  .compose {
+    position: relative;
+    background: var(--c-cobalt-900);
+    color: rgba(255, 247, 210, 0.92);
+    padding: 28px 32px;
+    border-radius: var(--radius-lg);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 24px 0;
+    overflow-x: auto;
+    box-shadow: 0 12px 32px -8px rgba(10, 23, 47, 0.45);
+  }
+  .compose .file {
+    display: inline-block;
+    background: rgba(255, 247, 210, 0.08);
+    color: var(--c-orange-knvb);
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .compose .copy-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255, 247, 210, 0.06);
+    color: rgba(255, 247, 210, 0.7);
+    border: 1px solid rgba(255, 247, 210, 0.12);
+    padding: 4px 10px;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity 140ms ease, background 140ms ease, color 140ms ease;
+  }
+  .compose .copy-btn:hover {
+    background: rgba(255, 247, 210, 0.14);
+    color: rgba(255, 247, 210, 0.92);
+  }
+  .compose pre { margin: 0; }
+  .compose .comment { color: rgba(255, 247, 210, 0.55); font-style: italic; }
+  .compose .keyword { color: #6892D9; }
+  .compose .string  { color: #5FE39A; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">Compose block · branded code panel for verbatim copy-paste content</div>
+  <h1 class="intro">Cobalt-900 panel, Plex Mono, copy-on-hover.</h1>
+  <p class="lede">For docker-compose YAML, bash recipes, JSON examples, anything the reader might want to copy. Optional filename pill at the top, a copy-to-clipboard button on hover.</p>
+
+  <div class="compose" role="region" aria-label="docker-compose.yml">
+    <span class="file">docker-compose.yml</span>
+    <button class="copy-btn">copy</button>
+<pre><span class="keyword">services</span>:
+  <span class="keyword">nextcloud</span>:
+    <span class="keyword">image</span>: <span class="string">nextcloud:latest</span>
+    <span class="keyword">restart</span>: unless-stopped
+    <span class="keyword">ports</span>:
+      - <span class="string">"8080:80"</span>
+    <span class="keyword">environment</span>:
+      <span class="comment"># Postgres connection details</span>
+      POSTGRES_HOST: db
+      POSTGRES_USER: nextcloud</pre>
+  </div>
+
+  <div class="compose" role="region" aria-label="bash">
+    <span class="file">bash</span>
+    <button class="copy-btn">copy</button>
+<pre><span class="comment"># one-time setup</span>
+docker compose up -d
+
+<span class="comment"># tail the logs</span>
+docker compose logs -f nextcloud</pre>
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;ComposeBlock/&gt;</code></h2>
+  <p>For verbatim copy-paste blocks (docker-compose, bash, env files) on connext marketing pages where the brand-styled cobalt-900 panel reads better than Docusaurus's default Prism-themed code block. For syntax-highlighted code on doc pages, keep using the standard fenced code block.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {ComposeBlock} from '@conduction/docusaurus-preset/components';
+
+&lt;ComposeBlock filename="docker-compose.yml" lang="yaml"&gt;
+{`services:
+  nextcloud:
+    image: nextcloud:latest
+    ports: ["8080:80"]
+`}
+&lt;/ComposeBlock&gt;
+
+&lt;ComposeBlock filename="bash"&gt;
+{`docker compose up -d
+docker compose logs -f nextcloud`}
+&lt;/ComposeBlock&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>filename</code> optional pill at the top (Plex Mono caps)</li>
+    <li><code>lang</code> sets language-X class on the inner code element (no syntax-highlighting; for screen readers and consumer styling)</li>
+    <li><code>children</code> raw text; preserve newlines with template literals</li>
+  </ul>
+  <h3>Behaviour</h3>
+  <ul class="ru-props">
+    <li>Copy button fades in on hover; click copies the inner text via navigator.clipboard</li>
+    <li>Copied state shows '✓ copied' for 1.6 seconds</li>
+    <li>Falls back to no-op if clipboard API is unavailable (iframes, no permission)</li>
+  </ul>
+</aside>
+
+</body>
+</html>

@@ -60,8 +60,13 @@ platform-diagram .diagram-grid {
   overflow: visible;
 }
 
-/* ---- Workspace hex ---- */
-platform-diagram .workspace {
+/* ---- Workspace hex ----
+   Selector deliberately scoped to the direct centre hex via :not(.box-wrap)
+   because .box-wrap.workspace (the WORKSPACE APPS list wrap) shares the
+   "workspace" class for grid placement — without the guard this rule
+   would clip the apps-list wrap with the same Nextcloud-blue hex shape. */
+platform-diagram > .workspace,
+platform-diagram .workspace:not(.box-wrap):not(.workspace-corner-hex) {
   grid-column: 2;
   grid-row: 1 / span 2;
   align-self: center;
@@ -83,7 +88,8 @@ platform-diagram .workspace {
   opacity: var(--pd-hex-progress);
 }
 platform-diagram .workspace-logo { width: 140px; height: auto; margin-bottom: 14px; }
-platform-diagram .workspace .role {
+platform-diagram > .workspace .role,
+platform-diagram .workspace:not(.box-wrap):not(.workspace-corner-hex) .role {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   opacity: 0.85;

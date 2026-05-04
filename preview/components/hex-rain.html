@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hex rain, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="../../sites/connext/static/lib/hex-rain.css">
+<style>
+  body { margin: 0; background: white; padding: 56px 64px; font-family: var(--conduction-typography-font-family-body); }
+  .frame { max-width: 1200px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400); margin-bottom: 24px;
+  }
+  .stage {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    height: 520px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lede {
+    font-size: 17px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 60ch; margin: 0 0 32px;
+  }
+  h1 {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">Hex rain · "Twelve apps" mini-game in the hero column</div>
+  <h1>Catch the falling hexes.</h1>
+  <p class="lede">A decorative continuous spawn loop drops orange hexes from the top of the column. Click the first hex to start a 60-second collect-the-apps game (12 unique apps to find). Clicking an already-collected app deselects it, the twist that punishes misclicks during the late-game chaos. Win = 12 / 12.</p>
+
+  <div class="stage">
+    <div class="hex-rain" aria-label="Twelve apps mini-game"></div>
+  </div>
+</div>
+
+<script src="../../sites/connext/static/lib/hex-rain.js" defer></script>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;HexRain/&gt;</code></h2>
+  <p>The hero mini-game lives as a real React component now. The bare <code>&lt;div className="hex-rain"/&gt;</code> + manual <code>&lt;Head/&gt;</code> tags are gone; the component handles the runtime asset loading and SPA-friendly hydration.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {Hero, HexRain} from '@conduction/docusaurus-preset/components';
+
+&lt;Hero
+  eyebrow="..."
+  title="..."
+  primaryCta={{label: 'Install', href: '/install'}}
+&gt;
+  &lt;HexRain /&gt;
+&lt;/Hero&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>ariaLabel</code> announcement for screen readers (default: "Twelve apps mini-game...")</li>
+    <li><code>className</code> extra classes to append to the <code>.hex-rain</code> mount</li>
+  </ul>
+  <h3>Game events</h3>
+  <p>The runtime fires a <code>connext:gameend</code> event on the document when the timer hits zero or the score reaches 12. The companion <code>game-modal</code> component listens for it and reveals its cross-site progress panel.</p>
+  <p>The component lazy-loads <code>/lib/hex-rain.{css,js}</code> via <code>&lt;Head/&gt;</code> and calls <code>window.HexRain.hydrate()</code> on mount so SPA route changes that bring fresh nodes hydrate immediately. The dataset.rainHydrated guard prevents double-hydration.</p>
+</aside>
+
+</body>
+</html>

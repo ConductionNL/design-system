@@ -294,5 +294,53 @@ body { margin: 0; background: white; color: var(--c-cobalt-700); }
 </div>
 
 <script src="_lib/platform-diagram.js"></script>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Two components, one diagram</h2>
+  <p>Platform overview ships as two React components depending on whether you need just the diagram or the section frame around it:</p>
+  <ul class="ru-props">
+    <li><code>&lt;PlatformDiagram/&gt;</code> the typed wrapper around the bespoke <code>&lt;platform-diagram&gt;</code> web component (the diagram itself)</li>
+    <li><code>&lt;PlatformOverview/&gt;</code> the cobalt-50 section with eyebrow + title + lede that wraps the diagram on landing.html</li>
+  </ul>
+  <h3>Compose them</h3>
+  <pre><code>import {PlatformOverview, PlatformDiagram} from '@conduction/docusaurus-preset/components';
+
+&lt;PlatformOverview
+  eyebrow="The platform"
+  title="Five components. Twenty-four apps. One Nextcloud workspace."
+  lede="Every ConNext app plugs into one of five categories..."
+&gt;
+  &lt;PlatformDiagram
+    workspace={{logo: '/img/nextcloud-logo.svg', alt: 'Nextcloud', role: 'Workspace'}}
+    lists={[
+      {position: 'top',          family: 'nextcloud',  items: [/* Files, Mail, ... */]},
+      {position: 'top-left',     family: 'core',       label: 'Technical\nCore',     items: [/* OpenRegister, ... */]},
+      {position: 'top-right',    family: 'solutions',  label: 'Solutions',           items: [/* OpenWoo, ... */]},
+      {position: 'bottom-left',  family: 'workspace',  label: 'Workspace\nApps',     items: [/* PipelinQ, ... */]},
+      {position: 'bottom-right', family: 'integrate',  label: 'Integrated\nApps',
+       columns: 2, items: [/* OpenTalk, n8n, Mattermost, ... */]},
+      {position: 'bottom-center', family: 'builder',   label: 'App\nBuilder', badge: 'COMING SOON',
+       items: [/* Build your own apps, ... */]},
+    ]}
+    flows={[
+      {from: 'top-left:bottom',     to: 'bottom-left:top',    shape: 'straight'},
+      {from: 'bottom-center:left',  to: 'bottom-left:bottom', shape: 'l-h'},
+      {from: 'bottom-right:bottom', to: 'bottom-left:bottom', shape: 'c-bracket-bottom', clearance: 280},
+      {from: 'top-left:top',        to: 'top-right:top',      shape: 'c-bracket-top',    clearance: 240},
+    ]}
+  /&gt;
+&lt;/PlatformOverview&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>workspace</code> {logo, alt, role} the centre tile</li>
+    <li><code>lists</code> array of {position, family, label?, badge?, columns?, items}</li>
+    <li><code>item</code> {name, meta, desc, brandColor?, icon}</li>
+    <li><code>flows</code> array of {from, to, shape, clearance?}</li>
+  </ul>
+  <p>The runtime CSS+JS auto-load via <code>&lt;Head/&gt;</code> from inside the component; consumers don't need to remember the boilerplate.</p>
+</aside>
+
 </body>
 </html>

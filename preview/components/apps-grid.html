@@ -132,10 +132,14 @@
 <link rel="stylesheet" href="_react-usage.css">
 <aside class="react-usage">
   <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
-  <h2>Mount in MDX as <code>&lt;AppsPreview/&gt;</code></h2>
-  <p>Featured-apps section with a 3-up grid. Wraps each card in <code>&lt;AppCard/&gt;</code>; for 12-up grids the same component re-tiles into 4 rows of 3.</p>
-  <p><strong>Filter chips:</strong> not yet shipped as a React primitive. Coming as <code>&lt;AppsGrid/&gt;</code> in Batch 3 (FilterChip + state).</p>
-  <h3>Import &amp; example</h3>
+  <h2>Two components from one kit page</h2>
+  <p>The kit's apps-grid pattern ships as two React components depending on whether you need filter chips or not:</p>
+  <ul class="ru-props">
+    <li><code>&lt;AppsPreview/&gt;</code> static 3-up row with section-head; landing.html "Most installed"</li>
+    <li><code>&lt;AppsGrid/&gt;</code> filterable catalogue with category chips; the /apps catalogue page</li>
+  </ul>
+  <p>Both wrap each card in the same <code>&lt;AppCard/&gt;</code> primitive so card visuals stay identical.</p>
+  <h3>Static row · &lt;AppsPreview/&gt;</h3>
   <pre><code>import {AppsPreview} from '@conduction/docusaurus-preset/components';
 
 &lt;AppsPreview
@@ -149,13 +153,26 @@
   ]}
   seeAll={{label: 'Browse all twelve apps', href: '/apps'}}
 /&gt;</code></pre>
-  <h3>Props</h3>
+
+  <h3>Filterable catalogue · &lt;AppsGrid/&gt;</h3>
+  <pre><code>import {AppsGrid} from '@conduction/docusaurus-preset/components';
+
+&lt;AppsGrid
+  categories={['All', 'Data', 'Processes', 'Connectors', 'Documents', 'AI', 'Dashboards']}
+  apps={[
+    {name: 'OpenRegister', tagline: '...', status: 'STABLE', version: 'v3.1',
+     href: '/apps/openregister', categories: ['Data'], icon: &lt;svg/&gt;},
+    /* ... */
+  ]}
+/&gt;</code></pre>
+  <p>Click a chip to narrow the grid. The first chip is always "All". Each app declares one or more <code>categories</code>; the union becomes the chip set if you don't pass <code>categories</code> explicitly.</p>
+
+  <h3>Props (shared)</h3>
   <ul class="ru-props">
-    <li><code>eyebrow</code> caption above the title</li>
-    <li><code>title</code> h2 title</li>
-    <li><code>lede</code> body paragraph</li>
     <li><code>apps</code> array of {name, tagline, status, version, href, icon}</li>
-    <li><code>seeAll</code> {label, href} for the trailing link</li>
+    <li><code>app.categories</code> string array (AppsGrid only)</li>
+    <li><code>app.status</code> 'STABLE' | 'BETA' | ...</li>
+    <li><code>seeAll</code> {label, href} for the trailing link (AppsPreview only)</li>
   </ul>
 </aside>
 

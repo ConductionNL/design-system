@@ -203,5 +203,42 @@
 </div>
 
 <script src="feature-grid.js" defer></script>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;FeatureGrid/&gt;</code></h2>
+  <p>Compact multi-column list for spec-grade features (10 to 60+ entries). Auto-fill grid with 240px-min columns. Each item shows a status hex and a short label; the full description reveals on hover and keyboard focus via a 280px-max tooltip. Used wherever an app or solution detail page wants the "every feature in the box" pattern.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {FeatureGrid} from '@conduction/docusaurus-preset/components';
+
+&lt;FeatureGrid
+  legend
+  items={[
+    {group: 'Core capabilities'},
+    {label: 'JSON Schema validation', tip: 'Define a register shape...', status: 'stable'},
+    {label: 'GraphQL endpoint',       tip: 'Auto-generated from the schema.', status: 'stable'},
+    {label: 'Schema versioning',      tip: 'Migrations are version-stable.', status: 'beta'},
+    {group: 'Integrations'},
+    {label: 'OpenCatalogi indexing',  tip: 'Surfaces every register...',     status: 'stable'},
+  ]}
+/&gt;</code></pre>
+  <h3>Or compose with children for full MDX flexibility</h3>
+  <pre><code>import {FeatureGrid, FeatureGridGroup, FeatureGridItem} from '@conduction/docusaurus-preset/components';
+
+&lt;FeatureGrid legend&gt;
+  &lt;FeatureGridGroup label="Core capabilities" /&gt;
+  &lt;FeatureGridItem label="JSON Schema validation" tip="..." status="stable" /&gt;
+&lt;/FeatureGrid&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>items</code> array with optional {group: 'X'} markers</li>
+    <li><code>legend</code> render the Stable/Beta/Coming soon legend on top</li>
+    <li><code>FeatureGridItem.label</code> short visible label</li>
+    <li><code>FeatureGridItem.tip</code> tooltip body (hover + focus)</li>
+    <li><code>FeatureGridItem.status</code> stable | beta | soon</li>
+  </ul>
+</aside>
+
 </body>
 </html>

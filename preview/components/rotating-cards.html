@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="../../tokens.css">
 <link rel="stylesheet" href="../preview.css">
 <link rel="stylesheet" href="../../docusaurus-preset/src/components/RotatingCards/RotatingCards.module.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/HexBackground/HexBackground.module.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/AppMock/AppMock.module.css">
 <style>
   body { padding: 0; background: white; font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
   .hero { background: var(--c-blue-cobalt); color: white; padding: 64px var(--space-12) 48px; }
@@ -14,92 +16,319 @@
   .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
   .hero h1 { color: white; font-size: 44px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
   .hero p  { color: var(--c-cobalt-100); font-size: 16px; max-width: 64ch; line-height: 1.5; margin-top: var(--space-4); }
+  /* Some breathing room after the stack so you can see the last card finish pinning. */
+  .scroll-tail { height: 60vh; }
 </style>
-<script>
-  /* Static-page rotation for the preview. The React component owns
-     this in the live build; the preview re-implements the basics so
-     the demo actually rotates without a build step. */
-  document.addEventListener('DOMContentLoaded', () => {
-    const stage = document.querySelector('[data-rotator]');
-    if (!stage) return;
-    const cards = JSON.parse(stage.dataset.cards);
-    const interval = parseInt(stage.dataset.interval, 10) || 5000;
-    const pipsEl = document.querySelector('[data-pips]');
-    let active = 0;
-    let paused = false;
-    let timer = null;
-
-    function render() {
-      const c = cards[active];
-      stage.innerHTML = '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        ${c.icon ? `<div class="icon" aria-hidden="true">${c.icon}</div>` : ''}
-        ${c.eyebrow ? `<div class="cardEyebrow">${c.eyebrow}</div>` : ''}
-        ${c.title ? `<h3 class="cardTitle">${c.title}</h3>` : ''}
-        ${c.summary ? `<p class="cardSummary">${c.summary}</p>` : ''}
-        ${c.cta ? `<a href="${c.cta.href}" class="cardCta">${c.cta.label}</a>` : ''}
-      `;
-      stage.appendChild(card);
-      pipsEl.querySelectorAll('.pip').forEach((p, i) => {
-        if (i === active) p.classList.add('pipActive');
-        else p.classList.remove('pipActive');
-        p.setAttribute('aria-selected', i === active);
-      });
-    }
-    function tick() { active = (active + 1) % cards.length; render(); }
-    function start() { if (!paused && !timer) timer = setInterval(tick, interval); }
-    function stop()  { if (timer) { clearInterval(timer); timer = null; } }
-
-    pipsEl.innerHTML = cards.map((c, i) =>
-      `<button class="pip" role="tab" aria-selected="${i===0}" aria-label="Card ${i+1}: ${c.title}"><span class="pipHex"></span></button>`
-    ).join('');
-    pipsEl.querySelectorAll('.pip').forEach((p, i) => {
-      p.addEventListener('click', () => { active = i; render(); });
-    });
-    stage.addEventListener('mouseenter', () => { paused = true;  stop(); });
-    stage.addEventListener('mouseleave', () => { paused = false; start(); });
-    render();
-    start();
-  });
-</script>
 </head>
 <body>
 
 <div class="hero">
   <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Components &nbsp;/&nbsp; RotatingCards</div>
-  <h1>RotatingCards &mdash; auto-advancing capability rotator.</h1>
-  <p>One card on a cobalt-900 stage, swapping every five seconds. Hover to pause, click a hex pip to jump. Reference: honeycomb.io home "What Honeycomb helps you do", in Conduction tokens.</p>
+  <h1>RotatingCards &mdash; scroll-pinned stacked cards.</h1>
+  <p>Cards stick to the top of the viewport as you scroll past, the next card slides up to cover it. Reference: honeycomb.io home "What Honeycomb helps you do". Each card carries a tone (mint, lavender, terracotta, forest, coral, workspace), a coloured-panel image-side with a hex backdrop, and a white text-side. <strong>Scroll the page below.</strong></p>
 </div>
 
 <section class="root">
   <header class="head">
     <div class="eyebrow"><span class="h"></span>What Conduction helps you do</div>
     <h2 class="title">Six things, in two minutes.</h2>
-    <p class="lede">Hover the card to pause. Use the hex pips to jump to a specific capability. The rotator pauses on focus too, so screen readers can finish reading the active card before it advances.</p>
+    <p class="lede">Each card pins as you reach it; the next card slides up to cover it. No timer, no carousel.</p>
   </header>
-  <div
-    class="stage"
-    data-rotator
-    data-interval="5000"
-    data-cards='[
-      {"eyebrow":"Catalogue","title":"Publish a public catalogue.","summary":"OpenCatalogi makes every register, dataset, and API in your organisation searchable from one URL. Federation to data.overheid.nl ships in the box.","cta":{"label":"See OpenCatalogi","href":"/apps/opencatalogi"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M3 7l9-4 9 4-9 4-9-4z\"/><path d=\"M3 12l9 4 9-4M3 17l9 4 9-4\"/></svg>"},
-      {"eyebrow":"Anonymise","title":"Anonymise documents at scale.","summary":"DocuDesk strips names, BSNs and case numbers from inbound documents before they reach the case file. WOO-ready, GDPR-grade, audit-logged.","cta":{"label":"See DocuDesk","href":"/apps/docudesk"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M16 13H8M16 17H8\"/></svg>"},
-      {"eyebrow":"Connect","title":"Pipe data without writing glue.","summary":"OpenConnector pulls from REST, SOAP, GraphQL, file drops, message queues. Pipe it into typed registers, observe every run, retry the failures.","cta":{"label":"See OpenConnector","href":"/apps/openconnector"},"icon":"<svg viewBox=\"0 0 24 24\"><circle cx=\"6\" cy=\"12\" r=\"3\"/><circle cx=\"18\" cy=\"6\" r=\"3\"/><circle cx=\"18\" cy=\"18\" r=\"3\"/><path d=\"M9 12h9M9 12l9-6M9 12l9 6\"/></svg>"},
-      {"eyebrow":"Decide","title":"Run meetings, ship decisions.","summary":"DeciDesk owns minutes, motions, and action items. Every decision links back to its source register row, every action item lands in the assignee’s queue.","cta":{"label":"See DeciDesk","href":"/apps/decidesk"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M9 11l3 3 8-8\"/><path d=\"M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9\"/></svg>"},
-      {"eyebrow":"Process","title":"Track cases end to end.","summary":"Procest runs ZGW-shaped case management. Stages, roles, dossiers, archive. Every step is auditable, every status pings the citizen-facing portal.","cta":{"label":"See Procest","href":"/apps/procest"},"icon":"<svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 3\"/></svg>"},
-      {"eyebrow":"Dashboard","title":"Build dashboards from your own data.","summary":"MyDash assembles a personal home from the registers your team already keeps. Pinned apps, recent records, overdue items, no extra BI tool, no extra login.","cta":{"label":"See MyDash","href":"/apps/mydash"},"icon":"<svg viewBox=\"0 0 24 24\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"9\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\"/></svg>"}
-    ]'
-    tabindex="0"
-    aria-roledescription="carousel"
-    aria-label="What Conduction helps you do"
-  ></div>
-  <div class="pips" data-pips role="tablist" aria-label="Select card"></div>
+  <div class="stack" style="--stack-count: 6;">
+
+    <!-- Card 1 — forest, OpenCatalogi -->
+    <article class="card tone-forest" style="--i: 0; top: calc(80px + 0px);">
+      <div class="cardImage">
+        <span class="bg tone-forest-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body opencatalogi">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="head">
+                  <div class="row head" style="width:30%"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div></div>
+                </div>
+                <div class="grid">
+                  <div class="card"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="card b"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="card c"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="card d"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="card e"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="card"><div class="ico"></div><div class="row head"></div><div class="row"></div><div class="row short"></div><div class="statusPill"><div class="h"></div><div class="t"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Catalogue</div>
+        <h3 class="cardTitle">Publish a public catalogue.</h3>
+        <p class="cardSummary">OpenCatalogi makes every register, dataset, and API in your organisation searchable from one URL. Federation to data.overheid.nl ships in the box.</p>
+        <a href="/apps/opencatalogi" class="cardCta">See OpenCatalogi</a>
+      </div>
+    </article>
+
+    <!-- Card 2 — terracotta, DocuDesk -->
+    <article class="card tone-terracotta" style="--i: 1; top: calc(80px + 24px);">
+      <div class="cardImage">
+        <span class="bg tone-terracotta-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body procest">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="timeline">
+                  <div class="step"><div class="h"></div><div class="label"></div></div>
+                  <div class="step now"><div class="h"></div><div class="label"></div></div>
+                  <div class="step todo"><div class="h"></div><div class="label"></div></div>
+                  <div class="step todo"><div class="h"></div><div class="label"></div></div>
+                </div>
+                <div class="panel">
+                  <div class="head"><div class="title"></div></div>
+                  <div class="stack">
+                    <div class="item"><div class="av a"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="av b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="av c"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Anonymise</div>
+        <h3 class="cardTitle">Anonymise documents at scale.</h3>
+        <p class="cardSummary">DocuDesk strips names, BSNs, and case numbers from inbound documents before they reach the case file. Woo-ready, GDPR-grade, audit-logged.</p>
+        <a href="/apps/docudesk" class="cardCta">See DocuDesk</a>
+      </div>
+    </article>
+
+    <!-- Card 3 — lavender, OpenConnector -->
+    <article class="card tone-lavender" style="--i: 2; top: calc(80px + 48px);">
+      <div class="cardImage">
+        <span class="bg tone-lavender-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body openconnector">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="stage">
+                  <div class="source"><div class="ico"></div><div class="row short"></div></div>
+                  <div class="arrow"></div>
+                  <div class="conn"><div class="ico"></div><div class="label"></div></div>
+                  <div class="arrow"></div>
+                  <div class="target"><div class="ico"></div><div class="row short"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Connect</div>
+        <h3 class="cardTitle">Pipe data without writing glue.</h3>
+        <p class="cardSummary">OpenConnector pulls from REST, SOAP, GraphQL, file drops, message queues. Pipe it into typed registers, observe every run, retry the failures.</p>
+        <a href="/apps/openconnector" class="cardCta">See OpenConnector</a>
+      </div>
+    </article>
+
+    <!-- Card 4 — mint, DeciDesk -->
+    <article class="card tone-mint" style="--i: 3; top: calc(80px + 72px);">
+      <div class="cardImage">
+        <span class="bg tone-mint-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body decidesk">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="head">
+                  <div class="row head" style="width:25%"></div>
+                  <div class="actions"><div class="btn"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
+                <div class="kpiRow">
+                  <div class="kpi amber"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi lavender"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Decide</div>
+        <h3 class="cardTitle">Run meetings, ship decisions.</h3>
+        <p class="cardSummary">DeciDesk owns minutes, motions, and action items. Every decision links back to its source register row, every action item lands in the assignee's queue.</p>
+        <a href="/apps/decidesk" class="cardCta">See DeciDesk</a>
+      </div>
+    </article>
+
+    <!-- Card 5 — coral, Procest -->
+    <article class="card tone-coral" style="--i: 4; top: calc(80px + 96px);">
+      <div class="cardImage">
+        <span class="bg tone-coral-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body procest">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="timeline">
+                  <div class="step"><div class="h"></div><div class="label"></div></div>
+                  <div class="step now"><div class="h"></div><div class="label"></div></div>
+                  <div class="step todo"><div class="h"></div><div class="label"></div></div>
+                  <div class="step todo"><div class="h"></div><div class="label"></div></div>
+                  <div class="step todo"><div class="h"></div><div class="label"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Process</div>
+        <h3 class="cardTitle">Track cases end to end.</h3>
+        <p class="cardSummary">Procest runs ZGW-shaped case management. Stages, roles, dossiers, archive. Every step is auditable, every status pings the citizen-facing portal.</p>
+        <a href="/apps/procest" class="cardCta">See Procest</a>
+      </div>
+    </article>
+
+    <!-- Card 6 — workspace, MyDash -->
+    <article class="card tone-workspace" style="--i: 5; top: calc(80px + 120px);">
+      <div class="cardImage">
+        <span class="bg tone-workspace-100 pos-top size-lg" aria-hidden="true">
+          <span class="hexA"></span>
+          <span class="hexB"></span>
+        </span>
+        <div class="cardImageInner">
+          <div class="frame size-md" style="aspect-ratio: 16/10; max-width: 460px;">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body mydash">
+              <div class="grid">
+                <div class="col">
+                  <div class="tile empty"></div>
+                  <div class="tile primary"><div class="icon"></div><div class="label"></div></div>
+                  <div class="tile primary"><div class="icon"></div><div class="label"></div></div>
+                  <div class="tile primary"><div class="icon"></div><div class="label"></div></div>
+                </div>
+                <div class="tile">
+                  <div class="tileHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="stack">
+                    <div class="item"><div class="av b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="av c"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="av a"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                  </div>
+                </div>
+                <div class="tile"><div class="tileHead"><div class="h"></div><div class="t"></div></div></div>
+                <div class="col">
+                  <div class="tile" style="flex:1"><div class="tileHead"><div class="h"></div><div class="t"></div></div></div>
+                  <div class="tile"><div class="tileHead"><div class="h"></div><div class="t"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cardText">
+        <div class="cardEyebrow">Dashboard</div>
+        <h3 class="cardTitle">Build dashboards from your own data.</h3>
+        <p class="cardSummary">MyDash assembles a personal home from the registers your team already keeps. Pinned apps, recent records, overdue items. No extra BI tool, no extra login.</p>
+        <a href="/apps/mydash" class="cardCta">See MyDash</a>
+      </div>
+    </article>
+
+  </div>
 </section>
 
-<div style="max-width: 1280px; margin: var(--space-6) auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
-  <p>The component is <a href="../../docusaurus-preset/src/components/RotatingCards/RotatingCards.jsx" style="color: var(--c-blue-cobalt);"><code>&lt;RotatingCards eyebrow title cards=[{icon,eyebrow,title,summary,cta}] interval=5000 /&gt;</code></a>. Hover or focus pauses the auto-advance; left/right arrow keys step manually. The static preview above re-implements the rotation in vanilla JS so the demo runs without a build step.</p>
+<div class="scroll-tail"></div>
+
+<div style="max-width: 1280px; margin: 0 auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
+  <p>The component is <a href="../../docusaurus-preset/src/components/RotatingCards/RotatingCards.jsx" style="color: var(--c-blue-cobalt);"><code>&lt;RotatingCards eyebrow title cards=[{tone, eyebrow, title, summary, cta, panel}] /&gt;</code></a>. Each card pins via <code>position: sticky</code> with a 24px top-stagger, so card N+1 lands lower than card N when both are pinned. The image-side uses <code>&lt;HexBackground tone="<i>tone</i>-100" position="top" size="lg" density={2} /&gt;</code> behind the AppMock so two corners of a hex crest the panel.</p>
 </div>
 
 </body>

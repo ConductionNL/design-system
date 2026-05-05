@@ -53,7 +53,21 @@ export default function Showcase({
 }) {
   const initialId = defaultOpen || items[0]?.id;
   const [openId, setOpenId] = useState(initialId);
-  const open = items.find(it => it.id === openId) || items[0];
+  /* The right-side panel always shows *something*. When the user toggles
+     the open item closed, fall back to the most recently opened panel
+     so the showcase doesn't go blank. lastPanelId tracks that. */
+  const [lastPanelId, setLastPanelId] = useState(initialId);
+  const open = items.find(it => it.id === openId) || null;
+  const panelItem = items.find(it => it.id === (openId || lastPanelId)) || items[0];
+
+  const toggle = (id) => {
+    if (openId === id) {
+      setOpenId(null);
+    } else {
+      setOpenId(id);
+      setLastPanelId(id);
+    }
+  };
 
   return (
     <section className={[styles.showcase, styles[`layout-${layout}`], className].filter(Boolean).join(' ')}>
@@ -76,7 +90,7 @@ export default function Showcase({
                   aria-expanded={isOpen}
                   aria-controls={`showcase-panel-${it.id}`}
                   className={styles.itemHead}
-                  onClick={() => setOpenId(it.id)}
+                  onClick={() => toggle(it.id)}
                   type="button"
                 >
                   <h3 className={styles.itemTitle}>{it.title}</h3>
@@ -96,8 +110,9 @@ export default function Showcase({
             );
           })}
         </div>
-        <div className={styles.panel} role="tabpanel" id={`showcase-panel-${open?.id}`} aria-label={open?.title}>
-          {open?.panel}
+        <div className={styles.panel} role="tabpanel" id={`showcase-panel-${panelItem?.id}`} aria-label={panelItem?.title}>
+          <div className={styles.panelHexBg} aria-hidden="true"></div>
+          <div className={styles.panelInner}>{panelItem?.panel}</div>
         </div>
       </div>
     </section>

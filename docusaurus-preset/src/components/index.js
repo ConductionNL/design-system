@@ -65,4 +65,5 @@ export {default as AppMock} from './AppMock/AppMock.jsx';
 export {default as HexNetwork} from './HexNetwork/HexNetwork.jsx';
 export {default as Showcase} from './Showcase/Showcase.jsx';
 export {default as RotatingCards} from './RotatingCards/RotatingCards.jsx';
+export {default as HexBackground} from './HexBackground/HexBackground.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

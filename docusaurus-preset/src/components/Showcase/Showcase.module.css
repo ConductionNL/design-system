@@ -106,15 +106,27 @@
   min-height: 360px;
   overflow: hidden;
 }
-/* Chevron-arrow accent in cobalt-100 behind the panel content,
-   echoing the Honeycomb reference shape without the literal pointer. */
-.panel::before {
-  content: "";
+
+/* Big pointy-top hex sitting behind the panel content. The hex is
+   over-sized and pushed up so its top point and shoulder corners
+   crest the panel's top edge — two of the hex's six corners visibly
+   poke up into the layout, brand-identifying without being literal.
+   The lower half of the hex provides the cobalt-100 wash behind the
+   AppMock. */
+.panelHexBg {
   position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, transparent 0 60%, var(--c-cobalt-100) 60% 100%);
-  opacity: 0.65;
+  width: 130%;
+  aspect-ratio: 1 / 1.155;
+  top: -22%;
+  left: 50%;
+  transform: translateX(-50%);
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-cobalt-100);
+  z-index: 0;
   pointer-events: none;
 }
-.panel > * { position: relative; z-index: 1; max-width: 100%; }
+.panelInner {
+  position: relative; z-index: 1;
+  width: 100%;
+  display: flex; align-items: center; justify-content: center;
+}

@@ -43,12 +43,15 @@
 }
 
 .cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
   position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 160ms;
 }
+.cell.linked { cursor: pointer; }
+.cell.linked:hover { transform: translateY(-2px); }
+
 .cellInner {
   width: 132px;
   height: 152px;
@@ -58,7 +61,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  /* fake the cobalt-100 border via a slightly-larger backdrop hex */
+  /* cobalt-100 hairline border via a slightly-larger backdrop hex */
 }
 .cellInner::before {
   content: "";
@@ -68,26 +71,16 @@
   clip-path: var(--hex-pointy-top);
   z-index: -1;
 }
+.cell.empty .cellInner { background: white; opacity: 0.55; }
 
-/* Highlighted centre — slight cobalt tint + soft outer glow. */
-.cell.center .cellInner {
-  background: white;
-}
+/* Highlighted centre — solid cobalt fill. */
+.cell.center .cellInner { background: var(--c-blue-cobalt); }
 .cell.center .cellInner::before {
   background: var(--c-blue-cobalt);
   inset: -3px;
 }
-.cell.center::after {
-  content: "";
-  position: absolute;
-  inset: -12px;
-  clip-path: var(--hex-pointy-top);
-  background: var(--c-cobalt-100);
-  z-index: -2;
-  opacity: 0.6;
-}
 
-/* Logo treatment inside a cell */
+/* Logo / wordmark treatment inside a cell */
 .logo {
   display: block;
   max-width: 56%;
@@ -95,20 +88,20 @@
   object-fit: contain;
   color: var(--c-blue-cobalt);
 }
-.cell.center .logo {
-  max-width: 64%;
-  max-height: 64%;
-}
+.cell.center .logo { color: white; max-width: 64%; max-height: 64%; }
 
-.name {
+.wordmark {
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
   color: var(--c-cobalt-700);
   text-align: center;
+  padding: 0 var(--space-3);
+  word-break: break-word;
 }
-.bg-inverse .name { color: var(--c-cobalt-100); }
+.cell.center .wordmark { color: white; }
+.bg-inverse .wordmark { color: var(--c-cobalt-100); }
 
 @media (max-width: 720px) {
   .cellInner { width: 96px; height: 110px; }

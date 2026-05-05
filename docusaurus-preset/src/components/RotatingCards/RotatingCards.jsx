@@ -1,34 +1,53 @@
 /**
  * <RotatingCards />
  *
- * Auto-advancing card rotator. Reference: honeycomb.io home page
- * "What Honeycomb helps you do" — single card visible at a time, swaps
- * every few seconds, hex-pip pagination beneath. Pauses on hover so a
- * reader can stop to actually read the card they care about.
+ * Scroll-pinned stacked cards, after honeycomb.io home "What
+ * Honeycomb helps you do". Each card sticks to the top of the
+ * viewport as you scroll past, the next card slides up from below to
+ * cover it, so the surface advances by scrolling instead of by click
+ * or auto-rotation. No timer, no carousel, no pagination.
  *
- * Used for "What Conduction helps you do" on the home, on /connext,
- * and on /commonground. Same pattern, different copy per surface.
+ * Per-card layout:
+ *   ┌────────────────────────────┬────────────────────────┐
+ *   │                            │                        │
+ *   │  [coloured panel]          │   [white text panel]   │
+ *   │                            │                        │
+ *   │  abstract product mock     │   eyebrow              │
+ *   │  on a hex backdrop         │   title                │
+ *   │                            │   summary              │
+ *   │                            │   cta                  │
+ *   └────────────────────────────┴────────────────────────┘
+ *
+ * Each card carries a tone (mint, lavender, terracotta, forest,
+ * coral, workspace) that drives the coloured-panel side. The text
+ * side stays white throughout for legibility.
  *
  * Usage in MDX:
  *
  *   <RotatingCards
  *     eyebrow="What Conduction helps you do"
  *     title="Six things, in two minutes."
- *     interval={5000}
  *     cards={[
  *       {
- *         icon: <svg viewBox="0 0 24 24">...</svg>,
- *         eyebrow: 'Catalogue',
+ *         tone: 'forest',
+ *         eyebrow: 'See everything',
  *         title: 'Publish a public catalogue.',
- *         summary: 'Federated registers searchable from one URL...',
+ *         summary: '...',
  *         cta: {label: 'See OpenCatalogi', href: '/apps/opencatalogi'},
+ *         panel: <AppMock app="opencatalogi" />,
  *       },
  *       ...
  *     ]}
  *   />
+ *
+ * Implementation note: each card is `position: sticky; top: <stagger>`,
+ * staggered so card N+1 ends up slightly above card N when both are
+ * pinned. The total scroll distance is sized by the wrapper's height
+ * (one viewport per card minus the stagger).
  */
 
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React from 'react';
+import HexBackground from '../HexBackground/HexBackground.jsx';
 import styles from './RotatingCards.module.css';
 
 export default function RotatingCards({
@@ -36,32 +55,9 @@ export default function RotatingCards({
   title,
   lede,
   cards = [],
-  interval = 5000,
   className,
 }) {
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const timerRef = useRef(null);
-  const total = cards.length;
-
-  const advance = useCallback((delta) => {
-    setActive((cur) => (cur + delta + total) % total);
-  }, [total]);
-
-  useEffect(() => {
-    if (paused || total <= 1) return undefined;
-    timerRef.current = setInterval(() => advance(1), interval);
-    return () => clearInterval(timerRef.current);
-  }, [paused, interval, advance, total]);
-
-  const onKeyDown = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); advance(1); }
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); advance(-1); }
-  };
-
-  if (total === 0) return null;
-  const card = cards[active];
-
+  if (cards.length === 0) return null;
   return (
     <section className={[styles.root, className].filter(Boolean).join(' ')}>
       {(eyebrow || title || lede) && (
@@ -71,53 +67,32 @@ export default function RotatingCards({
           {lede && <p className={styles.lede}>{lede}</p>}
         </header>
       )}
-      <div
-        className={styles.stage}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
-        onKeyDown={onKeyDown}
-        tabIndex={0}
-        aria-roledescription="carousel"
-        aria-label={typeof title === 'string' ? title : 'Rotating cards'}
-      >
-        <div
-          key={active /* re-mount triggers slide-in animation */}
-          className={styles.card}
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {card.icon && (
-            <div className={styles.icon} aria-hidden="true">{card.icon}</div>
-          )}
-          {card.eyebrow && <div className={styles.cardEyebrow}>{card.eyebrow}</div>}
-          {card.title && <h3 className={styles.cardTitle}>{card.title}</h3>}
-          {card.summary && <p className={styles.cardSummary}>{card.summary}</p>}
-          {card.cta && (
-            <a href={card.cta.href} className={styles.cardCta}>
-              {card.cta.label}
-            </a>
-          )}
-        </div>
+      <div className={styles.stack} style={{'--stack-count': cards.length}}>
+        {cards.map((card, i) => (
+          <article
+            key={i}
+            className={[styles.card, styles[`tone-${card.tone || 'cobalt'}`]].join(' ')}
+            style={{'--i': i, top: `calc(var(--card-top, 80px) + ${i * 24}px)`}}
+          >
+            <div className={styles.cardImage}>
+              <HexBackground tone={`${card.tone || 'cobalt'}-100`} position="top" size="lg" density={2} />
+              <div className={styles.cardImageInner}>
+                {card.panel}
+              </div>
+            </div>
+            <div className={styles.cardText}>
+              {card.eyebrow && <div className={styles.cardEyebrow}>{card.eyebrow}</div>}
+              {card.title && <h3 className={styles.cardTitle}>{card.title}</h3>}
+              {card.summary && <p className={styles.cardSummary}>{card.summary}</p>}
+              {card.cta && (
+                <a href={card.cta.href} className={styles.cardCta}>
+                  {card.cta.label}
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
       </div>
-      {total > 1 && (
-        <div className={styles.pips} role="tablist" aria-label="Select card">
-          {cards.map((c, i) => (
-            <button
-              key={i}
-              role="tab"
-              aria-selected={i === active}
-              aria-label={`Card ${i + 1}: ${c.title || ''}`}
-              className={[styles.pip, i === active && styles.pipActive].filter(Boolean).join(' ')}
-              onClick={() => setActive(i)}
-              type="button"
-            >
-              <span className={styles.pipHex} aria-hidden="true"></span>
-            </button>
-          ))}
-        </div>
-      )}
     </section>
   );
 }

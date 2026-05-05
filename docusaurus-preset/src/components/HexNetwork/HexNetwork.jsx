@@ -43,17 +43,23 @@ const LAYOUTS = {
 };
 
 function Cell({cell, highlighted}) {
+  if (!cell) {
+    return <div className={[styles.cell, styles.empty].filter(Boolean).join(' ')} aria-hidden="true"><div className={styles.cellInner} /></div>;
+  }
+  const inner = cell.logo
+    ? (typeof cell.logo === 'string'
+        ? <img src={cell.logo} alt={cell.name || ''} className={styles.logo} />
+        : <span className={styles.logo}>{cell.logo}</span>)
+    : (cell.name && <span className={styles.wordmark}>{cell.name}</span>);
   return (
-    <div className={[styles.cell, highlighted && styles.center].filter(Boolean).join(' ')}>
-      <div className={styles.cellInner}>
-        {cell?.logo && (
-          typeof cell.logo === 'string'
-            ? <img src={cell.logo} alt={cell.name || ''} className={styles.logo} />
-            : <span className={styles.logo}>{cell.logo}</span>
-        )}
-      </div>
-      {cell?.name && <div className={styles.name}>{cell.name}</div>}
-    </div>
+    <a
+      className={[styles.cell, highlighted && styles.center, cell.href && styles.linked].filter(Boolean).join(' ')}
+      href={cell.href || undefined}
+      title={cell.name || undefined}
+      aria-label={cell.name || undefined}
+    >
+      <div className={styles.cellInner}>{inner}</div>
+    </a>
   );
 }
 

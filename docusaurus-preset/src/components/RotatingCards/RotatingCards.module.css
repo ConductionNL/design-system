@@ -1,7 +1,11 @@
 /**
- * <RotatingCards /> styles. One card visible at a time, sliding in
- * from the right when the rotator advances. Pagination as a row of
- * pointy-top hex pips beneath the card.
+ * <RotatingCards /> styles. Scroll-pinned stacked cards.
+ *
+ * Each card is position: sticky and stays pinned at top: calc(...) as
+ * the viewport scrolls past it. Cards stagger by 24px each so that
+ * when card N is pinned and the user keeps scrolling, card N+1 slides
+ * up from below and ends 24px lower than card N — readable as a
+ * stack, not a swap.
  */
 
 .root {
@@ -11,6 +15,7 @@
   font-family: var(--conduction-typography-font-family-body);
 }
 
+/* ---------- Header ---------- */
 .head { max-width: 70ch; margin: 0 0 var(--space-8); }
 .eyebrow {
   display: inline-flex; align-items: center; gap: var(--space-2);
@@ -26,63 +31,110 @@
 }
 .lede { font-size: 17px; line-height: 1.5; color: var(--c-cobalt-700); margin: 0; }
 
-/* Card stage */
-.stage {
-  background: var(--c-cobalt-900);
+/* ---------- The stack ---------- */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.card {
+  position: sticky;
+  /* `top` is set inline as `calc(var(--card-top, 80px) + i * 24px)` so
+     each pinned card lands a little lower than the previous one. */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-xl);
-  padding: var(--space-10) var(--space-10);
-  min-height: 320px;
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+  margin-bottom: var(--space-4);
+  /* Each card needs at least one viewport-height of scroll room before
+     the next card can pin over it. min-height drives that. */
+  min-height: 480px;
+  /* The scroll-trigger area for each card: its parent contributes one
+     viewport-ish of height per card, achieved via the .card height +
+     bottom-margin. */
+}
+
+@media (max-width: 900px) {
+  .card { grid-template-columns: 1fr; min-height: auto; }
+}
+
+/* ---------- Image side (coloured panel) ---------- */
+.cardImage {
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
-  /* Subtle hex pattern in the background. */
-  background-image:
-    radial-gradient(circle at 12% 20%, rgba(243,108,33,0.08) 0%, transparent 30%),
-    radial-gradient(circle at 88% 80%, rgba(33,70,139,0.4) 0%, transparent 40%);
-  background-color: var(--c-cobalt-900);
+  justify-content: center;
+  padding: var(--space-8);
+  min-height: 380px;
 }
-.stage:focus-visible { outline: 2px solid var(--c-orange-knvb); outline-offset: 2px; }
-
-.card {
-  display: flex; flex-direction: column;
-  gap: var(--space-4);
-  max-width: 56ch;
-  color: white;
-  animation: cardIn 480ms ease-out;
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.icon {
-  width: 48px; height: 56px;
-  clip-path: var(--hex-pointy-top);
-  background: var(--c-orange-knvb);
+.cardImageInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
   display: flex; align-items: center; justify-content: center;
-  color: white;
 }
-.icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* Tone palettes — set the .cardImage background. */
+.tone-mint        .cardImage { background: var(--c-mint-100); }
+.tone-mint        .cardEyebrow,
+.tone-mint        .cardCta    { color: var(--c-mint-700); }
+
+.tone-lavender    .cardImage { background: var(--c-lavender-100); }
+.tone-lavender    .cardEyebrow,
+.tone-lavender    .cardCta    { color: var(--c-lavender-700); }
+
+.tone-forest      .cardImage { background: var(--c-forest-100); }
+.tone-forest      .cardEyebrow,
+.tone-forest      .cardCta    { color: var(--c-forest-700); }
+
+.tone-terracotta  .cardImage { background: var(--c-terracotta-100); }
+.tone-terracotta  .cardEyebrow,
+.tone-terracotta  .cardCta    { color: var(--c-terracotta-700); }
+
+.tone-coral       .cardImage { background: var(--c-coral-100); }
+.tone-coral       .cardEyebrow,
+.tone-coral       .cardCta    { color: var(--c-coral-700); }
+
+.tone-workspace   .cardImage { background: var(--c-workspace-100); }
+.tone-workspace   .cardEyebrow,
+.tone-workspace   .cardCta    { color: var(--c-cobalt-700); }
+
+.tone-cobalt      .cardImage { background: var(--c-cobalt-50); }
+.tone-cobalt      .cardEyebrow,
+.tone-cobalt      .cardCta    { color: var(--c-blue-cobalt); }
+
+/* ---------- Text side ---------- */
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-10) var(--space-9);
+  justify-content: center;
+}
 
 .cardEyebrow {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--c-cobalt-200);
+  font-weight: 600;
 }
 .cardTitle {
-  font-size: 36px; font-weight: 700; letter-spacing: -0.02em;
-  line-height: 1.15; color: white; margin: 0;
+  font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1.15; color: var(--c-cobalt-900); margin: 0;
 }
 .cardSummary {
-  font-size: 17px; line-height: 1.5; color: var(--c-cobalt-100);
+  font-size: 17px; line-height: 1.55; color: var(--c-cobalt-700);
   margin: 0;
 }
 
 .cardCta {
   align-self: flex-start;
   display: inline-flex; align-items: center;
-  background: white; color: var(--c-blue-cobalt);
+  background: var(--c-blue-cobalt); color: white !important;
   padding: 10px 18px;
   border-radius: var(--radius-md);
   font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
@@ -91,32 +143,4 @@
   transition: background 160ms;
   margin-top: var(--space-2);
 }
-.cardCta:hover { background: var(--c-cobalt-50); color: var(--c-cobalt-900); }
-
-/* Hex pip pagination */
-.pips {
-  display: flex; gap: var(--space-2);
-  justify-content: center;
-  margin-top: var(--space-5);
-}
-.pip {
-  appearance: none; -webkit-appearance: none;
-  background: transparent; border: 0; padding: 4px;
-  cursor: pointer;
-}
-.pipHex {
-  display: block;
-  width: 14px; height: 16px;
-  clip-path: var(--hex-pointy-top);
-  background: var(--c-cobalt-200);
-  transition: background 160ms, transform 160ms;
-}
-.pip:hover .pipHex { background: var(--c-cobalt-400); transform: scale(1.1); }
-.pipActive .pipHex { background: var(--c-orange-knvb); }
-.pip:focus-visible { outline: 2px solid var(--c-orange-knvb); outline-offset: 2px; border-radius: var(--radius-sm); }
-
-@media (max-width: 720px) {
-  .stage { padding: var(--space-6); min-height: 280px; }
-  .cardTitle { font-size: 26px; }
-  .cardSummary { font-size: 15px; }
-}
+.cardCta:hover { background: var(--c-cobalt-700); }

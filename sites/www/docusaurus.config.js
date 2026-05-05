@@ -41,19 +41,17 @@ module.exports = createConfig({
     },
   },
 
-  /* Override the preset's classic preset to drop the docs plugin. The
-     site is marketing-first; product docs live in their own apps. Blog
-     stays for release notes. */
+  /* Override the preset's classic preset to drop docs and blog. The
+     site is marketing-first; product docs live in their own apps and
+     blog content moved to academy.conduction.nl (sites/academy). The
+     /blog/* path on this site redirects to academy via the static
+     stubs in static/blog/. */
   presets: [
     [
       'classic',
       {
         docs: false,
-        blog: {
-          showReadingTime: true,
-          blogTitle: 'Conduction blog',
-          blogDescription: 'Updates from Conduction',
-        },
+        blog: false,
         theme: {
           customCss: [require.resolve('./src/css/site.css')],
         },

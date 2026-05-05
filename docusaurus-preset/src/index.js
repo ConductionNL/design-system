@@ -125,6 +125,17 @@ function createConfig(opts) {
     onBrokenLinks: 'warn',
     onBrokenMarkdownLinks: 'warn',
 
+    /* Two static roots, in increasing-precedence order:
+         1. preset's own ../static (lib/canal-footer, conduction-bg, hex-rain,
+            platform-diagram + brand img/favicon, logo, logo-dark, nextcloud-logo)
+         2. site's own static/ (CNAME, site-specific images, overrides)
+       Last wins per-file, so a site can drop its own /img/logo.svg into
+       static/img/logo.svg to override the brand default. */
+    staticDirectories: opts.staticDirectories || [
+      path.resolve(__dirname, '..', 'static'),
+      'static',
+    ],
+
     i18n: opts.i18n || I18N,
 
     presets: opts.presets || [

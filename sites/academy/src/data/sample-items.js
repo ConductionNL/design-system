@@ -72,6 +72,16 @@ export const FEATURED = {
 
 export const ITEMS = [
   {
+    href: '/posts/welcome/',
+    contentType: 'blog',
+    title: 'Conduction is online',
+    summary: 'First post on the new Conduction site. The brand book moves here once the OpenCatalogi content plugin lands.',
+    author: {name: 'Conduction'},
+    date: '2026-05-03',
+    tags: ['Conduction', 'design-system'],
+    thumbnail: {icon: <IconHome />, panelTone: 'cobalt-deep'},
+  },
+  {
     href: '/posts/tame-log-noise/',
     contentType: 'blog',
     title: "Taming log noise with OpenTelemetry's drain processor",

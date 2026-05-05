@@ -36,14 +36,29 @@ module.exports = createConfig({
     },
   },
 
-  /* Drop docs and blog from the classic preset. The landing is a
-     handwritten MDX page; blog plugin gets wired in batch 3. */
+  /* Blog plugin enabled at /posts/. The landing at src/pages/index.mdx
+     stays as the custom homepage on / for batch 3; batch 4 swizzles
+     BlogListPage and BlogPostPage so the academy components render
+     real frontmatter, and /posts/ collapses back into /. */
   presets: [
     [
       'classic',
       {
         docs: false,
-        blog: false,
+        blog: {
+          path: 'blog',
+          routeBasePath: '/posts',
+          showReadingTime: true,
+          blogTitle: 'Conduction Academy',
+          blogDescription: 'Blogs, guides, case studies, webinars, tutorials. One feed, all open-source.',
+          postsPerPage: 'ALL',
+          feedOptions: {
+            type: ['rss', 'atom'],
+            title: 'Conduction Academy',
+            description: 'New blogs, guides, case studies, webinars, and tutorials from Conduction.',
+            copyright: `Conduction B.V. © ${new Date().getFullYear()}`,
+          },
+        },
         theme: {
           customCss: [require.resolve('./src/css/site.css')],
         },

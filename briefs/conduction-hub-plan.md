@@ -49,25 +49,25 @@ Audience for this doc: a future agent (or human) walking in cold. It states what
 - [x] Footer typography ISO badges linking to `/iso`
 - [x] ISO certificate PNGs available at `sites/www/static/img/certificates/iso-9001-2015.png` and `iso-27001-2022.png` for use on the `/iso` page
 
-## Phase 2.5/B: company hub (in progress)
+## Phase 2.5/B: company hub (complete)
 
 The live `conduction.nl` is heavier than our new site: services breakdown, customer logo wall, contact form, legal pages. We are porting the procurement-relevant parts and reframing as Public Tech.
 
 ### Beheer page (managed services)
-- [ ] Create `sites/www/src/pages/beheer.mdx`
+- [x] Create `sites/www/src/pages/beheer.mdx`
   - Headline: Common Ground components hosted as SaaS at `commonground.nu`, **€250/month per app**
   - Partner CTA for multi-tenant deployments, custom integrations, per-user pricing
   - SLA / support hours / incident response (placeholder, fill from Procolix terms or leave as "neem contact op")
   - Mention which apps are available as managed components today
 
 ### Build page (formerly projecten)
-- [ ] Create `sites/www/src/pages/build.mdx` (URL `/build`; rename to `/develop` if it reads better)
+- [x] Create `sites/www/src/pages/build.mdx` (URL `/build`; rename to `/develop` if it reads better)
   - Audience: tertiary tier per CLAUDE.md (developer / integrator)
   - Topics: scaffolding from OpenRegister-as-backend, NLDesign Theme, EUPL-1.2 release pipeline, Docker dev env, app-store submission flow
   - Heavy GitHub + `docs.conduction.nl` links, get-out-of-their-way tone
 
 ### Solution: zaakafhandeling
-- [ ] Update `sites/www/src/pages/solutions/zaakafhandeling.mdx` to make the 4-app composition explicit:
+- [x] Update `sites/www/src/pages/solutions/zaakafhandeling.mdx` to make the 4-app composition explicit:
   - **OpenRegister** — typed data store with audit trail
   - **PipelinQ** — citizen / stakeholder CRM
   - **Procest** — case management
@@ -76,14 +76,14 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
   - Keep the existing ZGW / archive-koppelvlak / audit-trail framing
 
 ### Solution: archief
-- [ ] Add `sites/www/src/pages/solutions/archief.mdx`:
+- [x] Add `sites/www/src/pages/solutions/archief.mdx`:
   - **OpenRegister** stores current data
   - **OpenConnector** ships records to central archive storage (KSL / e-Depot / etc.)
   - Compliance signals: NEN-2082, Wet hergebruik, eIDAS-AdES sealed exports
   - Pricing line: "2 × €250 = €500/maand als SaaS via commonground.nu, of partner-rate voor maatwerk."
 
 ### Clients component
-- [ ] Design + implement `docusaurus-preset/src/components/Clients/Clients.jsx` + `Clients.module.css`
+- [x] Design + implement `docusaurus-preset/src/components/Clients/Clients.jsx` + `Clients.module.css`
   - Public-sector / customer logo wall (separate concept from `/partners`, which stays commercial-only)
   - Visual: grayscale logo grid, columns adapt mobile, no captions, no hover detail
   - 16 logos to source from `ConductionNL/conduction-website/static/img/`:
@@ -93,20 +93,20 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
   - **Asset blocker:** logos need to be downloaded from the source repo before the component can be wired
 
 ### About page (absorbs over-ons + contact)
-- [ ] Restructure `sites/www/src/pages/about.mdx`
+- [x] Restructure `sites/www/src/pages/about.mdx`
   1. "Public Tech / Tech to serve people" hero
   2. Company story, mission, "Digital Socials" framing
   3. ISO 9001 + 27001 callout block linking to `/iso`
   4. Optional team strip (`EmployeeCard` from preset, fed from `brand/assets/team/*.png`)
   5. Contact block: form (name, organisation, email, phone, message) OR a clean mailto + tel + map link triplet
   6. Office details: hours, KvK 76741850, BTW NL860784241B01, Lauriergracht 14h Amsterdam
-- [ ] Decide: real contact form (needs a submit endpoint, e.g. Formspree, Netlify Functions, or an OpenConnector endpoint) or a mailto-only block. **Default = mailto.**
-- [ ] Drop the standalone `/over-ons` and `/contact` URLs; `/about` is the single front door
+- [x] Decide: real contact form (needs a submit endpoint, e.g. Formspree, Netlify Functions, or an OpenConnector endpoint) or a mailto-only block. **Decision: mailto + tel + map link triplet, no form backend yet.**
+- [x] Drop the standalone `/over-ons` and `/contact` URLs; `/about` is the single front door
 
 ### Reframe Conduction landing as Public Tech
-- [ ] Restructure `sites/www/src/pages/index.mdx`
+- [x] Restructure `sites/www/src/pages/index.mdx`
   1. Hero with "Public Tech" eyebrow, "Tech to serve people" tagline
-  2. **Wat wij doen** 3-up cards (the company-services row that the live site has):
+  2. **Wat we doen** 3-up cards (the company-services row that the live site has):
      - Apps (link `/apps`)
      - Beheer (link `/beheer`)
      - Common Ground advisory (link `/commonground`)
@@ -115,6 +115,8 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
   5. Two-door pivot to `/connext` and `/commonground` (existing PairRow, keep)
   6. `<AppsPreview>` (existing 3 apps)
   7. `<CtaBanner>`
+
+Also done as part of this phase: navbar swapped Support → Beheer, footer Resources column added Beheer + Build, FeatureItem `<p>` nesting bug fix in the preset.
 
 ## Phase 3: brand-strip pass
 

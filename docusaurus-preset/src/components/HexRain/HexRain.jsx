@@ -35,6 +35,7 @@
 import React, {useEffect, useRef} from 'react';
 import Head from '@docusaurus/Head';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import {useLazyScript} from '../../utils/lazyScript';
 
 const ASSET_BASE = '/lib';
 
@@ -42,27 +43,33 @@ export default function HexRain({ariaLabel = 'Twelve apps mini-game, click each 
   const isBrowser = useIsBrowser();
   const ref = useRef(null);
 
+  /* hex-rain.js is loaded post-hydration via this hook so the runtime's
+     DOM mutations don't trip React's hydration mismatch. See
+     utils/lazyScript.js. */
+  useLazyScript(ASSET_BASE + '/hex-rain.js', 'hex-rain');
+
+  /* The runtime exposes window.HexRain.hydrate() once it has registered
+     itself. Poll one rAF tick per frame until it's there, then call it
+     to attach the spawn loop to this mount point. */
   useEffect(() => {
     if (!isBrowser) return;
-    /* Runtime is loaded via Head; once it's evaluated it registers
-       window.HexRain.hydrate(). Polling-free wait: try immediately,
-       and fall back to a single rAF tick if the script hasn't
-       registered yet. */
-    if (window.HexRain?.hydrate) {
-      window.HexRain.hydrate();
-      return;
+    let cancelled = false;
+    function tryHydrate() {
+      if (cancelled) return;
+      if (window.HexRain?.hydrate) {
+        window.HexRain.hydrate();
+        return;
+      }
+      requestAnimationFrame(tryHydrate);
     }
-    const id = requestAnimationFrame(() => {
-      if (window.HexRain?.hydrate) window.HexRain.hydrate();
-    });
-    return () => cancelAnimationFrame(id);
+    tryHydrate();
+    return () => { cancelled = true; };
   }, [isBrowser]);
 
   return (
     <>
       <Head>
         <link rel="stylesheet" href={ASSET_BASE + '/hex-rain.css'} />
-        <script src={ASSET_BASE + '/hex-rain.js'} defer />
       </Head>
       <div
         ref={ref}

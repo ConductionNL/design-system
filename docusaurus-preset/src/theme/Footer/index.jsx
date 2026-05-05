@@ -18,13 +18,13 @@
  * to the kit can flow through with minimal translation work.
  */
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
-import useIsBrowser from '@docusaurus/useIsBrowser';
 import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import {brandFor} from '../brand.jsx';
+import {useLazyScript} from '../../utils/lazyScript';
 import GameModal from '../../components/GameModal/GameModal';
 
 function FooterLink({label, href, to}) {
@@ -45,7 +45,6 @@ function FooterLink({label, href, to}) {
 
 export default function Footer() {
   const {footer, navbar} = useThemeConfig();
-  const isBrowser = useIsBrowser();
   const location = useLocation();
   /* Brand switch follows the pathname: /connext or /commonground sections
      show their styled wordmark and slot themselves into the triad row.
@@ -54,23 +53,10 @@ export default function Footer() {
   const brand = brandFor(location.pathname, navbar?.title);
   const wordmark = brand ? brand.wordmark : (navbar?.title || 'Conduction');
 
-  /* Load canal-footer.js *after* hydration. If we ship it via <Head>
-     with `defer`, the deferred script runs between HTML parse and
-     React hydration. The script mutates .skyline (filling it with
-     random house templates), and the mutated DOM no longer matches
-     React's expected empty .skyline div, producing hydration errors
-     #418 + #423 in production. Loading via this effect runs the
-     script *after* React's tree is in place, so the mutations are
-     post-hydration and React doesn't re-validate. */
-  useEffect(() => {
-    if (!isBrowser) return;
-    if (document.querySelector('script[data-canal-footer]')) return;
-    const script = document.createElement('script');
-    script.src = '/lib/canal-footer.js';
-    script.async = true;
-    script.dataset.canalFooter = 'true';
-    document.body.appendChild(script);
-  }, [isBrowser]);
+  /* canal-footer.js is loaded post-hydration so its DOM mutations
+     (filling .skyline, animating boats) don't trip React hydration
+     mismatches. See docs in utils/lazyScript.js. */
+  useLazyScript('/lib/canal-footer.js', 'canal-footer');
 
   if (!footer) return null;
   const {links = [], copyright} = footer;

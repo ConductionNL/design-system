@@ -43,32 +43,24 @@
  *   />
  */
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import Head from '@docusaurus/Head';
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import {useLazyScript} from '../../utils/lazyScript';
 
 const ASSET_BASE = '/lib';
 
 export default function PlatformDiagram({workspace, lists = [], flows = []}) {
-  const isBrowser = useIsBrowser();
-
-  /* The runtime upgrades any <platform-diagram> element it finds at
-     DOMContentLoaded. On SPA route changes the element re-mounts but
-     the script doesn't re-run; the IIFE registers a custom-element
-     definition that's idempotent, so freshly-mounted nodes are
-     upgraded automatically. No manual hook needed here. */
-  useEffect(() => {
-    /* No-op: the imperative work happens in the runtime script
-       (loaded via <Head> below). Hook left in place so a future
-       imperative handle (re-render, scroll into view, etc.) has a
-       seam. */
-  }, [isBrowser]);
+  /* platform-diagram.js is loaded post-hydration. The runtime registers
+     a custom-element definition that upgrades any <platform-diagram>
+     element on the page; running it after React hydration prevents the
+     custom-element constructor from mutating the DOM mid-hydration and
+     producing #418 / #423 warnings. See utils/lazyScript.js. */
+  useLazyScript(ASSET_BASE + '/platform-diagram.js', 'platform-diagram');
 
   return (
     <>
       <Head>
         <link rel="stylesheet" href={ASSET_BASE + '/platform-diagram.css'} />
-        <script src={ASSET_BASE + '/platform-diagram.js'} defer />
       </Head>
 
       <platform-diagram>

@@ -2,27 +2,36 @@
  * <DetailHero />
  *
  * Hero pattern shared by app-detail, solution-page, and partner-detail
- * pages from preview/pages/*. Two-column 1fr/360px grid: badge row +
- * title + tagline + actions on the left, a 360x416 cobalt hex with
- * the page subject's icon on the right.
+ * pages. Two-column layout: title + supporting copy on the left,
+ * an optional illustration (typically an <AppMock>) on the right.
  *
- * Mirrors the .head section in preview/pages/app-detail.html (and the
- * near-identical heads on solution-page.html / partner-detail.html).
+ * The page-subject icon renders as a small leading hex inline with
+ * the H1 title, *not* as a giant right-side panel. That frees the
+ * right column for an illustration that shows the product itself.
+ *
+ *     [crumb]
+ *     [status badges]
+ *     [hex] [Title]                        [    illustration    ]
+ *     tagline
+ *     [primary] [secondary] [tertiary]
+ *
+ * If no illustration is passed, the hero collapses to a single
+ * column and the title row stays inline-hex + h1.
  *
  * Usage:
  *
  *   <DetailHero
- *     crumb={[{label: 'Apps', href: '/apps'}, 'OpenRegister']}
- *     status={{label: 'Stable', color: 'var(--c-mint-500)'}}
- *     version="v3.1"
+ *     appId="mydash"
+ *     crumb={[{label: 'Apps', href: '/apps'}, 'MyDash']}
+ *     status={{label: 'Beta', color: 'var(--c-orange-knvb)'}}
+ *     version="v0.9"
  *     locales="NL · EN"
- *     title="OpenRegister"
- *     tagline="Schemas, registers, structured data objects, the typed-data backbone for every other Conduction app."
+ *     title="MyDash"
+ *     tagline="..."
  *     primaryCta={{label: 'Install from app store', href: '/install'}}
- *     secondaryCta={{label: 'Read the docs', href: '/docs/openregister'}}
- *     tertiaryCta={{label: 'View on GitHub', href: 'https://github.com/...'}}
  *     icon={<svg>...</svg>}
  *     iconColor="var(--c-blue-cobalt)"
+ *     illustration={<AppMock app="mydash" />}
  *   />
  */
 
@@ -44,18 +53,19 @@ export default function DetailHero({
   tertiaryCta,
   icon,
   iconColor,
+  illustration,
   className,
   appId,
   downloads,
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
+  const hasIllustration = Boolean(illustration);
 
   return (
-    <section className={[styles.head, className].filter(Boolean).join(' ')}>
+    <section className={[styles.head, hasIllustration && styles.withIllustration, className].filter(Boolean).join(' ')}>
       {crumb && Array.isArray(crumb) && (
         <div className={styles.crumb}>
           {crumb.map((c, i) => {
-            const last = i === crumb.length - 1;
             const sep = i < crumb.length - 1 ? <span className={styles.sep}>/</span> : null;
             if (typeof c === 'string') {
               return <React.Fragment key={i}>{c}{sep}</React.Fragment>;
@@ -99,7 +109,20 @@ export default function DetailHero({
             </div>
           )}
 
-          {title && <h1 className={styles.title}>{title}</h1>}
+          {title && (
+            <h1 className={styles.title}>
+              {icon && (
+                <span
+                  className={styles.titleIcon}
+                  style={iconColor ? {background: iconColor} : undefined}
+                  aria-hidden="true"
+                >
+                  {icon}
+                </span>
+              )}
+              <span className={styles.titleText}>{title}</span>
+            </h1>
+          )}
           {tagline && <p className={styles.tagline}>{tagline}</p>}
 
           {(primaryCta || secondaryCta || tertiaryCta) && (
@@ -111,10 +134,8 @@ export default function DetailHero({
           )}
         </div>
 
-        {icon && (
-          <div className={styles.appHex} style={iconColor ? {background: iconColor} : undefined}>
-            {icon}
-          </div>
+        {hasIllustration && (
+          <div className={styles.illustration}>{illustration}</div>
         )}
       </div>
     </section>

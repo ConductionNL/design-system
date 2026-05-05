@@ -27,6 +27,7 @@ import {
   ContentTypeFilter,
   CONTENT_TYPES,
   NewsletterCta,
+  Section,
 } from '@conduction/docusaurus-preset/components';
 
 const TYPE_SET = new Set(CONTENT_TYPES);
@@ -245,24 +246,24 @@ export default function BlogListPage(props) {
         title={metadata?.blogTitle || 'Conduction Academy'}
         description={metadata?.blogDescription}
       >
-        <main className="marketing-page" style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '48px 64px 96px',
-        }}>
-          <BrowserOnly fallback={<AcademyLandingFallback items={sorted} />}>
-            {() => <AcademyLandingInner items={sorted} />}
-          </BrowserOnly>
+        <main className="marketing-page">
+          <article style={{margin: 0, padding: 0}}>
+            <Section spacing="default">
+              <BrowserOnly fallback={<AcademyLandingFallback items={sorted} />}>
+                {() => <AcademyLandingInner items={sorted} />}
+              </BrowserOnly>
 
-          <div style={{height: 96}} />
+              <div style={{height: 96}} />
 
-          <NewsletterCta
-            title="New posts in your inbox, monthly."
-            lede="One mail a month. New guides, case studies, and webinars. Geen spam, je kunt je altijd uitschrijven."
-            placeholder="jij@bedrijf.nl"
-            submitLabel="Subscribe"
-            fineprint="We mail vanuit info@conduction.nl. Geen lijstverkoop."
-          />
+              <NewsletterCta
+                title="New posts in your inbox, monthly."
+                lede="One mail a month. New guides, case studies, and webinars. Geen spam, je kunt je altijd uitschrijven."
+                placeholder="jij@bedrijf.nl"
+                submitLabel="Subscribe"
+                fineprint="We mail vanuit info@conduction.nl. Geen lijstverkoop."
+              />
+            </Section>
+          </article>
         </main>
       </Layout>
     </HtmlClassNameProvider>

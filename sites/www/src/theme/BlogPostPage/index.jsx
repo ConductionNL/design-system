@@ -30,6 +30,7 @@ import {
   ContentDetailHero,
   ContentCard,
   RelatedPosts,
+  Section,
 } from '@conduction/docusaurus-preset/components';
 
 function defaultIconFor(contentType) {
@@ -143,11 +144,7 @@ function BlogPostPageContent({children}) {
     .filter(Boolean);
 
   return (
-    <article className="content-detail-page" style={{
-      maxWidth: 1080,
-      margin: '0 auto',
-      padding: '0 64px 96px',
-    }}>
+    <Section spacing="default">
       <ContentDetailHero {...heroProps} />
 
       <div className="content-detail-body" style={{
@@ -172,7 +169,7 @@ function BlogPostPageContent({children}) {
           </RelatedPosts>
         </div>
       )}
-    </article>
+    </Section>
   );
 }
 
@@ -188,9 +185,13 @@ export default function BlogPostPage(props) {
         <BlogPostPageMetadata />
         <BlogPostPageStructuredData />
         <Layout>
-          <BlogPostPageContent>
-            <BlogPostContent />
-          </BlogPostPageContent>
+          <main className="marketing-page">
+            <article style={{margin: 0, padding: 0}}>
+              <BlogPostPageContent>
+                <BlogPostContent />
+              </BlogPostPageContent>
+            </article>
+          </main>
         </Layout>
       </HtmlClassNameProvider>
     </BlogPostProvider>

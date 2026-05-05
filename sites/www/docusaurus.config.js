@@ -108,20 +108,19 @@ module.exports = createConfig({
           {label: 'Build an app',   to: '/build'},
           {label: 'ConNext',        to: '/connext'},
           {label: 'Common Ground',  to: '/commonground'},
-          {label: 'GitHub',         href: 'https://github.com/ConductionNL'},
         ],
       },
       {
         title: 'Conduction',
         items: [
           {label: 'About',          to: '/about'},
-          {label: 'Partners',       to: '/partners'},
-          {label: 'Common Ground',  href: 'https://commonground.nu/'},
-          {label: 'EUPL-1.2 / MIT', href: 'https://eupl.eu/'},
+          {label: 'Open source',    to: '/about#opensource'},
+          {label: 'Team',           to: '/about#team'},
+          {label: 'ISO',            to: '/iso'},
         ],
       },
     ],
-    copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · Lauriergracht 14h, 1016 RR Amsterdam · © ${new Date().getFullYear()}`,
+    copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · IBAN NL51 ABNA 0868951550 · Lauriergracht 14h, 1016 RR Amsterdam · © ${new Date().getFullYear()}`,
   },
 
   /* OpenCatalogi content plugin slot, wired in via env once it exists. */

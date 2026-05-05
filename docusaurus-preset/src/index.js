@@ -72,9 +72,10 @@ const baseFooter = () => ({
     {
       title: 'Conduction',
       items: [
-        { label: 'Over ons', href: 'https://conduction.nl/over-ons/' },
-        { label: 'Contact', href: 'mailto:info@conduction.nl' },
-        { label: 'GitHub', href: 'https://github.com/ConductionNL' },
+        { label: 'About', href: 'https://conduction.nl/about' },
+        { label: 'Open source', href: 'https://conduction.nl/about#opensource' },
+        { label: 'Team', href: 'https://conduction.nl/about#team' },
+        { label: 'ISO', href: 'https://conduction.nl/iso' },
       ],
     },
     {
@@ -82,11 +83,10 @@ const baseFooter = () => ({
       items: [
         { label: 'Brand book', href: 'https://connext.conduction.nl/' },
         { label: 'Diagram set', href: 'https://connext.conduction.nl/diagrams/' },
-        { label: 'EUPL-1.2 / MIT', href: 'https://eupl.eu/' },
       ],
     },
   ],
-  copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · Lauriergracht 14h, 1016 RR Amsterdam · ${new Date().getFullYear()}`,
+  copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · IBAN NL51 ABNA 0868951550 · Lauriergracht 14h, 1016 RR Amsterdam · ${new Date().getFullYear()}`,
 });
 
 /**

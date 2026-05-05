@@ -91,7 +91,6 @@ module.exports = createConfig({
           {label: 'OpenConnector', href: 'https://openconnector.conduction.nl/'},
           {label: 'DocuDesk',      href: 'https://docudesk.conduction.nl/'},
           {label: 'MyDash',        href: 'https://mydash.conduction.nl/'},
-          {label: 'OpenAI Bridge', href: 'https://openai-bridge.conduction.nl/'},
         ],
       },
       {

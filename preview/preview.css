@@ -324,3 +324,114 @@ body {
 }
 
 .hex { clip-path: var(--hex-pointy-top); display: inline-block; }
+
+
+/* ============================================================
+   Thumbnails — abstract token-built previews for hub tiles.
+
+   See SKILL.md "Thumbnails" for the four archetypes (token
+   specimen, shrunk artefact, hex-glyph row, abstract paper) and
+   the constraints (height ladder 80/100/110px, gap ladder, one
+   orange element max, code-style meta label, tokens-only).
+
+   Use these classes inside `.tile .visual`. For one-off shapes,
+   inline-style with tokens — but if a shape repeats, give it a
+   class here so the next tile can reach for it.
+   ============================================================ */
+
+/* Trailing code-style meta label, "13 artefacts · 13 deck layouts" */
+.thumb-meta {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+  letter-spacing: 0.06em;
+  align-self: center;
+  margin-left: var(--space-3);
+}
+
+/* Token specimens — show the tokens themselves at glanceable scale. */
+.swatch-row { display: flex; gap: 4px; height: 48px; width: 100%; }
+.swatch-row > div { flex: 1; border-radius: var(--radius-sm); }
+
+.type-stack { display: flex; flex-direction: column; gap: 2px; }
+.type-stack span { line-height: 1.1; }
+
+.hex-row { display: flex; gap: var(--space-2); align-items: center; }
+.hex-row .h { width: 36px; height: 42px; clip-path: var(--hex-pointy-top); }
+
+/* Paper-artefact mocks — a tiny card / page / envelope / slide / banner /
+   email signature. Paint with token colours, never images. */
+.mock-card {
+  width: 92px; height: 56px;
+  background: var(--c-blue-cobalt);
+  border-radius: 3px;
+  padding: 6px 8px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: var(--shadow-2);
+}
+.mock-card .mc-name { color: white; font-size: 8px; font-weight: 700; letter-spacing: -0.01em; }
+.mock-card .mc-role { color: var(--c-cobalt-200); font-size: 6px; }
+.mock-card .mc-qr { width: 14px; height: 14px; background: white; border-radius: 1px; align-self: flex-end; }
+
+.mock-paper {
+  width: 56px; height: 76px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 2px;
+  padding: 5px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.mock-paper .mp-h    { height: 6px; background: var(--c-blue-cobalt); border-radius: 1px; width: 50%; }
+.mock-paper .mp-l    { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
+.mock-paper .mp-foot { margin-top: auto; height: 3px; background: var(--c-orange-knvb); border-radius: 1px; width: 30%; }
+
+.mock-env {
+  width: 100px; height: 60px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 2px;
+  position: relative;
+}
+.mock-env::after {
+  content: ""; position: absolute; inset: 0;
+  border-bottom: 30px solid var(--c-cobalt-100);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  height: 0;
+}
+
+.mock-banner {
+  width: 32px; height: 76px;
+  background: var(--c-blue-cobalt);
+  border-radius: 2px;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 5px;
+}
+.mock-banner span { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: white; }
+
+.mock-slide {
+  width: 100px; height: 56px;
+  background: var(--c-cobalt-900);
+  border-radius: 3px;
+  padding: 6px 8px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: var(--shadow-2);
+}
+.mock-slide .ms-t { color: white; font-size: 8px; font-weight: 600; }
+.mock-slide .ms-d { display: flex; gap: 2px; }
+.mock-slide .ms-d span { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: var(--c-cobalt-300); }
+.mock-slide .ms-d span:first-child { background: var(--c-orange-knvb); }
+
+.mock-sig {
+  width: 100%; max-width: 180px; height: 50px;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: 3px;
+  padding: 6px 8px;
+  display: flex; gap: 6px; align-items: center;
+}
+.mock-sig .ms-av { width: 32px; height: 32px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+.mock-sig .ms-text { display: flex; flex-direction: column; gap: 2px; }
+.mock-sig .ms-text .l1 { height: 5px; width: 60px; background: var(--c-cobalt-700); border-radius: 1px; }
+.mock-sig .ms-text .l2 { height: 3px; width: 50px; background: var(--c-cobalt-400); border-radius: 1px; }
+.mock-sig .ms-text .l3 { height: 3px; width: 40px; background: var(--c-orange-knvb); border-radius: 1px; }

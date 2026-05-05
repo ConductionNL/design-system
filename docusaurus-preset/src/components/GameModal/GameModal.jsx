@@ -1,9 +1,11 @@
 /**
  * <GameModal />
  *
- * The end-of-game dialog for the ConNext mini-games (hex-rain, the
+ * The end-of-game dialog for the Conduction mini-games (hex-rain, the
  * canal-footer boats, future invaders / domino / hex-tetris). Mounts
- * once per page; listens for `connext:gameend` CustomEvents, opens
+ * once per page; listens for `connext:gameend` CustomEvents (the event
+ * name is a brand-internal identifier, retained for compatibility),
+ * opens
  * with the matching copy, tracks total games found in localStorage so
  * the cross-site progress bar is consistent.
  *
@@ -128,7 +130,7 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
   const title = event.title || (event.won ? 'Nice run.' : "That's all of them.");
   const subtitle = event.subtitle ||
     (event.won
-      ? "You've cleared a hidden ConNext mini-game."
+      ? "You've cleared a hidden Conduction mini-game."
       : "Try again any time, the rain doesn't stop.");
 
   return (

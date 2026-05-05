@@ -21,12 +21,12 @@ Pre-release, lives inside the [design-system monorepo](https://github.com/Conduc
 const { createConfig } = require('@conduction/docusaurus-preset');
 
 module.exports = createConfig({
-  title: 'ConNext',
-  tagline: 'The open-source workspace stack.',
-  url: 'https://connext.conduction.nl',
+  title: 'Conduction',
+  tagline: 'Open-source apps for the Nextcloud workspace.',
+  url: 'https://conduction.nl',
   baseUrl: '/',
   organizationName: 'ConductionNL',
-  projectName: 'connext',
+  projectName: 'design-system',
 
   // Optional overrides
   navbar: {
@@ -83,8 +83,8 @@ A future `@conduction/docusaurus-plugin-opencatalogi` will pull pages from a Nex
 ```js
 // docusaurus.config.js
 module.exports = createConfig({
-  title: 'ConNext',
-  url: 'https://connext.conduction.nl',
+  title: 'Conduction',
+  url: 'https://conduction.nl',
   plugins: [
     [
       '@conduction/docusaurus-plugin-opencatalogi',

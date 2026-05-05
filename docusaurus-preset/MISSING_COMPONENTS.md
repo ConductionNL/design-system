@@ -11,6 +11,8 @@ Every higher-level component composes from these. Each one was extracted
 when its CSS rule appeared in three or more component files.
 
 - **HexBullet** — `primitives/HexBullet.jsx`. Three sizes (sm 8×9, md 12×14, lg 44×50) of the pointy-top clip-path hex. Used in eyebrows, pill bullets, status badges, footer triad.
+- **HexThumbnail** — `primitives/HexThumbnail.jsx`. Single pointy-top hex tile holding an icon, photo (clip-path masked), or illustration. Four sizes (sm 56×64, md 88×100, lg 160×184, xl 240×280), six tones. Used by every academy card and hero.
+- **AuthorByline** — `primitives/AuthorByline.jsx`. Avatar (initials or photo) + name + bullet separator + formatted date. Three tones (default, on-dark, muted). Used on every academy card and detail page.
 - **Eyebrow** — `primitives/Eyebrow.jsx`. Uppercase Plex Mono caption with optional leading HexBullet.
 - **Section** — `primitives/Section.jsx`. The 1280px-max wrapper. Background variants (default, tinted, inverse), spacing variants (default, tight, flush).
 - **SectionHead** — `primitives/SectionHead.jsx`. Eyebrow + h2 + lede in a 1.1fr/1fr split, stacked under 900px.
@@ -46,6 +48,19 @@ Most consume one or more primitives.
 - **GameModal** — `GameModal/GameModal.jsx`. End-of-game dialog with cross-game progress tracking. Subscribes to `connext:gameend` events.
 - **CookieCli** — `CookieCli/CookieCli.jsx`. Terminal-styled cookie consent banner with localStorage persistence.
 - **ComposeBlock** — `ComposeBlock/ComposeBlock.jsx`. Branded code block (cobalt-900 + Plex Mono + filename pill + copy button). For docker-compose, bash recipes, and any verbatim copy-paste content. Used on `/demo`.
+
+## Academy components (Batch 4)
+
+Card-and-chrome patterns for academy.conduction.nl. One feed of blogs,
+guides, case studies, webinars, and tutorials, distinguished by a
+`contentType:` frontmatter. Mirrors `preview/components/academy.html`.
+
+- **ContentCard / ContentCardGrid** — `ContentCard/ContentCard.jsx`. The "Keep learning…" card: hex-thumb panel on the left, author byline + title + summary + tag pills on the right. Three column counts, drops to single-column under 700px. Composes HexThumbnail, AuthorByline, Pill.
+- **FeaturedCard** — `FeaturedCard/FeaturedCard.jsx`. Cobalt-900 hero spot with body copy left and a large pointy-top hex flanked by two satellite hexes right. The single KNVB orange satellite is the page's one orange accent (override with `accent="cobalt"` if a screen already burns its orange budget).
+- **ContentTypeFilter** — `ContentTypeFilter/ContentTypeFilter.jsx`. Top-of-page chip row driven by `?type=`. Controlled mode (`value` + `onChange`) or uncontrolled link mode (`hrefForType`). The taxonomy lives in `ContentTypeFilter/contentTypes.js` so chips, card pills, and detail-hero pills all draw from one list.
+- **NewsletterCta** — `NewsletterCta/NewsletterCta.jsx`. Cobalt-50 (or inverse cobalt-900) panel with title, lede, email input, submit, fineprint. Form is unwired by default; pass `action` or `onSubmit` to connect it.
+- **RelatedPosts** — `RelatedPosts/RelatedPosts.jsx`. Bottom-of-detail-page block with a "Keep learning…" heading, a "View all" pill on the right, and a content-card grid below. Accepts `items` for data-driven render or children for hand-composed.
+- **ContentDetailHero** — `ContentDetailHero/ContentDetailHero.jsx`. Header for individual posts. Crumb, content-type chip + tags, h1, summary, author byline, optional duration, then a 16:9 cover region. Distinct from `<DetailHero/>` which is for app/solution/partner pages with a 360px right-side hex.
 
 ## Diagram-set web-component wrappers
 

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.conduction.nl/schemas/academy/content.schema.json",
+  "title": "Academy content",
+  "description": "Frontmatter contract for an academy.conduction.nl entry. Each MDX file under sites/academy/content/ has frontmatter that conforms to this schema. Translations live in sites/academy/i18n/<locale>/docusaurus-plugin-content-blog/ and conform to the same schema, with content allowed to diverge per language.",
+  "type": "object",
+  "required": ["title", "contentType", "authors", "date", "summary"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL slug. Optional; Docusaurus derives from filename when omitted. Translations of the same post must share the same slug so URLs match across locales.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Sentence-case title. Used as the card title and the h1 on the detail page."
+    },
+    "contentType": {
+      "type": "string",
+      "enum": ["blog", "guide", "case-study", "webinar", "tutorial"],
+      "description": "Single-pick content type. Drives the chip colour and the filter row on the landing."
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"},
+      "description": "Author keys. Resolved against sites/academy/content/authors.yml. Multiple authors render as 'A & B' in bylines."
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Publish date in ISO 8601 (YYYY-MM-DD). Used for sort order and the byline."
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Topical tags shown next to the content-type chip. Free-form for now; can be promoted to a controlled vocabulary later."
+    },
+    "heroImage": {
+      "type": "string",
+      "description": "Path to the hero image used in <ContentDetailHero/>. Relative to the post folder."
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-line summary. Shown under the title on cards and as the lede on the detail page. Keep under 160 characters."
+    },
+    "durationMinutes": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Read or watch time in minutes. Renders as 'N min read' (blog/guide/case-study/tutorial) or 'N min watch' (webinar)."
+    },
+    "videoUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Webinar video URL. Required for contentType=webinar; ignored elsewhere."
+    },
+    "thumbnailTone": {
+      "type": "string",
+      "enum": ["cobalt", "cobalt-dark", "cobalt-deep", "mint", "orange", "cobalt-50"],
+      "description": "Optional tone override for the card thumbnail panel. Defaults are derived from contentType so editors normally do not set this."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"contentType": {"const": "webinar"}}
+      },
+      "then": {
+        "required": ["videoUrl"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

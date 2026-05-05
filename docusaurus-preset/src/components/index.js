@@ -68,3 +68,23 @@ export {default as RotatingCards} from './RotatingCards/RotatingCards.jsx';
 export {default as HexBackground} from './HexBackground/HexBackground.jsx';
 export {default as AgentTrace} from './AgentTrace/AgentTrace.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';
+
+/* Academy components (Batch 4). Card-and-chrome patterns for
+   academy.conduction.nl: a single feed of blogs, guides, case studies,
+   webinars, and tutorials. Content is MDX with a `contentType:`
+   frontmatter. The taxonomy lives in ContentTypeFilter/contentTypes.js
+   and is mirrored as JSON Schema in /schemas/academy/content.schema.json. */
+export {default as ContentCard, ContentCardGrid} from './ContentCard/ContentCard.jsx';
+export {default as FeaturedCard} from './FeaturedCard/FeaturedCard.jsx';
+export {
+  default as ContentTypeFilter,
+  CONTENT_TYPES,
+  CONTENT_TYPE_PLURAL_LABELS,
+} from './ContentTypeFilter/ContentTypeFilter.jsx';
+export {
+  CONTENT_TYPE_LABELS,
+  CONTENT_TYPE_BULLET_COLOR,
+} from './ContentTypeFilter/contentTypes.js';
+export {default as NewsletterCta} from './NewsletterCta/NewsletterCta.jsx';
+export {default as RelatedPosts} from './RelatedPosts/RelatedPosts.jsx';
+export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHero.jsx';

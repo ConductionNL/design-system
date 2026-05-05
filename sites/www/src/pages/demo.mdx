@@ -22,18 +22,25 @@ import {Section, SectionHead, HowSteps, HowStep, FeatureList, FeatureItem, PairR
 <Section spacing="default" background="tinted">
   <SectionHead
     eyebrow="How it works"
-    title="Drie stappen, vijftien minuten."
+    title="Vier stappen, vijftien minuten."
     align="stack"
-    lede="Nextcloud start binnen drie minuten. De Conduction apps installeren zichzelf via de officiële app-store. Je hebt een werkende stack voor je tweede koffie."
+    lede="Stage 0 is een eenmalige prep: Docker installeren. Stages 1 t/m 3 zijn de install zelf, en die is een kwartier werk. Daarna heb je een werkende stack op je laptop."
   />
-  <HowSteps>
-    <HowStep title="Drop the docker-compose.yml in een lege map.">
-      Het bestand hieronder volstaat: Nextcloud + Postgres + Redis. Sla op als <strong>docker-compose.yml</strong>, en run <strong>docker compose up -d</strong>. Open <strong>http://localhost:8080</strong> en kies een admin-naam en wachtwoord.
+  <HowSteps columns={4}>
+    <HowStep number="0" tier="3" title="Zorg dat Docker draait.">
+      Mac en Linux: installeer <a href="https://docs.docker.com/get-docker/">Docker Desktop</a>. Windows: zet ook <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL 2</a> aan voor je Docker Desktop installeert. Een keer doen, ~10 minuten. Daarna ben je klaar voor elke volgende demo.
     </HowStep>
-    <HowStep title="Open de Nextcloud app store.">
+    <HowStep number="1" tier="1" title="Maak een map en start Docker.">
+      Sla de docker-compose.yml hieronder op in een nieuwe map en draai <strong>docker compose up -d</strong>. Open daarna <strong>http://localhost:8080</strong> en kies een admin-naam en wachtwoord.
+      <ComposeBlock filename="bash">{`mkdir conduction-demo
+cd conduction-demo
+# save the docker-compose.yml below into this folder
+docker compose up -d`}</ComposeBlock>
+    </HowStep>
+    <HowStep number="2" tier="2" title="Open de Nextcloud app store.">
       Inloggen als admin, klik je avatar rechtsboven, kies <strong>Apps</strong>. De Conduction apps staan onder <strong>Integration</strong> en <strong>Office &amp; text</strong>. Eén klik per app installeert.
     </HowStep>
-    <HowStep title="Configureer en speel.">
+    <HowStep number="3" tier="3" title="Configureer en speel.">
       OpenRegister levert een schema-bootstrap met voorbeelddata. OpenCatalogi indexeert de eerste registers. MyDash bouwt een dashboard van wat je hebt. Je kunt nu rondklikken zoals een bestaande klant.
     </HowStep>
   </HowSteps>

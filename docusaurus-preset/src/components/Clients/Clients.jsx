@@ -39,6 +39,9 @@ export const DEFAULT_CLIENTS = [
   {name: 'Gemeente Tilburg',   src: '/img/clients/tilburg.png'},
   {name: 'Gemeente Utrecht',   src: '/img/clients/utrecht.png'},
   {name: 'Gemeente Hoorn',     src: '/img/clients/hoorn.png'},
+];
+
+export const DEFAULT_PARTNERS = [
   {name: 'Nextcloud',          src: '/img/clients/nextcloud.png'},
   {name: 'iO',                 src: '/img/clients/io.webp'},
   {name: 'Ritense',            src: '/img/clients/ritense.png'},

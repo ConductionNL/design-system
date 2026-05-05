@@ -70,7 +70,7 @@ module.exports = createConfig({
     items: [
       {to: '/apps',      label: 'Apps',      position: 'left'},
       {to: '/solutions', label: 'Solutions', position: 'left'},
-      {to: '/support',   label: 'Support',   position: 'left'},
+      {to: '/beheer',    label: 'Beheer',    position: 'left'},
       {to: '/about',     label: 'About',     position: 'left'},
       {type: 'localeDropdown', position: 'right'},
       {to: '/partners',  label: 'Partners',  position: 'right'},
@@ -104,9 +104,10 @@ module.exports = createConfig({
       {
         title: 'Resources',
         items: [
+          {label: 'Beheer',         to: '/beheer'},
+          {label: 'Build an app',   to: '/build'},
           {label: 'ConNext',        to: '/connext'},
           {label: 'Common Ground',  to: '/commonground'},
-          {label: 'Diagram set',    href: 'https://conduction.nl/diagrams/'},
           {label: 'GitHub',         href: 'https://github.com/ConductionNL'},
         ],
       },

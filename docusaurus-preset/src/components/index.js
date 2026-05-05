@@ -38,6 +38,7 @@ export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
    of cards in MDX with a single import. */
 export {default as SolutionCard, SolutionGrid} from './SolutionCard/SolutionCard.jsx';
 export {default as PartnerCard, PartnerGrid, BecomePartner} from './PartnerCard/PartnerCard.jsx';
+export {default as Clients, DEFAULT_CLIENTS} from './Clients/Clients.jsx';
 export {default as ReferenceCard, ReferenceGrid} from './ReferenceCard/ReferenceCard.jsx';
 export {default as PairCard, PairRow} from './PairCard/PairCard.jsx';
 export {default as FeatureList, FeatureItem} from './FeatureList/FeatureList.jsx';

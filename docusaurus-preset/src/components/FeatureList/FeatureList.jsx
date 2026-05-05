@@ -33,9 +33,11 @@ export function FeatureItem({icon, title, body, children}) {
       <div className={styles.glyph}>{icon}</div>
       <div>
         {title && <h3 className={styles.title}>{title}</h3>}
-        {(body || children) && (
-          <p className={styles.body}>{body || children}</p>
-        )}
+        {/* `body` prop is a string or inline JSX, wrap in <p> for typography.
+            `children` come from MDX which already wraps loose text in <p>;
+            using <div> here avoids the nested <p> DOM-validation warning. */}
+        {body && <p className={styles.body}>{body}</p>}
+        {!body && children && <div className={styles.body}>{children}</div>}
       </div>
     </div>
   );

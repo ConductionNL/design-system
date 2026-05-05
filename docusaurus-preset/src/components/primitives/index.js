@@ -11,6 +11,8 @@
  */
 
 export {default as HexBullet}    from './HexBullet';
+export {default as HexThumbnail} from './HexThumbnail';
+export {default as AuthorByline} from './AuthorByline';
 export {default as Eyebrow}      from './Eyebrow';
 export {default as Section}      from './Section';
 export {default as SectionHead}  from './SectionHead';

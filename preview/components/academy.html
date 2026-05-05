@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Academy components, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="academy.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1280px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: 0 0 var(--space-3);
+  }
+  .frame-title {
+    font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--c-cobalt-900); margin: 0 0 var(--space-4);
+    max-width: 26ch;
+  }
+  .frame-lede {
+    font-size: 17px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 60ch; margin: 0 0 var(--space-16);
+  }
+  .demo {
+    margin: 0 0 var(--space-20);
+  }
+  .demo-name {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-cobalt-900);
+    margin: 0 0 4px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .demo-name code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 14px; color: var(--c-blue-cobalt); font-weight: 500;
+  }
+  .demo-line {
+    font-size: 14px; color: var(--c-cobalt-700); line-height: 1.55;
+    max-width: 70ch; margin: 0 0 var(--space-6);
+  }
+  /* small recoloured pill for content-type chips inside cards */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--radius-pill);
+    background: var(--c-cobalt-50); color: var(--c-cobalt-700);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .pill .h {
+    width: 8px; height: 9px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: inline-block;
+  }
+  .pill-blog       .h { background: var(--c-blue-cobalt); }
+  .pill-guide      .h { background: var(--c-mint-500); }
+  .pill-case-study .h { background: var(--c-cobalt-700); }
+  .pill-webinar    .h { background: var(--c-orange-knvb); }
+  .pill-tutorial   .h { background: var(--c-cobalt-400); }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <p class="frame-label">Academy</p>
+  <h1 class="frame-title">Components for academy.conduction.nl</h1>
+  <p class="frame-lede">
+    Card and chrome patterns for the academy surface. Blogs, guides, case studies, webinars,
+    tutorials all live in one feed and share the same card. Pointy-top hex thumbnails carry the
+    brand. Every chip and headline is sentence case.
+  </p>
+
+  <!-- ── ContentTypeFilter ───────────────────────────────────────── -->
+  <section class="demo">
+    <h2 class="demo-name">Content type filter <code>&lt;ContentTypeFilter/&gt;</code></h2>
+    <p class="demo-line">
+      Top-of-page chip row. Click a chip to filter the feed. "Everything" is the default and
+      always present.
+    </p>
+
+    <div class="type-filter">
+      <a href="#" class="type-filter-chip is-active">Everything <span class="count">42</span></a>
+      <a href="#" class="type-filter-chip">Blogs <span class="count">18</span></a>
+      <a href="#" class="type-filter-chip">Guides <span class="count">9</span></a>
+      <a href="#" class="type-filter-chip">Case studies <span class="count">6</span></a>
+      <a href="#" class="type-filter-chip">Webinars <span class="count">5</span></a>
+      <a href="#" class="type-filter-chip">Tutorials <span class="count">4</span></a>
+    </div>
+  </section>
+
+  <!-- ── FeaturedCard ────────────────────────────────────────────── -->
+  <section class="demo">
+    <h2 class="demo-name">Featured card <code>&lt;FeaturedCard/&gt;</code></h2>
+    <p class="demo-line">
+      Hero spot at the top of the academy landing. Cobalt-900 ground, large pointy-top hex on
+      the right, KNVB orange used exactly once in a small satellite hex.
+    </p>
+
+    <a href="#" class="featured-card" style="text-decoration: none;">
+      <div>
+        <span class="featured-card-eyebrow"><span class="h"></span>Featured guide</span>
+        <h2 class="featured-card-title">Install OpenCatalogi in two minutes.</h2>
+        <p class="featured-card-lede">
+          A walk-through of the install flow on a fresh Nextcloud, from app store to first
+          register. Twelve minutes, no terminal required.
+        </p>
+        <div class="featured-card-meta">
+          <span class="author-byline">
+            <span class="avatar">RV</span>
+            <span class="name">Ruben van der Linde</span>
+            <span class="sep">·</span>
+            <span class="date">5 mei 2026</span>
+          </span>
+        </div>
+        <span class="featured-card-cta">Read the guide →</span>
+      </div>
+
+      <div class="featured-card-visual">
+        <div class="hex-thumb">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"/>
+            <path d="M4 12h16"/>
+            <path d="M4 17h10"/>
+            <path d="M19 14v6"/>
+            <path d="M16 17l3 3 3-3"/>
+          </svg>
+        </div>
+        <span class="satellite satellite-1"></span>
+        <span class="satellite satellite-2"></span>
+        <span class="satellite satellite-3"></span>
+      </div>
+    </a>
+  </section>
+
+  <!-- ── ContentCard + ContentCardGrid ───────────────────────────── -->
+  <section class="demo">
+    <h2 class="demo-name">Content card grid <code>&lt;ContentCardGrid/&gt;</code> + <code>&lt;ContentCard/&gt;</code></h2>
+    <p class="demo-line">
+      Two-up grid of content cards, each with a hex thumbnail on the left and meta + title +
+      tags on the right. One content-type chip first, plus topical tags.
+    </p>
+
+    <div class="content-grid content-grid-cols-2">
+
+      <a href="#" class="content-card">
+        <div class="content-card-thumb content-card-thumb-tone-cobalt-deep">
+          <span class="hex-thumb">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 11l9-8 9 8"/>
+              <path d="M5 10v10h14V10"/>
+              <path d="M9 20v-6h6v6"/>
+            </svg>
+          </span>
+        </div>
+        <div class="content-card-body">
+          <span class="author-byline">
+            <span class="avatar">MG</span>
+            <span class="name">Mike Goldsmith</span>
+            <span class="sep">·</span>
+            <span class="date">4 mei 2026</span>
+          </span>
+          <h3 class="content-card-title">Taming log noise with the OpenTelemetry collector's drain processor</h3>
+          <div class="content-card-tags">
+            <span class="pill pill-blog"><span class="h"></span>Blog</span>
+            <span class="pill"><span class="h"></span>OpenTelemetry</span>
+            <span class="pill"><span class="h"></span>Instrumentation</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="content-card">
+        <div class="content-card-thumb content-card-thumb-tone-cobalt-dark">
+          <span class="hex-thumb">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4h16v16H4z"/>
+              <path d="M4 9h16"/>
+              <circle cx="7.5" cy="6.5" r="0.6" fill="currentColor"/>
+              <circle cx="9.5" cy="6.5" r="0.6" fill="currentColor"/>
+              <path d="M8 13l3 3 5-5"/>
+            </svg>
+          </span>
+        </div>
+        <div class="content-card-body">
+          <span class="author-byline">
+            <span class="avatar">MP</span>
+            <span class="name">Midge Pickett</span>
+            <span class="sep">·</span>
+            <span class="date">29 april 2026</span>
+          </span>
+          <h3 class="content-card-title">New in the academy: learn to use the Conduction MCP server</h3>
+          <div class="content-card-tags">
+            <span class="pill pill-guide"><span class="h"></span>Guide</span>
+            <span class="pill"><span class="h"></span>AI &amp; LLMs</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="content-card">
+        <div class="content-card-thumb" style="background: var(--c-mint-500);">
+          <span class="hex-thumb" style="background: var(--c-mint-700);">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+            </svg>
+          </span>
+        </div>
+        <div class="content-card-body">
+          <span class="author-byline">
+            <span class="avatar">AP</span>
+            <span class="name">Austin Parker</span>
+            <span class="sep">·</span>
+            <span class="date">27 april 2026</span>
+          </span>
+          <h3 class="content-card-title">Approaching the parhelion</h3>
+          <div class="content-card-tags">
+            <span class="pill pill-case-study"><span class="h"></span>Case study</span>
+            <span class="pill"><span class="h"></span>AI &amp; LLMs</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="content-card">
+        <div class="content-card-thumb" style="background: var(--c-orange-knvb);">
+          <span class="hex-thumb" style="background: white; color: var(--c-orange-knvb);">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M10 9l5 3-5 3z" fill="currentColor"/>
+            </svg>
+          </span>
+        </div>
+        <div class="content-card-body">
+          <span class="author-byline">
+            <span class="avatar">MG</span>
+            <span class="name">Mike Goldsmith</span>
+            <span class="sep">·</span>
+            <span class="date">23 april 2026</span>
+          </span>
+          <h3 class="content-card-title">Managing OpenTelemetry semantic convention migrations with the collector</h3>
+          <div class="content-card-tags">
+            <span class="pill pill-webinar"><span class="h"></span>Webinar</span>
+            <span class="pill"><span class="h"></span>Instrumentation</span>
+            <span class="pill"><span class="h"></span>OpenTelemetry</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── RelatedPosts (composes SectionHead + ContentCardGrid) ───── -->
+  <section class="demo">
+    <h2 class="demo-name">Related posts <code>&lt;RelatedPosts/&gt;</code></h2>
+    <p class="demo-line">
+      Used at the bottom of every detail page. Same grid as the landing, with a "Keep
+      learning" header and a "View all" pill on the right.
+    </p>
+
+    <div class="related-posts">
+      <div class="related-posts-head">
+        <h2 class="related-posts-title">Keep learning…</h2>
+        <a href="#" class="related-posts-link">View all</a>
+      </div>
+
+      <div class="content-grid content-grid-cols-2">
+        <a href="#" class="content-card">
+          <div class="content-card-thumb content-card-thumb-tone-cobalt-deep">
+            <span class="hex-thumb">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+            </span>
+          </div>
+          <div class="content-card-body">
+            <span class="author-byline"><span class="avatar">MG</span><span class="name">Mike Goldsmith</span><span class="sep">·</span><span class="date">4 mei 2026</span></span>
+            <h3 class="content-card-title">Taming log noise with the OpenTelemetry collector's drain processor</h3>
+            <div class="content-card-tags"><span class="pill pill-blog"><span class="h"></span>Blog</span><span class="pill"><span class="h"></span>OpenTelemetry</span></div>
+          </div>
+        </a>
+
+        <a href="#" class="content-card">
+          <div class="content-card-thumb content-card-thumb-tone-cobalt-dark">
+            <span class="hex-thumb">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M8 13l3 3 5-5"/></svg>
+            </span>
+          </div>
+          <div class="content-card-body">
+            <span class="author-byline"><span class="avatar">MP</span><span class="name">Midge Pickett</span><span class="sep">·</span><span class="date">29 april 2026</span></span>
+            <h3 class="content-card-title">New in the academy: learn to use the Conduction MCP server</h3>
+            <div class="content-card-tags"><span class="pill pill-guide"><span class="h"></span>Guide</span><span class="pill"><span class="h"></span>AI &amp; LLMs</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NewsletterCta ───────────────────────────────────────────── -->
+  <section class="demo">
+    <h2 class="demo-name">Newsletter CTA <code>&lt;NewsletterCta/&gt;</code></h2>
+    <p class="demo-line">
+      Cobalt-50 panel with a title, lede, email field and submit. Form is a placeholder for
+      now. We wire a real endpoint once the academy site has a content runway.
+    </p>
+
+    <div class="newsletter-cta">
+      <div>
+        <h3 class="newsletter-cta-title">New posts in your inbox, monthly.</h3>
+        <p class="newsletter-cta-lede">
+          One mail a month. New guides, case studies, and webinars. Geen spam, je kunt je altijd
+          uitschrijven.
+        </p>
+      </div>
+      <div>
+        <form class="newsletter-cta-form" onsubmit="return false;">
+          <input type="email" class="newsletter-cta-input" placeholder="je@bedrijf.nl" required>
+          <button type="submit" class="newsletter-cta-submit">Subscribe</button>
+        </form>
+        <p class="newsletter-cta-fineprint">We mail vanuit info@conduction.nl. Geen lijstverkoop.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ContentDetailHero ───────────────────────────────────────── -->
+  <section class="demo">
+    <h2 class="demo-name">Content detail hero <code>&lt;ContentDetailHero/&gt;</code></h2>
+    <p class="demo-line">
+      Header for individual academy posts. Crumb, content-type chip, h1, summary, author
+      byline, then a 16:9 cover with the honeycomb watermark. Mirrors how the screenshot
+      cards expand into a full post.
+    </p>
+
+    <div class="content-detail-hero">
+      <div class="content-detail-hero-crumb">
+        <a href="#">Academy</a>
+        <span class="sep">/</span>
+        <a href="#">Guides</a>
+        <span class="sep">/</span>
+        <span>Install OpenCatalogi in two minutes</span>
+      </div>
+
+      <div class="content-detail-hero-tags">
+        <span class="pill pill-guide"><span class="h"></span>Guide</span>
+        <span class="pill"><span class="h"></span>OpenCatalogi</span>
+        <span class="pill"><span class="h"></span>Install</span>
+      </div>
+
+      <h1 class="content-detail-hero-title">Install OpenCatalogi in two minutes.</h1>
+
+      <p class="content-detail-hero-summary">
+        A walk-through of the install flow on a fresh Nextcloud, from app store to first
+        register. Twelve minutes, no terminal required.
+      </p>
+
+      <div class="content-detail-hero-meta">
+        <span class="author-byline">
+          <span class="avatar">RV</span>
+          <span class="name">Ruben van der Linde</span>
+          <span class="sep">·</span>
+          <span class="date">5 mei 2026</span>
+        </span>
+        <span class="duration">12 min read</span>
+      </div>
+
+      <div class="content-detail-hero-cover">
+        <span class="content-detail-hero-cover-watermark"></span>
+        <span class="hex-thumb">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/>
+            <path d="M19 14v6"/><path d="M16 17l3 3 3-3"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

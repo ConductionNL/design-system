@@ -1,7 +1,14 @@
 /**
- * <Clients /> styles. Public-sector + ecosystem logo wall, grayscale
- * at rest, full colour on hover. Mirrors the "Met wie doen we dat"
- * pattern from the live conduction.nl, recast in the brand chrome.
+ * <Clients /> styles.
+ *
+ * Grid variant: 5/4/3/2-column flat wall, grayscale at rest. Used for
+ * the Partners row and any small logo set.
+ *
+ * Marquee variant: three pointy-top hex rows, honeycomb stagger,
+ * lanes scroll right-to-left at 65/85/75s with row 2 reversed so the
+ * lanes desync over time. Soft mask fade at left/right edges, hover
+ * pauses the row + restores logo colour, prefers-reduced-motion turns
+ * the animation off, < 720px collapses to one lane.
  */
 
 .section {
@@ -17,6 +24,8 @@
   max-width: 1280px;
   margin: 0 auto;
 }
+
+/* ============ Grid variant ============ */
 
 .grid {
   display: grid;
@@ -58,4 +67,100 @@
 .cell:hover .logo {
   filter: grayscale(0);
   opacity: 1;
+}
+
+/* ============ Marquee variant ============ */
+
+.marquee {
+  --hex-w: 120px;
+  --hex-h: 138.56px;     /* hex-w * 1.1547 (pointy-top ratio) */
+  --hex-overlap: 34.6px; /* hex-h / 4: rows tuck up by this much */
+  --gap: 14px;
+  --offset: calc((var(--hex-w) + var(--gap)) / 2);
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-8);
+  padding: var(--space-4) 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.row {
+  overflow: hidden;
+  height: var(--hex-h);
+  margin-top: calc(var(--hex-overlap) * -1);
+}
+.row:first-child { margin-top: 0; }
+.row2 .track { padding-left: var(--offset); } /* honeycomb stagger */
+
+.track {
+  display: inline-flex;
+  gap: var(--gap);
+  width: max-content;
+  animation: marqueeScroll var(--speed, 65s) linear infinite;
+  will-change: transform;
+}
+.row1 .track { --speed: 65s; }
+.row2 .track { --speed: 85s; animation-direction: reverse; }
+.row3 .track { --speed: 75s; }
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee:hover .track,
+.marquee:focus-within .track { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .track { animation: none; }
+}
+
+.hex {
+  flex: 0 0 auto;
+  width: var(--hex-w);
+  height: var(--hex-h);
+  background: white;
+  clip-path: var(--hex-pointy-top);
+  display: grid;
+  place-items: center;
+  position: relative;
+  text-decoration: none;
+}
+.hex::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--c-cobalt-50);
+  clip-path: var(--hex-pointy-top);
+  z-index: 0;
+}
+.hex::after {
+  content: "";
+  position: absolute; inset: 1.5px;
+  background: white;
+  clip-path: var(--hex-pointy-top);
+  z-index: 1;
+}
+.hexLogo {
+  position: relative;
+  z-index: 2;
+  max-width: 60%;
+  max-height: 50%;
+  object-fit: contain;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter 200ms ease;
+}
+.hex:hover .hexLogo,
+.hex:focus-visible .hexLogo {
+  filter: grayscale(0) opacity(1);
+}
+
+@media (max-width: 720px) {
+  .marquee {
+    --hex-w: 88px;
+    --hex-h: 101.6px;
+    --hex-overlap: 25.4px;
+    --gap: 10px;
+  }
+  .row2, .row3 { display: none; }
 }

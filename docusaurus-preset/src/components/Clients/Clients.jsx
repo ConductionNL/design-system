@@ -5,25 +5,18 @@
  * Conduction landing, separate from <PartnerCard /> which is the
  * commercial implementation-partner row on /partners.
  *
- * The default `clients` set ships with the Conduction reference
- * customers (VNG, gemeenten, foundations, ecosystem peers), all
- * sourced from sites/www/static/img/clients/. Pages can override the
- * `clients` prop to render their own logo set.
+ * Two variants:
+ *   - "grid"    (default): static columns, used for the partners row
+ *                          and any short logo set
+ *   - "marquee": three pointy-top hex rows, honeycomb stagger, lanes
+ *                scroll right-to-left at slightly different speeds with
+ *                row 2 reversed for visual desync. Logos default to
+ *                grayscale and restore colour on hover; the lane pauses
+ *                on hover and respects prefers-reduced-motion. Below
+ *                720px it collapses to a single lane.
  *
- * Visual:
- *   - 1280px-wide grid, columns adapt to viewport
- *   - logos rendered grayscale at rest, full colour on hover
- *   - no captions, no links by default (the /partners page is for
- *     "where do I learn more about implementation"; this is just the
- *     "who works with Conduction" trust signal)
- *
- * Usage in MDX:
- *
- *   <Clients
- *     eyebrow="Who we work with"
- *     title="From VNG to your gemeente."
- *     lede="Sixteen years of public-sector and Common Ground work."
- *   />
+ * Logos live in sites/www/static/img/clients/ and ship via the brand
+ * assets folder; the kit's downloads page mirrors the same set.
  */
 
 import React from 'react';
@@ -31,14 +24,49 @@ import SectionHead from '../primitives/SectionHead';
 import styles from './Clients.module.css';
 
 export const DEFAULT_CLIENTS = [
-  {name: 'VNG',                src: '/img/clients/vng.png'},
-  {name: 'Gemeente Almere',    src: '/img/clients/almere.png'},
-  {name: "'s-Hertogenbosch",   src: '/img/clients/denbosch.png'},
-  {name: 'Gemeente Eindhoven', src: '/img/clients/eindhoven.png'},
-  {name: 'Gemeente Rotterdam', src: '/img/clients/rotterdam.png'},
-  {name: 'Gemeente Tilburg',   src: '/img/clients/tilburg.png'},
-  {name: 'Gemeente Utrecht',   src: '/img/clients/utrecht.png'},
-  {name: 'Gemeente Hoorn',     src: '/img/clients/hoorn.png'},
+  {name: 'Albrandswaard',     src: '/img/clients/albrandswaard.png'},
+  {name: 'Alkmaar',           src: '/img/clients/alkmaar.png'},
+  {name: 'Amsterdam',         src: '/img/clients/amsterdam.png'},
+  {name: 'Baarn',             src: '/img/clients/baarn.png'},
+  {name: 'Barendrecht',       src: '/img/clients/barendrecht.png'},
+  {name: 'Barneveld',         src: '/img/clients/barneveld.svg'},
+  {name: 'Beek',              src: '/img/clients/beek.svg'},
+  {name: 'Breda',             src: '/img/clients/breda.png'},
+  {name: 'Buren',             src: '/img/clients/buren.png'},
+  {name: 'DBP',               src: '/img/clients/dbp.svg'},
+  {name: 'De Bilt',           src: '/img/clients/de-bilt.svg'},
+  {name: 'Delft',             src: '/img/clients/delft.png'},
+  {name: 'Dinkelland',        src: '/img/clients/dinkelland.png'},
+  {name: 'Edam-Volendam',     src: '/img/clients/edam-volendam.png'},
+  {name: 'Ede',               src: '/img/clients/ede.svg'},
+  {name: 'Epe',               src: '/img/clients/epe.png'},
+  {name: 'Gooise Meren',      src: '/img/clients/gooise-meren.svg'},
+  {name: 'Gouda',             src: '/img/clients/gouda.png'},
+  {name: 'Hoeksche Waard',    src: '/img/clients/hoeksche-waard.png'},
+  {name: 'Hof van Twente',    src: '/img/clients/hof-van-twente.svg'},
+  {name: 'KSA',               src: '/img/clients/ksa.svg'},
+  {name: 'Lansingerland',     src: '/img/clients/lansingerland.svg'},
+  {name: 'Meppel',            src: '/img/clients/meppel.svg'},
+  {name: 'Moerdijk',          src: '/img/clients/moerdijk.svg'},
+  {name: 'Molenlanden',       src: '/img/clients/molenlanden.png'},
+  {name: 'Noaberkracht',      src: '/img/clients/noaberkracht.svg'},
+  {name: 'Noordwijk',         src: '/img/clients/noordwijk.svg'},
+  {name: 'ODMH',              src: '/img/clients/odmh.svg'},
+  {name: 'Oude IJsselstreek', src: '/img/clients/oude-ijsselstreek.png'},
+  {name: 'Overbetuwe',        src: '/img/clients/over-betuwe.svg'},
+  {name: 'Provincie Zeeland', src: '/img/clients/provincie-zeeland.svg'},
+  {name: 'Ridderkerk',        src: '/img/clients/ridderkerk.png'},
+  {name: 'Rijswijk',          src: '/img/clients/rijswijk.png'},
+  {name: 'Roosendaal',        src: '/img/clients/roosendaal.svg'},
+  {name: 'Rotterdam',         src: '/img/clients/rotterdam.png'},
+  {name: 'Soest',             src: '/img/clients/soest.svg'},
+  {name: 'Stichtse Vecht',    src: '/img/clients/stichtse-vecht.svg'},
+  {name: 'SURF',              src: '/img/clients/surf.svg'},
+  {name: 'Tilburg',           src: '/img/clients/tilburg.png'},
+  {name: 'Tubbergen',         src: '/img/clients/tubbergen.png'},
+  {name: 'VNG',               src: '/img/clients/vng.png'},
+  {name: 'Zutphen',           src: '/img/clients/zutphen.svg'},
+  {name: 'Zwolle',            src: '/img/clients/zwolle.svg'},
 ];
 
 export const DEFAULT_PARTNERS = [
@@ -51,22 +79,84 @@ export const DEFAULT_PARTNERS = [
   {name: 'BCT',                src: '/img/clients/bct.png'},
 ];
 
+function splitIntoRows(items, rowCount) {
+  const rows = Array.from({length: rowCount}, () => []);
+  items.forEach((item, i) => rows[i % rowCount].push(item));
+  return rows;
+}
+
+function HexTile({client, ariaHidden}) {
+  return (
+    <a
+      className={styles.hex}
+      href="#"
+      aria-label={ariaHidden ? undefined : client.name}
+      aria-hidden={ariaHidden ? 'true' : undefined}
+      tabIndex={ariaHidden ? -1 : 0}
+      onClick={e => e.preventDefault()}
+    >
+      <img
+        src={client.src}
+        alt={ariaHidden ? '' : client.name}
+        title={ariaHidden ? undefined : client.name}
+        loading="lazy"
+        className={styles.hexLogo}
+      />
+    </a>
+  );
+}
+
 export default function Clients({
   eyebrow = 'Who we work with',
   title = 'Public sector, ecosystem, partners.',
   lede,
   clients = DEFAULT_CLIENTS,
+  variant = 'grid',
   className,
 }) {
+  const head = (
+    <SectionHead
+      eyebrow={eyebrow}
+      title={title}
+      align="stack"
+      lede={lede}
+    />
+  );
+
+  if (variant === 'marquee') {
+    const rows = splitIntoRows(clients, 3);
+    return (
+      <section className={[styles.section, className].filter(Boolean).join(' ')}>
+        <div className={styles.inner}>{head}</div>
+        <div
+          className={styles.marquee}
+          role="region"
+          aria-label={typeof title === 'string' ? title : 'Clients'}
+        >
+          {rows.map((row, rowIdx) => (
+            <div
+              key={rowIdx}
+              className={[styles.row, styles[`row${rowIdx + 1}`]].join(' ')}
+            >
+              <div className={styles.track}>
+                {row.map((c, i) => (
+                  <HexTile key={`a-${i}`} client={c} ariaHidden={false} />
+                ))}
+                {row.map((c, i) => (
+                  <HexTile key={`b-${i}`} client={c} ariaHidden={true} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={[styles.section, className].filter(Boolean).join(' ')}>
       <div className={styles.inner}>
-        <SectionHead
-          eyebrow={eyebrow}
-          title={title}
-          align="stack"
-          lede={lede}
-        />
+        {head}
         <div className={styles.grid} role="list">
           {clients.map((c, i) => (
             <div key={i} className={styles.cell} role="listitem">

@@ -54,17 +54,22 @@ export default function Footer() {
   const brand = brandFor(location.pathname, navbar?.title);
   const wordmark = brand ? brand.wordmark : (navbar?.title || 'Conduction');
 
-  /* Re-trigger the canal-footer.js init on SPA navigations after the
-     Layout swap. The script's IIFE only runs once on first DOMContentLoaded,
-     but Docusaurus's Layout (and thus this Footer) doesn't unmount on
-     route changes, so the elements persist and the script's listeners stay
-     valid. The hook here is defensive: if a future Layout change re-mounts
-     the footer, this would re-fire the init. Currently a no-op. */
+  /* Load canal-footer.js *after* hydration. If we ship it via <Head>
+     with `defer`, the deferred script runs between HTML parse and
+     React hydration. The script mutates .skyline (filling it with
+     random house templates), and the mutated DOM no longer matches
+     React's expected empty .skyline div, producing hydration errors
+     #418 + #423 in production. Loading via this effect runs the
+     script *after* React's tree is in place, so the mutations are
+     post-hydration and React doesn't re-validate. */
   useEffect(() => {
     if (!isBrowser) return;
-    /* Intentionally no-op for now. Hook left in place so we can wire
-       a re-init API on canal-footer.js when SPA route changes start
-       remounting the footer. */
+    if (document.querySelector('script[data-canal-footer]')) return;
+    const script = document.createElement('script');
+    script.src = '/lib/canal-footer.js';
+    script.async = true;
+    script.dataset.canalFooter = 'true';
+    document.body.appendChild(script);
   }, [isBrowser]);
 
   if (!footer) return null;
@@ -74,7 +79,6 @@ export default function Footer() {
     <>
       <Head>
         <link rel="stylesheet" href="/lib/canal-footer.css" />
-        <script src="/lib/canal-footer.js" defer />
       </Head>
 
       <footer className="canal-footer" aria-label="Site footer">

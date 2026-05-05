@@ -1,0 +1,358 @@
+/**
+ * <AppMock /> styles.
+ *
+ * One outer .frame, one optional .topbar, then a per-app .body.
+ * All variants share the same atom toolkit — .nav, .col, .panel, .pill,
+ * .row, .kpi, .icon, .stack — so a future variant assembles in JSX
+ * without inventing new CSS.
+ *
+ * Tokens only; no images. One orange accent per variant max.
+ */
+
+.figure { margin: 0; display: inline-flex; flex-direction: column; gap: var(--space-2); width: 100%; max-width: 100%; }
+
+.frame {
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 10;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--conduction-typography-font-family-body);
+  position: relative;
+}
+.size-sm { max-width: 480px; }
+.size-md { max-width: 720px; }
+.size-lg { max-width: 960px; }
+
+.caption {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--c-cobalt-400);
+  font-size: 13px;
+}
+
+/* ======================================================================
+   Shared chrome
+   ====================================================================== */
+
+/* Top bar — Nextcloud-style row of small icons + spotlight + bell + avatar.
+   Used by mydash + the three admin variants below.  */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  background: var(--c-blue-cobalt);
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+.topbar .logo  { width: 16px; height: 12px; border-radius: 6px; background: white; }
+.topbar .icon  { width: 8px; height: 8px; border-radius: 1px; background: rgba(255,255,255,0.7); }
+.topbar .spacer { flex: 1; }
+.topbar .pill   { width: 12px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.4); }
+.topbar .bell   { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.7); }
+.topbar .avatar { width: 10px; height: 10px; border-radius: 50%; background: white; }
+
+/* Body wrapper — per-variant content fills this. */
+.body { flex: 1; display: flex; min-height: 0; min-width: 0; overflow: hidden; }
+
+/* ======================================================================
+   Atom toolkit — variants compose from these
+   ====================================================================== */
+
+/* Vertical sidebar nav — used by openregister, decidesk, procest. */
+.nav {
+  width: 22%;
+  min-width: 100px;
+  background: var(--c-cobalt-50);
+  border-right: 1px solid var(--c-cobalt-100);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.nav .navHead {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--c-blue-cobalt);
+  border-radius: 3px;
+  padding: 5px 6px;
+  margin-bottom: 4px;
+}
+.nav .navHead .h    { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+.nav .navHead .l    { flex: 1; height: 4px; background: rgba(255,255,255,0.7); border-radius: 1px; }
+.nav .item {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 5px;
+  border-radius: 2px;
+}
+.nav .item.active { background: var(--c-cobalt-100); }
+.nav .item .ico   { width: 8px; height: 8px; border-radius: 1px; background: var(--c-cobalt-400); flex-shrink: 0; }
+.nav .item.active .ico { background: var(--c-blue-cobalt); }
+.nav .item .l     { flex: 1; height: 4px; background: var(--c-cobalt-200); border-radius: 1px; }
+.nav .item.active .l { background: var(--c-cobalt-700); height: 5px; }
+
+/* Centre column — main work surface. */
+.col { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; overflow: hidden; }
+
+/* Right-rail detail panel. */
+.detail {
+  width: 26%;
+  min-width: 130px;
+  background: white;
+  border-left: 1px solid var(--c-cobalt-100);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Generic content panel — white card with rounded corners. */
+.panel {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.panel .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.panel .head .title { height: 6px; background: var(--c-cobalt-700); border-radius: 1px; width: 30%; }
+
+/* Text-line bars used everywhere a row of placeholder text would go. */
+.row { height: 4px; background: var(--c-cobalt-100); border-radius: 1px; width: 100%; }
+.row.short { width: 60%; }
+.row.dark  { background: var(--c-cobalt-300); }
+.row.head  { height: 6px; background: var(--c-cobalt-700); width: 40%; }
+.row.accent { background: var(--c-orange-knvb); width: 30%; }
+
+/* Small status pill (mint / orange / cobalt). */
+.statusPill {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--c-mint-100);
+}
+.statusPill .h  { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
+.statusPill .t  { height: 3px; width: 22px; background: var(--c-mint-700); border-radius: 1px; }
+.statusPill.beta { background: var(--c-coral-50); }
+.statusPill.beta .h { background: var(--c-orange-knvb); }
+.statusPill.beta .t { background: var(--c-coral-700); }
+
+/* KPI strip cell — big number left, label right. */
+.kpi {
+  flex: 1;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: var(--c-cobalt-50);
+  border-radius: var(--radius-sm);
+}
+.kpi .ico { width: 16px; height: 18px; clip-path: var(--hex-pointy-top); background: var(--c-mint-300); flex-shrink: 0; }
+.kpi.amber .ico   { background: var(--c-orange-knvb); }
+.kpi.lavender .ico { background: var(--c-lavender-300); }
+.kpi.forest .ico  { background: var(--c-forest-300); }
+.kpi .meta  { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.kpi .num   { height: 8px; background: var(--c-cobalt-900); border-radius: 1px; width: 30%; }
+.kpi .label { height: 3px; background: var(--c-cobalt-400); border-radius: 1px; width: 70%; }
+
+/* Stack of rows — table-like or list-like content. */
+.stack { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.stack .item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--c-cobalt-50);
+}
+.stack .item:last-child { border-bottom: none; }
+.stack .item .av { width: 14px; height: 14px; border-radius: 50%; background: var(--c-mint-300); flex-shrink: 0; }
+.stack .item .av.b { background: var(--c-lavender-300); }
+.stack .item .av.c { background: var(--c-orange-knvb); }
+.stack .item .av.d { background: var(--c-forest-300); }
+.stack .item .av.e { background: var(--c-terracotta-300); }
+.stack .item .lines { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.stack .item .lines .l1 { height: 4px; background: var(--c-cobalt-700); border-radius: 1px; width: 60%; }
+.stack .item .lines .l2 { height: 3px; background: var(--c-cobalt-200); border-radius: 1px; width: 80%; }
+
+/* Action-button row at the top of an admin page. */
+.actions { display: flex; gap: 6px; }
+.actions .btn {
+  background: var(--c-blue-cobalt);
+  height: 16px;
+  width: 56px;
+  border-radius: 3px;
+}
+.actions .btn.ghost { background: white; border: 1px solid var(--c-cobalt-200); }
+
+/* ======================================================================
+   MyDash — full-bleed cobalt background with widget grid
+   ====================================================================== */
+
+.mydash {
+  background: linear-gradient(135deg, var(--c-blue-cobalt) 0%, var(--c-cobalt-700) 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.mydash .grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  min-height: 0;
+}
+.mydash .col { padding: 0; gap: 8px; }
+.mydash .tile {
+  background: rgba(255,255,255,0.94);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+.mydash .tile.primary {
+  background: var(--c-blue-cobalt);
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  min-height: 50px;
+}
+.mydash .tile.primary .icon { width: 22px; height: 25px; clip-path: var(--hex-pointy-top); background: white; }
+.mydash .tile.primary .label { height: 5px; width: 50%; background: white; border-radius: 1px; }
+.mydash .tile.empty { background: rgba(255,255,255,0.55); flex: 0 0 26%; }
+.mydash .tileHead {
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 2px;
+}
+.mydash .tileHead .h { width: 9px; height: 9px; border-radius: 1px; background: var(--c-cobalt-400); }
+.mydash .tileHead .t { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
+
+/* ======================================================================
+   OpenRegister — left nav + centre dashboard + right detail panel
+   ====================================================================== */
+
+.openregister .col .kpiRow { display: flex; gap: 6px; }
+.openregister .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+
+/* ======================================================================
+   DeciDesk — left nav + centre with action row + KPIs + 2 tables
+   ====================================================================== */
+
+.decidesk .col .kpiRow { display: flex; gap: 6px; }
+.decidesk .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+.decidesk .col .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+
+/* ======================================================================
+   OpenCatalogi — list of catalogue cards
+   ====================================================================== */
+
+.opencatalogi .col .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+.opencatalogi .card {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.opencatalogi .card .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+.opencatalogi .card.b .ico { background: var(--c-forest-500); }
+.opencatalogi .card.c .ico { background: var(--c-lavender-500); }
+.opencatalogi .card.d .ico { background: var(--c-terracotta-500); }
+.opencatalogi .card.e .ico { background: var(--c-mint-500); }
+
+/* ======================================================================
+   OpenConnector — pipeline / source-connector-target visual
+   ====================================================================== */
+
+.openconnector .stage {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 0;
+}
+.openconnector .stage .source,
+.openconnector .stage .target {
+  width: 28%; height: 56px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-sm);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+}
+.openconnector .stage .source .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-lavender-500); }
+.openconnector .stage .target .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-forest-500); }
+.openconnector .stage .arrow { flex: 1; height: 2px; background: var(--c-cobalt-300); position: relative; }
+.openconnector .stage .arrow::after {
+  content: ""; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  border-left: 6px solid var(--c-cobalt-300);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+.openconnector .stage .conn {
+  width: 18%;
+  background: var(--c-blue-cobalt);
+  border-radius: var(--radius-sm);
+  height: 56px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+}
+.openconnector .stage .conn .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: white; }
+.openconnector .stage .conn .label { height: 4px; width: 60%; background: rgba(255,255,255,0.8); border-radius: 1px; }
+
+/* ======================================================================
+   Procest — process timeline / case detail
+   ====================================================================== */
+
+.procest .timeline {
+  display: flex; align-items: center; gap: 0;
+  padding: 8px 0;
+  position: relative;
+}
+.procest .timeline::before {
+  content: ""; position: absolute; left: 12px; right: 12px; top: 50%;
+  height: 2px; background: var(--c-cobalt-200);
+  z-index: 0;
+}
+.procest .timeline .step {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative; z-index: 1;
+}
+.procest .timeline .step .h {
+  width: 18px; height: 21px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+}
+.procest .timeline .step.todo .h { background: var(--c-cobalt-100); }
+.procest .timeline .step.now  .h { background: var(--c-orange-knvb); }
+.procest .timeline .step .label { height: 3px; width: 60%; background: var(--c-cobalt-400); border-radius: 1px; }

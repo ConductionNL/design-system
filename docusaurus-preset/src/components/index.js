@@ -61,4 +61,5 @@ export {default as GameModal} from './GameModal/GameModal.jsx';
 export {Hex, HexPrism, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg} from './Diagrams/Diagrams.jsx';
 export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
+export {default as AppMock} from './AppMock/AppMock.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

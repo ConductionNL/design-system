@@ -8,9 +8,9 @@
  *   const { createConfig } = require('@conduction/docusaurus-preset');
  *
  *   module.exports = createConfig({
- *     title: 'ConNext',
- *     tagline: 'The open-source workspace stack.',
- *     url: 'https://connext.conduction.nl',
+ *     title: 'Conduction',
+ *     tagline: 'Open-source apps for the Nextcloud workspace.',
+ *     url: 'https://conduction.nl',
  *     baseUrl: '/',
  *   });
  *
@@ -63,7 +63,8 @@ const baseFooter = () => ({
     {
       title: 'Product',
       items: [
-        { label: 'ConNext', href: 'https://connext.conduction.nl/' },
+        { label: 'ConNext', href: 'https://conduction.nl/connext' },
+        { label: 'Common Ground', href: 'https://conduction.nl/commonground' },
         { label: 'App store', href: 'https://apps.conduction.nl/' },
         { label: 'Common Ground hosting', href: 'https://commonground.nu/' },
       ],

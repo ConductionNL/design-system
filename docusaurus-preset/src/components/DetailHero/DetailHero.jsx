@@ -17,7 +17,7 @@
  *     version="v3.1"
  *     locales="NL · EN"
  *     title="OpenRegister"
- *     tagline="Schemas, registers, structured data objects, the typed-data backbone for every other ConNext app."
+ *     tagline="Schemas, registers, structured data objects, the typed-data backbone for every other Conduction app."
  *     primaryCta={{label: 'Install from app store', href: '/install'}}
  *     secondaryCta={{label: 'Read the docs', href: '/docs/openregister'}}
  *     tertiaryCta={{label: 'View on GitHub', href: 'https://github.com/...'}}

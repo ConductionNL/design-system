@@ -56,11 +56,21 @@ export default function MyDashMock() {
               ))}
             </div>
           </div>
-          {/* Column 3: Upcoming events (mostly empty) */}
-          <div className={styles.tile}>
-            <div className={styles.tileHead}>
+          {/* Column 3: Bar-chart graph card (KPI overview) */}
+          <div className={[styles.w, styles['w-graph-bar']].join(' ')}>
+            <div className={styles.wHead}>
               <div className={styles.h}></div><div className={styles.t}></div>
             </div>
+            <div className={styles.bars}>
+              <div className={styles.bar} style={{height: '40%'}}></div>
+              <div className={styles.bar} style={{height: '65%'}}></div>
+              <div className={styles.bar} style={{height: '52%'}}></div>
+              <div className={styles.bar} style={{height: '78%'}}></div>
+              <div className={[styles.bar, styles.accent].join(' ')} style={{height: '90%'}}></div>
+              <div className={styles.bar} style={{height: '60%'}}></div>
+              <div className={styles.bar} style={{height: '72%'}}></div>
+            </div>
+            <div className={styles.axis}></div>
           </div>
           {/* Column 4: Overdue + Document Anonymizer */}
           <div className={styles.col}>

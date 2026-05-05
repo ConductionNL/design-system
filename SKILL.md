@@ -57,6 +57,66 @@ For Style Dictionary / Tokens Studio / Figma plugins, use [`brand/tokens.json`](
 - Lucide icons (line, stroke 2, 24px) for UI iconography.
 - App glyphs go inside the pointy-top hex wrapper; cobalt or white, never orange.
 
+## Prism families — what each colour means
+
+The locked policy lives in [`tokens.css`](./tokens.css) (2026-04). Every hex-prism in a diagram, every category chip in a thumbnail, every pastel surface picks from this list. **Don't reach for a colour because it looks nice — pick it because the thing it represents has that meaning.** Repeat-matching across a scene is fine; mis-categorising is what breaks the system.
+
+| Family | Token | Means | Use for |
+|---|---|---|---|
+| **Cobalt** | `--c-blue-cobalt` | Brand chrome, the workspace itself | Workspace prism (Nextcloud), brand hexes, primary fills. Not a category. |
+| **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace prism in any platform diagram. Always with the Nextcloud cyan gradient. |
+| **Lavender** | `--c-lavender-500` | Process / workflow | OpenConnector, Procest, ZaakAfhandelApp, anything orchestration-flavoured |
+| **Mint** | `--c-mint-500` | Integrate / connect | Integration adapters, "stable" status pill, anything that signals *connected and OK* |
+| **Forest** | `--c-forest-500` | Data / trustworthy / NLDS-compliant | OpenRegister-flavoured prisms, register thumbnails, compliance-strong surfaces |
+| **Terracotta** | `--c-terracotta-500` | Documents / human work | DocuDesk-flavoured prisms, document thumbnails, human-craft surfaces |
+| **Coral / KNVB orange** | `--c-orange-knvb` | Single-use accent (focus, hover, the *one* highlight per scene) | Capped at ~8% of any surface. Never as a primary fill. Never as a prism family. |
+| **Gold** | `--c-gold-500` | "Conduction Certified" trustmark | Reserved. Don't use for generic UI. |
+| **Gray** | `--c-gray-500` | Neutral surfaces, side-box chrome | Strokes, dividers, side-box bodies. Not a category. |
+
+Banned as prism families: **coral, gold, gray, red-vermillion**. They have specific jobs and using them as a category breaks recognisability everywhere else.
+
+## Hex-prism composition
+
+Pulled from [`preview/diagrams/`](./preview/diagrams/) usage. The web components (`<cn-hex>`, `<cn-hex-prism>`, `<cn-platform>`, `<cn-pipeline>`, `<cn-side-box>`, `<cn-honeycomb-bg>`, `<cn-domain-tree>`) handle the geometry; you pick the families and the count.
+
+- **Prisms = installable apps. Side-boxes = everything else.** A prism is a Conduction app (OpenRegister, DocuDesk). A side-box is a source, sink, integration, or external system. The shape is the hierarchy — prisms are the *thing*, side-boxes are *around the thing*.
+- **One workspace prism per scene, max.** Cobalt is the workspace; if the scene shows multiple Nextcloud installs, federate them through side-boxes, don't duplicate the cobalt prism.
+- **One orange element per scene.** Same as Imagery rule. The orange is *the answer* of the scene — the active step, the new feature, the thing the eye should land on.
+- **Family count: 3–4 per scene.** A pipeline diagram with cobalt + lavender + mint + a coral accent is the canonical density. More than four families and the categories stop reading.
+- **Sources go left, consumers go right.** Side-boxes flanking a hex-prism row are conventionally `source · prism · prism · prism · consumer`. Don't reverse without reason.
+- **Sizes**: `sm` for inline-density rows, `md` for canonical scenes, `lg` for hero illustrations. One size per scene.
+- **Shadows are 2D, never 3D.** `var(--shadow-2)` for lifted prisms, `var(--shadow-1)` for ambient. No drop-shadow blur > 16px, no "depth" rendering.
+
+## App glyphs — the canonical icon per app
+
+Defined in [`preview/apps.html`](./preview/apps.html). Every app gets one Lucide-style glyph, sized for a 24-viewBox, stroke-2. Use the **same** SVG paths everywhere the app appears (footer, app-grid, hero hex, app-page header, AppMock thumbnail). If an app's canonical glyph isn't in the table below, **canonicalize it in `apps.html` first**, then use it; never invent a per-page variant.
+
+| App | Default fill | Glyph paths (viewBox 0 0 24 24, stroke 2) |
+|---|---|---|
+| **OpenCatalogi** | `--c-blue-cobalt` | layered-triangle: `M3 7l9-4 9 4-9 4-9-4z` + `M3 12l9 4 9-4` + `M3 17l9 4 9-4` |
+| **OpenRegister** | `--c-cobalt-700` | table: `<rect x="3" y="4" width="18" height="16" rx="2"/>` + `M3 9h18M9 4v16` |
+| **OpenConnector** | `--c-cobalt-700` | network: `<circle cx="6" cy="12" r="3"/>` + `<circle cx="18" cy="6" r="3"/>` + `<circle cx="18" cy="18" r="3"/>` + `M9 12h9M9 12l9-6M9 12l9 6` |
+| **DocuDesk** | `--c-blue-cobalt` | document: `M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z` + `M14 2v6h6M16 13H8M16 17H8M10 9H8` |
+| **MyDash** | white + cobalt outline (inverse) | 4-rect grid: `<rect 3,3 7×9/>` + `<rect 14,3 7×5/>` + `<rect 14,12 7×9/>` + `<rect 3,16 7×5/>` |
+
+**MyDash defaults to outline** (cobalt stroke on white) because it sits next to user content and shouldn't compete. Every other app defaults to a filled hex in cobalt or cobalt-700.
+
+The remaining apps in the catalogue — **DeciDesk, LarpingApp, NLDesign, OpenWoo, PipelinQ, Procest, SoftwareCatalog, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
+
+## Status palette
+
+For "stable / beta / preview" pills inside an app card, app-store row, or AppMock chrome. Defined by usage in [`preview/components.html`](./preview/components.html):
+
+| Status | Hex token | When |
+|---|---|---|
+| **Stable** | `--c-mint-500` | App is shipped, in production, supported |
+| **Beta** | `--c-orange-knvb` | Public, working, API may move (counts as the page's one orange element) |
+| **Preview** | `--c-gold-300` | Behind a feature flag or partner-only |
+| **Experimental** | `--c-cobalt-300` | Internal, may disappear without notice |
+| **Deprecated** | `--c-red-vermillion` | On the way out, do not adopt |
+
+Render as `<span class="hex-badge"><span class="h" style="background: …"></span>Stable</span>`.
+
 ## Thumbnails
 
 Hub tiles in [`preview/index.html`](./preview/index.html), [`preview/print/index.html`](./preview/print/index.html), [`preview/identity/index.html`](./preview/identity/index.html), [`preview/decks/index.html`](./preview/decks/index.html) all carry a small `.tile .visual` block that hints at the section's contents. **No screenshots, no images. Build the hint from token-styled `<div>`s and `<span>`s.** A tile that links to "Print" gets a tiny rotated card + page + slide. A tile that links to "Diagrams" gets a graduated row of hex shapes. A tile that links to "Type" gets a big "Aa" + a weight ramp. The pattern reads in 200ms, ages without rework, and updates the moment a token changes.

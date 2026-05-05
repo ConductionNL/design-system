@@ -73,6 +73,32 @@ services:
     #   - nextcloud-net
     restart: unless-stopped
 
+  # =====================================================================
+  # academy - sites/academy, the academy.conduction.nl learning hub
+  # ---------------------------------------------------------------------
+  # Single feed of blogs, guides, case studies, webinars, tutorials.
+  # Uses the same docusaurus-preset workspace as www. Override port via:
+  #   ACADEMY_PORT=3210 docker compose up academy
+  # =====================================================================
+  academy:
+    build:
+      context: .
+      dockerfile: sites/academy/Dockerfile
+    image: conduction/academy:dev
+    container_name: conduction-academy
+    ports:
+      - "${ACADEMY_PORT:-3200}:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/diagrams/node_modules
+      - /app/docusaurus-preset/node_modules
+      - /app/sites/academy/node_modules
+      - /app/sites/academy/.docusaurus
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped
+
 # networks:
 #   nextcloud-net:
 #     external: true

@@ -36,10 +36,11 @@ module.exports = createConfig({
     },
   },
 
-  /* Blog plugin enabled at /posts/. The landing at src/pages/index.mdx
-     stays as the custom homepage on / for batch 3; batch 4 swizzles
-     BlogListPage and BlogPostPage so the academy components render
-     real frontmatter, and /posts/ collapses back into /. */
+  /* Blog plugin at /. The swizzles in src/theme/BlogListPage and
+     src/theme/BlogPostPage replace the default Docusaurus chrome
+     with the academy components: FeaturedCard + ContentTypeFilter +
+     ContentCardGrid + NewsletterCta on the listing, ContentDetailHero
+     + body + RelatedPosts on each post. */
   presets: [
     [
       'classic',
@@ -47,11 +48,12 @@ module.exports = createConfig({
         docs: false,
         blog: {
           path: 'blog',
-          routeBasePath: '/posts',
+          routeBasePath: '/',
           showReadingTime: true,
           blogTitle: 'Conduction Academy',
           blogDescription: 'Blogs, guides, case studies, webinars, tutorials. One feed, all open-source.',
           postsPerPage: 'ALL',
+          blogSidebarCount: 0,
           feedOptions: {
             type: ['rss', 'atom'],
             title: 'Conduction Academy',

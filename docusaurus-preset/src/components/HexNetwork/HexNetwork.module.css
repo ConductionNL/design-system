@@ -1,0 +1,118 @@
+/**
+ * <HexNetwork /> styles. Honeycomb-pattern hex grid with logos.
+ *
+ * Geometry: pointy-top hex with width:height ratio 1 : 1.155 (sqrt(3)).
+ * Rows nest by overlapping ~25% vertically; alternate rows offset
+ * horizontally by 50% of cell width so the points interlock cleanly.
+ */
+
+.network {
+  width: 100%;
+  padding: var(--space-10) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: var(--radius-xl);
+}
+.bg-tinted    { background: var(--c-cobalt-50); }
+.bg-white     { background: white; }
+.bg-inverse   { background: var(--c-blue-cobalt); }
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.row {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+}
+.row + .row {
+  margin-top: -32px; /* nest rows so points interlock */
+}
+/* Offset alternate rows by half a cell-width to form the honeycomb pattern. */
+.row.offset {
+  margin-left: 76px;
+}
+.row.offset + .row {
+  margin-left: 0;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.cellInner {
+  width: 132px;
+  height: 152px;
+  clip-path: var(--hex-pointy-top);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* fake the cobalt-100 border via a slightly-larger backdrop hex */
+}
+.cellInner::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: var(--c-cobalt-200);
+  clip-path: var(--hex-pointy-top);
+  z-index: -1;
+}
+
+/* Highlighted centre — slight cobalt tint + soft outer glow. */
+.cell.center .cellInner {
+  background: white;
+}
+.cell.center .cellInner::before {
+  background: var(--c-blue-cobalt);
+  inset: -3px;
+}
+.cell.center::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-cobalt-100);
+  z-index: -2;
+  opacity: 0.6;
+}
+
+/* Logo treatment inside a cell */
+.logo {
+  display: block;
+  max-width: 56%;
+  max-height: 56%;
+  object-fit: contain;
+  color: var(--c-blue-cobalt);
+}
+.cell.center .logo {
+  max-width: 64%;
+  max-height: 64%;
+}
+
+.name {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-700);
+  text-align: center;
+}
+.bg-inverse .name { color: var(--c-cobalt-100); }
+
+@media (max-width: 720px) {
+  .cellInner { width: 96px; height: 110px; }
+  .row { gap: 12px; }
+  .row + .row { margin-top: -22px; }
+  .row.offset { margin-left: 54px; }
+}

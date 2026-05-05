@@ -43,7 +43,9 @@
   /* `top` is set inline as `calc(var(--card-top, 80px) + i * 24px)` so
      each pinned card lands a little lower than the previous one. */
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* Image side leans wider so the AppMock has room to breathe;
+     text side stays narrower for a comfortable measure. */
+  grid-template-columns: 1.15fr 1fr;
   background: white;
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-xl);
@@ -53,23 +55,23 @@
   /* Each card needs at least one viewport-height of scroll room before
      the next card can pin over it. min-height drives that. */
   min-height: 480px;
-  /* The scroll-trigger area for each card: its parent contributes one
-     viewport-ish of height per card, achieved via the .card height +
-     bottom-margin. */
 }
 
 @media (max-width: 900px) {
   .card { grid-template-columns: 1fr; min-height: auto; }
 }
 
-/* ---------- Image side (coloured panel) ---------- */
+/* ---------- Image side (coloured panel) — full-bleed to all edges
+   so the colour clearly demarcates the panel from the white text
+   side. The AppMock floats centred on the colour; padding lives on
+   the inner wrapper, not on the panel itself. ---------- */
 .cardImage {
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8);
+  padding: 0;
   min-height: 380px;
 }
 .cardImageInner {
@@ -77,6 +79,7 @@
   z-index: 1;
   width: 100%;
   display: flex; align-items: center; justify-content: center;
+  padding: var(--space-8) var(--space-6);
 }
 
 /* Tone palettes — set the .cardImage background. */

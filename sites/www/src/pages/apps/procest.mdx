@@ -4,7 +4,7 @@ description: Case-management for VTH and citizen processes. Workflow engine plus
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="procest"
@@ -13,7 +13,7 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
   version="v1.6"
   locales="NL · EN"
   title="Procest"
-  tagline={<>Case-management voor VTH (Vergunning, Toezicht, Handhaving) en citizen-processen op je <span className="next-blue">Nextcloud</span>. Workflow-engine plus typed registers, plus een audit trail die voldoet aan Wet kwaliteitsborging en Algemene wet bestuursrecht.</>}
+  tagline={<>Case management for VTH (permits, supervision, enforcement) and citizen processes on your <span className="next-blue">Nextcloud</span>. A workflow engine plus typed registers plus an audit trail that meets the Wet kwaliteitsborging and Algemene wet bestuursrecht.</>}
   primaryCta={{label: 'Install from app store', href: '/install'}}
   secondaryCta={{label: 'Read the docs', href: 'https://docs.conduction.nl/procest'}}
   tertiaryCta={{label: 'View on GitHub', href: 'https://github.com/ConductionNL/procest'}}
@@ -25,42 +25,74 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
 <Section spacing="default">
   <SectionHead
     eyebrow="What it does"
-    title="Workflow + typed records, één install."
+    title="Workflow plus typed records, one install."
     align="stack"
-    lede="Procest ships met procesmodellen voor de meest voorkomende VTH-zaken (vergunningen, controles, handhavingsverzoeken). Combineert een light-weight workflow-engine met OpenRegister voor de data en DocuDesk voor de uitgaande post."
+    lede="Procest ships with process models for the most common VTH cases (permits, inspections, enforcement requests). It combines a lightweight workflow engine with OpenRegister for the data and DocuDesk for outgoing decisions."
   />
   <FeatureList>
     <FeatureItem
       icon={<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>}
-      title="Voorgedefinieerde VTH-procesmodellen."
+      title="Pre-defined VTH process models."
     >
-      Omgevingsvergunning, milieumelding, brandveiligheid, BAG-melding, RUD-controle. Allemaal als BPMN-light state machines, aanpasbaar zonder code.
+      Omgevingsvergunning, milieumelding, brandveiligheid, BAG-melding, RUD-controle. All as BPMN-light state machines, configurable without code.
     </FeatureItem>
     <FeatureItem
       icon={<svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>}
-      title="Termijnen, automatisch bewaakt."
+      title="Statutory deadlines, watched automatically."
     >
-      Wettelijke termijnen worden ingebouwd in de procesmodellen. Procest waarschuwt vooraf, signaleert overschrijding, en logt alles in het audit trail.
+      Statutory deadlines are baked into the process models. Procest warns in advance, flags missed deadlines, and logs everything to the audit trail.
     </FeatureItem>
     <FeatureItem
       icon={<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>}
-      title="Beschikkingen via DocuDesk."
+      title="Decisions via DocuDesk."
     >
-      Klik op de "verleen vergunning"-transitie, DocuDesk genereert de beschikking uit de zaakgegevens, signt en archiveert volgens TMLO.
+      Click the "grant permit" transition, DocuDesk generates the decision document from the case data, signs and archives it per TMLO.
     </FeatureItem>
     <FeatureItem
       icon={<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.4-.7L3 21l1.5-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>}
-      title="Burger-portaal via ZaakAfhandelApp."
+      title="Citizen portal via ZaakAfhandelApp."
     >
-      Aanvragers volgen hun zaak op jouwgemeente.nl/zaken. Kunnen documenten uploaden, status zien, terugkoppeling lezen.
+      Applicants track their case at jouwgemeente.nl/zaken. They can upload documents, see status, and read responses.
     </FeatureItem>
   </FeatureList>
 </Section>
 
+<RotatingCards
+  eyebrow="Three ways Procest earns its place"
+  title="Stage timeline, register-linked, in every queue."
+  lede="Scroll the cards. Each pins as you reach it; the next slides up to cover."
+  cards={[
+    {
+      tone: 'lavender',
+      eyebrow: 'Stage timeline',
+      title: 'Every case has a visible workflow.',
+      summary: 'Procest runs ZGW-shaped case management. Five stages, one active, the rest queued or done. Citizens see the same status the case-worker sees, only the actions differ.',
+      cta: {label: 'See Procest', href: '/apps/procest'},
+      panel: <AppMock app="procest" />,
+    },
+    {
+      tone: 'forest',
+      eyebrow: 'Register-linked',
+      title: 'Every case is a typed register row.',
+      summary: 'Stages, roles, dossiers, archive entries are all OpenRegister records. Audit trail is automatic, retention follows the schema, citation IDs survive every export.',
+      cta: {label: 'See OpenRegister', href: '/apps/openregister'},
+      panel: <AppMock app="openregister" />,
+    },
+    {
+      tone: 'workspace',
+      eyebrow: 'On every queue',
+      title: 'Werkvoorraad widget on every dashboard.',
+      summary: 'Every case-worker gets a werkvoorraad widget on their MyDash. Active cases up top, late ones in red, the next stage one click away. No separate inbox app.',
+      cta: {label: 'See MyDash', href: '/apps/mydash'},
+      panel: <AppMock app="mydash-widgets" />,
+    },
+  ]}
+/>
+
 <Section spacing="default" background="tinted">
   <SectionHead
     eyebrow="Pairs well with"
-    title="Drie apps die het VTH-werkproces compleet maken."
+    title="Three apps that complete the VTH workflow."
     align="stack"
   />
   <PairRow>
@@ -80,14 +112,14 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
       href="/apps/openregister"
       icon={<svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/></svg>}
       name="OpenRegister"
-      why="Zaken, beschikkingen, controles als typed registers. Audit trail per record."
+      why="Cases, decisions, inspections as typed registers. Audit trail per record."
     />
   </PairRow>
 </Section>
 
 <CtaBanner
-  title="VTH op je eigen Nextcloud."
-  lede={<>Procest ships met procesmodellen voor de meest voorkomende VTH-zaken. Termijnen worden bewaakt, beschikkingen worden gegenereerd, audit trail dekt alles.</>}
+  title="VTH on your own Nextcloud."
+  lede={<>Procest ships with process models for the most common VTH cases. Deadlines are watched, decision documents get generated, the audit trail covers everything.</>}
   primaryCta={{label: 'Install from app store', href: '/install'}}
   secondaryCta={{label: 'Talk to a partner', href: '/partners'}}
 />

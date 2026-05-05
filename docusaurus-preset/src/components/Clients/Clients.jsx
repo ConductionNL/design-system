@@ -8,9 +8,9 @@
  * Two variants:
  *   - "grid"    (default): static columns, used for the partners row
  *                          and any short logo set
- *   - "marquee": three pointy-top hex rows, honeycomb stagger, lanes
- *                scroll right-to-left at slightly different speeds with
- *                row 2 reversed for visual desync. Logos default to
+ *   - "marquee": three pointy-top hex rows, honeycomb stagger, all
+ *                lanes scroll right-to-left at the same speed so the
+ *                rows read as one continuous wall. Logos default to
  *                grayscale and restore colour on hover; the lane pauses
  *                on hover and respects prefers-reduced-motion. Below
  *                720px it collapses to a single lane.

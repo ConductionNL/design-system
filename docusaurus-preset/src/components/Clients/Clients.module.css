@@ -4,11 +4,12 @@
  * Grid variant: 5/4/3/2-column flat wall, grayscale at rest. Used for
  * the Partners row and any small logo set.
  *
- * Marquee variant: three pointy-top hex rows, honeycomb stagger,
- * lanes scroll right-to-left at 65/85/75s with row 2 reversed so the
- * lanes desync over time. Soft mask fade at left/right edges, hover
- * pauses the row + restores logo colour, prefers-reduced-motion turns
- * the animation off, < 720px collapses to one lane.
+ * Marquee variant: three pointy-top hex rows, honeycomb stagger.
+ * All lanes scroll right-to-left at the same speed (75s) so the rows
+ * read as one continuous wall instead of three independent tracks.
+ * Soft mask fade at left/right edges, hover pauses the row + restores
+ * logo colour, prefers-reduced-motion turns the animation off, < 720px
+ * collapses to one lane.
  */
 
 .section {
@@ -97,12 +98,9 @@
   display: inline-flex;
   gap: var(--gap);
   width: max-content;
-  animation: marqueeScroll var(--speed, 65s) linear infinite;
+  animation: marqueeScroll 75s linear infinite;
   will-change: transform;
 }
-.row1 .track { --speed: 65s; }
-.row2 .track { --speed: 85s; animation-direction: reverse; }
-.row3 .track { --speed: 75s; }
 
 @keyframes marqueeScroll {
   from { transform: translateX(0); }

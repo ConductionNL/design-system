@@ -41,17 +41,33 @@ module.exports = createConfig({
     },
   },
 
-  /* Override the preset's classic preset to drop docs and blog. The
-     site is marketing-first; product docs live in their own apps and
-     blog content moved to academy.conduction.nl (sites/academy). The
-     /blog/* path on this site redirects to academy via the static
-     stubs in static/blog/. */
+  /* Override the preset's classic preset to drop docs. Blog plugin is
+     scoped to /academy/ and renders the academy section: blogs, guides,
+     case studies, webinars, tutorials. Posts live in academy/<slug>/.
+     The swizzles in src/theme/BlogListPage and src/theme/BlogPostPage
+     replace Docusaurus's defaults with the academy components.
+     /blog/* legacy paths redirect to /academy/* via static stubs in
+     static/blog/. */
   presets: [
     [
       'classic',
       {
         docs: false,
-        blog: false,
+        blog: {
+          path: 'academy',
+          routeBasePath: '/academy',
+          showReadingTime: true,
+          blogTitle: 'Conduction Academy',
+          blogDescription: 'Blogs, guides, case studies, webinars, tutorials. One feed, all open-source.',
+          postsPerPage: 'ALL',
+          blogSidebarCount: 0,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            title: 'Conduction Academy',
+            description: 'New blogs, guides, case studies, webinars, and tutorials from Conduction.',
+            copyright: `Conduction B.V. © ${new Date().getFullYear()}`,
+          },
+        },
         theme: {
           customCss: [require.resolve('./src/css/site.css')],
         },
@@ -68,6 +84,7 @@ module.exports = createConfig({
     items: [
       {to: '/apps',      label: 'Apps',      position: 'left'},
       {to: '/solutions', label: 'Solutions', position: 'left'},
+      {to: '/academy',   label: 'Academy',   position: 'left'},
       {to: '/beheer',    label: 'Beheer',    position: 'left'},
       {to: '/about',     label: 'About',     position: 'left'},
       {type: 'localeDropdown', position: 'right'},
@@ -97,6 +114,16 @@ module.exports = createConfig({
           {label: 'WOO compliance',  to: '/solutions/woo'},
           {label: 'NEN-7510',        to: '/solutions/nen-7510'},
           {label: 'Software catalog',to: '/solutions/software-catalog'},
+        ],
+      },
+      {
+        title: 'Academy',
+        items: [
+          {label: 'All content',    to: '/academy'},
+          {label: 'Blogs',          to: '/academy?type=blog'},
+          {label: 'Guides',         to: '/academy?type=guide'},
+          {label: 'Case studies',   to: '/academy?type=case-study'},
+          {label: 'Webinars',       to: '/academy?type=webinar'},
         ],
       },
       {

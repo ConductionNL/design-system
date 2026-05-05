@@ -172,7 +172,7 @@ function AcademyLandingInner({items}) {
         color: 'var(--c-cobalt-400)',
         fontSize: 16,
       }}>
-        Nothing yet for this category. <a href="/">View everything</a>
+        Nothing yet for this category. <a href="/academy/">View everything</a>
       </div>
     );
   }

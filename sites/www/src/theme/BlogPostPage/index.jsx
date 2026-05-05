@@ -118,9 +118,9 @@ function BlogPostPageContent({children}) {
   const author = metadata.authors && metadata.authors[0];
   const heroProps = {
     crumb: [
-      {label: 'Academy', href: '/'},
+      {label: 'Academy', href: '/academy/'},
       frontMatter.contentType
-        ? {label: frontMatter.contentType, href: '/?type=' + frontMatter.contentType}
+        ? {label: frontMatter.contentType, href: '/academy/?type=' + frontMatter.contentType}
         : null,
       metadata.title,
     ].filter(Boolean),
@@ -164,7 +164,7 @@ function BlogPostPageContent({children}) {
         <div style={{marginTop: 96}}>
           <RelatedPosts
             title="Keep learning…"
-            viewAllHref="/"
+            viewAllHref="/academy/"
             viewAllLabel="View all"
             columns={2}
           >

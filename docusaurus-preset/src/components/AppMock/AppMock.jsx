@@ -30,6 +30,9 @@ import React from 'react';
 import styles from './AppMock.module.css';
 
 import MyDashMock from './variants/MyDashMock.jsx';
+import MyDashTilesMock from './variants/MyDashTilesMock.jsx';
+import MyDashBiMock from './variants/MyDashBiMock.jsx';
+import MyDashWidgetsMock from './variants/MyDashWidgetsMock.jsx';
 import OpenCatalogiMock from './variants/OpenCatalogiMock.jsx';
 import OpenConnectorMock from './variants/OpenConnectorMock.jsx';
 import OpenRegisterMock from './variants/OpenRegisterMock.jsx';
@@ -37,12 +40,15 @@ import ProcestMock from './variants/ProcestMock.jsx';
 import DeciDeskMock from './variants/DeciDeskMock.jsx';
 
 const VARIANTS = {
-  mydash:        {Component: MyDashMock,        label: 'MyDash'},
-  opencatalogi:  {Component: OpenCatalogiMock,  label: 'OpenCatalogi'},
-  openconnector: {Component: OpenConnectorMock, label: 'OpenConnector'},
-  openregister:  {Component: OpenRegisterMock,  label: 'OpenRegister'},
-  procest:       {Component: ProcestMock,       label: 'Procest'},
-  decidesk:      {Component: DeciDeskMock,      label: 'DeciDesk'},
+  mydash:          {Component: MyDashMock,         label: 'MyDash'},
+  'mydash-tiles':  {Component: MyDashTilesMock,    label: 'MyDash · Tiles & grids'},
+  'mydash-bi':     {Component: MyDashBiMock,       label: 'MyDash · BI on registers'},
+  'mydash-widgets':{Component: MyDashWidgetsMock,  label: 'MyDash · Widgets'},
+  opencatalogi:    {Component: OpenCatalogiMock,   label: 'OpenCatalogi'},
+  openconnector:   {Component: OpenConnectorMock,  label: 'OpenConnector'},
+  openregister:    {Component: OpenRegisterMock,   label: 'OpenRegister'},
+  procest:         {Component: ProcestMock,        label: 'Procest'},
+  decidesk:        {Component: DeciDeskMock,       label: 'DeciDesk'},
 };
 
 export default function AppMock({app, size = 'md', caption = false, className}) {

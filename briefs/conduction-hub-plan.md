@@ -118,6 +118,17 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
 
 Also done as part of this phase: navbar swapped Support → Beheer, footer Resources column added Beheer + Build, FeatureItem `<p>` nesting bug fix in the preset.
 
+## Status of phases 3, 4, 5 (PRs in flight)
+
+All three remaining phases are prepared as stacked PRs. Cutover happens by merging them in the order below.
+
+- **Phase 3** ([design-system PR #4](https://github.com/ConductionNL/design-system/pull/4)) — brand-strip ConNext → Conduction across 28 MDX files. Branched off `main`. **Merge first.**
+- **Phase 4** ([design-system PR #5](https://github.com/ConductionNL/design-system/pull/5)) — Dutch translations for every page + theme strings. Stacked on Phase 3 (`base: phase-3-brand-strip`). **Merge after Phase 3.**
+- **Phase 5** ([design-system PR #6](https://github.com/ConductionNL/design-system/pull/6)) — Cloudflare Worker + cutover runbook + flip the `static/CNAME` from `connext.conduction.nl` to `conduction.nl`. Branched from `main`; needs a quick rebase after Phases 3 and 4 land. **Merge last** (this is the one that actually flips GitHub Pages to claim `conduction.nl`).
+- **Companion PR** ([conduction-website PR #14](https://github.com/ConductionNL/conduction-website/pull/14)) — removes the legacy `static/CNAME` so GitHub Pages on the old marketing repo releases its claim on `www.conduction.nl`. Merge between Phase 4 and Phase 5 per the runbook.
+
+The full cutover sequence (which PR to merge in which order, what to smoke-test, how to deploy the Worker, rollback path) is documented in [`briefs/cutover-runbook.md`](./cutover-runbook.md) on the `phase-5-cutover` branch.
+
 ## Phase 3: brand-strip pass
 
 After Phase 2.5/B lands, sweep `ConNext` references out of the shared content. Approximately 52 occurrences across 28 MDX files. Replace with `Conduction` (company) or product-specific (when a real app is meant).

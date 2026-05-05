@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RotatingCards · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/RotatingCards/RotatingCards.module.css">
+<style>
+  body { padding: 0; background: white; font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
+  .hero { background: var(--c-blue-cobalt); color: white; padding: 64px var(--space-12) 48px; }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
+  .hero h1 { color: white; font-size: 44px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+  .hero p  { color: var(--c-cobalt-100); font-size: 16px; max-width: 64ch; line-height: 1.5; margin-top: var(--space-4); }
+</style>
+<script>
+  /* Static-page rotation for the preview. The React component owns
+     this in the live build; the preview re-implements the basics so
+     the demo actually rotates without a build step. */
+  document.addEventListener('DOMContentLoaded', () => {
+    const stage = document.querySelector('[data-rotator]');
+    if (!stage) return;
+    const cards = JSON.parse(stage.dataset.cards);
+    const interval = parseInt(stage.dataset.interval, 10) || 5000;
+    const pipsEl = document.querySelector('[data-pips]');
+    let active = 0;
+    let paused = false;
+    let timer = null;
+
+    function render() {
+      const c = cards[active];
+      stage.innerHTML = '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        ${c.icon ? `<div class="icon" aria-hidden="true">${c.icon}</div>` : ''}
+        ${c.eyebrow ? `<div class="cardEyebrow">${c.eyebrow}</div>` : ''}
+        ${c.title ? `<h3 class="cardTitle">${c.title}</h3>` : ''}
+        ${c.summary ? `<p class="cardSummary">${c.summary}</p>` : ''}
+        ${c.cta ? `<a href="${c.cta.href}" class="cardCta">${c.cta.label}</a>` : ''}
+      `;
+      stage.appendChild(card);
+      pipsEl.querySelectorAll('.pip').forEach((p, i) => {
+        if (i === active) p.classList.add('pipActive');
+        else p.classList.remove('pipActive');
+        p.setAttribute('aria-selected', i === active);
+      });
+    }
+    function tick() { active = (active + 1) % cards.length; render(); }
+    function start() { if (!paused && !timer) timer = setInterval(tick, interval); }
+    function stop()  { if (timer) { clearInterval(timer); timer = null; } }
+
+    pipsEl.innerHTML = cards.map((c, i) =>
+      `<button class="pip" role="tab" aria-selected="${i===0}" aria-label="Card ${i+1}: ${c.title}"><span class="pipHex"></span></button>`
+    ).join('');
+    pipsEl.querySelectorAll('.pip').forEach((p, i) => {
+      p.addEventListener('click', () => { active = i; render(); });
+    });
+    stage.addEventListener('mouseenter', () => { paused = true;  stop(); });
+    stage.addEventListener('mouseleave', () => { paused = false; start(); });
+    render();
+    start();
+  });
+</script>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Components &nbsp;/&nbsp; RotatingCards</div>
+  <h1>RotatingCards &mdash; auto-advancing capability rotator.</h1>
+  <p>One card on a cobalt-900 stage, swapping every five seconds. Hover to pause, click a hex pip to jump. Reference: honeycomb.io home "What Honeycomb helps you do", in Conduction tokens.</p>
+</div>
+
+<section class="root">
+  <header class="head">
+    <div class="eyebrow"><span class="h"></span>What Conduction helps you do</div>
+    <h2 class="title">Six things, in two minutes.</h2>
+    <p class="lede">Hover the card to pause. Use the hex pips to jump to a specific capability. The rotator pauses on focus too, so screen readers can finish reading the active card before it advances.</p>
+  </header>
+  <div
+    class="stage"
+    data-rotator
+    data-interval="5000"
+    data-cards='[
+      {"eyebrow":"Catalogue","title":"Publish a public catalogue.","summary":"OpenCatalogi makes every register, dataset, and API in your organisation searchable from one URL. Federation to data.overheid.nl ships in the box.","cta":{"label":"See OpenCatalogi","href":"/apps/opencatalogi"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M3 7l9-4 9 4-9 4-9-4z\"/><path d=\"M3 12l9 4 9-4M3 17l9 4 9-4\"/></svg>"},
+      {"eyebrow":"Anonymise","title":"Anonymise documents at scale.","summary":"DocuDesk strips names, BSNs and case numbers from inbound documents before they reach the case file. WOO-ready, GDPR-grade, audit-logged.","cta":{"label":"See DocuDesk","href":"/apps/docudesk"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M16 13H8M16 17H8\"/></svg>"},
+      {"eyebrow":"Connect","title":"Pipe data without writing glue.","summary":"OpenConnector pulls from REST, SOAP, GraphQL, file drops, message queues. Pipe it into typed registers, observe every run, retry the failures.","cta":{"label":"See OpenConnector","href":"/apps/openconnector"},"icon":"<svg viewBox=\"0 0 24 24\"><circle cx=\"6\" cy=\"12\" r=\"3\"/><circle cx=\"18\" cy=\"6\" r=\"3\"/><circle cx=\"18\" cy=\"18\" r=\"3\"/><path d=\"M9 12h9M9 12l9-6M9 12l9 6\"/></svg>"},
+      {"eyebrow":"Decide","title":"Run meetings, ship decisions.","summary":"DeciDesk owns minutes, motions, and action items. Every decision links back to its source register row, every action item lands in the assignee’s queue.","cta":{"label":"See DeciDesk","href":"/apps/decidesk"},"icon":"<svg viewBox=\"0 0 24 24\"><path d=\"M9 11l3 3 8-8\"/><path d=\"M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9\"/></svg>"},
+      {"eyebrow":"Process","title":"Track cases end to end.","summary":"Procest runs ZGW-shaped case management. Stages, roles, dossiers, archive. Every step is auditable, every status pings the citizen-facing portal.","cta":{"label":"See Procest","href":"/apps/procest"},"icon":"<svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 3\"/></svg>"},
+      {"eyebrow":"Dashboard","title":"Build dashboards from your own data.","summary":"MyDash assembles a personal home from the registers your team already keeps. Pinned apps, recent records, overdue items, no extra BI tool, no extra login.","cta":{"label":"See MyDash","href":"/apps/mydash"},"icon":"<svg viewBox=\"0 0 24 24\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"9\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\"/></svg>"}
+    ]'
+    tabindex="0"
+    aria-roledescription="carousel"
+    aria-label="What Conduction helps you do"
+  ></div>
+  <div class="pips" data-pips role="tablist" aria-label="Select card"></div>
+</section>
+
+<div style="max-width: 1280px; margin: var(--space-6) auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
+  <p>The component is <a href="../../docusaurus-preset/src/components/RotatingCards/RotatingCards.jsx" style="color: var(--c-blue-cobalt);"><code>&lt;RotatingCards eyebrow title cards=[{icon,eyebrow,title,summary,cta}] interval=5000 /&gt;</code></a>. Hover or focus pauses the auto-advance; left/right arrow keys step manually. The static preview above re-implements the rotation in vanilla JS so the demo runs without a build step.</p>
+</div>
+
+</body>
+</html>

@@ -38,17 +38,31 @@ import OpenConnectorMock from './variants/OpenConnectorMock.jsx';
 import OpenRegisterMock from './variants/OpenRegisterMock.jsx';
 import ProcestMock from './variants/ProcestMock.jsx';
 import DeciDeskMock from './variants/DeciDeskMock.jsx';
+import DocuDeskMock from './variants/DocuDeskMock.jsx';
+import LarpingAppMock from './variants/LarpingAppMock.jsx';
+import NLDesignMock from './variants/NLDesignMock.jsx';
+import OpenWooMock from './variants/OpenWooMock.jsx';
+import PipelinQMock from './variants/PipelinQMock.jsx';
+import SoftwareCatalogMock from './variants/SoftwareCatalogMock.jsx';
+import ZaakAfhandelAppMock from './variants/ZaakAfhandelAppMock.jsx';
 
 const VARIANTS = {
-  mydash:          {Component: MyDashMock,         label: 'MyDash'},
-  'mydash-tiles':  {Component: MyDashTilesMock,    label: 'MyDash · Tiles & grids'},
-  'mydash-bi':     {Component: MyDashBiMock,       label: 'MyDash · BI on registers'},
-  'mydash-widgets':{Component: MyDashWidgetsMock,  label: 'MyDash · Widgets'},
-  opencatalogi:    {Component: OpenCatalogiMock,   label: 'OpenCatalogi'},
-  openconnector:   {Component: OpenConnectorMock,  label: 'OpenConnector'},
-  openregister:    {Component: OpenRegisterMock,   label: 'OpenRegister'},
-  procest:         {Component: ProcestMock,        label: 'Procest'},
-  decidesk:        {Component: DeciDeskMock,       label: 'DeciDesk'},
+  mydash:           {Component: MyDashMock,           label: 'MyDash'},
+  'mydash-tiles':   {Component: MyDashTilesMock,      label: 'MyDash · Tiles & grids'},
+  'mydash-bi':      {Component: MyDashBiMock,         label: 'MyDash · BI on registers'},
+  'mydash-widgets': {Component: MyDashWidgetsMock,    label: 'MyDash · Widgets'},
+  opencatalogi:     {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
+  openconnector:    {Component: OpenConnectorMock,    label: 'OpenConnector'},
+  openregister:     {Component: OpenRegisterMock,     label: 'OpenRegister'},
+  procest:          {Component: ProcestMock,          label: 'Procest'},
+  decidesk:         {Component: DeciDeskMock,         label: 'DeciDesk'},
+  docudesk:         {Component: DocuDeskMock,         label: 'DocuDesk'},
+  larpingapp:       {Component: LarpingAppMock,       label: 'LarpingApp'},
+  nldesign:         {Component: NLDesignMock,         label: 'NLDesign'},
+  openwoo:          {Component: OpenWooMock,          label: 'OpenWoo'},
+  pipelinq:         {Component: PipelinQMock,         label: 'PipelinQ'},
+  softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'SoftwareCatalog'},
+  zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
 };
 
 export default function AppMock({app, size = 'md', caption = false, className}) {

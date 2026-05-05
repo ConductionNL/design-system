@@ -1,0 +1,21 @@
+---
+title: Apps, Conduction
+description: Open-source apps die in Nextcloud klikken. Catalogi, registers, integraties, documentafhandeling, dashboards.
+hide_table_of_contents: true
+---
+
+import {Section, SectionHead, AppsGrid} from '@conduction/docusaurus-preset/components';
+import {getApps, APP_CATEGORIES, getCatalogTotals} from '@site/src/data/apps-catalog';
+
+export const apps = getApps();
+export const totals = getCatalogTotals();
+
+<Section spacing="default">
+  <SectionHead
+    eyebrow="Apps"
+    title={<>Kies een app.<br/>Installeer hem. Klaar.</>}
+    lede={<>Open-source apps die in <span className="next-blue">Nextcloud</span> klikken. Elke app lost een concreet probleem op. Geen methodiek, geen roadmap-workshop. Installeer uit de <span className="next-blue">Nextcloud</span>-app-store en je werkt binnen twee minuten. <strong>{totals.apps} apps</strong> in de store, <strong>{totals.installs.toLocaleString('nl-NL')}</strong> installs en groeiend.</>}
+  />
+
+  <AppsGrid categories={APP_CATEGORIES} apps={apps} />
+</Section>

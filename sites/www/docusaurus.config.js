@@ -21,7 +21,7 @@ const {createConfig} = require('@conduction/docusaurus-preset');
 module.exports = createConfig({
   title: 'Conduction',
   tagline: 'Open-source apps voor de Nextcloud-werkplek.',
-  url: 'https://connext.conduction.nl',
+  url: 'https://conduction.nl',
   baseUrl: '/',
 
   organizationName: 'ConductionNL',

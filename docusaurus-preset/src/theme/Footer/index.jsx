@@ -253,6 +253,11 @@ export default function Footer() {
                     <path d="M3 7l9 6 9-6"/>
                   </svg>
                 </a>
+                <a href="tel:+31853036840" aria-label="Phone +31 (0)85 303 6840">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </a>
                 <a href="https://maps.google.com/?q=Lauriergracht+14h+Amsterdam" aria-label="Lauriergracht 14h, Amsterdam, open in Google Maps" target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
@@ -278,8 +283,23 @@ export default function Footer() {
             <div className="legal-bar">
               <div className="left">
                 <span>{copyright}</span>
+                <span className="legal-links">
+                  <Link to="/privacy">Privacy</Link>
+                  <span className="sep">·</span>
+                  <Link to="/terms">Terms</Link>
+                  <span className="sep">·</span>
+                  <Link to="/iso">ISO</Link>
+                </span>
               </div>
               <div className="right">
+                <Link to="/iso" className="iso-badge" aria-label="ISO 9001:2015 certified, see details">
+                  <span className="iso-mark">ISO</span>
+                  <span className="iso-num">9001:2015</span>
+                </Link>
+                <Link to="/iso" className="iso-badge" aria-label="ISO 27001:2022 certified, see details">
+                  <span className="iso-mark">ISO</span>
+                  <span className="iso-num">27001:2022</span>
+                </Link>
                 <a href="https://github.com/ConductionNL" target="_blank" rel="noopener noreferrer">
                   github.com/ConductionNL
                 </a>

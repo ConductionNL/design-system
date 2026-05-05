@@ -117,20 +117,13 @@ module.exports = createConfig({
         ],
       },
       {
-        title: 'Academy',
-        items: [
-          {label: 'All content',    to: '/academy'},
-          {label: 'Blogs',          to: '/academy?type=blog'},
-          {label: 'Guides',         to: '/academy?type=guide'},
-          {label: 'Case studies',   to: '/academy?type=case-study'},
-          {label: 'Webinars',       to: '/academy?type=webinar'},
-        ],
-      },
-      {
         title: 'Resources',
         items: [
           {label: 'Beheer',         to: '/beheer'},
           {label: 'Build an app',   to: '/build'},
+          {label: 'Blogs',          to: '/academy?type=blog'},
+          {label: 'Guides',         to: '/academy?type=guide'},
+          {label: 'Tutorials',      to: '/academy?type=tutorial'},
           {label: 'ConNext',        to: '/connext'},
           {label: 'Common Ground',  to: '/commonground'},
         ],
@@ -141,6 +134,8 @@ module.exports = createConfig({
           {label: 'About',          to: '/about'},
           {label: 'Open source',    to: '/about#opensource'},
           {label: 'Team',           to: '/about#team'},
+          {label: 'Case studies',   to: '/academy?type=case-study'},
+          {label: 'Webinars',       to: '/academy?type=webinar'},
           {label: 'ISO',            to: '/iso'},
         ],
       },

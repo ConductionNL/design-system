@@ -12,9 +12,32 @@
      10→2    cruise swarm + chaos        ~0.2s/spawn, 3 at a time
      1       battleship boss  (HP 10)    regular spawns paused
 */
+/* On Docusaurus SPA navigation React unmounts the old <Footer/> and
+   mounts a new one. The IIFE pattern (run once at script load, bind to
+   the first .canal-footer found) bound listeners and timers to the
+   detached old DOM — so on the new page the skyline placeholder stayed
+   empty and boat clicks didn't register, until a hard reload re-ran
+   the script. The fix: wrap setup in init(), expose it as
+   window.CanalFooter.hydrate, and have the Footer swizzle call it on
+   every mount. The data-canal-footer-ready attribute keeps repeated
+   calls on the same root idempotent; _cleanup tears down the previous
+   instance's timers so they don't leak across route changes. */
 (function () {
-  const root = document.querySelector('.canal-footer');
-  if (!root) return;
+  function init() {
+    const root = document.querySelector('.canal-footer');
+    if (!root) return;
+    /* Same DOM node we already wired? Bail. The dataset attribute is
+       attached to the LIVE root; React replaces the whole footer node
+       on SPA navigation, so a fresh root has no attribute and falls
+       through to setup. */
+    if (root.dataset.canalFooterReady === '1') return;
+    /* Genuinely fresh root, so the *previous* instance (if any) was
+       bound to a now-detached DOM. Stop its timers and unhook its
+       window listeners before binding new ones. */
+    if (window.CanalFooter && window.CanalFooter._cleanup) {
+      try { window.CanalFooter._cleanup(); } catch (e) { /* ignore */ }
+    }
+    root.dataset.canalFooterReady = '1';
 
   // ===== Skyline (random row of trapgevels) =====
   const skyline = root.querySelector('.skyline');
@@ -185,10 +208,8 @@
     startGame();
   }
   goRestart.addEventListener('click', resetGame);
-  // Modal "Play again" button can also restart this game from anywhere.
-  window.addEventListener('connext:gamereplay', (e) => {
-    if (e.detail?.id === 'boats') resetGame();
-  });
+  /* The connext:gamereplay listener is bound near the bottom of init()
+     so the cleanup handler can remove it on the next route change. */
 
   // ===== Pace knobs — driven by the further of (time elapsed) and (score lost) =====
   function progress() {
@@ -443,17 +464,36 @@
     });
   }
 
-  // ===== Bootstrap =====
-  buildSkyline();
-  rollSpeeds();
-  wireConductionHouse();
-  captureDriftTemplates();
-  wireOriginalBoats();
-  updateHud();
+    // ===== Bootstrap =====
+    buildSkyline();
+    rollSpeeds();
+    wireConductionHouse();
+    captureDriftTemplates();
+    wireOriginalBoats();
+    updateHud();
 
-  let resizeT;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeT);
-    resizeT = setTimeout(() => { buildSkyline(); rollSpeeds(); wireConductionHouse(); }, 200);
-  });
+    let resizeT;
+    const onResize = () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => { buildSkyline(); rollSpeeds(); wireConductionHouse(); }, 200);
+    };
+    const onReplay = (e) => { if (e.detail?.id === 'boats') resetGame(); };
+    window.addEventListener('resize', onResize);
+    window.addEventListener('connext:gamereplay', onReplay);
+
+    /* Tear-down for the *previous* root: stop its timers and unhook
+       its window listeners. Saved on the global so the next init()
+       call can run it before binding fresh handlers. */
+    window.CanalFooter._cleanup = function () {
+      if (game.timerInt) clearInterval(game.timerInt);
+      if (game.spawnTimer) clearTimeout(game.spawnTimer);
+      clearTimeout(resizeT);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('connext:gamereplay', onReplay);
+    };
+  }
+
+  window.CanalFooter = window.CanalFooter || {};
+  window.CanalFooter.hydrate = init;
+  init();
 })();

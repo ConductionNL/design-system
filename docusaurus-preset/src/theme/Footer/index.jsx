@@ -18,11 +18,12 @@
  * to the kit can flow through with minimal translation work.
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
 import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import {brandFor} from '../brand.jsx';
 import {useLazyScript} from '../../utils/lazyScript';
 import GameModal from '../../components/GameModal/GameModal';
@@ -62,6 +63,31 @@ export default function Footer() {
      clicks on .ki-bike-1 / .ki-bike-2 inside the kade strip and runs a
      dodge-the-traffic round in parallel with the boat game. */
   useLazyScript('/lib/kade-cyclist.js', 'kade-cyclist');
+
+  /* Re-hydrate the canal-footer + kade-cyclist runtimes on every mount,
+     including SPA route changes that re-render this Footer component.
+     Both runtimes ship as IIFE scripts that run once at script-load and
+     bind to the first .canal-footer they find. Without a re-hydrate
+     call here, internal navigation leaves the new footer with an empty
+     .skyline (no trapgevel houses) and unwired boats / bikes (the
+     mini-games refuse to start until a hard reload). Each runtime
+     exposes window.<Name>.hydrate() once it has loaded; we poll one
+     rAF at a time until both appear, then call them. */
+  const isBrowser = useIsBrowser();
+  useEffect(() => {
+    if (!isBrowser) return;
+    let cancelled = false;
+    function tryHydrate() {
+      if (cancelled) return;
+      const canalReady = !!window.CanalFooter?.hydrate;
+      const kadeReady  = !!window.KadeCyclist?.hydrate;
+      if (canalReady) window.CanalFooter.hydrate();
+      if (kadeReady)  window.KadeCyclist.hydrate();
+      if (!canalReady || !kadeReady) requestAnimationFrame(tryHydrate);
+    }
+    tryHydrate();
+    return () => { cancelled = true; };
+  }, [isBrowser, location.pathname]);
 
   if (!footer) return null;
   const {links = [], copyright} = footer;

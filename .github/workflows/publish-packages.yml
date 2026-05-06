@@ -49,7 +49,12 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - run: npm ci
+      # `npm install` rather than `npm ci`, because package-lock.json is
+      # gitignored (the design-system monorepo doesn't pin transitive
+      # versions). The publish step itself does not need node_modules,
+      # but a clean install warms the workspace resolution that
+      # `npm publish --workspace` relies on.
+      - run: npm install --no-audit --no-fund
 
       - name: Check whether version on main is already published
         id: version

@@ -296,9 +296,6 @@ export default function Footer() {
                   <span className="iso-mark">ISO</span>
                   <span className="iso-num">27001:2022</span>
                 </Link>
-                <a href="https://github.com/ConductionNL" target="_blank" rel="noopener noreferrer">
-                  github.com/ConductionNL
-                </a>
               </div>
             </div>
           )}

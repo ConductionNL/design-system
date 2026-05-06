@@ -4,7 +4,7 @@ description: Citizen-facing case-status portal on Nextcloud. ZGW APIs, archief k
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase, AgentTrace} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="zaakafhandelapp"
@@ -90,6 +90,111 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
       title: 'TMLO archival, tamper-evident trail.',
       summary: 'Every status change, every document, every action gets a tamper-evident trail. DocuDesk archives per TMLO and Archiefwet 2026. Audit, annual report, or appeal: the evidence is ready.',
       cta: {label: 'See DocuDesk', href: '/apps/docudesk'},
+      panel: <AppMock app="docudesk" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Widgets we ship"
+  title="The case-worker's morning view."
+  lede="Install ZaakAfhandelApp and these widgets show up on every case-worker's dashboard. Open cases first, citizen messages next, deadlines below."
+  widgets={[
+    {
+      title: 'My open cases',
+      desc: 'Active cases for the logged-in case-worker. Late ones in red, the next stage one click away.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--conduction-typography-font-family-body)'}}>
+          {[
+            {tone: 'var(--c-orange-knvb)', l1: '60%', l2: '40%', av: 'var(--c-mint-300)'},
+            {tone: 'var(--c-lavender-300)', l1: '70%', l2: '50%', av: 'var(--c-lavender-300)'},
+            {tone: 'var(--c-red-vermillion)', l1: '55%', l2: '45%', av: 'var(--c-orange-knvb)'},
+            {tone: 'var(--c-lavender-300)', l1: '65%', l2: '35%', av: 'var(--c-mint-300)'},
+            {tone: 'var(--c-lavender-300)', l1: '75%', l2: '50%', av: 'var(--c-forest-300)'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{width: 14, height: 16, clipPath: 'var(--hex-pointy-top)', background: row.tone, flexShrink: 0}}></span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 3}}>
+                <div style={{height: 5, width: row.l1, background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
+                <div style={{height: 3, width: row.l2, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              </div>
+              <span style={{width: 18, height: 18, borderRadius: '50%', background: row.av, flexShrink: 0}}></span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Citizen messages',
+      desc: 'Inbound messages and document uploads from the citizen portal. Each linked to its case.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[
+            {tone: 'var(--c-mint-500)', stage: 'unread'},
+            {tone: 'var(--c-cobalt-300)', stage: 'replied'},
+            {tone: 'var(--c-mint-500)', stage: 'unread'},
+            {tone: 'var(--c-cobalt-300)', stage: 'replied'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', borderBottom: i < 3 ? '1px solid var(--c-cobalt-50)' : 'none'}}>
+              <span style={{width: 10, height: 11, clipPath: 'var(--hex-pointy-top)', background: row.tone}}></span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 2}}>
+                <div style={{height: 4, width: '70%', background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
+                <div style={{height: 3, width: '50%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              </div>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 8, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-500)'}}>{row.stage}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Deadlines this week',
+      desc: 'Statutory deadlines across the queue. Pre-warning before the day, escalation after.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 28, fontWeight: 700, color: 'var(--c-orange-knvb)'}}>4</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>this week</div>
+          </div>
+          {[{w: '70%', accent: true}, {w: '60%'}, {w: '55%'}, {w: '45%'}].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 6}}>
+              <span style={{width: 8, height: 9, clipPath: 'var(--hex-pointy-top)', background: row.accent ? 'var(--c-orange-knvb)' : 'var(--c-cobalt-300)'}}></span>
+              <div style={{flex: 1, height: 4, background: 'var(--c-cobalt-200)', borderRadius: 1, width: row.w}}></div>
+              <div style={{height: 4, width: 30, background: 'var(--c-cobalt-100)', borderRadius: 1}}></div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="How ZaakAfhandelApp plugs into the workspace"
+  title="Two sides of the case, one Nextcloud."
+  lede="Three integration paths that pull the case-worker view into Nextcloud and route the citizen-side login through DigiD or eIDAS. Most of the day-to-day flow rides on native apps."
+  layout="side"
+  defaultOpen="mail-files"
+  items={[
+    {
+      id: 'mail-files',
+      title: 'Mail, Files, Calendar, Deck',
+      summary: 'Citizen email lands on the case automatically; attachments file themselves under the case dossier; deadlines appear in Calendar; the team kanban runs in Deck. The case-worker stays in the same Nextcloud all day.',
+      cta: {label: 'See the integration guide', href: 'https://docs.conduction.nl/zaakafhandelapp/mail-files'},
+      panel: <AppMock app="zaakafhandelapp" />,
+    },
+    {
+      id: 'digid',
+      title: 'DigiD and eIDAS',
+      summary: 'Citizens log in at jouwgemeente.nl/zaken with DigiD or eIDAS. OpenConnector handles the SAML or OpenID flow; the case-worker side uses normal Nextcloud SSO. One source of truth, two authentication paths.',
+      cta: {label: 'See the auth guide', href: 'https://docs.conduction.nl/zaakafhandelapp/digid-eidas'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'archive',
+      title: 'TMLO archival',
+      summary: 'DocuDesk archives every closed case per TMLO and Archiefwet 2026. Retention runs automatically on the schedule the schema declares; the audit pack for inspection is pre-built.',
+      cta: {label: 'See the archive guide', href: 'https://docs.conduction.nl/zaakafhandelapp/archive'},
       panel: <AppMock app="docudesk" />,
     },
   ]}

@@ -220,10 +220,13 @@
     }
 
     /* Lift every visible hex to position:absolute at its snapshot coords
-       so it's no longer affected by track flex layout. Aria-hidden
-       duplicates (B-track) get hidden outright. */
+       so it's no longer affected by track flex layout. The flow runtime
+       drives drift via inline transform: translateX(...) — clear that
+       so the game's own left/top take over cleanly. Otherwise the hex
+       would render at left + transform, leaking the pre-pause drift. */
     const allLifted = allKept.concat(allDropping);
     allLifted.forEach(function (hex) {
+      hex.style.transform = '';
       hex.style.position = 'absolute';
       hex.style.left = hex._lmX + 'px';
       hex.style.top = hex._lmY + 'px';

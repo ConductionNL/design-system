@@ -238,11 +238,17 @@
 
   function pause() {
     if (!running) return;
-    /* Capture current scroll into the accumulator before halting so
-       resume() picks up where we left off. */
+    /* Capture scroll into the accumulator and FULLY halt the rAF.
+       Setting paused flags isn't enough — Logo Memory snapshots and
+       lifts hex positions, and any subsequent tick that reads/writes
+       a transform on a now-lifted hex would corrupt its placement. */
     scrollAccum = currentScroll(performance.now());
     scrollStart = null;
     running = false;
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
     REGISTRY.forEach(function (m) {
       m.rows.forEach(function (r) { r.paused = true; });
     });
@@ -259,6 +265,12 @@
   }
 
   function reset() {
+    /* Halt rAF before mutating state so a stray tick can't write to
+       elements we're about to remove. */
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
     scrollAccum = 0;
     scrollStart = null;
     running = true;

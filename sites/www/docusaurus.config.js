@@ -85,7 +85,7 @@ module.exports = createConfig({
       {to: '/apps',      label: 'Apps',      position: 'left'},
       {to: '/solutions', label: 'Solutions', position: 'left'},
       {to: '/academy',   label: 'Academy',   position: 'left'},
-      {to: '/beheer',    label: 'Beheer',    position: 'left'},
+      {to: '/support',   label: 'Support',   position: 'left'},
       {to: '/about',     label: 'About',     position: 'left'},
       {type: 'localeDropdown', position: 'right'},
       {to: '/partners',  label: 'Partners',  position: 'right'},
@@ -119,7 +119,7 @@ module.exports = createConfig({
       {
         title: 'Resources',
         items: [
-          {label: 'Beheer',         to: '/beheer'},
+          {label: 'Support',        to: '/support'},
           {label: 'Build an app',   to: '/build'},
           {label: 'Blogs',          to: '/academy?type=blog'},
           {label: 'Guides',         to: '/academy?type=guide'},

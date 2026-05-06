@@ -23,6 +23,11 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 - **Pointy-top hexes only.** No flat-top hexes anywhere.
 - **One orange accent per screen.** KNVB orange (`--c-orange-knvb`) is for highlights, never primary fills.
 - **Partner and client logos on white.** Third-party logos are designed against white and lose contrast on tinted surfaces. Always render them on a white tile, never on cobalt-50 or cobalt-100. If the surrounding surface is tinted, place the logo inside a white frame: a hex (preferred, via `<HexNetwork/>`), a card, or a small white plate. The brand-anchor center hex (Conduction) is the only solid-fill exception.
+- **Sub-brand icon hexes use the brand's own colour, not cobalt.** When a hex represents a partner brand (Nextcloud, Common Ground+) instead of a Conduction surface, the hex fill is the brand's own colour and the glyph inside is the brand's logo:
+  - **ConNext / Nextcloud** — Nextcloud logo (`fill: currentColor`, white) on a hex filled with `var(--c-nextcloud-blue)`.
+  - **Common Ground+** — Common Ground logo (`fill: currentColor`, cobalt-900 ink for AA on yellow) on a hex filled with `var(--c-commonground-yellow)`.
+  - In `<PairCard/>`, pass `iconBg` + `iconColor` to switch from the default cobalt-on-white icon to the brand variant. The card auto-switches to the filled-mark SVG rules instead of the stroke-only glyph.
+  - The Conduction cobalt hex is the default for our own apps and surfaces; reserve brand colour-fills for the two sub-brands above.
 
 ---
 

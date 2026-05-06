@@ -37,9 +37,10 @@ import React from 'react';
 import styles from './HexNetwork.module.css';
 
 const LAYOUTS = {
-  '3-3-3': [3, 3, 3],   // 9 cells, centre is row[1][1]
-  '2-3-2': [2, 3, 2],   // 7 cells, centre is row[1][1]
-  '3-4-3': [3, 4, 3],   // 10 cells, no natural centre slot
+  '3-3-3':   [3, 3, 3],         // 9 cells,  centre row[1][1]
+  '2-3-2':   [2, 3, 2],         // 7 cells,  centre row[1][1]
+  '3-4-3':   [3, 4, 3],         // 10 cells, no natural centre slot
+  '3-3-3-3': [3, 3, 3, 3],      // 12 cells, centre row[1][1] (used by /support hero scroll)
 };
 
 function Cell({cell, highlighted}) {
@@ -68,18 +69,23 @@ export default function HexNetwork({
   cells = [],
   layout = '3-3-3',
   background = 'transparent',
+  scroll = 'none',          // 'none' | 'down' | 'up'
+  scrollSpeed = 60,         // seconds per cycle
+  visibleRows = 3,          // rows visible inside the scroll viewport
   className,
 }) {
   const rowCounts = LAYOUTS[layout] || LAYOUTS['3-3-3'];
-  /* Distribute cells into rows, threading the centre into the middle of
-     the middle row so it stays visually anchored. The centre prop wins
-     over any cell that would otherwise occupy that slot. */
+  /* Distribute cells into rows, threading the centre into the middle row
+     (floor((rows-1)/2)) so it stays visually anchored regardless of how
+     many rows the layout has. The centre prop wins over any cell that
+     would otherwise occupy that slot. */
+  const centreRow = Math.floor((rowCounts.length - 1) / 2);
   const rows = [];
   let idx = 0;
   rowCounts.forEach((count, rowIdx) => {
     const row = [];
     for (let c = 0; c < count; c++) {
-      const isCentreSlot = rowIdx === 1 && c === Math.floor(count / 2) && center;
+      const isCentreSlot = rowIdx === centreRow && c === Math.floor(count / 2) && center;
       if (isCentreSlot) {
         row.push({cell: center, highlighted: true});
       } else {
@@ -89,17 +95,43 @@ export default function HexNetwork({
     }
     rows.push(row);
   });
+
   const composed = [styles.network, styles[`bg-${background}`], className].filter(Boolean).join(' ');
+  const renderRows = (rowsToRender, keyPrefix = '') => rowsToRender.map((row, ri) => (
+    <div
+      key={`${keyPrefix}${ri}`}
+      className={[styles.row, ri % 2 === 1 && styles.offset].filter(Boolean).join(' ')}
+    >
+      {row.map((entry, ci) => (
+        <Cell key={ci} cell={entry.cell} highlighted={entry.highlighted} />
+      ))}
+    </div>
+  ));
+
+  /* Static render: just the grid. */
+  if (scroll === 'none') {
+    return (
+      <div className={composed}>
+        <div className={styles.grid}>{renderRows(rows)}</div>
+      </div>
+    );
+  }
+
+  /* Scrolling render: viewport with mask-faded edges, track that holds
+     the rows twice for a seamless loop. The track animates translateY;
+     'down' shows content moving downward (rows enter at top, exit at
+     bottom), 'up' is the reverse (credits-roll). Hover and focus pause
+     the loop, prefers-reduced-motion turns it off. */
+  const scrollClass = scroll === 'down' ? styles.scrollDown : styles.scrollUp;
+  const trackStyle = {animationDuration: `${scrollSpeed}s`};
+  const viewportStyle = {'--hex-visible-rows': visibleRows};
   return (
     <div className={composed}>
-      <div className={styles.grid}>
-        {rows.map((row, ri) => (
-          <div key={ri} className={[styles.row, ri % 2 === 1 && styles.offset].filter(Boolean).join(' ')}>
-            {row.map((entry, ci) => (
-              <Cell key={ci} cell={entry.cell} highlighted={entry.highlighted} />
-            ))}
-          </div>
-        ))}
+      <div className={styles.viewport} style={viewportStyle}>
+        <div className={[styles.track, scrollClass].join(' ')} style={trackStyle}>
+          {renderRows(rows, 'a-')}
+          {renderRows(rows, 'b-')}
+        </div>
       </div>
     </div>
   );

@@ -86,6 +86,19 @@ export const DEFAULT_PARTNERS = [
 function splitIntoRows(items, rowCount) {
   const rows = Array.from({length: rowCount}, () => []);
   items.forEach((item, i) => rows[i % rowCount].push(item));
+  /* Pad shorter rows with duplicates from their own front so every row
+     has the same length and the same track width. Without this, the
+     marquee's translateX(-50%) animation drifts the rows out of
+     honeycomb alignment because each track's 50% resolves to a
+     different pixel offset. */
+  const max = Math.max(...rows.map(r => r.length));
+  rows.forEach(r => {
+    let i = 0;
+    while (r.length < max) {
+      r.push(r[i % (r.length || 1)]);
+      i++;
+    }
+  });
   return rows;
 }
 

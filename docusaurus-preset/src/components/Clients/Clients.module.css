@@ -76,9 +76,8 @@
   --hex-w: 120px;
   --hex-h: 138.56px;     /* hex-w * 1.1547 (pointy-top ratio) */
   --hex-overlap: 34.64px; /* hex-h * 0.25 — proper honeycomb tessellation */
-  --gap: 0px;            /* hexes share edges; the cobalt-50 ring around
-                            each hex forms one continuous honeycomb frame. */
-  --offset: calc(var(--hex-w) / 2); /* row 2 lateral offset = half-hex */
+  --gap: 8px;            /* breathing room between hexes */
+  --offset: calc((var(--hex-w) + var(--gap)) / 2); /* row 2 lateral stagger */
   position: relative;
   overflow: hidden;
   margin-top: var(--space-8);
@@ -93,7 +92,12 @@
   margin-top: calc(var(--hex-overlap) * -1);
 }
 .row:first-child { margin-top: 0; }
-.row2 .track { padding-left: var(--offset); } /* honeycomb stagger */
+/* Honeycomb stagger for row 2 via margin (NOT padding): margin sits
+   outside the track's content box, so the track's measured width is
+   identical across rows and the -50% scroll animation produces the
+   same pixel offset for every row. padding-left would inflate the
+   track's width and break the alignment. */
+.row2 .track { margin-left: var(--offset); }
 
 .track {
   display: inline-flex;
@@ -159,7 +163,7 @@
     --hex-w: 88px;
     --hex-h: 101.6px;
     --hex-overlap: 25.4px;  /* hex-h * 0.25 */
-    --gap: 0px;
+    --gap: 6px;
   }
   .row2, .row3 { display: none; }
 }

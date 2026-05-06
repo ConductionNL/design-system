@@ -104,6 +104,8 @@ export const PARTNERS = [
   },
 ];
 
+export const totalPartners = PARTNERS.length;
+
 export const BECOME_PARTNER = {
   href: '/support#become-a-partner',
   eyebrow: 'Become a partner',

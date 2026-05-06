@@ -4,7 +4,7 @@ description: What Common Ground actually is, where it stands eight years in, and
 hide_table_of_contents: true
 ---
 
-import {Hero, StatsStrip, Section, SectionHead, AppsPreview, PairRow, PairCard, CtaBanner, Pill} from '@conduction/docusaurus-preset/components';
+import {Hero, StatsStrip, Section, SectionHead, AppsPreview, PairRow, PairCard, CtaBanner, Pill, Showcase, AppMock} from '@conduction/docusaurus-preset/components';
 
 <Hero
   eyebrow={<>Common <span className="cg-yellow">Ground</span> · the state of play in 2026</>}
@@ -24,25 +24,60 @@ import {Hero, StatsStrip, Section, SectionHead, AppsPreview, PairRow, PairCard, 
 ]} />
 
 <Section spacing="default">
-  <SectionHead
-    eyebrow="The basics"
-    title="What Common Ground actually is."
-    align="stack"
-    lede="Started in 2017 inside the Vereniging van Nederlandse Gemeenten (VNG) as part of the broader Samen Organiseren movement. The trigger was concrete and uncomfortable."
-  />
 
-342 municipalities ran fragmented IT, all maintaining duplicated copies of the same citizen data, all paying two dominant vendors (Centric and PinkRoccade) for monolithic suites. The Algemene verordening gegevensbescherming (Avg) and the Wet open overheid (Woo) added regulatory pressure the legacy stack could not meet.
+<Showcase
+  eyebrow="The basics"
+  title="What Common Ground actually is."
+  lede="Started in 2017 inside the Vereniging van Nederlandse Gemeenten (VNG) as part of the broader Samen Organiseren movement. The trigger was concrete: 342 municipalities ran fragmented IT, all duplicating the same citizen data, all paying two dominant vendors for monolithic suites. The Avg and the Wet open overheid added regulatory pressure the legacy stack could not meet. The response was a shared vision, captured in six principles."
+  defaultOpen="bron"
+  layout="side"
+  items={[
+    {
+      id: 'bron',
+      title: 'Data aan de bron.',
+      summary: 'Store once, retrieve via API, no copies. The source system owns the truth, every other system asks.',
+      cta: {label: 'See OpenRegister', href: '/apps/openregister'},
+      panel: <AppMock app="openregister" />,
+    },
+    {
+      id: 'scheiding',
+      title: 'Scheiding van data en applicaties.',
+      summary: 'Apps consume data, they do not own it. Swap an app without losing the underlying records.',
+      cta: {label: 'See OpenCatalogi', href: '/apps/opencatalogi'},
+      panel: <AppMock app="opencatalogi" />,
+    },
+    {
+      id: 'auth',
+      title: 'Gefedereerde autorisatie.',
+      summary: 'Identity translated through a gateway, not duplicated per system. One identity provider, every service authenticated against it.',
+      cta: {label: 'See OpenConnector', href: '/apps/openconnector'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'verantwoording',
+      title: 'Verantwoording per bevraging.',
+      summary: 'Every API call logs a declaration of purpose. A citizen can audit who looked at their data, when, and why.',
+      cta: {label: 'See OpenRegister', href: '/apps/openregister'},
+      panel: <AppMock app="openregister" />,
+    },
+    {
+      id: 'modellen',
+      title: 'Gestandaardiseerde informatiemodellen.',
+      summary: 'Vendor-neutral data models. The same Zaak schema across every municipality, the same Document schema across every DMS.',
+      cta: {label: 'See OpenCatalogi', href: '/apps/opencatalogi'},
+      panel: <AppMock app="opencatalogi" />,
+    },
+    {
+      id: 'doelgericht',
+      title: 'Doelgerichte services.',
+      summary: 'Each API returns only the data the request needs. No "give me everything", no oversharing, no fishing.',
+      cta: {label: 'See OpenConnector', href: '/apps/openconnector'},
+      panel: <AppMock app="openconnector" />,
+    },
+  ]}
+/>
 
-The vision is captured in six principles. They are taken from the original [cg-vision document on GitHub](https://github.com/VNG-Realisatie/common-ground/blob/master/cg-vision.md):
-
-- **Data aan de bron.** Store once, retrieve via API, no copies.
-- **Scheiding van data en applicaties.** Apps consume data, they don't own it.
-- **Gefedereerde autorisatie.** Identity translated through a gateway, not duplicated per system.
-- **Verantwoording per bevraging.** Every API call logs a declaration of purpose, so a citizen can audit who looked at their data.
-- **Gestandaardiseerde informatiemodellen.** Vendor-neutral data models.
-- **Doelgerichte services.** Each API returns only the data the request needs.
-
-A common myth is that Common Ground has *five* principles. The number five refers to the five-layer model below, not the principles themselves.
+The principles come from the original [cg-vision document on GitHub](https://github.com/VNG-Realisatie/common-ground/blob/master/cg-vision.md). A common myth is that Common Ground has *five* principles. The number five refers to the five-layer model below.
 
 Governance sits at [VNG Realisatie](https://vng.nl/artikelen/common-ground), the executing arm of the VNG, funded through the [Gezamenlijke Gemeentelijke Uitvoering (GGU)](https://vng.nl/artikelen/gezamenlijke-gemeentelijke-uitvoering-ggu). The Common Ground Board, chaired by a gemeentesecretaris, sets direction. A Strategische Leverancierstafel advises from the vendor side. Common Ground is a thematic architecture inside [GEMMA](https://vng.nl/projecten/gemeentelijke-model-architectuur-gemma), the broader reference architecture every Dutch municipality is supposed to follow.
 

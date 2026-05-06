@@ -4,7 +4,12 @@ description: Digital design- en development-bureau uit Utrecht. Strong on MyDash
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, ReferenceGrid, ReferenceCard, PartnerCard, CtaBanner} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, ReferenceGrid, ReferenceCard, PartnerCard, PartnerSidecard, CtaBanner} from '@conduction/docusaurus-preset/components';
+import {PARTNERS} from '@site/src/data/partners-catalog';
+import {solutionsBySlugs} from '@site/src/data/solutions-catalog';
+
+export const YARD = PARTNERS.find(p => p.name === 'YARD');
+export const YARD_SOLUTIONS = solutionsBySlugs(YARD.solutions);
 
 <DetailHero
   crumb={[{label: 'Partners', href: '/partners'}, 'YARD']}
@@ -19,6 +24,9 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, ReferenceGri
   iconColor="white"
   icon={<img src="/img/partners/yard.png" alt="YARD logo" style={{width: 180, height: 'auto', objectFit: 'contain'}}/>}
 />
+
+<div style={{maxWidth: 1280, margin: '0 auto', padding: '0 var(--space-6)', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: 'var(--space-10)', alignItems: 'start'}} className="partner-detail-grid">
+<div style={{minWidth: 0}}>
 
 <Section spacing="default">
   <SectionHead
@@ -103,6 +111,18 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, ReferenceGri
     />
   </div>
 </Section>
+
+</div>
+
+<div style={{position: 'sticky', top: 'var(--space-6)', alignSelf: 'start', paddingTop: 'var(--space-10)'}}>
+  <PartnerSidecard
+    partner={YARD}
+    solutions={YARD_SOLUTIONS}
+    cta={{label: 'Talk to YARD', href: 'mailto:hello@yard.nl'}}
+  />
+</div>
+
+</div>
 
 <CtaBanner
   title="Citizen-facing op Nextcloud, NLDS-conform."

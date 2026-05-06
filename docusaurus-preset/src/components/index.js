@@ -39,6 +39,7 @@ export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
 export {default as SolutionCard, SolutionGrid} from './SolutionCard/SolutionCard.jsx';
 export {default as PartnerCard, PartnerGrid, BecomePartner} from './PartnerCard/PartnerCard.jsx';
 export {default as PartnerDirectory} from './PartnerDirectory/PartnerDirectory.jsx';
+export {default as PartnerSidecard} from './PartnerSidecard/PartnerSidecard.jsx';
 export {default as ManagedCommonGround} from './ManagedCommonGround/ManagedCommonGround.jsx';
 export {default as Clients, DEFAULT_CLIENTS, DEFAULT_PARTNERS} from './Clients/Clients.jsx';
 export {default as ReferenceCard, ReferenceGrid} from './ReferenceCard/ReferenceCard.jsx';

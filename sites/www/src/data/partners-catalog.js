@@ -29,6 +29,7 @@ export const PARTNERS = [
     logo: '/img/partners/acato.png',
     summary: <>Nederlandse open-source specialist uit Almere. Bouwt en host <span className="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen, met focus op AVG-compliance en NLDS. Strategisch partner op hosting, stack-implementatie en gezamenlijke roadmap.</>,
     apps: ['OpenRegister', 'OpenCatalogi', 'DocuDesk'],
+    solutions: ['woo', 'archief', 'software-catalog'],
   },
   {
     tier: 'certified',
@@ -36,6 +37,7 @@ export const PARTNERS = [
     logo: '/img/partners/centric.png',
     summary: <>Eén van Nederlands grootste software-leveranciers voor de publieke sector. Officieel <span className="next-blue">Nextcloud</span>-distributeur. Centric-klanten krijgen Conduction-apps geïntegreerd in hun bestaande Centric-omgeving.</>,
     apps: ['Nextcloud', 'OpenZaak', 'OpenRegister', 'DocuDesk'],
+    solutions: ['zaakafhandeling', 'archief'],
   },
   {
     href: '/partners/procolix',
@@ -44,6 +46,7 @@ export const PARTNERS = [
     logo: '/img/partners/procolix.png',
     summary: <>Nederlandse hoster en leverancier van proces- en zaakmanagement-software. Officieel <span className="next-blue">Nextcloud</span>-distributeur. Certified op DocuDesk en OpenConnector voor procesintegraties bij gemeenten en uitvoeringsorganisaties.</>,
     apps: ['Nextcloud', 'DocuDesk', 'OpenConnector'],
+    solutions: ['zaakafhandeling', 'archief', 'legacy-erp'],
   },
   {
     tier: 'certified',
@@ -51,6 +54,7 @@ export const PARTNERS = [
     logo: '/img/partners/goodcloud.png',
     summary: <>Nederlandse <span className="next-blue">Nextcloud</span>-hoster voor MKB en non-profits. Officieel Nextcloud-distributeur. Levert beheerde omgevingen met Conduction-apps pre-installed, privacy-eerst hosting in NL.</>,
     apps: ['Nextcloud', 'OpenRegister', 'MyDash'],
+    solutions: ['mkb-workspace'],
   },
   {
     tier: 'partner',
@@ -58,6 +62,7 @@ export const PARTNERS = [
     logo: '/img/partners/bct.png',
     summary: <>Nederlandse leverancier van document- en zaaksysteem-software voor de overheid. BCT-implementaties praten via OpenConnector met de Conduction-registers.</>,
     apps: ['OpenConnector', 'DocuDesk', 'OpenZaak'],
+    solutions: ['zaakafhandeling', 'archief', 'legacy-erp'],
   },
   {
     tier: 'partner',
@@ -65,6 +70,7 @@ export const PARTNERS = [
     logo: '/img/partners/open-gemeenten.png',
     summary: <>Coöperatieve community van gemeenten die samen open-source software ontwikkelen en delen. Levert OpenZaak-implementaties bij aangesloten gemeenten en draagt patches terug naar upstream.</>,
     apps: ['OpenZaak', 'OpenRegister', 'OpenCatalogi'],
+    solutions: ['zaakafhandeling', 'software-catalog'],
   },
   {
     tier: 'partner',
@@ -72,6 +78,7 @@ export const PARTNERS = [
     logo: '/img/partners/exxellence.png',
     summary: <>Nederlandse softwarebouwer gespecialiseerd in zaakafhandeling en burger-portaal-toepassingen. Reference-deploys op OpenZaak v4.x bij meerdere middelgrote gemeenten.</>,
     apps: ['OpenZaak', 'DocuDesk'],
+    solutions: ['zaakafhandeling'],
   },
   {
     href: '/partners/yard',
@@ -80,6 +87,7 @@ export const PARTNERS = [
     logo: '/img/partners/yard.png',
     summary: <>Digital design- en development-bureau uit Utrecht. Ontwerpt en bouwt klantgerichte digitale producten op <span className="next-blue">Nextcloud</span> voor gemeenten en publieke organisaties.</>,
     apps: ['MyDash', 'OpenCatalogi'],
+    solutions: ['software-catalog', 'mkb-workspace'],
   },
   {
     tier: 'partner',
@@ -87,6 +95,7 @@ export const PARTNERS = [
     logo: '/img/partners/io.webp',
     summary: <>Internationaal digital agency met Nederlandse vestiging in Amsterdam. Integreert Conduction-apps in bredere klantreis-trajecten voor publieke en semi-publieke organisaties.</>,
     apps: ['OpenConnector', 'MyDash'],
+    solutions: ['legacy-erp', 'mkb-workspace'],
   },
   {
     tier: 'partner',
@@ -94,6 +103,7 @@ export const PARTNERS = [
     logo: '/img/partners/shift2.png',
     summary: <>Nederlands development-bureau gespecialiseerd in <span className="next-blue">Nextcloud</span> en open source. Implementeert Conduction-stacks bij MKB-klanten en gemeenten in midden-Nederland.</>,
     apps: ['OpenRegister', 'MyDash'],
+    solutions: ['mkb-workspace'],
   },
   {
     tier: 'partner',
@@ -101,8 +111,19 @@ export const PARTNERS = [
     logo: '/img/partners/sendent.png',
     summary: <>Nederlandse leverancier die Microsoft Outlook en Teams koppelt aan <span className="next-blue">Nextcloud</span>. Levert support op MyDash voor klanten die hun e-mail- en bestandsstroom binnen de eigen Nextcloud-omgeving willen houden.</>,
     apps: ['MyDash'],
+    solutions: ['mkb-workspace'],
   },
 ];
+
+/** Reverse lookup: which partners ship a given solution slug. */
+export function partnersBySolution(slug) {
+  return PARTNERS.filter(p => (p.solutions || []).includes(slug));
+}
+
+/** Reverse lookup: which partners ship a given app name. */
+export function partnersByApp(name) {
+  return PARTNERS.filter(p => (p.apps || []).includes(name));
+}
 
 export const totalPartners = PARTNERS.length;
 

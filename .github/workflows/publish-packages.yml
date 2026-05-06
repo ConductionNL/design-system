@@ -6,6 +6,16 @@ name: Publish package
 # The workflow detects the bump and publishes; pushes that don't bump the
 # version are no-ops.
 #
+# Authentication uses npm's Trusted Publisher (OIDC) flow: the runner mints
+# a short-lived ID token, npm validates the {repo, workflow} claim against
+# its trust config, and issues a one-shot publish token. No NPM_TOKEN
+# secret to rotate. Provenance attestations are signed automatically.
+#
+# Trust config is set on the npm package settings page; it expects this
+# workflow to live at the path `.github/workflows/publish-packages.yml`
+# in `ConductionNL/design-system`. If you rename or move this file, update
+# the npm Trusted Publisher config to match.
+#
 # A tag push (`v*`) and a manual workflow_dispatch (with optional dry-run)
 # are also accepted, mostly for explicit republishes and emergency holds.
 #
@@ -30,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write    # required for npm Trusted Publisher (OIDC)
     steps:
       - uses: actions/checkout@v4
 
@@ -57,11 +68,9 @@ jobs:
 
       - name: Publish @conduction/docusaurus-preset
         if: steps.version.outputs.match == 'false'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
             npm publish --workspace @conduction/docusaurus-preset --access public --dry-run
           else
-            npm publish --workspace @conduction/docusaurus-preset --access public
+            npm publish --workspace @conduction/docusaurus-preset --access public --provenance
           fi

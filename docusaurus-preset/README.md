@@ -143,14 +143,18 @@ Releases auto-publish on push to `main`. The [.github/workflows/publish-packages
 
 The diagram primitives ship inside the same tarball under `src/diagrams/`, so there is exactly one npm release per push.
 
-**One-time setup** (per repo, since Conduction keeps secrets repo-local):
+**One-time setup**: configure the npm Trusted Publisher (OIDC) link.
 
-1. Sign in to npm with an account that's a member of the `@conduction` org and has publish rights on the scope. (`npm login` from the CLI, or via [npmjs.com](https://www.npmjs.com/login).)
-2. Create an automation token under your *user* settings (npm tokens are user-level, not org-level): npmjs.com → avatar dropdown → "Access Tokens" → "Generate New Token" → **Automation**. Copy the value.
-3. Add it as a repo secret: <https://github.com/ConductionNL/design-system/settings/secrets/actions> → "New repository secret" → name `NPM_TOKEN`, paste the token.
-4. (Optional) Verify the workflow with a dry run: Actions → "Publish packages" → Run workflow → leave "dry_run" checked. Watch for `+ @conduction/docusaurus-preset@…` in the logs without an actual upload.
+1. Open the package settings on npm: <https://www.npmjs.com/package/@conduction/docusaurus-preset/access>. Scroll to "Trusted Publisher" and click "Set up connection".
+2. Fill in:
+   - Publisher: GitHub Actions
+   - Organization or user: `ConductionNL`
+   - Repository: `design-system`
+   - Workflow filename: `publish-packages.yml`
+   - Environment name: leave empty (or set to a GitHub Environment if you later want a manual approval gate)
+3. Click "Set up connection".
 
-The token publishes **on behalf of the user account**, not the org, so anyone with the right org-level permission can generate the token. Rotate by replacing the secret; no need to redeploy or amend the workflow.
+That's it. There is no token to generate, no secret to install, no expiry to track. The workflow's `permissions: id-token: write` lets the runner request a short-lived OIDC token; npm validates the `{repo, workflow}` claim against the trust config and issues a one-shot publish credential. Each release is also signed with a [provenance attestation](https://docs.npmjs.com/generating-provenance-statements) so consumers can verify the build came from this exact workflow run.
 
 **Per release:**
 

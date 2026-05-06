@@ -22,6 +22,7 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 - **Tokens, not hardcoded values.** Reference `var(--c-cobalt-700)`, `var(--space-5)`, `var(--radius-lg)`. Add new tokens to [tokens.css](tokens.css) before using them.
 - **Pointy-top hexes only.** No flat-top hexes anywhere.
 - **One orange accent per screen.** KNVB orange (`--c-orange-knvb`) is for highlights, never primary fills.
+- **Partner and client logos on white.** Third-party logos are designed against white and lose contrast on tinted surfaces. Always render them on a white tile, never on cobalt-50 or cobalt-100. If the surrounding surface is tinted, place the logo inside a white frame: a hex (preferred, via `<HexNetwork/>`), a card, or a small white plate. The brand-anchor center hex (Conduction) is the only solid-fill exception.
 
 ---
 

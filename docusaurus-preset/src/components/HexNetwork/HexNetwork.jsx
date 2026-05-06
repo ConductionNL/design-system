@@ -67,7 +67,7 @@ export default function HexNetwork({
   center,
   cells = [],
   layout = '3-3-3',
-  background = 'tinted',
+  background = 'transparent',
   className,
 }) {
   const rowCounts = LAYOUTS[layout] || LAYOUTS['3-3-3'];

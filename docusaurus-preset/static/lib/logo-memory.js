@@ -111,9 +111,23 @@
     const state = ACTIVE.get(container);
     if (!state) return;
     document.removeEventListener('keydown', state.onKey);
-    /* Restore the marquee's original DOM. The track animation will pick
-       up from translateX(0) which is a small visual jump but cleanest. */
-    marquee.innerHTML = state.originalHTML;
+    /* The marquee is now driven by clients-flow.js which manages its
+       own hex pool. Calling reset() removes every existing hex (the
+       ones the game lifted out of rows AND any leftovers) and re-fills
+       the rows from scratch. Falls back to an innerHTML restore for
+       the transitional case where the flow runtime hasn't loaded. */
+    if (window.ConductionClientsFlow && typeof window.ConductionClientsFlow.reset === 'function') {
+      /* Strip everything we appended during the game (lifted hex
+         anchors, the HUD pill, the win panel, etc) — anything that
+         isn't a row container. The runtime's reset() will repopulate
+         the rows from scratch. */
+      Array.from(marquee.children).forEach(function (child) {
+        if (!child.hasAttribute('data-flow-row')) child.remove();
+      });
+      window.ConductionClientsFlow.reset();
+    } else if (state.originalHTML) {
+      marquee.innerHTML = state.originalHTML;
+    }
     marquee.classList.remove('lm-active', 'lm-overflow');
     delete container.dataset.memoryActive;
     ACTIVE.delete(container);
@@ -122,6 +136,12 @@
   async function startGame(container, marquee, logos) {
     container.dataset.memoryActive = '1';
     const originalHTML = marquee.innerHTML;
+
+    /* Freeze the continuous-spawn runtime so hexes stop drifting and
+       stay in their snapshot positions for phase 2 to lift cleanly. */
+    if (window.ConductionClientsFlow && typeof window.ConductionClientsFlow.pause === 'function') {
+      window.ConductionClientsFlow.pause();
+    }
 
     /* === Phase 1: Freeze + colorize === */
     marquee.classList.add('lm-active');

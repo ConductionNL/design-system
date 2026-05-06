@@ -46,6 +46,10 @@
   }
 
   /* === Marquee === */
+  /* Hexes are spawned, drifted, and culled by the runtime in
+     ../../docusaurus-preset/static/lib/clients-flow.js. Each row is
+     a static relative container; .hex children are absolutely
+     positioned and animated via inline transform. */
   .marquee {
     --hex-w: 120px;
     --hex-h: 138.56px;     /* hex-w * 1.1547 (pointy-top ratio) */
@@ -54,63 +58,39 @@
        gap perpendicular to slanted hex edges matches the horizontal
        gap between flat sides. */
     --hex-overlap: calc(var(--hex-h) - (var(--hex-w) + var(--gap)) * 0.866);
-    --row-h: calc(var(--hex-h) - var(--hex-overlap)); /* 103.96 */
     --offset: calc((var(--hex-w) + var(--gap)) / 2);
     position: relative;
     overflow: hidden;
-    /* Soft fade at left/right edges */
     -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
             mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
     padding: var(--space-4) 0;
   }
 
   .row {
+    position: relative;
     overflow: hidden;
     height: var(--hex-h);
     margin-top: calc(var(--hex-overlap) * -1);
   }
   .row:first-child { margin-top: 0; }
-  /* margin (not padding) so the track's content width stays equal to
-     the other rows — otherwise -50% scroll animates by a different
-     pixel amount and rows drift out of honeycomb alignment. */
-  .row-2 .track { margin-left: var(--offset); }    /* honeycomb stagger */
-
-  .track {
-    display: inline-flex;
-    gap: var(--gap);
-    width: max-content;
-    animation: marquee var(--speed, 60s) linear infinite;
-    will-change: transform;
-  }
-  .row-1 .track { --speed: 65s; }
-  .row-2 .track { --speed: 85s; animation-direction: reverse; } /* slight visual desync */
-  .row-3 .track { --speed: 75s; }
-
-  /* Translate by the second-copy start position (= unique-count *
-     hex pitch). translateX(-50%) is short by one --gap because of how
-     flexbox gap is counted, which shows as a one-gap stutter every
-     cycle. Tracks all have 15 unique hexes after padding. */
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(calc(-15 * (var(--hex-w) + var(--gap)))); }
-  }
-
-  .marquee:hover .track { animation-play-state: paused; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .track { animation: none; }
-  }
+  /* Row 2 stagger is applied by the runtime via translateX on each
+     spawned hex (default idx === 1 starts cursorX at half-pitch).
+     No CSS offset on the row itself: any padding/margin would
+     inflate the row's bounding rect, and the runtime uses that for
+     spawn arithmetic — all three rows must measure equal widths
+     so they stay in lockstep. */
 
   /* === Hex tile === */
   .hex {
-    flex: 0 0 auto;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: var(--hex-w);
     height: var(--hex-h);
     background: white;
     clip-path: var(--hex-pointy-top);
     display: grid;
     place-items: center;
-    position: relative;
   }
   /* faint cobalt outline via inset shadow inside the clip */
   .hex::before {
@@ -158,130 +138,70 @@
   <h2>From VNG to your gemeente.</h2>
   <p class="lede">Public-sector customers running our apps. Provincie, gemeente, joint arrangement, koepel.</p>
 
-  <div class="marquee" data-memory-marquee role="region" aria-label="Conduction clients">
+  <div class="marquee" data-memory-marquee data-hex-class="hex" role="region" aria-label="Conduction clients">
 
     <!--
-      Three rows. Each .track is duplicated inside itself so the marquee
-      loops seamlessly when transform reaches -50%. Tiles are interleaved
-      alphabetically across rows so each lane has a varied shape mix.
+      Three empty rows. clients-flow.js spawns absolutely-positioned
+      <a class="hex"> children into them, drifts them left, and culls
+      them once they leave the viewport. Logo pool below is read by
+      the runtime via the inline JSON script.
     -->
+    <script type="application/json" data-clients-source>
+      [
+        {"src": "../../brand/assets/clients/albrandswaard.png", "name": "Albrandswaard"},
+        {"src": "../../brand/assets/clients/alkmaar.png", "name": "Alkmaar"},
+        {"src": "../../brand/assets/clients/amsterdam.png", "name": "Amsterdam"},
+        {"src": "../../brand/assets/clients/baarn.png", "name": "Baarn"},
+        {"src": "../../brand/assets/clients/barendrecht.png", "name": "Barendrecht"},
+        {"src": "../../brand/assets/clients/barneveld.svg", "name": "Barneveld"},
+        {"src": "../../brand/assets/clients/beek.svg", "name": "Beek"},
+        {"src": "../../brand/assets/clients/breda.png", "name": "Breda"},
+        {"src": "../../brand/assets/clients/buren.png", "name": "Buren"},
+        {"src": "../../brand/assets/clients/dbp.svg", "name": "DBP"},
+        {"src": "../../brand/assets/clients/de-bilt.svg", "name": "De Bilt"},
+        {"src": "../../brand/assets/clients/delft.png", "name": "Delft"},
+        {"src": "../../brand/assets/clients/dinkelland.png", "name": "Dinkelland"},
+        {"src": "../../brand/assets/clients/edam-volendam.png", "name": "Edam-Volendam"},
+        {"src": "../../brand/assets/clients/ede.svg", "name": "Ede"},
+        {"src": "../../brand/assets/clients/epe.png", "name": "Epe"},
+        {"src": "../../brand/assets/clients/gooise-meren.svg", "name": "Gooise Meren"},
+        {"src": "../../brand/assets/clients/gouda.png", "name": "Gouda"},
+        {"src": "../../brand/assets/clients/hoeksche-waard.png", "name": "Hoeksche Waard"},
+        {"src": "../../brand/assets/clients/hof-van-twente.svg", "name": "Hof van Twente"},
+        {"src": "../../brand/assets/clients/ksa.svg", "name": "Kansspelautoriteit"},
+        {"src": "../../brand/assets/clients/lansingerland.svg", "name": "Lansingerland"},
+        {"src": "../../brand/assets/clients/meppel.svg", "name": "Meppel"},
+        {"src": "../../brand/assets/clients/moerdijk.svg", "name": "Moerdijk"},
+        {"src": "../../brand/assets/clients/molenlanden.png", "name": "Molenlanden"},
+        {"src": "../../brand/assets/clients/noaberkracht.svg", "name": "Noaberkracht"},
+        {"src": "../../brand/assets/clients/noordwijk.svg", "name": "Noordwijk"},
+        {"src": "../../brand/assets/clients/odmh.svg", "name": "ODMH"},
+        {"src": "../../brand/assets/clients/oude-ijsselstreek.png", "name": "Oude IJsselstreek"},
+        {"src": "../../brand/assets/clients/over-betuwe.svg", "name": "Overbetuwe"},
+        {"src": "../../brand/assets/clients/provincie-zeeland.svg", "name": "Provincie Zeeland"},
+        {"src": "../../brand/assets/clients/ridderkerk.png", "name": "Ridderkerk"},
+        {"src": "../../brand/assets/clients/rijswijk.png", "name": "Rijswijk"},
+        {"src": "../../brand/assets/clients/roosendaal.svg", "name": "Roosendaal"},
+        {"src": "../../brand/assets/clients/rotterdam.png", "name": "Rotterdam"},
+        {"src": "../../brand/assets/clients/soest.svg", "name": "Soest"},
+        {"src": "../../brand/assets/clients/stichtse-vecht.svg", "name": "Stichtse Vecht"},
+        {"src": "../../brand/assets/clients/surf.svg", "name": "SURF"},
+        {"src": "../../brand/assets/clients/tilburg.png", "name": "Tilburg"},
+        {"src": "../../brand/assets/clients/tubbergen.png", "name": "Tubbergen"},
+        {"src": "../../brand/assets/clients/vng.png", "name": "VNG"},
+        {"src": "../../brand/assets/clients/zutphen.svg", "name": "Zutphen"},
+        {"src": "../../brand/assets/clients/zwolle.svg", "name": "Zwolle"}
+      ]
+    </script>
 
-    <div class="row row-1">
-      <div class="track">
-        <!-- group A -->
-        <a class="hex" href="#" aria-label="Albrandswaard"><img src="../../brand/assets/clients/albrandswaard.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Baarn"><img src="../../brand/assets/clients/baarn.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Beek"><img src="../../brand/assets/clients/beek.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="DBP"><img src="../../brand/assets/clients/dbp.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Dinkelland"><img src="../../brand/assets/clients/dinkelland.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Epe"><img src="../../brand/assets/clients/epe.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Hoeksche Waard"><img src="../../brand/assets/clients/hoeksche-waard.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Lansingerland"><img src="../../brand/assets/clients/lansingerland.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Molenlanden"><img src="../../brand/assets/clients/molenlanden.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Oude IJsselstreek"><img src="../../brand/assets/clients/oude-ijsselstreek.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Ridderkerk"><img src="../../brand/assets/clients/ridderkerk.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Rotterdam"><img src="../../brand/assets/clients/rotterdam.png" alt=""></a>
-        <a class="hex" href="#" aria-label="SURF"><img src="../../brand/assets/clients/surf.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Tubbergen"><img src="../../brand/assets/clients/tubbergen.png" alt=""></a>
-        <a class="hex" href="#" aria-label="VNG"><img src="../../brand/assets/clients/vng.png" alt=""></a>
-        <!-- group A duplicate for seamless loop -->
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/albrandswaard.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/baarn.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/beek.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/dbp.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/dinkelland.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/epe.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/hoeksche-waard.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/lansingerland.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/molenlanden.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/oude-ijsselstreek.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/ridderkerk.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/rotterdam.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/surf.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/tubbergen.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/vng.png" alt=""></a>
-      </div>
-    </div>
-
-    <div class="row row-2">
-      <div class="track">
-        <a class="hex" href="#" aria-label="Alkmaar"><img src="../../brand/assets/clients/alkmaar.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Barendrecht"><img src="../../brand/assets/clients/barendrecht.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Breda"><img src="../../brand/assets/clients/breda.png" alt=""></a>
-        <a class="hex" href="#" aria-label="De Bilt"><img src="../../brand/assets/clients/de-bilt.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Edam-Volendam"><img src="../../brand/assets/clients/edam-volendam.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Gooise Meren"><img src="../../brand/assets/clients/gooise-meren.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Hof van Twente"><img src="../../brand/assets/clients/hof-van-twente.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Meppel"><img src="../../brand/assets/clients/meppel.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Noaberkracht"><img src="../../brand/assets/clients/noaberkracht.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Overbetuwe"><img src="../../brand/assets/clients/over-betuwe.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Rijswijk"><img src="../../brand/assets/clients/rijswijk.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Soest"><img src="../../brand/assets/clients/soest.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Tilburg"><img src="../../brand/assets/clients/tilburg.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Zutphen"><img src="../../brand/assets/clients/zutphen.svg" alt=""></a>
-        <!-- pad to match row-1 (15 unique hexes per track A so all
-             tracks have equal width — otherwise -50% scroll drifts
-             rows out of honeycomb alignment) -->
-        <a class="hex" href="#" aria-label="Alkmaar"><img src="../../brand/assets/clients/alkmaar.png" alt=""></a>
-        <!-- duplicate -->
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/alkmaar.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/barendrecht.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/breda.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/de-bilt.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/edam-volendam.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/gooise-meren.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/hof-van-twente.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/meppel.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/noaberkracht.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/over-betuwe.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/rijswijk.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/soest.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/tilburg.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/zutphen.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/alkmaar.png" alt=""></a>
-      </div>
-    </div>
-
-    <div class="row row-3">
-      <div class="track">
-        <a class="hex" href="#" aria-label="Amsterdam"><img src="../../brand/assets/clients/amsterdam.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Barneveld"><img src="../../brand/assets/clients/barneveld.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Buren"><img src="../../brand/assets/clients/buren.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Delft"><img src="../../brand/assets/clients/delft.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Ede"><img src="../../brand/assets/clients/ede.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Gouda"><img src="../../brand/assets/clients/gouda.png" alt=""></a>
-        <a class="hex" href="#" aria-label="Kansspelautoriteit"><img src="../../brand/assets/clients/ksa.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Moerdijk"><img src="../../brand/assets/clients/moerdijk.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Noordwijk"><img src="../../brand/assets/clients/noordwijk.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="ODMH"><img src="../../brand/assets/clients/odmh.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Provincie Zeeland"><img src="../../brand/assets/clients/provincie-zeeland.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Roosendaal"><img src="../../brand/assets/clients/roosendaal.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Stichtse Vecht"><img src="../../brand/assets/clients/stichtse-vecht.svg" alt=""></a>
-        <a class="hex" href="#" aria-label="Zwolle"><img src="../../brand/assets/clients/zwolle.svg" alt=""></a>
-        <!-- pad to match row-1 (15 unique hexes per track A) -->
-        <a class="hex" href="#" aria-label="Amsterdam"><img src="../../brand/assets/clients/amsterdam.png" alt=""></a>
-        <!-- duplicate -->
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/amsterdam.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/barneveld.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/buren.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/delft.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/ede.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/gouda.png" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/ksa.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/moerdijk.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/noordwijk.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/odmh.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/provincie-zeeland.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/roosendaal.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/stichtse-vecht.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/zwolle.svg" alt=""></a>
-        <a class="hex" href="#" aria-hidden="true" tabindex="-1"><img src="../../brand/assets/clients/amsterdam.png" alt=""></a>
-      </div>
-    </div>
+    <div data-flow-row class="row row-1"></div>
+    <div data-flow-row class="row row-2"></div>
+    <div data-flow-row class="row row-3"></div>
 
   </div>
 </section>
 
-<script src="../../docusaurus-preset/static/lib/logo-memory.js?v=10" defer></script>
+<script src="../../docusaurus-preset/static/lib/clients-flow.js?v=5" defer></script>
+<script src="../../docusaurus-preset/static/lib/logo-memory.js?v=13" defer></script>
 </body>
 </html>

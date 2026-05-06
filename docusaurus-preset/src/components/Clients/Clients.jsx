@@ -104,19 +104,28 @@ function splitIntoRows(items, rowCount) {
 
 /* ClientsMarquee
  *
- * Marquee variant body, factored out so it can lazy-load the Logo
- * Memory runtime via useLazyScript. The runtime listens for clicks on
- * any .hex inside [data-memory-marquee] and starts the memory minigame
- * (12 random logo pairs, centred 4-5-6-5-4 honeycomb cluster, flip on
- * Conduction back). Game-end fires `connext:gameend` for the gaming-
- * modal cookie.
+ * Marquee variant body. The hex wall is now driven by the JS runtime
+ * lib/clients-flow.js: each row is a static relative band, the runtime
+ * spawns absolutely-positioned hex anchors on the right with random
+ * logos from the supplied pool, drifts them left, and culls them once
+ * they leave the viewport. We render only the empty row containers
+ * here and pass the client pool through as a data-clients JSON
+ * attribute. CSS Modules hashes the .hex / .hexLogo class names, so
+ * the runtime needs them via data-hex-class / data-hex-logo-class to
+ * style its spawned children consistently.
+ *
+ * Logo Memory's click trigger still works the same way — the runtime
+ * spawns real <a class={styles.hex}> elements, so e.target.closest('a')
+ * inside the click handler picks them up.
  */
 function ClientsMarquee({head, clients, title, className}) {
-  const rows = splitIntoRows(clients, 3);
+  useLazyScript(LOGO_MEMORY_BASE + '/clients-flow.js', 'clients-flow');
   useLazyScript(LOGO_MEMORY_BASE + '/logo-memory.js', 'logo-memory');
   React.useEffect(() => {
+    if (window.ConductionClientsFlow?.hydrate) window.ConductionClientsFlow.hydrate();
     if (window.LogoMemory?.hydrate) window.LogoMemory.hydrate();
   });
+  const clientsJson = React.useMemo(() => JSON.stringify(clients), [clients]);
   return (
     <>
       <Head>
@@ -130,48 +139,18 @@ function ClientsMarquee({head, clients, title, className}) {
         <div
           className={styles.marquee}
           data-memory-marquee
+          data-clients={clientsJson}
+          data-hex-class={styles.hex}
+          data-hex-logo-class={styles.hexLogo}
           role="region"
           aria-label={typeof title === 'string' ? title : 'Clients'}
         >
-          {rows.map((row, rowIdx) => (
-            <div
-              key={rowIdx}
-              className={[styles.row, styles[`row${rowIdx + 1}`]].join(' ')}
-            >
-              <div className={styles.track}>
-                {row.map((c, i) => (
-                  <HexTile key={`a-${i}`} client={c} ariaHidden={false} />
-                ))}
-                {row.map((c, i) => (
-                  <HexTile key={`b-${i}`} client={c} ariaHidden={true} />
-                ))}
-              </div>
-            </div>
-          ))}
+          <div data-flow-row className={[styles.row, styles.row1].join(' ')} />
+          <div data-flow-row className={[styles.row, styles.row2].join(' ')} />
+          <div data-flow-row className={[styles.row, styles.row3].join(' ')} />
         </div>
       </section>
     </>
-  );
-}
-
-function HexTile({client, ariaHidden}) {
-  return (
-    <a
-      className={styles.hex}
-      href="#"
-      aria-label={ariaHidden ? undefined : client.name}
-      aria-hidden={ariaHidden ? 'true' : undefined}
-      tabIndex={ariaHidden ? -1 : 0}
-      onClick={e => e.preventDefault()}
-    >
-      <img
-        src={client.src}
-        alt={ariaHidden ? '' : client.name}
-        title={ariaHidden ? undefined : client.name}
-        loading="lazy"
-        className={styles.hexLogo}
-      />
-    </a>
   );
 }
 

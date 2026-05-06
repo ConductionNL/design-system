@@ -4,7 +4,7 @@ description: Case-management for VTH and citizen processes. Workflow engine plus
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="procest"
@@ -85,6 +85,75 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
       summary: 'Every case-worker gets a werkvoorraad widget on their MyDash. Active cases up top, late ones in red, the next stage one click away. No separate inbox app.',
       cta: {label: 'See MyDash', href: '/apps/mydash'},
       panel: <AppMock app="mydash-widgets" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Widgets we ship"
+  title="On every Nextcloud dashboard."
+  lede="Install Procest and these widgets show up on the home screen of every case-worker. No extra config, no separate inbox app."
+  widgets={[
+    {
+      title: 'Werkvoorraad',
+      desc: 'Active cases for the logged-in case-worker. Late ones in red, the next stage one click away.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--conduction-typography-font-family-body)'}}>
+          {[
+            {tone: 'var(--c-orange-knvb)', l1: '60%', l2: '40%', av: 'var(--c-mint-300)'},
+            {tone: 'var(--c-lavender-300)', l1: '70%', l2: '50%', av: 'var(--c-lavender-300)'},
+            {tone: 'var(--c-red-vermillion)', l1: '55%', l2: '45%', av: 'var(--c-orange-knvb)'},
+            {tone: 'var(--c-lavender-300)', l1: '65%', l2: '35%', av: 'var(--c-mint-300)'},
+            {tone: 'var(--c-lavender-300)', l1: '75%', l2: '50%', av: 'var(--c-forest-300)'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{width: 14, height: 16, clipPath: 'var(--hex-pointy-top)', background: row.tone, flexShrink: 0}}></span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 3}}>
+                <div style={{height: 5, width: row.l1, background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
+                <div style={{height: 3, width: row.l2, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              </div>
+              <span style={{width: 18, height: 18, borderRadius: '50%', background: row.av, flexShrink: 0}}></span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Deadlines today',
+      desc: 'Cases with statutory deadlines hitting today or this week. Pre-warning, then escalation.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 28, fontWeight: 700, color: 'var(--c-orange-knvb)'}}>3</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>this week</div>
+          </div>
+          {[{w: '70%', accent: true}, {w: '60%'}, {w: '55%'}].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 6}}>
+              <span style={{width: 8, height: 9, clipPath: 'var(--hex-pointy-top)', background: row.accent ? 'var(--c-orange-knvb)' : 'var(--c-cobalt-300)'}}></span>
+              <div style={{flex: 1, height: 4, background: 'var(--c-cobalt-200)', borderRadius: 1, width: row.w}}></div>
+              <div style={{height: 4, width: 30, background: 'var(--c-cobalt-100)', borderRadius: 1}}></div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Recent decisions',
+      desc: 'Last decisions issued, with type and recipient. Linked back to the source register row.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {['Vergunning · verleend', 'Beschikking · afgewezen', 'Vergunning · verleend', 'Wijziging · verleend'].map((_, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', borderBottom: i < 3 ? '1px solid var(--c-cobalt-50)' : 'none'}}>
+              <span style={{width: 10, height: 11, clipPath: 'var(--hex-pointy-top)', background: i === 1 ? 'var(--c-red-vermillion)' : 'var(--c-mint-500)'}}></span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 2}}>
+                <div style={{height: 4, width: '70%', background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
+                <div style={{height: 3, width: '50%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              </div>
+              <div style={{height: 3, width: 22, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ]}
 />

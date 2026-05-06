@@ -7,13 +7,25 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 ## Repo layout
 
 - [tokens.css](tokens.css): single source of truth for colors, type, spacing, radii, shadows, hex clip-paths
-- [brand/](brand/): token JSON, logo and hex assets
-- [preview/](preview/): every page in the kit, browsable as standalone HTML
-  - [preview/identity/](preview/identity/): the verbal brand: foundation, audience, products, voice, system rationale
-  - [preview/components/](preview/components/): reusable building blocks (hero, footer, apps-grid, etc.)
+- [typography.css](typography.css): web-font @font-face declarations consumed by both the kit and the live site
+- [brand/](brand/): token JSON, logo and hex assets, partner logos
+- [preview/](preview/): every page in the kit, browsable as standalone HTML, deployed via GitHub Pages at `design-system.conduction.nl`
+  - [preview/identity/](preview/identity/): the verbal brand, foundation, audience, products, voice, system rationale, websites
+  - [preview/components/](preview/components/): reusable building blocks (hero, footer, apps-grid, etc.) — designer-readable specimen pages for each preset component
   - [preview/pages/](preview/pages/): full pages composed from components
+  - [preview/print/](preview/print/): stationery and print templates (letterhead, business cards, invoice, NDA, SLA, email templates)
+  - [preview/diagrams/](preview/diagrams/): web-component specimens (`<cn-hex>`, `<cn-platform>`, `<cn-pipeline>`, etc.)
+- [docusaurus-preset/](docusaurus-preset/): the React component library (`@conduction/docusaurus-preset`) consumed by the live site. Mirrors the preview kit as React components, plus theme swizzles for Navbar/Footer/MDXPage. See [docusaurus-preset/MISSING_COMPONENTS.md](docusaurus-preset/MISSING_COMPONENTS.md) for the coverage map
+- [diagrams/](diagrams/): framework-agnostic web components (`cn-hex`, `cn-hex-prism`, `cn-platform`, `cn-domain-tree`, `cn-pipeline`, `cn-side-box`, `cn-honeycomb-bg`)
+- [sites/www/](sites/www/): the live Docusaurus site (Conduction main + ConNext sub-brand at `/connext` + Common Ground sub-brand at `/commonground`). Served from `conduction.nl`. `npm run dev` from repo root starts it on `localhost:3100`
+- [schemas/](schemas/): JSON schemas (currently the academy content frontmatter contract)
 - [briefs/](briefs/): design briefs and rationale documents
+- [data/](data/): build-time data inputs (e.g. `app-downloads.json` for the apps grid)
 - [README.md](README.md): public-facing introduction; mirrors the in-repo identity pages
+- [SKILL.md](SKILL.md): the Claude skill that operates this repo
+- [docker-compose.yml](docker-compose.yml): local dev environment
+
+`sites/connext/` exists as an empty stub from an earlier multi-site setup (now consolidated into `sites/www/`). It contains only `node_modules/` and `.docusaurus/` cache; safe to delete when convenient.
 
 ## Working rules
 

@@ -73,6 +73,7 @@ export default function HexNetwork({
   scroll = 'none',          // 'none' | 'down' | 'up'
   scrollSpeed = 60,         // seconds per cycle
   visibleRows = 3,          // rows visible inside the scroll viewport
+  fade = true,              // soft mask-gradient on viewport top/bottom
   className,
 }) {
   const rowCounts = LAYOUTS[layout] || LAYOUTS['3-3-3'];
@@ -126,9 +127,10 @@ export default function HexNetwork({
   const scrollClass = scroll === 'down' ? styles.scrollDown : styles.scrollUp;
   const trackStyle = {animationDuration: `${scrollSpeed}s`};
   const viewportStyle = {'--hex-visible-rows': visibleRows};
+  const viewportClass = [styles.viewport, fade && styles.viewportFade].filter(Boolean).join(' ');
   return (
     <div className={composed}>
-      <div className={styles.viewport} style={viewportStyle}>
+      <div className={viewportClass} style={viewportStyle}>
         <div className={[styles.track, scrollClass].join(' ')} style={trackStyle}>
           {renderRows(rows, 'a-')}
           {renderRows(rows, 'b-')}

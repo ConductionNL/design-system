@@ -258,9 +258,15 @@
     }
     const hexW = allKept[0]._lmW;
     const hexH = allKept[0]._lmH;
-    const gap = 12;
+    /* Read the actual --gap from the marquee so the cluster math
+       matches whatever the CSS sets (8px desktop, 6px mobile, etc).
+       Fallback to 8 if the variable isn't resolvable. */
+    const cssGap = parseFloat(getComputedStyle(marquee).getPropertyValue('--gap'));
+    const gap = isFinite(cssGap) && cssGap >= 0 ? cssGap : 8;
     const cellW = hexW + gap;
-    const rowSpacingY = hexH * 0.75; // honeycomb pack
+    /* Isotropic row spacing: vertical pitch matches the horizontal
+       pitch on the diagonal axis, same formula as the marquee CSS. */
+    const rowSpacingY = (hexW + gap) * 0.866;
 
     /* Group keepers by their original row to preserve the 3-row visual,
        then space them evenly within each row centred on stageCenterX. */
@@ -292,6 +298,19 @@
 
     /* === Phase 5: Duplicate keepers downward === */
     const downOffset = 3 * rowSpacingY;
+    const halfCell = cellW / 2;
+    /* Each clone needs its lateral position shifted so the bottom 3
+       rows continue the honeycomb stagger pattern. The top half has
+       stagger [0, ½, 0] for layout rows 0/1/2; the bottom half is
+       rows 3/4/5 which have stagger [½, 0, ½]. The shift is the
+       difference. Pre-compute per clone for use during both the
+       slide-in animation and the final position lock. */
+    function lateralShiftFor(orig) {
+      const origLayoutRow = sortedRowIds.indexOf(orig._lmRowIdx);
+      const origStaggered = (origLayoutRow % 2 === 1);
+      const cloneStaggered = ((origLayoutRow + 3) % 2 === 1);
+      return (cloneStaggered ? halfCell : 0) - (origStaggered ? halfCell : 0);
+    }
     const clones = allKept.map(function (orig) {
       const clone = orig.cloneNode(true);
       clone.classList.add('lm-clone');
@@ -311,9 +330,11 @@
     /* One frame for the clones to be in DOM before the transition. */
     await wait(50);
     clones.forEach(function (clone, i) {
+      const orig = allKept[i];
+      const dx = lateralShiftFor(orig);
       setTimeout(function () {
         clone.style.opacity = '1';
-        clone.style.transform = 'translateY(' + downOffset + 'px) scale(1)';
+        clone.style.transform = 'translate(' + dx + 'px, ' + downOffset + 'px) scale(1)';
       }, i * 30);
     });
     await wait(reduceMotion ? 30 : 700 + clones.length * 30);
@@ -321,11 +342,12 @@
        transform so flip rotateY is purely Y-rotation. */
     clones.forEach(function (clone, i) {
       const orig = allKept[i];
+      const dx = lateralShiftFor(orig);
       clone.style.transition = 'opacity 200ms ease';
       clone.style.transform = '';
-      clone.style.left = orig._lmFinalX + 'px';
+      clone.style.left = (orig._lmFinalX + dx) + 'px';
       clone.style.top = (orig._lmFinalY + downOffset) + 'px';
-      clone._lmFinalX = orig._lmFinalX;
+      clone._lmFinalX = orig._lmFinalX + dx;
       clone._lmFinalY = orig._lmFinalY + downOffset;
     });
 

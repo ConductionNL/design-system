@@ -35,16 +35,20 @@
 }
 .kc-lane-top    { top: 0; }
 .kc-lane-bottom { bottom: 0; }
+/* Lane divider — kept always visible during gameplay (more prominent
+   than the original ambient kade) so the player can read which lane
+   each hazard is in at a glance. */
 .kc-track::before {
   content: "";
   position: absolute;
   left: 0; right: 0;
   top: 50%;
-  height: 1px;
+  height: 2px;
+  margin-top: -1px;
   background: repeating-linear-gradient(
     to right,
-    rgba(10, 23, 47, 0.18) 0 6px,
-    transparent 6px 12px
+    rgba(10, 23, 47, 0.45) 0 8px,
+    transparent 8px 14px
   );
   pointer-events: none;
   z-index: 1;
@@ -54,7 +58,11 @@
 
 .kc-player {
   position: absolute;
-  left: 14%;
+  /* The runtime sets --kc-player-x to the centre x of the blue
+     Conduction house in the skyline, so the cyclist visually sits
+     under the brand-anchor house. Fallback covers the case where the
+     skyline hasn't been built yet. */
+  left: var(--kc-player-x, 14%);
   width: 22px;
   height: 16px;
   z-index: 6;

@@ -93,7 +93,16 @@ export default function Showcase({
                   onClick={() => toggle(it.id)}
                   type="button"
                 >
-                  <h3 className={styles.itemTitle}>{it.title}</h3>
+                  <span className={styles.titleGroup}>
+                    {it.icon && (
+                      <span className={styles.itemIcon} aria-hidden="true">
+                        {typeof it.icon === 'string'
+                          ? <img src={it.icon} alt="" className={styles.itemIconImg} />
+                          : it.icon}
+                      </span>
+                    )}
+                    <h3 className={styles.itemTitle}>{it.title}</h3>
+                  </span>
                   <span className={styles.chevron} aria-hidden="true">{isOpen ? '−' : '+'}</span>
                 </button>
                 {isOpen && (

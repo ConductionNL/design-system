@@ -20,8 +20,12 @@
  */
 
 import React from 'react';
+import Head from '@docusaurus/Head';
 import SectionHead from '../primitives/SectionHead';
+import {useLazyScript} from '../../utils/lazyScript';
 import styles from './Clients.module.css';
+
+const LOGO_MEMORY_BASE = '/lib';
 
 export const DEFAULT_CLIENTS = [
   {name: 'Albrandswaard',     src: '/img/clients/albrandswaard.png'},
@@ -44,7 +48,7 @@ export const DEFAULT_CLIENTS = [
   {name: 'Gouda',             src: '/img/clients/gouda.png'},
   {name: 'Hoeksche Waard',    src: '/img/clients/hoeksche-waard.png'},
   {name: 'Hof van Twente',    src: '/img/clients/hof-van-twente.svg'},
-  {name: 'KSA',               src: '/img/clients/ksa.svg'},
+  {name: 'Kansspelautoriteit', src: '/img/clients/ksa.svg'},
   {name: 'Lansingerland',     src: '/img/clients/lansingerland.svg'},
   {name: 'Meppel',            src: '/img/clients/meppel.svg'},
   {name: 'Moerdijk',          src: '/img/clients/moerdijk.svg'},
@@ -83,6 +87,58 @@ function splitIntoRows(items, rowCount) {
   const rows = Array.from({length: rowCount}, () => []);
   items.forEach((item, i) => rows[i % rowCount].push(item));
   return rows;
+}
+
+/* ClientsMarquee
+ *
+ * Marquee variant body, factored out so it can lazy-load the Logo
+ * Memory runtime via useLazyScript. The runtime listens for clicks on
+ * any .hex inside [data-memory-marquee] and starts the memory minigame
+ * (12 random logo pairs, centred 4-5-6-5-4 honeycomb cluster, flip on
+ * Conduction back). Game-end fires `connext:gameend` for the gaming-
+ * modal cookie.
+ */
+function ClientsMarquee({head, clients, title, className}) {
+  const rows = splitIntoRows(clients, 3);
+  useLazyScript(LOGO_MEMORY_BASE + '/logo-memory.js', 'logo-memory');
+  React.useEffect(() => {
+    if (window.LogoMemory?.hydrate) window.LogoMemory.hydrate();
+  });
+  return (
+    <>
+      <Head>
+        <link rel="stylesheet" href={LOGO_MEMORY_BASE + '/logo-memory.css'} />
+      </Head>
+      <section
+        className={[styles.section, className].filter(Boolean).join(' ')}
+        data-logo-memory
+      >
+        <div className={styles.inner}>{head}</div>
+        <div
+          className={styles.marquee}
+          data-memory-marquee
+          role="region"
+          aria-label={typeof title === 'string' ? title : 'Clients'}
+        >
+          {rows.map((row, rowIdx) => (
+            <div
+              key={rowIdx}
+              className={[styles.row, styles[`row${rowIdx + 1}`]].join(' ')}
+            >
+              <div className={styles.track}>
+                {row.map((c, i) => (
+                  <HexTile key={`a-${i}`} client={c} ariaHidden={false} />
+                ))}
+                {row.map((c, i) => (
+                  <HexTile key={`b-${i}`} client={c} ariaHidden={true} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
 }
 
 function HexTile({client, ariaHidden}) {
@@ -124,32 +180,13 @@ export default function Clients({
   );
 
   if (variant === 'marquee') {
-    const rows = splitIntoRows(clients, 3);
     return (
-      <section className={[styles.section, className].filter(Boolean).join(' ')}>
-        <div className={styles.inner}>{head}</div>
-        <div
-          className={styles.marquee}
-          role="region"
-          aria-label={typeof title === 'string' ? title : 'Clients'}
-        >
-          {rows.map((row, rowIdx) => (
-            <div
-              key={rowIdx}
-              className={[styles.row, styles[`row${rowIdx + 1}`]].join(' ')}
-            >
-              <div className={styles.track}>
-                {row.map((c, i) => (
-                  <HexTile key={`a-${i}`} client={c} ariaHidden={false} />
-                ))}
-                {row.map((c, i) => (
-                  <HexTile key={`b-${i}`} client={c} ariaHidden={true} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <ClientsMarquee
+        head={head}
+        clients={clients}
+        title={title}
+        className={className}
+      />
     );
   }
 

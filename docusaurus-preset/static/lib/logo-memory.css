@@ -1,0 +1,344 @@
+/* Logo Memory minigame styles. Pairs with logo-memory.js. The overlay
+   floats above the .clients-section / .marquee, the marquee gets a
+   .memory-frozen class to pause + dim, the cluster is 5 rows of pointy-
+   top hexes (4-5-6-5-4 = 24 = 12 pairs) packed with negative-margin
+   honeycomb stacking, and the flip is a 600ms 3D rotateY with stagger.
+   Tokens used: --c-cobalt-900, --c-cobalt-50, --c-orange-knvb,
+   --hex-pointy-top, --conduction-typography-font-family-body. */
+
+[data-logo-memory] {
+  position: relative;
+}
+
+/* Marquee freeze: pause its scroll animation + dim while the game runs.
+   Targets descendants generically because the marquee track lives under
+   different class names depending on whether we're in the React (CSS-
+   modules-hashed) or vanilla preview build. */
+[data-logo-memory] .memory-frozen {
+  pointer-events: none;
+}
+[data-logo-memory] .memory-frozen * {
+  animation-play-state: paused !important;
+}
+[data-logo-memory] .memory-frozen {
+  opacity: 0.18;
+  filter: blur(2px);
+  transition: opacity 320ms ease, filter 320ms ease;
+}
+
+/* ============ Overlay shell ============ */
+
+.logo-memory-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  animation: lmFadeIn 320ms ease both;
+  font-family: var(--conduction-typography-font-family-body, 'Figtree', system-ui, sans-serif);
+}
+.logo-memory-overlay.closing { animation: lmFadeOut 280ms ease both; }
+
+@keyframes lmFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lmFadeOut { to { opacity: 0; } }
+
+.logo-memory-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.92) 40%, rgba(255,255,255,0.78) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.logo-memory-stage {
+  position: relative;
+  z-index: 1;
+  width: min(960px, calc(100% - 48px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+}
+
+/* ============ HUD ============ */
+
+.logo-memory-hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 720px;
+}
+.logo-memory-counter,
+.logo-memory-moves {
+  background: var(--c-cobalt-900, #0A172F);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.logo-memory-counter [data-matched] {
+  color: var(--c-orange-knvb, #F77F0E);
+  font-weight: 700;
+  margin-right: 2px;
+}
+.logo-memory-moves [data-moves] { font-weight: 700; margin-right: 2px; }
+
+.logo-memory-close {
+  margin-left: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--c-cobalt-900, #0A172F);
+  background: white;
+  color: var(--c-cobalt-900, #0A172F);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+  font-family: inherit;
+}
+.logo-memory-close:hover,
+.logo-memory-close:focus-visible {
+  background: var(--c-cobalt-900, #0A172F);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ============ Hex cluster ============ */
+
+.logo-memory-grid {
+  --hex-w: 96px;
+  --hex-h: 110.85px;            /* hex-w * 1.1547 (pointy-top) */
+  --hex-overlap: 27.7px;        /* hex-h * 0.25, packs honeycomb */
+  --gap: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 12px;
+}
+.logo-memory-row {
+  display: flex;
+  gap: var(--gap);
+  margin-top: calc(var(--hex-overlap) * -1);
+}
+.logo-memory-row:first-child { margin-top: 0; }
+
+/* ============ Tile + flip ============ */
+
+.logo-memory-tile {
+  width: var(--hex-w);
+  height: var(--hex-h);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  perspective: 900px;
+  appearance: none;
+  -webkit-appearance: none;
+  animation: lmDropIn 540ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--stagger, 0ms);
+  /* Filter so the cobalt back glows on hover during play */
+  transition: filter 200ms ease, transform 200ms ease;
+}
+.logo-memory-tile:disabled { cursor: default; }
+.logo-memory-tile:not(:disabled):not(.flipped):hover {
+  filter: drop-shadow(0 0 6px rgba(33, 70, 139, 0.45));
+  transform: translateY(-2px);
+}
+.logo-memory-tile:focus-visible { outline: 2px solid var(--c-orange-knvb, #F77F0E); outline-offset: 4px; border-radius: 6px; }
+
+@keyframes lmDropIn {
+  from { transform: translateY(-30px) scale(0.6); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.logo-memory-tile-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+/* Flipped class = front face up (city logo visible).
+   Default = back face up (Conduction logo visible). */
+.logo-memory-tile.flipped .logo-memory-tile-inner {
+  transform: rotateY(180deg);
+}
+/* Slight tilt during flip so it reads as physical, not a 1D swap */
+.logo-memory-tile-inner::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+.logo-memory-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  display: grid;
+  place-items: center;
+  clip-path: var(--hex-pointy-top, polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%));
+}
+
+/* Back: cobalt hex with the Conduction C-in-hex mark */
+.logo-memory-back {
+  background: var(--c-cobalt-900, #0A172F);
+  transform: rotateY(0deg);
+  position: relative;
+}
+.logo-memory-back::after {
+  content: "";
+  position: absolute; inset: 4px;
+  background: var(--c-cobalt-700, #152D5C);
+  clip-path: var(--hex-pointy-top, polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%));
+  z-index: 0;
+}
+.logo-memory-back svg {
+  width: 56%;
+  height: 56%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Front: white hex with city logo */
+.logo-memory-front {
+  background: white;
+  transform: rotateY(180deg);
+  position: relative;
+}
+.logo-memory-front::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--c-cobalt-50, #EAEEF7);
+  clip-path: var(--hex-pointy-top, polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%));
+  z-index: 0;
+}
+.logo-memory-front::after {
+  content: "";
+  position: absolute; inset: 1.5px;
+  background: white;
+  clip-path: var(--hex-pointy-top, polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%));
+  z-index: 1;
+}
+.logo-memory-front img {
+  position: relative;
+  z-index: 2;
+  max-width: 64%;
+  max-height: 56%;
+  object-fit: contain;
+}
+
+/* Matched: orange ring + scaled-up pulse */
+.logo-memory-tile.matched .logo-memory-front::before {
+  background: var(--c-orange-knvb, #F77F0E);
+}
+.logo-memory-tile.matched {
+  animation: lmMatchPulse 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+@keyframes lmMatchPulse {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* ============ Win panel ============ */
+
+.logo-memory-win[hidden] { display: none; }
+.logo-memory-win {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  z-index: 2;
+  text-align: center;
+  border-radius: 16px;
+  animation: lmFadeIn 380ms ease both;
+}
+.logo-memory-win-title {
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--c-orange-knvb, #F77F0E);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.logo-memory-win-stats {
+  color: var(--c-cobalt-900, #0A172F);
+  font-size: 18px;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+.logo-memory-win-stats [data-final-moves],
+.logo-memory-win-stats [data-final-time] {
+  font-weight: 700;
+}
+.logo-memory-replay {
+  border: 0;
+  background: var(--c-cobalt-900, #0A172F);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.logo-memory-replay:hover,
+.logo-memory-replay:focus-visible {
+  transform: scale(1.04);
+  background: var(--c-cobalt-700, #152D5C);
+}
+
+/* Won state: subtle backdrop tint */
+.logo-memory-overlay.won .logo-memory-backdrop {
+  background:
+    radial-gradient(ellipse at center, rgba(247, 127, 14, 0.08) 0%, rgba(255,255,255,0.95) 70%);
+}
+
+/* ============ Responsive ============ */
+
+@media (max-width: 720px) {
+  .logo-memory-grid {
+    --hex-w: 64px;
+    --hex-h: 73.9px;
+    --hex-overlap: 18.5px;
+    --gap: 6px;
+  }
+  .logo-memory-win-title { font-size: 40px; }
+  .logo-memory-hud { gap: 8px; }
+  .logo-memory-counter,
+  .logo-memory-moves { padding: 6px 12px; font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .logo-memory-grid {
+    --hex-w: 52px;
+    --hex-h: 60px;
+    --hex-overlap: 15px;
+    --gap: 4px;
+  }
+}
+
+/* ============ Reduced motion ============ */
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-memory-overlay,
+  .logo-memory-tile,
+  .logo-memory-tile-inner,
+  .logo-memory-tile.matched,
+  .logo-memory-win {
+    animation: none !important;
+    transition: none !important;
+  }
+}

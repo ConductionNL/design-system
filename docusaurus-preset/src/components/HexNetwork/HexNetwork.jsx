@@ -40,7 +40,8 @@ const LAYOUTS = {
   '3-3-3':   [3, 3, 3],         // 9 cells,  centre row[1][1]
   '2-3-2':   [2, 3, 2],         // 7 cells,  centre row[1][1]
   '3-4-3':   [3, 4, 3],         // 10 cells, no natural centre slot
-  '3-3-3-3': [3, 3, 3, 3],      // 12 cells, centre row[1][1] (used by /support hero scroll)
+  '4-3-4':   [4, 3, 4],         // 11 cells, used for the full /support partner wall
+  '3-3-3-3': [3, 3, 3, 3],      // 12 cells, centre row[1][1]
 };
 
 function Cell({cell, highlighted}) {

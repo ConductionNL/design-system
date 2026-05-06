@@ -15,8 +15,7 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
   - [preview/pages/](preview/pages/): full pages composed from components
   - [preview/print/](preview/print/): stationery and print templates (letterhead, business cards, invoice, NDA, SLA, email templates)
   - [preview/diagrams/](preview/diagrams/): web-component specimens (`<cn-hex>`, `<cn-platform>`, `<cn-pipeline>`, etc.)
-- [docusaurus-preset/](docusaurus-preset/): the React component library (`@conduction/docusaurus-preset`) consumed by the live site. Mirrors the preview kit as React components, plus theme swizzles for Navbar/Footer/MDXPage. See [docusaurus-preset/MISSING_COMPONENTS.md](docusaurus-preset/MISSING_COMPONENTS.md) for the coverage map
-- [diagrams/](diagrams/): framework-agnostic web components (`cn-hex`, `cn-hex-prism`, `cn-platform`, `cn-domain-tree`, `cn-pipeline`, `cn-side-box`, `cn-honeycomb-bg`)
+- [docusaurus-preset/](docusaurus-preset/): the publishable React component library (`@conduction/docusaurus-preset` on npm) consumed by every Conduction Docusaurus site. Mirrors the preview kit as React components, plus theme swizzles for Navbar/Footer/MDXPage, plus the framework-agnostic `<cn-*>` web components under `src/diagrams/` (exported as the `@conduction/docusaurus-preset/diagrams` subpath). See [docusaurus-preset/MISSING_COMPONENTS.md](docusaurus-preset/MISSING_COMPONENTS.md) for the coverage map
 - [sites/www/](sites/www/): the live Docusaurus site (Conduction main + ConNext sub-brand at `/connext` + Common Ground sub-brand at `/commonground`). Served from `conduction.nl`. `npm run dev` from repo root starts it on `localhost:3100`
 - [schemas/](schemas/): JSON schemas (currently the academy content frontmatter contract)
 - [briefs/](briefs/): design briefs and rationale documents

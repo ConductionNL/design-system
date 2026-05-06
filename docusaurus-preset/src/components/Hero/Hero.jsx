@@ -52,8 +52,9 @@ export default function Hero({
      once registered (customElements.define guards). */
   useEffect(() => {
     if (isBrowser) {
-      import('@conduction/diagrams').catch(() => {
-        /* package may not be installed in non-Conduction sites; that's OK */
+      import('../../diagrams/index.js').catch(() => {
+        /* Defensive: dynamic import should always succeed since the
+           diagrams runtime ships in the same package. */
       });
     }
   }, [isBrowser]);

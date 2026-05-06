@@ -4,7 +4,7 @@ Brand-default Docusaurus 3 config for Conduction sites. Tokens, theme, navbar, f
 
 ## Status
 
-Source lives inside the [design-system monorepo](https://github.com/ConductionNL/design-system); published to npm under the `@conduction` scope. Install in any product site with `npm i @conduction/docusaurus-preset`. The `@conduction/diagrams` web-component runtime is pulled in automatically as a dependency.
+Source lives inside the [design-system monorepo](https://github.com/ConductionNL/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
 
 ## What it gives you
 
@@ -128,38 +128,43 @@ OPENCATALOGI_URL=http://localhost:8080/index.php/apps/openregister/api npm start
 npm i @conduction/docusaurus-preset @docusaurus/core @docusaurus/preset-classic react react-dom
 ```
 
-Then use `createConfig()` in your `docusaurus.config.js` as shown in [Usage](#usage) above. The matching `@conduction/diagrams` web-component runtime is pulled in automatically.
+Then use `createConfig()` in your `docusaurus.config.js` as shown in [Usage](#usage) above. The diagram web components register themselves on the client when `<Hero/>` or `<Diagrams/>` mount — no extra import needed in MDX. To register them eagerly (e.g. for a docs page that uses `<cn-hex>` directly without a wrapper), import the runtime module:
+
+```js
+// site src/clientModules/diagrams.js
+import '@conduction/docusaurus-preset/diagrams';
+```
 
 This is how product sites such as `mydash.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
 
 ## Releasing
 
-Releases are tag-triggered. Pushing a tag `vX.Y.Z` runs [.github/workflows/publish-packages.yml](../.github/workflows/publish-packages.yml), which publishes both `@conduction/diagrams` and `@conduction/docusaurus-preset` to npm under the `@conduction` scope.
+Releases auto-publish on push to `main`. The [.github/workflows/publish-packages.yml](../.github/workflows/publish-packages.yml) workflow compares the version in this `package.json` against what's on `registry.npmjs.org`. Bump the version, push, the workflow publishes. No bump means no publish — the workflow exits cleanly. Tag pushes (`v*`) and manual `workflow_dispatch` runs (with an optional dry-run flag) are accepted for explicit republishes and emergency holds.
+
+The diagram primitives ship inside the same tarball under `src/diagrams/`, so there is exactly one npm release per push.
 
 **One-time setup** (per repo, since Conduction keeps secrets repo-local):
 
-1. Create an npm automation token: <https://www.npmjs.com/settings/conduction/tokens> → "Generate New Token" → Automation. Copy the value.
-2. Add it as a repo secret: <https://github.com/ConductionNL/design-system/settings/secrets/actions> → "New repository secret" → name `NPM_TOKEN`, paste the token.
-3. (Optional) Verify the workflow with a dry run: Actions → "Publish packages" → Run workflow → leave "dry_run" checked. Watch for `+ @conduction/docusaurus-preset@…` in the logs without an actual upload.
+1. Sign in to npm with an account that's a member of the `@conduction` org and has publish rights on the scope. (`npm login` from the CLI, or via [npmjs.com](https://www.npmjs.com/login).)
+2. Create an automation token under your *user* settings (npm tokens are user-level, not org-level): npmjs.com → avatar dropdown → "Access Tokens" → "Generate New Token" → **Automation**. Copy the value.
+3. Add it as a repo secret: <https://github.com/ConductionNL/design-system/settings/secrets/actions> → "New repository secret" → name `NPM_TOKEN`, paste the token.
+4. (Optional) Verify the workflow with a dry run: Actions → "Publish packages" → Run workflow → leave "dry_run" checked. Watch for `+ @conduction/docusaurus-preset@…` in the logs without an actual upload.
+
+The token publishes **on behalf of the user account**, not the org, so anyone with the right org-level permission can generate the token. Rotate by replacing the secret; no need to redeploy or amend the workflow.
 
 **Per release:**
 
 ```bash
-# Bump versions in BOTH package.jsons. Match them unless you have a reason
-# to diverge — the preset depends on diagrams, so a diagrams major bump
-# usually means a preset bump too.
+# Bump the preset version. The diagrams source ships inside the preset,
+# so there is one version to bump.
 $EDITOR docusaurus-preset/package.json   # "version": "0.2.0"
-$EDITOR diagrams/package.json            # "version": "0.2.0"
-$EDITOR docusaurus-preset/package.json   # "@conduction/diagrams": "^0.2.0"
 
-git add docusaurus-preset/package.json diagrams/package.json
-git commit -m "Bump packages to 0.2.0"
-git tag v0.2.0
-git push origin main
-git push origin v0.2.0   # this triggers the publish workflow
+git add docusaurus-preset/package.json
+git commit -m "Bump @conduction/docusaurus-preset to 0.2.0"
+git push origin main   # the workflow detects the bump and publishes
 ```
 
-The workflow first publishes `@conduction/diagrams`, then `@conduction/docusaurus-preset`. If diagrams is unchanged you can skip its bump — npm will reject a re-publish at the same version, the preset publish step still runs, and the existing `@conduction/diagrams@X.Y.Z` keeps resolving for consumers.
+The workflow runs `npm publish --workspace @conduction/docusaurus-preset --access public`. Watch the run on the Actions tab. If it fails, fix the issue, bump the patch (`0.2.1`), push again — npm rejects re-publishing the same version, so a single failed run can't block a corrected re-bump.
 
 ## License
 

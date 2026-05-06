@@ -1,18 +1,21 @@
-name: Publish packages
+name: Publish package
 
-# Tag-triggered npm publish for the Conduction design-system packages.
+# Auto-publish @conduction/docusaurus-preset to npm on every push to main,
+# IF the version in docusaurus-preset/package.json differs from the version
+# already on the registry. To release: bump the version field, commit, push.
+# The workflow detects the bump and publishes; pushes that don't bump the
+# version are no-ops.
 #
-# Usage: bump the version in docusaurus-preset/package.json (and diagrams/
-# if it changed), commit, then `git tag v0.1.0 && git push origin v0.1.0`.
-# This workflow then publishes both packages to npm under the @conduction
-# scope.
+# A tag push (`v*`) and a manual workflow_dispatch (with optional dry-run)
+# are also accepted, mostly for explicit republishes and emergency holds.
 #
-# Diagrams publishes first because @conduction/docusaurus-preset declares
-# it as a runtime dependency and consumers will resolve both when they
-# install the preset.
+# The diagrams runtime (cn-hex, cn-platform, etc.) ships inside the same
+# package under the /diagrams subpath, so there is exactly one release.
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -20,7 +23,7 @@ on:
       dry_run:
         description: 'Run npm publish --dry-run only'
         type: boolean
-        default: true
+        default: false
 
 jobs:
   publish:
@@ -37,17 +40,23 @@ jobs:
 
       - run: npm ci
 
-      - name: Publish @conduction/diagrams
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Check whether version on main is already published
+        id: version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
-            npm publish --workspace @conduction/diagrams --access public --dry-run
+          LOCAL=$(node -p "require('./docusaurus-preset/package.json').version")
+          PUBLISHED=$(npm view @conduction/docusaurus-preset version 2>/dev/null || echo "none")
+          echo "local=$LOCAL" >> "$GITHUB_OUTPUT"
+          echo "published=$PUBLISHED" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL" = "$PUBLISHED" ]; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Version $LOCAL already on npm; skipping publish."
           else
-            npm publish --workspace @conduction/diagrams --access public
+            echo "match=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Local $LOCAL differs from published $PUBLISHED; will publish."
           fi
 
       - name: Publish @conduction/docusaurus-preset
+        if: steps.version.outputs.match == 'false'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |

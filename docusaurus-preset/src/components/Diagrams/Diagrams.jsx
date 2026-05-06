@@ -41,9 +41,10 @@ let runtimeImported = false;
 function ensureRuntime() {
   if (typeof window === 'undefined' || runtimeImported) return;
   runtimeImported = true;
-  import('@conduction/diagrams').catch(() => {
-    /* Package may not be installed in non-Conduction sites; that's OK.
-       Fall back to plain unknown-element rendering. */
+  import('../../diagrams/index.js').catch(() => {
+    /* Side-effect import that registers every <cn-*> custom element.
+       In rare environments where dynamic import fails (e.g. an old SSR
+       runtime), fall back to plain unknown-element rendering. */
     runtimeImported = false;
   });
 }

@@ -112,9 +112,14 @@
   100% { transform: translateY(0) scale(1); }
 }
 
-/* Hover hint while face-down — subtle lift + cobalt drop-shadow */
-.lm-tile.lm-back-up:not(.lm-matched):hover .lm-flipper {
-  transform: rotateY(180deg) translateY(-3px);
+/* Hover hint while face-down: NEVER touch the flipper's transform.
+   Animating between rotateY(180deg) and rotateY(180deg) <translate>
+   triggers quaternion-decomposition ambiguity at the 180° pole, and
+   browsers sometimes interpolate through rotateY(0) — which would
+   reveal the front face on hover and let the player cheat the game.
+   Use filter only; the tile is only "pushed" face-up via the click
+   handler, never via hover or focus. */
+.lm-tile.lm-back-up:not(.lm-matched):hover {
   filter: drop-shadow(0 4px 8px rgba(33, 70, 139, 0.28));
 }
 .lm-tile.lm-back-up:focus-visible {

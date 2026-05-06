@@ -44,10 +44,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Do NOT pass registry-url here. setup-node's registry-url option
+      # writes a .npmrc with `_authToken=${NODE_AUTH_TOKEN}` baked in;
+      # with no NODE_AUTH_TOKEN env var set (we don't have one, that's
+      # the whole point of Trusted Publisher), npm reads an empty token
+      # and tries to publish anonymously instead of falling through to
+      # OIDC. Letting npm use its default registry config lets the
+      # Trusted Publisher handshake fire correctly.
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://registry.npmjs.org'
 
       # `npm install` rather than `npm ci`, because package-lock.json is
       # gitignored (the design-system monorepo doesn't pin transitive

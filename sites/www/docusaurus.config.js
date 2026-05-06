@@ -88,7 +88,6 @@ module.exports = createConfig({
       {to: '/support',   label: 'Support',   position: 'left'},
       {to: '/about',     label: 'About',     position: 'left'},
       {type: 'localeDropdown', position: 'right'},
-      {to: '/partners',  label: 'Partners',  position: 'right'},
       {to: '/install',   label: 'Install',   position: 'right', cta: true},
     ],
   },

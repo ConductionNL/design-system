@@ -58,6 +58,11 @@ export default function Footer() {
      mismatches. See docs in utils/lazyScript.js. */
   useLazyScript('/lib/canal-footer.js', 'canal-footer');
 
+  /* kade-cyclist.js is the second hidden footer minigame. It listens for
+     clicks on .ki-bike-1 / .ki-bike-2 inside the kade strip and runs a
+     dodge-the-traffic round in parallel with the boat game. */
+  useLazyScript('/lib/kade-cyclist.js', 'kade-cyclist');
+
   if (!footer) return null;
   const {links = [], copyright} = footer;
 
@@ -65,6 +70,7 @@ export default function Footer() {
     <>
       <Head>
         <link rel="stylesheet" href="/lib/canal-footer.css" />
+        <link rel="stylesheet" href="/lib/kade-cyclist.css" />
       </Head>
 
       <footer className="canal-footer" aria-label="Site footer">

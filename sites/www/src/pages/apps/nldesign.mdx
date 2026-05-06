@@ -4,7 +4,7 @@ description: NL Design System theme for Nextcloud. Government-compliant typograp
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="nldesign"
@@ -97,6 +97,112 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
       summary: 'MyDash picks up the theme automatically. Graphs, tables, KPI cards all follow NLDS. Wethouders and directors see the same visual system as the citizens do.',
       cta: {label: 'See MyDash', href: '/apps/mydash'},
       panel: <AppMock app="mydash-bi" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Tokens we ship"
+  title="Type, colour, components, all from design.nl."
+  lede="Install NLDesign and the published NLDS tokens land in your Nextcloud. Type scale, colour palette, component variants — the version from design.nl, not a Conduction interpretation."
+  widgets={[
+    {
+      title: 'Type scale',
+      desc: 'NLDS type tokens for headings and body. Sentence case, government-readable, WCAG-AA contrast on the cobalt scale.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-headline)', fontSize: 24, fontWeight: 700, color: 'var(--c-cobalt-700)'}}>Aa</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>heading-xl</div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-headline)', fontSize: 18, fontWeight: 700, color: 'var(--c-cobalt-700)'}}>Aa</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>heading-lg</div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-body)', fontSize: 13, color: 'var(--c-cobalt-700)'}}>Aa</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>body</div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-body)', fontSize: 11, color: 'var(--c-cobalt-500)'}}>Aa</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>caption</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Colour palette',
+      desc: 'The official NLDS swatches. Switch a theme variable and your whole Nextcloud follows.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[
+            {name: 'rijksblauw', hex: 'var(--c-cobalt-700)'},
+            {name: 'logoblauw', hex: 'var(--c-cobalt-300)'},
+            {name: 'mint', hex: 'var(--c-mint-500)'},
+            {name: 'oranje', hex: 'var(--c-orange-knvb)'},
+            {name: 'lavender', hex: 'var(--c-lavender-300)'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{width: 14, height: 16, clipPath: 'var(--hex-pointy-top)', background: row.hex, flexShrink: 0}}></span>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-body)', fontSize: 11, color: 'var(--c-cobalt-700)', flex: 1}}>{row.name}</div>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, color: 'var(--c-cobalt-400)'}}>--c-{row.name}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Component variants',
+      desc: 'Buttons, inputs, focus rings, the patterns NLDS specifies. Drop-in replacements for the Nextcloud defaults.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+          <div style={{display: 'flex', gap: 6}}>
+            <div style={{padding: '6px 12px', background: 'var(--c-cobalt-700)', color: 'white', borderRadius: 4, fontFamily: 'var(--conduction-typography-font-family-body)', fontSize: 10, fontWeight: 600}}>Primary</div>
+            <div style={{padding: '6px 12px', background: 'transparent', color: 'var(--c-cobalt-700)', border: '1px solid var(--c-cobalt-700)', borderRadius: 4, fontFamily: 'var(--conduction-typography-font-family-body)', fontSize: 10, fontWeight: 600}}>Ghost</div>
+          </div>
+          <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 8, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>label</div>
+            <div style={{height: 22, background: 'white', border: '1px solid var(--c-cobalt-200)', borderRadius: 4, padding: '4px 8px', display: 'flex', alignItems: 'center'}}>
+              <div style={{height: 4, width: '60%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+            </div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
+            <div style={{width: 14, height: 14, borderRadius: 3, border: '2px solid var(--c-orange-knvb)', boxShadow: '0 0 0 2px rgba(247,119,21,0.25)'}}></div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>focus ring</div>
+          </div>
+        </div>
+      ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="Where the theme lands"
+  title="One install, three surfaces, every app picks it up."
+  lede="NLDesign is a theme, not an app. The integrations are surfaces that pick up the tokens automatically: the public catalogue, internal dashboards, and the case-worker views."
+  layout="side"
+  defaultOpen="public-facing"
+  items={[
+    {
+      id: 'public-facing',
+      title: 'Public-facing catalogues',
+      summary: 'OpenCatalogi reads the NLDesign tokens for the citizen-facing filter panel and detail pages. WCAG-AA contrast, focus rings, type scale all follow design.nl. Twdt-ready out of the box.',
+      cta: {label: 'See the public-surface guide', href: 'https://docs.conduction.nl/nldesign/public'},
+      panel: <AppMock app="opencatalogi" />,
+    },
+    {
+      id: 'internal-dashboards',
+      title: 'Internal dashboards',
+      summary: 'MyDash inherits the same theme. Graphs, tables, KPI cards follow NLDS. Wethouders and directors see the same visual system citizens do, on the same Nextcloud, no extra branding project.',
+      cta: {label: 'See the dashboard theme', href: 'https://docs.conduction.nl/nldesign/dashboards'},
+      panel: <AppMock app="mydash-bi" />,
+    },
+    {
+      id: 'case-views',
+      title: 'Case-worker views',
+      summary: 'ZaakAfhandelApp, Procest, DocuDesk all pick up the NLDS button, input, and form-field variants automatically. The case-worker sees the same controls every Dutch government interface uses.',
+      cta: {label: 'See the form components', href: 'https://docs.conduction.nl/nldesign/forms'},
+      panel: <AppMock app="zaakafhandelapp" />,
     },
   ]}
 />

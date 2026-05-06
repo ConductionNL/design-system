@@ -4,7 +4,28 @@ description: Support runs through partners. The apps stay free. Government clien
 hide_table_of_contents: true
 ---
 
-import {Section, SectionHead, HowSteps, HowStep, Card, Pill, HexBullet, HexNetwork, FeatureList, FeatureItem, PairRow, PairCard, Button, PartnerGrid, PartnerCard, BecomePartner, FAQ, FAQItem} from '@conduction/docusaurus-preset/components';
+import {Section, SectionHead, HowSteps, HowStep, Card, Pill, HexBullet, HexNetwork, FeatureList, FeatureItem, PairRow, PairCard, Button, PartnerGrid, PartnerCard, BecomePartner, PartnerDirectory, FAQ, FAQItem} from '@conduction/docusaurus-preset/components';
+
+export const TIER_PILL = {
+  partner:   {background: 'var(--c-cobalt-50)', color: 'var(--c-cobalt-700)'},
+  certified: {background: 'var(--c-gold-500)',  color: 'var(--c-cobalt-900)'},
+  strategic: {background: 'white',              color: 'var(--c-blue-cobalt)'},
+};
+export const TIER_CARD_STRATEGIC = {
+  background: 'var(--c-blue-cobalt)',
+  borderColor: 'var(--c-blue-cobalt)',
+  color: 'white',
+};
+export const TIER_PILL_BASE = {
+  display: 'inline-block',
+  fontFamily: 'var(--conduction-typography-font-family-code)',
+  fontSize: 10,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  padding: '4px 9px',
+  borderRadius: 'var(--radius-pill)',
+  fontWeight: 600,
+};
 
 <Section spacing="default">
   <div style={{display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 'var(--space-10)', alignItems: 'center'}} className="support-hero">
@@ -63,41 +84,35 @@ import {Section, SectionHead, HowSteps, HowStep, Card, Pill, HexBullet, HexNetwo
   />
   <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24}}>
     <Card padding="lg">
-      <Pill tone="solid" color="var(--c-cobalt-700)">PARTNER</Pill>
+      <span style={{...TIER_PILL_BASE, ...TIER_PILL.partner}}>Partner</span>
       <h3 style={{fontSize: 22, fontWeight: 700, margin: '18px 0 12px', color: 'var(--c-cobalt-900)'}}>Implementation, on demand.</h3>
-      <div style={{fontSize: 14, color: 'var(--c-cobalt-700)', lineHeight: 1.6, margin: '0 0 20px'}}>
-        Self-certified on the apps. Installs and configures for one or two clients in a region or sector.
-      </div>
-      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13}}>
+      <div style={{fontSize: 14, color: 'var(--c-cobalt-700)', lineHeight: 1.6, margin: '0 0 20px'}}>Self-certified on the apps. Installs and configures for one or two clients in a region or sector.</div>
+      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13, color: 'var(--c-cobalt-800)'}}>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Public listing in the directory</li>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Community Slack access</li>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Quarterly partner office hours</li>
       </ul>
     </Card>
     <Card padding="lg">
-      <Pill tone="solid" color="var(--c-gold-500)" style={{color: 'var(--c-cobalt-900)'}}>CERTIFIED</Pill>
+      <span style={{...TIER_PILL_BASE, ...TIER_PILL.certified}}>Certified</span>
       <h3 style={{fontSize: 22, fontWeight: 700, margin: '18px 0 12px', color: 'var(--c-cobalt-900)'}}>Certified on the apps you ship.</h3>
-      <div style={{fontSize: 14, color: 'var(--c-cobalt-700)', lineHeight: 1.6, margin: '0 0 20px'}}>
-        Conduction-certified per app. Joint go-to-market on tenders. Higher SLA on shared customers.
-      </div>
-      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13}}>
+      <div style={{fontSize: 14, color: 'var(--c-cobalt-700)', lineHeight: 1.6, margin: '0 0 20px'}}>Conduction-certified per app. Joint go-to-market on tenders. Higher SLA on shared customers.</div>
+      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13, color: 'var(--c-cobalt-800)'}}>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Everything in Partner</li>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Certified gold avatar</li>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Co-branded case-study slot</li>
         <li><HexBullet size="sm" color="var(--c-mint-500)" /> Pre-release access (one minor)</li>
       </ul>
     </Card>
-    <Card padding="lg">
-      <Pill tone="solid" color="var(--c-blue-cobalt)">STRATEGIC</Pill>
-      <h3 style={{fontSize: 22, fontWeight: 700, margin: '18px 0 12px', color: 'var(--c-cobalt-900)'}}>Shared roadmap, shared release.</h3>
-      <div style={{fontSize: 14, color: 'var(--c-cobalt-700)', lineHeight: 1.6, margin: '0 0 20px'}}>
-        Conduction's deepest partners. Joint roadmap commitments and shared engineering, by invitation only.
-      </div>
-      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13}}>
-        <li><HexBullet size="sm" color="var(--c-mint-500)" /> Everything in Certified</li>
-        <li><HexBullet size="sm" color="var(--c-mint-500)" /> Joint roadmap planning</li>
-        <li><HexBullet size="sm" color="var(--c-mint-500)" /> Engineering hours from Conduction</li>
-        <li><HexBullet size="sm" color="var(--c-mint-500)" /> Co-sale on government tenders</li>
+    <Card padding="lg" style={TIER_CARD_STRATEGIC}>
+      <span style={{...TIER_PILL_BASE, ...TIER_PILL.strategic}}>Strategic</span>
+      <h3 style={{fontSize: 22, fontWeight: 700, margin: '18px 0 12px', color: 'white'}}>Shared roadmap, shared release.</h3>
+      <div style={{fontSize: 14, color: 'rgba(255,255,255,0.78)', lineHeight: 1.6, margin: '0 0 20px'}}>Conduction's deepest partners. Joint roadmap commitments and shared engineering, by invitation only.</div>
+      <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.92)'}}>
+        <li><HexBullet size="sm" color="var(--c-orange-knvb)" /> Everything in Certified</li>
+        <li><HexBullet size="sm" color="var(--c-orange-knvb)" /> Joint roadmap planning</li>
+        <li><HexBullet size="sm" color="var(--c-orange-knvb)" /> Engineering hours from Conduction</li>
+        <li><HexBullet size="sm" color="var(--c-orange-knvb)" /> Co-sale on government tenders</li>
       </ul>
     </Card>
   </div>
@@ -105,44 +120,102 @@ import {Section, SectionHead, HowSteps, HowStep, Card, Pill, HexBullet, HexNetwo
 
 <Section spacing="default" background="tinted">
   <SectionHead
-    eyebrow="Featured partners"
-    title="A few of the teams that ship."
+    eyebrow="Partner directory"
+    title="Every team that ships our apps."
     align="stack"
-    lede="Hands-on partners that install, host, and support our apps for clients. Apply through the form below to be added."
+    lede="Implementation, hosting, and integration partners. Filter by tier and by the apps you want to deploy. Apply through the form below to be added."
   />
-  <PartnerGrid columns={3}>
-    <PartnerCard
-      href="/partners/yard"
-      tier="partner"
-      name="YARD"
-      logo="/img/partners/yard.png"
-      summary={<>Digital design- en development-bureau uit Utrecht. Ontwerpt en bouwt klantgerichte digitale producten op <span className="next-blue">Nextcloud</span> voor gemeenten en publieke organisaties.</>}
-      apps={['MyDash', 'OpenCatalogi']}
-    />
-    <PartnerCard
-      href="/partners/procolix"
-      tier="certified"
-      name="Procolix"
-      logo="/img/partners/procolix.png"
-      summary={<>Nederlandse hoster en leverancier van proces- en zaakmanagement-software. Officieel <span className="next-blue">Nextcloud</span>-distributeur. Certified op DocuDesk en OpenConnector voor procesintegraties bij gemeenten en uitvoeringsorganisaties.</>}
-      apps={['DocuDesk', 'OpenConnector']}
-    />
-    <PartnerCard
-      href="/partners/acato"
-      tier="strategic"
-      name="Acato"
-      logo="/img/partners/acato.png"
-      summary={<>Nederlandse open-source specialist uit Almere. Bouwt en host <span className="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen, met focus op AVG-compliance en NLDS. Strategisch partner op hosting, stack-implementatie en gezamenlijke roadmap.</>}
-      apps={['OpenRegister', 'OpenCatalogi', 'DocuDesk']}
-    />
-    <BecomePartner
-      href="#become-a-partner"
-      eyebrow="Become a partner"
-      title="Ship Conduction to your customers."
-      body="Join as Partner, Certified, or Strategic. Conduction trains your team, you handle the rollouts. The apps stay open source, the relationship stays direct."
-      ctaLabel="Apply below"
-    />
-  </PartnerGrid>
+  <PartnerDirectory
+    partners={[
+      {
+        href: '/partners/acato',
+        tier: 'strategic',
+        name: 'Acato',
+        logo: '/img/partners/acato.png',
+        summary: <>Nederlandse open-source specialist uit Almere. Bouwt en host <span className="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen, met focus op AVG-compliance en NLDS. Strategisch partner op hosting, stack-implementatie en gezamenlijke roadmap.</>,
+        apps: ['OpenRegister', 'OpenCatalogi', 'DocuDesk'],
+      },
+      {
+        tier: 'certified',
+        name: 'Centric',
+        logo: '/img/partners/centric.png',
+        summary: <>Eén van Nederlands grootste software-leveranciers voor de publieke sector. Officieel <span className="next-blue">Nextcloud</span>-distributeur. Centric-klanten krijgen Conduction-apps geïntegreerd in hun bestaande Centric-omgeving.</>,
+        apps: ['Nextcloud', 'OpenZaak', 'OpenRegister', 'DocuDesk'],
+      },
+      {
+        href: '/partners/procolix',
+        tier: 'certified',
+        name: 'Procolix',
+        logo: '/img/partners/procolix.png',
+        summary: <>Nederlandse hoster en leverancier van proces- en zaakmanagement-software. Officieel <span className="next-blue">Nextcloud</span>-distributeur. Certified op DocuDesk en OpenConnector voor procesintegraties bij gemeenten en uitvoeringsorganisaties.</>,
+        apps: ['Nextcloud', 'DocuDesk', 'OpenConnector'],
+      },
+      {
+        tier: 'certified',
+        name: 'The Goodcloud',
+        logo: '/img/partners/goodcloud.png',
+        summary: <>Nederlandse <span className="next-blue">Nextcloud</span>-hoster voor MKB en non-profits. Officieel Nextcloud-distributeur. Levert beheerde omgevingen met Conduction-apps pre-installed, privacy-eerst hosting in NL.</>,
+        apps: ['Nextcloud', 'OpenRegister', 'MyDash'],
+      },
+      {
+        tier: 'partner',
+        name: 'BCT',
+        logo: '/img/partners/bct.png',
+        summary: <>Nederlandse leverancier van document- en zaaksysteem-software voor de overheid. BCT-implementaties praten via OpenConnector met de Conduction-registers.</>,
+        apps: ['OpenConnector', 'DocuDesk', 'OpenZaak'],
+      },
+      {
+        tier: 'partner',
+        name: 'Open Gemeenten',
+        logo: '/img/partners/open-gemeenten.png',
+        summary: <>Coöperatieve community van gemeenten die samen open-source software ontwikkelen en delen. Levert OpenZaak-implementaties bij aangesloten gemeenten en draagt patches terug naar upstream.</>,
+        apps: ['OpenZaak', 'OpenRegister', 'OpenCatalogi'],
+      },
+      {
+        tier: 'partner',
+        name: 'Exxellence',
+        logo: '/img/partners/exxellence.png',
+        summary: <>Nederlandse softwarebouwer gespecialiseerd in zaakafhandeling en burger-portaal-toepassingen. Reference-deploys op OpenZaak v4.x bij meerdere middelgrote gemeenten.</>,
+        apps: ['OpenZaak', 'DocuDesk'],
+      },
+      {
+        href: '/partners/yard',
+        tier: 'partner',
+        name: 'YARD',
+        logo: '/img/partners/yard.png',
+        summary: <>Digital design- en development-bureau uit Utrecht. Ontwerpt en bouwt klantgerichte digitale producten op <span className="next-blue">Nextcloud</span> voor gemeenten en publieke organisaties.</>,
+        apps: ['MyDash', 'OpenCatalogi'],
+      },
+      {
+        tier: 'partner',
+        name: 'iO',
+        logo: '/img/partners/io.webp',
+        summary: <>Internationaal digital agency met Nederlandse vestiging in Amsterdam. Integreert Conduction-apps in bredere klantreis-trajecten voor publieke en semi-publieke organisaties.</>,
+        apps: ['OpenConnector', 'MyDash'],
+      },
+      {
+        tier: 'partner',
+        name: 'Shift2',
+        logo: '/img/partners/shift2.png',
+        summary: <>Nederlands development-bureau gespecialiseerd in <span className="next-blue">Nextcloud</span> en open source. Implementeert Conduction-stacks bij MKB-klanten en gemeenten in midden-Nederland.</>,
+        apps: ['OpenRegister', 'MyDash'],
+      },
+      {
+        tier: 'partner',
+        name: 'Sendent',
+        logo: '/img/partners/sendent.png',
+        summary: <>Nederlandse leverancier die Microsoft Outlook en Teams koppelt aan <span className="next-blue">Nextcloud</span>. Levert support op MyDash voor klanten die hun e-mail- en bestandsstroom binnen de eigen Nextcloud-omgeving willen houden.</>,
+        apps: ['MyDash'],
+      },
+    ]}
+    becomePartner={{
+      href: '#become-a-partner',
+      eyebrow: 'Become a partner',
+      title: 'Ship Conduction to your customers.',
+      body: 'Join as Partner, Certified, or Strategic. Conduction trains your team, you handle the rollouts. The apps stay open source, the relationship stays direct.',
+      ctaLabel: 'Apply below',
+    }}
+  />
 </Section>
 
 <Section spacing="default">

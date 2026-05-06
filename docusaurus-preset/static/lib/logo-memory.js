@@ -54,7 +54,7 @@
 
   function collectLogos(marquee) {
     const seen = new Map();
-    marquee.querySelectorAll('a.hex').forEach(function (a) {
+    marquee.querySelectorAll('a').forEach(function (a) {
       const img = a.querySelector('img');
       if (!img) return;
       const src = img.getAttribute('src');
@@ -94,7 +94,7 @@
 
     marquee.addEventListener('click', function (e) {
       if (container.dataset.memoryActive === '1') return;
-      const a = e.target.closest('a.hex');
+      const a = e.target.closest('a');
       if (!a || !marquee.contains(a)) return;
       e.preventDefault();
       const logos = collectLogos(marquee);
@@ -134,7 +134,7 @@
     const marqueeRect = marquee.getBoundingClientRect();
 
     const rowsHexes = rows.map(function (row, rowIdx) {
-      const hexes = Array.from(row.querySelectorAll('a.hex'));
+      const hexes = Array.from(row.querySelectorAll('a'));
       hexes.forEach(function (hex) {
         const r = hex.getBoundingClientRect();
         hex._lmX = r.left - marqueeRect.left;
@@ -155,6 +155,10 @@
     const stageWidth = marqueeRect.width;
     const stageCenterX = stageWidth / 2;
 
+    /* Pick the keepers per row, but guarantee a total of PAIRS keepers
+       so we always end up with 24 tiles. If a row's first 4 picks
+       overlap with another row's (rare in practice), we fall back to
+       picking the next-nearest hex from the densest row. */
     const allKept = [];
     const allDropping = [];
 
@@ -164,9 +168,31 @@
         const db = Math.abs((b._lmX + b._lmW / 2) - stageCenterX);
         return da - db;
       });
-      sorted.slice(0, KEEP_PER_ROW).forEach(function (h) { h._lmKept = true; allKept.push(h); });
-      sorted.slice(KEEP_PER_ROW).forEach(function (h) { h._lmKept = false; allDropping.push(h); });
+      const pickCount = Math.min(KEEP_PER_ROW, sorted.length);
+      for (let k = 0; k < pickCount; k++) {
+        sorted[k]._lmKept = true;
+        allKept.push(sorted[k]);
+      }
+      for (let k = pickCount; k < sorted.length; k++) {
+        sorted[k]._lmKept = false;
+        allDropping.push(sorted[k]);
+      }
     });
+    /* Top up keepers from droppers' nearest-to-centre if any row was
+       short. Pulls from the front of allDropping (which is row-sorted),
+       preferring the nearest-to-centre droppers. */
+    while (allKept.length < PAIRS && allDropping.length > 0) {
+      const sortedDrops = allDropping.slice().sort(function (a, b) {
+        const da = Math.abs((a._lmX + a._lmW / 2) - stageCenterX);
+        const db = Math.abs((b._lmX + b._lmW / 2) - stageCenterX);
+        return da - db;
+      });
+      const promote = sortedDrops[0];
+      promote._lmKept = true;
+      allKept.push(promote);
+      const idx = allDropping.indexOf(promote);
+      if (idx >= 0) allDropping.splice(idx, 1);
+    }
 
     /* Lift every visible hex to position:absolute at its snapshot coords
        so it's no longer affected by track flex layout. Aria-hidden
@@ -185,7 +211,7 @@
     });
     /* Hide the leftover (aria-hidden duplicates and any non-visible
        originals) hexes so the rows collapse without ghost slots. */
-    marquee.querySelectorAll('a.hex').forEach(function (h) {
+    marquee.querySelectorAll('a').forEach(function (h) {
       if (allLifted.indexOf(h) === -1) h.style.display = 'none';
     });
     /* Collapse rows so there's no empty band where the tracks used to

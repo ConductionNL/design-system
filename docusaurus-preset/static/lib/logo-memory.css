@@ -16,13 +16,11 @@
 /* ============ Phase 1+2: pause + colourise + overflow ============ */
 
 .marquee.lm-active .track,
-[data-memory-marquee].lm-active .track {
+[data-memory-marquee].lm-active .track,
+[data-memory-marquee].lm-active > div > div {
   animation-play-state: paused !important;
 }
-.marquee.lm-active .hexLogo,
-.marquee.lm-active a.hex img,
-[data-memory-marquee].lm-active .hexLogo,
-[data-memory-marquee].lm-active a.hex img {
+[data-memory-marquee].lm-active a img {
   filter: none !important;
   opacity: 1 !important;
   transition: filter 220ms ease, opacity 220ms ease;
@@ -39,16 +37,14 @@
 
 /* ============ Phase 3: tile flip structure ============ */
 
-a.hex.lm-tile {
+.lm-tile {
   perspective: 900px;
   cursor: pointer;
 }
-/* Hide the existing img during enhance (it gets moved into the front
-   face on its own); the flipper now owns the face structure. The
-   .hex::before/::after ring and inner-white still render behind. */
-a.hex.lm-tile > .hexLogo {
-  display: none;
-}
+/* The runtime moves the original img into .lm-front during enhance,
+   so the tile's only direct children are the .lm-flipper. The hex's
+   ::before (cobalt-50 ring) + ::after (white inner) still render
+   behind the flipper as the resting frame. */
 
 .lm-flipper {
   position: absolute;
@@ -57,7 +53,7 @@ a.hex.lm-tile > .hexLogo {
   transition: transform 600ms cubic-bezier(0.65, 0, 0.35, 1);
   z-index: 3;
 }
-a.hex.lm-tile.lm-back-up .lm-flipper {
+.lm-tile.lm-back-up .lm-flipper {
   transform: rotateY(180deg);
 }
 
@@ -112,10 +108,10 @@ a.hex.lm-tile.lm-back-up .lm-flipper {
    Inner white (::after, 1.5px inset) still covers the interior, so
    the visible orange is just the rim — the same shape as the rest
    of the hex pattern, no layout shift. */
-a.hex.lm-tile.lm-matched::before {
+.lm-tile.lm-matched::before {
   background: var(--c-orange-knvb, #F77F0E) !important;
 }
-a.hex.lm-tile.lm-matched {
+.lm-tile.lm-matched {
   animation: lmMatchPulse 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1;
 }
 @keyframes lmMatchPulse {
@@ -125,11 +121,11 @@ a.hex.lm-tile.lm-matched {
 }
 
 /* Hover hint while face-down — subtle lift + cobalt drop-shadow */
-a.hex.lm-tile.lm-back-up:not(.lm-matched):hover .lm-flipper {
+.lm-tile.lm-back-up:not(.lm-matched):hover .lm-flipper {
   transform: rotateY(180deg) translateY(-3px);
   filter: drop-shadow(0 4px 8px rgba(33, 70, 139, 0.28));
 }
-a.hex.lm-tile.lm-back-up:focus-visible {
+.lm-tile.lm-back-up:focus-visible {
   outline: 2px solid var(--c-orange-knvb, #F77F0E);
   outline-offset: 4px;
 }
@@ -200,7 +196,7 @@ a.hex.lm-tile.lm-back-up:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .lm-flipper,
-  a.hex.lm-tile.lm-matched,
+  .lm-tile.lm-matched,
   .lm-hud,
   .marquee.lm-active .hexLogo,
   .marquee.lm-active a.hex img,

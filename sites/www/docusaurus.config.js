@@ -119,6 +119,7 @@ module.exports = createConfig({
         title: 'Resources',
         items: [
           {label: 'Support',        to: '/support'},
+          {label: 'Partners',       to: '/partners'},
           {label: 'Build an app',   to: '/build'},
           {label: 'Blogs',          to: '/academy?type=blog'},
           {label: 'Guides',         to: '/academy?type=guide'},

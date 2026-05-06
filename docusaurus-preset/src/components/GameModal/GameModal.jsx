@@ -47,11 +47,11 @@ import styles from './GameModal.module.css';
 const STORAGE_KEY = 'conduction:minigames';
 
 const DEFAULT_GAMES = [
-  {id: 'hexrain',  label: 'Twelve apps · hex rain'},
-  {id: 'boats',    label: 'Sink the boats · footer canal'},
-  {id: 'invaders', label: 'Hex-vaders · TBD'},
-  {id: 'domino',   label: 'Hex-domino · TBD'},
-  {id: 'tetris',   label: 'Hex-tris · TBD'},
+  {id: 'hexrain',      label: 'Twelve apps · hex rain'},
+  {id: 'boats',        label: 'Sink the boats · footer canal'},
+  {id: 'invaders',     label: 'Hex-vaders · cookie CLI'},
+  {id: 'logo-memory',  label: 'Logo memory · clients marquee'},
+  {id: 'kade-cyclist', label: 'Kade cyclist · footer kade'},
 ];
 
 function readFound() {
@@ -86,8 +86,13 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
       const detail = e.detail || {};
       setEvent(detail);
       setOpen(true);
-      if (detail.won && detail.id) {
+      /* Discovery vs. victory: any game-end counts the game as "found"
+         because a few of the games (kade-cyclist, future endless
+         runners) never reach a clean win state. The scoreboard pill
+         still reflects the actual performance for that round. */
+      if (detail.id) {
         setFound((prev) => {
+          if (prev[detail.id]) return prev;
           const next = {...prev, [detail.id]: true};
           writeFound(next);
           return next;
@@ -106,7 +111,18 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
     return () => window.removeEventListener('keydown', onKey);
   }, [isBrowser, open]);
 
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => {
+    /* Notify the playing runtime so it can tear down its in-page UI
+       (lifted hexes, kade stage, etc.) and restore the original
+       surface. Without this the marquee or kade stays in its game-
+       over visual until the next page load. */
+    if (event?.id) {
+      Promise.resolve().then(() => {
+        window.dispatchEvent(new CustomEvent('connext:gameclose', {detail: {id: event.id}}));
+      });
+    }
+    setOpen(false);
+  }, [event]);
   const replay = useCallback(() => {
     /* Fire a `connext:gamereplay` event so the playing component (which
        listens for it) can re-init. We don't dispatch from inside an

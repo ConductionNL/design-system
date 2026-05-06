@@ -4,7 +4,7 @@ description: API gateway for Nextcloud. REST, SOAP, GraphQL, file drops, message
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase, AgentTrace} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="openconnector"
@@ -165,6 +165,47 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid,
           ))}
         </div>
       ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="How OpenConnector plugs into the workspace"
+  title="The bridge from anywhere to your registers."
+  lede="OpenConnector is itself an integration plane. These are the three integrations users meet most often: routing email and files, talking to workflow engines, and calling LLM providers."
+  layout="side"
+  defaultOpen="mail-files"
+  items={[
+    {
+      id: 'mail-files',
+      title: 'Mail and Files',
+      summary: 'Route inbound email into the right register; route outbound documents from a register through Mail. The Mail and Files sidebars show pipeline status when an item is part of an active flow.',
+      cta: {label: 'See the routing guide', href: 'https://docs.conduction.nl/openconnector/mail-files'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'windmill-n8n',
+      title: 'Windmill and n8n',
+      summary: 'OpenConnector is the bridge that lets workflow engines talk to your registers. Both directions: events out, instructions in. Windmill or n8n becomes the script engine your registers can call without leaving the typed-data world.',
+      cta: {label: 'See the workflow examples', href: 'https://docs.conduction.nl/openconnector/windmill-n8n'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'llms',
+      title: 'LLMs (Claude, Mistral, Ollama, OpenAI)',
+      summary: 'One adapter, every LLM provider. Switch from Claude to Mistral to a self-hosted Ollama by changing one config line. Audit log on every call, redaction before send, prompt caching where the provider supports it.',
+      cta: {label: 'See the LLM adapters', href: 'https://docs.conduction.nl/openconnector/llm-adapters'},
+      panel: <AgentTrace
+        lines={[
+          {kind: 'note',  bullet: 'done', text: 'Adapter lookup', muted: '(provider: claude-sonnet-4-6)'},
+          {kind: 'tool',  text: 'openconnector - llm_call (provider: claude,'},
+          {kind: 'continuation', text: 'cache: "5min", redact: ["bsn", "dob"])'},
+          {kind: 'note',  bullet: 'info', text: 'Cache hit, prompt cached this morning'},
+          {kind: 'status', text: 'Streaming response'},
+        ]}
+        cursor
+        mode="audit log on (every call recorded)"
+      />,
     },
   ]}
 />

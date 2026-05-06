@@ -4,7 +4,7 @@ description: Schema-driven object store with audit trail. The data foundation un
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase, AgentTrace} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="openregister"
@@ -157,6 +157,48 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid,
           ))}
         </div>
       ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="How OpenRegister plugs into the workspace"
+  title="Typed data, surfaced everywhere."
+  lede="Three integration paths that turn registers into the system of record across Mail, Files, workflow tools, and AI assistants."
+  layout="side"
+  defaultOpen="mail-files"
+  items={[
+    {
+      id: 'mail-files',
+      title: 'Mail and Files',
+      summary: 'Open an email or a file and the sidebar shows every register row that references it. One click jumps to the row, another links the email or file back to a different row. The register stays the system of record; the workspace stays where the work happens.',
+      cta: {label: 'See the integration guide', href: 'https://docs.conduction.nl/openregister/mail-files'},
+      panel: <AppMock app="openregister" />,
+    },
+    {
+      id: 'windmill-n8n',
+      title: 'Windmill and n8n',
+      summary: 'Trigger workflows on register events. New row, schema change, validation failure, archive transition — each one fires a webhook your Windmill or n8n flow can consume. Outcomes write back to the row.',
+      cta: {label: 'See the workflow examples', href: 'https://docs.conduction.nl/openregister/windmill-n8n'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'llms',
+      title: 'LLMs (Claude, Mistral, Ollama)',
+      summary: 'Plain-language search across every register. The LLM rewrites your question into a structured query, OpenRegister returns typed rows with citation-stable IDs. Every call audits.',
+      cta: {label: 'See the semantic-search adapter', href: 'https://docs.conduction.nl/openregister/llm-search'},
+      panel: <AgentTrace
+        lines={[
+          {kind: 'tool',  text: 'openregister - search (MCP)(query: "open Woo cases',
+                          },
+          {kind: 'continuation', text: 'past their deadline in maart 2026")'},
+          {kind: 'note',  bullet: 'info', text: 'Rewriting natural language to a typed query', muted: '(claude-sonnet-4-6)'},
+          {kind: 'note',  bullet: 'done', text: 'Returned 14 register rows with citation IDs'},
+          {kind: 'status', text: 'Synthesising answer'},
+        ]}
+        cursor
+        mode="audit log on (every query recorded)"
+      />,
     },
   ]}
 />

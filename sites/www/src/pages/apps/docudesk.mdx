@@ -4,7 +4,7 @@ description: Generate, anonymise, sign, and template documents on Nextcloud. Tem
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase, AgentTrace} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="docudesk"
@@ -159,6 +159,48 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
           ))}
         </div>
       ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="How DocuDesk plugs into the workspace"
+  title="One install, every document path."
+  lede="Three integration paths that put DocuDesk between the Nextcloud apps your team already uses and the LLM provider you trust."
+  layout="side"
+  defaultOpen="mail-files"
+  items={[
+    {
+      id: 'mail-files',
+      title: 'Mail and Files',
+      summary: 'Anonymise inbound mail before it touches the register. Sign outbound documents with the instance certificate from inside Files. The Mail and Files sidebars show the document\'s template, signing status, and audit trail in one place.',
+      cta: {label: 'See the integration guide', href: 'https://docs.conduction.nl/docudesk/mail-files'},
+      panel: <AppMock app="docudesk" />,
+    },
+    {
+      id: 'windmill-n8n',
+      title: 'Windmill and n8n',
+      summary: 'Trigger document generation as a workflow step. Windmill or n8n pulls fields from a register, calls DocuDesk to render the template, and routes the signed PDF wherever the flow wants. No glue code.',
+      cta: {label: 'See the workflow examples', href: 'https://docs.conduction.nl/docudesk/windmill-n8n'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'llms',
+      title: 'LLMs (Claude, Mistral, Ollama, Presidio)',
+      summary: 'Two-pass redaction. Microsoft Presidio strips structured PII (names, BSNs, addresses) with deterministic rules; an LLM catches the context the regex missed. The cleaned text is what reaches the register.',
+      cta: {label: 'See the privacy pipeline', href: 'https://docs.conduction.nl/docudesk/llm-redaction'},
+      panel: <AgentTrace
+        lines={[
+          {kind: 'note',  bullet: 'done', text: 'Inbound document received'},
+          {kind: 'tool',  text: 'presidio - scan (MCP)(file: subsidie-aanvraag.pdf)'},
+          {kind: 'note',  bullet: 'info', text: 'Presidio matched 7 PII spans', muted: '(deterministic)'},
+          {kind: 'tool',  text: 'mistral - context_check (MCP)(text: <redacted>)'},
+          {kind: 'note',  bullet: 'done', text: 'LLM caught 2 context-implicit PII spans'},
+          {kind: 'status', text: 'Sealing original, writing redacted version'},
+        ]}
+        cursor
+        mode="audit log on (every redaction recorded)"
+      />,
     },
   ]}
 />

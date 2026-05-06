@@ -4,7 +4,7 @@ description: Case-management for VTH and citizen processes. Workflow engine plus
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf, Showcase, AgentTrace} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="procest"
@@ -154,6 +154,47 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, PairRow, Pai
           ))}
         </div>
       ),
+    },
+  ]}
+/>
+
+<Showcase
+  eyebrow="How Procest plugs into the workspace"
+  title="Cases everywhere your team already works."
+  lede="Three integration paths that pull Procest into the rest of the Nextcloud workspace and the workflow tools your team brings."
+  layout="side"
+  defaultOpen="mail-files"
+  items={[
+    {
+      id: 'mail-files',
+      title: 'Mail and Files',
+      summary: 'Inbound citizen email lands on the case automatically. Attachments file themselves under the case dossier; the case-worker sees the new mail in the case timeline without leaving the case view.',
+      cta: {label: 'See the integration guide', href: 'https://docs.conduction.nl/procest/mail-files'},
+      panel: <AppMock app="procest" />,
+    },
+    {
+      id: 'windmill-n8n',
+      title: 'Windmill and n8n',
+      summary: 'Auto-handle the simple cases, escalate the hard ones. Define rules in Windmill or n8n; OpenConnector pipes events from Procest into the workflow and writes the outcome back to the case record.',
+      cta: {label: 'See the workflow examples', href: 'https://docs.conduction.nl/procest/windmill-n8n'},
+      panel: <AppMock app="openconnector" />,
+    },
+    {
+      id: 'llms',
+      title: 'LLMs (Claude, Mistral, Ollama)',
+      summary: 'Sensitive submissions get redacted before they hit the case file. Presidio strips PII, an LLM checks for context the regex missed, the cleaned version goes into the dossier with the original sealed in archive.',
+      cta: {label: 'See the privacy pipeline', href: 'https://docs.conduction.nl/procest/llm-redaction'},
+      panel: <AgentTrace
+        lines={[
+          {kind: 'note',  bullet: 'done', text: 'Inbound email parsed, attachments extracted'},
+          {kind: 'tool',  text: 'docudesk - redact_pii (MCP)(file: zaak-2026-118.eml,'},
+          {kind: 'continuation', text: 'mode: "strict", locales: ["nl-NL"])'},
+          {kind: 'note',  bullet: 'info', text: 'PII scan returned 12 matches', muted: '(BSN, names, addresses)'},
+          {kind: 'status', text: 'Sealing original in archive'},
+        ]}
+        cursor
+        mode="audit log on (every redaction recorded)"
+      />,
     },
   ]}
 />

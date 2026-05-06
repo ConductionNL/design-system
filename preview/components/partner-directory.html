@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Partner directory, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="partner-cards.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1280px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+
+  /* Active filter chips strip across the top */
+  .active-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 0 0 32px 296px;
+  }
+  .active-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 8px 5px 12px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-900);
+    font-size: 13px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .active-chip button {
+    appearance: none; border: none; background: none;
+    cursor: pointer;
+    width: 16px; height: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--c-cobalt-400);
+    border-radius: 50%;
+  }
+  .active-chip button:hover { background: var(--c-cobalt-100); color: var(--c-cobalt-700); }
+  .active-chip button svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; }
+
+  /* Layout: sidebar + grid */
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* Sidebar facets */
+  .filters { width: 240px; }
+  .facet { margin-bottom: 28px; border: none; padding: 0; }
+  .facet h3 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    margin: 0 0 10px;
+  }
+  .facet-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .facet-list li {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .facet-list li:hover { color: var(--c-blue-cobalt); }
+  .facet-list input[type="checkbox"] {
+    appearance: none;
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--c-cobalt-300);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    background: white;
+    transition: all 120ms;
+  }
+  .facet-list input[type="checkbox"]:hover { border-color: var(--c-blue-cobalt); }
+  .facet-list input[type="checkbox"]:checked {
+    background: var(--c-blue-cobalt);
+    border-color: var(--c-blue-cobalt);
+  }
+  .facet-list input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border: solid white;
+    border-width: 0 1.6px 1.6px 0;
+    transform: rotate(45deg);
+  }
+  .facet-list .count {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+  }
+  .facet-list label { cursor: pointer; }
+  .facet-clear {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--c-cobalt-400);
+    text-decoration: none;
+    margin-top: 8px;
+    border: none; background: none;
+    padding: 0; cursor: pointer;
+    font-family: inherit;
+  }
+  .facet-clear:hover { color: var(--c-orange-knvb); }
+
+  /* Results grid: PartnerGrid two columns */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+    min-width: 0;
+  }
+  .next-blue { color: var(--c-nextcloud-blue); font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 32px; }
+    .grid { grid-template-columns: 1fr; }
+    .active-chips { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">Partner directory · faceted-filter sidebar + partner-card grid + become-a-partner CTA</div>
+
+  <div class="active-chips">
+    <span class="active-chip">Strategic <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+    <span class="active-chip">OpenRegister <button aria-label="Remove"><svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8"/></svg></button></span>
+  </div>
+
+  <div class="layout">
+
+    <aside class="filters">
+
+      <fieldset class="facet">
+        <h3>Partner tier</h3>
+        <ul class="facet-list">
+          <li><input type="checkbox" id="t-strat" checked><label for="t-strat">Strategic</label><span class="count">1</span></li>
+          <li><input type="checkbox" id="t-cert"><label for="t-cert">Certified</label><span class="count">1</span></li>
+          <li><input type="checkbox" id="t-part"><label for="t-part">Partner</label><span class="count">1</span></li>
+        </ul>
+      </fieldset>
+
+      <fieldset class="facet">
+        <h3>Apps &amp; services</h3>
+        <ul class="facet-list">
+          <li><input type="checkbox" id="a-or" checked><label for="a-or">OpenRegister</label><span class="count">2</span></li>
+          <li><input type="checkbox" id="a-oc"><label for="a-oc">OpenCatalogi</label><span class="count">2</span></li>
+          <li><input type="checkbox" id="a-dd"><label for="a-dd">DocuDesk</label><span class="count">2</span></li>
+          <li><input type="checkbox" id="a-conn"><label for="a-conn">OpenConnector</label><span class="count">1</span></li>
+          <li><input type="checkbox" id="a-md"><label for="a-md">MyDash</label><span class="count">1</span></li>
+        </ul>
+      </fieldset>
+
+      <button class="facet-clear">Clear all filters</button>
+    </aside>
+
+    <div class="grid">
+
+      <a class="partner-card tier-strategic" href="../pages/partner-detail.html">
+        <span class="pc-tier">Strategic</span>
+        <div class="pc-avatar"><img src="../../brand/assets/partners/acato.png" alt="Acato logo"></div>
+        <div class="pc-name">Acato</div>
+        <div class="pc-summary">Nederlandse open-source specialist uit Almere. Bouwt en host <span class="next-blue">Nextcloud</span>-omgevingen voor gemeenten en zorginstellingen, met focus op AVG-compliance en NLDS. Strategisch partner op hosting + stack-implementatie en gezamenlijke roadmap.</div>
+        <div class="pc-apps">
+          <span class="app-pill"><span class="h"></span>OpenRegister</span>
+          <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+          <span class="app-pill"><span class="h"></span>DocuDesk</span>
+        </div>
+      </a>
+
+      <a class="partner-card tier-certified" href="../pages/partner-detail.html">
+        <span class="pc-tier">Certified</span>
+        <div class="pc-avatar"><img src="../../brand/assets/partners/procolix.png" alt="Procolix logo"></div>
+        <div class="pc-name">Procolix</div>
+        <div class="pc-summary">Nederlandse hoster en leverancier van proces- en zaakmanagement-software. Officieel <span class="next-blue">Nextcloud</span>-distributeur; certified op DocuDesk en OpenConnector voor procesintegraties bij gemeenten en uitvoeringsorganisaties.</div>
+        <div class="pc-apps">
+          <span class="app-pill nextcloud" title="Official Nextcloud supplier"><img src="../../brand/assets/nextcloud-logo.svg" alt=""><span class="next-blue">Nextcloud</span></span>
+          <span class="app-pill"><span class="h"></span>DocuDesk</span>
+          <span class="app-pill"><span class="h"></span>OpenConnector</span>
+        </div>
+      </a>
+
+      <a class="partner-card tier-partner" href="../pages/partner-detail.html">
+        <span class="pc-tier">Partner</span>
+        <div class="pc-avatar"><img src="../../brand/assets/partners/yard.png" alt="YARD logo"></div>
+        <div class="pc-name">YARD</div>
+        <div class="pc-summary">Digital design- en development-bureau uit Utrecht. Ontwerpt en bouwt klantgerichte digitale producten op <span class="next-blue">Nextcloud</span> voor gemeenten en publieke organisaties.</div>
+        <div class="pc-apps">
+          <span class="app-pill"><span class="h"></span>MyDash</span>
+          <span class="app-pill"><span class="h"></span>OpenCatalogi</span>
+        </div>
+      </a>
+
+      <a class="partner-card become" href="#become">
+        <div class="become-eyebrow">Become a partner</div>
+        <h4>Ship Conduction to your customers.</h4>
+        <p>Join as Partner, Certified, or Strategic. Apply once, pick the tier that fits your engagement model.</p>
+        <span class="arrow">Apply below &rarr;</span>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;PartnerDirectory/&gt;</code></h2>
+  <p>Composes <code>&lt;FacetedFilters/&gt;</code> sidebar, <code>&lt;PartnerGrid/&gt;</code>, <code>&lt;PartnerCard/&gt;</code>, and an optional <code>&lt;BecomePartner/&gt;</code> CTA. Facets auto-derive from the partners array (tier + apps).</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {PartnerDirectory} from '@conduction/docusaurus-preset/components';
+
+&lt;PartnerDirectory
+  partners={[
+    {href: '/partners/acato', tier: 'strategic', name: 'Acato',
+     logo: '/img/partners/acato.png',
+     summary: &lt;&gt;Nederlandse open-source specialist...&lt;/&gt;,
+     apps: ['OpenRegister', 'OpenCatalogi', 'DocuDesk']},
+    /* ... */
+  ]}
+  becomePartner={{
+    href: '#become-a-partner',
+    title: 'Ship Conduction to your customers.',
+    body:  'Join as Partner, Certified, or Strategic.',
+    ctaLabel: 'Apply below',
+  }}
+/&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>partners</code> array of PartnerCard props ({tier, name, logo, summary, apps, href})</li>
+    <li><code>becomePartner</code> trailing-tile CTA config</li>
+    <li><code>gridColumns</code> default 2</li>
+    <li><code>emptyState</code> string shown when no partner matches</li>
+  </ul>
+  <p>Filter logic: within a facet, multiple selections are OR-ed (any-of). Across facets, selections are AND-ed (all-of).</p>
+</aside>
+
+</body>
+</html>

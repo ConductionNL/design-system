@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Widget shelf, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 0;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: 56px 64px 0;
+    max-width: 1280px; margin: 0 auto;
+  }
+
+  .shelf {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-12) var(--space-12);
+  }
+  .head { max-width: 70ch; margin: 0 0 var(--space-8); }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-3);
+  }
+  .eyebrow .h { width: 10px; height: 12px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .title {
+    font-size: 36px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.1; color: var(--c-cobalt-900); margin: 0 0 var(--space-3);
+  }
+  .lede { font-size: 17px; line-height: 1.5; color: var(--c-cobalt-700); margin: 0; }
+
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel {
+    background: var(--c-cobalt-50);
+    padding: var(--space-5);
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .panel > .widget { width: 100%; max-width: 280px; }
+
+  .card-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: var(--space-4) var(--space-5) 0;
+  }
+  .card-icon {
+    width: 28px; height: 32px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-icon svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; }
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--c-cobalt-900);
+    margin: 0;
+    flex: 1;
+  }
+  .pill {
+    display: inline-flex; align-items: center;
+    padding: 3px 9px;
+    background: var(--c-mint-100);
+    color: var(--c-mint-700);
+    border-radius: var(--radius-pill);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .pill.beta { background: var(--c-cobalt-100); color: var(--c-cobalt-700); }
+
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--c-cobalt-700);
+    margin: 0;
+    padding: var(--space-2) var(--space-5) var(--space-5);
+  }
+
+  /* Widget mocks */
+  .w-records { display: flex; flex-direction: column; gap: 6px; }
+  .w-records .row { display: flex; align-items: center; gap: 8px; }
+  .w-records .av { width: 18px; height: 18px; border-radius: 2px; flex-shrink: 0; }
+  .w-records .lines { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .w-records .l1 { height: 4px; width: 70%; background: var(--c-cobalt-700); border-radius: 1px; }
+  .w-records .l2 { height: 3px; width: 50%; background: var(--c-cobalt-200); border-radius: 1px; }
+  .w-records .stamp { height: 3px; width: 22px; background: var(--c-cobalt-100); border-radius: 1px; }
+
+  .w-spark { display: flex; flex-direction: column; gap: 8px; }
+  .w-spark .head { display: flex; align-items: baseline; gap: 6px; }
+  .w-spark .num {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 26px; font-weight: 700; color: var(--c-cobalt-900);
+  }
+  .w-spark .delta {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; font-weight: 600; color: var(--c-mint-500);
+  }
+
+  .w-bars { display: flex; flex-direction: column; gap: 6px; }
+  .w-bars .bar-row { display: flex; align-items: center; gap: 8px; }
+  .w-bars .track {
+    flex: 1; position: relative; height: 14px;
+    background: var(--c-cobalt-50); border-radius: 2px; overflow: hidden;
+  }
+  .w-bars .fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: var(--c-cobalt-300); border-radius: 2px;
+  }
+  .w-bars .fill.hi { background: var(--c-orange-knvb); }
+  .w-bars .num {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; font-weight: 600; color: var(--c-cobalt-700);
+    min-width: 28px; text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame-label">Widget shelf &middot; dashboard widgets shipped by an app, on every Nextcloud home screen</div>
+
+<section class="shelf">
+  <header class="head">
+    <div class="eyebrow"><span class="h"></span>Widgets we ship</div>
+    <h2 class="title">On every Nextcloud dashboard.</h2>
+    <p class="lede">Install OpenRegister and the home screen surfaces what changed in your data, what people search for, and what slipped through validation.</p>
+  </header>
+
+  <div class="grid">
+
+    <article class="card">
+      <div class="panel">
+        <div class="widget w-records">
+          <div class="row">
+            <span class="av" style="background: var(--c-forest-300);"></span>
+            <div class="lines"><div class="l1"></div><div class="l2"></div></div>
+            <div class="stamp"></div>
+          </div>
+          <div class="row">
+            <span class="av" style="background: var(--c-lavender-300);"></span>
+            <div class="lines"><div class="l1"></div><div class="l2"></div></div>
+            <div class="stamp"></div>
+          </div>
+          <div class="row">
+            <span class="av" style="background: var(--c-mint-300);"></span>
+            <div class="lines"><div class="l1"></div><div class="l2"></div></div>
+            <div class="stamp"></div>
+          </div>
+          <div class="row">
+            <span class="av" style="background: var(--c-terracotta-300);"></span>
+            <div class="lines"><div class="l1"></div><div class="l2"></div></div>
+            <div class="stamp"></div>
+          </div>
+          <div class="row">
+            <span class="av" style="background: var(--c-forest-300);"></span>
+            <div class="lines"><div class="l1"></div><div class="l2"></div></div>
+            <div class="stamp"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-head">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg></div>
+        <h3 class="card-title">Recent records</h3>
+        <span class="pill">Stable</span>
+      </div>
+      <p class="card-desc">Latest objects across every register the user has access to. Schema avatar, snippet, audit-stamp.</p>
+    </article>
+
+    <article class="card">
+      <div class="panel">
+        <div class="widget w-spark">
+          <div class="head">
+            <div class="num">847</div>
+            <div class="delta">+12%</div>
+          </div>
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none" style="width: 100%; height: 50px;">
+            <path d="M 0 48 L 28 36 L 56 42 L 84 24 L 112 30 L 140 16 L 168 22 L 200 8" stroke="var(--c-blue-cobalt)" stroke-width="2" fill="none"/>
+            <path d="M 0 48 L 28 36 L 56 42 L 84 24 L 112 30 L 140 16 L 168 22 L 200 8 L 200 60 L 0 60 Z" fill="var(--c-cobalt-100)"/>
+            <circle cx="200" cy="8" r="3" fill="var(--c-orange-knvb)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-head">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
+        <h3 class="card-title">Schema activity</h3>
+        <span class="pill">Stable</span>
+      </div>
+      <p class="card-desc">Sparkline of objects-created per schema this week. Click through to a register-by-register breakdown.</p>
+    </article>
+
+    <article class="card">
+      <div class="panel">
+        <div class="widget w-bars">
+          <div class="bar-row">
+            <div class="track"><div class="fill hi" style="width: 90%;"></div></div>
+            <div class="num">142</div>
+          </div>
+          <div class="bar-row">
+            <div class="track"><div class="fill" style="width: 70%;"></div></div>
+            <div class="num">88</div>
+          </div>
+          <div class="bar-row">
+            <div class="track"><div class="fill" style="width: 60%;"></div></div>
+            <div class="num">54</div>
+          </div>
+          <div class="bar-row">
+            <div class="track"><div class="fill" style="width: 50%;"></div></div>
+            <div class="num">37</div>
+          </div>
+          <div class="bar-row">
+            <div class="track"><div class="fill" style="width: 40%;"></div></div>
+            <div class="num">21</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-head">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></div>
+        <h3 class="card-title">Top searches</h3>
+        <span class="pill beta">Beta</span>
+      </div>
+      <p class="card-desc">What your team is looking for. Common queries with hit counts; surfaces gaps in the catalogue.</p>
+    </article>
+
+  </div>
+</section>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;WidgetShelf/&gt;</code></h2>
+  <p>Section that lists the dashboard widgets a Conduction app ships for Nextcloud. Each app that registers a Nextcloud-dashboard widget shows up automatically in MyDash; this section makes that promise concrete by drawing the widgets the app actually contributes.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {WidgetShelf} from '@conduction/docusaurus-preset/components';
+
+&lt;WidgetShelf
+  eyebrow="Widgets we ship"
+  title="On every Nextcloud dashboard."
+  lede="Install OpenRegister and the home screen surfaces what changed..."
+  widgets={[
+    {
+      title: 'Recent records',
+      desc: 'Latest objects across every register...',
+      panel: &lt;div className="w w-records"&gt;...&lt;/div&gt;,
+    },
+    /* ... */
+  ]}
+/&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>eyebrow</code> Plex Mono caption above the title</li>
+    <li><code>title</code> headline (string or ReactNode)</li>
+    <li><code>lede</code> body copy under the title</li>
+    <li><code>widgets</code> array of {title, desc, panel}</li>
+    <li><code>columns</code> override (default 3 when widgets &ge; 4)</li>
+  </ul>
+</aside>
+
+</body>
+</html>

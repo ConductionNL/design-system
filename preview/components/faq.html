@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FAQ, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 880px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+
+  .faq h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 32px;
+    color: var(--c-cobalt-900);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .faq h2 .h {
+    width: 16px; height: 18px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    flex-shrink: 0;
+  }
+
+  details.item {
+    border-bottom: 1px solid var(--c-cobalt-100);
+    padding: 20px 0;
+  }
+  details.item summary {
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--c-cobalt-900);
+    gap: var(--space-4);
+  }
+  details.item summary::-webkit-details-marker { display: none; }
+  details.item summary::before {
+    content: "";
+    width: 11px; height: 13px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-200);
+    flex-shrink: 0;
+    transition: background 200ms ease;
+    margin-right: var(--space-3);
+  }
+  details.item[open] summary::before { background: var(--c-blue-cobalt); }
+  details.item summary .q { flex: 1; }
+  details.item summary::after {
+    content: "+";
+    font-size: 22px;
+    color: var(--c-cobalt-400);
+    font-weight: 400;
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  details.item[open] summary::after { transform: rotate(45deg); }
+
+  details.item .body {
+    font-size: 15px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+    margin: 12px 0 0 28px;
+    max-width: 64ch;
+  }
+  details.item .body p { margin: 0 0 var(--space-3); }
+  details.item .body p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-label">FAQ + FAQItem &middot; native &lt;details&gt; / &lt;summary&gt; disclosures</div>
+
+  <section class="faq">
+    <h2><span class="h"></span>FAQ.</h2>
+
+    <details class="item" open>
+      <summary><span class="q">Do I need a partner to use Conduction?</span></summary>
+      <div class="body">
+        <p>No. Every app is open source, EUPL-1.2, free to install from the <span style="color: var(--c-nextcloud-blue); font-weight: 600">Nextcloud</span> app store. A partner helps when you want a managed rollout, training, or an SLA. Most MKB customers install themselves and only call a partner if they hit a wall.</p>
+      </div>
+    </details>
+
+    <details class="item">
+      <summary><span class="q">Is the source actually open?</span></summary>
+      <div class="body">
+        <p>Yes. Every line of code we ship is on GitHub under EUPL-1.2. Issues, releases, roadmap discussions, all public. Fork it, audit it, run a private build, submit pull requests. The day you uninstall is as easy as the day you installed.</p>
+      </div>
+    </details>
+
+    <details class="item">
+      <summary><span class="q">Who pays for hosting?</span></summary>
+      <div class="body">
+        <p>You do, on your own Nextcloud. Conduction does not run your data, period. For public-sector clients we offer Managed Common Ground+ on a Cyso-hosted tenant (&euro;250 per component per month), but that's an opt-in service, not a default. Your data, your jurisdiction.</p>
+      </div>
+    </details>
+
+    <details class="item">
+      <summary><span class="q">If the apps are free, what does support cost?</span></summary>
+      <div class="body">
+        <p>Whatever the partner you pick charges. Conduction sets no minimum and takes no commission. Some partners do hourly (&euro;95&ndash;&euro;140), some sell retainers, some do fixed-price implementation projects. The partner directory shows each partner's typical engagement model.</p>
+      </div>
+    </details>
+
+    <details class="item">
+      <summary><span class="q">Can a partner from another country work with my organisation?</span></summary>
+      <div class="body">
+        <p>Yes. Partners aren't restricted by geography. Country is a hint in the directory, not a fence. A Friese MKB partner can work with a Brabants ziekenhuis if the fit is right.</p>
+      </div>
+    </details>
+
+    <details class="item">
+      <summary><span class="q">What's the certification process for partners?</span></summary>
+      <div class="body">
+        <p>One certified engineer has to complete the per-app practicals (deploy, configure, debug). Certifications are app-specific. Certified on DocuDesk doesn't make you Certified on OpenRegister. We retest every twelve months as the apps evolve.</p>
+      </div>
+    </details>
+
+  </section>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;FAQ/&gt;</code> + <code>&lt;FAQItem/&gt;</code></h2>
+  <p>Native <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code> for keyboard, screen-reader, and no-JS support. One question expands at a time on click; users can have several open. Hex bullet on the left turns from cobalt-200 to brand cobalt when the item is open.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {FAQ, FAQItem} from '@conduction/docusaurus-preset/components';
+
+&lt;FAQ title="FAQ."&gt;
+  &lt;FAQItem question="Do I need a partner?" defaultOpen&gt;
+    No. Every app is open source...
+  &lt;/FAQItem&gt;
+  &lt;FAQItem question="Is the source actually open?"&gt;
+    Yes. Every line of code we ship is on GitHub under EUPL-1.2...
+  &lt;/FAQItem&gt;
+&lt;/FAQ&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>title</code> heading text (default <code>FAQ.</code>)</li>
+    <li><code>children</code> one or more <code>&lt;FAQItem/&gt;</code> nodes</li>
+  </ul>
+  <p><code>FAQItem</code> takes <code>question</code> (string), <code>defaultOpen</code> (boolean), and <code>children</code> (the answer body, may include MDX inline markup).</p>
+</aside>
+
+</body>
+</html>

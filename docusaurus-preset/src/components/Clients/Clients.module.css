@@ -103,6 +103,7 @@
 .row2 .track { margin-left: var(--offset); }
 
 .track {
+  --copy-count: 15;            /* unique hexes per row, see splitIntoRows */
   display: inline-flex;
   gap: var(--gap);
   width: max-content;
@@ -110,9 +111,14 @@
   will-change: transform;
 }
 
+/* Translate by exactly the position of the second copy's first hex
+   (= unique-count * hex pitch). translateX(-50%) is hex-pitch off
+   by one --gap because of how flexbox gap counts (n hexes have
+   n-1 gaps but the wrap distance needs n gaps to reach the second
+   copy). That mismatch shows as a one-gap stutter every cycle. */
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(calc(-1 * var(--copy-count) * (var(--hex-w) + var(--gap)))); }
 }
 
 .marquee:hover .track,

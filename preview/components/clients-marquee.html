@@ -86,9 +86,13 @@
   .row-2 .track { --speed: 85s; animation-direction: reverse; } /* slight visual desync */
   .row-3 .track { --speed: 75s; }
 
+  /* Translate by the second-copy start position (= unique-count *
+     hex pitch). translateX(-50%) is short by one --gap because of how
+     flexbox gap is counted, which shows as a one-gap stutter every
+     cycle. Tracks all have 15 unique hexes after padding. */
   @keyframes marquee {
     from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    to   { transform: translateX(calc(-15 * (var(--hex-w) + var(--gap)))); }
   }
 
   .marquee:hover .track { animation-play-state: paused; }

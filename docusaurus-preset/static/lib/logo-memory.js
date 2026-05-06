@@ -130,7 +130,12 @@
     await wait(reduceMotion ? 30 : 280);
 
     /* === Phase 2: Snapshot, lift to absolute, pick keepers === */
-    const rows = Array.from(marquee.querySelectorAll('.row'));
+    /* The row class is hashed by CSS modules in the React build (e.g.
+       row_cD73), so .row doesn't match there. Match any descendant
+       whose class string contains "row" — works for both the literal
+       "row row1" of the preview HTML and the CSS-modules-hashed
+       "row_cD73 row2_w4Mq" of the React build. */
+    const rows = Array.from(marquee.querySelectorAll('[class*="row"]'));
     const marqueeRect = marquee.getBoundingClientRect();
 
     const rowsHexes = rows.map(function (row, rowIdx) {
@@ -215,8 +220,10 @@
       if (allLifted.indexOf(h) === -1) h.style.display = 'none';
     });
     /* Collapse rows so there's no empty band where the tracks used to
-       sit. Marquee gets its own min-height set below for the cluster. */
-    marquee.querySelectorAll('.row').forEach(function (r) {
+       sit. Marquee gets its own min-height set below for the cluster.
+       Reuse the rows array we captured at snapshot — `marquee.children`
+       now includes the lifted anchors as well so re-querying is risky. */
+    rows.forEach(function (r) {
       r.style.height = '0';
       r.style.margin = '0';
       r.style.overflow = 'visible';
@@ -238,6 +245,11 @@
     await wait(reduceMotion ? 30 : 700 + allDropping.length * 22);
     /* Drop fully done — remove dropped tiles. */
     allDropping.forEach(function (h) { h.remove(); });
+
+    /* Track the originalHTML in ACTIVE before any phase that might
+       mutate the marquee, so the early-abort path can fall back to
+       tearDownActive without needing setupGame to have run. */
+    ACTIVE.set(container, { onKey: function () {}, originalHTML: originalHTML });
 
     /* === Phase 4: Reposition keepers into clean centred 4×3 grid === */
     if (allKept.length === 0) {

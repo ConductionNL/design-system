@@ -4,7 +4,7 @@ description: Federated data catalogue for apps, datasets, APIs. Public-facing se
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, Pipeline, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, Pipeline, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="opencatalogi"
@@ -110,6 +110,68 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid,
       summary: 'MyDash reads the same registers OpenCatalogi indexes. Publish a dataset and a graph of it shows up on the dashboard the same morning.',
       cta: {label: 'See MyDash', href: '/apps/mydash'},
       panel: <AppMock app="mydash-bi" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Widgets we ship"
+  title="On every Nextcloud dashboard."
+  lede="Install OpenCatalogi and the home screen tracks what got published, what was searched, and what other gemeenten are federating from you."
+  widgets={[
+    {
+      title: 'Recent publications',
+      desc: 'Last items added to the public catalogue. Category hex, title, federation status.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {['var(--c-blue-cobalt)', 'var(--c-forest-500)', 'var(--c-lavender-500)', 'var(--c-terracotta-500)', 'var(--c-mint-500)'].map((tone, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', borderBottom: i < 4 ? '1px solid var(--c-cobalt-50)' : 'none'}}>
+              <span style={{width: 14, height: 16, clipPath: 'var(--hex-pointy-top)', background: tone, flexShrink: 0}}></span>
+              <div style={{flex: 1, height: 4, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              <span style={{width: 8, height: 9, clipPath: 'var(--hex-pointy-top)', background: i < 3 ? 'var(--c-mint-500)' : 'var(--c-cobalt-200)'}}></span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Catalogue stats',
+      desc: 'Three KPIs at a glance: total publications, federated downstream, queries this week.',
+      panel: (
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6}}>
+          {[
+            {n: '3.4k', l: 'records', tone: 'var(--c-cobalt-900)'},
+            {n: '12',  l: 'feeders', tone: 'var(--c-mint-500)'},
+            {n: '847', l: 'queries', tone: 'var(--c-orange-knvb)'},
+          ].map((kpi, i) => (
+            <div key={i} style={{padding: '8px 6px', background: 'var(--c-cobalt-50)', borderRadius: 'var(--radius-sm)', display: 'flex', flexDirection: 'column', gap: 2}}>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 18, fontWeight: 700, color: kpi.tone}}>{kpi.n}</div>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>{kpi.l}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Federation status',
+      desc: 'Who is consuming your catalogue, who is publishing back. Mint = healthy, orange = retry, red = down.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[
+            {tone: 'var(--c-mint-500)',       label: 'data.overheid.nl'},
+            {tone: 'var(--c-mint-500)',       label: 'gemeente Tilburg'},
+            {tone: 'var(--c-orange-knvb)',    label: 'gemeente Almere'},
+            {tone: 'var(--c-mint-500)',       label: 'Forum Standaardisatie'},
+            {tone: 'var(--c-red-vermillion)', label: 'gemeente Hoorn'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{width: 8, height: 9, clipPath: 'var(--hex-pointy-top)', background: row.tone, flexShrink: 0}}></span>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, color: 'var(--c-cobalt-700)', flex: 1}}>{row.label}</div>
+              <div style={{height: 3, width: 26, background: 'var(--c-cobalt-100)', borderRadius: 1}}></div>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ]}
 />

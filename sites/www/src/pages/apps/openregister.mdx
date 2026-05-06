@@ -4,7 +4,7 @@ description: Schema-driven object store with audit trail. The data foundation un
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="openregister"
@@ -98,6 +98,65 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid,
       summary: 'MyDash reads the schemas directly. Drop a chart on a board, point it at a register, and the columns are typed. No BI database, no separate login.',
       cta: {label: 'See MyDash', href: '/apps/mydash'},
       panel: <AppMock app="mydash-bi" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Widgets we ship"
+  title="On every Nextcloud dashboard."
+  lede="Install OpenRegister and the home screen surfaces what changed in your data, what people search for, and what slipped through validation."
+  widgets={[
+    {
+      title: 'Recent records',
+      desc: 'Latest objects across every register the user has access to. Schema avatar, snippet, audit-stamp.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {['var(--c-forest-300)', 'var(--c-lavender-300)', 'var(--c-mint-300)', 'var(--c-terracotta-300)', 'var(--c-forest-300)'].map((tone, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{width: 18, height: 18, borderRadius: 2, background: tone, flexShrink: 0}}></span>
+              <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 3}}>
+                <div style={{height: 4, width: '70%', background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
+                <div style={{height: 3, width: '50%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              </div>
+              <div style={{height: 3, width: 22, background: 'var(--c-cobalt-100)', borderRadius: 1}}></div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Schema activity',
+      desc: 'Sparkline of objects-created per schema this week. Click through to a register-by-register breakdown.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 6}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 26, fontWeight: 700, color: 'var(--c-cobalt-900)'}}>847</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, fontWeight: 600, color: 'var(--c-mint-500)'}}>+12%</div>
+          </div>
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none" style={{width: '100%', height: 50}}>
+            <path d="M 0 48 L 28 36 L 56 42 L 84 24 L 112 30 L 140 16 L 168 22 L 200 8" stroke="var(--c-blue-cobalt)" strokeWidth="2" fill="none"/>
+            <path d="M 0 48 L 28 36 L 56 42 L 84 24 L 112 30 L 140 16 L 168 22 L 200 8 L 200 60 L 0 60 Z" fill="var(--c-cobalt-100)"/>
+            <circle cx="200" cy="8" r="3" fill="var(--c-orange-knvb)"/>
+          </svg>
+        </div>
+      ),
+    },
+    {
+      title: 'Top searches',
+      desc: 'What your team is looking for. Common queries with hit counts; surfaces gaps in the catalogue.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[{w: '90%', n: '142'}, {w: '70%', n: '88'}, {w: '60%', n: '54'}, {w: '50%', n: '37'}, {w: '40%', n: '21'}].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <div style={{flex: 1, position: 'relative', height: 14, background: 'var(--c-cobalt-50)', borderRadius: 2, overflow: 'hidden'}}>
+                <div style={{position: 'absolute', top: 0, left: 0, height: '100%', width: row.w, background: i === 0 ? 'var(--c-orange-knvb)' : 'var(--c-cobalt-300)', borderRadius: 2}}></div>
+              </div>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, fontWeight: 600, color: 'var(--c-cobalt-700)', minWidth: 28, textAlign: 'right'}}>{row.n}</div>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ]}
 />

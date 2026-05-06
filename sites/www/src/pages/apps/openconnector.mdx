@@ -4,7 +4,7 @@ description: API gateway for Nextcloud. REST, SOAP, GraphQL, file drops, message
 hide_table_of_contents: true
 ---
 
-import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards} from '@conduction/docusaurus-preset/components';
+import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid, PairRow, PairCard, CtaBanner, AppMock, RotatingCards, WidgetShelf} from '@conduction/docusaurus-preset/components';
 
 <DetailHero
   appId="openconnector"
@@ -91,6 +91,80 @@ import {DetailHero, Section, SectionHead, FeatureList, FeatureItem, FeatureGrid,
       summary: 'Each pipeline run logs to a register row. Failures are visible in MyDash, replays are a click. No black-box scheduler.',
       cta: {label: 'See MyDash', href: '/apps/mydash'},
       panel: <AppMock app="mydash-bi" />,
+    },
+  ]}
+/>
+
+<WidgetShelf
+  eyebrow="Widgets we ship"
+  title="On every Nextcloud dashboard."
+  lede="Install OpenConnector and the home screen tells you what is flowing, what is failing, and what needs a retry. Operations stays a one-tab job."
+  widgets={[
+    {
+      title: 'Recent runs',
+      desc: 'Last pipeline runs across every active source. Status hex (mint = ok, orange = retry, red = failed), source name, duration.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[
+            {tone: 'var(--c-mint-500)'},
+            {tone: 'var(--c-mint-500)'},
+            {tone: 'var(--c-orange-knvb)'},
+            {tone: 'var(--c-mint-500)'},
+            {tone: 'var(--c-red-vermillion)'},
+            {tone: 'var(--c-mint-500)'},
+          ].map((row, i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', borderBottom: i < 5 ? '1px solid var(--c-cobalt-50)' : 'none'}}>
+              <span style={{width: 8, height: 9, clipPath: 'var(--hex-pointy-top)', background: row.tone, flexShrink: 0}}></span>
+              <div style={{flex: 1, height: 3, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, color: 'var(--c-cobalt-400)', minWidth: 32, textAlign: 'right'}}>{`${[12, 8, 24, 14, 38, 6][i]}s`}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Pipeline health',
+      desc: 'Donut KPI of run outcomes this week. Click through to the run-by-run view; retry failures with one button.',
+      panel: (
+        <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+          <div style={{width: 84, height: 84, borderRadius: '50%', background: 'conic-gradient(var(--c-mint-500) 0 78%, var(--c-orange-knvb) 78% 92%, var(--c-red-vermillion) 92% 100%)', position: 'relative', flexShrink: 0}}>
+            <div style={{position: 'absolute', inset: 14, background: 'var(--c-cobalt-50)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 16, fontWeight: 700, color: 'var(--c-cobalt-900)'}}>78%</div>
+            </div>
+          </div>
+          <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+            {[
+              {tone: 'var(--c-mint-500)',       label: 'OK'},
+              {tone: 'var(--c-orange-knvb)',    label: 'Retry'},
+              {tone: 'var(--c-red-vermillion)', label: 'Failed'},
+            ].map((row, i) => (
+              <div key={i} style={{display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 10, color: 'var(--c-cobalt-700)'}}>
+                <span style={{width: 8, height: 8, borderRadius: 1, background: row.tone}}></span>
+                {row.label}
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Failed deliveries',
+      desc: 'Outbound deliveries that need attention. Source-system, error code, retry button. Empty in the happy path.',
+      panel: (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+          <div style={{display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 2}}>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 26, fontWeight: 700, color: 'var(--c-orange-knvb)'}}>4</div>
+            <div style={{fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--c-cobalt-400)'}}>need retry</div>
+          </div>
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <span style={{display: 'inline-block', padding: '1px 6px', background: 'var(--c-coral-50)', color: 'var(--c-orange-knvb)', borderRadius: 2, fontFamily: 'var(--conduction-typography-font-family-code)', fontSize: 9, fontWeight: 700}}>{['504', '422', '500', '429'][i]}</span>
+              <div style={{flex: 1, height: 3, background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
+              <div style={{height: 16, width: 16, borderRadius: 3, background: 'var(--c-blue-cobalt)'}}></div>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ]}
 />

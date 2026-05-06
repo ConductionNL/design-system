@@ -31,10 +31,12 @@ export const SUB_BRANDS = [
     name: 'commonground',
     match: /^(?:\/nl)?\/commonground(?:\/|$)/,
     home: '/commonground',
-    label: 'Common Ground',
+    label: 'Common Ground+',
     wordmark: (
       <>
-        Common <span className="cg-yellow">Ground</span>
+        <span className="cg-plus-common">Common</span>{' '}
+        <span className="cg-yellow">Ground</span>
+        <span className="cg-plus-plus">+</span>
       </>
     ),
   },

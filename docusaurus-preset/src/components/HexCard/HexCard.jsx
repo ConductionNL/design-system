@@ -86,11 +86,11 @@ export default function HexCard({
   return (
     <Tag className={composed}>
       {decoration && (
-        <>
-          <span className={`${styles.deco} ${styles.deco1}`} aria-hidden="true" />
-          <span className={`${styles.deco} ${styles.deco2}`} aria-hidden="true" />
-          <span className={`${styles.deco} ${styles.deco3}`} aria-hidden="true" />
-        </>
+        <span className={styles.decoFrame} aria-hidden="true">
+          <span className={`${styles.deco} ${styles.deco1}`} />
+          <span className={`${styles.deco} ${styles.deco2}`} />
+          <span className={`${styles.deco} ${styles.deco3}`} />
+        </span>
       )}
 
       {glyph && (

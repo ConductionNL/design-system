@@ -7,46 +7,49 @@
 .hex-card {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "badge head"
-    "body  body";
-  column-gap: var(--space-4);
+    "head"
+    "body";
   row-gap: var(--space-3);
   align-items: start;
   background: var(--c-cobalt-50);
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-lg);
-  padding: var(--space-6) var(--space-7);
+  padding: var(--space-6) var(--space-8) var(--space-10) var(--space-12);
   margin: 0;
-  overflow: hidden;
+  overflow: visible;
   font-family: var(--conduction-typography-font-family-body);
 }
 
 .hex-card.has-actions {
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   grid-template-areas:
-    "badge head    actions"
-    "body  body    actions";
+    "head    actions"
+    "body    actions";
   align-items: center;
   column-gap: var(--space-5);
 }
 
 @media (max-width: 720px) {
   .hex-card.has-actions {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
     grid-template-areas:
-      "badge   head"
-      "body    body"
-      "actions actions";
+      "head"
+      "body"
+      "actions";
   }
-  .hex-card { padding: var(--space-5); }
+  .hex-card { padding: var(--space-6) var(--space-5) var(--space-8) var(--space-10); }
 }
 
+/* Hex badge centered on the top-left corner; half overflows the
+   card to the upper-left. */
 .hex-card .hc-badge {
-  grid-area: badge;
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  z-index: 2;
   width: 56px;
   height: 64px;
   display: inline-flex;
@@ -56,6 +59,7 @@
   color: white;
   clip-path: var(--hex-pointy-top);
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 .hex-card .hc-badge svg {
@@ -112,13 +116,21 @@
   white-space: nowrap;
 }
 
-/* Decorative right-edge hexes, opt-in via .hex-card.has-decoration. */
+/* Decorative right-edge hexes wrapped in a clipping frame so they
+   stay inside the rounded panel even though the card has overflow:
+   visible (needed for the corner badge). */
+.hex-card .hc-deco-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
 .hex-card .hc-deco {
   position: absolute;
   background: var(--c-cobalt-100);
   clip-path: var(--hex-pointy-top);
-  pointer-events: none;
-  z-index: 0;
 }
 .hex-card .hc-deco-1 {
   width: 220px; height: 254px;

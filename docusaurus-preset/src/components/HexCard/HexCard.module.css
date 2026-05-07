@@ -1,62 +1,68 @@
 /**
- * <HexCard /> styles. Tinted academy panel with a top-left hex
- * badge, optional right-edge decorative hex motif, and an optional
- * right-side actions slot.
+ * <HexCard /> styles. Tinted academy panel with a corner hex badge
+ * and an optional right-edge decorative hex motif.
  *
- * Layout:
- *   [badge]  [head .................] [actions]
- *            [body .........................  ]
+ * Layout: the badge is absolute-positioned and centered on the
+ * top-left corner of the card (half outside, half inside). Card
+ * padding has extra inset on the left and bottom so the title and
+ * the last list item never collide with the protruding hex.
  *
- * The badge column auto-sizes to the 56px hex; head spans the
- * remaining width; body lives below the head and spans both
- * non-action columns. The actions cell is only present when an
- * <HexCard actions={…}> prop is passed (e.g. ContactCta button).
+ *   ┌── ⬢ ────────────────────────┐
+ *   │ ⬢      Title       [actions]│
+ *   │   body / list / paragraph   │
+ *   │                             │
+ *   └─────────────────────────────┘
  */
 
 .card {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "badge head"
-    "body  body";
-  column-gap: var(--space-4);
+    "head"
+    "body";
   row-gap: var(--space-3);
   align-items: start;
   background: var(--c-cobalt-50);
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-lg);
-  padding: var(--space-6) var(--space-7);
+  padding: var(--space-6) var(--space-8) var(--space-10) var(--space-12);
   margin: var(--space-8) 0;
-  overflow: hidden;
+  overflow: visible;
   font-family: var(--conduction-typography-font-family-body);
 }
 
 .hasActions {
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   grid-template-areas:
-    "badge head    actions"
-    "body  body    actions";
+    "head    actions"
+    "body    actions";
   align-items: center;
   column-gap: var(--space-5);
 }
 
 @media (max-width: 720px) {
   .hasActions {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
     grid-template-areas:
-      "badge   head"
-      "body    body"
-      "actions actions";
+      "head"
+      "body"
+      "actions";
   }
-  .card { padding: var(--space-5) var(--space-5); }
+  .card { padding: var(--space-6) var(--space-5) var(--space-8) var(--space-10); }
 }
 
+/* Hex badge centered on the top-left corner. Half overflows the
+   card to the upper-left so the badge reads as a corner mark, not
+   an inset glyph. z-index lifts it above the deco frame. */
 .badge {
-  grid-area: badge;
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  z-index: 2;
   display: inline-flex;
+  pointer-events: none;
 }
 
 .head {
@@ -103,16 +109,23 @@
   white-space: nowrap;
 }
 
-/* Decorative pointy-top hexes layered on the right edge. Only
-   rendered when the parent passes <HexCard decoration>. They sit
-   behind copy via z-index 0 with everything else on z-index 1.
-   Pointy-top point-up — never rotated. */
+/* Wraps the decorative right-edge hexes. Absolute, fills the card,
+   inherits border-radius, and clips its own children so the deco
+   stays inside the rounded panel even though the card itself has
+   overflow: visible (needed for the corner badge). */
+.decoFrame {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .deco {
   position: absolute;
   background: var(--c-cobalt-100);
   clip-path: var(--hex-pointy-top);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .deco1 {

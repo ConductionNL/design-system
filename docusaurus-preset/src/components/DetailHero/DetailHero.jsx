@@ -37,6 +37,11 @@
  * Each cta object also accepts `tone: "orange"` to flip the primary
  * (or secondary) variant to the KNVB-orange accent. Reserved for
  * product pages with an orange-leaning brand identity (mydash).
+ *
+ * `background="cobalt"` paints the hero in a full-bleed cobalt panel
+ * with white type — the product-page identity used on the
+ * {slug}.conduction.nl landings. Default (undefined) keeps the
+ * existing on-cream rendering used by the connext apps detail pages.
  */
 
 import React from 'react';
@@ -61,12 +66,18 @@ export default function DetailHero({
   className,
   appId,
   downloads,
+  background,
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
   const hasIllustration = Boolean(illustration);
+  /* `background="cobalt"` flips the hero to a full-bleed cobalt panel
+     with white type — the product-page identity used on
+     {slug}.conduction.nl landings. Default (undefined) keeps the
+     existing on-cream rendering used by connext apps detail pages. */
+  const bgClass = background === 'cobalt' ? styles.bgCobalt : null;
 
   return (
-    <section className={[styles.head, hasIllustration && styles.withIllustration, className].filter(Boolean).join(' ')}>
+    <section className={[styles.head, hasIllustration && styles.withIllustration, bgClass, className].filter(Boolean).join(' ')}>
       {crumb && Array.isArray(crumb) && (
         <div className={styles.crumb}>
           {crumb.map((c, i) => {

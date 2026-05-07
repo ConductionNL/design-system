@@ -8,7 +8,42 @@
   margin: 0 auto;
   padding: 24px 64px 56px;
   font-family: var(--conduction-typography-font-family-body);
+  position: relative;
 }
+
+/* Cobalt-background hero variant for product-page identity. The brand
+   panel sits full-bleed via a pseudo-element so the centred content
+   keeps its 1280px max-width. Text + crumb + badges flip to white /
+   cobalt-100 against the dark surface; the icon hex and the action
+   buttons carry their own colour via iconColor + Button tone. */
+.bgCobalt {
+  padding-top: 56px;
+  padding-bottom: 64px;
+  color: white;
+}
+.bgCobalt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  background: var(--c-blue-cobalt);
+  z-index: -1;
+}
+.bgCobalt > * { position: relative; }
+
+.bgCobalt .crumb,
+.bgCobalt .crumb a { color: var(--c-cobalt-100); }
+.bgCobalt .crumb a:hover { color: var(--c-orange-knvb); }
+.bgCobalt .sep { color: var(--c-cobalt-300); }
+.bgCobalt .badge { color: var(--c-cobalt-100); }
+.bgCobalt .versionBadge { color: var(--c-cobalt-200); }
+.bgCobalt .downloadsBadge { color: white; }
+.bgCobalt .title,
+.bgCobalt .titleText { color: white; }
+.bgCobalt .tagline { color: var(--c-cobalt-100); }
+.bgCobalt .tagline :global(.next-blue) { color: var(--c-nextcloud-cyan); }
 
 .crumb {
   font-family: var(--conduction-typography-font-family-code);

@@ -9,15 +9,19 @@ tags: [Woo, OpenRegister, Bestanden, Upload, Publicaties]
 durationMinutes: 18
 ---
 
+import {Prerequisites, PrerequisiteItem, Troubleshooting, TroubleshootingItem, NextSteps, NextStep} from '@conduction/docusaurus-preset/components';
+
 Een Woo-publicatie zonder bestanden is metadata zonder bewijs. In deze tutorial koppel je documenten aan een Woo-publicatie via vier upload-modes: één bestand, meerdere bestanden tegelijk, en grote bestanden in chunks. Plus publiceren, depubliceren en opruimen.
 
 {/* truncate */}
 
-## Wat je nodig hebt
-
-- Een werkend Woo-register. Volg eerst [Een Woo-register opzetten](/academy/woo-register-opzetten) als je dat nog niet hebt
-- Een publicatie-object met bekende UUID
-- `curl`, basisauth, en een paar testbestanden
+<Prerequisites title="Wat je nodig hebt">
+  <PrerequisiteItem>
+    Een werkend Woo-register. Volg eerst <a href="/academy/woo-register-opzetten">Een Woo-register opzetten</a> als je dat nog niet hebt.
+  </PrerequisiteItem>
+  <PrerequisiteItem>Een publicatie-object met bekende UUID.</PrerequisiteItem>
+  <PrerequisiteItem><code>curl</code>, basisauth, en een paar testbestanden.</PrerequisiteItem>
+</Prerequisites>
 
 In de voorbeelden gebruiken we:
 
@@ -294,18 +298,38 @@ curl -u admin:admin \
 
 Voor de meeste Woo-publicaties pak je Mode 2 of 3. Pas op het moment dat een bestand groter dan 100 MB binnenkomt, schakel je over naar Mode 4.
 
-## Probleemoplossing
+<Troubleshooting title="Probleemoplossing">
+  <TroubleshootingItem symptom="The uploaded file exceeds upload_max_filesize">
+    Verhoog <code>upload_max_filesize</code> en <code>post_max_size</code> in <code>php.ini</code>, of stap over op Mode 4.
+  </TroubleshootingItem>
+  <TroubleshootingItem symptom="Bestand verschijnt niet in /files-lijst na MOVE">
+    Controleer dat de <code>Destination</code>-header naar <code>{'Open Registers/{Register Title}/{Object UUID}/'}</code> wijst en dat de UUID overeenkomt met een bestaand object. OpenRegister scant alleen die map.
+  </TroubleshootingItem>
+  <TroubleshootingItem symptom="accessUrl blijft null na publish">
+    Controleer of share-links aanstaan in de Nextcloud admin (Settings → Sharing → "Allow apps to use the share API"). Zonder deze instelling kunnen publicaties geen publieke link krijgen.
+  </TroubleshootingItem>
+</Troubleshooting>
 
-**`The uploaded file exceeds upload_max_filesize`:** verhoog `upload_max_filesize` en `post_max_size` in `php.ini`, of stap over op Mode 4.
-
-**Bestand verschijnt niet in `/files`-lijst na MOVE:** controleer dat de `Destination`-header naar `Open Registers/{Register Title}/{Object UUID}/` wijst en dat de UUID overeenkomt met een bestaand object. OpenRegister scant alleen die map.
-
-**`accessUrl` blijft `null` na publish:** controleer of share-links aanstaan in de Nextcloud admin (Settings → Sharing → "Allow apps to use the share API"). Zonder deze instelling kunnen publicaties geen publieke link krijgen.
-
-## Volgende stap
-
-Met deze vier modes kun je elk type Woo-document koppelen aan een publicatie. Wil je nu:
-
-- De publicatie samen met andere apps tonen op een portaal? Bekijk [OpenCatalogi](https://github.com/ConductionNL/opencatalogi).
-- Documenten automatisch laten lakken op privacygevoelige passages? Bekijk [DocuDesk](https://github.com/ConductionNL/docudesk).
-- De publicaties periodiek synchroniseren naar [PLOOI](https://open.overheid.nl)? Daar werken we aan via [OpenConnector](https://github.com/ConductionNL/openconnector).
+<NextSteps title="Volgende stap" lede="Met deze vier modes kun je elk type Woo-document koppelen aan een publicatie. Een paar logische vervolgstappen:">
+  <NextStep
+    href="https://github.com/ConductionNL/opencatalogi"
+    title="Toon op een portaal"
+    cta="Bekijk OpenCatalogi"
+  >
+    De publicatie samen met andere apps tonen op een portaal.
+  </NextStep>
+  <NextStep
+    href="https://github.com/ConductionNL/docudesk"
+    title="Documenten lakken"
+    cta="Bekijk DocuDesk"
+  >
+    Documenten automatisch laten lakken op privacygevoelige passages.
+  </NextStep>
+  <NextStep
+    href="https://github.com/ConductionNL/openconnector"
+    title="Synchroniseer naar PLOOI"
+    cta="Bekijk OpenConnector"
+  >
+    Publicaties periodiek synchroniseren naar <a href="https://open.overheid.nl">open.overheid.nl</a>.
+  </NextStep>
+</NextSteps>

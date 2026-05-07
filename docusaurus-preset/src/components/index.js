@@ -94,3 +94,11 @@ export {
 export {default as NewsletterCta} from './NewsletterCta/NewsletterCta.jsx';
 export {default as RelatedPosts} from './RelatedPosts/RelatedPosts.jsx';
 export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHero.jsx';
+
+/* Tutorial-body components. Drop-in replacements for the ad-hoc
+   "What you need", "Troubleshooting", and "Next steps" h2 + bullet
+   patterns that academy tutorials kept duplicating. Designed for use
+   inside an MDX academy post body. */
+export {default as Prerequisites, PrerequisiteItem} from './Prerequisites/Prerequisites.jsx';
+export {default as Troubleshooting, TroubleshootingItem} from './Troubleshooting/Troubleshooting.jsx';
+export {default as NextSteps, NextStep} from './NextSteps/NextSteps.jsx';

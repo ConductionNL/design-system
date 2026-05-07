@@ -91,17 +91,6 @@ export default function ContentDetailHero({
         </div>
       )}
 
-      {(typeLabel || tags.length > 0) && (
-        <div className={styles.tags}>
-          {typeLabel && (
-            <Pill bullet bulletColor={typeBullet}>{typeLabel}</Pill>
-          )}
-          {tags.map((t, i) => (
-            <Pill key={i} bullet bulletColor="var(--c-cobalt-300)">{t}</Pill>
-          ))}
-        </div>
-      )}
-
       {title && <h1 className={styles.title}>{title}</h1>}
 
       <div className={styles.cover}>
@@ -116,6 +105,17 @@ export default function ContentDetailHero({
       </div>
 
       {summary && <p className={styles.summary}>{summary}</p>}
+
+      {(typeLabel || tags.length > 0) && (
+        <div className={styles.tags}>
+          {typeLabel && (
+            <Pill bullet bulletColor={typeBullet}>{typeLabel}</Pill>
+          )}
+          {tags.map((t, i) => (
+            <Pill key={i} bullet bulletColor="var(--c-cobalt-300)">{t}</Pill>
+          ))}
+        </div>
+      )}
 
       {(author || date || duration) && (
         <div className={styles.meta}>

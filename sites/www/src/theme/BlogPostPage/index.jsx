@@ -32,6 +32,7 @@ import {
   RelatedPosts,
   Section,
 } from '@conduction/docusaurus-preset/components';
+import styles from './styles.module.css';
 
 function defaultIconFor(contentType) {
   const stroke = {strokeWidth: 1.6, fill: 'none', stroke: 'currentColor'};
@@ -147,13 +148,7 @@ function BlogPostPageContent({children}) {
     <Section spacing="default">
       <ContentDetailHero {...heroProps} />
 
-      <div className="content-detail-body" style={{
-        maxWidth: 760,
-        margin: '0 auto',
-        fontSize: 17,
-        lineHeight: 1.7,
-        color: 'var(--c-cobalt-700)',
-      }}>
+      <div className={`content-detail-body ${styles.body}`}>
         {children}
       </div>
 

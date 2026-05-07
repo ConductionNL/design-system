@@ -12,26 +12,24 @@
 }
 
 /* Cobalt-background hero variant for product-page identity. The brand
-   panel sits full-bleed via a pseudo-element so the centred content
-   keeps its 1280px max-width. Text + crumb + badges flip to white /
-   cobalt-100 against the dark surface; the icon hex and the action
-   buttons carry their own colour via iconColor + Button tone. */
+   panel needs to bleed full-width even though the section keeps its
+   1280px content max-width. Earlier attempt used a 100vw absolute
+   pseudo-element, but Docusaurus's <main>/<article> wrappers run
+   `overflow: hidden` on some routes which clipped the pseudo to the
+   container width (visible as a hard white strip on the right at
+   ≥1280px viewports). Switch to the box-shadow + clip-path bleed:
+   a single colour paints the element's box AND extends horizontally
+   via box-shadow rings, while clip-path: inset(0 -100vmax) trims the
+   top/bottom of those rings so the panel doesn't bleed vertically.
+   Robust against any ancestor overflow setting. */
 .bgCobalt {
   padding-top: 56px;
   padding-bottom: 64px;
   color: white;
-}
-.bgCobalt::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
   background: var(--c-blue-cobalt);
-  z-index: -1;
+  box-shadow: 0 0 0 100vmax var(--c-blue-cobalt);
+  clip-path: inset(0 -100vmax);
 }
-.bgCobalt > * { position: relative; }
 
 .bgCobalt .crumb,
 .bgCobalt .crumb a { color: var(--c-cobalt-100); }

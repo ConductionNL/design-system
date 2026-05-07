@@ -1,0 +1,229 @@
+/**
+ * <HexCard /> — vanilla CSS for the static specimen pages. Mirrors
+ * docusaurus-preset/src/components/HexCard/HexCard.module.css so the
+ * specimen and the React build render the same surface.
+ */
+
+.hex-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "badge head"
+    "body  body";
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  align-items: start;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-7);
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.hex-card.has-actions {
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "badge head    actions"
+    "body  body    actions";
+  align-items: center;
+  column-gap: var(--space-5);
+}
+
+@media (max-width: 720px) {
+  .hex-card.has-actions {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "badge   head"
+      "body    body"
+      "actions actions";
+  }
+  .hex-card { padding: var(--space-5); }
+}
+
+.hex-card .hc-badge {
+  grid-area: badge;
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-cobalt-900);
+  color: white;
+  clip-path: var(--hex-pointy-top);
+  flex-shrink: 0;
+}
+
+.hex-card .hc-badge svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hex-card .hc-head {
+  grid-area: head;
+  position: relative;
+  z-index: 1;
+  align-self: center;
+}
+
+.hex-card .hc-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-cobalt-900);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.hex-card .hc-body {
+  grid-area: body;
+  position: relative;
+  z-index: 1;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--c-cobalt-700);
+}
+
+.hex-card .hc-body > p { margin: 0; }
+.hex-card .hc-body > p + p { margin-top: var(--space-3); }
+.hex-card .hc-body > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.hex-card .hc-actions {
+  grid-area: actions;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Decorative right-edge hexes, opt-in via .hex-card.has-decoration. */
+.hex-card .hc-deco {
+  position: absolute;
+  background: var(--c-cobalt-100);
+  clip-path: var(--hex-pointy-top);
+  pointer-events: none;
+  z-index: 0;
+}
+.hex-card .hc-deco-1 {
+  width: 220px; height: 254px;
+  right: -60px; top: -40px;
+  opacity: 0.7;
+}
+.hex-card .hc-deco-2 {
+  width: 110px; height: 127px;
+  right: 80px; bottom: -30px;
+  opacity: 0.5;
+  background: var(--c-cobalt-200);
+}
+.hex-card .hc-deco-3 {
+  width: 56px; height: 65px;
+  right: 220px; top: 18px;
+  opacity: 0.5;
+  background: var(--c-cobalt-200);
+}
+@media (max-width: 720px) {
+  .hex-card .hc-deco-1 { right: -100px; top: -80px; }
+  .hex-card .hc-deco-2,
+  .hex-card .hc-deco-3 { display: none; }
+}
+
+/* CTA button used inside <ContactCta />. */
+.hc-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--c-blue-cobalt);
+  color: white;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  white-space: nowrap;
+}
+.hc-cta-button:hover {
+  background: var(--c-cobalt-900);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(13, 36, 78, 0.18);
+  color: white;
+}
+.hc-cta-button svg { color: var(--c-orange-knvb); }
+
+/* Outcomes list item — orange checkmark glyph. */
+.hc-outcome {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--c-cobalt-700);
+}
+.hc-outcome svg {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  color: var(--c-orange-knvb);
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Prerequisite list item — orange hex bullet. */
+.hc-prereq {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2);
+  align-items: start;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--c-cobalt-700);
+}
+.hc-prereq .hc-bullet {
+  width: 14px;
+  height: 14px;
+  margin-top: 6px;
+  background: var(--c-orange-knvb);
+  clip-path: var(--hex-pointy-top);
+  flex-shrink: 0;
+}
+
+.hc-outcome a, .hc-prereq a, .hex-card .hc-body a {
+  color: var(--c-blue-cobalt);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.hc-outcome a:hover, .hc-prereq a:hover, .hex-card .hc-body a:hover {
+  color: var(--c-cobalt-900);
+}
+.hc-outcome code, .hc-prereq code, .hex-card .hc-body code {
+  background: var(--c-cobalt-100);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 14px;
+  color: var(--c-cobalt-900);
+}

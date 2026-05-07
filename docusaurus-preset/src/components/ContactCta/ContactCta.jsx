@@ -2,11 +2,9 @@
  * <ContactCta />
  *
  * Soft tinted call-to-action panel for the bottom of academy
- * tutorials, docs pages, or any long-form content. Two-column
- * layout: title + body on the left, single primary action on the
- * right. A subtle pointy-top hex motif decorates the right edge
- * so the panel reads as a Conduction surface, not a generic blue
- * box.
+ * tutorials, docs pages, or any long-form content. Composed from
+ * <HexCard decoration> with a mail icon in the top-left badge and
+ * the primary CTA in the right-side actions slot.
  *
  * Tone: cobalt-50 ground, cobalt-900 type, cobalt-700 body, KNVB
  * orange reserved for the trailing arrow inside the CTA. One
@@ -34,41 +32,39 @@
  */
 
 import React from 'react';
+import HexCard from '../HexCard/HexCard';
 import styles from './ContactCta.module.css';
 
-export default function ContactCta({
-  title,
-  body,
-  cta,
-  className,
-}) {
-  const composed = [styles.panel, className].filter(Boolean).join(' ');
+function CtaButton({cta}) {
+  if (!cta) return null;
+  const isExternal = cta.href && /^https?:/.test(cta.href);
   return (
-    <aside className={composed}>
-      <span className={styles.hex1} aria-hidden="true" />
-      <span className={styles.hex2} aria-hidden="true" />
-      <span className={styles.hex3} aria-hidden="true" />
+    <a
+      className={styles.button}
+      href={cta.href || '#'}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noreferrer noopener' : undefined}
+    >
+      <span>{cta.label}</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" width="14" height="14"
+           fill="none" stroke="currentColor" strokeWidth="2"
+           strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  );
+}
 
-      <div className={styles.copy}>
-        {title && <h3 className={styles.title}>{title}</h3>}
-        {body && <p className={styles.body}>{body}</p>}
-      </div>
-
-      {cta && (
-        <a
-          className={styles.button}
-          href={cta.href || '#'}
-          target={cta.href && /^https?:/.test(cta.href) ? '_blank' : undefined}
-          rel={cta.href && /^https?:/.test(cta.href) ? 'noreferrer noopener' : undefined}
-        >
-          <span>{cta.label}</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true" width="14" height="14"
-               fill="none" stroke="currentColor" strokeWidth="2"
-               strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-      )}
-    </aside>
+export default function ContactCta({title, body, cta, className}) {
+  return (
+    <HexCard
+      title={title}
+      icon="mail"
+      decoration
+      actions={<CtaButton cta={cta} />}
+      className={className}
+    >
+      {body && <p>{body}</p>}
+    </HexCard>
   );
 }

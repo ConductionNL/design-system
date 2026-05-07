@@ -10,9 +10,10 @@
  *   - "What do I need before I start?"     (Prerequisites)
  *   - the actual tutorial body
  *
- * Visual: tinted card identical to <Prerequisites />, but each item
- * uses an orange checkmark glyph (achievement) instead of the orange
- * hex bullet (need). Same tone, distinct semantics.
+ * Visual: shared <HexCard> shell with a lightbulb icon in the
+ * top-left badge. Each item uses an orange checkmark glyph
+ * (achievement) instead of the orange hex bullet (need) used in
+ * <Prerequisites />. Same surface, distinct semantics.
  *
  * Usage:
  *
@@ -27,6 +28,7 @@
  */
 
 import React from 'react';
+import HexCard from '../HexCard/HexCard';
 import styles from './Outcomes.module.css';
 
 export function Outcome({children, className}) {
@@ -44,11 +46,9 @@ export function Outcome({children, className}) {
 }
 
 export default function Outcomes({title = "What you'll learn", children, className}) {
-  const composed = [styles.card, className].filter(Boolean).join(' ');
   return (
-    <aside className={composed}>
-      {title && <h2 className={styles.title}>{title}</h2>}
-      <ul className={styles.list}>{children}</ul>
-    </aside>
+    <HexCard title={title} icon="lightbulb" className={className}>
+      <ul>{children}</ul>
+    </HexCard>
   );
 }

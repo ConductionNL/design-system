@@ -1,0 +1,147 @@
+/**
+ * <HexCard /> styles. Tinted academy panel with a top-left hex
+ * badge, optional right-edge decorative hex motif, and an optional
+ * right-side actions slot.
+ *
+ * Layout:
+ *   [badge]  [head .................] [actions]
+ *            [body .........................  ]
+ *
+ * The badge column auto-sizes to the 56px hex; head spans the
+ * remaining width; body lives below the head and spans both
+ * non-action columns. The actions cell is only present when an
+ * <HexCard actions={…}> prop is passed (e.g. ContactCta button).
+ */
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "badge head"
+    "body  body";
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  align-items: start;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-7);
+  margin: var(--space-8) 0;
+  overflow: hidden;
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.hasActions {
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "badge head    actions"
+    "body  body    actions";
+  align-items: center;
+  column-gap: var(--space-5);
+}
+
+@media (max-width: 720px) {
+  .hasActions {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "badge   head"
+      "body    body"
+      "actions actions";
+  }
+  .card { padding: var(--space-5) var(--space-5); }
+}
+
+.badge {
+  grid-area: badge;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+}
+
+.head {
+  grid-area: head;
+  position: relative;
+  z-index: 1;
+  align-self: center;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-cobalt-900);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.body {
+  grid-area: body;
+  position: relative;
+  z-index: 1;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--c-cobalt-700);
+}
+
+.body > p { margin: 0; }
+.body > p + p { margin-top: var(--space-3); }
+.body > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.actions {
+  grid-area: actions;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Decorative pointy-top hexes layered on the right edge. Only
+   rendered when the parent passes <HexCard decoration>. They sit
+   behind copy via z-index 0 with everything else on z-index 1.
+   Pointy-top point-up — never rotated. */
+.deco {
+  position: absolute;
+  background: var(--c-cobalt-100);
+  clip-path: var(--hex-pointy-top);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.deco1 {
+  width: 220px;
+  height: 254px;
+  right: -60px;
+  top: -40px;
+  opacity: 0.7;
+}
+
+.deco2 {
+  width: 110px;
+  height: 127px;
+  right: 80px;
+  bottom: -30px;
+  opacity: 0.5;
+  background: var(--c-cobalt-200);
+}
+
+.deco3 {
+  width: 56px;
+  height: 65px;
+  right: 220px;
+  top: 18px;
+  opacity: 0.5;
+  background: var(--c-cobalt-200);
+}
+
+@media (max-width: 720px) {
+  .deco1 { right: -100px; top: -80px; }
+  .deco2, .deco3 { display: none; }
+}

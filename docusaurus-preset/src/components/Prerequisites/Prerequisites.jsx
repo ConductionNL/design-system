@@ -5,10 +5,10 @@
  * starting an academy tutorial. Replaces the ad-hoc "What you need"
  * h2 + bullet list pattern that was duplicated across tutorials.
  *
- * Each item renders with a small hex-bullet on the left so the list
- * reads as a checklist instead of generic prose. The card uses the
- * cobalt-50 tinted-surface tone, matching <FeatureList/> and
- * <FAQ/> on academy pages.
+ * Visual: shared <HexCard> shell with a clipboard icon in the
+ * top-left badge. Each item renders with a small orange hex-bullet
+ * on the left so the list reads as a checklist instead of generic
+ * prose.
  *
  * Usage:
  *
@@ -25,6 +25,7 @@
  */
 
 import React from 'react';
+import HexCard from '../HexCard/HexCard';
 import styles from './Prerequisites.module.css';
 
 export function PrerequisiteItem({children, className}) {
@@ -38,11 +39,9 @@ export function PrerequisiteItem({children, className}) {
 }
 
 export default function Prerequisites({title = 'What you need', children, className}) {
-  const composed = [styles.card, className].filter(Boolean).join(' ');
   return (
-    <aside className={composed}>
-      {title && <h2 className={styles.title}>{title}</h2>}
-      <ul className={styles.list}>{children}</ul>
-    </aside>
+    <HexCard title={title} icon="clipboard" className={className}>
+      <ul>{children}</ul>
+    </HexCard>
   );
 }

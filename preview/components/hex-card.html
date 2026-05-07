@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hex card, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<link rel="stylesheet" href="hex-card.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+  }
+  .frame { max-width: 880px; margin: 0 auto; display: grid; gap: 32px; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 8px;
+  }
+  .row-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: 0 0 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div>
+    <div class="frame-label">Hex card · the shared shell</div>
+    <p style="font-size: 16px; line-height: 1.6; color: var(--c-cobalt-700); max-width: 60ch; margin: 0 0 24px;">
+      Tinted academy panel with a top-left hex badge holding an icon. The shell behind <code>&lt;ContactCta /&gt;</code>, <code>&lt;Outcomes /&gt;</code>, and <code>&lt;Prerequisites /&gt;</code>. Use directly when the three preset wrappers don't fit.
+    </p>
+  </div>
+
+  <div>
+    <div class="row-label">Default · icon + title + body</div>
+    <aside class="hex-card">
+      <span class="hc-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3a6 6 0 0 0-4 10.5c.7.8 1 1.6 1 2.5v1h6v-1c0-.9.3-1.7 1-2.5A6 6 0 0 0 12 3z"/>
+          <path d="M9 18h6"/><path d="M10 21h4"/>
+        </svg>
+      </span>
+      <div class="hc-head">
+        <h3 class="hc-title">Default panel</h3>
+      </div>
+      <div class="hc-body">
+        <p>The minimum: a cobalt-50 surface, a cobalt-900 hex with white icon in the top-left, a 22px title, and a body row. Spans full width and stacks naturally below long-form content.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div>
+    <div class="row-label">With actions · right-side CTA slot</div>
+    <aside class="hex-card has-actions has-decoration">
+      <span class="hc-deco hc-deco-1" aria-hidden="true"></span>
+      <span class="hc-deco hc-deco-2" aria-hidden="true"></span>
+      <span class="hc-deco hc-deco-3" aria-hidden="true"></span>
+      <span class="hc-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="M3 7l9 7 9-7"/>
+        </svg>
+      </span>
+      <div class="hc-head"><h3 class="hc-title">With actions</h3></div>
+      <div class="hc-body"><p>Pass <code>actions</code> to render a right-side slot. Pair with <code>decoration</code> for the right-edge cobalt-100 hex motif.</p></div>
+      <div class="hc-actions">
+        <a class="hc-cta-button" href="#">
+          <span>Mail ons</span>
+          <svg viewBox="0 0 24 24" width="14" height="14"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;HexCard/&gt;</code></h2>
+  <p>The shared shell behind <code>&lt;ContactCta/&gt;</code>, <code>&lt;Outcomes/&gt;</code>, and <code>&lt;Prerequisites/&gt;</code>. Use those wrappers first; reach for <code>&lt;HexCard/&gt;</code> directly when you need the same surface for a one-off academy panel.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {HexCard} from '@conduction/docusaurus-preset/components';
+
+&lt;HexCard title="Wat je leert" icon="lightbulb"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Hoe je het canonieke Woo-register importeert&lt;/li&gt;
+    &lt;li&gt;Welke API-aanroepen horen bij elke stap&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/HexCard&gt;
+
+&lt;HexCard
+  title="Wil je meer weten?"
+  icon="mail"
+  decoration
+  actions={&lt;a className="..."&gt;Mail ons →&lt;/a&gt;}
+&gt;
+  &lt;p&gt;Mail ons. We helpen je in een halve dag op weg.&lt;/p&gt;
+&lt;/HexCard&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>title</code> string</li>
+    <li><code>icon</code> <code>"mail" | "lightbulb" | "clipboard"</code></li>
+    <li><code>iconNode</code> custom SVG (overrides icon)</li>
+    <li><code>decoration</code> boolean — right-edge hex motif</li>
+    <li><code>actions</code> ReactNode — right-side slot</li>
+    <li><code>children</code> ReactNode — body</li>
+    <li><code>as</code> tag override (default <code>aside</code>)</li>
+    <li><code>className</code> string</li>
+  </ul>
+</aside>
+
+</body>
+</html>

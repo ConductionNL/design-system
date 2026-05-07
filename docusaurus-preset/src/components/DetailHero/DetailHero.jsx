@@ -33,6 +33,10 @@
  *     iconColor="var(--c-blue-cobalt)"
  *     illustration={<AppMock app="mydash" />}
  *   />
+ *
+ * Each cta object also accepts `tone: "orange"` to flip the primary
+ * (or secondary) variant to the KNVB-orange accent. Reserved for
+ * product pages with an orange-leaning brand identity (mydash).
  */
 
 import React from 'react';
@@ -127,8 +131,24 @@ export default function DetailHero({
 
           {(primaryCta || secondaryCta || tertiaryCta) && (
             <div className={styles.actions}>
-              {primaryCta && <Button variant="primary" href={primaryCta.href}>{primaryCta.label}</Button>}
-              {secondaryCta && <Button variant="secondary" href={secondaryCta.href}>{secondaryCta.label}</Button>}
+              {primaryCta && (
+                <Button
+                  variant="primary"
+                  tone={primaryCta.tone}
+                  href={primaryCta.href}
+                >
+                  {primaryCta.label}
+                </Button>
+              )}
+              {secondaryCta && (
+                <Button
+                  variant="secondary"
+                  tone={secondaryCta.tone}
+                  href={secondaryCta.href}
+                >
+                  {secondaryCta.label}
+                </Button>
+              )}
               {tertiaryCta && <Button variant="ghost" href={tertiaryCta.href}>{tertiaryCta.label} →</Button>}
             </div>
           )}

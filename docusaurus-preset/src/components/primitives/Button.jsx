@@ -14,11 +14,17 @@
  *   - ghost:      plain text + arrow
  *   - on-dark:    primary variant inverted for use inside cobalt CTA panels
  *
+ * Tone (optional): override the primary/secondary fill colour. The
+ * brand default is cobalt; product pages with an orange-accent identity
+ * (e.g. mydash) pass `tone="orange"` to flip the primary CTA to
+ * KNVB-orange while keeping the rest of the brand chrome intact.
+ *
  * Usage:
  *
  *   <Button href="/apps">Install</Button>
  *   <Button variant="secondary" href="/partners">Get a demo</Button>
  *   <Button variant="ghost" href="https://github.com/...">View on GitHub →</Button>
+ *   <Button tone="orange" href="/install">Install from app store</Button>
  */
 
 import React from 'react';
@@ -26,6 +32,7 @@ import styles from './Button.module.css';
 
 export default function Button({
   variant = 'primary',
+  tone,
   href,
   size = 'md',
   className,
@@ -36,6 +43,7 @@ export default function Button({
     styles.btn,
     styles['v-' + variant],
     styles['s-' + size],
+    tone && styles['t-' + tone],
     className,
   ].filter(Boolean).join(' ');
 

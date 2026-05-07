@@ -125,6 +125,9 @@ const baseFooter = () => ({
  *   footer (per-property fallback: any of style/links/copyright the
  *     site omits keeps its brand default — pass `footer: { links: [...] }`
  *     to swap columns while inheriting the KvK/BTW copyright),
+ *   minigames (default true; set false to drop the brand canal-footer's
+ *     boat-sinking + kade-cyclist mini-games on product pages while
+ *     keeping the static skyline + canal decoration),
  *   customCss[] (appended to brand.css), plugins[], presets,
  *   i18n (overrides defaults)
  */
@@ -212,6 +215,26 @@ function createConfig(opts) {
             copyright: f.copyright || baseFooterCopyright(),
           };
         })(),
+        /* The brand canal-footer carries two interactive mini-games
+           (boat-sinking + kade-cyclist). They're a kit-flavour win on
+           the design-system showcase but distract on product-page
+           landings. Surface as a top-level themeConfig flag so the
+           Footer swizzle can drop the game DOM + lazy scripts when a
+           site opts out, while still keeping the static skyline +
+           canal decoration. Default true preserves prior behaviour. */
+        minigames: opts.minigames !== false,
+        /* Footer brand block (the wordmark + tagline + triad + socials
+           on the left of the canal-footer grid).
+             undefined  -> wordmark = 'Conduction' (product-page default;
+                          previously this fell back to the site title,
+                          which made every product-page footer wear the
+                          product's wordmark instead of the company's).
+             { wordmark: 'X' } -> single custom brand
+             { brands: [{wordmark, logo, href}, ...] } -> dual-brand row,
+                          rendered side by side. Used by product pages
+                          built jointly with a partner (mydash + Sendent
+                          is the first case). */
+        footerBrand: opts.footerBrand || null,
       },
       opts.themeConfig || {}
     ),

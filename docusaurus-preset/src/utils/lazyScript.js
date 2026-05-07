@@ -23,10 +23,18 @@
 import {useEffect} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 
+/**
+ * Pass a falsy `src` to skip the load entirely. The hook still runs
+ * unconditionally so call sites stay rules-of-hooks-compliant: the
+ * Footer swizzle uses this to gate /lib/kade-cyclist.js behind the
+ * `minigames` themeConfig flag without splitting into conditional
+ * hook calls.
+ */
 export function useLazyScript(src, key) {
   const isBrowser = useIsBrowser();
   useEffect(() => {
     if (!isBrowser) return;
+    if (!src) return;
     if (document.querySelector(`script[data-lazy-script="${key}"]`)) return;
     const script = document.createElement('script');
     script.src = src;

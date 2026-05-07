@@ -60,6 +60,8 @@ The function returns a complete Docusaurus config with brand defaults pre-applie
 | `i18n` |  | nl / en / de / fr, NL default | Override the brand-default i18n block. |
 | `navbar` |  | locale dropdown + GitHub | Merged into the brand-default navbar object. |
 | `footer` |  | three-column link grid + KvK/BTW copyright | Per-property fallback: any of `style` / `links` / `copyright` you omit keeps the brand default. Pass `footer: { links: [...] }` to swap columns and inherit the brand copyright. |
+| `footerBrand` |  | `{ wordmark: 'Conduction' }` | Overrides the wordmark in the canal-footer's left brand block. Pass `{ wordmark: 'X' }` for a single brand or `{ brands: [{wordmark, logo, href}, ...] }` for product pages co-built with a partner (rendered side by side). |
+| `minigames` |  | `true` | Set `false` to drop the brand canal-footer's boat-sinking + kade-cyclist mini-games on product pages. The static skyline + canal decoration are kept. |
 | `customCss` |  | `[]` | Site-specific CSS, appended to `brand.css`. |
 | `presets` |  | `[['classic', …]]` | Replaces the default preset list. |
 | `plugins` |  | `[]` | Docusaurus plugins. |

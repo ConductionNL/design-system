@@ -45,24 +45,44 @@ function FooterLink({label, href, to}) {
 }
 
 export default function Footer() {
-  const {footer, navbar} = useThemeConfig();
+  const themeConfig = useThemeConfig();
+  const {footer, navbar} = themeConfig;
+  /* `minigames` and `footerBrand` are top-level themeConfig flags
+     surfaced through createConfig() opts. See createConfig() in
+     ../../index.js for the option semantics. */
+  const minigamesOn = themeConfig.minigames !== false;
+  const footerBrand = themeConfig.footerBrand || null;
+
   const location = useLocation();
   /* Brand switch follows the pathname: /connext or /commonground sections
      show their styled wordmark and slot themselves into the triad row.
-     Outside sub-brand sections the wordmark falls back to the navbar
-     title (the parent brand, typically "Conduction"). */
+     Outside sub-brand sections the wordmark defaults to "Conduction"
+     for the company anchor. Sites can override the default via
+     `themeConfig.footerBrand = { wordmark: '...' }`, or render a dual
+     brand row via `{ brands: [{wordmark, logo, href}, ...] }` for
+     product pages co-branded with a partner. The legacy fallback to
+     `navbar.title` was misleading on product-page footers (mydash
+     showing "MyDash" rather than "Conduction"); the company-anchor
+     reading wins. */
   const brand = brandFor(location.pathname, navbar?.title);
-  const wordmark = brand ? brand.wordmark : (navbar?.title || 'Conduction');
+  const defaultWordmark = footerBrand?.wordmark || 'Conduction';
+  const wordmark = brand ? brand.wordmark : defaultWordmark;
+  const brandRow = !brand && Array.isArray(footerBrand?.brands) ? footerBrand.brands : null;
 
   /* canal-footer.js is loaded post-hydration so its DOM mutations
      (filling .skyline, animating boats) don't trip React hydration
-     mismatches. See docs in utils/lazyScript.js. */
+     mismatches. See docs in utils/lazyScript.js. We always load
+     canal-footer.js even when minigames are off, because the same
+     script populates the static skyline; canal-footer.js is null-safe
+     against a missing game-hud, so the game wiring no-ops cleanly. */
   useLazyScript('/lib/canal-footer.js', 'canal-footer');
 
-  /* kade-cyclist.js is the second hidden footer minigame. It listens for
-     clicks on .ki-bike-1 / .ki-bike-2 inside the kade strip and runs a
-     dodge-the-traffic round in parallel with the boat game. */
-  useLazyScript('/lib/kade-cyclist.js', 'kade-cyclist');
+  /* kade-cyclist.js is the second hidden footer minigame. Unlike the
+     canal script it has no static side-effects, so when a product page
+     opts out of minigames we feed `useLazyScript` a falsy src to skip
+     the load. The hook still runs unconditionally — rules-of-hooks
+     stays compliant. */
+  useLazyScript(minigamesOn ? '/lib/kade-cyclist.js' : null, 'kade-cyclist');
 
   /* Re-hydrate the canal-footer + kade-cyclist runtimes on every mount,
      including SPA route changes that re-render this Footer component.
@@ -80,14 +100,17 @@ export default function Footer() {
     function tryHydrate() {
       if (cancelled) return;
       const canalReady = !!window.CanalFooter?.hydrate;
-      const kadeReady  = !!window.KadeCyclist?.hydrate;
+      /* When minigames are off, kade-cyclist.js was never loaded, so
+         polling for it would loop forever. Treat it as ready in that
+         case so the loop exits after canal-footer is wired. */
+      const kadeReady  = !minigamesOn || !!window.KadeCyclist?.hydrate;
       if (canalReady) window.CanalFooter.hydrate();
-      if (kadeReady)  window.KadeCyclist.hydrate();
+      if (kadeReady && minigamesOn) window.KadeCyclist.hydrate();
       if (!canalReady || !kadeReady) requestAnimationFrame(tryHydrate);
     }
     tryHydrate();
     return () => { cancelled = true; };
-  }, [isBrowser, location.pathname]);
+  }, [isBrowser, location.pathname, minigamesOn]);
 
   if (!footer) return null;
   const {links = [], copyright} = footer;
@@ -219,23 +242,30 @@ export default function Footer() {
             </svg>
           </div>
 
-          {/* Mini-game HUD: timer + counter */}
-          <div className="game-hud" aria-live="polite" aria-label="Boat-sinking mini game">
-            <div className="hud-block hud-counter">
-              <span className="hud-num" data-counter="">100</span>
-              <span className="hud-label">Boats left</span>
-            </div>
-            <div className="hud-block hud-timer">
-              <span className="hud-num" data-timer="">60</span>
-              <span className="hud-label">Seconds</span>
-            </div>
-          </div>
+          {/* Mini-game HUD + game-over dialog + restart button. canal-footer.js
+              wires these via querySelector; the script's null-guards (added in
+              the same change) let it skip game initialisation cleanly when
+              they're absent on a product page. */}
+          {minigamesOn && (
+            <>
+              <div className="game-hud" aria-live="polite" aria-label="Boat-sinking mini game">
+                <div className="hud-block hud-counter">
+                  <span className="hud-num" data-counter="">100</span>
+                  <span className="hud-label">Boats left</span>
+                </div>
+                <div className="hud-block hud-timer">
+                  <span className="hud-num" data-timer="">60</span>
+                  <span className="hud-label">Seconds</span>
+                </div>
+              </div>
 
-          <div className="game-over" role="dialog" aria-label="Mini game over">
-            <p className="go-title" data-go-title="">Time's up</p>
-            <p className="go-stat"><span data-go-sunk="">0</span> sunk</p>
-            <button type="button" data-restart="">Play again</button>
-          </div>
+              <div className="game-over" role="dialog" aria-label="Mini game over">
+                <p className="go-title" data-go-title="">Time's up</p>
+                <p className="go-stat"><span data-go-sunk="">0</span> sunk</p>
+                <button type="button" data-restart="">Play again</button>
+              </div>
+            </>
+          )}
 
           <svg className="canal-waves" viewBox="0 0 1400 500" preserveAspectRatio="none" aria-hidden="true">
             <path className="w1" d="M 0,96 L 140,82 L 280,96 L 420,82 L 560,96 L 700,82 L 840,96 L 980,82 L 1120,96 L 1260,82 L 1400,96"/>
@@ -245,7 +275,43 @@ export default function Footer() {
 
           <div className="footer-grid">
             <div className="brand">
-              <div className="wm">{wordmark}</div>
+              {brandRow ? (
+                /* Dual-brand row: product pages co-built with a partner
+                   render both wordmarks/logos side by side. The triad
+                   below grows a partner segment in the same order. */
+                <div
+                  className="wm-row"
+                  style={{display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap'}}
+                >
+                  {brandRow.map((b, i) => {
+                    const inner = b.logo ? (
+                      <img
+                        src={b.logo}
+                        alt={b.wordmark}
+                        style={{height: 32, width: 'auto', display: 'block'}}
+                      />
+                    ) : (
+                      <span className="wm">{b.wordmark}</span>
+                    );
+                    return b.href ? (
+                      <a
+                        key={i}
+                        href={b.href}
+                        target={b.href.startsWith('http') ? '_blank' : undefined}
+                        rel={b.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        aria-label={b.wordmark}
+                        style={{textDecoration: 'none'}}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <React.Fragment key={i}>{inner}</React.Fragment>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="wm">{wordmark}</div>
+              )}
               <p>
                 Open-source apps for <span className="next-blue">Nextcloud</span>. Built and
                 maintained by Conduction in Amsterdam, released under EUPL-1.2.
@@ -253,7 +319,14 @@ export default function Footer() {
               <div className="triad">
                 <span>
                   <span className="h"></span>
-                  Conduction{brand && <> · {brand.label}</>} · <span className="next-blue">Nextcloud</span>
+                  Conduction
+                  {brand && <> · {brand.label}</>}
+                  {brandRow && brandRow
+                    .filter((b) => b.wordmark && b.wordmark !== 'Conduction')
+                    .map((b, i) => (
+                      <React.Fragment key={i}> · {b.wordmark}</React.Fragment>
+                    ))}
+                  {' '}· <span className="next-blue">Nextcloud</span>
                 </span>
               </div>
               <div className="socials">
@@ -330,13 +403,20 @@ export default function Footer() {
 
       {/* Hidden templates cloned by canal-footer.js to populate the
           skyline (5 trapgevel variants) and to spawn boats during the
-          mini-game (sailing ship, cargo, frigate, battleship boss). */}
-      <FooterTemplates />
+          mini-game (sailing ship, cargo, frigate, battleship boss).
+          When minigames are off the boat templates aren't reachable
+          anyway (canal-footer.js's game wiring is null-guarded), but
+          dropping them shaves a few KB of inline SVG from the SSR
+          payload on product pages. */}
+      <FooterTemplates includeBoats={minigamesOn} />
 
       {/* Cross-game completion dialog. Listens for connext:gameend (HexRain,
           canal mini-game) and reports the result with replay + cross-game
-          progress. Position: fixed via CSS module so it overlays the page. */}
-      <GameModal />
+          progress. Position: fixed via CSS module so it overlays the page.
+          Only mounted when minigames are on so a product page doesn't
+          carry the dialog DOM + listeners for an interaction it can't
+          trigger. */}
+      {minigamesOn && <GameModal />}
     </>
   );
 }
@@ -347,17 +427,22 @@ export default function Footer() {
    via .content. Because JSX puts children directly under the template
    instead of in its .content DocumentFragment, we inject the templates
    as raw HTML so the browser's HTML parser slots them correctly. */
-function FooterTemplates() {
+function FooterTemplates({includeBoats = true}) {
+  const html = HOUSE_TEMPLATES_HTML + (includeBoats ? BOAT_TEMPLATES_HTML : '');
   return (
     <div
       style={{display: 'none'}}
       aria-hidden="true"
-      dangerouslySetInnerHTML={{__html: TEMPLATES_HTML}}
+      dangerouslySetInnerHTML={{__html: html}}
     />
   );
 }
 
-const TEMPLATES_HTML = `
+/* Skyline templates (5 trapgevel variants). canal-footer.js queries
+   #tpl-h-a … #tpl-h-e to clone them across the skyline width. Always
+   shipped — the static skyline is part of the brand decoration even
+   on product pages that opt out of minigames. */
+const HOUSE_TEMPLATES_HTML = `
       <template id="tpl-h-a">
         <svg class="house h-a" viewBox="0 -2 80 202" xmlns="http://www.w3.org/2000/svg">
           <path d="M 0,200 L 0,38 L 8,38 L 8,26 L 16,26 L 16,14 L 24,14 L 24,8 L 56,8 L 56,14 L 64,14 L 64,26 L 72,26 L 72,38 L 80,38 L 80,200 Z" fill="var(--c-orange-knvb)"/>
@@ -426,7 +511,14 @@ const TEMPLATES_HTML = `
           <rect x="39.5" y="175" width="16" height="34" fill="rgba(11,32,73,0.55)"/>
         </svg>
       </template>
+`;
 
+/* Boat templates (sailing ship, cargo, frigate, battleship boss).
+   canal-footer.js spawns these as the boat-sinking mini-game escalates;
+   when a site opts out of minigames the script's null-guard skips
+   spawning and these templates are unreachable, so they're elided
+   from the SSR payload. */
+const BOAT_TEMPLATES_HTML = `
       <template id="tpl-ship-sailing">
         <svg class="ci ci-sailing" width="100" height="60" viewBox="-4 -42 108 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M 0,12 L 6,16 L 90,16 L 96,12 L 96,8 L 0,8 Z" fill="var(--c-orange-knvb)"/>

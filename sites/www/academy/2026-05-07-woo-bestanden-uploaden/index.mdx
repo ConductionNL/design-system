@@ -112,7 +112,7 @@ De respons is een array met één element:
 ]
 ```
 
-> **Let op: gebruik `files[]`, niet `file`.** Gebruik altijd `files[]` als veldnaam, ook voor één bestand. De alternatieve veldnaam `file` is bekend instabiel in de huidige OpenRegister-versie en geeft een 500-fout. Houd je aan `files[]` en je werkt rond het probleem.
+> **`files[]` werkt voor één en voor meerdere bestanden.** Het endpoint accepteert ook een enkelvoudig `file=`-veld, maar `files[]` is consistenter: precies dezelfde aanroep schaalt door naar Mode 3 hieronder zonder dat je je veldnaam hoeft aan te passen.
 
 ## Mode 3: meerdere bestanden in één request
 
@@ -295,8 +295,6 @@ curl -u admin:admin \
 Voor de meeste Woo-publicaties pak je Mode 2 of 3. Pas op het moment dat een bestand groter dan 100 MB binnenkomt, schakel je over naar Mode 4.
 
 ## Probleemoplossing
-
-**500 op `filesMultipart` met `file=`-veld:** gebruik `files[]=` in plaats van `file=`. Het `file`-pad in de huidige versie van OpenRegister normaliseert het verzoek niet correct.
 
 **`The uploaded file exceeds upload_max_filesize`:** verhoog `upload_max_filesize` en `post_max_size` in `php.ini`, of stap over op Mode 4.
 

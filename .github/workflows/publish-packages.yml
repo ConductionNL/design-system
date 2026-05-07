@@ -1,87 +1,84 @@
 name: Publish package
 
-# Auto-publish @conduction/docusaurus-preset to npm on every push to main,
-# IF the version in docusaurus-preset/package.json differs from the version
-# already on the registry. To release: bump the version field, commit, push.
-# The workflow detects the bump and publishes; pushes that don't bump the
-# version are no-ops.
+# Auto-publish @conduction/docusaurus-preset to npm via semantic-release.
 #
-# Authentication uses npm's Trusted Publisher (OIDC) flow: the runner mints
-# a short-lived ID token, npm validates the {repo, workflow} claim against
+# Trigger: every push to main. semantic-release reads conventional-commit
+# messages since the last `docusaurus-preset-v*` tag and decides what to
+# release:
+#   feat:        -> minor bump
+#   fix:         -> patch bump
+#   feat!: / BREAKING CHANGE: footer -> major bump
+#   anything else -> no release
+#
+# Path filtering: `semantic-release-monorepo` (configured via `extends` in
+# docusaurus-preset/.releaserc.json) restricts the commit scan to commits
+# that touched files inside docusaurus-preset/. Edits to preview/, sites/,
+# brand/, etc. never trigger a release.
+#
+# Authentication: npm Trusted Publisher (OIDC). The runner mints a
+# short-lived ID token, npm validates the {repo, workflow} claim against
 # its trust config, and issues a one-shot publish token. No NPM_TOKEN
-# secret to rotate. Provenance attestations are signed automatically.
+# secret to rotate. Provenance attestations are signed automatically
+# (NPM_CONFIG_PROVENANCE=true).
 #
-# Trust config is set on the npm package settings page; it expects this
-# workflow to live at the path `.github/workflows/publish-packages.yml`
-# in `ConductionNL/design-system`. If you rename or move this file, update
-# the npm Trusted Publisher config to match.
+# Why @semantic-release/exec instead of @semantic-release/npm publishing
+# directly: as of v12.0.2, @semantic-release/npm has no OIDC awareness and
+# its `verify-auth` step refuses to run without an NPM_TOKEN. We set
+# `npmPublish: false` on that plugin (which only does the in-place version
+# bump in package.json) and run the OIDC publish via @semantic-release/exec
+# in the same publish lifecycle. The plugin invokes `npx -y npm@latest`
+# because Node 22's bundled npm 10.9 is too old for OIDC (need >=11.5.1)
+# and an in-place `npm install -g npm@latest` hits a promise-retry
+# MODULE_NOT_FOUND race; npx sidesteps both.
 #
-# A tag push (`v*`) and a manual workflow_dispatch (with optional dry-run)
-# are also accepted, mostly for explicit republishes and emergency holds.
+# Trust config on npmjs.com expects this workflow at the path
+# `.github/workflows/publish-packages.yml` in `ConductionNL/design-system`.
+# If you rename or move this file, update the npm Trusted Publisher config.
 #
-# The diagrams runtime (cn-hex, cn-platform, etc.) ships inside the same
-# package under the /diagrams subpath, so there is exactly one release.
+# Tag format is `docusaurus-preset-v${version}` (semantic-release-monorepo
+# default), so any future second package can ship from the same repo
+# without tag clashes.
 
 on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Run npm publish --dry-run only'
+        description: 'Run semantic-release --dry-run only (no publish, no tag, no release)'
         type: boolean
         default: false
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write    # required for npm Trusted Publisher (OIDC)
+      contents: write    # @semantic-release/github creates the GitHub release + tag via API
+      id-token: write    # npm Trusted Publisher (OIDC) + provenance attestation
+    env:
+      NPM_CONFIG_PROVENANCE: 'true'
     steps:
+      # semantic-release walks every commit since the last tag, so we need
+      # the full history (default checkout depth is 1).
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Trusted Publisher OIDC requires npm CLI >= 11.5.1 and Node >= 22.14.
-      # Node 22 ships npm 10.9 (too old). `npm install -g npm@latest` hits
-      # the promise-retry MODULE_NOT_FOUND race when reifying over the
-      # in-place install, so we run the publish through `npx npm@latest`
-      # instead. That fetches a fresh npm binary into the npx cache and
-      # leaves the system npm alone.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
-      # `npm install` rather than `npm ci`, because package-lock.json is
-      # gitignored (the design-system monorepo doesn't pin transitive
-      # versions). The publish step itself does not need node_modules,
-      # but a clean install warms the workspace resolution that
-      # `npm publish --workspace` relies on.
       - run: npm install --no-audit --no-fund
 
-      - name: Check whether version on main is already published
-        id: version
-        run: |
-          LOCAL=$(node -p "require('./docusaurus-preset/package.json').version")
-          PUBLISHED=$(npm view @conduction/docusaurus-preset version 2>/dev/null || echo "none")
-          echo "local=$LOCAL" >> "$GITHUB_OUTPUT"
-          echo "published=$PUBLISHED" >> "$GITHUB_OUTPUT"
-          if [ "$LOCAL" = "$PUBLISHED" ]; then
-            echo "match=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Version $LOCAL already on npm; skipping publish."
-          else
-            echo "match=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Local $LOCAL differs from published $PUBLISHED; will publish."
-          fi
-
-      - name: Publish @conduction/docusaurus-preset
-        if: steps.version.outputs.match == 'false'
+      - name: semantic-release
+        working-directory: docusaurus-preset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
-            npx -y npm@latest publish --workspace @conduction/docusaurus-preset --access public --dry-run
+            npx semantic-release --dry-run
           else
-            npx -y npm@latest publish --workspace @conduction/docusaurus-preset --access public --provenance
+            npx semantic-release
           fi

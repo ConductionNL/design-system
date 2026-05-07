@@ -17,7 +17,24 @@
  *   <DetailHero appId="openregister" ... />   // looks up downloads automatically
  */
 
-import data from '../../../data/app-downloads.json';
+/* The JSON lives at design-system/data/app-downloads.json — three
+   levels up from this file inside the monorepo. When the preset is
+   installed via npm into a consumer site, that path resolves outside
+   the package directory and webpack 404s the import. Wrap in
+   require + try/catch so the consumer build falls back to an empty
+   stats payload instead of failing the whole build over a missing
+   download counter. */
+let data;
+try {
+  // eslint-disable-next-line global-require, import/no-unresolved
+  data = require('../../../data/app-downloads.json');
+} catch (e) {
+  data = {
+    generated_at: null,
+    totals: { downloads: 0, apps_total: 0, apps_in_store: 0 },
+    apps: [],
+  };
+}
 
 export default data;
 

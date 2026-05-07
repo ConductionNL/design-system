@@ -139,9 +139,18 @@ This is how product sites such as `mydash.conduction.nl/docs/...` adopt the bran
 
 ## Releasing
 
-Releases auto-publish on push to `main`. The [.github/workflows/publish-packages.yml](../.github/workflows/publish-packages.yml) workflow compares the version in this `package.json` against what's on `registry.npmjs.org`. Bump the version, push, the workflow publishes. No bump means no publish — the workflow exits cleanly. Tag pushes (`v*`) and manual `workflow_dispatch` runs (with an optional dry-run flag) are accepted for explicit republishes and emergency holds.
+Releases auto-publish on push to `main`, driven by [semantic-release](https://semantic-release.gitbook.io/) reading [conventional-commit](https://www.conventionalcommits.org/) messages. The [.github/workflows/publish-packages.yml](../.github/workflows/publish-packages.yml) workflow walks every commit since the last `@conduction/docusaurus-preset-v*` tag and decides what to ship:
 
-The diagram primitives ship inside the same tarball under `src/diagrams/`, so there is exactly one npm release per push.
+| Commit prefix | Release |
+| --- | --- |
+| `feat:` | minor bump |
+| `fix:` | patch bump |
+| `feat!:` or `BREAKING CHANGE:` footer | major bump |
+| anything else (`chore:`, `docs:`, `refactor:`, …) | no release |
+
+Path filtering via [semantic-release-monorepo](https://github.com/pmowrer/semantic-release-monorepo) restricts the commit scan to commits that touched files inside `docusaurus-preset/`. Edits to `preview/`, `sites/`, `brand/`, etc. never trigger a release. The diagram primitives ship inside the same tarball under `src/diagrams/`, so there is exactly one npm release per qualifying push.
+
+A manual `workflow_dispatch` is also accepted, with an optional `dry_run` flag that runs `semantic-release --dry-run` (no publish, no tag, no release) — useful for sanity-checking the next-version decision before merging a feature branch.
 
 **One-time setup**: configure the npm Trusted Publisher (OIDC) link.
 
@@ -159,16 +168,17 @@ That's it. There is no token to generate, no secret to install, no expiry to tra
 **Per release:**
 
 ```bash
-# Bump the preset version. The diagrams source ships inside the preset,
-# so there is one version to bump.
-$EDITOR docusaurus-preset/package.json   # "version": "0.2.0"
+# Make a change inside docusaurus-preset/ and commit with a conventional prefix.
+$EDITOR docusaurus-preset/src/components/Hero.jsx
 
-git add docusaurus-preset/package.json
-git commit -m "Bump @conduction/docusaurus-preset to 0.2.0"
-git push origin main   # the workflow detects the bump and publishes
+git add docusaurus-preset/src/components/Hero.jsx
+git commit -m "feat: add tagline slot to Hero"
+git push origin main   # semantic-release decides + publishes
 ```
 
-The workflow runs `npm publish --workspace @conduction/docusaurus-preset --access public`. Watch the run on the Actions tab. If it fails, fix the issue, bump the patch (`0.2.1`), push again — npm rejects re-publishing the same version, so a single failed run can't block a corrected re-bump.
+`package.json#version` on `main` stays stale on purpose — semantic-release uses the `@conduction/docusaurus-preset-v*` tag stream as its source of truth and bumps `package.json` in-place during the publish run without committing it back. The version on npm and the GitHub Releases page are authoritative; the field in `main`'s `package.json` only matters during a publish.
+
+If a publish fails mid-run, fix the issue and push another commit — `semantic-release` will retry the bump on the next run. npm rejects re-publishing the same version, so the next attempt picks the following patch.
 
 ## License
 

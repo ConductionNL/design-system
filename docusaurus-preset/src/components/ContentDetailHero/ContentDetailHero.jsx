@@ -103,6 +103,18 @@ export default function ContentDetailHero({
       )}
 
       {title && <h1 className={styles.title}>{title}</h1>}
+
+      <div className={styles.cover}>
+        <span className={styles.watermark} aria-hidden="true" />
+        {cover && cover.src
+          ? <img src={cover.src} alt={cover.alt || ''} className={styles.coverImg} />
+          : (
+            <HexThumbnail size="xl" tone={cover && cover.tone || 'cobalt'}>
+              {cover && cover.icon}
+            </HexThumbnail>
+          )}
+      </div>
+
       {summary && <p className={styles.summary}>{summary}</p>}
 
       {(author || date || duration) && (
@@ -120,17 +132,6 @@ export default function ContentDetailHero({
           {duration && <span className={styles.duration}>{duration}</span>}
         </div>
       )}
-
-      <div className={styles.cover}>
-        <span className={styles.watermark} aria-hidden="true" />
-        {cover && cover.src
-          ? <img src={cover.src} alt={cover.alt || ''} className={styles.coverImg} />
-          : (
-            <HexThumbnail size="xl" tone={cover && cover.tone || 'cobalt'}>
-              {cover && cover.icon}
-            </HexThumbnail>
-          )}
-      </div>
     </section>
   );
 }

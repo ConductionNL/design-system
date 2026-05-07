@@ -102,3 +102,4 @@ export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHer
 export {default as Prerequisites, PrerequisiteItem} from './Prerequisites/Prerequisites.jsx';
 export {default as Troubleshooting, TroubleshootingItem} from './Troubleshooting/Troubleshooting.jsx';
 export {default as NextSteps, NextStep} from './NextSteps/NextSteps.jsx';
+export {default as ContactCta} from './ContactCta/ContactCta.jsx';

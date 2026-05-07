@@ -99,7 +99,13 @@ export default function Navbar() {
   const rightItems = items.filter(i => i.position === 'right' || i.type === 'localeDropdown');
 
   return (
-    <nav className={styles.nav} role="navigation" aria-label="Main">
+    /* `navbar` (Docusaurus's framework class) is added alongside the
+       brand styles.nav so the internal scroll-anchor offset query
+       `document.querySelector('.navbar').clientHeight` resolves. The
+       previous JS-only class swizzle made every doc page crash with
+       "Cannot read properties of null (reading 'clientHeight')" the
+       moment Docusaurus ran its anchor logic on a heading scroll. */
+    <nav className={`navbar ${styles.nav}`} role="navigation" aria-label="Main">
       <div className={styles.left}>
         <Link to={homeHref} className={styles.wordmark}>
           {wordmark}

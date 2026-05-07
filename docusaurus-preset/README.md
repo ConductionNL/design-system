@@ -11,7 +11,7 @@ Source lives inside the [design-system monorepo](https://github.com/ConductionNL
 - **Brand CSS** — tokens (cobalt palette, KNVB orange, Plex Mono, hex clip-paths, Common Ground yellow) auto-applied to Docusaurus's Infima theme variables. Navbar, footer, sidebar, buttons, code blocks all inherit the brand without a single swizzle.
 - **i18n config** — four locales pinned: NL default at the URL root, EN/DE/FR at `/en/`, `/de/`, `/fr/`. `htmlLang` per locale, `trailingSlash: true`, locale dropdown ready.
 - **Brand-default navbar** — locale-dropdown + GitHub link. Sites override `items[]` for site-specific navigation.
-- **Brand-default footer** — three-column link grid + Conduction-tells (KvK, BTW, address). Sites override per page or globally.
+- **Brand-default footer** — three-column link grid + Conduction-tells (KvK, BTW, address). Per-property override: pass `footer: { links: [...] }` to swap columns and inherit the brand copyright unchanged. Spread `baseFooterLinks()` to keep one or two brand columns alongside site-specific ones.
 - **Sensible defaults** — `trailingSlash`, `onBrokenLinks: 'warn'`, `respectPrefersColorScheme`, dark-mode brand mapping.
 
 ## Usage
@@ -59,7 +59,7 @@ The function returns a complete Docusaurus config with brand defaults pre-applie
 | `projectName` |  | `'design-system'` | GitHub repo. |
 | `i18n` |  | nl / en / de / fr, NL default | Override the brand-default i18n block. |
 | `navbar` |  | locale dropdown + GitHub | Merged into the brand-default navbar object. |
-| `footer` |  | three-column link grid | Replaces the brand-default footer. |
+| `footer` |  | three-column link grid + KvK/BTW copyright | Per-property fallback: any of `style` / `links` / `copyright` you omit keeps the brand default. Pass `footer: { links: [...] }` to swap columns and inherit the brand copyright. |
 | `customCss` |  | `[]` | Site-specific CSS, appended to `brand.css`. |
 | `presets` |  | `[['classic', …]]` | Replaces the default preset list. |
 | `plugins` |  | `[]` | Docusaurus plugins. |
@@ -67,7 +67,23 @@ The function returns a complete Docusaurus config with brand defaults pre-applie
 | `editUrl` |  | undefined | Edit-this-doc link. |
 | `blog` |  | enabled | Set `false` to disable the blog plugin. |
 
-Also exported: `I18N`, `baseNavbar(siteName)`, `baseFooter()` for sites that want to compose manually.
+Also exported: `I18N`, `baseNavbar(siteName)`, `baseFooter()`, `baseFooterLinks()`, `baseFooterCopyright()` for sites that want to compose manually. Common pattern on a product page: pass site-specific columns plus the Conduction column from the brand default:
+
+```js
+const { createConfig, baseFooterLinks } = require('@conduction/docusaurus-preset');
+
+module.exports = createConfig({
+  // …
+  footer: {
+    links: [
+      { title: 'MyProduct', items: [/* …site links */] },
+      // Spread the brand "Conduction" column to keep the corporate anchor.
+      ...baseFooterLinks().filter((c) => c.title === 'Conduction'),
+    ],
+    // copyright: omitted -> brand KvK/BTW/IBAN inherits.
+  },
+});
+```
 
 ## Brand CSS exports
 

@@ -54,39 +54,64 @@ const baseNavbar = (siteName) => ({
 });
 
 /**
- * Brand-default footer. Cobalt-900 panel with three-column link grid +
- * the standard Conduction tells (KvK, BTW, EUPL/MIT licence).
+ * Brand-default footer columns (the "links" array).
+ *
+ * Three corporate columns rendered on the cobalt-900 footer panel.
+ * Sites override these wholesale by passing `footer.links` to
+ * createConfig(); a site that wants to keep just one brand column
+ * (e.g. only "Conduction" on a product-page footer) can spread the
+ * filtered output of this function into their own array. The other
+ * footer fields (style, copyright) keep their brand defaults
+ * independently.
+ */
+const baseFooterLinks = () => [
+  {
+    title: 'Product',
+    items: [
+      { label: 'ConNext', href: 'https://conduction.nl/connext' },
+      { label: 'Common Ground', href: 'https://conduction.nl/commonground' },
+      { label: 'App store', href: 'https://apps.conduction.nl/' },
+      { label: 'Common Ground hosting', href: 'https://commonground.nu/' },
+    ],
+  },
+  {
+    title: 'Conduction',
+    items: [
+      { label: 'About', href: 'https://conduction.nl/about' },
+      { label: 'Open source', href: 'https://conduction.nl/about#opensource' },
+      { label: 'Team', href: 'https://conduction.nl/about#team' },
+      { label: 'ISO', href: 'https://conduction.nl/iso' },
+    ],
+  },
+  {
+    title: 'Documentatie',
+    items: [
+      { label: 'Brand book', href: 'https://connext.conduction.nl/' },
+      { label: 'Diagram set', href: 'https://connext.conduction.nl/diagrams/' },
+    ],
+  },
+];
+
+/**
+ * Brand-default footer copyright string. KvK + BTW + IBAN + address are
+ * the legal anchor that every Conduction-branded site needs to render
+ * regardless of which product-specific columns the footer shows above
+ * it. Sites override this only for non-Conduction surfaces (rare); on
+ * product pages it inherits unchanged.
+ */
+const baseFooterCopyright = () =>
+  `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · IBAN NL51 ABNA 0868951550 · Lauriergracht 14h, 1016 RR Amsterdam · ${new Date().getFullYear()}`;
+
+/**
+ * Brand-default footer (full object). Backward-compatible shim for
+ * older sites that called `baseFooter()` directly; new callers should
+ * compose with `baseFooterLinks` / `baseFooterCopyright` so per-property
+ * overrides keep working.
  */
 const baseFooter = () => ({
   style: 'dark',
-  links: [
-    {
-      title: 'Product',
-      items: [
-        { label: 'ConNext', href: 'https://conduction.nl/connext' },
-        { label: 'Common Ground', href: 'https://conduction.nl/commonground' },
-        { label: 'App store', href: 'https://apps.conduction.nl/' },
-        { label: 'Common Ground hosting', href: 'https://commonground.nu/' },
-      ],
-    },
-    {
-      title: 'Conduction',
-      items: [
-        { label: 'About', href: 'https://conduction.nl/about' },
-        { label: 'Open source', href: 'https://conduction.nl/about#opensource' },
-        { label: 'Team', href: 'https://conduction.nl/about#team' },
-        { label: 'ISO', href: 'https://conduction.nl/iso' },
-      ],
-    },
-    {
-      title: 'Documentatie',
-      items: [
-        { label: 'Brand book', href: 'https://connext.conduction.nl/' },
-        { label: 'Diagram set', href: 'https://connext.conduction.nl/diagrams/' },
-      ],
-    },
-  ],
-  copyright: `Conduction B.V. · KvK 76741850 · BTW NL860784241B01 · IBAN NL51 ABNA 0868951550 · Lauriergracht 14h, 1016 RR Amsterdam · ${new Date().getFullYear()}`,
+  links: baseFooterLinks(),
+  copyright: baseFooterCopyright(),
 });
 
 /**
@@ -97,8 +122,11 @@ const baseFooter = () => ({
  *
  * Optional:
  *   organizationName, projectName, navbar (deep-merged into base),
- *   footer (replaces base), customCss[] (appended to brand.css),
- *   plugins[], presets, i18n (overrides defaults)
+ *   footer (per-property fallback: any of style/links/copyright the
+ *     site omits keeps its brand default — pass `footer: { links: [...] }`
+ *     to swap columns while inheriting the KvK/BTW copyright),
+ *   customCss[] (appended to brand.css), plugins[], presets,
+ *   i18n (overrides defaults)
  */
 function createConfig(opts) {
   if (!opts || !opts.title || !opts.url) {
@@ -171,7 +199,19 @@ function createConfig(opts) {
           respectPrefersColorScheme: true,
         },
         navbar: Object.assign(baseNavbar(opts.title), opts.navbar || {}),
-        footer: opts.footer || baseFooter(),
+        /* Per-property fallback so a site can override one slice of the
+           footer (e.g. just `links`) and inherit the rest from the brand.
+           Previously `opts.footer` replaced the whole footer wholesale,
+           which forced sites to copy the KvK/BTW copyright string just to
+           swap columns. */
+        footer: (() => {
+          const f = opts.footer || {};
+          return {
+            style:     f.style     || 'dark',
+            links:     f.links     || baseFooterLinks(),
+            copyright: f.copyright || baseFooterCopyright(),
+          };
+        })(),
       },
       opts.themeConfig || {}
     ),
@@ -180,4 +220,11 @@ function createConfig(opts) {
   };
 }
 
-module.exports = { createConfig, I18N, baseNavbar, baseFooter };
+module.exports = {
+  createConfig,
+  I18N,
+  baseNavbar,
+  baseFooter,
+  baseFooterLinks,
+  baseFooterCopyright,
+};

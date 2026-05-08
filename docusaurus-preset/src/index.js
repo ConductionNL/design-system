@@ -86,8 +86,8 @@ const baseFooterLinks = () => [
   {
     title: 'Documentatie',
     items: [
-      { label: 'Brand book', href: 'https://connext.conduction.nl/' },
-      { label: 'Diagram set', href: 'https://connext.conduction.nl/diagrams/' },
+      { label: 'Brand book', href: 'https://identity.conduction.nl/' },
+      { label: 'Diagram set', href: 'https://identity.conduction.nl/diagrams/' },
     ],
   },
 ];

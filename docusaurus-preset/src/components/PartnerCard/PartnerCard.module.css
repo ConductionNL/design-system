@@ -33,6 +33,21 @@
   text-decoration: none;
   color: inherit;
 }
+/* Stretched-link overlay. Covers the whole card so any click on
+   non-interactive content navigates to the partner detail page,
+   while leaving room for nested links (app pills) to take precedence
+   via z-index. The overlay carries the aria-label since the card
+   itself is no longer the anchor. */
+.cardLink {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+.cardLink:focus-visible {
+  outline: 2px solid var(--c-blue-cobalt);
+  outline-offset: -2px;
+}
 
 .tier {
   position: absolute;
@@ -107,6 +122,24 @@
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-family: var(--conduction-typography-font-family-code);
+  /* When the pill is rendered as <a> it sits above the cardLink
+     overlay so clicks land on the pill, not the card-wide link. */
+  position: relative;
+  z-index: 2;
+  text-decoration: none;
+  transition: background 160ms, color 160ms;
+}
+/* Hover affordance only when the pill is a real link (i.e. the
+   app is in the registry). Plain <span> pills (e.g. "Nextcloud")
+   stay static. */
+a.appPill:hover {
+  background: var(--c-blue-cobalt);
+  color: white;
+  text-decoration: none;
+}
+.card.tier-certified a.appPill:hover {
+  background: white;
+  color: var(--c-blue-cobalt);
 }
 .tier-certified .appPill { background: rgba(255, 255, 255, 0.12); color: white; }
 

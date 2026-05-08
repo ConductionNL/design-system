@@ -59,3 +59,26 @@ export function getApp(slug) {
 export function getApps(slugs = []) {
   return slugs.map(getApp).filter(Boolean);
 }
+
+/**
+ * Resolve a display-name (e.g. "OpenCatalogi", "DocuDesk", "MyDash")
+ * to its product page href, or undefined when the name is not in the
+ * registry. Used by partner cards / sidecards to turn the apps-shipped
+ * chip row into a clickable link list. Names like "Nextcloud" that
+ * aren't ours fall through and the consumer renders a plain span.
+ *
+ * Match is case-insensitive on both name and slug so consumers can
+ * pass either form ("OpenCatalogi", "opencatalogi", or "OpenCATALOGI")
+ * without each adding their own normalisation.
+ */
+export function appHrefByName(name) {
+  if (!name) return undefined;
+  const target = String(name).toLowerCase();
+  for (const slug of APP_SLUGS) {
+    const entry = APPS_REGISTRY[slug];
+    if (slug === target || entry.name.toLowerCase() === target) {
+      return entry.productHref;
+    }
+  }
+  return undefined;
+}

@@ -40,6 +40,7 @@
 
 import React from 'react';
 import HexBullet from '../primitives/HexBullet';
+import {appHrefByName} from '../../data/apps-registry';
 import styles from './PartnerCard.module.css';
 
 const TIER_LABELS = {host: 'Host', service: 'Service', certified: 'Certified'};
@@ -88,17 +89,30 @@ export default function PartnerCard({
     );
   }
 
-  /* Default: full partner card */
+  /* Default: full partner card.
+     The card wrapper is always a <div> rather than an <a>, even when
+     a partner detail href is set, so the per-app pills can be
+     individually clickable links to /apps/<slug>. The card-wide click
+     target is rendered as a stretched-link overlay (.cardLink) that
+     covers the whole card via position:absolute; nested <a> pills
+     sit on top via z-index, so clicks reach the pill instead of the
+     overlay when they land on a pill, and reach the overlay otherwise. */
   const composed = [
     styles.card,
     styles['tier-' + tier],
     className,
   ].filter(Boolean).join(' ');
-  const Tag = href ? 'a' : 'div';
   const bulletColor = tier === 'certified' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)';
 
   return (
-    <Tag href={href} className={composed}>
+    <div className={composed}>
+      {href && (
+        <a
+          href={href}
+          className={styles.cardLink}
+          aria-label={name ? `${name} partner page` : 'Partner page'}
+        />
+      )}
       <span className={styles.tier}>{TIER_LABELS[tier] || tier}</span>
       {logo && (
         <div className={styles.avatar}>
@@ -109,15 +123,29 @@ export default function PartnerCard({
       {summary && <div className={styles.summary}>{summary}</div>}
       {apps.length > 0 && (
         <div className={styles.apps}>
-          {apps.map((app, i) => (
-            <span key={i} className={styles.appPill}>
-              <HexBullet size="sm" color={bulletColor} />
-              {app}
-            </span>
-          ))}
+          {apps.map((app, i) => {
+            const appUrl = appHrefByName(app);
+            const inner = (
+              <>
+                <HexBullet size="sm" color={bulletColor} />
+                {app}
+              </>
+            );
+            return appUrl ? (
+              <a
+                key={app}
+                href={appUrl}
+                className={styles.appPill}
+              >
+                {inner}
+              </a>
+            ) : (
+              <span key={app} className={styles.appPill}>{inner}</span>
+            );
+          })}
         </div>
       )}
-    </Tag>
+    </div>
   );
 }
 

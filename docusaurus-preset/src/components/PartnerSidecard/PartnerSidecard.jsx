@@ -37,6 +37,7 @@
  */
 
 import React from 'react';
+import {appHrefByName} from '../../data/apps-registry';
 import styles from './PartnerSidecard.module.css';
 
 const TIER_LABELS = {
@@ -71,7 +72,7 @@ export default function PartnerSidecard({
         {tier === 'certified' && (
           <img
             className={styles.tierBadge}
-            src="/img/brand/avatar-conduction-gold-on-white.svg"
+            src="/img/brand/avatar-conduction-gold.svg"
             alt="Conduction-certified mark"
             width="44"
             height="44"
@@ -85,9 +86,14 @@ export default function PartnerSidecard({
         <div className={styles.section}>
           <h4 className={styles.sectionTitle}>Apps they ship</h4>
           <div className={styles.chipRow}>
-            {partner.apps.map((app) => (
-              <span key={app} className={styles.chip}>{app}</span>
-            ))}
+            {partner.apps.map((app) => {
+              const url = appHrefByName(app);
+              return url ? (
+                <a key={app} href={url} className={styles.chip}>{app}</a>
+              ) : (
+                <span key={app} className={styles.chip}>{app}</span>
+              );
+            })}
           </div>
         </div>
       )}

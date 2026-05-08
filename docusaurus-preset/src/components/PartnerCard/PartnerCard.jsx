@@ -3,10 +3,13 @@
  *
  * Partner card from preview/components/partner-cards.html.
  *
- * Three tiers:
- *   - partner   (default, white panel + cobalt-50 tier pill)
- *   - certified (white panel + gold tier pill)
- *   - strategic (cobalt-fill inverse + white tier pill)
+ * Three tiers (low → high):
+ *   - host      (default, white panel + cobalt-50 tier pill) —
+ *               ships our apps, no SLA with Conduction.
+ *   - service   (white panel + gold tier pill) — SLA, third-line
+ *               support, roadmap input.
+ *   - certified (cobalt-fill inverse + white tier pill) — trained,
+ *               joint roadmap, tender-eligible.
  *
  * Visual structure:
  *   ┌─────────────────────────────┐
@@ -25,7 +28,7 @@
  *   <PartnerGrid>
  *     <PartnerCard
  *       href="/partners/yard"
- *       tier="partner"
+ *       tier="host"
  *       name="YARD"
  *       logo="/img/partners/yard.png"
  *       summary={<>Digital design- en development-bureau uit Utrecht...</>}
@@ -39,7 +42,7 @@ import React from 'react';
 import HexBullet from '../primitives/HexBullet';
 import styles from './PartnerCard.module.css';
 
-const TIER_LABELS = {partner: 'Partner', certified: 'Certified', strategic: 'Strategic'};
+const TIER_LABELS = {host: 'Host', service: 'Service', certified: 'Certified'};
 
 export function PartnerGrid({columns = 3, children, className}) {
   const composed = [styles.grid, styles['cols-' + columns], className].filter(Boolean).join(' ');
@@ -49,7 +52,7 @@ export function PartnerGrid({columns = 3, children, className}) {
 export default function PartnerCard({
   variant = 'full',
   href,
-  tier = 'partner',
+  tier = 'host',
   name,
   logo,
   logoAlt,
@@ -92,7 +95,7 @@ export default function PartnerCard({
     className,
   ].filter(Boolean).join(' ');
   const Tag = href ? 'a' : 'div';
-  const bulletColor = tier === 'strategic' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)';
+  const bulletColor = tier === 'certified' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)';
 
   return (
     <Tag href={href} className={composed}>

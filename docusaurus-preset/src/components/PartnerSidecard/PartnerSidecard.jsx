@@ -4,10 +4,10 @@
  * Narrow info panel for the partner detail page right column. Three
  * stacked sections:
  *   1. Tier badge.       Pulls the same colour treatment as <PartnerCard>
- *                        (Partner = cobalt-50 pill, Certified = gold pill
- *                        with a small gold Conduction avatar to read as a
- *                        Conduction-issued credential, Strategic = white
- *                        pill on a cobalt-fill card).
+ *                        (Host = cobalt-50 pill, Service = gold pill,
+ *                        Certified = white pill on a cobalt-fill card,
+ *                        with a small gold Conduction avatar to read as
+ *                        a Conduction-issued credential).
  *   2. Apps supported.   Chip row from partner.apps.
  *   3. Solutions shipped. Chip row from solutionsBySlugs(partner.solutions),
  *                        each linking to its /solutions/<slug> page.
@@ -40,18 +40,18 @@ import React from 'react';
 import styles from './PartnerSidecard.module.css';
 
 const TIER_LABELS = {
-  partner: 'Partner',
+  host: 'Host',
+  service: 'Service',
   certified: 'Certified',
-  strategic: 'Strategic',
 };
 
 const TIER_BLURB = {
-  partner:
-    'Partner-tier teams have shipped Conduction in production at one or two clients. Listed in the directory, on the community Slack, joining quarterly office hours.',
+  host:
+    'Host partners ship our open-source apps to their customers. They sell, host, and resell Nextcloud-supported variants through their own channels. No SLA with Conduction, no direct line to our support, not eligible to respond to tenders with our products.',
+  service:
+    'Service partners hold an SLA with Conduction. Their team can call us directly for third-line support, with named contacts and input on bug priority and feature requests. They run rollouts; we back them up.',
   certified:
-    'Certified per app by Conduction. Joint go-to-market on tenders and a higher SLA on shared customers. Carries the Conduction credential.',
-  strategic:
-    'Strategic partner with shared roadmap commitments and joint engineering. By invitation. Co-sale on government tenders, co-branded hosting offerings.',
+    'Certified partners are trained, audited, and on the joint roadmap with Conduction. Eligible to co-sale on public tenders with our products, and the Conduction-credential mark on their own collateral.',
 };
 
 export default function PartnerSidecard({
@@ -61,7 +61,7 @@ export default function PartnerSidecard({
   className,
 }) {
   if (!partner) return null;
-  const tier = partner.tier || 'partner';
+  const tier = partner.tier || 'host';
   const tierLabel = TIER_LABELS[tier] || tier;
   const composed = [styles.rail, styles[`tier-${tier}`], className].filter(Boolean).join(' ');
 
@@ -77,7 +77,7 @@ export default function PartnerSidecard({
             height="44"
           />
         )}
-        <div className={styles.tierLabel}>{tier === 'partner' ? 'Partner' : `${tierLabel} partner`}</div>
+        <div className={styles.tierLabel}>{`${tierLabel} partner`}</div>
         <p className={styles.tierBlurb}>{TIER_BLURB[tier]}</p>
       </div>
 

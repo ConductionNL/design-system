@@ -43,7 +43,7 @@ Audience for this doc: a future agent (or human) walking in cold. It states what
 ### Phase 2.5/A: legal + footer plumbing
 - [x] `/privacy` ported from conduction-website (EN translation, NL canonical pointer)
 - [x] `/terms` drafted (legal-review-pending stub, NL canonical pointer)
-- [x] `/iso` drafted (ISO 9001:2015 and 27001:2022 sections, related compliance signals: ISAE 3402, BIO, DigiD, NEN-7510)
+- [x] `/iso` drafted (ISO 9001:2015 and 27001:2022 sections, related compliance signals: ISAE 3402, BIO, DigiD)
 - [x] Footer phone-icon social link (`tel:+31853036840`)
 - [x] Footer legal-link row (Privacy · Terms · ISO)
 - [x] Footer typography ISO badges linking to `/iso`

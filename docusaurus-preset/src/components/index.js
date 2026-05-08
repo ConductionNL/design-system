@@ -94,6 +94,8 @@ export {
 export {default as NewsletterCta} from './NewsletterCta/NewsletterCta.jsx';
 export {default as RelatedPosts} from './RelatedPosts/RelatedPosts.jsx';
 export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHero.jsx';
+export {default as AppCrossLinks} from './AppCrossLinks/AppCrossLinks.jsx';
+export {APPS_REGISTRY, APP_SLUGS, APP_LABELS, getApp, getApps} from '../data/apps-registry';
 
 /* Tutorial-body components. Drop-in replacements for the ad-hoc
    "What you need", "Troubleshooting", and "Next steps" h2 + bullet

@@ -31,6 +31,7 @@ import {
   ContentCard,
   RelatedPosts,
   Section,
+  AppCrossLinks,
 } from '@conduction/docusaurus-preset/components';
 import styles from './styles.module.css';
 
@@ -151,6 +152,19 @@ function BlogPostPageContent({children}) {
       <div className={`content-detail-body ${styles.body}`}>
         {children}
       </div>
+
+      {Array.isArray(frontMatter.apps) && frontMatter.apps.length > 0 && (
+        <div style={{marginTop: 64}}>
+          <AppCrossLinks
+            variant="inline"
+            apps={frontMatter.apps}
+            surface="academy"
+            heading={frontMatter.apps.length === 1
+              ? 'Continue with this app'
+              : 'Continue with these apps'}
+          />
+        </div>
+      )}
 
       {related.length > 0 && (
         <div style={{marginTop: 96}}>

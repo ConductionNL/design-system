@@ -3,10 +3,15 @@
  *
  * Replaces Docusaurus's default theme-classic BlogListPage with the
  * academy landing layout: <FeaturedCard/> for the most-recent post,
- * <ContentTypeFilter/> for the chip row, <ContentCardGrid/> for the
- * remaining posts, <NewsletterCta/> at the bottom. The filter is
- * driven by `?type=` so the chip selection survives reload and copy-
- * paste, and the URL stays clean.
+ * <ContentTypeFilter/> for the content-type chip row, a second
+ * <ContentTypeFilter/> reused as the product chip row, then
+ * <ContentCardGrid/> for the remaining posts and <NewsletterCta/> at
+ * the bottom. Filters are driven by `?type=` and `?app=` so chip
+ * selections survive reload and copy-paste, and the URL stays clean.
+ *
+ * The product chip row is the same component as the type row, just
+ * wired to APP_LABELS / APP_SLUGS from the shared apps-registry. Only
+ * apps with at least one post are shown to keep the row readable.
  *
  * SSR-safe: when window is not available (Docusaurus's first render),
  * we fall back to the unfiltered view via <BrowserOnly/>.
@@ -29,15 +34,25 @@ import {
   NewsletterCta,
   Section,
 } from '@conduction/docusaurus-preset/components';
+import {
+  APPS_REGISTRY,
+  APP_LABELS,
+} from '@conduction/docusaurus-preset/data/apps-registry';
 
 const TYPE_SET = new Set(CONTENT_TYPES);
+const APP_SET = new Set(Object.keys(APPS_REGISTRY));
 
-function readType(search) {
+function readQuery(search) {
   try {
-    const t = new URLSearchParams(search).get('type');
-    return t && TYPE_SET.has(t) ? t : null;
+    const params = new URLSearchParams(search);
+    const t = params.get('type');
+    const a = params.get('app');
+    return {
+      type: t && TYPE_SET.has(t) ? t : null,
+      app:  a && APP_SET.has(a)  ? a : null,
+    };
   } catch (_) {
-    return null;
+    return {type: null, app: null};
   }
 }
 
@@ -130,6 +145,10 @@ function postToFeaturedProps(post) {
   };
 }
 
+function postApps(post) {
+  return post.content.metadata.frontMatter?.apps || [];
+}
+
 function countsByType(posts) {
   const counts = {};
   for (const post of posts) {
@@ -139,69 +158,128 @@ function countsByType(posts) {
   return counts;
 }
 
+function countsByApp(posts) {
+  const counts = {};
+  for (const post of posts) {
+    for (const slug of postApps(post)) {
+      if (APP_SET.has(slug)) counts[slug] = (counts[slug] || 0) + 1;
+    }
+  }
+  return counts;
+}
+
 function AcademyLandingInner({items}) {
-  const [activeType, setActiveType] = useState(() =>
-    readType(typeof window !== 'undefined' ? window.location.search : '')
+  const [active, setActive] = useState(() =>
+    readQuery(typeof window !== 'undefined' ? window.location.search : '')
   );
 
   useEffect(() => {
-    const onPop = () => setActiveType(readType(window.location.search));
+    const onPop = () => setActive(readQuery(window.location.search));
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  const counts = useMemo(() => countsByType(items), [items]);
-  const allCount = items.length;
+  /* Type counts always reflect the full feed (so the user sees how many
+     blogs vs guides exist regardless of the active app filter). App
+     counts are computed against the type-filtered feed so the numbers
+     match what each chip will show after a click. */
+  const typeCounts = useMemo(() => countsByType(items), [items]);
+  const itemsAfterType = useMemo(
+    () => active.type
+      ? items.filter((p) => p.content.metadata.frontMatter?.contentType === active.type)
+      : items,
+    [items, active.type],
+  );
+  const appCounts = useMemo(() => countsByApp(itemsAfterType), [itemsAfterType]);
 
-  const filtered = activeType
-    ? items.filter((p) => p.content.metadata.frontMatter?.contentType === activeType)
-    : items;
+  /* Apps row only shows app slugs that have at least one post in the
+     current type-filtered feed. Keeps the row from dragging into a
+     long secondary list of zero-count apps. */
+  const visibleAppSlugs = useMemo(
+    () => Object.keys(APP_LABELS).filter((slug) => appCounts[slug] > 0),
+    [appCounts],
+  );
 
-  const handleChange = (next) => {
+  const filtered = active.app
+    ? itemsAfterType.filter((p) => postApps(p).includes(active.app))
+    : itemsAfterType;
+
+  const setQueryParam = (key, value) => {
     const url = new URL(window.location.href);
-    if (next) url.searchParams.set('type', next);
-    else url.searchParams.delete('type');
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
     window.history.pushState({}, '', url.toString());
-    setActiveType(next);
   };
 
-  if (filtered.length === 0) {
-    return (
-      <div style={{
-        padding: '48px 0',
-        textAlign: 'center',
-        color: 'var(--c-cobalt-400)',
-        fontSize: 16,
-      }}>
-        Nothing yet for this category. <a href="/academy/">View everything</a>
-      </div>
-    );
-  }
+  const handleTypeChange = (next) => {
+    setQueryParam('type', next);
+    /* Clear the app filter when the type changes if the active app no
+       longer has posts in the new type. Keeps the UI honest when a
+       user moves between content types. */
+    setActive((prev) => {
+      const newItems = next
+        ? items.filter((p) => p.content.metadata.frontMatter?.contentType === next)
+        : items;
+      const stillHasApp = prev.app && newItems.some((p) => postApps(p).includes(prev.app));
+      const nextApp = stillHasApp ? prev.app : null;
+      if (!stillHasApp) setQueryParam('app', null);
+      return {type: next, app: nextApp};
+    });
+  };
+
+  const handleAppChange = (next) => {
+    setQueryParam('app', next);
+    setActive((prev) => ({...prev, app: next}));
+  };
 
   const [featured, ...rest] = filtered;
 
   return (
     <>
-      <FeaturedCard {...postToFeaturedProps(featured)} />
+      {featured && <FeaturedCard {...postToFeaturedProps(featured)} />}
 
       <div style={{height: 64}} />
 
       <ContentTypeFilter
-        value={activeType}
-        onChange={handleChange}
-        counts={counts}
-        allCount={allCount}
+        value={active.type}
+        onChange={handleTypeChange}
+        counts={typeCounts}
+        allCount={items.length}
       />
+
+      {visibleAppSlugs.length > 0 && (
+        <>
+          <div style={{height: 12}} />
+          <ContentTypeFilter
+            value={active.app}
+            onChange={handleAppChange}
+            types={visibleAppSlugs}
+            labels={APP_LABELS}
+            counts={appCounts}
+            allLabel="All apps"
+            allCount={itemsAfterType.length}
+          />
+        </>
+      )}
 
       <div style={{height: 32}} />
 
-      {rest.length > 0 && (
+      {filtered.length === 0 ? (
+        <div style={{
+          padding: '48px 0',
+          textAlign: 'center',
+          color: 'var(--c-cobalt-400)',
+          fontSize: 16,
+        }}>
+          Nothing yet for this combination. <a href="/academy/">View everything</a>
+        </div>
+      ) : rest.length > 0 ? (
         <ContentCardGrid columns={2}>
           {rest.map((post, i) => (
             <ContentCard key={post.content.metadata.permalink || i} {...postToCardProps(post)} />
           ))}
         </ContentCardGrid>
-      )}
+      ) : null}
     </>
   );
 }

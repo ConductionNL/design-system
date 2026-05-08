@@ -26,7 +26,12 @@ import React from 'react';
 import downloadsJson from '../../../../data/app-downloads.json';
 
 /* Hand-curated display metadata. Keys are the GitHub repo slug
-   (matches `apps[].id` in app-downloads.json). */
+   (matches `apps[].id` in app-downloads.json). Names and `href`
+   (productHref) here are also mirrored in the apps-registry shipped
+   from @conduction/docusaurus-preset/data/apps-registry, which is the
+   URL-only source of truth consumed by <AppCrossLinks/> and the
+   academy product filter. When you add or rename an app, update
+   both. */
 const PRESENTATION = {
   opencatalogi: {
     name: 'OpenCatalogi',

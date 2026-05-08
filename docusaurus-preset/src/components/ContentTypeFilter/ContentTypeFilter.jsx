@@ -1,9 +1,15 @@
 /**
  * <ContentTypeFilter />
  *
- * Top-of-page chip row that filters academy content by type. "All" is
- * the default chip and is always present. Driven by a `?type=` query
- * parameter so the filter survives reload and copy-paste.
+ * Top-of-page chip row that filters a feed by a single key. Defaults
+ * to academy content types ("Blogs", "Guides", "Case studies", …) but
+ * is reused on the academy landing as the product filter row by
+ * passing a different `types` + `labels` map (see APP_LABELS in
+ * @conduction/docusaurus-preset/data/apps-registry).
+ *
+ * "All" is the default chip and is always present. Driven by a query
+ * parameter (`?type=` for content types, `?app=` for products) so the
+ * filter survives reload and copy-paste.
  *
  * Mirrors the chip row in preview/components/academy.html.
  *
@@ -29,6 +35,19 @@
  *
  *   const [type, setType] = useState(null);
  *   <ContentTypeFilter value={type} onChange={setType} />
+ *
+ * Usage as a product filter (reuses the same component):
+ *
+ *   import {APP_LABELS, APP_SLUGS} from '@conduction/docusaurus-preset/data/apps-registry';
+ *   <ContentTypeFilter
+ *     value={app}
+ *     onChange={setApp}
+ *     types={APP_SLUGS}
+ *     labels={APP_LABELS}
+ *     counts={appCounts}
+ *     allLabel="All apps"
+ *     allCount={totalCount}
+ *   />
  */
 
 import React from 'react';
@@ -48,9 +67,14 @@ export default function ContentTypeFilter({
   allLabel = 'Everything',
   allCount,
   types = CONTENT_TYPES,
+  labels,
   className,
 }) {
   const isLinkMode = typeof hrefForType === 'function';
+  const labelFor = (key) => {
+    if (labels && labels[key]) return labels[key];
+    return CONTENT_TYPE_PLURAL_LABELS[key] || key;
+  };
 
   const renderChip = (key, label, count) => {
     const active = (key === ALL && value == null) || key === value;
@@ -94,7 +118,7 @@ export default function ContentTypeFilter({
     <div className={[styles.row, className].filter(Boolean).join(' ')}>
       {renderChip(ALL, allLabel, allCount)}
       {types.map((t) =>
-        renderChip(t, CONTENT_TYPE_PLURAL_LABELS[t] || t, counts && counts[t])
+        renderChip(t, labelFor(t), counts && counts[t])
       )}
     </div>
   );

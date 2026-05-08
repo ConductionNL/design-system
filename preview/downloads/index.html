@@ -127,6 +127,53 @@
   }
   .asset .thumb.historic { filter: grayscale(0.6); opacity: 0.75; }
   .asset:hover .thumb.historic { filter: grayscale(0); opacity: 1; }
+
+  /* Multi-format cards: same visuals as .asset, but the bottom carries
+     two format chips instead of being a single download anchor. */
+  .asset-multi {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-cobalt-100);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transition: all 120ms;
+    color: inherit;
+    position: relative;
+  }
+  .asset-multi:hover { border-color: var(--c-blue-cobalt); box-shadow: var(--shadow-2); transform: translateY(-1px); }
+  .asset-multi .thumb {
+    aspect-ratio: 1;
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    padding: var(--space-3);
+  }
+  .asset-multi .thumb.dark { background: var(--c-cobalt-900); }
+  .asset-multi .thumb.blue { background: var(--c-blue-cobalt); }
+  .asset-multi .thumb.white { background: white; border: 1px solid var(--c-cobalt-100); }
+  .asset-multi .thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .asset-multi .name { font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--c-cobalt-900); line-height: 1.3; }
+  .asset-multi .meta { font-family: var(--conduction-typography-font-family-code); font-size: 10px; color: var(--c-cobalt-400); letter-spacing: 0.04em; text-transform: uppercase; }
+  .asset-multi .fmts { display: flex; gap: 6px; margin-top: auto; padding-top: var(--space-2); }
+  .asset-multi .fmts a {
+    flex: 1;
+    text-align: center;
+    padding: 6px 10px;
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    border-radius: var(--radius-sm);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 120ms, color 120ms;
+  }
+  .asset-multi .fmts a:hover { background: var(--c-blue-cobalt); color: white; }
 </style>
 </head>
 <body>
@@ -196,31 +243,46 @@
 
   <h3 class="subhead">Wordmarks</h3>
   <div class="gallery">
-    <a class="asset" href="../../brand/assets/wordmark-connext.svg" download="connext-wordmark.svg">
+    <div class="asset-multi">
       <div class="thumb white"><img src="../../brand/assets/wordmark-connext.svg" alt="ConNext wordmark, cobalt + Nextcloud-blue"></div>
-      <div class="name">ConNext (default)</div><div class="meta">SVG &middot; cobalt + Next-blue</div>
-      <span class="dl-icon">&darr;</span>
-    </a>
-    <a class="asset" href="../../brand/assets/wordmark-connext-white.svg" download="connext-wordmark-white.svg">
+      <div class="name">ConNext (default)</div><div class="meta">cobalt + Next-blue</div>
+      <div class="fmts">
+        <a href="../../brand/assets/wordmark-connext.svg" download="connext-wordmark.svg">SVG</a>
+        <a href="../../brand/assets/wordmark-connext.png" download="connext-wordmark.png">PNG</a>
+      </div>
+    </div>
+    <div class="asset-multi">
       <div class="thumb blue"><img src="../../brand/assets/wordmark-connext-white.svg" alt="ConNext wordmark, white + Nextcloud-blue"></div>
-      <div class="name">ConNext (inverse)</div><div class="meta">SVG &middot; for dark bg</div>
-      <span class="dl-icon">&darr;</span>
-    </a>
-    <a class="asset" href="../../brand/assets/wordmark-conduction.svg" download="conduction-wordmark.svg">
+      <div class="name">ConNext (inverse)</div><div class="meta">for dark bg</div>
+      <div class="fmts">
+        <a href="../../brand/assets/wordmark-connext-white.svg" download="connext-wordmark-white.svg">SVG</a>
+        <a href="../../brand/assets/wordmark-connext-white.png" download="connext-wordmark-white.png">PNG</a>
+      </div>
+    </div>
+    <div class="asset-multi">
       <div class="thumb white"><img src="../../brand/assets/wordmark-conduction.svg" alt="Conduction wordmark, cobalt"></div>
-      <div class="name">Conduction (default)</div><div class="meta">SVG &middot; cobalt</div>
-      <span class="dl-icon">&darr;</span>
-    </a>
-    <a class="asset" href="../../brand/assets/wordmark-conduction-white.svg" download="conduction-wordmark-white.svg">
+      <div class="name">Conduction (default)</div><div class="meta">cobalt</div>
+      <div class="fmts">
+        <a href="../../brand/assets/wordmark-conduction.svg" download="conduction-wordmark.svg">SVG</a>
+        <a href="../../brand/assets/wordmark-conduction.png" download="conduction-wordmark.png">PNG</a>
+      </div>
+    </div>
+    <div class="asset-multi">
       <div class="thumb blue"><img src="../../brand/assets/wordmark-conduction-white.svg" alt="Conduction wordmark, white"></div>
-      <div class="name">Conduction (inverse)</div><div class="meta">SVG &middot; for dark bg</div>
-      <span class="dl-icon">&darr;</span>
-    </a>
-    <a class="asset" href="../../brand/assets/wordmark-conduction-gold.svg" download="conduction-wordmark-gold.svg">
+      <div class="name">Conduction (inverse)</div><div class="meta">for dark bg</div>
+      <div class="fmts">
+        <a href="../../brand/assets/wordmark-conduction-white.svg" download="conduction-wordmark-white.svg">SVG</a>
+        <a href="../../brand/assets/wordmark-conduction-white.png" download="conduction-wordmark-white.png">PNG</a>
+      </div>
+    </div>
+    <div class="asset-multi">
       <div class="thumb white"><img src="../../brand/assets/wordmark-conduction-gold.svg" alt="Conduction wordmark, gold gradient"></div>
-      <div class="name">Conduction (gold)</div><div class="meta">SVG &middot; partners only</div>
-      <span class="dl-icon">&darr;</span>
-    </a>
+      <div class="name">Conduction (gold)</div><div class="meta">partners only</div>
+      <div class="fmts">
+        <a href="../../brand/assets/wordmark-conduction-gold.svg" download="conduction-wordmark-gold.svg">SVG</a>
+        <a href="../../brand/assets/wordmark-conduction-gold.png" download="conduction-wordmark-gold.png">PNG</a>
+      </div>
+    </div>
   </div>
 </section>
 

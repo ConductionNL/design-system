@@ -16,7 +16,6 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
   - [preview/print/](preview/print/): stationery and print templates (letterhead, business cards, invoice, NDA, SLA, email templates)
   - [preview/diagrams/](preview/diagrams/): web-component specimens (`<cn-hex>`, `<cn-platform>`, `<cn-pipeline>`, etc.)
 - [docusaurus-preset/](docusaurus-preset/): the publishable React component library (`@conduction/docusaurus-preset` on npm) consumed by every Conduction Docusaurus site. Mirrors the preview kit as React components, plus theme swizzles for Navbar/Footer/MDXPage, plus the framework-agnostic `<cn-*>` web components under `src/diagrams/` (exported as the `@conduction/docusaurus-preset/diagrams` subpath). See [docusaurus-preset/MISSING_COMPONENTS.md](docusaurus-preset/MISSING_COMPONENTS.md) for the coverage map
-- [sites/www/](sites/www/): the live Docusaurus site (Conduction main + ConNext sub-brand at `/connext` + Common Ground sub-brand at `/commonground`). Served from `conduction.nl`. `npm run dev` from repo root starts it on `localhost:3100`
 - [schemas/](schemas/): JSON schemas (currently the academy content frontmatter contract)
 - [briefs/](briefs/): design briefs and rationale documents
 - [data/](data/): build-time data inputs (e.g. `app-downloads.json` for the apps grid)
@@ -24,7 +23,7 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 - [SKILL.md](SKILL.md): the Claude skill that operates this repo
 - [docker-compose.yml](docker-compose.yml): local dev environment
 
-`sites/connext/` exists as an empty stub from an earlier multi-site setup (now consolidated into `sites/www/`). It contains only `node_modules/` and `.docusaurus/` cache; safe to delete when convenient.
+**`sites/` was removed** in 2026-05. The Docusaurus build that used to live at `sites/www/` (and powered conduction.nl + the connext / commonground sub-brand entry points) was extracted to a dedicated repo at [`ConductionNL/conduction-website`](https://github.com/ConductionNL/conduction-website), which now serves `www.conduction.nl`. This repo's GitHub Pages site now publishes only the brand kit (preview/, brand/, diagrams/, tokens.css) at [identity.conduction.nl](https://identity.conduction.nl/) — see [.github/workflows/pages.yml](.github/workflows/pages.yml).
 
 ## Working rules
 

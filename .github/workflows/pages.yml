@@ -1,12 +1,16 @@
 # =============================================================
-# GitHub Pages deploy: builds the Docusaurus site at sites/www/
-# and publishes it. The preview/ kit and the brand asset folders
-# at the repo root are layered into the same artifact so they
-# stay browsable at the same custom domain (preview/, brand/, etc.).
+# GitHub Pages deploy: publishes the brand kit at preview/ to the
+# design-system Pages site (identity.conduction.nl).
+#
+# Replaces the prior "build sites/www and layer preview/" workflow.
+# sites/www was extracted to ConductionNL/conduction-website (which
+# now serves www.conduction.nl); this repo's Pages site is now solely
+# the brand identity reference — every component / page / specimen
+# from preview/, plus the brand assets and tokens at the repo root.
 #
 # Pages source must be set to "GitHub Actions" in the repo settings.
-# Custom domain is claimed by sites/www/static/CNAME (Docusaurus
-# copies that to build/CNAME during the build step).
+# Custom domain is set to identity.conduction.nl via the CNAME file
+# generated below.
 # =============================================================
 
 name: pages
@@ -14,6 +18,13 @@ name: pages
 on:
   push:
     branches: [main]
+    paths:
+      - 'preview/**'
+      - 'brand/**'
+      - 'diagrams/**'
+      - 'tokens.css'
+      - 'typography.css'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -31,41 +42,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # package-lock.json is gitignored in this repo, so use install
-      # rather than ci. The build is deterministic enough for the
-      # marketing site; pin if needed via the engines field later.
-      - run: npm install
-
-      - name: Build Docusaurus site
-        run: npm run build
-
-      # Layer the preview kit and the brand asset folders on top of
-      # the Docusaurus build, so the kit stays browsable at the same
-      # host (e.g. connext.conduction.nl/preview/, /brand/, /diagrams/).
-      # The Docusaurus site owns the root index. Each layered folder
-      # lives at its own path; collisions resolve in favour of the
-      # Docusaurus build.
-      - name: Layer preview kit + brand assets onto build output
+      # Assemble the Pages artifact. preview/ is the root (so the kit
+      # specimens are reachable at identity.conduction.nl/<page>.html);
+      # brand/, diagrams/, tokens.css, typography.css layer in beside
+      # them so MDX / HTML in preview/ that imports the brand assets
+      # via absolute paths still resolves.
+      - name: Stage Pages artifact
         run: |
-          mkdir -p sites/www/build/preview
-          cp -r preview/. sites/www/build/preview/ 2>/dev/null || true
-          mkdir -p sites/www/build/brand
-          cp -r brand/. sites/www/build/brand/ 2>/dev/null || true
-          mkdir -p sites/www/build/diagrams
-          cp -r diagrams/dist/. sites/www/build/diagrams/ 2>/dev/null || true
-          # Static-only files at the repo root (tokens.css, typography.css,
-          # any standalone preview index). Don't fail if they don't exist.
+          mkdir -p _site
+          cp -r preview/. _site/
+          mkdir -p _site/brand
+          cp -r brand/. _site/brand/ 2>/dev/null || true
+          mkdir -p _site/diagrams
+          cp -r diagrams/dist/. _site/diagrams/ 2>/dev/null || true
           for f in tokens.css typography.css; do
-            [ -f "$f" ] && cp "$f" sites/www/build/ || true
+            [ -f "$f" ] && cp "$f" _site/ || true
           done
+          # Custom domain claim
+          echo "identity.conduction.nl" > _site/CNAME
+          # Disable Jekyll so files starting with _ are served as-is
+          touch _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: sites/www/build
+          path: _site
 
   deploy:
     needs: build

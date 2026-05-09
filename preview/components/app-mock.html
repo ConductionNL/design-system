@@ -42,6 +42,32 @@
   .specimen-card .head .tag { margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase; }
   .specimen-card p { color: var(--c-cobalt-700); font-size: 14px; line-height: 1.5; margin: 0; }
 
+  /* Variant tabs — for apps with multiple JSX variants under the same
+     name (today only MyDash). Inactive panes are hidden, click swaps. */
+  .variant-tabs {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 0; padding: 0;
+    list-style: none;
+  }
+  .variant-tab {
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    border: 1px solid var(--c-cobalt-100);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .variant-tab:hover { border-color: var(--c-cobalt-300); }
+  .variant-tab.is-active {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-color: var(--c-blue-cobalt);
+  }
+  .variant-pane { display: none; flex-direction: column; gap: var(--space-4); }
+  .variant-pane.is-active { display: flex; }
+
   /* ---- Anatomy section ---- */
   .anatomy {
     max-width: 1280px;
@@ -1807,21 +1833,29 @@
 <div class="anatomy-divider">
   <div>
     <div class="label">Variants</div>
-    <h2>Sixteen variants, two patterns, one chassis.</h2>
-    <p style="margin: var(--space-3) 0 0; max-width: 70ch; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5;">Thirteen apps, with MyDash showing four variants (default, tiles &amp; grids, BI on registers, widget integration). Each variant is its own JSX file under <code>AppMock/variants/</code>, registered by kebab-case slug in the <code>VARIANTS</code> map. Call from MDX as <code>&lt;AppMock app="mydash-bi" /&gt;</code>.</p>
+    <h2>Thirteen apps, sixteen variants, one chassis.</h2>
+    <p style="margin: var(--space-3) 0 0; max-width: 70ch; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5;">MyDash carries four variants behind the tab strip on its card (default, tiles &amp; grids, BI on registers, widget integration); the rest have one variant each. Every variant is its own JSX file under <code>AppMock/variants/</code>, registered by kebab-case slug in the <code>VARIANTS</code> map. Call from MDX as <code>&lt;AppMock app="mydash-bi" /&gt;</code>.</p>
   </div>
 </div>
 
 <div class="am">
 <div class="variant-grid">
 
-  <!-- ============================== 01 · MyDash ============================== -->
+  <!-- ============================== 01 · MyDash (4 variants, tabbed) ============================== -->
   <div class="specimen-card">
     <div class="head">
       <span class="num">01</span>
       <h3>MyDash</h3>
-      <span class="tag">SCREENSHOT-BASED</span>
+      <span class="tag">SCREENSHOT-BASED &middot; 4 VARIANTS</span>
     </div>
+    <ul class="variant-tabs">
+      <li><button class="variant-tab is-active" data-target="mydash-default">Default</button></li>
+      <li><button class="variant-tab" data-target="mydash-tiles">Tiles &amp; grids</button></li>
+      <li><button class="variant-tab" data-target="mydash-bi">BI on registers</button></li>
+      <li><button class="variant-tab" data-target="mydash-widgets">Widgets</button></li>
+    </ul>
+
+    <div class="variant-pane is-active" data-variant="mydash-default">
     <p>Personal home, full-bleed cobalt with a 4-column widget grid. Big primary tiles (Intranet, Calendar, Files) sit beside info widgets with avatar lists, empty states, and an upload drop-zone. Slug: <code>mydash</code>.</p>
     <figure class="figure">
       <div class="frame size-md">
@@ -1882,15 +1916,9 @@
         </div>
       </div>
     </figure>
-  </div>
+    </div><!-- /.variant-pane mydash-default -->
 
-  <!-- ============================== 02 · MyDash · Tiles & grids ============================== -->
-  <div class="specimen-card">
-    <div class="head">
-      <span class="num">02</span>
-      <h3>MyDash &middot; Tiles &amp; grids</h3>
-      <span class="tag">SCREENSHOT-BASED</span>
-    </div>
+    <div class="variant-pane" data-variant="mydash-tiles">
     <p>Nextcloud-integration angle. Hex-icon launcher tiles deeplink into Nextcloud, external URLs, or sub-grids of further tiles. Mock pictures three launcher tiles, a 2&times;2 sub-grid, files list, calendar mini-grid, and a Decks board. Slug: <code>mydash-tiles</code>.</p>
     <figure class="figure">
       <div class="frame size-md">
@@ -1953,15 +1981,9 @@
         </div>
       </div>
     </figure>
-  </div>
+    </div><!-- /.variant-pane mydash-tiles -->
 
-  <!-- ============================== 03 · MyDash · BI on registers ============================== -->
-  <div class="specimen-card">
-    <div class="head">
-      <span class="num">03</span>
-      <h3>MyDash &middot; BI on registers</h3>
-      <span class="tag">SCREENSHOT-BASED</span>
-    </div>
+    <div class="variant-pane" data-variant="mydash-bi">
     <p>BI-graph angle. Any chart, drawn directly on a register without ETL. Mock shows a 2&times;2 grid of graph cards (bar, line, donut, second bar), KPI tiles, plus a ranked-list table widget. Slug: <code>mydash-bi</code>.</p>
     <figure class="figure">
       <div class="frame size-md">
@@ -2067,15 +2089,9 @@
         </div>
       </div>
     </figure>
-  </div>
+    </div><!-- /.variant-pane mydash-bi -->
 
-  <!-- ============================== 04 · MyDash · Widgets ============================== -->
-  <div class="specimen-card">
-    <div class="head">
-      <span class="num">04</span>
-      <h3>MyDash &middot; Widgets</h3>
-      <span class="tag">SCREENSHOT-BASED</span>
-    </div>
+    <div class="variant-pane" data-variant="mydash-widgets">
     <p>Cross-app widget angle. Any Conduction app that registers a Nextcloud dashboard widget shows up here: DocuDesk dropzone, Procest werkvoorraad, Mail, Calendar, Jira, RSS, video shortcut. Slug: <code>mydash-widgets</code>.</p>
     <figure class="figure">
       <div class="frame size-md">
@@ -2158,12 +2174,13 @@
         </div>
       </div>
     </figure>
-  </div>
+    </div><!-- /.variant-pane mydash-widgets -->
+  </div><!-- /.specimen-card MyDash (4 variants) -->
 
-  <!-- ============================== 05 · OpenCatalogi ============================== -->
+  <!-- ============================== 02 · OpenCatalogi ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">05</span>
+      <span class="num">02</span>
       <h3>OpenCatalogi</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2208,10 +2225,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 06 · OpenConnector ============================== -->
+  <!-- ============================== 03 · OpenConnector ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">06</span>
+      <span class="num">03</span>
       <h3>OpenConnector</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2265,10 +2282,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 07 · OpenRegister ============================== -->
+  <!-- ============================== 04 · OpenRegister ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">07</span>
+      <span class="num">04</span>
       <h3>OpenRegister</h3>
       <span class="tag">SCREENSHOT-BASED</span>
     </div>
@@ -2355,10 +2372,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 08 · Procest ============================== -->
+  <!-- ============================== 05 · Procest ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">08</span>
+      <span class="num">05</span>
       <h3>Procest</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2413,10 +2430,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 09 · DeciDesk ============================== -->
+  <!-- ============================== 06 · DeciDesk ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">09</span>
+      <span class="num">06</span>
       <h3>DeciDesk</h3>
       <span class="tag">SCREENSHOT-BASED</span>
     </div>
@@ -2469,10 +2486,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 10 · DocuDesk ============================== -->
+  <!-- ============================== 07 · DocuDesk ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">10</span>
+      <span class="num">07</span>
       <h3>DocuDesk</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2523,10 +2540,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 11 · LarpingApp ============================== -->
+  <!-- ============================== 08 · LarpingApp ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">11</span>
+      <span class="num">08</span>
       <h3>LarpingApp</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2571,10 +2588,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 12 · NLDesign ============================== -->
+  <!-- ============================== 09 · NLDesign ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">12</span>
+      <span class="num">09</span>
       <h3>NLDesign</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2642,10 +2659,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 13 · OpenWoo ============================== -->
+  <!-- ============================== 10 · OpenWoo ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">13</span>
+      <span class="num">10</span>
       <h3>OpenWoo</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2691,10 +2708,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 14 · PipelinQ ============================== -->
+  <!-- ============================== 11 · PipelinQ ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">14</span>
+      <span class="num">11</span>
       <h3>PipelinQ</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2746,10 +2763,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 15 · SoftwareCatalog ============================== -->
+  <!-- ============================== 12 · SoftwareCatalog ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">15</span>
+      <span class="num">12</span>
       <h3>SoftwareCatalog</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2809,10 +2826,10 @@
     </figure>
   </div>
 
-  <!-- ============================== 16 · ZaakAfhandelApp ============================== -->
+  <!-- ============================== 13 · ZaakAfhandelApp ============================== -->
   <div class="specimen-card">
     <div class="head">
-      <span class="num">16</span>
+      <span class="num">13</span>
       <h3>ZaakAfhandelApp</h3>
       <span class="tag">INFERRED</span>
     </div>
@@ -2875,6 +2892,23 @@
   <p><strong>Status.</strong> Five variants are based on real screenshots taken at <code>localhost:8080</code> (MyDash and its three sub-variants, OpenRegister, DeciDesk). The other eleven were drafted from each app's product description while their frontends were still rebuilding, and will get a refinement pass once the live UI is back.</p>
   <p>The React component lives in <a href="../../docusaurus-preset/src/components/AppMock/AppMock.jsx" style="color: var(--c-blue-cobalt);"><code>docusaurus-preset/src/components/AppMock/</code></a>. Each variant is a sibling JSX file under <code>variants/</code>, all sharing the same <code>AppMock.module.css</code>. The <code>VARIANTS</code> map in <code>AppMock.jsx</code> maps a kebab-case slug to a variant component, so multiple variants for the same app (like <code>mydash</code>, <code>mydash-tiles</code>, <code>mydash-bi</code>, <code>mydash-widgets</code>) are first-class entries; pick which one with <code>&lt;AppMock app="mydash-tiles" /&gt;</code>.</p>
 </div>
+
+<script>
+  // Variant tab swap. Each .specimen-card may contain a .variant-tabs strip
+  // and one or more .variant-pane[data-variant] children. Clicking a tab
+  // toggles which pane is .is-active inside that card, scoped per-card so
+  // future multi-variant cards work without further wiring.
+  document.querySelectorAll('.specimen-card .variant-tabs').forEach(strip => {
+    strip.addEventListener('click', e => {
+      const tab = e.target.closest('.variant-tab');
+      if (!tab) return;
+      const target = tab.dataset.target;
+      const card = strip.closest('.specimen-card');
+      card.querySelectorAll('.variant-tab').forEach(b => b.classList.toggle('is-active', b === tab));
+      card.querySelectorAll('.variant-pane').forEach(p => p.classList.toggle('is-active', p.dataset.variant === target));
+    });
+  });
+</script>
 
 </body>
 </html>

@@ -1,6 +1,19 @@
 /**
  * <AppMock /> styles.
  *
+ * Every rule below is scoped under a `.am` parent. AppMock content
+ * has to be wrapped in `<div className={styles.am}>` (React) or
+ * `<div class="am">` (static HTML) for any of these styles to take
+ * effect. The scope wrapper is `display: contents` so it doesn't
+ * affect layout — it exists only to namespace the very generic
+ * class names (.frame, .topbar, .col, .nav, .grid, .head, .item,
+ * .row, etc.) that would otherwise collide with anything else on
+ * the host page when the file is loaded as a global stylesheet by
+ * the design-system kit's preview pages. Webpack CSS Modules sees
+ * `.am` and `.frame` as two locally-scoped classes; the static-HTML
+ * consumer sees the literal `.am .frame` selector and only matches
+ * when the parent wrapper is present.
+ *
  * One outer .frame, one optional .topbar, then a per-app .body.
  * All variants share the same atom toolkit — .nav, .col, .panel, .pill,
  * .row, .kpi, .icon, .stack — so a future variant assembles in JSX
@@ -9,9 +22,14 @@
  * Tokens only; no images. One orange accent per variant max.
  */
 
-.figure { margin: 0; display: inline-flex; flex-direction: column; gap: var(--space-2); width: 100%; max-width: 100%; }
+/* Scope wrapper — display:contents keeps it transparent to layout.
+   Children act as direct children of the parent for flex/grid/block
+   purposes; selectors still match through the DOM. */
+.am { display: contents; }
 
-.frame {
+.am .figure { margin: 0; display: inline-flex; flex-direction: column; gap: var(--space-2); width: 100%; max-width: 100%; }
+
+.am .frame {
   width: 100%;
   max-width: 720px;
   aspect-ratio: 16 / 10;
@@ -25,11 +43,11 @@
   font-family: var(--conduction-typography-font-family-body);
   position: relative;
 }
-.size-sm { max-width: 480px; }
-.size-md { max-width: 720px; }
-.size-lg { max-width: 960px; }
+.am .size-sm { max-width: 480px; }
+.am .size-md { max-width: 720px; }
+.am .size-lg { max-width: 960px; }
 
-.caption {
+.am .caption {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -38,7 +56,7 @@
   text-align: center;
 }
 
-.empty {
+.am .empty {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +71,7 @@
 
 /* Top bar — Nextcloud-style row of small icons + spotlight + bell + avatar.
    Used by mydash + the three admin variants below.  */
-.topbar {
+.am .topbar {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -62,22 +80,22 @@
   padding: 0 10px;
   flex-shrink: 0;
 }
-.topbar .logo  { width: 16px; height: 12px; border-radius: 6px; background: white; }
-.topbar .icon  { width: 8px; height: 8px; border-radius: 1px; background: rgba(255,255,255,0.7); }
-.topbar .spacer { flex: 1; }
-.topbar .pill   { width: 12px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.4); }
-.topbar .bell   { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.7); }
-.topbar .avatar { width: 10px; height: 10px; border-radius: 50%; background: white; }
+.am .topbar .logo  { width: 16px; height: 12px; border-radius: 6px; background: white; }
+.am .topbar .icon  { width: 8px; height: 8px; border-radius: 1px; background: rgba(255,255,255,0.7); }
+.am .topbar .spacer { flex: 1; }
+.am .topbar .pill   { width: 12px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.4); }
+.am .topbar .bell   { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.7); }
+.am .topbar .avatar { width: 10px; height: 10px; border-radius: 50%; background: white; }
 
 /* Body wrapper — per-variant content fills this. */
-.body { flex: 1; display: flex; min-height: 0; min-width: 0; overflow: hidden; }
+.am .body { flex: 1; display: flex; min-height: 0; min-width: 0; overflow: hidden; }
 
 /* ======================================================================
    Atom toolkit — variants compose from these
    ====================================================================== */
 
 /* Vertical sidebar nav — used by openregister, decidesk, procest. */
-.nav {
+.am .nav {
   width: 22%;
   min-width: 100px;
   background: var(--c-cobalt-50);
@@ -88,31 +106,31 @@
   gap: 5px;
   flex-shrink: 0;
 }
-.nav .navHead {
+.am .nav .navHead {
   display: flex; align-items: center; gap: 5px;
   background: var(--c-blue-cobalt);
   border-radius: 3px;
   padding: 5px 6px;
   margin-bottom: 4px;
 }
-.nav .navHead .h    { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
-.nav .navHead .l    { flex: 1; height: 4px; background: rgba(255,255,255,0.7); border-radius: 1px; }
-.nav .item {
+.am .nav .navHead .h    { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+.am .nav .navHead .l    { flex: 1; height: 4px; background: rgba(255,255,255,0.7); border-radius: 1px; }
+.am .nav .item {
   display: flex; align-items: center; gap: 5px;
   padding: 4px 5px;
   border-radius: 2px;
 }
-.nav .item.active { background: var(--c-cobalt-100); }
-.nav .item .ico   { width: 8px; height: 8px; border-radius: 1px; background: var(--c-cobalt-400); flex-shrink: 0; }
-.nav .item.active .ico { background: var(--c-blue-cobalt); }
-.nav .item .l     { flex: 1; height: 4px; background: var(--c-cobalt-200); border-radius: 1px; }
-.nav .item.active .l { background: var(--c-cobalt-700); height: 5px; }
+.am .nav .item.active { background: var(--c-cobalt-100); }
+.am .nav .item .ico   { width: 8px; height: 8px; border-radius: 1px; background: var(--c-cobalt-400); flex-shrink: 0; }
+.am .nav .item.active .ico { background: var(--c-blue-cobalt); }
+.am .nav .item .l     { flex: 1; height: 4px; background: var(--c-cobalt-200); border-radius: 1px; }
+.am .nav .item.active .l { background: var(--c-cobalt-700); height: 5px; }
 
 /* Centre column — main work surface. */
-.col { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; overflow: hidden; }
+.am .col { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; overflow: hidden; }
 
 /* Right-rail detail panel. */
-.detail {
+.am .detail {
   width: 26%;
   min-width: 130px;
   background: white;
@@ -125,7 +143,7 @@
 }
 
 /* Generic content panel — white card with rounded corners. */
-.panel {
+.am .panel {
   background: white;
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-sm);
@@ -135,83 +153,83 @@
   gap: 6px;
   min-width: 0;
 }
-.panel .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.panel .head .title { height: 6px; background: var(--c-cobalt-700); border-radius: 1px; width: 30%; }
+.am .panel .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.am .panel .head .title { height: 6px; background: var(--c-cobalt-700); border-radius: 1px; width: 30%; }
 
 /* Text-line bars used everywhere a row of placeholder text would go. */
-.row { height: 4px; background: var(--c-cobalt-100); border-radius: 1px; width: 100%; }
-.row.short { width: 60%; }
-.row.dark  { background: var(--c-cobalt-300); }
-.row.head  { height: 6px; background: var(--c-cobalt-700); width: 40%; }
-.row.accent { background: var(--c-orange-knvb); width: 30%; }
+.am .row { height: 4px; background: var(--c-cobalt-100); border-radius: 1px; width: 100%; }
+.am .row.short { width: 60%; }
+.am .row.dark  { background: var(--c-cobalt-300); }
+.am .row.head  { height: 6px; background: var(--c-cobalt-700); width: 40%; }
+.am .row.accent { background: var(--c-orange-knvb); width: 30%; }
 
 /* Small status pill (mint / orange / cobalt). */
-.statusPill {
+.am .statusPill {
   display: inline-flex; align-items: center; gap: 3px;
   padding: 2px 6px;
   border-radius: 999px;
   background: var(--c-mint-100);
 }
-.statusPill .h  { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
-.statusPill .t  { height: 3px; width: 22px; background: var(--c-mint-700); border-radius: 1px; }
-.statusPill.beta { background: var(--c-coral-50); }
-.statusPill.beta .h { background: var(--c-orange-knvb); }
-.statusPill.beta .t { background: var(--c-coral-700); }
+.am .statusPill .h  { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: var(--c-mint-500); }
+.am .statusPill .t  { height: 3px; width: 22px; background: var(--c-mint-700); border-radius: 1px; }
+.am .statusPill.beta { background: var(--c-coral-50); }
+.am .statusPill.beta .h { background: var(--c-orange-knvb); }
+.am .statusPill.beta .t { background: var(--c-coral-700); }
 
 /* KPI strip cell — big number left, label right. */
-.kpi {
+.am .kpi {
   flex: 1;
   display: flex; align-items: center; gap: 8px;
   padding: 8px 10px;
   background: var(--c-cobalt-50);
   border-radius: var(--radius-sm);
 }
-.kpi .ico { width: 16px; height: 18px; clip-path: var(--hex-pointy-top); background: var(--c-mint-300); flex-shrink: 0; }
-.kpi.amber .ico   { background: var(--c-orange-knvb); }
-.kpi.lavender .ico { background: var(--c-lavender-300); }
-.kpi.forest .ico  { background: var(--c-forest-300); }
-.kpi .meta  { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.kpi .num   { height: 8px; background: var(--c-cobalt-900); border-radius: 1px; width: 30%; }
-.kpi .label { height: 3px; background: var(--c-cobalt-400); border-radius: 1px; width: 70%; }
+.am .kpi .ico { width: 16px; height: 18px; clip-path: var(--hex-pointy-top); background: var(--c-mint-300); flex-shrink: 0; }
+.am .kpi.amber .ico   { background: var(--c-orange-knvb); }
+.am .kpi.lavender .ico { background: var(--c-lavender-300); }
+.am .kpi.forest .ico  { background: var(--c-forest-300); }
+.am .kpi .meta  { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.am .kpi .num   { height: 8px; background: var(--c-cobalt-900); border-radius: 1px; width: 30%; }
+.am .kpi .label { height: 3px; background: var(--c-cobalt-400); border-radius: 1px; width: 70%; }
 
 /* Stack of rows — table-like or list-like content. */
-.stack { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.stack .item {
+.am .stack { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.am .stack .item {
   display: flex; align-items: center; gap: 6px;
   padding: 4px 0;
   border-bottom: 1px solid var(--c-cobalt-50);
 }
-.stack .item:last-child { border-bottom: none; }
-.stack .item .av { width: 14px; height: 14px; border-radius: 50%; background: var(--c-mint-300); flex-shrink: 0; }
-.stack .item .av.b { background: var(--c-lavender-300); }
-.stack .item .av.c { background: var(--c-orange-knvb); }
-.stack .item .av.d { background: var(--c-forest-300); }
-.stack .item .av.e { background: var(--c-terracotta-300); }
-.stack .item .lines { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.stack .item .lines .l1 { height: 4px; background: var(--c-cobalt-700); border-radius: 1px; width: 60%; }
-.stack .item .lines .l2 { height: 3px; background: var(--c-cobalt-200); border-radius: 1px; width: 80%; }
+.am .stack .item:last-child { border-bottom: none; }
+.am .stack .item .av { width: 14px; height: 14px; border-radius: 50%; background: var(--c-mint-300); flex-shrink: 0; }
+.am .stack .item .av.b { background: var(--c-lavender-300); }
+.am .stack .item .av.c { background: var(--c-orange-knvb); }
+.am .stack .item .av.d { background: var(--c-forest-300); }
+.am .stack .item .av.e { background: var(--c-terracotta-300); }
+.am .stack .item .lines { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.am .stack .item .lines .l1 { height: 4px; background: var(--c-cobalt-700); border-radius: 1px; width: 60%; }
+.am .stack .item .lines .l2 { height: 3px; background: var(--c-cobalt-200); border-radius: 1px; width: 80%; }
 
 /* Action-button row at the top of an admin page. */
-.actions { display: flex; gap: 6px; }
-.actions .btn {
+.am .actions { display: flex; gap: 6px; }
+.am .actions .btn {
   background: var(--c-blue-cobalt);
   height: 16px;
   width: 56px;
   border-radius: 3px;
 }
-.actions .btn.ghost { background: white; border: 1px solid var(--c-cobalt-200); }
+.am .actions .btn.ghost { background: white; border: 1px solid var(--c-cobalt-200); }
 
 /* ======================================================================
    MyDash — full-bleed cobalt background with widget grid
    ====================================================================== */
 
-.mydash {
+.am .mydash {
   background: linear-gradient(135deg, var(--c-blue-cobalt) 0%, var(--c-cobalt-700) 100%);
   position: relative;
   display: flex;
   flex-direction: column;
 }
-.mydash .grid {
+.am .mydash .grid {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1.2fr 1fr 1fr;
@@ -219,8 +237,8 @@
   padding: 12px;
   min-height: 0;
 }
-.mydash .col { padding: 0; gap: 8px; }
-.mydash .tile {
+.am .mydash .col { padding: 0; gap: 8px; }
+.am .mydash .tile {
   background: rgba(255,255,255,0.94);
   border-radius: var(--radius-sm);
   padding: 8px 10px;
@@ -229,7 +247,7 @@
   gap: 4px;
   min-height: 0;
 }
-.mydash .tile.primary {
+.am .mydash .tile.primary {
   background: var(--c-blue-cobalt);
   align-items: center;
   justify-content: center;
@@ -237,15 +255,15 @@
   flex: 1;
   min-height: 50px;
 }
-.mydash .tile.primary .icon { width: 22px; height: 25px; clip-path: var(--hex-pointy-top); background: white; }
-.mydash .tile.primary .label { height: 5px; width: 50%; background: white; border-radius: 1px; }
-.mydash .tile.empty { background: rgba(255,255,255,0.55); flex: 0 0 26%; }
-.mydash .tileHead {
+.am .mydash .tile.primary .icon { width: 22px; height: 25px; clip-path: var(--hex-pointy-top); background: white; }
+.am .mydash .tile.primary .label { height: 5px; width: 50%; background: white; border-radius: 1px; }
+.am .mydash .tile.empty { background: rgba(255,255,255,0.55); flex: 0 0 26%; }
+.am .mydash .tileHead {
   display: flex; align-items: center; gap: 5px;
   margin-bottom: 2px;
 }
-.mydash .tileHead .h { width: 9px; height: 9px; border-radius: 1px; background: var(--c-cobalt-400); }
-.mydash .tileHead .t { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .mydash .tileHead .h { width: 9px; height: 9px; border-radius: 1px; background: var(--c-cobalt-400); }
+.am .mydash .tileHead .t { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
 
 /* ==========================================================
    Widget atoms — composable inside any AppMock dashboard
@@ -254,82 +272,82 @@
 
 /* Generic widget shell — same as .mydash .tile but reusable
    under any dashboard variant. */
-.w {
+.am .w {
   background: rgba(255, 255, 255, 0.94);
   border-radius: var(--radius-sm);
   padding: 8px 10px;
   display: flex; flex-direction: column;
   gap: 4px; min-height: 0;
 }
-.w .wHead {
+.am .w .wHead {
   display: flex; align-items: center; gap: 5px;
   margin-bottom: 2px;
 }
-.w .wHead .h { width: 9px; height: 9px; border-radius: 1px; background: var(--c-cobalt-400); }
-.w .wHead .t { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .w .wHead .h { width: 9px; height: 9px; border-radius: 1px; background: var(--c-cobalt-400); }
+.am .w .wHead .t { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
 
 /* Bar-chart widget — vertical bars with one KNVB-orange accent. */
-.w-graph-bar .bars {
+.am .w-graph-bar .bars {
   display: flex; align-items: flex-end; gap: 4px;
   flex: 1; min-height: 50px; padding-top: 4px;
 }
-.w-graph-bar .bar {
+.am .w-graph-bar .bar {
   flex: 1; background: var(--c-cobalt-300); border-radius: 1px 1px 0 0;
 }
-.w-graph-bar .bar.accent { background: var(--c-orange-knvb); }
-.w-graph-bar .axis { height: 1px; background: var(--c-cobalt-200); }
+.am .w-graph-bar .bar.accent { background: var(--c-orange-knvb); }
+.am .w-graph-bar .axis { height: 1px; background: var(--c-cobalt-200); }
 
 /* Line-chart widget — sparkline-style polyline. */
-.w-graph-line .chart {
+.am .w-graph-line .chart {
   flex: 1; min-height: 50px;
   display: flex; align-items: flex-end;
   position: relative; padding-top: 4px;
 }
-.w-graph-line .chart svg { width: 100%; height: 100%; min-height: 50px; }
-.w-graph-line .chart .stroke { fill: none; stroke: var(--c-blue-cobalt); stroke-width: 2; }
-.w-graph-line .chart .fill   { fill: var(--c-cobalt-100); }
-.w-graph-line .chart .dot    { fill: var(--c-orange-knvb); }
-.w-graph-line .axis { height: 1px; background: var(--c-cobalt-200); }
+.am .w-graph-line .chart svg { width: 100%; height: 100%; min-height: 50px; }
+.am .w-graph-line .chart .stroke { fill: none; stroke: var(--c-blue-cobalt); stroke-width: 2; }
+.am .w-graph-line .chart .fill   { fill: var(--c-cobalt-100); }
+.am .w-graph-line .chart .dot    { fill: var(--c-orange-knvb); }
+.am .w-graph-line .axis { height: 1px; background: var(--c-cobalt-200); }
 
 /* Donut-chart widget — KPI-style ring with one accent slice. */
-.w-graph-donut .chart {
+.am .w-graph-donut .chart {
   flex: 1; min-height: 50px;
   display: flex; align-items: center; justify-content: center;
   gap: 8px;
 }
-.w-graph-donut .donut {
+.am .w-graph-donut .donut {
   width: 44px; height: 44px;
   border-radius: 50%;
   background: conic-gradient(var(--c-blue-cobalt) 0 60%, var(--c-orange-knvb) 60% 78%, var(--c-cobalt-200) 78% 100%);
   position: relative;
   flex-shrink: 0;
 }
-.w-graph-donut .donut::after {
+.am .w-graph-donut .donut::after {
   content: ""; position: absolute; inset: 8px;
   background: white; border-radius: 50%;
 }
-.w-graph-donut .legend { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-.w-graph-donut .legend .row { display: flex; align-items: center; gap: 4px; }
-.w-graph-donut .legend .swatch { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
-.w-graph-donut .legend .swatch.a { background: var(--c-blue-cobalt); }
-.w-graph-donut .legend .swatch.b { background: var(--c-orange-knvb); }
-.w-graph-donut .legend .swatch.c { background: var(--c-cobalt-200); }
-.w-graph-donut .legend .label { flex: 1; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; }
+.am .w-graph-donut .legend { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.am .w-graph-donut .legend .row { display: flex; align-items: center; gap: 4px; }
+.am .w-graph-donut .legend .swatch { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+.am .w-graph-donut .legend .swatch.a { background: var(--c-blue-cobalt); }
+.am .w-graph-donut .legend .swatch.b { background: var(--c-orange-knvb); }
+.am .w-graph-donut .legend .swatch.c { background: var(--c-cobalt-200); }
+.am .w-graph-donut .legend .label { flex: 1; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; }
 
 /* Mail widget — avatar list with subject + sender lines. */
-.w-mail .list { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.w-mail .item { display: flex; align-items: center; gap: 5px; }
-.w-mail .item .av { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; background: var(--c-mint-300); }
-.w-mail .item.b .av { background: var(--c-lavender-300); }
-.w-mail .item.c .av { background: var(--c-orange-knvb); }
-.w-mail .item.d .av { background: var(--c-forest-300); }
-.w-mail .item.e .av { background: var(--c-terracotta-300); }
-.w-mail .item .lines { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.w-mail .item .l1 { height: 3px; width: 60%; background: var(--c-cobalt-700); border-radius: 1px; }
-.w-mail .item .l2 { height: 2px; width: 80%; background: var(--c-cobalt-200); border-radius: 1px; }
+.am .w-mail .list { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.am .w-mail .item { display: flex; align-items: center; gap: 5px; }
+.am .w-mail .item .av { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; background: var(--c-mint-300); }
+.am .w-mail .item.b .av { background: var(--c-lavender-300); }
+.am .w-mail .item.c .av { background: var(--c-orange-knvb); }
+.am .w-mail .item.d .av { background: var(--c-forest-300); }
+.am .w-mail .item.e .av { background: var(--c-terracotta-300); }
+.am .w-mail .item .lines { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.am .w-mail .item .l1 { height: 3px; width: 60%; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .w-mail .item .l2 { height: 2px; width: 80%; background: var(--c-cobalt-200); border-radius: 1px; }
 
 /* Calendar widget — 7×4 mini grid with one orange "today" cell. */
-.w-calendar .grid {
+.am .w-calendar .grid {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -337,76 +355,76 @@
   gap: 2px;
   min-height: 40px;
 }
-.w-calendar .grid .day {
+.am .w-calendar .grid .day {
   background: var(--c-cobalt-50);
   border-radius: 1px;
 }
-.w-calendar .grid .day.muted { background: transparent; }
-.w-calendar .grid .day.event { background: var(--c-cobalt-300); }
-.w-calendar .grid .day.today { background: var(--c-orange-knvb); }
+.am .w-calendar .grid .day.muted { background: transparent; }
+.am .w-calendar .grid .day.event { background: var(--c-cobalt-300); }
+.am .w-calendar .grid .day.today { background: var(--c-orange-knvb); }
 
 /* Files widget — file rows with hex-folder icon + name line. */
-.w-files .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.w-files .item { display: flex; align-items: center; gap: 5px; }
-.w-files .item .ico {
+.am .w-files .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.am .w-files .item { display: flex; align-items: center; gap: 5px; }
+.am .w-files .item .ico {
   width: 11px; height: 13px;
   background: var(--c-blue-cobalt);
   clip-path: var(--hex-pointy-top);
   flex-shrink: 0;
 }
-.w-files .item.folder .ico { background: var(--c-orange-knvb); }
-.w-files .item.doc .ico    { background: var(--c-terracotta-300); }
-.w-files .item.sheet .ico  { background: var(--c-forest-300); }
-.w-files .item .l { flex: 1; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; }
+.am .w-files .item.folder .ico { background: var(--c-orange-knvb); }
+.am .w-files .item.doc .ico    { background: var(--c-terracotta-300); }
+.am .w-files .item.sheet .ico  { background: var(--c-forest-300); }
+.am .w-files .item .l { flex: 1; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; }
 
 /* Decks widget — kanban with three columns of card-bars. */
-.w-decks .columns {
+.am .w-decks .columns {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
   min-height: 50px;
 }
-.w-decks .columns .col {
+.am .w-decks .columns .col {
   background: var(--c-cobalt-50);
   border-radius: 2px;
   padding: 3px;
   display: flex; flex-direction: column;
   gap: 2px;
 }
-.w-decks .columns .card {
+.am .w-decks .columns .card {
   height: 8px;
   background: white;
   border-radius: 1px;
   border-left: 2px solid var(--c-blue-cobalt);
 }
-.w-decks .columns .card.b { border-left-color: var(--c-orange-knvb); }
-.w-decks .columns .card.c { border-left-color: var(--c-mint-500); }
+.am .w-decks .columns .card.b { border-left-color: var(--c-orange-knvb); }
+.am .w-decks .columns .card.c { border-left-color: var(--c-mint-500); }
 
 /* RSS widget — long item rows with timestamp accent. */
-.w-rss .list { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.w-rss .item { display: flex; align-items: center; gap: 5px; }
-.w-rss .item .src { width: 14px; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; flex-shrink: 0; }
-.w-rss .item .title { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
-.w-rss .item .when  { width: 18px; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; flex-shrink: 0; }
+.am .w-rss .list { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.am .w-rss .item { display: flex; align-items: center; gap: 5px; }
+.am .w-rss .item .src { width: 14px; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; flex-shrink: 0; }
+.am .w-rss .item .title { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .w-rss .item .when  { width: 18px; height: 3px; background: var(--c-cobalt-200); border-radius: 1px; flex-shrink: 0; }
 
 /* Jira / status board widget — rows with status pill + title. */
-.w-jira .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.w-jira .item { display: flex; align-items: center; gap: 5px; }
-.w-jira .item .id { width: 22px; height: 4px; background: var(--c-lavender-300); border-radius: 1px; flex-shrink: 0; }
-.w-jira .item .l  { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
-.w-jira .item .pip {
+.am .w-jira .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.am .w-jira .item { display: flex; align-items: center; gap: 5px; }
+.am .w-jira .item .id { width: 22px; height: 4px; background: var(--c-lavender-300); border-radius: 1px; flex-shrink: 0; }
+.am .w-jira .item .l  { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .w-jira .item .pip {
   width: 10px; height: 11px;
   clip-path: var(--hex-pointy-top);
   background: var(--c-mint-500);
   flex-shrink: 0;
 }
-.w-jira .item.review .pip { background: var(--c-orange-knvb); }
-.w-jira .item.todo .pip   { background: var(--c-cobalt-200); }
-.w-jira .item.blocked .pip { background: var(--c-red-vermillion); }
+.am .w-jira .item.review .pip { background: var(--c-orange-knvb); }
+.am .w-jira .item.todo .pip   { background: var(--c-cobalt-200); }
+.am .w-jira .item.blocked .pip { background: var(--c-red-vermillion); }
 
 /* Video widget — thumbnail with play triangle + duration pill. */
-.w-video .frame {
+.am .w-video .frame {
   flex: 1;
   background: var(--c-cobalt-700);
   border-radius: 2px;
@@ -414,11 +432,11 @@
   min-height: 50px;
   overflow: hidden;
 }
-.w-video .frame::before {
+.am .w-video .frame::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(135deg, var(--c-cobalt-700) 0%, var(--c-cobalt-900) 100%);
 }
-.w-video .frame .play {
+.am .w-video .frame .play {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 0; height: 0;
   border-left: 10px solid white;
@@ -426,14 +444,14 @@
   border-bottom: 6px solid transparent;
   z-index: 1;
 }
-.w-video .frame .duration {
+.am .w-video .frame .duration {
   position: absolute; bottom: 4px; right: 4px;
   width: 18px; height: 4px; background: var(--c-orange-knvb); border-radius: 1px;
   z-index: 1;
 }
 
 /* DocuDesk-style upload widget — dropzone with hex-stack accent. */
-.w-upload .zone {
+.am .w-upload .zone {
   flex: 1;
   border: 1px dashed var(--c-cobalt-300);
   border-radius: 2px;
@@ -442,38 +460,38 @@
   gap: 4px;
   min-height: 50px;
 }
-.w-upload .zone .ico {
+.am .w-upload .zone .ico {
   width: 16px; height: 18px;
   clip-path: var(--hex-pointy-top);
   background: var(--c-terracotta-500);
 }
-.w-upload .zone .label {
+.am .w-upload .zone .label {
   height: 3px; width: 32px;
   background: var(--c-cobalt-400);
   border-radius: 1px;
 }
 
 /* Procest werkvoorraad widget — case rows with stage pip + assignee. */
-.w-werkvoorraad .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.w-werkvoorraad .item { display: flex; align-items: center; gap: 5px; }
-.w-werkvoorraad .item .stage {
+.am .w-werkvoorraad .list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.am .w-werkvoorraad .item { display: flex; align-items: center; gap: 5px; }
+.am .w-werkvoorraad .item .stage {
   width: 10px; height: 11px;
   clip-path: var(--hex-pointy-top);
   background: var(--c-lavender-300);
   flex-shrink: 0;
 }
-.w-werkvoorraad .item.now .stage { background: var(--c-orange-knvb); }
-.w-werkvoorraad .item.late .stage { background: var(--c-red-vermillion); }
-.w-werkvoorraad .item .l1 { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
-.w-werkvoorraad .item .av {
+.am .w-werkvoorraad .item.now .stage { background: var(--c-orange-knvb); }
+.am .w-werkvoorraad .item.late .stage { background: var(--c-red-vermillion); }
+.am .w-werkvoorraad .item .l1 { flex: 1; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .w-werkvoorraad .item .av {
   width: 12px; height: 12px; border-radius: 50%;
   background: var(--c-mint-300); flex-shrink: 0;
 }
-.w-werkvoorraad .item.b .av { background: var(--c-lavender-300); }
-.w-werkvoorraad .item.c .av { background: var(--c-forest-300); }
+.am .w-werkvoorraad .item.b .av { background: var(--c-lavender-300); }
+.am .w-werkvoorraad .item.c .av { background: var(--c-forest-300); }
 
 /* Custom-tile widget — large hex-icon launcher (Intranet, Calendar, Files). */
-.w-launcher {
+.am .w-launcher {
   background: var(--c-blue-cobalt);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -482,69 +500,69 @@
   border-radius: var(--radius-sm);
   min-height: 60px;
 }
-.w-launcher .ico {
+.am .w-launcher .ico {
   width: 22px; height: 25px;
   clip-path: var(--hex-pointy-top);
   background: white;
 }
-.w-launcher .label {
+.am .w-launcher .label {
   height: 5px; width: 50%;
   background: white; border-radius: 1px;
 }
-.w-launcher.amber  { background: var(--c-orange-knvb); }
-.w-launcher.mint   { background: var(--c-mint-500); }
-.w-launcher.lavender { background: var(--c-lavender-500); }
-.w-launcher.forest { background: var(--c-forest-500); }
+.am .w-launcher.amber  { background: var(--c-orange-knvb); }
+.am .w-launcher.mint   { background: var(--c-mint-500); }
+.am .w-launcher.lavender { background: var(--c-lavender-500); }
+.am .w-launcher.forest { background: var(--c-forest-500); }
 
 /* Sub-grid container — for showing tile groups inside a tile. */
-.w-subgrid .grid {
+.am .w-subgrid .grid {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4px;
   min-height: 50px;
 }
-.w-subgrid .grid .cell {
+.am .w-subgrid .grid .cell {
   background: var(--c-cobalt-50);
   border-radius: 2px;
   display: flex; align-items: center; justify-content: center;
 }
-.w-subgrid .grid .cell .ico {
+.am .w-subgrid .grid .cell .ico {
   width: 14px; height: 16px;
   clip-path: var(--hex-pointy-top);
   background: var(--c-blue-cobalt);
 }
-.w-subgrid .grid .cell.b .ico { background: var(--c-orange-knvb); }
-.w-subgrid .grid .cell.c .ico { background: var(--c-mint-500); }
-.w-subgrid .grid .cell.d .ico { background: var(--c-lavender-500); }
+.am .w-subgrid .grid .cell.b .ico { background: var(--c-orange-knvb); }
+.am .w-subgrid .grid .cell.c .ico { background: var(--c-mint-500); }
+.am .w-subgrid .grid .cell.d .ico { background: var(--c-lavender-500); }
 
 /* ======================================================================
    OpenRegister — left nav + centre dashboard + right detail panel
    ====================================================================== */
 
-.openregister .col .kpiRow { display: flex; gap: 6px; }
-.openregister .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+.am .openregister .col .kpiRow { display: flex; gap: 6px; }
+.am .openregister .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
 
 /* ======================================================================
    DeciDesk — left nav + centre with action row + KPIs + 2 tables
    ====================================================================== */
 
-.decidesk .col .kpiRow { display: flex; gap: 6px; }
-.decidesk .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
-.decidesk .col .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.am .decidesk .col .kpiRow { display: flex; gap: 6px; }
+.am .decidesk .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+.am .decidesk .col .head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 
 /* ======================================================================
    OpenCatalogi — list of catalogue cards
    ====================================================================== */
 
-.opencatalogi .col .grid {
+.am .opencatalogi .col .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   flex: 1;
   min-height: 0;
 }
-.opencatalogi .card {
+.am .opencatalogi .card {
   background: white;
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-sm);
@@ -553,22 +571,22 @@
   flex-direction: column;
   gap: 5px;
 }
-.opencatalogi .card .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
-.opencatalogi .card.b .ico { background: var(--c-forest-500); }
-.opencatalogi .card.c .ico { background: var(--c-lavender-500); }
-.opencatalogi .card.d .ico { background: var(--c-terracotta-500); }
-.opencatalogi .card.e .ico { background: var(--c-mint-500); }
+.am .opencatalogi .card .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+.am .opencatalogi .card.b .ico { background: var(--c-forest-500); }
+.am .opencatalogi .card.c .ico { background: var(--c-lavender-500); }
+.am .opencatalogi .card.d .ico { background: var(--c-terracotta-500); }
+.am .opencatalogi .card.e .ico { background: var(--c-mint-500); }
 
 /* ======================================================================
    OpenConnector — pipeline / source-connector-target visual
    ====================================================================== */
 
-.openconnector .stage {
+.am .openconnector .stage {
   display: flex; align-items: center; gap: 10px;
   padding: 12px 0;
 }
-.openconnector .stage .source,
-.openconnector .stage .target {
+.am .openconnector .stage .source,
+.am .openconnector .stage .target {
   width: 28%; height: 56px;
   background: var(--c-cobalt-50);
   border: 1px solid var(--c-cobalt-200);
@@ -577,16 +595,16 @@
   align-items: center; justify-content: center;
   gap: 4px;
 }
-.openconnector .stage .source .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-lavender-500); }
-.openconnector .stage .target .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-forest-500); }
-.openconnector .stage .arrow { flex: 1; height: 2px; background: var(--c-cobalt-300); position: relative; }
-.openconnector .stage .arrow::after {
+.am .openconnector .stage .source .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-lavender-500); }
+.am .openconnector .stage .target .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: var(--c-forest-500); }
+.am .openconnector .stage .arrow { flex: 1; height: 2px; background: var(--c-cobalt-300); position: relative; }
+.am .openconnector .stage .arrow::after {
   content: ""; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
   border-left: 6px solid var(--c-cobalt-300);
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
 }
-.openconnector .stage .conn {
+.am .openconnector .stage .conn {
   width: 18%;
   background: var(--c-blue-cobalt);
   border-radius: var(--radius-sm);
@@ -595,35 +613,35 @@
   align-items: center; justify-content: center;
   gap: 4px;
 }
-.openconnector .stage .conn .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: white; }
-.openconnector .stage .conn .label { height: 4px; width: 60%; background: rgba(255,255,255,0.8); border-radius: 1px; }
+.am .openconnector .stage .conn .ico { width: 18px; height: 21px; clip-path: var(--hex-pointy-top); background: white; }
+.am .openconnector .stage .conn .label { height: 4px; width: 60%; background: rgba(255,255,255,0.8); border-radius: 1px; }
 
 /* ======================================================================
    Procest — process timeline / case detail
    ====================================================================== */
 
-.procest .timeline {
+.am .procest .timeline {
   display: flex; align-items: center; gap: 0;
   padding: 8px 0;
   position: relative;
 }
-.procest .timeline::before {
+.am .procest .timeline::before {
   content: ""; position: absolute; left: 12px; right: 12px; top: 50%;
   height: 2px; background: var(--c-cobalt-200);
   z-index: 0;
 }
-.procest .timeline .step {
+.am .procest .timeline .step {
   flex: 1;
   display: flex; flex-direction: column;
   align-items: center;
   gap: 4px;
   position: relative; z-index: 1;
 }
-.procest .timeline .step .h {
+.am .procest .timeline .step .h {
   width: 18px; height: 21px;
   clip-path: var(--hex-pointy-top);
   background: var(--c-mint-500);
 }
-.procest .timeline .step.todo .h { background: var(--c-cobalt-100); }
-.procest .timeline .step.now  .h { background: var(--c-orange-knvb); }
-.procest .timeline .step .label { height: 3px; width: 60%; background: var(--c-cobalt-400); border-radius: 1px; }
+.am .procest .timeline .step.todo .h { background: var(--c-cobalt-100); }
+.am .procest .timeline .step.now  .h { background: var(--c-orange-knvb); }
+.am .procest .timeline .step .label { height: 3px; width: 60%; background: var(--c-cobalt-400); border-radius: 1px; }

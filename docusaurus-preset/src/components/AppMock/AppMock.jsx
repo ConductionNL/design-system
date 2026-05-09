@@ -69,18 +69,22 @@ export default function AppMock({app, size = 'md', caption = false, className}) 
   const variant = VARIANTS[app];
   if (!variant) {
     return (
-      <div className={[styles.frame, styles[`size-${size}`], className].filter(Boolean).join(' ')}>
-        <div className={styles.empty}>Unknown app: {app}</div>
+      <div className={styles.am}>
+        <div className={[styles.frame, styles[`size-${size}`], className].filter(Boolean).join(' ')}>
+          <div className={styles.empty}>Unknown app: {app}</div>
+        </div>
       </div>
     );
   }
   const {Component, label} = variant;
   return (
-    <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
-      <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
-        <Component />
-      </div>
-      {caption && <figcaption className={styles.caption}>{label}</figcaption>}
-    </figure>
+    <div className={styles.am}>
+      <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
+        <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
+          <Component />
+        </div>
+        {caption && <figcaption className={styles.caption}>{label}</figcaption>}
+      </figure>
+    </div>
   );
 }

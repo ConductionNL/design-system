@@ -24,6 +24,13 @@ on:
       - 'diagrams/**'
       - 'tokens.css'
       - 'typography.css'
+      # Trigger when JSX powering kit pages changes, so the
+      # build-kit step picks up the latest chassis without
+      # needing a manual preview/ edit.
+      - 'docusaurus-preset/src/components/AppMock/**'
+      - 'scripts/build-kit.mjs'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -41,6 +48,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install --no-audit --no-fund
+
+      # Re-render kit pages whose chassis comes from React components
+      # under docusaurus-preset/. Today this only touches the variant
+      # catalogue inside app-mock.html (BUILD:variant-catalogue marker);
+      # widget-mock.html and sidebar-mock.html will join in phases 2-3.
+      # Running on every deploy means the live identity.conduction.nl
+      # site never drifts from the published preset, even if a
+      # contributor forgot to run `npm run build:kit` locally.
+      - run: npm run build:kit
 
       # Assemble the Pages artifact. preview/ is the root (so the kit
       # specimens are reachable at identity.conduction.nl/<page>.html);

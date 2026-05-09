@@ -626,7 +626,7 @@
         <h3>Desk pattern</h3>
         <span class="formula">topbar &middot; col (full-bleed)</span>
       </div>
-      <p>Personal home / dashboard view. The Nextcloud topbar shelf is the only navigation; the body is one full-width canvas of widgets. Used when the surface aggregates across the whole workspace instead of belonging to one app. No <code>.nav</code>, no <code>.pageHeader</code>, no <code>.detail</code>.</p>
+      <p>Personal home / dashboard view. The Nextcloud topbar shelf is the only navigation; the body is one full-width canvas of widgets that fills the canvas top-to-bottom. Mix of action tiles, charts (bar / line / donut), calendar, video, and status lists. Used when the surface aggregates across the whole workspace instead of belonging to one app. No <code>.nav</code>, no <code>.pageHeader</code>, no <code>.detail</code>.</p>
       <figure class="figure" style="margin: 0;">
         <div class="frame size-sm" style="margin: 0 auto;">
           <div class="topbar">
@@ -640,9 +640,13 @@
           </div>
           <div class="body mydash">
             <div class="grid">
-              <!-- Col 1: bar chart on top, line chart below -->
+              <!-- Col 1: action tile (KNVB orange) on top, bar chart, line chart -->
               <div class="col">
-                <div class="w w-graph-bar">
+                <div class="tile primary" style="background: var(--c-orange-knvb); flex: 0 0 auto; min-height: 42px;">
+                  <div class="icon"></div>
+                  <div class="label"></div>
+                </div>
+                <div class="w w-graph-bar" style="flex: 1;">
                   <div class="wHead"><div class="h"></div><div class="t"></div></div>
                   <div class="bars">
                     <div class="bar" style="height:40%"></div>
@@ -654,7 +658,7 @@
                   </div>
                   <div class="axis"></div>
                 </div>
-                <div class="w w-graph-line">
+                <div class="w w-graph-line" style="flex: 1;">
                   <div class="wHead"><div class="h"></div><div class="t"></div></div>
                   <div class="chart">
                     <svg viewBox="0 0 100 40" preserveAspectRatio="none">
@@ -666,10 +670,41 @@
                   <div class="axis"></div>
                 </div>
               </div>
-              <!-- Col 2: donut + 2nd bar -->
+
+              <!-- Col 2: video widget on top, calendar widget below -->
               <div class="col">
-                <div class="w w-graph-donut"><div class="wHead"><div class="h"></div><div class="t"></div></div></div>
-                <div class="w w-graph-bar">
+                <div class="w" style="flex: 1.2;">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div style="flex: 1; min-height: 50px; background: linear-gradient(135deg, var(--c-blue-cobalt) 0%, var(--c-cobalt-700) 100%); border-radius: 2px; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="white"><polygon points="9,5 19,12 9,19" /></svg>
+                    <div style="position: absolute; bottom: 5px; right: 5px; height: 3px; width: 30%; background: var(--c-orange-knvb); border-radius: 1px;"></div>
+                  </div>
+                </div>
+                <div class="w w-calendar" style="flex: 1;">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="grid">
+                    <div class="day"></div><div class="day muted"></div><div class="day event"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day muted"></div>
+                    <div class="day"></div><div class="day"></div><div class="day"></div><div class="day today"></div><div class="day"></div><div class="day event"></div><div class="day"></div>
+                    <div class="day muted"></div><div class="day event"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day muted"></div>
+                    <div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day event"></div><div class="day"></div><div class="day"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Col 3: donut + bar chart 2 -->
+              <div class="col">
+                <div class="w w-graph-donut" style="flex: 1;">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="chart">
+                    <div class="donut"></div>
+                    <div class="legend">
+                      <div class="row"><div class="swatch a"></div><div class="label"></div></div>
+                      <div class="row"><div class="swatch b"></div><div class="label"></div></div>
+                      <div class="row"><div class="swatch c"></div><div class="label"></div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w w-graph-bar" style="flex: 1;">
                   <div class="wHead"><div class="h"></div><div class="t"></div></div>
                   <div class="bars">
                     <div class="bar" style="height:50%"></div>
@@ -681,16 +716,37 @@
                   <div class="axis"></div>
                 </div>
               </div>
-              <!-- Col 3: ranked list rail (table widget) -->
+
+              <!-- Col 4: list widget — full height, status pills in mint / orange / cobalt-200 / vermillion -->
               <div class="col">
-                <div class="w w-table" style="flex: 1;">
+                <div class="w w-jira" style="flex: 1;">
                   <div class="wHead"><div class="h"></div><div class="t"></div></div>
-                  <div class="stack">
-                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
-                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
-                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
-                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
-                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                  <div class="list" style="flex: 1; display: flex; flex-direction: column; gap: 5px; min-height: 0;">
+                    <div class="item">
+                      <div class="id"></div>
+                      <div class="l"></div>
+                      <div class="pip"></div>
+                    </div>
+                    <div class="item review">
+                      <div class="id"></div>
+                      <div class="l"></div>
+                      <div class="pip"></div>
+                    </div>
+                    <div class="item">
+                      <div class="id"></div>
+                      <div class="l"></div>
+                      <div class="pip" style="background: var(--c-cobalt-200);"></div>
+                    </div>
+                    <div class="item">
+                      <div class="id"></div>
+                      <div class="l"></div>
+                      <div class="pip" style="background: var(--c-red-vermillion);"></div>
+                    </div>
+                    <div class="item">
+                      <div class="id"></div>
+                      <div class="l"></div>
+                      <div class="pip"></div>
+                    </div>
                   </div>
                 </div>
               </div>

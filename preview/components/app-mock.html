@@ -427,19 +427,36 @@
   }
   .anatomy .rule p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--c-cobalt-700); }
 
-  /* Sizes and constraints strip */
+  /* Sizes and constraints strip — three cards laid out at proportional
+     widths (1fr / 1.5fr / 2fr ≈ 480 : 720 : 960) so the relative scale
+     is visible at a glance. Each card has a mini-AppMock chassis at the
+     top + the size metadata below. */
   .anatomy .sizes {
-    display: flex; gap: var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1.6fr;
+    gap: var(--space-4);
     margin-bottom: var(--space-10);
-    flex-wrap: wrap;
+    align-items: stretch;
   }
+  @media (max-width: 900px) { .anatomy .sizes { grid-template-columns: 1fr; } }
   .anatomy .sizes .size-pill {
-    flex: 1; min-width: 200px;
     background: white;
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-md);
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-4);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .anatomy .sizes .size-pill .example {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+  }
+  .anatomy .sizes .size-pill .example .frame { box-shadow: var(--shadow-1); margin: 0 auto; max-width: 100%; }
+  .anatomy .sizes .size-pill .meta {
     display: flex; align-items: baseline; gap: var(--space-3);
+    flex-wrap: wrap;
   }
   .anatomy .sizes .size-pill code {
     font-family: var(--conduction-typography-font-family-code);
@@ -452,8 +469,9 @@
     font-size: 13px; color: var(--c-cobalt-900); font-weight: 600;
   }
   .anatomy .sizes .size-pill .desc {
-    font-size: 12px; color: var(--c-cobalt-400);
-    margin-left: auto;
+    font-size: 12px; color: var(--c-cobalt-700);
+    line-height: 1.45;
+    width: 100%;
   }
 
   /* Section divider */
@@ -1597,9 +1615,139 @@
   <div class="section-eyebrow">Frame sizes</div>
   <h2>Pick by surface.</h2>
   <div class="sizes">
-    <div class="size-pill"><code>size="sm"</code><span class="px">480&nbsp;px</span><span class="desc">Inline in a Showcase row, beside copy</span></div>
-    <div class="size-pill"><code>size="md"</code><span class="px">720&nbsp;px</span><span class="desc">Default. App-detail hero, marketing card</span></div>
-    <div class="size-pill"><code>size="lg"</code><span class="px">960&nbsp;px</span><span class="desc">Standalone hero, deck slide, full-bleed</span></div>
+
+    <!-- size="sm" — 480px -->
+    <div class="size-pill">
+      <div class="example">
+        <figure class="figure" style="margin: 0;">
+          <div class="frame">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body openregister">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="kpiRow">
+                  <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                </div>
+                <div class="panelRow">
+                  <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="meta"><code>size="sm"</code><span class="px">480&nbsp;px</span></div>
+      <div class="desc">Inline in a Showcase row, beside copy.</div>
+    </div>
+
+    <!-- size="md" — 720px (default) -->
+    <div class="size-pill">
+      <div class="example">
+        <figure class="figure" style="margin: 0;">
+          <div class="frame">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body openregister">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="kpiRow">
+                  <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi amber"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                </div>
+                <div class="panelRow">
+                  <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
+                </div>
+              </div>
+              <div class="detail">
+                <div class="row head"></div>
+                <div class="row"></div>
+                <div class="row short"></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="meta"><code>size="md"</code><span class="px">720&nbsp;px</span></div>
+      <div class="desc">Default. App-detail hero, marketing card.</div>
+    </div>
+
+    <!-- size="lg" — 960px -->
+    <div class="size-pill">
+      <div class="example">
+        <figure class="figure" style="margin: 0;">
+          <div class="frame">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body openregister">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="col">
+                <div class="kpiRow">
+                  <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi amber"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi lavender"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                </div>
+                <div class="panelRow">
+                  <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
+                  <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="av b"></div><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="av d"></div><div class="lines"><div class="l1"></div></div></div></div></div>
+                </div>
+              </div>
+              <div class="detail">
+                <div class="row head"></div>
+                <div class="row dark"></div>
+                <div class="row"></div>
+                <div class="row short"></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="meta"><code>size="lg"</code><span class="px">960&nbsp;px</span></div>
+      <div class="desc">Standalone hero, deck slide, full-bleed.</div>
+    </div>
+
   </div>
 
 </div><!-- /.am -->

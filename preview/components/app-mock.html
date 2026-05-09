@@ -106,7 +106,7 @@
      the padded area. */
   .anatomy .annotated {
     margin: var(--space-9) auto;
-    padding: var(--space-9) var(--space-8);
+    padding: var(--space-9) 0;
     background: var(--c-cobalt-50);
     border-radius: var(--radius-lg);
     width: 100%;
@@ -264,6 +264,94 @@
   .zone-focus.focus-detail .body > .nav,
   .zone-focus.focus-detail .body > .col           { opacity: 0.25; }
   .zone-focus.focus-detail .body > .detail        { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); }
+
+  .zone-focus.focus-page-header .topbar,
+  .zone-focus.focus-page-header .body > .nav,
+  .zone-focus.focus-page-header .body > .detail,
+  .zone-focus.focus-page-header .body > .col > *:not(.pageHeader) { opacity: 0.25; }
+  .zone-focus.focus-page-header .pageHeader { box-shadow: 0 0 0 2px var(--c-orange-knvb); border-radius: var(--radius-sm); }
+
+  /* ---- New patterns we render via inline classes ----
+     .nav footer (Settings + Feedback) anchored to bottom.
+     .pageHeader: title-bar + action-buttons row at the top of .col.
+     .detail.rich: enriched sidebar with header / tabs / filters,
+       matching the real Nextcloud sidepanel pattern. */
+  .frame .nav .footer {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--c-cobalt-100);
+    display: flex; flex-direction: column;
+    gap: 5px;
+  }
+
+  .frame .pageHeader {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .frame .pageHeader .title-bar {
+    flex: 1;
+    height: 14px;
+    background: var(--c-blue-cobalt);
+    border-radius: 3px;
+    max-width: 45%;
+  }
+  .frame .pageHeader .spacer { flex: 1; }
+  .frame .pageHeader .actions { display: flex; gap: 4px; }
+  .frame .pageHeader .actions .btn {
+    height: 14px; width: 38px;
+    background: var(--c-blue-cobalt);
+    border-radius: 3px;
+  }
+  .frame .pageHeader .actions .btn.ghost {
+    background: white;
+    border: 1px solid var(--c-cobalt-200);
+  }
+
+  /* Sidebar (enriched .detail) — matches the real Nextcloud sidepanel:
+     header (icon + title + description + close), tabs, then content. */
+  .frame .detail.rich { padding: 0; gap: 0; }
+  .frame .detail.rich .sb-head {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .frame .detail.rich .sb-head .ico {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--c-cobalt-50);
+    border: 1px solid var(--c-cobalt-200);
+    flex-shrink: 0;
+  }
+  .frame .detail.rich .sb-head .meta {
+    flex: 1; display: flex; flex-direction: column; gap: 3px;
+    min-width: 0;
+  }
+  .frame .detail.rich .sb-head .title { height: 6px; background: var(--c-cobalt-900); border-radius: 1px; width: 50%; }
+  .frame .detail.rich .sb-head .desc  { height: 3px; background: var(--c-cobalt-300); border-radius: 1px; width: 85%; }
+  .frame .detail.rich .sb-head .close { width: 8px; height: 8px; background: var(--c-cobalt-300); flex-shrink: 0; }
+
+  .frame .detail.rich .sb-tabs {
+    display: flex;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .frame .detail.rich .sb-tab {
+    flex: 1; padding: 6px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    border-bottom: 2px solid transparent;
+  }
+  .frame .detail.rich .sb-tab.active { border-bottom-color: var(--c-blue-cobalt); }
+  .frame .detail.rich .sb-tab .ico { width: 7px; height: 7px; border-radius: 50%; background: var(--c-cobalt-300); }
+  .frame .detail.rich .sb-tab.active .ico { background: var(--c-cobalt-700); }
+  .frame .detail.rich .sb-tab .l { height: 3px; background: var(--c-cobalt-300); width: 24px; border-radius: 1px; }
+  .frame .detail.rich .sb-tab.active .l { background: var(--c-cobalt-700); }
+
+  .frame .detail.rich .sb-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+  .frame .detail.rich .sb-label { height: 4px; background: var(--c-cobalt-700); width: 40%; border-radius: 1px; }
+  .frame .detail.rich .sb-input { height: 14px; background: white; border: 1px solid var(--c-cobalt-200); border-radius: 3px; }
+  .frame .detail.rich .sb-filter { display: flex; flex-direction: column; gap: 4px; }
+  .frame .detail.rich .sb-filter .lbl  { height: 3px; background: var(--c-cobalt-400); width: 30%; border-radius: 1px; }
+  .frame .detail.rich .sb-filter .field { height: 12px; background: white; border: 1px solid var(--c-cobalt-200); border-radius: 2px; }
 
   /* Atom-by-atom rule table */
   .anatomy .atom-table {
@@ -430,8 +518,21 @@
             <div class="item"><div class="ico"></div><div class="l"></div></div>
             <div class="item"><div class="ico"></div><div class="l"></div></div>
             <div class="item"><div class="ico"></div><div class="l"></div></div>
+            <div class="footer">
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+            </div>
           </div>
           <div class="col">
+            <div class="pageHeader">
+              <div class="title-bar"></div>
+              <div class="spacer"></div>
+              <div class="actions">
+                <div class="btn ghost"></div>
+                <div class="btn"></div>
+                <div class="btn"></div>
+              </div>
+            </div>
             <div class="kpiRow">
               <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
               <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
@@ -469,7 +570,7 @@
         <h3>App pattern</h3>
         <span class="formula">topbar &middot; nav &middot; col [&middot; detail]</span>
       </div>
-      <p>Default for any Conduction app rendered inside Nextcloud's app surface. Carries its own per-app navigation in the left rail because the topbar's Nextcloud shelf points outward (other Nextcloud apps), not inward (this app's screens).</p>
+      <p>Default for any Conduction app rendered inside Nextcloud's app surface. Carries its own per-app navigation in the left rail (with Settings + Feedback pinned bottom), a page header at the top of <code>.col</code>, and an optional sidebar on the right.</p>
       <figure class="figure" style="margin: 0;">
         <div class="frame size-sm" style="margin: 0 auto;">
           <div class="topbar">
@@ -488,8 +589,17 @@
               <div class="item"><div class="ico"></div><div class="l"></div></div>
               <div class="item"><div class="ico"></div><div class="l"></div></div>
               <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="footer">
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
             </div>
             <div class="col">
+              <div class="pageHeader">
+                <div class="title-bar"></div>
+                <div class="spacer"></div>
+                <div class="actions"><div class="btn ghost"></div><div class="btn"></div></div>
+              </div>
               <div class="panelRow">
                 <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
               </div>
@@ -509,7 +619,7 @@
         <h3>Desk pattern</h3>
         <span class="formula">topbar &middot; col (full-bleed)</span>
       </div>
-      <p>Personal home / dashboard view. The Nextcloud topbar shelf is the only navigation; the body is one full-width canvas of widgets. Used when the surface aggregates across the whole workspace instead of belonging to one app.</p>
+      <p>Personal home / dashboard view. The Nextcloud topbar shelf is the only navigation; the body is one full-width canvas of widgets. Used when the surface aggregates across the whole workspace instead of belonging to one app. No <code>.nav</code>, no <code>.pageHeader</code>, no <code>.detail</code>.</p>
       <figure class="figure" style="margin: 0;">
         <div class="frame size-sm" style="margin: 0 auto;">
           <div class="topbar">
@@ -523,13 +633,59 @@
           </div>
           <div class="body mydash">
             <div class="grid">
+              <!-- Col 1: bar chart on top, line chart below -->
               <div class="col">
-                <div class="w w-graph-bar"><div class="wHead"><div class="h"></div><div class="t"></div></div><div class="bars"><div class="bar" style="height:40%"></div><div class="bar" style="height:65%"></div><div class="bar accent" style="height:90%"></div><div class="bar" style="height:60%"></div></div><div class="axis"></div></div>
+                <div class="w w-graph-bar">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="bars">
+                    <div class="bar" style="height:40%"></div>
+                    <div class="bar" style="height:65%"></div>
+                    <div class="bar" style="height:52%"></div>
+                    <div class="bar" style="height:78%"></div>
+                    <div class="bar accent" style="height:90%"></div>
+                    <div class="bar" style="height:60%"></div>
+                  </div>
+                  <div class="axis"></div>
+                </div>
+                <div class="w w-graph-line">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="chart">
+                    <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                      <path class="fill"   d="M0,32 L14,24 L28,28 L42,18 L56,22 L70,12 L84,16 L100,8 L100,40 L0,40 Z"/>
+                      <path class="stroke" d="M0,32 L14,24 L28,28 L42,18 L56,22 L70,12 L84,16 L100,8"/>
+                      <circle class="dot" cx="100" cy="8" r="2.5"/>
+                    </svg>
+                  </div>
+                  <div class="axis"></div>
+                </div>
               </div>
-              <div class="w w-graph-donut"><div class="wHead"><div class="h"></div><div class="t"></div></div></div>
+              <!-- Col 2: donut + 2nd bar -->
               <div class="col">
-                <div class="tile"><div class="tileHead"><div class="h"></div><div class="t"></div></div><div style="height:24px; background: var(--c-cobalt-50); border-radius: 3px;"></div></div>
-                <div class="tile"><div class="tileHead"><div class="h"></div><div class="t"></div></div><div style="height:24px; background: var(--c-cobalt-50); border-radius: 3px;"></div></div>
+                <div class="w w-graph-donut"><div class="wHead"><div class="h"></div><div class="t"></div></div></div>
+                <div class="w w-graph-bar">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="bars">
+                    <div class="bar" style="height:50%"></div>
+                    <div class="bar accent" style="height:80%"></div>
+                    <div class="bar" style="height:40%"></div>
+                    <div class="bar" style="height:60%"></div>
+                    <div class="bar" style="height:35%"></div>
+                  </div>
+                  <div class="axis"></div>
+                </div>
+              </div>
+              <!-- Col 3: ranked list rail (table widget) -->
+              <div class="col">
+                <div class="w w-table" style="flex: 1;">
+                  <div class="wHead"><div class="h"></div><div class="t"></div></div>
+                  <div class="stack">
+                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div></div></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -540,9 +696,161 @@
 
   </div>
 
+  <!-- Templates — Index and Detail layouts inside the App pattern -->
+  <div class="section-eyebrow">Templates</div>
+  <h2 style="font-size: 22px; margin-bottom: var(--space-5);">Two templates inside the App pattern.</h2>
+  <p class="lede" style="margin-bottom: var(--space-6);">
+    Most App-pattern screens are one of two templates: an <strong>Index</strong> (a list of records, filterable from the sidebar) or a <strong>Detail</strong> (one record open, with related sections and pinned metadata in the sidebar). Same chassis, same page header, same Settings/Feedback footer, same sidebar shape. Only the content of <code>.col</code> differs.
+  </p>
+
+  <div class="pattern-row">
+
+    <!-- Index template -->
+    <div class="pattern-card">
+      <div class="pat-head">
+        <h3>Generic Index</h3>
+        <span class="formula">pageHeader &middot; KPI &middot; table &middot; sidebar</span>
+      </div>
+      <p>The list / overview view: every Index page in every Conduction app composes the same way. KPI strip on top to summarise what's in the list, then the list itself, with the sidebar open to filters and column controls.</p>
+      <figure class="figure" style="margin: 0;">
+        <div class="frame size-sm" style="margin: 0 auto;">
+          <div class="topbar">
+            <div class="logo"></div>
+            <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+            <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+            <div class="icon"></div><div class="icon"></div>
+            <div class="spacer"></div>
+            <div class="bell"></div>
+            <div class="avatar"></div>
+          </div>
+          <div class="body openregister">
+            <div class="nav">
+              <div class="navHead"><div class="h"></div><div class="l"></div></div>
+              <div class="item active"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="footer">
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="pageHeader">
+                <div class="title-bar"></div>
+                <div class="spacer"></div>
+                <div class="actions"><div class="btn ghost"></div><div class="btn"></div></div>
+              </div>
+              <div class="kpiRow">
+                <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                <div class="kpi amber"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+              </div>
+              <div class="panelRow">
+                <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
+              </div>
+            </div>
+            <div class="detail rich">
+              <div class="sb-head">
+                <div class="ico"></div>
+                <div class="meta"><div class="title"></div><div class="desc"></div></div>
+                <div class="close"></div>
+              </div>
+              <div class="sb-tabs">
+                <div class="sb-tab active"><div class="ico"></div><div class="l"></div></div>
+                <div class="sb-tab"><div class="ico"></div><div class="l"></div></div>
+              </div>
+              <div class="sb-body">
+                <div class="sb-input"></div>
+                <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+      <p class="examples"><strong>Default sidebar tabs:</strong> Search + Columns. <strong>Used for:</strong> Requests, Clients, Leads, Tasks, Cases, Catalogues, Registers, Schemas.</p>
+    </div>
+
+    <!-- Detail template -->
+    <div class="pattern-card">
+      <div class="pat-head">
+        <h3>Generic Detail</h3>
+        <span class="formula">pageHeader &middot; record sections &middot; sidebar</span>
+      </div>
+      <p>The single-record view: one record's fields opened across stacked panels (Overview, Properties, Linked records, Activity). Sidebar pins related metadata, audit log, or quick edit fields. Same page header as Index; only the title and the actions change.</p>
+      <figure class="figure" style="margin: 0;">
+        <div class="frame size-sm" style="margin: 0 auto;">
+          <div class="topbar">
+            <div class="logo"></div>
+            <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+            <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+            <div class="icon"></div><div class="icon"></div>
+            <div class="spacer"></div>
+            <div class="bell"></div>
+            <div class="avatar"></div>
+          </div>
+          <div class="body openregister">
+            <div class="nav">
+              <div class="navHead"><div class="h"></div><div class="l"></div></div>
+              <div class="item active"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="footer">
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="pageHeader">
+                <div class="title-bar"></div>
+                <div class="spacer"></div>
+                <div class="actions"><div class="btn ghost"></div><div class="btn"></div></div>
+              </div>
+              <div class="panelRow">
+                <div class="panel" style="flex: 1;">
+                  <div class="head"><div class="title"></div></div>
+                  <div class="stack">
+                    <div class="item"><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                    <div class="item"><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="panelRow">
+                <div class="panel" style="flex: 1;">
+                  <div class="head"><div class="title"></div></div>
+                  <div class="stack">
+                    <div class="item"><div class="av b"></div><div class="lines"><div class="l1"></div></div></div>
+                    <div class="item"><div class="av c"></div><div class="lines"><div class="l1"></div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="detail">
+              <div class="row head"></div>
+              <div class="row dark"></div>
+              <div class="row"></div>
+              <div class="row short"></div>
+              <div style="height: 6px"></div>
+              <div class="row head"></div>
+              <div class="row"></div>
+              <div class="row accent"></div>
+              <div class="row short"></div>
+            </div>
+          </div>
+        </div>
+      </figure>
+      <p class="examples"><strong>Default sidebar tabs:</strong> Overview + Activity. <strong>Used for:</strong> a single Request, a single Client, a single Schema, a single Catalogue entry.</p>
+    </div>
+
+  </div>
+
   <!-- Zones — one card per atom, with the zone highlighted in context -->
   <div class="section-eyebrow">Zones</div>
-  <h2 style="font-size: 22px; margin-bottom: var(--space-5);">Four atoms, one chassis.</h2>
+  <h2 style="font-size: 22px; margin-bottom: var(--space-5);">Five atoms, one chassis.</h2>
   <p class="lede" style="margin-bottom: var(--space-6);">
     Each card focuses on one zone of the chassis. The zone is at full opacity; the rest of the frame is dimmed so you see <em>where</em> the zone sits, not just <em>what</em> it is. The orange outline marks the focused region.
   </p>
@@ -579,8 +887,17 @@
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="footer">
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                </div>
               </div>
               <div class="col">
+                <div class="pageHeader">
+                  <div class="title-bar"></div>
+                  <div class="spacer"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
                 <div class="kpiRow">
                   <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
                   <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
@@ -620,7 +937,7 @@
         <h3>Left navigation</h3>
         <span class="applies"><strong>App</strong> &middot; required &middot; <em style="color: var(--c-cobalt-300);">Desk: never</em></span>
       </div>
-      <p>The per-app sidebar. Carries this app's own primary navigation: the screens a user moves between inside this app. Always shows one active item; the active state is the only place cobalt-100 backgrounds the row.</p>
+      <p>The per-app sidebar. Carries this app's own primary navigation, plus a footer pinned to the bottom for global access (Settings, Feedback). The active item is the only place cobalt-100 backgrounds a row.</p>
 
       <div class="zone-frame">
         <figure class="figure" style="margin: 0;">
@@ -644,9 +961,17 @@
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
-                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="footer">
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                </div>
               </div>
               <div class="col">
+                <div class="pageHeader">
+                  <div class="title-bar"></div>
+                  <div class="spacer"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
                 <div class="kpiRow">
                   <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
                   <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
@@ -667,15 +992,15 @@
       </div>
 
       <dl>
-        <dt>Inside</dt><dd>navHead (cobalt-blue card with hex glyph + label), then 5&ndash;9 nav items, one with <code>.active</code></dd>
+        <dt>Inside</dt><dd>navHead (cobalt-blue card with hex glyph + label), 5&ndash;9 nav items (one with <code>.active</code>), and a <code>.footer</code> with Settings + Feedback pinned to the bottom</dd>
         <dt>Width</dt><dd><code>22%</code>, min <code>100px</code>; <code>flex-shrink: 0</code></dd>
-        <dt>Tokens</dt><dd><code>--c-cobalt-50</code> bg; <code>--c-cobalt-100</code> right border + active bg; <code>--c-orange-knvb</code> on the navHead hex</dd>
+        <dt>Tokens</dt><dd><code>--c-cobalt-50</code> bg; <code>--c-cobalt-100</code> right border + active bg + footer divider; <code>--c-orange-knvb</code> on the navHead hex</dd>
       </dl>
 
       <ul class="tips">
         <li>Always exactly one <code>.active</code> item; never zero, never two</li>
-        <li>NavHead hex gets the orange-accent budget for this region</li>
-        <li class="dont">Don't put global settings or sign-out here; those live behind the topbar avatar</li>
+        <li>Footer always carries Settings + Feedback, anchored bottom via <code>margin-top: auto</code></li>
+        <li class="dont">Don't add per-app sign-out here; the user's avatar in the topbar handles identity</li>
       </ul>
     </div>
 
@@ -686,7 +1011,7 @@
         <h3>Main column</h3>
         <span class="applies"><strong>App</strong> &middot; <strong>Desk</strong> &middot; always</span>
       </div>
-      <p>The work surface. In an App pattern, this is one column with stacked content (KPI strip on top, panels or tables below). In a Desk pattern, <code>.col</code> nests inside <code>.grid</code> to become a 4-column widget canvas, full-bleed across the body.</p>
+      <p>The work surface. In an App pattern, the column opens with a <code>.pageHeader</code> (title + actions), then KPI strip and panels. In a Desk pattern, <code>.col</code> nests inside <code>.grid</code> to become a full-bleed widget canvas with no page header.</p>
 
       <div class="zone-frame">
         <figure class="figure" style="margin: 0;">
@@ -709,8 +1034,17 @@
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="footer">
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                </div>
               </div>
               <div class="col">
+                <div class="pageHeader">
+                  <div class="title-bar"></div>
+                  <div class="spacer"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
                 <div class="kpiRow">
                   <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
                   <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
@@ -733,7 +1067,7 @@
       </div>
 
       <dl>
-        <dt>Inside</dt><dd>App pattern: <code>.kpiRow</code> + <code>.panelRow</code>s + tables. Desk pattern: <code>.grid</code> with <code>.w</code> widgets</dd>
+        <dt>Inside</dt><dd>App pattern: <code>.pageHeader</code> + <code>.kpiRow</code> + <code>.panelRow</code>s + tables. Desk pattern: <code>.grid</code> with <code>.w</code> widgets (no pageHeader)</dd>
         <dt>Width</dt><dd><code>flex: 1</code>; <code>min-width: 0</code>; <code>overflow: hidden</code></dd>
         <dt>Tokens</dt><dd>White bg; tokens scope to inner panels (<code>--c-cobalt-100</code> borders, <code>--c-mint-500</code> / <code>--c-orange-knvb</code> KPI accents)</dd>
       </dl>
@@ -745,14 +1079,87 @@
       </ul>
     </div>
 
-    <!-- ============================ Detail ============================ -->
+    <!-- ============================ Page header ============================ -->
+    <div class="zone-card">
+      <div class="zone-head">
+        <code>.pageHeader</code>
+        <h3>Page header</h3>
+        <span class="applies"><strong>Index</strong> &middot; <strong>Detail</strong> &middot; <em style="color: var(--c-cobalt-300);">Desk: never</em></span>
+      </div>
+      <p>The first row of <code>.col</code> on every Index and Detail template. Carries the page title (left) and one to three primary actions (right). Reused identically across both templates so users land on the same anchor.</p>
+
+      <div class="zone-frame">
+        <figure class="figure" style="margin: 0;">
+          <div class="frame size-md zone-focus focus-page-header">
+            <div class="topbar">
+              <div class="logo"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div><div class="icon"></div><div class="icon"></div>
+              <div class="icon"></div><div class="icon"></div>
+              <div class="spacer"></div>
+              <div class="bell"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="body openregister">
+              <div class="nav">
+                <div class="navHead"><div class="h"></div><div class="l"></div></div>
+                <div class="item active"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="footer">
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="pageHeader">
+                  <div class="title-bar"></div>
+                  <div class="spacer"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
+                <div class="kpiRow">
+                  <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                  <div class="kpi amber"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
+                </div>
+                <div class="panelRow">
+                  <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
+                </div>
+              </div>
+              <div class="detail">
+                <div class="row head"></div>
+                <div class="row"></div>
+                <div class="row short"></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+
+      <dl>
+        <dt>Inside</dt><dd>title-bar (left, cobalt-blue rounded rect with the page title), spacer, then 1&ndash;3 action buttons. Use <code>.btn.ghost</code> for the leftmost button (white with cobalt border) when actions split into "secondary | primary | primary".</dd>
+        <dt>Height</dt><dd><code>14&ndash;16px</code> band, sits flush with <code>.col</code>'s top padding</dd>
+        <dt>Tokens</dt><dd><code>--c-blue-cobalt</code> for the title-bar and primary buttons; <code>--c-cobalt-200</code> border on ghost buttons</dd>
+      </dl>
+
+      <ul class="tips">
+        <li>Identical anatomy on Index and Detail; only the title changes</li>
+        <li>Maximum three actions; if you need more, group into "Actions" dropdown (one ghost btn)</li>
+        <li class="dont">Don't render the page title as plain text inside a panel; the page header is the title</li>
+      </ul>
+    </div>
+
+    <!-- ============================ Sidebar (was Detail) ============================ -->
     <div class="zone-card">
       <div class="zone-head">
         <code>.detail</code>
-        <h3>Detail rail</h3>
+        <h3>Sidebar</h3>
         <span class="applies"><strong>App</strong> &middot; optional &middot; <em style="color: var(--c-cobalt-300);">Desk: never</em></span>
       </div>
-      <p>The right-hand rail. Optional. Use it when the variant genuinely surfaces a selected record, a filter summary, or pinned metadata. If the rail would be empty or padded with placeholders, drop it.</p>
+      <p>The right-hand sidebar. Optional, dismissible, anchored to the active record or the active view. Carries an icon + title + description in a header, then a tabbed body (Search / Columns by default). Class stays <code>.detail</code> for code; we call it the <em>Sidebar</em> in copy.</p>
 
       <div class="zone-frame">
         <figure class="figure" style="margin: 0;">
@@ -775,8 +1182,17 @@
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
                 <div class="item"><div class="ico"></div><div class="l"></div></div>
+                <div class="footer">
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                  <div class="item"><div class="ico"></div><div class="l"></div></div>
+                </div>
               </div>
               <div class="col">
+                <div class="pageHeader">
+                  <div class="title-bar"></div>
+                  <div class="spacer"></div>
+                  <div class="actions"><div class="btn ghost"></div><div class="btn"></div><div class="btn"></div></div>
+                </div>
                 <div class="kpiRow">
                   <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
                   <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
@@ -786,16 +1202,28 @@
                   <div class="panel"><div class="head"><div class="title"></div></div><div class="stack"><div class="item"><div class="lines"><div class="l1"></div></div></div></div></div>
                 </div>
               </div>
-              <div class="detail">
-                <div class="row head"></div>
-                <div class="row dark"></div>
-                <div class="row"></div>
-                <div class="row short"></div>
-                <div style="height: 6px"></div>
-                <div class="row head"></div>
-                <div class="row"></div>
-                <div class="row accent"></div>
-                <div class="row short"></div>
+              <div class="detail rich">
+                <div class="sb-head">
+                  <div class="ico"></div>
+                  <div class="meta">
+                    <div class="title"></div>
+                    <div class="desc"></div>
+                  </div>
+                  <div class="close"></div>
+                </div>
+                <div class="sb-tabs">
+                  <div class="sb-tab active"><div class="ico"></div><div class="l"></div></div>
+                  <div class="sb-tab"><div class="ico"></div><div class="l"></div></div>
+                </div>
+                <div class="sb-body">
+                  <div class="sb-label"></div>
+                  <div class="sb-input"></div>
+                  <div class="sb-label" style="margin-top: 4px;"></div>
+                  <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                  <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                  <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                  <div class="sb-filter"><div class="lbl"></div><div class="field"></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -803,15 +1231,15 @@
       </div>
 
       <dl>
-        <dt>Inside</dt><dd>Stacked <code>.row</code>s with modifiers: <code>.head</code> (label), <code>.dark</code> (emphasised value), <code>.accent</code> (orange highlight), <code>.short</code> (half-width)</dd>
+        <dt>Inside</dt><dd><code>.sb-head</code> (icon + title + description + close), <code>.sb-tabs</code> (2&ndash;3 tabs, one <code>.active</code>), then a <code>.sb-body</code> of inputs / filters / pinned metadata</dd>
         <dt>Width</dt><dd><code>26%</code>, min <code>130px</code>; <code>flex-shrink: 0</code></dd>
-        <dt>Tokens</dt><dd>White bg; <code>--c-cobalt-100</code> left border; <code>--c-orange-knvb</code> for at most one <code>.row.accent</code></dd>
+        <dt>Tokens</dt><dd>White bg; <code>--c-cobalt-100</code> left border; <code>--c-blue-cobalt</code> active-tab underline; <code>--c-cobalt-50</code> on the icon background</dd>
       </dl>
 
       <ul class="tips">
-        <li>Use sparingly: OpenRegister yes, OpenConnector no, OpenWoo no</li>
-        <li>One <code>.row.accent</code> max per rail; use it for the row the user came in to see</li>
-        <li class="dont">Don't fill it with chrome (nav, breadcrumb, tabs); those go in <code>.col</code> or <code>.topbar</code></li>
+        <li>Sidebar should be dismissible; it's a drawer, not a permanent rail</li>
+        <li>Default tabs on an Index page: <em>Search</em> + <em>Columns</em>. Default on Detail: <em>Overview</em> + <em>Activity</em></li>
+        <li class="dont">Don't put global navigation here; that's <code>.nav</code>'s job. The sidebar is scoped to the current view.</li>
       </ul>
     </div>
 
@@ -970,8 +1398,21 @@
             <div class="item"><div class="ico"></div><div class="l"></div></div>
             <div class="item"><div class="ico"></div><div class="l"></div></div>
             <div class="item"><div class="ico"></div><div class="l"></div></div>
+            <div class="footer">
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+              <div class="item"><div class="ico"></div><div class="l"></div></div>
+            </div>
           </div>
           <div class="col">
+            <div class="pageHeader">
+              <div class="title-bar"></div>
+              <div class="spacer"></div>
+              <div class="actions">
+                <div class="btn ghost"></div>
+                <div class="btn"></div>
+                <div class="btn"></div>
+              </div>
+            </div>
             <div class="kpiRow">
               <div class="kpi"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>
               <div class="kpi forest"><div class="ico"></div><div class="meta"><div class="num"></div><div class="label"></div></div></div>

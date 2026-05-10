@@ -66,6 +66,10 @@ export {Hex, HexPrism, Platform, DomainTree, DiagramPipeline, SideBox, Honeycomb
 export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as AppMock} from './AppMock/AppMock.jsx';
+export {default as WidgetMock} from './WidgetMock/WidgetMock.jsx';
+export {default as SidebarMock} from './SidebarMock/SidebarMock.jsx';
+export {default as MockScene} from './MockScene/MockScene.jsx';
+export {default as IntegrationIcon} from './IntegrationIcon/IntegrationIcon.jsx';
 export {default as AtomZones} from './AtomZones/AtomZones.jsx';
 export {default as HexNetwork} from './HexNetwork/HexNetwork.jsx';
 export {default as Showcase} from './Showcase/Showcase.jsx';

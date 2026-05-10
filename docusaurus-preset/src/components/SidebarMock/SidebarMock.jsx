@@ -52,6 +52,7 @@
 import React from 'react';
 import styles from './SidebarMock.module.css';
 import amStyles from '../AppMock/AppMock.module.css';
+import IntegrationIcon from '../IntegrationIcon/IntegrationIcon.jsx';
 
 import ProcestXWiki                  from './variants/ProcestXWiki.jsx';
 import ProcestTimeline               from './variants/ProcestTimeline.jsx';
@@ -71,89 +72,98 @@ import NextcloudActivity             from './variants/NextcloudActivity.jsx';
  *              decorative (rendered as a placeholder bar in .sb-tab .l)
  *              but the active flag drives the highlight.
  */
+/**
+ * Each tab carries an `icon` field: the kebab-case key into the
+ * IntegrationIcon registry (see IntegrationIcon/registry.js). The
+ * SidebarMock renders that icon in the tab's .ico slot, tinted via
+ * currentColor so active tabs read full-cobalt and inactive tabs
+ * read muted-cobalt. The icon makes the tab self-documenting:
+ * Procest's xWiki tab carries the xWiki icon, DocuDesk's Signatures
+ * tab carries an activity-style icon for "stuff happens here", etc.
+ */
 const VARIANTS = {
   'procest-xwiki': {
     Component: ProcestXWiki,
     label: 'Procest · Case sidebar, xWiki tab',
     tabs: [
-      { id: 'activity',  active: false },
-      { id: 'xwiki',     active: true  },
-      { id: 'timeline',  active: false },
-      { id: 'documents', active: false },
+      { id: 'activity',  active: false, icon: 'activity' },
+      { id: 'xwiki',     active: true,  icon: 'xwiki' },
+      { id: 'timeline',  active: false, icon: 'calendar' },
+      { id: 'documents', active: false, icon: 'files' },
     ],
   },
   'procest-timeline': {
     Component: ProcestTimeline,
     label: 'Procest · Case sidebar, Timeline tab',
     tabs: [
-      { id: 'activity',  active: false },
-      { id: 'xwiki',     active: false },
-      { id: 'timeline',  active: true  },
-      { id: 'documents', active: false },
+      { id: 'activity',  active: false, icon: 'activity' },
+      { id: 'xwiki',     active: false, icon: 'xwiki' },
+      { id: 'timeline',  active: true,  icon: 'calendar' },
+      { id: 'documents', active: false, icon: 'files' },
     ],
   },
   'docudesk-signatures': {
     Component: DocuDeskSignatures,
     label: 'DocuDesk · Document sidebar, Signatures tab',
     tabs: [
-      { id: 'activity',      active: false },
-      { id: 'signatures',    active: true  },
-      { id: 'pii',           active: false },
-      { id: 'versions',      active: false },
+      { id: 'activity',   active: false, icon: 'activity' },
+      { id: 'signatures', active: true,  icon: 'mail' },
+      { id: 'pii',        active: false, icon: 'keycloak' },
+      { id: 'versions',   active: false, icon: 'files' },
     ],
   },
   'docudesk-pii-map': {
     Component: DocuDeskPiiMap,
     label: 'DocuDesk · Document sidebar, PII map tab',
     tabs: [
-      { id: 'activity',      active: false },
-      { id: 'signatures',    active: false },
-      { id: 'pii',           active: true  },
-      { id: 'versions',      active: false },
+      { id: 'activity',   active: false, icon: 'activity' },
+      { id: 'signatures', active: false, icon: 'mail' },
+      { id: 'pii',        active: true,  icon: 'keycloak' },
+      { id: 'versions',   active: false, icon: 'files' },
     ],
   },
   'openregister-metadata': {
     Component: OpenRegisterMetadata,
     label: 'OpenRegister · Object sidebar, Metadata tab',
     tabs: [
-      { id: 'activity', active: false },
-      { id: 'metadata', active: true  },
-      { id: 'audit',    active: false },
+      { id: 'activity', active: false, icon: 'activity' },
+      { id: 'metadata', active: true,  icon: 'files' },
+      { id: 'audit',    active: false, icon: 'keycloak' },
     ],
   },
   'opencatalogi-publication-history': {
     Component: OpenCatalogiPublicationHistory,
     label: 'OpenCatalogi · Publication sidebar, History tab',
     tabs: [
-      { id: 'activity', active: false },
-      { id: 'history',  active: true  },
-      { id: 'sources',  active: false },
+      { id: 'activity', active: false, icon: 'activity' },
+      { id: 'history',  active: true,  icon: 'calendar' },
+      { id: 'sources',  active: false, icon: 'rss' },
     ],
   },
   'openconnector-run-detail': {
     Component: OpenConnectorRunDetail,
     label: 'OpenConnector · Run sidebar, Logs tab',
     tabs: [
-      { id: 'activity', active: false },
-      { id: 'logs',     active: true  },
-      { id: 'mapping',  active: false },
+      { id: 'activity', active: false, icon: 'activity' },
+      { id: 'logs',     active: true,  icon: 'n8n' },
+      { id: 'mapping',  active: false, icon: 'windmill' },
     ],
   },
   'decidesk-decision': {
     Component: DeciDeskDecision,
     label: 'DeciDesk · Decision sidebar, Detail tab',
     tabs: [
-      { id: 'activity', active: false },
-      { id: 'detail',   active: true  },
-      { id: 'actions',  active: false },
+      { id: 'activity', active: false, icon: 'activity' },
+      { id: 'detail',   active: true,  icon: 'files' },
+      { id: 'actions',  active: false, icon: 'decks' },
     ],
   },
   'nextcloud-activity': {
     Component: NextcloudActivity,
     label: 'Nextcloud · Stock activity feed',
     tabs: [
-      { id: 'activity', active: true  },
-      { id: 'comments', active: false },
+      { id: 'activity', active: true,  icon: 'activity' },
+      { id: 'comments', active: false, icon: 'talk' },
     ],
   },
 };
@@ -184,7 +194,11 @@ export default function SidebarMock({ kind, embedded = false, className }) {
         <div className={amStyles['sb-tabs']}>
           {tabs.map((t, i) => (
             <div key={t.id || i} className={[amStyles['sb-tab'], t.active && amStyles.active].filter(Boolean).join(' ')}>
-              <div className={amStyles.ico}></div>
+              {t.icon ? (
+                <IntegrationIcon name={t.icon} size="xs" />
+              ) : (
+                <div className={amStyles.ico}></div>
+              )}
               <div className={amStyles.l}></div>
             </div>
           ))}

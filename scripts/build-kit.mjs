@@ -64,6 +64,16 @@ const PAGES = [
     marker:     'incontext-catalogue',
     exportName: 'InContextCatalogue',
   },
+  {
+    jsx:    'preview/components/integration-icons.variants.jsx',
+    target: 'preview/components/integration-icons.html',
+    marker: 'integration-gallery',
+  },
+  {
+    jsx:    'preview/components/mock-scene.variants.jsx',
+    target: 'preview/components/mock-scene.html',
+    marker: 'scene-catalogue',
+  },
 ];
 
 // Stub CSS-module imports: styles.foo → 'foo'. Works because every

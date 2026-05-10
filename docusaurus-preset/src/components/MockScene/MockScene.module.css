@@ -1,0 +1,99 @@
+/**
+ * <MockScene /> styles.
+ *
+ * Marketing-surface composition. A single sidebar sits at the centre
+ * (slightly larger than its standalone size), with three to five
+ * widgets floating around it at staggered offsets and rotations.
+ * Background: a tinted cobalt-50 surface with a soft hex-network
+ * watermark, so the scene reads as "the workspace" without committing
+ * to a specific app frame.
+ *
+ * Use as the illustration on a card that talks about cross-cutting
+ * integration ("typed data, surfaced everywhere"; "every register,
+ * every workspace surface"). The scene is layout-only; the props pass
+ * through fully-formed SidebarMock + WidgetMock JSX.
+ */
+
+.am.scene { display: contents; }
+
+.am .sceneFrame {
+  position: relative;
+  background: var(--c-cobalt-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-cobalt-100);
+  padding: var(--space-8);
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Soft hex-network watermark using radial gradients on top of cobalt-50.
+   Cheap visual texture; no need to bring HexNetwork in for this. */
+.am .sceneFrame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 25%, var(--c-cobalt-100) 0, transparent 35%),
+    radial-gradient(circle at 80% 70%, var(--c-cobalt-100) 0, transparent 35%),
+    radial-gradient(circle at 50% 90%, var(--c-cobalt-100) 0, transparent 30%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Stage holds the sidebar at the centre and widgets at offsets.
+   position: relative so child position: absolute resolves here. */
+.am .sceneStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  z-index: 1;
+}
+
+/* Centre sidebar: anchored, slightly enlarged, drop-shadow for lift. */
+.am .sceneCenter {
+  position: relative;
+  z-index: 4;
+  filter: drop-shadow(0 16px 32px rgba(15, 35, 75, 0.2));
+}
+.am .sceneCenter > .am > .smFrame,
+.am .sceneCenter > .smFrame {
+  width: 320px;
+  height: 440px;
+}
+
+/* Floating widget wrappers. Each one positions absolutely relative
+   to .sceneStage; the data-pos attribute maps to a corner. */
+.am .sceneFloat {
+  position: absolute;
+  z-index: 2;
+  filter: drop-shadow(0 12px 22px rgba(15, 35, 75, 0.15));
+  transition: transform 200ms;
+}
+
+.am .sceneFloat[data-pos="top-left"]     { top: 0;       left: 0;       transform: rotate(-3deg); }
+.am .sceneFloat[data-pos="top-right"]    { top: 4%;      right: 0;      transform: rotate(2deg); }
+.am .sceneFloat[data-pos="bottom-left"]  { bottom: 0;    left: 6%;      transform: rotate(2deg); }
+.am .sceneFloat[data-pos="bottom-right"] { bottom: 0;    right: 0;      transform: rotate(-2deg); }
+.am .sceneFloat[data-pos="middle-left"]  { top: 40%;     left: 0;       transform: translateY(-50%) rotate(-2deg); }
+.am .sceneFloat[data-pos="middle-right"] { top: 40%;     right: 0;      transform: translateY(-50%) rotate(2deg); }
+
+/* Widget frames inside floats: scale down a hair and drop their own
+   shadow so the float-level shadow does the heavy lifting. */
+.am .sceneFloat .wmFrame {
+  box-shadow: none;
+  width: 240px;
+}
+
+/* Tighter scenes for cards: pass `compact` to the component. */
+.am .sceneFrame.compact {
+  padding: var(--space-6);
+  min-height: 300px;
+}
+.am .sceneFrame.compact .sceneStage { min-height: 300px; }
+.am .sceneFrame.compact .sceneCenter > .am > .smFrame,
+.am .sceneFrame.compact .sceneCenter > .smFrame { width: 260px; height: 360px; }
+.am .sceneFrame.compact .sceneFloat .wmFrame { width: 200px; }

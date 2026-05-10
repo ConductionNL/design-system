@@ -1,0 +1,252 @@
+/**
+ * <SidebarMock /> styles.
+ *
+ * Models the Nextcloud right-side detail panel (the surface where
+ * apps register tabs: Activity, Comments, plus app-specific extensions
+ * like Procest's xWiki tab or DocuDesk's Signatures tab).
+ *
+ * Two render modes share the same panel internals:
+ *
+ *   1. STANDALONE (default): the panel renders inside <div class="am sm">
+ *      with .smFrame around it (white card, shadow, border-radius). Used
+ *      in kit-page specimens and inline marketing copy.
+ *
+ *   2. EMBEDDED: the panel renders inside an <AppMock>'s .sidebarOverlay
+ *      via the AppMock `sidebar` prop. The overlay positions absolutely
+ *      against the right of the frame and extends full height. SidebarMock
+ *      drops the frame/shadow/radius in this mode so it slots cleanly.
+ *
+ * Both modes pass through the same atom toolkit defined under .smBody
+ * here (rows, lists, kvs, log lines). Body content is per-variant.
+ */
+
+.am.sm { display: contents; }
+
+/* ---- Standalone chrome ---- */
+
+.am .smFrame {
+  width: 300px;
+  height: 400px;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-cobalt-100);
+  box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Panel internals (used in both modes) ---- */
+
+.am .smPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: white;
+}
+
+/* Header: title bar plus close button. */
+.am .smHead {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+  flex-shrink: 0;
+}
+.am .smHead .smTitle {
+  flex: 1;
+  height: 5px;
+  background: var(--c-cobalt-700);
+  border-radius: 1px;
+}
+.am .smHead .smClose {
+  width: 10px;
+  height: 10px;
+  background: var(--c-cobalt-300);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* Tab strip: each tab is a width-fixed pill. Active tab is cobalt with
+   a 2px underline that crosses the .smTabs bottom border. */
+.am .smTabs {
+  display: flex;
+  padding: 0 12px;
+  gap: 8px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+  flex-shrink: 0;
+}
+.am .smTab {
+  height: 4px;
+  width: 28px;
+  background: var(--c-cobalt-200);
+  border-radius: 1px;
+  margin: 10px 0 8px;
+  position: relative;
+}
+.am .smTab.smTabActive {
+  background: var(--c-blue-cobalt);
+}
+.am .smTab.smTabActive::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: var(--c-blue-cobalt);
+  border-radius: 1px;
+}
+
+/* Body: scrolling region with stacked sections. */
+.am .smBody {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---- Body atoms ---- */
+
+/* Generic row. Defaults to a thin neutral bar. Modifiers below tweak it. */
+.am .smBody .row {
+  height: 3px;
+  background: var(--c-cobalt-200);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.am .smBody .row.head {
+  height: 5px;
+  width: 55%;
+  background: var(--c-cobalt-700);
+  margin-bottom: 4px;
+}
+.am .smBody .row.short { width: 35%; }
+.am .smBody .row.med   { width: 70%; }
+.am .smBody .row.dark  { background: var(--c-cobalt-700); }
+.am .smBody .row.accent { background: var(--c-orange-knvb); }
+
+/* Section break: horizontal rule with a bit of vertical breathing. */
+.am .smBody .smBreak {
+  height: 1px;
+  background: var(--c-cobalt-100);
+  margin: 4px 0;
+}
+
+/* Subhead: small block-level title that introduces a section. */
+.am .smBody .smSub {
+  height: 4px;
+  width: 40%;
+  background: var(--c-cobalt-700);
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+/* Key-value list (used for metadata sidebars). Each row is a label +
+   value pair. Label is a short cobalt-400 bar, value is a longer
+   cobalt-700 bar. */
+.am .smBody .smKv {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.am .smBody .smKv .k {
+  height: 3px;
+  width: 30%;
+  background: var(--c-cobalt-400);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.am .smBody .smKv .v {
+  flex: 1;
+  height: 3px;
+  background: var(--c-cobalt-700);
+  border-radius: 1px;
+}
+
+/* Person row (used for signatures, comments, talk). Avatar plus two
+   text rows plus an optional status pip on the right. */
+.am .smBody .smPerson {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.am .smBody .smPerson .av {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--c-mint-300);
+  flex-shrink: 0;
+}
+.am .smBody .smPerson.b .av { background: var(--c-lavender-300); }
+.am .smBody .smPerson.c .av { background: var(--c-orange-knvb); }
+.am .smBody .smPerson.d .av { background: var(--c-forest-300); }
+.am .smBody .smPerson.e .av { background: var(--c-terracotta-300); }
+.am .smBody .smPerson .lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.am .smBody .smPerson .l1 { height: 3px; width: 70%; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .smBody .smPerson .l2 { height: 2px; width: 50%; background: var(--c-cobalt-300); border-radius: 1px; }
+.am .smBody .smPerson .pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+.am .smBody .smPerson.pending .pip { background: var(--c-orange-knvb); }
+.am .smBody .smPerson.blocked .pip { background: var(--c-red-vermillion); }
+
+/* Stage timeline: vertical list with a left-side rail and stage hexes. */
+.am .smBody .smStage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.am .smBody .smStage .h {
+  width: 10px;
+  height: 11px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+.am .smBody .smStage.now .h    { background: var(--c-orange-knvb); }
+.am .smBody .smStage.todo .h   { background: var(--c-cobalt-200); }
+.am .smBody .smStage.late .h   { background: var(--c-red-vermillion); }
+.am .smBody .smStage .lines    { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.am .smBody .smStage .l1       { height: 3px; width: 60%; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .smBody .smStage .l2       { height: 2px; width: 40%; background: var(--c-cobalt-300); border-radius: 1px; }
+
+/* Log line: monospace-ish row with a status colour at the start. */
+.am .smBody .smLog {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.am .smBody .smLog .ts { width: 22px; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; flex-shrink: 0; }
+.am .smBody .smLog .msg { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
+.am .smBody .smLog.warn .ts { background: var(--c-orange-knvb); }
+.am .smBody .smLog.error .ts { background: var(--c-red-vermillion); }
+
+/* PII tag: a small inline pill for redacted content. */
+.am .smBody .smPiiBlock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.am .smBody .smPii {
+  height: 6px;
+  background: var(--c-cobalt-200);
+  border-radius: 1px;
+}
+.am .smBody .smPii.redacted { background: var(--c-red-vermillion); }
+.am .smBody .smPii.suggested { background: var(--c-orange-knvb); }

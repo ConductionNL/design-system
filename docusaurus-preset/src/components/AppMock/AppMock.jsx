@@ -17,11 +17,16 @@
  *   <AppMock app="mydash" />
  *   <AppMock app="openregister" caption />
  *   <AppMock app="decidesk" size="sm" />
+ *   <AppMock app="procest" sidebar={<SidebarMock kind="procest-xwiki" />} />
  *
  * Props:
- *   - app:     'mydash' | 'opencatalogi' | 'openconnector' |
- *              'openregister' | 'procest' | 'decidesk'  (required)
+ *   - app:     keyof VARIANTS                           (required)
  *   - size:    'sm' | 'md' (default)                    — frame width
+ *   - sidebar: ReactNode                                — renders inside
+ *              the right-edge overlay of the frame. Pass a SidebarMock
+ *              JSX to model a Nextcloud sidebar opened over this app
+ *              (e.g. xWiki tab over a Procest case). Any other node
+ *              renders verbatim
  *   - caption: boolean — adds a small app-name caption below the frame
  *   - className: string
  */
@@ -65,7 +70,7 @@ const VARIANTS = {
   zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
 };
 
-export default function AppMock({app, size = 'md', caption = false, className}) {
+export default function AppMock({app, size = 'md', sidebar = null, caption = false, className}) {
   const variant = VARIANTS[app];
   if (!variant) {
     return (
@@ -77,11 +82,25 @@ export default function AppMock({app, size = 'md', caption = false, className}) 
     );
   }
   const {Component, label} = variant;
+  // The `sidebar` prop renders any node as a Nextcloud-style overlay
+  // panel pinned to the right edge of the frame. Typically a
+  // <SidebarMock kind="..." />; the SidebarMock component automatically
+  // drops its standalone chrome via the `embedded` flag we pass here.
+  // Anything else (custom JSX, an image, etc.) renders verbatim inside
+  // the overlay slot.
+  const renderedSidebar = React.isValidElement(sidebar)
+    ? React.cloneElement(sidebar, { embedded: true })
+    : sidebar;
   return (
     <div className={styles.am}>
       <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
-        <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
+        <div className={[styles.frame, styles[`size-${size}`], renderedSidebar && styles.withSidebar].filter(Boolean).join(' ')}>
           <Component />
+          {renderedSidebar && (
+            <div className={styles.sidebarOverlay} aria-label="Sidebar overlay">
+              {renderedSidebar}
+            </div>
+          )}
         </div>
         {caption && <figcaption className={styles.caption}>{label}</figcaption>}
       </figure>

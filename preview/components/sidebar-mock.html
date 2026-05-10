@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SidebarMock · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/AppMock/AppMock.module.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/SidebarMock/SidebarMock.module.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
+  .hero { background: var(--c-blue-cobalt); color: white; padding: 64px var(--space-12) 48px; }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
+  .hero h1 { color: white; font-size: 44px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+  .hero p  { color: var(--c-cobalt-100); font-size: 16px; max-width: 64ch; line-height: 1.5; margin-top: var(--space-4); }
+
+  /* Anatomy section. */
+  .anatomy {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    padding: 0 var(--space-12);
+  }
+  .anatomy .section-eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: 0 0 var(--space-3);
+  }
+  .anatomy h2 { font-size: 28px; font-weight: 700; color: var(--c-blue-cobalt); margin: 0 0 var(--space-3); letter-spacing: -0.01em; }
+  .anatomy p  { color: var(--c-cobalt-700); font-size: 15px; line-height: 1.55; max-width: 70ch; margin: 0 0 var(--space-3); }
+  .anatomy code { font-family: var(--conduction-typography-font-family-code); font-size: 0.85em; background: var(--c-cobalt-100); padding: 1px 5px; border-radius: 3px; color: var(--c-cobalt-900); }
+
+  /* Section break before each catalogue. */
+  .anatomy-divider {
+    max-width: 1280px;
+    margin: var(--space-12) auto 0;
+    padding: var(--space-8) var(--space-12) 0;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .anatomy-divider .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-3);
+  }
+  .anatomy-divider h2 {
+    font-size: 32px; font-weight: 700; color: var(--c-blue-cobalt);
+    margin: 0; letter-spacing: -0.01em;
+  }
+
+  /* Standalone catalogue: 3 columns, fits 9 sidebars in 3 rows. */
+  .standalone-grid {
+    max-width: 1280px;
+    margin: 48px auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  /* In-context catalogue: 2 columns of larger AppMock + sidebar
+     compositions. Each column shows the sidebar overlaid on the right
+     side of an app. */
+  .incontext-grid {
+    max-width: 1280px;
+    margin: 48px auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10);
+  }
+
+  .specimen-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .specimen-card .head { display: flex; align-items: baseline; gap: var(--space-3); }
+  .specimen-card .head .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); }
+  .specimen-card .head h3  { margin: 0; font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt); }
+  .specimen-card .head .tag { margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 10px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase; }
+  .specimen-card p { color: var(--c-cobalt-700); font-size: 13px; line-height: 1.5; margin: 0; }
+
+  /* Center the SidebarMock standalone frame inside its specimen card. */
+  .specimen-card .smFrame { align-self: center; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Components &nbsp;/&nbsp; SidebarMock</div>
+  <h1>SidebarMock. The detail panel.</h1>
+  <p>The Nextcloud right-side detail panel, abstracted. Procest adds an xWiki tab to the case sidebar, DocuDesk adds Signatures and PII to the document sidebar, OpenRegister adds Metadata to the object sidebar. SidebarMock paints any one of those, standalone or overlaid on an <a href="app-mock.html" style="color: white; text-decoration: underline;">AppMock</a>.</p>
+</div>
+
+<section class="anatomy">
+  <div class="section-eyebrow">Chassis</div>
+  <h2>Header, tabs, body. Two render modes.</h2>
+  <p>Every sidebar is the same shape: a header row with title plus close, a horizontal tab strip, and a scrollable body. What varies per kind is which tab is active and what the body shows. The chassis lives in <code>SidebarMock.module.css</code>; the per-kind body lives in a sibling JSX file under <code>variants/</code>.</p>
+  <p>Standalone mode wraps the panel in a 300&times;400 white card with a shadow, sized for inline use in copy. Embedded mode drops the card and slots the panel into an <code>&lt;AppMock sidebar={...} /&gt;</code> overlay, full height, pinned right. Same panel, two contexts.</p>
+  <p>Status colour map matches WidgetMock and AppMock: <strong>mint</strong> stable or done, <strong>orange</strong> active or pending, <strong>red</strong> blocked or overdue, <strong>cobalt-200</strong> upcoming. One orange accent per panel.</p>
+</section>
+
+<div class="anatomy-divider">
+  <div class="label">Standalone catalogue</div>
+  <h2>Nine sidebars, eight apps, one panel shape.</h2>
+  <p style="margin: var(--space-3) 0 0; max-width: 70ch; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5;">Eight Conduction tabs (Procest xWiki + Timeline, DocuDesk Signatures + PII map, OpenRegister Metadata, OpenCatalogi Publication history, OpenConnector Run logs, DeciDesk Decision detail) and one stock Nextcloud tab (Activity). Call from MDX as <code>&lt;SidebarMock kind="procest-xwiki" /&gt;</code>.</p>
+</div>
+
+<!-- BUILD:variant-catalogue (rendered from preview/components/sidebar-mock.variants.jsx by scripts/build-kit.mjs — do not edit directly) -->
+<div class="standalone-grid">
+  <div class="specimen-card">
+    <div class="head"><span class="num">01</span>
+      <h3>Procest · xWiki</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Pulls the case-handling protocol page out of xWiki and shows it next to the live case. Wiki text body, headings plus paragraphs plus a checklist. Slug: <code>procest-xwiki</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="row"></div>
+            <div class="row"></div>
+            <div class="row med"></div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="row"></div>
+            <div class="row med"></div>
+            <div class="row short"></div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="row"></div>
+            <div class="row"></div>
+            <div class="row short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">02</span>
+      <h3>Procest · Timeline</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Stage history vertical: one done, one active in orange, three to-do. Same .now / .late / .todo modifiers as the AppMock procest timeline. Slug: <code>procest-timeline</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="smStage">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smStage">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smStage now">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smStage todo">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smStage todo">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smStage todo">
+              <div class="h"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">03</span>
+      <h3>DocuDesk · Signatures</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Recipients with status pip: signed (mint), pending (orange), declined (red). Avatar palette mix gives the team-of-five feel. Slug: <code>docudesk-signatures</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="row short"></div>
+            <div class="smBreak"></div>
+            <div class="smPerson">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson b">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson c pending">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson d pending">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson e blocked">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">04</span>
+      <h3>DocuDesk · PII map</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Inline pills marking redacted (red) and suggested-to-redact (orange) spans within paragraphs, plus a count of detected PII categories. Slug: <code>docudesk-pii-map</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="smPiiBlock">
+              <div class="smPii" style="width:30px"></div>
+              <div class="smPii redacted" style="width:22px"></div>
+              <div class="smPii" style="width:40px"></div>
+              <div class="smPii suggested" style="width:18px"></div>
+              <div class="smPii" style="width:26px"></div>
+              <div class="smPii redacted" style="width:30px"></div>
+              <div class="smPii" style="width:16px"></div>
+              <div class="smPii suggested" style="width:34px"></div>
+              <div class="smPii" style="width:22px"></div>
+            </div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">05</span>
+      <h3>OpenRegister · Metadata</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Object frontmatter as a key/value list: register, schema, slug, created, updated. Plus the primary identifiers section below. Slug: <code>openregister-metadata</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="row short"></div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">06</span>
+      <h3>OpenCatalogi · History</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Version history of a publication. Avatar plus version label plus timestamp; mint pip for current, red pip for withdrawn. Slug: <code>opencatalogi-publication-history</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="row short"></div>
+            <div class="smBreak"></div>
+            <div class="smPerson">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson b">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson d">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson c blocked">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson e">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">07</span>
+      <h3>OpenConnector · Run logs</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Single run inspected: header, then a vertical log stream with severity-coded timestamps. Last line is a warn or an error so the eye lands on it. Slug: <code>openconnector-run-detail</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smLog">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+            <div class="smLog">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+            <div class="smLog">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+            <div class="smLog warn">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+            <div class="smLog">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+            <div class="smLog error">
+              <div class="ts"></div>
+              <div class="msg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">08</span>
+      <h3>DeciDesk · Decision detail</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Decision summary, structured fields (date, source meeting, decision-maker), action-items section showing who owns the follow-up. Slug: <code>decidesk-decision</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab"></div>
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="row head"></div>
+            <div class="row"></div>
+            <div class="row med"></div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smKv">
+              <div class="k"></div>
+              <div class="v"></div>
+            </div>
+            <div class="smBreak"></div>
+            <div class="smSub"></div>
+            <div class="smPerson">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+            <div class="smPerson b pending">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+              <div class="pip"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">09</span>
+      <h3>Nextcloud · Activity</h3><span class="tag">STOCK</span>
+    </div>
+    <p>The stock first-tab activity feed every Nextcloud sidebar carries. Framed for context so MKB readers see where Conduction tabs sit. Slug: <code>nextcloud-activity</code>.</p>
+    <div class="am sm">
+      <div class="smFrame">
+        <div class="smPanel">
+          <div class="smHead">
+            <div class="smTitle"></div>
+            <div class="smClose"></div>
+          </div>
+          <div class="smTabs">
+            <div class="smTab smTabActive"></div>
+            <div class="smTab"></div>
+          </div>
+          <div class="smBody">
+            <div class="smPerson">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson b">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson c">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson d">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson e">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+            <div class="smPerson b">
+              <div class="av"></div>
+              <div class="lines">
+                <div class="l1"></div>
+                <div class="l2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /BUILD:variant-catalogue -->
+
+<div class="anatomy-divider">
+  <div class="label">In context</div>
+  <h2>Sidebar over the app it belongs to.</h2>
+  <p style="margin: var(--space-3) 0 0; max-width: 70ch; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5;">Pass a SidebarMock as the <code>sidebar</code> prop on AppMock and it renders pinned to the right edge of the frame, full height. Two examples: Procest with the xWiki tab open, OpenRegister with the Metadata tab open. The same composition lights up any app + sidebar pair.</p>
+</div>
+
+<!-- BUILD:incontext-catalogue (rendered from preview/components/sidebar-mock.variants.jsx by scripts/build-kit.mjs — do not edit directly) -->
+<div class="incontext-grid">
+  <div class="specimen-card">
+    <div class="head"><span class="num">01</span>
+      <h3>Procest with xWiki tab open</h3><span class="tag">COMPOSED</span>
+    </div>
+    <p>A Procest case loaded in the main column, the xWiki tab of its sidebar pulled out on the right. The case-handling protocol page reads next to the live case, no app switch needed.</p>
+    <div class="am">
+      <figure class="figure">
+        <div class="frame size-md withSidebar">
+          <div class="topbar">
+            <div class="logo"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="spacer"></div>
+            <div class="bell"></div>
+            <div class="avatar"></div>
+          </div>
+          <div class="body procest">
+            <div class="nav">
+              <div class="navHead">
+                <div class="h"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item active">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="head">
+                <div class="row head" style="width:35px"></div>
+                <div class="actions">
+                  <div class="btn ghost"></div>
+                  <div class="btn"></div>
+                </div>
+              </div>
+              <div class="timeline">
+                <div class="step">
+                  <div class="h"></div>
+                  <div class="label"></div>
+                </div>
+                <div class="step now">
+                  <div class="h"></div>
+                  <div class="label"></div>
+                </div>
+                <div class="step todo">
+                  <div class="h"></div>
+                  <div class="label"></div>
+                </div>
+                <div class="step todo">
+                  <div class="h"></div>
+                  <div class="label"></div>
+                </div>
+                <div class="step todo">
+                  <div class="h"></div>
+                  <div class="label"></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="head">
+                  <div class="title"></div>
+                </div>
+                <div class="stack">
+                  <div class="item">
+                    <div class="av a"></div>
+                    <div class="lines">
+                      <div class="l1"></div>
+                      <div class="l2"></div>
+                    </div>
+                    <div class="statusPill">
+                      <div class="h"></div>
+                      <div class="t"></div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="av b"></div>
+                    <div class="lines">
+                      <div class="l1"></div>
+                      <div class="l2"></div>
+                    </div>
+                    <div class="statusPill beta">
+                      <div class="h"></div>
+                      <div class="t"></div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="av d"></div>
+                    <div class="lines">
+                      <div class="l1"></div>
+                      <div class="l2"></div>
+                    </div>
+                    <div class="statusPill">
+                      <div class="h"></div>
+                      <div class="t"></div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="av c"></div>
+                    <div class="lines">
+                      <div class="l1"></div>
+                      <div class="l2"></div>
+                    </div>
+                    <div class="statusPill">
+                      <div class="h"></div>
+                      <div class="t"></div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="av a"></div>
+                    <div class="lines">
+                      <div class="l1"></div>
+                      <div class="l2"></div>
+                    </div>
+                    <div class="statusPill">
+                      <div class="h"></div>
+                      <div class="t"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sidebarOverlay" aria-label="Sidebar overlay">
+            <div class="smPanel">
+              <div class="smHead">
+                <div class="smTitle"></div>
+                <div class="smClose"></div>
+              </div>
+              <div class="smTabs">
+                <div class="smTab"></div>
+                <div class="smTab smTabActive"></div>
+                <div class="smTab"></div>
+                <div class="smTab"></div>
+              </div>
+              <div class="smBody">
+                <div class="row head"></div>
+                <div class="row"></div>
+                <div class="row"></div>
+                <div class="row med"></div>
+                <div class="smBreak"></div>
+                <div class="smSub"></div>
+                <div class="row"></div>
+                <div class="row med"></div>
+                <div class="row short"></div>
+                <div class="smBreak"></div>
+                <div class="smSub"></div>
+                <div class="row"></div>
+                <div class="row"></div>
+                <div class="row short"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">02</span>
+      <h3>OpenRegister with Metadata tab open</h3><span class="tag">COMPOSED</span>
+    </div>
+    <p>An OpenRegister object selected in the dashboard. Sidebar shows the object&#x27;s frontmatter on the right: register, schema, slug, owner, identifiers.</p>
+    <div class="am">
+      <figure class="figure">
+        <div class="frame size-md withSidebar">
+          <div class="topbar">
+            <div class="logo"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="icon"></div>
+            <div class="spacer"></div>
+            <div class="bell"></div>
+            <div class="avatar"></div>
+          </div>
+          <div class="body openregister">
+            <div class="nav">
+              <div class="navHead">
+                <div class="h"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item active">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="kpiRow">
+                <div class="kpi">
+                  <div class="ico"></div>
+                  <div class="meta">
+                    <div class="num"></div>
+                    <div class="label"></div>
+                  </div>
+                </div>
+                <div class="kpi forest">
+                  <div class="ico"></div>
+                  <div class="meta">
+                    <div class="num"></div>
+                    <div class="label"></div>
+                  </div>
+                </div>
+                <div class="kpi amber">
+                  <div class="ico"></div>
+                  <div class="meta">
+                    <div class="num"></div>
+                    <div class="label"></div>
+                  </div>
+                </div>
+                <div class="kpi lavender">
+                  <div class="ico"></div>
+                  <div class="meta">
+                    <div class="num"></div>
+                    <div class="label"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="panelRow">
+                <div class="panel">
+                  <div class="head">
+                    <div class="title"></div>
+                  </div>
+                  <div class="stack">
+                    <div class="item">
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel">
+                  <div class="head">
+                    <div class="title"></div>
+                  </div>
+                  <div class="stack">
+                    <div class="item">
+                      <div class="av b"></div>
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="av d"></div>
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="av c"></div>
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="av a"></div>
+                      <div class="lines">
+                        <div class="l1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="detail">
+              <div class="row head"></div>
+              <div class="row"></div>
+              <div class="row short"></div>
+              <div style="height:8px"></div>
+              <div class="row head"></div>
+              <div class="row dark"></div>
+              <div class="row"></div>
+              <div class="row"></div>
+              <div class="row short"></div>
+              <div class="row accent"></div>
+              <div class="row short"></div>
+            </div>
+          </div>
+          <div class="sidebarOverlay" aria-label="Sidebar overlay">
+            <div class="smPanel">
+              <div class="smHead">
+                <div class="smTitle"></div>
+                <div class="smClose"></div>
+              </div>
+              <div class="smTabs">
+                <div class="smTab"></div>
+                <div class="smTab smTabActive"></div>
+                <div class="smTab"></div>
+              </div>
+              <div class="smBody">
+                <div class="row head"></div>
+                <div class="row short"></div>
+                <div class="smBreak"></div>
+                <div class="smSub"></div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smBreak"></div>
+                <div class="smSub"></div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+                <div class="smKv">
+                  <div class="k"></div>
+                  <div class="v"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+</div>
+<!-- /BUILD:incontext-catalogue -->
+
+<div style="max-width: 1280px; margin: 0 auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
+  <p><strong>Status.</strong> All nine variants are token-painted, no real text. Each variant describes how a Conduction app extends a Nextcloud sidebar with one tab; the body content reflects the canonical "what would this tab look like" for that app. Once a real screenshot exists, the variant gets a refinement pass.</p>
+  <p>The React component lives in <a href="../../docusaurus-preset/src/components/SidebarMock/SidebarMock.jsx" style="color: var(--c-blue-cobalt);"><code>docusaurus-preset/src/components/SidebarMock/</code></a>. Each kind is a sibling JSX file under <code>variants/</code>. The chassis (header, tab strip, body atoms like <code>.smKv</code>, <code>.smPerson</code>, <code>.smStage</code>, <code>.smLog</code>) lives in <code>SidebarMock.module.css</code>.</p>
+</div>
+
+</body>
+</html>

@@ -52,6 +52,18 @@ const PAGES = [
     target: 'preview/components/widget-mock.html',
     marker: 'variant-catalogue',
   },
+  {
+    jsx:        'preview/components/sidebar-mock.variants.jsx',
+    target:     'preview/components/sidebar-mock.html',
+    marker:     'variant-catalogue',
+    exportName: 'StandaloneCatalogue',
+  },
+  {
+    jsx:        'preview/components/sidebar-mock.variants.jsx',
+    target:     'preview/components/sidebar-mock.html',
+    marker:     'incontext-catalogue',
+    exportName: 'InContextCatalogue',
+  },
 ];
 
 // Stub CSS-module imports: styles.foo → 'foo'. Works because every
@@ -79,7 +91,7 @@ const cssIgnore = {
   },
 };
 
-async function renderJsx(jsxPath, tmpDir) {
+async function renderJsx(jsxPath, tmpDir, exportName = 'default') {
   // Write the bundled ESM into design-system/.tmp-build-kit/ so dynamic
   // import resolves bare specifiers like 'react' against the local
   // node_modules (data: URLs can't, file: URLs in our tree can).
@@ -102,7 +114,11 @@ async function renderJsx(jsxPath, tmpDir) {
     logLevel: 'warning',
   });
   const mod = await import(pathToFileURL(outFile).href);
-  const raw = renderToStaticMarkup(React.createElement(mod.default));
+  const Component = mod[exportName];
+  if (!Component) {
+    throw new Error(`Export "${exportName}" not found in ${jsxPath} (available: ${Object.keys(mod).join(', ')})`);
+  }
+  const raw = renderToStaticMarkup(React.createElement(Component));
   // Pretty-print so future diffs of the generated section are reviewable.
   // The generated block sits inline in app-mock.html, so 2-space indent
   // matches the surrounding hand-coded HTML style.
@@ -135,12 +151,13 @@ let exitCode = 0;
 try {
   for (const page of PAGES) {
     try {
-      const rendered = await renderJsx(page.jsx, tmpDir);
+      const rendered = await renderJsx(page.jsx, tmpDir, page.exportName);
       const targetPath = resolve(repoRoot, page.target);
       const html = await readFile(targetPath, 'utf8');
       const updated = spliceMarker(html, page.marker, rendered);
       await writeFile(targetPath, updated);
-      console.log(`✓ built ${page.target} (from ${page.jsx}, marker ${page.marker}, ${rendered.length} chars)`);
+      const exportLabel = page.exportName && page.exportName !== 'default' ? ` export ${page.exportName}` : '';
+      console.log(`✓ built ${page.target} (from ${page.jsx}${exportLabel}, marker ${page.marker}, ${rendered.length} chars)`);
     } catch (err) {
       console.error(`✗ failed ${page.target}: ${err.message}`);
       exitCode = 1;

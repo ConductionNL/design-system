@@ -42,6 +42,13 @@
  *
  * Props:
  *   - kind:     one of VARIANTS keys      (required)
+ *   - size:     'sm' | 'md' (default) | 'lg'   — standalone frame size
+ *                                                 (240x320 / 300x400 /
+ *                                                 360x480). Ignored in
+ *                                                 embedded mode (the
+ *                                                 panel sizes itself
+ *                                                 to AppMock's .body
+ *                                                 layout)
  *   - embedded: boolean (default false)   — drop the standalone
  *                                           .smFrame chrome so the
  *                                           panel slots into
@@ -168,12 +175,12 @@ const VARIANTS = {
   },
 };
 
-export default function SidebarMock({ kind, embedded = false, className }) {
+export default function SidebarMock({ kind, size = 'md', embedded = false, className }) {
   const variant = VARIANTS[kind];
   if (!variant) {
     return (
       <div className={[amStyles.am, styles.sm].filter(Boolean).join(' ')}>
-        <div className={styles.smFrame}>
+        <div className={[styles.smFrame, styles[`sb-size-${size}`]].filter(Boolean).join(' ')}>
           <div style={{ padding: 12, color: 'var(--c-cobalt-400)', fontSize: 11 }}>Unknown sidebar: {kind}</div>
         </div>
       </div>
@@ -214,7 +221,7 @@ export default function SidebarMock({ kind, embedded = false, className }) {
 
   return (
     <div className={[amStyles.am, styles.sm, className].filter(Boolean).join(' ')}>
-      <div className={styles.smFrame}>
+      <div className={[styles.smFrame, styles[`sb-size-${size}`]].filter(Boolean).join(' ')}>
         {panel}
       </div>
     </div>

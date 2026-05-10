@@ -47,27 +47,6 @@
 .am .size-md { max-width: 720px; }
 .am .size-lg { max-width: 960px; }
 
-/* Sidebar overlay: when AppMock receives a `sidebar` prop, the
-   passed JSX renders pinned to the right edge of the frame, full
-   height, modeling a Nextcloud detail panel sliding over the app.
-   The .withSidebar modifier on .frame is a hook for variants that
-   want to dim the underlying canvas; today it doesn't add any
-   styles itself. */
-.am .frame .sidebarOverlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 32%;
-  min-width: 200px;
-  background: white;
-  border-left: 1px solid var(--c-cobalt-200);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .am .caption {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 11px;
@@ -162,6 +141,55 @@
   gap: 8px;
   flex-shrink: 0;
 }
+
+/* Sidebar (enriched .detail) matches the real Nextcloud sidepanel:
+   header (icon + title + description + close), tabs, then content.
+   Used by SidebarMock embedded mode (slots into <body>'s flex layout
+   as a sibling of .col, taking the .detail slot) and by the kit
+   page templates section. */
+.am .detail.rich { padding: 0; gap: 0; }
+.am .detail.rich .sb-head {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.am .detail.rich .sb-head .ico {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-200);
+  flex-shrink: 0;
+}
+.am .detail.rich .sb-head .meta {
+  flex: 1; display: flex; flex-direction: column; gap: 3px;
+  min-width: 0;
+}
+.am .detail.rich .sb-head .title { height: 6px; background: var(--c-cobalt-900); border-radius: 1px; width: 50%; }
+.am .detail.rich .sb-head .desc  { height: 3px; background: var(--c-cobalt-300); border-radius: 1px; width: 85%; }
+.am .detail.rich .sb-head .close { width: 8px; height: 8px; background: var(--c-cobalt-300); flex-shrink: 0; }
+
+.am .detail.rich .sb-tabs {
+  display: flex;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--c-cobalt-100);
+}
+.am .detail.rich .sb-tab {
+  flex: 1; padding: 6px 0;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  border-bottom: 2px solid transparent;
+}
+.am .detail.rich .sb-tab.active { border-bottom-color: var(--c-blue-cobalt); }
+.am .detail.rich .sb-tab .ico { width: 7px; height: 7px; border-radius: 50%; background: var(--c-cobalt-300); }
+.am .detail.rich .sb-tab.active .ico { background: var(--c-cobalt-700); }
+.am .detail.rich .sb-tab .l { height: 3px; background: var(--c-cobalt-300); width: 24px; border-radius: 1px; }
+.am .detail.rich .sb-tab.active .l { background: var(--c-cobalt-700); }
+
+.am .detail.rich .sb-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
+.am .detail.rich .sb-label { height: 4px; background: var(--c-cobalt-700); width: 40%; border-radius: 1px; }
+.am .detail.rich .sb-input { height: 14px; background: white; border: 1px solid var(--c-cobalt-200); border-radius: 3px; }
+.am .detail.rich .sb-filter { display: flex; flex-direction: column; gap: 4px; }
+.am .detail.rich .sb-filter .lbl  { height: 3px; background: var(--c-cobalt-400); width: 30%; border-radius: 1px; }
+.am .detail.rich .sb-filter .field { height: 12px; background: white; border: 1px solid var(--c-cobalt-200); border-radius: 2px; }
 
 /* Generic content panel — white card with rounded corners. */
 .am .panel {

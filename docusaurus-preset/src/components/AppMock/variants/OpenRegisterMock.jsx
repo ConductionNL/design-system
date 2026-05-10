@@ -10,7 +10,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function OpenRegisterMock() {
+export default function OpenRegisterMock({ sidebar = null }) {
   return (
     <>
       <div className={styles.topbar}>
@@ -80,20 +80,25 @@ export default function OpenRegisterMock() {
             </div>
           </div>
         </div>
-        {/* Right detail rail */}
-        <div className={styles.detail}>
-          <div className={styles.row + ' ' + styles.head}></div>
-          <div className={styles.row}></div>
-          <div className={styles.row + ' ' + styles.short}></div>
-          <div style={{height: 8}}></div>
-          <div className={styles.row + ' ' + styles.head}></div>
-          <div className={styles.row + ' ' + styles.dark}></div>
-          <div className={styles.row}></div>
-          <div className={styles.row}></div>
-          <div className={styles.row + ' ' + styles.short}></div>
-          <div className={styles.row + ' ' + styles.accent}></div>
-          <div className={styles.row + ' ' + styles.short}></div>
-        </div>
+        {/* Right detail rail. When AppMock passes a `sidebar` prop
+            (typically a <SidebarMock kind="..." embedded />), it
+            renders as the rich detail rail instead of the placeholder
+            rows. */}
+        {sidebar || (
+          <div className={styles.detail}>
+            <div className={styles.row + ' ' + styles.head}></div>
+            <div className={styles.row}></div>
+            <div className={styles.row + ' ' + styles.short}></div>
+            <div style={{height: 8}}></div>
+            <div className={styles.row + ' ' + styles.head}></div>
+            <div className={styles.row + ' ' + styles.dark}></div>
+            <div className={styles.row}></div>
+            <div className={styles.row}></div>
+            <div className={styles.row + ' ' + styles.short}></div>
+            <div className={styles.row + ' ' + styles.accent}></div>
+            <div className={styles.row + ' ' + styles.short}></div>
+          </div>
+        )}
       </div>
     </>
   );

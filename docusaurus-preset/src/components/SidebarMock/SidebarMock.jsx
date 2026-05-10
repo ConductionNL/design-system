@@ -8,23 +8,31 @@
  * so on). A SidebarMock variant represents one such sidebar with
  * one tab active.
  *
+ * Markup matches the existing .detail.rich pattern that already
+ * lived in the AppMock kit anatomy: a .sb-head row (icon + meta of
+ * title + description + close), a .sb-tabs strip (one per registered
+ * tab, active marker on the current one), and a .sb-body. All
+ * styles live in AppMock.module.css under .am .detail.rich; the
+ * body atoms (smKv / smPerson / smStage / smLog / smPii) live in
+ * SidebarMock.module.css under .am .sb-body so they only apply
+ * inside a sidebar.
+ *
  * Two render modes:
  *
- *   STANDALONE (default): wraps the panel in <div class="am sm"> with
- *   a .smFrame card around it. Use in kit-page specimens or marketing
- *   copy that talks about a single sidebar surface in isolation.
+ *   STANDALONE (default): wraps the .detail.rich panel in
+ *   <div class="am sm"> + .smFrame so it reads as a card on the
+ *   kit page. Use in marketing copy that talks about a single
+ *   sidebar surface in isolation.
  *
  *     <SidebarMock kind="procest-xwiki" />
  *
- *   EMBEDDED: drops the frame so the panel slots directly into the
- *   .sidebarOverlay slot inside an AppMock frame. Set automatically
- *   by AppMock when the `sidebar` prop is a SidebarMock JSX element.
+ *   EMBEDDED: drops the .smFrame wrapper, leaving just
+ *   <div class="detail rich">…</div>. Slots into the .body flex
+ *   layout of an AppMock variant as a sibling of .col, taking the
+ *   detail-rail position. Set automatically by AppMock when the
+ *   `sidebar` prop is a SidebarMock JSX element.
  *
  *     <AppMock app="procest" sidebar={<SidebarMock kind="procest-xwiki" />} />
- *
- * Header bar (title + close) and tab strip are chassis. Body content
- * is per-variant: the JSX file under variants/ provides just the body
- * children, the chassis wraps it.
  *
  * Status colour map matches WidgetMock and AppMock atoms:
  *   mint     = stable / done / signed
@@ -34,9 +42,10 @@
  *
  * Props:
  *   - kind:     one of VARIANTS keys      (required)
- *   - embedded: boolean (default false)   — drop the standalone chrome
- *                                           so this can render inside
- *                                           an AppMock overlay slot
+ *   - embedded: boolean (default false)   — drop the standalone
+ *                                           .smFrame chrome so the
+ *                                           panel slots into
+ *                                           AppMock's .body layout
  *   - className: string
  */
 
@@ -56,10 +65,10 @@ import NextcloudActivity             from './variants/NextcloudActivity.jsx';
 
 /**
  * Each VARIANTS entry carries:
- *   Component: the JSX that fills the body
+ *   Component: the JSX that fills the .sb-body
  *   label:     human-readable name (used in caption / kit page)
- *   tabs:      ordered list of tab labels with one marked active. The
- *              labels are decorative (kit page renders width-fixed pills)
+ *   tabs:      ordered list of tabs with one .active. The id is
+ *              decorative (rendered as a placeholder bar in .sb-tab .l)
  *              but the active flag drives the highlight.
  */
 const VARIANTS = {
@@ -162,19 +171,26 @@ export default function SidebarMock({ kind, embedded = false, className }) {
   }
   const { Component, tabs } = variant;
   const panel = (
-    <div className={styles.smPanel}>
-      <div className={styles.smHead}>
-        <div className={styles.smTitle}></div>
-        <div className={styles.smClose}></div>
+    <div className={[amStyles.detail, amStyles.rich].join(' ')}>
+      <div className={amStyles['sb-head']}>
+        <div className={amStyles.ico}></div>
+        <div className={amStyles.meta}>
+          <div className={amStyles.title}></div>
+          <div className={amStyles.desc}></div>
+        </div>
+        <div className={amStyles.close}></div>
       </div>
       {tabs && tabs.length > 0 && (
-        <div className={styles.smTabs}>
+        <div className={amStyles['sb-tabs']}>
           {tabs.map((t, i) => (
-            <div key={t.id || i} className={[styles.smTab, t.active && styles.smTabActive].filter(Boolean).join(' ')}></div>
+            <div key={t.id || i} className={[amStyles['sb-tab'], t.active && amStyles.active].filter(Boolean).join(' ')}>
+              <div className={amStyles.ico}></div>
+              <div className={amStyles.l}></div>
+            </div>
           ))}
         </div>
       )}
-      <div className={styles.smBody}>
+      <div className={amStyles['sb-body']}>
         <Component />
       </div>
     </div>

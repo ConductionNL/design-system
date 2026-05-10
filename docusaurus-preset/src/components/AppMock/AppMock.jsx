@@ -82,25 +82,21 @@ export default function AppMock({app, size = 'md', sidebar = null, caption = fal
     );
   }
   const {Component, label} = variant;
-  // The `sidebar` prop renders any node as a Nextcloud-style overlay
-  // panel pinned to the right edge of the frame. Typically a
-  // <SidebarMock kind="..." />; the SidebarMock component automatically
-  // drops its standalone chrome via the `embedded` flag we pass here.
-  // Anything else (custom JSX, an image, etc.) renders verbatim inside
-  // the overlay slot.
+  // The `sidebar` prop is forwarded to the variant Component, which
+  // renders it as a flex sibling of `.col` inside the variant's
+  // `.body`, taking the `.detail` slot. SidebarMock children get
+  // `embedded: true` so they drop their standalone .smFrame chrome
+  // and render as the bare `.detail.rich` panel that slots into
+  // .body. Variants that don't accept a sidebar prop (e.g. MyDash)
+  // ignore it; this keeps the change additive.
   const renderedSidebar = React.isValidElement(sidebar)
     ? React.cloneElement(sidebar, { embedded: true })
     : sidebar;
   return (
     <div className={styles.am}>
       <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
-        <div className={[styles.frame, styles[`size-${size}`], renderedSidebar && styles.withSidebar].filter(Boolean).join(' ')}>
-          <Component />
-          {renderedSidebar && (
-            <div className={styles.sidebarOverlay} aria-label="Sidebar overlay">
-              {renderedSidebar}
-            </div>
-          )}
+        <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
+          <Component sidebar={renderedSidebar} />
         </div>
         {caption && <figcaption className={styles.caption}>{label}</figcaption>}
       </figure>

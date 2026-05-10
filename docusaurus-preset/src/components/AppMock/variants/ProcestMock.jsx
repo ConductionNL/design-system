@@ -11,7 +11,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function ProcestMock() {
+export default function ProcestMock({ sidebar = null }) {
   return (
     <>
       <div className={styles.topbar}>
@@ -81,6 +81,11 @@ export default function ProcestMock() {
             </div>
           </div>
         </div>
+        {/* Optional sidebar (typically a <SidebarMock kind="..." />)
+            renders here as a flex sibling of .col, taking the .detail
+            slot. Procest's case detail view doesn't ship a default
+            detail rail, so without the prop nothing extra renders. */}
+        {sidebar}
       </div>
     </>
   );

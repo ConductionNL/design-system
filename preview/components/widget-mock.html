@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WidgetMock · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/AppMock/AppMock.module.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/WidgetMock/WidgetMock.module.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
+  .hero { background: var(--c-blue-cobalt); color: white; padding: 64px var(--space-12) 48px; }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
+  .hero h1 { color: white; font-size: 44px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+  .hero p  { color: var(--c-cobalt-100); font-size: 16px; max-width: 64ch; line-height: 1.5; margin-top: var(--space-4); }
+
+  /* Anatomy section. One callout panel explaining the widget chassis. */
+  .anatomy {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    padding: 0 var(--space-12);
+  }
+  .anatomy .section-eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: 0 0 var(--space-3);
+  }
+  .anatomy h2 { font-size: 28px; font-weight: 700; color: var(--c-blue-cobalt); margin: 0 0 var(--space-3); letter-spacing: -0.01em; }
+  .anatomy p  { color: var(--c-cobalt-700); font-size: 15px; line-height: 1.55; max-width: 70ch; margin: 0 0 var(--space-3); }
+  .anatomy code { font-family: var(--conduction-typography-font-family-code); font-size: 0.85em; background: var(--c-cobalt-100); padding: 1px 5px; border-radius: 3px; color: var(--c-cobalt-900); }
+
+  .anatomy-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-10);
+    align-items: center;
+    margin: var(--space-8) 0 var(--space-10);
+  }
+
+  /* Section break before the variant catalogue. */
+  .anatomy-divider {
+    max-width: 1280px;
+    margin: var(--space-12) auto 0;
+    padding: var(--space-8) var(--space-12) 0;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .anatomy-divider .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: var(--space-3);
+  }
+  .anatomy-divider h2 {
+    font-size: 32px; font-weight: 700; color: var(--c-blue-cobalt);
+    margin: 0; letter-spacing: -0.01em;
+  }
+
+  /* The catalogue grid. Three columns since widgets are smaller than
+     full-app mocks. */
+  .variant-grid {
+    max-width: 1280px;
+    margin: 48px auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+  .specimen-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .specimen-card .head { display: flex; align-items: baseline; gap: var(--space-3); }
+  .specimen-card .head .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); }
+  .specimen-card .head h3  { margin: 0; font-size: 17px; font-weight: 600; color: var(--c-blue-cobalt); }
+  .specimen-card .head .tag { margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 10px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase; }
+  .specimen-card p { color: var(--c-cobalt-700); font-size: 13px; line-height: 1.5; margin: 0; }
+
+  /* Center the WidgetMock figure inside its specimen card. */
+  .specimen-card .wmFigure { align-self: center; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Components &nbsp;/&nbsp; WidgetMock</div>
+  <h1>WidgetMock. One tile, one job.</h1>
+  <p>The single Nextcloud-dashboard tile abstraction. A Conduction app registers a widget, you talk about that widget standalone in marketing or docs, this is the picture you reach for. Companion to <a href="app-mock.html" style="color: white; text-decoration: underline;">AppMock</a>: same atom toolkit, smaller frame.</p>
+</div>
+
+<section class="anatomy">
+  <div class="section-eyebrow">Chassis</div>
+  <h2>One frame, fourteen variants, same atom toolkit.</h2>
+  <p>Every widget is the same frame: a <code>.w</code> tile with a <code>.wHead</code> on top (hex glyph plus title bar) and a body that varies per kind. The variants split by visualisation pattern, not per app: a list, a grid, a graph, a drop-zone. Most widgets reuse the existing <code>.w-mail</code>, <code>.w-jira</code>, <code>.w-graph-line</code> etc. atoms from <a href="app-mock.html#atoms" style="color: var(--c-blue-cobalt);">AppMock</a>; WidgetMock just standalonises one.</p>
+  <p>Status mapping is consistent across every widget: <strong>mint</strong> means stable or done, <strong>orange</strong> means active or due soon, <strong>red</strong> means blocked or overdue, <strong>cobalt-200</strong> means upcoming or no action. Read the colour, you know the priority. One orange accent per tile, never two.</p>
+</section>
+
+<div class="anatomy-divider">
+  <div class="label">Variants</div>
+  <h2>Fourteen widgets, nine apps, one tile shape.</h2>
+  <p style="margin: var(--space-3) 0 0; max-width: 70ch; color: var(--c-cobalt-700); font-size: 15px; line-height: 1.5;">Nine Conduction widgets (DocuDesk anonymise plus pending-sign, Procest werkvoorraad plus due-today, OpenRegister activity, OpenCatalogi publications, OpenConnector runs, DeciDesk actions, PipelinQ deals) and five stock Nextcloud surfaces we frame around (Mail, Calendar, Files, Decks, RSS). Call from MDX as <code>&lt;WidgetMock kind="procest-werkvoorraad" /&gt;</code>.</p>
+</div>
+
+<!-- BUILD:variant-catalogue (rendered from preview/components/widget-mock.variants.jsx by scripts/build-kit.mjs — do not edit directly) -->
+<div class="variant-grid">
+  <div class="specimen-card">
+    <div class="head"><span class="num">01</span>
+      <h3>DocuDesk · Anonymise drop</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Drop a document into the tile, get back a redacted copy. Action-first widget; no status pip, no list, just the drop-zone. Slug: <code>docudesk-anonymise</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-upload">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="zone">
+              <div class="ico"></div>
+              <div class="label"></div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">02</span>
+      <h3>DocuDesk · Pending signatures</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Documents waiting on a signature, ranked by oldest. Pip colour shows how stuck each one is: orange waiting, red blocked, cobalt-200 idle. Slug: <code>docudesk-pending-sign</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-jira">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item blocked">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item todo">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">03</span>
+      <h3>Procest · Werkvoorraad</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Your case queue. Stage pip on the left, case title in the middle, owner avatar on the right. Active stages glow orange, SLA breaches glow red. Slug: <code>procest-werkvoorraad</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-werkvoorraad">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item now">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av"></div>
+              </div>
+              <div class="item">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av b"></div>
+              </div>
+              <div class="item late">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av c"></div>
+              </div>
+              <div class="item">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av"></div>
+              </div>
+              <div class="item">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av b"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">04</span>
+      <h3>Procest · Due today</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>A deadline-shaped take on the same atom. Cases that hit their deadline today or earlier, mostly red. Read it, then act. Slug: <code>procest-due-today</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-werkvoorraad">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item late">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av b"></div>
+              </div>
+              <div class="item late">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av"></div>
+              </div>
+              <div class="item now">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av c"></div>
+              </div>
+              <div class="item">
+                <div class="stage"></div>
+                <div class="l1"></div>
+                <div class="av b"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">05</span>
+      <h3>OpenRegister · Activity</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Read and write rate over the past N hours, drawn as a sparkline. The dot on the right is &quot;now&quot;. Quick health glance for an admin. Slug: <code>openregister-activity</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-graph-line">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                <path class="fill" d="M0,30 L12,28 L24,32 L36,22 L48,26 L60,16 L72,18 L84,10 L100,14 L100,40 L0,40 Z"></path>
+                <path class="stroke" d="M0,30 L12,28 L24,32 L36,22 L48,26 L60,16 L72,18 L84,10 L100,14"></path>
+                <circle class="dot" cx="100" cy="14" r="2.5"></circle>
+              </svg>
+            </div>
+            <div class="axis"></div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">06</span>
+      <h3>OpenCatalogi · Recent publications</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Last five items federated to the public catalogue. Type badge on the left, title in the middle, status pip on the right. Slug: <code>opencatalogi-publications</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-jira">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item blocked">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">07</span>
+      <h3>OpenConnector · Recent runs</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Last few integration runs with status pip: mint success, orange partial, red failed, cobalt-200 scheduled. Slug: <code>openconnector-runs</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-jira">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item blocked">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item todo">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">08</span>
+      <h3>DeciDesk · Action items</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Action items the viewer owns, sorted by due date. Pip colour separates overdue, due-this-week, done, and upcoming. Slug: <code>decidesk-actions</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-jira">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item blocked">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item review">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+              <div class="item todo">
+                <div class="id"></div>
+                <div class="l"></div>
+                <div class="pip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">09</span>
+      <h3>PipelinQ · Deals closing</h3><span class="tag">INFERRED</span>
+    </div>
+    <p>Deals expected to close this week, ranked by value. Avatar reads as the assigned rep, l1 the deal name, l2 value plus stage. Slug: <code>pipelinq-deals</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-mail">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item b">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item c">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item d">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">10</span>
+      <h3>Nextcloud · Important mail</h3><span class="tag">STOCK</span>
+    </div>
+    <p>The stock Nextcloud Mail dashboard widget, framed for context. Shown so MKB readers can place where Conduction widgets sit. Slug: <code>nextcloud-mail</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-mail">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item b">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item c">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item d">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="av"></div>
+                <div class="lines">
+                  <div class="l1"></div>
+                  <div class="l2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">11</span>
+      <h3>Nextcloud · Calendar</h3><span class="tag">STOCK</span>
+    </div>
+    <p>Stock Nextcloud calendar mini-grid: today in orange, events in cobalt-300, leading and trailing days muted. Slug: <code>nextcloud-calendar</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-calendar">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="grid">
+              <div class="day muted"></div>
+              <div class="day muted"></div>
+              <div class="day event"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day muted"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day today"></div>
+              <div class="day event"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day event"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day event"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+              <div class="day event"></div>
+              <div class="day"></div>
+              <div class="day"></div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">12</span>
+      <h3>Nextcloud · Recent files</h3><span class="tag">STOCK</span>
+    </div>
+    <p>Stock recent-files widget. Type-coloured icons: orange folders, terracotta documents, forest sheets, plain images. Slug: <code>nextcloud-files</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-files">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item folder">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item doc">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item sheet">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item doc">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+              <div class="item">
+                <div class="ico"></div>
+                <div class="l"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">13</span>
+      <h3>Nextcloud · Decks</h3><span class="tag">STOCK</span>
+    </div>
+    <p>Stock Decks board. Three columns of cards with priority borders: orange urgent, mint done, plain default. Slug: <code>nextcloud-decks</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-decks">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="columns">
+              <div class="col">
+                <div class="card"></div>
+                <div class="card"></div>
+              </div>
+              <div class="col">
+                <div class="card b"></div>
+                <div class="card"></div>
+                <div class="card"></div>
+              </div>
+              <div class="col">
+                <div class="card c"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div class="specimen-card">
+    <div class="head"><span class="num">14</span>
+      <h3>Nextcloud · RSS feed</h3><span class="tag">STOCK</span>
+    </div>
+    <p>Stock RSS reader. Source badge, title, when. No avatar, no pip; the metadata IS the status. Slug: <code>nextcloud-rss</code>.</p>
+    <div class="am wm">
+      <figure class="wmFigure">
+        <div class="wmFrame wm-size-md">
+          <div class="w w-rss">
+            <div class="wHead">
+              <div class="h"></div>
+              <div class="t"></div>
+            </div>
+            <div class="list">
+              <div class="item">
+                <div class="src"></div>
+                <div class="title"></div>
+                <div class="when"></div>
+              </div>
+              <div class="item">
+                <div class="src"></div>
+                <div class="title"></div>
+                <div class="when"></div>
+              </div>
+              <div class="item">
+                <div class="src"></div>
+                <div class="title"></div>
+                <div class="when"></div>
+              </div>
+              <div class="item">
+                <div class="src"></div>
+                <div class="title"></div>
+                <div class="when"></div>
+              </div>
+              <div class="item">
+                <div class="src"></div>
+                <div class="title"></div>
+                <div class="when"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+</div>
+<!-- /BUILD:variant-catalogue -->
+
+<div style="max-width: 1280px; margin: 0 auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
+  <p><strong>Status.</strong> All fourteen variants are token-painted, no real text. The Conduction widgets are <em>inferred from app role</em>: each app's MDX product page describes which widgets it registers, and WidgetMock paints the canonical shape. Once a real widget ships and gets a screenshot, the variant gets a refinement pass. The five stock-Nextcloud variants are shaped from the Nextcloud upstream defaults.</p>
+  <p>The React component lives in <a href="../../docusaurus-preset/src/components/WidgetMock/WidgetMock.jsx" style="color: var(--c-blue-cobalt);"><code>docusaurus-preset/src/components/WidgetMock/</code></a>. Each kind is a sibling JSX file under <code>variants/</code>, all sharing the same atom CSS in <a href="../../docusaurus-preset/src/components/AppMock/AppMock.module.css" style="color: var(--c-blue-cobalt);"><code>AppMock.module.css</code></a>. The <code>VARIANTS</code> map maps a kebab-case slug to a variant component; pick one with <code>&lt;WidgetMock kind="..." /&gt;</code>.</p>
+</div>
+
+</body>
+</html>

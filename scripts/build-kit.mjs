@@ -47,6 +47,11 @@ const PAGES = [
     target: 'preview/components/app-mock.html',
     marker: 'variant-catalogue',
   },
+  {
+    jsx:    'preview/components/widget-mock.variants.jsx',
+    target: 'preview/components/widget-mock.html',
+    marker: 'variant-catalogue',
+  },
 ];
 
 // Stub CSS-module imports: styles.foo → 'foo'. Works because every

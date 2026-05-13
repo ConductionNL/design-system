@@ -108,3 +108,36 @@ export function productWordmark(title, brandPrefix) {
   }
   return null;
 }
+
+/**
+ * Derive the maturity label that prefixes the version pill and the
+ * DetailHero status badge. Driven by SemVer:
+ *
+ *   1.0.0+         → "Stable"
+ *   0.x.y          → "Beta"   (every 0.x is pre-1.0 by SemVer rule)
+ *   *-alpha.N      → "Alpha"
+ *   *-beta.N       → "Beta"
+ *   *-rc.N         → "RC"
+ *   anything else  → "Stable" (safe default for non-SemVer strings)
+ *
+ * Both the navbar pill (theme/Navbar) and DetailHero (components/
+ * DetailHero) call this so the chrome and the landing-page status
+ * badge can't drift apart. Sites can still pass an explicit string
+ * to override (`versionPill.prefix = 'Preview'` etc.).
+ */
+export function deriveStability(version) {
+  if (!version || typeof version !== 'string') return 'Stable';
+  /* Pre-release tags win first — '1.0.0-beta.2' is Beta, not Stable.
+     Match case-insensitively because info.xml authors aren't
+     consistent (`-Beta`, `-BETA`, …). */
+  const pre = version.match(/-(alpha|beta|rc)(?:\.|$|-)/i);
+  if (pre) {
+    const tag = pre[1].toLowerCase();
+    if (tag === 'rc') return 'RC';
+    return tag === 'alpha' ? 'Alpha' : 'Beta';
+  }
+  /* No pre-release tag — 0.x is by SemVer convention not yet stable. */
+  const major = version.match(/^(\d+)\./);
+  if (major && parseInt(major[1], 10) === 0) return 'Beta';
+  return 'Stable';
+}

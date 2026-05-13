@@ -45,10 +45,24 @@
  */
 
 import React from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HexBullet from '../primitives/HexBullet';
 import Button from '../primitives/Button';
+import {deriveStability} from '../../theme/brand.jsx';
 import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
 import styles from './DetailHero.module.css';
+
+/**
+ * Per-stability hex-bullet colour. Keeps the hero badge and the
+ * navbar pill on the same maturity story without each site having
+ * to pass a colour explicitly.
+ */
+const STABILITY_COLORS = {
+  Stable: 'var(--c-mint-500)',
+  Beta:   'var(--c-orange-knvb)',
+  RC:     'var(--c-blue-cobalt)',
+  Alpha:  'var(--c-red-vermillion)',
+};
 
 export default function DetailHero({
   crumb,
@@ -76,6 +90,23 @@ export default function DetailHero({
      existing on-cream rendering used by connext apps detail pages. */
   const bgClass = background === 'cobalt' ? styles.bgCobalt : null;
 
+  /* Reconcile the hero's badge row with the navbar version pill so
+     they can't drift apart. When the caller doesn't pass `version`
+     and/or `status` props, fall back to the same customFields.appVersion
+     the navbar reads, and auto-derive Stable/Beta/RC/Alpha from the
+     SemVer string via deriveStability(). Sites can still pass explicit
+     props to override (e.g. a static-site demo that wants to show
+     "Preview" instead of the auto-derived label). */
+  const {siteConfig} = useDocusaurusContext();
+  const appVersion = siteConfig?.customFields?.appVersion;
+  const resolvedVersion = version || (appVersion ? `v${appVersion}` : undefined);
+  const resolvedStatus = status || (appVersion
+    ? {
+        label: deriveStability(appVersion),
+        color: STABILITY_COLORS[deriveStability(appVersion)],
+      }
+    : undefined);
+
   return (
     <section className={[styles.head, hasIllustration && styles.withIllustration, bgClass, className].filter(Boolean).join(' ')}>
       {crumb && Array.isArray(crumb) && (
@@ -99,15 +130,15 @@ export default function DetailHero({
 
       <div className={styles.headInner}>
         <div className={styles.copy}>
-          {(status || version || locales || dlCount > 0) && (
+          {(resolvedStatus || resolvedVersion || locales || dlCount > 0) && (
             <div className={styles.badgeRow}>
-              {status && (
+              {resolvedStatus && (
                 <span className={styles.badge}>
-                  <HexBullet size="md" color={status.color || 'var(--c-mint-500)'} />
-                  {status.label}
+                  <HexBullet size="md" color={resolvedStatus.color || STABILITY_COLORS[resolvedStatus.label] || 'var(--c-mint-500)'} />
+                  {resolvedStatus.label}
                 </span>
               )}
-              {version && <span className={[styles.badge, styles.versionBadge].join(' ')}>{version}</span>}
+              {resolvedVersion && <span className={[styles.badge, styles.versionBadge].join(' ')}>{resolvedVersion}</span>}
               {locales && <span className={[styles.badge, styles.versionBadge].join(' ')}>{locales}</span>}
               {dlCount > 0 && (
                 <span

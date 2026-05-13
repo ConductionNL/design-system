@@ -49,7 +49,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem';
-import {brandFor, productWordmark} from '../brand.jsx';
+import {brandFor, productWordmark, deriveStability} from '../brand.jsx';
 import {ICONS} from '../../components/primitives/icons';
 import styles from './styles.module.css';
 
@@ -126,14 +126,18 @@ function NavItem({item, location, appVersion}) {
     return <Link to={to} className={className}>{content}</Link>;
   }
 
-  /* Version pill: code-typeface "Stable · v{version}" chip. Source is
-     customFields.appVersion (set by createConfig() from appinfo/info.xml
-     or package.json). Hidden when no version is available so sites
-     without an app version (Hydra, design-system itself) get a clean
-     navbar instead of an empty pill. */
+  /* Version pill: code-typeface "{Stability} · v{version}" chip.
+     Source is customFields.appVersion (set by createConfig() from
+     appinfo/info.xml or package.json). The maturity prefix
+     (Stable/Beta/RC/Alpha) is auto-derived from the SemVer string —
+     `0.1.0` → Beta, `1.0.0-rc.2` → RC, `1.2.3` → Stable. Sites can
+     still pass an explicit `prefix` to override. Hidden when no
+     version is available so sites without an app version (Hydra,
+     design-system itself) get a clean navbar instead of an empty
+     pill. */
   if (typeIs(item, 'versionPill')) {
     if (!appVersion) return null;
-    const prefix = item.prefix || 'Stable';
+    const prefix = item.prefix || deriveStability(appVersion);
     return (
       <span className={styles.versionPill} title={`${prefix} · v${appVersion}`}>
         {prefix} · v{appVersion}

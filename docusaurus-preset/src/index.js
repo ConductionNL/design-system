@@ -42,31 +42,47 @@ function resolveAppVersion(opts) {
   if (opts.appVersion) return String(opts.appVersion);
 
   /* Nextcloud apps: appinfo/info.xml carries the canonical version.
-     We avoid pulling in an XML parser for one tag — a non-greedy regex
-     against the file content is robust enough for the standard
-     `<version>x.y.z</version>` shape the app store mandates. */
-  try {
-    const infoPath = path.join(process.cwd(), 'appinfo', 'info.xml');
-    if (fs.existsSync(infoPath)) {
-      const xml = fs.readFileSync(infoPath, 'utf8');
-      const m = xml.match(/<version>\s*([^<\s]+)\s*<\/version>/);
-      if (m && m[1]) return m[1];
+     Conduction docs sites live at <appRepo>/docs/ next to the app's
+     <appRepo>/appinfo/, so we check both the cwd AND the parent
+     before giving up. We avoid pulling in an XML parser for one tag
+     — a non-greedy regex against the file content is robust enough
+     for the standard `<version>x.y.z</version>` shape the app store
+     mandates. */
+  const cwd = process.cwd();
+  const infoCandidates = [
+    path.join(cwd, 'appinfo', 'info.xml'),
+    path.join(cwd, '..', 'appinfo', 'info.xml'),
+  ];
+  for (const infoPath of infoCandidates) {
+    try {
+      if (fs.existsSync(infoPath)) {
+        const xml = fs.readFileSync(infoPath, 'utf8');
+        const m = xml.match(/<version>\s*([^<\s]+)\s*<\/version>/);
+        if (m && m[1]) return m[1];
+      }
+    } catch (e) {
+      /* fall through */
     }
-  } catch (e) {
-    /* fall through */
   }
 
-  /* Non-Nextcloud sites: package.json version. Walks up from cwd in
-     case the site builds from a sub-directory; one level deep is
-     enough for the conduction-website layout. */
-  try {
-    const pkgPath = path.join(process.cwd(), 'package.json');
-    if (fs.existsSync(pkgPath)) {
-      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-      if (pkg.version) return pkg.version;
+  /* Non-Nextcloud sites: package.json version. Same parent-walk so
+     a site building from <repo>/site/ still finds <repo>/package.json. */
+  const pkgCandidates = [
+    path.join(cwd, 'package.json'),
+    path.join(cwd, '..', 'package.json'),
+  ];
+  for (const pkgPath of pkgCandidates) {
+    try {
+      if (fs.existsSync(pkgPath)) {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+        /* Skip the docs-site's own placeholder package.json (every
+           Conduction docs site is scaffolded with name="*-docs" and
+           version="0.0.0"); fall through to the parent in that case. */
+        if (pkg.version && pkg.version !== '0.0.0') return pkg.version;
+      }
+    } catch (e) {
+      /* fall through */
     }
-  } catch (e) {
-    /* fall through */
   }
 
   return undefined;

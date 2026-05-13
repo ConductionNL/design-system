@@ -6,48 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="_docs-shell.css">
 <style>
-  /* Architecture diagram — boxes-and-arrows, brand-strict (pointy-top hexes, cobalt). */
-  .arch-diagram {
-    background: var(--c-cobalt-50);
-    border: 1px solid var(--c-cobalt-100);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-    margin: var(--space-5) 0;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: var(--space-3);
-    align-items: center;
-    justify-items: center;
-    font-family: var(--conduction-typography-font-family-code);
-    font-size: 11px;
-    text-align: center;
-  }
-  .arch-diagram .node {
-    width: 100%;
-    padding: var(--space-3) var(--space-2);
-    background: white;
-    border: 1px solid var(--c-cobalt-200);
-    border-radius: var(--radius-sm);
-    color: var(--c-cobalt-800);
-  }
-  .arch-diagram .node.accent {
-    background: var(--c-blue-cobalt);
-    color: white;
-    border-color: var(--c-blue-cobalt);
-  }
-  .arch-diagram .arrow {
-    color: var(--c-cobalt-400);
-    font-size: 16px;
-  }
-  .arch-diagram .hex {
-    width: 56px; height: 64px;
-    clip-path: var(--hex-pointy-top);
-    background: var(--c-orange-knvb);
-    display: flex; align-items: center; justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 12px;
-  }
+  /* Architecture diagram is now <cn-arch-flow>; see
+     ../../docusaurus-preset/src/diagrams/cn-arch-flow.js. Wrap locally
+     so consecutive rows sit on top of each other with the same gap the
+     old .arch-diagram stack had. */
+  cn-arch-flow { display: block; margin: var(--space-5) 0; }
+  cn-arch-flow + cn-arch-flow { margin-top: var(--space-3); }
+
   .adr-table { font-size: 13px; }
   .adr-table .status {
     font-family: var(--conduction-typography-font-family-code);
@@ -62,6 +27,7 @@
   .adr-table .status.proposed { background: var(--c-cobalt-100); color: var(--c-cobalt-800); }
   .adr-table .status.superseded { background: var(--c-cobalt-50); color: var(--c-cobalt-400); }
 </style>
+<script type="module" src="../../docusaurus-preset/src/diagrams/index.js"></script>
 </head>
 <body>
 
@@ -123,27 +89,23 @@
 
     <h2>Request flow</h2>
 
-    <div class="arch-diagram">
-      <div class="node">Client</div>
-      <span class="arrow">→</span>
-      <div class="node accent">API layer</div>
-      <span class="arrow">→</span>
-      <div class="hex">Validator</div>
-    </div>
-    <div class="arch-diagram" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
-      <div class="node">Schema registry</div>
-      <span class="arrow">↓</span>
-      <div class="node accent">Storage adapter</div>
-      <span class="arrow">↓</span>
-      <div class="node">Audit log</div>
-    </div>
-    <div class="arch-diagram" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
-      <div class="node">Nextcloud DB</div>
-      <div class="node">MySQL</div>
-      <div class="node">PostgreSQL</div>
-      <div class="node">MongoDB</div>
-      <div class="node" style="opacity: 0.5;">…</div>
-    </div>
+    <cn-arch-flow>
+      <span>Client</span>
+      <span accent>API layer</span>
+      <span hex>Validator</span>
+    </cn-arch-flow>
+    <cn-arch-flow arrow="down">
+      <span>Schema registry</span>
+      <span accent>Storage adapter</span>
+      <span>Audit log</span>
+    </cn-arch-flow>
+    <cn-arch-flow arrow="none">
+      <span>Nextcloud DB</span>
+      <span>MySQL</span>
+      <span>PostgreSQL</span>
+      <span>MongoDB</span>
+      <span muted>…</span>
+    </cn-arch-flow>
 
     <h2>Layers</h2>
 

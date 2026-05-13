@@ -146,3 +146,48 @@ export function HoneycombBg(props) {
   useDiagramRuntime();
   return <cn-honeycomb-bg {...props} />;
 }
+
+/* ============================================================
+   <Pair /> wraps <cn-pair>
+   Two systems linked by an orange arrow. Attribute names are
+   camelCase in React, converted to dashed on the element.
+   ============================================================ */
+export function Pair({
+  leftLabel, leftCaption, leftColor,
+  rightLabel, rightCaption, rightColor,
+  bridgeLabel, arrow,
+  children, ...rest
+}) {
+  useDiagramRuntime();
+  return (
+    <cn-pair
+      {...attrs({
+        'left-label':    leftLabel,
+        'left-caption':  leftCaption,
+        'left-color':    leftColor,
+        'right-label':   rightLabel,
+        'right-caption': rightCaption,
+        'right-color':   rightColor,
+        'bridge-label':  bridgeLabel,
+        arrow,
+      })}
+      {...rest}
+    >
+      {children}
+    </cn-pair>
+  );
+}
+
+/* ============================================================
+   <ArchFlow /> wraps <cn-arch-flow>
+   One row of an architecture diagram. Children with `accent`,
+   `hex`, or `muted` attributes are styled by the web component.
+   ============================================================ */
+export function ArchFlow({arrow, children, ...rest}) {
+  useDiagramRuntime();
+  return (
+    <cn-arch-flow {...attrs({arrow})} {...rest}>
+      {children}
+    </cn-arch-flow>
+  );
+}

@@ -17,6 +17,8 @@
  *   <cn-pipeline>       — horizontal flow of stages connected by arrows
  *   <cn-side-box>       — rectangle-feed-prism pattern for non-app surfaces
  *   <cn-honeycomb-bg>   — honeycomb backdrop wrapper for hero scenes
+ *   <cn-pair>           — two systems bridged by an orange arrow
+ *   <cn-arch-flow>      — single row of an architecture / request-flow diagram
  */
 
 export * from './cn-hex.js';
@@ -26,3 +28,5 @@ export * from './cn-platform.js';
 export * from './cn-pipeline.js';
 export * from './cn-side-box.js';
 export * from './cn-honeycomb-bg.js';
+export * from './cn-pair.js';
+export * from './cn-arch-flow.js';

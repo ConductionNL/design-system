@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cn-arch-flow · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  .specimen.tall { min-height: 160px; padding: 0; align-items: stretch; }
+  .specimen.tall cn-arch-flow { width: 100%; }
+  .specimen.stack { flex-direction: column; gap: var(--space-3); padding: 0; align-items: stretch; }
+  .specimen.stack cn-arch-flow { width: 100%; }
+
+  pre {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; line-height: 1.6;
+    overflow-x: auto;
+    margin: var(--space-3) 0 0;
+  }
+  pre .tag  { color: #93B5E0; }
+  pre .attr { color: #F7C76F; }
+  pre .str  { color: #5FE39A; }
+
+  .rationale {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+  .rationale .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    margin-bottom: var(--space-2);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .rationale .label::before {
+    content: ""; width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: block;
+  }
+  .rationale h2 {
+    font-size: var(--fs-xl); font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-3);
+  }
+  .rationale .lede {
+    color: var(--c-cobalt-700);
+    font-size: var(--fs-sm); line-height: 1.55;
+    margin-bottom: var(--space-4);
+  }
+  .rationale ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .rationale li {
+    font-size: var(--fs-sm); line-height: 1.5;
+    color: var(--c-cobalt-900);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .rationale li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 8px; height: 9.2px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+  }
+  .rationale li code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+    background: var(--c-cobalt-50);
+    padding: 1px 5px; border-radius: 3px;
+  }
+</style>
+<script type="module" src="../../docusaurus-preset/src/diagrams/index.js"></script>
+</head>
+<body>
+
+<div class="card">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Diagrams</a> &nbsp;/&nbsp; cn-arch-flow</div>
+
+  <div class="card-header">
+    <div>
+      <div class="card-eyebrow">11.09 · Diagrams / cn-arch-flow</div>
+      <h1 class="card-title">&lt;cn-arch-flow&gt;</h1>
+    </div>
+    <p class="card-subtitle">A single row of an architecture or request-flow diagram. White rounded nodes, one solid cobalt "system" node, optionally one orange pointy-top hex. Stack multiple rows for a multi-layer system view.</p>
+  </div>
+
+  <div class="section-label">Canonical · the OpenRegister request flow</div>
+  <div class="specimen stack">
+    <cn-arch-flow>
+      <span>Client</span>
+      <span accent>API layer</span>
+      <span hex>Validator</span>
+    </cn-arch-flow>
+    <cn-arch-flow arrow="down">
+      <span>Schema registry</span>
+      <span accent>Storage adapter</span>
+      <span>Audit log</span>
+    </cn-arch-flow>
+    <cn-arch-flow arrow="none">
+      <span>Nextcloud DB</span>
+      <span>MySQL</span>
+      <span>PostgreSQL</span>
+      <span>MongoDB</span>
+      <span muted>…</span>
+    </cn-arch-flow>
+  </div>
+  <pre><span class="tag">&lt;cn-arch-flow&gt;</span>
+  <span class="tag">&lt;span&gt;</span>Client<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">accent</span><span class="tag">&gt;</span>API layer<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">hex</span><span class="tag">&gt;</span>Validator<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/cn-arch-flow&gt;</span>
+<span class="tag">&lt;cn-arch-flow</span> <span class="attr">arrow</span>=<span class="str">"down"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;span&gt;</span>Schema registry<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">accent</span><span class="tag">&gt;</span>Storage adapter<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span&gt;</span>Audit log<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/cn-arch-flow&gt;</span>
+<span class="tag">&lt;cn-arch-flow</span> <span class="attr">arrow</span>=<span class="str">"none"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;span&gt;</span>Nextcloud DB<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span&gt;</span>MySQL<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span&gt;</span>PostgreSQL<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span&gt;</span>MongoDB<span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">muted</span><span class="tag">&gt;</span>…<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/cn-arch-flow&gt;</span></pre>
+
+  <div class="section-label">Minimal · two nodes, one accent</div>
+  <div class="specimen tall">
+    <cn-arch-flow>
+      <span>Source</span>
+      <span accent>Sink</span>
+    </cn-arch-flow>
+  </div>
+
+  <div class="section-label">All accent · for parity diagrams</div>
+  <div class="specimen tall">
+    <cn-arch-flow arrow="none">
+      <span accent>OpenRegister</span>
+      <span accent>OpenConnector</span>
+      <span accent>OpenCatalogi</span>
+    </cn-arch-flow>
+  </div>
+
+  <div class="section-label">API · slots</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Slot</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>(default)</code></td><td>Row members, in order. Plain elements (typically <code>&lt;span&gt;</code>) styled by the component according to their attributes. The component auto-inserts arrows between consecutive members.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">API · attributes (on cn-arch-flow)</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Attribute</th><th>Values</th><th>Default</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>arrow</code></td><td><code>right</code> · <code>down</code> · <code>none</code></td><td><code>right</code></td><td>Arrow direction. Use <code>down</code> for the second-and-later rows of a vertical stack so the reader sees flow continuing. <code>none</code> for adjacency rows (storage adapters, app catalogs).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">API · child attributes (on the slotted elements)</div>
+  <div class="api-block">
+    <table class="api">
+      <thead><tr><th>Attribute</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>(none)</code></td><td>Default: white rounded box with cobalt-200 border. The "external" or "neighbour" node.</td></tr>
+        <tr><td><code>accent</code></td><td>Solid cobalt fill, white text. The "system" node — usually the one Conduction owns in this layer.</td></tr>
+        <tr><td><code>hex</code></td><td>Orange pointy-top hex. The one-orange-per-scene knob; use once per row stack, on the node the reader should land on.</td></tr>
+        <tr><td><code>muted</code></td><td>Opacity 0.5. For "and more" / out-of-scope placeholders.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Why we built it this way</div>
+  <div class="rationale">
+    <div class="label">Layered · the architecture diagram</div>
+    <h2>One row, four child attributes, no class wars</h2>
+    <p class="lede">cn-arch-flow encodes a pattern that lived as inline CSS in every product-page mockup. Child elements style themselves by the attribute they carry; the parent owns the panel chrome and the arrow placement.</p>
+    <ul>
+      <li><strong>Attributes, not class names.</strong> <code>&lt;span accent&gt;</code> beats <code>&lt;span class="node accent"&gt;</code>. The shadow CSS uses <code>::slotted([accent])</code> selectors so any tag (<code>span</code>, <code>div</code>, anchor) becomes a styled node.</li>
+      <li><strong>Auto-inserted arrows.</strong> Same MutationObserver pattern as cn-pipeline. Add or remove children; arrows reflow.</li>
+      <li><strong>One hex per stack.</strong> The orange hex slot replaces the rectangle entirely — different shape, different role. Use it once per multi-row diagram on the node the reader's eye should land on; the brand rule is one orange accent per scene, not per row.</li>
+      <li><strong>No row component.</strong> A row IS a cn-arch-flow. Stacking happens with adjacent cn-arch-flow elements at the page level. The component does not own the multi-row layout because the spacing between rows is page-decision territory.</li>
+      <li><strong>Arrows are not children.</strong> Authors never write <code>&lt;span class="arrow"&gt;→&lt;/span&gt;</code> by hand. The original product-page mockup did, and that's exactly the duplication we're extracting away.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

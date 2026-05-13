@@ -90,6 +90,8 @@ slot-based children pass through. All exported from `Diagrams/Diagrams.jsx`.
 - **DiagramPipeline** wraps `<cn-pipeline>` (renamed from Pipeline to avoid the components/Pipeline name collision)
 - **SideBox** wraps `<cn-side-box>`
 - **HoneycombBg** wraps `<cn-honeycomb-bg>`
+- **Pair** wraps `<cn-pair>` (leftLabel, leftCaption, leftColor, rightLabel, rightCaption, rightColor, bridgeLabel, arrow). Two systems linked by an orange arrow; the integration-page headline diagram. Owns the one-orange-per-scene budget. Extracted 2026-05-13 from the `.pair-banner` pattern in `preview/product-pages/integrations.html`.
+- **ArchFlow** wraps `<cn-arch-flow>` (arrow: right | down | none). One row of a request-flow / architecture diagram. Child elements style themselves by attribute (`accent` solid cobalt, `hex` orange pointy-top, `muted` half-opacity). Stack multiple rows for a multi-layer system view. Extracted 2026-05-13 from the `.arch-diagram` pattern in `preview/product-pages/technical-docs.html`.
 
 ## Theme swizzles
 

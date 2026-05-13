@@ -316,6 +316,15 @@ export default function Footer() {
                 Open-source apps for <span className="next-blue">Nextcloud</span>. Built and
                 maintained by Conduction in Amsterdam, released under EUPL-1.2.
               </p>
+              {/*
+                Brand citation. The producer chain stays dot-separated
+                (Conduction · sub-brand · partner) and connects to
+                Nextcloud through a vermillion-red heart — the "loves"
+                relationship is between the producer stack and the
+                platform it ships on. Nextcloud is a link to
+                nextcloud.com so visitors can verify the platform
+                upstream in one click.
+              */}
               <div className="triad">
                 <span>
                   <span className="h"></span>
@@ -326,7 +335,17 @@ export default function Footer() {
                     .map((b, i) => (
                       <React.Fragment key={i}> · {b.wordmark}</React.Fragment>
                     ))}
-                  {' '}· <span className="next-blue">Nextcloud</span>
+                  {' '}
+                  <svg className="heart" viewBox="0 0 24 24" fill="currentColor" aria-label="loves" role="img">
+                    <path d="M12 21s-6.7-4.35-9.2-8.4C.8 9.2 2 5.5 5.2 4.7c2-.5 3.8.4 4.8 1.9 1-1.5 2.8-2.4 4.8-1.9 3.2.8 4.4 4.5 2.4 7.9C18.7 16.65 12 21 12 21z"/>
+                  </svg>
+                  {' '}
+                  <a
+                    href="https://nextcloud.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="next-blue"
+                  >Nextcloud</a>
                 </span>
               </div>
               <div className="socials">

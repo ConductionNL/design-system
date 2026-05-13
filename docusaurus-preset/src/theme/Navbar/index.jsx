@@ -45,6 +45,7 @@
 import React from 'react';
 import Link from '@docusaurus/Link';
 import {useLocation} from '@docusaurus/router';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem';
@@ -212,8 +213,14 @@ export default function Navbar() {
      app's hex-glyph next to the wordmark. The icon is sourced from
      navbar.logo (createConfig defaults it to img/logo.svg, which every
      Conduction docs site ships under static/img/). Sites can opt the
-     icon out by passing `logo: null` in their navbar config. */
-  const logoSrc = navbar.logo?.src;
+     icon out by passing `logo: null` in their navbar config.
+
+     `useBaseUrl` resolves the src against the site's configured
+     baseUrl — without it, a relative `img/app-logo.svg` resolves
+     against the current page's path, so the icon 404s on every
+     sub-route (e.g. /docs/intro/img/app-logo.svg). */
+  const logoSrcRaw = navbar.logo?.src;
+  const logoSrc = useBaseUrl(logoSrcRaw || '');
   const logoAlt = navbar.logo?.alt || `${navbar.title} avatar`;
 
   /* Split into "left links" (regular nav) and "right CTAs" (locale,
@@ -241,7 +248,7 @@ export default function Navbar() {
     <nav className={`navbar ${styles.nav}`} role="navigation" aria-label="Main">
       <div className={styles.left}>
         <Link to={homeHref} className={styles.wordmark}>
-          {logoSrc && (
+          {logoSrcRaw && (
             <img
               src={logoSrc}
               alt={logoAlt}

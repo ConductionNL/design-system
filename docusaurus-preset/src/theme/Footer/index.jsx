@@ -52,6 +52,32 @@ export default function Footer() {
      ../../index.js for the option semantics. */
   const minigamesOn = themeConfig.minigames !== false;
   const footerBrand = themeConfig.footerBrand || null;
+  /* legalLinks: opt-in/out of the Privacy / Terms / ISO links inside
+     the legal-bar, and the two ISO 9001/27001 certification badges on
+     the right. Defaults preserve current behaviour for sites that ship
+     those pages (docs.conduction.nl, www.conduction.nl). Consumer
+     sites that don't ship them can pass { privacy: false, terms: false,
+     iso: false, isoCertifications: false } via createConfig opts to
+     silence broken-link warnings. Each link slot also accepts a string
+     to override the destination (e.g. an external URL pointing at the
+     canonical Conduction legal page). */
+  const legalLinks = themeConfig.legalLinks || {};
+  const legalLink = (key, fallback) => {
+    if (legalLinks[key] === false) return null;
+    if (typeof legalLinks[key] === 'string' && legalLinks[key]) return legalLinks[key];
+    return fallback;
+  };
+  const privacyTo  = legalLink('privacy', '/privacy');
+  const termsTo    = legalLink('terms',   '/terms');
+  const isoTo      = legalLink('iso',     '/iso');
+  /* ISO certification badges (the two 9001 + 27001 pills on the right
+     of the legal-bar) default to following the iso link's visibility —
+     no point claiming certifications when the linked detail page
+     doesn't ship. Sites can force a state with
+     legalLinks.isoCertifications: true | false. */
+  const showIsoCerts = legalLinks.isoCertifications !== undefined
+    ? Boolean(legalLinks.isoCertifications)
+    : Boolean(isoTo);
 
   const location = useLocation();
   /* Brand switch follows the pathname: /connext or /commonground sections
@@ -378,24 +404,28 @@ export default function Footer() {
             <div className="legal-bar">
               <div className="left">
                 <span>{copyright}</span>
-                <span className="legal-links">
-                  <Link to="/privacy">Privacy</Link>
-                  <span className="sep">·</span>
-                  <Link to="/terms">Terms</Link>
-                  <span className="sep">·</span>
-                  <Link to="/iso">ISO</Link>
-                </span>
+                {(privacyTo || termsTo || isoTo) && (
+                  <span className="legal-links">
+                    {privacyTo && <Link to={privacyTo}>Privacy</Link>}
+                    {privacyTo && termsTo && <span className="sep">·</span>}
+                    {termsTo && <Link to={termsTo}>Terms</Link>}
+                    {(privacyTo || termsTo) && isoTo && <span className="sep">·</span>}
+                    {isoTo && <Link to={isoTo}>ISO</Link>}
+                  </span>
+                )}
               </div>
-              <div className="right">
-                <Link to="/iso" className="iso-badge" aria-label="ISO 9001:2015 certified, see details">
-                  <span className="iso-mark">ISO</span>
-                  <span className="iso-num">9001:2015</span>
-                </Link>
-                <Link to="/iso" className="iso-badge" aria-label="ISO 27001:2022 certified, see details">
-                  <span className="iso-mark">ISO</span>
-                  <span className="iso-num">27001:2022</span>
-                </Link>
-              </div>
+              {showIsoCerts && (
+                <div className="right">
+                  <Link to={isoTo || '/iso'} className="iso-badge" aria-label="ISO 9001:2015 certified, see details">
+                    <span className="iso-mark">ISO</span>
+                    <span className="iso-num">9001:2015</span>
+                  </Link>
+                  <Link to={isoTo || '/iso'} className="iso-badge" aria-label="ISO 27001:2022 certified, see details">
+                    <span className="iso-mark">ISO</span>
+                    <span className="iso-num">27001:2022</span>
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

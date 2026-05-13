@@ -235,6 +235,24 @@ function createConfig(opts) {
                           built jointly with a partner (mydash + Sendent
                           is the first case). */
         footerBrand: opts.footerBrand || null,
+        /* Legal-bar links (Privacy / Terms / ISO) plus the two ISO
+           9001 + 27001 certification badges on the right side of the
+           canal-footer. Default keeps prior behaviour (pages live at
+           /privacy, /terms, /iso on docs.conduction.nl + www.conduction.nl).
+           Consumer sites that don't ship those pages can opt out per
+           slot to silence broken-link warnings:
+
+             legalLinks: {
+               privacy: false,     // hide the Privacy link
+               terms:   false,     // hide the Terms link
+               iso:     false,     // hide the ISO link AND the cert badges
+                                   // (badges follow iso link by default)
+               // any slot can also take a string for an external URL:
+               privacy: 'https://docs.conduction.nl/privacy',
+               // certs default-follow iso, override here:
+               isoCertifications: true | false,
+             } */
+        legalLinks: opts.legalLinks || {},
       },
       opts.themeConfig || {}
     ),

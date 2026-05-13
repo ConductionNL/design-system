@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>API reference · Open Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_docs-shell.css">
+<style>
+  /* Redocusaurus mock: three-pane layout (left endpoints, middle doc, right sample). */
+  body { background: white; }
+  .redoc-shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr) 360px;
+    min-height: calc(100vh - 60px);
+    font-size: 13px;
+  }
+  .redoc-left {
+    background: var(--c-cobalt-50);
+    border-right: 1px solid var(--c-cobalt-100);
+    padding: var(--space-5);
+    overflow-y: auto;
+  }
+  .redoc-left .api-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--c-cobalt-900);
+    margin-bottom: var(--space-2);
+  }
+  .redoc-left .api-version {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    color: var(--c-cobalt-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-4);
+  }
+  .redoc-left .tag {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-cobalt-400);
+    margin: var(--space-4) 0 var(--space-2);
+  }
+  .redoc-left a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    color: var(--c-cobalt-700);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  .redoc-left a:hover { background: var(--c-cobalt-100); }
+  .redoc-left a.active { background: white; color: var(--c-cobalt-900); font-weight: 500; }
+  .verb {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    min-width: 44px;
+    text-align: center;
+  }
+  .verb.get   { background: #E2F1FA; color: #146CC1; }
+  .verb.post  { background: var(--c-mint-100); color: var(--c-mint-700); }
+  .verb.patch { background: #FFF4E5; color: #B75C00; }
+  .verb.del   { background: #FEE5E5; color: #B22B2B; }
+
+  .redoc-mid {
+    padding: var(--space-7) var(--space-8);
+    overflow-y: auto;
+  }
+  .redoc-mid h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--space-3);
+  }
+  .redoc-mid h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: var(--space-7) 0 var(--space-3);
+  }
+  .redoc-mid h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: var(--space-5) 0 var(--space-2);
+  }
+  .redoc-mid p, .redoc-mid li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--c-cobalt-800);
+  }
+  .redoc-mid .endpoint-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-md);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    margin: var(--space-4) 0;
+  }
+  .redoc-mid table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-4) 0;
+    font-size: 13px;
+  }
+  .redoc-mid th, .redoc-mid td {
+    padding: var(--space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--c-cobalt-100);
+    vertical-align: top;
+  }
+  .redoc-mid th {
+    background: var(--c-cobalt-50);
+    font-weight: 600;
+    color: var(--c-cobalt-800);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .redoc-mid .param-row td:first-child {
+    font-family: var(--conduction-typography-font-family-code);
+    font-weight: 600;
+    color: var(--c-blue-cobalt);
+  }
+  .redoc-mid .req {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    color: #B22B2B;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-left: 6px;
+  }
+
+  .redoc-right {
+    background: var(--c-cobalt-900);
+    color: var(--c-cobalt-100);
+    padding: var(--space-6);
+    overflow-y: auto;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+  }
+  .redoc-right h4 {
+    color: white;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 var(--space-2);
+  }
+  .redoc-right .tabs {
+    display: flex;
+    gap: var(--space-3);
+    border-bottom: 1px solid var(--c-cobalt-700);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .redoc-right .tab {
+    color: var(--c-cobalt-400);
+    cursor: pointer;
+    padding: 3px 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .redoc-right .tab.active { color: white; border-bottom: 2px solid var(--c-orange-knvb); }
+  .redoc-right pre {
+    background: transparent;
+    padding: 0;
+    margin: 0 0 var(--space-5);
+    color: var(--c-cobalt-200);
+    white-space: pre-wrap;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .redoc-right .lit { color: var(--c-orange-knvb); }
+  .redoc-right .key { color: #82c2ff; }
+  .redoc-right .str { color: #9fdab5; }
+  .redoc-right .num-val { color: #c89bff; }
+</style>
+</head>
+<body>
+
+<header class="docs-navbar">
+  <a href="landing.html" class="brand">
+    <span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></span>
+    Open Register
+  </a>
+  <nav>
+    <a href="intro.html">Documentation</a>
+    <a href="#" class="active">API Documentation</a>
+    <a href="#">GitHub</a>
+  </nav>
+  <div class="right">
+    <span class="version">Stable · v3.1</span>
+    <span class="lang">EN ▾</span>
+  </div>
+</header>
+
+<div class="redoc-shell">
+
+  <aside class="redoc-left">
+    <div class="api-title">Open Register API</div>
+    <div class="api-version">v3.1 · OpenAPI 3.1</div>
+
+    <div class="tag">Objects</div>
+    <a href="#"><span class="verb get">GET</span> List objects</a>
+    <a href="#" class="active"><span class="verb post">POST</span> Create object</a>
+    <a href="#"><span class="verb get">GET</span> Get object</a>
+    <a href="#"><span class="verb patch">PATCH</span> Update object</a>
+    <a href="#"><span class="verb del">DEL</span> Delete object</a>
+
+    <div class="tag">Schemas</div>
+    <a href="#"><span class="verb get">GET</span> List schemas</a>
+    <a href="#"><span class="verb post">POST</span> Create schema</a>
+    <a href="#"><span class="verb get">GET</span> Get schema</a>
+
+    <div class="tag">Registers</div>
+    <a href="#"><span class="verb get">GET</span> List registers</a>
+    <a href="#"><span class="verb post">POST</span> Create register</a>
+
+    <div class="tag">Audit log</div>
+    <a href="#"><span class="verb get">GET</span> List audit entries</a>
+    <a href="#"><span class="verb get">GET</span> Get audit entry</a>
+  </aside>
+
+  <main class="redoc-mid">
+    <h1>Create object</h1>
+
+    <p>Create a new validated object in the given register, against the given schema. The body is validated against the schema's JSON Schema before the object is stored. Validation errors return a 422 with a JSON-Pointer path to each failing property.</p>
+
+    <div class="endpoint-head">
+      <span class="verb post">POST</span>
+      <span>/api/objects/&#123;register&#125;/&#123;schema&#125;</span>
+    </div>
+
+    <h2>Path parameters</h2>
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr class="param-row"><td>register</td><td>string</td><td>Slug of the target register.<span class="req">required</span></td></tr>
+        <tr class="param-row"><td>schema</td><td>string</td><td>Slug of the schema the object must validate against.<span class="req">required</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Request body</h2>
+    <p>Any valid JSON object matching the referenced schema. Unknown properties are rejected unless the schema sets <code>additionalProperties: true</code>.</p>
+
+    <h2>Responses</h2>
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th><th>Body</th></tr></thead>
+      <tbody>
+        <tr><td><code>201</code></td><td>Created</td><td>Stored object, persistent ID, audit-log reference.</td></tr>
+        <tr><td><code>422</code></td><td>Validation failed</td><td>JSON-Pointer errors per property.</td></tr>
+        <tr><td><code>403</code></td><td>Forbidden</td><td>Caller lacks write on the register.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Validation errors</h3>
+    <p>422 responses follow <a href="#">RFC 9457 · Problem Details for HTTP APIs</a> with a list of pointer-tagged errors under <code>errors[]</code>. Each entry carries <code>instancePath</code>, <code>schemaPath</code>, and a human message.</p>
+  </main>
+
+  <aside class="redoc-right">
+    <div class="tabs">
+      <span class="tab active">cURL</span>
+      <span class="tab">JavaScript</span>
+      <span class="tab">PHP</span>
+    </div>
+
+    <h4>Request</h4>
+<pre>curl -X <span class="lit">POST</span> \
+  https://nc.example/index.php/apps/openregister/api/objects/<span class="lit">citizens</span>/<span class="lit">citizen</span> \
+  -H <span class="str">"Authorization: Bearer $TOKEN"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "bsn": "123456789",
+    "firstName": "Jenna",
+    "lastName": "de Vries"
+  }'</span></pre>
+
+    <h4>Response · 201</h4>
+<pre>{
+  <span class="key">"id"</span>:      <span class="str">"urn:nl-openregister:01HXY..."</span>,
+  <span class="key">"version"</span>: <span class="num-val">1</span>,
+  <span class="key">"audit"</span>:   <span class="str">"urn:nl-openregister:audit:01HXY..."</span>,
+  <span class="key">"data"</span>: {
+    <span class="key">"bsn"</span>:       <span class="str">"123456789"</span>,
+    <span class="key">"firstName"</span>: <span class="str">"Jenna"</span>,
+    <span class="key">"lastName"</span>:  <span class="str">"de Vries"</span>
+  }
+}</pre>
+
+    <h4>Response · 422</h4>
+<pre>{
+  <span class="key">"title"</span>:  <span class="str">"Validation failed"</span>,
+  <span class="key">"status"</span>: <span class="num-val">422</span>,
+  <span class="key">"errors"</span>: [
+    {
+      <span class="key">"instancePath"</span>: <span class="str">"/bsn"</span>,
+      <span class="key">"schemaPath"</span>:   <span class="str">"#/properties/bsn/pattern"</span>,
+      <span class="key">"message"</span>:      <span class="str">"must match pattern ^[0-9]{9}$"</span>
+    }
+  ]
+}</pre>
+  </aside>
+
+</div>
+
+<a class="kit-ribbon" href="index.html">↩ Product pages</a>
+
+</body>
+</html>

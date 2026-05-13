@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Architecture · Open Register docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_docs-shell.css">
+<style>
+  /* Architecture diagram — boxes-and-arrows, brand-strict (pointy-top hexes, cobalt). */
+  .arch-diagram {
+    background: var(--c-cobalt-50);
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin: var(--space-5) 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+    align-items: center;
+    justify-items: center;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    text-align: center;
+  }
+  .arch-diagram .node {
+    width: 100%;
+    padding: var(--space-3) var(--space-2);
+    background: white;
+    border: 1px solid var(--c-cobalt-200);
+    border-radius: var(--radius-sm);
+    color: var(--c-cobalt-800);
+  }
+  .arch-diagram .node.accent {
+    background: var(--c-blue-cobalt);
+    color: white;
+    border-color: var(--c-blue-cobalt);
+  }
+  .arch-diagram .arrow {
+    color: var(--c-cobalt-400);
+    font-size: 16px;
+  }
+  .arch-diagram .hex {
+    width: 56px; height: 64px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .adr-table { font-size: 13px; }
+  .adr-table .status {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    display: inline-block;
+  }
+  .adr-table .status.accepted { background: var(--c-mint-100); color: var(--c-mint-700); }
+  .adr-table .status.proposed { background: var(--c-cobalt-100); color: var(--c-cobalt-800); }
+  .adr-table .status.superseded { background: var(--c-cobalt-50); color: var(--c-cobalt-400); }
+</style>
+</head>
+<body>
+
+<header class="docs-navbar">
+  <a href="landing.html" class="brand">
+    <span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></span>
+    Open Register
+  </a>
+  <nav>
+    <a href="#" class="active">Documentation</a>
+    <a href="api-reference.html">API Documentation</a>
+    <a href="#">GitHub</a>
+  </nav>
+  <div class="right">
+    <span class="version">Stable · v3.1</span>
+    <span class="lang">EN ▾</span>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar">
+    <a href="intro.html">Introduction</a>
+    <a href="user-docs.html">Installation</a>
+
+    <div class="group">Features</div>
+    <a href="features.html">Objects</a>
+    <a href="#">Schemas</a>
+    <a href="#">Registers</a>
+
+    <div class="group">Integrations</div>
+    <a href="integrations.html">xWiki</a>
+    <a href="#">n8n</a>
+
+    <div class="group">Technical</div>
+    <a href="#" class="active">Architecture</a>
+    <a href="#">Data model</a>
+    <a href="#">Storage adapters</a>
+    <a href="#">Event system</a>
+    <a href="#">Search engine</a>
+
+    <div class="group">ADRs</div>
+    <a href="#" style="margin-left: 12px;">001 · Schema-first design</a>
+    <a href="#" style="margin-left: 12px;">002 · Storage adapter interface</a>
+    <a href="#" style="margin-left: 12px;">003 · GraphQL alongside REST</a>
+    <a href="#" style="margin-left: 12px;">004 · Audit log signing</a>
+
+    <div class="group">Development</div>
+    <a href="#">Contributing</a>
+    <a href="#">Code style</a>
+    <a href="#">Release process</a>
+  </aside>
+
+  <article class="docs-content">
+    <div class="crumb">Docs / Technical / Architecture</div>
+    <h1>Architecture</h1>
+
+    <p>Open Register sits between the client (a Nextcloud app, a browser, or any HTTP caller) and one or more storage backends. The request flow is schema-first: every write goes through validation before it touches a database.</p>
+
+    <h2>Request flow</h2>
+
+    <div class="arch-diagram">
+      <div class="node">Client</div>
+      <span class="arrow">→</span>
+      <div class="node accent">API layer</div>
+      <span class="arrow">→</span>
+      <div class="hex">Validator</div>
+    </div>
+    <div class="arch-diagram" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+      <div class="node">Schema registry</div>
+      <span class="arrow">↓</span>
+      <div class="node accent">Storage adapter</div>
+      <span class="arrow">↓</span>
+      <div class="node">Audit log</div>
+    </div>
+    <div class="arch-diagram" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+      <div class="node">Nextcloud DB</div>
+      <div class="node">MySQL</div>
+      <div class="node">PostgreSQL</div>
+      <div class="node">MongoDB</div>
+      <div class="node" style="opacity: 0.5;">…</div>
+    </div>
+
+    <h2>Layers</h2>
+
+    <h3>1 · API layer</h3>
+    <p>The API layer is generated from your schemas. REST routes follow the pattern <code>/api/objects/&#123;register&#125;/&#123;schema&#125;</code> and accept JSON. A parallel GraphQL endpoint at <code>/api/graphql</code> exposes the same data through a typed query language. Both use the same validator and the same storage adapter.</p>
+
+    <h3>2 · Schema registry</h3>
+    <p>The schema registry holds every JSON Schema definition the system knows about. Schemas have a version, a source (manual, Schema.org, GGM), and a status (draft, published, deprecated). Lookups are cached in APCu with a 5-minute TTL.</p>
+
+    <h3>3 · Validator</h3>
+    <p>The validator runs every inbound object against the corresponding schema before it reaches the storage layer. Validation errors return as a structured 422 response with a <a href="#">JSON-Pointer</a> path to each failing property.</p>
+
+    <h3>4 · Storage adapter</h3>
+    <p>The storage adapter interface decouples the API from the backend. Implementations exist for Nextcloud's internal database, MySQL/MariaDB, PostgreSQL, and MongoDB. New adapters implement four methods: <code>find()</code>, <code>save()</code>, <code>delete()</code>, <code>search()</code>.</p>
+
+    <div class="callout">
+      <div class="title">ADR-002</div>
+      <p style="margin:0; font-size:14px;">The storage adapter contract is intentionally small. <a href="#">ADR-002 · Storage adapter interface</a> covers the four-method choice and why we rejected a richer ORM.</p>
+    </div>
+
+    <h2>Architecture decisions</h2>
+
+    <table class="adr-table">
+      <thead>
+        <tr><th>ID</th><th>Title</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>001</td><td>Schema-first design</td><td><span class="status accepted">Accepted</span></td><td>2025-03-14</td></tr>
+        <tr><td>002</td><td>Storage adapter interface</td><td><span class="status accepted">Accepted</span></td><td>2025-04-02</td></tr>
+        <tr><td>003</td><td>GraphQL alongside REST</td><td><span class="status accepted">Accepted</span></td><td>2025-06-21</td></tr>
+        <tr><td>004</td><td>Audit log signing</td><td><span class="status accepted">Accepted</span></td><td>2025-09-08</td></tr>
+        <tr><td>005</td><td>Single-table inheritance</td><td><span class="status superseded">Superseded</span></td><td>2025-10-15</td></tr>
+        <tr><td>006</td><td>Event-driven webhooks</td><td><span class="status proposed">Proposed</span></td><td>2026-02-01</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Performance</h2>
+
+    <p>Reads benchmark at roughly 1,200 req/s on a single-node Nextcloud instance backed by PostgreSQL, with schema validation in the path. Writes sit around 600 req/s because of the audit-log signing step. See <a href="#">Performance notes</a> for the full benchmark methodology.</p>
+
+    <div class="callout tip">
+      <div class="title">Read next</div>
+      <p style="margin:0; font-size:14px;">If you are integrating Open Register into a larger Nextcloud app, start with the <a href="#">Storage adapters</a> reference. If you are extending the API surface, the <a href="#">Event system</a> page is the entry point.</p>
+    </div>
+  </article>
+
+</div>
+
+<footer class="docs-footer">
+  <div class="cols">
+    <div><h4>Docs</h4><a href="intro.html">Documentation</a><a href="user-docs.html">Install guide</a><a href="api-reference.html">API reference</a></div>
+    <div><h4>Product</h4><a href="features.html">Features</a><a href="integrations.html">Integrations</a><a href="#">Use cases</a></div>
+    <div><h4>Company</h4><a href="#">Conduction</a><a href="#">Open source</a><a href="#">Team</a></div>
+    <div><h4>Compliance</h4><a href="#">ISO 27001</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="legal">© 2026 Conduction B.V. · Built on Nextcloud</div>
+</footer>
+
+<a class="kit-ribbon" href="index.html">↩ Product pages</a>
+
+</body>
+</html>

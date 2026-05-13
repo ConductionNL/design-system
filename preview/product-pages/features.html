@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Objects · Open Register features</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_docs-shell.css">
+<style>
+  /* Feature-page accents — benefit row, sub-feature checklist, pairs row. */
+  .feature-hero {
+    background: var(--c-cobalt-50);
+    border-left: 3px solid var(--c-blue-cobalt);
+    padding: var(--space-5) var(--space-6);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: var(--space-2) 0 var(--space-6);
+  }
+  .feature-hero p { margin: 0; font-size: 16px; color: var(--c-cobalt-800); line-height: 1.55; }
+  .benefit-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+  .benefit-row .benefit {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+  }
+  .benefit-row .benefit .h {
+    width: 22px; height: 26px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    display: inline-block;
+    margin-bottom: var(--space-2);
+  }
+  .benefit-row .benefit strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--c-cobalt-900);
+  }
+  .benefit-row .benefit span {
+    font-size: 13px;
+    color: var(--c-cobalt-700);
+    line-height: 1.5;
+  }
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+    columns: 2;
+    column-gap: var(--space-6);
+  }
+  .checklist li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--c-cobalt-800);
+    margin-bottom: var(--space-2);
+    padding-left: 22px;
+    position: relative;
+    break-inside: avoid;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 6px;
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-mint-500);
+  }
+  .pairs-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+  .pair-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: all 160ms ease;
+  }
+  .pair-card:hover { box-shadow: var(--shadow-1); border-color: var(--c-cobalt-200); }
+  .pair-card .h {
+    width: 36px; height: 42px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white;
+  }
+  .pair-card .h svg { width: 18px; height: 18px; }
+  .pair-card .meta strong { display: block; font-size: 14px; color: var(--c-cobalt-900); }
+  .pair-card .meta span { font-size: 12px; color: var(--c-cobalt-700); }
+</style>
+</head>
+<body>
+
+<header class="docs-navbar">
+  <a href="landing.html" class="brand">
+    <span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></span>
+    Open Register
+  </a>
+  <nav>
+    <a href="#" class="active">Documentation</a>
+    <a href="api-reference.html">API Documentation</a>
+    <a href="#">GitHub</a>
+  </nav>
+  <div class="right">
+    <span class="version">Stable · v3.1</span>
+    <span class="lang">EN ▾</span>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar">
+    <a href="intro.html">Introduction</a>
+    <a href="user-docs.html">Installation</a>
+
+    <div class="group">Features</div>
+    <a href="#" class="active">Objects</a>
+    <a href="#">Schemas</a>
+    <a href="#">Registers</a>
+    <a href="#">Access control</a>
+    <a href="#">File management</a>
+    <a href="#">Search &amp; facets</a>
+    <a href="#">Events &amp; webhooks</a>
+    <a href="#">Storage sources</a>
+
+    <div class="group">Integrations</div>
+    <a href="integrations.html">xWiki</a>
+    <a href="#">n8n</a>
+    <a href="#">Keycloak</a>
+
+    <div class="group">Technical</div>
+    <a href="technical-docs.html">Architecture</a>
+  </aside>
+
+  <article class="docs-content">
+    <div class="crumb">Docs / Features / Objects</div>
+    <h1>Storing objects</h1>
+
+    <div class="feature-hero">
+      <p>Every entity you store in Open Register is an <strong>object</strong> — a validated, versioned JSON record that lives in a register, follows a schema, and carries metadata about who changed it, when, and why. Objects are the smallest unit of data the system commits to.</p>
+    </div>
+
+    <h2>What you get</h2>
+
+    <div class="benefit-row">
+      <div class="benefit"><span class="h"></span><strong>Data integrity</strong><span>Every write is validated against a JSON Schema. Invalid data never lands.</span></div>
+      <div class="benefit"><span class="h"></span><strong>Citation-stable IDs</strong><span>Persistent identifiers survive renames, moves, and storage migrations.</span></div>
+      <div class="benefit"><span class="h"></span><strong>Audit trail</strong><span>Every change is logged and signed. WOO and BIO evidence comes for free.</span></div>
+    </div>
+
+    <h2>Sub-features</h2>
+
+    <ul class="checklist">
+      <li>Schema validation on every write</li>
+      <li>Object relationships (one-to-one, one-to-many, many-to-many)</li>
+      <li>Object locking for concurrent edits</li>
+      <li>Soft deletion with restore</li>
+      <li>Version history per object</li>
+      <li>Signed audit trails</li>
+      <li>File attachments via Nextcloud Files</li>
+      <li>Persistent identifiers (UUID + URN)</li>
+      <li>Schema-aware search across registers</li>
+      <li>Batch operations (create, update, delete)</li>
+    </ul>
+
+    <h2>Quick example</h2>
+
+    <p>Store an object via the REST API. Replace <code>citizens</code> with your register slug and <code>citizen</code> with your schema slug:</p>
+
+<pre><code>POST /index.php/apps/openregister/api/objects/citizens/citizen
+Content-Type: application/json
+Authorization: Bearer $TOKEN
+
+{
+  "bsn": "123456789",
+  "firstName": "Jenna",
+  "lastName": "de Vries"
+}</code></pre>
+
+    <p>If validation passes, the response carries the persistent ID, the version, and the audit-log entry that recorded the write:</p>
+
+<pre><code>{
+  "id": "urn:nl-openregister:01HXY...",
+  "version": 1,
+  "audit": "urn:nl-openregister:audit:01HXY...",
+  "data": { "bsn": "...", "firstName": "Jenna", "lastName": "de Vries" }
+}</code></pre>
+
+    <h2>Pairs well with</h2>
+
+    <div class="pairs-row">
+      <a class="pair-card" href="#">
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg></span>
+        <div class="meta"><strong>OpenCatalogi</strong><span>Public catalogue of registers</span></div>
+      </a>
+      <a class="pair-card" href="#">
+        <span class="h" style="background: var(--c-orange-knvb);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+        <div class="meta"><strong>DocuDesk</strong><span>Generate docs from objects</span></div>
+      </a>
+      <a class="pair-card" href="#">
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 12h9M9 12l9-6M9 12l9 6"/></svg></span>
+        <div class="meta"><strong>OpenConnector</strong><span>Sync objects to external systems</span></div>
+      </a>
+    </div>
+
+    <div class="callout tip">
+      <div class="title">For sales conversations</div>
+      <p style="margin:0; font-size:14px;">Every object writes a signed audit-log entry by default. For Woo / BIO compliance evidence, no extra plug-in is required. Link to the <a href="technical-docs.html#audit">audit-log architecture</a> for the technical detail.</p>
+    </div>
+  </article>
+
+</div>
+
+<footer class="docs-footer">
+  <div class="cols">
+    <div><h4>Docs</h4><a href="intro.html">Documentation</a><a href="user-docs.html">Install guide</a><a href="api-reference.html">API reference</a></div>
+    <div><h4>Product</h4><a href="#">Features</a><a href="integrations.html">Integrations</a><a href="#">Use cases</a></div>
+    <div><h4>Company</h4><a href="#">Conduction</a><a href="#">Open source</a><a href="#">Team</a></div>
+    <div><h4>Compliance</h4><a href="#">ISO 27001</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="legal">© 2026 Conduction B.V. · Built on Nextcloud</div>
+</footer>
+
+<a class="kit-ribbon" href="index.html">↩ Product pages</a>
+
+</body>
+</html>

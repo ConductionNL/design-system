@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Installation · Open Register docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_docs-shell.css">
+</head>
+<body>
+
+<header class="docs-navbar">
+  <a href="landing.html" class="brand">
+    <span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></span>
+    Open Register
+  </a>
+  <nav>
+    <a href="#" class="active">Documentation</a>
+    <a href="api-reference.html">API Documentation</a>
+    <a href="#">GitHub</a>
+  </nav>
+  <div class="right">
+    <span class="version">Stable · v3.1</span>
+    <span class="lang">EN ▾</span>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar">
+    <a href="intro.html">Introduction</a>
+    <a href="#" class="active">Installation</a>
+    <a href="#">Quality assurance</a>
+    <a href="#">Testing</a>
+
+    <div class="group">User guide</div>
+    <a href="#" class="active" style="margin-left: 12px;">Install from app store</a>
+    <a href="#" style="margin-left: 12px;">First register</a>
+    <a href="#" style="margin-left: 12px;">Import a schema</a>
+    <a href="#" style="margin-left: 12px;">Create your first object</a>
+    <a href="#" style="margin-left: 12px;">Search &amp; filter</a>
+    <a href="#" style="margin-left: 12px;">Dashboard widgets</a>
+
+    <div class="group">Features</div>
+    <a href="features.html">Objects</a>
+    <a href="#">Schemas</a>
+    <a href="#">Registers</a>
+
+    <div class="group">Technical</div>
+    <a href="technical-docs.html">Architecture</a>
+  </aside>
+
+  <article class="docs-content">
+    <div class="crumb">Docs / User guide / Installation</div>
+    <h1>Installation</h1>
+
+    <p>Open Register installs from the Nextcloud app store. You need a working Nextcloud instance (28 or later) and admin rights. The whole thing takes about five minutes.</p>
+
+    <div class="callout warning">
+      <div class="title">Heads up</div>
+      <p style="margin:0; font-size:14px;">On a fresh Nextcloud, install Open Register <em>before</em> the apps that depend on it (OpenCatalogi, DocuDesk). Otherwise the dependent apps fall back to their bundled schema and you will have to re-link them.</p>
+    </div>
+
+    <h2>Step 1 · Install from the app store</h2>
+
+    <p>Open <strong>Apps</strong> in Nextcloud, search for <em>Open Register</em>, click <strong>Install</strong>. The app appears in the left sidebar within seconds.</p>
+
+    <div class="screenshot">[ screenshot · Nextcloud app store with Open Register · 1200 × 700 ]</div>
+
+    <h2>Step 2 · Create your first register</h2>
+
+    <p>Open the app, click <strong>Registers → New register</strong>, give it a slug (lowercase, hyphenated) and a human-readable name. The register becomes the home for one or more schemas.</p>
+
+    <div class="callout tip">
+      <div class="title">Tip</div>
+      <p style="margin:0; font-size:14px;">Use one register per domain: <code>citizens</code>, <code>licences</code>, <code>buildings</code>. Avoid a single mega-register; access control gets easier per domain.</p>
+    </div>
+
+    <h2>Step 3 · Add a schema</h2>
+
+    <p>Inside the register, click <strong>Schemas → New schema</strong>. You can write JSON Schema by hand, paste an existing one, or import from Schema.org or GGM.</p>
+
+<pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Citizen",
+  "type": "object",
+  "properties": {
+    "bsn": { "type": "string", "pattern": "^[0-9]{9}$" },
+    "firstName": { "type": "string" },
+    "lastName": { "type": "string" }
+  },
+  "required": ["bsn", "lastName"]
+}</code></pre>
+
+    <h2>Step 4 · Create your first object</h2>
+
+    <p>From the register's detail page, click <strong>Objects → New object</strong>. The form is rendered from the schema, so every required field shows up with the right input type.</p>
+
+    <div class="screenshot">[ screenshot · object form rendered from schema · 1200 × 600 ]</div>
+
+    <h2>Step 5 · Hit the API</h2>
+
+    <p>Every object you store is reachable through REST and GraphQL right away. Replace <code>my-register</code> with your slug:</p>
+
+<pre><code>curl https://your-nc.example/index.php/apps/openregister/api/objects/my-register \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json"</code></pre>
+
+    <h3>Troubleshooting</h3>
+
+    <ul>
+      <li><strong>Install fails with "missing dependency"</strong> — make sure your Nextcloud version is 28 or higher. <code>occ app:list</code> shows what is installed.</li>
+      <li><strong>Schema validation rejects valid JSON</strong> — check that the schema's <code>$schema</code> URL matches the draft you wrote against. Draft 2020-12 is the default.</li>
+      <li><strong>Object form doesn't render</strong> — clear the OPcache (<code>apachectl graceful</code>) and reload. Schema changes are cached.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="title">Next</div>
+      <p style="margin:0; font-size:14px;">Once the basics work, browse the <a href="features.html">feature pages</a> for access control, audit trails, search, and integrations.</p>
+    </div>
+  </article>
+
+</div>
+
+<footer class="docs-footer">
+  <div class="cols">
+    <div><h4>Docs</h4><a href="intro.html">Documentation</a><a href="#">Install guide</a><a href="api-reference.html">API reference</a></div>
+    <div><h4>Product</h4><a href="features.html">Features</a><a href="integrations.html">Integrations</a><a href="#">Use cases</a></div>
+    <div><h4>Company</h4><a href="#">Conduction</a><a href="#">Open source</a><a href="#">Team</a></div>
+    <div><h4>Compliance</h4><a href="#">ISO 27001</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="legal">© 2026 Conduction B.V. · Built on Nextcloud</div>
+</footer>
+
+<a class="kit-ribbon" href="index.html">↩ Product pages</a>
+
+</body>
+</html>

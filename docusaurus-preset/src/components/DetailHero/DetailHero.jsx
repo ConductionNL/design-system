@@ -147,6 +147,7 @@ export default function DetailHero({
                   variant="primary"
                   tone={primaryCta.tone}
                   href={primaryCta.href}
+                  icon={primaryCta.icon}
                 >
                   {primaryCta.label}
                 </Button>
@@ -156,11 +157,26 @@ export default function DetailHero({
                   variant="secondary"
                   tone={secondaryCta.tone}
                   href={secondaryCta.href}
+                  icon={secondaryCta.icon}
                 >
                   {secondaryCta.label}
                 </Button>
               )}
-              {tertiaryCta && <Button variant="ghost" href={tertiaryCta.href}>{tertiaryCta.label} →</Button>}
+              {tertiaryCta && (
+                /* On a cobalt-bg hero the default ghost variant
+                   (cobalt-700 text) disappears against the dark panel;
+                   auto-switch to on-dark-tertiary (white text + white
+                   border) so the CTA reads at parity with the primary
+                   and secondary buttons. Sites can still pass an
+                   explicit `variant` to opt out. */
+                <Button
+                  variant={tertiaryCta.variant || (background === 'cobalt' ? 'on-dark-tertiary' : 'ghost')}
+                  href={tertiaryCta.href}
+                  icon={tertiaryCta.icon}
+                >
+                  {tertiaryCta.label} →
+                </Button>
+              )}
             </div>
           )}
         </div>

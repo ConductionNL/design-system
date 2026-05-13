@@ -156,3 +156,157 @@ a:not(.navbar__link):not(.footer__link-item):not(.button) {
 a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
   text-decoration-color: var(--c-orange-knvb);
 }
+
+/* =========================================================================
+   Docs-page styling — mirror preview/product-pages/_docs-shell.css
+
+   The Docusaurus defaults (Infima) ship a cramped sidebar, Title-Case
+   menu items, and an aggressive vertical rhythm. The design-system
+   product-page mocks define a calmer treatment: a 280px sidebar, code-
+   typeface group labels, a left-border active state on cobalt-50, and a
+   900px content column with a 40/26/22 px heading scale at 1.65 body
+   line-height. These overrides pull the live docs deploys (shillinq,
+   openregister, …) into line with the mocks.
+   ========================================================================= */
+
+/* Sidebar: 280px column with a 1px cobalt-100 right edge. */
+.theme-doc-sidebar-container {
+  width: 280px !important;
+  border-right: 1px solid var(--c-cobalt-100) !important;
+  background: white;
+}
+
+/* Menu list typography + spacing */
+.menu {
+  padding: var(--space-6) var(--space-5) !important;
+  font-size: 13px;
+}
+.menu__list .menu__list {
+  padding-left: var(--space-3);
+  margin-left: 0;
+}
+.menu__list-item {
+  margin: 0;
+}
+
+/* Default link state: idle sentence-case cobalt-700 on white,
+   4-px-radius hover tint cobalt-50. */
+.menu__link {
+  color: var(--c-cobalt-700);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.menu__link:hover {
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+}
+
+/* Active item: 2-px cobalt left border + cobalt-50 fill + cobalt-blue text.
+   The padding tweak compensates for the border so the label stays
+   aligned with the idle siblings above and below. */
+.menu__link--active,
+.menu__link--active:hover {
+  background: var(--c-cobalt-50);
+  color: var(--c-blue-cobalt);
+  font-weight: 500;
+  border-left: 2px solid var(--c-blue-cobalt);
+  padding-left: 8px;
+}
+
+/* Category headers (Features / Integrations / Technical groups) get
+   the code-typeface uppercase eyebrow treatment, matching the
+   `.docs-sidebar .group` rule in the mock. */
+.menu__list-item-collapsible > .menu__link,
+.menu__link--sublist {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-cobalt-400);
+  font-weight: 500;
+  margin: var(--space-4) 0 var(--space-2);
+}
+.menu__list-item-collapsible > .menu__link:hover {
+  background: transparent;
+  color: var(--c-cobalt-700);
+}
+
+/* Caret on collapsible categories — desaturate to cobalt-300. */
+.menu__caret::before,
+.menu__link--sublist-caret::after {
+  filter: opacity(0.5);
+}
+
+/* Content column: 900px max width, generous padding, brand type scale.
+   We avoid touching the global .markdown selector (it'd hit MDX pages
+   too); scope to the doc-item container instead. */
+.theme-doc-markdown {
+  max-width: 900px;
+  padding: var(--space-8) var(--space-10);
+}
+.theme-doc-markdown h1 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 var(--space-4);
+  color: var(--c-cobalt-900);
+}
+.theme-doc-markdown h2 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: var(--space-8) 0 var(--space-3);
+  color: var(--c-cobalt-900);
+}
+.theme-doc-markdown h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: var(--space-6) 0 var(--space-3);
+  color: var(--c-cobalt-900);
+}
+.theme-doc-markdown p,
+.theme-doc-markdown ul,
+.theme-doc-markdown ol {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--c-cobalt-800);
+  margin: 0 0 var(--space-3);
+}
+.theme-doc-markdown ul,
+.theme-doc-markdown ol {
+  padding-left: var(--space-5);
+}
+.theme-doc-markdown li {
+  margin-bottom: var(--space-2);
+}
+.theme-doc-markdown strong {
+  color: var(--c-cobalt-900);
+}
+
+/* Code-typeface breadcrumb above the H1. Docusaurus renders this
+   via the DocBreadcrumbs component; we restyle in-place. */
+.theme-doc-breadcrumbs {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin-bottom: var(--space-4);
+}
+.theme-doc-breadcrumbs .breadcrumbs__link {
+  color: var(--c-cobalt-400);
+  background: transparent;
+  padding: 0;
+}
+.theme-doc-breadcrumbs .breadcrumbs__link:hover {
+  color: var(--c-orange-knvb);
+  background: transparent;
+}
+.theme-doc-breadcrumbs .breadcrumbs__item--active .breadcrumbs__link {
+  color: var(--c-cobalt-700);
+  background: transparent;
+}

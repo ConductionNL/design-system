@@ -24,6 +24,9 @@
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -31,6 +34,33 @@
   text-decoration: none;
 }
 .wordmark:hover { color: var(--c-blue-cobalt); text-decoration: none; }
+
+/* App-glyph hex next to the wordmark. Every product navbar shows the
+   app's icon (sourced from navbar.logo); sized to match the wordmark's
+   cap height so the two land on the same baseline. */
+.wordmarkIcon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+/* Wordmark text wrapper; gives us a single hook for tweaks like
+   line-height alignment without touching the parent flex container. */
+.wordmarkText {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* "Light" prefix syllable for product wordmarks. Mirrors
+   preview/apps.html .lockup .word .light: cobalt-400 + regular weight,
+   so "OpenRegister" reads as muted-"Open" + bold-"Register" and the
+   eye lands on the noun, not the brand prefix. */
+.wordmarkPrefix {
+  color: var(--c-cobalt-400);
+  font-weight: 400;
+}
 
 .links {
   display: flex;
@@ -98,6 +128,69 @@
 }
 .localeWrapper :global(.navbar__link:hover) {
   color: var(--c-orange-knvb);
+}
+
+/* Inline SVG slot used by `github` and `apiDocs` items. The icon
+   inherits the link's font-size + colour so a single `currentColor`
+   path stays on brand whether the link is active, hovered, or idle. */
+.iconGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.iconGlyph :global(svg) {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+
+/* Icon-only navbar link. Used by the github item; no visible label,
+   the aria-label gives it a name. Slightly larger icon (18px) than
+   text links so it reads as a fixed glyph rather than letterform. */
+.iconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  color: var(--c-cobalt-700);
+  font-size: 18px;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease;
+}
+.iconLink:hover {
+  color: var(--c-blue-cobalt);
+  background: var(--c-cobalt-50);
+  text-decoration: none;
+}
+
+/* Icon + label link. Used by the apiDocs item. Same typography as
+   plain .link but with an inline icon before the label, gap matches
+   the brand button-icon spacing. */
+.iconLabelLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.iconLabelLink .iconGlyph {
+  font-size: 16px;
+}
+
+/* Stable-version pill. Code typeface, cobalt-50 fill, cobalt-400 text,
+   pill-radius. Source is customFields.appVersion via createConfig();
+   when undefined the pill isn't rendered at all (see NavItem). */
+.versionPill {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--c-cobalt-400);
+  background: var(--c-cobalt-50);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 /* Responsive collapse, simplified for v1.

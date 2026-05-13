@@ -61,3 +61,50 @@ export function brandFor(pathname, title) {
   }
   return null;
 }
+
+/**
+ * Conduction product-app wordmark patterns. The brand convention,
+ * codified in preview/apps.html, is to render the prefix syllable in
+ * cobalt-400 / regular weight and the rest in blue-cobalt / bold:
+ *
+ *   <span class="light">Open</span>Register
+ *   <span class="light">Docu</span>Desk
+ *   <span class="light">My</span>Dash
+ *
+ * This list covers the prefixes used across the Conduction fleet.
+ * Sites whose wordmark doesn't start with one of these (e.g. Shillinq,
+ * Decidesk) keep the whole wordmark in blue-cobalt unless they pass
+ * an explicit `navbar.brandPrefix` to override.
+ */
+const PRODUCT_PREFIXES = [
+  'OpenAI',    /* must precede 'Open' so 'OpenAI Bridge' splits as OpenAI/Bridge */
+  'Open',
+  'Docu',
+  'My',
+  'Pipe',
+  'Pro',
+  'Decid',
+  'Schol',
+  'Larping',
+];
+
+/**
+ * Split a wordmark into (prefix, rest) so the prefix can render in the
+ * cobalt-400 "light" treatment. `brandPrefix` (optional) overrides
+ * auto-detection — sites with a non-standard wordmark pass it
+ * explicitly. Returns `null` when no split applies (single-word
+ * wordmarks or unrecognised prefixes); callers should render the
+ * wordmark as-is in that case.
+ */
+export function productWordmark(title, brandPrefix) {
+  if (!title) return null;
+  if (brandPrefix && title.startsWith(brandPrefix) && title.length > brandPrefix.length) {
+    return {prefix: brandPrefix, rest: title.slice(brandPrefix.length)};
+  }
+  for (const p of PRODUCT_PREFIXES) {
+    if (title.startsWith(p) && title.length > p.length) {
+      return {prefix: p, rest: title.slice(p.length)};
+    }
+  }
+  return null;
+}

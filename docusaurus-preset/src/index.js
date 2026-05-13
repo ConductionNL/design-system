@@ -21,6 +21,56 @@
  */
 
 const path = require('path');
+const fs = require('fs');
+
+/**
+ * Resolve the app version that drives the navbar "Stable · v{x.y.z}"
+ * pill. Order of precedence:
+ *
+ *   1. opts.appVersion (explicit override)
+ *   2. appinfo/info.xml <version> tag (Nextcloud app convention; every
+ *      app in the Conduction fleet has one)
+ *   3. package.json version (sites without an info.xml — Hydra,
+ *      design-system itself, conduction-website)
+ *   4. undefined (pill is hidden by the Navbar swizzle)
+ *
+ * The resolver runs at config build-time inside `process.cwd()`, which
+ * is the consuming site's repo root. Failures are swallowed silently so
+ * a missing info.xml never breaks the site build — the pill just hides.
+ */
+function resolveAppVersion(opts) {
+  if (opts.appVersion) return String(opts.appVersion);
+
+  /* Nextcloud apps: appinfo/info.xml carries the canonical version.
+     We avoid pulling in an XML parser for one tag — a non-greedy regex
+     against the file content is robust enough for the standard
+     `<version>x.y.z</version>` shape the app store mandates. */
+  try {
+    const infoPath = path.join(process.cwd(), 'appinfo', 'info.xml');
+    if (fs.existsSync(infoPath)) {
+      const xml = fs.readFileSync(infoPath, 'utf8');
+      const m = xml.match(/<version>\s*([^<\s]+)\s*<\/version>/);
+      if (m && m[1]) return m[1];
+    }
+  } catch (e) {
+    /* fall through */
+  }
+
+  /* Non-Nextcloud sites: package.json version. Walks up from cwd in
+     case the site builds from a sub-directory; one level deep is
+     enough for the conduction-website layout. */
+  try {
+    const pkgPath = path.join(process.cwd(), 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      if (pkg.version) return pkg.version;
+    }
+  } catch (e) {
+    /* fall through */
+  }
+
+  return undefined;
+}
 
 /**
  * Brand-default i18n block. Nederlands at the URL root, others at /en/, /de/, /fr/.
@@ -39,8 +89,23 @@ const I18N = {
 /**
  * Brand-default navbar. Sites pass their own items[] and logo; the chrome
  * styling (cobalt-on-white, Plex-Mono caption) is locked.
+ *
+ * The right-side default carries the four chrome items that the brand
+ * navbar swizzle (theme/Navbar/index.jsx) renders as icons + pill:
+ *
+ *   versionPill   "Stable · v{x.y.z}" reading customFields.appVersion;
+ *                 hidden when no version is available, so non-Nextcloud
+ *                 sites get a clean navbar.
+ *   apiDocs       Book icon + "API Documentation", pointing at /api
+ *                 (Redocusaurus convention). Sites without an OpenAPI
+ *                 spec remove this item from their own config.
+ *   github        GitHub mark, opens the org GitHub by default.
+ *   localeDropdown  Existing locale switcher (nl/en/de/fr).
+ *
+ * The `opts.repoUrl` plumbing below overrides the GitHub item's href
+ * to point at the specific app repo when the site provides it.
  */
-const baseNavbar = (siteName) => ({
+const baseNavbar = (siteName, repoUrl) => ({
   title: siteName,
   logo: {
     alt: `${siteName} avatar`,
@@ -48,8 +113,10 @@ const baseNavbar = (siteName) => ({
     srcDark: 'img/logo-dark.svg',
   },
   items: [
+    { type: 'versionPill', position: 'right' },
+    { type: 'apiDocs', position: 'right' },
+    { type: 'github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
     { type: 'localeDropdown', position: 'right' },
-    { href: 'https://github.com/ConductionNL', label: 'GitHub', position: 'right' },
   ],
 });
 
@@ -128,6 +195,11 @@ const baseFooter = () => ({
  *   minigames (default true; set false to drop the brand canal-footer's
  *     boat-sinking + kade-cyclist mini-games on product pages while
  *     keeping the static skyline + canal decoration),
+ *   appVersion (explicit override for the navbar "Stable · v{x.y.z}"
+ *     pill; defaults to appinfo/info.xml then package.json — see
+ *     resolveAppVersion above),
+ *   repoUrl (target of the navbar GitHub icon; defaults to the
+ *     ConductionNL org root),
  *   customCss[] (appended to brand.css), plugins[], presets,
  *   i18n (overrides defaults)
  */
@@ -142,6 +214,11 @@ function createConfig(opts) {
      getClientModules(), so customCss carries site-specific CSS only. */
   const customCss = opts.customCss || [];
 
+  /* App version drives the navbar "Stable · v{x.y.z}" pill (resolved
+     once at config time). Pulled from appinfo/info.xml, then
+     package.json — see resolveAppVersion above. */
+  const appVersion = resolveAppVersion(opts);
+
   return {
     title: opts.title,
     tagline: opts.tagline || '',
@@ -152,6 +229,17 @@ function createConfig(opts) {
 
     organizationName: opts.organizationName || 'ConductionNL',
     projectName: opts.projectName || 'design-system',
+
+    /* customFields is the canonical Docusaurus channel for build-time
+       data the theme reads at runtime via useDocusaurusContext().
+       appVersion drives the navbar "Stable · v{x.y.z}" pill; sites
+       extend this by passing their own customFields in opts. */
+    customFields: Object.assign(
+      {
+        ...(appVersion && {appVersion}),
+      },
+      opts.customFields || {}
+    ),
 
     onBrokenLinks: 'warn',
     onBrokenMarkdownLinks: 'warn',
@@ -201,7 +289,7 @@ function createConfig(opts) {
           disableSwitch: false,
           respectPrefersColorScheme: true,
         },
-        navbar: Object.assign(baseNavbar(opts.title), opts.navbar || {}),
+        navbar: Object.assign(baseNavbar(opts.title, opts.repoUrl), opts.navbar || {}),
         /* Per-property fallback so a site can override one slice of the
            footer (e.g. just `links`) and inherit the rest from the brand.
            Previously `opts.footer` replaced the whole footer wholesale,

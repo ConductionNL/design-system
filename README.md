@@ -147,7 +147,7 @@ For diagrams that need humans (About, testimonials), prefer text-only or abstrac
 ### What we never do visually
 
 - ❌ Stock photos of "diverse team meeting", handshakes, whiteboards
-- ❌ 3D renders, gradient backgrounds (except Nextcloud's official cyan-blue gradient, only on the workspace hex)
+- ❌ 3D renders, gradient backgrounds. Solid fills only, no exceptions, Nextcloud blue included.
 - ❌ Other shades of blue on the logo
 - ❌ Orange as a primary button fill (cobalt owns that)
 - ❌ Two orange accents on the same screen
@@ -163,7 +163,7 @@ For diagrams that need humans (About, testimonials), prefer text-only or abstrac
 
 **Lucide** ([lucide.dev](https://lucide.dev)) is the standard icon library, ISC-licensed, line-style, broad peer adoption. Use stroke-width 2, 24px default size, `currentColor` for tinting. Icons are visual aids, not load-bearing, every icon-only button gets an `aria-label`.
 
-For app icons specifically: each app gets its own glyph **inside the pointy-top hexagon wrapper** in `brand/assets/`. App glyph hex fill is **cobalt**, **cobalt-700**, **white-on-cobalt outline**, or **vermillion**. Never orange (orange is accent, not container). Never the Nextcloud cyan-blue gradient, that's a *guest color* reserved for the brand-word "Nextcloud" in copy and the workspace hex on platform diagrams, not for Conduction-built apps.
+For app icons specifically: each app gets its own glyph **inside the pointy-top hexagon wrapper** in `brand/assets/`. App glyph hex fill is **cobalt**, **cobalt-700**, **white-on-cobalt outline**, or **vermillion**. Never orange (orange is accent, not container). Never solid Nextcloud blue, that's a *guest color* reserved for the brand-word "Nextcloud" in copy and the workspace hex on platform diagrams, not for Conduction-built apps. Nextcloud blue is always solid `#0082C9`, never a gradient.
 
 ---
 

@@ -53,7 +53,7 @@ For Style Dictionary / Tokens Studio / Figma plugins, use [`brand/tokens.json`](
 
 - **Flat-isometric hex-prism style** for all illustrations (reference: honeycomb.io platform diagrams).
 - No people, no faces, no characters.
-- No stock photos, no 3D renders, no gradient backgrounds (except Nextcloud's official cyan-blue gradient on the workspace hex).
+- No stock photos, no 3D renders, no gradient backgrounds. Solid fills only, no exceptions.
 - Lucide icons (line, stroke 2, 24px) for UI iconography.
 - App glyphs go inside the pointy-top hex wrapper; cobalt or white, never orange.
 
@@ -64,7 +64,7 @@ The locked policy lives in [`tokens.css`](./tokens.css) (2026-04). Every hex-pri
 | Family | Token | Means | Use for |
 |---|---|---|---|
 | **Cobalt** | `--c-blue-cobalt` | Brand chrome, the workspace itself | Workspace prism (Nextcloud), brand hexes, primary fills. Not a category. |
-| **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace prism in any platform diagram. Always with the Nextcloud cyan gradient. |
+| **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace prism in any platform diagram. Always solid `#0082C9`, never a gradient. |
 | **Lavender** | `--c-lavender-500` | Process / workflow | OpenConnector, Procest, ZaakAfhandelApp, anything orchestration-flavoured |
 | **Mint** | `--c-mint-500` | Integrate / connect | Integration adapters, "stable" status pill, anything that signals *connected and OK* |
 | **Forest** | `--c-forest-500` | Data / trustworthy / NLDS-compliant | OpenRegister-flavoured prisms, register thumbnails, compliance-strong surfaces |

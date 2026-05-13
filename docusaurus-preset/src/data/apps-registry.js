@@ -32,7 +32,6 @@ export const APPS_REGISTRY = {
   openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    productHref: '/apps/openconnector',   docsHref: 'https://docs.conduction.nl/openconnector',   academyHref: '/academy?app=openconnector'},
   docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         productHref: '/apps/docudesk',        docsHref: 'https://docs.conduction.nl/docudesk',        academyHref: '/academy?app=docudesk'},
   mydash:          {slug: 'mydash',          name: 'MyDash',           productHref: '/apps/mydash',          docsHref: 'https://docs.conduction.nl/mydash',          academyHref: '/academy?app=mydash'},
-  openwoo:         {slug: 'openwoo',         name: 'OpenWoo',          productHref: '/apps/openwoo',         docsHref: 'https://docs.conduction.nl/openwoo',         academyHref: '/academy?app=openwoo'},
   zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  productHref: '/apps/zaakafhandelapp', docsHref: 'https://docs.conduction.nl/zaakafhandelapp', academyHref: '/academy?app=zaakafhandelapp'},
   pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         productHref: '/apps/pipelinq',        docsHref: 'https://docs.conduction.nl/pipelinq',        academyHref: '/academy?app=pipelinq'},
   procest:         {slug: 'procest',         name: 'Procest',          productHref: '/apps/procest',         docsHref: 'https://docs.conduction.nl/procest',         academyHref: '/academy?app=procest'},
@@ -40,6 +39,10 @@ export const APPS_REGISTRY = {
   softwarecatalog: {slug: 'softwarecatalog', name: 'SoftwareCatalog',  productHref: '/apps/softwarecatalog', docsHref: 'https://docs.conduction.nl/softwarecatalog', academyHref: '/academy?app=softwarecatalog'},
   larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
   nldesign:        {slug: 'nldesign',        name: 'NLDesign',         productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
+  shillinq:        {slug: 'shillinq',        name: 'Shillinq',         productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
+  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
+  doriath:         {slug: 'doriath',         name: 'Doriath',          productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
+  'app-versions':  {slug: 'app-versions',    name: 'App Versions',     productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
 };
 
 export const APP_SLUGS = Object.keys(APPS_REGISTRY);

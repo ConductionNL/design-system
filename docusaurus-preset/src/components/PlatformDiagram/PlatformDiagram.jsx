@@ -87,6 +87,7 @@ export default function PlatformDiagram({workspace, lists = [], flows = []}) {
                 name={item.name}
                 meta={item.meta}
                 desc={item.desc}
+                href={item.href}
                 brand-color={item.brandColor}
               >
                 {item.icon}

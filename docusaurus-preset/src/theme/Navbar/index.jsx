@@ -24,11 +24,17 @@
  *   { type: 'doc', label, to }                       internal doc link
  *   { type: 'link', label, to | href }               internal/external link
  *   { type: 'localeDropdown' }                       Docusaurus locale switcher
- *   { type: 'github', href }                         icon-only GitHub mark
- *   { type: 'apiDocs', label?, to }                  icon + "API Documentation"
- *   { type: 'versionPill', prefix? }                 "Stable · v{x.y.z}" pill
+ *   { type: 'custom-github', href }                  icon-only GitHub mark
+ *   { type: 'custom-apiDocs', label?, to }           icon + "API Documentation"
+ *   { type: 'custom-versionPill', prefix? }          "Stable · v{x.y.z}" pill
  *                                                    reads customFields.appVersion;
  *                                                    hidden when no version
+ *
+ * The `custom-` prefix is required so Docusaurus's themeConfig schema
+ * validator passes (`@docusaurus/theme-classic` rejects unknown bare
+ * type names). The swizzle below accepts both the prefixed and the
+ * bare names so 2.7.0-beta.1 sites that wired the bare names keep
+ * working after the upgrade.
  *
  * The pill prefix defaults to "Stable" but can be overridden per site
  * (e.g. prefix="Beta" while on a pre-1.0 release line).
@@ -45,6 +51,24 @@ import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem
 import {brandFor, productWordmark} from '../brand.jsx';
 import {ICONS} from '../../components/primitives/icons';
 import styles from './styles.module.css';
+
+/**
+ * Brand-specific navbar item types live under the `custom-` prefix
+ * because Docusaurus's themeConfig validator (Joi schema in
+ * @docusaurus/theme-classic) rejects unknown top-level types. The
+ * `custom-` namespace is the documented escape hatch: items prefixed
+ * with `custom-` bypass schema validation and are passed through to
+ * the theme as-is. The brand Navbar then dispatches on them below.
+ *
+ * Sites may also use the bare names (`github`, `apiDocs`,
+ * `versionPill`) — they render identically here but Docusaurus will
+ * reject the config at load time. Accept both forms so the migration
+ * from 2.7.0-beta.1 to .beta.2 doesn't break sites that already
+ * configured the bare names.
+ */
+function typeIs(item, kind) {
+  return item.type === kind || item.type === 'custom-' + kind;
+}
 
 /**
  * Render a single navbar item. The brand navbar supports a small
@@ -64,7 +88,7 @@ function NavItem({item, location, appVersion}) {
   /* GitHub: icon-only link with an accessible label. The aria-label
      gives screen-readers + browser tooltips a name without rendering
      a visible text label in the navbar. */
-  if (item.type === 'github') {
+  if (typeIs(item, 'github')) {
     return (
       <a
         href={item.href || 'https://github.com/ConductionNL'}
@@ -82,7 +106,7 @@ function NavItem({item, location, appVersion}) {
   /* API Documentation: icon + label link. Target defaults to /api
      (the Redocusaurus mount point used by every Conduction docs site).
      Sites can override via `to` or `href`. */
-  if (item.type === 'apiDocs') {
+  if (typeIs(item, 'apiDocs')) {
     const label = item.label || 'API Documentation';
     const to = item.to || '/api';
     const href = item.href;
@@ -106,7 +130,7 @@ function NavItem({item, location, appVersion}) {
      or package.json). Hidden when no version is available so sites
      without an app version (Hydra, design-system itself) get a clean
      navbar instead of an empty pill. */
-  if (item.type === 'versionPill') {
+  if (typeIs(item, 'versionPill')) {
     if (!appVersion) return null;
     const prefix = item.prefix || 'Stable';
     return (
@@ -198,7 +222,12 @@ export default function Navbar() {
      position="right" — but the three brand-specific item types
      (github, apiDocs, versionPill) live on the right by convention,
      mirroring the docs-shell mock. */
-  const RIGHT_TYPES = new Set(['localeDropdown', 'github', 'apiDocs', 'versionPill']);
+  const RIGHT_TYPES = new Set([
+    'localeDropdown',
+    'github', 'custom-github',
+    'apiDocs', 'custom-apiDocs',
+    'versionPill', 'custom-versionPill',
+  ]);
   const leftItems = items.filter(i => i.position !== 'right' && !RIGHT_TYPES.has(i.type));
   const rightItems = items.filter(i => i.position === 'right' || RIGHT_TYPES.has(i.type));
 

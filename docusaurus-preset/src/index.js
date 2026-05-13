@@ -112,10 +112,16 @@ const baseNavbar = (siteName, repoUrl) => ({
     src: 'img/logo.svg',
     srcDark: 'img/logo-dark.svg',
   },
+  /* `custom-*` prefix is the Docusaurus convention for theme-defined
+     navbar item types — items prefixed this way bypass the strict Joi
+     schema validator in @docusaurus/theme-classic, so the brand Navbar
+     swizzle can dispatch on them without registering each shape with
+     core. The swizzle accepts both `custom-github` and the bare
+     `github` (etc.) for forward-compat. */
   items: [
-    { type: 'versionPill', position: 'right' },
-    { type: 'apiDocs', position: 'right' },
-    { type: 'github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
+    { type: 'custom-versionPill', position: 'right' },
+    { type: 'custom-apiDocs', position: 'right' },
+    { type: 'custom-github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
     { type: 'localeDropdown', position: 'right' },
   ],
 });

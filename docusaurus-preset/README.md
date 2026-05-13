@@ -6,6 +6,14 @@ Brand-default Docusaurus 3 config for Conduction sites. Tokens, theme, navbar, f
 
 Source lives inside the [design-system monorepo](https://github.com/ConductionNL/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
 
+## Brand rules
+
+A few non-negotiables encoded by the package CSS and worth knowing about:
+
+- **App Builder hex is always KNVB orange.** The hex in `<PlatformDiagram/>` representing the "compose your own app" pathway carries `var(--c-orange-knvb)` regardless of whether the cluster ships a `COMING SOON` badge. It is the proposition the eye should land on. Don't gate it on app state.
+- **Pointy-top hexes only, no rotation.** Every `<cn-*>` hex shape is pointy-top by design. Flat-top hexes belong to other brands.
+- **One orange accent per scene.** KNVB orange is the highlight, used once per diagram. The new `<Pair/>` and `<ArchFlow hex>` components own that budget when present.
+
 ## What it gives you
 
 - **Brand CSS** — tokens (cobalt palette, KNVB orange, Plex Mono, hex clip-paths, Common Ground yellow) auto-applied to Docusaurus's Infima theme variables. Navbar, footer, sidebar, buttons, code blocks all inherit the brand without a single swizzle.

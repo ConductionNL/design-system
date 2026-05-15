@@ -63,6 +63,12 @@ export {default as GameModal} from './GameModal/GameModal.jsx';
    framework-agnostic diagram set in @conduction/diagrams. Brand is
    flat-hex only; the 3D prism wrapper was removed in v3.0.0. */
 export {Hex, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg, Pair, ArchFlow} from './Diagrams/Diagrams.jsx';
+
+/* LeafCard — metadata header for an Open Register leaf integration.
+   <LeafGrid> renders a responsive grid of LeafCards for the overview
+   page; <LeafCard> on its own anchors the top of a per-leaf docs
+   page. See docs/Integrations/leaf-system.md for the worked use. */
+export {default as LeafCard, LeafGrid} from './LeafCard/LeafCard.jsx';
 export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as AppMock} from './AppMock/AppMock.jsx';

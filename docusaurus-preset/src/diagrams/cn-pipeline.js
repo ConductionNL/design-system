@@ -1,15 +1,15 @@
 /**
- * <cn-pipeline> — horizontal flow of prisms or hexes connected by arrows.
+ * <cn-pipeline> — horizontal flow of hexes connected by arrows.
  *
  * The flattened cousin of cn-platform. Used in solution pages, how-
  * it-works sections, and any sequence diagram where data moves
  * left-to-right through a series of stages.
  *
  *   <cn-pipeline>
- *     <cn-hex-prism family="coral">Source</cn-hex-prism>
- *     <cn-hex-prism family="lavender">Process</cn-hex-prism>
- *     <cn-hex-prism family="cobalt">Workspace</cn-hex-prism>
- *     <cn-hex-prism family="mint">Sink</cn-hex-prism>
+ *     <cn-hex color="lavender">Source</cn-hex>
+ *     <cn-hex color="forest">Process</cn-hex>
+ *     <cn-hex color="cobalt">Workspace</cn-hex>
+ *     <cn-hex color="mint">Sink</cn-hex>
  *   </cn-pipeline>
  *
  * The component reads its own light-DOM children, assigns each to a

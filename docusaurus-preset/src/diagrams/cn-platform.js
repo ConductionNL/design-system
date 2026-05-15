@@ -2,11 +2,11 @@
  * <cn-platform> — workspace-plus-orbiting-apps cluster.
  *
  * The canonical "what is ConNext" diagram: a Nextcloud workspace at
- * the centre, six application prisms arranged in a hex ring around
- * it. Used on landing pages, product overviews, ecosystem visuals.
+ * the centre, six application hexes arranged in a hex ring around it.
+ * Used on landing pages, product overviews, ecosystem visuals.
  *
  * Slots
- *   apex     — central element; required (typically a cobalt cn-hex-prism).
+ *   apex     — central element; required (typically a cobalt cn-hex).
  *              Same slot name as cn-domain-tree; "kernel" is a banned
  *              word in the brand vocabulary, see identity/voice.html.
  *   default  — orbiting apps; up to six, positioned in this order:
@@ -19,8 +19,8 @@
  *              Background of the surrounding stage.
  *
  * The component owns only layout + ground + optional connector ring.
- * Each child element keeps its own styling, so the apex element can
- * be a hex prism or a flat hex interchangeably.
+ * Each child element keeps its own styling. Brand is flat-hex only;
+ * the 3D prism was removed in v3.0.0.
  */
 
 class CnPlatform extends HTMLElement {

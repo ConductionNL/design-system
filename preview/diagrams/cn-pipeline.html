@@ -91,45 +91,33 @@
     <p class="card-subtitle">Horizontal flow of stages connected by arrows. The flattened cousin of cn-platform; used in solution pages and how-it-works sections to show data moving left-to-right through a series of apps.</p>
   </div>
 
-  <div class="section-label">Canonical · prisms with dotted arrows</div>
+  <div class="section-label">Canonical · hexes with dotted arrows</div>
   <div class="specimen tall">
     <cn-pipeline>
-      <cn-hex-prism family="coral" size="md">
-        Source
-        <span slot="kicker">DATA</span>
-      </cn-hex-prism>
-      <cn-hex-prism family="lavender" size="md">
-        Connector
-        <span slot="kicker">CONNECT</span>
-      </cn-hex-prism>
-      <cn-hex-prism family="cobalt" size="md">
-        Workspace
-        <span slot="kicker">PROCESS</span>
-      </cn-hex-prism>
-      <cn-hex-prism family="mint" size="md">
-        Sink
-        <span slot="kicker">DELIVER</span>
-      </cn-hex-prism>
+      <cn-hex color="forest" size="md">Source</cn-hex>
+      <cn-hex color="lavender" size="md">Connector</cn-hex>
+      <cn-hex color="cobalt" size="md">Workspace</cn-hex>
+      <cn-hex color="mint" size="md">Sink</cn-hex>
       <span slot="caption">Data &middot; connect &middot; process &middot; deliver</span>
     </cn-pipeline>
   </div>
   <pre><span class="tag">&lt;cn-pipeline&gt;</span>
-  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"coral"</span><span class="tag">&gt;</span>Source<span class="tag">&lt;/cn-hex-prism&gt;</span>
-  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"lavender"</span><span class="tag">&gt;</span>Connector<span class="tag">&lt;/cn-hex-prism&gt;</span>
-  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"cobalt"</span><span class="tag">&gt;</span>Workspace<span class="tag">&lt;/cn-hex-prism&gt;</span>
-  <span class="tag">&lt;cn-hex-prism</span> <span class="attr">family</span>=<span class="str">"mint"</span><span class="tag">&gt;</span>Sink<span class="tag">&lt;/cn-hex-prism&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">color</span>=<span class="str">"forest"</span><span class="tag">&gt;</span>Source<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">color</span>=<span class="str">"lavender"</span><span class="tag">&gt;</span>Connector<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">color</span>=<span class="str">"cobalt"</span><span class="tag">&gt;</span>Workspace<span class="tag">&lt;/cn-hex&gt;</span>
+  <span class="tag">&lt;cn-hex</span> <span class="attr">color</span>=<span class="str">"mint"</span><span class="tag">&gt;</span>Sink<span class="tag">&lt;/cn-hex&gt;</span>
 <span class="tag">&lt;/cn-pipeline&gt;</span></pre>
 
   <div class="section-label">Solid arrows · for production diagrams</div>
   <div class="specimen tall">
     <cn-pipeline tone="solid">
-      <cn-hex-prism family="coral" size="md">Catalogi</cn-hex-prism>
-      <cn-hex-prism family="gold" size="md">Register</cn-hex-prism>
-      <cn-hex-prism family="lavender" size="md">Connector</cn-hex-prism>
+      <cn-hex color="cobalt" size="md">Catalogi</cn-hex>
+      <cn-hex color="forest" size="md">Register</cn-hex>
+      <cn-hex color="lavender" size="md">Connector</cn-hex>
     </cn-pipeline>
   </div>
 
-  <div class="section-label">With flat hexes · simpler stages</div>
+  <div class="section-label">With smaller hexes · denser pipelines</div>
   <div class="specimen tall">
     <cn-pipeline tone="dim">
       <cn-hex size="lg" color="orange">Lead</cn-hex>
@@ -167,11 +155,11 @@
     <h2>Arrows are part of the layout, not the content</h2>
     <p class="lede">cn-pipeline reads its own children, slot-assigns each, and inserts an arrow connector between consecutive pairs in the shadow DOM. The user writes plain stages; the arrows appear automatically.</p>
     <ul>
-      <li><strong>Slot-assignment via JS, not user markup.</strong> The user writes <code>&lt;cn-hex-prism&gt;</code> children; the component sets their <code>slot</code> attribute to <code>step-N</code>. No <code>&lt;cn-step&gt;</code> wrapper required.</li>
+      <li><strong>Slot-assignment via JS, not user markup.</strong> The user writes <code>&lt;cn-hex&gt;</code> children; the component sets their <code>slot</code> attribute to <code>step-N</code>. No <code>&lt;cn-step&gt;</code> wrapper required.</li>
       <li><strong>MutationObserver on children.</strong> Adding or removing stages re-renders the row with the right arrow count. Animation later, declarative now.</li>
       <li><strong>Three arrow tones, no per-arrow customisation.</strong> One pipeline gets one tone. Different sections use different cn-pipeline elements with different tones if needed.</li>
       <li><strong>Wraps to vertical on small screens.</strong> Below 700px, rows wrap and arrows rotate 90° to keep the flow readable on phones.</li>
-      <li><strong>Children stay free.</strong> Use any element, hex or prism, sized however. The pipeline owns spacing; the children own appearance.</li>
+      <li><strong>Children stay free.</strong> Use any cn-hex (or other element), sized however. The pipeline owns spacing; the children own appearance.</li>
     </ul>
   </div>
 

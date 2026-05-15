@@ -57,13 +57,12 @@ export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFil
 export {default as CookieCli} from './CookieCli/CookieCli.jsx';
 export {default as GameModal} from './GameModal/GameModal.jsx';
 
-/* Diagram-set web-component React wrappers (cn-hex, cn-hex-prism,
-   cn-platform, cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg,
-   cn-pair, cn-arch-flow). Type-checked, autocompletable React surface
-   for the framework-agnostic diagram set in @conduction/diagrams. The
-   bare web components still work in plain HTML; the wrappers are the
-   React-friendly version. */
-export {Hex, HexPrism, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg, Pair, ArchFlow} from './Diagrams/Diagrams.jsx';
+/* Diagram-set web-component React wrappers (cn-hex, cn-platform,
+   cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg, cn-pair,
+   cn-arch-flow). Type-checked, autocompletable React surface for the
+   framework-agnostic diagram set in @conduction/diagrams. Brand is
+   flat-hex only; the 3D prism wrapper was removed in v3.0.0. */
+export {Hex, Platform, DomainTree, DiagramPipeline, SideBox, HoneycombBg, Pair, ArchFlow} from './Diagrams/Diagrams.jsx';
 export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as AppMock} from './AppMock/AppMock.jsx';

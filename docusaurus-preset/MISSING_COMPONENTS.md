@@ -84,7 +84,6 @@ Thin React wrappers around the framework-agnostic web components in
 slot-based children pass through. All exported from `Diagrams/Diagrams.jsx`.
 
 - **Hex** wraps `<cn-hex>` (color, size, variant, layout, interactive)
-- **HexPrism** wraps `<cn-hex-prism>` (family, size, state)
 - **Platform** wraps `<cn-platform>` (ground)
 - **DomainTree** wraps `<cn-domain-tree>`
 - **DiagramPipeline** wraps `<cn-pipeline>` (renamed from Pipeline to avoid the components/Pipeline name collision)

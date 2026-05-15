@@ -1,7 +1,7 @@
 /**
- * <cn-side-box> — the rectangle-feed-prism pattern.
+ * <cn-side-box> — the rectangle-feed-hex pattern.
  *
- * Hex prisms are "the system". Side-boxes are "what feeds it" or
+ * Hexes are "the system". Side-boxes are "what feeds it" or
  * "what consumes it". The shape difference is the hierarchy.
  *
  *   <cn-side-box header="YOUR DATA">

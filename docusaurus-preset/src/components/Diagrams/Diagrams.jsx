@@ -1,7 +1,8 @@
 /**
  * Thin React wrappers for the framework-agnostic diagram web
- * components in @conduction/diagrams: <cn-hex>, <cn-hex-prism>,
- * <cn-platform>, <cn-domain-tree>, etc.
+ * components in @conduction/diagrams: <cn-hex>, <cn-platform>,
+ * <cn-domain-tree>, etc. Brand is flat-hex only; the 3D prism was
+ * removed in v3.0.0.
  *
  * Why React wrappers around already-working web components?
  *   - Type-checked prop names (no remembering "size" vs "scale")
@@ -16,17 +17,12 @@
  *
  * Usage in MDX:
  *
- *   import {Hex, HexPrism} from '@conduction/docusaurus-preset/components';
+ *   import {Hex} from '@conduction/docusaurus-preset/components';
  *
  *   <Hex color="cobalt" size="md" variant="solid">
  *     <span slot="kicker">DATA</span>
  *     OpenRegister
  *   </Hex>
- *
- *   <HexPrism family="coral" size="lg" state="hover">
- *     <span slot="kicker">CATALOG</span>
- *     OpenCatalogi
- *   </HexPrism>
  *
  * The runtime is lazy-loaded once, then customElements.define guards
  * keep subsequent imports a no-op. If the package isn't installed
@@ -76,19 +72,6 @@ export function Hex({color, size, variant, layout, interactive, children, ...res
     <cn-hex {...attrs({color, size, variant, layout, interactive: interactive ? '' : undefined})} {...rest}>
       {children}
     </cn-hex>
-  );
-}
-
-/* ============================================================
-   <HexPrism /> wraps <cn-hex-prism>
-   Observed: family, size, state
-   ============================================================ */
-export function HexPrism({family, size, state, children, ...rest}) {
-  useDiagramRuntime();
-  return (
-    <cn-hex-prism {...attrs({family, size, state})} {...rest}>
-      {children}
-    </cn-hex-prism>
   );
 }
 

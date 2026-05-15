@@ -22,11 +22,10 @@ Every Conduction diagram follows the same brand rules: pointy-top hexes, fixed p
 | Component | Status | Purpose |
 | --- | --- | --- |
 | `<cn-hex>` | Available | Pointy-top hex primitive. Label + icon, nine colours, four sizes, solid or outline, optional interactive state. |
-| `<cn-hex-prism>` | Available | 3D isometric prism. Six families, four sizes, slots for label / icon / kicker / pills, coming-state badge. |
 | `<cn-domain-tree>` | Available | Vertical apex-and-branches layout for one-to-many domain maps. Slot-driven; multi-trunk diagrams stack two trees. |
-| `<cn-platform>` | Available | Workspace-plus-orbiting-apps cluster. Six neighbours in a hex ring around a central apex (typically a cobalt cn-hex-prism representing the Nextcloud workspace). |
+| `<cn-platform>` | Available | Workspace-plus-orbiting-apps cluster. Six neighbours in a hex ring around a central cobalt cn-hex representing the Nextcloud workspace. |
 | `<cn-pipeline>` | Available | Horizontal flow of stages with auto-inserted arrow connectors. Three arrow tones. |
-| `<cn-side-box>` | Available | Rectangle-feed-prism pattern. Header chip + icon-and-label rows. Three widths, optional compact + footer. |
+| `<cn-side-box>` | Available | Rectangle-feed-hex pattern. Header chip + icon-and-label rows. Three widths, optional compact + footer. |
 | `<cn-honeycomb-bg>` | Available | Honeycomb backdrop wrapper. Theme + accent + density attributes. Parallax in v2. |
 
 ## Usage
@@ -71,4 +70,4 @@ No build step needed. Drop the module into any HTML page:
 
 ## Roadmap
 
-See the planned components above. Built in this order: `cn-hex` ✅ → `cn-hex-prism` → `cn-domain-tree` (first real consumer on the new identity/domains.html page) → `cn-platform` → `cn-pipeline` → `cn-side-box` → `cn-honeycomb-bg`.
+Brand is flat-hex only. The 3D `<cn-hex-prism>` primitive was removed in v3.0.0 (`@conduction/docusaurus-preset` 3.0.0).

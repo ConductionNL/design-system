@@ -51,41 +51,41 @@ For Style Dictionary / Tokens Studio / Figma plugins, use [`brand/tokens.json`](
 
 ## Imagery
 
-- **Flat-isometric hex-prism style** for all illustrations (reference: honeycomb.io platform diagrams).
+- **Flat pointy-top hex style** for all illustrations. No rotation, no isometric depth, no 3D prisms (the prism mechanism was removed in v3.0.0).
 - No people, no faces, no characters.
 - No stock photos, no 3D renders, no gradient backgrounds. Solid fills only, no exceptions.
 - Lucide icons (line, stroke 2, 24px) for UI iconography.
 - App glyphs go inside the pointy-top hex wrapper; cobalt or white, never orange.
 
-## Prism families — what each colour means
+## Hex families — what each colour means
 
-The locked policy lives in [`tokens.css`](./tokens.css) (2026-04). Every hex-prism in a diagram, every category chip in a thumbnail, every pastel surface picks from this list. **Don't reach for a colour because it looks nice — pick it because the thing it represents has that meaning.** Repeat-matching across a scene is fine; mis-categorising is what breaks the system.
+The locked policy lives in [`tokens.css`](./tokens.css) (2026-04, updated 2026-05). Every hex in a diagram, every category chip in a thumbnail, every pastel surface picks from this list. **Don't reach for a colour because it looks nice — pick it because the thing it represents has that meaning.** Repeat-matching across a scene is fine; mis-categorising is what breaks the system. The canonical reference is [`preview/colors.html`](./preview/colors.html); this table is the short version.
 
 | Family | Token | Means | Use for |
 |---|---|---|---|
-| **Cobalt** | `--c-blue-cobalt` | Brand chrome, the workspace itself | Workspace prism (Nextcloud), brand hexes, primary fills. Not a category. |
-| **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace prism in any platform diagram. Always solid `#0082C9`, never a gradient. |
+| **Cobalt** | `--c-blue-cobalt` | Brand chrome, the workspace itself | The workspace hex (Nextcloud), brand hexes, primary fills. Not a category. |
+| **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace hex in any platform diagram. Always solid `#0082C9`, never a gradient. |
 | **Lavender** | `--c-lavender-500` | Process / workflow | OpenConnector, Procest, ZaakAfhandelApp, anything orchestration-flavoured |
 | **Mint** | `--c-mint-500` | Integrate / connect | Integration adapters, "stable" status pill, anything that signals *connected and OK* |
-| **Forest** | `--c-forest-500` | Data / trustworthy / NLDS-compliant | OpenRegister-flavoured prisms, register thumbnails, compliance-strong surfaces |
-| **Terracotta** | `--c-terracotta-500` | Documents / human work | DocuDesk-flavoured prisms, document thumbnails, human-craft surfaces |
-| **Coral / KNVB orange** | `--c-orange-knvb` | Single-use accent (focus, hover, the *one* highlight per scene) | Capped at ~8% of any surface. Never as a primary fill. Never as a prism family. |
+| **Forest** | `--c-forest-500` | Data / trustworthy / NLDS-compliant | OpenRegister-flavoured hexes, register thumbnails, compliance-strong surfaces |
+| **Terracotta** | `--c-terracotta-500` | Documents / human work | DocuDesk-flavoured hexes, document thumbnails, human-craft surfaces |
+| **Coral / KNVB orange** | `--c-orange-knvb` | Single-use accent (focus, hover, the *one* highlight per scene) | Capped at ~8% of any surface. Never as a primary fill. Never as a hex family. |
 | **Gold** | `--c-gold-500` | "Conduction Certified" trustmark | Reserved. Don't use for generic UI. |
 | **Gray** | `--c-gray-500` | Neutral surfaces, side-box chrome | Strokes, dividers, side-box bodies. Not a category. |
 
-Banned as prism families: **coral, gold, gray, red-vermillion**. They have specific jobs and using them as a category breaks recognisability everywhere else.
+Banned as hex families: **coral, gold, gray, red-vermillion**. They have specific jobs and using them as a category breaks recognisability everywhere else.
 
-## Hex-prism composition
+## Hex composition
 
-Pulled from [`preview/diagrams/`](./preview/diagrams/) usage. The web components (`<cn-hex>`, `<cn-hex-prism>`, `<cn-platform>`, `<cn-pipeline>`, `<cn-side-box>`, `<cn-honeycomb-bg>`, `<cn-domain-tree>`) handle the geometry; you pick the families and the count.
+Pulled from [`preview/diagrams/`](./preview/diagrams/) usage. The web components (`<cn-hex>`, `<cn-platform>`, `<cn-pipeline>`, `<cn-side-box>`, `<cn-honeycomb-bg>`, `<cn-domain-tree>`) handle the geometry; you pick the families and the count.
 
-- **Prisms = installable apps. Side-boxes = everything else.** A prism is a Conduction app (OpenRegister, DocuDesk). A side-box is a source, sink, integration, or external system. The shape is the hierarchy — prisms are the *thing*, side-boxes are *around the thing*.
-- **One workspace prism per scene, max.** Cobalt is the workspace; if the scene shows multiple Nextcloud installs, federate them through side-boxes, don't duplicate the cobalt prism.
+- **Hexes = installable apps. Side-boxes = everything else.** A hex is a Conduction app (OpenRegister, DocuDesk). A side-box is a source, sink, integration, or external system. The shape is the hierarchy — hexes are the *thing*, side-boxes are *around the thing*.
+- **One workspace hex per scene, max.** Cobalt is the workspace; if the scene shows multiple Nextcloud installs, federate them through side-boxes, don't duplicate the cobalt hex.
 - **One orange element per scene.** Same as Imagery rule. The orange is *the answer* of the scene — the active step, the new feature, the thing the eye should land on.
 - **Family count: 3–4 per scene.** A pipeline diagram with cobalt + lavender + mint + a coral accent is the canonical density. More than four families and the categories stop reading.
-- **Sources go left, consumers go right.** Side-boxes flanking a hex-prism row are conventionally `source · prism · prism · prism · consumer`. Don't reverse without reason.
+- **Sources go left, consumers go right.** Side-boxes flanking a hex row are conventionally `source · hex · hex · hex · consumer`. Don't reverse without reason.
 - **Sizes**: `sm` for inline-density rows, `md` for canonical scenes, `lg` for hero illustrations. One size per scene.
-- **Shadows are 2D, never 3D.** `var(--shadow-2)` for lifted prisms, `var(--shadow-1)` for ambient. No drop-shadow blur > 16px, no "depth" rendering.
+- **Shadows are 2D, never 3D.** `var(--shadow-2)` for lifted hexes, `var(--shadow-1)` for ambient. No drop-shadow blur > 16px, no "depth" rendering.
 
 ## App glyphs — the canonical icon per app
 

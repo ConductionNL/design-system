@@ -201,12 +201,14 @@
   .scale .step .num { font-size: 13px; font-family: var(--conduction-typography-font-family-body); font-weight: 600; letter-spacing: -0.01em; }
 
   /* Hex-prism families */
-  .families { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-5); }
+  .families { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-5); }
+  .families + .families { margin-top: var(--space-5); }
   .family { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5); }
   .family .name { font-weight: 600; margin-bottom: var(--space-4); }
   .family .hexes { display: flex; gap: var(--space-1); }
-  .family .hex { width: 28px; height: 32px; clip-path: var(--hex-pointy-top); }
-  .family .stops { display: flex; justify-content: space-between; gap: var(--space-1); font-family: var(--conduction-typography-font-family-code); font-size: 9px; color: var(--c-cobalt-400); margin-top: var(--space-2); }
+  .family .hex { width: 24px; height: 28px; clip-path: var(--hex-pointy-top); }
+  .family .stops { display: flex; gap: var(--space-1); font-family: var(--conduction-typography-font-family-code); font-size: 9px; color: var(--c-cobalt-400); margin-top: var(--space-2); }
+  .family .stops span { width: 24px; text-align: center; }
   .family .use { font-size: 12px; color: var(--c-cobalt-700); margin-top: var(--space-3); line-height: 1.4; }
 
   /* Status row */
@@ -471,7 +473,15 @@
       <div class="meta">
         <div class="name">Nextcloud Blue</div>
         <div class="role">Guest color · ConNext context only · always solid</div>
-        <div class="vals"><span>#0082C9</span><span>nextcloud</span></div>
+        <div class="vals"><span>#0082C9</span><span>nextcloud-blue</span></div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background: var(--c-nextcloud-cyan); color: var(--c-cobalt-900);"><span class="ratio dark">guest</span></div>
+      <div class="meta">
+        <div class="name">Nextcloud Cyan</div>
+        <div class="role">Guest color · Nextcloud accent, lighter pair to the blue. Rarely used; never as a primary fill.</div>
+        <div class="vals"><span>#1CAFFF</span><span>nextcloud-cyan</span></div>
       </div>
     </div>
     <div class="swatch">
@@ -500,57 +510,114 @@
   </div>
 
   <!-- Hex prism families -->
-  <div class="section-label">Hex-prism category families · pastel, for illustration faces</div>
+  <div class="section-label">Hex-prism families · sanctioned, pastel, for illustration faces</div>
+  <p class="note" style="max-width: 720px; margin: 0 0 var(--space-5) 0; color: var(--c-cobalt-700); font-size: 14px; line-height: 1.55;">
+    Per the policy locked in <code>tokens.css</code>: component prisms get exactly one of <b>lavender, mint, forest, terracotta</b>. The workspace prism uses <b>workspace-blue</b> (= Nextcloud's own brand blue). Cobalt is brand chrome, never a prism family. Each family ships five stops; <b>50</b> is wash, <b>500</b> is the saturated face, <b>700</b> is the deep accent.
+  </p>
   <div class="families">
-    <div class="family">
-      <div class="name">Coral</div>
-      <div class="hexes">
-        <div class="hex" style="background: var(--c-coral-100);"></div>
-        <div class="hex" style="background: var(--c-coral-300);"></div>
-        <div class="hex" style="background: var(--c-coral-500);"></div>
-      </div>
-      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
-      <div class="use">Apps · OpenCatalogi family. KNVB orange tip.</div>
-    </div>
     <div class="family">
       <div class="name">Lavender</div>
       <div class="hexes">
+        <div class="hex" style="background: var(--c-lavender-50);"></div>
         <div class="hex" style="background: var(--c-lavender-100);"></div>
         <div class="hex" style="background: var(--c-lavender-300);"></div>
         <div class="hex" style="background: var(--c-lavender-500);"></div>
+        <div class="hex" style="background: var(--c-lavender-700);"></div>
       </div>
-      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
-      <div class="use">Connectors · OpenConnector, integrations.</div>
-    </div>
-    <div class="family">
-      <div class="name">Gold</div>
-      <div class="hexes">
-        <div class="hex" style="background: var(--c-gold-100);"></div>
-        <div class="hex" style="background: var(--c-gold-300);"></div>
-        <div class="hex" style="background: var(--c-gold-500);"></div>
-      </div>
-      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
-      <div class="use">Data · OpenRegister, schemas, storage.</div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Connectors · OpenConnector, integrations, anything that crosses a boundary.</div>
     </div>
     <div class="family">
       <div class="name">Mint</div>
       <div class="hexes">
+        <div class="hex" style="background: var(--c-mint-50);"></div>
         <div class="hex" style="background: var(--c-mint-100);"></div>
         <div class="hex" style="background: var(--c-mint-300);"></div>
         <div class="hex" style="background: var(--c-mint-500);"></div>
+        <div class="hex" style="background: var(--c-mint-700);"></div>
       </div>
-      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
       <div class="use">Processes · DocuDesk, AI, status: stable.</div>
+    </div>
+    <div class="family">
+      <div class="name">Forest</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-forest-50);"></div>
+        <div class="hex" style="background: var(--c-forest-100);"></div>
+        <div class="hex" style="background: var(--c-forest-300);"></div>
+        <div class="hex" style="background: var(--c-forest-500);"></div>
+        <div class="hex" style="background: var(--c-forest-700);"></div>
+      </div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Sustained processes · long-running flows, archival, knowledge.</div>
+    </div>
+    <div class="family">
+      <div class="name">Terracotta</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-terracotta-50);"></div>
+        <div class="hex" style="background: var(--c-terracotta-100);"></div>
+        <div class="hex" style="background: var(--c-terracotta-300);"></div>
+        <div class="hex" style="background: var(--c-terracotta-500);"></div>
+        <div class="hex" style="background: var(--c-terracotta-700);"></div>
+      </div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Content · documents, templates, anything paper-shaped.</div>
+    </div>
+    <div class="family">
+      <div class="name">Workspace</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-workspace-50);"></div>
+        <div class="hex" style="background: var(--c-workspace-100);"></div>
+        <div class="hex" style="background: var(--c-workspace-300);"></div>
+        <div class="hex" style="background: var(--c-workspace-500);"></div>
+        <div class="hex" style="background: var(--c-workspace-700);"></div>
+      </div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Workspace prism · the central Nextcloud hex on platform diagrams. <code>--c-workspace-*</code> aliases <code>--c-workspaceblue-*</code>; 500 is Nextcloud blue.</div>
+    </div>
+  </div>
+
+  <!-- Reserved utility scales · not prism families -->
+  <div class="section-label">Reserved utility scales · NOT prism families, kept for specific jobs</div>
+  <p class="note" style="max-width: 720px; margin: 0 0 var(--space-5) 0; color: var(--c-cobalt-700); font-size: 14px; line-height: 1.55;">
+    These scales live in <code>tokens.css</code> alongside the prism families but serve different jobs and must <b>not</b> be picked up as a prism. <b>Coral</b> is the KNVB-orange accent scale (≤ 8 % page area). <b>Gold</b> is the Common Ground citation scale. <b>Gray</b> is the neutral support scale.
+  </p>
+  <div class="families">
+    <div class="family">
+      <div class="name">Coral</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-coral-50);"></div>
+        <div class="hex" style="background: var(--c-coral-100);"></div>
+        <div class="hex" style="background: var(--c-coral-300);"></div>
+        <div class="hex" style="background: var(--c-coral-500);"></div>
+        <div class="hex" style="background: var(--c-coral-700);"></div>
+      </div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Accent · KNVB-orange (coral-500 = <code>--c-orange-knvb</code>). Focus, hover, single-use highlights. Never as a prism face.</div>
+    </div>
+    <div class="family">
+      <div class="name">Gold</div>
+      <div class="hexes">
+        <div class="hex" style="background: var(--c-gold-50);"></div>
+        <div class="hex" style="background: var(--c-gold-100);"></div>
+        <div class="hex" style="background: var(--c-gold-300);"></div>
+        <div class="hex" style="background: var(--c-gold-500);"></div>
+        <div class="hex" style="background: var(--c-gold-700);"></div>
+      </div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Common-Ground citation scale · gold-500 sits near CG yellow. Use in CG-context surfaces only.</div>
     </div>
     <div class="family">
       <div class="name">Gray</div>
       <div class="hexes">
+        <div class="hex" style="background: var(--c-gray-50);"></div>
         <div class="hex" style="background: var(--c-gray-100);"></div>
         <div class="hex" style="background: var(--c-gray-300);"></div>
         <div class="hex" style="background: var(--c-gray-500);"></div>
+        <div class="hex" style="background: var(--c-gray-700);"></div>
       </div>
-      <div class="stops"><span>100</span><span>300</span><span>500</span></div>
-      <div class="use">Neutrals · diagram supports, ambient elements.</div>
+      <div class="stops"><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span></div>
+      <div class="use">Neutrals · diagram supports, ambient elements, disabled states. Never a prism family.</div>
     </div>
   </div>
 

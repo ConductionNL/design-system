@@ -310,3 +310,23 @@ a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
   color: var(--c-cobalt-700);
   background: transparent;
 }
+
+/* ============================================================
+   Body grows with content.
+
+   Infima ships `html, body { height: 100% }`. With long pages the
+   body stops at one viewport while content overflows beneath it.
+   Anything past that height paints over the browser canvas, not
+   over body. On screens where the canvas is dark (Chrome on macOS
+   dark mode, Windows high-contrast), the canal-footer pattern is
+   preceded by a `#1B1B1D` band.
+
+   Swapping `height: 100%` for `min-height: 100vh` keeps short
+   pages looking the same and lets body cover the full document
+   on long pages. Site-level customCss can still override.
+   ============================================================ */
+html,
+body {
+  height: auto;
+  min-height: 100vh;
+}

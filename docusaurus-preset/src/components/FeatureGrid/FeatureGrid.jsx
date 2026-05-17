@@ -47,17 +47,35 @@ import styles from './FeatureGrid.module.css';
 
 const STATUS_CLASSES = {stable: '', beta: styles.beta, soon: styles.soon};
 
-export function FeatureItem({label, tip, status = 'stable', className}) {
+export function FeatureItem({label, tip, status = 'stable', href, className}) {
   const hexClass = [styles.h, STATUS_CLASSES[status]].filter(Boolean).join(' ');
+  const body = (
+    <>
+      <span className={hexClass} aria-hidden="true" />
+      <span className={styles.label}>{label}</span>
+      {tip && <span className={styles.tip}>{tip}</span>}
+    </>
+  );
+  if (href) {
+    const isExternal = /^https?:\/\//.test(href);
+    return (
+      <a
+        className={[styles.item, styles.itemLink, className].filter(Boolean).join(' ')}
+        href={href}
+        title={tip || label}
+        {...(isExternal ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
+      >
+        {body}
+      </a>
+    );
+  }
   return (
     <div
       className={[styles.item, className].filter(Boolean).join(' ')}
       tabIndex={0}
       title={tip || label}
     >
-      <span className={hexClass} aria-hidden="true" />
-      <span className={styles.label}>{label}</span>
-      {tip && <span className={styles.tip}>{tip}</span>}
+      {body}
     </div>
   );
 }

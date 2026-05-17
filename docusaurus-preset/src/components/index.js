@@ -82,6 +82,7 @@ export {default as Showcase} from './Showcase/Showcase.jsx';
 export {default as RotatingCards} from './RotatingCards/RotatingCards.jsx';
 export {default as HexBackground} from './HexBackground/HexBackground.jsx';
 export {default as AgentTrace} from './AgentTrace/AgentTrace.jsx';
+export {default as McpToolShelf} from './McpToolShelf/McpToolShelf.jsx';
 export {default as ExternalAppShelf} from './ExternalAppShelf/ExternalAppShelf.jsx';
 export {default as WidgetShelf} from './WidgetShelf/WidgetShelf.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';

@@ -232,9 +232,11 @@ function buildAiHeadTags(opts) {
  *
  * Sites with locale-specific tag pages and pagination should keep the
  * exclude list in sync. Pagination (`/page/N/`) and tag pages
- * (`/tags/*/`) are documented Docusaurus duplicate-content traps;
+ * (`/tags/{slug}/`) are documented Docusaurus duplicate-content traps;
  * we exclude them by default so they neither dilute crawl budget nor
- * confuse AI summarisers.
+ * confuse AI summarisers. (Do not write `/tags/*` followed by a slash
+ * in this comment: the literal asterisk-slash sequence would close
+ * the JSDoc block and break preset parsing for every consuming site.)
  */
 const DEFAULT_SITEMAP_OPTIONS = {
   changefreq: null,

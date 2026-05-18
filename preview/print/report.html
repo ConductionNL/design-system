@@ -561,21 +561,12 @@
     margin: 0 0 6mm; max-width: 56ch; line-height: 1.5;
   }
   .info-page .info-stack { display: grid; gap: 4mm; }
+  /* Standard info-box: no hex. Just a tinted card with a left bar +
+     eyebrow label + body. The hex treatment lives on the playful
+     variant below, which uses the hex as the actual border. */
   .info-page .info-box {
-    display: grid; grid-template-columns: 10mm 1fr; gap: 5mm;
     padding: 4mm 5mm;
     border-radius: 0 1mm 1mm 0;
-    align-items: start;
-  }
-  .info-page .info-box .icon {
-    width: 8mm; height: 9.2mm;
-    clip-path: var(--hex-pointy-top);
-    justify-self: center;
-    margin-top: 0.5mm;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .info-page .info-box .icon svg {
-    width: 4mm; height: 4mm; fill: white;
   }
   .info-page .info-box .h {
     font-family: var(--conduction-typography-font-family-code);
@@ -589,17 +580,27 @@
   /* ---- Playful info box variant ----
      Card bleeds margin-right past the .body-page right padding all the
      way to the paper edge. The hex IS the left border treatment: it
-     sits at the top-left at fixed 14×16.1mm, and a thin border-left
-     continues below the hex for tall content. For short content (≤16mm)
-     the hex alone reads as the full left edge. */
+     sits at the top-left at fixed 14×16.1mm. For short content (≤16mm)
+     the hex alone reads as the full left edge. For tall content a thin
+     line continues below the hex, positioned to line up with the hex's
+     vertical centerline (x = hex_width / 2 = 7mm) so it reads as a
+     visual continuation of the hex's point, not as a separate border. */
   .info-page .info-box-playful {
     position: relative;
     margin-right: -22mm;
     padding: 4mm 24mm 4mm 19mm;
-    border-left: 0.8mm solid var(--c-cobalt-200);
     min-height: 16mm;
     display: flex; flex-direction: column; gap: 1.5mm;
     justify-content: center;
+  }
+  .info-page .info-box-playful::before {
+    content: "";
+    position: absolute;
+    left: 6.6mm;     /* hex centerline = 14mm / 2 = 7mm, minus half line width */
+    top: 16.1mm;     /* starts just below the hex bottom point */
+    bottom: 0;
+    width: 0.8mm;
+    background: var(--c-cobalt-200);
   }
   .info-page .info-box-playful .icon {
     position: absolute;
@@ -607,6 +608,7 @@
     width: 14mm; height: 16.1mm;
     clip-path: var(--hex-pointy-top);
     display: flex; align-items: center; justify-content: center;
+    z-index: 1;
   }
   .info-page .info-box-playful .icon svg {
     width: 6mm; height: 6mm; fill: white;
@@ -621,31 +623,23 @@
     margin: 0;
   }
   /* variant fills mirror the standard info-box variants */
-  .info-page .info-box-playful.note {
-    background: var(--c-cobalt-50);
-    border-left-color: var(--c-blue-cobalt);
-  }
+  .info-page .info-box-playful.note { background: var(--c-cobalt-50); }
+  .info-page .info-box-playful.note::before { background: var(--c-blue-cobalt); }
   .info-page .info-box-playful.note .icon { background: var(--c-blue-cobalt); }
   .info-page .info-box-playful.note .h { color: var(--c-blue-cobalt); }
 
-  .info-page .info-box-playful.tip {
-    background: #E8F4EE;
-    border-left-color: var(--c-mint-500);
-  }
+  .info-page .info-box-playful.tip { background: #E8F4EE; }
+  .info-page .info-box-playful.tip::before { background: var(--c-mint-500); }
   .info-page .info-box-playful.tip .icon { background: var(--c-mint-500); }
   .info-page .info-box-playful.tip .h { color: var(--c-mint-500); }
 
-  .info-page .info-box-playful.warning {
-    background: #F7E9E4;
-    border-left-color: var(--c-terracotta-500);
-  }
+  .info-page .info-box-playful.warning { background: #F7E9E4; }
+  .info-page .info-box-playful.warning::before { background: var(--c-terracotta-500); }
   .info-page .info-box-playful.warning .icon { background: var(--c-terracotta-500); }
   .info-page .info-box-playful.warning .h { color: var(--c-terracotta-500); }
 
-  .info-page .info-box-playful.important {
-    background: #FDEDE0;
-    border-left-color: var(--c-orange-knvb);
-  }
+  .info-page .info-box-playful.important { background: #FDEDE0; }
+  .info-page .info-box-playful.important::before { background: var(--c-orange-knvb); }
   .info-page .info-box-playful.important .icon { background: var(--c-orange-knvb); }
   .info-page .info-box-playful.important .h { color: var(--c-orange-knvb); }
   /* note → cobalt */
@@ -653,29 +647,59 @@
     background: var(--c-cobalt-50);
     border-left: 0.8mm solid var(--c-blue-cobalt);
   }
-  .info-page .info-box.note .icon { background: var(--c-blue-cobalt); }
   .info-page .info-box.note .h { color: var(--c-blue-cobalt); }
   /* tip → mint */
   .info-page .info-box.tip {
     background: #E8F4EE;
     border-left: 0.8mm solid var(--c-mint-500);
   }
-  .info-page .info-box.tip .icon { background: var(--c-mint-500); }
   .info-page .info-box.tip .h { color: var(--c-mint-500); }
   /* warning → terracotta */
   .info-page .info-box.warning {
     background: #F7E9E4;
     border-left: 0.8mm solid var(--c-terracotta-500);
   }
-  .info-page .info-box.warning .icon { background: var(--c-terracotta-500); }
   .info-page .info-box.warning .h { color: var(--c-terracotta-500); }
   /* important → KNVB orange (the one-orange-per-screen accent) */
   .info-page .info-box.important {
     background: #FDEDE0;
     border-left: 0.8mm solid var(--c-orange-knvb);
   }
-  .info-page .info-box.important .icon { background: var(--c-orange-knvb); }
   .info-page .info-box.important .h { color: var(--c-orange-knvb); }
+
+  /* ---- Quote page ----
+     Documents the .body-page blockquote component used inline on body
+     pages. Italic body in cobalt-700, KNVB-orange left bar, Plex Mono
+     attribution under the quote text. Shown on its own A4 sheet with
+     three variants stacked. */
+  .quote-page h2 {
+    font-size: 22pt; font-weight: 700; letter-spacing: -0.015em;
+    margin: 0 0 3mm;
+  }
+  .quote-page > p {
+    font-size: 11pt; color: var(--c-cobalt-700);
+    margin: 0 0 8mm; max-width: 56ch; line-height: 1.5;
+  }
+  .quote-page .quote-stack { display: grid; gap: 9mm; }
+  .quote-page blockquote {
+    /* inherits the .body-page blockquote rule (orange bar, italic).
+       Bigger type + zero outside margin (gap handles vertical spacing). */
+    margin: 0;
+    font-size: 12pt;
+    line-height: 1.55;
+    padding: 1mm 0 1mm 7mm;
+  }
+  .quote-page blockquote .who {
+    display: block;
+    margin-top: 4mm;
+    font-style: normal;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .quote-page blockquote .who strong {
+    color: var(--c-cobalt-700); font-weight: 600;
+  }
 
   @media print {
     @page { size: A4; margin: 0; }
@@ -687,7 +711,7 @@
 <div class="chrome">
   <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Report</div>
   <h1>Report</h1>
-  <p class="lead">A4 portrait. Ten sheets in a full report: cover, index (TOC), summary, body, diagram, table, info box, sources, attachments, back. Every body page shares a markdown-style running header and hex pagination. Filled "Acme BV" example below the empty template; mix-and-match the page types your report actually needs.</p>
+  <p class="lead">A4 portrait. Eleven sheets in a full report: cover, index (TOC), summary, body, quote, diagram, table, info box (standard + playful), sources, attachments, back. Every body page shares a markdown-style running header and hex pagination. Filled "Acme BV" example below the empty template; mix-and-match the page types your report actually needs.</p>
 </div>
 
 <div class="stage">
@@ -782,6 +806,37 @@
             </div>
           </div>
           <span class="specimen-label">Body &middot; running header is markdown-style #</span>
+        </div>
+
+        <!-- Quote -->
+        <div>
+          <div class="paper paper--A4 body-page quote-page">
+            <div class="running">
+              <span># Open registers Acme BV</span>
+              <span class="doc-id">CND-2026-042 &middot; p. 04</span>
+            </div>
+            <h2>Stemmen uit het veld</h2>
+            <p>Drie quotes uit interviews bij Acme. Italic body, KNVB-orange linkerbalk, attribution onderaan in Plex Mono.</p>
+            <div class="quote-stack">
+              <blockquote>
+                &ldquo;We hebben er gewoon een Excel van gemaakt omdat het systeem dat we hadden niet meedeed.&rdquo;
+                <span class="who"><strong>Henk</strong> &middot; beheerder klantregister</span>
+              </blockquote>
+              <blockquote>
+                &ldquo;Drie mensen weten welk veld optioneel is, twee zijn met pensioen. Als ik op vakantie ben kan niemand een klant aanleveren zonder Henk te bellen.&rdquo;
+                <span class="who"><strong>Marleen</strong> &middot; IT-lead</span>
+              </blockquote>
+              <blockquote>
+                &ldquo;Een audit-trail is hier al een jaar issue. Niemand wil het oplossen want dan moeten we ook direct 142 spreadsheets uitfaseren.&rdquo;
+                <span class="who"><strong>Anoniem</strong> &middot; finance team</span>
+              </blockquote>
+            </div>
+            <div class="pagefoot-r">
+              <span>conduction.nl &middot; CND-2026-042</span>
+              <span class="hex-row"><span></span><span class="active"></span><span></span></span>
+            </div>
+          </div>
+          <span class="specimen-label">Quote &middot; italic + orange bar + Plex Mono attribution</span>
         </div>
 
         <!-- Index -->
@@ -899,32 +954,20 @@
             <p>Vier soorten kantlijn. Een note is achtergrond, een tip is een snelle win, een warning is een risico, important moet je niet missen.</p>
             <div class="info-stack">
               <div class="info-box note">
-                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
-                <div>
-                  <div class="h">Note &middot; Achtergrond</div>
-                  <div class="body">OpenRegister loopt onder Nextcloud, dat hosten jullie zelf. Dezelfde server, dezelfde back-up, dezelfde rechtenstructuur.</div>
-                </div>
+                <div class="h">Note &middot; Achtergrond</div>
+                <div class="body">OpenRegister loopt onder Nextcloud, dat hosten jullie zelf. Dezelfde server, dezelfde back-up, dezelfde rechtenstructuur.</div>
               </div>
               <div class="info-box tip">
-                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span>
-                <div>
-                  <div class="h">Tip &middot; Snelle win</div>
-                  <div class="body">Begin met het klantregister. Daar zit de meeste pijn, en het is de simpelste import. Een week voor cleanup, &eacute;&eacute;n voor de migratie.</div>
-                </div>
+                <div class="h">Tip &middot; Snelle win</div>
+                <div class="body">Begin met het klantregister. Daar zit de meeste pijn, en het is de simpelste import. Een week voor cleanup, &eacute;&eacute;n voor de migratie.</div>
               </div>
               <div class="info-box warning">
-                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
-                <div>
-                  <div class="h">Warning &middot; Risico</div>
-                  <div class="body">Henk gaat in juli twee weken op vakantie. Plan de schema-sessie v&oacute;&oacute;r week 26, anders schuift de hele tijdlijn een week op.</div>
-                </div>
+                <div class="h">Warning &middot; Risico</div>
+                <div class="body">Henk gaat in juli twee weken op vakantie. Plan de schema-sessie v&oacute;&oacute;r week 26, anders schuift de hele tijdlijn een week op.</div>
               </div>
               <div class="info-box important">
-                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span>
-                <div>
-                  <div class="h">Important &middot; Voor besluit</div>
-                  <div class="body">Vaste prijs geldt tot week 4. Daarna gaan we per uur, want het werk hangt af van wat je tijdens go/no-go besluit.</div>
-                </div>
+                <div class="h">Important &middot; Voor besluit</div>
+                <div class="body">Vaste prijs geldt tot week 4. Daarna gaan we per uur, want het werk hangt af van wat je tijdens go/no-go besluit.</div>
               </div>
             </div>
             <div class="pagefoot-r">
@@ -1193,6 +1236,34 @@
           <span class="specimen-label">Body template</span>
         </div>
 
+        <!-- Quote template -->
+        <div>
+          <div class="paper paper--A4 body-page quote-page">
+            <div class="running">
+              <span># {{ chapter }}</span>
+              <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
+            </div>
+            <h2>{{ Page title }}</h2>
+            <p>{{ One paragraph framing why these quotes are here. }}</p>
+            <div class="quote-stack">
+              <blockquote>
+                &ldquo;{{ Short quote, one sentence, lifted verbatim. }}&rdquo;
+                <span class="who"><strong>{{ Speaker }}</strong> &middot; {{ role }}</span>
+              </blockquote>
+              <blockquote>
+                &ldquo;{{ Longer quote spanning two or three lines, still verbatim. Keep the punctuation the speaker used, even if it is not how you would write it. }}&rdquo;
+                <span class="who"><strong>{{ Speaker }}</strong> &middot; {{ role }}</span>
+              </blockquote>
+              <blockquote>
+                &ldquo;{{ Quote attributed to an anonymous source. }}&rdquo;
+                <span class="who"><strong>Anoniem</strong> &middot; {{ context }}</span>
+              </blockquote>
+            </div>
+            <div class="pagefoot-r"><span>conduction.nl &middot; {{ #ID }}</span><span class="hex-row"><span></span><span class="active"></span><span></span></span></div>
+          </div>
+          <span class="specimen-label">Quote template</span>
+        </div>
+
         <!-- Index template -->
         <div>
           <div class="paper paper--A4 body-page index-page">
@@ -1290,10 +1361,10 @@
             <h2>{{ Page title }}</h2>
             <p>{{ One paragraph framing the four variants. }}</p>
             <div class="info-stack">
-              <div class="info-box note"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span><div><div class="h">Note &middot; {{ label }}</div><div class="body">{{ Background context, one short paragraph. }}</div></div></div>
-              <div class="info-box tip"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span><div><div class="h">Tip &middot; {{ label }}</div><div class="body">{{ Quick win, actionable suggestion in one paragraph. }}</div></div></div>
-              <div class="info-box warning"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><div><div class="h">Warning &middot; {{ label }}</div><div class="body">{{ Risk or constraint the reader must factor in. }}</div></div></div>
-              <div class="info-box important"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span><div><div class="h">Important &middot; {{ label }}</div><div class="body">{{ The must-read line that affects the decision. }}</div></div></div>
+              <div class="info-box note"><div class="h">Note &middot; {{ label }}</div><div class="body">{{ Background context, one short paragraph. }}</div></div>
+              <div class="info-box tip"><div class="h">Tip &middot; {{ label }}</div><div class="body">{{ Quick win, actionable suggestion in one paragraph. }}</div></div>
+              <div class="info-box warning"><div class="h">Warning &middot; {{ label }}</div><div class="body">{{ Risk or constraint the reader must factor in. }}</div></div>
+              <div class="info-box important"><div class="h">Important &middot; {{ label }}</div><div class="body">{{ The must-read line that affects the decision. }}</div></div>
             </div>
             <div class="pagefoot-r"><span>conduction.nl &middot; {{ #ID }}</span><span class="hex-row"><span></span><span></span><span class="active"></span></span></div>
           </div>
@@ -1392,8 +1463,9 @@
       <li><strong>Index is a flat TOC.</strong> Plex Mono section number, Figtree title, Plex Mono page number. No chapter/subsection nesting, the report isn't a book.</li>
       <li><strong>Diagram is now &rarr; bridge &rarr; next.</strong> Three pointy-top hexes, cobalt-300 / cobalt / forest. The reader sees the transition in three glances, then the body explains the move.</li>
       <li><strong>Tables earn their cobalt header.</strong> Plex Mono for nums and dates, Figtree for owners, hairline cobalt-100 between rows. The eye knows where to land without zebra stripes.</li>
-      <li><strong>Four info-box variants.</strong> Note (cobalt), tip (mint), warning (terracotta), important (KNVB orange). One orange per page, the others can repeat. The colour is the rule, the label confirms it. Each hex carries a Material-style icon (info-i, lightbulb, triangle-!, exclamation) so it works at a glance, even in greyscale.</li>
-      <li><strong>Playful info-box variant.</strong> Same four colours, but the card bleeds to the paper's right edge and the hex IS the left border. Short content: hex covers the full left side. Tall content: hex stays fixed at the top-left and a thin border-left line continues underneath. More fun, costs 22mm of bleed area.</li>
+      <li><strong>Four info-box variants, standard.</strong> Note (cobalt), tip (mint), warning (terracotta), important (KNVB orange). Just a tinted card with a left bar, no hex, no icon. The colour is the rule, the label confirms it. One orange per page; the others can repeat.</li>
+      <li><strong>Playful info-box variant.</strong> Same four colours, but the card bleeds to the paper's right edge and the hex IS the left border. Each hex carries a Material-style icon (info-i, lightbulb, triangle-!, exclamation). Short content: the hex alone reads as the full left edge. Tall content: the hex stays fixed at the top-left, and a thin line continues underneath, lined up with the hex's vertical centre.</li>
+      <li><strong>Quote.</strong> Italic body in cobalt-700 with a KNVB-orange left bar. Attribution underneath in Plex Mono uppercase, "Speaker &middot; role" format. Same component used inline on body pages and stacked on its own sheet.</li>
       <li><strong>"Wat we niet doen" callout.</strong> Every body page can hold a honesty box. Builds trust faster than three claims.</li>
       <li><strong>Sources are academic-ish.</strong> Numbered [01], author + title, Plex Mono URL. Auditors can find the source, the rest of the readership can ignore it.</li>
       <li><strong>Attachments name themselves.</strong> Plex Mono filenames with type pill and size, so the reader knows what each blob is before they open it.</li>

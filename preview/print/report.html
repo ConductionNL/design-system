@@ -562,16 +562,20 @@
   }
   .info-page .info-stack { display: grid; gap: 4mm; }
   .info-page .info-box {
-    display: grid; grid-template-columns: 8mm 1fr; gap: 5mm;
+    display: grid; grid-template-columns: 10mm 1fr; gap: 5mm;
     padding: 4mm 5mm;
     border-radius: 0 1mm 1mm 0;
     align-items: start;
   }
   .info-page .info-box .icon {
-    width: 6mm; height: 6.9mm;
+    width: 8mm; height: 9.2mm;
     clip-path: var(--hex-pointy-top);
     justify-self: center;
-    margin-top: 1mm;
+    margin-top: 0.5mm;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .info-page .info-box .icon svg {
+    width: 4mm; height: 4mm; fill: white;
   }
   .info-page .info-box .h {
     font-family: var(--conduction-typography-font-family-code);
@@ -581,6 +585,69 @@
   .info-page .info-box .body {
     font-size: 9.5pt; line-height: 1.55; color: var(--c-cobalt-900);
   }
+
+  /* ---- Playful info box variant ----
+     Card bleeds margin-right past the .body-page right padding all the
+     way to the paper edge. The hex IS the left border treatment: it
+     sits at the top-left at fixed 14×16.1mm, and a thin border-left
+     continues below the hex for tall content. For short content (≤16mm)
+     the hex alone reads as the full left edge. */
+  .info-page .info-box-playful {
+    position: relative;
+    margin-right: -22mm;
+    padding: 4mm 24mm 4mm 19mm;
+    border-left: 0.8mm solid var(--c-cobalt-200);
+    min-height: 16mm;
+    display: flex; flex-direction: column; gap: 1.5mm;
+    justify-content: center;
+  }
+  .info-page .info-box-playful .icon {
+    position: absolute;
+    left: 0; top: 0;
+    width: 14mm; height: 16.1mm;
+    clip-path: var(--hex-pointy-top);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .info-page .info-box-playful .icon svg {
+    width: 6mm; height: 6mm; fill: white;
+  }
+  .info-page .info-box-playful .h {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase;
+    margin: 0;
+  }
+  .info-page .info-box-playful .body {
+    font-size: 9.5pt; line-height: 1.55; color: var(--c-cobalt-900);
+    margin: 0;
+  }
+  /* variant fills mirror the standard info-box variants */
+  .info-page .info-box-playful.note {
+    background: var(--c-cobalt-50);
+    border-left-color: var(--c-blue-cobalt);
+  }
+  .info-page .info-box-playful.note .icon { background: var(--c-blue-cobalt); }
+  .info-page .info-box-playful.note .h { color: var(--c-blue-cobalt); }
+
+  .info-page .info-box-playful.tip {
+    background: #E8F4EE;
+    border-left-color: var(--c-mint-500);
+  }
+  .info-page .info-box-playful.tip .icon { background: var(--c-mint-500); }
+  .info-page .info-box-playful.tip .h { color: var(--c-mint-500); }
+
+  .info-page .info-box-playful.warning {
+    background: #F7E9E4;
+    border-left-color: var(--c-terracotta-500);
+  }
+  .info-page .info-box-playful.warning .icon { background: var(--c-terracotta-500); }
+  .info-page .info-box-playful.warning .h { color: var(--c-terracotta-500); }
+
+  .info-page .info-box-playful.important {
+    background: #FDEDE0;
+    border-left-color: var(--c-orange-knvb);
+  }
+  .info-page .info-box-playful.important .icon { background: var(--c-orange-knvb); }
+  .info-page .info-box-playful.important .h { color: var(--c-orange-knvb); }
   /* note → cobalt */
   .info-page .info-box.note {
     background: var(--c-cobalt-50);
@@ -832,28 +899,28 @@
             <p>Vier soorten kantlijn. Een note is achtergrond, een tip is een snelle win, een warning is een risico, important moet je niet missen.</p>
             <div class="info-stack">
               <div class="info-box note">
-                <span class="icon"></span>
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
                 <div>
                   <div class="h">Note &middot; Achtergrond</div>
                   <div class="body">OpenRegister loopt onder Nextcloud, dat hosten jullie zelf. Dezelfde server, dezelfde back-up, dezelfde rechtenstructuur.</div>
                 </div>
               </div>
               <div class="info-box tip">
-                <span class="icon"></span>
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span>
                 <div>
                   <div class="h">Tip &middot; Snelle win</div>
                   <div class="body">Begin met het klantregister. Daar zit de meeste pijn, en het is de simpelste import. Een week voor cleanup, &eacute;&eacute;n voor de migratie.</div>
                 </div>
               </div>
               <div class="info-box warning">
-                <span class="icon"></span>
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
                 <div>
                   <div class="h">Warning &middot; Risico</div>
                   <div class="body">Henk gaat in juli twee weken op vakantie. Plan de schema-sessie v&oacute;&oacute;r week 26, anders schuift de hele tijdlijn een week op.</div>
                 </div>
               </div>
               <div class="info-box important">
-                <span class="icon"></span>
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span>
                 <div>
                   <div class="h">Important &middot; Voor besluit</div>
                   <div class="body">Vaste prijs geldt tot week 4. Daarna gaan we per uur, want het werk hangt af van wat je tijdens go/no-go besluit.</div>
@@ -866,6 +933,45 @@
             </div>
           </div>
           <span class="specimen-label">Info box &middot; note / tip / warning / important &middot; one orange per page</span>
+        </div>
+
+        <!-- Info box playful (full-bleed, hex-as-border) -->
+        <div>
+          <div class="paper paper--A4 body-page info-page">
+            <div class="running">
+              <span># Open registers Acme BV</span>
+              <span class="doc-id">CND-2026-042 &middot; p. 06b</span>
+            </div>
+            <h2>Wat je moet weten, met meer lef</h2>
+            <p>Zelfde vier kantlijnen, andere uitvoering. Hex doet het zware werk als borderstuk; de kaart loopt door tot aan de bladrand.</p>
+            <div class="info-stack">
+              <div class="info-box-playful note">
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
+                <div class="h">Note &middot; Achtergrond</div>
+                <div class="body">OpenRegister loopt onder Nextcloud, dat hosten jullie zelf. Dezelfde server, dezelfde back-up, dezelfde rechtenstructuur.</div>
+              </div>
+              <div class="info-box-playful tip">
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span>
+                <div class="h">Tip &middot; Snelle win</div>
+                <div class="body">Begin met het klantregister. Daar zit de meeste pijn, en het is de simpelste import. Een week voor cleanup, &eacute;&eacute;n voor de migratie. De Henk-factor is daar het kleinst.</div>
+              </div>
+              <div class="info-box-playful warning">
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
+                <div class="h">Warning &middot; Risico</div>
+                <div class="body">Henk gaat in juli twee weken op vakantie. Plan de schema-sessie v&oacute;&oacute;r week 26, anders schuift de hele tijdlijn een week op.</div>
+              </div>
+              <div class="info-box-playful important">
+                <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span>
+                <div class="h">Important &middot; Voor besluit</div>
+                <div class="body">Vaste prijs geldt tot week 4. Daarna gaan we per uur, want het werk hangt af van wat je tijdens go/no-go besluit.</div>
+              </div>
+            </div>
+            <div class="pagefoot-r">
+              <span>conduction.nl &middot; CND-2026-042</span>
+              <span class="hex-row"><span></span><span></span><span class="active"></span></span>
+            </div>
+          </div>
+          <span class="specimen-label">Info box playful &middot; full-bleed &middot; hex IS the border</span>
         </div>
 
         <!-- Sources -->
@@ -1184,14 +1290,34 @@
             <h2>{{ Page title }}</h2>
             <p>{{ One paragraph framing the four variants. }}</p>
             <div class="info-stack">
-              <div class="info-box note"><span class="icon"></span><div><div class="h">Note &middot; {{ label }}</div><div class="body">{{ Background context, one short paragraph. }}</div></div></div>
-              <div class="info-box tip"><span class="icon"></span><div><div class="h">Tip &middot; {{ label }}</div><div class="body">{{ Quick win, actionable suggestion in one paragraph. }}</div></div></div>
-              <div class="info-box warning"><span class="icon"></span><div><div class="h">Warning &middot; {{ label }}</div><div class="body">{{ Risk or constraint the reader must factor in. }}</div></div></div>
-              <div class="info-box important"><span class="icon"></span><div><div class="h">Important &middot; {{ label }}</div><div class="body">{{ The must-read line that affects the decision. }}</div></div></div>
+              <div class="info-box note"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span><div><div class="h">Note &middot; {{ label }}</div><div class="body">{{ Background context, one short paragraph. }}</div></div></div>
+              <div class="info-box tip"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span><div><div class="h">Tip &middot; {{ label }}</div><div class="body">{{ Quick win, actionable suggestion in one paragraph. }}</div></div></div>
+              <div class="info-box warning"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><div><div class="h">Warning &middot; {{ label }}</div><div class="body">{{ Risk or constraint the reader must factor in. }}</div></div></div>
+              <div class="info-box important"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span><div><div class="h">Important &middot; {{ label }}</div><div class="body">{{ The must-read line that affects the decision. }}</div></div></div>
             </div>
             <div class="pagefoot-r"><span>conduction.nl &middot; {{ #ID }}</span><span class="hex-row"><span></span><span></span><span class="active"></span></span></div>
           </div>
           <span class="specimen-label">Info box template</span>
+        </div>
+
+        <!-- Info box playful template -->
+        <div>
+          <div class="paper paper--A4 body-page info-page">
+            <div class="running">
+              <span># {{ chapter }}</span>
+              <span class="doc-id">{{ #ID }} &middot; p. {{ n }}</span>
+            </div>
+            <h2>{{ Page title }}</h2>
+            <p>{{ One paragraph framing the four variants. }}</p>
+            <div class="info-stack">
+              <div class="info-box-playful note"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span><div class="h">Note &middot; {{ label }}</div><div class="body">{{ Background context, one short paragraph. }}</div></div>
+              <div class="info-box-playful tip"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg></span><div class="h">Tip &middot; {{ label }}</div><div class="body">{{ Quick win, actionable suggestion in one paragraph. }}</div></div>
+              <div class="info-box-playful warning"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span><div class="h">Warning &middot; {{ label }}</div><div class="body">{{ Risk or constraint the reader must factor in. }}</div></div>
+              <div class="info-box-playful important"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span><div class="h">Important &middot; {{ label }}</div><div class="body">{{ The must-read line that affects the decision. }}</div></div>
+            </div>
+            <div class="pagefoot-r"><span>conduction.nl &middot; {{ #ID }}</span><span class="hex-row"><span></span><span></span><span class="active"></span></span></div>
+          </div>
+          <span class="specimen-label">Info box playful template</span>
         </div>
 
         <!-- Sources template -->
@@ -1266,7 +1392,8 @@
       <li><strong>Index is a flat TOC.</strong> Plex Mono section number, Figtree title, Plex Mono page number. No chapter/subsection nesting, the report isn't a book.</li>
       <li><strong>Diagram is now &rarr; bridge &rarr; next.</strong> Three pointy-top hexes, cobalt-300 / cobalt / forest. The reader sees the transition in three glances, then the body explains the move.</li>
       <li><strong>Tables earn their cobalt header.</strong> Plex Mono for nums and dates, Figtree for owners, hairline cobalt-100 between rows. The eye knows where to land without zebra stripes.</li>
-      <li><strong>Four info-box variants.</strong> Note (cobalt), tip (mint), warning (terracotta), important (KNVB orange). One orange per page, the others can repeat. The colour is the rule, the label confirms it.</li>
+      <li><strong>Four info-box variants.</strong> Note (cobalt), tip (mint), warning (terracotta), important (KNVB orange). One orange per page, the others can repeat. The colour is the rule, the label confirms it. Each hex carries a Material-style icon (info-i, lightbulb, triangle-!, exclamation) so it works at a glance, even in greyscale.</li>
+      <li><strong>Playful info-box variant.</strong> Same four colours, but the card bleeds to the paper's right edge and the hex IS the left border. Short content: hex covers the full left side. Tall content: hex stays fixed at the top-left and a thin border-left line continues underneath. More fun, costs 22mm of bleed area.</li>
       <li><strong>"Wat we niet doen" callout.</strong> Every body page can hold a honesty box. Builds trust faster than three claims.</li>
       <li><strong>Sources are academic-ish.</strong> Numbered [01], author + title, Plex Mono URL. Auditors can find the source, the rest of the readership can ignore it.</li>
       <li><strong>Attachments name themselves.</strong> Plex Mono filenames with type pill and size, so the reader knows what each blob is before they open it.</li>

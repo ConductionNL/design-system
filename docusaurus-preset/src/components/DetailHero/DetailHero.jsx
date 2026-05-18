@@ -45,11 +45,13 @@
  */
 
 import React from 'react';
+import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HexBullet from '../primitives/HexBullet';
 import Button from '../primitives/Button';
 import {deriveStability} from '../../theme/brand.jsx';
 import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
+import {APPS_REGISTRY, applicationCategoryFor} from '../../data/apps-registry';
 import styles from './DetailHero.module.css';
 
 /**
@@ -107,8 +109,61 @@ export default function DetailHero({
       }
     : undefined);
 
+  /* SoftwareApplication JSON-LD for AI crawlers. Emitted when appId
+     resolves to a known entry in apps-registry (so the schema only
+     fires on actual product pages, not partner/solution detail pages
+     that reuse this hero). Pulls applicationCategory from the registry
+     category, operatingSystem is hard-coded "Nextcloud" because every
+     Conduction app is a Nextcloud app. Downloads and version surface
+     as ratingCount-shaped signals on schema.org/SoftwareApplication.
+     The schema lives on every page that mounts this hero, including
+     each product page's /apps/<slug> route on conduction.nl AND each
+     per-app docs site's landing where DetailHero is the masthead. */
+  const appEntry = appId ? APPS_REGISTRY[appId] : undefined;
+  const softwareApplicationJsonLd = appEntry ? (() => {
+    const titleText = typeof title === 'string' ? title : appEntry.name;
+    const taglineText = typeof tagline === 'string' ? tagline : undefined;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      '@id': `${siteConfig?.url || ''}${appEntry.productHref}#app`,
+      name: titleText,
+      applicationCategory: applicationCategoryFor(appId),
+      operatingSystem: 'Nextcloud',
+      url: `${siteConfig?.url || ''}${appEntry.productHref}`,
+      sameAs: [appEntry.docsHref].filter(Boolean),
+      publisher: {'@id': 'https://www.conduction.nl/#org'},
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+      },
+      license: 'https://eupl.eu/1.2/en/',
+    };
+    if (taglineText) schema.description = taglineText;
+    if (resolvedVersion) schema.softwareVersion = resolvedVersion.replace(/^v/, '');
+    if (dlCount > 0) {
+      /* Surface install count as InteractionCounter rather than
+         aggregateRating; downloads are not reviews. */
+      schema.interactionStatistic = {
+        '@type': 'InteractionCounter',
+        interactionType: {'@type': 'DownloadAction'},
+        userInteractionCount: dlCount,
+      };
+    }
+    return schema;
+  })() : null;
+
   return (
     <section className={[styles.head, hasIllustration && styles.withIllustration, bgClass, className].filter(Boolean).join(' ')}>
+      {softwareApplicationJsonLd && (
+        <Head>
+          <script type="application/ld+json">
+            {JSON.stringify(softwareApplicationJsonLd)}
+          </script>
+        </Head>
+      )}
       {crumb && Array.isArray(crumb) && (
         <div className={styles.crumb}>
           {crumb.map((c, i) => {

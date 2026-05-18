@@ -27,23 +27,46 @@
  */
 
 export const APPS_REGISTRY = {
-  opencatalogi:    {slug: 'opencatalogi',    name: 'OpenCatalogi',     productHref: '/apps/opencatalogi',    docsHref: 'https://docs.conduction.nl/opencatalogi',    academyHref: '/academy?app=opencatalogi'},
-  openregister:    {slug: 'openregister',    name: 'OpenRegister',     productHref: '/apps/openregister',    docsHref: 'https://docs.conduction.nl/openregister',    academyHref: '/academy?app=openregister'},
-  openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    productHref: '/apps/openconnector',   docsHref: 'https://docs.conduction.nl/openconnector',   academyHref: '/academy?app=openconnector'},
-  docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         productHref: '/apps/docudesk',        docsHref: 'https://docs.conduction.nl/docudesk',        academyHref: '/academy?app=docudesk'},
-  mydash:          {slug: 'mydash',          name: 'MyDash',           productHref: '/apps/mydash',          docsHref: 'https://docs.conduction.nl/mydash',          academyHref: '/academy?app=mydash'},
-  zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  productHref: '/apps/zaakafhandelapp', docsHref: 'https://docs.conduction.nl/zaakafhandelapp', academyHref: '/academy?app=zaakafhandelapp'},
-  pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         productHref: '/apps/pipelinq',        docsHref: 'https://docs.conduction.nl/pipelinq',        academyHref: '/academy?app=pipelinq'},
-  procest:         {slug: 'procest',         name: 'Procest',          productHref: '/apps/procest',         docsHref: 'https://docs.conduction.nl/procest',         academyHref: '/academy?app=procest'},
-  decidesk:        {slug: 'decidesk',        name: 'DeciDesk',         productHref: '/apps/decidesk',        docsHref: 'https://docs.conduction.nl/decidesk',        academyHref: '/academy?app=decidesk'},
-  softwarecatalog: {slug: 'softwarecatalog', name: 'SoftwareCatalog',  productHref: '/apps/softwarecatalog', docsHref: 'https://docs.conduction.nl/softwarecatalog', academyHref: '/academy?app=softwarecatalog'},
-  larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
-  nldesign:        {slug: 'nldesign',        name: 'NLDesign',         productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
-  shillinq:        {slug: 'shillinq',        name: 'Shillinq',         productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
-  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
-  doriath:         {slug: 'doriath',         name: 'Doriath',          productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
-  'app-versions':  {slug: 'app-versions',    name: 'App Versions',     productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
+  opencatalogi:    {slug: 'opencatalogi',    name: 'OpenCatalogi',     category: 'Data',        productHref: '/apps/opencatalogi',    docsHref: 'https://docs.conduction.nl/opencatalogi',    academyHref: '/academy?app=opencatalogi'},
+  openregister:    {slug: 'openregister',    name: 'OpenRegister',     category: 'Data',        productHref: '/apps/openregister',    docsHref: 'https://docs.conduction.nl/openregister',    academyHref: '/academy?app=openregister'},
+  openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    category: 'Connectors',  productHref: '/apps/openconnector',   docsHref: 'https://docs.conduction.nl/openconnector',   academyHref: '/academy?app=openconnector'},
+  docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docs.conduction.nl/docudesk',        academyHref: '/academy?app=docudesk'},
+  mydash:          {slug: 'mydash',          name: 'MyDash',           category: 'Dashboards',  productHref: '/apps/mydash',          docsHref: 'https://docs.conduction.nl/mydash',          academyHref: '/academy?app=mydash'},
+  zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  category: 'Processes',   productHref: '/apps/zaakafhandelapp', docsHref: 'https://docs.conduction.nl/zaakafhandelapp', academyHref: '/academy?app=zaakafhandelapp'},
+  pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://docs.conduction.nl/pipelinq',        academyHref: '/academy?app=pipelinq'},
+  procest:         {slug: 'procest',         name: 'Procest',          category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://docs.conduction.nl/procest',         academyHref: '/academy?app=procest'},
+  decidesk:        {slug: 'decidesk',        name: 'DeciDesk',         category: 'Processes',   productHref: '/apps/decidesk',        docsHref: 'https://docs.conduction.nl/decidesk',        academyHref: '/academy?app=decidesk'},
+  softwarecatalog: {slug: 'softwarecatalog', name: 'SoftwareCatalog',  category: 'Data',        productHref: '/apps/softwarecatalog', docsHref: 'https://docs.conduction.nl/softwarecatalog', academyHref: '/academy?app=softwarecatalog'},
+  larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
+  nldesign:        {slug: 'nldesign',        name: 'NLDesign',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
+  shillinq:        {slug: 'shillinq',        name: 'Shillinq',         category: 'Processes',   productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
+  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        category: 'Processes',   productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
+  doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
+  'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
 };
+
+/**
+ * Map an apps-catalog category to a schema.org applicationCategory.
+ * Used by <DetailHero> when emitting SoftwareApplication JSON-LD for
+ * AI crawlers. Defaults to BusinessApplication for any unknown
+ * category, since every Conduction app fits BusinessApplication in
+ * the absence of better signal.
+ */
+export const SCHEMA_APPLICATION_CATEGORY = {
+  Data:        'BusinessApplication',
+  Processes:   'BusinessApplication',
+  Connectors:  'DeveloperApplication',
+  Documents:   'BusinessApplication',
+  Dashboards:  'BusinessApplication',
+  AI:          'BusinessApplication',
+};
+
+/** Resolve an appId to its schema.org applicationCategory. */
+export function applicationCategoryFor(slug) {
+  const entry = APPS_REGISTRY[slug];
+  if (!entry) return 'BusinessApplication';
+  return SCHEMA_APPLICATION_CATEGORY[entry.category] || 'BusinessApplication';
+}
 
 export const APP_SLUGS = Object.keys(APPS_REGISTRY);
 

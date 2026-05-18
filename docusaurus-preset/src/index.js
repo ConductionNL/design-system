@@ -89,6 +89,136 @@ function resolveAppVersion(opts) {
 }
 
 /**
+ * Brand-default Organization JSON-LD. One canonical version of the
+ * company's legal-entity facts (address, KvK, BTW, socials), shipped on
+ * every Conduction site so AI crawlers (GPTBot, ClaudeBot, Perplexity-
+ * Bot, OAI-SearchBot, Google AI Overviews) get the same answer to
+ * "who is Conduction" regardless of which subdomain they landed on.
+ * Updates here propagate to the fleet on the next preset release.
+ *
+ * Sites that aren't conduction.nl (per-app docs sites at
+ * {slug}.conduction.nl, etc.) still reference the same Organization via
+ * @id, so cross-site citations consolidate cleanly.
+ */
+const BRAND_ORGANIZATION_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://www.conduction.nl/#org',
+  name: 'Conduction B.V.',
+  alternateName: 'Conduction',
+  url: 'https://www.conduction.nl/',
+  logo: 'https://www.conduction.nl/img/brand/avatar-conduction-gold-on-white.svg',
+  foundingDate: '2019',
+  description:
+    'Dutch open-source software company building EUPL-1.2 apps for the Nextcloud workspace.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Lauriergracht 14h',
+    postalCode: '1016 RR',
+    addressLocality: 'Amsterdam',
+    addressCountry: 'NL',
+  },
+  email: 'info@conduction.nl',
+  telephone: '+31-85-303-6840',
+  taxID: 'NL860784241B01',
+  vatID: 'NL860784241B01',
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'KvK',
+    value: '76741850',
+  },
+  sameAs: [
+    'https://github.com/ConductionNL',
+    'https://www.linkedin.com/company/conduction/',
+  ],
+};
+
+/**
+ * Build the per-site WebSite JSON-LD that ties the consuming site to
+ * the shared Organization. WebSite carries the site title and URL the
+ * site was configured with; Organization stays canonical.
+ */
+function buildWebsiteJsonLd(opts) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${opts.url}/#website`,
+    url: `${opts.url}/`,
+    name: opts.title,
+    publisher: {'@id': 'https://www.conduction.nl/#org'},
+    inLanguage: (opts.i18n && opts.i18n.locales) || ['nl', 'en', 'de', 'fr'],
+  };
+}
+
+/**
+ * Default headTags emitted on every page. Two JSON-LD blocks
+ * (Organization + WebSite) consumed by AI crawlers, Google rich
+ * results, Bing AI, LinkedIn previews. Static SSG output, so non-JS
+ * fetchers (GPTBot, ClaudeBot, PerplexityBot) see them too.
+ *
+ * Sites extend by passing `opts.headTags = [...]`; the preset merges
+ * the site's tags after its own defaults.
+ */
+function buildAiHeadTags(opts) {
+  return [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify(BRAND_ORGANIZATION_JSONLD),
+    },
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify(buildWebsiteJsonLd(opts)),
+    },
+  ];
+}
+
+/**
+ * Default sitemap plugin options. Each locale outputs its own
+ * sitemap.xml. /academy/tags/** is excluded site-wide because tag
+ * pages are thin and confuse AI summarisers more than they help SEO.
+ * ignorePatterns matches the *route path* after locale prefixing, so
+ * we list every locale variant.
+ *
+ * Sites passing their own classic preset config can override by
+ * including a `sitemap` key alongside `docs`/`blog`/`theme`.
+ */
+const DEFAULT_SITEMAP_OPTIONS = {
+  changefreq: 'weekly',
+  priority: 0.5,
+  ignorePatterns: [
+    '/academy/tags/**',
+    '/nl/academy/tags/**',
+    '/en/academy/tags/**',
+    '/de/academy/tags/**',
+    '/fr/academy/tags/**',
+  ],
+  filename: 'sitemap.xml',
+};
+
+/**
+ * Default themeConfig.metadata. Twitter + og:type baselines so social
+ * cards render correctly. Per-page MDX frontmatter still wins (Helmet
+ * de-dupes by meta name/property). Sites override the whole array by
+ * passing `themeConfig.metadata = [...]` in opts.
+ */
+const DEFAULT_METADATA = [
+  {name: 'twitter:site', content: '@ConductionNL'},
+  {name: 'twitter:card', content: 'summary_large_image'},
+  {property: 'og:type', content: 'website'},
+];
+
+/**
+ * Default OG image. 1200x630 cobalt brand card shipped from the preset
+ * static/img/. Sites can override by dropping their own
+ * static/img/og-conduction.png (staticDirectories precedence puts the
+ * site's file last). For per-app product cards, set themeConfig.image
+ * explicitly in your site config.
+ */
+const DEFAULT_OG_IMAGE = 'img/og-conduction.png';
+
+/**
  * Brand-default i18n block. Nederlands at the URL root, others at /en/, /de/, /fr/.
  */
 const I18N = {
@@ -266,12 +396,19 @@ function createConfig(opts) {
     onBrokenLinks: 'warn',
     onBrokenMarkdownLinks: 'warn',
 
-    /* Two static roots, in increasing-precedence order:
-         1. preset's own ../static (lib/canal-footer, conduction-bg, hex-rain,
-            platform-diagram + brand img/favicon, logo, logo-dark, nextcloud-logo)
+    /* Two static roots. Docusaurus wires staticDirectories through
+       copy-webpack-plugin's parallel pattern processing (Promise.all),
+       so for file collisions the winner is whichever pattern finishes
+       reading first — non-deterministic in practice (preset wins on
+       most disks because it ships smaller). Don't rely on this array
+       order for overrides; ship a Docusaurus plugin like
+       ./plugins/ai-crawling.js when you need deterministic precedence.
+         1. preset's own ../static (canal-footer, conduction-bg,
+            hex-rain, platform-diagram, brand img/favicon, logo, logo-
+            dark, nextcloud-logo, default OG card)
          2. site's own static/ (CNAME, site-specific images, overrides)
-       Last wins per-file, so a site can drop its own /img/logo.svg into
-       static/img/logo.svg to override the brand default. */
+       Files unique to one directory always copy; conflicts are
+       essentially undefined behaviour. */
     staticDirectories: opts.staticDirectories || [
       path.resolve(__dirname, '..', 'static'),
       'static',
@@ -295,6 +432,11 @@ function createConfig(opts) {
           theme: {
             customCss,
           },
+          /* AI-crawler-friendly defaults for @docusaurus/plugin-sitemap.
+             Per-locale sitemap.xml emitted automatically; /academy/tags
+             excluded across every locale prefix. Sites passing their own
+             presets array must include their own sitemap config too. */
+          sitemap: DEFAULT_SITEMAP_OPTIONS,
         },
       ],
     ],
@@ -363,17 +505,53 @@ function createConfig(opts) {
                isoCertifications: true | false,
              } */
         legalLinks: opts.legalLinks || {},
+        /* AI-friendly social-card defaults. `image` ships from the
+           preset's static/img/og-conduction.png and gets served at every
+           consuming site's /img/og-conduction.png; drop your own
+           static/img/og-conduction.png to override per-site. `metadata`
+           seeds twitter:site + twitter:card + og:type baselines; per-
+           page MDX frontmatter still wins via Helmet de-dupe. */
+        image: DEFAULT_OG_IMAGE,
+        metadata: DEFAULT_METADATA,
       },
       opts.themeConfig || {}
     ),
 
-    plugins: opts.plugins || [],
+    /* AI-crawler discovery: Organization + WebSite JSON-LD on every
+       page, plus any site-specific tags the consumer adds. Sites
+       inherit the canonical Conduction Organization automatically;
+       per-app SoftwareApplication schemas are emitted by the
+       <DetailHero> component on the pages it renders. */
+    headTags: [
+      ...buildAiHeadTags(opts),
+      ...(opts.headTags || []),
+    ],
+
+    /* The AI-crawling plugin emits /robots.txt (and optionally /llms.txt)
+       in postBuild, after webpack's copy-plugin has copied static files.
+       It no-ops when the file already exists in outDir, so a site's own
+       static/robots.txt or static/llms.txt always wins. Sites disable
+       per-file or wholesale via opts.aiCrawling.disable. Hand-rolled
+       plugins in opts.plugins are appended after this default. */
+    plugins: [
+      [
+        require.resolve('./plugins/ai-crawling.js'),
+        opts.aiCrawling || {},
+      ],
+      ...(opts.plugins || []),
+    ],
   };
 }
 
 module.exports = {
   createConfig,
   I18N,
+  BRAND_ORGANIZATION_JSONLD,
+  buildWebsiteJsonLd,
+  buildAiHeadTags,
+  DEFAULT_SITEMAP_OPTIONS,
+  DEFAULT_METADATA,
+  DEFAULT_OG_IMAGE,
   baseNavbar,
   baseFooter,
   baseFooterLinks,

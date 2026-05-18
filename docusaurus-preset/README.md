@@ -21,6 +21,7 @@ A few non-negotiables encoded by the package CSS and worth knowing about:
 - **Brand-default navbar** — locale-dropdown + GitHub link. Sites override `items[]` for site-specific navigation.
 - **Brand-default footer** — three-column link grid + Conduction-tells (KvK, BTW, address). Per-property override: pass `footer: { links: [...] }` to swap columns and inherit the brand copyright unchanged. Spread `baseFooterLinks()` to keep one or two brand columns alongside site-specific ones.
 - **Sensible defaults** — `trailingSlash`, `onBrokenLinks: 'warn'`, `respectPrefersColorScheme`, dark-mode brand mapping.
+- **AI-crawler baseline** — Organization + WebSite JSON-LD on every page, `SoftwareApplication` JSON-LD from `<DetailHero>`, `FAQPage` JSON-LD from `<FAQ>`, default `og:image` + Twitter card meta, sitemap options, and a `postBuild` plugin that emits `robots.txt` when the site does not ship its own. See the AI baseline section below for the validator and content requirements.
 
 ## Usage
 
@@ -162,6 +163,55 @@ import '@conduction/docusaurus-preset/diagrams';
 ```
 
 This is how product sites such as `mydash.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
+
+## AI-crawler baseline
+
+Every site that consumes this preset inherits a contract that AI crawlers (GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google AI Overviews) expect. The schemas, meta tags, and `robots.txt` ship automatically; sites only have to opt in to the content that surfaces them.
+
+**What the preset ships**
+
+| Surface | Source | How a site uses it |
+| --- | --- | --- |
+| Organization + WebSite JSON-LD | `headTags` injected by `createConfig` | Automatic on every page |
+| `og:image`, `twitter:site`, `twitter:card`, `og:type` | `themeConfig.image` + `themeConfig.metadata` defaults | Override per site by passing `themeConfig.image: 'img/og-my-app.png'` |
+| Default `robots.txt` | `conduction-ai-crawling` postBuild plugin | Drop `static/robots.txt` to override |
+| `SoftwareApplication` JSON-LD | `<DetailHero appId="my-app" .../>` | Pages that should advertise the app must render `<DetailHero>` with an `appId` that resolves in `src/data/apps-registry.js`. No DetailHero means no schema. |
+| `FAQPage` JSON-LD | `<FAQ>` with `<FAQItem question=...>` children | Drop a `<FAQ>` block onto a page; the schema is auto-emitted from the children |
+| Sitemap options | Default `sitemap` config on the classic preset | Sites that override `presets` must include their own `sitemap` block |
+
+**Validating a site**
+
+The preset ships a generic 8-check validator as a `bin`. Wire it into the site's build:
+
+```jsonc
+// docs/package.json
+{
+  "scripts": {
+    "build": "docusaurus build",
+    "postbuild": "validate-ai-baseline",
+    "validate:ai-baseline": "validate-ai-baseline"
+  }
+}
+```
+
+`npm run build` now exits non-zero if any of these regress: `robots.txt` exists with a Sitemap line and an AI-bot allow line, `sitemap.xml` has at least one URL, the homepage emits Organization + WebSite JSON-LD plus `og:image` / `og:type` / `twitter:site` / `twitter:card`, and the `og:image` URL resolves to a real file. Sites can extend the validator with extra checks (per-app SoftwareApplication, FAQPage on specific pages, etc.) by adding their own `scripts/validate-ai-baseline-site.mjs` and chaining it.
+
+**Per-app docs site checklist**
+
+For a per-app docs site to satisfy the full schema contract, the landing page must render `<DetailHero appId="my-app" .../>` with an `appId` that exists in `src/data/apps-registry.js`. That single render emits the `SoftwareApplication` JSON-LD with category mapping (Data and Processes -> BusinessApplication, Connectors -> DeveloperApplication, etc.), `operatingSystem: 'Nextcloud'`, and the EUPL-1.2 license URL. Sites that build a custom landing without `<DetailHero>` get only Organization + WebSite, not the per-app schema.
+
+**Opting out**
+
+```js
+createConfig({
+  title: '...',
+  url: '...',
+  baseUrl: '/',
+  aiCrawling: { disable: true },          // skip the whole postBuild plugin
+  // or, finer-grained:
+  aiCrawling: { disable: { robotsTxt: true } },  // ship our own static/robots.txt
+});
+```
 
 ## Releasing
 

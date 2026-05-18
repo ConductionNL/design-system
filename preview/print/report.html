@@ -580,11 +580,13 @@
   /* ---- Playful info box variant ----
      Card bleeds margin-right past the .body-page right padding all the
      way to the paper edge. The hex IS the left border treatment: it
-     sits at the top-left at fixed 14×16.1mm. For short content (≤16mm)
-     the hex alone reads as the full left edge. For tall content a thin
-     line continues below the hex, positioned to line up with the hex's
-     vertical centerline (x = hex_width / 2 = 7mm) so it reads as a
-     visual continuation of the hex's point, not as a separate border. */
+     sits at the top-left at fixed 14×16.1mm. Both the card bg AND the
+     border line are anchored to the hex's vertical centerline (x=7mm):
+     - bg is a horizontal gradient with a hard edge at x=7mm, so the
+       coloured area starts exactly where the line is
+     - line is a ::before pseudo at top:0, full height, centered on
+       x=7mm. The hex (z-index:2) covers the upper 16.1mm of the line,
+       so there is no visible gap between hex and line. */
   .info-page .info-box-playful {
     position: relative;
     margin-right: -22mm;
@@ -594,13 +596,15 @@
     justify-content: center;
   }
   .info-page .info-box-playful::before {
+    /* border line, centered on hex centerline, extends top to bottom
+       of card; hex's z-index covers the top 16.1mm so no visible gap. */
     content: "";
     position: absolute;
-    left: 6.6mm;     /* hex centerline = 14mm / 2 = 7mm, minus half line width */
-    top: 16.1mm;     /* starts just below the hex bottom point */
-    bottom: 0;
+    left: 6.6mm;
+    top: 0; bottom: 0;
     width: 0.8mm;
     background: var(--c-cobalt-200);
+    z-index: 1;
   }
   .info-page .info-box-playful .icon {
     position: absolute;
@@ -608,7 +612,7 @@
     width: 14mm; height: 16.1mm;
     clip-path: var(--hex-pointy-top);
     display: flex; align-items: center; justify-content: center;
-    z-index: 1;
+    z-index: 2;
   }
   .info-page .info-box-playful .icon svg {
     width: 6mm; height: 6mm; fill: white;
@@ -622,23 +626,33 @@
     font-size: 9.5pt; line-height: 1.55; color: var(--c-cobalt-900);
     margin: 0;
   }
-  /* variant fills mirror the standard info-box variants */
-  .info-page .info-box-playful.note { background: var(--c-cobalt-50); }
+  /* variant fills mirror the standard info-box variants. bg is a
+     horizontal gradient with a hard edge at 7mm so the coloured area
+     begins exactly at the hex centerline (= where the line sits). */
+  .info-page .info-box-playful.note {
+    background: linear-gradient(90deg, transparent 7mm, var(--c-cobalt-50) 7mm);
+  }
   .info-page .info-box-playful.note::before { background: var(--c-blue-cobalt); }
   .info-page .info-box-playful.note .icon { background: var(--c-blue-cobalt); }
   .info-page .info-box-playful.note .h { color: var(--c-blue-cobalt); }
 
-  .info-page .info-box-playful.tip { background: #E8F4EE; }
+  .info-page .info-box-playful.tip {
+    background: linear-gradient(90deg, transparent 7mm, #E8F4EE 7mm);
+  }
   .info-page .info-box-playful.tip::before { background: var(--c-mint-500); }
   .info-page .info-box-playful.tip .icon { background: var(--c-mint-500); }
   .info-page .info-box-playful.tip .h { color: var(--c-mint-500); }
 
-  .info-page .info-box-playful.warning { background: #F7E9E4; }
+  .info-page .info-box-playful.warning {
+    background: linear-gradient(90deg, transparent 7mm, #F7E9E4 7mm);
+  }
   .info-page .info-box-playful.warning::before { background: var(--c-terracotta-500); }
   .info-page .info-box-playful.warning .icon { background: var(--c-terracotta-500); }
   .info-page .info-box-playful.warning .h { color: var(--c-terracotta-500); }
 
-  .info-page .info-box-playful.important { background: #FDEDE0; }
+  .info-page .info-box-playful.important {
+    background: linear-gradient(90deg, transparent 7mm, #FDEDE0 7mm);
+  }
   .info-page .info-box-playful.important::before { background: var(--c-orange-knvb); }
   .info-page .info-box-playful.important .icon { background: var(--c-orange-knvb); }
   .info-page .info-box-playful.important .h { color: var(--c-orange-knvb); }

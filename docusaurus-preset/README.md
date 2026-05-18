@@ -213,6 +213,35 @@ createConfig({
 });
 ```
 
+## Traditional SEO baseline
+
+The same `createConfig` call also wires the traditional-search baseline that pairs with the AI-crawler one. Google, Bing, DuckDuckGo and the AI surfaces those engines feed (Copilot, ChatGPT Search, Perplexity) all benefit.
+
+**What's shipped automatically**
+
+- **Sitemap with `lastmod`** from file mtime; `priority` and `changefreq` are dropped because Google ignores them. `/page/N/` pagination and `/academy/tags/` thin pages are excluded sitewide so they don't dilute crawl budget.
+- **Footer legal links default to absolute URLs on `www.conduction.nl`** (`/privacy`, `/terms`, `/iso`). Earlier defaults used relative routes that 404'd on every per-app subdomain — the SEO audit found ~645 sitewide broken internal links across the fleet from this single mistake. Marketing sites that self-host these pages pass `legalLinks: { privacy: '/privacy', ... }` to opt back into relative routing.
+- **Search Console / Bing Webmaster / Yandex / Facebook / Pinterest verification meta tags** via `opts.searchConsoleVerification`. Each present token becomes a `<meta>` tag in the global head, which lets a non-DNS-admin teammate verify the property via the console UI:
+
+```js
+createConfig({
+  // ...
+  searchConsoleVerification: {
+    google: 'abc123...',     // -> <meta name="google-site-verification">
+    bing:   'xyz...',        // -> <meta name="msvalidate.01">
+    yandex: '...',           // -> <meta name="yandex-verification">
+    facebook: '...',         // -> <meta name="facebook-domain-verification">
+    pinterest: '...',        // -> <meta name="p:domain_verify">
+  },
+});
+```
+
+**Known follow-ups (not yet automatic)**
+
+- `BreadcrumbList` JSON-LD on every page. The DocBreadcrumbs DOM already renders; the schema needs a theme swizzle. Tracked as a 3.7+ candidate.
+- `TechArticle` JSON-LD on docs pages with `dateModified` from git mtime. Same swizzle scope.
+- Per-page title format. Docusaurus defaults to `{Page} | {Site}` which produces `OpenRegister | OpenRegister` on per-app homepages. Override per page via frontmatter `title:` for now; a `titleFormat` option may land later.
+
 ## Releasing
 
 Releases auto-publish on push to `main`, driven by [semantic-release](https://semantic-release.gitbook.io/) reading [conventional-commit](https://www.conventionalcommits.org/) messages. The [.github/workflows/publish-packages.yml](../.github/workflows/publish-packages.yml) workflow walks every commit since the last `@conduction/docusaurus-preset-v*` tag and decides what to ship:

@@ -160,7 +160,7 @@ function buildWebsiteJsonLd(opts) {
  * the site's tags after its own defaults.
  */
 function buildAiHeadTags(opts) {
-  return [
+  const tags = [
     {
       tagName: 'script',
       attributes: {type: 'application/ld+json'},
@@ -172,6 +172,45 @@ function buildAiHeadTags(opts) {
       innerHTML: JSON.stringify(buildWebsiteJsonLd(opts)),
     },
   ];
+
+  /* Search Console verification meta tags. Sites pass tokens via
+     opts.searchConsoleVerification = { google: '...', bing: '...',
+     yandex: '...' }; each present token becomes a meta tag. Verifying
+     via meta (vs DNS TXT) lets a non-DNS-admin teammate access Search
+     Console / Bing Webmaster Tools. */
+  const verification = opts.searchConsoleVerification || {};
+  if (verification.google) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'google-site-verification', content: verification.google},
+    });
+  }
+  if (verification.bing) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'msvalidate.01', content: verification.bing},
+    });
+  }
+  if (verification.yandex) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'yandex-verification', content: verification.yandex},
+    });
+  }
+  if (verification.facebook) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'facebook-domain-verification', content: verification.facebook},
+    });
+  }
+  if (verification.pinterest) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'p:domain_verify', content: verification.pinterest},
+    });
+  }
+
+  return tags;
 }
 
 /**
@@ -184,15 +223,34 @@ function buildAiHeadTags(opts) {
  * Sites passing their own classic preset config can override by
  * including a `sitemap` key alongside `docs`/`blog`/`theme`.
  */
+/**
+ * Sitemap defaults. Google ignores `changefreq` and `priority` (and has
+ * for years; the @docusaurus/plugin-sitemap defaults are wrong on this
+ * point). `lastmod` is the only signal Google actually uses, and only
+ * if the dates are accurate, so we ship lastmod from file mtime. Bing
+ * still reads all three, harmless to omit.
+ *
+ * Sites with locale-specific tag pages and pagination should keep the
+ * exclude list in sync. Pagination (`/page/N/`) and tag pages
+ * (`/tags/*/`) are documented Docusaurus duplicate-content traps;
+ * we exclude them by default so they neither dilute crawl budget nor
+ * confuse AI summarisers.
+ */
 const DEFAULT_SITEMAP_OPTIONS = {
-  changefreq: 'weekly',
-  priority: 0.5,
+  changefreq: null,
+  priority: null,
+  lastmod: 'date',
   ignorePatterns: [
     '/academy/tags/**',
     '/nl/academy/tags/**',
     '/en/academy/tags/**',
     '/de/academy/tags/**',
     '/fr/academy/tags/**',
+    '/page/**',
+    '/nl/page/**',
+    '/en/page/**',
+    '/de/page/**',
+    '/fr/page/**',
   ],
   filename: 'sitemap.xml',
 };
@@ -489,9 +547,15 @@ function createConfig(opts) {
         footerBrand: opts.footerBrand || null,
         /* Legal-bar links (Privacy / Terms / ISO) plus the two ISO
            9001 + 27001 certification badges on the right side of the
-           canal-footer. Default keeps prior behaviour (pages live at
-           /privacy, /terms, /iso on docs.conduction.nl + www.conduction.nl).
-           Consumer sites that don't ship those pages can opt out per
+           canal-footer.
+
+           Defaults point at the canonical Conduction pages on
+           www.conduction.nl rather than relative routes. Earlier
+           defaults used /privacy, /terms, /iso which 404'd on every
+           per-app subdomain (openregister.conduction.nl/privacy etc.)
+           because those routes only exist on the marketing site. The
+           SEO audit found ~645 sitewide broken internal links across
+           the fleet from this single mistake. Sites can override per
            slot to silence broken-link warnings:
 
              legalLinks: {
@@ -499,12 +563,21 @@ function createConfig(opts) {
                terms:   false,     // hide the Terms link
                iso:     false,     // hide the ISO link AND the cert badges
                                    // (badges follow iso link by default)
-               // any slot can also take a string for an external URL:
-               privacy: 'https://docs.conduction.nl/privacy',
-               // certs default-follow iso, override here:
-               isoCertifications: true | false,
-             } */
-        legalLinks: opts.legalLinks || {},
+               privacy: '/privacy', // self-host: pass a relative route
+               certifications: true | false,
+             }
+
+           The marketing site at conduction-website passes legalLinks
+           explicitly with relative routes so its self-hosted Privacy /
+           Terms / ISO pages keep working as before. */
+        legalLinks: Object.assign(
+          {
+            privacy: 'https://www.conduction.nl/privacy',
+            terms: 'https://www.conduction.nl/terms',
+            iso: 'https://www.conduction.nl/iso',
+          },
+          opts.legalLinks || {}
+        ),
         /* AI-friendly social-card defaults. `image` ships from the
            preset's static/img/og-conduction.png and gets served at every
            consuming site's /img/og-conduction.png; drop your own

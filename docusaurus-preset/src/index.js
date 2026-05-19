@@ -293,6 +293,41 @@ const I18N = {
 };
 
 /**
+ * Wrap a user-supplied `opts.presets` array so the classic preset's
+ * `sitemap` option inherits brand defaults (lastmod, ignorePatterns)
+ * when the site hasn't set them explicitly. Before this helper, sites
+ * that passed their own presets array silently lost the preset's
+ * DEFAULT_SITEMAP_OPTIONS, so the fleet sitemaps never shipped
+ * <lastmod> tags despite the preset claiming to add them. See
+ * MEMORY.md project_preset-4.0-wrap-user-presets for the back story.
+ *
+ * Recognises both 'classic' and '@docusaurus/preset-classic' entries.
+ * Leaves non-classic presets untouched. Explicit user values win:
+ * `sitemap: null` opts out, `sitemap: { lastmod: false }` opts out
+ * of lastmod specifically, and so on.
+ */
+function wrapClassicPresetDefaults(userPresets) {
+  return userPresets.map(entry => {
+    if (!Array.isArray(entry)) return entry;
+    const [name, config] = entry;
+    const isClassic =
+      name === 'classic' || name === '@docusaurus/preset-classic';
+    if (!isClassic || typeof config !== 'object' || config === null) return entry;
+    if (config.sitemap === null) return entry; /* explicit opt-out */
+    return [
+      name,
+      {
+        ...config,
+        sitemap: {
+          ...DEFAULT_SITEMAP_OPTIONS,
+          ...(config.sitemap || {}),
+        },
+      },
+    ];
+  });
+}
+
+/**
  * Brand-default navbar. Sites pass their own items[] and logo; the chrome
  * styling (cobalt-on-white, Plex-Mono caption) is locked.
  *
@@ -476,30 +511,34 @@ function createConfig(opts) {
 
     i18n: opts.i18n || I18N,
 
-    presets: opts.presets || [
-      [
-        'classic',
-        {
-          docs: {
-            sidebarPath: './sidebars.js',
-            editUrl: opts.editUrl,
-          },
-          blog: opts.blog === false ? false : {
-            showReadingTime: true,
-            blogTitle: opts.title + ' blog',
-            blogDescription: 'Updates from Conduction',
-          },
-          theme: {
-            customCss,
-          },
-          /* AI-crawler-friendly defaults for @docusaurus/plugin-sitemap.
-             Per-locale sitemap.xml emitted automatically; /academy/tags
-             excluded across every locale prefix. Sites passing their own
-             presets array must include their own sitemap config too. */
-          sitemap: DEFAULT_SITEMAP_OPTIONS,
-        },
-      ],
-    ],
+    /* Sites can pass `opts.presets` to override docs/blog/theme. When
+       they do, the preset wraps each classic preset entry to deep-merge
+       DEFAULT_SITEMAP_OPTIONS into the entry's sitemap key (lastmod
+       becomes automatic, ignorePatterns merge in). Without this wrap
+       sites would have to copy-paste the sitemap config in every
+       docusaurus.config.js, and the fleet would drift over time. */
+    presets: opts.presets
+      ? wrapClassicPresetDefaults(opts.presets)
+      : [
+          [
+            'classic',
+            {
+              docs: {
+                sidebarPath: './sidebars.js',
+                editUrl: opts.editUrl,
+              },
+              blog: opts.blog === false ? false : {
+                showReadingTime: true,
+                blogTitle: opts.title + ' blog',
+                blogDescription: 'Updates from Conduction',
+              },
+              theme: {
+                customCss,
+              },
+              sitemap: DEFAULT_SITEMAP_OPTIONS,
+            },
+          ],
+        ],
 
     /* Brand theme: registers ./theme/* swizzles (Navbar, Footer, …)
        and auto-loads brand.css. Site-specific themes can be added by
@@ -581,15 +620,34 @@ function createConfig(opts) {
           opts.legalLinks || {}
         ),
         /* AI-friendly social-card defaults. `image` ships from the
-           preset's static/img/og-conduction.png and gets served at every
-           consuming site's /img/og-conduction.png; drop your own
-           static/img/og-conduction.png to override per-site. `metadata`
-           seeds twitter:site + twitter:card + og:type baselines; per-
-           page MDX frontmatter still wins via Helmet de-dupe. */
-        image: DEFAULT_OG_IMAGE,
-        metadata: DEFAULT_METADATA,
+           preset's static/img/og-conduction.png and gets served at
+           every consuming site's /img/og-conduction.png; drop your
+           own static/img/og-conduction.png to override per-site, or
+           pass `themeConfig.image: 'img/og-my-app.png'` to use a
+           different file. `metadata` seeds twitter:site + twitter:card
+           + og:type baselines; per-page MDX frontmatter still wins
+           via Helmet de-dupe.
+
+           These two slots are handled below via explicit overrides
+           rather than the wholesale Object.assign so that user-set
+           metadata extends (rather than replaces) the brand defaults
+           and image falls back gracefully. */
+        image: opts.themeConfig?.image || DEFAULT_OG_IMAGE,
+        metadata: [
+          ...DEFAULT_METADATA,
+          ...(opts.themeConfig?.metadata || []),
+        ],
       },
-      opts.themeConfig || {}
+      /* Object.assign last so opts.themeConfig overrides primitives
+         like colorMode and navbar, but the image + metadata keys
+         above pre-merged the user's values so the spread doesn't
+         clobber the brand defaults. */
+      (() => {
+        if (!opts.themeConfig) return {};
+        /* eslint-disable-next-line no-unused-vars */
+        const {image: _image, metadata: _metadata, ...rest} = opts.themeConfig;
+        return rest;
+      })()
     ),
 
     /* AI-crawler discovery: Organization + WebSite JSON-LD on every

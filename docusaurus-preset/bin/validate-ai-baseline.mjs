@@ -87,25 +87,24 @@ check('sitemap.xml exists and has at least 1 URL', () => {
   return {ok: true, msg: `${n} URLs`};
 });
 
-/* sitemap.xml lastmod check is informational only. Google treats
-   lastmod as the only sitemap-level signal that actually informs
-   recrawl priority, but applying it requires per-site docusaurus.config
-   changes (sites that override `presets:` don't pick up the preset's
-   DEFAULT_SITEMAP_OPTIONS automatically). Warning here surfaces the
-   gap without blocking deploy on fleet sites that haven't adopted
-   the new sitemap config yet. Promote back to hard-fail in a future
-   release once the preset wraps user presets to inject sitemap defaults
-   automatically. */
-check('sitemap.xml emits <lastmod> on URLs (advisory, not fatal)', () => {
+/* sitemap.xml should ship <lastmod> on every URL. Google treats lastmod
+   as the only sitemap-level signal that actually informs recrawl
+   priority, and only when it's trustworthy. Preset 3.7+ wraps user-
+   supplied opts.presets to inject DEFAULT_SITEMAP_OPTIONS (lastmod:
+   'date') into any classic preset entry, so every site that bumps
+   should see lastmod automatically. Hard-fail blocks regression. */
+check('sitemap.xml emits <lastmod> on URLs', () => {
   const body = readBuild('sitemap.xml');
   const locCount = (body.match(/<loc>/g) || []).length;
   const lastmodCount = (body.match(/<lastmod>/g) || []).length;
   if (locCount === 0) return {ok: false, msg: 'no <loc> entries to compare against'};
   if (lastmodCount === 0) {
-    /* Surface as a "passed with note" rather than fail. */
-    return {ok: true, msg: `WARN 0 / ${locCount} URLs have <lastmod> (enable sitemap.lastmod in docusaurus.config)`};
+    return {ok: false, msg: `0 / ${locCount} URLs have <lastmod>. Upgrade to @conduction/docusaurus-preset ^3.7.0 or set sitemap.lastmod in docusaurus.config.`};
   }
   const ratio = lastmodCount / locCount;
+  if (ratio < 0.9) {
+    return {ok: false, msg: `only ${lastmodCount} / ${locCount} URLs have <lastmod>`};
+  }
   return {ok: true, msg: `${lastmodCount} / ${locCount} URLs (${Math.round(ratio * 100)}%)`};
 });
 

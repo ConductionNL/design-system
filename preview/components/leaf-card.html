@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Leaf card, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: var(--c-cobalt-50);
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1080px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+  .specimen-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin: var(--space-8) 0 var(--space-3);
+  }
+  .specimen-label:first-of-type { margin-top: 0; }
+
+  .leaf-card {
+    display: block;
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 120ms ease, transform 120ms ease;
+  }
+  a.leaf-card:hover {
+    border-color: var(--c-cobalt-400);
+    transform: translateY(-1px);
+  }
+  .leaf-card .head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+  }
+  .leaf-card .hex {
+    width: 40px; height: 46px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-cobalt-50);
+    color: var(--c-cobalt-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700; font-size: 18px;
+  }
+  .leaf-card .heading { flex: 1; min-width: 0; }
+  .leaf-card .label {
+    font-size: 18px; font-weight: 700;
+    color: var(--c-cobalt-900); margin: 0;
+    line-height: 1.2;
+  }
+  .leaf-card .id {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--c-cobalt-400);
+    font-family: var(--conduction-typography-font-family-code);
+    margin-top: 2px;
+  }
+  .leaf-card .status-pill {
+    display: inline-block;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .leaf-card.status-backend-ready .status-pill {
+    background: #DFF3E5; color: #1E7A40;
+  }
+  .leaf-card.status-stub .status-pill {
+    background: #FFF4E5; color: var(--c-orange-knvb);
+  }
+  .leaf-card.status-external .status-pill {
+    background: var(--c-cobalt-100); color: var(--c-cobalt-900);
+  }
+  .leaf-card.status-built-in .status-pill {
+    background: var(--c-cobalt-50); color: var(--c-cobalt-700);
+  }
+  .leaf-card .description {
+    font-size: 14px; color: var(--c-cobalt-700);
+    margin: 0 0 var(--space-4); line-height: 1.55;
+  }
+  .leaf-card .meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px var(--space-4);
+    margin: 0;
+    font-size: 13px;
+  }
+  .leaf-card .meta dt {
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    align-self: center;
+  }
+  .leaf-card .meta dd {
+    margin: 0;
+    color: var(--c-cobalt-900);
+    align-self: center;
+  }
+  .leaf-card .meta code {
+    background: var(--c-cobalt-50);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px;
+  }
+  .leaf-card .muted { color: var(--c-cobalt-400); font-style: italic; }
+
+  .leaf-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (max-width: 800px) {
+    .leaf-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: white; border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Leaf card</div>
+
+<div class="frame">
+  <div class="frame-label">LeafCard + LeafGrid &middot; per-leaf metadata header for the openregister docs</div>
+
+  <div class="specimen-label">Single card &middot; top of a leaf docs page</div>
+  <div class="leaf-card status-backend-ready">
+    <div class="head">
+      <div class="hex" aria-hidden="true">C</div>
+      <div class="heading">
+        <div class="label">Meetings</div>
+        <code class="id">calendar</code>
+      </div>
+      <span class="status-pill">Backend ready</span>
+    </div>
+    <p class="description">Link a register record to one or more Nextcloud Calendar events. Attendees, time, location, and the iCalendar feed stay in the host workspace; the leaf row holds the join and a couple of cached display fields.</p>
+    <dl class="meta">
+      <dt>Group</dt>
+      <dd>Communication</dd>
+      <dt>Required app</dt>
+      <dd><code>calendar</code></dd>
+      <dt>Storage</dt>
+      <dd>Link table</dd>
+      <dt>Icon</dt>
+      <dd><code>Calendar</code></dd>
+    </dl>
+  </div>
+
+  <div class="specimen-label">Grid &middot; overview page (4 of 18+1 shown)</div>
+  <div class="leaf-grid">
+
+    <a class="leaf-card status-backend-ready" href="#">
+      <div class="head">
+        <div class="hex" aria-hidden="true">C</div>
+        <div class="heading">
+          <div class="label">Contacts</div>
+          <code class="id">contacts</code>
+        </div>
+        <span class="status-pill">Backend ready</span>
+      </div>
+      <dl class="meta">
+        <dt>Group</dt><dd>Communication</dd>
+        <dt>Required app</dt><dd><code>contacts</code></dd>
+        <dt>Storage</dt><dd>Link table</dd>
+      </dl>
+    </a>
+
+    <a class="leaf-card status-stub" href="#">
+      <div class="head">
+        <div class="hex" aria-hidden="true">M</div>
+        <div class="heading">
+          <div class="label">Mail thread</div>
+          <code class="id">mail</code>
+        </div>
+        <span class="status-pill">Provider stub</span>
+      </div>
+      <dl class="meta">
+        <dt>Group</dt><dd>Communication</dd>
+        <dt>Required app</dt><dd><code>mail</code></dd>
+        <dt>Storage</dt><dd>Query-time (live)</dd>
+      </dl>
+    </a>
+
+    <a class="leaf-card status-external" href="#">
+      <div class="head">
+        <div class="hex" aria-hidden="true">X</div>
+        <div class="heading">
+          <div class="label">xWiki page</div>
+          <code class="id">xwiki</code>
+        </div>
+        <span class="status-pill">External (OpenConnector)</span>
+      </div>
+      <dl class="meta">
+        <dt>Group</dt><dd>Documents</dd>
+        <dt>Required app</dt><dd><span class="muted">None (routed)</span></dd>
+        <dt>Storage</dt><dd>External (no local store)</dd>
+      </dl>
+    </a>
+
+    <a class="leaf-card status-built-in" href="#">
+      <div class="head">
+        <div class="hex" aria-hidden="true">F</div>
+        <div class="heading">
+          <div class="label">Files folder</div>
+          <code class="id">files</code>
+        </div>
+        <span class="status-pill">Built-in</span>
+      </div>
+      <dl class="meta">
+        <dt>Group</dt><dd>Core</dd>
+        <dt>Required app</dt><dd><span class="muted">None (always available)</span></dd>
+        <dt>Storage</dt><dd>Magic column</dd>
+      </dl>
+    </a>
+
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;LeafCard/&gt;</code> + <code>&lt;LeafGrid/&gt;</code></h2>
+  <p>Metadata header for an Open Register leaf integration. Mirrors the registry descriptor so every per-leaf docs page leads with the same compact summary, one card, six fields, no prose to skim. <code>&lt;LeafGrid/&gt;</code> renders a responsive grid of cards for the overview page; each card links to its dedicated docs route when <code>href</code> is set.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {LeafCard, LeafGrid} from '@conduction/docusaurus-preset/components';
+
+&lt;LeafCard
+  id="calendar"
+  label="Meetings"
+  icon="Calendar"
+  group="comms"
+  requiredApp="calendar"
+  storage="link-table"
+  status="backend-ready"
+  description="Link a register record to one or more Nextcloud Calendar events..."
+/&gt;
+
+&lt;LeafGrid columns={3}&gt;
+  &lt;LeafCard id="calendar" status="backend-ready" href="/docs/integrations/calendar" ... /&gt;
+  &lt;LeafCard id="contacts" status="backend-ready" href="/docs/integrations/contacts" ... /&gt;
+  &lt;LeafCard id="mail" status="stub" href="/docs/integrations/mail" ... /&gt;
+&lt;/LeafGrid&gt;</code></pre>
+  <h3>Props (LeafCard)</h3>
+  <ul class="ru-props">
+    <li><code>id</code> machine slug used as the link-table key</li>
+    <li><code>label</code> human-readable name shown as the card heading</li>
+    <li><code>icon</code> MDI icon name (e.g. <code>Calendar</code>); falls back to the first letter of <code>id</code></li>
+    <li><code>group</code> one of <code>core</code> / <code>comms</code> / <code>docs</code> / <code>workflow</code> / <code>external</code></li>
+    <li><code>requiredApp</code> Nextcloud app id this leaf depends on; <code>""</code> or omit when always available</li>
+    <li><code>storage</code> one of <code>magic-column</code> / <code>link-table</code> / <code>external</code> / <code>query-time</code></li>
+    <li><code>status</code> one of <code>backend-ready</code> / <code>stub</code> / <code>external</code> / <code>built-in</code> &mdash; tints the status pill</li>
+    <li><code>href</code> when set, the whole card is clickable</li>
+    <li><code>description</code> optional one-paragraph body</li>
+  </ul>
+  <p><code>LeafGrid</code> takes <code>columns</code> (1&ndash;4, default 3) and <code>children</code>.</p>
+</aside>
+
+</body>
+</html>

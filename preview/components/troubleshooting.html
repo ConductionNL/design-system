@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Troubleshooting, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 880px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+
+  .troubleshooting {
+    margin: var(--space-10) 0 var(--space-8);
+    font-family: var(--conduction-typography-font-family-body);
+  }
+  .troubleshooting > h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--c-cobalt-900);
+    margin: 0 0 var(--space-3);
+    line-height: 1.2;
+  }
+  .troubleshooting > .lede {
+    font-size: 17px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+    margin: 0 0 var(--space-5);
+  }
+  .troubleshooting .list {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .ts-item {
+    background: var(--c-cobalt-50);
+    border-left: 3px solid var(--c-orange-knvb);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .ts-item .symptom {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .ts-item .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 22px;
+    background: var(--c-orange-knvb);
+    color: white;
+    font-family: var(--conduction-typography-font-family-display);
+    font-weight: 700;
+    font-size: 13px;
+    clip-path: var(--hex-pointy-top);
+    flex-shrink: 0;
+  }
+  .ts-item .symptom-text {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 14px;
+    color: var(--c-cobalt-900);
+    background: transparent;
+    padding: 0;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .ts-item .body {
+    font-size: 16px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+  }
+  .ts-item .body code {
+    background: var(--c-cobalt-100);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 14px;
+    color: var(--c-cobalt-900);
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: var(--c-cobalt-50); border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Troubleshooting</div>
+
+<div class="frame">
+  <div class="frame-label">Troubleshooting + TroubleshootingItem &middot; tutorial-body section</div>
+
+  <section class="troubleshooting">
+    <h2>Probleemoplossing.</h2>
+    <p class="lede">Veelvoorkomende foutmeldingen bij het koppelen van een Open Register-folder, en wat je doet als er iets misgaat.</p>
+
+    <div class="list">
+
+      <div class="ts-item">
+        <div class="symptom">
+          <span class="icon" aria-hidden="true">!</span>
+          <code class="symptom-text">The uploaded file exceeds upload_max_filesize</code>
+        </div>
+        <div class="body">
+          <p>Verhoog <code>upload_max_filesize</code> en <code>post_max_size</code> in <code>php.ini</code>, of stap over op Mode 4 (chunked upload). De default van 2 MB is voor de meeste bijlagen te krap.</p>
+        </div>
+      </div>
+
+      <div class="ts-item">
+        <div class="symptom">
+          <span class="icon" aria-hidden="true">!</span>
+          <code class="symptom-text">Bestand verschijnt niet in /files-lijst na MOVE</code>
+        </div>
+        <div class="body">
+          <p>Controleer dat de <code>Destination</code>-header naar <code>Open Registers/&lt;register&gt;/&lt;schema&gt;/&lt;id&gt;/</code> wijst. Een typo in een van de drie segmenten geeft 201, maar de file landt nergens.</p>
+        </div>
+      </div>
+
+      <div class="ts-item">
+        <div class="symptom">
+          <span class="icon" aria-hidden="true">!</span>
+          <code class="symptom-text">403 Forbidden bij PROPFIND op de share</code>
+        </div>
+        <div class="body">
+          <p>De share staat op "Read only". Zet hem op "Allow editing" in het Files-menu, anders kan de webhook geen bestanden plaatsen.</p>
+        </div>
+      </div>
+
+      <div class="ts-item">
+        <div class="symptom">
+          <span class="icon" aria-hidden="true">!</span>
+          <code class="symptom-text">Conflict 412: ETag mismatch</code>
+        </div>
+        <div class="body">
+          <p>Een ander proces heeft de file in de tussentijd geupdate. Refresh de lokale kopie via <code>GET /files/&lt;path&gt;</code>, merge je wijziging, en stuur PUT opnieuw met de nieuwe ETag.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;Troubleshooting/&gt;</code> + <code>&lt;TroubleshootingItem/&gt;</code></h2>
+  <p>Structured error-recovery list for academy tutorials and per-app docs. Pairs a literal <code>symptom</code> (usually the error message a user pastes into search) with a one-paragraph body that says what to do. The symptom block lives in a warning-tinted slot on top; the fix fills the rest. Keep symptoms verbatim. Keep fixes under three sentences.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {Troubleshooting, TroubleshootingItem} from '@conduction/docusaurus-preset/components';
+
+&lt;Troubleshooting title="Probleemoplossing" lede="Veelvoorkomende foutmeldingen..."&gt;
+  &lt;TroubleshootingItem symptom="The uploaded file exceeds upload_max_filesize"&gt;
+    Verhoog &lt;code&gt;upload_max_filesize&lt;/code&gt; in &lt;code&gt;php.ini&lt;/code&gt;, of stap over op Mode 4.
+  &lt;/TroubleshootingItem&gt;
+  &lt;TroubleshootingItem symptom="Bestand verschijnt niet in /files-lijst na MOVE"&gt;
+    Controleer dat de &lt;code&gt;Destination&lt;/code&gt;-header naar &lt;code&gt;Open Registers/...&lt;/code&gt; wijst.
+  &lt;/TroubleshootingItem&gt;
+&lt;/Troubleshooting&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>title</code> heading text (default <code>Troubleshooting</code>; usually <code>Probleemoplossing</code> in NL)</li>
+    <li><code>lede</code> optional one-paragraph intro before the list</li>
+    <li><code>children</code> one or more <code>&lt;TroubleshootingItem/&gt;</code> nodes</li>
+  </ul>
+  <p><code>TroubleshootingItem</code> takes <code>symptom</code> (string, rendered as monospace) and <code>children</code> (the fix body, MDX inline markup allowed).</p>
+</aside>
+
+</body>
+</html>

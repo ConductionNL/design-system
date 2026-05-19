@@ -73,6 +73,7 @@ export default function DetailHero({
   locales,
   title,
   tagline,
+  intro,
   primaryCta,
   secondaryCta,
   tertiaryCta,
@@ -262,6 +263,7 @@ export default function DetailHero({
             </h1>
           )}
           {tagline && <p className={styles.tagline}>{tagline}</p>}
+          {intro && <div className={styles.intro}>{intro}</div>}
 
           {(primaryCta || secondaryCta || tertiaryCta) && (
             <div className={styles.actions}>

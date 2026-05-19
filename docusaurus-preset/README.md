@@ -236,11 +236,43 @@ createConfig({
 });
 ```
 
-**Known follow-ups (not yet automatic)**
+**`BreadcrumbList` JSON-LD**
 
-- `BreadcrumbList` JSON-LD on every page. The DocBreadcrumbs DOM already renders; the schema needs a theme swizzle. Tracked as a 3.7+ candidate.
-- `TechArticle` JSON-LD on docs pages with `dateModified` from git mtime. Same swizzle scope.
-- Per-page title format. Docusaurus defaults to `{Page} | {Site}` which produces `OpenRegister | OpenRegister` on per-app homepages. Override per page via frontmatter `title:` for now; a `titleFormat` option may land later.
+- Docs pages: emitted automatically by Docusaurus 3.10+ via the bundled `DocBreadcrumbs/StructuredData` component. Older Docusaurus versions render the same data as inline microdata (`itemscope`/`itemprop`), which Google still reads.
+- Marketing / landing pages: `<DetailHero>` emits a `BreadcrumbList` JSON-LD block from its existing `crumb` prop. Pages that pass `crumb={[...]}` to `<DetailHero>` get the schema for free; no additional component needed.
+
+**`TechArticle` JSON-LD on docs pages**
+
+The preset's `DocItem/Content` swizzle prepends a `TechArticle` JSON-LD block to every documentation page. Fields derived from the page's frontmatter and Docusaurus metadata:
+
+- `headline` and `description` from frontmatter title + description
+- `datePublished` and `dateModified` from `metadata.lastUpdatedAt` (git mtime by default)
+- `author` from frontmatter `author:` or `authors:` (string, object, or array). Defaults to "Conduction" as the team author
+- `publisher` references the shared Conduction `Organization` via `@id`
+- `mainEntityOfPage` resolves to the doc's canonical URL
+
+Sites can opt out per-page by setting `techArticle: false` in the doc's frontmatter.
+
+**IndexNow integration for Bing + AI surfaces**
+
+`@conduction/docusaurus-preset/plugins/indexnow` is auto-loaded by `createConfig`. Sites enable it by passing a key:
+
+```js
+createConfig({
+  // ...
+  indexnow: {
+    key: 'abc123...', // 64-char key from bing.com/indexnow/getstarted
+  },
+});
+```
+
+The plugin writes `<key>.txt` to the build output (for IndexNow's ownership handshake) and POSTs the full sitemap URL list to `api.indexnow.org` after a successful build. Bing recrawls within minutes; Yandex consumes the same payload. DuckDuckGo, Copilot, and ChatGPT Search all read Bing's index, so a single ping covers most non-Google surfaces.
+
+Failure-tolerant: timeouts or 5xx responses log a warning and let the deploy continue. Disable via `indexnow: { disable: true }`.
+
+**Per-page title format**
+
+Docusaurus defaults to `{Page} | {Site}`, which produces `OpenRegister | OpenRegister` on per-app homepages. Override per page via frontmatter `title:` for now; a `titleFormat` option may land in a future release.
 
 ## Releasing
 

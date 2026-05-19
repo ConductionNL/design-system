@@ -155,12 +155,49 @@ export default function DetailHero({
     return schema;
   })() : null;
 
+  /* BreadcrumbList JSON-LD from the existing `crumb` prop. The hero
+     already renders a visible breadcrumb chain; this just emits the
+     schema.org/BreadcrumbList equivalent so Google can render SERP
+     breadcrumbs. Items with an href become navigable list entries;
+     bare strings (typically the last "you are here" position) get a
+     name + position with no item URL. The current page is added as
+     the final position so the schema is self-contained. */
+  const breadcrumbListJsonLd = (crumb && Array.isArray(crumb) && crumb.length > 0) ? (() => {
+    const baseUrl = (siteConfig?.url || '').replace(/\/$/, '');
+    const items = crumb.map((c, i) => {
+      const name = typeof c === 'string' ? c : c.label;
+      const href = (typeof c === 'object' && c.href) ? c.href : undefined;
+      const url = href
+        ? (href.startsWith('http') ? href : `${baseUrl}${href}`)
+        : undefined;
+      const entry = {
+        '@type': 'ListItem',
+        position: i + 1,
+        name,
+      };
+      if (url) entry.item = url;
+      return entry;
+    });
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items,
+    };
+  })() : null;
+
   return (
     <section className={[styles.head, hasIllustration && styles.withIllustration, bgClass, className].filter(Boolean).join(' ')}>
       {softwareApplicationJsonLd && (
         <Head>
           <script type="application/ld+json">
             {JSON.stringify(softwareApplicationJsonLd)}
+          </script>
+        </Head>
+      )}
+      {breadcrumbListJsonLd && (
+        <Head>
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbListJsonLd)}
           </script>
         </Head>
       )}

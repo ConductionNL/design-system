@@ -665,11 +665,23 @@ function createConfig(opts) {
        It no-ops when the file already exists in outDir, so a site's own
        static/robots.txt or static/llms.txt always wins. Sites disable
        per-file or wholesale via opts.aiCrawling.disable. Hand-rolled
-       plugins in opts.plugins are appended after this default. */
+       plugins in opts.plugins are appended after these defaults.
+
+       The IndexNow plugin pings api.indexnow.org with the sitemap URLs
+       after a successful build so Bing (and the AI surfaces it feeds,
+       Copilot / ChatGPT Search / DuckDuckGo) recrawl within minutes
+       instead of the usual 1-4 weeks. No-ops without opts.indexnow.key
+       (the per-site IndexNow key, generated once at bing.com/indexnow).
+       Sites that prefer the long-tail crawl path opt out by passing
+       indexnow: { disable: true } or just leaving the key unset. */
     plugins: [
       [
         require.resolve('./plugins/ai-crawling.js'),
         opts.aiCrawling || {},
+      ],
+      [
+        require.resolve('./plugins/indexnow.js'),
+        opts.indexnow || {},
       ],
       ...(opts.plugins || []),
     ],

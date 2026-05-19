@@ -13,9 +13,13 @@
   padding: 28px;
   text-decoration: none; color: inherit;
   transition: all 160ms ease;
-  display: flex; flex-direction: column;
-  gap: 16px;
   cursor: pointer;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 20px;
+  row-gap: 6px;
+  align-items: start;
+  align-content: start;
 }
 .app-card:hover { border-color: var(--c-blue-cobalt); transform: translateY(-2px); box-shadow: var(--shadow-2); }
 
@@ -26,18 +30,23 @@
   color: white;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
 }
 .app-card .icon-wrap svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; }
 
-.app-card .name { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.app-card .name { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; grid-column: 2; }
 .app-card .tagline,
-.app-card .desc { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.5; }
+.app-card .desc { font-size: 15px; color: var(--c-cobalt-700); line-height: 1.5; grid-column: 2; }
 
 .app-card .meta {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: auto; padding-top: 20px;
   border-top: 1px solid var(--c-cobalt-100);
+  grid-column: 1 / -1;
 }
+.app-card .install { grid-column: 1 / -1; }
 
 /* Status hex-badge (Stable / Beta / Experimental). */
 .app-card .hex-badge,
@@ -65,7 +74,7 @@
 /* Compact variant — denser size for the apps catalogue, where cards sit in
    a tighter grid alongside filter chrome. The catalogue layers its own
    .top + .badges + .meta-row on top, see preview/pages/apps-catalog.html. */
-.app-card.compact { padding: 24px; gap: 14px; }
+.app-card.compact { padding: 24px; column-gap: 16px; row-gap: 4px; }
 .app-card.compact .icon-wrap { width: 48px; height: 55px; }
 .app-card.compact .icon-wrap svg { width: 22px; height: 22px; }
 .app-card.compact .name { font-size: 18px; }

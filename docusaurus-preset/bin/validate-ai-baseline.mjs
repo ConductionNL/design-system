@@ -176,6 +176,79 @@ check('homepage has og:image, og:type, twitter:site, twitter:card', () => {
   return {ok: true, msg: 'all four present'};
 });
 
+/* TechArticle JSON-LD on docs pages. Preset 3.8.0+ swizzles
+   DocItem/Content to prepend TechArticle on every doc page. If the
+   swizzle ever regresses (preset downgrade, opt-out via frontmatter
+   accidentally site-wide, theme path mis-wired), this check fires.
+   Scans the build's docs/ tree and looks for any rendered page that
+   carries a TechArticle JSON-LD block. Skips gracefully on sites that
+   don't have a docs/ subtree (marketing sites like conduction.nl). */
+function findFirstHtmlIn(dir, depth = 0) {
+  if (depth > 4) return null;
+  if (!existsSync(dir)) return null;
+  let entries;
+  try {entries = require('node:fs').readdirSync(dir, {withFileTypes: true});}
+  catch {return null;}
+  /* Prefer index.html in this dir first. */
+  const indexEntry = entries.find(e => e.isFile() && e.name === 'index.html');
+  if (indexEntry) return join(dir, 'index.html');
+  /* Recurse into directories. */
+  for (const e of entries) {
+    if (e.isDirectory() && !e.name.startsWith('.')) {
+      const found = findFirstHtmlIn(join(dir, e.name), depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+check('TechArticle JSON-LD present on docs pages (preset 3.8+)', () => {
+  const docsDir = join(buildDir, 'docs');
+  if (!existsSync(docsDir)) {
+    return {ok: true, msg: 'no docs/ subtree, skipped (marketing site)'};
+  }
+  /* Walk up to 100 pages looking for any with TechArticle. Most sites
+     hit it on the very first sample (the swizzle fires on every page),
+     but small sites with /docs/category/X redirects need a few hops. */
+  const visited = new Set();
+  let firstFound = null;
+  let firstChecked = null;
+  function scan(dir, depth = 0) {
+    if (depth > 4 || firstFound) return;
+    let entries;
+    try {entries = require('node:fs').readdirSync(dir, {withFileTypes: true});}
+    catch {return;}
+    for (const e of entries) {
+      if (firstFound) return;
+      const p = join(dir, e.name);
+      if (e.isFile() && e.name === 'index.html') {
+        if (visited.has(p)) continue;
+        visited.add(p);
+        if (!firstChecked) firstChecked = p;
+        const html = readFileSync(p, 'utf8');
+        if (html.includes('"@type":"TechArticle"')) {
+          firstFound = p;
+          return;
+        }
+      } else if (e.isDirectory() && !e.name.startsWith('.')) {
+        scan(p, depth + 1);
+      }
+    }
+  }
+  scan(docsDir);
+  if (firstFound) {
+    const rel = firstFound.replace(buildDir + '/', '');
+    return {ok: true, msg: `found on ${rel}`};
+  }
+  if (!firstChecked) {
+    return {ok: true, msg: 'docs/ has no index.html files, skipped'};
+  }
+  return {
+    ok: false,
+    msg: `0 docs pages emit TechArticle JSON-LD. Checked ${visited.size} pages starting from ${firstChecked.replace(buildDir + '/', '')}. Verify @conduction/docusaurus-preset is at ^3.8.0 and DocItem swizzle is registered.`,
+  };
+});
+
 check('og:image URL resolves to a file in the build', () => {
   const html = readBuild('index.html');
   const url = metaTag(html, 'og:image');

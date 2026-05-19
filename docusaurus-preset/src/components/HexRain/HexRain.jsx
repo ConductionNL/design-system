@@ -33,9 +33,9 @@
  */
 
 import React, {useEffect, useRef} from 'react';
-import Head from '@docusaurus/Head';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import {useLazyScript} from '../../utils/lazyScript';
+import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 
 const ASSET_BASE = '/lib';
 
@@ -43,10 +43,12 @@ export default function HexRain({ariaLabel = 'Twelve apps mini-game, click each 
   const isBrowser = useIsBrowser();
   const ref = useRef(null);
 
-  /* hex-rain.js is loaded post-hydration via this hook so the runtime's
-     DOM mutations don't trip React's hydration mismatch. See
-     utils/lazyScript.js. */
+  /* hex-rain.{js,css} are loaded post-hydration so neither the
+     runtime's DOM mutations trip React's hydration mismatch nor the
+     stylesheet blocks first paint. See utils/lazyScript.js and
+     utils/lazyStylesheet.js. */
   useLazyScript(ASSET_BASE + '/hex-rain.js', 'hex-rain');
+  useLazyStylesheet(ASSET_BASE + '/hex-rain.css', 'hex-rain');
 
   /* The runtime exposes window.HexRain.hydrate() once it has registered
      itself. Poll one rAF tick per frame until it's there, then call it
@@ -67,15 +69,10 @@ export default function HexRain({ariaLabel = 'Twelve apps mini-game, click each 
   }, [isBrowser]);
 
   return (
-    <>
-      <Head>
-        <link rel="stylesheet" href={ASSET_BASE + '/hex-rain.css'} />
-      </Head>
-      <div
-        ref={ref}
-        className={['hex-rain', className].filter(Boolean).join(' ')}
-        aria-label={ariaLabel}
-      />
-    </>
+    <div
+      ref={ref}
+      className={['hex-rain', className].filter(Boolean).join(' ')}
+      aria-label={ariaLabel}
+    />
   );
 }

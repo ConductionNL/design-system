@@ -20,12 +20,12 @@
 
 import React, {useEffect} from 'react';
 import Link from '@docusaurus/Link';
-import Head from '@docusaurus/Head';
 import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import {brandFor} from '../brand.jsx';
 import {useLazyScript} from '../../utils/lazyScript';
+import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 import GameModal from '../../components/GameModal/GameModal';
 
 function FooterLink({label, href, to}) {
@@ -95,20 +95,23 @@ export default function Footer() {
   const wordmark = brand ? brand.wordmark : defaultWordmark;
   const brandRow = !brand && Array.isArray(footerBrand?.brands) ? footerBrand.brands : null;
 
-  /* canal-footer.js is loaded post-hydration so its DOM mutations
-     (filling .skyline, animating boats) don't trip React hydration
-     mismatches. See docs in utils/lazyScript.js. We always load
-     canal-footer.js even when minigames are off, because the same
-     script populates the static skyline; canal-footer.js is null-safe
-     against a missing game-hud, so the game wiring no-ops cleanly. */
+  /* canal-footer.{js,css} are loaded post-hydration. The script's DOM
+     mutations (filling .skyline, animating boats) don't trip React
+     hydration mismatches, and the stylesheet doesn't block first paint.
+     See docs in utils/lazyScript.js and utils/lazyStylesheet.js. We
+     always load canal-footer.{js,css} even when minigames are off,
+     because the same script populates the static skyline and the same
+     stylesheet styles the canal frame. */
   useLazyScript('/lib/canal-footer.js', 'canal-footer');
+  useLazyStylesheet('/lib/canal-footer.css', 'canal-footer');
 
-  /* kade-cyclist.js is the second hidden footer minigame. Unlike the
-     canal script it has no static side-effects, so when a product page
-     opts out of minigames we feed `useLazyScript` a falsy src to skip
-     the load. The hook still runs unconditionally — rules-of-hooks
-     stays compliant. */
+  /* kade-cyclist.{js,css} are the second hidden footer minigame. Unlike
+     the canal script they have no static side-effects, so when a product
+     page opts out of minigames we feed both hooks a falsy value to skip
+     the load. The hooks still run unconditionally — rules-of-hooks stays
+     compliant. */
   useLazyScript(minigamesOn ? '/lib/kade-cyclist.js' : null, 'kade-cyclist');
+  useLazyStylesheet(minigamesOn ? '/lib/kade-cyclist.css' : null, 'kade-cyclist');
 
   /* Re-hydrate the canal-footer + kade-cyclist runtimes on every mount,
      including SPA route changes that re-render this Footer component.
@@ -143,11 +146,6 @@ export default function Footer() {
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href="/lib/canal-footer.css" />
-        <link rel="stylesheet" href="/lib/kade-cyclist.css" />
-      </Head>
-
       <footer className="canal-footer" aria-label="Site footer">
         {/* Skyline placeholder — canal-footer.js fills it with cloned house templates */}
         <div className="skyline" role="presentation" />

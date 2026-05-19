@@ -20,7 +20,7 @@
  */
 
 import React from 'react';
-import Head from '@docusaurus/Head';
+import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 import SectionHead from '../primitives/SectionHead';
 import {useLazyScript} from '../../utils/lazyScript';
 import styles from './Clients.module.css';
@@ -121,6 +121,7 @@ function splitIntoRows(items, rowCount) {
 function ClientsMarquee({head, clients, title, className}) {
   useLazyScript(LOGO_MEMORY_BASE + '/clients-flow.js', 'clients-flow');
   useLazyScript(LOGO_MEMORY_BASE + '/logo-memory.js', 'logo-memory');
+  useLazyStylesheet(LOGO_MEMORY_BASE + '/logo-memory.css', 'logo-memory');
   React.useEffect(() => {
     if (window.ConductionClientsFlow?.hydrate) window.ConductionClientsFlow.hydrate();
     if (window.LogoMemory?.hydrate) window.LogoMemory.hydrate();
@@ -128,9 +129,6 @@ function ClientsMarquee({head, clients, title, className}) {
   const clientsJson = React.useMemo(() => JSON.stringify(clients), [clients]);
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href={LOGO_MEMORY_BASE + '/logo-memory.css'} />
-      </Head>
       <section
         className={[styles.section, className].filter(Boolean).join(' ')}
         data-logo-memory

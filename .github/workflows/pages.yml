@@ -77,6 +77,15 @@ jobs:
           cp -r brand/. _site/brand/ 2>/dev/null || true
           mkdir -p _site/diagrams
           cp -r diagrams/dist/. _site/diagrams/ 2>/dev/null || true
+          # Stage the parts of docusaurus-preset/ that preview pages link
+          # to via `../../docusaurus-preset/...` URLs: the raw component
+          # CSS modules and the vendored static lib (kade-cyclist,
+          # hex-rain, logo-memory, clients-flow). Without this, pages
+          # like showcase, mock-scene, hex-rain, clients-marquee, etc.
+          # 404 their stylesheets/scripts and render unstyled.
+          mkdir -p _site/docusaurus-preset/static _site/docusaurus-preset/src
+          cp -r docusaurus-preset/static/. _site/docusaurus-preset/static/ 2>/dev/null || true
+          cp -r docusaurus-preset/src/.    _site/docusaurus-preset/src/    2>/dev/null || true
           for f in tokens.css typography.css; do
             [ -f "$f" ] && cp "$f" _site/ || true
           done

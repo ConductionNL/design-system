@@ -324,15 +324,21 @@ a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
    the same orange (no second hover colour) so the visual stays
    stable once the hash is on-screen.
    ============================================================ */
+/* `!important` survives the cssnano `mergeRules` pass at build time —
+   without it the bare `.hash-link` selector gets dropped from the
+   comma list when cssnano merges nearby `.hash-link {opacity:0; ...}`
+   rules from Docusaurus, leaving only the pseudo-class variants
+   orange and the default-state hash inheriting cobalt from the
+   surrounding heading. */
 .hash-link,
 .hash-link:hover,
 .hash-link:focus,
 .hash-link:focus-visible,
 .hash-link:active,
 .hash-link:visited {
-  color: var(--c-orange-knvb);
-  text-decoration: none;
-  border-bottom: 0;
+  color: var(--c-orange-knvb) !important;
+  text-decoration: none !important;
+  border-bottom: 0 !important;
 }
 
 /* ============================================================

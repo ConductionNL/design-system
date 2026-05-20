@@ -30,7 +30,14 @@ import React from 'react';
 import HexThumbnail from '../primitives/HexThumbnail';
 import HexBullet from '../primitives/HexBullet';
 import AuthorByline from '../primitives/AuthorByline';
+import {AUDIENCE_LABELS} from '../../data/audience';
 import styles from './FeaturedCard.module.css';
+
+function readOrWatch(contentType, minutes) {
+  if (!minutes) return null;
+  const verb = contentType === 'webinar' ? 'watch' : 'read';
+  return `${minutes} min ${verb}`;
+}
 
 export default function FeaturedCard({
   href,
@@ -44,8 +51,26 @@ export default function FeaturedCard({
   locale,
   thumbnail,
   accent = 'orange',
+  contentType,
+  durationMinutes,
+  audience = [],
+  module: moduleSlug,
+  modulePosition,
+  moduleTotalParts,
+  moduleTitle,
   className,
 }) {
+  const readWatch = readOrWatch(contentType, durationMinutes);
+  const moduleLabel = moduleSlug
+    ? (modulePosition && moduleTotalParts
+        ? `Part ${modulePosition} of ${moduleTotalParts}`
+        : (modulePosition ? `Part ${modulePosition}` : null))
+    : null;
+  const audienceLabel = audience.length > 0
+    ? audience.map((a) => AUDIENCE_LABELS[a] || a).join(' · ')
+    : null;
+  const metaBits = [readWatch, moduleLabel, moduleSlug ? (moduleTitle || moduleSlug) : null, audienceLabel]
+    .filter(Boolean);
   const Tag = href ? 'a' : 'div';
   const composed = [styles.card, className].filter(Boolean).join(' ');
   const thumbProps = thumbnail || {};
@@ -61,6 +86,17 @@ export default function FeaturedCard({
         )}
         {title && <h2 className={styles.title}>{title}</h2>}
         {lede && <p className={styles.lede}>{lede}</p>}
+
+        {metaBits.length > 0 && (
+          <div className={styles.metaBits}>
+            {metaBits.map((bit, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <span className={styles.metaSep} aria-hidden="true">·</span>}
+                <span className={styles.metaBit}>{bit}</span>
+              </React.Fragment>
+            ))}
+          </div>
+        )}
 
         {(author || date) && (
           <div className={styles.meta}>

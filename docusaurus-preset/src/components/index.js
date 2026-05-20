@@ -30,6 +30,7 @@ export * from './primitives';
 export {default as Hero} from './Hero/Hero.jsx';
 export {default as StatsStrip} from './StatsStrip/StatsStrip.jsx';
 export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';
+export {default as DownloadPanel} from './DownloadPanel/DownloadPanel.jsx';
 export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
 export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
 
@@ -108,6 +109,23 @@ export {default as RelatedPosts} from './RelatedPosts/RelatedPosts.jsx';
 export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHero.jsx';
 export {default as AppCrossLinks} from './AppCrossLinks/AppCrossLinks.jsx';
 export {APPS_REGISTRY, APP_SLUGS, APP_LABELS, getApp, getApps} from '../data/apps-registry';
+
+/* Academy modules — composite-card and per-module index page that
+   group a multi-part academy series (e.g. deskdesk-tutorial,
+   openwoo-getting-started) into one entity. ModuleCard renders on
+   the academy landing in place of the individual member cards;
+   ModulePage wraps /academy/modules/{slug}.mdx index pages. Both
+   read frontmatter from the consuming site's `academy-modules`
+   plugin via usePluginData('academy-modules'). */
+export {default as ModuleCard} from './ModuleCard/ModuleCard.jsx';
+export {default as ModulePage} from './ModulePage/ModulePage.jsx';
+export {
+  AUDIENCES,
+  AUDIENCE_LABELS,
+  AUDIENCE_PLURAL_LABELS,
+  AUDIENCE_BULLET_COLOR,
+  AUDIENCE_SHORT_LABELS,
+} from '../data/audience';
 
 /* Tutorial-body components. Drop-in replacements for the ad-hoc
    "What you need", "Troubleshooting", and "Next steps" h2 + bullet

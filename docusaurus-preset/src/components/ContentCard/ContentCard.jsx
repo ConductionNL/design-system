@@ -38,13 +38,40 @@
 
 import React from 'react';
 import HexThumbnail from '../primitives/HexThumbnail';
-import AuthorByline from '../primitives/AuthorByline';
 import Pill from '../primitives/Pill';
-import {
-  CONTENT_TYPE_LABELS,
-  CONTENT_TYPE_BULLET_COLOR,
-} from '../ContentTypeFilter/contentTypes';
+import {CONTENT_TYPE_LABELS} from '../ContentTypeFilter/contentTypes';
+import {AUDIENCE_SHORT_LABELS} from '../../data/audience';
 import styles from './ContentCard.module.css';
+
+function readOrWatch(_contentType, minutes) {
+  if (!minutes) return null;
+  /* No verb appended — the type line below the date (BLOG / TUTORIAL /
+     WEBINAR) already signals read vs. watch, and the extra word kept
+     wrapping to a second line on narrow card columns. */
+  return `${minutes} min`;
+}
+
+function formatDate(date, locale = 'nl') {
+  if (!date) return null;
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    if (Number.isNaN(d.getTime())) return null;
+    return d.toLocaleDateString(locale, {day: 'numeric', month: 'short', year: 'numeric'});
+  } catch (_) {
+    return null;
+  }
+}
+
+function authorInitials(name) {
+  if (!name) return '';
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toUpperCase();
+}
 
 export function ContentCardGrid({columns = 2, children, className}) {
   const composed = [
@@ -67,6 +94,12 @@ export default function ContentCard({
   locale,
   tags = [],
   thumbnail,
+  durationMinutes,
+  audience = [],
+  module: moduleSlug,
+  modulePosition,
+  moduleTotalParts,
+  moduleTitle,
   className,
   ...rest
 }) {
@@ -81,40 +114,66 @@ export default function ContentCard({
   const typeLabel = contentTypeLabel
     || (contentType && CONTENT_TYPE_LABELS[contentType])
     || null;
-  const typeBullet = contentType
-    ? CONTENT_TYPE_BULLET_COLOR[contentType]
-    : undefined;
+
+  /* Four-line meta block under the thumbnail:
+       1. Author name
+       2. Date · Read time
+       3. Type (TUTORIAL / BLOG / GUIDE)
+       4. Module title  N/M    (only when part of a module)
+     Each line is independently optional. */
+  const readWatch     = readOrWatch(contentType, durationMinutes);
+  const formattedDate = formatDate(date, locale);
+  const dateReadLine  = [formattedDate, readWatch].filter(Boolean).join(' · ');
+  const moduleLine    = moduleSlug
+    ? (modulePosition && moduleTotalParts
+        ? `${moduleTitle || moduleSlug} ${modulePosition}/${moduleTotalParts}`
+        : (moduleTitle || moduleSlug))
+    : null;
+
+  const authorName    = author && author.name;
+  const authorAvatar  = author && author.avatarSrc;
+  const initials      = (author && author.initials) || authorInitials(authorName);
 
   return (
     <Tag href={href} className={composed} {...rest}>
-      <div className={[styles.thumbPanel, panelToneClass].join(' ')}>
-        {thumbProps.src
-          ? <HexThumbnail size={thumbProps.size || 'md'} tone={thumbProps.tone || 'cobalt'} src={thumbProps.src} alt={thumbProps.alt} />
-          : <HexThumbnail size={thumbProps.size || 'md'} tone={thumbProps.tone || 'cobalt'}>{thumbProps.icon}</HexThumbnail>}
+      <div className={styles.leftCol}>
+        <div className={[styles.thumbPanel, panelToneClass].join(' ')}>
+          {thumbProps.src
+            ? <HexThumbnail size={thumbProps.size || 'md'} tone={thumbProps.tone || 'cobalt'} src={thumbProps.src} alt={thumbProps.alt} />
+            : <HexThumbnail size={thumbProps.size || 'md'} tone={thumbProps.tone || 'cobalt'}>{thumbProps.icon}</HexThumbnail>}
+        </div>
+
+        {(authorName || dateReadLine || typeLabel || moduleLine) && (
+          <div className={styles.metaStack}>
+            {(authorAvatar || initials) && (
+              <span className={styles.avatar} aria-hidden="true">
+                {authorAvatar
+                  ? <img src={authorAvatar} alt="" />
+                  : <span className={styles.avatarInitials}>{initials}</span>}
+              </span>
+            )}
+            <div className={styles.metaLines}>
+              {authorName    && <div className={styles.metaAuthor}>{authorName}</div>}
+              {dateReadLine  && <div className={styles.metaSub}>{dateReadLine}</div>}
+              {typeLabel     && <div className={styles.metaType}>{typeLabel}</div>}
+              {moduleLine    && <div className={styles.metaModule}>{moduleLine}</div>}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.body}>
-        {(author || date) && (
-          <AuthorByline
-            name={author && author.name}
-            avatarSrc={author && author.avatarSrc}
-            initials={author && author.initials}
-            date={date}
-            dateLabel={dateLabel}
-            locale={locale}
-          />
-        )}
-
         {title && <h3 className={styles.title}>{title}</h3>}
         {summary && <p className={styles.summary}>{summary}</p>}
 
-        {(typeLabel || tags.length > 0) && (
+        {audience.length > 0 && (
+          <div className={styles.audienceLine}>
+            For: {audience.map((a) => AUDIENCE_SHORT_LABELS[a] || a).join(', ')}
+          </div>
+        )}
+
+        {tags.length > 0 && (
           <div className={styles.tags}>
-            {typeLabel && (
-              <Pill bullet bulletColor={typeBullet}>
-                {typeLabel}
-              </Pill>
-            )}
             {tags.map((tag, i) => (
               <Pill key={i} bullet bulletColor="var(--c-cobalt-300)">{tag}</Pill>
             ))}

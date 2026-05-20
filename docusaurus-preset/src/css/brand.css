@@ -315,25 +315,24 @@ a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
    Heading anchor hash glyphs.
 
    Docusaurus auto-generates a hidden `<a class="hash-link">#</a>`
-   inside every h2-h6 so readers can copy a deep link. Default
-   Infima styling renders the glyph in the primary brand colour
-   (cobalt) which is fine for the visible state, but the affordance
-   reads stronger when the hash itself lights up in KNVB orange
-   the moment the cursor touches it.
+   inside every h2-h6 so readers can copy a deep link. The default
+   theme keeps the glyph invisible until the heading is hovered
+   (theme/MDXComponents/Heading), which is the affordance we want.
 
-   We render the glyph in cobalt-300 by default (visible-on-hover
-   of the heading, via the theme's anchorWithStickyNavbar rule)
-   and flip it to var(--c-orange-knvb) the moment the user hovers
-   or focuses the hash itself.
+   Branding: the glyph should always render in KNVB orange — never
+   cobalt, never underlined. Hover/focus on the hash itself keeps
+   the same orange (no second hover colour) so the visual stays
+   stable once the hash is on-screen.
    ============================================================ */
-.hash-link {
-  color: var(--c-cobalt-300);
-  transition: color 120ms ease;
-}
+.hash-link,
 .hash-link:hover,
-.hash-link:focus-visible {
+.hash-link:focus,
+.hash-link:focus-visible,
+.hash-link:active,
+.hash-link:visited {
   color: var(--c-orange-knvb);
   text-decoration: none;
+  border-bottom: 0;
 }
 
 /* ============================================================

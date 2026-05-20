@@ -110,6 +110,8 @@ body. All five have specimen pages.
 - **Troubleshooting / TroubleshootingItem** — `Troubleshooting/Troubleshooting.jsx`. Structured error-recovery list. Each item pairs a verbatim `symptom` (monospace) with a one-paragraph fix in a cobalt-50 panel with KNVB-orange left border. Specimen: `preview/components/troubleshooting.html`.
 - **NextSteps / NextStep** — `NextSteps/NextSteps.jsx`. End-of-tutorial action-card row (2/3/4-column). Each card is a fully clickable link with title + body + CTA. Specimen: `preview/components/next-steps.html`.
 - **ContactCta** — `ContactCta/ContactCta.jsx`. "Mail ons" prompt with mail hex badge + primary button. Specimen: `preview/components/contact-cta.html`.
+- **SetupSteps / SetupStep** — Vertical numbered-row pattern for setup / install / walkthrough sections in docs prose. Small orange hex with the auto-assigned step number on the left, bold title + one short paragraph on the right. Distinct from `HowSteps` (3-up card row for marketing surfaces); reach for `SetupSteps` when steps are sequential and detailed inside MDX. Specimen: `preview/components/setup-steps.html` (React wrapper still pending).
+- **ConfigGrid / ConfigPanel** — Side-by-side comparison panels for documenting both ends of an integration (Open Register side vs the external system). Each panel is a white card with a mono-uppercase header and a stack of label/value rows. Used on every `/integrations/<leaf>` docs page; drops to one column under 800px. Specimen: `preview/components/config-grid.html` (React wrapper still pending).
 
 ## OpenRegister leaf docs
 

@@ -113,6 +113,26 @@ body. All five have specimen pages.
 - **SetupSteps / SetupStep** — Vertical numbered-row pattern for setup / install / walkthrough sections in docs prose. Small orange hex with the auto-assigned step number on the left, bold title + one short paragraph on the right. Distinct from `HowSteps` (3-up card row for marketing surfaces); reach for `SetupSteps` when steps are sequential and detailed inside MDX. Specimen: `preview/components/setup-steps.html` (React wrapper still pending).
 - **ConfigGrid / ConfigPanel** — Side-by-side comparison panels for documenting both ends of an integration (Open Register side vs the external system). Each panel is a white card with a mono-uppercase header and a stack of label/value rows. Used on every `/integrations/<leaf>` docs page; drops to one column under 800px. Specimen: `preview/components/config-grid.html` (React wrapper still pending).
 
+## Page-section blocks
+
+A 2026-05-20 audit lifted the following inline-only patterns out of `preview/pages/*` and `preview/product-pages/*` into specimens. React wrappers are still pending; the CSS lives in each spec for now.
+
+- **Timeline / Milestone** — Vertical year-by-year story strip with a gradient axis line (orange-fading-to-cobalt at the endpoints) and a pointy-top hex marker per milestone. The current milestone gets `now` for a slow pulse. Used on `/about` for the company origin story; reusable on `/roadmap`. Specimen: `preview/components/timeline.html`.
+- **ContactStrip** — Bottom-of-page contact block on cobalt-900. Two columns: title + lede on the left, list of icon-prefixed channels on the right (GitHub, LinkedIn, mail, phone, address). Translucent-fill rows that brighten on hover. Specimen: `preview/components/contact-strip.html`.
+- **CyclingVerb** — Tiny word-swap primitive. Cycles a list of verbs on a slow loop with a 200ms opacity fade. Default cobalt-400 italic; optional cobalt or orange variants. Respects `prefers-reduced-motion`. Specimen: `preview/components/cycling-verb.html`.
+- **TierExplain / TierCard** — Three-up explanation row for the partner-tier hierarchy. Tier pill (cobalt-700 Host, gold Service, cobalt-blue Certified) + title + lede + mint-bulleted benefits list. Distinct from `PartnerCard` — explains the tiers themselves, not individual partners. Specimen: `preview/components/tier-explain.html`.
+- **FormCard / FieldRow / Field** — Lead-capture panel with mono-uppercase eyebrow + h3 + lede + form fields + primary submit. Two variants: white card (default contact) and cobalt-900 dark (partner-application / demo-request). Specimen: `preview/components/form-card.html`.
+- **PageStrip** — Lightweight banner above the content rail. Smaller and quieter than `Hero` — meant for index pages and second-level surfaces. Crumbs + h1 + lede. Default + tinted variants. Specimen: `preview/components/page-strip.html`.
+- **FeatureHero / BenefitRow + Benefit / Checklist / PairsRow + PairTile** — Four building blocks of the product-pages feature template. Independently usable but designed to compose top-to-bottom: hero pull-quote → 3-up benefit case → 2-column mint-bullet checklist → pairs-well-with tile row. Specimen: `preview/components/feature-page-blocks.html`.
+- **AnatomyCard / AnatomyTree** — Two-column explainer for "this is how an X is structured" content. Eyebrow + h2 + paragraphs on the left, stylised file-tree code block on the right. `<AnatomyTree>` auto-styles `root` / `folder` / `note` spans. Specimen: `preview/components/anatomy-card.html`.
+- **PreviewTileGrid / PreviewTile** — Iframe-preview card grid for hub pages. Container-query scaling keeps the preview reading as a full desktop layout, just shrunk. Generalises the `.component-tile` pattern from `preview/components.html`. Specimen: `preview/components/preview-tile.html`.
+- **AdrTable** — Architecture-decision-record index. Four columns (ID, Title, Status, Date) with a colour-coded status pill: mint Accepted, cobalt-100 Proposed, orange Draft, cobalt-50 muted Superseded, vermillion Rejected. Used at the top of every `technical-docs.html`. Specimen: `preview/components/adr-table.html`.
+- **RedocShell / VerbPill** — Three-column API-reference layout (left endpoint nav / middle prose / right code samples) wrapping Redocusaurus with Conduction-brand chrome. `VerbPill` exported separately for use outside the shell: GET light-blue, POST mint, PATCH orange, DELETE vermillion. Specimen: `preview/components/redoc-shell.html`.
+
+## Setup steps (already documented above under Tutorial-body)
+
+- **SetupSteps / SetupStep** + **ConfigGrid / ConfigPanel** lifted from `preview/product-pages/integrations.html` in commit `aa8b81a`.
+
 ## OpenRegister leaf docs
 
 - **LeafCard / LeafGrid** — `LeafCard/LeafCard.jsx`. Per-leaf metadata header for the openregister docs. Pointy-top hex + label + status pill + six-field meta grid (group, requiredApp, storage, icon). Four status tints: backend-ready, stub, external (OpenConnector-routed), built-in. `<LeafGrid>` lays cards out for the overview page; each card links to its docs route when `href` is set. Specimen: `preview/components/leaf-card.html`.

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cycling verb, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body { margin: 0; background: white; padding: 56px 64px; font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
+  .frame { max-width: 860px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+  .specimen-row {
+    margin: var(--space-6) 0;
+    font-size: 28px;
+    color: var(--c-cobalt-900);
+    line-height: 1.3;
+  }
+  .specimen-row .label {
+    display: block;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    color: var(--c-cobalt-400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .cycling-verb {
+    color: var(--c-cobalt-400);
+    font-style: italic;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 11ch;
+    transition: opacity 200ms ease;
+  }
+  .cycling-verb.fade { opacity: 0; }
+  .cycling-verb.cobalt { color: var(--c-blue-cobalt); }
+  .cycling-verb.orange { color: var(--c-orange-knvb); }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: var(--c-cobalt-50); border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Cycling verb</div>
+
+<div class="frame">
+  <div class="frame-label">CyclingVerb &middot; word-swap primitive on a 2.4 s fade loop</div>
+
+  <div class="specimen-row">
+    <span class="label">Default · cobalt-400 italic (ambient state)</span>
+    Aan het <span class="cycling-verb" data-cv-default>bouwen</span>.
+  </div>
+
+  <div class="specimen-row">
+    <span class="label">Cobalt variant · brand-strong</span>
+    We zijn <span class="cycling-verb cobalt" data-cv-cobalt>shippen</span>.
+  </div>
+
+  <div class="specimen-row">
+    <span class="label">Orange variant · single-screen accent</span>
+    Vandaag aan het <span class="cycling-verb orange" data-cv-orange>reviewen</span>.
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;CyclingVerb/&gt;</code></h2>
+  <p>Tiny word-swap primitive. Cycles through a list of verbs on a slow loop with a 200&thinsp;ms opacity fade. Reads as ambient state (we're working on something) rather than motion (look, this is animated). The default colour is cobalt-400 italic so it sits behind the surrounding sentence; a <code>cobalt</code> or <code>orange</code> variant promotes it to a deliberate accent.</p>
+  <p><strong>Brand rule:</strong> orange is the one-accent-per-screen colour. If the rest of the page already burns its orange budget, stick to the default cobalt-400.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {CyclingVerb} from '@conduction/docusaurus-preset/components';
+
+Aan het &lt;CyclingVerb verbs={['bouwen', 'shippen', 'testen', 'itereren', 'reviewen']}/&gt;.</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>verbs</code> array of strings to cycle through</li>
+    <li><code>interval</code> ms between swaps (default 2400)</li>
+    <li><code>color</code> <code>default</code> / <code>cobalt</code> / <code>orange</code> (default <code>default</code>)</li>
+    <li><code>respectReducedMotion</code> bool (default <code>true</code>) &mdash; freeze on the first verb when the user prefers reduced motion</li>
+  </ul>
+</aside>
+
+<script>
+  /* Demo runtime: cycles each .cycling-verb on a 2.4s loop with a fade. */
+  (function () {
+    const lists = {
+      default: ['bouwen', 'shippen', 'testen', 'itereren', 'reviewen', 'documenteren', 'coderen', 'debuggen', 'refactoren', 'ontwerpen'],
+      cobalt:  ['shippen', 'releasen', 'mergen', 'reviewen', 'bouwen'],
+      orange:  ['reviewen', 'pairen', 'documenteren', 'demoen', 'feedbacken'],
+    };
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    Object.entries(lists).forEach(([key, verbs]) => {
+      const el = document.querySelector('[data-cv-' + key + ']');
+      if (!el || reduced) return;
+      let i = 0;
+      setInterval(() => {
+        el.classList.add('fade');
+        setTimeout(() => {
+          i = (i + 1) % verbs.length;
+          el.textContent = verbs[i];
+          el.classList.remove('fade');
+        }, 220);
+      }, 2400);
+    });
+  })();
+</script>
+
+</body>
+</html>

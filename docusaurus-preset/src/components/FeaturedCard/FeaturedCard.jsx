@@ -27,16 +27,18 @@
  */
 
 import React from 'react';
+import {translate} from '@docusaurus/Translate';
 import HexThumbnail from '../primitives/HexThumbnail';
 import HexBullet from '../primitives/HexBullet';
 import AuthorByline from '../primitives/AuthorByline';
-import {AUDIENCE_LABELS} from '../../data/audience';
+import {AUDIENCE_SHORT_LABELS} from '../../data/audience';
 import styles from './FeaturedCard.module.css';
 
 function readOrWatch(contentType, minutes) {
   if (!minutes) return null;
-  const verb = contentType === 'webinar' ? 'watch' : 'read';
-  return `${minutes} min ${verb}`;
+  return contentType === 'webinar'
+    ? translate({id: 'preset.featuredCard.minWatch', message: '{minutes} min watch', description: 'Duration label for video content'}, {minutes})
+    : translate({id: 'preset.featuredCard.minRead', message: '{minutes} min read', description: 'Duration label for text content'}, {minutes});
 }
 
 export default function FeaturedCard({
@@ -44,7 +46,7 @@ export default function FeaturedCard({
   eyebrow,
   title,
   lede,
-  ctaLabel = 'Read more',
+  ctaLabel,
   author,
   date,
   dateLabel,
@@ -61,15 +63,39 @@ export default function FeaturedCard({
   className,
 }) {
   const readWatch = readOrWatch(contentType, durationMinutes);
+  const resolvedCtaLabel = ctaLabel ?? translate({
+    id: 'preset.featuredCard.cta',
+    message: 'Read more',
+    description: 'Default CTA label on FeaturedCard when the consuming MDX does not pass ctaLabel',
+  });
   const moduleLabel = moduleSlug
     ? (modulePosition && moduleTotalParts
-        ? `Part ${modulePosition} of ${moduleTotalParts}`
-        : (modulePosition ? `Part ${modulePosition}` : null))
+        ? translate({id: 'preset.featuredCard.modulePartOf', message: 'Part {position} of {total}', description: 'Module-position label, e.g. "Part 2 of 4"'}, {position: modulePosition, total: moduleTotalParts})
+        : (modulePosition ? translate({id: 'preset.featuredCard.modulePart', message: 'Part {position}', description: 'Module-position label when total parts is unknown'}, {position: modulePosition}) : null))
     : null;
-  const audienceLabel = audience.length > 0
-    ? audience.map((a) => AUDIENCE_LABELS[a] || a).join(' · ')
+  /* Audience renders on its own "For: A, B, C" line below the meta bits,
+     matching ContentCard and ModuleCard. Each short label gets its own
+     translate() so consuming sites can localise the audience names
+     without forking the data file. */
+  const audienceLabels = audience
+    .map((a) => translate(
+      {
+        id: `preset.audience.short.${a}`,
+        message: AUDIENCE_SHORT_LABELS[a] || a,
+        description: `Short audience label used in the "For: ..." line. Slug: ${a}.`,
+      },
+    ));
+  const audienceLine = audienceLabels.length > 0
+    ? translate(
+        {
+          id: 'preset.featuredCard.audienceFor',
+          message: 'For: {list}',
+          description: 'Audience line under the FeaturedCard meta row. {list} is a comma-separated audience list.',
+        },
+        {list: audienceLabels.join(', ')},
+      )
     : null;
-  const metaBits = [readWatch, moduleLabel, moduleSlug ? (moduleTitle || moduleSlug) : null, audienceLabel]
+  const metaBits = [readWatch, moduleLabel, moduleSlug ? (moduleTitle || moduleSlug) : null]
     .filter(Boolean);
   const Tag = href ? 'a' : 'div';
   const composed = [styles.card, className].filter(Boolean).join(' ');
@@ -98,6 +124,10 @@ export default function FeaturedCard({
           </div>
         )}
 
+        {audienceLine && (
+          <div className={styles.audienceLine}>{audienceLine}</div>
+        )}
+
         {(author || date) && (
           <div className={styles.meta}>
             <AuthorByline
@@ -112,9 +142,9 @@ export default function FeaturedCard({
           </div>
         )}
 
-        {ctaLabel && (
+        {resolvedCtaLabel && (
           <span className={styles.cta}>
-            <span>{ctaLabel}</span>
+            <span>{resolvedCtaLabel}</span>
             <span aria-hidden="true">→</span>
           </span>
         )}

@@ -24,6 +24,7 @@
  */
 
 import React from 'react';
+import {translate} from '@docusaurus/Translate';
 import HexThumbnail from '../primitives/HexThumbnail';
 import {AUDIENCE_SHORT_LABELS} from '../../data/audience';
 import {CONTENT_TYPE_PLURAL_LABELS} from '../ContentTypeFilter/contentTypes';
@@ -86,14 +87,41 @@ export default function ModuleCard({
      the composite type summary below already signal whether this is
      something the visitor reads or watches. Keeps the date line on a
      single row in narrow columns. */
-  const totalLabel = typeof totalMinutes === 'number' ? `${totalMinutes} min` : null;
+  const totalLabel = typeof totalMinutes === 'number'
+    ? translate(
+        {
+          id: 'preset.moduleCard.minLabel',
+          message: '{minutes} min',
+          description: 'Total duration label under a module card (just minutes, no verb).',
+        },
+        {minutes: totalMinutes},
+      )
+    : null;
   const dateLabel  = formatDate(latestDate, locale);
   const dateReadLine = [dateLabel, totalLabel].filter(Boolean).join(' · ');
 
+  const moduleEyebrow = translate({
+    id: 'preset.moduleCard.moduleLabel',
+    message: 'MODULE',
+    description: 'All-caps eyebrow word in the module card type line.',
+  });
   const partsLabel = typeof parts === 'number'
-    ? (parts === 1 ? '1 PART' : `${parts} PARTS`)
+    ? (parts === 1
+        ? translate({
+            id: 'preset.moduleCard.singlePart',
+            message: '1 PART',
+            description: 'Module-parts count when the module has exactly one part.',
+          })
+        : translate(
+            {
+              id: 'preset.moduleCard.multipleParts',
+              message: '{count} PARTS',
+              description: 'Module-parts count when the module has 2+ parts.',
+            },
+            {count: parts},
+          ))
     : null;
-  const typeLine = ['MODULE', partsLabel].filter(Boolean).join(' · ');
+  const typeLine = [moduleEyebrow, partsLabel].filter(Boolean).join(' · ');
 
   /* Composite content-type summary on line 4. For a single-type
      module ("Tutorials") this is one word; mixed modules read
@@ -141,7 +169,24 @@ export default function ModuleCard({
 
         {audience.length > 0 && (
           <div className={styles.audienceLine}>
-            For: {audience.map((a) => AUDIENCE_SHORT_LABELS[a] || a).join(', ')}
+            {translate(
+              {
+                id: 'preset.moduleCard.audienceFor',
+                message: 'For: {list}',
+                description: 'Audience line under a module card. {list} is a comma-separated audience list.',
+              },
+              {
+                list: audience
+                  .map((a) => translate(
+                    {
+                      id: `preset.audience.short.${a}`,
+                      message: AUDIENCE_SHORT_LABELS[a] || a,
+                      description: `Short audience label used in the "For: ..." line. Slug: ${a}.`,
+                    },
+                  ))
+                  .join(', '),
+              },
+            )}
           </div>
         )}
       </div>

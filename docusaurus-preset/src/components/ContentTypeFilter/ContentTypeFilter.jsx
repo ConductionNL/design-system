@@ -51,6 +51,7 @@
  */
 
 import React from 'react';
+import {translate} from '@docusaurus/Translate';
 import {
   CONTENT_TYPES,
   CONTENT_TYPE_PLURAL_LABELS,
@@ -64,12 +65,17 @@ export default function ContentTypeFilter({
   onChange,
   hrefForType,
   counts,
-  allLabel = 'Everything',
+  allLabel,
   allCount,
   types = CONTENT_TYPES,
   labels,
   className,
 }) {
+  const resolvedAllLabel = allLabel ?? translate({
+    id: 'preset.contentTypeFilter.all',
+    message: 'Everything',
+    description: 'Default label on the "all" chip of the content type filter when no allLabel is passed',
+  });
   const isLinkMode = typeof hrefForType === 'function';
   const labelFor = (key) => {
     if (labels && labels[key]) return labels[key];
@@ -116,7 +122,7 @@ export default function ContentTypeFilter({
 
   return (
     <div className={[styles.row, className].filter(Boolean).join(' ')}>
-      {renderChip(ALL, allLabel, allCount)}
+      {renderChip(ALL, resolvedAllLabel, allCount)}
       {types.map((t) =>
         renderChip(t, labelFor(t), counts && counts[t])
       )}

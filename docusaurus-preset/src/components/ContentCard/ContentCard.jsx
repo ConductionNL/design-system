@@ -37,6 +37,7 @@
  */
 
 import React from 'react';
+import {translate} from '@docusaurus/Translate';
 import HexThumbnail from '../primitives/HexThumbnail';
 import Pill from '../primitives/Pill';
 import {CONTENT_TYPE_LABELS} from '../ContentTypeFilter/contentTypes';
@@ -48,7 +49,14 @@ function readOrWatch(_contentType, minutes) {
   /* No verb appended — the type line below the date (BLOG / TUTORIAL /
      WEBINAR) already signals read vs. watch, and the extra word kept
      wrapping to a second line on narrow card columns. */
-  return `${minutes} min`;
+  return translate(
+    {
+      id: 'preset.contentCard.minLabel',
+      message: '{minutes} min',
+      description: 'Duration label under a content card (just minutes, no verb).',
+    },
+    {minutes},
+  );
 }
 
 function formatDate(date, locale = 'nl') {
@@ -168,7 +176,24 @@ export default function ContentCard({
 
         {audience.length > 0 && (
           <div className={styles.audienceLine}>
-            For: {audience.map((a) => AUDIENCE_SHORT_LABELS[a] || a).join(', ')}
+            {translate(
+              {
+                id: 'preset.contentCard.audienceFor',
+                message: 'For: {list}',
+                description: 'Audience line under a content card. {list} is a comma-separated audience list.',
+              },
+              {
+                list: audience
+                  .map((a) => translate(
+                    {
+                      id: `preset.audience.short.${a}`,
+                      message: AUDIENCE_SHORT_LABELS[a] || a,
+                      description: `Short audience label used in the "For: ..." line. Slug: ${a}.`,
+                    },
+                  ))
+                  .join(', '),
+              },
+            )}
           </div>
         )}
 

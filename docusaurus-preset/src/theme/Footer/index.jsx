@@ -23,6 +23,7 @@ import Link from '@docusaurus/Link';
 import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import Translate, {translate} from '@docusaurus/Translate';
 import {brandFor} from '../brand.jsx';
 import {useLazyScript} from '../../utils/lazyScript';
 import {useLazyStylesheet} from '../../utils/lazyStylesheet';
@@ -272,21 +273,32 @@ export default function Footer() {
               they're absent on a product page. */}
           {minigamesOn && (
             <>
-              <div className="game-hud" aria-live="polite" aria-label="Boat-sinking mini game">
+              <div className="game-hud" aria-live="polite" aria-label={translate({id: 'preset.footer.game.ariaLabel', message: 'Boat-sinking mini game', description: 'Accessible name for the footer minigame region'})}>
                 <div className="hud-block hud-counter">
                   <span className="hud-num" data-counter="">100</span>
-                  <span className="hud-label">Boats left</span>
+                  <span className="hud-label">
+                    <Translate id="preset.footer.game.boatsLeft" description="HUD label counting boats remaining">Boats left</Translate>
+                  </span>
                 </div>
                 <div className="hud-block hud-timer">
                   <span className="hud-num" data-timer="">60</span>
-                  <span className="hud-label">Seconds</span>
+                  <span className="hud-label">
+                    <Translate id="preset.footer.game.seconds" description="HUD label for the seconds-remaining timer">Seconds</Translate>
+                  </span>
                 </div>
               </div>
 
-              <div className="game-over" role="dialog" aria-label="Mini game over">
-                <p className="go-title" data-go-title="">Time's up</p>
-                <p className="go-stat"><span data-go-sunk="">0</span> sunk</p>
-                <button type="button" data-restart="">Play again</button>
+              <div className="game-over" role="dialog" aria-label={translate({id: 'preset.footer.game.overAriaLabel', message: 'Mini game over', description: 'Accessible name for the game-over dialog'})}>
+                <p className="go-title" data-go-title="">
+                  <Translate id="preset.footer.game.timesUp" description="Default headline shown when the minigame timer hits zero">Time's up</Translate>
+                </p>
+                <p className="go-stat">
+                  <span data-go-sunk="">0</span>{' '}
+                  <Translate id="preset.footer.game.sunk" description="Suffix after the number of boats sunk in the game-over stat">sunk</Translate>
+                </p>
+                <button type="button" data-restart="">
+                  <Translate id="preset.footer.game.playAgain" description="Button label to restart the minigame">Play again</Translate>
+                </button>
               </div>
             </>
           )}
@@ -337,8 +349,12 @@ export default function Footer() {
                 <div className="wm">{wordmark}</div>
               )}
               <p>
-                Open-source apps for <span className="next-blue">Nextcloud</span>. Built and
-                maintained by Conduction in Amsterdam, released under EUPL-1.2.
+                <Translate
+                  id="preset.footer.brandBlurb"
+                  description="Footer brand-citation paragraph. {nextcloud} is the styled Nextcloud word."
+                  values={{nextcloud: <span className="next-blue">Nextcloud</span>}}>
+                  {'Open-source apps for {nextcloud}. Built and maintained by Conduction in Amsterdam, released under EUPL-1.2.'}
+                </Translate>
               </p>
               {/*
                 Brand citation. The producer chain stays dot-separated

@@ -48,6 +48,7 @@ import {useLocation} from '@docusaurus/router';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useThemeConfig} from '@docusaurus/theme-common';
+import {translate} from '@docusaurus/Translate';
 import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem';
 import {brandFor, productWordmark, deriveStability} from '../brand.jsx';
 import {ICONS} from '../../components/primitives/icons';
@@ -96,7 +97,7 @@ function NavItem({item, location, appVersion}) {
         className={styles.iconLink}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={item['aria-label'] || 'GitHub repository'}
+        aria-label={item['aria-label'] || translate({id: 'preset.navbar.github.ariaLabel', message: 'GitHub repository', description: 'Default accessible label for the icon-only GitHub link in the navbar'})}
         title="GitHub"
       >
         <span className={styles.iconGlyph} aria-hidden="true">{ICONS.github}</span>
@@ -108,7 +109,7 @@ function NavItem({item, location, appVersion}) {
      (the Redocusaurus mount point used by every Conduction docs site).
      Sites can override via `to` or `href`. */
   if (typeIs(item, 'apiDocs')) {
-    const label = item.label || 'API Documentation';
+    const label = item.label || translate({id: 'preset.navbar.apiDocs.label', message: 'API Documentation', description: 'Default label for the API Documentation navbar link when the consuming site does not set one'});
     const to = item.to || '/api';
     const href = item.href;
     const isActive = !href && (location?.pathname === to ||
@@ -225,7 +226,10 @@ export default function Navbar() {
      sub-route (e.g. /docs/intro/img/app-logo.svg). */
   const logoSrcRaw = navbar.logo?.src;
   const logoSrc = useBaseUrl(logoSrcRaw || '');
-  const logoAlt = navbar.logo?.alt || `${navbar.title} avatar`;
+  const logoAlt = navbar.logo?.alt || translate(
+    {id: 'preset.navbar.logoAlt', message: '{title} avatar', description: 'Default alt text for the navbar logo. {title} is the site title.'},
+    {title: navbar.title},
+  );
 
   /* Split into "left links" (regular nav) and "right CTAs" (locale,
      external links, install button, GitHub icon, version pill).

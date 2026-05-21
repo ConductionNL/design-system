@@ -133,6 +133,7 @@ export {
    patterns that academy tutorials kept duplicating. Designed for use
    inside an MDX academy post body. */
 export {default as HexCard} from './HexCard/HexCard.jsx';
+export {default as PullQuote} from './PullQuote/PullQuote.jsx';
 export {default as Outcomes, Outcome} from './Outcomes/Outcomes.jsx';
 export {default as Prerequisites, PrerequisiteItem} from './Prerequisites/Prerequisites.jsx';
 export {default as Troubleshooting, TroubleshootingItem} from './Troubleshooting/Troubleshooting.jsx';

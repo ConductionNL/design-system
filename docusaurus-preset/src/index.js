@@ -683,6 +683,17 @@ function createConfig(opts) {
         require.resolve('./plugins/indexnow.js'),
         opts.indexnow || {},
       ],
+      /* The Features Page plugin registers a `/features` route backed by
+         the consuming app's `docs/features.json` (regenerated from
+         openspec/specs/ by the org-wide Features Extract workflow stage).
+         No-ops when features.json is absent, so it's safe to enable
+         across the fleet ahead of full adoption. Sites opt out via
+         opts.featuresPage = { disable: true } or override the page
+         title / intro / route path. */
+      [
+        require.resolve('./plugins/features-page.js'),
+        opts.featuresPage || {},
+      ],
       ...(opts.plugins || []),
     ],
   };

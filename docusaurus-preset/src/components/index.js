@@ -89,6 +89,7 @@ export {default as McpToolShelf} from './McpToolShelf/McpToolShelf.jsx';
 export {default as ExternalAppShelf} from './ExternalAppShelf/ExternalAppShelf.jsx';
 export {default as WidgetShelf} from './WidgetShelf/WidgetShelf.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';
+export {default as FeaturesPage} from './FeaturesPage/FeaturesPage.jsx';
 
 /* Academy components (Batch 4). Card-and-chrome patterns for
    academy.conduction.nl: a single feed of blogs, guides, case studies,

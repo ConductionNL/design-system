@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Toon, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<style>
+  /* Hub-style chassis: full-bleed hero + content rail + footer, matches preview/components.html. */
+  body { padding: 0; background: var(--c-cobalt-50); }
+  .kit-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-12) var(--space-12);
+  }
+  .kit-body > .section-label:first-child { margin-top: 0; }
+  .kit-footer {
+    max-width: 1280px;
+    margin: 64px auto;
+    padding: var(--space-8) var(--space-12);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .kit-footer code { font-family: var(--conduction-typography-font-family-code); }
+  .kit-footer a { color: var(--c-cobalt-400); }
+
+  /* Three registers · the calibration set */
+  .registers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  @media (max-width: 1100px) { .registers { grid-template-columns: 1fr; } }
+
+  .register {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+    position: relative;
+  }
+  .register .marker {
+    position: absolute;
+    top: 0; left: var(--space-8);
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+    transform: translateY(-7px);
+    background: var(--accent);
+  }
+  .register.a { --accent: var(--c-cobalt-400); }
+  .register.b { --accent: var(--c-cobalt-700); }
+  .register.c { --accent: var(--c-orange-knvb); }
+
+  .register .label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .register h3 {
+    font-size: 19px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .register .stance {
+    font-size: 13px; line-height: 1.5;
+    color: var(--c-cobalt-700);
+  }
+  .register .stance strong { color: var(--c-blue-cobalt); }
+  .register blockquote {
+    font-style: italic; color: var(--c-cobalt-700);
+    font-size: 13px; line-height: 1.5;
+    border-left: 2px solid var(--accent);
+    padding-left: var(--space-3);
+    margin: 0;
+  }
+  .register blockquote + blockquote { margin-top: 8px; }
+  .register .verdict {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em;
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--c-cobalt-50);
+  }
+  .register.a .verdict, .register.b .verdict { color: var(--c-red-vermillion); }
+  .register.c .verdict { color: var(--c-mint-500); }
+  .register .verdict strong { color: var(--c-blue-cobalt); }
+
+  /* Rewrite recipes table */
+  .rewrites {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .rewrites table { width: 100%; border-collapse: collapse; }
+  .rewrites th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    font-weight: 500;
+  }
+  .rewrites td {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    font-size: 14px; line-height: 1.5;
+    width: 50%;
+  }
+  .rewrites td.before {
+    color: var(--c-cobalt-400);
+    font-style: italic;
+    text-decoration: line-through;
+    text-decoration-color: var(--c-cobalt-200);
+  }
+  .rewrites td.after {
+    color: var(--c-blue-cobalt);
+    font-weight: 500;
+  }
+  .rewrites td.after::before {
+    content: "→  ";
+    color: var(--c-orange-knvb);
+    font-weight: 600;
+  }
+
+  /* Golden rules */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  .rule {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .rule .num {
+    width: 28px; height: 32px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .rule .body { flex: 1; }
+  .rule .body strong {
+    color: var(--c-blue-cobalt);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .rule .body p {
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.5;
+  }
+
+  /* Banned phrases */
+  .banned {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8) var(--space-8);
+    margin-top: var(--space-2);
+  }
+  .banned h4 {
+    font-size: 15px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    margin-bottom: var(--space-2);
+  }
+  .banned .pills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: var(--space-3);
+  }
+  .banned .pills span {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: white;
+    color: var(--c-red-vermillion);
+    border: 1px solid var(--c-cobalt-200);
+    text-decoration: line-through;
+    font-style: italic;
+  }
+  .banned p {
+    font-size: 13px; color: var(--c-cobalt-700); line-height: 1.55;
+    margin-top: var(--space-3);
+  }
+  .banned p strong { color: var(--c-blue-cobalt); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Identity</a> &nbsp;/&nbsp; Voice</div>
+  <h1>MKB-direct. Concreet. Kort.</h1>
+  <p>Onderwerp = een mens, geen systeem. Werkwoord = actie, geen bestaan. Eén claim per zin. Minder dan 16 woorden.</p>
+</div>
+
+<div class="kit-body">
+
+  <div class="section-label">Drie registers · welke we gebruiken, welke twee niet</div>
+  <div class="registers">
+
+    <div class="register a">
+      <span class="marker"></span>
+      <div class="label">Register A · de inkoop-stem</div>
+      <h3>"De Oplossing ondersteunt het opslaan van zoekopdrachten."</h3>
+      <p class="stance">Gedepersonaliseerd, juridisch veilig, gebouwd voor inkoopdocumenten. Onderwerp is altijd <em>"de Oplossing"</em>, nooit een mens. Klinkt als een <strong>bestek</strong>, niet als een product.</p>
+      <blockquote>"De Oplossing biedt de mogelijkheid om sjablonen inclusief huisstijl centraal te configureren."</blockquote>
+      <blockquote>"De Oplossing dient benaderbaar te zijn via een fully qualified domain name."</blockquote>
+      <div class="verdict">Gebruiken? <strong>Nee.</strong> Gereserveerd voor documentatie en gedetailleerde feature-lijsten op app-detail-pagina's.</div>
+    </div>
+
+    <div class="register b">
+      <span class="marker"></span>
+      <div class="label">Register B · de eisen-stem</div>
+      <h3>"Het systeem moet alle intrekkingen opslaan."</h3>
+      <p class="stance">Functionele eisen, imperatief, toetsbaar. Onderwerp is <em>"het systeem"</em>. Een stap dieper in robot-territorium dan register A, en twee keer zo anoniem.</p>
+      <blockquote>"Het systeem moet een controletrail bijhouden van alle kostentoewijzingen."</blockquote>
+      <blockquote>"Het systeem moet de afhankelijkheidsrelatie tussen lastenorders en invorderingsbeschikkingen registreren."</blockquote>
+      <div class="verdict">Gebruiken? <strong>Nee.</strong> Focust op wat het systeem <em>doet</em>, niet op wat de gebruiker <em>bereikt</em>.</div>
+    </div>
+
+    <div class="register c">
+      <span class="marker"></span>
+      <div class="label">Register C · de user-story-stem</div>
+      <h3>"Als gebruiker wil ik mijn zoekopdrachten opslaan, zodat ik ze later opnieuw kan gebruiken."</h3>
+      <p class="stance">Een echte mens, een concreet doel, een motivatie. Met één aanpassing, laat <em>"Als gebruiker"</em> vallen, landt het precies op de Conduction-toon.</p>
+      <blockquote>"Als gebruiker wil ik filtering op content, zodat ik enkel relevante content tot mijn beschikking heb."</blockquote>
+      <blockquote>"Als gebruiker wil ik tickets toewijzen, zodat ik gericht aan een collega kan overdragen."</blockquote>
+      <div class="verdict">Gebruiken? <strong>Ja, maar korter herschrijven.</strong> Spreek de lezer direct aan. Zie recepten hieronder.</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Herschrijf-recepten · van bron naar website</div>
+  <div class="rewrites">
+    <table>
+      <thead><tr><th>Tender / eis-bron</th><th>Conduction-website</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="before">"De Oplossing ondersteunt het opslaan van zoekopdrachten."</td>
+          <td class="after">"Sla je zoekopdrachten op en gebruik ze later opnieuw."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing heeft één centrale beheeromgeving waarin autorisaties kunnen worden beheerd."</td>
+          <td class="after">"Beheer alle autorisaties op één plek."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing ondersteunt Single Sign On (SSO) authenticatie op basis van ADFS en SAML 2.0."</td>
+          <td class="after">"Log in met je bestaande account via SSO (ADFS, SAML 2.0)."</td>
+        </tr>
+        <tr>
+          <td class="before">"Het systeem moet een digitale inschrijfvoorziening bieden waarmee verzoeken kunnen worden ingediend."</td>
+          <td class="after">"Laat mensen zich digitaal inschrijven, zonder papierwerk."</td>
+        </tr>
+        <tr>
+          <td class="before">"Het systeem moet historische jaarrekeningen permanent archiveren."</td>
+          <td class="after">"Jaarrekeningen worden automatisch gearchiveerd, voorgoed vindbaar."</td>
+        </tr>
+        <tr>
+          <td class="before">"De Oplossing biedt documentcreatiefunctionaliteit om documenten en e-mails op basis van sjablonen te creëren."</td>
+          <td class="after">"Genereer documenten en e-mails uit sjablonen, direct, zonder plug-in."</td>
+        </tr>
+        <tr>
+          <td class="before">"State-of-the-art platform dat digitale transformatie versnelt."</td>
+          <td class="after">"Twaalf apps die in twee minuten op je Nextcloud draaien."</td>
+        </tr>
+        <tr>
+          <td class="before">"Boek een demo voor een persoonlijk gesprek."</td>
+          <td class="after">"Vraag een demo aan bij een partner."</td>
+        </tr>
+        <tr>
+          <td class="before">"Volledig NLDS-compliant en toekomstbestendig."</td>
+          <td class="after">"Open source. Gratis. AVG-compliant by default."</td>
+        </tr>
+        <tr>
+          <td class="before">"Onze WOO-app voor gemeenten."</td>
+          <td class="after">"Onze WOO-solution, gebouwd op OpenCatalogi en OpenConnector."</td>
+        </tr>
+        <tr>
+          <td class="before">"Synergetische ketensamenwerking voor waardevolle inzichten."</td>
+          <td class="after">Gewoon weglaten. Begin opnieuw met één concrete claim.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">De zeven regels · houd deze in je hoofd</div>
+  <div class="rules">
+    <div class="rule">
+      <div class="num">1</div>
+      <div class="body">
+        <strong>Onderwerp = een mens, geen systeem.</strong>
+        <p><em>"Je"</em> · <em>"jij"</em> · <em>"we"</em> verslaat <em>"de Oplossing"</em> · <em>"het systeem"</em> altijd. Ook als het systeem het werk <em>doet</em>, schrijf vanuit de gebruiker.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">2</div>
+      <div class="body">
+        <strong>Werkwoord = actie, geen bestaan.</strong>
+        <p><em>"Genereer"</em> verslaat <em>"heeft de mogelijkheid te genereren"</em>. <em>"Exporteer"</em> verslaat <em>"biedt export-functionaliteit"</em>. Actieve vorm, geen nominalisatie.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">3</div>
+      <div class="body">
+        <strong>Resultaat vóór motivatie.</strong>
+        <p>User stories openen met <em>"Als X wil ik Y zodat Z"</em>. Draai het om: <em>"Y, zodat Z."</em> Of gewoon <em>"Y. Z."</em></p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">4</div>
+      <div class="body">
+        <strong>Minder dan 16 woorden.</strong>
+        <p>Wordt een zin langer dan 16, splits 'm. Twee korte zinnen lezen sneller dan één lange, en elke claim is afzonderlijk verdedigbaar.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">5</div>
+      <div class="body">
+        <strong>Jargon vraagt context.</strong>
+        <p>WOO-coördinator? Prima, maar leg het de eerste keer uit. SAML? OK in tech-context. <em>Ketensamenwerking</em>? Nooit.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">6</div>
+      <div class="body">
+        <strong>Afkortingen: eerste keer voluit, daarna afgekort.</strong>
+        <p><em>"Wet open overheid (Woo)"</em> bij eerste vermelding. Daarna alleen <em>"Woo"</em>. Laat lezers niet Googlen.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">7</div>
+      <div class="body">
+        <strong>Eén claim per zin.</strong>
+        <p>Marketingzinnen met meerdere claims (<em>"snel, schaalbaar, veilig en betrouwbaar"</em>) worden overgeslagen. Eén claim, één zin. De lezer kan elke claim afzonderlijk verifiëren.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="num">8</div>
+      <div class="body">
+        <strong>Geen em-dashes. Geen Title Case.</strong>
+        <p>Em-dashes (<code>—</code>) en double-dashes (<code>--</code>) zijn AI-tells. Vervang door een punt, komma of dubbele punt. Koppen in sentence case, geen Title Case. En-dashes (<code>–</code>) alleen voor numerieke ranges.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Verbannen woorden · de marketing-ruis-lijst</div>
+  <div class="banned">
+    <h4>Woorden die in tenders opduiken en niet op onze site verschijnen.</h4>
+    <p>Elk van deze woorden is een teken dat een zin zich achter generieke taal verstopt. Schrap het woord en kijk of de zin nog werkt. Zo ja, dan was het ruis.</p>
+    <div class="pills">
+      <span>Digitale transformatie</span>
+      <span>Ketensamenwerking</span>
+      <span>Waardevolle inzichten</span>
+      <span>Toekomstbestendig</span>
+      <span>State-of-the-art</span>
+      <span>Platform dat…</span>
+      <span>Oplossing</span>
+      <span>Synergie</span>
+      <span>Proactief meedenken</span>
+      <span>Kernel</span>
+    </div>
+    <p style="margin-top: var(--space-4);"><strong>Uitzondering · "Oplossing".</strong> Het woord is prima in klant-vertalingen van <em>"solution"</em>, maar nooit als generieke vervanger voor ons product. We hebben <strong>apps</strong> en <strong>solutions</strong>, nooit <em>"de Oplossing"</em>.</p>
+    <p style="margin-top: var(--space-3);"><strong>Vervang · "Kernel" &rarr; "workspace".</strong> Kernel klinkt naar tech-jargon (operating-system kernel, Linux-kernel) en sluit MKB-beslissers buiten. Nextcloud noemt zichzelf een <em>workspace</em>; wij citeren dat. <em>"Six apps, one workspace, all open-source"</em> in plaats van <em>"six apps · one kernel"</em>. In API-namen gebruiken we <code>slot="apex"</code> voor het centrale element, hetzelfde als in <code>cn-domain-tree</code>.</p>
+  </div>
+
+</div><!-- /.kit-body -->
+
+<div class="kit-footer">
+  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span><a href="index.html">&larr; Back to identity</a> &middot; <a href="../index.html">&larr; Back to system</a></span>
+</div>
+
+</body>
+</html>

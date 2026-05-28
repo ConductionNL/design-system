@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>SLA · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  .letter { padding: 22mm 22mm 24mm; display: flex; flex-direction: column; min-height: var(--paper-a4-h); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); font-size: 10pt; line-height: 1.5; }
+  .filepath { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.06em; color: var(--c-cobalt-400); border-bottom: 0.3mm solid var(--c-cobalt-100); padding-bottom: 1.5mm; margin-bottom: 6mm; }
+  .filepath .nx { color: var(--c-cobalt-700); }
+
+  .doc-title { font-size: 18pt; font-weight: 700; color: var(--c-blue-cobalt); letter-spacing: -0.01em; margin-bottom: 1mm; }
+  .doc-sub { font-family: var(--conduction-typography-font-family-code); font-size: 8pt; letter-spacing: 0.08em; color: var(--c-cobalt-400); text-transform: uppercase; margin-bottom: 8mm; }
+
+  .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-bottom: 8mm; }
+  .tier { background: white; border: 0.3mm solid var(--c-cobalt-100); border-radius: 1.5mm; padding: 4mm 4mm 5mm; }
+  .tier.recommended { border-color: var(--c-orange-knvb); border-width: 0.6mm; position: relative; }
+  .tier.recommended::before {
+    content: 'Recommended'; position: absolute; top: -3mm; left: 4mm;
+    background: var(--c-orange-knvb); color: white;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.5mm 2mm; border-radius: 999px; font-weight: 500;
+  }
+  .tier .name { font-size: 11pt; font-weight: 700; color: var(--c-blue-cobalt); margin-bottom: 1mm; }
+  .tier .price { font-family: var(--conduction-typography-font-family-code); font-size: 14pt; font-weight: 700; color: var(--c-cobalt-900); margin-bottom: 3mm; }
+  .tier .price small { font-size: 7pt; color: var(--c-cobalt-400); font-weight: 400; }
+  .tier ul { padding-left: 0; margin: 0; list-style: none; display: flex; flex-direction: column; gap: 1.5mm; }
+  .tier li { padding-left: 4mm; position: relative; font-size: 8.5pt; line-height: 1.4; color: var(--c-cobalt-700); }
+  .tier li::before { content: ''; position: absolute; left: 0; top: 1.4mm; width: 1.2mm; height: 1.4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .tier.recommended li::before { background: var(--c-orange-knvb); }
+
+  .article { margin-bottom: 4mm; }
+  .article h3 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 1.5mm;
+    font-weight: 600;
+  }
+  .article p { margin: 0 0 2mm; font-size: 9pt; line-height: 1.5; }
+
+  .response-table { width: 100%; border-collapse: collapse; margin-bottom: 4mm; font-size: 9pt; }
+  .response-table th, .response-table td { padding: 2mm 3mm; border-bottom: 0.2mm solid var(--c-cobalt-100); text-align: left; }
+  .response-table th { font-family: var(--conduction-typography-font-family-code); font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); font-weight: 500; background: var(--c-cobalt-50); }
+
+  .footer-strip { border-top: 0.3mm solid var(--c-cobalt-100); margin-top: auto; padding-top: 4mm; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; font-family: var(--conduction-typography-font-family-code); font-size: 7pt; color: var(--c-cobalt-400); letter-spacing: 0.04em; }
+  .footer-strip b { color: var(--c-cobalt-900); font-family: var(--conduction-typography-font-family-body); font-weight: 600; display: block; margin-bottom: 1mm; }
+
+  @media print { @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; Letters &nbsp;/&nbsp; SLA</div>
+  <h1>SLA &middot; service agreement</h1>
+  <p class="lead">Service-level terms for client environments on <a href="../identity/websites.html">commonground.nu</a>. Three tiers (basic / standard / premium), four response-time categories, one escalation path. English canonical.</p>
+</div>
+
+<div class="stage">
+  <div>
+    <div class="paper paper--A4">
+      <div class="letter">
+
+        <div class="filepath">
+          conduction.nl &middot; <span class="nx">letters</span> &middot; sla &middot; v2026.05
+        </div>
+
+        <div class="doc-title">Service Level Agreement</div>
+        <div class="doc-sub">Hosting + operations for Nextcloud environments on commonground.nu</div>
+
+        <div class="tier-grid">
+          <div class="tier">
+            <div class="name">Basic</div>
+            <div class="price">€ {{ PRICE_BASIC }} <small>/ month</small></div>
+            <ul>
+              <li>99.0% availability</li>
+              <li>Weekdays 09:00-17:00</li>
+              <li>Response within 8 hours</li>
+              <li>Updates monthly</li>
+              <li>Email support</li>
+            </ul>
+          </div>
+          <div class="tier recommended">
+            <div class="name">Standard</div>
+            <div class="price">€ {{ PRICE_STANDARD }} <small>/ month</small></div>
+            <ul>
+              <li>99.5% availability</li>
+              <li>Weekdays 08:00-18:00</li>
+              <li>Response within 2 hours</li>
+              <li>Updates weekly</li>
+              <li>Email + phone</li>
+              <li>Monthly report</li>
+            </ul>
+          </div>
+          <div class="tier">
+            <div class="name">Premium</div>
+            <div class="price">€ {{ PRICE_PREMIUM }} <small>/ month</small></div>
+            <ul>
+              <li>99.9% availability</li>
+              <li>24/7 including weekends</li>
+              <li>Response within 30 min</li>
+              <li>Updates on release</li>
+              <li>Named contact</li>
+              <li>Weekly report</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="article">
+          <h3>Response times per level</h3>
+          <table class="response-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Example</th>
+                <th>Basic</th>
+                <th>Standard</th>
+                <th>Premium</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>P1</strong> &middot; critical</td><td>Site offline, data loss</td><td>4 hours</td><td>1 hour</td><td>15 min</td></tr>
+              <tr><td><strong>P2</strong> &middot; high</td><td>Functionality broken, workaround</td><td>8 hours</td><td>2 hours</td><td>30 min</td></tr>
+              <tr><td><strong>P3</strong> &middot; medium</td><td>Issue without direct impact</td><td>2 work days</td><td>1 work day</td><td>4 hours</td></tr>
+              <tr><td><strong>P4</strong> &middot; low</td><td>Request, question, small ask</td><td>5 work days</td><td>3 work days</td><td>1 work day</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="article">
+          <h3>Escalation process</h3>
+          <p>Not happy with response or resolution: call <strong>{{ ESCALATION_NAME }}</strong> directly on <strong>{{ ESCALATION_TEL }}</strong>. One person, no ticket system for escalations. Conduction grade, not vendor-helpdesk grade.</p>
+        </div>
+
+        <div class="article">
+          <h3>Out of scope</h3>
+          <p>Custom development, integrations with third-party systems, and data migrations are separate engagements (see <a href="quotation.html">quotation</a>). Availability is measured excluding planned maintenance (announced 5 work days in advance, max 4 hours per month).</p>
+        </div>
+
+        <div class="article">
+          <h3>Term</h3>
+          <p>Cancellable monthly with a 30-day notice period. No complicated discounts for annual contracts; we think it's more important that you can walk away if we don't deliver.</p>
+        </div>
+
+        <div class="footer-strip">
+          <div><b>Conduction B.V.</b>Lauriergracht 14h<br>1016 RR Amsterdam</div>
+          <div><b>Contact</b>+31 85 303 6840<br>support@commonground.nu</div>
+          <div><b>Version</b>v2026.05<br>Previous version: v2026.02</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="specimen-label">SLA &middot; template &middot; three tiers + response-time table</div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>Three tiers, one table, no fine print</h2>
+    <p class="lede">SLAs are famous for slick marketing text followed by 30 pages of exceptions. Our version: one page, three columns, one table. What you pay is what you get; what you don't see isn't there.</p>
+    <ul>
+      <li><strong>Three tiers, one recommended.</strong> Basic / standard / premium. Standard gets the orange "Recommended" pill, because 80% of MKB buyers sit right there.</li>
+      <li><strong>Response-time table with realistic examples.</strong> Not "P1 = critical"; "P1 = site offline or data loss". So the buyer knows what falls into which level.</li>
+      <li><strong>Escalation to one name, not a ticket system.</strong> Conduction is a people business, not a vendor helpdesk. One number when things go wrong.</li>
+      <li><strong>Out-of-scope explicit.</strong> Custom work, integrations, data migrations are separate engagements. Saves three emails per month about scope creep.</li>
+      <li><strong>Monthly cancellable.</strong> No annual contracts with retention bonuses. We want clients to stay because we deliver, not because they're locked in.</li>
+    </ul>
+    <div class="footer-note">A4 &middot; EN canonical &middot; one-pager (extends to 2 pages with pricing appendix) &middot; --bleed 0 &middot; placeholders use {{ }}</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="letterhead.html">letterhead</a> footer-strip &middot;
+        <a href="quotation.html">quotation</a> for project work &middot;
+        <a href="../identity/websites.html">commonground.nu</a> as the deployment target &middot;
+        <code>--c-orange-knvb</code> for the recommended-tier accent &middot;
+        <code>.paper--A4</code>
+      </div>
+    </div>
+
+    <div class="download-block">
+      <span class="dl-label">Download</span>
+      <a class="dl-chip" href="odf/sla.odt" download>
+        <span><span class="ext">.odt</span>LibreOffice / Word</span>
+        <span class="arrow">&rarr;</span>
+      </a>
+      <p class="dl-note">Open in your editor, fill the &#123;&#123; placeholders &#125;&#125;, export to PDF.</p>
+    </div>
+  </aside>
+</div>
+
+<script src="../include.js"></script>
+</body>
+</html>

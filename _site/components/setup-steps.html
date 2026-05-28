@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Setup steps, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 880px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+  .setup-steps > h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--c-cobalt-900);
+    margin: 0 0 var(--space-3);
+    line-height: 1.2;
+  }
+  .setup-steps > .lede {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--c-cobalt-700);
+    margin: 0 0 var(--space-5);
+    max-width: 60ch;
+  }
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+  .step-row .num {
+    width: 36px; height: 42px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .step-row .body strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--c-cobalt-900);
+    font-size: 17px;
+  }
+  .step-row .body p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--c-cobalt-700);
+    line-height: 1.55;
+  }
+  .step-row .body code {
+    background: var(--c-cobalt-50);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    color: var(--c-cobalt-900);
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: var(--c-cobalt-50); border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Setup steps</div>
+
+<div class="frame">
+  <div class="frame-label">SetupSteps + SetupStep &middot; vertical inline-row pattern for docs setup/install/walkthrough sections</div>
+
+  <section class="setup-steps">
+    <h2>Setup</h2>
+    <p class="lede">Numbered steps you read top to bottom. Use this for setup, install, and onboarding flows where each step is a single action with one short paragraph of context.</p>
+
+    <div class="step-row">
+      <div class="num">1</div>
+      <div class="body">
+        <strong>Add an xWiki source in OpenConnector</strong>
+        <p>Open <em>Integrations &rarr; Sources &rarr; New source</em>, choose <em>xWiki</em>, paste the base URL and an API token. Test the connection.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="num">2</div>
+      <div class="body">
+        <strong>Pick the spaces to index</strong>
+        <p>Per source, choose one or more xWiki spaces. Open Register indexes the articles in those spaces and refreshes on the configured cron schedule.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="num">3</div>
+      <div class="body">
+        <strong>Enable the integration in the consuming app</strong>
+        <p>In the target app (DeskDesk, OpenCatalogi, etc.), open the <em>Integrations</em> tab, toggle <em>xWiki articles</em> on, pick the source you added above.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="num">4</div>
+      <div class="body">
+        <strong>Verify</strong>
+        <p>Open the app's chat sidebar, ask a question that matches an indexed article. The matching article appears in the answer with a deep-link back to xWiki.</p>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;SetupSteps/&gt;</code> + <code>&lt;SetupStep/&gt;</code></h2>
+  <p>Vertical numbered-step list for docs setup/install/walkthrough sections. Each step shows a small orange hex with its number on the left and a bold title + one short paragraph on the right. Distinct from <a href="how-steps.html">HowSteps</a>, which is a 3-up card row for marketing surfaces; <code>SetupSteps</code> is meant for in-body docs prose where steps are sequential and detailed.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {SetupSteps, SetupStep} from '@conduction/docusaurus-preset/components';
+
+## Setup
+
+&lt;SetupSteps&gt;
+  &lt;SetupStep title="Add an xWiki source in OpenConnector"&gt;
+    Open *Integrations &rarr; Sources &rarr; New source*, choose *xWiki*, paste the base URL and an API token. Test the connection.
+  &lt;/SetupStep&gt;
+  &lt;SetupStep title="Pick the spaces to index"&gt;
+    Per source, choose one or more xWiki spaces. Open Register indexes the articles and refreshes on the configured cron schedule.
+  &lt;/SetupStep&gt;
+  &lt;SetupStep title="Verify"&gt;
+    Open the app's chat sidebar, ask a question that matches an indexed article.
+  &lt;/SetupStep&gt;
+&lt;/SetupSteps&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>title</code> optional h2 above the list (e.g. <code>Setup</code>, <code>Install</code>); pass <code>title={null}</code> to drop the heading when the section already has one</li>
+    <li><code>lede</code> optional one-paragraph intro</li>
+    <li><code>start</code> starting number for the first step (default 1; useful when the list resumes after a break)</li>
+    <li><code>children</code> one or more <code>&lt;SetupStep/&gt;</code> nodes</li>
+  </ul>
+  <p><code>SetupStep</code> takes <code>title</code> (bold text on the first line) and <code>children</code> (the body paragraph; MDX inline markup allowed). The step number is auto-assigned in document order; no manual numbering.</p>
+</aside>
+
+</body>
+</html>

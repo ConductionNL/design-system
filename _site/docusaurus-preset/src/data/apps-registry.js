@@ -1,0 +1,110 @@
+/**
+ * @conduction/docusaurus-preset/data/apps-registry
+ *
+ * URL-only registry of every public Conduction app. Single source of
+ * truth for cross-linking between the three surfaces a visitor lands
+ * on while learning about an app:
+ *
+ *   1. /apps/<slug>                  product detail page
+ *   2. https://docs.conduction.nl/<slug>     documentation site (lives
+ *      in the app's own repo, served from a per-app subfolder under
+ *      the central docs.conduction.nl Docusaurus install)
+ *   3. /academy?app=<slug>           academy posts filtered by app
+ *
+ * The registry is consumed by:
+ *   - <AppCrossLinks/>          renders the three links per app.
+ *   - <ProductFilter/>          renders the chip row on /academy.
+ *   - sites/www/src/data/apps-catalog.js   the live Conduction.nl
+ *     site adds icons, taglines, and category metadata on top of
+ *     this registry, so display data and URLs stay in lockstep.
+ *
+ * Adding a new app: add an entry here. The url shape is conventional:
+ *   - productHref:  /apps/<slug>
+ *   - docsHref:     https://docs.conduction.nl/<slug>
+ *   - academyHref:  /academy?app=<slug>
+ * Override any of the three when an app deviates from the convention
+ * (none today; the convention holds).
+ */
+
+export const APPS_REGISTRY = {
+  opencatalogi:    {slug: 'opencatalogi',    name: 'OpenCatalogi',     category: 'Data',        productHref: '/apps/opencatalogi',    docsHref: 'https://docs.conduction.nl/opencatalogi',    academyHref: '/academy?app=opencatalogi'},
+  openregister:    {slug: 'openregister',    name: 'OpenRegister',     category: 'Data',        productHref: '/apps/openregister',    docsHref: 'https://docs.conduction.nl/openregister',    academyHref: '/academy?app=openregister'},
+  openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    category: 'Connectors',  productHref: '/apps/openconnector',   docsHref: 'https://docs.conduction.nl/openconnector',   academyHref: '/academy?app=openconnector'},
+  docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docs.conduction.nl/docudesk',        academyHref: '/academy?app=docudesk'},
+  mydash:          {slug: 'mydash',          name: 'MyDash',           category: 'Dashboards',  productHref: '/apps/mydash',          docsHref: 'https://docs.conduction.nl/mydash',          academyHref: '/academy?app=mydash'},
+  zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  category: 'Processes',   productHref: '/apps/zaakafhandelapp', docsHref: 'https://docs.conduction.nl/zaakafhandelapp', academyHref: '/academy?app=zaakafhandelapp'},
+  pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://docs.conduction.nl/pipelinq',        academyHref: '/academy?app=pipelinq'},
+  procest:         {slug: 'procest',         name: 'Procest',          category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://docs.conduction.nl/procest',         academyHref: '/academy?app=procest'},
+  decidesk:        {slug: 'decidesk',        name: 'DeciDesk',         category: 'Processes',   productHref: '/apps/decidesk',        docsHref: 'https://docs.conduction.nl/decidesk',        academyHref: '/academy?app=decidesk'},
+  softwarecatalog: {slug: 'softwarecatalog', name: 'SoftwareCatalog',  category: 'Data',        productHref: '/apps/softwarecatalog', docsHref: 'https://docs.conduction.nl/softwarecatalog', academyHref: '/academy?app=softwarecatalog'},
+  larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
+  nldesign:        {slug: 'nldesign',        name: 'NLDesign',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
+  shillinq:        {slug: 'shillinq',        name: 'Shillinq',         category: 'Processes',   productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
+  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        category: 'Processes',   productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
+  doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
+  'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
+};
+
+/**
+ * Map an apps-catalog category to a schema.org applicationCategory.
+ * Used by <DetailHero> when emitting SoftwareApplication JSON-LD for
+ * AI crawlers. Defaults to BusinessApplication for any unknown
+ * category, since every Conduction app fits BusinessApplication in
+ * the absence of better signal.
+ */
+export const SCHEMA_APPLICATION_CATEGORY = {
+  Data:        'BusinessApplication',
+  Processes:   'BusinessApplication',
+  Connectors:  'DeveloperApplication',
+  Documents:   'BusinessApplication',
+  Dashboards:  'BusinessApplication',
+  AI:          'BusinessApplication',
+};
+
+/** Resolve an appId to its schema.org applicationCategory. */
+export function applicationCategoryFor(slug) {
+  const entry = APPS_REGISTRY[slug];
+  if (!entry) return 'BusinessApplication';
+  return SCHEMA_APPLICATION_CATEGORY[entry.category] || 'BusinessApplication';
+}
+
+export const APP_SLUGS = Object.keys(APPS_REGISTRY);
+
+/** Build a label map keyed by slug, suitable for <ContentTypeFilter labels=…/>. */
+export const APP_LABELS = APP_SLUGS.reduce((acc, slug) => {
+  acc[slug] = APPS_REGISTRY[slug].name;
+  return acc;
+}, {});
+
+/** Resolve a slug to its registry entry; returns undefined for unknown slugs. */
+export function getApp(slug) {
+  return APPS_REGISTRY[slug];
+}
+
+/** Resolve an array of slugs, dropping any that aren't in the registry. */
+export function getApps(slugs = []) {
+  return slugs.map(getApp).filter(Boolean);
+}
+
+/**
+ * Resolve a display-name (e.g. "OpenCatalogi", "DocuDesk", "MyDash")
+ * to its product page href, or undefined when the name is not in the
+ * registry. Used by partner cards / sidecards to turn the apps-shipped
+ * chip row into a clickable link list. Names like "Nextcloud" that
+ * aren't ours fall through and the consumer renders a plain span.
+ *
+ * Match is case-insensitive on both name and slug so consumers can
+ * pass either form ("OpenCatalogi", "opencatalogi", or "OpenCATALOGI")
+ * without each adding their own normalisation.
+ */
+export function appHrefByName(name) {
+  if (!name) return undefined;
+  const target = String(name).toLowerCase();
+  for (const slug of APP_SLUGS) {
+    const entry = APPS_REGISTRY[slug];
+    if (slug === target || entry.name.toLowerCase() === target) {
+      return entry.productHref;
+    }
+  }
+  return undefined;
+}

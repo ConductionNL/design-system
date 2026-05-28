@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 600" width="210mm" height="600mm" role="img" aria-label="Quotation honeycomb watermark">
+  <title>Quotation watermark, tight comb anchored on the brand-block logo</title>
+  <!-- Tight honeycomb. R_grid = 9, drawn-R = 8, so the hex-to-hex
+       gap is (R_grid - drawn) * sqrt(3) = 1.73 mm, which roughly
+       matches the white inset between the cobalt frame and the C
+       inside the logo. Drawn hexes are still 13.86 x 16 mm,
+       identical to the brand-block logo's bounding box.
+
+       Pattern is anchored at x=11.34, y=26 so a type-A hex centre
+       lands exactly on the logo position (26.93, 26). Type-B
+       row sits 13.5 mm below at y=39.5, and the previous row at
+       y=12.5 (also type B) appears above. Result: the logo is one
+       hex in a continuous comb that flows above and below.
+
+       No mask rects: the outcome-block, sign-online and other
+       content panels in the host page each carry their own solid
+       background (cobalt-50, cobalt-900, mint-50, terracotta-50)
+       and naturally cover the comb behind them via z-index. A
+       prior version had a white rect at (0, 45, 210, 57) that
+       clipped the bottom 2.5mm of the hex row above the outcome
+       block, leaving cropped hex apexes; removing it lets the
+       comb flow uninterrupted under all content.
+
+       The visible Conduction logo polygons sit on top of the
+       grid at the (26.93, 26) cell. -->
+  <defs>
+    <polygon id="hx" points="0,-8 6.928,-4 6.928,4 0,8 -6.928,4 -6.928,-4"/>
+    <pattern id="hexgrid" x="11.34" y="26" width="15.59" height="27" patternUnits="userSpaceOnUse">
+      <!-- Hex A at the tile origin (0, 0). Its bbox extends to
+           (-6.93, -8), outside the tile, so SVG clips it. The
+           three wrap clones below put back the missing halves
+           via the neighbouring tiles. -->
+      <use href="#hx" x="0" y="0" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+      <use href="#hx" x="15.59" y="0" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+      <use href="#hx" x="0" y="27" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+      <use href="#hx" x="15.59" y="27" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+      <!-- Hex B at (W/2, H/2). Bbox (0.87, 5.5) to (14.72, 21.5)
+           is fully inside the tile, no wrap needed. -->
+      <use href="#hx" x="7.795" y="13.5" fill="none" stroke="#DCE3F0" stroke-width="0.4"/>
+    </pattern>
+  </defs>
+
+  <!-- Honeycomb across the page. Tall viewBox (600mm) covers
+       content that overflows past A4 in the preview; the print
+       stylesheet at the bottom of the host file clips to one
+       A4 page anyway. -->
+  <rect width="210" height="600" fill="url(#hexgrid)"/>
+
+  <!-- Conduction logo at the (26.93, 26) cell -->
+  <g transform="translate(26.93 26) scale(0.08)">
+    <polygon fill="#21468B" points="0,-100 86.6,-50 86.6,50 0,100 -86.6,50 -86.6,-50"/>
+    <polygon fill="#FFFFFF" points="0,-74.5 64.5,-37.3 64.5,37.3 0,74.5 -64.5,37.3 -64.5,-37.3"/>
+    <polygon fill="#21468B" points="-0.2,-25.2 20.1,-13.5 43.7,-27.1 -0.2,-52.4 -45.6,-26.2 -45.6,26.2 -0.2,52.4 43.7,27.1 20.1,13.5 -0.2,25.2 -22,12.6 -22,-12.6"/>
+  </g>
+</svg>

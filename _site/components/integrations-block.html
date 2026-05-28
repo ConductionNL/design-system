@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Integrations block, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1280px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+
+  /* Section header, spans both columns */
+  .ib-head { max-width: 720px; margin-bottom: var(--space-8); }
+  .ib-eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: var(--space-4);
+  }
+  .ib-eyebrow .h {
+    width: 10px; height: 12px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-orange-knvb);
+    flex-shrink: 0;
+  }
+  .ib-head h2 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--c-cobalt-900);
+    margin: 0 0 var(--space-5);
+  }
+  .ib-head p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--c-cobalt-700);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* Two-column body */
+  .ib-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  /* FAQ-style accordion, the left rail */
+  .ib-faq { display: flex; flex-direction: column; gap: var(--space-3); }
+  details.ib-item {
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5) var(--space-6);
+    background: white;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+  details.ib-item[open] {
+    border-color: var(--c-cobalt-200);
+    box-shadow: var(--shadow-1);
+  }
+  details.ib-item summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--c-cobalt-900);
+  }
+  details.ib-item summary::-webkit-details-marker { display: none; }
+  details.ib-item summary::after {
+    content: "+";
+    font-size: 22px;
+    color: var(--c-cobalt-400);
+    font-weight: 400;
+    line-height: 1;
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+  }
+  details.ib-item[open] summary::after { transform: rotate(45deg); }
+  details.ib-item .body {
+    font-size: 15px;
+    color: var(--c-cobalt-700);
+    line-height: 1.6;
+    margin-top: var(--space-4);
+    max-width: 56ch;
+  }
+  details.ib-item .body p { margin: 0 0 var(--space-4); }
+  details.ib-item .body p:last-child { margin-bottom: 0; }
+  details.ib-item .body .cta {
+    display: inline-block;
+    background: var(--c-blue-cobalt);
+    color: white;
+    text-decoration: none;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    transition: background 120ms;
+    margin-top: var(--space-2);
+  }
+  details.ib-item .body .cta:hover { background: var(--c-cobalt-700); }
+
+  /* Mock panel, the right rail */
+  .ib-mock {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    aspect-ratio: 1.05;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ib-mock .window {
+    width: 100%;
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+    border: 1px solid var(--c-cobalt-100);
+  }
+  .ib-mock .chrome {
+    background: var(--c-cobalt-900);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ib-mock .chrome .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+  }
+  .ib-mock .chrome .dot.live { background: var(--c-orange-knvb); }
+  .ib-mock .layout {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    min-height: 280px;
+  }
+  .ib-mock .rail {
+    background: var(--c-cobalt-50);
+    padding: 14px 10px;
+    display: flex; flex-direction: column; gap: 10px;
+    border-right: 1px solid var(--c-cobalt-100);
+  }
+  .ib-mock .rail .item {
+    height: 6px;
+    background: var(--c-cobalt-200);
+    border-radius: 2px;
+  }
+  .ib-mock .rail .item.active { background: var(--c-blue-cobalt); height: 8px; }
+  .ib-mock .body {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 0.9fr;
+    gap: 10px;
+  }
+  .ib-mock .col { display: flex; flex-direction: column; gap: 8px; }
+  .ib-mock .col .head {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .ib-mock .col .head .h {
+    width: 12px; height: 14px;
+    clip-path: var(--hex-pointy-top);
+  }
+  .ib-mock .col .head .label {
+    height: 4px; width: 30px;
+    background: var(--c-cobalt-200);
+    border-radius: 1px;
+  }
+  .ib-mock .card {
+    background: var(--c-cobalt-50);
+    border-radius: 3px;
+    padding: 6px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .ib-mock .card .line {
+    height: 3px;
+    background: var(--c-cobalt-200);
+    border-radius: 1px;
+  }
+  .ib-mock .card .line.w-80 { width: 80%; }
+  .ib-mock .card .line.w-60 { width: 60%; }
+  .ib-mock .card .line.w-40 { width: 40%; }
+  .ib-mock .card .line.accent { background: var(--c-blue-cobalt); width: 20px; height: 4px; }
+  .ib-mock .card .line.orange { background: var(--c-orange-knvb); width: 18px; }
+  .ib-mock .card .line.mint { background: var(--c-mint-500); width: 14px; }
+
+  /* Detail rail (the right-most thin column) shows a per-record sidebar */
+  .ib-mock .col.detail .card { background: white; border: 1px solid var(--c-cobalt-100); }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: var(--c-cobalt-50); border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Integrations block</div>
+
+<div class="frame">
+  <div class="frame-label">IntegrationsBlock &middot; explainer with FAQ + product-mock</div>
+
+  <section class="ib-section">
+
+    <header class="ib-head">
+      <div class="ib-eyebrow"><span class="h"></span>Integrations</div>
+      <h2>Apps that truly work together.</h2>
+      <p>OpenRegister is what turns an office suite into a workspace. Every Nextcloud app on the install can read and write the same registers, and every register surfaces what lives in those apps. The integration runs on three levels at once: sidebar tabs that show linked records, dashboard widgets on every user's home screen, and a shared service layer that lets one app call another's data without anyone copy-pasting between tabs.</p>
+    </header>
+
+    <div class="ib-grid">
+
+      <div class="ib-faq">
+
+        <details class="ib-item" open>
+          <summary>Files, mail, and shares stay with the record.</summary>
+          <div class="body">
+            <p>Every object in a register gets an auto-created folder. Drop files into it, write notes against the record, tag rows from the same workspace taxonomy your files use. Add a mail to a project and your colleagues see it without anyone forwarding. When someone shares one of those files in Nextcloud, the share is visible on the record. The case file is part of the workspace, not a parallel storage to keep in sync.</p>
+            <a class="cta" href="#">See the integration guide</a>
+          </div>
+        </details>
+
+        <details class="ib-item">
+          <summary>Your CRM uses your real contacts and calendar.</summary>
+          <div class="body">
+            <p>PipelinQ leans on the Nextcloud contacts and calendar your team already maintains. Adding a deal does not duplicate the customer record, and booking a meeting goes straight into the salesperson's own calendar. No vendor lock-in on the people graph.</p>
+          </div>
+        </details>
+
+        <details class="ib-item">
+          <summary>Project knowledge, attached to the project.</summary>
+          <div class="body">
+            <p>The wiki, decisions, and meetings for a project all hang off the same register row. xWiki pages, DeciDesk decisions, and meeting notes show up in the right-hand sidebar of every record so the team reads the project from one place.</p>
+          </div>
+        </details>
+
+        <details class="ib-item">
+          <summary>Open a ticket or lead straight from a Talk message.</summary>
+          <div class="body">
+            <p>Right-click a message in Nextcloud Talk and turn it into a PipelinQ lead, a Procest case, or a DocuDesk request. The Talk conversation stays linked to the new record so the context is one click away.</p>
+          </div>
+        </details>
+
+        <details class="ib-item">
+          <summary>Outside systems, in the same fabric.</summary>
+          <div class="body">
+            <p>OpenConnector bridges to legacy systems, REST APIs, SOAP endpoints, file drops, and message queues. The remote data flows into the same registers, the same folders, the same sidebar. Users do not learn a second interface to reach the third-party world.</p>
+          </div>
+        </details>
+
+      </div><!-- /.ib-faq -->
+
+      <div class="ib-mock" aria-hidden="true">
+        <div class="window">
+          <div class="chrome">
+            <span class="dot live"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="layout">
+            <div class="rail">
+              <span class="item active"></span>
+              <span class="item"></span>
+              <span class="item"></span>
+              <span class="item"></span>
+              <span class="item"></span>
+              <span class="item"></span>
+            </div>
+            <div class="body">
+
+              <div class="col">
+                <div class="head"><span class="h" style="background: var(--c-mint-500);"></span><span class="label"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-60"></span><span class="line accent"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-40"></span></div>
+                <div class="card"><span class="line w-60"></span><span class="line w-40"></span></div>
+              </div>
+
+              <div class="col">
+                <div class="head"><span class="h" style="background: var(--c-cobalt-700);"></span><span class="label"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line orange"></span></div>
+                <div class="card"><span class="line w-60"></span><span class="line mint"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-40"></span></div>
+              </div>
+
+              <div class="col">
+                <div class="head"><span class="h" style="background: var(--c-orange-knvb);"></span><span class="label"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-60"></span></div>
+                <div class="card"><span class="line w-60"></span><span class="line w-40"></span></div>
+              </div>
+
+              <div class="col detail">
+                <div class="head"><span class="h" style="background: var(--c-lavender-500);"></span><span class="label"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-60"></span><span class="line accent"></span></div>
+                <div class="card"><span class="line w-80"></span><span class="line w-40"></span><span class="line orange"></span></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div><!-- /.ib-mock -->
+
+    </div><!-- /.ib-grid -->
+
+  </section>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;IntegrationsBlock/&gt;</code></h2>
+  <p>Explainer section that pairs a left-rail FAQ with a right-rail product mock. Used on app detail pages and the OpenRegister marketing surfaces to show how the apps fit into a single Nextcloud workspace. Spans the full content column; the eyebrow + h2 + lede sit above the split.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {IntegrationsBlock, IntegrationsItem, MockScene} from '@conduction/docusaurus-preset/components';
+
+&lt;IntegrationsBlock
+  eyebrow="Integrations"
+  title="Apps that truly work together."
+  lede="OpenRegister is what turns an office suite into a workspace..."
+  mock={&lt;MockScene preset="openregister-cross-app" /&gt;}
+&gt;
+  &lt;IntegrationsItem
+    title="Files, mail, and shares stay with the record."
+    cta={{label: "See the integration guide", to: "/docs/openregister/integrations"}}
+    defaultOpen
+  &gt;
+    Every object in a register gets an auto-created folder...
+  &lt;/IntegrationsItem&gt;
+  &lt;IntegrationsItem title="Your CRM uses your real contacts and calendar."&gt;
+    PipelinQ leans on the Nextcloud contacts and calendar...
+  &lt;/IntegrationsItem&gt;
+&lt;/IntegrationsBlock&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>eyebrow</code> short uppercase label rendered in KNVB orange with a hex bullet</li>
+    <li><code>title</code> h2 headline (sentence case, period at the end)</li>
+    <li><code>lede</code> 1&ndash;3-sentence paragraph that frames the integration story</li>
+    <li><code>mock</code> a node rendered into the right rail (typically <code>&lt;MockScene/&gt;</code> or <code>&lt;AppMock/&gt;</code>)</li>
+    <li><code>children</code> one or more <code>&lt;IntegrationsItem/&gt;</code> nodes for the left-rail accordion</li>
+  </ul>
+  <p><code>IntegrationsItem</code> takes <code>title</code>, <code>cta</code> (optional <code>{label, to}</code> button shown inside the open body), <code>defaultOpen</code> (boolean), and <code>children</code> (the answer body, MDX inline markup allowed).</p>
+</aside>
+
+</body>
+</html>

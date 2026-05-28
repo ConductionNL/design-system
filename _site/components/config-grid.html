@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Config grid, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: white;
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1080px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+  .config-grid-section > h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--c-cobalt-900);
+    margin: 0 0 var(--space-3);
+    line-height: 1.2;
+  }
+  .config-grid-section > .lede {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--c-cobalt-700);
+    margin: 0 0 var(--space-5);
+    max-width: 60ch;
+  }
+
+  .config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    margin: var(--space-5) 0;
+  }
+  @media (max-width: 800px) {
+    .config-grid { grid-template-columns: 1fr; }
+  }
+  .config-grid .col {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+  .config-grid h4 {
+    margin: 0 0 var(--space-3);
+    font-size: 14px;
+    font-family: var(--conduction-typography-font-family-code);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-cobalt-400);
+  }
+  .config-grid table { width: 100%; border-collapse: collapse; }
+  .config-grid th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    padding: 10px 0;
+    border-top: 1px solid var(--c-cobalt-50);
+    width: 40%;
+    vertical-align: top;
+  }
+  .config-grid td {
+    padding: 10px 0;
+    border-top: 1px solid var(--c-cobalt-50);
+    font-size: 14px;
+    color: var(--c-cobalt-900);
+    line-height: 1.5;
+  }
+  .config-grid tr:first-child th,
+  .config-grid tr:first-child td { border-top: 0; }
+  .config-grid code {
+    background: var(--c-cobalt-50);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px;
+    color: var(--c-cobalt-900);
+  }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: var(--c-cobalt-50); border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Config grid</div>
+
+<div class="frame">
+  <div class="frame-label">ConfigGrid + ConfigPanel &middot; two-column comparison panel for "X side vs Y side" specs</div>
+
+  <section class="config-grid-section">
+    <h2>Configuration</h2>
+    <p class="lede">Two side-by-side white panels with a mono-uppercase header and a stack of label / value rows. Used on integration pages to compare the Open Register side of an integration against the external system's side, so the reader can match settings at a glance.</p>
+
+    <div class="config-grid">
+      <div class="col">
+        <h4>Open Register side</h4>
+        <table>
+          <tbody>
+            <tr><th>Source slug</th><td><code>xwiki</code></td></tr>
+            <tr><th>Mapping</th><td><code>Article &rarr; Schema</code></td></tr>
+            <tr><th>Refresh</th><td>Cron, default <code>*/15 * * * *</code></td></tr>
+            <tr><th>Auth</th><td>Bearer token</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col">
+        <h4>xWiki side</h4>
+        <table>
+          <tbody>
+            <tr><th>Version</th><td>15.x or later</td></tr>
+            <tr><th>Auth</th><td>REST API + personal token</td></tr>
+            <tr><th>Permissions</th><td><em>view</em> on indexed spaces</td></tr>
+            <tr><th>Outbound</th><td>HTTPS to Nextcloud webhook</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;ConfigGrid/&gt;</code> + <code>&lt;ConfigPanel/&gt;</code></h2>
+  <p>Side-by-side comparison panel for documenting two ends of an integration: the Open Register / Conduction side on the left, the external system on the right. Each panel is a small spec sheet with a mono-uppercase header and a list of label/value rows. Drops to one column under 800&thinsp;px.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {ConfigGrid, ConfigPanel} from '@conduction/docusaurus-preset/components';
+
+## Configuration
+
+&lt;ConfigGrid&gt;
+  &lt;ConfigPanel title="Open Register side"&gt;
+    | Source slug | &grave;xwiki&grave; |
+    | Mapping     | &grave;Article &rarr; Schema&grave; |
+    | Refresh     | Cron, default &grave;*/15 * * * *&grave; |
+    | Auth        | Bearer token |
+  &lt;/ConfigPanel&gt;
+  &lt;ConfigPanel title="xWiki side"&gt;
+    | Version     | 15.x or later |
+    | Auth        | REST API + personal token |
+    | Permissions | *view* on indexed spaces |
+    | Outbound    | HTTPS to Nextcloud webhook |
+  &lt;/ConfigPanel&gt;
+&lt;/ConfigGrid&gt;</code></pre>
+  <h3>Props</h3>
+  <ul class="ru-props">
+    <li><code>title</code> optional h2 above the grid (e.g. <code>Configuration</code>, <code>Specs</code>)</li>
+    <li><code>lede</code> optional one-paragraph intro</li>
+    <li><code>columns</code> 2 or 3 (default 2)</li>
+    <li><code>children</code> two or three <code>&lt;ConfigPanel/&gt;</code> nodes</li>
+  </ul>
+  <p><code>ConfigPanel</code> takes <code>title</code> (mono-uppercase header) and <code>children</code> (an MDX table, which renders as the row-stack). Cell content accepts inline code, em, and links.</p>
+</aside>
+
+</body>
+</html>

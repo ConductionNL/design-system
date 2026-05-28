@@ -1,0 +1,218 @@
+/* ============================================================
+   Game-modal — shown after any mini-game ends. White-panel,
+   cobalt-on-white design that mirrors the React <GameModal/>
+   in @conduction/docusaurus-preset (GameModal.module.css). The
+   kit and the website now share one visual; only the markup
+   classnames differ (BEM here, hashed CSS modules there).
+
+   Listens for `connext:gameend`:
+
+     window.dispatchEvent(new CustomEvent('connext:gameend', {
+       detail: { id: 'hexrain', won: true, score: 12,
+                 summary: '12 / 12 collected' }
+     }));
+
+   "Play again" fires `connext:gamereplay` so each game can
+   listen for its own id and reset.
+   ============================================================ */
+
+.game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--conduction-typography-font-family-body, 'Inter', system-ui, sans-serif);
+}
+.game-modal.show { display: flex; animation: gm-fade 220ms ease; }
+@keyframes gm-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.game-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 23, 47, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
+}
+
+.game-modal__panel {
+  position: relative;
+  z-index: 1;
+  background: white;
+  color: var(--c-cobalt-700);
+  width: calc(100% - 48px);
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: var(--radius-xl, 16px);
+  padding: 40px 36px 32px;
+  box-shadow: var(--shadow-3, 0 30px 80px -20px rgba(10, 23, 47, 0.4));
+  animation: gm-rise 320ms cubic-bezier(.2,.8,.3,1);
+}
+@keyframes gm-rise {
+  from { transform: translateY(20px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+.game-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-700);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  font-family: inherit;
+  transition: background 120ms ease;
+}
+.game-modal__close:hover { background: var(--c-cobalt-100); }
+
+.game-modal__eyebrow {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.game-modal__title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-cobalt-900);
+  margin: 0 0 8px;
+}
+
+.game-modal__subtitle {
+  font-size: 15px;
+  color: var(--c-cobalt-700);
+  line-height: 1.55;
+  margin: 0 0 16px;
+}
+
+.game-modal__score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill, 999px);
+  margin-bottom: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-modal__progress {
+  margin: 24px 0 16px;
+}
+.game-modal__progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  margin-bottom: 8px;
+}
+.game-modal__progress-label strong {
+  color: var(--c-cobalt-900);
+  font-weight: 700;
+}
+
+.game-modal__progress-bar {
+  height: 6px;
+  background: var(--c-cobalt-50);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.game-modal__progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--c-orange-knvb);
+  border-radius: 3px;
+  transition: width 600ms cubic-bezier(.2,.8,.3,1);
+}
+
+.game-modal__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gm-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--c-cobalt-400);
+}
+.gm-tile.found {
+  color: var(--c-cobalt-900);
+  font-weight: 500;
+}
+.gm-tile__hex {
+  width: 10px;
+  height: 12px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-cobalt-200);
+  flex-shrink: 0;
+}
+.gm-tile.found .gm-tile__hex { background: var(--c-mint-500); }
+
+.game-modal__cta {
+  font-size: 13px;
+  color: var(--c-cobalt-400);
+  font-style: italic;
+  margin: 16px 0 24px;
+}
+
+.game-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.game-modal__btn {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: var(--radius-md, 6px);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+}
+.game-modal__btn--secondary {
+  background: white;
+  color: var(--c-cobalt-700);
+  border: 1px solid var(--c-cobalt-200);
+}
+.game-modal__btn--secondary:hover {
+  border-color: var(--c-blue-cobalt);
+  color: var(--c-blue-cobalt);
+}
+.game-modal__btn--primary {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+}
+.game-modal__btn--primary:hover {
+  background: var(--c-cobalt-700);
+  border-color: var(--c-cobalt-700);
+}

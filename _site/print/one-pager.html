@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Leave-behind one-pager · Conduction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="print.css">
+<style>
+  body { background: var(--c-cobalt-50); padding: 0; }
+
+  /* ---- Manpage one-pager ---- */
+  .manpage {
+    padding: 18mm 18mm 22mm;
+    color: var(--c-cobalt-900);
+    font-size: 9.5pt; line-height: 1.5;
+    display: flex; flex-direction: column;
+    min-height: var(--paper-a4-h);
+    position: relative;
+  }
+  /* Hex veil — gray cobalt-100 stroke pattern on the NL face,
+     white-on-cobalt scatter on the EN dark face. Same chassis as
+     the report summary + app fact-sheet. */
+  .manpage::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 210mm; height: 600mm;
+    background-image: url("../../brand/assets/backgrounds/honeycomb-page.svg");
+    background-repeat: no-repeat;
+    background-size: 210mm 600mm;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .manpage--en::before {
+    background-image: url("../../brand/assets/backgrounds/honeycomb-scatter.svg");
+    background-position: center;
+    background-size: cover;
+  }
+  .manpage > * { position: relative; z-index: 1; }
+  .manpage--en { background: var(--c-cobalt-900); color: white; }
+  .manpage--en .h, .manpage--en .label, .manpage--en code, .manpage--en .footer-line { color: var(--c-cobalt-100); }
+  .manpage--en .h { color: var(--c-orange-knvb); }
+  .manpage--en h2 { color: white; }
+  .manpage--en .crest .word { color: white; }
+
+  .manpage .top-bar {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+    padding-bottom: 2mm;
+    display: flex; justify-content: space-between;
+    margin-bottom: 8mm;
+  }
+  .manpage--en .top-bar {
+    color: var(--c-cobalt-300);
+    border-bottom-color: var(--c-cobalt-700);
+  }
+
+  .crest { display: flex; align-items: center; gap: 4mm; margin-bottom: 10mm; }
+  .crest .logo { width: 13mm; height: 13mm; flex-shrink: 0; }
+  .crest .logo img { width: 100%; height: 100%; display: block; }
+  .crest .word { font-size: 18pt; font-weight: 700; color: var(--c-cobalt-900); letter-spacing: -0.02em; }
+  .manpage--en .crest .word { color: white; }
+
+  h2 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8pt; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--c-blue-cobalt);
+    margin: 6mm 0 1.5mm;
+    padding-bottom: 0.8mm;
+    border-bottom: 0.3mm solid var(--c-cobalt-100);
+  }
+  .manpage--en h2 {
+    color: var(--c-orange-knvb);
+    border-bottom-color: var(--c-cobalt-700);
+  }
+  h2:first-of-type { margin-top: 0; }
+
+  .manpage p { margin: 0 0 3mm; }
+  .manpage code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 8.5pt;
+    background: var(--c-cobalt-50);
+    padding: 0.5mm 1.5mm;
+    border-radius: 0.5mm;
+    color: var(--c-cobalt-700);
+  }
+  .manpage--en code { background: var(--c-cobalt-700); color: var(--c-cobalt-100); }
+
+  .manpage ul { list-style: none; padding: 0; margin: 0 0 3mm; }
+  .manpage ul li { padding-left: 5mm; position: relative; margin-bottom: 1.2mm; }
+  .manpage ul li::before { content: ""; position: absolute; left: 0; top: 1.7mm; width: 2mm; height: 2.3mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+
+  .manpage table {
+    width: 100%; border-collapse: collapse;
+    margin-bottom: 3mm;
+    font-size: 9pt;
+  }
+  .manpage table td {
+    padding: 1.5mm 2mm 1.5mm 0;
+    border-bottom: 0.2mm solid var(--c-cobalt-100);
+    vertical-align: top;
+  }
+  .manpage--en table td { border-bottom-color: var(--c-cobalt-700); }
+  .manpage table td:first-child {
+    font-family: var(--conduction-typography-font-family-code);
+    color: var(--c-cobalt-700);
+    width: 40mm; font-size: 8pt;
+  }
+  .manpage--en table td:first-child { color: var(--c-cobalt-200); }
+
+  /* Footer pinned to absolute page bottom, kit-consistent. No top
+     border — the watermark provides the separation. */
+  .footer-line {
+    position: absolute;
+    left: 18mm; right: 18mm; bottom: 12mm;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 7pt; letter-spacing: 0.06em;
+    color: var(--c-cobalt-400);
+    display: flex; justify-content: space-between;
+  }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="index.html">Print</a> &nbsp;/&nbsp; One-pager</div>
+  <h1>Leave-behind one-pager</h1>
+  <p class="lead">A4 double-sided. White front, cobalt-900 back, both English. Structured like a Unix manpage: NAME, SYNOPSIS, DESCRIPTION, EXAMPLES, BUGS. Confident, MKB-direct, anti-marketing. The leave-behind that gets pinned to the wall.</p>
+</div>
+
+<div class="stage">
+  <div class="paper-flow">
+    <!-- Front, white -->
+    <div>
+      <div class="paper paper--A4 manpage">
+        <div class="top-bar">
+          <span>$ man conduction(7)</span>
+          <span>EN &middot; page 1/2</span>
+        </div>
+        <div class="crest">
+          <span class="logo"><img src="../../brand/assets/avatar-conduction.svg" alt="Conduction logo"></span>
+          <span class="word">Conduction</span>
+        </div>
+
+        <h2>Name</h2>
+        <p><code>conduction</code> &mdash; OSS product company. Builds apps for Nextcloud that keep you in control of your own data.</p>
+
+        <h2>Synopsis</h2>
+        <p><code>conduction install</code> [<code>OpenCatalogi</code> | <code>OpenRegister</code> | <code>OpenConnector</code> | <code>DocuDesk</code> | <code>MyDash</code>] [<code>--solution=woo|procurement|public</code>]</p>
+
+        <h2>Description</h2>
+        <p>We build five apps. Not "a platform". Not "a solution". Apps you install from the Nextcloud app store, on a server you run. Open-source, MIT/AGPL, no vendor lock-in.</p>
+        <p>On top of the apps sit <strong>solutions</strong>, concrete outcomes built on those apps. A WOO publication setup. A procurement workflow. A public catalogue. Apps are the building blocks, solutions are what you explain to your board.</p>
+
+        <h2>Examples</h2>
+        <ul>
+          <li>WOO publication: OpenCatalogi + OpenConnector + DocuDesk, live in 8 weeks.</li>
+          <li>Open registers: OpenRegister loaded with your own schema, audit trail out of the box.</li>
+          <li>Personal start page for staff: MyDash next to the Nextcloud tiles.</li>
+        </ul>
+
+        <h2>Who</h2>
+        <table>
+          <tr><td>Primary</td><td>SMB decision-maker, IT lead, 10&ndash;500 people, finds us via Google. Wants to install today.</td></tr>
+          <tr><td>Secondary</td><td>Public-sector decision-maker, municipalities and joint arrangements. Procurement in months, compliance signals required.</td></tr>
+          <tr><td>Tertiary</td><td>Developer / integrator. Wants the API spec and the licence one click away.</td></tr>
+        </table>
+
+        <h2>Bugs</h2>
+        <p>We have them. File at <code>github.com/ConductionNL</code> and we'll fix them. We don't send sales after an issue, only a commit.</p>
+
+        <h2>See also</h2>
+        <p><code>conduction.nl</code> &middot; <code>github.com/ConductionNL</code> &middot; <code>docs.conduction.nl</code></p>
+
+        <div class="footer-line">
+          <span>Conduction BV &middot; KvK 50615773 &middot; Zoetermeer</span>
+          <span>v2026.04 &middot; EN</span>
+        </div>
+      </div>
+      <span class="specimen-label">Front &middot; A4 &middot; English &middot; manpage(7) style</span>
+    </div>
+
+    <!-- Back, cobalt-900 -->
+    <div>
+      <div class="paper paper--A4 manpage manpage--en">
+        <div class="top-bar">
+          <span>$ man conduction(7)</span>
+          <span>EN &middot; page 2/2</span>
+        </div>
+        <div class="crest">
+          <span class="logo"><img src="../../brand/assets/avatar-conduction-white.svg" alt="Conduction logo"></span>
+          <span class="word">Conduction</span>
+        </div>
+
+        <h2>Name</h2>
+        <p><code>conduction</code> &mdash; Dutch OSS product company. Builds apps for Nextcloud that keep you in control of your own data.</p>
+
+        <h2>Synopsis</h2>
+        <p><code>conduction install</code> [<code>OpenCatalogi</code> | <code>OpenRegister</code> | <code>OpenConnector</code> | <code>DocuDesk</code> | <code>MyDash</code>] [<code>--solution=woo|procurement|public</code>]</p>
+
+        <h2>Description</h2>
+        <p>We build five apps. Not "a platform". Not "a solution". Apps you install from the Nextcloud app store, on a server you run. Open-source, MIT/AGPL, zero vendor lock-in.</p>
+        <p>Solutions sit on top: a WOO transparency setup, a procurement workflow, a public catalogue. Apps are the building blocks, solutions are what you explain to a council.</p>
+
+        <h2>Examples</h2>
+        <ul>
+          <li>WOO publication: OpenCatalogi + OpenConnector + DocuDesk, eight weeks to live.</li>
+          <li>Open registers: OpenRegister loaded with your own schema, audit trail out of the box.</li>
+          <li>Personal start page for staff: MyDash next to the Nextcloud tiles.</li>
+        </ul>
+
+        <h2>Who</h2>
+        <table>
+          <tr><td>Primary</td><td>SMB decision-maker, IT lead, 10&ndash;500 people, finds us via Google. Wants to install today.</td></tr>
+          <tr><td>Secondary</td><td>Public-sector decision-maker, municipalities and joint arrangements. Procurement in months, compliance signals required.</td></tr>
+          <tr><td>Tertiary</td><td>Developer / integrator. Wants the API spec and the licence one click away.</td></tr>
+        </table>
+
+        <h2>Bugs</h2>
+        <p>We have them. File at <code>github.com/ConductionNL</code> and we will fix them. We do not send sales after an issue, only a commit.</p>
+
+        <h2>See also</h2>
+        <p><code>conduction.nl</code> &middot; <code>github.com/ConductionNL</code> &middot; <code>docs.conduction.nl</code></p>
+
+        <div class="footer-line">
+          <span>Conduction BV &middot; CoC 50615773 &middot; Zoetermeer, NL</span>
+          <span>v2026.04 &middot; EN</span>
+        </div>
+      </div>
+      <span class="specimen-label">Back &middot; A4 &middot; English &middot; cobalt-900 ground for contrast</span>
+    </div>
+  </div>
+
+  <aside class="spark">
+    <div class="label">Why we built it this way</div>
+    <h2>A leave-behind that doesn't lie</h2>
+    <p class="lede">Most one-pagers read like a brochure: claims, gradients, vague verbs. Ours reads like a Unix manpage: NAME, SYNOPSIS, DESCRIPTION, EXAMPLES, BUGS. The structure is the message.</p>
+    <ul>
+      <li><strong>Manpage structure.</strong> Tech buyers grok it instantly. Non-tech buyers find it refreshingly direct, "ah, the Bugs section is honest". Either way, memorable.</li>
+      <li><strong>Apps vs solutions, on the page.</strong> The DESCRIPTION section pins down our taxonomy: apps are downloadable, solutions are outcomes built on apps. Clearest possible answer to "what do you actually sell".</li>
+      <li><strong>BUGS section, plural.</strong> An anti-marketing move. Builds trust faster than three case-studies.</li>
+      <li><strong>"What's next" not "Contact us".</strong> "File issues at github.com/ConductionNL and we'll fix them", we send a commit, not a sales rep.</li>
+      <li><strong>Inverted contrast on the back.</strong> Front on white, back on cobalt-900. The back becomes the night-mode side, signals "flip me" without arrows or "see other side". And it forces a clear front/back distinction at a glance.</li>
+      <li><strong>One orange accent, on the dark side only.</strong> The hex on the back cover is orange, the front hex is cobalt. The orange does its job (one-per-screen) without breaking the rule across both sides.</li>
+      <li><strong>Plex Mono for section heads.</strong> SECTION-CASE titles in mono, like a real manpage. Plus they stop looking like marketing slides.</li>
+    </ul>
+    <div class="footer-note">A4 portrait &middot; double-sided &middot; bleed 0 &middot; both sides English; the back reuses the same component layout with the ground colour flipped to cobalt-900</div>
+
+    <div class="uses">
+      <span class="uses-label">Uses</span>
+      <div class="uses-list">
+        <a href="../../tokens.css"><code>tokens.css</code></a> &middot;
+        <a href="../../brand/assets/icons/hex-bullet.svg">hex-bullet icon</a> &middot;
+        <code>.paper--A4</code> double-sided &middot;
+        Plex Mono for section heads &middot;
+        MKB-direct copy from <a href="../identity/voice.html">voice</a>
+      </div>
+    </div>
+
+    <div class="download-block">
+      <span class="dl-label">Download</span>
+      <a class="dl-chip" href="odf/one-pager.odt" download>
+        <span><span class="ext">.odt</span>LibreOffice / Word</span>
+        <span class="arrow">&rarr;</span>
+      </a>
+      <p class="dl-note">Open in your editor, fill the &#123;&#123; placeholders &#125;&#125;, export to PDF.</p>
+    </div>
+  </aside>
+</div>
+
+</body>
+</html>

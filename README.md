@@ -247,9 +247,9 @@ Then open `http://localhost:8000/`. Live reload only with VS Code's extension or
 
 Built from the canonical Conduction brand sources:
 
-- [`BRAND.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/BRAND.md), what & how
-- [`DESIGN.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/DESIGN.md), why (rationale, color comparison tables, font choices)
-- [`brand/tokens.json`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/brand/tokens.json), DTCG tokens
-- [`briefs/website/visual-motifs.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/briefs/website/visual-motifs.md), hex motif catalog, illustration style, per-section treatments
+- [`BRAND.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/BRAND.md), what & how
+- [`DESIGN.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/DESIGN.md), why (rationale, color comparison tables, font choices)
+- [`brand/tokens.json`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/brand/tokens.json), DTCG tokens
+- [`briefs/website/visual-motifs.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/briefs/website/visual-motifs.md), hex motif catalog, illustration style, per-section treatments
 
 Theme version: `theme-conduction-2026` · Scope A (color + typography) · Spacing/radii/shadows proposed in this kit, not yet ratified upstream.

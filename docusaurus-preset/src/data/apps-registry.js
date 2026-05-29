@@ -40,7 +40,7 @@ export const APPS_REGISTRY = {
   larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
   nldesign:        {slug: 'nldesign',        name: 'NLDesign',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
   shillinq:        {slug: 'shillinq',        name: 'Shillinq',         category: 'Processes',   productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
-  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        category: 'Processes',   productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
+  openbuild:       {slug: 'openbuild',       name: 'OpenBuild',        category: 'Processes',   productHref: '/apps/openbuild',       docsHref: 'https://docs.conduction.nl/openbuild',       academyHref: '/academy?app=openbuild'},
   doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
   'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
 };

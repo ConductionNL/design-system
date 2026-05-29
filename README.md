@@ -1,4 +1,9 @@
-# Conduction Design System, `theme-conduction-2026`
+> [!IMPORTANT]
+> ## 🚚 This repository has moved to Codeberg
+>
+> Active development now happens at **https://codeberg.org/Conduction/design-system**.
+> This GitHub mirror is read-only — issues, pull requests, and new commits should go to Codeberg.
+> Update your remote with: `git remote set-url origin https://codeberg.org/Conduction/design-system`# Conduction Design System, `theme-conduction-2026`
 
 The design system for **Conduction**, a Dutch open-source product company that builds an ecosystem of cooperating Nextcloud apps. **ConNext** is Conduction's public product brand for the platform.
 

@@ -131,8 +131,10 @@
   .treatment {
     padding: var(--space-5) var(--space-3);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: var(--space-3);
     border-right: 1px solid var(--c-cobalt-100);
     min-height: 110px;
   }
@@ -173,7 +175,8 @@
   .treatment .glyph.t-favicon svg { width: 18px; height: 18px; }
 
   /* Wordmark lockup cell: small hex beside the two-tone app name (same lockup as the wordmark cards) */
-  .treatment.wordmark-cell { flex-direction: row; gap: 8px; padding-left: var(--space-3); padding-right: var(--space-3); }
+  .treatment.wordmark-cell { padding-left: var(--space-3); padding-right: var(--space-3); }
+  .wm-lockup { display: flex; align-items: center; gap: 8px; }
   .wordmark-cell .glyph-sm {
     width: 32px; height: 36px; flex-shrink: 0;
     clip-path: var(--hex-pointy-top);
@@ -186,6 +189,19 @@
     color: var(--c-blue-cobalt); text-align: left; line-height: 1.1;
   }
   .wordmark-cell .word .light { color: var(--c-cobalt-400); font-weight: 400; }
+
+  /* Download pills (SVG / PNG), injected under every treatment glyph */
+  .dl { display: flex; gap: 4px; }
+  .dl button {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--c-cobalt-400); background: white;
+    border: 1px solid var(--c-cobalt-200); border-radius: 3px;
+    padding: 2px 6px; cursor: pointer; line-height: 1.4;
+    transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
+  }
+  .dl button:hover { color: white; background: var(--c-blue-cobalt); border-color: var(--c-blue-cobalt); }
+  .dl button:disabled { opacity: 0.5; cursor: default; }
 
   /* Hero stack (the canonical big-glyph-with-app-name layout) */
   .hero-stack-grid {
@@ -681,6 +697,180 @@
   <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
   <span><a href="index.html">&larr; Back to system</a></span>
 </div>
+
+<script>
+/* Download pills: build the composed treatment (hex + real app glyph) as a self-contained
+   SVG, then offer it as SVG or rasterise to PNG. Wordmark is SVG-only with Figtree embedded. */
+(function () {
+  var COBALT = '#21468B', ORANGE = '#F36C21', COBALT400 = '#4D69A4', WHITE = '#ffffff';
+
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function hexPath(w, h, m) {
+    m = m || 0;
+    var xc = w / 2, x0 = m, x1 = w - m, ih = h - 2 * m;
+    var y0 = m, y25 = m + ih * 0.25, y75 = m + ih * 0.75, y1 = h - m;
+    return 'M' + xc + ' ' + y0 + ' L' + x1 + ' ' + y25 + ' L' + x1 + ' ' + y75 +
+           ' L' + xc + ' ' + y1 + ' L' + x0 + ' ' + y75 + ' L' + x0 + ' ' + y25 + ' Z';
+  }
+
+  /* Pull a symbol's geometry from the live DOM and hard-substitute currentColor,
+     so the exported asset needs no colour cascade (works in files and on canvas). */
+  function glyph(symId, color, x, y, w, h) {
+    var sym = document.getElementById(symId);
+    var vb = sym.getAttribute('viewBox');
+    var pres = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin']
+      .filter(function (a) { return sym.hasAttribute(a); })
+      .map(function (a) { return a + '="' + sym.getAttribute(a).replace(/currentColor/g, color) + '"'; })
+      .join(' ');
+    var inner = sym.innerHTML.replace(/currentColor/g, color);
+    return '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+           '" viewBox="' + vb + '" ' + pres + ' overflow="visible">' + inner + '</svg>';
+  }
+
+  function wrap(inner, vbW, vbH, pxW) {
+    var pxH = Math.round(pxW * vbH / vbW);
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + pxW + '" height="' + pxH +
+           '" viewBox="0 0 ' + vbW + ' ' + vbH + '">' + inner + '</svg>';
+  }
+
+  /* Inner markup for an icon treatment (64x72 hex). */
+  function iconInner(symId, t) {
+    var W = 64, H = 72, hexFill, glyphColor, stroke = '', m = 0;
+    if (t === 'orange') { hexFill = ORANGE; glyphColor = WHITE; }
+    else if (t === 'inversed') { hexFill = WHITE; glyphColor = COBALT; stroke = COBALT; m = 2; }
+    else { hexFill = COBALT; glyphColor = WHITE; } /* cobalt + favicon */
+    var hex = '<path d="' + hexPath(W, H, m) + '" fill="' + hexFill + '"' +
+              (stroke ? ' stroke="' + stroke + '" stroke-width="3"' : '') + '/>';
+    return { inner: hex + glyph(symId, glyphColor, 18, 22, 28, 28), vbW: W, vbH: H };
+  }
+
+  /* Figtree woff2 → base64, embedded so the wordmark SVG is portable. Cached. */
+  var fontCache = null;
+  async function toB64(url) {
+    var buf = new Uint8Array(await (await fetch(url)).arrayBuffer());
+    var s = '', chunk = 0x8000;
+    for (var i = 0; i < buf.length; i += chunk) {
+      s += String.fromCharCode.apply(null, buf.subarray(i, i + chunk));
+    }
+    return btoa(s);
+  }
+  async function fontFaceCSS() {
+    if (fontCache !== null) return fontCache;
+    try {
+      var base = '/brand/assets/fonts/figtree/woff2/';
+      var pair = await Promise.all([toB64(base + 'Figtree-400-latin.woff2'), toB64(base + 'Figtree-700-latin.woff2')]);
+      fontCache =
+        "@font-face{font-family:'Figtree';font-style:normal;font-weight:400;src:url(data:font/woff2;base64," + pair[0] + ") format('woff2');}" +
+        "@font-face{font-family:'Figtree';font-style:normal;font-weight:700;src:url(data:font/woff2;base64," + pair[1] + ") format('woff2');}";
+    } catch (e) {
+      fontCache = ''; /* fall back to the viewer's Figtree / system font */
+    }
+    return fontCache;
+  }
+
+  async function wordmarkInner(symId, cell) {
+    var wordEl = cell.querySelector('.word');
+    var lightEl = wordEl.querySelector('.light');
+    var light = lightEl ? lightEl.textContent : '';
+    var bold = wordEl.textContent.slice(light.length);
+    var FS = 18, hexW = 36, hexH = 40, gap = 10, padX = 6, H = 44;
+    var ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = '400 ' + FS + "px Figtree, sans-serif";
+    var wl = light ? ctx.measureText(light).width : 0;
+    ctx.font = '700 ' + FS + "px Figtree, sans-serif";
+    var wb = ctx.measureText(bold).width;
+    var textX = hexW + gap, W = Math.ceil(textX + wl + wb + padX);
+    var hy = (H - hexH) / 2;
+    var hex = '<g transform="translate(0,' + hy + ')"><path d="' + hexPath(hexW, hexH, 0) +
+              '" fill="' + COBALT + '"/>' + glyph(symId, WHITE, (hexW - 16) / 2, (hexH - 16) / 2, 16, 16) + '</g>';
+    var face = await fontFaceCSS();
+    var baseline = H / 2 + FS * 0.35;
+    var text = '<text x="' + textX + '" y="' + baseline + '" font-family="Figtree, sans-serif" font-size="' + FS + '" letter-spacing="-0.2">' +
+      (light ? '<tspan font-weight="400" fill="' + COBALT400 + '">' + esc(light) + '</tspan>' : '') +
+      '<tspan font-weight="700" fill="' + COBALT + '">' + esc(bold) + '</tspan></text>';
+    return { inner: '<defs><style>' + face + '</style></defs>' + hex + text, vbW: W, vbH: H };
+  }
+
+  function save(href, name, revoke) {
+    var a = document.createElement('a');
+    a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    if (revoke) setTimeout(function () { URL.revokeObjectURL(href); }, 0);
+  }
+
+  function downloadSVG(svg, name) {
+    var url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
+    save(url, name, true);
+  }
+
+  function downloadPNG(inner, vbW, vbH, pxW, name) {
+    var svg = wrap(inner, vbW, vbH, pxW);
+    var url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
+    var img = new Image();
+    img.onload = function () {
+      var canvas = document.createElement('canvas');
+      canvas.width = pxW; canvas.height = Math.round(pxW * vbH / vbW);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(function (b) { save(URL.createObjectURL(b), name, true); }, 'image/png');
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); };
+    img.src = url;
+  }
+
+  async function build(key, t, cell) {
+    if (t === 'wordmark') return await wordmarkInner('g-' + key, cell);
+    return iconInner('g-' + key, t);
+  }
+
+  function mkBtn(key, t, fmt, cell) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = fmt.toUpperCase();
+    b.addEventListener('click', async function () {
+      b.disabled = true;
+      try {
+        var g = await build(key, t, cell);
+        var name = key + '-' + t + '.' + fmt;
+        if (fmt === 'svg') {
+          var svgPx = (t === 'favicon') ? 96 : (t === 'wordmark') ? g.vbW : 256;
+          downloadSVG(wrap(g.inner, g.vbW, g.vbH, svgPx), name);
+        } else {
+          downloadPNG(g.inner, g.vbW, g.vbH, (t === 'favicon') ? 128 : 512, name);
+        }
+      } finally { b.disabled = false; }
+    });
+    return b;
+  }
+
+  function init() {
+    document.querySelectorAll('.app-treatments .treatment').forEach(function (cell) {
+      var use = cell.querySelector('use');
+      if (!use) return;
+      var key = use.getAttribute('href').replace(/^#g-/, '');
+      var t = cell.classList.contains('wordmark-cell') ? 'wordmark'
+        : cell.querySelector('.t-hex-cobalt') ? 'cobalt'
+        : cell.querySelector('.outline-wrap') ? 'inversed'
+        : cell.querySelector('.t-hex-orange') ? 'orange'
+        : cell.querySelector('.t-favicon') ? 'favicon' : null;
+      if (!t) return;
+      if (t === 'wordmark') {
+        var lk = document.createElement('div');
+        lk.className = 'wm-lockup';
+        while (cell.firstChild) lk.appendChild(cell.firstChild);
+        cell.appendChild(lk);
+      }
+      var dl = document.createElement('div');
+      dl.className = 'dl';
+      dl.appendChild(mkBtn(key, t, 'svg', cell));
+      if (t !== 'wordmark') dl.appendChild(mkBtn(key, t, 'png', cell));
+      cell.appendChild(dl);
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
 
 </body>
 </html>

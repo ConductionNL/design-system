@@ -128,7 +128,7 @@ const BRAND_ORGANIZATION_JSONLD = {
     value: '76741850',
   },
   sameAs: [
-    'https://github.com/ConductionNL',
+    'https://codeberg.org/Conduction',
     'https://www.linkedin.com/company/conduction/',
   ],
 };
@@ -362,7 +362,7 @@ const baseNavbar = (siteName, repoUrl) => ({
   items: [
     { type: 'custom-versionPill', position: 'right' },
     { type: 'custom-apiDocs', position: 'right' },
-    { type: 'custom-github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
+    { type: 'custom-github', href: repoUrl || 'https://codeberg.org/Conduction', position: 'right' },
     { type: 'localeDropdown', position: 'right' },
   ],
 });

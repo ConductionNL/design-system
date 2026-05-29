@@ -34,7 +34,7 @@
  *   <Button
  *     variant="on-dark-tertiary"
  *     icon="github"
- *     href="https://github.com/ConductionNL/shillinq"
+ *     href="https://codeberg.org/Conduction/shillinq"
  *   >View on GitHub</Button>
  */
 

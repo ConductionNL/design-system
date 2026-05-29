@@ -4,7 +4,7 @@ Brand-default Docusaurus 3 config for Conduction sites. Tokens, theme, navbar, f
 
 ## Status
 
-Source lives inside the [design-system monorepo](https://github.com/ConductionNL/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
+Source lives inside the [design-system monorepo](https://codeberg.org/Conduction/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
 
 ## Brand rules
 

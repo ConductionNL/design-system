@@ -21,5 +21,5 @@ For commercial support, SLA agreements, or custom development:
 
 ## Useful Links
 
-- [Nextcloud Docker Dev Environment](https://github.com/ConductionNL/nextcloud-docker-dev) — Development setup
-- [OpenRegister](https://github.com/ConductionNL/openregister) — Foundation repository for all Conduction apps
+- [Nextcloud Docker Dev Environment](https://codeberg.org/Conduction/nextcloud-docker-dev) — Development setup
+- [OpenRegister](https://codeberg.org/Conduction/openregister) — Foundation repository for all Conduction apps

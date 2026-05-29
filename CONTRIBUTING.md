@@ -257,7 +257,7 @@ Add labels to categorize your PR in the automated changelog:
 2. Install Composer
 3. Clone the repository
 4. Run `composer install` and `npm install`
-5. Configure your [Nextcloud development environment](https://github.com/ConductionNL/nextcloud-docker-dev)
+5. Configure your [Nextcloud development environment](https://codeberg.org/Conduction/nextcloud-docker-dev)
 
 ## Community
 

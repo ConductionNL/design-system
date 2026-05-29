@@ -4,7 +4,7 @@
  * Adds a `/features` route to every Conduction docs site, backed by the
  * `docs/features.json` artefact regenerated from `openspec/specs/` by the
  * org-wide Features Extract workflow stage
- * (https://github.com/ConductionNL/.github/blob/main/.github/workflows/quality.yml).
+ * (https://codeberg.org/Conduction/.github/src/branch/main/.github/workflows/quality.yml).
  *
  * The route renders the brand `<FeaturesPage />` component, which in turn
  * maps each entry to a `<FeatureItem>` inside `<FeatureGrid>`. Every entry

@@ -23,7 +23,7 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 - [SKILL.md](SKILL.md): the Claude skill that operates this repo
 - [docker-compose.yml](docker-compose.yml): local dev environment
 
-**`sites/` was removed** in 2026-05. The Docusaurus build that used to live at `sites/www/` (and powered conduction.nl + the connext / commonground sub-brand entry points) was extracted to a dedicated repo at [`ConductionNL/conduction-website`](https://github.com/ConductionNL/conduction-website), which now serves `www.conduction.nl`. This repo's GitHub Pages site now publishes only the brand kit (preview/, brand/, diagrams/, tokens.css) at [identity.conduction.nl](https://identity.conduction.nl/) — see [.github/workflows/pages.yml](.github/workflows/pages.yml).
+**`sites/` was removed** in 2026-05. The Docusaurus build that used to live at `sites/www/` (and powered conduction.nl + the connext / commonground sub-brand entry points) was extracted to a dedicated repo at [`ConductionNL/conduction-website`](https://codeberg.org/Conduction/conduction-website), which now serves `www.conduction.nl`. This repo's GitHub Pages site now publishes only the brand kit (preview/, brand/, diagrams/, tokens.css) at [identity.conduction.nl](https://identity.conduction.nl/) — see [.github/workflows/pages.yml](.github/workflows/pages.yml).
 
 ## Working rules
 

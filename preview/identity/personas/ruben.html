@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Ruben van der Linde, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../preview.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); }
+  .kit-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-12) var(--space-12);
+  }
+  .kit-body > .section-label:first-child { margin-top: 0; }
+  .kit-footer {
+    max-width: 1280px;
+    margin: 64px auto;
+    padding: var(--space-8) var(--space-12);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .kit-footer code { font-family: var(--conduction-typography-font-family-code); }
+  .kit-footer a { color: var(--c-cobalt-400); }
+
+  /* Profile card with hex avatar */
+  .profile {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  .profile .avatar {
+    width: 96px; height: 110px;
+    clip-path: var(--hex-pointy-top);
+    background: var(--c-blue-cobalt);
+    color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 32px;
+    font-family: var(--conduction-typography-font-family-display);
+  }
+  .profile h2 {
+    font-size: 24px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+  }
+  .profile .role {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-orange-knvb);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .profile .lede {
+    margin-top: var(--space-3);
+    font-size: 14px; line-height: 1.55;
+    color: var(--c-cobalt-700);
+  }
+
+  /* Where he writes from */
+  .scenes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 900px) { .scenes { grid-template-columns: 1fr; } }
+  .scene {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+    font-size: 14px; line-height: 1.55;
+    color: var(--c-cobalt-700);
+  }
+  .scene strong {
+    color: var(--c-blue-cobalt);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  /* Themes grid */
+  .themes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 1000px) { .themes { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px)  { .themes { grid-template-columns: 1fr; } }
+  .theme {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; flex-direction: column;
+    gap: var(--space-2);
+  }
+  .theme .name {
+    font-size: 14px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+  }
+  .theme p {
+    font-size: 13px; line-height: 1.5;
+    color: var(--c-cobalt-700);
+  }
+
+  /* Vocabulary swap rows */
+  .vocab {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .vocab table { width: 100%; border-collapse: collapse; }
+  .vocab th {
+    text-align: left;
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    padding: var(--space-4) var(--space-5);
+    background: var(--c-cobalt-50);
+    font-weight: 500;
+  }
+  .vocab td {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--c-cobalt-50);
+    vertical-align: top;
+    font-size: 13px; line-height: 1.5;
+  }
+  .vocab td.avoid {
+    color: var(--c-cobalt-400);
+    font-style: italic;
+    text-decoration: line-through;
+    text-decoration-color: var(--c-cobalt-200);
+    width: 30%;
+  }
+  .vocab td.use {
+    color: var(--c-blue-cobalt);
+    font-weight: 500;
+    width: 30%;
+  }
+  .vocab td.note {
+    color: var(--c-cobalt-700);
+  }
+
+  /* Metaphor library */
+  .metaphors {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 900px) { .metaphors { grid-template-columns: 1fr; } }
+  .metaphor {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+  .metaphor .name {
+    font-size: 14px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    margin-bottom: var(--space-2);
+  }
+  .metaphor blockquote {
+    font-style: italic;
+    border-left: 2px solid var(--c-orange-knvb);
+    padding-left: var(--space-3);
+    margin: 0 0 var(--space-3) 0;
+    font-size: 13px; line-height: 1.5;
+    color: var(--c-cobalt-700);
+  }
+  .metaphor .when {
+    font-size: 12px;
+    color: var(--c-cobalt-400);
+  }
+  .metaphor .when strong { color: var(--c-blue-cobalt); }
+
+  /* Quote catalog · do not recycle */
+  .quotes {
+    background: var(--c-cobalt-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+  .quotes h4 {
+    font-size: 15px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    margin-bottom: var(--space-2);
+  }
+  .quotes .warning {
+    font-size: 13px; color: var(--c-red-vermillion);
+    margin-bottom: var(--space-4);
+  }
+  .quotes .group { margin-top: var(--space-5); }
+  .quotes .group h5 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    font-weight: 500;
+    margin-bottom: var(--space-3);
+  }
+  .quotes ul {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex; flex-direction: column;
+    gap: var(--space-2);
+  }
+  .quotes li {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-size: 13px; line-height: 1.5;
+    color: var(--c-cobalt-700);
+    font-style: italic;
+    border-left: 2px solid var(--c-cobalt-200);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../../index.html">Design system</a> &nbsp;/&nbsp; <a href="../index.html">Identity</a> &nbsp;/&nbsp; <a href="index.html">Personas</a> &nbsp;/&nbsp; Ruben van der Linde</div>
+  <h1>Ruben van der Linde</h1>
+  <p>Oprichter van Conduction. Schrijft als gefrustreerde-maar-pragmatische developer, niet als vendor of consultant.</p>
+</div>
+
+<div class="kit-body">
+
+  <div class="profile">
+    <div class="avatar">R</div>
+    <div>
+      <div class="role">Persona · oprichter van Conduction</div>
+      <h2>Software-developer eerst, oprichter daarna.</h2>
+      <p class="lede">Twintig jaar in en rond Nederlands overheids-IT. Common Ground-veteraan, sprak op HAVEN+, gaat elk jaar naar FOSDEM. Zit in de OSPO-, Eurostack- en digitale-soevereiniteit-gesprekken. Bouwt en onderhoudt open source, verkoopt het aan het MKB. Mild cynisch over het gat tussen wat overheden over open source zeggen en wat ze doen. Constructief over hoe het gat dicht moet.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Waar hij vandaan schrijft · de stoel</div>
+  <div class="scenes">
+    <div class="scene">
+      <strong>In de trein terug van Brussel of Utrecht</strong>
+      Laptop op de knieën, koffie, hoofd vol indrukken. Schrijft op wat hij vrijdag had willen zeggen maar pas zondag doorhad.
+    </div>
+    <div class="scene">
+      <strong>Na een Common Ground-sessie</strong>
+      Voor de vijfde keer iemand die vraagt of open source wel volwassen genoeg is. Zit op het terras, schrijft de reactie die hij in de zaal niet kwijt kon.
+    </div>
+    <div class="scene">
+      <strong>Tussen twee meetings</strong>
+      Net iets gehoord van een ambtenaar dat blijft hangen. Vijftien minuten in een wachtruimte op Den Haag CS, voor de volgende afspraak.
+    </div>
+    <div class="scene">
+      <strong>Zondagavond, koffie</strong>
+      Verwerkt de week. Schrijft wat in de drukte niet kon. Geen essay, gewoon wat eruit moet.
+    </div>
+  </div>
+
+  <div class="section-label">Doelgroep · voor wie hij schrijft</div>
+  <p style="font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6; margin-bottom: var(--space-4);">
+    Niet voor het grote publiek. Niet voor management. Voor <strong>technisch geletterde lezers in en rond overheid-IT en het open-source-ecosysteem</strong>. Common Ground-deelnemers, OSPO-leads, beleidsmedewerkers digitale infrastructuur, gemeentelijke architecten, OpenDesk- en La-Suite-watchers, SURF- en VNG-mensen. Plus, sinds de standaardtaal Engels is geworden, de bredere Europese kring (FOSDEM-gaande overheidsdevelopers, DINUM, OpenForum Europe, Eurostack-geïnteresseerden).
+  </p>
+  <p style="font-size: 14px; color: var(--c-cobalt-700); line-height: 1.6;">
+    Deze lezers weten wat een OSPO is, kennen het verschil tussen self-hosted en soeverein, en hebben opinies over FOSS-eerst aanbestedingsbeleid. <strong>Niets uitleggen wat ze al weten.</strong> Geen herhaling van het coalitieakkoord. Direct naar het standpunt.
+  </p>
+
+  <div class="section-label">Terugkerende thema's · waar hij steeds terugkomt</div>
+  <div class="themes">
+    <div class="theme">
+      <div class="name">Digitale soevereiniteit</div>
+      <p>Geen slogan, maar een concrete stapel werk die niemand wil beginnen.</p>
+    </div>
+    <div class="theme">
+      <div class="name">Het beleids-praktijk-gat</div>
+      <p>Coalitieakkoord belooft, ambtenaar bouwt nog steeds zelf, leverancier levert Microsoft.</p>
+    </div>
+    <div class="theme">
+      <div class="name">NIH-syndroom op elk niveau</div>
+      <p>Van ministeries tot gemeenten tot individuele developers, sinds vibe coding solo bouwen triviaal maakt.</p>
+    </div>
+    <div class="theme">
+      <div class="name">Lock-in als zelfgemaakt probleem</div>
+      <p>Macro's, hardcoded Office-verwijzingen, aanbestedingen met impliciete Microsoft-eisen. Geen leverancier-probleem.</p>
+    </div>
+    <div class="theme">
+      <div class="name">De illusie van controle</div>
+      <p>Teams die zelf bouwen denken meer controle te hebben dan teams die bijdragen. Meestal is het tegenovergesteld waar.</p>
+    </div>
+    <div class="theme">
+      <div class="name">De geopolitieke wind die draait</div>
+      <p>Trump, Cloud Act, het ICC-incident. De forcing function die soevereiniteit van papier naar budget heeft gebracht.</p>
+    </div>
+    <div class="theme">
+      <div class="name">MKB als echte test</div>
+      <p>"Public money, public functionality." Bereikt de overheidscode het MKB? Zo nee, het experiment is mislukt.</p>
+    </div>
+    <div class="theme">
+      <div class="name">AI als versneller, niet stuurman</div>
+      <p>Human in the loop. Lokale LLMs als alternatief voor cloud-AI-afhankelijkheid. Vibe coding ondermijnt ecosystemen.</p>
+    </div>
+    <div class="theme">
+      <div class="name">Constructieve frustratie</div>
+      <p>Sharp, direct, met naam genoemd, maar altijd richting "jij kan en moet dit oplossen." Cynisme zonder richting telt niet.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Woordenschat · Ruben-specifieke voorkeuren</div>
+  <div class="vocab">
+    <table>
+      <thead><tr><th>In plaats van</th><th>Gebruik</th><th>Waarom</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="avoid">"Big Tech"</td>
+          <td class="use">"Foreign Tech"</td>
+          <td class="note">Het woord <em>Foreign</em> draagt de geopolitieke lading die <em>Big</em> mist. Bewuste keuze.</td>
+        </tr>
+        <tr>
+          <td class="avoid">"Versnipperde projecten"</td>
+          <td class="use">"Eilandjes"</td>
+          <td class="note">Visueel, herkenbaar voor Common Ground-publiek, klinkt zoals het is.</td>
+        </tr>
+        <tr>
+          <td class="avoid">"Autonomie"</td>
+          <td class="use">"Soevereiniteit"</td>
+          <td class="note">Autonomie klinkt naar beleidsstuk. Soevereiniteit naar standpunt.</td>
+        </tr>
+        <tr>
+          <td class="avoid">"Aanbestedingen" (EN)</td>
+          <td class="use">"Procurement" (EN)</td>
+          <td class="note">Internationale lezers begrijpen <em>procurement</em>; <em>tenders</em> is BE/UK-bias.</td>
+        </tr>
+        <tr>
+          <td class="avoid">"Not-Invented-Here syndrome"</td>
+          <td class="use">"NIH-syndroom"</td>
+          <td class="note">Kortere vorm, herkenbaar in beide talen.</td>
+        </tr>
+        <tr>
+          <td class="avoid">"Gemeentes"</td>
+          <td class="use">"Gemeenten" (NL) / "municipalities" (EN)</td>
+          <td class="note">Het is <em>gemeenten</em>. <em>Gemeentes</em> klinkt als buitenstaander.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size: 13px; color: var(--c-cobalt-700); margin-top: var(--space-3);">
+    Engelse leenwoorden in Nederlandse tekst zijn prima als developers zo praten: <em>lock-in, vendor lock-in, cloud, stack, open source, pull request, macro, integration</em>. Niet vertalen om te vertalen.
+  </p>
+
+  <div class="section-label">Metaforen-bibliotheek · gebruik er één per stuk</div>
+  <div class="metaphors">
+
+    <div class="metaphor">
+      <div class="name">De stofzuiger</div>
+      <blockquote>"Open source is geen stofzuiger die jouw puinhoop opruimt. Het is een fundament om op te bouwen, maar dan moet je eerst je eigen rommel opruimen."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> lezer hoopt dat een open tool een door hemzelf gemaakt probleem oplost.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">Het feestje in de hoek</div>
+      <blockquote>"Alsof je op een feest bent waar iemand in de hoek alleen met zichzelf staat te praten."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> overheid bouwt eigen geïsoleerd project terwijl ze het bredere ecosysteem consumeert. Past bij NIH-kritiek.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">De Narcissus Product Owner</div>
+      <blockquote>"Het is een beetje alsof je Narcissus Product Owner maakt. Eigen standaarden. Eigen integraties. Eigen eilandjes."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> PO of tech-lead verliefd op eigen creatie in de open zee.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">De aansteker voor een roker</div>
+      <blockquote>"Dat is alsof je een rokende verslaafde een gratis aansteker geeft. Het probleem bestond al, maar je maakt het onweerstaanbaar."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> een nieuwe technologie maakt een bestaand probleem onweerstaanbaar (vibe coding bij NIH).</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">Stoppen met roken als verslaafde</div>
+      <blockquote>Lock-in als argument tegen migreren is alsof je zegt: "Ik kan niet stoppen met roken want ik ben verslaafd." Ja, precies daarom.</blockquote>
+      <div class="when"><strong>Wanneer:</strong> de reden om niet te veranderen is zelf de sterkste reden om wel te veranderen.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">De draaiende geopolitieke wind</div>
+      <blockquote>"Nu de geopolitieke wind draait en digitale soevereiniteit opeens op de agenda staat..."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> opening van een stuk over timing of soevereiniteit. Trump, Cloud Act, EU-context.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">De zelfgebouwde kooi</div>
+      <blockquote>"Die macro's zijn geen tekortkoming van open source. Ze zijn een direct gevolg van de keuze om zo diep het Microsoft-ecosysteem in te duiken dat je werkprocessen niet meer los te koppelen zijn. Die lock-in heb je zelf gecreëerd."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> zelf-toegebrachte technische lock-in, aanbestedings-cultuur, dependency-cultuur.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">De tuin en de gesneden bloemen</div>
+      <blockquote>"Je plant gesneden bloemen in een pot en noemt het een tuin. Ze zien er een seizoen goed uit, krijgen nooit wortels, en elke lente ga je terug naar dezelfde leverancier."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> kopen van een suite waar een platform nodig was. Past bij sovereign-workplace-discussie.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">Het loverboy-scheme</div>
+      <blockquote>Foreign Tech als loverboy. Eerst goedkoop en aantrekkelijk, dan vasthoudend, dan controlerend.</blockquote>
+      <div class="when"><strong>Wanneer:</strong> stuk over geopolitieke afhankelijkheid, ICC/Microsoft-incident, Pax Americana.</div>
+    </div>
+
+    <div class="metaphor">
+      <div class="name">Muziek kun je niet eten</div>
+      <blockquote>"Het klinkt als muziek in de oren, en dat is precies het probleem. Want muziek kun je niet eten, en mooie woorden betalen geen serverrekeningen."</blockquote>
+      <div class="when"><strong>Wanneer:</strong> beleid dat goed klinkt maar geen budget of deadline heeft. Coalitieakkoord-kritiek.</div>
+    </div>
+
+  </div>
+  <p style="font-size: 13px; color: var(--c-cobalt-700); margin-top: var(--space-4);">
+    Probeer eerst een <strong>nieuwe metafoor</strong> voor het specifieke onderwerp uit te vinden. Zit dertig seconden met de vraag: "waar lijkt dit op?" Komt er niks, dan deze bibliotheek. Pak alleen wat past. Een slechte metafoor is erger dan geen metafoor.
+  </p>
+
+  <div class="section-label">Echte quotes · niet hergebruiken</div>
+  <div class="quotes">
+    <h4>Deze zinnen heeft Ruben al gepubliceerd op rubenlinde.nl.</h4>
+    <p class="warning"><strong>Niet letterlijk overnemen.</strong> Een lezer die zijn blog kent herkent een hergebruikte paragraaf. Schrijf rond ze heen. Vind een nieuw frame.</p>
+
+    <div class="group">
+      <h5>Hooks · openingszinnen die hij al gebruikt heeft</h5>
+      <ul>
+        <li>"Open source lost jouw lock-in niet op. Dat moet je zelf doen."</li>
+        <li>"De overheid houdt van open source. Zolang ze het zelf mogen bouwen."</li>
+        <li>"Het coalitieakkoord 2026 leest als een wensenlijstje voor iedereen die al jaren pleit voor digitale soevereiniteit."</li>
+        <li>"De trein dendert door het Belgische landschap. Buiten glijden weilanden voorbij, binnen zit ik met een lauwe koffie en een hoofd vol indrukken."</li>
+        <li>"'Is open source volwassen genoeg voor overheidsinzet?' Deze vraag hoor ik regelmatig in vergaderzalen en bij koffieautomaten."</li>
+        <li>"In februari 2025 bedacht Andrej Karpathy de term 'vibe coding'."</li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h5>Pivots · scharnierzinnen die hij al gebruikt heeft</h5>
+      <ul>
+        <li>"Laten we eerlijk zijn."</li>
+        <li>"Dat klinkt cynisch, maar ik meen het."</li>
+        <li>"Nee. Natuurlijk niet. Dat was ook nooit de bedoeling."</li>
+        <li>"En dat brengt me bij het meest veelzeggende voorbeeld."</li>
+        <li>"Laat dat even bezinken."</li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h5>Closes · slotzinnen die hij al gebruikt heeft</h5>
+      <ul>
+        <li>"Begin vandaag. Stap voor stap. Want elke dag dat je wacht, wordt de weg terug langer."</li>
+        <li>"Begin met bijdragen. Stop met bouwen. De rest volgt vanzelf."</li>
+        <li>"Publiek geld voor publiek goed. De woorden staan er. Nu de daden nog."</li>
+        <li>"De aansteker is er. De sigaret brandt. De vraag is of we de rookmelder aanzetten of blijven vibreren tot het te laat is."</li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <h5>Herbruikbare framings · deze mag je wel weven</h5>
+      <ul>
+        <li>"Er is nog nooit een ambtenaar ontslagen omdat die voor Microsoft koos." (Aanbestedings-adagium.)</li>
+        <li>HAVEN+, Common Ground, FOSDEM als terugkerende events.</li>
+        <li>Jacco de Groot, Claudia van Kruistum (SURF), Theo Peters als terugkerende namen.</li>
+        <li>Het iBestuur-9%-cijfer, WordPress-43%, Office-10-20%-feature-usage.</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /.kit-body -->
+
+<div class="kit-footer">
+  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span><a href="index.html">&larr; Back to personas</a> &middot; <a href="../index.html">&larr; Back to identity</a></span>
+</div>
+
+</body>
+</html>

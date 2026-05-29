@@ -76,7 +76,7 @@
   .app-row.head .col:last-child { border-right: none; }
   .app-row.head .head-cols {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 
   .app-row {
@@ -125,7 +125,7 @@
 
   .app-treatments {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0;
   }
   .treatment {
@@ -145,7 +145,6 @@
 
   /* Treatment specs */
   .t-hex-cobalt { background: var(--app-cobalt); color: white; clip-path: var(--hex-pointy-top); }
-  .t-hex-900 { background: var(--app-cobalt-900); color: white; clip-path: var(--hex-pointy-top); }
   .t-hex-orange { background: var(--app-orange); color: white; clip-path: var(--hex-pointy-top); }
 
   /* Inversed: outline hex faked with two stacked clipped elements (a real border
@@ -173,18 +172,18 @@
   }
   .treatment .glyph.t-favicon svg { width: 18px; height: 18px; }
 
-  /* Wordmark lockup cell: small hex stacked over the two-tone app name */
-  .treatment.wordmark-cell { flex-direction: column; gap: var(--space-2); }
+  /* Wordmark lockup cell: small hex beside the two-tone app name (same lockup as the wordmark cards) */
+  .treatment.wordmark-cell { flex-direction: row; gap: 8px; padding-left: var(--space-3); padding-right: var(--space-3); }
   .wordmark-cell .glyph-sm {
-    width: 34px; height: 39px;
+    width: 32px; height: 36px; flex-shrink: 0;
     clip-path: var(--hex-pointy-top);
     background: var(--app-cobalt); color: white;
     display: flex; align-items: center; justify-content: center;
   }
-  .wordmark-cell .glyph-sm svg { width: 16px; height: 16px; }
+  .wordmark-cell .glyph-sm svg { width: 15px; height: 15px; }
   .wordmark-cell .word {
-    font-size: 12px; font-weight: 700; letter-spacing: -0.01em;
-    color: var(--c-blue-cobalt); text-align: center; line-height: 1.05;
+    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--c-blue-cobalt); text-align: left; line-height: 1.1;
   }
   .wordmark-cell .word .light { color: var(--c-cobalt-400); font-weight: 400; }
 
@@ -244,31 +243,34 @@
   }
   .hero-stack .install .dollar { color: var(--c-orange-knvb); }
 
-  /* Wordmark lockups */
-  .lockup-grid {
+  /* ExApp sidecars */
+  .exapp-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--space-4);
   }
-  .lockup {
+  .exapp-card {
     background: white;
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-md);
-    padding: var(--space-5) var(--space-6);
-    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--space-6) var(--space-4);
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+    text-align: center;
   }
-  .lockup .glyph-sm {
-    width: 40px; height: 46px;
+  .exapp-card .glyph-lg {
+    width: 48px; height: 54px;
     clip-path: var(--hex-pointy-top);
     background: var(--app-cobalt); color: white;
     display: flex; align-items: center; justify-content: center;
   }
-  .lockup .glyph-sm svg { width: 18px; height: 18px; }
-  .lockup .word {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  .exapp-card .glyph-lg svg { width: 24px; height: 24px; }
+  .exapp-card .name {
+    font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
     color: var(--c-blue-cobalt);
   }
-  .lockup .word .light { color: var(--c-cobalt-400); font-weight: 400; }
+  .exapp-card .caption {
+    font-size: 11px; color: var(--c-cobalt-400); line-height: 1.4;
+  }
 
   /* Don't / do gallery */
   .donts-grid {
@@ -325,25 +327,29 @@
   <symbol id="g-softwarecatalog" viewBox="0 0 24 24"><path fill="currentColor" d="M5.6,3.4l1.4,1.4-3.2,3.2,3.2,3.2-1.4,1.4L1,8,5.6,3.4M11.4,3.4l4.6,4.6-4.6,4.6-1.4-1.4,3.2-3.2-3.2-3.2,1.4-1.4M22,6v12c0,1.1-.9,2-2,2H4c-1.1,0-2-.9-2-2v-4h2v4h16V6h-3v-2h3c1.1,0,2,.9,2,2Z"/></symbol>
   <symbol id="g-nldesign" viewBox="0 0 24 24"><path fill="currentColor" d="M2 2h9v9H2V2zm11 0h9v9h-9V2zM2 13h9v9H2v-9zm13 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></symbol>
   <symbol id="g-shillinq" viewBox="0 0 384 512"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM64 80c0-8.8 7.2-16 16-16h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zm128 72c8.8 0 16 7.2 16 16v17.3c8.5 1.2 16.7 3.1 24.1 5.1c8.5 2.3 13.6 11 11.3 19.6s-11 13.6-19.6 11.3c-11.1-3-22-5.2-32.1-5.3c-8.4-.1-17.4 1.8-23.6 5.5c-5.7 3.4-8.1 7.3-8.1 12.8c0 3.7 1.3 6.5 7.3 10.1c6.9 4.1 16.6 7.1 29.2 10.9l.5 .1 0 0 0 0c11.3 3.4 25.3 7.6 36.3 14.6c12.1 7.6 22.4 19.7 22.7 38.2c.3 19.3-9.6 33.3-22.9 41.6c-7.7 4.8-16.4 7.6-25.1 9.1V440c0 8.8-7.2 16-16 16s-16-7.2-16-16V422.2c-11.2-2.1-21.7-5.7-30.9-8.9l0 0 0 0c-2.1-.7-4.2-1.4-6.2-2.1c-8.4-2.8-12.9-11.9-10.1-20.2s11.9-12.9 20.2-10.1c2.5 .8 4.8 1.6 7.1 2.4l0 0 0 0 0 0c13.6 4.6 24.6 8.4 36.3 8.7c9.1 .3 17.9-1.7 23.7-5.3c5.1-3.2 7.9-7.3 7.8-14c-.1-4.6-1.8-7.8-7.7-11.6c-6.8-4.3-16.5-7.4-29-11.2l-1.6-.5 0 0c-11-3.3-24.3-7.3-34.8-13.7c-12-7.2-22.6-18.9-22.7-37.3c-.1-19.4 10.8-32.8 23.8-40.5c7.5-4.4 15.8-7.2 24.1-8.7V232c0-8.8 7.2-16 16-16z"/></symbol>
+  <symbol id="ex-openklant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ex-opentalk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></symbol>
+  <symbol id="ex-openzaak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></symbol>
+  <symbol id="ex-valtimo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></symbol>
+  <symbol id="ex-n8n" viewBox="0 0 24 24"><path fill="currentColor" d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></symbol>
 </svg>
 
 <div class="hero">
   <div class="crumb"><a href="index.html">Design system</a> &nbsp;/&nbsp; Apps</div>
   <h1>Every app, every treatment.</h1>
-  <p>The full app glyph system. Thirteen core apps, each shown in every treatment: the cobalt hex (canonical), the 900 hex for dark sections, the inversed outline, the orange hex for hero and marketing surfaces, the wordmark lockup, and the 32px favicon. Every glyph is the app's real Nextcloud icon. One cobalt only: <code>#21468B</code>.</p>
+  <p>The full app glyph system. Thirteen core apps, each shown in every treatment: the cobalt hex (canonical), the inversed outline, the orange hex for hero and marketing surfaces, the wordmark lockup, and the 32px favicon. Every glyph is the app's real Nextcloud icon. One cobalt only: <code>#21468B</code>. The containerised ExApp sidecars follow below.</p>
 </div>
 
 <div class="kit-body">
 
   <!-- Roster grid: every app × every treatment -->
-  <div class="section-label">The roster · 13 apps × 6 treatments</div>
+  <div class="section-label">The roster · 13 apps × 5 treatments</div>
   <div class="app-roster">
 
     <div class="app-row head">
       <div class="meta"><div class="label">App ↓ &nbsp; Treatment →</div></div>
       <div class="head-cols">
         <div class="col">Cobalt</div>
-        <div class="col">Black · 900</div>
         <div class="col">Inversed</div>
         <div class="col">Orange</div>
         <div class="col">Wordmark</div>
@@ -354,14 +360,11 @@
     <!-- OpenCatalogi -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>OpenCatalogi</h3>
-        <p>The catalogue. Discover and install apps from a federated registry of trusted publishers.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>The catalogue. Discover and install apps from a federated registry of trusted publishers.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-opencatalogi"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-opencatalogi"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-opencatalogi"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-opencatalogi"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-opencatalogi"/></svg></div><div class="word"><span class="light">Open</span>Catalogi</div></div>
@@ -372,14 +375,11 @@
     <!-- OpenRegister -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>OpenRegister</h3>
-        <p>Structured records. Form-driven data with versioning, permissions, and an event log per row.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Structured records. Form-driven data with versioning, permissions, and an event log per row.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-openregister"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-openregister"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-openregister"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-openregister"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-openregister"/></svg></div><div class="word"><span class="light">Open</span>Register</div></div>
@@ -390,14 +390,11 @@
     <!-- OpenConnector -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>OpenConnector</h3>
-        <p>The integration plane. Pipe data between Conduction apps and any external API, with retries and observability.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>The integration plane. Pipe data between Conduction apps and any external API, with retries and observability.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-openconnector"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-openconnector"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-openconnector"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-openconnector"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-openconnector"/></svg></div><div class="word"><span class="light">Open</span>Connector</div></div>
@@ -408,14 +405,11 @@
     <!-- DocuDesk -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>DocuDesk</h3>
-        <p>Document workflows. Templates, signatures, and audit trails for public-sector compliance teams.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Document workflows. Templates, signatures, and audit trails for public-sector compliance teams.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-docudesk"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-docudesk"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-docudesk"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-docudesk"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-docudesk"/></svg></div><div class="word"><span class="light">Docu</span>Desk</div></div>
@@ -426,14 +420,11 @@
     <!-- MyDash -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>MyDash</h3>
-        <p>The personal home. Each user's pinned apps, recent records, and tasks, the welcome screen of the stack.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>The personal home. Each user's pinned apps, recent records, and tasks, the welcome screen of the stack.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-mydash"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-mydash"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-mydash"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-mydash"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-mydash"/></svg></div><div class="word"><span class="light">My</span>Dash</div></div>
@@ -444,14 +435,11 @@
     <!-- LarpingApp -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>LarpingApp</h3>
-        <p>Run live-action roleplay. Characters, settings, and events in one place.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Run live-action roleplay. Characters, settings, and events in one place.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-larpingapp"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-larpingapp"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-larpingapp"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-larpingapp"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-larpingapp"/></svg></div><div class="word"><span class="light">Larping</span>App</div></div>
@@ -462,14 +450,11 @@
     <!-- Procest -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>Procest</h3>
-        <p>Process management. Model and run business processes as structured data.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Process management. Model and run business processes as structured data.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-procest"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-procest"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-procest"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-procest"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-procest"/></svg></div><div class="word">Procest</div></div>
@@ -480,14 +465,11 @@
     <!-- Pipelinq -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>Pipelinq</h3>
-        <p>Recruitment pipeline. Track candidates from intake to hire.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Recruitment pipeline. Track candidates from intake to hire.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-pipelinq"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-pipelinq"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-pipelinq"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-pipelinq"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-pipelinq"/></svg></div><div class="word">Pipelinq</div></div>
@@ -498,14 +480,11 @@
     <!-- Planix -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>Planix</h3>
-        <p>Planning boards. Schedule work across teams and timelines.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Planning boards. Schedule work across teams and timelines.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-planix"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-planix"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-planix"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-planix"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-planix"/></svg></div><div class="word">Planix</div></div>
@@ -516,14 +495,11 @@
     <!-- Decidesk -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>Decidesk</h3>
-        <p>Decision records. Meetings, minutes, and auditable outcomes.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Decision records. Meetings, minutes, and auditable outcomes.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-decidesk"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-decidesk"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-decidesk"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-decidesk"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-decidesk"/></svg></div><div class="word"><span class="light">Deci</span>desk</div></div>
@@ -534,14 +510,11 @@
     <!-- SoftwareCatalog -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>SoftwareCatalog</h3>
-        <p>Software catalogue. Track the apps and components your organisation runs.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Software catalogue. Track the apps and components your organisation runs.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-softwarecatalog"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-softwarecatalog"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-softwarecatalog"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-softwarecatalog"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-softwarecatalog"/></svg></div><div class="word"><span class="light">Software</span>Catalog</div></div>
@@ -552,14 +525,11 @@
     <!-- NLDesign -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>NLDesign</h3>
-        <p>Government theming. Dutch NL Design System tokens for Nextcloud.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Government theming. Dutch NL Design System tokens for Nextcloud.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-nldesign"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-nldesign"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-nldesign"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-nldesign"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-nldesign"/></svg></div><div class="word"><span class="light">NL</span>Design</div></div>
@@ -570,14 +540,11 @@
     <!-- Shillinq -->
     <div class="app-row">
       <div class="meta">
-        <div class="label">App · cobalt</div>
+        <div class="label">App</div>
         <h3>Shillinq</h3>
-        <p>Invoicing. Quotes, invoices, and payments for small teams.</p>
-        <span class="tag">Cobalt</span>
-      </div>
+        <p>Invoicing. Quotes, invoices, and payments for small teams.</p>      </div>
       <div class="app-treatments">
         <div class="treatment"><div class="glyph t-hex-cobalt"><svg><use href="#g-shillinq"/></svg></div></div>
-        <div class="treatment"><div class="glyph t-hex-900"><svg><use href="#g-shillinq"/></svg></div></div>
         <div class="treatment"><div class="glyph outline-wrap"><div class="inner"><svg><use href="#g-shillinq"/></svg></div></div></div>
         <div class="treatment"><div class="glyph t-hex-orange"><svg><use href="#g-shillinq"/></svg></div></div>
         <div class="treatment wordmark-cell"><div class="glyph-sm"><svg><use href="#g-shillinq"/></svg></div><div class="word">Shillinq</div></div>
@@ -621,33 +588,15 @@
     </div>
   </div>
 
-  <!-- Wordmark lockups -->
-  <div class="section-label">Wordmark lockups · sidebar &amp; nav</div>
-  <div class="lockup-grid">
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-opencatalogi"/></svg></div>
-      <div class="word"><span class="light">Open</span>Catalogi</div>
-    </div>
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-openregister"/></svg></div>
-      <div class="word"><span class="light">Open</span>Register</div>
-    </div>
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-openconnector"/></svg></div>
-      <div class="word"><span class="light">Open</span>Connector</div>
-    </div>
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-docudesk"/></svg></div>
-      <div class="word"><span class="light">Docu</span>Desk</div>
-    </div>
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-mydash"/></svg></div>
-      <div class="word"><span class="light">My</span>Dash</div>
-    </div>
-    <div class="lockup">
-      <div class="glyph-sm"><svg><use href="#g-softwarecatalog"/></svg></div>
-      <div class="word"><span class="light">Software</span>Catalog</div>
-    </div>
+  <!-- ExApp sidecars -->
+  <div class="section-label">ExApp sidecars · containerised wrappers</div>
+  <p style="margin: 0 0 var(--space-5); color: var(--c-cobalt-700); font-size: 13px; max-width: 80ch;">Sidecar apps wrap an external product. Each runs as a containerised Nextcloud ExApp, on the same cobalt hex.</p>
+  <div class="exapp-grid">
+    <div class="exapp-card"><div class="glyph-lg"><svg><use href="#ex-openklant"/></svg></div><div class="name">OpenKlant</div><div class="caption">Klantinteractie · CRM</div></div>
+    <div class="exapp-card"><div class="glyph-lg"><svg><use href="#ex-openzaak"/></svg></div><div class="name">OpenZaak</div><div class="caption">Zaakgericht werken</div></div>
+    <div class="exapp-card"><div class="glyph-lg"><svg><use href="#ex-opentalk"/></svg></div><div class="name">OpenTalk</div><div class="caption">Video meetings</div></div>
+    <div class="exapp-card"><div class="glyph-lg"><svg><use href="#ex-valtimo"/></svg></div><div class="name">Valtimo</div><div class="caption">Low-code BPM</div></div>
+    <div class="exapp-card"><div class="glyph-lg"><svg><use href="#ex-n8n"/></svg></div><div class="name">n8n</div><div class="caption">Workflow automation</div></div>
   </div>
 
   <!-- Don't / Do -->
@@ -710,9 +659,9 @@
       <h3 style="font-size: 16px; font-weight: 600; margin-bottom: var(--space-3);">Container rules</h3>
       <ul style="font-size: 13px; color: var(--c-cobalt-700); line-height: 1.7; padding-left: 1.2em;">
         <li>Pointy-top hex is canonical (<code>clip-path: var(--hex-pointy-top)</code>)</li>
-        <li>900 hex for charcoal and dark sections; same glyph, no other change</li>
         <li>Inversed (outline) for light-on-cobalt and inverse contexts</li>
         <li>Orange hex for hero and marketing only; one orange per surface</li>
+        <li>ExApp sidecars use the same cobalt hex as the core apps</li>
       </ul>
     </div>
     <div class="rationale-card">

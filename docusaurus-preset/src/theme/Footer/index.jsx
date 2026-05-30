@@ -88,8 +88,8 @@ export default function Footer() {
      `themeConfig.footerBrand = { wordmark: '...' }`, or render a dual
      brand row via `{ brands: [{wordmark, logo, href}, ...] }` for
      product pages co-branded with a partner. The legacy fallback to
-     `navbar.title` was misleading on product-page footers (mydash
-     showing "MyDash" rather than "Conduction"); the company-anchor
+     `navbar.title` was misleading on product-page footers (launchpad
+     showing "LaunchPad" rather than "Conduction"); the company-anchor
      reading wins. */
   const brand = brandFor(location.pathname, navbar?.title);
   const defaultWordmark = footerBrand?.wordmark || 'Conduction';

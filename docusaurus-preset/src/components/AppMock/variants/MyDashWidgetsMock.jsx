@@ -1,5 +1,5 @@
 /**
- * MyDash · Widget integration variant.
+ * LaunchPad · Widget integration variant.
  *
  * Demonstrates the cross-app widget angle: any Conduction app that
  * registers a Nextcloud dashboard widget shows up here. The mock
@@ -16,7 +16,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function MyDashWidgetsMock() {
+export default function LaunchPadWidgetsMock() {
   return (
     <>
       <div className={styles.topbar}>
@@ -26,7 +26,7 @@ export default function MyDashWidgetsMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.mydash].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Procest werkvoorraad + DocuDesk upload */}
           <div className={styles.col}>

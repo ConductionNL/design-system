@@ -97,9 +97,9 @@ Defined in [`preview/apps.html`](./preview/apps.html). Every app gets one Lucide
 | **OpenRegister** | `--c-cobalt-700` | table: `<rect x="3" y="4" width="18" height="16" rx="2"/>` + `M3 9h18M9 4v16` |
 | **OpenConnector** | `--c-cobalt-700` | network: `<circle cx="6" cy="12" r="3"/>` + `<circle cx="18" cy="6" r="3"/>` + `<circle cx="18" cy="18" r="3"/>` + `M9 12h9M9 12l9-6M9 12l9 6` |
 | **DocuDesk** | `--c-blue-cobalt` | document: `M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z` + `M14 2v6h6M16 13H8M16 17H8M10 9H8` |
-| **MyDash** | white + cobalt outline (inverse) | 4-rect grid: `<rect 3,3 7×9/>` + `<rect 14,3 7×5/>` + `<rect 14,12 7×9/>` + `<rect 3,16 7×5/>` |
+| **LaunchPad** | white + cobalt outline (inverse) | 4-rect grid: `<rect 3,3 7×9/>` + `<rect 14,3 7×5/>` + `<rect 14,12 7×9/>` + `<rect 3,16 7×5/>` |
 
-**MyDash defaults to outline** (cobalt stroke on white) because it sits next to user content and shouldn't compete. Every other app defaults to a filled hex in cobalt or cobalt-700.
+**LaunchPad defaults to outline** (cobalt stroke on white) because it sits next to user content and shouldn't compete. Every other app defaults to a filled hex in cobalt or cobalt-700.
 
 The remaining apps in the catalogue — **DeciDesk, LarpingApp, NLDesign, OpenWoo, PipelinQ, Procest, SoftwareCatalog, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
 

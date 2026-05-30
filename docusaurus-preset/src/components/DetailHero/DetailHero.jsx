@@ -21,22 +21,22 @@
  * Usage:
  *
  *   <DetailHero
- *     appId="mydash"
- *     crumb={[{label: 'Apps', href: '/apps'}, 'MyDash']}
+ *     appId="launchpad"
+ *     crumb={[{label: 'Apps', href: '/apps'}, 'LaunchPad']}
  *     status={{label: 'Beta', color: 'var(--c-orange-knvb)'}}
  *     version="v0.9"
  *     locales="NL · EN"
- *     title="MyDash"
+ *     title="LaunchPad"
  *     tagline="..."
  *     primaryCta={{label: 'Install from app store', href: '/install'}}
  *     icon={<svg>...</svg>}
  *     iconColor="var(--c-blue-cobalt)"
- *     illustration={<AppMock app="mydash" />}
+ *     illustration={<AppMock app="launchpad" />}
  *   />
  *
  * Each cta object also accepts `tone: "orange"` to flip the primary
  * (or secondary) variant to the KNVB-orange accent. Reserved for
- * product pages with an orange-leaning brand identity (mydash).
+ * product pages with an orange-leaning brand identity (launchpad).
  *
  * `background="cobalt"` paints the hero in a full-bleed cobalt panel
  * with white type — the product-page identity used on the

@@ -162,7 +162,7 @@ Then use `createConfig()` in your `docusaurus.config.js` as shown in [Usage](#us
 import '@conduction/docusaurus-preset/diagrams';
 ```
 
-This is how product sites such as `mydash.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
+This is how product sites such as `launchpad.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
 
 ## AI-crawler baseline
 

@@ -8,7 +8,7 @@
  * the moment this app is installed".
  *
  * Each Conduction app that registers a Nextcloud-dashboard widget
- * shows up automatically in MyDash; this section makes that promise
+ * shows up automatically in LaunchPad; this section makes that promise
  * concrete by drawing the widgets the app actually contributes.
  *
  * Usage in MDX:

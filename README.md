@@ -25,7 +25,7 @@ This kit documents how Conduction looks, sounds, and behaves on every surface, w
 The kit is the visual spine for:
 
 - **`connext.conduction.nl`**, the ConNext public product site (primary surface)
-- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, MyDash, etc.)
+- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, LaunchPad, etc.)
 - **`docs.conduction.nl`**, technical documentation
 - **Presentations, offers, print**, the same palette, type, and hex motif apply
 

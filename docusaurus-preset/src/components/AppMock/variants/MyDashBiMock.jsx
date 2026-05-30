@@ -1,5 +1,5 @@
 /**
- * MyDash · BI on registers variant.
+ * LaunchPad · BI on registers variant.
  *
  * Demonstrates the BI-graph angle: any chart you want, drawn directly
  * on a register without ETL. The mock shows four graph cards in a
@@ -10,7 +10,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function MyDashBiMock() {
+export default function LaunchPadBiMock() {
   return (
     <>
       <div className={styles.topbar}>
@@ -20,7 +20,7 @@ export default function MyDashBiMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.mydash].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Bar chart on top, line chart below */}
           <div className={styles.col}>

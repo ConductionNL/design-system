@@ -32,7 +32,7 @@
  *       name="YARD"
  *       logo="/img/partners/yard.png"
  *       summary={<>Digital design- en development-bureau uit Utrecht...</>}
- *       apps={['MyDash', 'OpenCatalogi']}
+ *       apps={['LaunchPad', 'OpenCatalogi']}
  *     />
  *     <BecomePartner href="/partners/become" />
  *   </PartnerGrid>

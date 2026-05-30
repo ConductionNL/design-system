@@ -1,6 +1,6 @@
 /**
- * MyDash abstract — full-bleed cobalt background with widget grid.
- * Reference: live screenshot at http://localhost:8080/apps/mydash/.
+ * LaunchPad abstract — full-bleed cobalt background with widget grid.
+ * Reference: live screenshot at http://localhost:8080/apps/launchpad/.
  *
  * Layout: top app strip + 4-column grid where col 1 stacks small + big
  * primary tiles (Intranet / Calendar / Files), cols 2-4 hold info
@@ -10,7 +10,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function MyDashMock() {
+export default function LaunchPadMock() {
   return (
     <>
       <div className={styles.topbar}>
@@ -20,7 +20,7 @@ export default function MyDashMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.mydash].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: small + big primary tiles */}
           <div className={styles.col}>

@@ -14,7 +14,7 @@
  *
  * Usage:
  *
- *   <AppMock app="mydash" />
+ *   <AppMock app="launchpad" />
  *   <AppMock app="openregister" caption />
  *   <AppMock app="decidesk" size="sm" />
  *   <AppMock app="procest" sidebar={<SidebarMock kind="procest-xwiki" />} />
@@ -34,10 +34,10 @@
 import React from 'react';
 import styles from './AppMock.module.css';
 
-import MyDashMock from './variants/MyDashMock.jsx';
-import MyDashTilesMock from './variants/MyDashTilesMock.jsx';
-import MyDashBiMock from './variants/MyDashBiMock.jsx';
-import MyDashWidgetsMock from './variants/MyDashWidgetsMock.jsx';
+import LaunchPadMock from './variants/LaunchPadMock.jsx';
+import LaunchPadTilesMock from './variants/LaunchPadTilesMock.jsx';
+import LaunchPadBiMock from './variants/LaunchPadBiMock.jsx';
+import LaunchPadWidgetsMock from './variants/LaunchPadWidgetsMock.jsx';
 import OpenCatalogiMock from './variants/OpenCatalogiMock.jsx';
 import OpenConnectorMock from './variants/OpenConnectorMock.jsx';
 import OpenRegisterMock from './variants/OpenRegisterMock.jsx';
@@ -52,10 +52,10 @@ import SoftwareCatalogMock from './variants/SoftwareCatalogMock.jsx';
 import ZaakAfhandelAppMock from './variants/ZaakAfhandelAppMock.jsx';
 
 const VARIANTS = {
-  mydash:           {Component: MyDashMock,           label: 'MyDash'},
-  'mydash-tiles':   {Component: MyDashTilesMock,      label: 'MyDash · Tiles & grids'},
-  'mydash-bi':      {Component: MyDashBiMock,         label: 'MyDash · BI on registers'},
-  'mydash-widgets': {Component: MyDashWidgetsMock,    label: 'MyDash · Widgets'},
+  launchpad:           {Component: LaunchPadMock,           label: 'LaunchPad'},
+  'launchpad-tiles':   {Component: LaunchPadTilesMock,      label: 'LaunchPad · Tiles & grids'},
+  'launchpad-bi':      {Component: LaunchPadBiMock,         label: 'LaunchPad · BI on registers'},
+  'launchpad-widgets': {Component: LaunchPadWidgetsMock,    label: 'LaunchPad · Widgets'},
   opencatalogi:     {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
   openconnector:    {Component: OpenConnectorMock,    label: 'OpenConnector'},
   openregister:     {Component: OpenRegisterMock,     label: 'OpenRegister'},
@@ -87,7 +87,7 @@ export default function AppMock({app, size = 'md', sidebar = null, caption = fal
   // `.body`, taking the `.detail` slot. SidebarMock children get
   // `embedded: true` so they drop their standalone .smFrame chrome
   // and render as the bare `.detail.rich` panel that slots into
-  // .body. Variants that don't accept a sidebar prop (e.g. MyDash)
+  // .body. Variants that don't accept a sidebar prop (e.g. LaunchPad)
   // ignore it; this keeps the change additive.
   const renderedSidebar = React.isValidElement(sidebar)
     ? React.cloneElement(sidebar, { embedded: true })

@@ -46,16 +46,16 @@ For every app `<app>` under [ConductionNL](https://codeberg.org/Conduction), two
 | **Always-latest released SBOM** (auto-redirects to newest release) | `https://codeberg.org/Conduction/<app>/releases/latest/download/sbom.cdx.json` |
 | **Specific release SBOM** (pinned, for compliance archives)        | `https://codeberg.org/Conduction/<app>/releases/download/<tag>/sbom.cdx.json`  |
 
-Example — fetch the latest mydash SBOM:
+Example — fetch the latest launchpad SBOM:
 
 ```bash
-curl -sL https://codeberg.org/Conduction/mydash/releases/latest/download/sbom.cdx.json | jq .
+curl -sL https://codeberg.org/Conduction/launchpad/releases/latest/download/sbom.cdx.json | jq .
 ```
 
 Example — fetch the SBOM for a specific historical release:
 
 ```bash
-curl -sL https://codeberg.org/Conduction/mydash/releases/download/v1.0.0/sbom.cdx.json | jq .
+curl -sL https://codeberg.org/Conduction/launchpad/releases/download/v1.0.0/sbom.cdx.json | jq .
 ```
 
 ### Update cadence

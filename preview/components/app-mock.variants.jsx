@@ -17,7 +17,7 @@
  * authored HTML in app-mock.html — those parts are not driven by
  * React components and have no drift surface.
  *
- * The catalogue itself: thirteen <AppMock> instances, one per app.
+ * The catalogue itself: fourteen <AppMock> instances, one per app.
  * LaunchPad carries four variants behind a tab strip; the rest are
  * single-variant. Clicking a tab toggles which .variant-pane is
  * .is-active inside the same .specimen-card, wired by the inline
@@ -192,6 +192,17 @@ export default function VariantCatalogue() {
         </div>
         <p>Citizen plus case-worker portal. ZGW APIs, archive interfaces. Centre runs the active case-worker queue with stage pips on top of a citizen-side timeline of recent submissions. Slug: <code>zaakafhandelapp</code>.</p>
         <AppMock app="zaakafhandelapp" />
+      </div>
+
+      {/* ============================== 14 · OpenBuild ============================== */}
+      <div className="specimen-card">
+        <div className="head">
+          <span className="num">14</span>
+          <h3>OpenBuild</h3>
+          <span className="tag">SCREENSHOT-BASED</span>
+        </div>
+        <p>Citizen-developer app builder. Three-pane builder: nav left, dashboard centre, manifest and schema editor rail right. A KPI strip (virtual apps, published, templates, versions) sits over a virtual-app list and the template catalogue. Slug: <code>openbuild</code>.</p>
+        <AppMock app="openbuild" />
       </div>
 
     </div>

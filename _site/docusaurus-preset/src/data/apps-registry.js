@@ -31,7 +31,7 @@ export const APPS_REGISTRY = {
   openregister:    {slug: 'openregister',    name: 'OpenRegister',     category: 'Data',        productHref: '/apps/openregister',    docsHref: 'https://docs.conduction.nl/openregister',    academyHref: '/academy?app=openregister'},
   openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    category: 'Connectors',  productHref: '/apps/openconnector',   docsHref: 'https://docs.conduction.nl/openconnector',   academyHref: '/academy?app=openconnector'},
   docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docs.conduction.nl/docudesk',        academyHref: '/academy?app=docudesk'},
-  mydash:          {slug: 'mydash',          name: 'MyDash',           category: 'Dashboards',  productHref: '/apps/mydash',          docsHref: 'https://docs.conduction.nl/mydash',          academyHref: '/academy?app=mydash'},
+  launchpad:       {slug: 'launchpad',       name: 'LaunchPad',        category: 'Dashboards',  productHref: '/apps/launchpad',       docsHref: 'https://launchpad.conduction.nl',                 academyHref: '/academy?app=launchpad'},
   zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  category: 'Processes',   productHref: '/apps/zaakafhandelapp', docsHref: 'https://docs.conduction.nl/zaakafhandelapp', academyHref: '/academy?app=zaakafhandelapp'},
   pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://docs.conduction.nl/pipelinq',        academyHref: '/academy?app=pipelinq'},
   procest:         {slug: 'procest',         name: 'Procest',          category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://docs.conduction.nl/procest',         academyHref: '/academy?app=procest'},
@@ -40,7 +40,7 @@ export const APPS_REGISTRY = {
   larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://docs.conduction.nl/larpingapp',      academyHref: '/academy?app=larpingapp'},
   nldesign:        {slug: 'nldesign',        name: 'NLDesign',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://docs.conduction.nl/nldesign',        academyHref: '/academy?app=nldesign'},
   shillinq:        {slug: 'shillinq',        name: 'Shillinq',         category: 'Processes',   productHref: '/apps/shillinq',        docsHref: 'https://docs.conduction.nl/shillinq',        academyHref: '/academy?app=shillinq'},
-  openbuilt:       {slug: 'openbuilt',       name: 'OpenBuilt',        category: 'Processes',   productHref: '/apps/openbuilt',       docsHref: 'https://docs.conduction.nl/openbuilt',       academyHref: '/academy?app=openbuilt'},
+  openbuild:       {slug: 'openbuild',       name: 'OpenBuild',        category: 'Processes',   productHref: '/apps/openbuild',       docsHref: 'https://docs.conduction.nl/openbuild',       academyHref: '/academy?app=openbuild'},
   doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://docs.conduction.nl/doriath',         academyHref: '/academy?app=doriath'},
   'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://docs.conduction.nl/app-versions',    academyHref: '/academy?app=app-versions'},
 };
@@ -87,7 +87,7 @@ export function getApps(slugs = []) {
 }
 
 /**
- * Resolve a display-name (e.g. "OpenCatalogi", "DocuDesk", "MyDash")
+ * Resolve a display-name (e.g. "OpenCatalogi", "DocuDesk", "LaunchPad")
  * to its product page href, or undefined when the name is not in the
  * registry. Used by partner cards / sidecards to turn the apps-shipped
  * chip row into a clickable link list. Names like "Nextcloud" that

@@ -13,7 +13,7 @@
  *   mint        integrate / connect    (OpenConnector)
  *   forest      data / registers       (OpenRegister)
  *   terracotta  documents / search     (OpenCatalogi)
- *   lavender    process / views        (MyDash)
+ *   lavender    process / views        (LaunchPad)
  *   workspace   Nextcloud workspace    (centre platform hex)
  *
  * Sources / consumers end-boxes use <IconList />, also exported on its
@@ -77,7 +77,7 @@ function inferFamily(name) {
   if (n.includes('connector')) return 'mint';
   if (n.includes('register')) return 'forest';
   if (n.includes('catalog')) return 'terracotta';
-  if (n.includes('mydash') || n.includes('dashboard')) return 'lavender';
+  if (n.includes('launchpad') || n.includes('dashboard')) return 'lavender';
   if (n.includes('nextcloud') || n.includes('workspace') || n.includes('platform')) return 'workspace';
   return 'forest';
 }

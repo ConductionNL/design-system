@@ -69,7 +69,7 @@ The market we write to has absorbed a chunk of English into daily Dutch IT speec
 | Keep in English (in NL copy) | Translate to Dutch |
 |---|---|
 | `app store`, `dashboard`, `workspace`, `audit log`, `webhook`, `commit`, `pull request`, `lock-in`, `open source` | `aanbestedingstraject` (not `procurement track`), `inkoop` (not `procurement`), `overheid` (not `government`), `gemeente` (not `municipality`), `inwoner` (not `citizen` when the context is Dutch civil law) |
-| Brand and product names, never translated: `OpenRegister`, `OpenCatalogi`, `OpenConnector`, `DocuDesk`, `MyDash`, `ZaakAfhandelApp`, `ConNext`, `Common Ground+`, `Nextcloud` | Compliance frameworks, keep the Dutch acronym in NL: `Woo` (NL) / `WOO` (EN), `BIO`, `AVG` (NL) / `GDPR` (EN) |
+| Brand and product names, never translated: `OpenRegister`, `OpenCatalogi`, `OpenConnector`, `DocuDesk`, `LaunchPad`, `ZaakAfhandelApp`, `ConNext`, `Common Ground+`, `Nextcloud` | Compliance frameworks, keep the Dutch acronym in NL: `Woo` (NL) / `WOO` (EN), `BIO`, `AVG` (NL) / `GDPR` (EN) |
 
 **Each language stands alone. Don't mix.** EN copy is pure English; NL copy is pure Dutch (with the IT loanwords above, which are how Dutch IT-leads actually talk). Don't drop Dutch nouns into English prose for local flavour, and don't sprinkle marketing English (*insights, journey, streamlined*) into Dutch text. If a Dutch concept needs to appear in English copy, describe it in plain English: *gemeente* becomes *municipality*, *inwoner* becomes *citizen* or *resident*, *overheid* becomes *government*. The exceptions are tiny and listed in §4.5.
 
@@ -214,7 +214,7 @@ Two notes:
 
 Two different things, two different words. Mixing them is the most common copy bug we ship.
 
-- **App**: software we build and ship. Concrete, installable, has a version number, has a status (Stable, Beta, Coming soon). *OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, MyDash, ZaakAfhandelApp.*
+- **App**: software we build and ship. Concrete, installable, has a version number, has a status (Stable, Beta, Coming soon). *OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, LaunchPad, ZaakAfhandelApp.*
 - **Solution**: a concrete outcome built on apps. A goal, not a download. *WOO compliance, citizen case status, software catalogue, BI on registers.*
 
 Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouwd op OpenCatalogi, OpenConnector en DocuDesk"*.
@@ -229,7 +229,7 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 | **ConNext** | The Conduction product brand for the Nextcloud-app ecosystem, MKB-flavoured. | Always written `Con` + a `Next` in `--c-nextcloud-blue` (use `<span className="next-blue">Next</span>`). |
 | **Common Ground+** | The same apps, framed for Dutch government with WOO and BIO compliance signals up front. The "+" is the workspace layer the official model leaves blank. | The plus sign is part of the name; render it via `<CommonGroundPlus />`. |
 | **Common Ground** | The VNG-led architecture for Dutch local-government IT, six principles, five layers, governed by VNG Realisatie. We respect it as the predecessor and cite it accurately. | When we say *"Common Ground+"* we are extending it; never replace it with *"Common Ground 2"* or *"Common Ground Next"*. |
-| **Technical Core** | The category of apps that hold typed data, integrations, document handling, theming, dashboarding. | OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, NLDesign Theme, MyDash. |
+| **Technical Core** | The category of apps that hold typed data, integrations, document handling, theming, dashboarding. | OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, NLDesign Theme, LaunchPad. |
 | **Workspace Apps** | Per-team productivity apps. PipelinQ, Procest, DeciDesk, ShillinQ, LarpingApp, SoftwareCatalog. |
 | **Solutions** | Pre-configured outcomes (WOO publication, citizen case status, software catalogue, …). |
 | **Integrated Apps** | Third-party open source we ship as ExApps next to Nextcloud (OpenTalk, Matrix, Mattermost, n8n, Windmill, OpenProject, XWiki, GitLab, …). Written exactly as the upstream project writes itself. |
@@ -250,7 +250,7 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 
 - **Capitalised exactly as the source spells them.** *OpenCatalogi*, *OpenRegister*, *Nextcloud* (one word, capital N), *GitLab*, *Mattermost*, *XWiki*, *Keycloak*. Never *Open Catalogi*, *Next Cloud*, *Git Lab*.
 - **Never translate them.** *OpenWoo* stays *OpenWoo* in EN; *ZaakAfhandelApp* stays *ZaakAfhandelApp* in EN. The product name is the product name.
-- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *DocuDesk*, *MyDash*, *PipelinQ* (one word, no space, capital Q at the end).
+- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *DocuDesk*, *LaunchPad*, *PipelinQ* (one word, no space, capital Q at the end).
 - **`Nextcloud` always renders in brand blue** in HTML/MDX surfaces: `<span className="next-blue">Nextcloud</span>`. In plain markdown / READMEs, leave it as plain text.
 
 ---

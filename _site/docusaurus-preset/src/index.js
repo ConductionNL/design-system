@@ -583,7 +583,7 @@ function createConfig(opts) {
              { wordmark: 'X' } -> single custom brand
              { brands: [{wordmark, logo, href}, ...] } -> dual-brand row,
                           rendered side by side. Used by product pages
-                          built jointly with a partner (mydash + Sendent
+                          built jointly with a partner (launchpad + Sendent
                           is the first case). */
         footerBrand: opts.footerBrand || null,
         /* Legal-bar links (Privacy / Terms / ISO) plus the two ISO

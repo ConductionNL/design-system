@@ -1,5 +1,5 @@
 /**
- * MyDash · Tiles & Grids variant.
+ * LaunchPad · Tiles & Grids variant.
  *
  * Demonstrates the Nextcloud-integration angle: large hex-icon
  * launcher tiles that deeplink inside Nextcloud, link out to external
@@ -12,7 +12,7 @@
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-export default function MyDashTilesMock() {
+export default function LaunchPadTilesMock() {
   return (
     <>
       <div className={styles.topbar}>
@@ -22,7 +22,7 @@ export default function MyDashTilesMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.mydash].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Launcher tiles in cobalt + KNVB */}
           <div className={styles.col}>

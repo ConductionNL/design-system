@@ -285,7 +285,11 @@ export default function DetailHero({
               {primaryCta && (
                 <Button
                   variant="primary"
-                  tone={primaryCta.tone}
+                  /* On the cobalt hero the primary CTA goes orange (KNVB)
+                     so it pops against the blue, matching the orange icon
+                     hex. Cream surface keeps the default tone. Callers can
+                     still pass an explicit `tone` to override. */
+                  tone={primaryCta.tone ?? (background === 'cobalt' ? 'orange' : undefined)}
                   href={primaryCta.href}
                   icon={primaryCta.icon}
                 >

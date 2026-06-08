@@ -52,6 +52,7 @@ import Button from '../primitives/Button';
 import {deriveStability} from '../../theme/brand.jsx';
 import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
 import {APPS_REGISTRY, applicationCategoryFor} from '../../data/apps-registry';
+import AppGlyph, {hasAppGlyph} from '../AppGlyph/AppGlyph.jsx';
 import styles from './DetailHero.module.css';
 
 /**
@@ -87,6 +88,20 @@ export default function DetailHero({
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
   const hasIllustration = Boolean(illustration);
+  /* Default the title mark to the canonical app glyph (the same logo
+     served on identity.conduction.nl/apps) when the caller doesn't pass
+     an explicit `icon`. Keeps every /apps hero on the real brand logo
+     instead of a hand-drawn placeholder. */
+  const resolvedIcon = icon !== undefined
+    ? icon
+    : (appId && hasAppGlyph(appId) ? <AppGlyph app={appId} /> : null);
+  /* Icon-hex colour follows the surface: an orange hex on the cobalt
+     hero (so the mark reads against the blue), a cobalt hex on the
+     default cream surface. Callers can still pass `iconColor` to
+     override. ("Orange hex on a blue background.") */
+  const resolvedIconColor = iconColor !== undefined
+    ? iconColor
+    : (background === 'cobalt' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)');
   /* `background="cobalt"` flips the hero to a full-bleed cobalt panel
      with white type — the product-page identity used on
      {slug}.conduction.nl landings. Default (undefined) keeps the
@@ -250,13 +265,13 @@ export default function DetailHero({
 
           {title && (
             <h1 className={styles.title}>
-              {icon && (
+              {resolvedIcon && (
                 <span
                   className={styles.titleIcon}
-                  style={iconColor ? {background: iconColor} : undefined}
+                  style={{background: resolvedIconColor}}
                   aria-hidden="true"
                 >
-                  {icon}
+                  {resolvedIcon}
                 </span>
               )}
               <span className={styles.titleText}>{title}</span>

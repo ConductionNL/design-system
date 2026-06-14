@@ -42,24 +42,16 @@
     }
 
     _decorate(layout) {
-      // Closing slide: the full Conduction logo (white mark + wordmark)
-      // tucked into the corner, no orange ground.
-      if (layout === 'contact') {
-        var logo = document.createElement('span');
-        logo.className = 'cn-deco-logo';
-        logo.innerHTML =
-          '<img src="../../brand/assets/avatar-conduction-white.svg" alt="">' +
-          '<span class="word">Conduction</span>';
-        this.prepend(logo);
-        return;
-      }
-      // Other dark slides: one honeycomb cell rendered as the Conduction
-      // mark (orange hex + white C), grid-aligned and sized to a cell.
-      if (['title', 'section', 'image'].indexOf(layout) === -1) return;
+      // One honeycomb cell rendered as the Conduction mark, grid-aligned
+      // and sized to a background cell. Cobalt slides get the orange-hex
+      // C; the closing slide gets the white-bordered C mark (no orange).
+      if (['title', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
       var span = document.createElement('span');
       span.className = 'cn-deco-mark';
       var img = document.createElement('img');
-      img.src = '../../brand/assets/avatar-conduction-orange.svg';
+      img.src = layout === 'contact'
+        ? '../../brand/assets/avatar-conduction-white.svg'
+        : '../../brand/assets/avatar-conduction-orange.svg';
       img.alt = '';
       span.appendChild(img);
       this.prepend(span);

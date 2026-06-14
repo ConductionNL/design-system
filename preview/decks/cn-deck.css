@@ -1,0 +1,449 @@
+/* ============================================================
+   cn-deck.css — Conduction slide-deck component library
+   ------------------------------------------------------------
+   A token-driven set of 16:9 slide layouts, authored as the
+   <cn-deck> / <cn-slide layout="..."> custom elements (see
+   cn-deck.js). The HTML is the source of truth for every deck;
+   .odp / .pdf are exported from it.
+
+   Each <cn-slide> is a 1280x720 (338.67mm x 190.5mm) canvas.
+   cn-deck.js injects the eyebrow, the page number, and any
+   layout-inherent hex decoration, so authors only write content.
+
+   Conventions (per design-system CLAUDE.md):
+     - tokens only, no hardcoded colours
+     - pointy-top hexes only (var(--hex-pointy-top))
+     - one orange accent per slide
+   Requires tokens.css.
+   ============================================================ */
+
+/* ===================== Deck (gallery) ===================== */
+cn-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-6);
+  background: var(--c-cobalt-50);
+}
+
+/* ===================== Slide canvas ====================== */
+cn-slide {
+  display: block;
+  position: relative;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  flex-shrink: 0;
+  background: white;
+  color: var(--c-cobalt-900);
+  overflow: hidden;
+  isolation: isolate; /* contain the z-index:-1 hex decorations within the slide */
+  border: 1px solid var(--c-cobalt-100); /* flat delineation in the gallery — no drop shadows, per huisstijl */
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+/* Flat by design: kill any drop shadow leaking in from preview.css
+   generic component classes (e.g. .card) — Conduction style has no shades. */
+cn-slide, cn-slide .card, cn-slide .stat-card, cn-slide .stepcard, cn-slide .nc, cn-slide .cell { box-shadow: none; }
+
+/* Dark (cobalt) surfaces share the seamless honeycomb-mesh ground */
+cn-slide[layout="title"],
+cn-slide[layout="quote"],
+cn-slide[layout="section"],
+cn-slide[layout="image"],
+cn-slide[layout="contact"],
+cn-slide.is-dark {
+  background-color: var(--c-blue-cobalt);
+  background-image: url("../../brand/assets/backgrounds/honeycomb-mesh-dark.svg");
+  background-size: 27mm 46.8mm;
+  background-repeat: repeat;
+  color: #fff;
+}
+
+/* Fade the mesh out toward the left so left-aligned text stays readable */
+cn-slide[layout="title"]::before,
+cn-slide[layout="quote"]::before,
+cn-slide[layout="section"]::before,
+cn-slide[layout="image"]::before,
+cn-slide[layout="contact"]::before,
+cn-slide.is-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to right, var(--c-blue-cobalt) 0%, var(--c-blue-cobalt) 34%, transparent 78%);
+  pointer-events: none;
+}
+
+/* ===================== Chrome (injected) ================= */
+cn-slide .cn-eyebrow {
+  position: absolute;
+  top: 8mm; left: 12mm;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-cobalt-400);
+  z-index: 5;
+}
+cn-slide .cn-pgnum {
+  position: absolute;
+  bottom: 8mm; right: 12mm;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 8pt; letter-spacing: 0.08em;
+  color: var(--c-cobalt-400);
+  z-index: 5;
+}
+cn-slide.is-dark .cn-eyebrow,
+cn-slide[layout="title"] .cn-eyebrow,
+cn-slide[layout="quote"] .cn-eyebrow,
+cn-slide[layout="section"] .cn-eyebrow,
+cn-slide[layout="image"] .cn-eyebrow,
+cn-slide[layout="contact"] .cn-eyebrow { color: var(--c-cobalt-200); }
+cn-slide.is-dark .cn-pgnum,
+cn-slide[layout="title"] .cn-pgnum,
+cn-slide[layout="quote"] .cn-pgnum,
+cn-slide[layout="section"] .cn-pgnum,
+cn-slide[layout="image"] .cn-pgnum,
+cn-slide[layout="contact"] .cn-pgnum { color: var(--c-cobalt-300); }
+
+/* ===================== Conduction-mark decoration (injected) ===
+   A single brand hex (orange with a white C on cobalt slides; the
+   white outline mark on the dark contact slide). Pointy-top hex
+   aspect is 173.2:200 (≈ 0.866 wide). Sits behind content. */
+.cn-deco-mark { position: absolute; z-index: -1; }
+.cn-deco-mark img { display: block; width: 100%; height: 100%; }
+cn-slide[layout="title"] .cn-deco-mark   { top: 11%; right: 9%; width: 38mm; height: 43.9mm; }
+cn-slide[layout="section"] .cn-deco-mark { top: 18%; right: 8%; width: 40mm; height: 46.2mm; }
+cn-slide[layout="image"] .cn-deco-mark   { top: 18%; right: 8%; width: 40mm; height: 46.2mm; }
+cn-slide[layout="contact"] .cn-deco-mark { bottom: 14mm; right: 18mm; width: 40mm; height: 46.2mm; }
+
+/* ===================== 01 · Title ======================== */
+cn-slide[layout="title"] {
+  padding: 28mm 24mm;
+  display: flex; flex-direction: column; justify-content: center;
+}
+cn-slide[layout="title"] h1 {
+  font-size: 56pt; font-weight: 700; letter-spacing: -0.025em;
+  line-height: 1.02; max-width: 24ch; margin: 0; color: #fff;
+}
+cn-slide[layout="title"] .sub {
+  font-size: 16pt; color: var(--c-cobalt-200); margin-top: 8mm;
+  max-width: 60ch; line-height: 1.4;
+}
+cn-slide[layout="title"] .meta {
+  position: absolute; left: 24mm; right: 24mm; bottom: 18mm;
+  display: flex; gap: 14mm;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 9pt; color: var(--c-cobalt-300); letter-spacing: 0.08em;
+}
+cn-slide[layout="title"] .meta span { display: flex; gap: 3mm; align-items: baseline; }
+cn-slide[layout="title"] .meta strong {
+  font-family: var(--conduction-typography-font-family-body);
+  font-size: 12pt; color: #fff; font-weight: 600; letter-spacing: -0.005em;
+}
+
+/* ===================== 02 · Intro (speaker) ============== */
+cn-slide[layout="intro"] {
+  padding: 22mm 24mm;
+  display: grid; grid-template-columns: 80mm 1fr; gap: 18mm; align-items: center;
+}
+cn-slide[layout="intro"] .av-block { display: flex; flex-direction: column; align-items: center; gap: 5mm; }
+cn-slide[layout="intro"] .av {
+  width: 80mm; height: 92mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30pt; font-weight: 700; letter-spacing: -0.025em;
+}
+cn-slide[layout="intro"] .av-tag {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-cobalt-400);
+}
+cn-slide[layout="intro"] .body { display: flex; flex-direction: column; gap: 5mm; }
+cn-slide[layout="intro"] .body h2 { font-size: 36pt; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin: 0; }
+cn-slide[layout="intro"] .who { display: flex; align-items: baseline; gap: 4mm; flex-wrap: wrap; }
+cn-slide[layout="intro"] .who .name { font-size: 16pt; font-weight: 700; letter-spacing: -0.005em; }
+cn-slide[layout="intro"] .who .role { font-size: 11pt; color: var(--c-cobalt-700); }
+cn-slide[layout="intro"] .row { display: flex; flex-direction: column; gap: 2mm; }
+cn-slide[layout="intro"] .row .label {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 9pt; letter-spacing: 0.08em; text-transform: lowercase;
+  color: var(--c-orange-knvb);
+}
+cn-slide[layout="intro"] .row .v { font-size: 11.5pt; line-height: 1.5; color: var(--c-cobalt-900); max-width: 72ch; }
+cn-slide[layout="intro"] .row ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2mm; }
+cn-slide[layout="intro"] .row li { font-size: 11.5pt; line-height: 1.5; padding-left: 7mm; position: relative; }
+cn-slide[layout="intro"] .row li::before {
+  content: ""; position: absolute; left: 0; top: 2mm;
+  width: 3.5mm; height: 4mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);
+}
+
+/* ===================== 03 · Agenda ====================== */
+cn-slide[layout="agenda"] { padding: 22mm 24mm; }
+cn-slide[layout="agenda"] h2 { font-size: 30pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 10mm; }
+cn-slide[layout="agenda"] .items { display: flex; flex-direction: column; gap: 3mm; }
+cn-slide[layout="agenda"] .item {
+  display: grid; grid-template-columns: 12mm 1fr 36mm; align-items: center; gap: 6mm;
+  padding: 3mm 0; border-bottom: 0.3mm solid var(--c-cobalt-100);
+}
+cn-slide[layout="agenda"] .item:last-child { border-bottom: 0; }
+cn-slide[layout="agenda"] .num {
+  width: 12mm; height: 13.8mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--conduction-typography-font-family-code); font-size: 11pt; font-weight: 600;
+}
+cn-slide[layout="agenda"] .item.active .num { background: var(--c-orange-knvb); }
+cn-slide[layout="agenda"] .h { font-size: 16pt; font-weight: 600; }
+cn-slide[layout="agenda"] .b { font-size: 11pt; color: var(--c-cobalt-700); margin-top: 1mm; line-height: 1.4; }
+cn-slide[layout="agenda"] .time {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11pt; color: var(--c-cobalt-400); text-align: right; letter-spacing: 0.04em;
+}
+cn-slide[layout="agenda"] .item.active .time { color: var(--c-orange-knvb); }
+
+/* ===================== 04 · Content ===================== */
+cn-slide[layout="content"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="content"] h2 { font-size: 32pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8mm; max-width: 30ch; }
+cn-slide[layout="content"] .body { font-size: 14pt; line-height: 1.55; max-width: 92ch; }
+cn-slide[layout="content"] .body p { margin: 0 0 8mm; }
+cn-slide[layout="content"] ul { list-style: none; padding: 0; margin: 4mm 0 0; }
+cn-slide[layout="content"] li { font-size: 13pt; line-height: 1.5; padding-left: 9mm; position: relative; margin-bottom: 6mm; }
+cn-slide[layout="content"] li::before {
+  content: ""; position: absolute; left: 0; top: 1.8mm;
+  width: 4.5mm; height: 5.2mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb);
+}
+
+/* ===================== 05 · Stats (cards) =============== */
+cn-slide[layout="stats"] { padding: 22mm 24mm; display: flex; flex-direction: column; justify-content: center; }
+cn-slide[layout="stats"] h2 { font-size: 26pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 10mm; max-width: 30ch; }
+cn-slide[layout="stats"] .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+cn-slide[layout="stats"] .stat-card {
+  background: var(--c-cobalt-50); border-top: 2mm solid var(--c-blue-cobalt);
+  border-radius: 0 0 1mm 1mm; padding: 10mm 8mm; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4mm;
+}
+cn-slide[layout="stats"] .stat-card.accent { background: var(--c-blue-cobalt); border-top-color: var(--c-orange-knvb); }
+cn-slide[layout="stats"] .big {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 64pt; font-weight: 700; color: var(--c-blue-cobalt);
+  line-height: 0.9; letter-spacing: -0.04em; font-feature-settings: "tnum";
+}
+cn-slide[layout="stats"] .stat-card.accent .big { color: var(--c-orange-knvb); }
+cn-slide[layout="stats"] .lbl {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-700);
+}
+cn-slide[layout="stats"] .stat-card.accent .lbl { color: #fff; }
+cn-slide[layout="stats"] .desc { font-size: 11pt; color: var(--c-cobalt-700); line-height: 1.4; }
+cn-slide[layout="stats"] .stat-card.accent .desc { color: var(--c-cobalt-200); }
+cn-slide[layout="stats"] .caption { font-size: 11pt; font-style: italic; color: var(--c-cobalt-700); text-align: center; margin-top: 8mm; }
+
+/* ===================== 06 · Quote ======================= */
+cn-slide[layout="quote"] { padding: 30mm 36mm; display: flex; flex-direction: column; justify-content: center; }
+cn-slide[layout="quote"] .quote { font-size: 34pt; font-weight: 600; line-height: 1.22; letter-spacing: -0.015em; max-width: 30ch; margin: 0; color: #fff; }
+cn-slide[layout="quote"] .quote::before {
+  content: "\201C"; color: var(--c-orange-knvb); display: block;
+  font-size: 90pt; line-height: 0.5; margin-bottom: 8mm; font-family: serif;
+}
+cn-slide[layout="quote"] .attr {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10pt; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-orange-knvb); margin-top: 14mm;
+}
+
+/* ===================== 07 · Section divider ============= */
+cn-slide[layout="section"] { padding: 30mm 36mm; display: flex; flex-direction: column; justify-content: center; }
+cn-slide[layout="section"] .num {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 110pt; font-weight: 700; color: var(--c-orange-knvb);
+  line-height: 0.85; letter-spacing: -0.04em;
+}
+cn-slide[layout="section"] .title { font-size: 32pt; font-weight: 700; margin-top: 8mm; letter-spacing: -0.015em; max-width: 24ch; color: #fff; }
+cn-slide[layout="section"] .lede { font-size: 14pt; color: var(--c-cobalt-200); margin-top: 5mm; max-width: 58ch; line-height: 1.45; }
+
+/* ===================== 08 · Horizons (two-col cards) ==== */
+cn-slide[layout="horizons"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="horizons"] h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8mm; }
+cn-slide[layout="horizons"] .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+cn-slide[layout="horizons"] .kicker {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 9pt; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-cobalt-400); margin-bottom: 3mm;
+}
+cn-slide[layout="horizons"] .card {
+  background: var(--c-cobalt-50); border-left: 1.2mm solid var(--c-orange-knvb);
+  border-radius: 0 1mm 1mm 0; padding: 7mm 8mm;
+}
+cn-slide[layout="horizons"] .card h3 { font-size: 15pt; font-weight: 700; margin: 0 0 4mm; }
+cn-slide[layout="horizons"] .card ul { list-style: none; padding: 0; margin: 0; }
+cn-slide[layout="horizons"] .card li { font-size: 11.5pt; line-height: 1.45; padding-left: 6mm; position: relative; margin-bottom: 3mm; }
+cn-slide[layout="horizons"] .card li::before {
+  content: ""; position: absolute; left: 0; top: 1.8mm;
+  width: 3mm; height: 3.5mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);
+}
+cn-slide[layout="horizons"] .caption { font-size: 11pt; font-style: italic; color: var(--c-cobalt-700); margin-top: 8mm; }
+
+/* ===================== 09 · App spotlight =============== */
+cn-slide[layout="spotlight"] { padding: 22mm 24mm; display: grid; grid-template-columns: 80mm 1fr; gap: 20mm; align-items: center; }
+cn-slide[layout="spotlight"] .glyph {
+  width: 80mm; height: 92mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36pt; font-weight: 700; letter-spacing: -0.02em;
+}
+cn-slide[layout="spotlight"] .glyph img { width: 100%; height: 100%; clip-path: none; }
+cn-slide[layout="spotlight"] .body h2 { font-size: 34pt; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4mm; }
+cn-slide[layout="spotlight"] .body .tag { font-size: 13pt; color: var(--c-cobalt-700); margin: 0 0 8mm; line-height: 1.45; max-width: 60ch; }
+cn-slide[layout="spotlight"] .body ul { list-style: none; padding: 0; margin: 0; }
+cn-slide[layout="spotlight"] .body li { font-size: 12.5pt; line-height: 1.5; padding-left: 9mm; position: relative; margin-bottom: 5mm; }
+cn-slide[layout="spotlight"] .body li::before {
+  content: ""; position: absolute; left: 0; top: 1.8mm;
+  width: 4.5mm; height: 5.2mm; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb);
+}
+
+/* ===================== 10 · Comparison ================= */
+cn-slide[layout="comparison"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="comparison"] h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8mm; }
+cn-slide[layout="comparison"] .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+cn-slide[layout="comparison"] .col { padding: 8mm; border-radius: 2mm; }
+cn-slide[layout="comparison"] .col-good { background: var(--c-mint-300); }
+cn-slide[layout="comparison"] .col-bad { background: var(--c-terracotta-300); }
+cn-slide[layout="comparison"] .col h3 { font-size: 15pt; font-weight: 700; margin: 0 0 4mm; }
+cn-slide[layout="comparison"] .col-good h3 { color: var(--c-mint-500); }
+cn-slide[layout="comparison"] .col-bad h3 { color: var(--c-terracotta-500); }
+cn-slide[layout="comparison"] .col ul { list-style: none; padding: 0; margin: 0; }
+cn-slide[layout="comparison"] .col li { font-size: 12pt; line-height: 1.45; padding-left: 6mm; position: relative; margin-bottom: 3mm; }
+cn-slide[layout="comparison"] .col-good li::before { content: "\2713"; position: absolute; left: 0; color: var(--c-mint-500); font-weight: 700; }
+cn-slide[layout="comparison"] .col-bad li::before { content: "\00D7"; position: absolute; left: 0; color: var(--c-terracotta-500); font-weight: 700; }
+cn-slide[layout="comparison"] .caption { font-size: 11pt; font-style: italic; color: var(--c-cobalt-700); margin-top: 8mm; }
+
+/* ===================== 11 · Columns (three cards) ======= */
+cn-slide[layout="columns"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="columns"] h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8mm; }
+cn-slide[layout="columns"] .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+cn-slide[layout="columns"] .card {
+  background: var(--c-cobalt-50); border-top: 2mm solid var(--c-blue-cobalt);
+  border-radius: 0 0 1mm 1mm; padding: 8mm;
+}
+cn-slide[layout="columns"] .card.accent { border-top-color: var(--c-orange-knvb); }
+cn-slide[layout="columns"] .card h3 { font-size: 15pt; font-weight: 700; margin: 0 0 4mm; }
+cn-slide[layout="columns"] .card ul { list-style: none; padding: 0; margin: 0; }
+cn-slide[layout="columns"] .card li { font-size: 11.5pt; line-height: 1.45; padding-left: 6mm; position: relative; margin-bottom: 3mm; }
+cn-slide[layout="columns"] .card li::before {
+  content: ""; position: absolute; left: 0; top: 1.8mm;
+  width: 3mm; height: 3.5mm; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt);
+}
+cn-slide[layout="columns"] .caption { font-size: 11pt; font-style: italic; color: var(--c-cobalt-700); margin-top: 8mm; }
+
+/* ===================== 12 · Questions (numbered grid) === */
+cn-slide[layout="questions"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="questions"] h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 10mm; }
+cn-slide[layout="questions"] .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm 14mm; }
+cn-slide[layout="questions"] .q { display: grid; grid-template-columns: 11mm 1fr; gap: 5mm; align-items: start; }
+cn-slide[layout="questions"] .num {
+  width: 11mm; height: 12.7mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--conduction-typography-font-family-code); font-size: 11pt; font-weight: 600;
+}
+cn-slide[layout="questions"] .q .h { font-size: 14pt; font-weight: 700; margin-bottom: 1.5mm; }
+cn-slide[layout="questions"] .q .b { font-size: 11pt; color: var(--c-cobalt-700); line-height: 1.4; }
+
+/* ===================== 13 · Image / hero =============== */
+cn-slide[layout="image"] { padding: 24mm 30mm; display: flex; flex-direction: column; justify-content: center; }
+cn-slide[layout="image"] h2 { font-size: 30pt; font-weight: 700; letter-spacing: -0.015em; max-width: 34ch; line-height: 1.15; margin: 0; color: #fff; }
+cn-slide[layout="image"] .lede { font-size: 14pt; color: var(--c-cobalt-200); margin-top: 6mm; max-width: 60ch; line-height: 1.45; }
+cn-slide[layout="image"] .footer {
+  position: absolute; bottom: 8mm; left: 30mm;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-300);
+}
+
+/* ===================== 14 · Timeline =================== */
+cn-slide[layout="timeline"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="timeline"] h2 { font-size: 28pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 14mm; }
+cn-slide[layout="timeline"] .track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5mm; position: relative; }
+cn-slide[layout="timeline"] .track::before {
+  content: ""; position: absolute; left: 6%; right: 6%; top: 6.9mm; height: 0.4mm;
+  background: var(--c-cobalt-100); z-index: 0;
+}
+cn-slide[layout="timeline"] .step { display: flex; flex-direction: column; align-items: center; gap: 4mm; position: relative; z-index: 1; }
+cn-slide[layout="timeline"] .node {
+  width: 12mm; height: 13.8mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-blue-cobalt); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--conduction-typography-font-family-code); font-size: 12pt; font-weight: 700;
+}
+cn-slide[layout="timeline"] .step.active .node { background: var(--c-orange-knvb); }
+cn-slide[layout="timeline"] .steplabel {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 8pt; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); text-align: center;
+}
+cn-slide[layout="timeline"] .step.active .steplabel { color: var(--c-orange-knvb); }
+cn-slide[layout="timeline"] .stepcard {
+  background: var(--c-cobalt-50); border-radius: 1mm; padding: 5mm; width: 100%;
+  display: flex; flex-direction: column; gap: 2mm; min-height: 44mm;
+}
+cn-slide[layout="timeline"] .step.active .stepcard { background: var(--c-blue-cobalt); color: #fff; }
+cn-slide[layout="timeline"] .stepcard .t { font-size: 12.5pt; font-weight: 700; }
+cn-slide[layout="timeline"] .stepcard .d { font-size: 10pt; color: var(--c-cobalt-700); line-height: 1.4; flex: 1; }
+cn-slide[layout="timeline"] .step.active .stepcard .d { color: var(--c-cobalt-200); }
+cn-slide[layout="timeline"] .stepcard .own {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 8pt; letter-spacing: 0.04em; color: var(--c-cobalt-400); margin-top: auto;
+}
+cn-slide[layout="timeline"] .step.active .stepcard .own { color: var(--c-cobalt-200); }
+cn-slide[layout="timeline"] .caption { font-size: 11pt; font-style: italic; color: var(--c-cobalt-700); margin-top: 10mm; }
+
+/* ===================== 15 · Contact / closing (dark) ===
+   Blue honeycomb ground, white cards, white Conduction C mark. */
+cn-slide[layout="contact"] { padding: 22mm 24mm; display: flex; flex-direction: column; }
+cn-slide[layout="contact"] h2 { font-size: 30pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 4mm; color: #fff; }
+cn-slide[layout="contact"] .lede { font-size: 14pt; color: var(--c-cobalt-200); margin: 0 0 12mm; max-width: 70ch; line-height: 1.4; }
+cn-slide[layout="contact"] .nexts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin-bottom: 14mm; }
+cn-slide[layout="contact"] .nc { background: #fff; color: var(--c-cobalt-900); border-top: 1.5mm solid var(--c-orange-knvb); border-radius: 0 0 1mm 1mm; padding: 6mm; }
+cn-slide[layout="contact"] .nc .n { font-family: var(--conduction-typography-font-family-code); font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-orange-knvb); margin-bottom: 2.5mm; }
+cn-slide[layout="contact"] .nc .h { font-size: 13pt; font-weight: 700; margin-bottom: 2mm; color: var(--c-cobalt-900); }
+cn-slide[layout="contact"] .nc .b { font-size: 10pt; color: var(--c-cobalt-700); line-height: 1.45; margin-bottom: 3mm; }
+cn-slide[layout="contact"] .nc .own { font-family: var(--conduction-typography-font-family-code); font-size: 8pt; color: var(--c-cobalt-400); letter-spacing: 0.04em; }
+cn-slide[layout="contact"] .person { display: grid; grid-template-columns: 18mm 1fr; gap: 5mm; align-items: center; margin-top: auto; }
+cn-slide[layout="contact"] .person .av {
+  width: 18mm; height: 20.7mm; clip-path: var(--hex-pointy-top);
+  background: var(--c-orange-knvb); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12pt;
+}
+cn-slide[layout="contact"] .person .name { font-size: 14pt; font-weight: 700; color: #fff; }
+cn-slide[layout="contact"] .person .role { font-size: 11pt; color: var(--c-cobalt-200); }
+cn-slide[layout="contact"] .person .c { font-family: var(--conduction-typography-font-family-code); font-size: 9pt; color: var(--c-cobalt-200); margin-top: 1mm; }
+
+/* ===================== Logo wall (library extra) ======== */
+cn-slide[layout="logo-wall"] { padding: 22mm 24mm; display: flex; flex-direction: column; justify-content: center; }
+cn-slide[layout="logo-wall"] h2 { font-size: 24pt; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 12mm; max-width: 26ch; }
+cn-slide[layout="logo-wall"] .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8mm; }
+cn-slide[layout="logo-wall"] .cell { aspect-ratio: 2/1; background: #fff; border-radius: 1mm; display: flex; align-items: center; justify-content: center; padding: 4mm; }
+cn-slide[layout="logo-wall"] .cell img { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(100%); opacity: 0.65; }
+cn-slide[layout="logo-wall"] .cell.featured { border: 0.3mm solid var(--c-blue-cobalt); }
+cn-slide[layout="logo-wall"] .cell.featured img { filter: none; opacity: 1; }
+
+/* ===================== Present mode ===================== */
+cn-deck.cn-present {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000; padding: 0; gap: 0;
+  display: block;
+}
+cn-deck.cn-present cn-slide {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(var(--cn-present-scale, 1));
+  opacity: 0; pointer-events: none; box-shadow: none;
+  transition: opacity 0.18s ease;
+}
+cn-deck.cn-present cn-slide.is-current { opacity: 1; pointer-events: auto; }
+
+/* ===================== Print =========================== */
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  body { background: #fff; }
+  cn-deck { display: block; padding: 0; gap: 0; background: #fff; }
+  cn-slide { box-shadow: none; page-break-after: always; break-after: page; }
+  cn-slide:last-child { page-break-after: auto; }
+}

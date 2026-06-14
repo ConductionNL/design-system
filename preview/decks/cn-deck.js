@@ -45,7 +45,7 @@
       // One honeycomb cell rendered as the Conduction mark, grid-aligned
       // and sized to a background cell. Cobalt slides get the orange-hex
       // C; the closing slide gets the white-bordered C mark (no orange).
-      if (['title', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
+      if (['title', 'quote', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
       var span = document.createElement('span');
       span.className = 'cn-deco-mark';
       var img = document.createElement('img');

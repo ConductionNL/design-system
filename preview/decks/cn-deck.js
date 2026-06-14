@@ -26,7 +26,6 @@
     connectedCallback() {
       if (this._init) return;
       this._init = true;
-      var layout = this.getAttribute('layout') || 'content';
 
       // Eyebrow (top-left mono kicker)
       var eb = this.getAttribute('eyebrow');
@@ -36,25 +35,9 @@
         e.textContent = eb;
         this.prepend(e);
       }
-
-      // Layout-inherent hex decoration (opt out with the `nodeco` attr)
-      if (!this.hasAttribute('nodeco')) this._decorate(layout);
-    }
-
-    _decorate(layout) {
-      // One honeycomb cell rendered as the Conduction mark, grid-aligned
-      // and sized to a background cell. Cobalt slides get the orange-hex
-      // C; the closing slide gets the white-bordered C mark (no orange).
-      if (['title', 'quote', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
-      var span = document.createElement('span');
-      span.className = 'cn-deco-mark';
-      var img = document.createElement('img');
-      img.src = layout === 'contact'
-        ? '../../brand/assets/avatar-conduction-white.svg'
-        : '../../brand/assets/avatar-conduction-orange.svg';
-      img.alt = '';
-      span.appendChild(img);
-      this.prepend(span);
+      // The Conduction-C honeycomb cell on dark slides is a CSS background
+      // layer (see cn-deck.css), tiled by the same engine as the mesh, so it
+      // stays pixel-aligned to the grid. No overlay element needed.
     }
   }
 

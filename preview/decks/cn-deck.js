@@ -42,20 +42,14 @@
     }
 
     _decorate(layout) {
-      // Brand-mark decoration: orange hex + white C on cobalt slides;
-      // the white outline mark on the dark contact slide.
-      var src;
-      if (layout === 'title' || layout === 'section' || layout === 'image') {
-        src = '../../brand/assets/avatar-conduction-orange.svg';
-      } else if (layout === 'contact') {
-        src = '../../brand/assets/avatar-conduction-white.svg';
-      } else {
-        return;
-      }
+      // Brand-mark decoration: one honeycomb cell rendered as the
+      // Conduction mark (orange hex + white C), grid-aligned and sized
+      // to match a background cell. Dark slides only.
+      if (['title', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
       var span = document.createElement('span');
       span.className = 'cn-deco-mark';
       var img = document.createElement('img');
-      img.src = src;
+      img.src = '../../brand/assets/avatar-conduction-orange.svg';
       img.alt = '';
       span.appendChild(img);
       this.prepend(span);

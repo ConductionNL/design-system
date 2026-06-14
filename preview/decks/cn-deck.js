@@ -42,10 +42,20 @@
     }
 
     _decorate(layout) {
-      // Brand-mark decoration: one honeycomb cell rendered as the
-      // Conduction mark (orange hex + white C), grid-aligned and sized
-      // to match a background cell. Dark slides only.
-      if (['title', 'section', 'image', 'contact'].indexOf(layout) === -1) return;
+      // Closing slide: the full Conduction logo (white mark + wordmark)
+      // tucked into the corner, no orange ground.
+      if (layout === 'contact') {
+        var logo = document.createElement('span');
+        logo.className = 'cn-deco-logo';
+        logo.innerHTML =
+          '<img src="../../brand/assets/avatar-conduction-white.svg" alt="">' +
+          '<span class="word">Conduction</span>';
+        this.prepend(logo);
+        return;
+      }
+      // Other dark slides: one honeycomb cell rendered as the Conduction
+      // mark (orange hex + white C), grid-aligned and sized to a cell.
+      if (['title', 'section', 'image'].indexOf(layout) === -1) return;
       var span = document.createElement('span');
       span.className = 'cn-deco-mark';
       var img = document.createElement('img');

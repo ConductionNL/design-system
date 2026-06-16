@@ -450,6 +450,37 @@ const baseFooter = () => ({
  *   customCss[] (appended to brand.css), plugins[], presets,
  *   i18n (overrides defaults)
  */
+/**
+ * Derive the blog content directory + route base path from the site's
+ * options so the blog-series plugin scans the right folder and emits
+ * correct permalinks. Handles opts.blog (object), a classic preset
+ * entry under opts.presets, and falls back to the Docusaurus default.
+ */
+function deriveBlogConfig(opts) {
+  const normalize = (b) => {
+    let s = String(b || '/blog');
+    if (!s.startsWith('/')) s = '/' + s;
+    return s.replace(/\/+$/, '') || '/blog';
+  };
+  const fromBlock = (blog) =>
+    blog && typeof blog === 'object'
+      ? {
+          contentDir: blog.path || 'blog',
+          routeBasePath: normalize(blog.routeBasePath || '/blog'),
+        }
+      : null;
+
+  if (opts.blog && typeof opts.blog === 'object') return fromBlock(opts.blog);
+  if (Array.isArray(opts.presets)) {
+    for (const entry of opts.presets) {
+      const cfg = Array.isArray(entry) ? entry[1] : null;
+      const derived = cfg && fromBlock(cfg.blog);
+      if (derived) return derived;
+    }
+  }
+  return {contentDir: 'blog', routeBasePath: '/blog'};
+}
+
 function createConfig(opts) {
   if (!opts || !opts.title || !opts.url) {
     throw new Error(
@@ -694,6 +725,21 @@ function createConfig(opts) {
         require.resolve('./plugins/features-page.js'),
         opts.featuresPage || {},
       ],
+      /* blog-series: groups blog posts by their `series` + `partNumber`
+         frontmatter and exposes the grouping via global data, so the
+         brand BlogPostItem/Footer swizzle can render a <SeriesNav/>
+         (Part X of N + prev/next) on every post in a series. Registered
+         unconditionally so the swizzle's usePluginData() never throws;
+         it no-ops on sites with no series frontmatter. Opt out with
+         seriesNav: false, or pass overrides via seriesNav: {…}. */
+      ...(opts.seriesNav === false
+        ? []
+        : [
+            [
+              require.resolve('./plugins/blog-series.js'),
+              {...deriveBlogConfig(opts), ...(opts.seriesNav || {})},
+            ],
+          ]),
       ...(opts.plugins || []),
     ],
   };

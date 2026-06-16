@@ -34,6 +34,8 @@ export {default as DownloadPanel} from './DownloadPanel/DownloadPanel.jsx';
 export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
 export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
 export {default as AppGlyph, APP_GLYPH_SLUGS, hasAppGlyph} from './AppGlyph/AppGlyph.jsx';
+export {default as SeriesNav} from './SeriesNav/SeriesNav.jsx';
+export {default as BlogSeriesNav} from './SeriesNav/BlogSeriesNav.jsx';
 
 /* Card-family components (Batch 2). Each pairs with a *Grid sibling
    that handles the surrounding layout, so callers can drop a row

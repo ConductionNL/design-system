@@ -22,6 +22,36 @@ const fs = require('fs');
 const path = require('path');
 
 const FRONTMATTER_RE = /^---\s*\n([\s\S]*?\n)---\s*\n([\s\S]*)$/;
+const SLUGGY_RE = /^[a-z0-9]+(?:-[a-z0-9]+)+$/;
+
+// Map a spec's frontmatter status to a roadmap kind: stable (mint),
+// beta (cobalt blue), soon (orange). Unmapped statuses are skipped.
+const STATUS_KIND = {
+  done: 'stable', implemented: 'stable', reviewed: 'stable', active: 'stable', stable: 'stable',
+  'in-progress': 'beta', implementing: 'beta', partial: 'beta', beta: 'beta',
+  draft: 'soon', specified: 'soon', proposed: 'soon', planned: 'soon', 'coming-soon': 'soon', soon: 'soon',
+};
+
+const ACRONYMS = new Set([
+  'ai', 'api', 'ui', 'ux', 'or', 'bi', 'mcp', 'tmlo', 'mdto', 'dcat', 'woo',
+  'vth', 'kcc', 'crm', 'pdf', 'csv', 'sepa', 'zgw', 'ztc', 'dso', 'rbac',
+  'gdpr', 'avg', 'kvk', 'brp', 'sso', 'jwt', 'cli', 'ocr', 'ner', 'kpi',
+  'saas', 'oas', 'json', 'xml', 'html', 'css', 'url', 'http', 'https', 'id',
+  'pwa', 'sip', 'eml', 'sla', 'llm', 'rag', 'e2e', 'qr', 'vng',
+]);
+
+function titlecaseSlug(slug) {
+  return slug
+    .split('-')
+    .map((w) => (ACRONYMS.has(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
+function cleanTitle(rawTitle, slug) {
+  let title = rawTitle.replace(/^\s*spec:\s*/i, '').replace(/\s+specification\s*$/i, '').trim();
+  if (!title || title === slug || SLUGGY_RE.test(title)) title = titlecaseSlug(slug);
+  return title;
+}
 
 function parseSpec(specPath, slug) {
   let text;
@@ -38,11 +68,12 @@ function parseSpec(specPath, slug) {
 
   const statusMatch = front.match(/^status:\s*(.+?)\s*$/m);
   const status = statusMatch ? statusMatch[1].trim().replace(/^["']|["']$/g, '').toLowerCase() : '';
-  if (status !== 'done') return null;
+  const kind = STATUS_KIND[status];
+  if (!kind) return null;
 
   const titleMatch = body.match(/^#\s+(.+?)\s*$/m);
   const rawTitle = titleMatch ? titleMatch[1].trim() : slug;
-  const title = rawTitle.replace(/\s+specification\s*$/i, '').trim();
+  const title = cleanTitle(rawTitle, slug);
 
   let summary = '';
   const purposeHeading = body.match(/^##\s+Purpose\s*$/m);
@@ -58,6 +89,7 @@ function parseSpec(specPath, slug) {
     slug,
     title,
     summary,
+    status: kind,
     docsUrl: `openspec/specs/${slug}/spec.md`,
   };
 }

@@ -34,7 +34,7 @@ export default function FeaturesPage({data}) {
   const items = features.map((f) => ({
     label: f.title || f.slug,
     tip: f.summary || '',
-    status: 'stable',
+    status: f.status || 'stable',
     href: f.docsUrl || undefined,
   }));
 
@@ -49,7 +49,7 @@ export default function FeaturesPage({data}) {
         {items.length === 0 ? (
           <p>No features documented yet.</p>
         ) : (
-          <FeatureGrid items={items} legend />
+          <FeatureGrid items={items} legend withDescriptions />
         )}
       </main>
     </Layout>

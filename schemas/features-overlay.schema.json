@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.conduction.nl/schemas/features-overlay.schema.json",
+  "title": "Conduction /features overlay",
+  "description": "Curated, authoritative commercial feature list for an app's docs /features page. Lives at <app>/openspec/features.overlay.json. See docusaurus-preset/FEATURE_PAGE_STANDARD.md.",
+  "oneOf": [
+    { "type": "array", "items": { "$ref": "#/$defs/feature" } },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["features"],
+      "properties": {
+        "intro": { "type": "string", "description": "EN intro paragraph above the grid" },
+        "intro_nl": { "type": "string", "description": "NL intro paragraph" },
+        "features": { "type": "array", "items": { "$ref": "#/$defs/feature" } }
+      }
+    }
+  ],
+  "$defs": {
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "status"],
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stable id; defaults to a slugified title if omitted"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "EN title, sentence case, human capability name (never a raw slug)"
+        },
+        "title_nl": { "type": "string", "description": "NL title, sentence case" },
+        "summary": {
+          "type": "string",
+          "description": "EN benefit line: one claim, result-first, under ~16 words"
+        },
+        "summary_nl": { "type": "string", "description": "NL benefit line" },
+        "status": {
+          "type": "string",
+          "enum": ["stable", "beta", "soon"],
+          "description": "stable = shipped & reachable; beta = partial/provider-dependent; soon = honest roadmap"
+        },
+        "providedBy": {
+          "type": "string",
+          "description": "Cross-app provenance (e.g. openregister) for a capability backed by another app; credited as 'Powered by …'"
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Optional deep link, usually openspec/specs/<slug>/spec.md"
+        }
+      }
+    }
+  }
+}

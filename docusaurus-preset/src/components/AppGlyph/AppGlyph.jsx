@@ -39,6 +39,12 @@ export default function AppGlyph({app, className, title, ...rest}) {
       viewBox={glyph.viewBox}
       className={className}
       fill="currentColor"
+      // These are FILLED brand glyphs. Force stroke off inline so a
+      // container's line-icon rule (e.g. .iconWrap svg { stroke: currentColor;
+      // stroke-width: 2 }) can't paint a 2px outline over the fill and bloat
+      // the mark. Inline style beats module CSS, so this fixes every consumer
+      // (apps grid, detail hero, cross-links, connext) in one place.
+      style={{fill: 'currentColor', stroke: 'none'}}
       role={title ? 'img' : undefined}
       aria-hidden={title ? undefined : 'true'}
       aria-label={title}

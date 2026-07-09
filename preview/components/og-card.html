@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>OG card · Conduction Design System</title>
+  <link rel="stylesheet" href="../../tokens.css">
+  <link rel="stylesheet" href="../../typography.css">
+  <link rel="stylesheet" href="../preview.css">
+  <style>
+    /*
+     * og-card — the canonical 1200×630 Open Graph / social share card for a
+     * Conduction app or product. One card per app: brand eyebrow, wordmark,
+     * one-line tagline, the app's own domain, and the licence/origin line.
+     * Pointy-top hex motifs (brand rule) sit bottom-right; the whole surface
+     * is the canonical cobalt (--c-blue-cobalt). No orange — the card is a
+     * calm brand surface, not a CTA.
+     *
+     * Render at exactly 1200×630 and export to PNG:
+     *   /preview/components/og-card.html?name=LaunchPad
+     *     &tagline=Personal+and+team+dashboards+built+from+your+registers.
+     *     &domain=launchpad.conduction.nl
+     *
+     * The page reads name / tagline / domain / licence from the query string
+     * (defaults below). Screenshot the #og element (its box is 1200×630) and
+     * drop the PNG at <app>/docs/static/img/og-<app>.png, then point
+     * docusaurus.config.js `themeConfig.image` at it.
+     */
+    body { margin: 0; padding: 0; background: var(--c-cobalt-50); }
+
+    /* The export target: exactly 1200×630. */
+    #og {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: var(--c-blue-cobalt);
+      color: white;
+      font-family: var(--conduction-typography-font-family-body);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 96px 80px;
+    }
+
+    /* Decorative pointy-top hex motifs, bottom-right. Brand: pointy-top
+       only, solid tints (no gradients), single brand colour family. */
+    #og .hexes { position: absolute; inset: 0; pointer-events: none; }
+    #og .hex {
+      position: absolute;
+      clip-path: var(--hex-pointy-top);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    #og .hex.h1 { width: 360px; height: 414px; top: -120px;  right: 60px;  background: rgba(255,255,255,0.07); }
+    #og .hex.h2 { width: 300px; height: 345px; bottom: -150px; right: 230px; background: rgba(255,255,255,0.05); }
+    #og .hex.h3 { width: 240px; height: 276px; bottom: -60px;  right: -40px; background: rgba(255,255,255,0.09); }
+    #og .hex.h4 { width: 180px; height: 207px; bottom: 150px;  right: -70px; background: rgba(255,255,255,0.05); }
+
+    #og .content { position: relative; z-index: 1; max-width: 880px; }
+
+    #og .eyebrow {
+      font-family: var(--conduction-typography-font-family-code);
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.62);
+      margin: 0 0 28px;
+    }
+    #og .wordmark {
+      font-family: var(--conduction-typography-font-family-heading);
+      font-size: 104px;
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin: 0 0 28px;
+      color: #fff;
+    }
+    #og .tagline {
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: rgba(255, 255, 255, 0.92);
+      margin: 0;
+      max-width: 820px;
+    }
+
+    /* Footer: domain bottom-left, licence/origin bottom-right. */
+    #og .foot {
+      position: absolute;
+      left: 80px;
+      right: 80px;
+      bottom: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--conduction-typography-font-family-code);
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.7);
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="og">
+    <div class="hexes" aria-hidden="true">
+      <span class="hex h1"></span>
+      <span class="hex h2"></span>
+      <span class="hex h3"></span>
+      <span class="hex h4"></span>
+    </div>
+    <div class="content">
+      <p class="eyebrow" id="eyebrow">Conduction · Open-source for Nextcloud</p>
+      <h1 class="wordmark" id="wordmark">LaunchPad</h1>
+      <p class="tagline" id="tagline">Personal and team dashboards built from your registers.</p>
+    </div>
+    <div class="foot">
+      <span id="domain">launchpad.conduction.nl</span>
+      <span id="licence">EUPL-1.2 · Made in Amsterdam</span>
+    </div>
+  </div>
+
+  <script>
+    // Fill the card from query params: ?name= &tagline= &domain= &eyebrow= &licence=
+    const q = new URLSearchParams(location.search);
+    const set = (id, key) => { const v = q.get(key); if (v !== null) document.getElementById(id).textContent = v; };
+    set('wordmark', 'name');
+    set('tagline', 'tagline');
+    set('domain', 'domain');
+    set('eyebrow', 'eyebrow');
+    set('licence', 'licence');
+  </script>
+</body>
+</html>

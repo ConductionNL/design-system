@@ -1,0 +1,41 @@
+# =============================================================
+# Codeberg Woodpecker CI: deploy the brand kit to Cloudflare.
+#
+# Builds the _site artifact (preview/ + brand/ + diagrams/ + tokens)
+# exactly as the legacy GitHub Pages workflow did, then deploys it as
+# the `identity-conduction` Worker, which serves identity.conduction.nl
+# via the route declared in wrangler.jsonc.
+#
+# Setup (one-time, in Codeberg → repo Settings → Actions/Secrets, via
+# Woodpecker at https://ci.codeberg.org):
+#   1. Enable this repository in Woodpecker.
+#   2. Add a secret named `cloudflare_api_token` containing a Cloudflare
+#      API token with: Account › Workers Scripts:Edit, Zone › Workers
+#      Routes:Edit and Zone › Zone:Read (both scoped to conduction.nl).
+#      The "Edit Cloudflare Workers" token template covers all three.
+# =============================================================
+
+when:
+  - event: push
+    branch: main
+    path:
+      include:
+        - 'preview/**'
+        - 'brand/**'
+        - 'diagrams/**'
+        - 'tokens.css'
+        - 'typography.css'
+        - 'wrangler.jsonc'
+        - '.woodpecker.yml'
+
+steps:
+  deploy:
+    image: node:22
+    environment:
+      CLOUDFLARE_API_TOKEN:
+        from_secret: cloudflare_api_token
+    commands:
+      # Assemble the static site, then deploy the Worker (assets + route
+      # from wrangler.jsonc). Same path as a local `npm run deploy`.
+      - node scripts/stage-site.mjs
+      - npx -y wrangler@4 deploy

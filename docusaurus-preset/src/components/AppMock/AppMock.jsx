@@ -38,6 +38,7 @@ import LaunchPadMock from './variants/LaunchPadMock.jsx';
 import LaunchPadTilesMock from './variants/LaunchPadTilesMock.jsx';
 import LaunchPadBiMock from './variants/LaunchPadBiMock.jsx';
 import LaunchPadWidgetsMock from './variants/LaunchPadWidgetsMock.jsx';
+import OpenBuildMock from './variants/OpenBuildMock.jsx';
 import OpenCatalogiMock from './variants/OpenCatalogiMock.jsx';
 import OpenConnectorMock from './variants/OpenConnectorMock.jsx';
 import OpenRegisterMock from './variants/OpenRegisterMock.jsx';
@@ -56,6 +57,7 @@ const VARIANTS = {
   'launchpad-tiles':   {Component: LaunchPadTilesMock,      label: 'LaunchPad · Tiles & grids'},
   'launchpad-bi':      {Component: LaunchPadBiMock,         label: 'LaunchPad · BI on registers'},
   'launchpad-widgets': {Component: LaunchPadWidgetsMock,    label: 'LaunchPad · Widgets'},
+  openbuild:        {Component: OpenBuildMock,        label: 'OpenBuild'},
   opencatalogi:     {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
   openconnector:    {Component: OpenConnectorMock,    label: 'OpenConnector'},
   openregister:     {Component: OpenRegisterMock,     label: 'OpenRegister'},

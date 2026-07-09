@@ -1,10 +1,11 @@
 /**
  * @conduction/docusaurus-preset/plugins/features-page
  *
- * Adds a `/features` route to every Conduction docs site, backed by the
- * `docs/features.json` artefact regenerated from `openspec/specs/` by the
- * org-wide Features Extract workflow stage
- * (https://codeberg.org/Conduction/.github/src/branch/main/.github/workflows/quality.yml).
+ * Adds a `/features` route to every Conduction docs site. The feature list
+ * is regenerated FROM `openspec/specs/` at docs-build time (so the page is
+ * always current with the specs and never depends on a hand-maintained
+ * artefact); it falls back to a committed `docs/features.json` only on
+ * deploys that ship without `openspec/`.
  *
  * The route renders the brand `<FeaturesPage />` component, which in turn
  * maps each entry to a `<FeatureItem>` inside `<FeatureGrid>`. Every entry
@@ -30,6 +31,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const {extractFeatures} = require('./extractFeatures');
 
 function loadFeatures(absPath) {
   try {
@@ -51,12 +53,20 @@ function featuresPagePlugin(context, options = {}) {
     ? featuresFile
     : path.resolve(context.siteDir, featuresFile);
 
-  const features = loadFeatures(absPath);
+  /* Generate-at-consume: derive the feature list from the app's
+     openspec/specs at build time so the page is always current. siteDir is
+     the docs/ dir holding docusaurus.config.js, so the specs live one level
+     up at ../openspec/specs. The committed featuresFile is a fallback for
+     deploys that ship without openspec/. */
+  const specsDir = options.specsDir
+    ? path.resolve(context.siteDir, options.specsDir)
+    : path.resolve(context.siteDir, '..', 'openspec', 'specs');
+
+  const features = extractFeatures(specsDir) || loadFeatures(absPath);
   if (features === null) {
-    /* Plugin is enabled but the consuming site hasn't produced
-       features.json yet — most likely the Features Extract workflow
-       stage hasn't run, or the app has no openspec/specs/ entries with
-       a publishable status. Stay silent rather than build-fail. */
+    /* Neither openspec/specs nor a committed features.json is available
+       (e.g. the app has no done specs yet). Stay silent rather than
+       build-fail. */
     return {name: 'conduction-features-page'};
   }
 

@@ -1,7 +1,8 @@
 name: App Downloads
 
-# Refreshes data/app-downloads.json with GitHub release-asset download counts
-# and Nextcloud app store metadata for every ConductionNL app.
+# Refreshes data/app-downloads.json with combined release-asset download counts
+# from GitHub (ConductionNL, legacy) + Codeberg (Conduction, live) and Nextcloud
+# app store metadata for every Conduction app.
 # Cron is UTC; 07:00 UTC = 09:00 Amsterdam (CEST) / 08:00 (CET).
 
 on:
@@ -25,6 +26,9 @@ jobs:
       - name: Collect download stats
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: lifts the Codeberg/Forgejo anonymous rate limit. The
+          # collector works without it, just slower under throttling.
+          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
         run: python .github/scripts/app_downloads.py
 
       - name: Commit if changed

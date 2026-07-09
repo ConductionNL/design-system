@@ -33,6 +33,7 @@ export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';
 export {default as DownloadPanel} from './DownloadPanel/DownloadPanel.jsx';
 export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
 export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
+export {default as AppGlyph, APP_GLYPH_SLUGS, hasAppGlyph} from './AppGlyph/AppGlyph.jsx';
 
 /* Card-family components (Batch 2). Each pairs with a *Grid sibling
    that handles the surrounding layout, so callers can drop a row

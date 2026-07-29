@@ -22,6 +22,7 @@ A few non-negotiables encoded by the package CSS and worth knowing about:
 - **Brand-default footer** — three-column link grid + Conduction-tells (KvK, BTW, address). Per-property override: pass `footer: { links: [...] }` to swap columns and inherit the brand copyright unchanged. Spread `baseFooterLinks()` to keep one or two brand columns alongside site-specific ones.
 - **Sensible defaults** — `trailingSlash`, `onBrokenLinks: 'warn'`, `respectPrefersColorScheme`, dark-mode brand mapping.
 - **AI-crawler baseline** — Organization + WebSite JSON-LD on every page, `SoftwareApplication` JSON-LD from `<DetailHero>`, `FAQPage` JSON-LD from `<FAQ>`, default `og:image` + Twitter card meta, sitemap options, and a `postBuild` plugin that emits `robots.txt` when the site does not ship its own. See the AI baseline section below for the validator and content requirements.
+- **AI content disclosure** — opt-in `ai:` frontmatter key (`generated` / `modified` / `assisted`) renders the official EU Article-50 mark + a factual, no-compliance-claim line at the top of a doc or blog page. See the AI content disclosure section below.
 
 ## Usage
 
@@ -273,6 +274,39 @@ Failure-tolerant: timeouts or 5xx responses log a warning and let the deploy con
 **Per-page title format**
 
 Docusaurus defaults to `{Page} | {Site}`, which produces `OpenRegister | OpenRegister` on per-app homepages. Override per page via frontmatter `title:` for now; a `titleFormat` option may land in a future release.
+
+## AI content disclosure (EU AI Act Article 50)
+
+The EU AI Act's transparency tier (Article 50) obliges the discloser of AI-generated or AI-modified content to say so. On 2026-06-10 the European Commission published a set of icons for exactly this purpose, free to use without attribution. This preset vendors those icons and wires a strictly opt-in way to show them on a page.
+
+**Important:** using these icons does **not** by itself establish legal compliance with Article 50, and the Commission asks that non-signatories not use them in a way that implies adherence to the Code of Practice on Transparency of AI-Generated Content. The copy this preset ships states a fact about the page ("This page was generated with AI.") and nothing more — it never asserts compliance or Code-of-Practice adherence. See `static/img/ai-disclosure/PROVENANCE.md` for the icon source, licence, and per-mark meaning.
+
+**Frontmatter usage** — add an `ai:` key to a doc or blog post's frontmatter:
+
+```md
+---
+title: How we generate release notes
+ai: generated
+---
+```
+
+| Value | EU mark | Meaning |
+| --- | --- | --- |
+| `generated` | Fully AI-Generated | Entirely AI-produced, no human-authored elements or editorial control (prompting excluded) |
+| `modified` | Partially AI-Modified | Pre-existing human content partially altered with AI |
+| `assisted` | Basic | AI assisted the work, or a custom/interactive label is used |
+
+The banner renders at the top of the page, above the title. **Omitting `ai:` renders nothing** — there is no site-wide default, no directory inheritance, and no content inference; labelling a human-written page as AI-generated would publish a false authorship claim, which is the exact harm the disclosure regime exists to prevent. A misspelled or empty value (e.g. `ai: genrated`) emits a build-time warning naming the file, the bad value, and the three permitted values, and still renders no banner — it never falls back to a mark.
+
+**Inline MDX usage** — the same component the frontmatter key triggers is also exported directly, for a mark that belongs somewhere other than the page top (for example, beside a single AI-generated figure within an otherwise human-written page):
+
+```mdx
+import { AiDisclosure } from '@conduction/docusaurus-preset/components';
+
+<AiDisclosure kind="modified" />
+```
+
+**Theme-aware** — the mark automatically switches between the Commission's black and white treatments to match the reader's active colour mode, live, with no page reload. **Localised** — copy is available in all four of the preset's locales (nl default, en, de, fr) and renders in the page's active locale.
 
 ## Releasing
 

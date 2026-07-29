@@ -1,5 +1,18 @@
 # EU icons for labelling AI-generated content
 
+## Location
+
+Served as plain static files from here (`static/img/ai-disclosure/`),
+referenced by `<AiDisclosure>` via `useBaseUrl('img/ai-disclosure/<file>')`
+rather than a webpack `.svg` import. This preset also enables
+`@docusaurus/plugin-svgr` (via the classic preset), which unconditionally
+turns any `.svg` imported from a JS/JSX/MDX file into an inlined React
+component, regardless of a `?url` suffix. An inlined SVGR component would
+also leak the unscoped `.cls-1`/`.cls-2` fill classes below across every
+mark rendered on the same page (two different marks would fight over the
+same class names). A plain `<img src>` pointed at an untouched static
+file avoids both problems.
+
 ## Where these came from
 
 Downloaded from the European Commission on 2026-07-29:

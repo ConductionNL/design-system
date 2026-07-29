@@ -25,6 +25,12 @@
  *
  * Sites that don't want the schema on a particular page set
  * `frontMatter.techArticle: false` in the doc's frontmatter.
+ *
+ * Also resolves the `ai` frontmatter key (ai-content-disclosure) and,
+ * when present and valid, renders the <AiDisclosure> banner above the
+ * doc body. Absence of the key is silent by design (design.md D2); an
+ * unrecognised value warns at build time (SSR runs this component
+ * during `docusaurus build`) and still renders nothing (D3).
  */
 
 import React from 'react';
@@ -32,6 +38,8 @@ import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
 import DocItemContent from '@theme-init/DocItem/Content';
+import AiDisclosure from '../../../components/AiDisclosure/AiDisclosure.jsx';
+import {resolveAiFrontmatter} from '../../../components/AiDisclosure/disclosure';
 
 function buildTechArticleJsonLd(siteUrl, metadata, frontMatter) {
   const url = siteUrl
@@ -89,6 +97,12 @@ export default function DocItemContentWithSchema(props) {
   const schema = emitSchema
     ? buildTechArticleJsonLd(siteConfig.url, metadata, frontMatter)
     : null;
+
+  const {kind: aiKind, warning: aiWarning} = resolveAiFrontmatter(frontMatter.ai, metadata.source);
+  if (aiWarning && typeof console !== 'undefined') {
+    console.warn(aiWarning);
+  }
+
   return (
     <>
       {schema && (
@@ -98,6 +112,7 @@ export default function DocItemContentWithSchema(props) {
           </script>
         </Head>
       )}
+      {aiKind && <AiDisclosure kind={aiKind} />}
       <DocItemContent {...props} />
     </>
   );

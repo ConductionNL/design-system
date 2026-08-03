@@ -43,6 +43,12 @@ export const APPS_REGISTRY = {
   openbuild:       {slug: 'openbuild',       name: 'OpenBuild',        category: 'Processes',   productHref: '/apps/openbuild',       docsHref: 'https://openbuild.conduction.nl',       academyHref: '/academy?app=openbuild'},
   doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://doriath.conduction.nl',         academyHref: '/academy?app=doriath'},
   'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://app-versions.conduction.nl',    academyHref: '/academy?app=app-versions'},
+  hermiq:          {slug: 'hermiq',          name: 'Hermiq',           category: 'AI',          productHref: '/apps/hermiq',          docsHref: 'https://hermiq.conduction.nl',          academyHref: '/academy?app=hermiq'},
+  hrmq:            {slug: 'hrmq',            name: 'HRMQ',             category: 'Processes',   productHref: '/apps/hrmq',            docsHref: 'https://hrmq.conduction.nl',            academyHref: '/academy?app=hrmq'},
+  openanonymiser:  {slug: 'openanonymiser',  name: 'OpenAnonymiser',   category: 'Documents',   productHref: '/apps/openanonymiser',  docsHref: 'https://openanonymiser.conduction.nl',  academyHref: '/academy?app=openanonymiser'},
+  planix:          {slug: 'planix',          name: 'Planix',           category: 'Processes',   productHref: '/apps/planix',          docsHref: 'https://planix.conduction.nl',          academyHref: '/academy?app=planix'},
+  portaliq:        {slug: 'portaliq',        name: 'Portaliq',         category: 'Processes',   productHref: '/apps/portaliq',        docsHref: 'https://portaliq.conduction.nl',        academyHref: '/academy?app=portaliq'},
+  scholiq:         {slug: 'scholiq',         name: 'Scholiq',          category: 'Processes',   productHref: '/apps/scholiq',         docsHref: 'https://scholiq.conduction.nl',         academyHref: '/academy?app=scholiq'},
 };
 
 /**

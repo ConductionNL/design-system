@@ -19,7 +19,7 @@
  *
  * Tone (optional): override the primary/secondary fill colour. The
  * brand default is cobalt; product pages with an orange-accent identity
- * (e.g. mydash) pass `tone="orange"` to flip the primary CTA to
+ * (e.g. launchpad) pass `tone="orange"` to flip the primary CTA to
  * KNVB-orange while keeping the rest of the brand chrome intact.
  *
  * Icon (optional): pass a key from icons.jsx (e.g. `"github"`) or a
@@ -34,7 +34,7 @@
  *   <Button
  *     variant="on-dark-tertiary"
  *     icon="github"
- *     href="https://github.com/ConductionNL/shillinq"
+ *     href="https://codeberg.org/Conduction/shillinq"
  *   >View on GitHub</Button>
  */
 

@@ -312,6 +312,36 @@ a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
 }
 
 /* ============================================================
+   Heading anchor hash glyphs.
+
+   Docusaurus auto-generates a hidden `<a class="hash-link">#</a>`
+   inside every h2-h6 so readers can copy a deep link. The default
+   theme keeps the glyph invisible until the heading is hovered
+   (theme/MDXComponents/Heading), which is the affordance we want.
+
+   Branding: the glyph should always render in KNVB orange — never
+   cobalt, never underlined. Hover/focus on the hash itself keeps
+   the same orange (no second hover colour) so the visual stays
+   stable once the hash is on-screen.
+   ============================================================ */
+/* `!important` survives the cssnano `mergeRules` pass at build time —
+   without it the bare `.hash-link` selector gets dropped from the
+   comma list when cssnano merges nearby `.hash-link {opacity:0; ...}`
+   rules from Docusaurus, leaving only the pseudo-class variants
+   orange and the default-state hash inheriting cobalt from the
+   surrounding heading. */
+.hash-link,
+.hash-link:hover,
+.hash-link:focus,
+.hash-link:focus-visible,
+.hash-link:active,
+.hash-link:visited {
+  color: var(--c-orange-knvb) !important;
+  text-decoration: none !important;
+  border-bottom: 0 !important;
+}
+
+/* ============================================================
    Body grows with content.
 
    Infima ships `html, body { height: 100% }`. With long pages the

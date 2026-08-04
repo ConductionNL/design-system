@@ -2,11 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Components, Conduction Design System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="preview.css">
 <link rel="stylesheet" href="conduction-bg.css">
 <style>
+  /* ============================================================
+     Chassis overrides, hub-style: full-bleed hero on cobalt-900,
+     centered content rail on cobalt-50, footer at the bottom.
+     Matches preview/print/index.html.
+     ============================================================ */
+  body { padding: 0; background: var(--c-cobalt-50); }
+
+  .kit-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-12) var(--space-12);
+  }
+  .kit-body > .section-label:first-child { margin-top: 0; }
+
+  .kit-footer {
+    max-width: 1280px;
+    margin: 64px auto;
+    padding: var(--space-8) var(--space-12);
+    color: var(--c-cobalt-400);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid var(--c-cobalt-100);
+  }
+  .kit-footer code { font-family: var(--conduction-typography-font-family-code); }
+  .kit-footer a { color: var(--c-cobalt-400); }
+
   /* Buttons */
   .btn {
     display: inline-flex; align-items: center; gap: var(--space-2);
@@ -60,7 +89,8 @@
   .chip.active { background: var(--c-blue-cobalt); color: white; }
   .chip-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 
-  /* App cards */
+  /* App cards · icon hex on the left, name + description to the right,
+     status + version row spans the full width at the bottom. */
   .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
   .app-card {
     border: 1px solid var(--c-cobalt-100);
@@ -69,6 +99,11 @@
     transition: all 120ms ease;
     cursor: pointer;
     background: white;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-4);
+    row-gap: 4px;
+    align-items: start;
   }
   .app-card:hover { border-color: var(--c-blue-cobalt); box-shadow: var(--shadow-2); }
   .app-card .icon-wrap {
@@ -76,12 +111,20 @@
     clip-path: var(--hex-pointy-top);
     display: flex; align-items: center; justify-content: center;
     color: white;
-    margin-bottom: var(--space-4);
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
   }
   .app-card .icon-wrap svg { width: 22px; height: 22px; }
-  .app-card .name { font-weight: 600; font-size: 17px; margin-bottom: 4px; }
-  .app-card .desc { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; min-height: 42px; }
-  .app-card .meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--c-cobalt-100); font-size: 12px; color: var(--c-cobalt-400); }
+  .app-card .name { font-weight: 600; font-size: 17px; grid-column: 2; }
+  .app-card .desc { font-size: 14px; color: var(--c-cobalt-700); line-height: 1.5; grid-column: 2; }
+  .app-card .meta-row {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: var(--space-4); padding-top: var(--space-4);
+    border-top: 1px solid var(--c-cobalt-100);
+    font-size: 12px; color: var(--c-cobalt-400);
+  }
 
   /* Form fields */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); max-width: 720px; }
@@ -350,9 +393,10 @@
     min-height: 360px;
   }
   .feature-stack .illo {
-    background: linear-gradient(135deg, var(--c-cobalt-50), var(--c-cobalt-100));
+    background: var(--c-cobalt-50);
     position: relative;
     overflow: hidden;
+    isolation: isolate;
     padding: 48px;
     display: flex;
     align-items: center;
@@ -360,6 +404,7 @@
   }
   .feature-stack .illo .scene {
     position: relative;
+    z-index: 1;
     width: 100%; max-width: 360px;
     aspect-ratio: 1.3;
   }
@@ -792,15 +837,19 @@
 </head>
 <body>
 
-<div class="card">
+<div class="hero">
   <div class="crumb"><a href="index.html">Design system</a> &nbsp;/&nbsp; Components</div>
-  <div class="card-header">
-    <div>
-      <div class="card-eyebrow">05 · Components</div>
-      <h1 class="card-title">Rectangles do, hexagons indicate.</h1>
-    </div>
-    <p class="card-subtitle">Functional containers (buttons, inputs, cards) stay rectangular. Status, order, and category get the hex.</p>
+  <h1>Rectangles do, hexagons indicate.</h1>
+  <p>Functional containers (buttons, inputs, cards) stay rectangular. Status, order, and category get the hex.</p>
+  <div class="meta">
+    <span>Library<strong>HTML + React</strong></span>
+    <span>Motif<strong>Pointy-top hex</strong></span>
+    <span>Accent<strong>One orange per screen</strong></span>
+    <span>Languages<strong>NL + EN</strong></span>
   </div>
+</div>
+
+<div class="kit-body">
 
   <!-- Buttons -->
   <div class="section-label">Buttons</div>
@@ -993,6 +1042,7 @@
     </div>
     <div class="panel">
       <div class="illo">
+        <div class="conduction-bg on-light" aria-hidden="true"></div>
         <div class="scene">
           <span class="connector c1"></span>
           <span class="connector c2"></span>
@@ -1114,6 +1164,23 @@
   </div>
   <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Form card uses cut-corner-tlbr-lg so the top-left cut points back at the pitch headline · form lives on white inside cobalt-800 · single primary button, cobalt fill</p>
 
+  <!-- Download / no-form variant -->
+  <div class="section-label">Download panel · no-form variant · single orange CTA</div>
+  <div class="download-panel">
+    <div class="conduction-bg" aria-hidden="true"></div>
+    <div class="pitch">
+      <h3>This is not an app shelf.<br>It is <span style="color: var(--c-nextcloud-cyan);">Nextcloud</span> as a platform.</h3>
+      <p>The sovereign-workplace bundles are the start, not the finish. Microsoft has spent five years training a generation of citizen developers on Power Platform; Europe has eighteen to thirty-six months to ship a credible architectural answer.</p>
+      <p style="margin-bottom: 0; color: rgba(255,255,255,0.55); font-size: 13px;">Thinkpiece · 7 min read · By Ruben van der Linde, CTO</p>
+    </div>
+    <div class="form-card" style="display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start;">
+      <h4>Want the full essay?</h4>
+      <p style="font-size: 14px; line-height: 1.55; color: var(--c-cobalt-700); margin: 0;">The thinkpiece on Nextcloud as a platform, the citizen-developer wave, and the sovereignty calculus on AI.</p>
+      <a href="/academy/the-platform-moment" style="background: var(--c-orange-knvb); color: white; border: 1px solid var(--c-orange-knvb); border-radius: var(--radius-md); padding: 13px 22px; font-size: 15px; font-weight: 500; text-decoration: none; display: inline-block;">Read the thinkpiece</a>
+    </div>
+  </div>
+  <p style="margin-top: var(--space-3); font-size: 12px; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code);">Same chrome as the lead-capture variant above · form replaced by a single h4 + body + KNVB-orange pill · one orange accent per component (the CTA) · use for thinkpiece links, paper announcements, or any "we made a thing" moment that does not warrant the full form</p>
+
   <div class="section-label">Page-level components · standalone HTML files in <code>preview/components/</code></div>
 
   <div class="component-tiles">
@@ -1212,7 +1279,7 @@
       <div class="meta">
         <div class="num">10 · Detail page · USPs</div>
         <h3>Feature list</h3>
-        <p>Broad-column section that pairs a hex glyph with a heading and short body. Designed for the three-to-eight USPs that sell the app. Pair it with the <a href="components/feature-grid.html">Feature grid</a> below for the full spec.</p>
+        <p>Broad-column section that pairs a hex glyph with a heading and short body. Designed for the three-to-eight USPs that sell the app. Pair it with the <code style="color: var(--c-blue-cobalt); background: none; padding: 0;">Feature grid</code> below for the full spec.</p>
       </div>
     </a>
 
@@ -1369,7 +1436,7 @@
       <div class="meta">
         <div class="num">26 · Illustration</div>
         <h3>App mock</h3>
-        <p>Token-painted abstract of a Conduction app. Thirteen apps, sixteen variants (MyDash carries four), one chassis. <code>&lt;AppMock app="procest" /&gt;</code> wherever you want to show <em>what</em> an app looks like without a real screenshot.</p>
+        <p>Token-painted abstract of a Conduction app. Fourteen apps, seventeen variants (LaunchPad carries four), one chassis. <code>&lt;AppMock app="procest" /&gt;</code> wherever you want to show <em>what</em> an app looks like without a real screenshot.</p>
       </div>
     </a>
 
@@ -1406,6 +1473,15 @@
         <div class="num">26e · Icon set</div>
         <h3>Integration icons</h3>
         <p>The third surface in the icon family, after partners and clients. Twenty-one monochromatic glyphs spanning Nextcloud-bundled apps, workflow tools (xWiki, n8n, Windmill, OpenProject, Keycloak), LLM providers (Claude, Mistral, Ollama, OpenAI, Gemini), and Conduction-extension apps. <code>&lt;IntegrationIcon name="..." /&gt;</code> tints via <code>currentColor</code> so it adapts to its context.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/og-card.html">
+      <div class="preview" style="height: 480px;"><iframe src="components/og-card.html"></iframe></div>
+      <div class="meta">
+        <div class="num">26f · Social card</div>
+        <h3>OG card</h3>
+        <p>The canonical 1200&times;630 Open Graph / social share card for an app or product. Brand eyebrow, wordmark, one-line tagline, the app's own domain, and the licence line, on canonical cobalt with pointy-top hex motifs. One card per app. Render <code>og-card.html?name=&amp;tagline=&amp;domain=</code> at 1200&times;630 and export to <code>&lt;app&gt;/docs/static/img/og-&lt;app&gt;.png</code>.</p>
       </div>
     </a>
 
@@ -1450,7 +1526,7 @@
       <div class="meta">
         <div class="num">30 · Marketing</div>
         <h3>Managed Common Ground</h3>
-        <p>Yellow Common Ground+ panel with centred header, dual CTA, and a three-column row of bundled components (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, MyDash, OpenAI Bridge) at &euro;250 per component per month, plus the public-sector eligibility footnote. Used on <code>/commonground</code> and <code>/support</code>.</p>
+        <p>Yellow Common Ground+ panel with centred header, dual CTA, and a three-column row of bundled components (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, LaunchPad, OpenAI Bridge) at &euro;250 per component per month, plus the public-sector eligibility footnote. Used on <code>/commonground</code> and <code>/support</code>.</p>
       </div>
     </a>
 
@@ -1481,12 +1557,30 @@
       </div>
     </a>
 
+    <a class="component-tile span-2" href="components/integrations-block.html">
+      <div class="preview" style="height: 520px;"><iframe src="components/integrations-block.html"></iframe></div>
+      <div class="meta">
+        <div class="num">33b &middot; Detail page</div>
+        <h3>Integrations block</h3>
+        <p>Explainer section that pairs a left-rail FAQ with a right-rail product mock. Eyebrow + h2 + lede header sits above the split. Used on app detail pages and the OpenRegister marketing surfaces to show how the apps fit together in one workspace. Composes <code>&lt;IntegrationsItem/&gt;</code> for the disclosures and accepts any <code>&lt;MockScene/&gt;</code> or <code>&lt;AppMock/&gt;</code> in the right slot.</p>
+      </div>
+    </a>
+
     <a class="component-tile span-2" href="components/widget-shelf.html">
       <div class="preview" style="height: 520px;"><iframe src="components/widget-shelf.html"></iframe></div>
       <div class="meta">
         <div class="num">34 · Detail page</div>
         <h3>Widget shelf</h3>
         <p>Section that lists the dashboard widgets a Conduction app ships for Nextcloud. Eyebrow + title + lede header above an N-column grid; each card has a tinted preview panel on top, then a hex icon + title + status pill, then a one-line description. Used on every app detail page.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/mcp-tool-shelf.html">
+      <div class="preview" style="height: 560px;"><iframe src="components/mcp-tool-shelf.html"></iframe></div>
+      <div class="meta">
+        <div class="num">34b · Detail page</div>
+        <h3>MCP tool shelf</h3>
+        <p>Section that lists the MCP tools a Conduction app contributes to the workspace AI chat companion. Eyebrow + title + lede header above a two-column layout: a responsive grid of tool cards on the left, an <code>AgentTrace</code> mock on the right. Status hex (stable/beta/soon) matches the FeatureGrid legend. Used on every app detail page.</p>
       </div>
     </a>
 
@@ -1525,6 +1619,187 @@
         <p>"Mail ons" prompt at the bottom of academy tutorials. Mail hex badge in the top-left corner, primary button on the right, decorative right-edge hex motif. Calmer than the dark CtaBanner footer, louder than a plain link.</p>
       </div>
     </a>
+
+    <a class="component-tile span-2" href="components/pull-quote.html">
+      <div class="preview" style="height: 360px;"><iframe src="components/pull-quote.html"></iframe></div>
+      <div class="meta">
+        <div class="num">38b &middot; Academy / Opinion &middot; Editorial emphasis</div>
+        <h3>Pull quote</h3>
+        <p>Orange-knvb left border, cobalt-50 fill, italic cobalt body, code-font attribution. Lifts one or two load-bearing sentences out of a long-form opinion piece, product page, or academy post. Three variants: default, hero (eyebrow hex + no italics, for a citable thesis), compact (sidebar pull-out).</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/troubleshooting.html">
+      <div class="preview" style="height: 480px;"><iframe src="components/troubleshooting.html"></iframe></div>
+      <div class="meta">
+        <div class="num">39 &middot; Academy / Docs &middot; Tutorial body</div>
+        <h3>Troubleshooting</h3>
+        <p>Structured error-recovery list for academy tutorials and per-app docs. Each <code>&lt;TroubleshootingItem&gt;</code> pairs a verbatim error <code>symptom</code> with a one-paragraph fix. Orange hex bullet + cobalt-50 panel + KNVB-orange left border per item.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/next-steps.html">
+      <div class="preview" style="height: 480px;"><iframe src="components/next-steps.html"></iframe></div>
+      <div class="meta">
+        <div class="num">40 &middot; Academy / Docs &middot; End-of-tutorial</div>
+        <h3>Next steps</h3>
+        <p>Action-card row that closes an academy tutorial or per-app docs page. Each <code>&lt;NextStep&gt;</code> is a fully clickable card with title, body, and CTA. Default three columns; collapses to one column under 800&thinsp;px. Pair with Contact CTA for the closing block.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/partner-sidecard.html">
+      <div class="preview" style="height: 560px;"><iframe src="components/partner-sidecard.html"></iframe></div>
+      <div class="meta">
+        <div class="num">41 &middot; Partners &middot; Detail page</div>
+        <h3>Partner sidecard</h3>
+        <p>Narrow right-rail (~320&thinsp;px) for the partner-detail page. Three stacked sections, tier card (Host plain, Service gold stripe, Certified cobalt fill + gold mark), Apps they ship, Solutions they deliver, with an optional bottom CTA. The page wraps the rail in a sticky column.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/partners-for.html">
+      <div class="preview" style="height: 560px;"><iframe src="components/partners-for.html"></iframe></div>
+      <div class="meta">
+        <div class="num">41b &middot; Partners &middot; App / solution pages</div>
+        <h3>Partners-for section</h3>
+        <p>"Who ships this" section that drops directly below the "What it does" block on every app and solution page. Reuses the full <code>&lt;PartnerCard/&gt;</code> in a 3-column grid, with a trailing <code>&lt;BecomePartner/&gt;</code> tile. Wired to <code>partners-catalog.js</code> so the cards stay in sync with <code>/partners</code>. Empty-state collapses to just the BecomePartner cell.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/leaf-card.html">
+      <div class="preview" style="height: 560px;"><iframe src="components/leaf-card.html"></iframe></div>
+      <div class="meta">
+        <div class="num">42 &middot; OpenRegister docs &middot; Detail page</div>
+        <h3>Leaf card</h3>
+        <p>Metadata header for an Open Register leaf integration. Pointy-top hex + label + status pill + a six-field meta grid. <code>&lt;LeafGrid&gt;</code> renders a responsive 3-up grid of cards for the leaf-system overview; <code>&lt;LeafCard&gt;</code> on its own anchors a per-leaf docs page. Four status tints: backend-ready / stub / external / built-in.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/atom-zones.html">
+      <div class="preview" style="height: 580px;"><iframe src="components/atom-zones.html"></iframe></div>
+      <div class="meta">
+        <div class="num">43 &middot; Architecture &middot; Docs page</div>
+        <h3>Atom zones</h3>
+        <p>Five-zone reference for the canonical Conduction app chassis. Each card focuses one atom (Topbar, Left navigation, Main column, Page header, Sidebar) in KNVB orange and fades the rest. Used on architecture pages in per-app docs sites to teach where each atom sits.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/setup-steps.html">
+      <div class="preview" style="height: 520px;"><iframe src="components/setup-steps.html"></iframe></div>
+      <div class="meta">
+        <div class="num">44 &middot; Docs &middot; In-body</div>
+        <h3>Setup steps</h3>
+        <p>Vertical numbered-row pattern for docs setup, install, and walkthrough sections. Small orange hex with the number on the left, bold title + one short paragraph on the right. Auto-numbers in document order. Distinct from <code style="color: var(--c-blue-cobalt); background: none; padding: 0;">HowSteps</code> (3-up card row for marketing surfaces); this one is for sequential prose in MDX docs.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/config-grid.html">
+      <div class="preview" style="height: 520px;"><iframe src="components/config-grid.html"></iframe></div>
+      <div class="meta">
+        <div class="num">45 &middot; Docs &middot; Integration page</div>
+        <h3>Config grid</h3>
+        <p>Two side-by-side spec panels for documenting both ends of an integration (Open Register side vs the external system). Each panel is a white card with a mono-uppercase header and a stack of label / value rows. Used on every <code>/integrations/&lt;leaf&gt;</code> page; drops to one column under 800&thinsp;px.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/timeline.html">
+      <div class="preview" style="height: 600px;"><iframe src="components/timeline.html"></iframe></div>
+      <div class="meta">
+        <div class="num">46 &middot; About / Roadmap</div>
+        <h3>Timeline + Milestone</h3>
+        <p>Vertical year-by-year story strip with a gradient axis line (orange-fading-to-cobalt at the endpoints) and a pointy-top hex marker per milestone. The current milestone gets <code>now</code> for a slow pulse so the timeline reads as still-going.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/contact-strip.html">
+      <div class="preview" style="height: 520px;"><iframe src="components/contact-strip.html"></iframe></div>
+      <div class="meta">
+        <div class="num">47 &middot; Bottom-of-page</div>
+        <h3>Contact strip</h3>
+        <p>Bottom-of-page contact block on cobalt-900. Two columns: title + lede on the left, list of icon-prefixed channels on the right (GitHub, LinkedIn, mail, phone, address). Translucent-fill rows brighten on hover.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/cycling-verb.html">
+      <div class="preview" style="height: 460px;"><iframe src="components/cycling-verb.html"></iframe></div>
+      <div class="meta">
+        <div class="num">48 &middot; Primitive &middot; Ambient state</div>
+        <h3>Cycling verb</h3>
+        <p>Tiny word-swap primitive. Cycles through a list of verbs on a slow loop with a 200&thinsp;ms opacity fade. Reads as ambient state, not motion. Default cobalt-400 italic; optional cobalt or orange variants. Respects <code>prefers-reduced-motion</code>.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/tier-explain.html">
+      <div class="preview" style="height: 540px;"><iframe src="components/tier-explain.html"></iframe></div>
+      <div class="meta">
+        <div class="num">49 &middot; Partners &middot; Explainer</div>
+        <h3>Tier explain</h3>
+        <p>Three-up explanation row for the partner-tier hierarchy. Each card has a tier pill (cobalt-700 for Host, gold for Service, cobalt-blue for Certified), title, lede, and a short benefits list. Distinct from <code style="color: var(--c-blue-cobalt); background: none; padding: 0;">PartnerCard</code> &mdash; this explains the tiers themselves.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/form-card.html">
+      <div class="preview" style="height: 560px;"><iframe src="components/form-card.html"></iframe></div>
+      <div class="meta">
+        <div class="num">50 &middot; Lead capture</div>
+        <h3>Form card</h3>
+        <p>Lead-capture panel with mono-uppercase eyebrow + h3 + lede + fields + primary submit. Two variants: white card (default contact form) and cobalt-900 dark (high-stakes / commitment forms like partner application).</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/page-strip.html">
+      <div class="preview" style="height: 460px;"><iframe src="components/page-strip.html"></iframe></div>
+      <div class="meta">
+        <div class="num">51 &middot; Chrome</div>
+        <h3>Page strip</h3>
+        <p>Lightweight banner above the content rail. Smaller and quieter than the full Hero, for index pages and second-level surfaces where the visual budget should go to the content below. Crumbs + h1 + lede. Default + tinted variants.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/feature-page-blocks.html">
+      <div class="preview" style="height: 600px;"><iframe src="components/feature-page-blocks.html"></iframe></div>
+      <div class="meta">
+        <div class="num">52 &middot; Product page</div>
+        <h3>Feature-page blocks</h3>
+        <p>Four building blocks of the product-pages feature template: <strong>FeatureHero</strong> (pull-quote panel), <strong>BenefitRow</strong> (3-up tile case), <strong>Checklist</strong> (2-column mint hex bullets), <strong>PairsRow</strong> ("pairs well with" tiles). Independently usable but designed to compose top-to-bottom.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/anatomy-card.html">
+      <div class="preview" style="height: 480px;"><iframe src="components/anatomy-card.html"></iframe></div>
+      <div class="meta">
+        <div class="num">53 &middot; Docs &middot; Structure</div>
+        <h3>Anatomy card</h3>
+        <p>Two-column explainer for "this is how an X is structured" content. Eyebrow + h2 + paragraphs on the left, a stylised file-tree code block on the right. <code>&lt;AnatomyTree/&gt;</code> auto-styles <code>root</code> / <code>folder</code> / <code>note</code> spans.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/preview-tile.html">
+      <div class="preview" style="height: 540px;"><iframe src="components/preview-tile.html"></iframe></div>
+      <div class="meta">
+        <div class="num">54 &middot; Hub chrome</div>
+        <h3>Preview tile</h3>
+        <p>Iframe-preview card grid used by hub pages to show the full render of a sub-page in-place. Container-query scaling keeps the preview reading as the full desktop layout, just shrunk. Generalises the <code>.component-tile</code> on this page.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/adr-table.html">
+      <div class="preview" style="height: 480px;"><iframe src="components/adr-table.html"></iframe></div>
+      <div class="meta">
+        <div class="num">55 &middot; Technical docs</div>
+        <h3>ADR table</h3>
+        <p>Architecture-decision-record index. Four columns (ID, Title, Status, Date) with a colour-coded status pill: mint Accepted, cobalt Proposed, orange Draft, muted Superseded, vermillion Rejected. Used at the top of every <code>technical-docs.html</code> page.</p>
+      </div>
+    </a>
+
+    <a class="component-tile span-2" href="components/redoc-shell.html">
+      <div class="preview" style="height: 640px;"><iframe src="components/redoc-shell.html"></iframe></div>
+      <div class="meta">
+        <div class="num">56 &middot; API reference</div>
+        <h3>Redoc shell + VerbPill</h3>
+        <p>Three-column API-reference layout that wraps Redocusaurus output with Conduction-brand chrome. Left rail = sticky endpoint nav with HTTP-verb pills; middle = operation prose + parameter tables; right rail = dark code-sample box with cURL / Node / PHP tabs. <code>&lt;VerbPill/&gt;</code> exported separately.</p>
+      </div>
+    </a>
+
   </div>
 
   <div class="section-label">Beyond components · the diagram set</div>
@@ -1536,6 +1811,12 @@
     </div>
     <a class="cta" href="diagrams/index.html">Diagram set &rarr;</a>
   </div>
+
+</div><!-- /.kit-body -->
+
+<div class="kit-footer">
+  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span><a href="index.html">&larr; Back to system</a></span>
 </div>
 
 <script src="conduction-bg.js" defer></script>

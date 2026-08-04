@@ -20,12 +20,13 @@
 
 import React, {useEffect} from 'react';
 import Link from '@docusaurus/Link';
-import Head from '@docusaurus/Head';
 import {useLocation} from '@docusaurus/router';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import Translate, {translate} from '@docusaurus/Translate';
 import {brandFor} from '../brand.jsx';
 import {useLazyScript} from '../../utils/lazyScript';
+import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 import GameModal from '../../components/GameModal/GameModal';
 
 function FooterLink({label, href, to}) {
@@ -87,28 +88,31 @@ export default function Footer() {
      `themeConfig.footerBrand = { wordmark: '...' }`, or render a dual
      brand row via `{ brands: [{wordmark, logo, href}, ...] }` for
      product pages co-branded with a partner. The legacy fallback to
-     `navbar.title` was misleading on product-page footers (mydash
-     showing "MyDash" rather than "Conduction"); the company-anchor
+     `navbar.title` was misleading on product-page footers (launchpad
+     showing "LaunchPad" rather than "Conduction"); the company-anchor
      reading wins. */
   const brand = brandFor(location.pathname, navbar?.title);
   const defaultWordmark = footerBrand?.wordmark || 'Conduction';
   const wordmark = brand ? brand.wordmark : defaultWordmark;
   const brandRow = !brand && Array.isArray(footerBrand?.brands) ? footerBrand.brands : null;
 
-  /* canal-footer.js is loaded post-hydration so its DOM mutations
-     (filling .skyline, animating boats) don't trip React hydration
-     mismatches. See docs in utils/lazyScript.js. We always load
-     canal-footer.js even when minigames are off, because the same
-     script populates the static skyline; canal-footer.js is null-safe
-     against a missing game-hud, so the game wiring no-ops cleanly. */
+  /* canal-footer.{js,css} are loaded post-hydration. The script's DOM
+     mutations (filling .skyline, animating boats) don't trip React
+     hydration mismatches, and the stylesheet doesn't block first paint.
+     See docs in utils/lazyScript.js and utils/lazyStylesheet.js. We
+     always load canal-footer.{js,css} even when minigames are off,
+     because the same script populates the static skyline and the same
+     stylesheet styles the canal frame. */
   useLazyScript('/lib/canal-footer.js', 'canal-footer');
+  useLazyStylesheet('/lib/canal-footer.css', 'canal-footer');
 
-  /* kade-cyclist.js is the second hidden footer minigame. Unlike the
-     canal script it has no static side-effects, so when a product page
-     opts out of minigames we feed `useLazyScript` a falsy src to skip
-     the load. The hook still runs unconditionally — rules-of-hooks
-     stays compliant. */
+  /* kade-cyclist.{js,css} are the second hidden footer minigame. Unlike
+     the canal script they have no static side-effects, so when a product
+     page opts out of minigames we feed both hooks a falsy value to skip
+     the load. The hooks still run unconditionally — rules-of-hooks stays
+     compliant. */
   useLazyScript(minigamesOn ? '/lib/kade-cyclist.js' : null, 'kade-cyclist');
+  useLazyStylesheet(minigamesOn ? '/lib/kade-cyclist.css' : null, 'kade-cyclist');
 
   /* Re-hydrate the canal-footer + kade-cyclist runtimes on every mount,
      including SPA route changes that re-render this Footer component.
@@ -143,11 +147,6 @@ export default function Footer() {
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href="/lib/canal-footer.css" />
-        <link rel="stylesheet" href="/lib/kade-cyclist.css" />
-      </Head>
-
       <footer className="canal-footer" aria-label="Site footer">
         {/* Skyline placeholder — canal-footer.js fills it with cloned house templates */}
         <div className="skyline" role="presentation" />
@@ -274,21 +273,32 @@ export default function Footer() {
               they're absent on a product page. */}
           {minigamesOn && (
             <>
-              <div className="game-hud" aria-live="polite" aria-label="Boat-sinking mini game">
+              <div className="game-hud" aria-live="polite" aria-label={translate({id: 'preset.footer.game.ariaLabel', message: 'Boat-sinking mini game', description: 'Accessible name for the footer minigame region'})}>
                 <div className="hud-block hud-counter">
                   <span className="hud-num" data-counter="">100</span>
-                  <span className="hud-label">Boats left</span>
+                  <span className="hud-label">
+                    <Translate id="preset.footer.game.boatsLeft" description="HUD label counting boats remaining">Boats left</Translate>
+                  </span>
                 </div>
                 <div className="hud-block hud-timer">
                   <span className="hud-num" data-timer="">60</span>
-                  <span className="hud-label">Seconds</span>
+                  <span className="hud-label">
+                    <Translate id="preset.footer.game.seconds" description="HUD label for the seconds-remaining timer">Seconds</Translate>
+                  </span>
                 </div>
               </div>
 
-              <div className="game-over" role="dialog" aria-label="Mini game over">
-                <p className="go-title" data-go-title="">Time's up</p>
-                <p className="go-stat"><span data-go-sunk="">0</span> sunk</p>
-                <button type="button" data-restart="">Play again</button>
+              <div className="game-over" role="dialog" aria-label={translate({id: 'preset.footer.game.overAriaLabel', message: 'Mini game over', description: 'Accessible name for the game-over dialog'})}>
+                <p className="go-title" data-go-title="">
+                  <Translate id="preset.footer.game.timesUp" description="Default headline shown when the minigame timer hits zero">Time's up</Translate>
+                </p>
+                <p className="go-stat">
+                  <span data-go-sunk="">0</span>{' '}
+                  <Translate id="preset.footer.game.sunk" description="Suffix after the number of boats sunk in the game-over stat">sunk</Translate>
+                </p>
+                <button type="button" data-restart="">
+                  <Translate id="preset.footer.game.playAgain" description="Button label to restart the minigame">Play again</Translate>
+                </button>
               </div>
             </>
           )}
@@ -339,8 +349,12 @@ export default function Footer() {
                 <div className="wm">{wordmark}</div>
               )}
               <p>
-                Open-source apps for <span className="next-blue">Nextcloud</span>. Built and
-                maintained by Conduction in Amsterdam, released under EUPL-1.2.
+                <Translate
+                  id="preset.footer.brandBlurb"
+                  description="Footer brand-citation paragraph. {nextcloud} is the styled Nextcloud word."
+                  values={{nextcloud: <span className="next-blue">Nextcloud</span>}}>
+                  {'Open-source apps for {nextcloud}. Built and maintained by Conduction in Amsterdam, released under EUPL-1.2.'}
+                </Translate>
               </p>
               {/*
                 Brand citation. The producer chain stays dot-separated
@@ -375,7 +389,7 @@ export default function Footer() {
                 </span>
               </div>
               <div className="socials">
-                <a href="https://github.com/ConductionNL" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+                <a href="https://codeberg.org/Conduction" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path className="filled" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.04 1.53 1.04.9 1.53 2.36 1.09 2.93.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
                   </svg>

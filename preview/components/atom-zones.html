@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Atom zones, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../../typography.css">
+<style>
+  body {
+    margin: 0;
+    background: var(--c-cobalt-50);
+    padding: 56px 64px;
+    font-family: var(--conduction-typography-font-family-body);
+    color: var(--c-cobalt-900);
+  }
+  .frame { max-width: 1200px; margin: 0 auto; }
+  .frame-label {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-bottom: 32px;
+  }
+  .frame > p.lede {
+    font-size: 16px; line-height: 1.6;
+    color: var(--c-cobalt-700);
+    max-width: 70ch;
+    margin: 0 0 var(--space-8);
+  }
+
+  .zones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+  @media (max-width: 900px) {
+    .zones { grid-template-columns: 1fr; }
+  }
+
+  .zone-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .zone-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .zone-head code {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 13px; font-weight: 500;
+    color: var(--c-blue-cobalt);
+    background: var(--c-cobalt-50);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .zone-head h3 {
+    margin: 0;
+    font-size: 22px; font-weight: 600;
+    color: var(--c-blue-cobalt);
+    letter-spacing: -0.01em;
+  }
+  .zone-head .applies {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10px; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-cobalt-400);
+    margin-left: auto;
+  }
+  .zone-head .applies strong { color: var(--c-mint-500); font-weight: 500; }
+  .zone-head .applies em.never {
+    color: var(--c-red-vermillion);
+    font-style: normal;
+    font-weight: 500;
+  }
+  .zone-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--c-cobalt-700);
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  /* Mini chassis: a low-fidelity schematic that mirrors the full
+     chassis from app-mock.html. The .focus-* modifier outlines one
+     atom in KNVB orange and fades everything else to 25%. */
+  .mini {
+    background: white;
+    border: 1px solid var(--c-cobalt-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 24px 1fr;
+    height: 220px;
+  }
+  .mini .topbar {
+    background: var(--c-cobalt-900);
+    display: flex; align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+  }
+  .mini .topbar .logo { width: 14px; height: 14px; background: white; border-radius: 50%; }
+  .mini .topbar .ic { width: 10px; height: 10px; background: rgba(255,255,255,0.4); border-radius: 2px; }
+  .mini .topbar .sp { flex: 1; }
+  .mini .body {
+    display: grid;
+    grid-template-columns: 56px 1fr 90px;
+  }
+  .mini .nav {
+    background: var(--c-cobalt-50);
+    border-right: 1px solid var(--c-cobalt-100);
+    padding: 6px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .mini .nav .row {
+    height: 8px;
+    background: var(--c-cobalt-200);
+    border-radius: 2px;
+  }
+  .mini .nav .row.active { background: var(--c-blue-cobalt); }
+  .mini .nav .spacer { flex: 1; }
+  .mini .col { padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; }
+  .mini .col .header {
+    display: flex; align-items: center; gap: 4px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--c-cobalt-100);
+  }
+  .mini .col .title { height: 8px; width: 50px; background: var(--c-cobalt-300); border-radius: 2px; }
+  .mini .col .sp { flex: 1; }
+  .mini .col .btn { height: 12px; width: 18px; background: var(--c-cobalt-200); border-radius: 2px; }
+  .mini .col .btn.primary { background: var(--c-blue-cobalt); }
+  .mini .col .kpis { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+  .mini .col .kpi { background: var(--c-cobalt-50); border-radius: 2px; height: 22px; }
+  .mini .col .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; flex: 1; }
+  .mini .col .panel { background: var(--c-cobalt-50); border-radius: 2px; }
+  .mini .detail {
+    background: var(--c-cobalt-50);
+    border-left: 1px solid var(--c-cobalt-100);
+    padding: 6px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .mini .detail .sb-head { height: 14px; background: var(--c-cobalt-200); border-radius: 2px; }
+  .mini .detail .sb-tab { height: 8px; background: var(--c-cobalt-100); border-radius: 2px; }
+  .mini .detail .sb-tab.active { background: var(--c-blue-cobalt); }
+  .mini .detail .sb-input { height: 12px; background: white; border: 1px solid var(--c-cobalt-100); border-radius: 2px; }
+  .mini .detail .sb-row { height: 6px; background: var(--c-cobalt-100); border-radius: 1px; }
+
+  /* Focus modifiers: outline one atom and fade the rest. */
+  .mini.focus-topbar > .body,
+  .mini.focus-nav .col, .mini.focus-nav .detail, .mini.focus-nav .topbar,
+  .mini.focus-col .nav, .mini.focus-col .detail, .mini.focus-col .topbar,
+  .mini.focus-pageheader .nav, .mini.focus-pageheader .detail, .mini.focus-pageheader .topbar,
+  .mini.focus-pageheader .col > .kpis, .mini.focus-pageheader .col > .panels,
+  .mini.focus-detail .nav, .mini.focus-detail .col, .mini.focus-detail .topbar {
+    opacity: 0.25;
+  }
+
+  .mini.focus-topbar .topbar { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); }
+  .mini.focus-nav .nav { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); position: relative; z-index: 1; }
+  .mini.focus-col .col { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); position: relative; z-index: 1; }
+  .mini.focus-pageheader .header {
+    outline: 2px solid var(--c-orange-knvb);
+    outline-offset: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  .mini.focus-detail .detail { box-shadow: inset 0 0 0 2px var(--c-orange-knvb); position: relative; z-index: 1; }
+
+  /* Full-width tail card for the .detail atom because it pairs best
+     with a wider chassis preview. */
+  .zone-card.span { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+
+<div class="crumb" style="padding: 12px 64px; background: white; border-bottom: 1px solid var(--c-cobalt-100); margin: -56px -64px 32px;"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../components.html">Components</a> &nbsp;/&nbsp; Atom zones</div>
+
+<div class="frame">
+  <div class="frame-label">AtomZones &middot; five-atoms reference for the Conduction app chassis</div>
+  <p class="lede">Five zone cards, one per atom of the canonical chassis: Topbar, Left navigation, Main column, Page header, Sidebar. The focused atom is outlined in KNVB orange. The rest fades to 25% so the reader sees where each atom sits in context, not just what it looks like in isolation. The full chassis with all atoms enabled lives on <a href="app-mock.html">app-mock</a>.</p>
+
+  <div class="zones">
+
+    <div class="zone-card">
+      <div class="zone-head">
+        <code>.topbar</code>
+        <h3>Topbar</h3>
+        <span class="applies"><strong>App</strong> &middot; <strong>Desk</strong> &middot; always</span>
+      </div>
+      <p class="zone-body">The Nextcloud chrome row. Sits across every page unconditionally because every Conduction app lives inside Nextcloud's workspace. The shelf icons are the cross-app navigation; per-app links never go here.</p>
+      <div class="mini focus-topbar">
+        <div class="topbar"><span class="logo"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="sp"></span><span class="ic"></span><span class="ic"></span></div>
+        <div class="body">
+          <div class="nav"><span class="row active"></span><span class="row"></span><span class="row"></span><span class="row"></span><span class="spacer"></span><span class="row"></span></div>
+          <div class="col">
+            <div class="header"><span class="title"></span><span class="sp"></span><span class="btn"></span><span class="btn primary"></span></div>
+            <div class="kpis"><span class="kpi"></span><span class="kpi"></span><span class="kpi"></span></div>
+            <div class="panels"><span class="panel"></span><span class="panel"></span></div>
+          </div>
+          <div class="detail"><span class="sb-head"></span><span class="sb-tab active"></span><span class="sb-tab"></span><span class="sb-input"></span><span class="sb-row"></span><span class="sb-row"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-head">
+        <code>.nav</code>
+        <h3>Left navigation</h3>
+        <span class="applies"><strong>App</strong> &middot; required &middot; <em class="never">Desk: never</em></span>
+      </div>
+      <p class="zone-body">The per-app sidebar. Carries this app's own primary navigation, plus a footer pinned to the bottom for global access (Settings, Feedback). The active item is the only place cobalt-100 backgrounds a row.</p>
+      <div class="mini focus-nav">
+        <div class="topbar"><span class="logo"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="sp"></span><span class="ic"></span></div>
+        <div class="body">
+          <div class="nav"><span class="row active"></span><span class="row"></span><span class="row"></span><span class="row"></span><span class="spacer"></span><span class="row"></span></div>
+          <div class="col">
+            <div class="header"><span class="title"></span><span class="sp"></span><span class="btn"></span><span class="btn primary"></span></div>
+            <div class="kpis"><span class="kpi"></span><span class="kpi"></span><span class="kpi"></span></div>
+            <div class="panels"><span class="panel"></span><span class="panel"></span></div>
+          </div>
+          <div class="detail"><span class="sb-head"></span><span class="sb-tab active"></span><span class="sb-tab"></span><span class="sb-input"></span><span class="sb-row"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-head">
+        <code>.col</code>
+        <h3>Main column</h3>
+        <span class="applies"><strong>App</strong> &middot; <strong>Desk</strong> &middot; always</span>
+      </div>
+      <p class="zone-body">The work surface. In an App pattern, the column opens with a .pageHeader (title + actions), then KPI strip and panels. In a Desk pattern, .col nests inside .grid to become a full-bleed widget canvas with no page header.</p>
+      <div class="mini focus-col">
+        <div class="topbar"><span class="logo"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="sp"></span><span class="ic"></span></div>
+        <div class="body">
+          <div class="nav"><span class="row active"></span><span class="row"></span><span class="row"></span><span class="spacer"></span></div>
+          <div class="col">
+            <div class="header"><span class="title"></span><span class="sp"></span><span class="btn"></span><span class="btn primary"></span></div>
+            <div class="kpis"><span class="kpi"></span><span class="kpi"></span><span class="kpi"></span></div>
+            <div class="panels"><span class="panel"></span><span class="panel"></span></div>
+          </div>
+          <div class="detail"><span class="sb-head"></span><span class="sb-tab active"></span><span class="sb-tab"></span><span class="sb-input"></span><span class="sb-row"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-head">
+        <code>.pageHeader</code>
+        <h3>Page header</h3>
+        <span class="applies"><strong>Index</strong> &middot; <strong>Detail</strong> &middot; <em class="never">Desk: never</em></span>
+      </div>
+      <p class="zone-body">The first row of .col on every Index and Detail template. Carries the page title (left) and exactly two action buttons (right): one ghost, one primary. The header tracks .col's width: full-spread when the sidebar is closed, constrained when it is open.</p>
+      <div class="mini focus-pageheader">
+        <div class="topbar"><span class="logo"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="sp"></span><span class="ic"></span></div>
+        <div class="body">
+          <div class="nav"><span class="row active"></span><span class="row"></span><span class="row"></span><span class="spacer"></span></div>
+          <div class="col">
+            <div class="header"><span class="title"></span><span class="sp"></span><span class="btn"></span><span class="btn primary"></span></div>
+            <div class="kpis"><span class="kpi"></span><span class="kpi"></span><span class="kpi"></span></div>
+            <div class="panels"><span class="panel"></span><span class="panel"></span></div>
+          </div>
+          <div class="detail"><span class="sb-head"></span><span class="sb-tab active"></span><span class="sb-tab"></span><span class="sb-input"></span><span class="sb-row"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-card span">
+      <div class="zone-head">
+        <code>.detail</code>
+        <h3>Sidebar</h3>
+        <span class="applies"><strong>App</strong> &middot; optional &middot; <em class="never">Desk: never</em></span>
+      </div>
+      <p class="zone-body">The right-hand sidebar. Optional, dismissible, anchored to the active record or the active view. Carries an icon + title + description in a header, then a tabbed body (Search / Columns by default). Class stays <code>.detail</code> for code; we call it the Sidebar in copy.</p>
+      <div class="mini focus-detail">
+        <div class="topbar"><span class="logo"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="ic"></span><span class="sp"></span><span class="ic"></span><span class="ic"></span></div>
+        <div class="body">
+          <div class="nav"><span class="row active"></span><span class="row"></span><span class="row"></span><span class="row"></span><span class="spacer"></span><span class="row"></span></div>
+          <div class="col">
+            <div class="header"><span class="title"></span><span class="sp"></span><span class="btn"></span><span class="btn primary"></span></div>
+            <div class="kpis"><span class="kpi"></span><span class="kpi"></span><span class="kpi"></span></div>
+            <div class="panels"><span class="panel"></span><span class="panel"></span></div>
+          </div>
+          <div class="detail"><span class="sb-head"></span><span class="sb-tab active"></span><span class="sb-tab"></span><span class="sb-input"></span><span class="sb-row"></span><span class="sb-row"></span><span class="sb-row"></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<link rel="stylesheet" href="_react-usage.css">
+<aside class="react-usage">
+  <div class="ru-eyebrow"><span class="h"></span>React / MDX usage</div>
+  <h2>Mount in MDX as <code>&lt;AtomZones/&gt;</code></h2>
+  <p>Educational visual reference for the canonical Conduction app chassis. Renders five zone cards, each focusing on one atom (Topbar, Left navigation, Main column, Page header, Sidebar). Used on architecture pages in the per-app docs sites (<code>nextcloud-vue.conduction.nl</code>, <code>procest.conduction.nl</code>, <code>openregister.conduction.nl</code>) to teach where each atom sits in the chassis.</p>
+  <p>Self-contained, takes no props. The full chassis with every atom enabled lives at <a href="app-mock.html">app-mock</a>; this component is the per-atom teaching variant.</p>
+  <h3>Import &amp; example</h3>
+  <pre><code>import {AtomZones} from '@conduction/docusaurus-preset/components';
+
+# The five atoms
+
+&lt;AtomZones /&gt;</code></pre>
+  <h3>Props</h3>
+  <p class="ru-props">None. Five zones, one chassis pattern, locked content.</p>
+</aside>
+
+</body>
+</html>

@@ -42,6 +42,7 @@
 
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import Translate, {translate} from '@docusaurus/Translate';
 import styles from './GameModal.module.css';
 
 const STORAGE_KEY = 'conduction:minigames';
@@ -142,29 +143,43 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
 
   if (!isBrowser || !open || !event) return null;
 
-  const eyebrow = event.won ? 'Mini-game complete' : 'Game over';
-  const title = event.title || (event.won ? 'Nice run.' : "That's all of them.");
+  const eyebrow = event.won
+    ? translate({id: 'preset.gameModal.eyebrow.won', message: 'Mini-game complete', description: 'Eyebrow above the game-over heading when the player won'})
+    : translate({id: 'preset.gameModal.eyebrow.lost', message: 'Game over', description: 'Eyebrow above the game-over heading when the player lost'});
+  const title = event.title || (event.won
+    ? translate({id: 'preset.gameModal.title.won', message: 'Nice run.', description: 'Default headline on the game-over modal when the player won'})
+    : translate({id: 'preset.gameModal.title.lost', message: "That's all of them.", description: 'Default headline on the game-over modal when the player lost'}));
   const subtitle = event.subtitle ||
     (event.won
-      ? "You've cleared a hidden Conduction mini-game."
-      : "Try again any time, the rain doesn't stop.");
+      ? translate({id: 'preset.gameModal.subtitle.won', message: "You've cleared a hidden Conduction mini-game.", description: 'Default subtitle on the game-over modal when the player won'})
+      : translate({id: 'preset.gameModal.subtitle.lost', message: "Try again any time, the rain doesn't stop.", description: 'Default subtitle on the game-over modal when the player lost'}));
 
   return (
     <div className={[styles.modal, className].filter(Boolean).join(' ')} role="dialog" aria-modal="true" aria-labelledby="gm-title">
       <div className={styles.overlay} onClick={close} />
       <div className={styles.panel}>
-        <button type="button" className={styles.close} onClick={close} aria-label="Close">×</button>
+        <button type="button" className={styles.close} onClick={close} aria-label={translate({id: 'preset.gameModal.close', message: 'Close', description: 'Accessible label for the close (×) button on the game-over modal'})}>×</button>
         <p className={styles.eyebrow}>{eyebrow}</p>
         <h2 className={styles.title} id="gm-title">{title}</h2>
         <p className={styles.subtitle}>{subtitle}</p>
 
         {typeof event.score !== 'undefined' && (
-          <span className={styles.scorePill}>{event.summary || `score: ${event.score}`}</span>
+          <span className={styles.scorePill}>{event.summary || translate({id: 'preset.gameModal.scorePill', message: 'score: {score}', description: 'Default score pill text. {score} is the numeric score.'}, {score: event.score})}</span>
         )}
 
         <div className={styles.progress}>
           <div className={styles.progressLabel}>
-            <span><strong>{foundCount}</strong> / {total} mini-games found</span>
+            <span>
+              <Translate
+                id="preset.gameModal.progress.found"
+                description="Progress label below the game-over copy. {found} bolded count of games discovered; {total} is the total."
+                values={{
+                  found: <strong>{foundCount}</strong>,
+                  total: total,
+                }}>
+                {'{found} / {total} mini-games found'}
+              </Translate>
+            </span>
             <span>{percent}%</span>
           </div>
           <div className={styles.progressBar}>
@@ -183,13 +198,24 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
 
         <p className={styles.cta}>
           {foundCount < total
-            ? `${total - foundCount} more game${total - foundCount === 1 ? '' : 's'} hidden somewhere. Keep clicking.`
-            : "All five found. You read the kit."}
+            ? translate(
+                {
+                  id: 'preset.gameModal.cta.remaining',
+                  message: '{remaining, plural, one {# more game hidden somewhere. Keep clicking.} other {# more games hidden somewhere. Keep clicking.}}',
+                  description: 'CTA text on the game-over modal when at least one game is still hidden. {remaining} is the count of games still hidden.',
+                },
+                {remaining: total - foundCount},
+              )
+            : translate({id: 'preset.gameModal.cta.allFound', message: 'All five found. You read the kit.', description: 'CTA text on the game-over modal when the player has discovered every mini-game.'})}
         </p>
 
         <div className={styles.actions}>
-          <button type="button" className={styles.btnSecondary} onClick={close}>Close</button>
-          <button type="button" className={styles.btnPrimary} onClick={replay}>Play again</button>
+          <button type="button" className={styles.btnSecondary} onClick={close}>
+            <Translate id="preset.gameModal.action.close" description="Close button label on the game-over modal">Close</Translate>
+          </button>
+          <button type="button" className={styles.btnPrimary} onClick={replay}>
+            <Translate id="preset.gameModal.action.replay" description="Replay button label on the game-over modal">Play again</Translate>
+          </button>
         </div>
       </div>
     </div>

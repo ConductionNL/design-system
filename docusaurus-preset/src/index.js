@@ -89,6 +89,196 @@ function resolveAppVersion(opts) {
 }
 
 /**
+ * Brand-default Organization JSON-LD. One canonical version of the
+ * company's legal-entity facts (address, KvK, BTW, socials), shipped on
+ * every Conduction site so AI crawlers (GPTBot, ClaudeBot, Perplexity-
+ * Bot, OAI-SearchBot, Google AI Overviews) get the same answer to
+ * "who is Conduction" regardless of which subdomain they landed on.
+ * Updates here propagate to the fleet on the next preset release.
+ *
+ * Sites that aren't conduction.nl (per-app docs sites at
+ * {slug}.conduction.nl, etc.) still reference the same Organization via
+ * @id, so cross-site citations consolidate cleanly.
+ */
+const BRAND_ORGANIZATION_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://www.conduction.nl/#org',
+  name: 'Conduction B.V.',
+  alternateName: 'Conduction',
+  url: 'https://www.conduction.nl/',
+  logo: 'https://www.conduction.nl/img/brand/avatar-conduction-gold-on-white.svg',
+  foundingDate: '2019',
+  description:
+    'Dutch open-source software company building EUPL-1.2 apps for the Nextcloud workspace.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Lauriergracht 14h',
+    postalCode: '1016 RR',
+    addressLocality: 'Amsterdam',
+    addressCountry: 'NL',
+  },
+  email: 'info@conduction.nl',
+  telephone: '+31-85-303-6840',
+  taxID: 'NL860784241B01',
+  vatID: 'NL860784241B01',
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'KvK',
+    value: '76741850',
+  },
+  sameAs: [
+    'https://codeberg.org/Conduction',
+    'https://www.linkedin.com/company/conduction/',
+  ],
+};
+
+/**
+ * Build the per-site WebSite JSON-LD that ties the consuming site to
+ * the shared Organization. WebSite carries the site title and URL the
+ * site was configured with; Organization stays canonical.
+ */
+function buildWebsiteJsonLd(opts) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${opts.url}/#website`,
+    url: `${opts.url}/`,
+    name: opts.title,
+    publisher: {'@id': 'https://www.conduction.nl/#org'},
+    inLanguage: (opts.i18n && opts.i18n.locales) || ['nl', 'en', 'de', 'fr'],
+  };
+}
+
+/**
+ * Default headTags emitted on every page. Two JSON-LD blocks
+ * (Organization + WebSite) consumed by AI crawlers, Google rich
+ * results, Bing AI, LinkedIn previews. Static SSG output, so non-JS
+ * fetchers (GPTBot, ClaudeBot, PerplexityBot) see them too.
+ *
+ * Sites extend by passing `opts.headTags = [...]`; the preset merges
+ * the site's tags after its own defaults.
+ */
+function buildAiHeadTags(opts) {
+  const tags = [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify(BRAND_ORGANIZATION_JSONLD),
+    },
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify(buildWebsiteJsonLd(opts)),
+    },
+  ];
+
+  /* Search Console verification meta tags. Sites pass tokens via
+     opts.searchConsoleVerification = { google: '...', bing: '...',
+     yandex: '...' }; each present token becomes a meta tag. Verifying
+     via meta (vs DNS TXT) lets a non-DNS-admin teammate access Search
+     Console / Bing Webmaster Tools. */
+  const verification = opts.searchConsoleVerification || {};
+  if (verification.google) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'google-site-verification', content: verification.google},
+    });
+  }
+  if (verification.bing) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'msvalidate.01', content: verification.bing},
+    });
+  }
+  if (verification.yandex) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'yandex-verification', content: verification.yandex},
+    });
+  }
+  if (verification.facebook) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'facebook-domain-verification', content: verification.facebook},
+    });
+  }
+  if (verification.pinterest) {
+    tags.push({
+      tagName: 'meta',
+      attributes: {name: 'p:domain_verify', content: verification.pinterest},
+    });
+  }
+
+  return tags;
+}
+
+/**
+ * Default sitemap plugin options. Each locale outputs its own
+ * sitemap.xml. /academy/tags/** is excluded site-wide because tag
+ * pages are thin and confuse AI summarisers more than they help SEO.
+ * ignorePatterns matches the *route path* after locale prefixing, so
+ * we list every locale variant.
+ *
+ * Sites passing their own classic preset config can override by
+ * including a `sitemap` key alongside `docs`/`blog`/`theme`.
+ */
+/**
+ * Sitemap defaults. Google ignores `changefreq` and `priority` (and has
+ * for years; the @docusaurus/plugin-sitemap defaults are wrong on this
+ * point). `lastmod` is the only signal Google actually uses, and only
+ * if the dates are accurate, so we ship lastmod from file mtime. Bing
+ * still reads all three, harmless to omit.
+ *
+ * Sites with locale-specific tag pages and pagination should keep the
+ * exclude list in sync. Pagination (`/page/N/`) and tag pages
+ * (`/tags/{slug}/`) are documented Docusaurus duplicate-content traps;
+ * we exclude them by default so they neither dilute crawl budget nor
+ * confuse AI summarisers. (Do not write `/tags/*` followed by a slash
+ * in this comment: the literal asterisk-slash sequence would close
+ * the JSDoc block and break preset parsing for every consuming site.)
+ */
+const DEFAULT_SITEMAP_OPTIONS = {
+  changefreq: null,
+  priority: null,
+  lastmod: 'date',
+  ignorePatterns: [
+    '/academy/tags/**',
+    '/nl/academy/tags/**',
+    '/en/academy/tags/**',
+    '/de/academy/tags/**',
+    '/fr/academy/tags/**',
+    '/page/**',
+    '/nl/page/**',
+    '/en/page/**',
+    '/de/page/**',
+    '/fr/page/**',
+  ],
+  filename: 'sitemap.xml',
+};
+
+/**
+ * Default themeConfig.metadata. Twitter + og:type baselines so social
+ * cards render correctly. Per-page MDX frontmatter still wins (Helmet
+ * de-dupes by meta name/property). Sites override the whole array by
+ * passing `themeConfig.metadata = [...]` in opts.
+ */
+const DEFAULT_METADATA = [
+  {name: 'twitter:site', content: '@ConductionNL'},
+  {name: 'twitter:card', content: 'summary_large_image'},
+  {property: 'og:type', content: 'website'},
+];
+
+/**
+ * Default OG image. 1200x630 cobalt brand card shipped from the preset
+ * static/img/. Sites can override by dropping their own
+ * static/img/og-conduction.png (staticDirectories precedence puts the
+ * site's file last). For per-app product cards, set themeConfig.image
+ * explicitly in your site config.
+ */
+const DEFAULT_OG_IMAGE = 'img/og-conduction.png';
+
+/**
  * Brand-default i18n block. Nederlands at the URL root, others at /en/, /de/, /fr/.
  */
 const I18N = {
@@ -101,6 +291,41 @@ const I18N = {
     fr: { label: 'Français',   htmlLang: 'fr-FR', direction: 'ltr' },
   },
 };
+
+/**
+ * Wrap a user-supplied `opts.presets` array so the classic preset's
+ * `sitemap` option inherits brand defaults (lastmod, ignorePatterns)
+ * when the site hasn't set them explicitly. Before this helper, sites
+ * that passed their own presets array silently lost the preset's
+ * DEFAULT_SITEMAP_OPTIONS, so the fleet sitemaps never shipped
+ * <lastmod> tags despite the preset claiming to add them. See
+ * MEMORY.md project_preset-4.0-wrap-user-presets for the back story.
+ *
+ * Recognises both 'classic' and '@docusaurus/preset-classic' entries.
+ * Leaves non-classic presets untouched. Explicit user values win:
+ * `sitemap: null` opts out, `sitemap: { lastmod: false }` opts out
+ * of lastmod specifically, and so on.
+ */
+function wrapClassicPresetDefaults(userPresets) {
+  return userPresets.map(entry => {
+    if (!Array.isArray(entry)) return entry;
+    const [name, config] = entry;
+    const isClassic =
+      name === 'classic' || name === '@docusaurus/preset-classic';
+    if (!isClassic || typeof config !== 'object' || config === null) return entry;
+    if (config.sitemap === null) return entry; /* explicit opt-out */
+    return [
+      name,
+      {
+        ...config,
+        sitemap: {
+          ...DEFAULT_SITEMAP_OPTIONS,
+          ...(config.sitemap || {}),
+        },
+      },
+    ];
+  });
+}
 
 /**
  * Brand-default navbar. Sites pass their own items[] and logo; the chrome
@@ -137,7 +362,7 @@ const baseNavbar = (siteName, repoUrl) => ({
   items: [
     { type: 'custom-versionPill', position: 'right' },
     { type: 'custom-apiDocs', position: 'right' },
-    { type: 'custom-github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
+    { type: 'custom-github', href: repoUrl || 'https://codeberg.org/Conduction', position: 'right' },
     { type: 'localeDropdown', position: 'right' },
   ],
 });
@@ -266,12 +491,19 @@ function createConfig(opts) {
     onBrokenLinks: 'warn',
     onBrokenMarkdownLinks: 'warn',
 
-    /* Two static roots, in increasing-precedence order:
-         1. preset's own ../static (lib/canal-footer, conduction-bg, hex-rain,
-            platform-diagram + brand img/favicon, logo, logo-dark, nextcloud-logo)
+    /* Two static roots. Docusaurus wires staticDirectories through
+       copy-webpack-plugin's parallel pattern processing (Promise.all),
+       so for file collisions the winner is whichever pattern finishes
+       reading first — non-deterministic in practice (preset wins on
+       most disks because it ships smaller). Don't rely on this array
+       order for overrides; ship a Docusaurus plugin like
+       ./plugins/ai-crawling.js when you need deterministic precedence.
+         1. preset's own ../static (canal-footer, conduction-bg,
+            hex-rain, platform-diagram, brand img/favicon, logo, logo-
+            dark, nextcloud-logo, default OG card)
          2. site's own static/ (CNAME, site-specific images, overrides)
-       Last wins per-file, so a site can drop its own /img/logo.svg into
-       static/img/logo.svg to override the brand default. */
+       Files unique to one directory always copy; conflicts are
+       essentially undefined behaviour. */
     staticDirectories: opts.staticDirectories || [
       path.resolve(__dirname, '..', 'static'),
       'static',
@@ -279,25 +511,34 @@ function createConfig(opts) {
 
     i18n: opts.i18n || I18N,
 
-    presets: opts.presets || [
-      [
-        'classic',
-        {
-          docs: {
-            sidebarPath: './sidebars.js',
-            editUrl: opts.editUrl,
-          },
-          blog: opts.blog === false ? false : {
-            showReadingTime: true,
-            blogTitle: opts.title + ' blog',
-            blogDescription: 'Updates from Conduction',
-          },
-          theme: {
-            customCss,
-          },
-        },
-      ],
-    ],
+    /* Sites can pass `opts.presets` to override docs/blog/theme. When
+       they do, the preset wraps each classic preset entry to deep-merge
+       DEFAULT_SITEMAP_OPTIONS into the entry's sitemap key (lastmod
+       becomes automatic, ignorePatterns merge in). Without this wrap
+       sites would have to copy-paste the sitemap config in every
+       docusaurus.config.js, and the fleet would drift over time. */
+    presets: opts.presets
+      ? wrapClassicPresetDefaults(opts.presets)
+      : [
+          [
+            'classic',
+            {
+              docs: {
+                sidebarPath: './sidebars.js',
+                editUrl: opts.editUrl,
+              },
+              blog: opts.blog === false ? false : {
+                showReadingTime: true,
+                blogTitle: opts.title + ' blog',
+                blogDescription: 'Updates from Conduction',
+              },
+              theme: {
+                customCss,
+              },
+              sitemap: DEFAULT_SITEMAP_OPTIONS,
+            },
+          ],
+        ],
 
     /* Brand theme: registers ./theme/* swizzles (Navbar, Footer, …)
        and auto-loads brand.css. Site-specific themes can be added by
@@ -342,14 +583,20 @@ function createConfig(opts) {
              { wordmark: 'X' } -> single custom brand
              { brands: [{wordmark, logo, href}, ...] } -> dual-brand row,
                           rendered side by side. Used by product pages
-                          built jointly with a partner (mydash + Sendent
+                          built jointly with a partner (launchpad + Sendent
                           is the first case). */
         footerBrand: opts.footerBrand || null,
         /* Legal-bar links (Privacy / Terms / ISO) plus the two ISO
            9001 + 27001 certification badges on the right side of the
-           canal-footer. Default keeps prior behaviour (pages live at
-           /privacy, /terms, /iso on docs.conduction.nl + www.conduction.nl).
-           Consumer sites that don't ship those pages can opt out per
+           canal-footer.
+
+           Defaults point at the canonical Conduction pages on
+           www.conduction.nl rather than relative routes. Earlier
+           defaults used /privacy, /terms, /iso which 404'd on every
+           per-app subdomain (openregister.conduction.nl/privacy etc.)
+           because those routes only exist on the marketing site. The
+           SEO audit found ~645 sitewide broken internal links across
+           the fleet from this single mistake. Sites can override per
            slot to silence broken-link warnings:
 
              legalLinks: {
@@ -357,23 +604,110 @@ function createConfig(opts) {
                terms:   false,     // hide the Terms link
                iso:     false,     // hide the ISO link AND the cert badges
                                    // (badges follow iso link by default)
-               // any slot can also take a string for an external URL:
-               privacy: 'https://docs.conduction.nl/privacy',
-               // certs default-follow iso, override here:
-               isoCertifications: true | false,
-             } */
-        legalLinks: opts.legalLinks || {},
+               privacy: '/privacy', // self-host: pass a relative route
+               certifications: true | false,
+             }
+
+           The marketing site at conduction-website passes legalLinks
+           explicitly with relative routes so its self-hosted Privacy /
+           Terms / ISO pages keep working as before. */
+        legalLinks: Object.assign(
+          {
+            privacy: 'https://www.conduction.nl/privacy',
+            terms: 'https://www.conduction.nl/terms',
+            iso: 'https://www.conduction.nl/iso',
+          },
+          opts.legalLinks || {}
+        ),
+        /* AI-friendly social-card defaults. `image` ships from the
+           preset's static/img/og-conduction.png and gets served at
+           every consuming site's /img/og-conduction.png; drop your
+           own static/img/og-conduction.png to override per-site, or
+           pass `themeConfig.image: 'img/og-my-app.png'` to use a
+           different file. `metadata` seeds twitter:site + twitter:card
+           + og:type baselines; per-page MDX frontmatter still wins
+           via Helmet de-dupe.
+
+           These two slots are handled below via explicit overrides
+           rather than the wholesale Object.assign so that user-set
+           metadata extends (rather than replaces) the brand defaults
+           and image falls back gracefully. */
+        image: opts.themeConfig?.image || DEFAULT_OG_IMAGE,
+        metadata: [
+          ...DEFAULT_METADATA,
+          ...(opts.themeConfig?.metadata || []),
+        ],
       },
-      opts.themeConfig || {}
+      /* Object.assign last so opts.themeConfig overrides primitives
+         like colorMode and navbar, but the image + metadata keys
+         above pre-merged the user's values so the spread doesn't
+         clobber the brand defaults. */
+      (() => {
+        if (!opts.themeConfig) return {};
+        /* eslint-disable-next-line no-unused-vars */
+        const {image: _image, metadata: _metadata, ...rest} = opts.themeConfig;
+        return rest;
+      })()
     ),
 
-    plugins: opts.plugins || [],
+    /* AI-crawler discovery: Organization + WebSite JSON-LD on every
+       page, plus any site-specific tags the consumer adds. Sites
+       inherit the canonical Conduction Organization automatically;
+       per-app SoftwareApplication schemas are emitted by the
+       <DetailHero> component on the pages it renders. */
+    headTags: [
+      ...buildAiHeadTags(opts),
+      ...(opts.headTags || []),
+    ],
+
+    /* The AI-crawling plugin emits /robots.txt (and optionally /llms.txt)
+       in postBuild, after webpack's copy-plugin has copied static files.
+       It no-ops when the file already exists in outDir, so a site's own
+       static/robots.txt or static/llms.txt always wins. Sites disable
+       per-file or wholesale via opts.aiCrawling.disable. Hand-rolled
+       plugins in opts.plugins are appended after these defaults.
+
+       The IndexNow plugin pings api.indexnow.org with the sitemap URLs
+       after a successful build so Bing (and the AI surfaces it feeds,
+       Copilot / ChatGPT Search / DuckDuckGo) recrawl within minutes
+       instead of the usual 1-4 weeks. No-ops without opts.indexnow.key
+       (the per-site IndexNow key, generated once at bing.com/indexnow).
+       Sites that prefer the long-tail crawl path opt out by passing
+       indexnow: { disable: true } or just leaving the key unset. */
+    plugins: [
+      [
+        require.resolve('./plugins/ai-crawling.js'),
+        opts.aiCrawling || {},
+      ],
+      [
+        require.resolve('./plugins/indexnow.js'),
+        opts.indexnow || {},
+      ],
+      /* The Features Page plugin registers a `/features` route backed by
+         the consuming app's `docs/features.json` (regenerated from
+         openspec/specs/ by the org-wide Features Extract workflow stage).
+         No-ops when features.json is absent, so it's safe to enable
+         across the fleet ahead of full adoption. Sites opt out via
+         opts.featuresPage = { disable: true } or override the page
+         title / intro / route path. */
+      [
+        require.resolve('./plugins/features-page.js'),
+        opts.featuresPage || {},
+      ],
+      ...(opts.plugins || []),
+    ],
   };
 }
 
 module.exports = {
   createConfig,
   I18N,
+  BRAND_ORGANIZATION_JSONLD,
+  buildWebsiteJsonLd,
+  buildAiHeadTags,
+  DEFAULT_SITEMAP_OPTIONS,
+  DEFAULT_METADATA,
+  DEFAULT_OG_IMAGE,
   baseNavbar,
   baseFooter,
   baseFooterLinks,

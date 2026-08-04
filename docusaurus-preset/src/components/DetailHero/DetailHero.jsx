@@ -21,22 +21,22 @@
  * Usage:
  *
  *   <DetailHero
- *     appId="mydash"
- *     crumb={[{label: 'Apps', href: '/apps'}, 'MyDash']}
+ *     appId="launchpad"
+ *     crumb={[{label: 'Apps', href: '/apps'}, 'LaunchPad']}
  *     status={{label: 'Beta', color: 'var(--c-orange-knvb)'}}
  *     version="v0.9"
  *     locales="NL · EN"
- *     title="MyDash"
+ *     title="LaunchPad"
  *     tagline="..."
  *     primaryCta={{label: 'Install from app store', href: '/install'}}
  *     icon={<svg>...</svg>}
  *     iconColor="var(--c-blue-cobalt)"
- *     illustration={<AppMock app="mydash" />}
+ *     illustration={<AppMock app="launchpad" />}
  *   />
  *
  * Each cta object also accepts `tone: "orange"` to flip the primary
  * (or secondary) variant to the KNVB-orange accent. Reserved for
- * product pages with an orange-leaning brand identity (mydash).
+ * product pages with an orange-leaning brand identity (launchpad).
  *
  * `background="cobalt"` paints the hero in a full-bleed cobalt panel
  * with white type — the product-page identity used on the
@@ -45,11 +45,14 @@
  */
 
 import React from 'react';
+import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HexBullet from '../primitives/HexBullet';
 import Button from '../primitives/Button';
 import {deriveStability} from '../../theme/brand.jsx';
 import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
+import {APPS_REGISTRY, applicationCategoryFor} from '../../data/apps-registry';
+import AppGlyph, {hasAppGlyph} from '../AppGlyph/AppGlyph.jsx';
 import styles from './DetailHero.module.css';
 
 /**
@@ -71,6 +74,7 @@ export default function DetailHero({
   locales,
   title,
   tagline,
+  intro,
   primaryCta,
   secondaryCta,
   tertiaryCta,
@@ -84,6 +88,20 @@ export default function DetailHero({
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
   const hasIllustration = Boolean(illustration);
+  /* Default the title mark to the canonical app glyph (the same logo
+     served on identity.conduction.nl/apps) when the caller doesn't pass
+     an explicit `icon`. Keeps every /apps hero on the real brand logo
+     instead of a hand-drawn placeholder. */
+  const resolvedIcon = icon !== undefined
+    ? icon
+    : (appId && hasAppGlyph(appId) ? <AppGlyph app={appId} /> : null);
+  /* Icon-hex colour follows the surface: an orange hex on the cobalt
+     hero (so the mark reads against the blue), a cobalt hex on the
+     default cream surface. Callers can still pass `iconColor` to
+     override. ("Orange hex on a blue background.") */
+  const resolvedIconColor = iconColor !== undefined
+    ? iconColor
+    : (background === 'cobalt' ? 'var(--c-orange-knvb)' : 'var(--c-blue-cobalt)');
   /* `background="cobalt"` flips the hero to a full-bleed cobalt panel
      with white type — the product-page identity used on
      {slug}.conduction.nl landings. Default (undefined) keeps the
@@ -107,8 +125,98 @@ export default function DetailHero({
       }
     : undefined);
 
+  /* SoftwareApplication JSON-LD for AI crawlers. Emitted when appId
+     resolves to a known entry in apps-registry (so the schema only
+     fires on actual product pages, not partner/solution detail pages
+     that reuse this hero). Pulls applicationCategory from the registry
+     category, operatingSystem is hard-coded "Nextcloud" because every
+     Conduction app is a Nextcloud app. Downloads and version surface
+     as ratingCount-shaped signals on schema.org/SoftwareApplication.
+     The schema lives on every page that mounts this hero, including
+     each product page's /apps/<slug> route on conduction.nl AND each
+     per-app docs site's landing where DetailHero is the masthead. */
+  const appEntry = appId ? APPS_REGISTRY[appId] : undefined;
+  const softwareApplicationJsonLd = appEntry ? (() => {
+    const titleText = typeof title === 'string' ? title : appEntry.name;
+    const taglineText = typeof tagline === 'string' ? tagline : undefined;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      '@id': `${siteConfig?.url || ''}${appEntry.productHref}#app`,
+      name: titleText,
+      applicationCategory: applicationCategoryFor(appId),
+      operatingSystem: 'Nextcloud',
+      url: `${siteConfig?.url || ''}${appEntry.productHref}`,
+      sameAs: [appEntry.docsHref].filter(Boolean),
+      publisher: {'@id': 'https://www.conduction.nl/#org'},
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+      },
+      license: 'https://eupl.eu/1.2/en/',
+    };
+    if (taglineText) schema.description = taglineText;
+    if (resolvedVersion) schema.softwareVersion = resolvedVersion.replace(/^v/, '');
+    if (dlCount > 0) {
+      /* Surface install count as InteractionCounter rather than
+         aggregateRating; downloads are not reviews. */
+      schema.interactionStatistic = {
+        '@type': 'InteractionCounter',
+        interactionType: {'@type': 'DownloadAction'},
+        userInteractionCount: dlCount,
+      };
+    }
+    return schema;
+  })() : null;
+
+  /* BreadcrumbList JSON-LD from the existing `crumb` prop. The hero
+     already renders a visible breadcrumb chain; this just emits the
+     schema.org/BreadcrumbList equivalent so Google can render SERP
+     breadcrumbs. Items with an href become navigable list entries;
+     bare strings (typically the last "you are here" position) get a
+     name + position with no item URL. The current page is added as
+     the final position so the schema is self-contained. */
+  const breadcrumbListJsonLd = (crumb && Array.isArray(crumb) && crumb.length > 0) ? (() => {
+    const baseUrl = (siteConfig?.url || '').replace(/\/$/, '');
+    const items = crumb.map((c, i) => {
+      const name = typeof c === 'string' ? c : c.label;
+      const href = (typeof c === 'object' && c.href) ? c.href : undefined;
+      const url = href
+        ? (href.startsWith('http') ? href : `${baseUrl}${href}`)
+        : undefined;
+      const entry = {
+        '@type': 'ListItem',
+        position: i + 1,
+        name,
+      };
+      if (url) entry.item = url;
+      return entry;
+    });
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items,
+    };
+  })() : null;
+
   return (
     <section className={[styles.head, hasIllustration && styles.withIllustration, bgClass, className].filter(Boolean).join(' ')}>
+      {softwareApplicationJsonLd && (
+        <Head>
+          <script type="application/ld+json">
+            {JSON.stringify(softwareApplicationJsonLd)}
+          </script>
+        </Head>
+      )}
+      {breadcrumbListJsonLd && (
+        <Head>
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbListJsonLd)}
+          </script>
+        </Head>
+      )}
       {crumb && Array.isArray(crumb) && (
         <div className={styles.crumb}>
           {crumb.map((c, i) => {
@@ -157,26 +265,31 @@ export default function DetailHero({
 
           {title && (
             <h1 className={styles.title}>
-              {icon && (
+              {resolvedIcon && (
                 <span
                   className={styles.titleIcon}
-                  style={iconColor ? {background: iconColor} : undefined}
+                  style={{background: resolvedIconColor}}
                   aria-hidden="true"
                 >
-                  {icon}
+                  {resolvedIcon}
                 </span>
               )}
               <span className={styles.titleText}>{title}</span>
             </h1>
           )}
           {tagline && <p className={styles.tagline}>{tagline}</p>}
+          {intro && <div className={styles.intro}>{intro}</div>}
 
           {(primaryCta || secondaryCta || tertiaryCta) && (
             <div className={styles.actions}>
               {primaryCta && (
                 <Button
                   variant="primary"
-                  tone={primaryCta.tone}
+                  /* On the cobalt hero the primary CTA goes orange (KNVB)
+                     so it pops against the blue, matching the orange icon
+                     hex. Cream surface keeps the default tone. Callers can
+                     still pass an explicit `tone` to override. */
+                  tone={primaryCta.tone ?? (background === 'cobalt' ? 'orange' : undefined)}
                   href={primaryCta.href}
                   icon={primaryCta.icon}
                 >

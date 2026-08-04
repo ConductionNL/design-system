@@ -12,8 +12,8 @@
  * about a single integration point.
  *
  * Visual reference: every Conduction widget renders against a dashboard
- * background (cobalt-900 in MyDash, white in stock Nextcloud). The
- * WidgetMock chrome is cobalt to match MyDash since most Conduction
+ * background (cobalt-900 in LaunchPad, white in stock Nextcloud). The
+ * WidgetMock chrome is cobalt to match LaunchPad since most Conduction
  * widgets are built for that surface; the same widget atoms render
  * fine on white when reused there.
  *

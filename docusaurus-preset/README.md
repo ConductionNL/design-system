@@ -4,7 +4,7 @@ Brand-default Docusaurus 3 config for Conduction sites. Tokens, theme, navbar, f
 
 ## Status
 
-Source lives inside the [design-system monorepo](https://github.com/ConductionNL/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
+Source lives inside the [design-system monorepo](https://codeberg.org/Conduction/design-system); published to npm under the `@conduction` scope as a single package. Install in any product site with `npm i @conduction/docusaurus-preset`. The diagram web-component runtime (`<cn-hex>`, `<cn-platform>`, etc.) ships inside this same package under `@conduction/docusaurus-preset/diagrams` — no separate install needed.
 
 ## Brand rules
 
@@ -21,6 +21,8 @@ A few non-negotiables encoded by the package CSS and worth knowing about:
 - **Brand-default navbar** — locale-dropdown + GitHub link. Sites override `items[]` for site-specific navigation.
 - **Brand-default footer** — three-column link grid + Conduction-tells (KvK, BTW, address). Per-property override: pass `footer: { links: [...] }` to swap columns and inherit the brand copyright unchanged. Spread `baseFooterLinks()` to keep one or two brand columns alongside site-specific ones.
 - **Sensible defaults** — `trailingSlash`, `onBrokenLinks: 'warn'`, `respectPrefersColorScheme`, dark-mode brand mapping.
+- **AI-crawler baseline** — Organization + WebSite JSON-LD on every page, `SoftwareApplication` JSON-LD from `<DetailHero>`, `FAQPage` JSON-LD from `<FAQ>`, default `og:image` + Twitter card meta, sitemap options, and a `postBuild` plugin that emits `robots.txt` when the site does not ship its own. See the AI baseline section below for the validator and content requirements.
+- **AI content disclosure** — opt-in `ai:` frontmatter key (`generated` / `modified` / `assisted`) renders the official EU Article-50 mark + a factual, no-compliance-claim line at the top of a doc or blog page. See the AI content disclosure section below.
 
 ## Usage
 
@@ -161,7 +163,150 @@ Then use `createConfig()` in your `docusaurus.config.js` as shown in [Usage](#us
 import '@conduction/docusaurus-preset/diagrams';
 ```
 
-This is how product sites such as `mydash.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
+This is how product sites such as `launchpad.conduction.nl/docs/...` adopt the brand without copying CSS or theme code, and stay in sync as the design-system evolves.
+
+## AI-crawler baseline
+
+Every site that consumes this preset inherits a contract that AI crawlers (GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google AI Overviews) expect. The schemas, meta tags, and `robots.txt` ship automatically; sites only have to opt in to the content that surfaces them.
+
+**What the preset ships**
+
+| Surface | Source | How a site uses it |
+| --- | --- | --- |
+| Organization + WebSite JSON-LD | `headTags` injected by `createConfig` | Automatic on every page |
+| `og:image`, `twitter:site`, `twitter:card`, `og:type` | `themeConfig.image` + `themeConfig.metadata` defaults | Override per site by passing `themeConfig.image: 'img/og-my-app.png'` |
+| Default `robots.txt` | `conduction-ai-crawling` postBuild plugin | Drop `static/robots.txt` to override |
+| `SoftwareApplication` JSON-LD | `<DetailHero appId="my-app" .../>` | Pages that should advertise the app must render `<DetailHero>` with an `appId` that resolves in `src/data/apps-registry.js`. No DetailHero means no schema. |
+| `FAQPage` JSON-LD | `<FAQ>` with `<FAQItem question=...>` children | Drop a `<FAQ>` block onto a page; the schema is auto-emitted from the children |
+| Sitemap options | Default `sitemap` config on the classic preset | Sites that override `presets` must include their own `sitemap` block |
+
+**Validating a site**
+
+The preset ships a generic 8-check validator as a `bin`. Wire it into the site's build:
+
+```jsonc
+// docs/package.json
+{
+  "scripts": {
+    "build": "docusaurus build",
+    "postbuild": "validate-ai-baseline",
+    "validate:ai-baseline": "validate-ai-baseline"
+  }
+}
+```
+
+`npm run build` now exits non-zero if any of these regress: `robots.txt` exists with a Sitemap line and an AI-bot allow line, `sitemap.xml` has at least one URL, the homepage emits Organization + WebSite JSON-LD plus `og:image` / `og:type` / `twitter:site` / `twitter:card`, and the `og:image` URL resolves to a real file. Sites can extend the validator with extra checks (per-app SoftwareApplication, FAQPage on specific pages, etc.) by adding their own `scripts/validate-ai-baseline-site.mjs` and chaining it.
+
+**Per-app docs site checklist**
+
+For a per-app docs site to satisfy the full schema contract, the landing page must render `<DetailHero appId="my-app" .../>` with an `appId` that exists in `src/data/apps-registry.js`. That single render emits the `SoftwareApplication` JSON-LD with category mapping (Data and Processes -> BusinessApplication, Connectors -> DeveloperApplication, etc.), `operatingSystem: 'Nextcloud'`, and the EUPL-1.2 license URL. Sites that build a custom landing without `<DetailHero>` get only Organization + WebSite, not the per-app schema.
+
+**Opting out**
+
+```js
+createConfig({
+  title: '...',
+  url: '...',
+  baseUrl: '/',
+  aiCrawling: { disable: true },          // skip the whole postBuild plugin
+  // or, finer-grained:
+  aiCrawling: { disable: { robotsTxt: true } },  // ship our own static/robots.txt
+});
+```
+
+## Traditional SEO baseline
+
+The same `createConfig` call also wires the traditional-search baseline that pairs with the AI-crawler one. Google, Bing, DuckDuckGo and the AI surfaces those engines feed (Copilot, ChatGPT Search, Perplexity) all benefit.
+
+**What's shipped automatically**
+
+- **Sitemap with `lastmod`** from file mtime; `priority` and `changefreq` are dropped because Google ignores them. `/page/N/` pagination and `/academy/tags/` thin pages are excluded sitewide so they don't dilute crawl budget.
+- **Footer legal links default to absolute URLs on `www.conduction.nl`** (`/privacy`, `/terms`, `/iso`). Earlier defaults used relative routes that 404'd on every per-app subdomain — the SEO audit found ~645 sitewide broken internal links across the fleet from this single mistake. Marketing sites that self-host these pages pass `legalLinks: { privacy: '/privacy', ... }` to opt back into relative routing.
+- **Search Console / Bing Webmaster / Yandex / Facebook / Pinterest verification meta tags** via `opts.searchConsoleVerification`. Each present token becomes a `<meta>` tag in the global head, which lets a non-DNS-admin teammate verify the property via the console UI:
+
+```js
+createConfig({
+  // ...
+  searchConsoleVerification: {
+    google: 'abc123...',     // -> <meta name="google-site-verification">
+    bing:   'xyz...',        // -> <meta name="msvalidate.01">
+    yandex: '...',           // -> <meta name="yandex-verification">
+    facebook: '...',         // -> <meta name="facebook-domain-verification">
+    pinterest: '...',        // -> <meta name="p:domain_verify">
+  },
+});
+```
+
+**`BreadcrumbList` JSON-LD**
+
+- Docs pages: emitted automatically by Docusaurus 3.10+ via the bundled `DocBreadcrumbs/StructuredData` component. Older Docusaurus versions render the same data as inline microdata (`itemscope`/`itemprop`), which Google still reads.
+- Marketing / landing pages: `<DetailHero>` emits a `BreadcrumbList` JSON-LD block from its existing `crumb` prop. Pages that pass `crumb={[...]}` to `<DetailHero>` get the schema for free; no additional component needed.
+
+**`TechArticle` JSON-LD on docs pages**
+
+The preset's `DocItem/Content` swizzle prepends a `TechArticle` JSON-LD block to every documentation page. Fields derived from the page's frontmatter and Docusaurus metadata:
+
+- `headline` and `description` from frontmatter title + description
+- `datePublished` and `dateModified` from `metadata.lastUpdatedAt` (git mtime by default)
+- `author` from frontmatter `author:` or `authors:` (string, object, or array). Defaults to "Conduction" as the team author
+- `publisher` references the shared Conduction `Organization` via `@id`
+- `mainEntityOfPage` resolves to the doc's canonical URL
+
+Sites can opt out per-page by setting `techArticle: false` in the doc's frontmatter.
+
+**IndexNow integration for Bing + AI surfaces**
+
+`@conduction/docusaurus-preset/plugins/indexnow` is auto-loaded by `createConfig`. Sites enable it by passing a key:
+
+```js
+createConfig({
+  // ...
+  indexnow: {
+    key: 'abc123...', // 64-char key from bing.com/indexnow/getstarted
+  },
+});
+```
+
+The plugin writes `<key>.txt` to the build output (for IndexNow's ownership handshake) and POSTs the full sitemap URL list to `api.indexnow.org` after a successful build. Bing recrawls within minutes; Yandex consumes the same payload. DuckDuckGo, Copilot, and ChatGPT Search all read Bing's index, so a single ping covers most non-Google surfaces.
+
+Failure-tolerant: timeouts or 5xx responses log a warning and let the deploy continue. Disable via `indexnow: { disable: true }`.
+
+**Per-page title format**
+
+Docusaurus defaults to `{Page} | {Site}`, which produces `OpenRegister | OpenRegister` on per-app homepages. Override per page via frontmatter `title:` for now; a `titleFormat` option may land in a future release.
+
+## AI content disclosure (EU AI Act Article 50)
+
+The EU AI Act's transparency tier (Article 50) obliges the discloser of AI-generated or AI-modified content to say so. On 2026-06-10 the European Commission published a set of icons for exactly this purpose, free to use without attribution. This preset vendors those icons and wires a strictly opt-in way to show them on a page.
+
+**Important:** using these icons does **not** by itself establish legal compliance with Article 50, and the Commission asks that non-signatories not use them in a way that implies adherence to the Code of Practice on Transparency of AI-Generated Content. The copy this preset ships states a fact about the page ("This page was generated with AI.") and nothing more — it never asserts compliance or Code-of-Practice adherence. See `static/img/ai-disclosure/PROVENANCE.md` for the icon source, licence, and per-mark meaning.
+
+**Frontmatter usage** — add an `ai:` key to a doc or blog post's frontmatter:
+
+```md
+---
+title: How we generate release notes
+ai: generated
+---
+```
+
+| Value | EU mark | Meaning |
+| --- | --- | --- |
+| `generated` | Fully AI-Generated | Entirely AI-produced, no human-authored elements or editorial control (prompting excluded) |
+| `modified` | Partially AI-Modified | Pre-existing human content partially altered with AI |
+| `assisted` | Basic | AI assisted the work, or a custom/interactive label is used |
+
+The banner renders at the top of the page, above the title. **Omitting `ai:` renders nothing** — there is no site-wide default, no directory inheritance, and no content inference; labelling a human-written page as AI-generated would publish a false authorship claim, which is the exact harm the disclosure regime exists to prevent. A misspelled or empty value (e.g. `ai: genrated`) emits a build-time warning naming the file, the bad value, and the three permitted values, and still renders no banner — it never falls back to a mark.
+
+**Inline MDX usage** — the same component the frontmatter key triggers is also exported directly, for a mark that belongs somewhere other than the page top (for example, beside a single AI-generated figure within an otherwise human-written page):
+
+```mdx
+import { AiDisclosure } from '@conduction/docusaurus-preset/components';
+
+<AiDisclosure kind="modified" />
+```
+
+**Theme-aware** — the mark automatically switches between the Commission's black and white treatments to match the reader's active colour mode, live, with no page reload. **Localised** — copy is available in all four of the preset's locales (nl default, en, de, fr) and renders in the page's active locale.
 
 ## Releasing
 

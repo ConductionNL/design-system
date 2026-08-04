@@ -1,0 +1,26 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [main, beta]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run semantic-release --dry-run only"
+        type: boolean
+        default: false
+
+# @conduction/docusaurus-preset is a monorepo package under docusaurus-preset/
+# (semantic-release-monorepo, tag docusaurus-preset-v*). working-directory scopes
+# semantic-release to that subdir; the reusable workflow installs at repo root so
+# the npm workspace resolves. The SHORT `Conduction/.github/...@main` form is
+# required — Forgejo does not expand the full https://codeberg.org/... URL form,
+# which leaves the runner label empty and the run never starts.
+jobs:
+  publish:
+    uses: Conduction/.github/.forgejo/workflows/release-npm.yml@main
+    with:
+      working-directory: docusaurus-preset
+      install-command: install   # no committed root package-lock.json (npm workspaces)
+      dry-run: ${{ inputs.dry_run || false }}
+    secrets: inherit

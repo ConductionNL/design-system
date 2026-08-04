@@ -30,8 +30,10 @@ export * from './primitives';
 export {default as Hero} from './Hero/Hero.jsx';
 export {default as StatsStrip} from './StatsStrip/StatsStrip.jsx';
 export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';
+export {default as DownloadPanel} from './DownloadPanel/DownloadPanel.jsx';
 export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
 export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
+export {default as AppGlyph, APP_GLYPH_SLUGS, hasAppGlyph} from './AppGlyph/AppGlyph.jsx';
 
 /* Card-family components (Batch 2). Each pairs with a *Grid sibling
    that handles the surrounding layout, so callers can drop a row
@@ -40,12 +42,14 @@ export {default as SolutionCard, SolutionGrid} from './SolutionCard/SolutionCard
 export {default as PartnerCard, PartnerGrid, BecomePartner} from './PartnerCard/PartnerCard.jsx';
 export {default as PartnerDirectory} from './PartnerDirectory/PartnerDirectory.jsx';
 export {default as PartnerSidecard} from './PartnerSidecard/PartnerSidecard.jsx';
+export {default as PartnersFor} from './PartnersFor/PartnersFor.jsx';
 export {default as ManagedCommonGround} from './ManagedCommonGround/ManagedCommonGround.jsx';
 export {default as Clients, DEFAULT_CLIENTS, DEFAULT_PARTNERS} from './Clients/Clients.jsx';
 export {default as ReferenceCard, ReferenceGrid} from './ReferenceCard/ReferenceCard.jsx';
 export {default as PairCard, PairRow} from './PairCard/PairCard.jsx';
 export {default as FeatureList, FeatureItem} from './FeatureList/FeatureList.jsx';
 export {default as HowSteps, HowStep} from './HowSteps/HowSteps.jsx';
+export {default as SetupSteps, SetupStep} from './SetupSteps/SetupSteps.jsx';
 export {default as FAQ, FAQItem} from './FAQ/FAQ.jsx';
 export {default as EmployeeCard, TeamGrid} from './EmployeeCard/EmployeeCard.jsx';
 export {default as DetailHero} from './DetailHero/DetailHero.jsx';
@@ -82,9 +86,11 @@ export {default as Showcase} from './Showcase/Showcase.jsx';
 export {default as RotatingCards} from './RotatingCards/RotatingCards.jsx';
 export {default as HexBackground} from './HexBackground/HexBackground.jsx';
 export {default as AgentTrace} from './AgentTrace/AgentTrace.jsx';
+export {default as McpToolShelf} from './McpToolShelf/McpToolShelf.jsx';
 export {default as ExternalAppShelf} from './ExternalAppShelf/ExternalAppShelf.jsx';
 export {default as WidgetShelf} from './WidgetShelf/WidgetShelf.jsx';
 export {default as FeatureGrid, FeatureGridGroup, FeatureItem as FeatureGridItem} from './FeatureGrid/FeatureGrid.jsx';
+export {default as FeaturesPage} from './FeaturesPage/FeaturesPage.jsx';
 
 /* Academy components (Batch 4). Card-and-chrome patterns for
    academy.conduction.nl: a single feed of blogs, guides, case studies,
@@ -108,13 +114,38 @@ export {default as ContentDetailHero} from './ContentDetailHero/ContentDetailHer
 export {default as AppCrossLinks} from './AppCrossLinks/AppCrossLinks.jsx';
 export {APPS_REGISTRY, APP_SLUGS, APP_LABELS, getApp, getApps} from '../data/apps-registry';
 
+/* Academy modules — composite-card and per-module index page that
+   group a multi-part academy series (e.g. deskdesk-tutorial,
+   openwoo-getting-started) into one entity. ModuleCard renders on
+   the academy landing in place of the individual member cards;
+   ModulePage wraps /academy/modules/{slug}.mdx index pages. Both
+   read frontmatter from the consuming site's `academy-modules`
+   plugin via usePluginData('academy-modules'). */
+export {default as ModuleCard} from './ModuleCard/ModuleCard.jsx';
+export {default as ModulePage} from './ModulePage/ModulePage.jsx';
+export {
+  AUDIENCES,
+  AUDIENCE_LABELS,
+  AUDIENCE_PLURAL_LABELS,
+  AUDIENCE_BULLET_COLOR,
+  AUDIENCE_SHORT_LABELS,
+} from '../data/audience';
+
 /* Tutorial-body components. Drop-in replacements for the ad-hoc
    "What you need", "Troubleshooting", and "Next steps" h2 + bullet
    patterns that academy tutorials kept duplicating. Designed for use
    inside an MDX academy post body. */
 export {default as HexCard} from './HexCard/HexCard.jsx';
+export {default as PullQuote} from './PullQuote/PullQuote.jsx';
 export {default as Outcomes, Outcome} from './Outcomes/Outcomes.jsx';
 export {default as Prerequisites, PrerequisiteItem} from './Prerequisites/Prerequisites.jsx';
 export {default as Troubleshooting, TroubleshootingItem} from './Troubleshooting/Troubleshooting.jsx';
 export {default as NextSteps, NextStep} from './NextSteps/NextSteps.jsx';
 export {default as ContactCta} from './ContactCta/ContactCta.jsx';
+
+/* AiDisclosure — EU Article-50 AI-content disclosure banner/mark.
+   Frontmatter-driven at the top of docs/blog pages (see the
+   DocItem/Content and BlogPostItem/Content theme swizzles); exported
+   here so an author can also drop it inline in MDX, e.g. beside a
+   single AI-generated figure within an otherwise human-written page. */
+export {default as AiDisclosure} from './AiDisclosure/AiDisclosure.jsx';

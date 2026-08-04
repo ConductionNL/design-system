@@ -55,6 +55,28 @@
       const scripts = [...body.querySelectorAll('script')];
       scripts.forEach((s) => s.remove());
 
+      // Body-level <link rel="stylesheet"> tags get the same lift +
+      // href rewrite as head links, otherwise the browser resolves
+      // them relative to the host page and 404s. (Fragments like
+      // top-navbar.html and footer.fragment.html put their preview-
+      // only stylesheets in the body.)
+      body.querySelectorAll('link[rel="stylesheet"]').forEach((linkEl, i) => {
+        const id = idBase + '-bodylink-' + i;
+        const rawHref = linkEl.getAttribute('href');
+        linkEl.remove();
+        if (document.getElementById(id)) return;
+        const live = document.createElement('link');
+        live.rel = 'stylesheet';
+        if (rawHref) live.href = new URL(rawHref, sourceUrl).href;
+        live.id = id;
+        document.head.appendChild(live);
+      });
+
+      // Strip <aside class="react-usage"> blocks: those are the React
+      // / MDX spec docs that belong only on the standalone component
+      // spec page, never on a page that includes the component.
+      body.querySelectorAll('aside.react-usage').forEach((a) => a.remove());
+
       el.outerHTML = body.innerHTML;
 
       // Re-attach scripts as live elements so inline code (e.g. the

@@ -4,7 +4,7 @@ Brand-strict diagram primitives for Conduction and ConNext, as framework-agnosti
 
 ## Status
 
-Pre-release, scaffolded inside the `design-system` repo. The future home is tracked in [design-system#2](https://github.com/ConductionNL/design-system/issues/2).
+Pre-release, scaffolded inside the `design-system` repo. The future home is tracked in [design-system#2](https://codeberg.org/Conduction/design-system/issues/2).
 
 ## Why
 

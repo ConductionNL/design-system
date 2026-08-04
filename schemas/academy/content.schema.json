@@ -4,7 +4,7 @@
   "title": "Academy content",
   "description": "Frontmatter contract for an academy.conduction.nl entry. Each MDX file under sites/academy/content/ has frontmatter that conforms to this schema. Translations live in sites/academy/i18n/<locale>/docusaurus-plugin-content-blog/ and conform to the same schema, with content allowed to diverge per language.",
   "type": "object",
-  "required": ["title", "contentType", "authors", "date", "summary"],
+  "required": ["title", "contentType", "authors", "date", "summary", "audience"],
   "properties": {
     "slug": {
       "type": "string",
@@ -45,6 +45,34 @@
       "description": "App slugs from the shared apps-registry (docusaurus-preset/src/data/apps-registry.js). Drives the product filter row on the academy landing and the cross-link block on the post detail page. Multiple apps allowed when a post covers a pipeline that spans products. Optional; posts that aren't about a specific app omit it.",
       "uniqueItems": true
     },
+    "audience": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["mkb", "government", "developer"]
+      },
+      "description": "Target audiences for this entry, from the three tiers defined in design-system/CLAUDE.md and preview/identity/audience.html. `mkb` = MKB-beslisser / IT-lead (primary), `government` = Overheid-beslisser (secondary), `developer` = Developer / integrator (tertiary). One or more values. A post is shown when ANY of its audiences matches the active filter. List the primary audience first by convention."
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Optional module slug. Groups multiple entries into an ordered learning path (e.g. `deskdesk-tutorial` for the four-part build series). Use the same slug across every entry in the module. Combine with `modulePosition` to define the order. Modules can mix content types: a module may include guides, tutorials, and a closing webinar."
+    },
+    "modulePosition": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Position of this entry inside its `module`, starting at 1. Required when `module` is set so the TOC / next-prev navigation can render in a deterministic order. Gaps are allowed (1, 2, 4) for in-progress modules."
+    },
+    "moduleTitle": {
+      "type": "string",
+      "description": "Optional human-readable title for the module. Set this on the entry at `modulePosition: 1` (the canonical source); other parts may omit it. Used by the composite <ModuleCard/> on the academy landing and the <ModulePage/> wrapper for /academy/modules/{slug}. Falls back to a kebab→sentence-case render of the `module` slug when absent."
+    },
+    "moduleLede": {
+      "type": "string",
+      "description": "Optional one- or two-sentence summary of the module. Set this on the entry at `modulePosition: 1` (the canonical source). Used as the lede on the composite <ModuleCard/> and as the hero copy on the module index page. Falls back to the first part's `summary` when absent."
+    },
     "heroImage": {
       "type": "string",
       "description": "Path to the hero image used in <ContentDetailHero/>. Relative to the post folder."
@@ -76,6 +104,14 @@
       },
       "then": {
         "required": ["videoUrl"]
+      }
+    },
+    {
+      "if": {
+        "required": ["module"]
+      },
+      "then": {
+        "required": ["modulePosition"]
       }
     }
   ],

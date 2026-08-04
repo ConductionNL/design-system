@@ -5,7 +5,7 @@ Tracks which `preview/components/*.html` patterns ship as React components in
 port; now reads as a coverage map. Anything still missing lives in **Open gaps**
 at the bottom.
 
-> Last refreshed 2026-05-06 against `src/components/index.js` and the static kit.
+> Last refreshed 2026-05-19 against `src/components/index.js` and the static kit.
 
 ## Atomic primitives
 
@@ -35,10 +35,10 @@ Most consume one or more primitives.
 - **AppsPreview / AppCard** — `AppsPreview/AppsPreview.jsx`. Static 3-up apps grid. Composes SectionHead + HexBullet.
 - **AppsGrid** — `AppsGrid/AppsGrid.jsx`. Filterable apps catalogue with category chips. Reuses AppCard.
 - **SolutionCard / SolutionGrid** — `SolutionCard/SolutionCard.jsx`. Sector-tinted solution cards. Composes Pill.
-- **PartnerCard / PartnerGrid / BecomePartner** — `PartnerCard/PartnerCard.jsx`. Three tiers (partner, certified, strategic). Plus `variant="other"` for the compact mini-avatar card used on partner-detail pages.
-- **PartnerDirectory** — `PartnerDirectory/PartnerDirectory.jsx`. Self-contained faceted directory used on `/partners` and embedded on the homepage. Internally derives facets from the partner data; pair with a `becomePartner` object for the trailing CTA card. No dedicated static-kit specimen — composed from PartnerCard + FacetedFilters.
+- **PartnerCard / PartnerGrid / BecomePartner** — `PartnerCard/PartnerCard.jsx`. Three tiers (partner, certified, strategic). Plus `variant="other"` for the compact mini-avatar card used on partner-detail pages. Optional `logoAlt` prop for explicit a11y; defaults to `name + ' logo'` when omitted.
+- **PartnerDirectory** — `PartnerDirectory/PartnerDirectory.jsx`. Self-contained faceted directory used on `/partners` and embedded on the homepage. Internally derives facets from the partner data (including `solutions` merged into the offering facet); pair with a `becomePartner` object for the trailing CTA card. Specimen: `preview/components/partner-directory.html`.
 - **PartnerSidecard** — `PartnerSidecard/PartnerSidecard.jsx`. Sticky right rail used inside partner-detail pages. Holds the tier credential, "apps they ship", and "solutions they deliver". Bleeds into the Specialties section without wrapping the page.
-- **ManagedCommonGround** — `ManagedCommonGround/ManagedCommonGround.jsx`. Yellow-themed managed-stack panel used on `/commonground` and `/support`. Component-list + price line + dual CTA. No dedicated static-kit specimen.
+- **ManagedCommonGround** — `ManagedCommonGround/ManagedCommonGround.jsx`. Yellow-themed managed-stack panel used on `/commonground` and `/support`. Component-list + price line + dual CTA. Specimen: `preview/components/managed-common-ground.html`.
 - **Clients** (+ `DEFAULT_CLIENTS`, `DEFAULT_PARTNERS`) — `Clients/Clients.jsx`. Three-row right-to-left honeycomb marquee with grayscale-to-colour hover, lane-pause-on-hover, and `prefers-reduced-motion` respect. Specimen: `preview/components/clients-marquee.html`.
 - **ReferenceCard / ReferenceGrid** — `ReferenceCard/ReferenceCard.jsx`. Customer-reference cards on partner-detail pages.
 - **PairCard / PairRow** — `PairCard/PairCard.jsx`. Compact "related item" cards on app- and solution-detail pages.
@@ -57,12 +57,12 @@ Most consume one or more primitives.
 - **CookieCli** — `CookieCli/CookieCli.jsx`. Terminal-styled cookie consent banner with localStorage persistence.
 - **ComposeBlock** — `ComposeBlock/ComposeBlock.jsx`. Branded code block (cobalt-900 + Plex Mono + filename pill + copy button). For docker-compose, bash recipes, and any verbatim copy-paste content. Used on `/demo`.
 - **AgentTrace** — `AgentTrace/AgentTrace.jsx`. Terminal-styled agent execution trace with cursor + mode chrome. Specimen: `preview/components/agent-trace.html`.
-- **AppMock** — `AppMock/AppMock.jsx`. Selector that renders one of 16 app-specific UI mockups (DeciDesk, DocuDesk, LarpingApp, MyDash + variants, NLDesign, OpenCatalogi, OpenConnector, OpenRegister, OpenWoo, PipelinQ, Procest, SoftwareCatalog, ZaakAfhandelApp). Each variant lives under `AppMock/variants/`. Specimen: `preview/components/app-mock.html`.
-- **ExternalAppShelf** — `ExternalAppShelf/ExternalAppShelf.jsx`. Third-party-app shelf (Outlook-style, Mattermost, Keycloak, etc.) used on `/connext`. No dedicated specimen.
-- **WidgetShelf** — `WidgetShelf/WidgetShelf.jsx`. Widget showcase grid with eyebrow + title + lede + N-column widget cards. No dedicated specimen.
+- **AppMock** — `AppMock/AppMock.jsx`. Selector that renders one of 16 app-specific UI mockups (DeciDesk, DocuDesk, LarpingApp, LaunchPad + variants, NLDesign, OpenCatalogi, OpenConnector, OpenRegister, OpenWoo, PipelinQ, Procest, SoftwareCatalog, ZaakAfhandelApp). Each variant lives under `AppMock/variants/`. Specimen: `preview/components/app-mock.html`.
+- **ExternalAppShelf** — `ExternalAppShelf/ExternalAppShelf.jsx`. Third-party-app shelf (Outlook-style, Mattermost, Keycloak, etc.) used on `/connext`. Specimen: `preview/components/external-app-shelf.html`.
+- **WidgetShelf** — `WidgetShelf/WidgetShelf.jsx`. Widget showcase grid with eyebrow + title + lede + N-column widget cards. Specimen: `preview/components/widget-shelf.html`.
 - **Showcase** — `Showcase/Showcase.jsx`. Multi-item collapsible showcase with screenshot + body. Used on `/commonground` for the "5-lagen model". Specimen: `preview/components/showcase.html`.
 - **RotatingCards** — `RotatingCards/RotatingCards.jsx`. Rotating card carousel. Specimen: `preview/components/rotating-cards.html`.
-- **FAQ / FAQItem** — `FAQ/FAQ.jsx`. Disclosure-pattern FAQ block. Used on `/support`. No dedicated specimen.
+- **FAQ / FAQItem** — `FAQ/FAQ.jsx`. Disclosure-pattern FAQ block. Used on `/support`. Specimen: `preview/components/faq.html`.
 
 ## Academy components
 
@@ -98,13 +98,60 @@ slot-based children pass through. All exported from `Diagrams/Diagrams.jsx`.
 - **Footer canal scene** — `theme/Footer/index.jsx`. Full canal scene (Amsterdam trapgevel skyline, kade with bikes/cars, cobalt canal with orange boats, brand block + link grid riding on the water). Templates injected via `dangerouslySetInnerHTML` so the runtime can `.content`-clone them. Re-hydrates on SPA route changes.
 - **MDXPage** — `theme/MDXPage/index.jsx`. Drops the Docusaurus default `col col--8 col--offset-2` wrapper for pages with `hide_table_of_contents: true`, so marketing surfaces render full-width. Adds the `marketing-page` class on `<main>` so `brand.css` can zero-out stray top margins (no gap between navbar and hero).
 
+## Tutorial-body components
+
+Drop-in replacements for the ad-hoc h2 + bullet patterns that academy
+tutorials and per-app docs kept duplicating. Designed for use inside an MDX
+body. All five have specimen pages.
+
+- **HexCard** — `HexCard/HexCard.jsx`. Tinted academy panel with a top-left hex badge holding an icon. The shared shell behind ContactCta, Outcomes, and Prerequisites. Specimen: `preview/components/hex-card.html`.
+- **Outcomes / Outcome** — `Outcomes/Outcomes.jsx`. "What you'll learn" card with lightbulb hex badge + orange checkmarks. Specimen: `preview/components/outcomes.html`.
+- **Prerequisites / PrerequisiteItem** — `Prerequisites/Prerequisites.jsx`. "What you need" checklist with clipboard hex badge + orange hex bullets. Specimen: `preview/components/prerequisites.html`.
+- **Troubleshooting / TroubleshootingItem** — `Troubleshooting/Troubleshooting.jsx`. Structured error-recovery list. Each item pairs a verbatim `symptom` (monospace) with a one-paragraph fix in a cobalt-50 panel with KNVB-orange left border. Specimen: `preview/components/troubleshooting.html`.
+- **NextSteps / NextStep** — `NextSteps/NextSteps.jsx`. End-of-tutorial action-card row (2/3/4-column). Each card is a fully clickable link with title + body + CTA. Specimen: `preview/components/next-steps.html`.
+- **ContactCta** — `ContactCta/ContactCta.jsx`. "Mail ons" prompt with mail hex badge + primary button. Specimen: `preview/components/contact-cta.html`.
+- **SetupSteps / SetupStep** — Vertical numbered-row pattern for setup / install / walkthrough sections in docs prose. Small orange hex with the auto-assigned step number on the left, bold title + one short paragraph on the right. Distinct from `HowSteps` (3-up card row for marketing surfaces); reach for `SetupSteps` when steps are sequential and detailed inside MDX. Specimen: `preview/components/setup-steps.html` (React wrapper still pending).
+- **ConfigGrid / ConfigPanel** — Side-by-side comparison panels for documenting both ends of an integration (Open Register side vs the external system). Each panel is a white card with a mono-uppercase header and a stack of label/value rows. Used on every `/integrations/<leaf>` docs page; drops to one column under 800px. Specimen: `preview/components/config-grid.html` (React wrapper still pending).
+
+## Page-section blocks
+
+A 2026-05-20 audit lifted the following inline-only patterns out of `preview/pages/*` and `preview/product-pages/*` into specimens. React wrappers are still pending; the CSS lives in each spec for now.
+
+- **Timeline / Milestone** — Vertical year-by-year story strip with a gradient axis line (orange-fading-to-cobalt at the endpoints) and a pointy-top hex marker per milestone. The current milestone gets `now` for a slow pulse. Used on `/about` for the company origin story; reusable on `/roadmap`. Specimen: `preview/components/timeline.html`.
+- **ContactStrip** — Bottom-of-page contact block on cobalt-900. Two columns: title + lede on the left, list of icon-prefixed channels on the right (GitHub, LinkedIn, mail, phone, address). Translucent-fill rows that brighten on hover. Specimen: `preview/components/contact-strip.html`.
+- **CyclingVerb** — Tiny word-swap primitive. Cycles a list of verbs on a slow loop with a 200ms opacity fade. Default cobalt-400 italic; optional cobalt or orange variants. Respects `prefers-reduced-motion`. Specimen: `preview/components/cycling-verb.html`.
+- **TierExplain / TierCard** — Three-up explanation row for the partner-tier hierarchy. Tier pill (cobalt-700 Host, gold Service, cobalt-blue Certified) + title + lede + mint-bulleted benefits list. Distinct from `PartnerCard` — explains the tiers themselves, not individual partners. Specimen: `preview/components/tier-explain.html`.
+- **FormCard / FieldRow / Field** — Lead-capture panel with mono-uppercase eyebrow + h3 + lede + form fields + primary submit. Two variants: white card (default contact) and cobalt-900 dark (partner-application / demo-request). Specimen: `preview/components/form-card.html`.
+- **PageStrip** — Lightweight banner above the content rail. Smaller and quieter than `Hero` — meant for index pages and second-level surfaces. Crumbs + h1 + lede. Default + tinted variants. Specimen: `preview/components/page-strip.html`.
+- **FeatureHero / BenefitRow + Benefit / Checklist / PairsRow + PairTile** — Four building blocks of the product-pages feature template. Independently usable but designed to compose top-to-bottom: hero pull-quote → 3-up benefit case → 2-column mint-bullet checklist → pairs-well-with tile row. Specimen: `preview/components/feature-page-blocks.html`.
+- **AnatomyCard / AnatomyTree** — Two-column explainer for "this is how an X is structured" content. Eyebrow + h2 + paragraphs on the left, stylised file-tree code block on the right. `<AnatomyTree>` auto-styles `root` / `folder` / `note` spans. Specimen: `preview/components/anatomy-card.html`.
+- **PreviewTileGrid / PreviewTile** — Iframe-preview card grid for hub pages. Container-query scaling keeps the preview reading as a full desktop layout, just shrunk. Generalises the `.component-tile` pattern from `preview/components.html`. Specimen: `preview/components/preview-tile.html`.
+- **AdrTable** — Architecture-decision-record index. Four columns (ID, Title, Status, Date) with a colour-coded status pill: mint Accepted, cobalt-100 Proposed, orange Draft, cobalt-50 muted Superseded, vermillion Rejected. Used at the top of every `technical-docs.html`. Specimen: `preview/components/adr-table.html`.
+- **RedocShell / VerbPill** — Three-column API-reference layout (left endpoint nav / middle prose / right code samples) wrapping Redocusaurus with Conduction-brand chrome. `VerbPill` exported separately for use outside the shell: GET light-blue, POST mint, PATCH orange, DELETE vermillion. Specimen: `preview/components/redoc-shell.html`.
+
+## Setup steps (already documented above under Tutorial-body)
+
+- **SetupSteps / SetupStep** + **ConfigGrid / ConfigPanel** lifted from `preview/product-pages/integrations.html` in commit `aa8b81a`.
+
+## OpenRegister leaf docs
+
+- **LeafCard / LeafGrid** — `LeafCard/LeafCard.jsx`. Per-leaf metadata header for the openregister docs. Pointy-top hex + label + status pill + six-field meta grid (group, requiredApp, storage, icon). Four status tints: backend-ready, stub, external (OpenConnector-routed), built-in. `<LeafGrid>` lays cards out for the overview page; each card links to its docs route when `href` is set. Specimen: `preview/components/leaf-card.html`.
+
+## Marketing / explainer
+
+- **IntegrationsBlock / IntegrationsItem** — Two-column explainer that pairs a left-rail FAQ accordion with a right-rail product-mock. Eyebrow + h2 + lede header above the split. Used on app detail pages (notably OpenRegister) to show how the apps fit into a single Nextcloud workspace. Specimen: `preview/components/integrations-block.html` (kit-only; React wrapper still pending).
+- **AtomZones** — `AtomZones/AtomZones.jsx`. Five-zone reference for the canonical Conduction app chassis: Topbar, Left navigation, Main column, Page header, Sidebar. Each card focuses one atom in KNVB orange and fades the rest. Used on architecture pages in per-app docs sites. Specimen: `preview/components/atom-zones.html`.
+- **PartnerSidecard** — `PartnerSidecard/PartnerSidecard.jsx`. Sticky right rail for partner-detail pages. Three tier treatments (Host plain, Service gold stripe, Certified cobalt fill + gold avatar) + Apps they ship + Solutions they deliver + optional bottom CTA. Specimen: `preview/components/partner-sidecard.html`.
+
 ## Open gaps
 
-Three earlier gaps (PartnerCard.OtherCard variant, diagram-set web component
-wrappers, brand-citation utilities) closed in April–May 2026 and are folded
-into the lists above.
+Six earlier gaps closed in April–May 2026 and are folded into the lists above:
+PartnerCard.OtherCard variant; diagram-set web-component wrappers;
+brand-citation utilities; the five composed components that lacked specimens
+(`Troubleshooting`, `NextSteps`, `PartnerSidecard`, `LeafCard`, `AtomZones`,
+plus the new `IntegrationsBlock`); the locale-switcher integration on
+`landing.html` (now complete, NL dictionary covers every `data-i18n` key);
+the `PartnerDirectory solutions` field (consumed in the offering facet);
+the `PartnerCard logoAlt` prop (accepted, with `name + ' logo'` fallback).
 
-- **Locale switcher integration on the kit's static `landing.html`** — the top-navbar.html ships an NL/EN switcher (querystring driven), but the kit's individual pages don't yet have a translation dictionary so the switch is cosmetic on those pages. The connext site already has full Docusaurus i18n; the kit is one round of NL copy away from full parity.
-- **Static specimen pages for composed components** — `ManagedCommonGround`, `PartnerDirectory`, `WidgetShelf`, `ExternalAppShelf`, `FAQ` ship as React but have no `preview/components/*.html` reference. They're composed from primitives that already have specimens, so the absence is reasonable, but a designer reviewing the kit can't see them outside the live site.
-- **PartnerCard `logoAlt` prop** — accepted but never passed by any current MDX usage. Either drop or document an a11y fallback expectation.
-- **PartnerDirectory `solutions` field** — included in `partners-catalog.js` per partner, never consumed by `<PartnerCard>` (harmless spread). Decide whether to surface (e.g. inside the card) or remove from the data.
+No open gaps as of 2026-05-19.

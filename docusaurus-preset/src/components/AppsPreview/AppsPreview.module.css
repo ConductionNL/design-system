@@ -29,7 +29,9 @@
   .row { grid-template-columns: 1fr; }
 }
 
-/* App card, mirrors .app-card from preview/components/apps-grid.css */
+/* App card, mirrors .app-card from preview/components/apps-grid.css.
+   Two-column grid: icon hex on the left, name + tagline on the right,
+   meta row spans the full width at the bottom. */
 .card {
   background: white;
   border: 1px solid var(--c-cobalt-100);
@@ -38,9 +40,12 @@
   text-decoration: none;
   color: inherit;
   transition: all 160ms ease;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 20px;
+  row-gap: 6px;
+  align-items: start;
+  align-content: start;
 }
 .card:hover {
   border-color: var(--c-blue-cobalt);
@@ -60,6 +65,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
 }
 .iconWrap svg {
   width: 26px;
@@ -74,12 +82,14 @@
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--c-cobalt-900);
+  grid-column: 2;
 }
 
 .tagline {
   font-size: 15px;
   color: var(--c-cobalt-700);
   line-height: 1.5;
+  grid-column: 2;
 }
 .tagline :global(.next-blue) { color: var(--c-nextcloud-blue); }
 
@@ -90,6 +100,7 @@
   margin-top: auto;
   padding-top: 20px;
   border-top: 1px solid var(--c-cobalt-100);
+  grid-column: 1 / -1;
 }
 
 .badge {

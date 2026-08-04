@@ -39,6 +39,8 @@ try {
 export default data;
 
 export const totalDownloads = data.totals.downloads;
+export const totalDownloadsGithub = data.totals.downloads_github ?? data.totals.downloads;
+export const totalDownloadsCodeberg = data.totals.downloads_codeberg ?? 0;
 export const appsTotal = data.totals.apps_total;
 export const appsInStore = data.totals.apps_in_store;
 export const generatedAt = data.generated_at;
@@ -51,7 +53,13 @@ export function appStats(appId) {
 
 export function downloadsForApp(appId) {
   const app = byId.get(appId);
-  return app && app.github ? app.github.downloads : 0;
+  if (!app) return 0;
+  // New shape: combined GitHub (legacy) + Codeberg (live) total.
+  if (typeof app.downloads_total === 'number') return app.downloads_total;
+  // Back-compat with the GitHub-only JSON shape.
+  const gh = app.github ? app.github.downloads : 0;
+  const cb = app.codeberg ? app.codeberg.downloads : 0;
+  return gh + cb;
 }
 
 export function formatDownloads(n, locale = 'en') {

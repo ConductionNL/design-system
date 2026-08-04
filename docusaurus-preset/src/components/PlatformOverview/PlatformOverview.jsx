@@ -6,21 +6,15 @@
  * "section-head" pattern (eyebrow + h2 + lede) above the diagram.
  *
  * The platform-diagram custom element is registered by
- * /lib/platform-diagram.js, which sites must include via <Head> on
- * any page that uses this section. The CSS is similarly served from
- * /lib/platform-diagram.css.
+ * /lib/platform-diagram.js and styled by /lib/platform-diagram.css.
+ * Both are loaded post-hydration by the <PlatformDiagram /> component;
+ * sites no longer need to inject anything in <Head> manually.
  *
  * Mirrors the .platform section in preview/pages/landing.html.
  *
  * Usage in MDX:
  *
- *   import Head from '@docusaurus/Head';
  *   import {PlatformOverview} from '@conduction/docusaurus-preset/components';
- *
- *   <Head>
- *     <link rel="stylesheet" href="/lib/platform-diagram.css" />
- *     <script src="/lib/platform-diagram.js" defer />
- *   </Head>
  *
  *   <PlatformOverview
  *     eyebrow="The platform"

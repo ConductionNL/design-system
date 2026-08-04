@@ -44,25 +44,24 @@
  */
 
 import React from 'react';
-import Head from '@docusaurus/Head';
 import {useLazyScript} from '../../utils/lazyScript';
+import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 
 const ASSET_BASE = '/lib';
 
 export default function PlatformDiagram({workspace, lists = [], flows = []}) {
-  /* platform-diagram.js is loaded post-hydration. The runtime registers
-     a custom-element definition that upgrades any <platform-diagram>
-     element on the page; running it after React hydration prevents the
-     custom-element constructor from mutating the DOM mid-hydration and
-     producing #418 / #423 warnings. See utils/lazyScript.js. */
+  /* platform-diagram.{js,css} are loaded post-hydration. The runtime
+     registers a custom-element definition that upgrades any
+     <platform-diagram> element on the page; running it after React
+     hydration prevents the custom-element constructor from mutating the
+     DOM mid-hydration and producing #418 / #423 warnings. The matching
+     stylesheet is held off the render path so its 19 KB doesn't block
+     LCP on pages that render this component. */
   useLazyScript(ASSET_BASE + '/platform-diagram.js', 'platform-diagram');
+  useLazyStylesheet(ASSET_BASE + '/platform-diagram.css', 'platform-diagram');
 
   return (
     <>
-      <Head>
-        <link rel="stylesheet" href={ASSET_BASE + '/platform-diagram.css'} />
-      </Head>
-
       <platform-diagram>
         {workspace && (
           <pd-workspace

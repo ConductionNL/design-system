@@ -5,7 +5,7 @@
  * learning about a Conduction app:
  *
  *   1. /apps/<slug>                              product page
- *   2. https://docs.conduction.nl/<slug>         documentation
+ *   2. https://<slug>.conduction.nl              documentation
  *   3. /academy?app=<slug>                       academy filtered
  *
  * URLs come from the shared apps-registry so all three surfaces stay
@@ -47,6 +47,7 @@
 
 import React from 'react';
 import {APPS_REGISTRY} from '../../data/apps-registry';
+import AppGlyph from '../AppGlyph/AppGlyph.jsx';
 import styles from './AppCrossLinks.module.css';
 
 const ROWS = [
@@ -89,7 +90,9 @@ function AppCard({app, surface, variant}) {
   return (
     <div className={styles.card} aria-labelledby={tagId}>
       <div className={styles.head}>
-        <span className={styles.hex} aria-hidden="true" />
+        <span className={styles.hex} aria-hidden="true">
+          <AppGlyph app={app} className={styles.hexGlyph} />
+        </span>
         <div>
           <p className={styles.eyebrow}>About this app</p>
           <h4 className={styles.title} id={tagId}>{reg.name}</h4>

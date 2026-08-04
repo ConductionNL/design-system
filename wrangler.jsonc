@@ -1,0 +1,23 @@
+{
+  // Cloudflare Worker that serves the static brand kit (the _site artifact
+  // assembled from preview/ + brand/ + diagrams/ + tokens) at
+  // identity.conduction.nl. Replaces the legacy GitHub Pages deploy of the
+  // now-archived ConductionNL/design-system repo; the canonical source now
+  // lives on Codeberg and deploys here via .woodpecker.yml.
+  //
+  // Static-assets-only Worker (no server script). html_handling defaults to
+  // serving /brand.html for the clean URL /brand, matching the old Pages
+  // behaviour.
+  "name": "identity-conduction",
+  "account_id": "a2d03dfcc6758e48447baee66d7a8fa5",
+  "compatibility_date": "2026-06-16",
+  "assets": {
+    "directory": "./_site"
+  },
+  // Runs in front of the existing (proxied) identity.conduction.nl DNS record,
+  // so it serves the brand kit without any DNS change. Remove this route to
+  // fall back to whatever the DNS record points at.
+  "routes": [
+    { "pattern": "identity.conduction.nl/*", "zone_name": "conduction.nl" }
+  ]
+}

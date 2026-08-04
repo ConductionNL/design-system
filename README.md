@@ -1,9 +1,4 @@
-> [!IMPORTANT]
-> ## 🚚 This repository has moved to Codeberg
->
-> Active development now happens at **https://codeberg.org/Conduction/design-system**.
-> This GitHub mirror is read-only — issues, pull requests, and new commits should go to Codeberg.
-> Update your remote with: `git remote set-url origin https://codeberg.org/Conduction/design-system`# Conduction Design System, `theme-conduction-2026`
+# Conduction Design System, `theme-conduction-2026`
 
 The design system for **Conduction**, a Dutch open-source product company that builds an ecosystem of cooperating Nextcloud apps. **ConNext** is Conduction's public product brand for the platform.
 
@@ -30,7 +25,7 @@ This kit documents how Conduction looks, sounds, and behaves on every surface, w
 The kit is the visual spine for:
 
 - **`connext.conduction.nl`**, the ConNext public product site (primary surface)
-- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, MyDash, etc.)
+- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, LaunchPad, etc.)
 - **`docs.conduction.nl`**, technical documentation
 - **Presentations, offers, print**, the same palette, type, and hex motif apply
 
@@ -252,9 +247,9 @@ Then open `http://localhost:8000/`. Live reload only with VS Code's extension or
 
 Built from the canonical Conduction brand sources:
 
-- [`BRAND.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/BRAND.md), what & how
-- [`DESIGN.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/DESIGN.md), why (rationale, color comparison tables, font choices)
-- [`brand/tokens.json`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/brand/tokens.json), DTCG tokens
-- [`briefs/website/visual-motifs.md`](https://github.com/ConductionNL/.github/blob/feature/brand-2026/briefs/website/visual-motifs.md), hex motif catalog, illustration style, per-section treatments
+- [`BRAND.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/BRAND.md), what & how
+- [`DESIGN.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/DESIGN.md), why (rationale, color comparison tables, font choices)
+- [`brand/tokens.json`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/brand/tokens.json), DTCG tokens
+- [`briefs/website/visual-motifs.md`](https://codeberg.org/Conduction/.github/src/branch/feature/brand-2026/briefs/website/visual-motifs.md), hex motif catalog, illustration style, per-section treatments
 
 Theme version: `theme-conduction-2026` · Scope A (color + typography) · Spacing/radii/shadows proposed in this kit, not yet ratified upstream.

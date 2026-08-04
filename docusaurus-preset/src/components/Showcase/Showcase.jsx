@@ -30,7 +30,7 @@
  *         id: 'open',
  *         title: 'Open by default.',
  *         summary: 'Every line is EUPL-1.2 on GitHub.',
- *         cta: {label: 'Browse on GitHub', href: 'https://github.com/ConductionNL'},
+ *         cta: {label: 'Browse on GitHub', href: 'https://codeberg.org/Conduction'},
  *         panel: <AppMock app="opencatalogi" />,
  *       },
  *       ...

@@ -93,7 +93,7 @@ function NavItem({item, location, appVersion}) {
   if (typeIs(item, 'github')) {
     return (
       <a
-        href={item.href || 'https://github.com/ConductionNL'}
+        href={item.href || 'https://codeberg.org/Conduction'}
         className={styles.iconLink}
         target="_blank"
         rel="noopener noreferrer"

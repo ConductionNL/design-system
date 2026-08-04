@@ -17,8 +17,8 @@
  * authored HTML in app-mock.html — those parts are not driven by
  * React components and have no drift surface.
  *
- * The catalogue itself: thirteen <AppMock> instances, one per app.
- * MyDash carries four variants behind a tab strip; the rest are
+ * The catalogue itself: fourteen <AppMock> instances, one per app.
+ * LaunchPad carries four variants behind a tab strip; the rest are
  * single-variant. Clicking a tab toggles which .variant-pane is
  * .is-active inside the same .specimen-card, wired by the inline
  * <script> at the bottom of app-mock.html.
@@ -31,34 +31,34 @@ export default function VariantCatalogue() {
   return (
     <div className="variant-grid">
 
-      {/* ============================== 01 · MyDash (4 variants, tabbed) ============================== */}
+      {/* ============================== 01 · LaunchPad (4 variants, tabbed) ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">01</span>
-          <h3>MyDash</h3>
+          <h3>LaunchPad</h3>
           <span className="tag">SCREENSHOT-BASED · 4 VARIANTS</span>
         </div>
         <ul className="variant-tabs">
-          <li><button className="variant-tab is-active" data-target="mydash-default">Default</button></li>
-          <li><button className="variant-tab" data-target="mydash-tiles">Tiles &amp; grids</button></li>
-          <li><button className="variant-tab" data-target="mydash-bi">BI on registers</button></li>
-          <li><button className="variant-tab" data-target="mydash-widgets">Widgets</button></li>
+          <li><button className="variant-tab is-active" data-target="launchpad-default">Default</button></li>
+          <li><button className="variant-tab" data-target="launchpad-tiles">Tiles &amp; grids</button></li>
+          <li><button className="variant-tab" data-target="launchpad-bi">BI on registers</button></li>
+          <li><button className="variant-tab" data-target="launchpad-widgets">Widgets</button></li>
         </ul>
-        <div className="variant-pane is-active" data-variant="mydash-default">
-          <p>Personal home, full-bleed cobalt with a 4-column widget grid. Big primary tiles (Intranet, Calendar, Files) sit beside info widgets with avatar lists, empty states, and an upload drop-zone. Slug: <code>mydash</code>.</p>
-          <AppMock app="mydash" />
+        <div className="variant-pane is-active" data-variant="launchpad-default">
+          <p>Personal home, full-bleed cobalt with a 4-column widget grid. Big primary tiles (Intranet, Calendar, Files) sit beside info widgets with avatar lists, empty states, and an upload drop-zone. Slug: <code>launchpad</code>.</p>
+          <AppMock app="launchpad" />
         </div>
-        <div className="variant-pane" data-variant="mydash-tiles">
-          <p>Nextcloud-integration angle. Hex-icon launcher tiles deeplink into Nextcloud, external URLs, or sub-grids of further tiles. Mock pictures three launcher tiles, a 2&times;2 sub-grid, files list, calendar mini-grid, and a Decks board. Slug: <code>mydash-tiles</code>.</p>
-          <AppMock app="mydash-tiles" />
+        <div className="variant-pane" data-variant="launchpad-tiles">
+          <p>Nextcloud-integration angle. Hex-icon launcher tiles deeplink into Nextcloud, external URLs, or sub-grids of further tiles. Mock pictures three launcher tiles, a 2&times;2 sub-grid, files list, calendar mini-grid, and a Decks board. Slug: <code>launchpad-tiles</code>.</p>
+          <AppMock app="launchpad-tiles" />
         </div>
-        <div className="variant-pane" data-variant="mydash-bi">
-          <p>BI-graph angle. Any chart, drawn directly on a register without ETL. Mock shows a 2&times;2 grid of graph cards (bar, line, donut, second bar), KPI tiles, plus a ranked-list table widget. Slug: <code>mydash-bi</code>.</p>
-          <AppMock app="mydash-bi" />
+        <div className="variant-pane" data-variant="launchpad-bi">
+          <p>BI-graph angle. Any chart, drawn directly on a register without ETL. Mock shows a 2&times;2 grid of graph cards (bar, line, donut, second bar), KPI tiles, plus a ranked-list table widget. Slug: <code>launchpad-bi</code>.</p>
+          <AppMock app="launchpad-bi" />
         </div>
-        <div className="variant-pane" data-variant="mydash-widgets">
-          <p>Cross-app widget angle. Any Conduction app that registers a Nextcloud dashboard widget shows up here: DocuDesk dropzone, Procest werkvoorraad, Mail, Calendar, Jira, RSS, video shortcut. Slug: <code>mydash-widgets</code>.</p>
-          <AppMock app="mydash-widgets" />
+        <div className="variant-pane" data-variant="launchpad-widgets">
+          <p>Cross-app widget angle. Any Conduction app that registers a Nextcloud dashboard widget shows up here: DocuDesk dropzone, Procest werkvoorraad, Mail, Calendar, Jira, RSS, video shortcut. Slug: <code>launchpad-widgets</code>.</p>
+          <AppMock app="launchpad-widgets" />
         </div>
       </div>
 
@@ -192,6 +192,17 @@ export default function VariantCatalogue() {
         </div>
         <p>Citizen plus case-worker portal. ZGW APIs, archive interfaces. Centre runs the active case-worker queue with stage pips on top of a citizen-side timeline of recent submissions. Slug: <code>zaakafhandelapp</code>.</p>
         <AppMock app="zaakafhandelapp" />
+      </div>
+
+      {/* ============================== 14 · OpenBuild ============================== */}
+      <div className="specimen-card">
+        <div className="head">
+          <span className="num">14</span>
+          <h3>OpenBuild</h3>
+          <span className="tag">SCREENSHOT-BASED</span>
+        </div>
+        <p>Citizen-developer app builder. Three-pane builder: nav left, dashboard centre, manifest and schema editor rail right. A KPI strip (virtual apps, published, templates, versions) sits over a virtual-app list and the template catalogue. Slug: <code>openbuild</code>.</p>
+        <AppMock app="openbuild" />
       </div>
 
     </div>

@@ -31,9 +31,11 @@
  * on every save.
  */
 
-import React, {useState, useEffect, useMemo, useCallback} from 'react';
+import React, {useState, useEffect, useMemo, useCallback, useRef} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import styles from './CookieCli.module.css';
+import SpaceInvaders from './spaceInvaders';
+import {runCommand} from './shell';
 
 const STORAGE_KEY = 'conduction:cookie-cli';
 
@@ -136,25 +138,125 @@ export default function CookieCli({
     save(minimal);
   }, [categories, save]);
 
-  /* Bind keyboard shortcuts: A = accept all, S = save, R = reject,
-     1-9 = toggle category n. */
+  /* ---- the shell, and the game hiding in it ---- */
+
+  const [buffer, setBuffer] = useState('');
+  const [history, setHistory] = useState([]); // [{cmd, lines}]
+  const [mode, setMode] = useState('shell');  // 'shell' | 'game'
+  const gameRef = useRef(null);
+  const screenRef = useRef(null);
+  const hudRef = useRef(null);
+  const footerRef = useRef(null);
+  const promptRef = useRef(null);
+
+  const emit = useCallback((cmd, lines) => {
+    setHistory((prev) => [...prev, {cmd, lines}]);
+  }, []);
+
+  const exitGame = useCallback(() => {
+    if (gameRef.current) gameRef.current.stop();
+    gameRef.current = null;
+    setMode('shell');
+    emit(null, [{text: '# thanks for playing. back to your regularly scheduled cookies.', tone: 'cmt'}]);
+  }, [emit]);
+
+  const startGame = useCallback(() => {
+    emit(null, [
+      {text: 'Loading game.exe ...', tone: 'cmt'},
+      {text: '[OK] CONDUCTION SPACE INVADERS v0.1', tone: 'ok'},
+    ]);
+    setMode('game');
+  }, [emit]);
+
+  /* Construct the engine once the game surface is actually on screen.
+     Building it in the click handler would hand it refs that are still
+     null, because the panel it draws into has not rendered yet. */
   useEffect(() => {
-    if (!isBrowser || decided) return;
+    if (mode !== 'game' || gameRef.current) return undefined;
+    gameRef.current = new SpaceInvaders({
+      onFrame: ({screen, hud, footer}) => {
+        if (screenRef.current) screenRef.current.innerHTML = screen;
+        if (hudRef.current) hudRef.current.innerHTML = hud;
+        if (footerRef.current) footerRef.current.innerHTML = footer;
+      },
+      onExit: exitGame,
+    });
+    return () => {
+      if (gameRef.current) { gameRef.current.stop(); gameRef.current = null; }
+    };
+  }, [mode, exitGame]);
+
+  const submit = useCallback((line) => {
+    const result = runCommand(line);
+    if (result.clear) { setHistory([]); return; }
+    emit(line, result.lines);
+    if (result.effect === 'game') startGame();
+  }, [emit, startGame]);
+
+  /* One key handler for both modes.
+     In game mode every key belongs to the game. In shell mode the rule is
+     the specimen's: digits pick cookie options, letters type. The consent
+     accelerators [A] [S] [R] stay live only while the prompt is empty, so
+     they never eat a keystroke mid-word. None of the shell's own commands
+     start with a, s, or r, so the two never collide in practice. */
+  useEffect(() => {
+    if (!isBrowser || decided) return undefined;
+
     function onKey(e) {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const k = e.key.toLowerCase();
-      if (k === 'a') { e.preventDefault(); acceptAll(); return; }
-      if (k === 's') { e.preventDefault(); saveCurrent(); return; }
-      if (k === 'r') { e.preventDefault(); rejectNonEssential(); return; }
-      const idx = parseInt(e.key, 10);
-      if (!Number.isNaN(idx) && idx >= 1 && idx <= categories.length) {
+
+      if (mode === 'game') {
+        if (gameRef.current) gameRef.current.onKey(e);
+        return;
+      }
+
+      if (e.key === 'Enter') {
         e.preventDefault();
-        toggle(categories[idx - 1]);
+        const line = buffer;
+        setBuffer('');
+        submit(line);
+        return;
+      }
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        setBuffer((b) => b.slice(0, -1));
+        return;
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setBuffer('');
+        return;
+      }
+
+      const empty = buffer.length === 0;
+
+      if (empty) {
+        const k = e.key.toLowerCase();
+        if (k === 'a') { e.preventDefault(); acceptAll(); return; }
+        if (k === 's') { e.preventDefault(); saveCurrent(); return; }
+        if (k === 'r') { e.preventDefault(); rejectNonEssential(); return; }
+        const idx = parseInt(e.key, 10);
+        if (!Number.isNaN(idx) && idx >= 1 && idx <= categories.length) {
+          e.preventDefault();
+          toggle(categories[idx - 1]);
+          return;
+        }
+      }
+
+      if (e.key.length === 1) {
+        e.preventDefault();
+        setBuffer((b) => b + e.key);
       }
     }
+
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isBrowser, decided, acceptAll, saveCurrent, rejectNonEssential, toggle, categories]);
+  }, [isBrowser, decided, mode, buffer, submit, acceptAll, saveCurrent, rejectNonEssential, toggle, categories]);
+
+  /* Keep the prompt in view as output accumulates. */
+  useEffect(() => {
+    if (promptRef.current) promptRef.current.scrollIntoView({block: 'nearest'});
+  }, [history, mode]);
 
   /* Hide the banner once the user has made a decision; the prompt
      reappears via window.ConductionCookieCli.reset(). */
@@ -184,7 +286,7 @@ export default function CookieCli({
         </div>
         <p className={styles.comment}># Pick what you're OK with. Essential cookies are required.</p>
 
-        <ul className={styles.opts}>
+        <ul className={styles.opts} style={mode === 'game' ? {display: 'none'} : undefined}>
           {categories.map((c, i) => {
             const on = !!selected[c.key] || !!c.required;
             return (
@@ -206,17 +308,86 @@ export default function CookieCli({
           })}
         </ul>
 
-        <div className={styles.actions}>
-          <button type="button" className={[styles.btn, styles.btnPrimary].join(' ')} onClick={acceptAll}>
-            <span className={styles.btnKey}>A</span>Accept all
-          </button>
-          <button type="button" className={styles.btn} onClick={saveCurrent}>
-            <span className={styles.btnKey}>S</span>Save selection
-          </button>
-          <button type="button" className={styles.btn} onClick={rejectNonEssential}>
-            <span className={styles.btnKey}>R</span>Reject non-essential
-          </button>
-        </div>
+        {/* Scrollback. Command output is plain text with a tone class; the
+            game is the only thing that writes HTML, and it escapes its own
+            content in spaceInvaders.js. */}
+        {history.length > 0 && (
+          <div className={styles.scrollback}>
+            {history.map((block, i) => (
+              <div key={i} className={styles.outBlock}>
+                {block.cmd != null && (
+                  <div className={styles.prompt}>
+                    <span className={styles.user}>you</span>
+                    <span className={styles.sigil}>@</span>
+                    <span className={styles.host}>{siteHost}</span>
+                    <span className={styles.sigil}>:</span>
+                    <span className={styles.path}>~</span>
+                    <span className={styles.sigil}>$</span>{' '}
+                    <span className={styles.cmd}>{block.cmd}</span>
+                  </div>
+                )}
+                {block.lines.length > 0 && (
+                  <pre className={styles.out}>
+                    {block.lines.map((l, j) => (
+                      <div key={j} className={l.tone ? styles[`tone_${l.tone}`] : undefined}>{l.text}</div>
+                    ))}
+                  </pre>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {mode === 'game' ? (
+          <div className={styles.game}>
+            <div className={styles.gameHud} ref={hudRef} />
+            <pre className={styles.gameScreen} ref={screenRef} />
+            <div className={styles.gameFooter} ref={footerRef} />
+          </div>
+        ) : (
+          <>
+            {/* The live prompt. Typing is captured on window rather than in an
+                <input>, because the banner is not focused when it appears and
+                we do not want to steal focus from the page to make a joke
+                work. The hidden input keeps mobile keyboards reachable. */}
+            <div
+              className={styles.prompt}
+              ref={promptRef}
+              title="you can type here ;)"
+              style={{cursor: 'text'}}
+              onClick={() => { if (promptRef.current) promptRef.current.querySelector('input')?.focus(); }}
+            >
+              <span className={styles.user}>you</span>
+              <span className={styles.sigil}>@</span>
+              <span className={styles.host}>{siteHost}</span>
+              <span className={styles.sigil}>:</span>
+              <span className={styles.path}>~</span>
+              <span className={styles.sigil}>$</span>{' '}
+              <span className={styles.cmd}>{buffer}</span>
+              <span className={styles.cursor} aria-hidden="true" />
+              <input
+                type="text"
+                value={buffer}
+                onChange={() => {}}
+                className={styles.hiddenInput}
+                aria-label="Terminal input. Type help for commands."
+                tabIndex={-1}
+              />
+            </div>
+
+            <div className={styles.actions}>
+              <button type="button" className={[styles.btn, styles.btnPrimary].join(' ')} onClick={acceptAll}>
+                <span className={styles.btnKey}>A</span>Accept all
+              </button>
+              <button type="button" className={styles.btn} onClick={saveCurrent}>
+                <span className={styles.btnKey}>S</span>Save selection
+              </button>
+              <button type="button" className={styles.btn} onClick={rejectNonEssential}>
+                <span className={styles.btnKey}>R</span>Reject non-essential
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,95 @@
+# Publish @conduction/docusaurus-preset to npm.
+#
+# Replaces .forgejo/workflows/release-npm.yml, which ran on Codeberg. That
+# forge was retired on 2026-08-04 and nothing on GitHub took over, so the
+# package silently stopped being publishable: npm sat at 3.28.0 while every
+# merge to main added unreleased work. The giveaway was
+# docusaurus-preset/package.json still reading 0.1.1, because the release
+# config bumps the version at publish time and never commits it back.
+#
+# The semantic-release config it runs (docusaurus-preset/.releaserc.json)
+# and the whole toolchain in the workspace root were untouched by the
+# migration. Only the runner was missing.
+#
+# Requires one repository secret:
+#
+#   NPM_TOKEN - an npm **automation** token for the account that owns the
+#               @conduction scope.
+#
+# Automation matters. A "publish" token still demands a one-time password,
+# which cannot be answered by CI, and that is exactly why 3.29.0 could not
+# be released by hand. Automation tokens bypass 2FA for publishing, which
+# is the only way an unattended release works.
+# Create at npmjs.com → Access Tokens → Generate New Token → Automation.
+
+name: Publish to npm
+
+on:
+  push:
+    branches: [main, beta]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run semantic-release --dry-run only (no publish)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-npm
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write   # semantic-release pushes the release tag
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # semantic-release reads history to pick the version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      # No committed root lockfile (npm workspaces), so `install` rather
+      # than `ci`. Installing at the root is what makes the workspace
+      # resolve for the package below it.
+      - name: Install
+        run: npm install
+
+      # Fails fast and loudly rather than running a release that cannot
+      # publish. A green release job that published nothing is the exact
+      # failure this workflow exists to end.
+      - name: Check the npm token is present
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::NPM_TOKEN is not set. Add an npm *automation* token (a publish token still requires an OTP and cannot work here)."
+            exit 1
+          fi
+
+      - name: semantic-release
+        working-directory: docusaurus-preset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release --extends semantic-release-monorepo ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      # The published version is decided by semantic-release, not by the
+      # repo, so state it plainly in the summary. Verifying the dist-tag
+      # actually moved is the only proof a release happened: a run can go
+      # green having decided there was nothing to release.
+      - name: Report the published version
+        if: always()
+        run: |
+          echo "### npm dist-tags for @conduction/docusaurus-preset" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm view @conduction/docusaurus-preset dist-tags 2>&1 >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

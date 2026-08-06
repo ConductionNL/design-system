@@ -11,16 +11,26 @@
 # and the whole toolchain in the workspace root were untouched by the
 # migration. Only the runner was missing.
 #
-# Requires one repository secret:
+# Credentials: no secret needed, if trusted publishing is set up.
 #
-#   NPM_TOKEN - an npm **automation** token for the account that owns the
-#               @conduction scope.
+# npm supports trusted publishing over OIDC, so this job can authenticate as
+# "this workflow, in this repository" without a long-lived token living in
+# repository secrets. That is why the job requests `id-token: write` and why
+# .releaserc.json publishes through `npx -y npm@latest`, which is new enough
+# to perform the credential exchange (npm 11.5.1+). It also produces a
+# provenance attestation, which a token publish does not: none of the
+# versions up to 3.28.0 carry one, because they were published by the old
+# Codeberg job with a classic token.
 #
-# Automation matters. A "publish" token still demands a one-time password,
-# which cannot be answered by CI, and that is exactly why 3.29.0 could not
-# be released by hand. Automation tokens bypass 2FA for publishing, which
-# is the only way an unattended release works.
-# Create at npmjs.com → Access Tokens → Generate New Token → Automation.
+# The one prerequisite lives on npmjs.com rather than here: the package needs
+# a trusted publisher configured, pointing at this repository and this
+# workflow file. Until that exists the publish step fails with a 401 no
+# matter what is in secrets.
+#
+# NPM_TOKEN is still honoured if present, as a fallback. If you use one,
+# make it an **automation** token: a "publish" token demands a one-time
+# password that CI cannot answer, which is exactly what blocked releasing
+# 3.29.0 by hand.
 
 name: Publish to npm
 
@@ -46,6 +56,7 @@ jobs:
       contents: write   # semantic-release pushes the release tag
       issues: write
       pull-requests: write
+      id-token: write   # OIDC, so npm trusted publishing needs no token
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,22 +73,25 @@ jobs:
       - name: Install
         run: npm install
 
-      # Fails fast and loudly rather than running a release that cannot
-      # publish. A green release job that published nothing is the exact
-      # failure this workflow exists to end.
-      - name: Check the npm token is present
+      # Say which credential this run will use, so a failure names itself
+      # instead of arriving as a bare 401 from the registry.
+      - name: Report the publish credential
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if [ -z "$NPM_TOKEN" ]; then
-            echo "::error::NPM_TOKEN is not set. Add an npm *automation* token (a publish token still requires an OTP and cannot work here)."
-            exit 1
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "Publishing with NPM_TOKEN."
+          else
+            echo "No NPM_TOKEN set; relying on npm trusted publishing over OIDC."
+            echo "That requires a trusted publisher configured for @conduction/docusaurus-preset on npmjs.com, pointing at this repository and this workflow file."
           fi
 
       - name: semantic-release
         working-directory: docusaurus-preset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Both are empty when no secret exists, which is fine: npm then
+          # falls back to the OIDC credential exchange.
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release --extends semantic-release-monorepo ${{ inputs.dry_run && '--dry-run' || '' }}

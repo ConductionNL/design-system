@@ -22,10 +22,23 @@
 # versions up to 3.28.0 carry one, because they were published by the old
 # Codeberg job with a classic token.
 #
-# The one prerequisite lives on npmjs.com rather than here: the package needs
-# a trusted publisher configured, pointing at this repository and this
-# workflow file. Until that exists the publish step fails with a 401 no
-# matter what is in secrets.
+# The one prerequisite lives on npmjs.com rather than here, and as of
+# 2026-08-06 it is NOT configured: a run with id-token: write and npm 11.13
+# still failed with
+#
+#   npm error code ENEEDAUTH
+#   npm error need auth This command requires you to be logged in
+#
+# which is what npm says when no trusted publisher matches. To fix it, on
+# npmjs.com open the @conduction/docusaurus-preset package settings, add a
+# Trusted Publisher, and point it at:
+#
+#   provider : GitHub Actions
+#   owner    : ConductionNL
+#   repo     : design-system
+#   workflow : release-npm.yml
+#
+# Nothing in this repository needs to change once that exists.
 #
 # NPM_TOKEN is still honoured if present, as a fallback. If you use one,
 # make it an **automation** token: a "publish" token demands a one-time

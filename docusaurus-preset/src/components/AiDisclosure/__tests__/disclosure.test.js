@@ -32,6 +32,9 @@ const {
   getIconPath,
   getViewBox,
   getCopy,
+  getLinkText,
+  LINK_TEXT,
+  LINK_HREF,
 } = require('../disclosure');
 
 // Icons are vendored as plain static files (not a webpack `.svg`
@@ -215,4 +218,46 @@ test('isValidKind rejects anything outside the three permitted values', () => {
   assert.equal(isValidKind(''), false);
   assert.equal(isValidKind(undefined), false);
   assert.equal(isValidKind(null), false);
+});
+
+// -- "read more" pointer to the AI policy page --------------------------------
+//
+// The link is navigation, not a statement about the page, which is why
+// it lives outside COPY and is asserted separately here.
+
+test('link text covers every locale COPY covers', () => {
+  for (const locale of LOCALES) {
+    assert.equal(
+      typeof LINK_TEXT[locale],
+      'string',
+      `LINK_TEXT is missing locale "${locale}" that COPY defines`,
+    );
+    assert.ok(LINK_TEXT[locale].length > 0, `LINK_TEXT["${locale}"] is empty`);
+  }
+});
+
+test('getLinkText falls back to English for an unknown locale', () => {
+  assert.equal(getLinkText('en'), LINK_TEXT.en);
+  assert.equal(getLinkText('nl'), LINK_TEXT.nl);
+  assert.equal(getLinkText('xx'), LINK_TEXT.en);
+  assert.equal(getLinkText(undefined), LINK_TEXT.en);
+});
+
+test('the link points at the AI policy page, site-relative', () => {
+  // Site-relative so useBaseUrl() can prefix a deployment baseUrl.
+  assert.equal(LINK_HREF, '/ai');
+});
+
+test('link text makes no compliance claim either', () => {
+  // Same denylist discipline as COPY: the pointer must not smuggle in a
+  // claim the copy is forbidden from making.
+  const denied = [/compliant/i, /compliance/i, /code of practice/i, /conform/i, /certified/i];
+  for (const locale of LOCALES) {
+    for (const pattern of denied) {
+      assert.ok(
+        !pattern.test(LINK_TEXT[locale]),
+        `LINK_TEXT["${locale}"] matches forbidden pattern ${pattern}`,
+      );
+    }
+  }
 });

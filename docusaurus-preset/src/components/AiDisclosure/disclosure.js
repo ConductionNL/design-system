@@ -49,26 +49,55 @@ const COPY = {
   nl: {
     generated: 'Deze pagina is gegenereerd met AI.',
     modified: 'Deze pagina is gedeeltelijk aangepast met AI.',
-    assisted: 'Deze pagina is geschreven met hulp van AI.',
+    assisted: 'Deze pagina is geschreven met hulp van AI, bijvoorbeeld voor spelling en onderzoek.',
   },
   en: {
     generated: 'This page was generated with AI.',
     modified: 'This page was partially modified with AI.',
-    assisted: 'This page was written with AI assistance.',
+    assisted: 'This page was written using AI assistance, for example for spelling and research.',
   },
   de: {
     generated: 'Diese Seite wurde mit KI erstellt.',
     modified: 'Diese Seite wurde teilweise mit KI bearbeitet.',
-    assisted: 'Diese Seite wurde mit KI-Unterstützung geschrieben.',
+    assisted:
+      'Diese Seite wurde mit KI-Unterstützung geschrieben, zum Beispiel für Rechtschreibung und Recherche.',
   },
   fr: {
     generated: "Cette page a été générée avec l'IA.",
     modified: "Cette page a été partiellement modifiée avec l'IA.",
-    assisted: "Cette page a été rédigée avec l'aide de l'IA.",
+    assisted:
+      "Cette page a été rédigée avec l'aide de l'IA, par exemple pour l'orthographe et la recherche.",
   },
 };
 
 const LOCALES = Object.keys(COPY);
+
+// The "what does that mean" pointer. Kept OUT of the COPY table on
+// purpose: COPY holds only statements of fact about the page (the
+// denylist test asserts every value makes no compliance claim), while
+// this is navigation. One link text per locale, identical across all
+// three kinds - what the reader wants to know ("how does Conduction
+// use AI?") does not change with the kind.
+const LINK_TEXT = {
+  nl: 'Lees wat dat betekent en hoe Conduction AI gebruikt.',
+  en: 'Read what that means and how Conduction uses AI.',
+  de: 'Lesen Sie, was das bedeutet und wie Conduction KI einsetzt.',
+  fr: "Découvrez ce que cela signifie et comment Conduction utilise l'IA.",
+};
+
+// Site-relative. The page exists at src/pages/ai.mdx ("How we use AI").
+const LINK_HREF = '/ai';
+
+/**
+ * Localised "read more" text for the disclosure banner.
+ * Falls back to English for an unknown locale, same as getCopy().
+ *
+ * @param {string} locale
+ * @returns {string}
+ */
+function getLinkText(locale) {
+  return LINK_TEXT[locale] || LINK_TEXT.en;
+}
 
 function isValidKind(value) {
   return AI_KINDS.indexOf(value) !== -1;
@@ -159,6 +188,8 @@ module.exports = {
   KIND_TO_FILE_PREFIX,
   VIEWBOX,
   COPY,
+  LINK_TEXT,
+  LINK_HREF,
   ICONS_BASE_PATH,
   isValidKind,
   resolveAiFrontmatter,
@@ -166,4 +197,5 @@ module.exports = {
   getIconPath,
   getViewBox,
   getCopy,
+  getLinkText,
 };

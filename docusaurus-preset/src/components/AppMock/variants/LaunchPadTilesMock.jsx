@@ -7,6 +7,11 @@
  * a sub-grid of further tiles. The mock pictures exactly that mix:
  * four launcher tiles top-left, a 2×2 sub-grid bottom-left ("custom
  * tile group"), and two info widgets right.
+ *
+ * Animated (7s loop, --am-dur): the custom tile group is pressed
+ * (a short scale dip) and unfolds its four sub-tiles in a stagger.
+ * `running={false}` / prefers-reduced-motion show the unfolded
+ * group. Keyframes live in AppMock.module.css (`.lpTiles` section).
  */
 
 import React from 'react';
@@ -22,7 +27,7 @@ export default function LaunchPadTilesMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad, styles.lpTiles].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Launcher tiles in cobalt + KNVB */}
           <div className={styles.col}>

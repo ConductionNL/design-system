@@ -12,11 +12,13 @@
  * Five nodes: trigger → two parallel steps → approval (join) → end.
  * A mint run-line travels the trigger → step → approval → end route
  * on a slow loop, with a subtle halo pulse on each node as the line
- * passes. `prefers-reduced-motion: reduce` (and `running={false}`)
- * renders the full route as a static mint path with no animation.
+ * passes. At the approval node the run HOLDS for ~600ms while an
+ * orange halo flashes — a human decides here. `prefers-reduced-motion:
+ * reduce` (and `running={false}`) renders the full route as a static
+ * mint path with no animation and no flash.
  *
  * Tokens only; no images; rectangles (the nodes *do* work, so no
- * hexes); no orange accent used.
+ * hexes); the approval hold flash is the single orange accent.
  *
  * Usage:
  *

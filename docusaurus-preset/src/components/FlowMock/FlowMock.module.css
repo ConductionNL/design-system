@@ -9,7 +9,10 @@
  * transparent to layout.
  *
  * Tokens only. Node bars: mint = trigger, lavender = steps/approval,
- * vermillion = end. The run-line is mint (--c-mint-500); no orange.
+ * vermillion = end. The run-line is mint (--c-mint-500). The run
+ * holds ~600ms at the approval node while an orange halo flashes
+ * there — "a human decides here" — and that flash is this
+ * component's single orange accent.
  */
 
 .fm { display: contents; }
@@ -102,7 +105,13 @@
  * travels the full route once per cycle. Animating the offset from
  * 1.28 to 0 shifts the pattern forward exactly one period, so the
  * loop is seamless (the segment exits the end node as its successor
- * enters the trigger). */
+ * enters the trigger).
+ *
+ * The offset keyframes are not linear end-to-end: the run reaches the
+ * approval node at 58% (offset 1.28 × (1 − 0.62) ≈ 0.487, the node
+ * sitting ~62% along the route) and HOLDS there for ~600ms (8.6% of
+ * the 7s cycle) — approval is where a human decides — before
+ * continuing to the end node. */
 
 .fm .runline {
   fill: none;
@@ -115,13 +124,17 @@
 }
 
 @keyframes fmRun {
-  from { stroke-dashoffset: 1.28; }
-  to   { stroke-dashoffset: 0; }
+  0%    { stroke-dashoffset: 1.28; }
+  58%   { stroke-dashoffset: 0.487; } /* segment reaches the approval node */
+  66.6% { stroke-dashoffset: 0.487; } /* ~600ms hold: a human decides */
+  100%  { stroke-dashoffset: 0; }
 }
 
 /* Halo pulse on the nodes the run-line passes. Delays approximate
-   where along the route each node sits (trigger 0%, step ~30%,
-   approval ~62%, end ~85% of the cycle). */
+   where along the (held) cycle each node sits: trigger 0%, step ~28%,
+   approval 58% (the hold), end ~87%. The approval halo is the
+   exception: it flashes KNVB orange for the length of the hold — the
+   component's one orange accent. */
 .fm .halo {
   fill: none;
   stroke: var(--c-mint-500);
@@ -130,15 +143,29 @@
   animation: fmPulse var(--fm-dur, 7s) linear infinite;
 }
 .fm .halo-0 { animation-delay: 0s; }
-.fm .halo-1 { animation-delay: calc(var(--fm-dur, 7s) * 0.3); }
-.fm .halo-2 { animation-delay: calc(var(--fm-dur, 7s) * 0.62); }
-.fm .halo-3 { animation-delay: calc(var(--fm-dur, 7s) * 0.85); }
+.fm .halo-1 { animation-delay: calc(var(--fm-dur, 7s) * 0.28); }
+.fm .halo-2 {
+  stroke: var(--c-orange-knvb);
+  animation-name: fmPulseHold;
+  animation-delay: calc(var(--fm-dur, 7s) * 0.58);
+}
+.fm .halo-3 { animation-delay: calc(var(--fm-dur, 7s) * 0.87); }
 
 @keyframes fmPulse {
   0%   { opacity: 0; }
   4%   { opacity: 0.55; }
   12%  { opacity: 0; }
   100% { opacity: 0; }
+}
+
+/* The approval flash spans the whole ~600ms hold (8.6% of the cycle)
+   instead of the quick pass-through pulse. */
+@keyframes fmPulseHold {
+  0%    { opacity: 0; }
+  1.5%  { opacity: 0.8; }
+  8%    { opacity: 0.8; }
+  11%   { opacity: 0; }
+  100%  { opacity: 0; }
 }
 
 /* ---- Static renderings ----

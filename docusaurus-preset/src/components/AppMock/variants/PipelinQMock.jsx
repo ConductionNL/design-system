@@ -6,6 +6,13 @@
  * (lead, qualified, proposal, won, lost) plus a KPI strip on top
  * (pipeline value, win rate, deals this week). Left nav for kanban /
  * customers / contacts / deals / quotes.
+ *
+ * Animated (7s loop, --am-dur): a deal closes — the proposal-column
+ * card collapses, the won card scales in with its mint bar, and the
+ * pipeline-value KPI widens. Resets by opacity swap. `running={false}`
+ * / prefers-reduced-motion show the closed state (won card in place,
+ * proposal card gone). Keyframes live in AppMock.module.css (`.plq`
+ * section).
  */
 
 import React from 'react';
@@ -21,7 +28,7 @@ export default function PipelinQMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.decidesk].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.decidesk, styles.plq].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false, false].map((active, i) => (
@@ -71,9 +78,12 @@ export default function PipelinQMock() {
               <div className={styles.col}>
                 <div className={[styles.card, styles.c].join(' ')}></div>
                 <div className={styles.card}></div>
-                <div className={styles.card}></div>
+                {/* The deal being closed — collapses out of proposal. */}
+                <div className={[styles.card, styles.dealGone].join(' ')}></div>
               </div>
               <div className={styles.col}>
+                {/* …and lands here as the won card (mint bar). */}
+                <div className={[styles.card, styles.dealWon].join(' ')}></div>
                 <div className={[styles.card, styles.c].join(' ')}></div>
               </div>
               <div className={styles.col}>

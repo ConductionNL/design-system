@@ -5,6 +5,14 @@
  * centre shows a settings layout with a colour-swatch row, a type
  * specimen, and a component preview block. Left nav for theme /
  * colours / typography / spacing / components / overrides.
+ *
+ * Animated (6s loop, --am-dur): the lavender swatch is selected (a
+ * cobalt focus ring pops on it), the component preview rethemes in a
+ * cascade (button, then status pill crossfade to lavender), and the
+ * type-scale bars restretch as if the theme changed the scale. The
+ * loop reverts by crossfading back. `running={false}` /
+ * prefers-reduced-motion show the resting cobalt/mint theme with no
+ * ring. Keyframes live in AppMock.module.css (`.nldesign` section).
  */
 
 import React from 'react';
@@ -20,7 +28,7 @@ export default function NLDesignMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.openregister].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.openregister, styles.nldesign].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false, false, false].map((active, i) => (
@@ -35,15 +43,16 @@ export default function NLDesignMock() {
           <div className={styles.panel}>
             <div className={styles.head}><div className={styles.title}></div></div>
             <div style={{display: 'flex', gap: 6, flexWrap: 'wrap'}}>
+              {/* Index 3 (lavender) is the swatch the animation selects. */}
               {['var(--c-blue-cobalt)','var(--c-orange-knvb)','var(--c-mint-500)','var(--c-lavender-500)','var(--c-forest-500)','var(--c-terracotta-500)','var(--c-cobalt-300)','var(--c-cobalt-100)'].map((bg, i) => (
-                <span key={i} style={{width: 22, height: 22, borderRadius: 4, background: bg}}></span>
+                <span key={i} className={[styles.swatch, i === 3 && styles.swatchSel].filter(Boolean).join(' ')} style={{background: bg}}></span>
               ))}
             </div>
           </div>
           {/* Type specimen */}
           <div className={styles.panel}>
             <div className={styles.head}><div className={styles.title}></div></div>
-            <div style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
+            <div className={styles.typeRow} style={{display: 'flex', alignItems: 'baseline', gap: 8}}>
               <div style={{height: 14, width: 18, background: 'var(--c-cobalt-900)', borderRadius: 1}}></div>
               <div style={{height: 11, width: 14, background: 'var(--c-cobalt-700)', borderRadius: 1}}></div>
               <div style={{height: 8,  width: 12, background: 'var(--c-cobalt-400)', borderRadius: 1}}></div>
@@ -56,7 +65,9 @@ export default function NLDesignMock() {
           {/* Component preview */}
           <div className={styles.panel}>
             <div className={styles.head}><div className={styles.title}></div></div>
-            <div style={{display: 'flex', gap: 6, flexWrap: 'wrap'}}>
+            {/* The .actions wrapper is required for .btn to pick up its
+                styles (the buttons rendered invisible without it). */}
+            <div className={styles.actions} style={{alignItems: 'center', flexWrap: 'wrap'}}>
               <div className={styles.btn}></div>
               <div className={styles.btn + ' ' + styles.ghost}></div>
               <div className={styles.statusPill}><div className={styles.h}></div><div className={styles.t}></div></div>

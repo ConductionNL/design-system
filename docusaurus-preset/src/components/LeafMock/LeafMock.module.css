@@ -6,6 +6,11 @@
  * Tokens only. Accent discipline per leaf: contacts sync = mint,
  * calendar event bar = lavender, mail action chip = mint, files
  * record chip = forest. No orange anywhere in this component.
+ *
+ * All four leaves animate on the shared --lm-dur timeline (6s),
+ * KanbanMock conventions: base styles are the meaningful end state,
+ * loops reset by opacity swap, `.static` (running={false}) and
+ * prefers-reduced-motion freeze to the base styles.
  */
 
 .lm { display: contents; }
@@ -20,6 +25,7 @@
 }
 
 .lm .frame {
+  --lm-dur: 6s;
   width: 100%;
   max-width: 360px;
   aspect-ratio: 4 / 3;
@@ -235,3 +241,120 @@
 }
 .lm .fileLines { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .lm .recordChip { background: var(--c-forest-500); }
+
+/* ======================================================================
+   Animations — one shared 6s timeline (--lm-dur) per leaf
+   ====================================================================== */
+
+/* ---- Contacts: the sync arrow double-pulses, then the contact data
+   lands on the phone as three staggered rows. ---- */
+
+.lm .syncArrow { animation: lmSyncPulse var(--lm-dur) ease-in-out infinite; }
+@keyframes lmSyncPulse {
+  0%, 6%    { transform: scale(1); }
+  12%       { transform: scale(1.18); }
+  18%       { transform: scale(1); }
+  26%       { transform: scale(1.18); }
+  32%, 100% { transform: scale(1); }
+}
+
+.lm .phoneRow { animation: lmPhoneRow var(--lm-dur) ease-out infinite both; }
+.lm .phoneRow:nth-child(2) { animation-delay: 0.35s; }
+.lm .phoneRow:nth-child(3) { animation-delay: 0.7s; }
+@keyframes lmPhoneRow {
+  0%, 18%   { opacity: 0; transform: translateX(-4px); }
+  26%, 92%  { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- Calendar: the linked day pops highlighted, then the event chip
+   slides in beneath the month grid. ---- */
+
+.lm .dayActive { animation: lmDayPop var(--lm-dur) ease-in-out infinite; }
+@keyframes lmDayPop {
+  0%, 8%    { background-color: var(--c-cobalt-50); border-color: var(--c-cobalt-100); transform: scale(1); }
+  16%       { background-color: var(--c-lavender-300); border-color: var(--c-lavender-500); transform: scale(1.35); }
+  22%, 90%  { background-color: var(--c-lavender-300); border-color: var(--c-lavender-500); transform: scale(1); }
+  98%, 100% { background-color: var(--c-cobalt-50); border-color: var(--c-cobalt-100); transform: scale(1); }
+}
+
+.lm .eventChip { animation: lmChipSlide var(--lm-dur) ease-out infinite both; }
+@keyframes lmChipSlide {
+  0%, 22%   { opacity: 0; transform: translateY(8px); }
+  32%, 92%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- Mail: the middle row highlights, then the create-from-email
+   chip pops with an overshoot. ---- */
+
+.lm .mailRowActive { animation: lmRowHl var(--lm-dur) ease-in-out infinite; }
+@keyframes lmRowHl {
+  0%, 10%   { background-color: transparent; border-color: transparent; }
+  20%, 90%  { background-color: var(--c-cobalt-50); border-color: var(--c-cobalt-100); }
+  98%, 100% { background-color: transparent; border-color: transparent; }
+}
+
+.lm .mail .actionChip { transform-origin: center; animation: lmChipPop var(--lm-dur) ease-in-out infinite both; }
+@keyframes lmChipPop {
+  0%, 26%   { opacity: 0; transform: scale(0); }
+  34%       { opacity: 1; transform: scale(1.18); }
+  39%, 90%  { opacity: 1; transform: scale(1); }
+  97%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* ---- Files: the linked row slides in, the record chip pops, and its
+   link icon draws itself (the path carries pathLength="1"). ---- */
+
+.lm .files .fileRow:nth-child(2) { animation: lmFileRow var(--lm-dur) ease-out infinite both; }
+@keyframes lmFileRow {
+  0%, 8%    { opacity: 0; transform: translateY(-4px); }
+  16%, 92%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+.lm .files .recordChip { transform-origin: center; animation: lmChipPop var(--lm-dur) ease-in-out infinite both; }
+.lm .files .recordChip .linkIcon path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lmLinkDraw var(--lm-dur) ease-in-out infinite both;
+}
+@keyframes lmLinkDraw {
+  0%, 34%   { stroke-dashoffset: 1; }
+  56%, 100% { stroke-dashoffset: 0; }
+}
+
+/* ======================================================================
+   Static frames — running={false} adds `.static` to `.lm .frame`; the
+   media query mirrors it for prefers-reduced-motion. Base styles are
+   the end state, so freezing is animation: none plus the icon-draw
+   dash reset.
+   ====================================================================== */
+
+.lm .static .syncArrow,
+.lm .static .phoneRow,
+.lm .static .dayActive,
+.lm .static .eventChip,
+.lm .static .mailRowActive,
+.lm .static .mail .actionChip,
+.lm .static .files .fileRow:nth-child(2),
+.lm .static .files .recordChip,
+.lm .static .files .recordChip .linkIcon path {
+  animation: none;
+}
+.lm .static .files .recordChip .linkIcon path { stroke-dasharray: none; stroke-dashoffset: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lm .syncArrow,
+  .lm .phoneRow,
+  .lm .dayActive,
+  .lm .eventChip,
+  .lm .mailRowActive,
+  .lm .mail .actionChip,
+  .lm .files .fileRow:nth-child(2),
+  .lm .files .recordChip,
+  .lm .files .recordChip .linkIcon path {
+    animation: none;
+  }
+  .lm .files .recordChip .linkIcon path { stroke-dasharray: none; stroke-dashoffset: 0; }
+}

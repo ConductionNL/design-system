@@ -22,6 +22,12 @@
  * Props:
  *   - app:     keyof VARIANTS                           (required)
  *   - size:    'sm' | 'md' (default)                    — frame width
+ *   - running: boolean (default true) — false freezes every variant
+ *              animation to its meaningful static end state (the same
+ *              rendering `prefers-reduced-motion: reduce` gives).
+ *              Forwarded to the variant component as well, for variants
+ *              that need JS-side awareness; the CSS `.static` class on
+ *              the frame is what actually stops the keyframes.
  *   - sidebar: ReactNode                                — renders inside
  *              the right-edge overlay of the frame. Pass a SidebarMock
  *              JSX to model a Nextcloud sidebar opened over this app
@@ -47,7 +53,6 @@ import DeciDeskMock from './variants/DeciDeskMock.jsx';
 import DocuDeskMock from './variants/DocuDeskMock.jsx';
 import LarpingAppMock from './variants/LarpingAppMock.jsx';
 import NLDesignMock from './variants/NLDesignMock.jsx';
-import OpenWooMock from './variants/OpenWooMock.jsx';
 import PipelinQMock from './variants/PipelinQMock.jsx';
 import SoftwareCatalogMock from './variants/SoftwareCatalogMock.jsx';
 import ZaakAfhandelAppMock from './variants/ZaakAfhandelAppMock.jsx';
@@ -74,7 +79,11 @@ const VARIANTS = {
   docudesk:         {Component: DocuDeskMock,         label: 'DocuDesk'},
   larpingapp:       {Component: LarpingAppMock,       label: 'LarpingApp'},
   nldesign:         {Component: NLDesignMock,         label: 'NLDesign'},
-  openwoo:          {Component: OpenWooMock,          label: 'OpenWoo'},
+  /* `openwoo` is an alias: the OpenWoo app is retired in favour of
+     OpenCatalogi, so the slug renders the OpenCatalogi mock. The
+     OpenWooMock.jsx variant file is kept for now (no importer left);
+     delete it in a later cleanup wave. */
+  openwoo:          {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
   pipelinq:         {Component: PipelinQMock,         label: 'PipelinQ'},
   softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'SoftwareCatalog'},
   zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
@@ -88,7 +97,7 @@ const VARIANTS = {
   'app-versions':   {Component: AppVersionsMock,      label: 'App Versions'},
 };
 
-export default function AppMock({app, size = 'md', sidebar = null, caption = false, className}) {
+export default function AppMock({app, size = 'md', sidebar = null, caption = false, running = true, className}) {
   const variant = VARIANTS[app];
   if (!variant) {
     return (
@@ -113,8 +122,8 @@ export default function AppMock({app, size = 'md', sidebar = null, caption = fal
   return (
     <div className={styles.am}>
       <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
-        <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
-          <Component sidebar={renderedSidebar} />
+        <div className={[styles.frame, styles[`size-${size}`], !running && styles.static].filter(Boolean).join(' ')}>
+          <Component sidebar={renderedSidebar} running={running} />
         </div>
         {caption && <figcaption className={styles.caption}>{label}</figcaption>}
       </figure>

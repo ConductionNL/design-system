@@ -11,10 +11,19 @@
  *  - Jira      → external-app status board
  *  - RSS       → headlines feed
  *  - Video     → video-call shortcut
+ *
+ * Animated (10s loop, --am-dur): the dashboard assembles — the seven
+ * widgets arrive one by one on a 900ms stagger (inline
+ * animation-delay, reading order), hold, then fade for the reset.
+ * `running={false}` / prefers-reduced-motion show the assembled
+ * board. Keyframes live in AppMock.module.css (`.lpWidgets` section).
  */
 
 import React from 'react';
 import styles from '../AppMock.module.css';
+
+/* Per-widget arrival delay on the shared stagger. */
+const ARRIVE = (i) => ({animationDelay: `${i * 900}ms`});
 
 export default function LaunchPadWidgetsMock() {
   return (
@@ -26,11 +35,11 @@ export default function LaunchPadWidgetsMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad, styles.lpWidgets].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Procest werkvoorraad + DocuDesk upload */}
           <div className={styles.col}>
-            <div className={[styles.w, styles['w-werkvoorraad']].join(' ')}>
+            <div className={[styles.w, styles['w-werkvoorraad']].join(' ')} style={ARRIVE(0)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>
@@ -42,7 +51,7 @@ export default function LaunchPadWidgetsMock() {
                 <div className={styles.item}><div className={styles.stage}></div><div className={styles.l1}></div><div className={[styles.av, styles.b].join(' ')}></div></div>
               </div>
             </div>
-            <div className={[styles.w, styles['w-upload']].join(' ')}>
+            <div className={[styles.w, styles['w-upload']].join(' ')} style={ARRIVE(1)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>
@@ -53,7 +62,7 @@ export default function LaunchPadWidgetsMock() {
             </div>
           </div>
           {/* Column 2: Mail (Important mail) */}
-          <div className={[styles.w, styles['w-mail']].join(' ')}>
+          <div className={[styles.w, styles['w-mail']].join(' ')} style={ARRIVE(2)}>
             <div className={styles.wHead}>
               <div className={styles.h}></div><div className={styles.t}></div>
             </div>
@@ -71,7 +80,7 @@ export default function LaunchPadWidgetsMock() {
           </div>
           {/* Column 3: Jira status board + RSS feed */}
           <div className={styles.col}>
-            <div className={[styles.w, styles['w-jira']].join(' ')}>
+            <div className={[styles.w, styles['w-jira']].join(' ')} style={ARRIVE(3)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>
@@ -83,7 +92,7 @@ export default function LaunchPadWidgetsMock() {
                 <div className={styles.item}><div className={styles.id}></div><div className={styles.l}></div><div className={styles.pip}></div></div>
               </div>
             </div>
-            <div className={[styles.w, styles['w-rss']].join(' ')}>
+            <div className={[styles.w, styles['w-rss']].join(' ')} style={ARRIVE(4)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>
@@ -96,7 +105,7 @@ export default function LaunchPadWidgetsMock() {
           </div>
           {/* Column 4: Calendar + Video call shortcut */}
           <div className={styles.col}>
-            <div className={[styles.w, styles['w-calendar']].join(' ')}>
+            <div className={[styles.w, styles['w-calendar']].join(' ')} style={ARRIVE(5)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>
@@ -106,7 +115,7 @@ export default function LaunchPadWidgetsMock() {
                 ))}
               </div>
             </div>
-            <div className={[styles.w, styles['w-video']].join(' ')}>
+            <div className={[styles.w, styles['w-video']].join(' ')} style={ARRIVE(6)}>
               <div className={styles.wHead}>
                 <div className={styles.h}></div><div className={styles.t}></div>
               </div>

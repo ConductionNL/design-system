@@ -33,10 +33,29 @@ export default function LarpingAppMock() {
           ))}
         </div>
         <div className={styles.col}>
-          {/* Scene timeline (one done, one active in orange, three to-do) */}
-          <div className={[styles.w, styles['w-graph-bar']].join(' ')} style={{minHeight: 0}}>
-            <div className={styles.wHead}>
-              <div className={styles.h}></div><div className={styles.t}></div>
+          {/* Scene timeline (one done, one active in orange — the
+              variant's single orange — three to-do). Reuses the
+              procest timeline atoms; the wrapper div provides the
+              `.procest` scope those styles require. The previous
+              markup here was an empty w-graph-bar shell that rendered
+              nothing but its header. */}
+          <div className={styles.procest}>
+            <div className={styles.timeline}>
+              <div className={styles.step}>
+                <div className={styles.h}></div><div className={styles.label}></div>
+              </div>
+              <div className={[styles.step, styles.now].join(' ')}>
+                <div className={styles.h}></div><div className={styles.label}></div>
+              </div>
+              <div className={[styles.step, styles.todo].join(' ')}>
+                <div className={styles.h}></div><div className={styles.label}></div>
+              </div>
+              <div className={[styles.step, styles.todo].join(' ')}>
+                <div className={styles.h}></div><div className={styles.label}></div>
+              </div>
+              <div className={[styles.step, styles.todo].join(' ')}>
+                <div className={styles.h}></div><div className={styles.label}></div>
+              </div>
             </div>
           </div>
           {/* Character grid */}

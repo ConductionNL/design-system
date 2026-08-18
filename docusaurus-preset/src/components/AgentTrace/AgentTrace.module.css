@@ -1,6 +1,17 @@
 /**
  * <AgentTrace /> styles. Cobalt-900 terminal panel with monospace
  * lines and Claude-CLI-style coloured bullets.
+ *
+ * Typed reveal: every .line runs one shared looping animation whose
+ * period is --at-total (set inline by the component from the line
+ * count) and whose start is staggered by the per-line --at-d delay
+ * (i × 550ms, also inline). A line clips open left-to-right over the
+ * first ~4% of the period, holds, and fades near the end — with the
+ * stagger, lines type in and later fade out in arrival order, so the
+ * restart is a soft cascade rather than a hard cut. Status dots and
+ * the prompt cursor inherit the same delay so they only start after
+ * their line exists. `.static` (running={false}) and
+ * prefers-reduced-motion show every line at rest.
  */
 
 .trace {
@@ -29,6 +40,14 @@
   align-items: flex-start;
   gap: var(--space-2);
   font-feature-settings: "calt" 0;
+  animation: atType var(--at-total, 6s) linear var(--at-d, 0ms) infinite both;
+}
+
+@keyframes atType {
+  0%        { opacity: 0; clip-path: inset(0 100% 0 0); }
+  4%        { opacity: 1; clip-path: inset(0 0 0 0); }
+  90%       { opacity: 1; clip-path: inset(0 0 0 0); }
+  96%, 100% { opacity: 0; clip-path: inset(0 0 0 0); }
 }
 
 /* Bullets — set inline-block so the gap works the same across kinds. */
@@ -56,7 +75,9 @@
 .dots {
   display: inline-block;
   margin-left: 2px;
-  animation: dots 1400ms steps(4, end) infinite;
+  /* Inherits the line's --at-d so the dots only start ticking after
+     their line has typed in; backwards-fill hides them until then. */
+  animation: dots 1400ms steps(4, end) var(--at-d, 0ms) infinite backwards;
   white-space: pre;
   overflow: hidden;
   vertical-align: bottom;
@@ -94,7 +115,8 @@
   height: 14px;
   background: white;
   vertical-align: -2px;
-  animation: blink 1100ms steps(2, end) infinite;
+  /* Same delay-inheritance as .dots: blinking starts with its line. */
+  animation: blink 1100ms steps(2, end) var(--at-d, 0ms) infinite backwards;
 }
 @keyframes blink {
   0%, 50%   { opacity: 1; }
@@ -113,3 +135,20 @@
 }
 .modeArrow { color: var(--c-cobalt-300); }
 .modeText  { color: var(--c-cobalt-200); }
+
+/* ---- Static trace (running={false} and reduced motion) ----
+   Every line visible at rest, dots at full width, cursor solid. */
+
+.static .line,
+.static .dots,
+.static .cursor {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line,
+  .dots,
+  .cursor {
+    animation: none;
+  }
+}

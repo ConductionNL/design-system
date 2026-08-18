@@ -1,0 +1,45 @@
+name: Code Quality
+
+# The org rulesets on main and beta require the status contexts
+# `branch-protection / check-branch` and `quality / Quality Report`.
+# Until 2026-08-18 this repo had neither caller workflow, so those
+# contexts could never report and no PR into main was mergeable without
+# an admin bypass (design-system#41 was merged that way). This caller
+# restores the contexts by delegating to the shared quality pipeline in
+# ConductionNL/.github, the same as nextcloud-vue.
+#
+# What is deliberately OFF, and why:
+# - enable-php: no composer.json here.
+# - frontend-checks / eslint / stylelint: every frontend leg runs `npm ci`,
+#   and this repo commits NO package-lock.json (npm workspaces; the
+#   release workflow uses `npm install` for the same reason). A leg that
+#   can only fail is worse than none. Turn them on the day a lockfile is
+#   tracked; `docusaurus-preset` has an `npm test` (26 tests) worth wiring
+#   as `frontend-checks: ["test"]` at that point.
+# The Quality Report job runs `if: always()`, so it reports even with the
+# legs disabled — which is what makes the required context appear.
+
+on:
+  push:
+    branches: [main, beta, feature/**, feat/**, fix/**, ci/**]
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main, beta]
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  quality:
+    if: github.event_name != 'push' || github.event.created != true
+    uses: ConductionNL/.github/.github/workflows/quality.yml@main
+    with:
+      app-name: design-system
+      enable-php: false
+      enable-frontend: false
+      enable-eslint: false
+      enable-stylelint: false
+      enable-sbom: false

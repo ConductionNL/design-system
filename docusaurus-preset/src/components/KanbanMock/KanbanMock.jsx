@@ -4,8 +4,11 @@
  * Token-built abstract of the pipelinq kanban board with a looping
  * drag animation: a cursor picks up the top lead card in the first
  * column (the card lifts), drags it to the second column, drops it,
- * and the column counts nudge (3→2, 2→3). Loops every ~7 seconds.
- * Pipelinq's hero/panel illustration.
+ * and at the drop moment the column counts nudge (3→2, 2→3) and the
+ * per-lane € KPI tiles above the board shift the moved deal's value
+ * (€ 48k→€ 30k, € 27k→€ 45k; the third lane stays € 64k). Loops
+ * every ~7 seconds and resets cleanly at loop start. Pipelinq's
+ * hero/panel illustration.
  *
  * Named KanbanMock rather than PipelineMock because the preset
  * already ships a `Pipeline` component (the hex-numbered process
@@ -48,13 +51,35 @@ function CardGreek({wide, dot}) {
 
 function Count({from, to}) {
   /* Two stacked digits crossfading on the shared timeline: `from`
-     shows until the drop (~55%), `to` after it, back again for the
-     next loop. Static renderings show `from`. */
+     shows until the drop settles (54%), `to` after it, back again for
+     the next loop. Static renderings show `from`. */
   return (
     <span className={styles.count}>
       <span className={styles.countBefore}>{from}</span>
       <span className={styles.countAfter}>{to}</span>
     </span>
+  );
+}
+
+function Kpi({from, to}) {
+  /* Small € tile above a lane. Reuses the count crossfade classes so
+     the value swaps at the same drop moment as the column counts and
+     shows `from` in static renderings. A `to` of undefined renders a
+     lane whose total never changes. */
+  return (
+    <div className={styles.kpi}>
+      <span className={styles.kpiBar} />
+      <span className={styles.kpiValue}>
+        {to != null ? (
+          <>
+            <span className={styles.countBefore}>{from}</span>
+            <span className={styles.countAfter}>{to}</span>
+          </>
+        ) : (
+          <span className={styles.kpiStill}>{from}</span>
+        )}
+      </span>
+    </div>
   );
 }
 
@@ -65,9 +90,14 @@ export default function KanbanMock({size = 'md', caption, running = true, classN
         <div
           className={[styles.frame, styles[`size-${size}`], !running && styles.static].filter(Boolean).join(' ')}
           role="img"
-          aria-label="Abstract kanban board: a lead card is dragged from the first column to the second and the column counts update."
+          aria-label="Abstract kanban board: a lead card is dragged from the first column to the second; the column counts and the lane value totals update at the drop."
         >
           <div className={styles.board}>
+            <div className={styles.kpis}>
+              <Kpi from="€ 48k" to="€ 30k" />
+              <Kpi from="€ 27k" to="€ 45k" />
+              <Kpi from="€ 64k" />
+            </div>
             <div className={styles.col}>
               <div className={styles.colHead}>
                 <span className={styles.colBar} />

@@ -5,17 +5,32 @@
  *
  * One shared timeline (--km-dur, default 7s):
  *
- *   0–12%   cursor travels to the top card in column 1
+ *   0–10%   cursor travels to the top card in column 1
  *   14%     the card lifts (scale + deeper shadow)
  *   16–50%  card + cursor drag to column 2's top slot
- *   52–55%  drop; the column counts crossfade (3→2, 2→3)
- *   55–86%  hold
- *   86–100% card fades back to its origin, counts revert, loop
+ *   50–54%  the card settles into the slot
+ *   54–56%  the column counts (3→2, 2→3) and the lane € KPIs
+ *           (€ 48k→€ 30k, € 27k→€ 45k) crossfade — right at the drop
+ *   56–86%  hold
+ *   86–100% card fades back to its origin, counts + KPIs revert, loop
+ *
+ * Geometry: the mover is absolutely positioned over the board, so its
+ * keyframe coordinates must equal the top card slot of columns 1 and
+ * 2. Those slots mix %-sized board chrome with px-sized column chrome,
+ * so the coordinates are calc() custom properties (--km-x1, --km-x2,
+ * --km-y, --km-card-w) derived below rather than by-eye percentages —
+ * that keeps the landing exact at every frame width. Derivation:
+ *   board padding 6%/5% of frame width W; column gap 4% of the 90%
+ *   content box = 3.6%W; columns (90% − 7.2%)/3 = 27.6%W;
+ *   col chrome = 1px border + 10px padding = 11px;
+ *   vertical: 6%W top pad = 9.6% of the 16/10 frame height, + KPI row
+ *   34px + 12px row gap + col chrome 11px + head 16px + head margin
+ *   2px + col gap 8px = 83px.
  *
  * prefers-reduced-motion (and .static from running={false}) renders
  * the static board: no cursor, no animation, the card resting in its
- * origin column, original counts. Tokens only; the mover's status
- * dot (mint) is the only non-neutral accent; no orange.
+ * origin column, original counts and KPI values. Tokens only; the
+ * mover's status dot (mint) is the only non-neutral accent; no orange.
  */
 
 .km { display: contents; }
@@ -31,6 +46,11 @@
 
 .km .frame {
   --km-dur: 7s;
+  /* Card-slot geometry (see the derivation in the header comment). */
+  --km-x1: calc(5% + 11px);
+  --km-x2: calc(36.2% + 11px);
+  --km-y: calc(9.6% + 83px);
+  --km-card-w: calc(27.6% - 22px);
   width: 100%;
   max-width: 720px;
   aspect-ratio: 16 / 10;
@@ -62,8 +82,71 @@
   padding: 6% 5%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4%;
+  grid-template-rows: auto 1fr;
+  /* Fixed 12px row gap (part of the mover's --km-y derivation);
+     percentage column gap so lanes track the frame width. */
+  gap: 12px 4%;
 }
+
+/* ---- KPI row above the lanes ---- */
+
+.km .kpis {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* Same content box as the board, so 4% aligns tiles with lanes. */
+  gap: 4%;
+  min-width: 0;
+}
+
+.km .kpi {
+  box-sizing: border-box;
+  height: 34px; /* fixed: part of the mover's --km-y derivation */
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.km .kpiBar {
+  display: block;
+  width: 26%;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--c-cobalt-300);
+  flex-shrink: 0;
+}
+.km .kpiValue {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 38px;
+  height: 14px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+/* The crossfading value spans reuse .countBefore/.countAfter (same
+   timeline, same static overrides) but sit right-aligned in the tile
+   instead of filling a pill. */
+.km .kpiValue .countBefore,
+.km .kpiValue .countAfter {
+  inset: auto;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+/* A lane total that never changes (third lane). */
+.km .kpiStill { display: inline-flex; align-items: center; }
 
 .km .col {
   background: var(--c-cobalt-50);
@@ -124,6 +207,9 @@
 
 .km .card,
 .km .mover {
+  /* Explicit border-box: --km-card-w describes the full card box, and
+     not every consumer of this file ships a global box-sizing reset. */
+  box-sizing: border-box;
   background: white;
   border: 1px solid var(--c-cobalt-100);
   border-radius: var(--radius-sm);
@@ -134,9 +220,10 @@
   gap: 5px;
 }
 
-/* The gap where the travelling card lives at rest. Sized like a card
-   so the column layout doesn't jump. */
-.km .slotGap { height: 44px; flex-shrink: 0; }
+/* The gap where the travelling card lives at rest. Exactly the
+   mover's height (2px border + 16px padding + 23px content) so the
+   card sits flush in the slot when it lands. */
+.km .slotGap { height: 41px; flex-shrink: 0; }
 
 .km .cardTop { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .km .cardBar  { display: block; height: 4px; border-radius: 1px; background: var(--c-cobalt-700); }
@@ -153,24 +240,26 @@
 
 .km .mover {
   position: absolute;
-  /* Origin: column 1's top slot (board padding 6%/5%, col padding,
-     head row). Kept in sync with .slotGap by eye — it's a mock. */
-  left: 7.4%;
-  top: 21%;
-  width: 24.5%;
+  /* Origin: column 1's top slot. Exact calc() geometry — see the
+     header comment — so the card sits flush in the slot at rest and
+     when it lands, at every frame width. The lift is a transform so
+     left/top always mean "the slot". */
+  left: var(--km-x1);
+  top: var(--km-y);
+  width: var(--km-card-w);
   animation: kmMove var(--km-dur) linear infinite;
   z-index: 2;
 }
 
 @keyframes kmMove {
-  0%, 10% { left: 7.4%;  top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
-  14%     { left: 7.4%;  top: 19.5%; transform: scale(1.05); box-shadow: var(--shadow-3); opacity: 1; }
-  50%     { left: 39.2%; top: 19.5%; transform: scale(1.05); box-shadow: var(--shadow-3); opacity: 1; }
-  54%     { left: 39.2%; top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
-  86%     { left: 39.2%; top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
-  92%     { left: 39.2%; top: 21%; opacity: 0; }
-  96%     { left: 7.4%;  top: 21%; opacity: 0; }
-  100%    { left: 7.4%;  top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
+  0%, 10% { left: var(--km-x1); top: var(--km-y); transform: translateY(0) scale(1);      box-shadow: var(--shadow-1); opacity: 1; }
+  14%     { left: var(--km-x1); top: var(--km-y); transform: translateY(-3px) scale(1.04); box-shadow: var(--shadow-3); opacity: 1; }
+  50%     { left: var(--km-x2); top: var(--km-y); transform: translateY(-3px) scale(1.04); box-shadow: var(--shadow-3); opacity: 1; }
+  54%     { left: var(--km-x2); top: var(--km-y); transform: translateY(0) scale(1);      box-shadow: var(--shadow-1); opacity: 1; }
+  86%     { left: var(--km-x2); top: var(--km-y); transform: translateY(0) scale(1);      box-shadow: var(--shadow-1); opacity: 1; }
+  92%     { left: var(--km-x2); top: var(--km-y); opacity: 0; }
+  96%     { left: var(--km-x1); top: var(--km-y); opacity: 0; }
+  100%    { left: var(--km-x1); top: var(--km-y); transform: translateY(0) scale(1);      box-shadow: var(--shadow-1); opacity: 1; }
 }
 
 /* ---- Cursor ---- */
@@ -191,23 +280,26 @@
 
 @keyframes kmCursor {
   0%      { left: 60%; top: 60%; }
-  10%     { left: 17%; top: 26%; }  /* over the card */
-  14%     { left: 17%; top: 24.5%; }
-  50%     { left: 48.8%; top: 24.5%; } /* drag with the card */
-  54%     { left: 48.8%; top: 26%; }
+  10%     { left: calc(var(--km-x1) + 10%); top: calc(var(--km-y) + 18px); }  /* over the card */
+  14%     { left: calc(var(--km-x1) + 10%); top: calc(var(--km-y) + 15px); }
+  50%     { left: calc(var(--km-x2) + 10%); top: calc(var(--km-y) + 15px); }  /* drag with the card */
+  54%     { left: calc(var(--km-x2) + 10%); top: calc(var(--km-y) + 18px); }
   64%     { left: 60%; top: 60%; }  /* release, drift away */
   100%    { left: 60%; top: 60%; }
 }
 
 /* ---- Count crossfade ---- */
 
+/* Counts and KPI values swap the moment the card settles: the drop
+   ends at 54%, the crossfade runs 54–56%. They revert while the card
+   fades back to its origin (86–96%). */
 @keyframes kmCountBefore {
-  0%, 53%   { opacity: 1; }
+  0%, 54%   { opacity: 1; }
   56%, 88%  { opacity: 0; }
   93%, 100% { opacity: 1; }
 }
 @keyframes kmCountAfter {
-  0%, 53%   { opacity: 0; }
+  0%, 54%   { opacity: 0; }
   56%, 88%  { opacity: 1; }
   93%, 100% { opacity: 0; }
 }

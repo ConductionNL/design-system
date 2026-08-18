@@ -7,6 +7,17 @@
  * duplicated for a seamless loop, paused on hover/focus) and the
  * static responsive grid (carousel={false}, and what
  * prefers-reduced-motion collapses the carousel to).
+ *
+ * The CSS keyframe marquee is the SSR/no-JS fallback; once the
+ * component mounts, the JSX adds .jsDriven to the track and a rAF
+ * loop drives the same transform so the prev/next/pause controls can
+ * steer it. Controls are cobalt ghost buttons (never orange fill)
+ * and are hidden under reduced motion together with the marquee.
+ *
+ * Auto panels (.auto*): token-built mini mocks for widgets without an
+ * explicit panel. Four archetypes (KPI tile, bar chart, list rows,
+ * donut gauge); the accent comes from --wsa / --wsa-soft, set inline
+ * by the JSX from a hash of the widget title.
  */
 
 .shelf {
@@ -89,6 +100,56 @@
   to   { transform: translateX(-50%); }
 }
 
+/* Once the rAF loop owns the transform, the keyframe animation must
+   let go — otherwise it would overwrite the inline transform. */
+.track.jsDriven { animation: none; }
+
+/* ---- Controls (pause/play + prev/next) ----
+ *
+ * Cobalt ghost buttons per the kit: transparent ground, cobalt ink,
+ * cobalt-200 hairline; hover tints, focus ring is a visible cobalt
+ * outline. Never orange. Hidden under reduced motion because the
+ * static grid has nothing to steer. */
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.ctrl {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-blue-cobalt);
+  cursor: pointer;
+}
+.ctrl:hover {
+  background: var(--c-cobalt-50);
+  border-color: var(--c-blue-cobalt);
+}
+.ctrl:focus-visible {
+  outline: 2px solid var(--c-blue-cobalt);
+  outline-offset: 2px;
+}
+.ctrl svg { width: 16px; height: 16px; display: block; }
+.chev {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.glyph { fill: currentColor; }
+
 /* Reduced motion: drop the duplicate copy and render the first group
    as the static wrapping grid — identical to carousel={false}. The
    .cols-2 / .cols-3 class on the group supplies the column template. */
@@ -98,7 +159,8 @@
     -webkit-mask-image: none;
     mask-image: none;
   }
-  .track { animation: none; display: block; width: 100%; }
+  .controls { display: none; }
+  .track { animation: none; display: block; width: 100%; transform: none !important; }
   .group {
     display: grid;
     gap: var(--space-5);
@@ -149,4 +211,134 @@
   color: var(--c-cobalt-700);
   margin: 0;
   padding: var(--space-2) var(--space-5) var(--space-5);
+}
+
+/* ---- Auto-generated mini panels ----
+ *
+ * White widget tile on the tinted panel ground, same chrome family as
+ * the hand-built .w mocks. All greeked (bars, dots, one number); the
+ * accent tokens --wsa / --wsa-soft arrive inline from the JSX. */
+
+.auto {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 280px;
+  min-height: 124px;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  padding: 16px 18px;
+}
+
+/* KPI number tile */
+.autoKpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.autoHex {
+  display: block;
+  width: 13px;
+  height: 15px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--wsa);
+}
+.autoKpiValue {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--c-cobalt-900);
+}
+.autoKpiBar {
+  display: block;
+  height: 5px;
+  border-radius: 1.5px;
+  background: var(--wsa-soft);
+}
+
+/* Mini bar chart */
+.autoBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 124px;
+}
+.autoBar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: var(--c-cobalt-200);
+}
+.autoBarHi { background: var(--wsa); }
+
+/* List rows */
+.autoList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+.autoRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.autoDot {
+  flex-shrink: 0;
+  width: 12px;
+  height: 14px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-cobalt-200);
+}
+.autoDotHi { background: var(--wsa); }
+.autoRowBars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.autoRowBar {
+  display: block;
+  height: 5px;
+  border-radius: 1.5px;
+  background: var(--c-cobalt-700);
+}
+.autoRowLine {
+  display: block;
+  width: 86%;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--c-cobalt-100);
+}
+
+/* Donut gauge */
+.autoDonut {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.autoRing {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+}
+.autoRingTrack {
+  fill: none;
+  stroke: var(--c-cobalt-100);
+  stroke-width: 6;
+}
+.autoRingFill {
+  fill: none;
+  stroke: var(--wsa);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.autoDonutBars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

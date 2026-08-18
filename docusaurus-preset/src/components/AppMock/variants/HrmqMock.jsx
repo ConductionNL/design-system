@@ -1,21 +1,25 @@
 /**
- * HRMQ abstract — people administration.
+ * HRMQ abstract — hours administration.
  *
- * Inferred from the app role (HR: employees, contracts, leave): a
- * people list with hex avatars next to a leave-balance card of
- * labelled horizontal bars. Tone: mint — the team is in order.
+ * Content rework (wave 4): the earlier people-list + leave-balance
+ * pair misrepresented the app (HRMQ's daily surface is hours and
+ * approval, not a personnel directory). The mock now shows the
+ * timesheet week — five day columns of hour bars plus a submit
+ * button — next to an approval card: the submitted week arriving as
+ * a row, its pip ticking mint on approval, and a payroll counter
+ * that grows when the approved hours land. Tone: mint — the team's
+ * hours are in order.
+ *
+ * Animation: day bars fill in a stagger → submit press → the
+ * approval row's pip ticks mint → the payroll counter widens.
+ * Base styles are the approved end state.
  */
 
 import React from 'react';
 import styles from '../AppMock.module.css';
 
-const PEOPLE = ['var(--c-mint-500)', 'var(--c-mint-300)', 'var(--c-forest-300)', 'var(--c-mint-300)', 'var(--c-mint-500)'];
-const BALANCES = [
-  {fill: '72%', shade: 'var(--c-mint-500)'},
-  {fill: '45%', shade: 'var(--c-mint-500)'},
-  {fill: '88%', shade: 'var(--c-mint-300)'},
-  {fill: '20%', shade: 'var(--c-mint-300)'},
-];
+/* Hour-bar heights for the five day columns of the week. */
+const WEEK = ['70%', '85%', '60%', '90%', '45%'];
 
 export default function HrmqMock() {
   return (
@@ -27,7 +31,7 @@ export default function HrmqMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.decidesk].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.decidesk, styles.hrmq].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false, false].map((active, i) => (
@@ -45,29 +49,43 @@ export default function HrmqMock() {
             </div>
           </div>
           <div className={styles.panelRow} style={{gridTemplateColumns: '1.2fr 1fr'}}>
-            {/* People list — hex avatars */}
-            <div className={styles.panel}>
+            {/* Timesheet — the week's hour bars + submit */}
+            <div className={[styles.panel, styles.timesheet].join(' ')}>
               <div className={styles.head}><div className={styles.title}></div></div>
-              <div className={styles.stack}>
-                {PEOPLE.map((shade, i) => (
-                  <div key={i} className={styles.item}>
-                    <div style={{width: 13, height: 15, clipPath: 'var(--hex-pointy-top)', background: shade, flexShrink: 0}}></div>
-                    <div className={styles.lines}><div className={styles.l1}></div><div className={styles.l2}></div></div>
+              <div className={styles.week}>
+                {WEEK.map((h, i) => (
+                  <div key={i} className={styles.dayCol}>
+                    <div className={styles.dayBar} style={{height: h}}></div>
+                    <div className={styles.dayLabel}></div>
                   </div>
                 ))}
               </div>
+              <div className={styles.sheetFoot}>
+                <div className={styles.sheetSum}></div>
+                <div className={[styles.btn, styles.submitBtn].join(' ')}></div>
+              </div>
             </div>
-            {/* Leave-balance card — labelled bars */}
-            <div className={styles.panel}>
+            {/* Approval + payroll — the submitted week arrives, is
+                approved (mint tick), and the payroll counter grows. */}
+            <div className={[styles.panel, styles.approval].join(' ')}>
               <div className={styles.head}><div className={styles.title}></div></div>
-              {BALANCES.map(({fill, shade}, i) => (
-                <div key={i} style={{display: 'flex', flexDirection: 'column', gap: 3}}>
-                  <div className={styles.row + ' ' + styles.short} style={{height: 3}}></div>
-                  <div style={{height: 5, background: 'var(--c-cobalt-100)', borderRadius: 2}}>
-                    <div style={{width: fill, height: 5, background: shade, borderRadius: 2}}></div>
-                  </div>
+              <div className={styles.stack}>
+                <div className={[styles.item, styles.approveRow].join(' ')}>
+                  <div className={styles.av}></div>
+                  <div className={styles.lines}><div className={styles.l1}></div><div className={styles.l2}></div></div>
+                  <div className={styles.approvePip}></div>
                 </div>
-              ))}
+                <div className={styles.item}>
+                  <div className={[styles.av, styles.b].join(' ')}></div>
+                  <div className={styles.lines}><div className={styles.l1}></div><div className={styles.l2}></div></div>
+                  <div className={styles.donePip}></div>
+                </div>
+              </div>
+              {/* Payroll counter — widens when the approval lands */}
+              <div className={styles.payroll}>
+                <div className={styles.pLabel}></div>
+                <div className={styles.pNum}></div>
+              </div>
             </div>
           </div>
         </div>

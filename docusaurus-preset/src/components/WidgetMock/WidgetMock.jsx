@@ -29,7 +29,19 @@
  *   - caption: boolean                                — adds a small
  *                                                       label below
  *                                                       the frame
+ *   - running: boolean (default true) — false freezes the widget's
+ *              animation on its meaningful static end state (same
+ *              rendering `prefers-reduced-motion: reduce` gives).
+ *              The CSS `.static` class on the frame stops keyframes.
  *   - className: string
+ *
+ * Every list-shaped variant (VARIANTS entries with `list: true`)
+ * shares one refresh primitive, styled in AppMock.module.css under
+ * `.wmLive`: a new row slides in at the top, the bottom row clips
+ * out, and the unread badge on the frame bumps as the row lands.
+ * Non-list variants (calendar grid, decks columns, activity graph,
+ * anonymise dropzone) opt out; the dropzone has its own `.zoneLive`
+ * marching-ants + file-drop treatment inside the variant itself.
  */
 
 import React from 'react';
@@ -53,22 +65,22 @@ import NextcloudRss            from './variants/NextcloudRss.jsx';
 
 const VARIANTS = {
   'docudesk-anonymise':       { Component: DocuDeskAnonymise,       label: 'DocuDesk · Anonymise drop' },
-  'docudesk-pending-sign':    { Component: DocuDeskPendingSign,     label: 'DocuDesk · Pending signatures' },
-  'procest-werkvoorraad':     { Component: ProcestWerkvoorraad,     label: 'Procest · Werkvoorraad' },
-  'procest-due-today':        { Component: ProcestDueToday,         label: 'Procest · Due today' },
+  'docudesk-pending-sign':    { Component: DocuDeskPendingSign,     label: 'DocuDesk · Pending signatures', list: true },
+  'procest-werkvoorraad':     { Component: ProcestWerkvoorraad,     label: 'Procest · Werkvoorraad', list: true },
+  'procest-due-today':        { Component: ProcestDueToday,         label: 'Procest · Due today', list: true },
   'openregister-activity':    { Component: OpenRegisterActivity,    label: 'OpenRegister · Activity' },
-  'opencatalogi-publications':{ Component: OpenCatalogiPublications,label: 'OpenCatalogi · Recent publications' },
-  'openconnector-runs':       { Component: OpenConnectorRuns,       label: 'OpenConnector · Recent runs' },
-  'decidesk-actions':         { Component: DeciDeskActions,         label: 'DeciDesk · Action items' },
-  'pipelinq-deals':           { Component: PipelinQDeals,           label: 'PipelinQ · Deals closing' },
-  'nextcloud-mail':           { Component: NextcloudMail,           label: 'Nextcloud · Important mail' },
+  'opencatalogi-publications':{ Component: OpenCatalogiPublications,label: 'OpenCatalogi · Recent publications', list: true },
+  'openconnector-runs':       { Component: OpenConnectorRuns,       label: 'OpenConnector · Recent runs', list: true },
+  'decidesk-actions':         { Component: DeciDeskActions,         label: 'DeciDesk · Action items', list: true },
+  'pipelinq-deals':           { Component: PipelinQDeals,           label: 'PipelinQ · Deals closing', list: true },
+  'nextcloud-mail':           { Component: NextcloudMail,           label: 'Nextcloud · Important mail', list: true },
   'nextcloud-calendar':       { Component: NextcloudCalendar,       label: 'Nextcloud · Calendar' },
-  'nextcloud-files':          { Component: NextcloudFiles,          label: 'Nextcloud · Recent files' },
+  'nextcloud-files':          { Component: NextcloudFiles,          label: 'Nextcloud · Recent files', list: true },
   'nextcloud-decks':          { Component: NextcloudDecks,          label: 'Nextcloud · Decks' },
-  'nextcloud-rss':            { Component: NextcloudRss,            label: 'Nextcloud · RSS feed' },
+  'nextcloud-rss':            { Component: NextcloudRss,            label: 'Nextcloud · RSS feed', list: true },
 };
 
-export default function WidgetMock({ kind, size = 'md', caption = false, className }) {
+export default function WidgetMock({ kind, size = 'md', caption = false, running = true, className }) {
   const variant = VARIANTS[kind];
   const wrap = [amStyles.am, styles.wm].filter(Boolean).join(' ');
   if (!variant) {
@@ -80,12 +92,21 @@ export default function WidgetMock({ kind, size = 'md', caption = false, classNa
       </div>
     );
   }
-  const { Component, label } = variant;
+  const { Component, label, list } = variant;
+  const frameCls = [
+    styles.wmFrame,
+    styles[`wm-size-${size}`],
+    list && amStyles.wmLive,
+    !running && amStyles.static,
+  ].filter(Boolean).join(' ');
   return (
     <div className={wrap}>
       <figure className={[styles.wmFigure, className].filter(Boolean).join(' ')}>
-        <div className={[styles.wmFrame, styles[`wm-size-${size}`]].filter(Boolean).join(' ')}>
-          <Component />
+        <div className={frameCls}>
+          {/* Unread badge — list variants only; bumps when the fresh
+              row lands. Styled in AppMock.module.css (.wmBadge). */}
+          {list && <div className={amStyles.wmBadge}></div>}
+          <Component running={running} />
         </div>
         {caption && <figcaption className={styles.wmCaption}>{label}</figcaption>}
       </figure>

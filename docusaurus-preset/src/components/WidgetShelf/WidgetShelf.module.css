@@ -1,7 +1,12 @@
 /**
- * <WidgetShelf /> styles. Header + responsive grid of widget-preview
- * cards. Each card has a tinted panel containing the widget mock,
- * with title + description below.
+ * <WidgetShelf /> styles. Header + widget-preview cards. Each card
+ * has a tinted panel containing the widget mock, with title +
+ * description below.
+ *
+ * Two layouts: the default single-row carousel (slow marquee, track
+ * duplicated for a seamless loop, paused on hover/focus) and the
+ * static responsive grid (carousel={false}, and what
+ * prefers-reduced-motion collapses the carousel to).
  */
 
 .shelf {
@@ -11,7 +16,11 @@
   font-family: var(--conduction-typography-font-family-body);
 }
 
-.head { max-width: 70ch; margin: 0 0 var(--space-8); }
+/* The head runs full width so the title can fill the line; only the
+   lede (body text) keeps the 70ch reading measure. Capping the whole
+   head at 70ch forced titles into an early wrap, which the base
+   h1-h6 `text-wrap: balance` then split into two even lines. */
+.head { margin: 0 0 var(--space-8); }
 .eyebrow {
   display: inline-flex; align-items: center; gap: var(--space-2);
   font-family: var(--conduction-typography-font-family-code);
@@ -23,8 +32,9 @@
 .title {
   font-size: 36px; font-weight: 700; letter-spacing: -0.02em;
   line-height: 1.1; color: var(--c-cobalt-900); margin: 0 0 var(--space-3);
+  text-wrap: pretty; /* run full width; no artificial two-line balance */
 }
-.lede { font-size: 17px; line-height: 1.5; color: var(--c-cobalt-700); margin: 0; }
+.lede { font-size: 17px; line-height: 1.5; color: var(--c-cobalt-700); margin: 0; max-width: 70ch; }
 
 .grid {
   display: grid;
@@ -33,6 +43,75 @@
 .cols-2 { grid-template-columns: repeat(2, 1fr); }
 .cols-3 { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+/* ---- Carousel (default) ----
+ *
+ * Marquee mechanics: the track holds two identical groups of cards
+ * and translates from 0 to -50% on a slow linear loop; because each
+ * group carries a trailing padding equal to the card gap, -50% of
+ * the track lands exactly one group later and the loop is seamless.
+ * The duplicate group is aria-hidden in the JSX so screen readers
+ * hear each widget once. Hover or keyboard focus anywhere in the
+ * viewport pauses the animation. */
+
+.viewport {
+  overflow: hidden;
+  /* Soft fade at both edges so cards enter/exit gently. */
+  -webkit-mask-image: linear-gradient(to right, transparent, black 48px, black calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to right, transparent, black 48px, black calc(100% - 48px), transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: wsMarquee var(--ws-speed, 45s) linear infinite;
+}
+
+.viewport:hover .track,
+.viewport:focus-within .track {
+  animation-play-state: paused;
+}
+
+.group {
+  display: flex;
+  gap: var(--space-5);
+  padding-right: var(--space-5);
+}
+
+.carousel .card {
+  width: 340px;
+  flex: 0 0 auto;
+}
+@media (max-width: 700px) { .carousel .card { width: 280px; } }
+
+@keyframes wsMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Reduced motion: drop the duplicate copy and render the first group
+   as the static wrapping grid — identical to carousel={false}. The
+   .cols-2 / .cols-3 class on the group supplies the column template. */
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .track { animation: none; display: block; width: 100%; }
+  .group {
+    display: grid;
+    gap: var(--space-5);
+    padding-right: 0;
+    width: 100%;
+  }
+  /* After .group so its display wins the equal-specificity contest. */
+  .group.dup { display: none; }
+  .carousel .card { width: auto; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 900px) {
+  .group { grid-template-columns: 1fr; }
+}
 
 .card {
   background: white;

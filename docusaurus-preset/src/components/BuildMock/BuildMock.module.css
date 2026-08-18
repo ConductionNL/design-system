@@ -1,0 +1,290 @@
+/**
+ * <BuildMock /> styles. Scoped under `.bm` (display: contents), the
+ * AppMock `.am` convention, so specimen pages can reuse the file as a
+ * plain global stylesheet.
+ *
+ * One shared timeline (--bm-dur, default 8s) drives five animations:
+ * the cursor path, the FAB press, the palette open/close, the dragged
+ * ghost, and the snap-in of the placed component. Percentages line up
+ * across the keyframe sets:
+ *
+ *   0–14%   cursor travels to the FAB, presses it
+ *   16–22%  palette opens, cursor moves to the middle palette tile
+ *   30–58%  ghost is dragged from the palette to the empty slot
+ *   58–62%  snap: ghost settles, placed component fades in
+ *   62–88%  hold the result
+ *   88–100% everything resets for the next loop
+ *
+ * prefers-reduced-motion (and the .static class from running={false})
+ * freezes the mock at the end state: component placed, palette closed,
+ * no cursor. Tokens only; the orange FAB is the single orange accent.
+ */
+
+.bm { display: contents; }
+
+.bm .figure {
+  margin: 0;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 100%;
+}
+
+.bm .frame {
+  --bm-dur: 8s;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 10;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  position: relative;
+  font-family: var(--conduction-typography-font-family-body);
+}
+.bm .size-sm { max-width: 480px; }
+.bm .size-md { max-width: 720px; }
+
+.bm .caption {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ---- Page skeleton ---- */
+
+.bm .page {
+  position: absolute;
+  inset: 0;
+  padding: 7% 8%;
+  display: flex;
+  flex-direction: column;
+  gap: 5%;
+}
+.bm .pageHead { flex-shrink: 0; }
+.bm .headGreek {
+  display: block;
+  width: 34%;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--c-cobalt-700);
+}
+.bm .pageGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5%;
+  /* Leave the right quarter free for the palette + FAB. */
+  margin-right: 22%;
+}
+
+.bm .tile,
+.bm .slot {
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+}
+.bm .tile {
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+}
+.bm .slot {
+  border: 2px dashed var(--c-cobalt-200);
+  animation: bmSlotHint var(--bm-dur) linear infinite;
+}
+
+.bm .miniTile {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+.bm .miniBar  { display: block; height: 5px; border-radius: 1.5px; background: var(--c-cobalt-700); }
+.bm .miniLine { display: block; height: 3px; border-radius: 1px; background: var(--c-cobalt-200); width: 80%; }
+
+/* The delivered component inside the slot. */
+.bm .snapTile {
+  opacity: 0;
+  animation: bmSnapIn var(--bm-dur) linear infinite;
+}
+
+/* ---- Palette ---- */
+
+.bm .palette {
+  position: absolute;
+  right: 4%;
+  top: 22%;
+  width: 13%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-3);
+  padding: 8px;
+  opacity: 0;
+  transform: translateX(10px);
+  animation: bmPalette var(--bm-dur) linear infinite;
+}
+.bm .paletteTile {
+  display: block;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+}
+.bm .paletteTileActive { animation: bmPaletteTile var(--bm-dur) linear infinite; }
+
+/* ---- FAB (the one orange accent) ---- */
+
+.bm .fab {
+  position: absolute;
+  right: 5%;
+  bottom: 7%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--c-orange-knvb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-2);
+  animation: bmFabPress var(--bm-dur) linear infinite;
+}
+.bm .fab svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- Dragged ghost ---- */
+
+.bm .ghost {
+  position: absolute;
+  width: 22%;
+  left: 76%;
+  top: 30%;
+  background: white;
+  border: 1px solid var(--c-lavender-500);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-3);
+  padding: 8px 10px;
+  opacity: 0;
+  animation: bmGhost var(--bm-dur) linear infinite;
+}
+
+/* ---- Cursor ---- */
+
+.bm .cursor {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 55%;
+  top: 42%;
+  fill: var(--c-cobalt-900);
+  stroke: white;
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 2px rgba(10, 23, 47, 0.35));
+  animation: bmCursor var(--bm-dur) linear infinite;
+  z-index: 2;
+}
+
+/* ---- Timeline keyframes ---- */
+
+@keyframes bmCursor {
+  0%   { left: 55%; top: 42%; }
+  12%  { left: 88%; top: 82%; }   /* over the FAB */
+  16%  { left: 88%; top: 82%; }   /* press */
+  24%  { left: 82%; top: 36%; }   /* over the middle palette tile */
+  30%  { left: 82%; top: 36%; }   /* grab */
+  58%  { left: 26%; top: 66%; }   /* drag to the slot */
+  64%  { left: 26%; top: 66%; }   /* release */
+  82%  { left: 55%; top: 42%; }
+  100% { left: 55%; top: 42%; }
+}
+
+@keyframes bmFabPress {
+  0%, 11%  { transform: scale(1); }
+  13%      { transform: scale(0.85); }
+  16%, 100% { transform: scale(1); }
+}
+
+@keyframes bmPalette {
+  0%, 15%  { opacity: 0; transform: translateX(10px); }
+  18%, 72% { opacity: 1; transform: translateX(0); }
+  78%, 100% { opacity: 0; transform: translateX(10px); }
+}
+
+@keyframes bmPaletteTile {
+  0%, 22%  { background: var(--c-cobalt-50); border-color: var(--c-cobalt-100); }
+  26%, 34% { background: var(--c-cobalt-100); border-color: var(--c-lavender-500); }
+  38%, 100% { background: var(--c-cobalt-50); border-color: var(--c-cobalt-100); }
+}
+
+@keyframes bmGhost {
+  0%, 29%  { opacity: 0; left: 76%; top: 30%; transform: scale(1); }
+  31%      { opacity: 1; left: 76%; top: 30%; transform: scale(1.02); }
+  58%      { opacity: 1; left: 12%; top: 58%; transform: scale(1.02); }
+  61%      { opacity: 1; left: 12%; top: 60%; transform: scale(1); }
+  63%      { opacity: 0; left: 12%; top: 60%; transform: scale(1); }
+  100%     { opacity: 0; left: 12%; top: 60%; transform: scale(1); }
+}
+
+@keyframes bmSnapIn {
+  0%, 60%  { opacity: 0; }
+  63%, 88% { opacity: 1; }
+  94%, 100% { opacity: 0; }
+}
+
+@keyframes bmSlotHint {
+  0%, 38%  { border-color: var(--c-cobalt-200); }
+  44%, 58% { border-color: var(--c-lavender-500); }
+  63%, 100% { border-color: var(--c-cobalt-200); }
+}
+
+/* ---- Static end state (running={false} and reduced motion) ----
+ * Component placed, palette closed, no cursor, no ghost. */
+
+.bm .static .snapTile,
+.bm .static .slot,
+.bm .static .fab,
+.bm .static .palette,
+.bm .static .paletteTile,
+.bm .static .ghost,
+.bm .static .cursor { animation: none; }
+.bm .static .snapTile { opacity: 1; }
+.bm .static .slot {
+  border-style: solid;
+  border-color: var(--c-cobalt-100);
+  border-width: 1px;
+  background: var(--c-cobalt-50);
+}
+.bm .static .palette, .bm .static .ghost, .bm .static .cursor { opacity: 0; visibility: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bm .snapTile,
+  .bm .slot,
+  .bm .fab,
+  .bm .palette,
+  .bm .paletteTile,
+  .bm .ghost,
+  .bm .cursor { animation: none; }
+  .bm .snapTile { opacity: 1; }
+  .bm .slot {
+    border-style: solid;
+    border-color: var(--c-cobalt-100);
+    border-width: 1px;
+    background: var(--c-cobalt-50);
+  }
+  .bm .palette, .bm .ghost, .bm .cursor { opacity: 0; visibility: hidden; }
+}

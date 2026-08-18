@@ -37,7 +37,22 @@
 .bgCobalt .sep { color: var(--c-cobalt-300); }
 .bgCobalt .badge { color: var(--c-cobalt-100); }
 .bgCobalt .versionBadge { color: var(--c-cobalt-200); }
-.bgCobalt .downloadsBadge { color: white; }
+/* On the cobalt hero the default chip (cobalt text on a cobalt-50
+   plate) inverts to full-opacity white text on a translucent white
+   chip. The 16%-white plate blends to #45649E over cobalt, which
+   keeps white text at 5.9:1 — above the 4.5:1 WCAG AA floor. The
+   earlier rule only recoloured the text and left the light plate,
+   which made the chip near-invisible on the blue panel. */
+.bgCobalt .downloadsBadge {
+  color: white;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.bgCobalt a.downloadsBadge:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.5);
+}
 .bgCobalt .title,
 .bgCobalt .titleText { color: white; }
 .bgCobalt .tagline { color: var(--c-cobalt-100); }
@@ -91,6 +106,9 @@
 }
 .versionBadge { color: var(--c-cobalt-400); }
 
+/* Meta-row chip. Shared by the downloads counter and the "View on
+   GitHub" link; both are usually <a> elements pointing at the app's
+   repository, so the chip carries link resets + a hover state. */
 .downloadsBadge {
   color: var(--c-blue-cobalt);
   background: var(--c-cobalt-50);
@@ -98,6 +116,13 @@
   border-radius: var(--radius-sm);
   padding: 4px 10px;
   letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+a.downloadsBadge:hover {
+  color: var(--c-blue-cobalt);
+  background: var(--c-cobalt-100);
+  border-color: var(--c-cobalt-200);
 }
 .downloadIcon {
   width: 12px;
@@ -107,6 +132,11 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+.repoIcon {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
 }
 
 .title {

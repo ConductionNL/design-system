@@ -1,0 +1,233 @@
+/**
+ * <KanbanMock /> styles. Scoped under `.km` (display: contents), the
+ * AppMock `.am` convention, so specimen pages can reuse the file as a
+ * plain global stylesheet.
+ *
+ * One shared timeline (--km-dur, default 7s):
+ *
+ *   0–12%   cursor travels to the top card in column 1
+ *   14%     the card lifts (scale + deeper shadow)
+ *   16–50%  card + cursor drag to column 2's top slot
+ *   52–55%  drop; the column counts crossfade (3→2, 2→3)
+ *   55–86%  hold
+ *   86–100% card fades back to its origin, counts revert, loop
+ *
+ * prefers-reduced-motion (and .static from running={false}) renders
+ * the static board: no cursor, no animation, the card resting in its
+ * origin column, original counts. Tokens only; the mover's status
+ * dot (mint) is the only non-neutral accent; no orange.
+ */
+
+.km { display: contents; }
+
+.km .figure {
+  margin: 0;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 100%;
+}
+
+.km .frame {
+  --km-dur: 7s;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 10;
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  position: relative;
+  font-family: var(--conduction-typography-font-family-body);
+}
+.km .size-sm { max-width: 480px; }
+.km .size-md { max-width: 720px; }
+
+.km .caption {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ---- Board ---- */
+
+.km .board {
+  position: absolute;
+  inset: 0;
+  padding: 6% 5%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4%;
+}
+
+.km .col {
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.km .colHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.km .colBar {
+  display: block;
+  flex: 1;
+  max-width: 55%;
+  height: 5px;
+  border-radius: 1.5px;
+  background: var(--c-cobalt-700);
+}
+
+/* Count pill: two stacked digits crossfading on the timeline. */
+.km .count,
+.km .countStatic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-100);
+  color: var(--c-cobalt-700);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  font-weight: 600;
+}
+.km .countBefore,
+.km .countAfter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.km .countBefore { animation: kmCountBefore var(--km-dur) linear infinite; }
+.km .countAfter  { opacity: 0; animation: kmCountAfter var(--km-dur) linear infinite; }
+
+/* ---- Cards ---- */
+
+.km .card,
+.km .mover {
+  background: white;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-1);
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* The gap where the travelling card lives at rest. Sized like a card
+   so the column layout doesn't jump. */
+.km .slotGap { height: 44px; flex-shrink: 0; }
+
+.km .cardTop { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.km .cardBar  { display: block; height: 4px; border-radius: 1px; background: var(--c-cobalt-700); }
+.km .cardLine { display: block; height: 3px; border-radius: 1px; background: var(--c-cobalt-200); width: 78%; }
+.km .cardDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+
+/* ---- The travelling card ---- */
+
+.km .mover {
+  position: absolute;
+  /* Origin: column 1's top slot (board padding 6%/5%, col padding,
+     head row). Kept in sync with .slotGap by eye — it's a mock. */
+  left: 7.4%;
+  top: 21%;
+  width: 24.5%;
+  animation: kmMove var(--km-dur) linear infinite;
+  z-index: 2;
+}
+
+@keyframes kmMove {
+  0%, 10% { left: 7.4%;  top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
+  14%     { left: 7.4%;  top: 19.5%; transform: scale(1.05); box-shadow: var(--shadow-3); opacity: 1; }
+  50%     { left: 39.2%; top: 19.5%; transform: scale(1.05); box-shadow: var(--shadow-3); opacity: 1; }
+  54%     { left: 39.2%; top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
+  86%     { left: 39.2%; top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
+  92%     { left: 39.2%; top: 21%; opacity: 0; }
+  96%     { left: 7.4%;  top: 21%; opacity: 0; }
+  100%    { left: 7.4%;  top: 21%; transform: scale(1);    box-shadow: var(--shadow-1); opacity: 1; }
+}
+
+/* ---- Cursor ---- */
+
+.km .cursor {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  left: 60%;
+  top: 60%;
+  fill: var(--c-cobalt-900);
+  stroke: white;
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 2px rgba(10, 23, 47, 0.35));
+  animation: kmCursor var(--km-dur) linear infinite;
+  z-index: 3;
+}
+
+@keyframes kmCursor {
+  0%      { left: 60%; top: 60%; }
+  10%     { left: 17%; top: 26%; }  /* over the card */
+  14%     { left: 17%; top: 24.5%; }
+  50%     { left: 48.8%; top: 24.5%; } /* drag with the card */
+  54%     { left: 48.8%; top: 26%; }
+  64%     { left: 60%; top: 60%; }  /* release, drift away */
+  100%    { left: 60%; top: 60%; }
+}
+
+/* ---- Count crossfade ---- */
+
+@keyframes kmCountBefore {
+  0%, 53%   { opacity: 1; }
+  56%, 88%  { opacity: 0; }
+  93%, 100% { opacity: 1; }
+}
+@keyframes kmCountAfter {
+  0%, 53%   { opacity: 0; }
+  56%, 88%  { opacity: 1; }
+  93%, 100% { opacity: 0; }
+}
+
+/* ---- Static board (running={false} and reduced motion) ---- */
+
+.km .static .mover,
+.km .static .cursor,
+.km .static .countBefore,
+.km .static .countAfter { animation: none; }
+.km .static .cursor { opacity: 0; visibility: hidden; }
+.km .static .countBefore { opacity: 1; }
+.km .static .countAfter { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .km .mover,
+  .km .cursor,
+  .km .countBefore,
+  .km .countAfter { animation: none; }
+  .km .cursor { opacity: 0; visibility: hidden; }
+  .km .countBefore { opacity: 1; }
+  .km .countAfter { opacity: 0; }
+}

@@ -27,9 +27,19 @@
  *     ]}
  *   />
  *
- * Layout: 2 or 3 columns depending on widget count, responsive
- * to viewport. Each card has the panel (preview) at the top,
- * title + description below.
+ * Layout: by default a single-row carousel that auto-scrolls slowly
+ * (marquee-style, seamless loop via a duplicated track), pausing on
+ * hover and on keyboard focus. The duplicate copy is aria-hidden so
+ * assistive tech reads each widget once; the first copy keeps normal
+ * semantics. `prefers-reduced-motion: reduce` collapses the carousel
+ * to the static wrapping grid, which is also what `carousel={false}`
+ * renders: 2 or 3 columns depending on widget count, responsive to
+ * viewport. Each card has the panel (preview) at the top, title +
+ * description below.
+ *
+ * Props (beyond eyebrow/title/lede/widgets/columns/className):
+ *   - carousel: boolean (default true) — false renders the static grid
+ *   - speed:    number — seconds per full carousel loop (default 45)
  */
 
 import React from 'react';
@@ -41,11 +51,20 @@ export default function WidgetShelf({
   lede,
   widgets = [],
   columns,
+  carousel = true,
+  speed = 45,
   className,
 }) {
   const cols = columns || (widgets.length >= 4 ? 3 : Math.min(widgets.length, 3));
+  const cards = widgets.map((w, i) => (
+    <article key={i} className={styles.card}>
+      <div className={styles.panel}>{w.panel}</div>
+      {w.title && <h3 className={styles.cardTitle}>{w.title}</h3>}
+      {w.desc && <p className={styles.cardDesc}>{w.desc}</p>}
+    </article>
+  ));
   return (
-    <section className={[styles.shelf, className].filter(Boolean).join(' ')}>
+    <section className={[styles.shelf, carousel && styles.carousel, className].filter(Boolean).join(' ')}>
       {(eyebrow || title || lede) && (
         <header className={styles.head}>
           {eyebrow && <div className={styles.eyebrow}><span className={styles.h}></span>{eyebrow}</div>}
@@ -53,15 +72,35 @@ export default function WidgetShelf({
           {lede && <p className={styles.lede}>{lede}</p>}
         </header>
       )}
-      <div className={[styles.grid, styles[`cols-${cols}`]].join(' ')}>
-        {widgets.map((w, i) => (
-          <article key={i} className={styles.card}>
-            <div className={styles.panel}>{w.panel}</div>
-            {w.title && <h3 className={styles.cardTitle}>{w.title}</h3>}
-            {w.desc && <p className={styles.cardDesc}>{w.desc}</p>}
-          </article>
-        ))}
-      </div>
+      {carousel ? (
+        <div className={styles.viewport}>
+          <div
+            className={styles.track}
+            style={{'--ws-speed': `${speed}s`}}
+          >
+            <div className={[styles.group, styles[`cols-${cols}`]].join(' ')}>
+              {cards}
+            </div>
+            {/* Seamless-loop duplicate. Hidden from assistive tech so
+                each widget is announced once; under reduced motion the
+                CSS removes it entirely and the first group becomes the
+                static grid. */}
+            <div className={[styles.group, styles.dup].join(' ')} aria-hidden="true">
+              {widgets.map((w, i) => (
+                <article key={i} className={styles.card}>
+                  <div className={styles.panel}>{w.panel}</div>
+                  {w.title && <h3 className={styles.cardTitle}>{w.title}</h3>}
+                  {w.desc && <p className={styles.cardDesc}>{w.desc}</p>}
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className={[styles.grid, styles[`cols-${cols}`]].join(' ')}>
+          {cards}
+        </div>
+      )}
     </section>
   );
 }

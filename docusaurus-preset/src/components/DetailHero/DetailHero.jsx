@@ -38,6 +38,16 @@
  * (or secondary) variant to the KNVB-orange accent. Reserved for
  * product pages with an orange-leaning brand identity (launchpad).
  *
+ * GitHub lives in the badge row, not the CTA row: the downloads
+ * counter links to the app's repository and a "View on GitHub" chip
+ * sits next to it (both new-tab). The URL comes from the `repoHref`
+ * prop when given; otherwise a GitHub-pointing `tertiaryCta` href is
+ * reused (and that tertiary is then dropped from the CTA row, so
+ * existing pages upgrade without edits); otherwise it falls back to
+ * https://github.com/ConductionNL/{appId}. The CTA row therefore
+ * normally holds just the primary + secondary pair; a non-GitHub
+ * tertiary still renders for compatibility.
+ *
  * `background="cobalt"` paints the hero in a full-bleed cobalt panel
  * with white type — the product-page identity used on the
  * {slug}.conduction.nl landings. Default (undefined) keeps the
@@ -85,8 +95,26 @@ export default function DetailHero({
   appId,
   downloads,
   background,
+  repoHref,
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
+  /* GitHub repo link for the badge row. Priority: explicit `repoHref`
+     prop → a GitHub-pointing tertiaryCta (the old "View on GitHub"
+     ghost button, which this hero now renders as a meta-row chip
+     instead of a third CTA) → the ConductionNL org default for the
+     appId. Both the downloads counter and the "View on GitHub" chip
+     link here, in a new tab. */
+  const tertiaryIsRepo = Boolean(
+    tertiaryCta && typeof tertiaryCta.href === 'string' && tertiaryCta.href.includes('github.com')
+  );
+  const resolvedRepoHref = repoHref
+    || (tertiaryIsRepo ? tertiaryCta.href : undefined)
+    || (appId ? `https://github.com/ConductionNL/${appId}` : undefined);
+  /* A GitHub tertiary CTA is "moved up top": it renders as the meta-row
+     chip and disappears from the CTA row, which then holds just the
+     primary + secondary pair. Any other tertiary (docs, demo, ...)
+     keeps rendering as before for compatibility. */
+  const renderedTertiaryCta = tertiaryIsRepo ? null : tertiaryCta;
   const hasIllustration = Boolean(illustration);
   /* Default the title mark to the canonical app glyph (the same logo
      served on identity.conduction.nl/apps) when the caller doesn't pass
@@ -238,7 +266,7 @@ export default function DetailHero({
 
       <div className={styles.headInner}>
         <div className={styles.copy}>
-          {(resolvedStatus || resolvedVersion || locales || dlCount > 0) && (
+          {(resolvedStatus || resolvedVersion || locales || dlCount > 0 || resolvedRepoHref) && (
             <div className={styles.badgeRow}>
               {resolvedStatus && (
                 <span className={styles.badge}>
@@ -248,17 +276,39 @@ export default function DetailHero({
               )}
               {resolvedVersion && <span className={[styles.badge, styles.versionBadge].join(' ')}>{resolvedVersion}</span>}
               {locales && <span className={[styles.badge, styles.versionBadge].join(' ')}>{locales}</span>}
-              {dlCount > 0 && (
-                <span
+              {dlCount > 0 && (() => {
+                /* The downloads counter links to the repo when one
+                   resolves; a plain chip otherwise. */
+                const DlTag = resolvedRepoHref ? 'a' : 'span';
+                const dlLinkProps = resolvedRepoHref
+                  ? {href: resolvedRepoHref, target: '_blank', rel: 'noopener noreferrer'}
+                  : {};
+                return (
+                  <DlTag
+                    className={[styles.badge, styles.downloadsBadge].join(' ')}
+                    title="Total release-asset downloads from GitHub. Updated weekdays at 09:00."
+                    data-app-downloads={appId || ''}
+                    {...dlLinkProps}
+                  >
+                    <svg className={styles.downloadIcon} viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/>
+                    </svg>
+                    {formatDownloads(dlCount)} downloads
+                  </DlTag>
+                );
+              })()}
+              {resolvedRepoHref && (
+                <a
                   className={[styles.badge, styles.downloadsBadge].join(' ')}
-                  title="Total release-asset downloads from GitHub. Updated weekdays at 09:00."
-                  data-app-downloads={appId || ''}
+                  href={resolvedRepoHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <svg className={styles.downloadIcon} viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/>
+                  <svg className={styles.repoIcon} viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
                   </svg>
-                  {formatDownloads(dlCount)} downloads
-                </span>
+                  View on GitHub
+                </a>
               )}
             </div>
           )}
@@ -280,7 +330,7 @@ export default function DetailHero({
           {tagline && <p className={styles.tagline}>{tagline}</p>}
           {intro && <div className={styles.intro}>{intro}</div>}
 
-          {(primaryCta || secondaryCta || tertiaryCta) && (
+          {(primaryCta || secondaryCta || renderedTertiaryCta) && (
             <div className={styles.actions}>
               {primaryCta && (
                 <Button
@@ -306,19 +356,21 @@ export default function DetailHero({
                   {secondaryCta.label}
                 </Button>
               )}
-              {tertiaryCta && (
+              {renderedTertiaryCta && (
                 /* On a cobalt-bg hero the default ghost variant
                    (cobalt-700 text) disappears against the dark panel;
                    auto-switch to on-dark-tertiary (white text + white
                    border) so the CTA reads at parity with the primary
                    and secondary buttons. Sites can still pass an
-                   explicit `variant` to opt out. */
+                   explicit `variant` to opt out. GitHub-pointing
+                   tertiaries never reach this row: they render as the
+                   "View on GitHub" chip in the badge row instead. */
                 <Button
-                  variant={tertiaryCta.variant || (background === 'cobalt' ? 'on-dark-tertiary' : 'ghost')}
-                  href={tertiaryCta.href}
-                  icon={tertiaryCta.icon}
+                  variant={renderedTertiaryCta.variant || (background === 'cobalt' ? 'on-dark-tertiary' : 'ghost')}
+                  href={renderedTertiaryCta.href}
+                  icon={renderedTertiaryCta.icon}
                 >
-                  {tertiaryCta.label} →
+                  {renderedTertiaryCta.label} →
                 </Button>
               )}
             </div>

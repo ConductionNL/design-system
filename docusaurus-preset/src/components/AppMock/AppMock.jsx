@@ -51,6 +51,14 @@ import OpenWooMock from './variants/OpenWooMock.jsx';
 import PipelinQMock from './variants/PipelinQMock.jsx';
 import SoftwareCatalogMock from './variants/SoftwareCatalogMock.jsx';
 import ZaakAfhandelAppMock from './variants/ZaakAfhandelAppMock.jsx';
+import HermiqMock from './variants/HermiqMock.jsx';
+import PortaliqMock from './variants/PortaliqMock.jsx';
+import ScholiqMock from './variants/ScholiqMock.jsx';
+import ShillinqMock from './variants/ShillinqMock.jsx';
+import DoriathMock from './variants/DoriathMock.jsx';
+import PlanixMock from './variants/PlanixMock.jsx';
+import HrmqMock from './variants/HrmqMock.jsx';
+import AppVersionsMock from './variants/AppVersionsMock.jsx';
 
 const VARIANTS = {
   launchpad:           {Component: LaunchPadMock,           label: 'LaunchPad'},
@@ -70,6 +78,14 @@ const VARIANTS = {
   pipelinq:         {Component: PipelinQMock,         label: 'PipelinQ'},
   softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'SoftwareCatalog'},
   zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
+  hermiq:           {Component: HermiqMock,           label: 'Hermiq'},
+  portaliq:         {Component: PortaliqMock,         label: 'Portaliq'},
+  scholiq:          {Component: ScholiqMock,          label: 'Scholiq'},
+  shillinq:         {Component: ShillinqMock,         label: 'Shillinq'},
+  doriath:          {Component: DoriathMock,          label: 'Doriath'},
+  planix:           {Component: PlanixMock,           label: 'Planix'},
+  hrmq:             {Component: HrmqMock,             label: 'HRMQ'},
+  'app-versions':   {Component: AppVersionsMock,      label: 'App Versions'},
 };
 
 export default function AppMock({app, size = 'md', sidebar = null, caption = false, className}) {

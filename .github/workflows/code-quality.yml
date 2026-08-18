@@ -39,7 +39,15 @@ jobs:
     with:
       app-name: design-system
       enable-php: false
+      # No committed lockfile (npm workspaces): every npm leg's `npm ci`
+      # fails hard, so the whole npm ecosystem switch is off, not just the
+      # frontend checks. Same reasoning as release-npm.yml's `npm install`.
+      enable-npm: false
       enable-frontend: false
       enable-eslint: false
       enable-stylelint: false
+      # This repo has openspec/ but not the docs/features.json convention
+      # the features gate verifies; without the artefact the check can only
+      # fail. Enable together with adopting the convention.
+      enable-features-extract: false
       enable-sbom: false

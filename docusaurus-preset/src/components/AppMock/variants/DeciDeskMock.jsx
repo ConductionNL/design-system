@@ -1,13 +1,31 @@
 /**
  * DeciDesk abstract — left nav + centre with action row, KPI strip,
- * and two tables. Reference: localhost:8080/apps/decidesk.
+ * vote tally, and decision row. Reference: localhost:8080/apps/decidesk.
  *
  * Hero of the centre is the trio of primary buttons (New Decision /
- * Action Item / Minutes); we render them as accent-pill rows top right.
+ * Action Item / Minutes) rendered as accent-pill rows top right.
+ *
+ * Content rework (wave 4): the two former placeholder panels (a bare
+ * accent row / a bare short row) are now the app's actual story — a
+ * vote tally (for / against / abstain bars with a quorum line) and a
+ * decision row whose status flips pending → adopted. The tally fills,
+ * the "for" bar crosses the quorum line (which ticks mint), and the
+ * decision pill flips to adopted. Base styles are the adopted end
+ * state. The KPI strip keeps its single amber cell as the variant's
+ * one orange; the pending pill replays via the shared beta-pill
+ * coral/orange styling only transiently.
  */
 
 import React from 'react';
 import styles from '../AppMock.module.css';
+
+/* for / against / abstain — fill widths of the tally tracks. The
+   "for" bar carries the quorum line and crosses it as it fills. */
+const TALLY = [
+  {cls: 'for', fill: '72%'},
+  {cls: 'against', fill: '30%'},
+  {cls: 'abstain', fill: '16%'},
+];
 
 export default function DeciDeskMock() {
   return (
@@ -55,12 +73,35 @@ export default function DeciDeskMock() {
             </div>
           </div>
           <div className={styles.panelRow}>
-            <div className={styles.panel}>
+            {/* Vote tally — for / against / abstain with quorum line */}
+            <div className={[styles.panel, styles.tally].join(' ')}>
               <div className={styles.head}><div className={styles.title}></div></div>
-              <div className={styles.row + ' ' + styles.accent}></div>
+              {TALLY.map(({cls, fill}, i) => (
+                <div key={i} className={[styles.tallyRow, styles[cls]].join(' ')}>
+                  <div className={styles.tLabel}></div>
+                  <div className={styles.track}>
+                    <div className={styles.fill} style={{width: fill}}></div>
+                    {cls === 'for' && <div className={styles.quorum}></div>}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className={styles.panel}>
+            {/* Decision row — pending → adopted flip */}
+            <div className={[styles.panel, styles.decision].join(' ')}>
               <div className={styles.head}><div className={styles.title}></div></div>
+              <div className={[styles.item, styles.decisionRow].join(' ')}>
+                <div className={styles.dIco}></div>
+                <div className={styles.lines}>
+                  <div className={styles.l1}></div>
+                  <div className={styles.l2}></div>
+                </div>
+                {/* Base pill = adopted (mint). The keyframes replay the
+                    pending (beta-coloured) phase before the flip. */}
+                <div className={[styles.statusPill, styles.adoptFlip].join(' ')}>
+                  <div className={styles.h}></div><div className={styles.t}></div>
+                </div>
+              </div>
+              <div className={styles.row}></div>
               <div className={styles.row + ' ' + styles.short}></div>
             </div>
           </div>

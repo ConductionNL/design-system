@@ -6,6 +6,12 @@
  * pattern — next to one unlocked detail card on a cobalt-900 surface
  * with the revealed value in light. Tones: cobalt-900 for the vault
  * interior, lavender for the keys.
+ *
+ * Animation (wave 2): the key hex turns, the mask dots unmask, the
+ * value wipes in, a mint countdown hairline runs out, and the entry
+ * auto-relocks. Base styles are the revealed state (what static
+ * frames show); the keyframes replay lock → unlock → countdown →
+ * relock as one seamless loop.
  */
 
 import React from 'react';
@@ -13,9 +19,9 @@ import styles from '../AppMock.module.css';
 
 export default function DoriathMock() {
   const mask = (n) => (
-    <div style={{display: 'flex', gap: 2, flexShrink: 0}}>
+    <div className={styles.maskDots}>
       {Array.from({length: n}).map((_, i) => (
-        <div key={i} style={{width: 3, height: 3, borderRadius: '50%', background: 'var(--c-cobalt-400)'}}></div>
+        <div key={i} className={styles.dot}></div>
       ))}
     </div>
   );
@@ -28,7 +34,7 @@ export default function DoriathMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.decidesk].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.decidesk, styles.doriath].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false].map((active, i) => (
@@ -53,23 +59,32 @@ export default function DoriathMock() {
               <div className={styles.stack}>
                 {[6, 5, 7, 5, 6].map((dots, i) => (
                   <div key={i} className={styles.item}>
-                    <div style={{width: 10, height: 11, clipPath: 'var(--hex-pointy-top)', background: 'var(--c-lavender-500)', flexShrink: 0}}></div>
+                    <div className={styles.keyChip}></div>
                     <div className={styles.lines}><div className={styles.l1}></div></div>
                     {mask(dots)}
                   </div>
                 ))}
               </div>
             </div>
-            {/* Unlocked entry — vault-dark card, value revealed */}
-            <div className={styles.panel} style={{background: 'var(--c-cobalt-900)', borderColor: 'var(--c-cobalt-900)'}}>
-              <div style={{display: 'flex', alignItems: 'center', gap: 5}}>
-                <div style={{width: 12, height: 14, clipPath: 'var(--hex-pointy-top)', background: 'var(--c-lavender-300)', flexShrink: 0}}></div>
-                <div style={{height: 6, width: '45%', background: 'var(--c-lavender-300)', borderRadius: 1}}></div>
+            {/* Unlocked entry — vault-dark card. The key turns, the
+                masked dots unmask, the value wipes in, the countdown
+                hairline runs out, and the card relocks. */}
+            <div className={[styles.panel, styles.vaultCard].join(' ')}>
+              <div className={styles.vHead}>
+                <div className={styles.keyHex}></div>
+                <div className={styles.vTitle}></div>
               </div>
-              <div style={{height: 3, width: '60%', background: 'rgba(255,255,255,0.25)', borderRadius: 1}}></div>
-              <div style={{height: 10, width: '85%', background: 'rgba(255,255,255,0.9)', borderRadius: 2}}></div>
-              <div style={{height: 3, width: '50%', background: 'rgba(255,255,255,0.25)', borderRadius: 1}}></div>
-              <div style={{height: 3, width: '70%', background: 'rgba(255,255,255,0.25)', borderRadius: 1}}></div>
+              <div className={styles.vMeta}></div>
+              <div className={styles.vSecret}>
+                <div className={styles.vMask}>
+                  {Array.from({length: 7}).map((_, i) => (
+                    <div key={i} className={styles.dot}></div>
+                  ))}
+                </div>
+                <div className={styles.vValue}></div>
+              </div>
+              <div className={styles.vCountdown}></div>
+              <div className={styles.vMetaShort}></div>
             </div>
           </div>
         </div>

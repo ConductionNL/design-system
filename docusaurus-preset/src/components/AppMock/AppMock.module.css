@@ -1063,6 +1063,1087 @@
 }
 
 /* ======================================================================
+   Wave 2 — storytelling variant animations
+   ====================================================================== */
+
+/* ---- DocuDesk — the anonymiser blacks out the marked (PII) words
+   one by one across the open document list. Base = redacted end
+   state (cobalt-900 blocks); the amDdMark keyframes replay the
+   text-look before-state and the black-out, one word per slot.
+   The drop-zone shares the `.zoneLive` treatment below. ---- */
+
+.am .docudesk { --am-dur: 9s; }
+/* The drop-zone widget absorbs the column's remaining height so the
+   frame has no dead white band under the two widgets. */
+.am .docudesk .w-upload { flex: 1; }
+.am .docudesk .words {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+.am .docudesk .word {
+  height: 3px;
+  background: var(--c-cobalt-300);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.am .docudesk .word.mark { height: 5px; background: var(--c-cobalt-900); }
+.am .docudesk .word.mark-1 { animation: amDdMark1 var(--am-dur) linear infinite both; }
+.am .docudesk .word.mark-2 { animation: amDdMark2 var(--am-dur) linear infinite both; }
+.am .docudesk .word.mark-3 { animation: amDdMark3 var(--am-dur) linear infinite both; }
+.am .docudesk .word.mark-4 { animation: amDdMark4 var(--am-dur) linear infinite both; }
+.am .docudesk .word.mark-5 { animation: amDdMark5 var(--am-dur) linear infinite both; }
+
+@keyframes amDdMark1 {
+  0%, 12%   { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+  15%, 93%  { background: var(--c-cobalt-900); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+}
+@keyframes amDdMark2 {
+  0%, 24%   { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+  27%, 93%  { background: var(--c-cobalt-900); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+}
+@keyframes amDdMark3 {
+  0%, 36%   { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+  39%, 93%  { background: var(--c-cobalt-900); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+}
+@keyframes amDdMark4 {
+  0%, 48%   { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+  51%, 93%  { background: var(--c-cobalt-900); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+}
+@keyframes amDdMark5 {
+  0%, 60%   { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+  63%, 93%  { background: var(--c-cobalt-900); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-300); transform: scaleY(0.6); }
+}
+
+/* ---- Shillinq — a bank statement line slides down onto invoice
+   row 3, both tick mint, the totals line and the first KPI grow.
+   Base = reconciled end state (row-3 tick mint, bank line gone). ---- */
+
+.am .shillinq { --am-dur: 8s; }
+.am .shillinq .kpi .ico.terra     { background: var(--c-terracotta-500); }
+.am .shillinq .kpi .ico.terraSoft { background: var(--c-terracotta-300); }
+.am .shillinq .ledger { flex: 1; position: relative; }
+.am .shillinq .inv .doc {
+  width: 11px; height: 13px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-terracotta-300);
+  flex-shrink: 0;
+}
+.am .shillinq .inv .net { height: 4px; background: var(--c-cobalt-700); border-radius: 1px; flex-shrink: 0; }
+.am .shillinq .inv .vat { height: 4px; background: var(--c-cobalt-300); border-radius: 1px; flex-shrink: 0; }
+.am .shillinq .inv .tick {
+  width: 9px; height: 10px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+.am .shillinq .inv .tick.open { background: var(--c-cobalt-200); }
+.am .shillinq .totals {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--c-cobalt-100);
+}
+.am .shillinq .totNet { width: 32px; height: 6px; background: var(--c-cobalt-900); border-radius: 1px; transform-origin: right center; }
+.am .shillinq .totVat { width: 20px; height: 6px; background: var(--c-cobalt-400); border-radius: 1px; }
+
+/* The travelling bank line. Hidden at rest and in static frames. */
+.am .shillinq .bankLine {
+  position: absolute;
+  top: 24px;
+  right: 12px;
+  width: 45%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 4px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  animation: amShqBank var(--am-dur) ease-in-out infinite both;
+}
+.am .shillinq .bankLine .bIco { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-forest-500); flex-shrink: 0; }
+.am .shillinq .bankLine .bBar { flex: 1; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; }
+.am .shillinq .bankLine .bAmt { width: 18px; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; flex-shrink: 0; }
+
+@keyframes amShqBank {
+  0%, 6%    { opacity: 0; transform: translateY(-8px); }
+  12%, 22%  { opacity: 1; transform: translateY(0); }
+  36%       { opacity: 1; transform: translateY(52px); }
+  42%, 100% { opacity: 0; transform: translateY(52px); }
+}
+
+.am .shillinq .inv.reconciling .tick { animation: amShqTick var(--am-dur) linear infinite both; }
+@keyframes amShqTick {
+  0%, 38%   { background: var(--c-cobalt-200); transform: scale(1); }
+  42%       { background: var(--c-mint-500); transform: scale(1.35); }
+  46%, 93%  { background: var(--c-mint-500); transform: scale(1); }
+  98%, 100% { background: var(--c-cobalt-200); transform: scale(1); }
+}
+
+.am .shillinq .totNet { animation: amShqTotal var(--am-dur) ease-in-out infinite; }
+@keyframes amShqTotal {
+  0%, 44%   { transform: scaleX(1); }
+  52%, 90%  { transform: scaleX(1.18); }
+  97%, 100% { transform: scaleX(1); }
+}
+
+/* ---- Doriath — the key turns, the mask dots unmask, the value
+   wipes in, the mint countdown hairline runs out, and the entry
+   auto-relocks. Base = revealed state (what static frames show). ---- */
+
+.am .doriath { --am-dur: 10s; }
+.am .doriath .keyChip {
+  width: 10px; height: 11px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-lavender-500);
+  flex-shrink: 0;
+}
+.am .doriath .maskDots { display: flex; gap: 2px; flex-shrink: 0; }
+.am .doriath .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--c-cobalt-400); flex-shrink: 0; }
+.am .doriath .vaultCard { background: var(--c-cobalt-900); border-color: var(--c-cobalt-900); }
+.am .doriath .vHead { display: flex; align-items: center; gap: 5px; }
+.am .doriath .keyHex {
+  width: 12px; height: 14px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-lavender-300);
+  flex-shrink: 0;
+  animation: amDorKey var(--am-dur) ease-in-out infinite;
+}
+.am .doriath .vTitle { height: 6px; width: 45%; background: var(--c-lavender-300); border-radius: 1px; }
+.am .doriath .vMeta      { height: 3px; width: 60%; background: rgba(255, 255, 255, 0.25); border-radius: 1px; }
+.am .doriath .vMetaShort { height: 3px; width: 50%; background: rgba(255, 255, 255, 0.25); border-radius: 1px; }
+.am .doriath .vSecret { position: relative; height: 10px; }
+.am .doriath .vMask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  animation: amDorMask var(--am-dur) linear infinite both;
+}
+.am .doriath .vMask .dot { background: rgba(255, 255, 255, 0.45); }
+.am .doriath .vValue {
+  position: absolute;
+  inset: 0 15% 0 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: amDorValue var(--am-dur) linear infinite both;
+}
+.am .doriath .vCountdown {
+  height: 2px;
+  background: var(--c-mint-500);
+  border-radius: 1px;
+  transform-origin: left center;
+  animation: amDorCount var(--am-dur) linear infinite both;
+}
+
+@keyframes amDorKey {
+  0%        { transform: rotate(-35deg); }
+  10%, 82%  { transform: rotate(0deg); }
+  90%, 100% { transform: rotate(-35deg); }
+}
+@keyframes amDorMask {
+  0%, 14%   { opacity: 1; }
+  20%, 82%  { opacity: 0; }
+  88%, 100% { opacity: 1; }
+}
+@keyframes amDorValue {
+  0%, 16%   { opacity: 0; transform: scaleX(0); }
+  26%, 80%  { opacity: 1; transform: scaleX(1); }
+  86%, 100% { opacity: 0; transform: scaleX(1); }
+}
+@keyframes amDorCount {
+  0%, 24%   { opacity: 0; transform: scaleX(1); }
+  27%       { opacity: 1; transform: scaleX(1); }
+  76%       { opacity: 1; transform: scaleX(0.02); }
+  80%, 100% { opacity: 0; transform: scaleX(0.02); }
+}
+
+/* ---- OpenCatalogi — a query types into the federated search bar,
+   the grid dims, the three matches snap back and their pills tick.
+   Base = filtered end state (non-matches dimmed, query present). ---- */
+
+.am .opencatalogi { --am-dur: 8s; }
+.am .opencatalogi .col > .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.am .opencatalogi .search {
+  flex: 1;
+  max-width: 38%;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 5px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 999px;
+  animation: amOcFocus var(--am-dur) linear infinite;
+}
+.am .opencatalogi .search .sIco { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--c-cobalt-400); flex-shrink: 0; }
+.am .opencatalogi .search .q {
+  height: 3px;
+  width: 55%;
+  background: var(--c-cobalt-700);
+  border-radius: 1px;
+  transform-origin: left center;
+  animation: amOcQuery var(--am-dur) linear infinite both;
+}
+.am .opencatalogi .card.dim { opacity: 0.38; animation: amOcDim var(--am-dur) linear infinite both; }
+.am .opencatalogi .card.match { animation: amOcMatch var(--am-dur) ease-in-out infinite; }
+.am .opencatalogi .card.match .statusPill .h { animation: amOcPill var(--am-dur) ease-in-out infinite; }
+
+@keyframes amOcFocus {
+  0%, 2%    { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+  5%, 20%   { border-color: var(--c-blue-cobalt); box-shadow: 0 0 0 2px var(--c-cobalt-100); }
+  24%, 100% { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+}
+@keyframes amOcQuery {
+  0%, 4%    { transform: scaleX(0); opacity: 1; }
+  18%, 93%  { transform: scaleX(1); opacity: 1; }
+  98%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+@keyframes amOcDim {
+  0%, 20%   { opacity: 1; }
+  30%, 90%  { opacity: 0.38; }
+  97%, 100% { opacity: 1; }
+}
+@keyframes amOcMatch {
+  0%, 26%   { transform: scale(1); }
+  32%       { transform: scale(1.04); }
+  38%, 100% { transform: scale(1); }
+}
+@keyframes amOcPill {
+  0%, 32%   { transform: scale(1); }
+  38%       { transform: scale(1.5); }
+  44%, 100% { transform: scale(1); }
+}
+
+/* ---- OpenConnector — a record dot travels the pipeline: lavender
+   leg source → connector, forest leg connector → target (the mapping
+   made visible), then the new run row inserts and ticks mint.
+   Base = completed end state (run row present, tick mint). ---- */
+
+.am .openconnector { --am-dur: 7s; }
+.am .openconnector .stage .arrow { overflow: visible; }
+.am .openconnector .travelDotA,
+.am .openconnector .travelDotB {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.am .openconnector .travelDotA { background: var(--c-lavender-500); animation: amOxDotA var(--am-dur) linear infinite both; }
+.am .openconnector .travelDotB { background: var(--c-forest-500);   animation: amOxDotB var(--am-dur) linear infinite both; }
+.am .openconnector .stage .conn { animation: amOxConn var(--am-dur) ease-in-out infinite; }
+
+@keyframes amOxDotA {
+  0%, 5%    { left: 0%; opacity: 0; }
+  8%        { left: 4%; opacity: 1; }
+  24%       { left: 92%; opacity: 1; }
+  27%, 100% { left: 100%; opacity: 0; }
+}
+@keyframes amOxDotB {
+  0%, 30%   { left: 0%; opacity: 0; }
+  33%       { left: 6%; opacity: 1; }
+  47%       { left: 92%; opacity: 1; }
+  50%, 100% { left: 100%; opacity: 0; }
+}
+@keyframes amOxConn {
+  0%, 24%   { transform: scale(1); }
+  28%       { transform: scale(1.05); }
+  32%, 100% { transform: scale(1); }
+}
+
+.am .openconnector .newRun { animation: amOxRun var(--am-dur) ease-out infinite both; }
+@keyframes amOxRun {
+  0%, 52%   { opacity: 0; transform: translateY(-5px); }
+  58%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+.am .openconnector .newRun .runTick {
+  width: 10px; height: 11px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+  animation: amOxTick var(--am-dur) ease-in-out infinite both;
+}
+@keyframes amOxTick {
+  0%, 58%   { opacity: 0; transform: scale(0.5); }
+  63%       { opacity: 1; transform: scale(1.3); }
+  67%, 93%  { opacity: 1; transform: scale(1); }
+  98%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* ---- Procest — the case advances one stage. Ghost hexes overlaid
+   on steps 2+3 replay the before-state (step 2 orange-active, step 3
+   to-do) and fade to reveal the advanced base; the advanced case's
+   row re-sorts to the top of the list. Base = advanced end state. ---- */
+
+.am .procest { --am-dur: 7s; }
+.am .procest .timeline .step .ghost {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -9px;
+  width: 18px; height: 21px;
+  clip-path: var(--hex-pointy-top);
+  opacity: 0;
+  pointer-events: none;
+  animation: amPcGhost var(--am-dur) linear infinite both;
+}
+.am .procest .timeline .step .ghost.ghostNow  { background: var(--c-orange-knvb); }
+.am .procest .timeline .step .ghost.ghostTodo { background: var(--c-cobalt-100); }
+@keyframes amPcGhost {
+  0%, 30%   { opacity: 1; }
+  40%, 92%  { opacity: 0; }
+  97%, 100% { opacity: 1; }
+}
+.am .procest .stack .sortUp   { animation: amPcSortUp var(--am-dur) ease-in-out infinite both; }
+.am .procest .stack .sortDown { animation: amPcSortDown var(--am-dur) ease-in-out infinite both; }
+@keyframes amPcSortUp {
+  0%        { opacity: 0; transform: translateY(28px); }
+  4%, 48%   { opacity: 1; transform: translateY(28px); }
+  60%, 92%  { opacity: 1; transform: none; }
+  97%       { opacity: 0; transform: none; }
+  100%      { opacity: 0; transform: translateY(28px); }
+}
+@keyframes amPcSortDown {
+  0%        { opacity: 0; transform: translateY(-28px); }
+  4%, 48%   { opacity: 1; transform: translateY(-28px); }
+  60%, 92%  { opacity: 1; transform: none; }
+  97%       { opacity: 0; transform: none; }
+  100%      { opacity: 0; transform: translateY(-28px); }
+}
+
+/* ---- OpenRegister — a new object row lands in the "Objects by
+   Register" table, the first KPI widens, the right-rail statistics
+   repaint in a stagger. Base = landed end state. ---- */
+
+.am .openregister { --am-dur: 7s; }
+.am .openregister .newObj { animation: amOrLand var(--am-dur) ease-out infinite both; }
+@keyframes amOrLand {
+  0%, 44%   { opacity: 0; transform: translateY(-5px); }
+  51%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+.am .openregister .detail > .row { animation: amOrRail var(--am-dur) linear infinite; }
+.am .openregister .detail > .row:nth-child(2)  { animation-delay: calc(var(--am-dur) * 0.015); }
+.am .openregister .detail > .row:nth-child(3)  { animation-delay: calc(var(--am-dur) * 0.03); }
+.am .openregister .detail > .row:nth-child(4)  { animation-delay: calc(var(--am-dur) * 0.045); }
+.am .openregister .detail > .row:nth-child(6)  { animation-delay: calc(var(--am-dur) * 0.06); }
+.am .openregister .detail > .row:nth-child(7)  { animation-delay: calc(var(--am-dur) * 0.075); }
+.am .openregister .detail > .row:nth-child(8)  { animation-delay: calc(var(--am-dur) * 0.09); }
+.am .openregister .detail > .row:nth-child(9)  { animation-delay: calc(var(--am-dur) * 0.105); }
+.am .openregister .detail > .row:nth-child(10) { animation-delay: calc(var(--am-dur) * 0.12); }
+.am .openregister .detail > .row:nth-child(11) { animation-delay: calc(var(--am-dur) * 0.135); }
+.am .openregister .detail > .row:nth-child(12) { animation-delay: calc(var(--am-dur) * 0.15); }
+@keyframes amOrRail {
+  0%, 56%   { opacity: 1; }
+  60%       { opacity: 0.25; }
+  66%, 100% { opacity: 1; }
+}
+
+/* Shared KPI-widen pulse — the .kpiGrow cell's number stretches as a
+   count absorbs the new arrival (OpenRegister, OpenBuild, Shillinq). */
+.am .kpiGrow .num {
+  transform-origin: left center;
+  animation: amKpiGrow var(--am-dur) ease-in-out infinite;
+}
+@keyframes amKpiGrow {
+  0%, 50%   { transform: scaleX(1); }
+  58%, 88%  { transform: scaleX(1.25); }
+  96%, 100% { transform: scaleX(1); }
+}
+
+/* ======================================================================
+   Wave 4 — content reworks, animated
+   ====================================================================== */
+
+/* ---- DeciDesk — the vote tally fills, the "for" bar crosses the
+   quorum line (which ticks mint), and the decision pill flips
+   pending → adopted. Base = adopted end state. ---- */
+
+.am .decidesk { --am-dur: 8s; }
+.am .decidesk .tallyRow { display: flex; align-items: center; gap: 6px; }
+.am .decidesk .tallyRow .tLabel { width: 22px; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; flex-shrink: 0; }
+.am .decidesk .tallyRow .track {
+  flex: 1;
+  height: 6px;
+  background: var(--c-cobalt-100);
+  border-radius: 2px;
+  position: relative;
+}
+.am .decidesk .tallyRow .fill {
+  height: 6px;
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: amDkFill var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+.am .decidesk .tallyRow.for .fill     { background: var(--c-mint-500); }
+.am .decidesk .tallyRow.against .fill { background: var(--c-cobalt-400); animation-delay: calc(var(--am-dur) * 0.04); }
+.am .decidesk .tallyRow.abstain .fill { background: var(--c-cobalt-200); animation-delay: calc(var(--am-dur) * 0.08); }
+@keyframes amDkFill {
+  0%, 8%    { transform: scaleX(0); opacity: 1; }
+  30%, 93%  { transform: scaleX(1); opacity: 1; }
+  98%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+.am .decidesk .tallyRow .quorum {
+  position: absolute;
+  left: 55%;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  border-radius: 1px;
+  background: var(--c-mint-500);
+  animation: amDkQuorum var(--am-dur) linear infinite both;
+}
+@keyframes amDkQuorum {
+  0%, 22%   { background: var(--c-cobalt-400); transform: scaleY(1); }
+  26%       { background: var(--c-mint-500); transform: scaleY(1.4); }
+  30%, 93%  { background: var(--c-mint-500); transform: scaleY(1); }
+  98%, 100% { background: var(--c-cobalt-400); transform: scaleY(1); }
+}
+.am .decidesk .decisionRow .dIco {
+  width: 11px; height: 13px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-lavender-300);
+  flex-shrink: 0;
+}
+/* Pending → adopted flip. The pill rides the shared beta (coral +
+   orange) styling transiently as the pending phase, landing mint. */
+.am .decidesk .adoptFlip     { animation: amDkPill var(--am-dur) linear infinite both; }
+.am .decidesk .adoptFlip .h  { animation: amDkPillH var(--am-dur) linear infinite both; }
+.am .decidesk .adoptFlip .t  { animation: amDkPillT var(--am-dur) linear infinite both; }
+@keyframes amDkPill {
+  0%        { background: var(--c-coral-300); opacity: 0; }
+  6%, 38%   { background: var(--c-coral-300); opacity: 1; }
+  44%, 92%  { background: var(--c-mint-300); opacity: 1; }
+  98%       { background: var(--c-mint-300); opacity: 0; }
+  100%      { background: var(--c-coral-300); opacity: 0; }
+}
+@keyframes amDkPillH {
+  0%, 38%   { background: var(--c-orange-knvb); transform: scale(1); }
+  44%       { background: var(--c-mint-500); transform: scale(1.4); }
+  50%, 100% { background: var(--c-mint-500); transform: scale(1); }
+}
+@keyframes amDkPillT {
+  0%, 38%   { background: var(--c-coral-500); }
+  44%, 100% { background: var(--c-mint-500); }
+}
+
+/* ---- HRMQ — the week's hour bars fill, the sheet is submitted, the
+   approval pip ticks mint, and the payroll counter widens.
+   Base = approved end state. ---- */
+
+.am .hrmq { --am-dur: 8s; }
+.am .hrmq .week {
+  flex-shrink: 0;
+  height: 72px;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  padding: 2px 4px 0;
+}
+.am .hrmq .dayCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.am .hrmq .dayBar {
+  width: 70%;
+  background: var(--c-mint-300);
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom center;
+  animation: amHrBar var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+.am .hrmq .dayCol:nth-child(2) .dayBar { animation-delay: calc(var(--am-dur) * 0.03); }
+.am .hrmq .dayCol:nth-child(3) .dayBar { animation-delay: calc(var(--am-dur) * 0.06); }
+.am .hrmq .dayCol:nth-child(4) .dayBar { animation-delay: calc(var(--am-dur) * 0.09); }
+.am .hrmq .dayCol:nth-child(5) .dayBar { animation-delay: calc(var(--am-dur) * 0.12); }
+@keyframes amHrBar {
+  0%, 4%    { transform: scaleY(0); opacity: 1; }
+  22%, 92%  { transform: scaleY(1); opacity: 1; }
+  97%       { transform: scaleY(1); opacity: 0; }
+  100%      { transform: scaleY(0); opacity: 0; }
+}
+.am .hrmq .dayLabel { width: 60%; height: 2px; background: var(--c-cobalt-200); border-radius: 1px; }
+.am .hrmq .sheetFoot { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.am .hrmq .sheetSum { width: 30%; height: 5px; background: var(--c-cobalt-700); border-radius: 1px; }
+/* The submit button lives outside an .actions row, so it carries its
+   own button paint. */
+.am .hrmq .submitBtn {
+  width: 44px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--c-blue-cobalt);
+  animation: amHrSubmit var(--am-dur) ease-in-out infinite;
+}
+@keyframes amHrSubmit {
+  0%, 38%   { transform: scale(1); }
+  41%       { transform: scale(0.9); }
+  44%, 100% { transform: scale(1); }
+}
+.am .hrmq .approvePip,
+.am .hrmq .donePip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--c-mint-500);
+  flex-shrink: 0;
+}
+.am .hrmq .donePip { background: var(--c-mint-300); }
+.am .hrmq .approvePip { animation: amHrApprove var(--am-dur) linear infinite both; }
+@keyframes amHrApprove {
+  0%, 50%   { background: var(--c-cobalt-200); transform: scale(1); }
+  55%       { background: var(--c-mint-500); transform: scale(1.4); }
+  60%, 93%  { background: var(--c-mint-500); transform: scale(1); }
+  98%, 100% { background: var(--c-cobalt-200); transform: scale(1); }
+}
+.am .hrmq .payroll {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 5px;
+  border-top: 1px solid var(--c-cobalt-100);
+}
+.am .hrmq .payroll .pLabel { width: 40%; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; }
+.am .hrmq .payroll .pNum {
+  width: 34%; height: 8px;
+  background: var(--c-cobalt-900);
+  border-radius: 1px;
+  transform-origin: left center;
+  animation: amHrPay var(--am-dur) ease-in-out infinite;
+}
+@keyframes amHrPay {
+  0%, 62%   { transform: scaleX(1); }
+  70%, 90%  { transform: scaleX(1.3); }
+  97%, 100% { transform: scaleX(1); }
+}
+
+/* ---- LarpingApp — the XP ripple: the second character card lifts,
+   an XP hex token rises to the timeline's active stage, the stage
+   absorbs it with a pulse, and every card's text rows grow in a
+   stagger. Base = settled (post-XP) end state. ---- */
+
+.am .larping { --am-dur: 8s; }
+.am .larping .col { position: relative; }
+.am .larping .card.xpSource { animation: amLrpLift var(--am-dur) ease-in-out infinite; }
+@keyframes amLrpLift {
+  0%, 4%    { transform: none; box-shadow: none; }
+  10%, 26%  { transform: translateY(-3px); box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.25); }
+  34%, 100% { transform: none; box-shadow: none; }
+}
+.am .larping .xpToken {
+  position: absolute;
+  left: 48%;
+  top: 52%;
+  width: 10px; height: 11px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-mint-500);
+  opacity: 0;
+  pointer-events: none;
+  animation: amLrpToken var(--am-dur) ease-in-out infinite both;
+}
+@keyframes amLrpToken {
+  0%, 10%   { left: 48%; top: 52%; opacity: 0; transform: scale(0.6); }
+  14%       { left: 48%; top: 48%; opacity: 1; transform: scale(1); }
+  34%       { left: 31%; top: 9%;  opacity: 1; transform: scale(1); }
+  38%, 100% { left: 31%; top: 7%;  opacity: 0; transform: scale(0.4); }
+}
+.am .larping .timeline .step.now .h { animation: amLrpStage var(--am-dur) ease-in-out infinite; }
+@keyframes amLrpStage {
+  0%, 34%   { transform: scale(1); }
+  39%       { transform: scale(1.25); }
+  44%, 100% { transform: scale(1); }
+}
+.am .larping .card .row {
+  transform-origin: left center;
+  animation: amLrpRow var(--am-dur) ease-in-out infinite;
+}
+.am .larping .card:nth-child(2) .row { animation-delay: calc(var(--am-dur) * 0.02); }
+.am .larping .card:nth-child(3) .row { animation-delay: calc(var(--am-dur) * 0.04); }
+.am .larping .card:nth-child(4) .row { animation-delay: calc(var(--am-dur) * 0.06); }
+.am .larping .card:nth-child(5) .row { animation-delay: calc(var(--am-dur) * 0.08); }
+.am .larping .card:nth-child(6) .row { animation-delay: calc(var(--am-dur) * 0.1); }
+@keyframes amLrpRow {
+  0%, 46%   { transform: scaleX(0.82); }
+  58%, 100% { transform: scaleX(1); }
+}
+
+/* ---- SoftwareCatalog — the CVE scan: a band sweeps down the app
+   list, row 4's pip flips red as it passes, and the CVE chart bar
+   surges in vermillion (red family — the chart keeps its single
+   KNVB-orange accent). Base = post-scan end state. ---- */
+
+.am .swc { --am-dur: 8s; }
+.am .swc .scanPanel { position: relative; overflow: hidden; }
+.am .swc .scanBand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 12px;
+  background: linear-gradient(180deg, transparent 0%, var(--c-cobalt-100) 50%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  animation: amSwcScan var(--am-dur) linear infinite both;
+}
+@keyframes amSwcScan {
+  0%, 6%    { transform: translateY(-12px); opacity: 0; }
+  10%       { transform: translateY(0); opacity: 0.9; }
+  44%       { transform: translateY(88px); opacity: 0.9; }
+  50%, 100% { transform: translateY(100px); opacity: 0; }
+}
+.am .swc .item.cveHit .pip { animation: amSwcPip var(--am-dur) linear infinite both; }
+@keyframes amSwcPip {
+  0%, 28%   { background: var(--c-cobalt-200); transform: scale(1); }
+  33%       { background: var(--c-red-vermillion); transform: scale(1.4); }
+  38%, 93%  { background: var(--c-red-vermillion); transform: scale(1); }
+  98%, 100% { background: var(--c-cobalt-200); transform: scale(1); }
+}
+.am .swc .bar.cve {
+  background: var(--c-red-vermillion);
+  transform-origin: bottom center;
+  animation: amSwcBar var(--am-dur) ease-in-out infinite both;
+}
+@keyframes amSwcBar {
+  0%, 36%   { transform: scaleY(0.45); }
+  48%       { transform: scaleY(1.08); }
+  54%, 93%  { transform: scaleY(1); }
+  98%, 100% { transform: scaleY(0.45); }
+}
+
+/* ---- ZaakAfhandelApp — a citizen submission travels up into the
+   werkvoorraad and gains its stage hex + assignee avatar; the late
+   row's red pip pulses once as the SLA reminder. Base = assigned
+   end state. ---- */
+
+.am .zaak { --am-dur: 8s; }
+.am .zaak .col { position: relative; }
+.am .zaak .zkGhost {
+  position: absolute;
+  left: 28%;
+  top: 76%;
+  width: 40%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 4px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  animation: amZkGhost var(--am-dur) ease-in-out infinite both;
+}
+.am .zaak .zkGhost .src  { width: 14px; height: 3px; background: var(--c-cobalt-400); border-radius: 1px; flex-shrink: 0; }
+.am .zaak .zkGhost .gBar { flex: 1; height: 3px; background: var(--c-cobalt-700); border-radius: 1px; }
+@keyframes amZkGhost {
+  0%, 8%    { top: 76%; opacity: 0; }
+  13%       { top: 74%; opacity: 1; }
+  36%       { top: 27%; opacity: 1; }
+  42%, 100% { top: 25%; opacity: 0; }
+}
+.am .zaak .zkNew .stage { animation: amZkStage var(--am-dur) linear infinite both; }
+@keyframes amZkStage {
+  0%, 42%   { background: var(--c-cobalt-100); transform: scale(1); }
+  47%       { background: var(--c-lavender-300); transform: scale(1.3); }
+  52%, 100% { background: var(--c-lavender-300); transform: scale(1); }
+}
+.am .zaak .zkNew .av { animation: amZkAv var(--am-dur) linear infinite both; }
+@keyframes amZkAv {
+  0%, 44%   { opacity: 0.25; }
+  52%, 100% { opacity: 1; }
+}
+.am .zaak .zkNew .l1 {
+  transform-origin: left center;
+  animation: amZkLine var(--am-dur) ease-out infinite both;
+}
+@keyframes amZkLine {
+  0%, 40%   { transform: scaleX(0.55); }
+  52%, 100% { transform: scaleX(1); }
+}
+.am .zaak .zkSent { animation: amZkSent var(--am-dur) linear infinite; }
+@keyframes amZkSent {
+  0%, 10%   { opacity: 1; }
+  16%, 40%  { opacity: 0.35; }
+  50%, 100% { opacity: 1; }
+}
+.am .zaak .item.late .stage { animation: amZkLate var(--am-dur) ease-in-out infinite; }
+@keyframes amZkLate {
+  0%, 60%   { transform: scale(1); }
+  64%       { transform: scale(1.35); }
+  68%, 100% { transform: scale(1); }
+}
+
+/* ---- Hermiq — the conversation plays: the user asks, the typing
+   indicator blinks, the agent answers, the tool chips light L→R,
+   the approval chip (the variant's single orange while pending)
+   ticks mint, the tool result lands, the user follows up.
+   Base = approved end state (all chips lit, approval mint). ---- */
+
+.am .hermiq { --am-dur: 10s; }
+.am .hermiq .nav .item .ico.round { border-radius: 50%; }
+.am .hermiq .convo { flex: 1; gap: 8px; justify-content: flex-end; }
+.am .hermiq .bubble { flex-shrink: 0; }
+.am .hermiq .bubble.user {
+  align-self: flex-end;
+  width: 42%;
+  height: 12px;
+  border-radius: 8px 2px 8px 8px;
+  background: var(--c-workspaceblue-300);
+}
+.am .hermiq .bubble.user.narrow { width: 34%; }
+.am .hermiq .bubble.agent {
+  align-self: flex-start;
+  width: 58%;
+  height: 18px;
+  border-radius: 2px 8px 8px 8px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+}
+.am .hermiq .bubble.agent.tall { width: 64%; height: 24px; }
+.am .hermiq .typing {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: 2px 8px 8px 8px;
+  opacity: 0;
+  animation: amHqTyping var(--am-dur) linear infinite both;
+}
+.am .hermiq .typing .tDot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--c-cobalt-400);
+  animation: amHqDot 0.9s ease-in-out infinite;
+}
+.am .hermiq .typing .tDot:nth-child(2) { animation-delay: 0.2s; }
+.am .hermiq .typing .tDot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes amHqTyping {
+  0%, 7%    { opacity: 0; }
+  10%, 20%  { opacity: 1; }
+  23%, 100% { opacity: 0; }
+}
+@keyframes amHqDot {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50%      { opacity: 1; transform: translateY(-1px); }
+}
+.am .hermiq .chips { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.am .hermiq .chip { width: 34px; height: 9px; border-radius: 999px; background: var(--c-cobalt-300); }
+.am .hermiq .chip.chip3 { width: 26px; }
+.am .hermiq .bubble.turn1 { animation: amHqTurn1 var(--am-dur) ease-out infinite both; }
+.am .hermiq .bubble.turn2 { animation: amHqTurn2 var(--am-dur) ease-out infinite both; }
+.am .hermiq .bubble.turn3 { animation: amHqTurn3 var(--am-dur) ease-out infinite both; }
+.am .hermiq .bubble.turn4 { animation: amHqTurn4 var(--am-dur) ease-out infinite both; }
+@keyframes amHqTurn1 {
+  0%, 2%    { opacity: 0; transform: translateY(4px); }
+  6%, 93%   { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+@keyframes amHqTurn2 {
+  0%, 22%   { opacity: 0; transform: translateY(4px); }
+  27%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+@keyframes amHqTurn3 {
+  0%, 62%   { opacity: 0; transform: translateY(4px); }
+  68%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+@keyframes amHqTurn4 {
+  0%, 74%   { opacity: 0; transform: translateY(4px); }
+  79%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+.am .hermiq .chips .chip1 { animation: amHqChip1 var(--am-dur) ease-out infinite both; }
+@keyframes amHqChip1 {
+  0%, 30%   { opacity: 0; transform: scale(0.7); }
+  34%, 93%  { opacity: 1; transform: scale(1); }
+  98%, 100% { opacity: 0; transform: scale(1); }
+}
+.am .hermiq .chip.chip2 { animation: amHqChip2 var(--am-dur) linear infinite both; }
+@keyframes amHqChip2 {
+  0%, 36%   { background: var(--c-cobalt-100); }
+  40%, 93%  { background: var(--c-cobalt-300); }
+  98%, 100% { background: var(--c-cobalt-100); }
+}
+.am .hermiq .chip.chip3 { animation: amHqChip3 var(--am-dur) linear infinite both; }
+@keyframes amHqChip3 {
+  0%, 42%   { background: var(--c-cobalt-100); }
+  46%, 93%  { background: var(--c-cobalt-300); }
+  98%, 100% { background: var(--c-cobalt-100); }
+}
+/* Approval chip — appears orange (pending, via the shared beta pill
+   tokens), holds for the human moment, ticks mint on approval. */
+.am .hermiq .approveChip    { animation: amHqAppr var(--am-dur) linear infinite both; }
+.am .hermiq .approveChip .h { animation: amHqApprH var(--am-dur) linear infinite both; }
+.am .hermiq .approveChip .t { animation: amHqApprT var(--am-dur) linear infinite both; }
+@keyframes amHqAppr {
+  0%, 46%   { background: var(--c-coral-300); opacity: 0; }
+  50%, 58%  { background: var(--c-coral-300); opacity: 1; }
+  62%, 93%  { background: var(--c-mint-300); opacity: 1; }
+  98%       { background: var(--c-mint-300); opacity: 0; }
+  100%      { background: var(--c-coral-300); opacity: 0; }
+}
+@keyframes amHqApprH {
+  0%, 58%   { background: var(--c-orange-knvb); transform: scale(1); }
+  62%       { background: var(--c-mint-500); transform: scale(1.4); }
+  67%, 100% { background: var(--c-mint-500); transform: scale(1); }
+}
+@keyframes amHqApprT {
+  0%, 58%   { background: var(--c-coral-500); }
+  62%, 100% { background: var(--c-mint-500); }
+}
+.am .hermiq .promptRow { align-items: center; }
+.am .hermiq .promptField {
+  flex: 1;
+  height: 16px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 8px;
+}
+.am .hermiq .sendBtn { width: 28px; animation: amHqSend var(--am-dur) ease-in-out infinite; }
+@keyframes amHqSend {
+  0%        { transform: scale(1); }
+  1.5%      { transform: scale(0.88); }
+  4%, 100%  { transform: scale(1); }
+}
+
+/* ---- OpenBuild — the top template row highlights, a ghost chip
+   travels into the virtual-apps list, the new app row lands, the
+   first KPI widens, the published KPI's hex pulses mint.
+   Base = published end state. ---- */
+
+.am .openbuild { --am-dur: 8s; }
+.am .openbuild .col { position: relative; }
+.am .openbuild .col .kpiRow { display: flex; gap: 6px; }
+.am .openbuild .col .panelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+.am .openbuild .tplSource { animation: amObTpl var(--am-dur) linear infinite; }
+@keyframes amObTpl {
+  0%, 6%    { background: transparent; }
+  10%, 22%  { background: var(--c-cobalt-50); }
+  28%, 100% { background: transparent; }
+}
+.am .openbuild .buildGhost {
+  position: absolute;
+  left: 58%;
+  top: 42%;
+  width: 26px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--c-lavender-300);
+  opacity: 0;
+  pointer-events: none;
+  animation: amObGhost var(--am-dur) ease-in-out infinite both;
+}
+@keyframes amObGhost {
+  0%, 14%   { left: 58%; top: 42%; opacity: 0; }
+  18%       { left: 56%; top: 42%; opacity: 1; }
+  38%       { left: 10%; top: 38%; opacity: 1; }
+  44%, 100% { left: 8%;  top: 38%; opacity: 0; }
+}
+.am .openbuild .newApp { animation: amObLand var(--am-dur) ease-out infinite both; }
+@keyframes amObLand {
+  0%, 42%   { opacity: 0; transform: translateY(-5px); }
+  49%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+.am .openbuild .publishedKpi .ico { animation: amObPublish var(--am-dur) ease-in-out infinite; }
+@keyframes amObPublish {
+  0%, 64%   { background: var(--c-forest-300); transform: scale(1); }
+  70%       { background: var(--c-mint-500); transform: scale(1.25); }
+  76%, 84%  { background: var(--c-mint-500); transform: scale(1); }
+  92%, 100% { background: var(--c-forest-300); transform: scale(1); }
+}
+
+/* ======================================================================
+   Wave 5 — WidgetMock list-refresh primitive, anonymise dropzone,
+   SidebarMock open/underline/stagger
+   ====================================================================== */
+
+/* Shared list-refresh — WidgetMock puts `.wmLive` (this module) on
+   its frame for every list-shaped variant. A fresh row slides in at
+   the top, the bottom row clips out, and the unread badge bumps.
+   Transforms + opacity only, so the tile's height never jumps. */
+
+.am .wmLive { --am-dur: 7s; position: relative; }
+.am .wmLive .w .list > *:first-child {
+  transform-origin: top center;
+  animation: amWmNew var(--am-dur) ease-out infinite both;
+}
+@keyframes amWmNew {
+  0%, 8%    { opacity: 0; transform: translateY(-6px) scaleY(0.5); }
+  16%, 90%  { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-6px) scaleY(0.5); }
+}
+.am .wmLive .w .list > *:last-child {
+  transform-origin: bottom center;
+  animation: amWmOld var(--am-dur) ease-in infinite both;
+}
+@keyframes amWmOld {
+  0%, 16%   { opacity: 1; transform: none; }
+  26%, 88%  { opacity: 0; transform: translateY(4px) scaleY(0.4); }
+  94%, 100% { opacity: 1; transform: none; }
+}
+/* Unread badge — pinned to the tile's top-right; bumps as the fresh
+   row lands. Mint on the cobalt-900 dashboard surface. */
+.am .wmBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 14px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--c-mint-500);
+  z-index: 1;
+  animation: amWmBadge var(--am-dur) ease-in-out infinite;
+}
+@keyframes amWmBadge {
+  0%, 12%   { transform: scale(1); }
+  17%       { transform: scale(1.45); }
+  24%, 100% { transform: scale(1); }
+}
+
+/* Anonymise dropzone — marching-ants dashes, a file hex drops in,
+   the zone flashes mint as the redacted copy is confirmed. Applied
+   by the docudesk-anonymise widget variant and the DocuDesk app
+   mock's own drop-zone (`.zoneLive` on the .w-upload block). */
+
+.am .zoneLive { --am-dur: 5s; }
+.am .zoneLive .zone {
+  position: relative;
+  overflow: hidden;
+  border-style: solid;
+  border-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg, var(--c-cobalt-300) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(90deg, var(--c-cobalt-300) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(0deg, var(--c-cobalt-300) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(0deg, var(--c-cobalt-300) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  animation:
+    amZoneAnts 0.9s linear infinite,
+    amZoneFlash var(--am-dur) ease-in-out infinite;
+}
+@keyframes amZoneAnts {
+  to { background-position: 8px 0, -8px 100%, 0 -8px, 100% 8px; }
+}
+@keyframes amZoneFlash {
+  0%, 52%   { background-color: var(--c-cobalt-50); }
+  58%, 66%  { background-color: var(--c-mint-300); }
+  74%, 100% { background-color: var(--c-cobalt-50); }
+}
+.am .zoneLive .zoneFile {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 14px;
+  margin: -7px 0 0 -6px;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-terracotta-300);
+  opacity: 0;
+  pointer-events: none;
+  animation: amZoneFile var(--am-dur) ease-in infinite both;
+}
+@keyframes amZoneFile {
+  0%, 26%   { opacity: 0; transform: translateY(-26px); }
+  32%       { opacity: 1; transform: translateY(-20px); }
+  48%       { opacity: 1; transform: translateY(0); }
+  56%, 100% { opacity: 0; transform: translateY(0); }
+}
+
+/* SidebarMock — the panel slides in from the right, the head wipes,
+   the active-tab underline travels in from the neighbouring tab
+   (positioned by --sb-ix / --sb-n from the component), and the body
+   rows land in a stagger. Base = opened, settled panel. */
+
+.am .sbLive { --am-dur: 7s; animation: amSbPanel var(--am-dur) ease-out infinite both; }
+@keyframes amSbPanel {
+  0%        { opacity: 0; transform: translateX(14px); }
+  7%, 94%   { opacity: 1; transform: none; }
+  99%, 100% { opacity: 0; transform: translateX(14px); }
+}
+.am .sbLive .sb-head .title {
+  transform-origin: left center;
+  animation: amSbTitle var(--am-dur) ease-out infinite both;
+}
+@keyframes amSbTitle {
+  0%, 8%    { transform: scaleX(0); }
+  16%, 100% { transform: scaleX(1); }
+}
+.am .sbLive .sb-head .desc {
+  transform-origin: left center;
+  animation: amSbDesc var(--am-dur) ease-out infinite both;
+}
+@keyframes amSbDesc {
+  0%, 12%   { transform: scaleX(0); }
+  22%, 100% { transform: scaleX(1); }
+}
+.am .sbLive .sb-tabs { position: relative; }
+/* The travelling underline replaces the static active border. */
+.am .sbLive .sb-tab.active { border-bottom-color: transparent; }
+.am .sbLive .sb-underline {
+  position: absolute;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--c-blue-cobalt);
+  left: calc(10px + (100% - 20px) * var(--sb-ix, 1) / var(--sb-n, 4));
+  width: calc((100% - 20px) / var(--sb-n, 4));
+  animation: amSbUnderline var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+@keyframes amSbUnderline {
+  0%, 18%   { transform: translateX(var(--sb-from, -100%)); }
+  30%, 100% { transform: translateX(0); }
+}
+.am .sbLive .sb-body > * { animation: amSbRow var(--am-dur) ease-out infinite both; }
+.am .sbLive .sb-body > *:nth-child(2) { animation-delay: calc(var(--am-dur) * 0.018); }
+.am .sbLive .sb-body > *:nth-child(3) { animation-delay: calc(var(--am-dur) * 0.036); }
+.am .sbLive .sb-body > *:nth-child(4) { animation-delay: calc(var(--am-dur) * 0.054); }
+.am .sbLive .sb-body > *:nth-child(5) { animation-delay: calc(var(--am-dur) * 0.072); }
+.am .sbLive .sb-body > *:nth-child(6) { animation-delay: calc(var(--am-dur) * 0.09); }
+.am .sbLive .sb-body > *:nth-child(7) { animation-delay: calc(var(--am-dur) * 0.108); }
+.am .sbLive .sb-body > *:nth-child(8) { animation-delay: calc(var(--am-dur) * 0.126); }
+.am .sbLive .sb-body > *:nth-child(9) { animation-delay: calc(var(--am-dur) * 0.144); }
+.am .sbLive .sb-body > *:nth-child(10) { animation-delay: calc(var(--am-dur) * 0.162); }
+@keyframes amSbRow {
+  0%, 20%   { opacity: 0; transform: translateY(4px); }
+  28%, 100% { opacity: 1; transform: none; }
+}
+
+/* ======================================================================
    Static frames — running={false} adds `.static` next to `.am .frame`;
    the media query below mirrors it for prefers-reduced-motion. Selectors
    repeat the animated ones with `.static` inserted so they always win
@@ -1138,4 +2219,186 @@
   }
   .am .lpBi .w-graph-line .stroke { stroke-dasharray: none; stroke-dashoffset: 0; }
   .am .plq .dealGone { display: none; }
+}
+
+/* ======================================================================
+   Static frames — waves 2, 4 and 5. Same convention as the block
+   above: `.static` on the frame (AppMock), on the WidgetMock frame
+   (`.wmLive.static`), or on the SidebarMock panel (`.sbLive.static`)
+   freezes every keyframe onto its base — the meaningful end state.
+   Transient travellers (ghosts, dots, sweeps, the typing indicator)
+   have `opacity: 0` bases, so they simply stay hidden.
+   ====================================================================== */
+
+.am .static .docudesk .word.mark-1,
+.am .static .docudesk .word.mark-2,
+.am .static .docudesk .word.mark-3,
+.am .static .docudesk .word.mark-4,
+.am .static .docudesk .word.mark-5,
+.am .static .shillinq .bankLine,
+.am .static .shillinq .inv.reconciling .tick,
+.am .static .shillinq .totNet,
+.am .static .doriath .keyHex,
+.am .static .doriath .vMask,
+.am .static .doriath .vValue,
+.am .static .doriath .vCountdown,
+.am .static .opencatalogi .search,
+.am .static .opencatalogi .search .q,
+.am .static .opencatalogi .card.dim,
+.am .static .opencatalogi .card.match,
+.am .static .opencatalogi .card.match .statusPill .h,
+.am .static .openconnector .travelDotA,
+.am .static .openconnector .travelDotB,
+.am .static .openconnector .stage .conn,
+.am .static .openconnector .newRun,
+.am .static .openconnector .newRun .runTick,
+.am .static .procest .timeline .step .ghost,
+.am .static .procest .stack .sortUp,
+.am .static .procest .stack .sortDown,
+.am .static .openregister .newObj,
+.am .static .openregister .detail > .row,
+.am .static .kpiGrow .num,
+.am .static .decidesk .tallyRow .fill,
+.am .static .decidesk .tallyRow .quorum,
+.am .static .decidesk .adoptFlip,
+.am .static .decidesk .adoptFlip .h,
+.am .static .decidesk .adoptFlip .t,
+.am .static .hrmq .dayBar,
+.am .static .hrmq .submitBtn,
+.am .static .hrmq .approvePip,
+.am .static .hrmq .payroll .pNum,
+.am .static .larping .card.xpSource,
+.am .static .larping .xpToken,
+.am .static .larping .timeline .step.now .h,
+.am .static .larping .card .row,
+.am .static .swc .scanBand,
+.am .static .swc .item.cveHit .pip,
+.am .static .swc .bar.cve,
+.am .static .zaak .zkGhost,
+.am .static .zaak .zkNew .stage,
+.am .static .zaak .zkNew .av,
+.am .static .zaak .zkNew .l1,
+.am .static .zaak .zkSent,
+.am .static .zaak .item.late .stage,
+.am .static .hermiq .bubble,
+.am .static .hermiq .typing,
+.am .static .hermiq .typing .tDot,
+.am .static .hermiq .chips .chip1,
+.am .static .hermiq .chip.chip2,
+.am .static .hermiq .chip.chip3,
+.am .static .hermiq .approveChip,
+.am .static .hermiq .approveChip .h,
+.am .static .hermiq .approveChip .t,
+.am .static .hermiq .sendBtn,
+.am .static .openbuild .tplSource,
+.am .static .openbuild .buildGhost,
+.am .static .openbuild .newApp,
+.am .static .openbuild .publishedKpi .ico,
+.am .wmLive.static .w .list > *:first-child,
+.am .wmLive.static .w .list > *:last-child,
+.am .wmLive.static .wmBadge,
+.am .static .wmBadge,
+.am .static .zoneLive .zone,
+.am .zoneLive.static .zone,
+.am .static .zoneLive .zoneFile,
+.am .zoneLive.static .zoneFile,
+.am .sbLive.static,
+.am .static .sbLive,
+.am .sbLive.static .sb-head .title,
+.am .static .sbLive .sb-head .title,
+.am .sbLive.static .sb-head .desc,
+.am .static .sbLive .sb-head .desc,
+.am .sbLive.static .sb-underline,
+.am .static .sbLive .sb-underline,
+.am .sbLive.static .sb-body > *,
+.am .static .sbLive .sb-body > * {
+  animation: none;
+}
+.am .static .zoneLive .zone,
+.am .zoneLive.static .zone {
+  border: 1px dashed var(--c-cobalt-300);
+  background-image: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .am .docudesk .word.mark-1,
+  .am .docudesk .word.mark-2,
+  .am .docudesk .word.mark-3,
+  .am .docudesk .word.mark-4,
+  .am .docudesk .word.mark-5,
+  .am .shillinq .bankLine,
+  .am .shillinq .inv.reconciling .tick,
+  .am .shillinq .totNet,
+  .am .doriath .keyHex,
+  .am .doriath .vMask,
+  .am .doriath .vValue,
+  .am .doriath .vCountdown,
+  .am .opencatalogi .search,
+  .am .opencatalogi .search .q,
+  .am .opencatalogi .card.dim,
+  .am .opencatalogi .card.match,
+  .am .opencatalogi .card.match .statusPill .h,
+  .am .openconnector .travelDotA,
+  .am .openconnector .travelDotB,
+  .am .openconnector .stage .conn,
+  .am .openconnector .newRun,
+  .am .openconnector .newRun .runTick,
+  .am .procest .timeline .step .ghost,
+  .am .procest .stack .sortUp,
+  .am .procest .stack .sortDown,
+  .am .openregister .newObj,
+  .am .openregister .detail > .row,
+  .am .kpiGrow .num,
+  .am .decidesk .tallyRow .fill,
+  .am .decidesk .tallyRow .quorum,
+  .am .decidesk .adoptFlip,
+  .am .decidesk .adoptFlip .h,
+  .am .decidesk .adoptFlip .t,
+  .am .hrmq .dayBar,
+  .am .hrmq .submitBtn,
+  .am .hrmq .approvePip,
+  .am .hrmq .payroll .pNum,
+  .am .larping .card.xpSource,
+  .am .larping .xpToken,
+  .am .larping .timeline .step.now .h,
+  .am .larping .card .row,
+  .am .swc .scanBand,
+  .am .swc .item.cveHit .pip,
+  .am .swc .bar.cve,
+  .am .zaak .zkGhost,
+  .am .zaak .zkNew .stage,
+  .am .zaak .zkNew .av,
+  .am .zaak .zkNew .l1,
+  .am .zaak .zkSent,
+  .am .zaak .item.late .stage,
+  .am .hermiq .bubble,
+  .am .hermiq .typing,
+  .am .hermiq .typing .tDot,
+  .am .hermiq .chips .chip1,
+  .am .hermiq .chip.chip2,
+  .am .hermiq .chip.chip3,
+  .am .hermiq .approveChip,
+  .am .hermiq .approveChip .h,
+  .am .hermiq .approveChip .t,
+  .am .hermiq .sendBtn,
+  .am .openbuild .tplSource,
+  .am .openbuild .buildGhost,
+  .am .openbuild .newApp,
+  .am .openbuild .publishedKpi .ico,
+  .am .wmLive .w .list > *:first-child,
+  .am .wmLive .w .list > *:last-child,
+  .am .wmBadge,
+  .am .zoneLive .zone,
+  .am .zoneLive .zoneFile,
+  .am .sbLive,
+  .am .sbLive .sb-head .title,
+  .am .sbLive .sb-head .desc,
+  .am .sbLive .sb-underline,
+  .am .sbLive .sb-body > * {
+    animation: none;
+  }
+  .am .zoneLive .zone {
+    border: 1px dashed var(--c-cobalt-300);
+    background-image: none;
+  }
 }

@@ -53,7 +53,20 @@
  *                                           .smFrame chrome so the
  *                                           panel slots into
  *                                           AppMock's .body layout
+ *   - running:  boolean (default true)    — false freezes the panel
+ *                                           animation on its settled
+ *                                           end state (same rendering
+ *                                           prefers-reduced-motion
+ *                                           gives)
  *   - className: string
+ *
+ * Animation (wave 5, `.sbLive` in AppMock.module.css): the panel
+ * slides in from the right, the head title/description wipe in, the
+ * active-tab underline travels from the neighbouring tab to the
+ * active one — positioned by the `--sb-ix` / `--sb-n` custom
+ * properties the component sets from the variant's active index —
+ * and the body rows land in a stagger. Base styles are the opened,
+ * settled panel.
  */
 
 import React from 'react';
@@ -175,7 +188,7 @@ const VARIANTS = {
   },
 };
 
-export default function SidebarMock({ kind, size = 'md', embedded = false, className }) {
+export default function SidebarMock({ kind, size = 'md', embedded = false, running = true, className }) {
   const variant = VARIANTS[kind];
   if (!variant) {
     return (
@@ -187,8 +200,19 @@ export default function SidebarMock({ kind, size = 'md', embedded = false, class
     );
   }
   const { Component, tabs } = variant;
+  /* The travelling underline needs the active tab's index and the tab
+     count; both ride custom properties so the CSS can compute the
+     resting offset. It slides in from the neighbouring tab — from the
+     left normally, from the right when the first tab is the active
+     one (there is no left neighbour to come from). */
+  const activeIx = Math.max(0, tabs.findIndex((t) => t.active));
+  const underlineVars = {
+    '--sb-ix': activeIx,
+    '--sb-n': tabs.length,
+    '--sb-from': activeIx > 0 ? '-100%' : '100%',
+  };
   const panel = (
-    <div className={[amStyles.detail, amStyles.rich].join(' ')}>
+    <div className={[amStyles.detail, amStyles.rich, amStyles.sbLive, !running && amStyles.static].filter(Boolean).join(' ')}>
       <div className={amStyles['sb-head']}>
         <div className={amStyles.ico}></div>
         <div className={amStyles.meta}>
@@ -209,6 +233,9 @@ export default function SidebarMock({ kind, size = 'md', embedded = false, class
               <div className={amStyles.l}></div>
             </div>
           ))}
+          {/* Travelling active-tab underline — rests under the active
+              tab; the loop replays the travel from its neighbour. */}
+          <div className={amStyles['sb-underline']} style={underlineVars}></div>
         </div>
       )}
       <div className={amStyles['sb-body']}>

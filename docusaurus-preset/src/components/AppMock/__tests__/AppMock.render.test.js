@@ -170,6 +170,154 @@ test('larpingapp: the scene timeline renders five steps (was an empty shell)', (
   assert.equal((html.match(/step now/g) || []).length, 1, 'exactly one active (orange) step');
 });
 
+/* ---- Wave 2 — storytelling animation hooks ---- */
+
+test('docudesk: word-level rows with five ordered PII marks, and the live drop-zone', () => {
+  const html = render({app: 'docudesk'});
+  assert.match(html, /class="body opencatalogi docudesk"/);
+  assert.equal((html.match(/class="words"/g) || []).length, 5, 'five word-bar rows');
+  for (const n of [1, 2, 3, 4, 5]) {
+    assert.match(html, new RegExp(`word mark mark-${n}`), `mark-${n} missing`);
+  }
+  assert.match(html, /w w-upload zoneLive/);
+  assert.match(html, /class="zoneFile"/);
+});
+
+test('shillinq: bank line, reconciling row 3, ledger totals, and the KPI grow hook', () => {
+  const html = render({app: 'shillinq'});
+  assert.match(html, /class="body decidesk shillinq"/);
+  assert.match(html, /class="bankLine"/);
+  assert.equal((html.match(/item inv/g) || []).length, 5, 'five invoice rows');
+  assert.equal((html.match(/item inv reconciling/g) || []).length, 1, 'exactly one reconciling row');
+  // The reconciling row is row 3: two plain rows precede it.
+  assert.match(html, /item inv"[\s\S]*?item inv"[\s\S]*?item inv reconciling/);
+  assert.equal((html.match(/tick open/g) || []).length, 1, 'one still-open tick (row 5)');
+  assert.match(html, /class="totNet"/);
+  assert.match(html, /kpi kpiGrow/);
+});
+
+test('doriath: key hex, both mask layers, value, and the countdown hairline', () => {
+  const html = render({app: 'doriath'});
+  assert.match(html, /class="body decidesk doriath"/);
+  assert.match(html, /class="keyHex"/);
+  assert.match(html, /class="vMask"/);
+  assert.match(html, /class="vValue"/);
+  assert.match(html, /class="vCountdown"/);
+  assert.equal((html.match(/class="maskDots"/g) || []).length, 5, 'five locked list entries keep their dot masks');
+});
+
+test('opencatalogi: search bar with query fill; three matches and three dimmed cards', () => {
+  const html = render({app: 'opencatalogi'});
+  assert.match(html, /class="search"/);
+  assert.match(html, /class="q"/);
+  assert.equal((html.match(/class="card[^"]*match"/g) || []).length, 3, 'three matching cards');
+  assert.equal((html.match(/class="card[^"]*dim"/g) || []).length, 3, 'three dimmed cards');
+});
+
+test('openconnector: two travel dots on the arrows and the inserted run row with mint tick', () => {
+  const html = render({app: 'openconnector'});
+  assert.match(html, /class="travelDotA"/);
+  assert.match(html, /class="travelDotB"/);
+  assert.match(html, /item newRun/);
+  assert.match(html, /class="runTick"/);
+});
+
+test('procest: advanced base state (2 done, 1 now), two ghost overlays, and the re-sort pair', () => {
+  const html = render({app: 'procest'});
+  assert.match(html, /class="step"/, 'first step done');
+  assert.match(html, /step advanceFrom/, 'second step advanced out of active');
+  assert.match(html, /step now advanceTo/, 'third step is the newly active one');
+  assert.equal((html.match(/step now/g) || []).length, 1, 'one active step');
+  assert.equal((html.match(/step todo/g) || []).length, 2, 'two to-do steps');
+  assert.match(html, /ghost ghostNow/);
+  assert.match(html, /ghost ghostTodo/);
+  assert.match(html, /item sortUp/);
+  assert.match(html, /item sortDown/);
+});
+
+test('openregister: the landing object row and the KPI grow hook', () => {
+  const html = render({app: 'openregister'});
+  assert.match(html, /item newObj/);
+  assert.match(html, /kpi kpiGrow/);
+});
+
+/* ---- Wave 4 — content reworks ---- */
+
+test('decidesk: vote tally (for/against/abstain + quorum) and the adopt-flip decision row', () => {
+  const html = render({app: 'decidesk'});
+  assert.equal((html.match(/class="tallyRow /g) || []).length, 3, 'three tally rows');
+  assert.match(html, /tallyRow for/);
+  assert.match(html, /tallyRow against/);
+  assert.match(html, /tallyRow abstain/);
+  assert.equal((html.match(/class="quorum"/g) || []).length, 1, 'quorum line on the for-track only');
+  assert.match(html, /item decisionRow/);
+  assert.match(html, /statusPill adoptFlip/);
+});
+
+test('hrmq: reworked to a timesheet + approval surface (no people-list panels left)', () => {
+  const html = render({app: 'hrmq'});
+  assert.match(html, /class="body decidesk hrmq"/);
+  assert.equal((html.match(/class="dayCol"/g) || []).length, 5, 'five day columns');
+  assert.equal((html.match(/class="dayBar"/g) || []).length, 5, 'five hour bars');
+  assert.match(html, /btn submitBtn/);
+  assert.match(html, /item approveRow/);
+  assert.match(html, /class="approvePip"/);
+  assert.match(html, /class="payroll"/);
+  assert.match(html, /class="pNum"/);
+});
+
+test('larpingapp: XP ripple — lifted source card, travelling token, timeline intact', () => {
+  const html = render({app: 'larpingapp'});
+  assert.match(html, /class="body opencatalogi larping"/);
+  assert.match(html, /card b xpSource/);
+  assert.match(html, /class="xpToken"/);
+  assert.equal((html.match(/step now/g) || []).length, 1);
+});
+
+test('softwarecatalog: scan band, CVE-hit row 4, and the vermillion CVE bar (orange accent bar intact)', () => {
+  const html = render({app: 'softwarecatalog'});
+  assert.match(html, /class="body openregister swc"/);
+  assert.match(html, /class="scanBand"/);
+  assert.match(html, /item blocked cveHit/);
+  assert.match(html, /bar cve/);
+  assert.equal((html.match(/bar accent/g) || []).length, 1, 'exactly one orange accent bar');
+});
+
+test('zaakafhandelapp: travelling submission ghost and the dressed new case row', () => {
+  const html = render({app: 'zaakafhandelapp'});
+  assert.match(html, /class="body procest zaak"/);
+  assert.match(html, /class="zkGhost"/);
+  assert.match(html, /item zkNew/);
+  assert.match(html, /item zkSent/);
+  assert.equal((html.match(/item late/g) || []).length, 1, 'the SLA-late row survives the rework');
+});
+
+test('hermiq: inline styles moved to the module — bubbles, typing indicator, chips, approval', () => {
+  const html = render({app: 'hermiq'});
+  assert.match(html, /class="body decidesk hermiq"/);
+  assert.equal((html.match(/bubble user/g) || []).length, 2, 'two user bubbles');
+  assert.equal((html.match(/bubble agent/g) || []).length, 2, 'two agent bubbles');
+  assert.match(html, /class="typing"/);
+  assert.equal((html.match(/class="tDot"/g) || []).length, 3, 'three typing dots');
+  assert.match(html, /statusPill chip1/);
+  assert.match(html, /chip chip2/);
+  assert.match(html, /chip chip3/);
+  assert.match(html, /statusPill approveChip/);
+  assert.match(html, /class="promptField"/);
+  assert.match(html, /btn sendBtn/);
+  // The wave-4 requirement: presentation no longer rides inline styles.
+  assert.doesNotMatch(html, /style="[^"]*(background|border-radius|align-self)/, 'presentation styles must live in the module');
+});
+
+test('openbuild: template highlight, travelling ghost chip, landing app row, publish pulse', () => {
+  const html = render({app: 'openbuild'});
+  assert.match(html, /item tplSource/);
+  assert.match(html, /class="buildGhost"/);
+  assert.match(html, /item newApp/);
+  assert.match(html, /kpi kpiGrow/);
+  assert.match(html, /kpi forest publishedKpi/);
+});
+
 test('reserved accent families: no variant inline-styles coral or gold', () => {
   // SKILL.md reserves the coral and gold families; the one-orange rule
   // is enforced per component by review, but coral/gold must never

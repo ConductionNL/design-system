@@ -7,6 +7,12 @@
  * Published / Templates / Versions) over two panels — a virtual-app card
  * list ("Virtual apps") and a template-catalogue list ("Templates").
  * Right rail abstracts the per-app manifest/schema editor.
+ *
+ * Animation (wave 4): the top template row highlights, a ghost chip
+ * travels from the template catalogue into the virtual-apps list, the
+ * new app row lands there, the first KPI widens, and the published
+ * KPI's hex pulses mint — template to running app in one loop. Base
+ * styles are the published end state.
  */
 
 import React from 'react';
@@ -40,11 +46,11 @@ export default function OpenBuildMock({ sidebar = null }) {
         <div className={styles.col}>
           {/* KPI strip: Virtual apps / Published / Templates / Versions */}
           <div className={styles.kpiRow}>
-            <div className={styles.kpi}>
+            <div className={[styles.kpi, styles.kpiGrow].join(' ')}>
               <div className={styles.ico}></div>
               <div className={styles.meta}><div className={styles.num}></div><div className={styles.label}></div></div>
             </div>
-            <div className={[styles.kpi, styles.forest].join(' ')}>
+            <div className={[styles.kpi, styles.forest, styles.publishedKpi].join(' ')}>
               <div className={styles.ico}></div>
               <div className={styles.meta}><div className={styles.num}></div><div className={styles.label}></div></div>
             </div>
@@ -57,12 +63,18 @@ export default function OpenBuildMock({ sidebar = null }) {
               <div className={styles.meta}><div className={styles.num}></div><div className={styles.label}></div></div>
             </div>
           </div>
-          {/* Virtual-app card list + template catalogue */}
+          {/* Virtual-app card list + template catalogue. The ghost
+              chip travels template row → apps list; the new app row
+              (.newApp) lands at the top of the virtual-apps stack. */}
           <div className={styles.panelRow}>
             <div className={styles.panel}>
               <div className={styles.head}><div className={styles.title}></div></div>
               <div className={styles.stack}>
-                {['b','d','a','c'].map((cls, i) => (
+                <div className={[styles.item, styles.newApp].join(' ')}>
+                  <div className={[styles.av, styles.b].join(' ')}></div>
+                  <div className={styles.lines}><div className={styles.l1}></div><div className={styles.l2}></div></div>
+                </div>
+                {['d','a','c'].map((cls, i) => (
                   <div key={i} className={styles.item}>
                     <div className={[styles.av, styles[cls]].join(' ')}></div>
                     <div className={styles.lines}><div className={styles.l1}></div><div className={styles.l2}></div></div>
@@ -74,13 +86,16 @@ export default function OpenBuildMock({ sidebar = null }) {
               <div className={styles.head}><div className={styles.title}></div></div>
               <div className={styles.stack}>
                 {[0,1,2,3].map(i => (
-                  <div key={i} className={styles.item}>
+                  <div key={i} className={[styles.item, i === 0 && styles.tplSource].filter(Boolean).join(' ')}>
                     <div className={styles.lines}><div className={styles.l1}></div></div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
+          {/* Ghost chip — travels from the template catalogue into the
+              virtual-apps list. Hidden at rest and in static frames. */}
+          <div className={styles.buildGhost}></div>
         </div>
         {/* Right rail: per-app manifest / schema editor. When AppMock passes
             a `sidebar` prop it renders there instead of this placeholder. */}

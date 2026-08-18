@@ -6,6 +6,12 @@
  * with hex avatars in different family tones) plus a scene timeline
  * across the top so a session organiser can move stages forward. Left
  * nav for characters / scenes / NPCs / factions / rules / archive.
+ *
+ * Animation (wave 4, the XP ripple): the second character card lifts,
+ * an XP hex token rises from it to the scene timeline's active stage,
+ * the stage hex pulses as it absorbs the token, and every character
+ * card's text rows grow in a stagger — the whole party levelling from
+ * the played scene. Base styles are the settled (post-XP) end state.
  */
 
 import React from 'react';
@@ -22,7 +28,7 @@ export default function LarpingAppMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.opencatalogi].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.opencatalogi, styles.larping].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false, false, false].map((active, i) => (
@@ -58,10 +64,11 @@ export default function LarpingAppMock() {
               </div>
             </div>
           </div>
-          {/* Character grid */}
+          {/* Character grid. Card 2 (.xpSource) lifts and releases the
+              XP token that travels up to the timeline's active stage. */}
           <div className={styles.grid}>
             {charTones.map((cls, i) => (
-              <div key={i} className={[styles.card, cls && styles[cls]].filter(Boolean).join(' ')}>
+              <div key={i} className={[styles.card, cls && styles[cls], i === 1 && styles.xpSource].filter(Boolean).join(' ')}>
                 <div className={styles.ico}></div>
                 <div className={styles.row + ' ' + styles.head}></div>
                 <div className={styles.row + ' ' + styles.short}></div>
@@ -71,6 +78,9 @@ export default function LarpingAppMock() {
               </div>
             ))}
           </div>
+          {/* XP token — travels from the lifted card to the timeline.
+              Hidden at rest and in static frames. */}
+          <div className={styles.xpToken}></div>
         </div>
       </div>
     </>

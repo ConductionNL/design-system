@@ -6,6 +6,11 @@
  * pipeline (lavender source → cobalt connector → forest target), with
  * a status table below for recent runs. Left nav for sources, jobs,
  * mappings, sync logs, schedules.
+ *
+ * Animation (wave 2): a lavender record dot travels source →
+ * connector, re-emerges forest on the far side → target (the mapping
+ * made visible), then a new run row inserts at the top of the runs
+ * table and ticks mint. Base styles are the completed end state.
  */
 
 import React from 'react';
@@ -45,12 +50,18 @@ export default function OpenConnectorMock() {
               <div className={styles.ico}></div>
               <div className={styles.row + ' ' + styles.short}></div>
             </div>
-            <div className={styles.arrow}></div>
+            <div className={styles.arrow}>
+              {/* Record dot, lavender leg: source → connector */}
+              <div className={styles.travelDotA}></div>
+            </div>
             <div className={styles.conn}>
               <div className={styles.ico}></div>
               <div className={styles.label}></div>
             </div>
-            <div className={styles.arrow}></div>
+            <div className={styles.arrow}>
+              {/* Record dot, forest leg: connector → target */}
+              <div className={styles.travelDotB}></div>
+            </div>
             <div className={styles.target}>
               <div className={styles.ico}></div>
               <div className={styles.row + ' ' + styles.short}></div>
@@ -64,7 +75,18 @@ export default function OpenConnectorMock() {
               </div>
             </div>
             <div className={styles.stack}>
-              {['a','d','b','c'].map((cls, i) => (
+              {/* The freshly-inserted run row: slides in when the dot
+                  lands, its trailing pip ticks mint. Present (mint)
+                  in the static end state. */}
+              <div className={[styles.item, styles.newRun].join(' ')}>
+                <div className={[styles.av, styles.d].join(' ')}></div>
+                <div className={styles.lines}>
+                  <div className={styles.l1}></div>
+                  <div className={styles.l2}></div>
+                </div>
+                <div className={styles.runTick}></div>
+              </div>
+              {['a','d','b'].map((cls, i) => (
                 <div key={i} className={styles.item}>
                   <div className={[styles.av, styles[cls]].join(' ')}></div>
                   <div className={styles.lines}>

@@ -22,9 +22,8 @@
 # versions up to 3.28.0 carry one, because they were published by the old
 # Codeberg job with a classic token.
 #
-# The one prerequisite lives on npmjs.com rather than here, and as of
-# 2026-08-06 it is NOT configured: a run with id-token: write and npm 11.13
-# still failed with
+# The one prerequisite lives on npmjs.com rather than here. Until it is
+# configured, a run with id-token: write fails with
 #
 #   npm error code ENEEDAUTH
 #   npm error need auth This command requires you to be logged in
@@ -75,9 +74,12 @@ jobs:
         with:
           fetch-depth: 0   # semantic-release reads history to pick the version
 
+      # Node 24: semantic-release@24 needs Node ^22.14 || >=24.10, and Node
+      # 24 bundles an OIDC-capable npm 11.x. Mirrors ConductionNL/nextcloud-vue,
+      # the workflow that publishes cleanly over trusted publishing today.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
 
       # No committed root lockfile (npm workspaces), so `install` rather
@@ -107,6 +109,9 @@ jobs:
           # falls back to the OIDC credential exchange.
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Sign a provenance attestation on publish. Only meaningful over
+          # OIDC; harmless with a token. Versions <=3.28.0 carry none.
+          NPM_CONFIG_PROVENANCE: 'true'
         run: npx semantic-release --extends semantic-release-monorepo ${{ inputs.dry_run && '--dry-run' || '' }}
 
       # The published version is decided by semantic-release, not by the

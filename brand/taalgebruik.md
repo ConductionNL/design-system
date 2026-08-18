@@ -602,6 +602,33 @@ Every public page on the docusaurus sites is composed from the same handful of c
 
 When inventing a new component, give it a copy contract in the same shape and add the row to this table.
 
+### 16.1 Product pages: write for the business owner
+
+The app product pages on conduction.nl (`/apps/<slug>`) have one reader: the owner or office manager of a Dutch business with 10 to 500 people. They arrive with a concrete problem and evaluate alone. They do not know what OpenRegister is and do not need to. Three rules on top of everything above, added 2026-08-18 after the PipelinQ rewrite.
+
+**Rule A · Their vocabulary, not ours.** Platform internals never appear in body copy: OpenRegister, OpenBuild, Hermiq, schema, register, typed, delta, layer, manifest, MCP, tool provider, CalDAV, CardDAV, endpoint, JSON, leaf, ADR, token. A platform name is allowed in exactly one place, the CTA label that links to that app's own page (*"How automation works"* → `/apps/openregister`). Test: could your accountant's office manager read the sentence without asking what a word means?
+
+| We say (wrong) | They read (right) |
+|---|---|
+| "Clients are typed OpenRegister schemas with an audit trail." | "Every change is logged, so you always know who did what." |
+| "Changes are stored as a delta over the shipped manifest." | "Your changes stay with every update." |
+| "Two-way CardDAV sync with Nextcloud Contacts." | "Change a number in the CRM and it is right on your phone." |
+| "Every action is exposed as an MCP tool with scope × reach grants." | "Every action can be handed to an assistant, and you decide per assistant what it may do." |
+| "Accepting a quote starts a flow." | "The moment the quote is accepted, the project exists and the kick-off task is on the right desk." |
+
+**Rule B · Every example proves added value.** A capability is not an example. An example shows what the reader does by hand today, what happens instead, and what that saves. Three beats, in that order: *today / instead / so*. If you cannot name what they gain, you have described a mechanism; cut it or find the gain.
+
+- Fails: *"A deal is won. Everything that follows just happens."* (mechanism, no value)
+- Passes: *"Today you accept the quote, then open three other screens to create the project, plan the kick-off and tell the team. With a flow you set that up once. The moment the quote is accepted, the project exists, the kick-off task is on the right desk and the discount over ten percent waits for your approval."*
+
+Pick scenes from the reader's day: back in the car after a client visit, the VAT return on the last Friday of the quarter, the certificate that expires while nobody is looking, the address book that slowly drifts apart. Name a real trade when it sharpens the picture: the installer who needs a site-visit step, the wholesaler who wants delivery region on every client.
+
+**Rule C · Ground every example in shipped functionality.** A scene is a promise. If the feature is spec-only, the example goes into the spec, not the page. When unsure, verify in the app before writing.
+
+**Card eyebrows are verbs for the reader**, not product names: *Automate / Make it yours / Talk to it*, never *Flows / OpenBuild / Hermiq*. The section title *"Three ways <App> earns its place"* stays as the frame.
+
+**Product-page CTA pair (fixed):** *"Install from the Nextcloud app store"* and *"Request a demo from a partner"*. Never *"Book a demo"*, never *"Talk to a partner"*, and no card CTA may link back to the page it is on.
+
 ---
 
 ## 17. Old voice → new voice (worked examples)

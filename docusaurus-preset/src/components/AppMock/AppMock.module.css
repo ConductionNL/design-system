@@ -30,6 +30,10 @@
 .am .figure { margin: 0; display: inline-flex; flex-direction: column; gap: var(--space-2); width: 100%; max-width: 100%; }
 
 .am .frame {
+  /* Shared animation timeline token. Every variant keyframe below runs
+     on var(--am-dur); a variant overrides it on its own body class
+     (e.g. `.nldesign { --am-dur: 6s; }`). The KanbanMock convention. */
+  --am-dur: 8s;
   width: 100%;
   max-width: 720px;
   aspect-ratio: 16 / 10;
@@ -700,3 +704,438 @@
 .am .procest .timeline .step.todo .h { background: var(--c-cobalt-100); }
 .am .procest .timeline .step.now  .h { background: var(--c-orange-knvb); }
 .am .procest .timeline .step .label { height: 3px; width: 60%; background: var(--c-cobalt-400); border-radius: 1px; }
+
+/* ======================================================================
+   Variant animations
+   ======================================================================
+
+   Every timeline runs on var(--am-dur) (declared on `.am .frame`,
+   overridden per variant body class). Conventions, copied from
+   KanbanMock.module.css:
+
+   - Base styles are the animation's meaningful END state, so freezing
+     (running={false} → `.static` on the frame, or the user's
+     prefers-reduced-motion) is `animation: none` plus a couple of
+     explicit overrides.
+   - Loops reset via opacity swaps (fade out at ~92–98%, re-enter from
+     the 0% frame), never a visible rewind. 0% and 100% frames are both
+     hidden or identical, so per-element `animation-delay` staggers stay
+     seamless in steady state.
+   - `animation-fill-mode: both` keeps delayed elements on their hidden
+     0% frame during the initial delay.
+   - Tokens only; no new orange is introduced by any animation. */
+
+/* ---- Portaliq — a visitor fills the form, submits, the message
+   lands in the inbox. Timeline (8s): focus+fill field 1 (3–19%),
+   field 2 (21–37%), field 3 (39–55%), submit press (58–63%), mint
+   confirm sweep across the form (63–72%), inbox row arrives (74–80%),
+   hold, fade-reset (94–100%). ---- */
+
+.am .portaliq .field {
+  position: relative;
+  height: 14px;
+  background: white;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.am .portaliq .field.tall { height: 26px; }
+.am .portaliq .fieldFill {
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--c-cobalt-300);
+  transform-origin: left center;
+}
+.am .portaliq .field-1 .fieldFill { width: 62%; animation: amPqFill1 var(--am-dur) linear infinite both; }
+.am .portaliq .field-2 .fieldFill { width: 48%; animation: amPqFill2 var(--am-dur) linear infinite both; }
+.am .portaliq .field-3 .fieldFill { width: 78%; animation: amPqFill3 var(--am-dur) linear infinite both; }
+.am .portaliq .field-1 { animation: amPqFocus1 var(--am-dur) linear infinite; }
+.am .portaliq .field-2 { animation: amPqFocus2 var(--am-dur) linear infinite; }
+.am .portaliq .field-3 { animation: amPqFocus3 var(--am-dur) linear infinite; }
+
+@keyframes amPqFocus1 {
+  0%, 3%    { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+  6%, 17%   { border-color: var(--c-blue-cobalt); box-shadow: 0 0 0 2px var(--c-cobalt-100); }
+  20%, 100% { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+}
+@keyframes amPqFocus2 {
+  0%, 21%   { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+  24%, 35%  { border-color: var(--c-blue-cobalt); box-shadow: 0 0 0 2px var(--c-cobalt-100); }
+  38%, 100% { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+}
+@keyframes amPqFocus3 {
+  0%, 39%   { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+  42%, 53%  { border-color: var(--c-blue-cobalt); box-shadow: 0 0 0 2px var(--c-cobalt-100); }
+  56%, 100% { border-color: var(--c-cobalt-200); box-shadow: 0 0 0 0 rgba(31, 68, 156, 0); }
+}
+@keyframes amPqFill1 {
+  0%, 8%    { transform: scaleX(0); opacity: 1; }
+  19%, 93%  { transform: scaleX(1); opacity: 1; }
+  98%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+@keyframes amPqFill2 {
+  0%, 26%   { transform: scaleX(0); opacity: 1; }
+  37%, 93%  { transform: scaleX(1); opacity: 1; }
+  98%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+@keyframes amPqFill3 {
+  0%, 44%   { transform: scaleX(0); opacity: 1; }
+  55%, 93%  { transform: scaleX(1); opacity: 1; }
+  98%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+
+.am .portaliq .submit { animation: amPqPress var(--am-dur) ease-in-out infinite; }
+@keyframes amPqPress {
+  0%, 58%   { transform: scale(1); }
+  60%       { transform: scale(0.92); }
+  63%, 100% { transform: scale(1); }
+}
+
+/* Mint confirmation sweep — a soft light band crossing the form panel
+   right after the submit press. Hidden at rest and in static frames. */
+.am .portaliq .formPanel { position: relative; overflow: hidden; }
+.am .portaliq .confirmSweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 32%, var(--c-mint-300) 50%, transparent 68%);
+  opacity: 0;
+  transform: translateX(-120%);
+  pointer-events: none;
+  animation: amPqSweep var(--am-dur) linear infinite;
+}
+@keyframes amPqSweep {
+  0%, 63%   { transform: translateX(-120%); opacity: 0; }
+  64%       { opacity: 0.9; }
+  71%       { opacity: 0.9; }
+  72%, 100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* The arriving inbox row (its default mint avatar reads as the
+   delivered/confirmed state). Visible in static frames. */
+.am .portaliq .newItem { animation: amPqRow var(--am-dur) ease-out infinite both; }
+@keyframes amPqRow {
+  0%, 74%   { opacity: 0; transform: translateY(-5px); }
+  80%, 93%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- NLDesign — a theme swatch is selected, the components retheme
+   in a cascade (button, then status pill), and the type scale
+   restretches. Timeline (6s): ring on the lavender swatch (5–10%),
+   button recolours (12–20%), pill recolours (14–22%), type bars
+   restretch (30–50%), hold, revert crossfade (84–100%). ---- */
+
+.am .nldesign { --am-dur: 6s; }
+
+.am .nldesign .swatch { display: inline-block; width: 22px; height: 22px; border-radius: 4px; }
+.am .nldesign .swatchSel { animation: amNldSel var(--am-dur) ease-in-out infinite; }
+@keyframes amNldSel {
+  0%, 5%    { box-shadow: 0 0 0 0 white, 0 0 0 0 rgba(31, 68, 156, 0); }
+  10%, 86%  { box-shadow: 0 0 0 2px white, 0 0 0 4px var(--c-blue-cobalt); }
+  94%, 100% { box-shadow: 0 0 0 0 white, 0 0 0 0 rgba(31, 68, 156, 0); }
+}
+
+.am .nldesign .actions .btn:not(.ghost) { animation: amNldBtn var(--am-dur) ease-in-out infinite; }
+@keyframes amNldBtn {
+  0%, 12%   { background-color: var(--c-blue-cobalt); }
+  20%, 84%  { background-color: var(--c-lavender-500); }
+  92%, 100% { background-color: var(--c-blue-cobalt); }
+}
+
+.am .nldesign .statusPill:not(.beta) { animation: amNldPillBg var(--am-dur) ease-in-out infinite; }
+.am .nldesign .statusPill:not(.beta) .h,
+.am .nldesign .statusPill:not(.beta) .t { animation: amNldPillInk var(--am-dur) ease-in-out infinite; }
+@keyframes amNldPillBg {
+  0%, 14%   { background-color: var(--c-mint-300); }
+  22%, 84%  { background-color: var(--c-lavender-300); }
+  92%, 100% { background-color: var(--c-mint-300); }
+}
+@keyframes amNldPillInk {
+  0%, 14%   { background-color: var(--c-mint-500); }
+  22%, 84%  { background-color: var(--c-lavender-500); }
+  92%, 100% { background-color: var(--c-mint-500); }
+}
+
+.am .nldesign .typeRow > * {
+  transform-origin: left center;
+  animation: amNldType var(--am-dur) ease-in-out infinite;
+}
+.am .nldesign .typeRow > *:nth-child(2) { animation-delay: 0.05s; }
+.am .nldesign .typeRow > *:nth-child(3) { animation-delay: 0.1s; }
+.am .nldesign .typeRow > *:nth-child(4) { animation-delay: 0.15s; }
+.am .nldesign .typeRow > *:nth-child(5) { animation-delay: 0.2s; }
+@keyframes amNldType {
+  0%, 30%   { transform: scaleX(1); }
+  42%       { transform: scaleX(1.32); }
+  50%, 84%  { transform: scaleX(1.18); }
+  94%, 100% { transform: scaleX(1); }
+}
+
+/* ---- Scholiq — course progress bars fill in a stagger, then the
+   completed course's credential chip pops with an overshoot.
+   Timeline (6s): bars fill (3–25% + per-bar delay), chip pop
+   (44–57%), hold, fade-reset (91–100%). Per-bar delays are inline
+   (i × 250ms) so the keyframes stay shared. ---- */
+
+.am .scholiq { --am-dur: 6s; }
+
+.am .scholiq .progress { height: 4px; background: var(--c-cobalt-100); border-radius: 2px; }
+.am .scholiq .progressFill {
+  height: 4px;
+  background: var(--c-forest-500);
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: amSchFill var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+@keyframes amSchFill {
+  0%, 3%    { transform: scaleX(0); opacity: 1; }
+  25%, 91%  { transform: scaleX(1); opacity: 1; }
+  97%       { transform: scaleX(1); opacity: 0; }
+  100%      { transform: scaleX(0); opacity: 0; }
+}
+
+.am .scholiq .credChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--c-forest-300);
+  align-self: flex-start;
+  transform-origin: left center;
+  animation: amSchChip var(--am-dur) ease-in-out infinite both;
+}
+.am .scholiq .credChip .credHex { width: 6px; height: 7px; clip-path: var(--hex-pointy-top); background: var(--c-forest-500); }
+.am .scholiq .credChip .credBar { height: 3px; width: 22px; background: var(--c-forest-500); border-radius: 1px; }
+@keyframes amSchChip {
+  0%, 44%   { transform: scale(0); opacity: 0; }
+  52%       { transform: scale(1.18); opacity: 1; }
+  57%, 91%  { transform: scale(1); opacity: 1; }
+  97%, 100% { transform: scale(1); opacity: 0; }
+}
+
+/* ---- LaunchPad · Widgets — the dashboard assembles: widgets arrive
+   one by one on a 900ms stagger (inline delays), hold, fade-reset.
+   Timeline (10s). ---- */
+
+.am .lpWidgets { --am-dur: 10s; }
+.am .lpWidgets .w { animation: amLpwArrive var(--am-dur) ease-out infinite both; }
+@keyframes amLpwArrive {
+  0%        { opacity: 0; transform: translateY(10px) scale(0.98); }
+  4%        { opacity: 1; transform: none; }
+  93%       { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- LaunchPad · Tiles — the sub-grid tile is pressed and unfolds
+   its four sub-tiles in a stagger. Timeline (7s): press (5–11%),
+   cells unfold (10–20% + nth-child delay), hold, fade-reset. ---- */
+
+.am .lpTiles { --am-dur: 7s; }
+.am .lpTiles .w-subgrid { transform-origin: center; animation: amLptPress var(--am-dur) ease-in-out infinite; }
+@keyframes amLptPress {
+  0%, 5%    { transform: scale(1); }
+  8%        { transform: scale(0.96); }
+  11%, 100% { transform: scale(1); }
+}
+.am .lpTiles .w-subgrid .cell { animation: amLptCell var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both; }
+.am .lpTiles .w-subgrid .cell:nth-child(2) { animation-delay: 0.12s; }
+.am .lpTiles .w-subgrid .cell:nth-child(3) { animation-delay: 0.24s; }
+.am .lpTiles .w-subgrid .cell:nth-child(4) { animation-delay: 0.36s; }
+@keyframes amLptCell {
+  0%, 10%   { opacity: 0; transform: scale(0.4); }
+  16%       { opacity: 1; transform: scale(1.08); }
+  20%, 92%  { opacity: 1; transform: scale(1); }
+  97%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* ---- LaunchPad · BI — the charts draw themselves: bars grow from
+   the axis in a stagger, the line draws along its path and its end
+   dot pops, the donut sweeps in, the KPI deltas fade up. Timeline
+   (9s): bars (2–16% + nth-child delay), donut (8–26%), line draw
+   (10–38%), dot pop (38–49%), deltas (46–54% + inline delay), hold,
+   fade-reset (92–100%). The line's stroke path carries
+   pathLength="1" so the dash arithmetic is geometry-independent
+   (the FlowMock run-line technique). ---- */
+
+.am .lpBi { --am-dur: 9s; }
+
+.am .lpBi .w-graph-bar .bar {
+  transform-origin: bottom;
+  animation: amBiBar var(--am-dur) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+.am .lpBi .w-graph-bar .bar:nth-child(2) { animation-delay: 0.12s; }
+.am .lpBi .w-graph-bar .bar:nth-child(3) { animation-delay: 0.24s; }
+.am .lpBi .w-graph-bar .bar:nth-child(4) { animation-delay: 0.36s; }
+.am .lpBi .w-graph-bar .bar:nth-child(5) { animation-delay: 0.48s; }
+.am .lpBi .w-graph-bar .bar:nth-child(6) { animation-delay: 0.6s; }
+@keyframes amBiBar {
+  0%, 2%    { transform: scaleY(0); opacity: 1; }
+  16%, 92%  { transform: scaleY(1); opacity: 1; }
+  97%       { transform: scaleY(1); opacity: 0; }
+  100%      { transform: scaleY(0); opacity: 0; }
+}
+
+.am .lpBi .w-graph-line .stroke {
+  stroke-dasharray: 1;
+  animation: amBiLine var(--am-dur) ease-in-out infinite both;
+}
+@keyframes amBiLine {
+  0%, 10%   { stroke-dashoffset: 1; opacity: 1; }
+  38%, 92%  { stroke-dashoffset: 0; opacity: 1; }
+  97%       { stroke-dashoffset: 0; opacity: 0; }
+  100%      { stroke-dashoffset: 1; opacity: 0; }
+}
+.am .lpBi .w-graph-line .fill { animation: amBiFill var(--am-dur) linear infinite both; }
+@keyframes amBiFill {
+  0%, 30%   { opacity: 0; }
+  44%, 92%  { opacity: 1; }
+  98%, 100% { opacity: 0; }
+}
+.am .lpBi .w-graph-line .dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: amBiDot var(--am-dur) ease-out infinite both;
+}
+@keyframes amBiDot {
+  0%, 38%   { opacity: 0; transform: scale(0); }
+  44%       { opacity: 1; transform: scale(1.7); }
+  49%, 92%  { opacity: 1; transform: scale(1); }
+  98%, 100% { opacity: 0; transform: scale(1); }
+}
+
+.am .lpBi .donut { animation: amBiDonut var(--am-dur) ease-out infinite both; }
+@keyframes amBiDonut {
+  0%, 8%    { opacity: 0; transform: rotate(-80deg) scale(0.85); }
+  26%, 92%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+.am .lpBi .biDelta { animation: amBiDelta var(--am-dur) ease-out infinite both; }
+@keyframes amBiDelta {
+  0%, 46%   { opacity: 0; transform: translateY(4px); }
+  54%, 92%  { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- PipelinQ — a deal closes: the proposal-column card collapses,
+   the won card scales in with its mint bar, and the pipeline-value
+   KPI widens. Timeline (7s): collapse (14–22%), won pop (17–29%),
+   KPI widen (26–34%), hold, opacity-swap reset (91–100%). Static
+   frames show the closed state (won card in place, proposal card
+   gone). ---- */
+
+.am .plq { --am-dur: 7s; }
+
+.am .plq .dealGone { transform-origin: center; animation: amPlqGone var(--am-dur) ease-in-out infinite; }
+@keyframes amPlqGone {
+  0%, 14%   { opacity: 1; transform: scaleY(1); }
+  22%, 91%  { opacity: 0; transform: scaleY(0); }
+  97%, 100% { opacity: 1; transform: scaleY(1); }
+}
+
+.am .plq .dealWon {
+  border-left-color: var(--c-mint-500);
+  transform-origin: center;
+  animation: amPlqWon var(--am-dur) ease-out infinite both;
+}
+@keyframes amPlqWon {
+  0%, 17%   { opacity: 0; transform: scale(0.5); }
+  25%       { opacity: 1; transform: scale(1.1); }
+  29%, 91%  { opacity: 1; transform: scale(1); }
+  97%, 100% { opacity: 0; transform: scale(1); }
+}
+
+.am .plq .kpiRow .kpi:first-child .num {
+  transform-origin: left center;
+  animation: amPlqKpi var(--am-dur) ease-in-out infinite;
+}
+@keyframes amPlqKpi {
+  0%, 26%   { transform: scaleX(1); }
+  34%, 90%  { transform: scaleX(1.3); }
+  97%, 100% { transform: scaleX(1); }
+}
+
+/* ======================================================================
+   Static frames — running={false} adds `.static` next to `.am .frame`;
+   the media query below mirrors it for prefers-reduced-motion. Selectors
+   repeat the animated ones with `.static` inserted so they always win
+   on specificity. Base styles are the meaningful end state, so beyond
+   `animation: none` only a few explicit overrides are needed.
+   ====================================================================== */
+
+.am .static .portaliq .field-1,
+.am .static .portaliq .field-2,
+.am .static .portaliq .field-3,
+.am .static .portaliq .field-1 .fieldFill,
+.am .static .portaliq .field-2 .fieldFill,
+.am .static .portaliq .field-3 .fieldFill,
+.am .static .portaliq .submit,
+.am .static .portaliq .confirmSweep,
+.am .static .portaliq .newItem,
+.am .static .nldesign .swatchSel,
+.am .static .nldesign .actions .btn:not(.ghost),
+.am .static .nldesign .statusPill:not(.beta),
+.am .static .nldesign .statusPill:not(.beta) .h,
+.am .static .nldesign .statusPill:not(.beta) .t,
+.am .static .nldesign .typeRow > *,
+.am .static .scholiq .progressFill,
+.am .static .scholiq .credChip,
+.am .static .lpWidgets .w,
+.am .static .lpTiles .w-subgrid,
+.am .static .lpTiles .w-subgrid .cell,
+.am .static .lpBi .w-graph-bar .bar,
+.am .static .lpBi .w-graph-line .stroke,
+.am .static .lpBi .w-graph-line .fill,
+.am .static .lpBi .w-graph-line .dot,
+.am .static .lpBi .donut,
+.am .static .lpBi .biDelta,
+.am .static .plq .dealGone,
+.am .static .plq .dealWon,
+.am .static .plq .kpiRow .kpi:first-child .num {
+  animation: none;
+}
+.am .static .lpBi .w-graph-line .stroke { stroke-dasharray: none; stroke-dashoffset: 0; }
+.am .static .plq .dealGone { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .am .portaliq .field-1,
+  .am .portaliq .field-2,
+  .am .portaliq .field-3,
+  .am .portaliq .field-1 .fieldFill,
+  .am .portaliq .field-2 .fieldFill,
+  .am .portaliq .field-3 .fieldFill,
+  .am .portaliq .submit,
+  .am .portaliq .confirmSweep,
+  .am .portaliq .newItem,
+  .am .nldesign .swatchSel,
+  .am .nldesign .actions .btn:not(.ghost),
+  .am .nldesign .statusPill:not(.beta),
+  .am .nldesign .statusPill:not(.beta) .h,
+  .am .nldesign .statusPill:not(.beta) .t,
+  .am .nldesign .typeRow > *,
+  .am .scholiq .progressFill,
+  .am .scholiq .credChip,
+  .am .lpWidgets .w,
+  .am .lpTiles .w-subgrid,
+  .am .lpTiles .w-subgrid .cell,
+  .am .lpBi .w-graph-bar .bar,
+  .am .lpBi .w-graph-line .stroke,
+  .am .lpBi .w-graph-line .fill,
+  .am .lpBi .w-graph-line .dot,
+  .am .lpBi .donut,
+  .am .lpBi .biDelta,
+  .am .plq .dealGone,
+  .am .plq .dealWon,
+  .am .plq .kpiRow .kpi:first-child .num {
+    animation: none;
+  }
+  .am .lpBi .w-graph-line .stroke { stroke-dasharray: none; stroke-dashoffset: 0; }
+  .am .plq .dealGone { display: none; }
+}

@@ -21,8 +21,28 @@
 
 .am .sceneItem {
   position: absolute;
-  /* `left`, `top`, and optionally `z-index` are set inline by the
-     component from the item's x/y/z values. */
+  /* `left`, `top`, optionally `z-index`, and the landing
+     animation-delay (i × 220ms) are set inline by the component from
+     the item's x/y/z values and index. The landing is transform +
+     opacity only — the inline left/top positioning is never fought.
+     0% and 100% are both hidden, so the staggered delays stay
+     seamless in steady state; `both` keeps a delayed item on its
+     hidden first frame before the initial landing. */
+  animation: msLand var(--ms-dur, 8s) cubic-bezier(0.2, 0.7, 0.3, 1) infinite both;
+}
+
+@keyframes msLand {
+  0%        { opacity: 0; transform: translateY(16px); }
+  4%        { opacity: 1; transform: none; }
+  94%       { opacity: 1; transform: none; }
+  99%, 100% { opacity: 0; transform: none; }
+}
+
+/* Static scene (running={false} and reduced motion): assembled. */
+.am .static .sceneItem { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .am .sceneItem { animation: none; }
 }
 
 /* Widgets inside a scene drop their LaunchPad-style cobalt-900 dashboard

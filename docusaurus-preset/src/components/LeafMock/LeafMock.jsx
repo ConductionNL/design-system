@@ -8,26 +8,39 @@
  *
  * Same abstraction level as <AppMock> (honeycomb.io/technologies/*):
  * greeked content, tokens only, no real text beyond short labels.
- * Four variants:
+ * Four variants, each with a small looping animation on the shared
+ * 6s timeline (--lm-dur):
  *
  *   - contacts: address-book rows with pointy-top hex avatars and a
- *     mint sync arrow to a phone silhouette
+ *     mint sync arrow to a phone silhouette. The arrow pulses and the
+ *     phone rows arrive in a stagger (the sync lands on the phone)
  *   - calendar: mini month grid with one highlighted day and a
- *     linked-event chip (lavender bar)
+ *     linked-event chip (lavender bar). The day pops highlighted,
+ *     then the event chip slides in beneath
  *   - mail:     message list with one highlighted row carrying a
- *     mint "create from email" action chip
- *   - files:    folder/file rows with a link-to-record chip (forest)
+ *     mint "create from email" action chip. The row highlights, then
+ *     the chip pops with an overshoot
+ *   - files:    folder/file rows with a link-to-record chip (forest).
+ *     The linked row slides in, the chip pops, and its link icon
+ *     draws itself (pathLength dash technique)
+ *
+ * `running={false}` (the `.static` frame class) and the user's
+ * prefers-reduced-motion setting freeze each leaf to its meaningful
+ * end state: synced rows, highlighted day + chip, highlighted mail
+ * row + chip, linked file row.
  *
  * Usage:
  *
  *   <LeafMock leaf="contacts" />
  *   <LeafMock leaf="calendar" caption size="sm" />
+ *   <LeafMock leaf="mail" running={false} />
  *
  * Props:
  *   - leaf:      'contacts' | 'calendar' | 'mail' | 'files' (required)
  *   - size:      'sm' | 'md' (default)  — frame width
  *   - caption:   string | true          — small label below the frame;
  *                `true` uses the variant's default label
+ *   - running:   boolean (default true) — false freezes the leaf
  *   - className: string
  */
 
@@ -126,7 +139,9 @@ function FilesLeaf() {
           {i === 1 && (
             <span className={[styles.actionChip, styles.recordChip].join(' ')}>
               <svg className={styles.linkIcon} viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1.5 1.5M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6L12.5 17.5" />
+                {/* pathLength="1" so the draw animation's dash
+                    arithmetic is geometry-independent. */}
+                <path pathLength="1" d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1.5 1.5M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6L12.5 17.5" />
               </svg>
               <Greek w="26px" tone="chip" />
             </span>
@@ -144,7 +159,7 @@ const VARIANTS = {
   files:    {Component: FilesLeaf,    label: 'Files leaf'},
 };
 
-export default function LeafMock({leaf, size = 'md', caption, className}) {
+export default function LeafMock({leaf, size = 'md', caption, running = true, className}) {
   const variant = VARIANTS[leaf];
   if (!variant) {
     return (
@@ -159,7 +174,7 @@ export default function LeafMock({leaf, size = 'md', caption, className}) {
   return (
     <div className={styles.lm}>
       <figure className={[styles.figure, className].filter(Boolean).join(' ')}>
-        <div className={[styles.frame, styles[`size-${size}`]].filter(Boolean).join(' ')}>
+        <div className={[styles.frame, styles[`size-${size}`], !running && styles.static].filter(Boolean).join(' ')}>
           <Component />
         </div>
         {caption && (

@@ -44,6 +44,12 @@
  *   - items:     Array of item descriptors (see above)
  *   - width:     scene width in px (default 960)
  *   - height:    scene height in px (default 420)
+ *   - running:   boolean (default true) — the scene assembles: items
+ *     land one by one on a 220ms stagger (opacity + translateY only,
+ *     so the inline left/top positioning is never fought), hold, and
+ *     fade for the loop reset. The loop period derives from the item
+ *     count (--ms-dur, set inline). `running={false}` and
+ *     prefers-reduced-motion show the assembled scene.
  *   - className: string
  */
 
@@ -64,16 +70,24 @@ function renderItem(item) {
   return item.node || null;
 }
 
-export default function MockScene({ items = [], width = 960, height = 420, className }) {
+export default function MockScene({ items = [], width = 960, height = 420, running = true, className }) {
+  /* Landing timing: item i arrives at i × 220ms; ~5s hold after the
+     last landing, then a fade window before the loop restarts. */
+  const STEP = 220;
+  const duration = items.length * STEP + 5600;
   return (
     <div className={[amStyles.am, styles.scene, className].filter(Boolean).join(' ')}>
-      <div className={styles.sceneFrame} style={{ width, height }}>
+      <div
+        className={[styles.sceneFrame, !running && styles.static].filter(Boolean).join(' ')}
+        style={{ width, height, '--ms-dur': `${duration}ms` }}
+      >
         {items.map((item, i) => {
           const wrapperStyle = {
             ...(item.style || {}),
             left: item.x || 0,
             top: item.y || 0,
             zIndex: item.z != null ? item.z : i,
+            animationDelay: `${i * STEP}ms`,
           };
           return (
             <div key={i} className={styles.sceneItem} style={wrapperStyle}>

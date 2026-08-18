@@ -6,6 +6,12 @@
  * credential chip on the completed course. Left nav for courses /
  * lessons / learners / certificates. Tone: forest — data you can
  * trust a diploma to.
+ *
+ * Animated (6s loop, --am-dur): the six progress bars fill on a
+ * 250ms stagger (inline animation-delay), then the completed course's
+ * credential chip pops in with an overshoot. `running={false}` /
+ * prefers-reduced-motion show the filled bars and the chip. Keyframes
+ * live in AppMock.module.css (`.scholiq` section). No orange.
  */
 
 import React from 'react';
@@ -30,7 +36,7 @@ export default function ScholiqMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.opencatalogi].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.opencatalogi, styles.scholiq].filter(Boolean).join(' ')}>
         <div className={styles.nav}>
           <div className={styles.navHead}><div className={styles.h}></div><div className={styles.l}></div></div>
           {[true, false, false, false].map((active, i) => (
@@ -54,14 +60,14 @@ export default function ScholiqMock() {
                 <div className={styles.ico}></div>
                 <div className={styles.row}></div>
                 <div className={styles.row + ' ' + styles.short}></div>
-                <div style={{height: 4, background: 'var(--c-cobalt-100)', borderRadius: 2}}>
-                  <div style={{width: fill, height: 4, background: 'var(--c-forest-500)', borderRadius: 2}}></div>
+                <div className={styles.progress}>
+                  <div className={styles.progressFill} style={{width: fill, animationDelay: `${i * 250}ms`}}></div>
                 </div>
                 {done && (
                   /* Credential chip — course completed, certificate issued */
-                  <div style={{display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px', borderRadius: 999, background: 'var(--c-forest-300)', alignSelf: 'flex-start'}}>
-                    <div style={{width: 6, height: 7, clipPath: 'var(--hex-pointy-top)', background: 'var(--c-forest-500)'}}></div>
-                    <div style={{height: 3, width: 22, background: 'var(--c-forest-500)', borderRadius: 1}}></div>
+                  <div className={styles.credChip}>
+                    <div className={styles.credHex}></div>
+                    <div className={styles.credBar}></div>
                   </div>
                 )}
               </div>

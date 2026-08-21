@@ -1,5 +1,5 @@
 /**
- * Doriath abstract — secrets vault.
+ * Keepiq abstract — secrets vault.
  *
  * Inferred from the app role (storing and sharing secrets): a list of
  * locked entries — key hex, name, masked value rendered as a dot

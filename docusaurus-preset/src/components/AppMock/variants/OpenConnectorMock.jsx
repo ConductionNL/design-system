@@ -1,5 +1,5 @@
 /**
- * OpenConnector abstract — source-connector-target pipeline view.
+ * Integriq abstract — source-connector-target pipeline view.
  *
  * Inferred from the app's role ("integration plane between Conduction
  * apps and external APIs"): the centre stage shows a single canonical

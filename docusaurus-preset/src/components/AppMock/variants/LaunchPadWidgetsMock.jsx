@@ -4,8 +4,8 @@
  * Demonstrates the cross-app widget angle: any Conduction app that
  * registers a Nextcloud dashboard widget shows up here. The mock
  * pictures the canonical mix:
- *  - DocuDesk  → upload-to-anonymise dropzone widget
- *  - Procest   → werkvoorraad (case queue) widget
+ *  - Filinq    → upload-to-anonymise dropzone widget
+ *  - Dossiq    → werkvoorraad (case queue) widget
  *  - Mail      → Important mail (avatar list)
  *  - Calendar  → upcoming-events mini grid
  *  - Jira      → external-app status board
@@ -37,7 +37,7 @@ export default function LaunchPadWidgetsMock() {
       </div>
       <div className={[styles.body, styles.launchpad, styles.lpWidgets].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
-          {/* Column 1: Procest werkvoorraad + DocuDesk upload */}
+          {/* Column 1: Dossiq werkvoorraad + Filinq upload */}
           <div className={styles.col}>
             <div className={[styles.w, styles['w-werkvoorraad']].join(' ')} style={ARRIVE(0)}>
               <div className={styles.wHead}>

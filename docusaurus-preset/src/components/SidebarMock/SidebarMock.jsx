@@ -3,8 +3,8 @@
  *
  * Token-painted abstract of the Nextcloud right-side detail panel.
  * Each Conduction app registers tabs into specific Nextcloud
- * sidebars (Procest adds xWiki + Timeline tabs to the case sidebar,
- * DocuDesk adds Signatures + PII Map to the document sidebar, and
+ * sidebars (Dossiq adds xWiki + Timeline tabs to the case sidebar,
+ * Filinq adds Signatures + PII Map to the document sidebar, and
  * so on). A SidebarMock variant represents one such sidebar with
  * one tab active.
  *
@@ -98,13 +98,13 @@ import NextcloudActivity             from './variants/NextcloudActivity.jsx';
  * SidebarMock renders that icon in the tab's .ico slot, tinted via
  * currentColor so active tabs read full-cobalt and inactive tabs
  * read muted-cobalt. The icon makes the tab self-documenting:
- * Procest's xWiki tab carries the xWiki icon, DocuDesk's Signatures
+ * Dossiq's xWiki tab carries the xWiki icon, Filinq's Signatures
  * tab carries an activity-style icon for "stuff happens here", etc.
  */
 const VARIANTS = {
   'procest-xwiki': {
     Component: ProcestXWiki,
-    label: 'Procest · Case sidebar, xWiki tab',
+    label: 'Dossiq · Case sidebar, xWiki tab',
     tabs: [
       { id: 'activity',  active: false, icon: 'activity' },
       { id: 'xwiki',     active: true,  icon: 'xwiki' },
@@ -114,7 +114,7 @@ const VARIANTS = {
   },
   'procest-timeline': {
     Component: ProcestTimeline,
-    label: 'Procest · Case sidebar, Timeline tab',
+    label: 'Dossiq · Case sidebar, Timeline tab',
     tabs: [
       { id: 'activity',  active: false, icon: 'activity' },
       { id: 'xwiki',     active: false, icon: 'xwiki' },
@@ -124,7 +124,7 @@ const VARIANTS = {
   },
   'docudesk-signatures': {
     Component: DocuDeskSignatures,
-    label: 'DocuDesk · Document sidebar, Signatures tab',
+    label: 'Filinq · Document sidebar, Signatures tab',
     tabs: [
       { id: 'activity',   active: false, icon: 'activity' },
       { id: 'signatures', active: true,  icon: 'mail' },
@@ -134,7 +134,7 @@ const VARIANTS = {
   },
   'docudesk-pii-map': {
     Component: DocuDeskPiiMap,
-    label: 'DocuDesk · Document sidebar, PII map tab',
+    label: 'Filinq · Document sidebar, PII map tab',
     tabs: [
       { id: 'activity',   active: false, icon: 'activity' },
       { id: 'signatures', active: false, icon: 'mail' },
@@ -162,7 +162,7 @@ const VARIANTS = {
   },
   'openconnector-run-detail': {
     Component: OpenConnectorRunDetail,
-    label: 'OpenConnector · Run sidebar, Logs tab',
+    label: 'Integriq · Run sidebar, Logs tab',
     tabs: [
       { id: 'activity', active: false, icon: 'activity' },
       { id: 'logs',     active: true,  icon: 'n8n' },
@@ -171,7 +171,7 @@ const VARIANTS = {
   },
   'decidesk-decision': {
     Component: DeciDeskDecision,
-    label: 'DeciDesk · Decision sidebar, Detail tab',
+    label: 'Decidiq · Decision sidebar, Detail tab',
     tabs: [
       { id: 'activity', active: false, icon: 'activity' },
       { id: 'detail',   active: true,  icon: 'files' },

@@ -17,7 +17,7 @@
  *     Conduction integrates with (xWiki, n8n, Windmill, OpenProject,
  *     Keycloak).
  *   llm               — large-language-model providers we consume via
- *     OpenConnector / DocuDesk (Claude, Mistral, Ollama, OpenAI,
+ *     Integriq / Filinq (Claude, Mistral, Ollama, OpenAI,
  *     Gemini).
  *   conduction-ext    — external apps in the Conduction Nextcloud
  *     ecosystem (OpenTalk, Matrix, Mattermost, OpenExchange).
@@ -146,7 +146,7 @@ export const INTEGRATIONS = {
 
 export const INTEGRATION_CATEGORIES = {
   'nextcloud-bundled': { label: 'Nextcloud bundled', desc: 'Surfaces every Nextcloud workspace already ships.' },
-  'workflow':          { label: 'Workflow & auth',   desc: 'Third-party tools we wire into Conduction apps via OpenConnector.' },
-  'llm':               { label: 'LLM providers',     desc: 'Models we call from OpenConnector and DocuDesk.' },
+  'workflow':          { label: 'Workflow & auth',   desc: 'Third-party tools we wire into Conduction apps via Integriq.' },
+  'llm':               { label: 'LLM providers',     desc: 'Models we call from Integriq and Filinq.' },
   'conduction-ext':    { label: 'Conduction extensions', desc: 'Adjacent apps in the Conduction Nextcloud ecosystem.' },
 };

@@ -69,7 +69,7 @@ The market we write to has absorbed a chunk of English into daily Dutch IT speec
 | Keep in English (in NL copy) | Translate to Dutch |
 |---|---|
 | `app store`, `dashboard`, `workspace`, `audit log`, `webhook`, `commit`, `pull request`, `lock-in`, `open source` | `aanbestedingstraject` (not `procurement track`), `inkoop` (not `procurement`), `overheid` (not `government`), `gemeente` (not `municipality`), `inwoner` (not `citizen` when the context is Dutch civil law) |
-| Brand and product names, never translated: `OpenRegister`, `OpenCatalogi`, `OpenConnector`, `DocuDesk`, `LaunchPad`, `ZaakAfhandelApp`, `ConNext`, `Common Ground+`, `Nextcloud` | Compliance frameworks, keep the Dutch acronym in NL: `Woo` (NL) / `WOO` (EN), `BIO`, `AVG` (NL) / `GDPR` (EN) |
+| Brand and product names, never translated: `OpenRegister`, `OpenCatalogi`, `Integriq`, `Filinq`, `LaunchPad`, `ZaakAfhandelApp`, `ConNext`, `Common Ground+`, `Nextcloud` | Compliance frameworks, keep the Dutch acronym in NL: `Woo` (NL) / `WOO` (EN), `BIO`, `AVG` (NL) / `GDPR` (EN) |
 
 **Each language stands alone. Don't mix.** EN copy is pure English; NL copy is pure Dutch (with the IT loanwords above, which are how Dutch IT-leads actually talk). Don't drop Dutch nouns into English prose for local flavour, and don't sprinkle marketing English (*insights, journey, streamlined*) into Dutch text. If a Dutch concept needs to appear in English copy, describe it in plain English: *gemeente* becomes *municipality*, *inwoner* becomes *citizen* or *resident*, *overheid* becomes *government*. The exceptions are tiny and listed in §4.5.
 
@@ -188,7 +188,7 @@ The eighth rule, sometimes treated as part of the set, lives in §11 (Punctuatio
 
 - **≤ 16 words per sentence.** Hard limit at 24. If you need more, you have two ideas, split them.
 - **Average paragraph 2–4 sentences.** Long paragraphs hide claims. Short paragraphs let the reader land between them.
-- **Active voice always.** *"OpenConnector validates the input"*, not *"the input is validated by OpenConnector"*. Passive voice belongs in legal copy.
+- **Active voice always.** *"Integriq validates the input"*, not *"the input is validated by Integriq"*. Passive voice belongs in legal copy.
 - **No nominalisations.** Replace *"the configuration of the application"* with *"configuring the app"*; *"het uitvoeren van de installatie"* with *"installeren"*.
 - **Concrete numbers beat adjectives.** *"twelve apps"* beats *"a comprehensive suite"*. *"€250 per component per month"* beats *"affordable"*. *"two-minute install"* beats *"easy to set up"*.
 - **Lead with the verb where you can.** *"Install from the Nextcloud app store"* beats *"You can install it from the Nextcloud app store if you want to"*.
@@ -214,10 +214,10 @@ Two notes:
 
 Two different things, two different words. Mixing them is the most common copy bug we ship.
 
-- **App**: software we build and ship. Concrete, installable, has a version number, has a status (Stable, Beta, Coming soon). *OpenCatalogi, OpenRegister, OpenConnector, DocuDesk, LaunchPad, ZaakAfhandelApp.*
+- **App**: software we build and ship. Concrete, installable, has a version number, has a status (Stable, Beta, Coming soon). *OpenCatalogi, OpenRegister, Integriq, Filinq, LaunchPad, ZaakAfhandelApp.*
 - **Solution**: a concrete outcome built on apps. A goal, not a download. *WOO compliance, citizen case status, software catalogue, BI on registers.*
 
-Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouwd op OpenCatalogi, OpenConnector en DocuDesk"*.
+Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouwd op OpenCatalogi, Integriq en Filinq"*.
 
 ### 7.3 Brand glossary
 
@@ -229,8 +229,8 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 | **ConNext** | The Conduction product brand for the Nextcloud-app ecosystem, MKB-flavoured. | Always written `Con` + a `Next` in `--c-nextcloud-blue` (use `<span className="next-blue">Next</span>`). |
 | **Common Ground+** | The same apps, framed for Dutch government with WOO and BIO compliance signals up front. The "+" is the workspace layer the official model leaves blank. | The plus sign is part of the name; render it via `<CommonGroundPlus />`. |
 | **Common Ground** | The VNG-led architecture for Dutch local-government IT, six principles, five layers, governed by VNG Realisatie. We respect it as the predecessor and cite it accurately. | When we say *"Common Ground+"* we are extending it; never replace it with *"Common Ground 2"* or *"Common Ground Next"*. |
-| **Technical Core** | The category of apps that hold typed data, integrations, document handling, theming, dashboarding. | OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, NLDesign Theme, LaunchPad. |
-| **Workspace Apps** | Per-team productivity apps. PipelinQ, Procest, DeciDesk, ShillinQ, LarpingApp, SoftwareCatalog. |
+| **Technical Core** | The category of apps that hold typed data, integrations, document handling, theming, dashboarding. | OpenRegister, OpenCatalogi, Integriq, Filinq, Thematiq Theme, LaunchPad. |
+| **Workspace Apps** | Per-team productivity apps. PipelinQ, Dossiq, Decidiq, ShillinQ, Larpinq, Stackiq. |
 | **Solutions** | Pre-configured outcomes (WOO publication, citizen case status, software catalogue, …). |
 | **Integrated Apps** | Third-party open source we ship as ExApps next to Nextcloud (OpenTalk, Matrix, Mattermost, n8n, Windmill, OpenProject, XWiki, GitLab, …). Written exactly as the upstream project writes itself. |
 | **Digital Socials** | What we call ourselves internally and on `/about`. *We started Conduction in 2019 to bring open-source thinking to Dutch government IT. We call ourselves Digital Socials.* | Use sparingly and always with the *why* attached. |
@@ -250,7 +250,7 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 
 - **Capitalised exactly as the source spells them.** *OpenCatalogi*, *OpenRegister*, *Nextcloud* (one word, capital N), *GitLab*, *Mattermost*, *XWiki*, *Keycloak*. Never *Open Catalogi*, *Next Cloud*, *Git Lab*.
 - **Never translate them.** *OpenWoo* stays *OpenWoo* in EN; *ZaakAfhandelApp* stays *ZaakAfhandelApp* in EN. The product name is the product name.
-- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *DocuDesk*, *LaunchPad*, *PipelinQ* (one word, no space, capital Q at the end).
+- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *Filinq*, *LaunchPad*, *PipelinQ* (one word, no space, capital Q at the end).
 - **`Nextcloud` always renders in brand blue** in HTML/MDX surfaces: `<span className="next-blue">Nextcloud</span>`. In plain markdown / READMEs, leave it as plain text.
 
 ---
@@ -441,7 +441,7 @@ These verbs read as filler. They almost always stand in for a stronger, more spe
 | `deliver` (as filler in *deliver value*) | ship, build, give |
 | `empower` | already banned in §7.1 |
 
-`Optimize`, `harness` and `drive` are fine in their literal engineering meanings: *optimize for cache locality*, *harness GPU compute*, *drive an outcome through OpenConnector*. They become tells when they replace plain verbs in marketing prose.
+`Optimize`, `harness` and `drive` are fine in their literal engineering meanings: *optimize for cache locality*, *harness GPU compute*, *drive an outcome through Integriq*. They become tells when they replace plain verbs in marketing prose.
 
 ### 12.2 Banned LLM nouns and adjectives
 
@@ -490,9 +490,9 @@ If you need to hedge, prefer a concrete clause that explains *why* you are hedgi
 A model trained on millions of articles falls into rhythms no human writes consistently. Read your draft out loud and watch for these:
 
 - **Tricolon-on-everything.** *"Fast, simple, and reliable. Open, transparent, and free. Stable, audited, and trusted."* Three things in a row, every sentence. Break the pattern; vary the count.
-- **Alternating short-long-short.** *"It works. The integration runs through OpenConnector with audit logging on every call. We tested it."* Once is fine. Three paragraphs in a row is a tell.
+- **Alternating short-long-short.** *"It works. The integration runs through Integriq with audit logging on every call. We tested it."* Once is fine. Three paragraphs in a row is a tell.
 - **Bold-first-word-of-every-bullet.** Treats every list item as a labelled definition. Use bold only when the trigger word does real work; not as a default formatting style.
-- **Identical sentence shape down a list.** *"OpenRegister handles X. OpenCatalogi handles Y. OpenConnector handles Z."* Vary the verb or the structure on at least one item.
+- **Identical sentence shape down a list.** *"OpenRegister handles X. OpenCatalogi handles Y. Integriq handles Z."* Vary the verb or the structure on at least one item.
 - **Mirrored-clause closers.** *"Not for the procurement officer, but for the person who installs it."* / *"Not a methodology, but a workspace."* Fine occasionally; once per page, not once per section.
 - **The takeaway-coda.** Most LLM paragraphs end with a one-line summary that restates the paragraph. Cut it. The reader caught it the first time.
 
@@ -606,7 +606,7 @@ When inventing a new component, give it a copy contract in the same shape and ad
 
 The app product pages on conduction.nl (`/apps/<slug>`) have one reader: the owner or office manager of a Dutch business with 10 to 500 people. They arrive with a concrete problem and evaluate alone. They do not know what OpenRegister is and do not need to. Three rules on top of everything above, added 2026-08-18 after the PipelinQ rewrite.
 
-**Rule A · Their vocabulary, not ours.** Platform internals never appear in body copy: OpenRegister, OpenBuild, Hermiq, schema, register, typed, delta, layer, manifest, MCP, tool provider, CalDAV, CardDAV, endpoint, JSON, leaf, ADR, token. A platform name is allowed in exactly one place, the CTA label that links to that app's own page (*"How automation works"* → `/apps/openregister`). Test: could your accountant's office manager read the sentence without asking what a word means?
+**Rule A · Their vocabulary, not ours.** Platform internals never appear in body copy: OpenRegister, Buildiq, Hermiq, schema, register, typed, delta, layer, manifest, MCP, tool provider, CalDAV, CardDAV, endpoint, JSON, leaf, ADR, token. A platform name is allowed in exactly one place, the CTA label that links to that app's own page (*"How automation works"* → `/apps/openregister`). Test: could your accountant's office manager read the sentence without asking what a word means?
 
 | We say (wrong) | They read (right) |
 |---|---|
@@ -625,7 +625,7 @@ Pick scenes from the reader's day: back in the car after a client visit, the VAT
 
 **Rule C · Ground every example in shipped functionality.** A scene is a promise. If the feature is spec-only, the example goes into the spec, not the page. When unsure, verify in the app before writing.
 
-**Card eyebrows are verbs for the reader**, not product names: *Automate / Make it yours / Talk to it*, never *Flows / OpenBuild / Hermiq*. The section title *"Three ways <App> earns its place"* stays as the frame.
+**Card eyebrows are verbs for the reader**, not product names: *Automate / Make it yours / Talk to it*, never *Flows / Buildiq / Hermiq*. The section title *"Three ways <App> earns its place"* stays as the frame.
 
 **Product-page CTA pair (fixed):** *"Install from the Nextcloud app store"* and *"Request a demo from a partner"*. Never *"Book a demo"*, never *"Talk to a partner"*, and no card CTA may link back to the page it is on.
 

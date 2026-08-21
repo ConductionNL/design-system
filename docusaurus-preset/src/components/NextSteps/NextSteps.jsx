@@ -23,7 +23,7 @@
  *     <NextStep
  *       href="/apps/docudesk"
  *       title="Documenten lakken"
- *       cta="Bekijk DocuDesk"
+ *       cta="Bekijk Filinq"
  *     >
  *       Anonimiseer privacygevoelige passages voor publicatie.
  *     </NextStep>

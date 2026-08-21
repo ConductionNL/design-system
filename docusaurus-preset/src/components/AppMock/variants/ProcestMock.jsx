@@ -1,5 +1,5 @@
 /**
- * Procest abstract — case management with process timeline.
+ * Dossiq abstract — case management with process timeline.
  *
  * Inferred from app role (ZGW case-management for VTH and citizen
  * processes): centre shows a canonical case detail with the timeline
@@ -110,7 +110,7 @@ export default function ProcestMock({ sidebar = null }) {
         </div>
         {/* Optional sidebar (typically a <SidebarMock kind="..." />)
             renders here as a flex sibling of .col, taking the .detail
-            slot. Procest's case detail view doesn't ship a default
+            slot. Dossiq's case detail view doesn't ship a default
             detail rail, so without the prop nothing extra renders. */}
         {sidebar}
       </div>

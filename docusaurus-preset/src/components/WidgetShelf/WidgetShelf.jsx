@@ -16,7 +16,7 @@
  *   <WidgetShelf
  *     eyebrow="Widgets we ship"
  *     title="On every Nextcloud dashboard."
- *     lede="Install Procest and your team gets these widgets..."
+ *     lede="Install Dossiq and your team gets these widgets..."
  *     widgets={[
  *       {
  *         title: 'Werkvoorraad',

@@ -87,10 +87,10 @@ Replacement: **"Kernel" → "workspace"**. Kernel reads as tech-jargon (OS / Lin
 
 ## Apps versus solutions
 
-- **App**: software we build and ship. Concrete, installable, has a version number. (OpenCatalogi, OpenRegister, DocuDesk, …)
+- **App**: software we build and ship. Concrete, installable, has a version number. (OpenCatalogi, OpenRegister, Filinq, …)
 - **Solution**: a concrete outcome (WOO compliance, a procurement workflow, a public catalogue) built **on** apps. A goal, not a download.
 
-Never write "onze WOO-app": there isn't one. Write "onze WOO-solution, gebouwd op OpenCatalogi, OpenConnector en DocuDesk."
+Never write "onze WOO-app": there isn't one. Write "onze WOO-solution, gebouwd op OpenCatalogi, Integriq en Filinq."
 
 ## Punctuation and capitalisation rules (the AI tells)
 
@@ -119,7 +119,7 @@ Note that the rewrite uses commas where an em-dash would have been the AI-defaul
 
 The `/apps/<slug>` pages have one reader: the owner or office manager of a 10–500 person business who has never heard of OpenRegister. Three extra rules (full text in [brand/taalgebruik.md §16.1](brand/taalgebruik.md), rendered in [preview/identity/voice.html](preview/identity/voice.html)):
 
-- **A · Their vocabulary, not ours.** No platform internals in body copy (OpenRegister, OpenBuild, Hermiq, schema, register, delta, layer, manifest, MCP, CalDAV, endpoint, JSON, leaf, token). A platform name may appear only in the CTA label that links to that app's page.
+- **A · Their vocabulary, not ours.** No platform internals in body copy (OpenRegister, Buildiq, Hermiq, schema, register, delta, layer, manifest, MCP, CalDAV, endpoint, JSON, leaf, token). A platform name may appear only in the CTA label that links to that app's page.
 - **B · Every example proves added value.** Three beats: *today* (what they do by hand) · *instead* (what happens now) · *so* (what it saves). "Accepting a quote starts a flow" is a mechanism; "the moment the quote is accepted, the project exists and the kick-off task is on the right desk" is value. Pick scenes from their day.
 - **C · Ground every scene in shipped functionality.** Spec-only features go in the spec, not on the page.
 

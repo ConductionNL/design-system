@@ -31,7 +31,7 @@
  *   - sidebar: ReactNode                                — renders inside
  *              the right-edge overlay of the frame. Pass a SidebarMock
  *              JSX to model a Nextcloud sidebar opened over this app
- *              (e.g. xWiki tab over a Procest case). Any other node
+ *              (e.g. xWiki tab over a Dossiq case). Any other node
  *              renders verbatim
  *   - caption: boolean — adds a small app-name caption below the frame
  *   - className: string
@@ -70,31 +70,31 @@ const VARIANTS = {
   'launchpad-tiles':   {Component: LaunchPadTilesMock,      label: 'LaunchPad · Tiles & grids'},
   'launchpad-bi':      {Component: LaunchPadBiMock,         label: 'LaunchPad · BI on registers'},
   'launchpad-widgets': {Component: LaunchPadWidgetsMock,    label: 'LaunchPad · Widgets'},
-  openbuild:        {Component: OpenBuildMock,        label: 'OpenBuild'},
+  openbuild:        {Component: OpenBuildMock,        label: 'Buildiq'},
   opencatalogi:     {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
-  openconnector:    {Component: OpenConnectorMock,    label: 'OpenConnector'},
+  openconnector:    {Component: OpenConnectorMock,    label: 'Integriq'},
   openregister:     {Component: OpenRegisterMock,     label: 'OpenRegister'},
-  procest:          {Component: ProcestMock,          label: 'Procest'},
-  decidesk:         {Component: DeciDeskMock,         label: 'DeciDesk'},
-  docudesk:         {Component: DocuDeskMock,         label: 'DocuDesk'},
-  larpingapp:       {Component: LarpingAppMock,       label: 'LarpingApp'},
-  nldesign:         {Component: NLDesignMock,         label: 'NLDesign'},
+  procest:          {Component: ProcestMock,          label: 'Dossiq'},
+  decidesk:         {Component: DeciDeskMock,         label: 'Decidiq'},
+  docudesk:         {Component: DocuDeskMock,         label: 'Filinq'},
+  larpingapp:       {Component: LarpingAppMock,       label: 'Larpinq'},
+  nldesign:         {Component: NLDesignMock,         label: 'Thematiq'},
   /* `openwoo` is an alias: the OpenWoo app is retired in favour of
      OpenCatalogi, so the slug renders the OpenCatalogi mock. The
      OpenWooMock.jsx variant file is kept for now (no importer left);
      delete it in a later cleanup wave. */
   openwoo:          {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
   pipelinq:         {Component: PipelinQMock,         label: 'PipelinQ'},
-  softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'SoftwareCatalog'},
+  softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'Stackiq'},
   zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
   hermiq:           {Component: HermiqMock,           label: 'Hermiq'},
   portaliq:         {Component: PortaliqMock,         label: 'Portaliq'},
-  scholiq:          {Component: ScholiqMock,          label: 'Scholiq'},
+  scholiq:          {Component: ScholiqMock,          label: 'Learniq'},
   shillinq:         {Component: ShillinqMock,         label: 'Shillinq'},
-  doriath:          {Component: DoriathMock,          label: 'Doriath'},
-  planix:           {Component: PlanixMock,           label: 'Planix'},
-  hrmq:             {Component: HrmqMock,             label: 'HRMQ'},
-  'app-versions':   {Component: AppVersionsMock,      label: 'App Versions'},
+  doriath:          {Component: DoriathMock,          label: 'Keepiq'},
+  planix:           {Component: PlanixMock,           label: 'Planiq'},
+  hrmq:             {Component: HrmqMock,             label: 'Humaniq'},
+  'app-versions':   {Component: AppVersionsMock,      label: 'Versioniq'},
 };
 
 export default function AppMock({app, size = 'md', sidebar = null, caption = false, running = true, className}) {

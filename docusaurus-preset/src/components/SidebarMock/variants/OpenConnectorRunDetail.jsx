@@ -1,5 +1,5 @@
 /**
- * OpenConnector · run sidebar, Logs tab.
+ * Integriq · run sidebar, Logs tab.
  *
  * Single integration run inspected: header with run id and timing,
  * then a vertical log stream with severity-coded timestamps. Last

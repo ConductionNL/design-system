@@ -1,5 +1,5 @@
 /**
- * DeciDesk abstract — left nav + centre with action row, KPI strip,
+ * Decidiq abstract — left nav + centre with action row, KPI strip,
  * vote tally, and decision row. Reference: localhost:8080/apps/decidesk.
  *
  * Hero of the centre is the trio of primary buttons (New Decision /

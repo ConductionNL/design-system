@@ -1,8 +1,8 @@
 /**
- * HRMQ abstract — hours administration.
+ * Humaniq abstract — hours administration.
  *
  * Content rework (wave 4): the earlier people-list + leave-balance
- * pair misrepresented the app (HRMQ's daily surface is hours and
+ * pair misrepresented the app (Humaniq's daily surface is hours and
  * approval, not a personnel directory). The mock now shows the
  * timesheet week — five day columns of hour bars plus a submit
  * button — next to an approval card: the submitted week arriving as

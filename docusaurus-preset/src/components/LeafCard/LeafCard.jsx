@@ -16,7 +16,7 @@
  *     orange for the one accent-leaf when grouped). Falls back to the
  *     `id` initial when no icon is given.
  *   - Status pill colours: green = backend-ready, amber = stub,
- *     cobalt = external (OpenConnector-routed), grey = built-in.
+ *     cobalt = external (Integriq-routed), grey = built-in.
  *
  * Usage in MDX:
  *
@@ -46,7 +46,7 @@ import styles from './LeafCard.module.css';
 const STATUS_LABELS = {
   'backend-ready': 'Backend ready',
   'stub': 'Provider stub',
-  'external': 'External (OpenConnector)',
+  'external': 'External (Integriq)',
   'built-in': 'Built-in',
 };
 

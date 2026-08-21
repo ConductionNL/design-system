@@ -31,7 +31,7 @@ const ITEMS = [
     desc: 'Last few integration runs with status pip: mint success, orange partial, red failed, cobalt-200 scheduled.' },
   { num: '08', label: 'Decidiq · Action items',           tag: 'INFERRED', kind: 'decidesk-actions',
     desc: 'Action items the viewer owns, sorted by due date. Pip colour separates overdue, due-this-week, done, and upcoming.' },
-  { num: '09', label: 'PipelinQ · Deals closing',          tag: 'INFERRED', kind: 'pipelinq-deals',
+  { num: '09', label: 'Pipelinq · Deals closing',          tag: 'INFERRED', kind: 'pipelinq-deals',
     desc: 'Deals expected to close this week, ranked by value. Avatar reads as the assigned rep, l1 the deal name, l2 value plus stage.' },
   { num: '10', label: 'Nextcloud · Important mail',        tag: 'STOCK',    kind: 'nextcloud-mail',
     desc: 'The stock Nextcloud Mail dashboard widget, framed for context. Shown so MKB readers can place where Conduction widgets sit.' },

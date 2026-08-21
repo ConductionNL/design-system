@@ -22,7 +22,7 @@
     ];
     const APP_NAMES = [
       'OpenCatalogi', 'OpenRegister', 'OpenConnector', 'DocuDesk',
-      'LaunchPad', 'AI Bridge', 'PipelinQ', 'OpenCalendar',
+      'LaunchPad', 'AI Bridge', 'Pipelinq', 'OpenCalendar',
       'OpenSAML', 'OpenMail', 'NextCloud', 'OpenZaak',
     ];
     const APP_COUNT = ICONS.length;

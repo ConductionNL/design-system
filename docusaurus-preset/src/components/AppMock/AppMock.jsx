@@ -84,7 +84,7 @@ const VARIANTS = {
      OpenWooMock.jsx variant file is kept for now (no importer left);
      delete it in a later cleanup wave. */
   openwoo:          {Component: OpenCatalogiMock,     label: 'OpenCatalogi'},
-  pipelinq:         {Component: PipelinQMock,         label: 'PipelinQ'},
+  pipelinq:         {Component: PipelinQMock,         label: 'Pipelinq'},
   softwarecatalog:  {Component: SoftwareCatalogMock,  label: 'Stackiq'},
   zaakafhandelapp:  {Component: ZaakAfhandelAppMock,  label: 'ZaakAfhandelApp'},
   hermiq:           {Component: HermiqMock,           label: 'Hermiq'},
@@ -92,7 +92,7 @@ const VARIANTS = {
   scholiq:          {Component: ScholiqMock,          label: 'Learniq'},
   shillinq:         {Component: ShillinqMock,         label: 'Shillinq'},
   doriath:          {Component: DoriathMock,          label: 'Keepiq'},
-  planix:           {Component: PlanixMock,           label: 'Planiq'},
+  planix:           {Component: PlanixMock,           label: 'Planninq'},
   hrmq:             {Component: HrmqMock,             label: 'Humaniq'},
   'app-versions':   {Component: AppVersionsMock,      label: 'Versioniq'},
 };

@@ -230,7 +230,7 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 | **Common Ground+** | The same apps, framed for Dutch government with WOO and BIO compliance signals up front. The "+" is the workspace layer the official model leaves blank. | The plus sign is part of the name; render it via `<CommonGroundPlus />`. |
 | **Common Ground** | The VNG-led architecture for Dutch local-government IT, six principles, five layers, governed by VNG Realisatie. We respect it as the predecessor and cite it accurately. | When we say *"Common Ground+"* we are extending it; never replace it with *"Common Ground 2"* or *"Common Ground Next"*. |
 | **Technical Core** | The category of apps that hold typed data, integrations, document handling, theming, dashboarding. | OpenRegister, OpenCatalogi, Integriq, Filinq, Thematiq Theme, LaunchPad. |
-| **Workspace Apps** | Per-team productivity apps. PipelinQ, Dossiq, Decidiq, ShillinQ, Larpinq, Stackiq. |
+| **Workspace Apps** | Per-team productivity apps. Pipelinq, Dossiq, Decidiq, ShillinQ, Larpinq, Stackiq. |
 | **Solutions** | Pre-configured outcomes (WOO publication, citizen case status, software catalogue, …). |
 | **Integrated Apps** | Third-party open source we ship as ExApps next to Nextcloud (OpenTalk, Matrix, Mattermost, n8n, Windmill, OpenProject, XWiki, GitLab, …). Written exactly as the upstream project writes itself. |
 | **Digital Socials** | What we call ourselves internally and on `/about`. *We started Conduction in 2019 to bring open-source thinking to Dutch government IT. We call ourselves Digital Socials.* | Use sparingly and always with the *why* attached. |
@@ -250,7 +250,7 @@ Never write *"onze WOO-app"*. There isn't one. Write *"onze WOO-solution, gebouw
 
 - **Capitalised exactly as the source spells them.** *OpenCatalogi*, *OpenRegister*, *Nextcloud* (one word, capital N), *GitLab*, *Mattermost*, *XWiki*, *Keycloak*. Never *Open Catalogi*, *Next Cloud*, *Git Lab*.
 - **Never translate them.** *OpenWoo* stays *OpenWoo* in EN; *ZaakAfhandelApp* stays *ZaakAfhandelApp* in EN. The product name is the product name.
-- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *Filinq*, *LaunchPad*, *PipelinQ* (one word, no space, capital Q at the end).
+- **Acronyms in product names**: *ZaakAfhandelApp* (`ZAA`), *KlantContactApp* (`CSA`), *Filinq*, *LaunchPad*, *Pipelinq* (one word, no space, lowercase q at the end).
 - **`Nextcloud` always renders in brand blue** in HTML/MDX surfaces: `<span className="next-blue">Nextcloud</span>`. In plain markdown / READMEs, leave it as plain text.
 
 ---
@@ -604,7 +604,7 @@ When inventing a new component, give it a copy contract in the same shape and ad
 
 ### 16.1 Product pages: write for the business owner
 
-The app product pages on conduction.nl (`/apps/<slug>`) have one reader: the owner or office manager of a Dutch business with 10 to 500 people. They arrive with a concrete problem and evaluate alone. They do not know what OpenRegister is and do not need to. Three rules on top of everything above, added 2026-08-18 after the PipelinQ rewrite.
+The app product pages on conduction.nl (`/apps/<slug>`) have one reader: the owner or office manager of a Dutch business with 10 to 500 people. They arrive with a concrete problem and evaluate alone. They do not know what OpenRegister is and do not need to. Three rules on top of everything above, added 2026-08-18 after the Pipelinq rewrite.
 
 **Rule A · Their vocabulary, not ours.** Platform internals never appear in body copy: OpenRegister, Buildiq, Hermiq, schema, register, typed, delta, layer, manifest, MCP, tool provider, CalDAV, CardDAV, endpoint, JSON, leaf, ADR, token. A platform name is allowed in exactly one place, the CTA label that links to that app's own page (*"How automation works"* → `/apps/openregister`). Test: could your accountant's office manager read the sentence without asking what a word means?
 

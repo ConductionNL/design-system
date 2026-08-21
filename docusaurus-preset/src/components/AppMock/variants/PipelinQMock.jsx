@@ -1,5 +1,5 @@
 /**
- * PipelinQ abstract — sales kanban + KPI strip.
+ * Pipelinq abstract — sales kanban + KPI strip.
  *
  * Inferred from the app role (CRM with kanban deal-flow, customers,
  * deals, quotes): centre shows the kanban board with five columns

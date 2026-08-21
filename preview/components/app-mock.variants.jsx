@@ -161,11 +161,11 @@ export default function VariantCatalogue() {
         <AppMock app="openwoo" />
       </div>
 
-      {/* ============================== 11 · PipelinQ ============================== */}
+      {/* ============================== 11 · Pipelinq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">11</span>
-          <h3>PipelinQ</h3>
+          <h3>Pipelinq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>CRM with kanban deal-flow. Five-column board (lead, qualified, proposal, won, lost) with KPI strip on top (pipeline value, win rate, deals this week). Slug: <code>pipelinq</code>.</p>

@@ -33,7 +33,7 @@ export const APPS_REGISTRY = {
   docudesk:        {slug: 'docudesk',        name: 'Filinq',           category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docudesk.conduction.nl',        academyHref: '/academy?app=docudesk'},
   launchpad:       {slug: 'launchpad',       name: 'LaunchPad',        category: 'Dashboards',  productHref: '/apps/launchpad',       docsHref: 'https://launchpad.conduction.nl',       academyHref: '/academy?app=launchpad'},
   zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  category: 'Processes',   productHref: '/apps/zaakafhandelapp', docsHref: 'https://zaakafhandelapp.conduction.nl', academyHref: '/academy?app=zaakafhandelapp'},
-  pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://pipelinq.conduction.nl',        academyHref: '/academy?app=pipelinq'},
+  pipelinq:        {slug: 'pipelinq',        name: 'Pipelinq',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://pipelinq.conduction.nl',        academyHref: '/academy?app=pipelinq'},
   procest:         {slug: 'procest',         name: 'Dossiq',           category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://procest.conduction.nl',         academyHref: '/academy?app=procest'},
   decidesk:        {slug: 'decidesk',        name: 'Decidiq',          category: 'Processes',   productHref: '/apps/decidesk',        docsHref: 'https://decidesk.conduction.nl',        academyHref: '/academy?app=decidesk'},
   softwarecatalog: {slug: 'softwarecatalog', name: 'Stackiq',          category: 'Data',        productHref: '/apps/softwarecatalog', docsHref: 'https://softwarecatalog.conduction.nl', academyHref: '/academy?app=softwarecatalog'},
@@ -46,7 +46,7 @@ export const APPS_REGISTRY = {
   hermiq:          {slug: 'hermiq',          name: 'Hermiq',           category: 'AI',          productHref: '/apps/hermiq',          docsHref: 'https://hermiq.conduction.nl',          academyHref: '/academy?app=hermiq'},
   hrmq:            {slug: 'hrmq',            name: 'Humaniq',          category: 'Processes',   productHref: '/apps/hrmq',            docsHref: 'https://hrmq.conduction.nl',            academyHref: '/academy?app=hrmq'},
   openanonymiser:  {slug: 'openanonymiser',  name: 'Anonymiq',         category: 'Documents',   productHref: '/apps/openanonymiser',  docsHref: 'https://openanonymiser.conduction.nl',  academyHref: '/academy?app=openanonymiser'},
-  planix:          {slug: 'planix',          name: 'Planiq',           category: 'Processes',   productHref: '/apps/planix',          docsHref: 'https://planix.conduction.nl',          academyHref: '/academy?app=planix'},
+  planix:          {slug: 'planix',          name: 'Planninq',         category: 'Processes',   productHref: '/apps/planix',          docsHref: 'https://planix.conduction.nl',          academyHref: '/academy?app=planix'},
   portaliq:        {slug: 'portaliq',        name: 'Portaliq',         category: 'Processes',   productHref: '/apps/portaliq',        docsHref: 'https://portaliq.conduction.nl',        academyHref: '/academy?app=portaliq'},
   scholiq:         {slug: 'scholiq',         name: 'Learniq',          category: 'Processes',   productHref: '/apps/scholiq',         docsHref: 'https://scholiq.conduction.nl',         academyHref: '/academy?app=scholiq'},
 };

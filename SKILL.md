@@ -101,7 +101,7 @@ Defined in [`preview/apps.html`](./preview/apps.html). Every app gets one Lucide
 
 **LaunchPad defaults to outline** (cobalt stroke on white) because it sits next to user content and shouldn't compete. Every other app defaults to a filled hex in cobalt or cobalt-700.
 
-The remaining apps in the catalogue — **Decidiq, Larpinq, Thematiq, OpenWoo, PipelinQ, Dossiq, Stackiq, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
+The remaining apps in the catalogue — **Decidiq, Larpinq, Thematiq, OpenWoo, Pipelinq, Dossiq, Stackiq, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
 
 ## Status palette
 

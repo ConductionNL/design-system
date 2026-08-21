@@ -72,7 +72,7 @@ const VARIANTS = {
   'opencatalogi-publications':{ Component: OpenCatalogiPublications,label: 'OpenCatalogi · Recent publications', list: true },
   'openconnector-runs':       { Component: OpenConnectorRuns,       label: 'Integriq · Recent runs', list: true },
   'decidesk-actions':         { Component: DeciDeskActions,         label: 'Decidiq · Action items', list: true },
-  'pipelinq-deals':           { Component: PipelinQDeals,           label: 'PipelinQ · Deals closing', list: true },
+  'pipelinq-deals':           { Component: PipelinQDeals,           label: 'Pipelinq · Deals closing', list: true },
   'nextcloud-mail':           { Component: NextcloudMail,           label: 'Nextcloud · Important mail', list: true },
   'nextcloud-calendar':       { Component: NextcloudCalendar,       label: 'Nextcloud · Calendar' },
   'nextcloud-files':          { Component: NextcloudFiles,          label: 'Nextcloud · Recent files', list: true },

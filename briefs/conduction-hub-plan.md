@@ -69,7 +69,7 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
 ### Solution: zaakafhandeling
 - [x] Update `sites/www/src/pages/solutions/zaakafhandeling.mdx` to make the 4-app composition explicit:
   - **OpenRegister** — typed data store with audit trail
-  - **PipelinQ** — citizen / stakeholder CRM
+  - **Pipelinq** — citizen / stakeholder CRM
   - **Dossiq** — case management
   - **Windmill** — workflow engine
   - Pricing line: "4 × €250 = €1000/maand als SaaS via commonground.nu, of partner-rate voor maatwerk."

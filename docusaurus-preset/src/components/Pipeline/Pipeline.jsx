@@ -10,7 +10,7 @@
  * threading through every hex equator.
  *
  * Family palette follows the locked PRISM-FAMILY POLICY in tokens.css:
- *   mint        integrate / connect    (OpenConnector)
+ *   mint        integrate / connect    (Integriq)
  *   forest      data / registers       (OpenRegister)
  *   terracotta  documents / search     (OpenCatalogi)
  *   lavender    process / views        (LaunchPad)
@@ -36,7 +36,7 @@
  *       {label: 'Legacy', icon: 'legacy'},
  *     ]}}
  *     steps={[
- *       {number: '01', kicker: 'Ingest', name: 'OpenConnector',
+ *       {number: '01', kicker: 'Ingest', name: 'Integriq',
  *         caption: 'Pulls schemas, REST, SOAP, files.'},
  *       {number: 'PLATFORM', name: 'Nextcloud', family: 'workspace',
  *         pill: 'files · users · auth'},

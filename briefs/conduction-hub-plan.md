@@ -63,14 +63,14 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
 ### Build page (formerly projecten)
 - [x] Create `sites/www/src/pages/build.mdx` (URL `/build`; rename to `/develop` if it reads better)
   - Audience: tertiary tier per CLAUDE.md (developer / integrator)
-  - Topics: scaffolding from OpenRegister-as-backend, NLDesign Theme, EUPL-1.2 release pipeline, Docker dev env, app-store submission flow
+  - Topics: scaffolding from OpenRegister-as-backend, Thematiq Theme, EUPL-1.2 release pipeline, Docker dev env, app-store submission flow
   - Heavy GitHub + `docs.conduction.nl` links, get-out-of-their-way tone
 
 ### Solution: zaakafhandeling
 - [x] Update `sites/www/src/pages/solutions/zaakafhandeling.mdx` to make the 4-app composition explicit:
   - **OpenRegister** — typed data store with audit trail
   - **PipelinQ** — citizen / stakeholder CRM
-  - **Procest** — case management
+  - **Dossiq** — case management
   - **Windmill** — workflow engine
   - Pricing line: "4 × €250 = €1000/maand als SaaS via commonground.nu, of partner-rate voor maatwerk."
   - Keep the existing ZGW / archive-koppelvlak / audit-trail framing
@@ -78,7 +78,7 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
 ### Solution: archief
 - [x] Add `sites/www/src/pages/solutions/archief.mdx`:
   - **OpenRegister** stores current data
-  - **OpenConnector** ships records to central archive storage (KSL / e-Depot / etc.)
+  - **Integriq** ships records to central archive storage (KSL / e-Depot / etc.)
   - Compliance signals: NEN-2082, Wet hergebruik, eIDAS-AdES sealed exports
   - Pricing line: "2 × €250 = €500/maand als SaaS via commonground.nu, of partner-rate voor maatwerk."
 
@@ -100,7 +100,7 @@ The live `conduction.nl` is heavier than our new site: services breakdown, custo
   4. Optional team strip (`EmployeeCard` from preset, fed from `brand/assets/team/*.png`)
   5. Contact block: form (name, organisation, email, phone, message) OR a clean mailto + tel + map link triplet
   6. Office details: hours, KvK 76741850, BTW NL860784241B01, Lauriergracht 14h Amsterdam
-- [x] Decide: real contact form (needs a submit endpoint, e.g. Formspree, Netlify Functions, or an OpenConnector endpoint) or a mailto-only block. **Decision: mailto + tel + map link triplet, no form backend yet.**
+- [x] Decide: real contact form (needs a submit endpoint, e.g. Formspree, Netlify Functions, or an Integriq endpoint) or a mailto-only block. **Decision: mailto + tel + map link triplet, no form backend yet.**
 - [x] Drop the standalone `/over-ons` and `/contact` URLs; `/about` is the single front door
 
 ### Reframe Conduction landing as Public Tech
@@ -173,7 +173,7 @@ After Phase 2.5/B lands, sweep `ConNext` references out of the shared content. A
 | --- | --- | --- |
 | Client logo PNG/SVG assets (16 logos) | **Blocker for Clients component** | Download from `ConductionNL/conduction-website/static/img/`, save into `sites/www/static/img/clients/` |
 | Distinct sub-brand SVG marks (ConNext, Common Ground) | Not blocking | Today the Conduction hex avatar is the universal mark; sub-brand differentiation is the wordmark text only. If distinct logos are produced later, drop into `sites/www/static/img/` and reference from `theme/brand.jsx` |
-| Contact form backend | Decision pending | Mailto fallback OK initially. If a real form is required, pick a submit target (Formspree, Netlify Functions, OpenConnector endpoint) and add a submit URL |
+| Contact form backend | Decision pending | Mailto fallback OK initially. If a real form is required, pick a submit target (Formspree, Netlify Functions, Integriq endpoint) and add a submit URL |
 | `/iso` certificate numbers and certifying body | Required before live | The `/iso` page has placeholders ("_Listed on the certificate, contact us for a copy_"). Fill in from current cert docs |
 | Legal review on `/terms` | **Required before live** | Page is a working draft, flagged in body. The NL canonical version (Phase 4) is what becomes binding |
 | `kwaliteitsbeleid` content | Decision: dropped | Quality-policy content is folded into `/iso` and `/terms`. If a separate page is needed later, add `/quality.mdx` |

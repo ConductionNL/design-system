@@ -1,5 +1,5 @@
 /**
- * OpenBuild abstract — three-pane citizen-developer app builder: left
+ * Buildiq abstract — three-pane citizen-developer app builder: left
  * builder nav + centre dashboard + right manifest/detail rail.
  * Reference: live screenshot at http://localhost:8080/apps/openbuild/.
  *

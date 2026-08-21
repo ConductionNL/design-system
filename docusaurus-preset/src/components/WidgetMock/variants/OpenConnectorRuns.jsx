@@ -1,5 +1,5 @@
 /**
- * OpenConnector · Recent runs widget.
+ * Integriq · Recent runs widget.
  *
  * Last few integration runs with status pip (mint = success, orange =
  * partial, red = failed, cobalt-200 = scheduled). Reuses .w-jira.

@@ -1,5 +1,5 @@
 /**
- * Procest · Due today widget.
+ * Dossiq · Due today widget.
  *
  * Cases whose deadline lands today or earlier. Reuses .w-werkvoorraad
  * but with more late items in red and one orange-active to read as

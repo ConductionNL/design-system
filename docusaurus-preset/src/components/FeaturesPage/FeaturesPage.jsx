@@ -32,9 +32,9 @@ import FeatureGrid from '../FeatureGrid/FeatureGrid.jsx';
 const PROVIDER_NAMES = {
   openregister: 'OpenRegister',
   opencatalogi: 'OpenCatalogi',
-  openconnector: 'OpenConnector',
-  docudesk: 'DocuDesk',
-  nldesign: 'NLDesign',
+  openconnector: 'Integriq',
+  docudesk: 'Filinq',
+  nldesign: 'Thematiq',
 };
 
 function providerCredit(providedBy, locale) {

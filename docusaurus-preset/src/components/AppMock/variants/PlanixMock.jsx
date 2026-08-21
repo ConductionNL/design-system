@@ -1,5 +1,5 @@
 /**
- * Planix abstract — planning board.
+ * Planiq abstract — planning board.
  *
  * Inferred from the app role (scheduling people and work over time):
  * a week grid of five day columns with placed planning blocks at

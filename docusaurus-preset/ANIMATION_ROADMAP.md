@@ -39,7 +39,7 @@ wave 6 adds is the *payload* making the journey, not the line itself.
   (the `IconList` "Sources" column), travels the dotted line
   left-to-right, and pauses ~400ms at each step hex's equator.
 - At each pause the step hex answers: a 1.06 scale pulse plus a brief
-  ring in the step's own family colour (mint for the OpenConnector
+  ring in the step's own family colour (mint for the Integriq
   step, workspace-blue for the platform hex, terracotta for
   OpenCatalogi — never a new orange). The pill inside the hex, when
   present, bumps with it.

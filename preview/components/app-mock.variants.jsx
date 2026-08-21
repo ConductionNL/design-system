@@ -57,7 +57,7 @@ export default function VariantCatalogue() {
           <AppMock app="launchpad-bi" />
         </div>
         <div className="variant-pane" data-variant="launchpad-widgets">
-          <p>Cross-app widget angle. Any Conduction app that registers a Nextcloud dashboard widget shows up here: DocuDesk dropzone, Procest werkvoorraad, Mail, Calendar, Jira, RSS, video shortcut. Slug: <code>launchpad-widgets</code>.</p>
+          <p>Cross-app widget angle. Any Conduction app that registers a Nextcloud dashboard widget shows up here: Filinq dropzone, Dossiq werkvoorraad, Mail, Calendar, Jira, RSS, video shortcut. Slug: <code>launchpad-widgets</code>.</p>
           <AppMock app="launchpad-widgets" />
         </div>
       </div>
@@ -73,11 +73,11 @@ export default function VariantCatalogue() {
         <AppMock app="opencatalogi" />
       </div>
 
-      {/* ============================== 03 · OpenConnector ============================== */}
+      {/* ============================== 03 · Integriq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">03</span>
-          <h3>OpenConnector</h3>
+          <h3>Integriq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>Integration plane. Centre stage is a single canonical pipeline (lavender source &rarr; cobalt connector &rarr; forest target) with a recent-runs status table below. Slug: <code>openconnector</code>.</p>
@@ -95,55 +95,55 @@ export default function VariantCatalogue() {
         <AppMock app="openregister" />
       </div>
 
-      {/* ============================== 05 · Procest ============================== */}
+      {/* ============================== 05 · Dossiq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">05</span>
-          <h3>Procest</h3>
+          <h3>Dossiq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>Case management for ZGW processes. Centre runs the stage timeline across the top (one done, one active in orange, three to-do) above a recent-cases table with status pills. Slug: <code>procest</code>.</p>
         <AppMock app="procest" />
       </div>
 
-      {/* ============================== 06 · DeciDesk ============================== */}
+      {/* ============================== 06 · Decidiq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">06</span>
-          <h3>DeciDesk</h3>
+          <h3>Decidiq</h3>
           <span className="tag">SCREENSHOT-BASED</span>
         </div>
         <p>Decision and minutes tooling for boards. Left nav, action row top right (New Decision / Action Item / Minutes), KPI cards, two side-by-side tables for notulen and besluiten. Slug: <code>decidesk</code>.</p>
         <AppMock app="decidesk" />
       </div>
 
-      {/* ============================== 07 · DocuDesk ============================== */}
+      {/* ============================== 07 · Filinq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">07</span>
-          <h3>DocuDesk</h3>
+          <h3>Filinq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>Document workshop. Template-driven generation, anonymisation, signing, archiving. Centre lists recent documents with status pips and an anonymise drop-zone widget below. Slug: <code>docudesk</code>.</p>
         <AppMock app="docudesk" />
       </div>
 
-      {/* ============================== 08 · LarpingApp ============================== */}
+      {/* ============================== 08 · Larpinq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">08</span>
-          <h3>LarpingApp</h3>
+          <h3>Larpinq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>LARP setting management: characters, scenes, NPCs, factions. Centre shows a 3&times;2 character card grid with hex avatars in family tones, plus a scene timeline strip on top. Slug: <code>larpingapp</code>.</p>
         <AppMock app="larpingapp" />
       </div>
 
-      {/* ============================== 09 · NLDesign ============================== */}
+      {/* ============================== 09 · Thematiq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">09</span>
-          <h3>NLDesign</h3>
+          <h3>Thematiq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>NL Design System theme settings panel. Centre shows a colour-swatch row, type specimen, and component preview panels stacked vertically. Slug: <code>nldesign</code>.</p>
@@ -172,11 +172,11 @@ export default function VariantCatalogue() {
         <AppMock app="pipelinq" />
       </div>
 
-      {/* ============================== 12 · SoftwareCatalog ============================== */}
+      {/* ============================== 12 · Stackiq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">12</span>
-          <h3>SoftwareCatalog</h3>
+          <h3>Stackiq</h3>
           <span className="tag">INFERRED</span>
         </div>
         <p>IT-asset inventory. Tabular app list with stable / update-available / end-of-life status pips, plus a licence-renewal timeline bar chart on top. Slug: <code>softwarecatalog</code>.</p>
@@ -194,11 +194,11 @@ export default function VariantCatalogue() {
         <AppMock app="zaakafhandelapp" />
       </div>
 
-      {/* ============================== 14 · OpenBuild ============================== */}
+      {/* ============================== 14 · Buildiq ============================== */}
       <div className="specimen-card">
         <div className="head">
           <span className="num">14</span>
-          <h3>OpenBuild</h3>
+          <h3>Buildiq</h3>
           <span className="tag">SCREENSHOT-BASED</span>
         </div>
         <p>Citizen-developer app builder. Three-pane builder: nav left, dashboard centre, manifest and schema editor rail right. A KPI strip (virtual apps, published, templates, versions) sits over a virtual-app list and the template catalogue. Slug: <code>openbuild</code>.</p>

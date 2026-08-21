@@ -1,5 +1,5 @@
 /**
- * Scholiq abstract — learning environment.
+ * Learniq abstract — learning environment.
  *
  * Inferred from the app role (courses, lessons, credentials): centre
  * shows a course-card grid, each card carrying a progress bar, with a

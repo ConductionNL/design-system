@@ -23,7 +23,7 @@
  *       {href: '/partners/acato', tier: 'certified', name: 'Acato',
  *        logo: '/img/partners/acato.png',
  *        summary: <>Digital agency uit Almere…</>,
- *        apps: ['OpenCatalogi', 'OpenRegister', 'OpenConnector'],
+ *        apps: ['OpenCatalogi', 'OpenRegister', 'Integriq'],
  *        solutions: ['woo']},
  *       …
  *     ]}

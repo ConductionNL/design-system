@@ -1,5 +1,5 @@
 /**
- * DocuDesk abstract — three-pane document workshop.
+ * Filinq abstract — three-pane document workshop.
  *
  * Inferred from the app's role (template-driven document generation,
  * anonymisation, signing, archiving): centre stage shows a list of

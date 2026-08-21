@@ -2,7 +2,7 @@
  * <WidgetMock />
  *
  * Standalone abstract of a Nextcloud dashboard widget that a
- * Conduction app registers (DocuDesk anonymise, Procest werkvoorraad,
+ * Conduction app registers (Filinq anonymise, Dossiq werkvoorraad,
  * OpenRegister activity, etc.) plus a few of the stock Nextcloud
  * widgets we frame around (Mail, Calendar, Files, Decks, RSS).
  *
@@ -64,14 +64,14 @@ import NextcloudDecks          from './variants/NextcloudDecks.jsx';
 import NextcloudRss            from './variants/NextcloudRss.jsx';
 
 const VARIANTS = {
-  'docudesk-anonymise':       { Component: DocuDeskAnonymise,       label: 'DocuDesk · Anonymise drop' },
-  'docudesk-pending-sign':    { Component: DocuDeskPendingSign,     label: 'DocuDesk · Pending signatures', list: true },
-  'procest-werkvoorraad':     { Component: ProcestWerkvoorraad,     label: 'Procest · Werkvoorraad', list: true },
-  'procest-due-today':        { Component: ProcestDueToday,         label: 'Procest · Due today', list: true },
+  'docudesk-anonymise':       { Component: DocuDeskAnonymise,       label: 'Filinq · Anonymise drop' },
+  'docudesk-pending-sign':    { Component: DocuDeskPendingSign,     label: 'Filinq · Pending signatures', list: true },
+  'procest-werkvoorraad':     { Component: ProcestWerkvoorraad,     label: 'Dossiq · Werkvoorraad', list: true },
+  'procest-due-today':        { Component: ProcestDueToday,         label: 'Dossiq · Due today', list: true },
   'openregister-activity':    { Component: OpenRegisterActivity,    label: 'OpenRegister · Activity' },
   'opencatalogi-publications':{ Component: OpenCatalogiPublications,label: 'OpenCatalogi · Recent publications', list: true },
-  'openconnector-runs':       { Component: OpenConnectorRuns,       label: 'OpenConnector · Recent runs', list: true },
-  'decidesk-actions':         { Component: DeciDeskActions,         label: 'DeciDesk · Action items', list: true },
+  'openconnector-runs':       { Component: OpenConnectorRuns,       label: 'Integriq · Recent runs', list: true },
+  'decidesk-actions':         { Component: DeciDeskActions,         label: 'Decidiq · Action items', list: true },
   'pipelinq-deals':           { Component: PipelinQDeals,           label: 'PipelinQ · Deals closing', list: true },
   'nextcloud-mail':           { Component: NextcloudMail,           label: 'Nextcloud · Important mail', list: true },
   'nextcloud-calendar':       { Component: NextcloudCalendar,       label: 'Nextcloud · Calendar' },

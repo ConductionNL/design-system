@@ -1,5 +1,5 @@
 /**
- * DocuDesk · Anonymise drop widget.
+ * Filinq · Anonymise drop widget.
  *
  * Drop a document into the dashboard tile, get back a redacted copy.
  * Visual: dashed cobalt drop-zone with a hex glyph. Status-pill is

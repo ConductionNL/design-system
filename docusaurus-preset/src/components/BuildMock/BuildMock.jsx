@@ -1,7 +1,7 @@
 /**
  * <BuildMock />
  *
- * Token-built abstract of the OpenBuild "make it yours" moment: the
+ * Token-built abstract of the Buildiq "make it yours" moment: the
  * orange edit button gets pressed, a small component palette opens, a
  * widget is picked and dragged onto the page, and it snaps into the
  * empty layout slot. Loops every ~8 seconds. Used on every app's
@@ -9,7 +9,7 @@
  *
  * Same abstraction level as <AppMock>: greeked content, tokens only.
  * The orange FAB is this component's single orange accent (it *is*
- * the OpenBuild edit button).
+ * the Buildiq edit button).
  *
  * `prefers-reduced-motion: reduce` (and `running={false}`) renders
  * the static end state: palette closed, cursor gone, the dragged
@@ -75,7 +75,7 @@ export default function BuildMock({size = 'md', caption, running = true, classNa
             <span className={styles.paletteTile} />
           </div>
 
-          {/* The OpenBuild edit button — the one orange accent. */}
+          {/* The Buildiq edit button — the one orange accent. */}
           <div className={styles.fab}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />

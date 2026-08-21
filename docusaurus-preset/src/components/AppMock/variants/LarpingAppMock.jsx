@@ -1,5 +1,5 @@
 /**
- * LarpingApp abstract — character + scene workshop.
+ * Larpinq abstract — character + scene workshop.
  *
  * Inferred from the app role (LARP setting management, character sheets,
  * scenes, NPCs, factions): centre shows a character grid (3×2 cards

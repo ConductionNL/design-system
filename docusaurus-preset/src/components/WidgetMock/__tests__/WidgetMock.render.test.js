@@ -121,5 +121,5 @@ test('docudesk-anonymise: the dropzone carries the zoneLive scope and the droppi
 });
 
 test('caption renders the variant label', () => {
-  assert.match(render({kind: 'procest-werkvoorraad', caption: true}), /Procest · Werkvoorraad/);
+  assert.match(render({kind: 'procest-werkvoorraad', caption: true}), /Dossiq · Werkvoorraad/);
 });

@@ -1,5 +1,5 @@
 /**
- * NLDesign abstract — theme settings panel.
+ * Thematiq abstract — theme settings panel.
  *
  * Inferred from the app role (NL Design System theme for Nextcloud):
  * centre shows a settings layout with a colour-swatch row, a type

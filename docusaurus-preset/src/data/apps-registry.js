@@ -29,26 +29,26 @@
 export const APPS_REGISTRY = {
   opencatalogi:    {slug: 'opencatalogi',    name: 'OpenCatalogi',     category: 'Data',        productHref: '/apps/opencatalogi',    docsHref: 'https://opencatalogi.conduction.nl',    academyHref: '/academy?app=opencatalogi'},
   openregister:    {slug: 'openregister',    name: 'OpenRegister',     category: 'Data',        productHref: '/apps/openregister',    docsHref: 'https://openregister.conduction.nl',    academyHref: '/academy?app=openregister'},
-  openconnector:   {slug: 'openconnector',   name: 'OpenConnector',    category: 'Connectors',  productHref: '/apps/openconnector',   docsHref: 'https://openconnector.conduction.nl',   academyHref: '/academy?app=openconnector'},
-  docudesk:        {slug: 'docudesk',        name: 'DocuDesk',         category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docudesk.conduction.nl',        academyHref: '/academy?app=docudesk'},
+  openconnector:   {slug: 'openconnector',   name: 'Integriq',         category: 'Connectors',  productHref: '/apps/openconnector',   docsHref: 'https://openconnector.conduction.nl',   academyHref: '/academy?app=openconnector'},
+  docudesk:        {slug: 'docudesk',        name: 'Filinq',           category: 'Documents',   productHref: '/apps/docudesk',        docsHref: 'https://docudesk.conduction.nl',        academyHref: '/academy?app=docudesk'},
   launchpad:       {slug: 'launchpad',       name: 'LaunchPad',        category: 'Dashboards',  productHref: '/apps/launchpad',       docsHref: 'https://launchpad.conduction.nl',       academyHref: '/academy?app=launchpad'},
   zaakafhandelapp: {slug: 'zaakafhandelapp', name: 'ZaakAfhandelApp',  category: 'Processes',   productHref: '/apps/zaakafhandelapp', docsHref: 'https://zaakafhandelapp.conduction.nl', academyHref: '/academy?app=zaakafhandelapp'},
   pipelinq:        {slug: 'pipelinq',        name: 'PipelinQ',         category: 'Processes',   productHref: '/apps/pipelinq',        docsHref: 'https://pipelinq.conduction.nl',        academyHref: '/academy?app=pipelinq'},
-  procest:         {slug: 'procest',         name: 'Procest',          category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://procest.conduction.nl',         academyHref: '/academy?app=procest'},
-  decidesk:        {slug: 'decidesk',        name: 'DeciDesk',         category: 'Processes',   productHref: '/apps/decidesk',        docsHref: 'https://decidesk.conduction.nl',        academyHref: '/academy?app=decidesk'},
-  softwarecatalog: {slug: 'softwarecatalog', name: 'SoftwareCatalog',  category: 'Data',        productHref: '/apps/softwarecatalog', docsHref: 'https://softwarecatalog.conduction.nl', academyHref: '/academy?app=softwarecatalog'},
-  larpingapp:      {slug: 'larpingapp',      name: 'LarpingApp',       category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://larpingapp.conduction.nl',      academyHref: '/academy?app=larpingapp'},
-  nldesign:        {slug: 'nldesign',        name: 'NLDesign',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://nldesign.conduction.nl',        academyHref: '/academy?app=nldesign'},
+  procest:         {slug: 'procest',         name: 'Dossiq',           category: 'Processes',   productHref: '/apps/procest',         docsHref: 'https://procest.conduction.nl',         academyHref: '/academy?app=procest'},
+  decidesk:        {slug: 'decidesk',        name: 'Decidiq',          category: 'Processes',   productHref: '/apps/decidesk',        docsHref: 'https://decidesk.conduction.nl',        academyHref: '/academy?app=decidesk'},
+  softwarecatalog: {slug: 'softwarecatalog', name: 'Stackiq',          category: 'Data',        productHref: '/apps/softwarecatalog', docsHref: 'https://softwarecatalog.conduction.nl', academyHref: '/academy?app=softwarecatalog'},
+  larpingapp:      {slug: 'larpingapp',      name: 'Larpinq',          category: 'Processes',   productHref: '/apps/larpingapp',      docsHref: 'https://larpingapp.conduction.nl',      academyHref: '/academy?app=larpingapp'},
+  nldesign:        {slug: 'nldesign',        name: 'Thematiq',         category: 'Documents',   productHref: '/apps/nldesign',        docsHref: 'https://nldesign.conduction.nl',        academyHref: '/academy?app=nldesign'},
   shillinq:        {slug: 'shillinq',        name: 'Shillinq',         category: 'Processes',   productHref: '/apps/shillinq',        docsHref: 'https://shillinq.conduction.nl',        academyHref: '/academy?app=shillinq'},
-  openbuild:       {slug: 'openbuild',       name: 'OpenBuild',        category: 'Processes',   productHref: '/apps/openbuild',       docsHref: 'https://openbuild.conduction.nl',       academyHref: '/academy?app=openbuild'},
-  doriath:         {slug: 'doriath',         name: 'Doriath',          category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://doriath.conduction.nl',         academyHref: '/academy?app=doriath'},
-  'app-versions':  {slug: 'app-versions',    name: 'App Versions',     category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://app-versions.conduction.nl',    academyHref: '/academy?app=app-versions'},
+  openbuild:       {slug: 'openbuild',       name: 'Buildiq',          category: 'Processes',   productHref: '/apps/openbuild',       docsHref: 'https://openbuild.conduction.nl',       academyHref: '/academy?app=openbuild'},
+  doriath:         {slug: 'doriath',         name: 'Keepiq',           category: 'Connectors',  productHref: '/apps/doriath',         docsHref: 'https://doriath.conduction.nl',         academyHref: '/academy?app=doriath'},
+  'app-versions':  {slug: 'app-versions',    name: 'Versioniq',        category: 'Data',        productHref: '/apps/app-versions',    docsHref: 'https://app-versions.conduction.nl',    academyHref: '/academy?app=app-versions'},
   hermiq:          {slug: 'hermiq',          name: 'Hermiq',           category: 'AI',          productHref: '/apps/hermiq',          docsHref: 'https://hermiq.conduction.nl',          academyHref: '/academy?app=hermiq'},
-  hrmq:            {slug: 'hrmq',            name: 'HRMQ',             category: 'Processes',   productHref: '/apps/hrmq',            docsHref: 'https://hrmq.conduction.nl',            academyHref: '/academy?app=hrmq'},
-  openanonymiser:  {slug: 'openanonymiser',  name: 'OpenAnonymiser',   category: 'Documents',   productHref: '/apps/openanonymiser',  docsHref: 'https://openanonymiser.conduction.nl',  academyHref: '/academy?app=openanonymiser'},
-  planix:          {slug: 'planix',          name: 'Planix',           category: 'Processes',   productHref: '/apps/planix',          docsHref: 'https://planix.conduction.nl',          academyHref: '/academy?app=planix'},
+  hrmq:            {slug: 'hrmq',            name: 'Humaniq',          category: 'Processes',   productHref: '/apps/hrmq',            docsHref: 'https://hrmq.conduction.nl',            academyHref: '/academy?app=hrmq'},
+  openanonymiser:  {slug: 'openanonymiser',  name: 'Anonymiq',         category: 'Documents',   productHref: '/apps/openanonymiser',  docsHref: 'https://openanonymiser.conduction.nl',  academyHref: '/academy?app=openanonymiser'},
+  planix:          {slug: 'planix',          name: 'Planiq',           category: 'Processes',   productHref: '/apps/planix',          docsHref: 'https://planix.conduction.nl',          academyHref: '/academy?app=planix'},
   portaliq:        {slug: 'portaliq',        name: 'Portaliq',         category: 'Processes',   productHref: '/apps/portaliq',        docsHref: 'https://portaliq.conduction.nl',        academyHref: '/academy?app=portaliq'},
-  scholiq:         {slug: 'scholiq',         name: 'Scholiq',          category: 'Processes',   productHref: '/apps/scholiq',         docsHref: 'https://scholiq.conduction.nl',         academyHref: '/academy?app=scholiq'},
+  scholiq:         {slug: 'scholiq',         name: 'Learniq',          category: 'Processes',   productHref: '/apps/scholiq',         docsHref: 'https://scholiq.conduction.nl',         academyHref: '/academy?app=scholiq'},
 };
 
 /**
@@ -93,7 +93,7 @@ export function getApps(slugs = []) {
 }
 
 /**
- * Resolve a display-name (e.g. "OpenCatalogi", "DocuDesk", "LaunchPad")
+ * Resolve a display-name (e.g. "OpenCatalogi", "Filinq", "LaunchPad")
  * to its product page href, or undefined when the name is not in the
  * registry. Used by partner cards / sidecards to turn the apps-shipped
  * chip row into a clickable link list. Names like "Nextcloud" that

@@ -1,5 +1,5 @@
 /**
- * DeciDesk · Action items widget.
+ * Decidiq · Action items widget.
  *
  * Action items assigned to the viewer, sorted by due date. .w-jira
  * atom: id slot is the source decision, pip slot is status (orange =

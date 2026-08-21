@@ -1,5 +1,5 @@
 /**
- * Procest · Werkvoorraad widget.
+ * Dossiq · Werkvoorraad widget.
  *
  * The case worker's queue, with stage pip on the left, case title in
  * the middle, owner avatar on the right. .now = active stage in

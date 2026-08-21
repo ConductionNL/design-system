@@ -1,5 +1,5 @@
 /**
- * SoftwareCatalog abstract — IT-asset inventory list.
+ * Stackiq abstract — IT-asset inventory list.
  *
  * Inferred from the app role (software inventory, licences, contracts,
  * dependencies): centre shows a tabular app list with status pips

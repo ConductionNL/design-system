@@ -65,10 +65,10 @@ The locked policy lives in [`tokens.css`](./tokens.css) (2026-04, updated 2026-0
 |---|---|---|---|
 | **Cobalt** | `--c-blue-cobalt` | Brand chrome, the workspace itself | The workspace hex (Nextcloud), brand hexes, primary fills. Not a category. |
 | **Workspace blue** | `--c-workspace-500` (= `--c-nextcloud-blue`) | Nextcloud as platform | The single workspace hex in any platform diagram. Always solid `#0082C9`, never a gradient. |
-| **Lavender** | `--c-lavender-500` | Process / workflow | OpenConnector, Procest, ZaakAfhandelApp, anything orchestration-flavoured |
+| **Lavender** | `--c-lavender-500` | Process / workflow | Integriq, Dossiq, ZaakAfhandelApp, anything orchestration-flavoured |
 | **Mint** | `--c-mint-500` | Integrate / connect | Integration adapters, "stable" status pill, anything that signals *connected and OK* |
 | **Forest** | `--c-forest-500` | Data / trustworthy / NLDS-compliant | OpenRegister-flavoured hexes, register thumbnails, compliance-strong surfaces |
-| **Terracotta** | `--c-terracotta-500` | Documents / human work | DocuDesk-flavoured hexes, document thumbnails, human-craft surfaces |
+| **Terracotta** | `--c-terracotta-500` | Documents / human work | Filinq-flavoured hexes, document thumbnails, human-craft surfaces |
 | **Coral / KNVB orange** | `--c-orange-knvb` | Single-use accent (focus, hover, the *one* highlight per scene) | Capped at ~8% of any surface. Never as a primary fill. Never as a hex family. |
 | **Gold** | `--c-gold-500` | "Conduction Certified" trustmark | Reserved. Don't use for generic UI. |
 | **Gray** | `--c-gray-500` | Neutral surfaces, side-box chrome | Strokes, dividers, side-box bodies. Not a category. |
@@ -79,7 +79,7 @@ Banned as hex families: **coral, gold, gray, red-vermillion**. They have specifi
 
 Pulled from [`preview/diagrams/`](./preview/diagrams/) usage. The web components (`<cn-hex>`, `<cn-platform>`, `<cn-pipeline>`, `<cn-side-box>`, `<cn-honeycomb-bg>`, `<cn-domain-tree>`) handle the geometry; you pick the families and the count.
 
-- **Hexes = installable apps. Side-boxes = everything else.** A hex is a Conduction app (OpenRegister, DocuDesk). A side-box is a source, sink, integration, or external system. The shape is the hierarchy — hexes are the *thing*, side-boxes are *around the thing*.
+- **Hexes = installable apps. Side-boxes = everything else.** A hex is a Conduction app (OpenRegister, Filinq). A side-box is a source, sink, integration, or external system. The shape is the hierarchy — hexes are the *thing*, side-boxes are *around the thing*.
 - **One workspace hex per scene, max.** Cobalt is the workspace; if the scene shows multiple Nextcloud installs, federate them through side-boxes, don't duplicate the cobalt hex.
 - **One orange element per scene.** Same as Imagery rule. The orange is *the answer* of the scene — the active step, the new feature, the thing the eye should land on.
 - **Family count: 3–4 per scene.** A pipeline diagram with cobalt + lavender + mint + a coral accent is the canonical density. More than four families and the categories stop reading.
@@ -95,13 +95,13 @@ Defined in [`preview/apps.html`](./preview/apps.html). Every app gets one Lucide
 |---|---|---|
 | **OpenCatalogi** | `--c-blue-cobalt` | layered-triangle: `M3 7l9-4 9 4-9 4-9-4z` + `M3 12l9 4 9-4` + `M3 17l9 4 9-4` |
 | **OpenRegister** | `--c-cobalt-700` | table: `<rect x="3" y="4" width="18" height="16" rx="2"/>` + `M3 9h18M9 4v16` |
-| **OpenConnector** | `--c-cobalt-700` | network: `<circle cx="6" cy="12" r="3"/>` + `<circle cx="18" cy="6" r="3"/>` + `<circle cx="18" cy="18" r="3"/>` + `M9 12h9M9 12l9-6M9 12l9 6` |
-| **DocuDesk** | `--c-blue-cobalt` | document: `M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z` + `M14 2v6h6M16 13H8M16 17H8M10 9H8` |
+| **Integriq** | `--c-cobalt-700` | network: `<circle cx="6" cy="12" r="3"/>` + `<circle cx="18" cy="6" r="3"/>` + `<circle cx="18" cy="18" r="3"/>` + `M9 12h9M9 12l9-6M9 12l9 6` |
+| **Filinq** | `--c-blue-cobalt` | document: `M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z` + `M14 2v6h6M16 13H8M16 17H8M10 9H8` |
 | **LaunchPad** | white + cobalt outline (inverse) | 4-rect grid: `<rect 3,3 7×9/>` + `<rect 14,3 7×5/>` + `<rect 14,12 7×9/>` + `<rect 3,16 7×5/>` |
 
 **LaunchPad defaults to outline** (cobalt stroke on white) because it sits next to user content and shouldn't compete. Every other app defaults to a filled hex in cobalt or cobalt-700.
 
-The remaining apps in the catalogue — **DeciDesk, LarpingApp, NLDesign, OpenWoo, PipelinQ, Procest, SoftwareCatalog, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
+The remaining apps in the catalogue — **Decidiq, Larpinq, Thematiq, OpenWoo, PipelinQ, Dossiq, Stackiq, ZaakAfhandelApp** — don't yet have a row in `apps.html`. When you build an artefact that needs one of these, **canonicalize the glyph in `apps.html` first** (one row, six treatments: hex-cobalt, hex-900, outline, square-cut, monogram, favicon), commit it, then reference it. Don't pick a Lucide icon by feel.
 
 ## Status palette
 

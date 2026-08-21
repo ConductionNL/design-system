@@ -1,5 +1,5 @@
 /**
- * App Versions abstract — fleet version dashboard.
+ * Versioniq abstract — fleet version dashboard.
  *
  * Inferred from the app role (tracking installed app versions across
  * a workspace): a KPI strip over an app list — app hex, name, version

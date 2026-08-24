@@ -127,8 +127,14 @@ const BRAND_ORGANIZATION_JSONLD = {
     propertyID: 'KvK',
     value: '76741850',
   },
+  // `sameAs` is consumed by search engines as the authoritative list of
+  // other profiles that are the SAME entity, so a stale host here is
+  // published as structured data on every site built from this preset —
+  // not merely a dead link in prose. This named codeberg.org/Conduction,
+  // which is an unmaintained mirror; GitHub is the only host, and the org
+  // is `ConductionNL` there, not `Conduction`.
   sameAs: [
-    'https://codeberg.org/Conduction',
+    'https://github.com/ConductionNL',
     'https://www.linkedin.com/company/conduction/',
   ],
 };
@@ -362,7 +368,11 @@ const baseNavbar = (siteName, repoUrl) => ({
   items: [
     { type: 'custom-versionPill', position: 'right' },
     { type: 'custom-apiDocs', position: 'right' },
-    { type: 'custom-github', href: repoUrl || 'https://codeberg.org/Conduction', position: 'right' },
+    // The fallback matters: a site that passes no `repoUrl` still renders
+    // this item, and the item is typed `custom-github`. The fallback used to
+    // be the Codeberg org, so those sites showed a GitHub-labelled navbar
+    // link pointing at a host the organisation no longer publishes to.
+    { type: 'custom-github', href: repoUrl || 'https://github.com/ConductionNL', position: 'right' },
     { type: 'localeDropdown', position: 'right' },
   ],
 });

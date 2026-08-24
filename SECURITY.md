@@ -27,7 +27,7 @@ We provide security updates for the latest stable release of each app. Older ver
 
 ## Scope
 
-This security policy applies to all repositories under the [ConductionNL](https://codeberg.org/Conduction) organization.
+This security policy applies to all repositories under the [ConductionNL](https://github.com/ConductionNL) organization.
 
 ## Recognition
 
@@ -39,23 +39,32 @@ We publish a [CycloneDX](https://cyclonedx.org/) 1.5 JSON SBOM for every release
 
 ### Stable URLs
 
-For every app `<app>` under [ConductionNL](https://codeberg.org/Conduction), two URLs always work:
+> **Status (verified 2026-08-24): the SBOM asset is not currently attached to
+> releases.** The latest release of `launchpad`, `openregister`, `shillinq`,
+> `buildiq`, `thematiq` and `decidiq` each carries only a source tarball (plus,
+> in one case, a `.sha256`) — no `sbom.cdx.json`. The URL patterns below are the
+> intended contract and the right shape, but they return 404 until the release
+> workflow actually publishes the artifact. This paragraph previously stated the
+> URLs "always work"; that was not true on Codeberg either, so repointing the
+> host alone would have preserved the false claim in a security policy.
+
+For every app `<app>` under [ConductionNL](https://github.com/ConductionNL), the SBOM is published at:
 
 | Use case                                                           | URL pattern                                                                    |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| **Always-latest released SBOM** (auto-redirects to newest release) | `https://codeberg.org/Conduction/<app>/releases/latest/download/sbom.cdx.json` |
-| **Specific release SBOM** (pinned, for compliance archives)        | `https://codeberg.org/Conduction/<app>/releases/download/<tag>/sbom.cdx.json`  |
+| **Always-latest released SBOM** (auto-redirects to newest release) | `https://github.com/ConductionNL/<app>/releases/latest/download/sbom.cdx.json` |
+| **Specific release SBOM** (pinned, for compliance archives)        | `https://github.com/ConductionNL/<app>/releases/download/<tag>/sbom.cdx.json`  |
 
 Example — fetch the latest launchpad SBOM:
 
 ```bash
-curl -sL https://codeberg.org/Conduction/launchpad/releases/latest/download/sbom.cdx.json | jq .
+curl -sL https://github.com/ConductionNL/launchpad/releases/latest/download/sbom.cdx.json | jq .
 ```
 
 Example — fetch the SBOM for a specific historical release:
 
 ```bash
-curl -sL https://codeberg.org/Conduction/launchpad/releases/download/v1.0.0/sbom.cdx.json | jq .
+curl -sL https://github.com/ConductionNL/launchpad/releases/download/v1.0.0/sbom.cdx.json | jq .
 ```
 
 ### Update cadence

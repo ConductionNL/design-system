@@ -1,5 +1,5 @@
 /**
- * DocuDesk · Pending signatures widget.
+ * Filinq · Pending signatures widget.
  *
  * Documents waiting on someone's signature, ranked by oldest. Reuses
  * the .w-jira atom (id + title + status pip): id slot reads as a

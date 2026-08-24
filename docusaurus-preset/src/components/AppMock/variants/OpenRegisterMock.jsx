@@ -5,6 +5,11 @@
  * Centre is the canonical "Dashboard" view: KPI strip top, two
  * side-by-side tables ("Popular Search Terms" / "Objects by Register"),
  * second row of two more. Right rail shows Filter Statistics + Totals.
+ *
+ * Animation (wave 2): a new object row lands in the "Objects by
+ * Register" table, the first KPI's number widens to absorb the count,
+ * and the right-rail statistics rows repaint in a stagger — the
+ * dashboard reacting to a write. Base styles are the landed end state.
  */
 
 import React from 'react';
@@ -38,7 +43,7 @@ export default function OpenRegisterMock({ sidebar = null }) {
         <div className={styles.col}>
           {/* KPI strip */}
           <div className={styles.kpiRow}>
-            <div className={styles.kpi}>
+            <div className={[styles.kpi, styles.kpiGrow].join(' ')}>
               <div className={styles.ico}></div>
               <div className={styles.meta}><div className={styles.num}></div><div className={styles.label}></div></div>
             </div>
@@ -70,7 +75,13 @@ export default function OpenRegisterMock({ sidebar = null }) {
             <div className={styles.panel}>
               <div className={styles.head}><div className={styles.title}></div></div>
               <div className={styles.stack}>
-                {['b','d','c','a'].map((cls, i) => (
+                {/* The freshly-written object row: lands with a slide
+                    when the loop fires. Present in static frames. */}
+                <div className={[styles.item, styles.newObj].join(' ')}>
+                  <div className={[styles.av, styles.d].join(' ')}></div>
+                  <div className={styles.lines}><div className={styles.l1}></div></div>
+                </div>
+                {['b','d','c'].map((cls, i) => (
                   <div key={i} className={styles.item}>
                     <div className={[styles.av, styles[cls]].join(' ')}></div>
                     <div className={styles.lines}><div className={styles.l1}></div></div>

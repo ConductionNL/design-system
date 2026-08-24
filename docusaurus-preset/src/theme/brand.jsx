@@ -68,12 +68,12 @@ export function brandFor(pathname, title) {
  * cobalt-400 / regular weight and the rest in blue-cobalt / bold:
  *
  *   <span class="light">Open</span>Register
- *   <span class="light">Docu</span>Desk
+ *   <span class="light">Pipe</span>linQ
  *   <span class="light">My</span>Dash
  *
  * This list covers the prefixes used across the Conduction fleet.
  * Sites whose wordmark doesn't start with one of these (e.g. Shillinq,
- * Decidesk) keep the whole wordmark in blue-cobalt unless they pass
+ * Hermiq) keep the whole wordmark in blue-cobalt unless they pass
  * an explicit `navbar.brandPrefix` to override.
  */
 const PRODUCT_PREFIXES = [

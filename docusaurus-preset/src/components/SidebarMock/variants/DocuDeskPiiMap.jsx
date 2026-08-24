@@ -1,5 +1,5 @@
 /**
- * DocuDesk · document sidebar, PII map tab.
+ * Filinq · document sidebar, PII map tab.
  *
  * Inline pills marking redacted spans (red) and suggested redactions
  * (orange) within paragraphs. Reads as "here is what got covered up".

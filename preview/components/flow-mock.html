@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>FlowMock · Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../../docusaurus-preset/src/components/FlowMock/FlowMock.module.css">
+<style>
+  body { padding: 0; background: var(--c-cobalt-50); font-family: var(--conduction-typography-font-family-body); color: var(--c-cobalt-900); }
+  .hero { background: var(--c-blue-cobalt); color: white; padding: 64px var(--space-12) 48px; }
+  .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-4); }
+  .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
+  .hero h1 { color: white; font-size: 44px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+  .hero p  { color: var(--c-cobalt-100); font-size: 16px; max-width: 64ch; line-height: 1.5; margin-top: var(--space-4); }
+
+  .variant-grid {
+    max-width: 1280px;
+    margin: 48px auto;
+    padding: 0 var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+  @media (max-width: 900px) { .variant-grid { grid-template-columns: 1fr; } }
+  .specimen-card {
+    background: white;
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+  }
+  .specimen-card .head { display: flex; align-items: baseline; gap: var(--space-3); }
+  .specimen-card .head .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); }
+  .specimen-card .head h3  { margin: 0; font-size: 22px; font-weight: 600; color: var(--c-blue-cobalt); }
+  .specimen-card .head .tag { margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; color: var(--c-cobalt-400); text-transform: uppercase; }
+  .specimen-card p { color: var(--c-cobalt-700); font-size: 14px; line-height: 1.5; margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../components.html">Components</a> / FlowMock</div>
+  <h1>Flow mock</h1>
+  <p>Token-built abstract of the flow editor: white node cards on a dotted canvas, a coloured left bar per node (mint = trigger, lavender = steps, vermillion = end), curved grey edges with pill labels, and a mint run-line that travels trigger → step → approval → end on a slow loop. Same abstraction level as AppMock; no real text beyond the node kind labels. <code>prefers-reduced-motion</code> and <code>running={false}</code> both freeze the run-line to the full static mint route.</p>
+</div>
+
+<div class="variant-grid">
+
+  <div class="specimen-card">
+    <div class="head">
+      <div class="num">01</div>
+      <h3>Default</h3>
+      <div class="tag">size="md" · running</div>
+    </div>
+    <div class="fm">
+      <figure class="figure">
+        <div class="frame size-md">
+          <svg class="canvas" viewBox="0 0 720 450" role="img" aria-label="Abstract flow-editor canvas: a trigger fans out to two parallel steps, joins at an approval, and ends.">
+            <defs>
+              <pattern id="fm-dots-a" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle class="dot" cx="2" cy="2" r="1"></circle>
+              </pattern>
+            </defs>
+            <rect class="surface" x="0" y="0" width="720" height="450"></rect>
+            <rect fill="url(#fm-dots-a)" x="0" y="0" width="720" height="450"></rect>
+
+            <path class="edge" d="M164,211 C205,211 200,91 240,91"></path>
+            <path class="edge" d="M164,211 C205,211 200,331 240,331"></path>
+            <path class="edge" d="M380,91 C420,91 416,211 456,211"></path>
+            <path class="edge" d="M380,331 C420,331 416,211 456,211"></path>
+            <path class="edge" d="M596,211 C614,211 618,211 636,211"></path>
+
+            <path class="runline" d="M164,211 C205,211 200,91 240,91 L380,91 C420,91 416,211 456,211 L596,211 C614,211 618,211 636,211" pathLength="1"></path>
+
+            <g><rect class="pill" x="185" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="185" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="269.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="269.5" width="18" height="3" rx="1"></rect></g>
+
+            <g>
+              <rect class="halo halo-0" x="21" y="173" width="146" height="76" rx="10"></rect>
+              <rect class="card" x="24" y="176" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-trigger" x="27" y="182" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="36" y="194">Trigger</text>
+              <rect class="titleGreek" x="36" y="202" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="36" y="216" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="36" y="224" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-1" x="237" y="53" width="146" height="76" rx="10"></rect>
+              <rect class="card" x="240" y="56" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="62" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="74">Step</text>
+              <rect class="titleGreek" x="252" y="82" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="96" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="104" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="240" y="296" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="302" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="314">Step</text>
+              <rect class="titleGreek" x="252" y="322" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="336" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="344" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-2" x="453" y="169" width="146" height="84" rx="10"></rect>
+              <rect class="card" x="456" y="172" width="140" height="78" rx="8"></rect>
+              <rect class="bar bar-approval" x="459" y="178" width="4" height="66" rx="2"></rect>
+              <text class="kindLabel" x="468" y="190">Approval</text>
+              <rect class="titleGreek" x="468" y="198" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="468" y="212" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="468" y="220" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-3" x="633" y="180" width="68" height="62" rx="10"></rect>
+              <rect class="card" x="636" y="183" width="62" height="56" rx="8"></rect>
+              <rect class="bar bar-end" x="639" y="189" width="4" height="44" rx="2"></rect>
+              <text class="kindLabel" x="648" y="201">End</text>
+              <rect class="subGreek" x="648" y="211" width="38" height="3" rx="1"></rect>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="caption">Flow editor</figcaption>
+      </figure>
+    </div>
+    <p><code>&lt;FlowMock caption /&gt;</code> — the default frame. A mint segment loops the trigger → step → approval → end route every 7 seconds; each node it passes gets a brief halo pulse.</p>
+  </div>
+
+  <div class="specimen-card">
+    <div class="head">
+      <div class="num">02</div>
+      <h3>Static</h3>
+      <div class="tag">running={false} / reduced motion</div>
+    </div>
+    <div class="fm">
+      <figure class="figure">
+        <div class="frame size-md static">
+          <svg class="canvas" viewBox="0 0 720 450" role="img" aria-label="Abstract flow-editor canvas, static: the full run route rendered as a solid mint path.">
+            <defs>
+              <pattern id="fm-dots-b" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle class="dot" cx="2" cy="2" r="1"></circle>
+              </pattern>
+            </defs>
+            <rect class="surface" x="0" y="0" width="720" height="450"></rect>
+            <rect fill="url(#fm-dots-b)" x="0" y="0" width="720" height="450"></rect>
+
+            <path class="edge" d="M164,211 C205,211 200,91 240,91"></path>
+            <path class="edge" d="M164,211 C205,211 200,331 240,331"></path>
+            <path class="edge" d="M380,91 C420,91 416,211 456,211"></path>
+            <path class="edge" d="M380,331 C420,331 416,211 456,211"></path>
+            <path class="edge" d="M596,211 C614,211 618,211 636,211"></path>
+
+            <path class="runline" d="M164,211 C205,211 200,91 240,91 L380,91 C420,91 416,211 456,211 L596,211 C614,211 618,211 636,211" pathLength="1"></path>
+
+            <g><rect class="pill" x="185" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="185" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="269.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="269.5" width="18" height="3" rx="1"></rect></g>
+
+            <g>
+              <rect class="card" x="24" y="176" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-trigger" x="27" y="182" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="36" y="194">Trigger</text>
+              <rect class="titleGreek" x="36" y="202" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="36" y="216" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="36" y="224" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="240" y="56" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="62" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="74">Step</text>
+              <rect class="titleGreek" x="252" y="82" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="96" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="104" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="240" y="296" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="302" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="314">Step</text>
+              <rect class="titleGreek" x="252" y="322" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="336" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="344" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="456" y="172" width="140" height="78" rx="8"></rect>
+              <rect class="bar bar-approval" x="459" y="178" width="4" height="66" rx="2"></rect>
+              <text class="kindLabel" x="468" y="190">Approval</text>
+              <rect class="titleGreek" x="468" y="198" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="468" y="212" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="468" y="220" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="636" y="183" width="62" height="56" rx="8"></rect>
+              <rect class="bar bar-end" x="639" y="189" width="4" height="44" rx="2"></rect>
+              <text class="kindLabel" x="648" y="201">End</text>
+              <rect class="subGreek" x="648" y="211" width="38" height="3" rx="1"></rect>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="caption">Static · reduced motion</figcaption>
+      </figure>
+    </div>
+    <p><code>&lt;FlowMock running={false} /&gt;</code> — the full route as a solid mint path, no dash travel, no pulse. This is also exactly what <code>prefers-reduced-motion: reduce</code> renders for the animated variant.</p>
+  </div>
+
+  <div class="specimen-card">
+    <div class="head">
+      <div class="num">03</div>
+      <h3>Small</h3>
+      <div class="tag">size="sm"</div>
+    </div>
+    <div class="fm">
+      <figure class="figure">
+        <div class="frame size-sm">
+          <svg class="canvas" viewBox="0 0 720 450" role="img" aria-label="Abstract flow-editor canvas at the small frame size.">
+            <defs>
+              <pattern id="fm-dots-c" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle class="dot" cx="2" cy="2" r="1"></circle>
+              </pattern>
+            </defs>
+            <rect class="surface" x="0" y="0" width="720" height="450"></rect>
+            <rect fill="url(#fm-dots-c)" x="0" y="0" width="720" height="450"></rect>
+
+            <path class="edge" d="M164,211 C205,211 200,91 240,91"></path>
+            <path class="edge" d="M164,211 C205,211 200,331 240,331"></path>
+            <path class="edge" d="M380,91 C420,91 416,211 456,211"></path>
+            <path class="edge" d="M380,331 C420,331 416,211 456,211"></path>
+            <path class="edge" d="M596,211 C614,211 618,211 636,211"></path>
+
+            <path class="runline" d="M164,211 C205,211 200,91 240,91 L380,91 C420,91 416,211 456,211 L596,211 C614,211 618,211 636,211" pathLength="1"></path>
+
+            <g><rect class="pill" x="185" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="185" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="193" y="269.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="144" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="149.5" width="18" height="3" rx="1"></rect></g>
+            <g><rect class="pill" x="401" y="264" width="34" height="14" rx="7"></rect><rect class="pillGreek" x="409" y="269.5" width="18" height="3" rx="1"></rect></g>
+
+            <g>
+              <rect class="halo halo-0" x="21" y="173" width="146" height="76" rx="10"></rect>
+              <rect class="card" x="24" y="176" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-trigger" x="27" y="182" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="36" y="194">Trigger</text>
+              <rect class="titleGreek" x="36" y="202" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="36" y="216" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="36" y="224" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-1" x="237" y="53" width="146" height="76" rx="10"></rect>
+              <rect class="card" x="240" y="56" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="62" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="74">Step</text>
+              <rect class="titleGreek" x="252" y="82" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="96" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="104" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="card" x="240" y="296" width="140" height="70" rx="8"></rect>
+              <rect class="bar bar-step" x="243" y="302" width="4" height="58" rx="2"></rect>
+              <text class="kindLabel" x="252" y="314">Step</text>
+              <rect class="titleGreek" x="252" y="322" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="252" y="336" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="252" y="344" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-2" x="453" y="169" width="146" height="84" rx="10"></rect>
+              <rect class="card" x="456" y="172" width="140" height="78" rx="8"></rect>
+              <rect class="bar bar-approval" x="459" y="178" width="4" height="66" rx="2"></rect>
+              <text class="kindLabel" x="468" y="190">Approval</text>
+              <rect class="titleGreek" x="468" y="198" width="77" height="5" rx="1.5"></rect>
+              <rect class="subGreek" x="468" y="212" width="95.2" height="3" rx="1"></rect>
+              <rect class="subGreek" x="468" y="220" width="61.6" height="3" rx="1"></rect>
+            </g>
+            <g>
+              <rect class="halo halo-3" x="633" y="180" width="68" height="62" rx="10"></rect>
+              <rect class="card" x="636" y="183" width="62" height="56" rx="8"></rect>
+              <rect class="bar bar-end" x="639" y="189" width="4" height="44" rx="2"></rect>
+              <text class="kindLabel" x="648" y="201">End</text>
+              <rect class="subGreek" x="648" y="211" width="38" height="3" rx="1"></rect>
+            </g>
+          </svg>
+        </div>
+      </figure>
+    </div>
+    <p><code>&lt;FlowMock size="sm" /&gt;</code> — the 480px frame for card slots (the Automate cards, DetailHero illustrations on narrow layouts).</p>
+  </div>
+
+</div>
+
+<div style="max-width: 1280px; margin: 0 auto var(--space-12); padding: 0 var(--space-12); color: var(--c-cobalt-700); font-size: 14px; line-height: 1.6;">
+  <p><strong>Rules.</strong> Tokens only; greeked content, no real text beyond the node kind labels; nodes are rectangles because they <em>do</em> work (hexes indicate); node bars are mint (trigger), lavender (steps and approval), vermillion (end); the run-line is <code>--c-mint-500</code>; no orange anywhere in this component.</p>
+  <p>The React component lives in <a href="../../docusaurus-preset/src/components/FlowMock/FlowMock.jsx" style="color: var(--c-blue-cobalt);"><code>docusaurus-preset/src/components/FlowMock/</code></a>. Props: <code>size</code> ('sm' | 'md'), <code>caption</code> (string, or <code>true</code> for the default label), <code>running</code> (default <code>true</code>). Import with <code>import {FlowMock} from '@conduction/docusaurus-preset/components';</code>.</p>
+</div>
+
+</body>
+</html>

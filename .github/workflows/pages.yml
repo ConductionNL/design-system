@@ -46,6 +46,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Site build observed well under 5 min; 20 is a loose upper bound.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -101,6 +103,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # Pages deploy is a single action step, observed in seconds; 15 is a loose upper bound.
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

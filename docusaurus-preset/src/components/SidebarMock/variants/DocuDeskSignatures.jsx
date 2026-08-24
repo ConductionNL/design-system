@@ -1,5 +1,5 @@
 /**
- * DocuDesk · document sidebar, Signatures tab.
+ * Filinq · document sidebar, Signatures tab.
  *
  * List of recipients with status pip: signed (mint), pending (orange),
  * blocked / declined (red). Avatar colour mix matches AppMock palette.

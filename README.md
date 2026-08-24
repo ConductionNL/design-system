@@ -25,7 +25,7 @@ This kit documents how Conduction looks, sounds, and behaves on every surface, w
 The kit is the visual spine for:
 
 - **`connext.conduction.nl`**, the ConNext public product site (primary surface)
-- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, OpenConnector, DocuDesk, LaunchPad, etc.)
+- **App UIs** built on Nextcloud (OpenRegister, OpenCatalogi, Integriq, Filinq, LaunchPad, etc.)
 - **`docs.conduction.nl`**, technical documentation
 - **Presentations, offers, print**, the same palette, type, and hex motif apply
 
@@ -74,10 +74,10 @@ We shifted from *consultancy* to *product company*, and from *government-first* 
 
 This distinction holds across all communication:
 
-- **App** = software we build and ship. Concrete, installable. *OpenCatalogi*, *OpenRegister*, *DocuDesk*.
+- **App** = software we build and ship. Concrete, installable. *OpenCatalogi*, *OpenRegister*, *Filinq*.
 - **Solution** = what a customer achieves with one or more apps. *WOO compliance*, *zaakafhandeling*, *softwarecatalog*.
 
-Never write "our WOO app", there isn't one. Write "our WOO solution, built on OpenCatalogi and OpenConnector."
+Never write "our WOO app", there isn't one. Write "our WOO solution, built on OpenCatalogi and Integriq."
 
 ### CTA hierarchy, download-pressure, not upgrade-pressure
 

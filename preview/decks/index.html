@@ -13,12 +13,11 @@
     background: var(--conduction-color-background-inverse);
     color: white;
     padding: 80px 64px 64px;
-    border-radius: 0;
   }
   .hero .crumb { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-cobalt-200); margin-bottom: var(--space-4); }
   .hero .crumb a { color: var(--c-cobalt-200); text-decoration: none; }
   .hero h1 { color: white; font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
-  .hero p { color: var(--c-cobalt-100); font-size: 18px; margin-top: var(--space-5); max-width: 64ch; line-height: 1.5; }
+  .hero p { color: var(--c-cobalt-100); font-size: 18px; margin-top: var(--space-5); max-width: 66ch; line-height: 1.5; }
   .hero .meta { display: flex; gap: var(--space-8); margin-top: var(--space-8); font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-200); flex-wrap: wrap; }
   .hero .meta span strong { display: block; color: white; font-family: var(--conduction-typography-font-family-body); font-size: 15px; font-weight: 600; margin-top: 4px; }
 
@@ -31,7 +30,7 @@
 
   .cta {
     max-width: 1280px; margin: var(--space-6) auto 0; padding: 0 var(--space-12);
-    display: flex; gap: var(--space-3);
+    display: flex; gap: var(--space-3); flex-wrap: wrap;
   }
   .btn {
     display: inline-flex; align-items: center; gap: var(--space-2);
@@ -44,76 +43,101 @@
   .btn-secondary { background: white; color: var(--c-blue-cobalt); border: 1px solid var(--c-cobalt-200); }
   .btn-secondary:hover { border-color: var(--c-blue-cobalt); }
 
+  .usage { max-width: 1280px; margin: var(--space-10) auto 0; padding: 0 var(--space-12); }
+  .usage pre {
+    background: var(--c-cobalt-900); color: var(--c-cobalt-100);
+    border-radius: var(--radius-md); padding: var(--space-6);
+    font-family: var(--conduction-typography-font-family-code); font-size: 12.5px; line-height: 1.6;
+    overflow-x: auto;
+  }
+  .usage pre .t { color: #8FB0E8; }
+  .usage pre .a { color: var(--c-orange-knvb); }
+  .usage pre .c { color: var(--c-cobalt-400); }
+  .usage .note { font-size: 13px; color: var(--c-cobalt-700); margin-top: var(--space-3); line-height: 1.6; }
+  .usage .note code { font-family: var(--conduction-typography-font-family-code); color: var(--c-blue-cobalt); }
+
   .grid {
-    max-width: 1280px;
-    margin: 48px auto 0;
-    padding: 0 var(--space-12);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
+    max-width: 1280px; margin: 40px auto 0; padding: 0 var(--space-12);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5);
   }
   .layout-tile {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    box-shadow: var(--shadow-1);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    background: white; border-radius: var(--radius-md); padding: var(--space-4);
+    box-shadow: var(--shadow-1); display: flex; flex-direction: column; gap: var(--space-3);
     border: 1px solid var(--c-cobalt-100);
   }
   .layout-tile .num { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); letter-spacing: 0.06em; }
+  .layout-tile .num code { color: var(--c-blue-cobalt); }
   .layout-tile h3 { font-size: var(--fs-base); font-weight: var(--fw-semibold); }
   .layout-tile p { color: var(--c-cobalt-700); font-size: var(--fs-xs); line-height: 1.5; }
   .layout-tile .preview {
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    background: var(--c-cobalt-50);
-    position: relative;
-    margin-bottom: var(--space-2);
+    aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden;
+    background: var(--c-cobalt-50); position: relative; margin-bottom: var(--space-2);
   }
 
   /* Layout previews — every slide layout in miniature */
   .pv { position: absolute; inset: 0; padding: 12%; display: flex; flex-direction: column; }
+  .hexp { clip-path: var(--hex-pointy-top); }
+  /* Flat: kill any shadow leaking from preview.css generic .card onto mini-cards */
+  .layout-tile .preview * { box-shadow: none; }
 
-  .pv-intro { background: white; padding: 8%; flex-direction: row; gap: 8px; align-items: center; }
-  .pv-intro .av { width: 35%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
-  .pv-intro .body { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-  .pv-intro .body .h { height: 6px; background: var(--c-cobalt-900); border-radius: 1px; width: 70%; }
-  .pv-intro .body .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
-  .pv-intro .body .nu { height: 6px; background: var(--c-terracotta-300); border-left: 2px solid var(--c-orange-knvb); border-radius: 0 1px 1px 0; margin-top: 2px; }
-
-  .pv-title { background: var(--c-cobalt-900); justify-content: center; align-items: flex-start; }
+  .pv-title { background: var(--c-blue-cobalt); justify-content: center; align-items: flex-start; }
   .pv-title .l1 { color: white; font-size: 9px; font-weight: 700; line-height: 1.1; }
   .pv-title .l2 { color: var(--c-cobalt-200); font-size: 7px; margin-top: 2px; }
-  .pv-title .hex { width: 8px; height: 9px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); margin-bottom: 6px; }
+  .pv-title .hex { position: absolute; top: 12%; right: 9%; width: 14px; height: 16px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+
+  .pv-intro { background: white; padding: 8%; flex-direction: row; gap: 8px; align-items: center; }
+  .pv-intro .av { width: 35%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; }
+  .pv-intro .body { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .pv-intro .body .h { height: 6px; background: var(--c-cobalt-900); border-radius: 1px; width: 70%; }
+  .pv-intro .body .lab { height: 3px; background: var(--c-orange-knvb); border-radius: 1px; width: 30%; margin-top: 2px; }
+  .pv-intro .body .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
 
   .pv-agenda { background: white; padding: 10%; }
   .pv-agenda .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 6px; }
   .pv-agenda .item { display: flex; gap: 4px; align-items: center; margin-bottom: 3px; }
   .pv-agenda .item .num { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .pv-agenda .item:first-child .num { background: var(--c-orange-knvb); }
   .pv-agenda .item .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; flex: 1; }
 
   .pv-content { background: white; padding: 10%; }
   .pv-content .h { width: 50%; height: 5px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
-  .pv-content .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; margin-bottom: 2px; }
+  .pv-content .bl { display: flex; gap: 4px; align-items: center; margin-bottom: 3px; }
+  .pv-content .bl span.x { width: 5px; height: 6px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; }
+  .pv-content .bl span.ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; flex: 1; }
 
-  .pv-two { background: white; padding: 10%; }
-  .pv-two .h { width: 50%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
-  .pv-two .row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
-  .pv-two .col { background: var(--c-cobalt-50); border-radius: 2px; padding: 4px; }
-  .pv-two .col .ln { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
+  .pv-stats { background: white; padding: 10%; }
+  .pv-stats .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; flex: 1; align-content: center; }
+  .pv-stats .card { background: var(--c-cobalt-50); border-top: 3px solid var(--c-blue-cobalt); border-radius: 0 0 2px 2px; padding: 6px 3px; text-align: center; }
+  .pv-stats .card.accent { background: var(--c-blue-cobalt); border-top-color: var(--c-orange-knvb); }
+  .pv-stats .big { font-size: 12px; font-weight: 700; color: var(--c-blue-cobalt); line-height: 1; font-family: var(--conduction-typography-font-family-code); }
+  .pv-stats .card.accent .big { color: var(--c-orange-knvb); }
+  .pv-stats .lbl { font-size: 4px; color: var(--c-cobalt-400); margin-top: 2px; text-transform: uppercase; }
+  .pv-stats .card.accent .lbl { color: white; }
 
   .pv-quote { background: var(--c-blue-cobalt); padding: 12%; justify-content: center; }
-  .pv-quote .q { color: white; font-size: 10px; font-weight: 600; line-height: 1.2; font-style: italic; }
-  .pv-quote .a { color: var(--c-cobalt-200); font-size: 7px; margin-top: 4px; }
+  .pv-quote .q { color: white; font-size: 10px; font-weight: 600; line-height: 1.2; }
+  .pv-quote .q::before { content: "\201C"; color: var(--c-orange-knvb); font-family: serif; font-size: 18px; display: block; line-height: 0.5; margin-bottom: 4px; }
+  .pv-quote .a { color: var(--c-orange-knvb); font-size: 6px; margin-top: 6px; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--conduction-typography-font-family-code); }
 
-  .pv-app { background: white; padding: 10%; flex-direction: row; gap: 8px; align-items: center; }
-  .pv-app .glyph { width: 30%; aspect-ratio: 1; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
-  .pv-app .body { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-  .pv-app .body .h { height: 5px; background: var(--c-cobalt-900); border-radius: 1px; width: 60%; }
-  .pv-app .body .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
+  .pv-section { background: var(--c-blue-cobalt); padding: 12%; justify-content: center; }
+  .pv-section .num { font-size: 24px; font-weight: 700; color: var(--c-orange-knvb); line-height: 0.85; font-family: var(--conduction-typography-font-family-code); }
+  .pv-section .lbl { color: white; font-size: 9px; font-weight: 700; margin-top: 4px; }
+  .pv-section .cluster { position: absolute; top: 22%; right: 8%; }
+  .pv-section .cluster i { position: absolute; clip-path: var(--hex-pointy-top); display: block; }
+  .pv-section .cluster i:nth-child(1) { width: 14px; height: 16px; background: var(--c-orange-knvb); top: 0; right: 4px; }
+  .pv-section .cluster i:nth-child(2) { display: none; }
+
+  .pv-horizons { background: white; padding: 10%; }
+  .pv-horizons .h { width: 50%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-horizons .row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+  .pv-horizons .card { background: var(--c-cobalt-50); border-left: 3px solid var(--c-orange-knvb); border-radius: 0 2px 2px 0; padding: 4px; }
+  .pv-horizons .card .ln { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
+
+  .pv-spotlight { background: white; padding: 10%; flex-direction: row; gap: 8px; align-items: center; }
+  .pv-spotlight .glyph { width: 30%; aspect-ratio: 100/115; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; }
+  .pv-spotlight .body { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .pv-spotlight .body .h { height: 5px; background: var(--c-cobalt-900); border-radius: 1px; width: 60%; }
+  .pv-spotlight .body .ln { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; }
 
   .pv-compare { background: white; padding: 10%; }
   .pv-compare .h { width: 40%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 5px; }
@@ -122,44 +146,125 @@
   .pv-compare .col-bad { background: var(--c-terracotta-300); border-radius: 2px; padding: 4px; }
   .pv-compare .col-good .b, .pv-compare .col-bad .b { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
 
+  .pv-columns { background: white; padding: 10%; }
+  .pv-columns .h { width: 50%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-columns .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; flex: 1; }
+  .pv-columns .card { background: var(--c-cobalt-50); border-top: 3px solid var(--c-blue-cobalt); border-radius: 0 0 2px 2px; padding: 4px; }
+  .pv-columns .card.accent { border-top-color: var(--c-orange-knvb); }
+  .pv-columns .card .ln { height: 2px; background: var(--c-cobalt-200); border-radius: 1px; margin-bottom: 2px; }
+
+  .pv-questions { background: white; padding: 10%; }
+  .pv-questions .h { width: 40%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 6px; }
+  .pv-questions .row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; flex: 1; }
+  .pv-questions .q { display: flex; gap: 4px; align-items: flex-start; }
+  .pv-questions .q .num { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
+  .pv-questions .q .lines { flex: 1; }
+  .pv-questions .q .a { height: 2px; background: var(--c-cobalt-700); border-radius: 1px; width: 80%; }
+  .pv-questions .q .b { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; margin-top: 1px; }
+
+  .pv-image { background: var(--c-blue-cobalt); padding: 12%; justify-content: center; }
+  .pv-image .lbl { color: white; font-size: 9px; font-weight: 700; }
+  .pv-image .ln { color: var(--c-cobalt-200); font-size: 6px; margin-top: 3px; }
+  .pv-image .cluster { position: absolute; top: 22%; right: 8%; }
+  .pv-image .cluster i { position: absolute; clip-path: var(--hex-pointy-top); display: block; }
+  .pv-image .cluster i:nth-child(1) { width: 14px; height: 16px; background: var(--c-orange-knvb); top: 0; right: 4px; }
+  .pv-image .cluster i:nth-child(2) { display: none; }
+
+  .pv-timeline { background: white; padding: 10%; }
+  .pv-timeline .h { width: 45%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 8px; }
+  .pv-timeline .track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; flex: 1; }
+  .pv-timeline .step { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .pv-timeline .node { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+  .pv-timeline .step:first-child .node { background: var(--c-orange-knvb); }
+  .pv-timeline .card { background: var(--c-cobalt-50); border-radius: 1px; width: 100%; flex: 1; }
+  .pv-timeline .step:first-child .card { background: var(--c-blue-cobalt); }
+
+  .pv-contact { background: white; padding: 10%; }
+  .pv-contact .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 5px; }
+  .pv-contact .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px; }
+  .pv-contact .nc { background: var(--c-blue-cobalt); border-top: 2px solid var(--c-orange-knvb); border-radius: 0 0 2px 2px; height: 20px; }
+  .pv-contact .person { display: flex; gap: 3px; align-items: center; }
+  .pv-contact .av { width: 9px; height: 11px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); flex-shrink: 0; }
+  .pv-contact .lines { flex: 1; }
+  .pv-contact .lines .a { height: 2px; background: var(--c-cobalt-700); border-radius: 1px; width: 50%; }
+  .pv-contact .lines .b { height: 2px; background: var(--c-cobalt-100); border-radius: 1px; width: 70%; margin-top: 1px; }
+
   .pv-logos { background: white; padding: 10%; justify-content: center; }
   .pv-logos .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 8px; }
   .pv-logos .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
   .pv-logos .row span { aspect-ratio: 2/1; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); border-radius: 1px; }
+  .pv-logos .row span.f { background: white; border-color: var(--c-blue-cobalt); }
 
-  .pv-stats { background: var(--c-cobalt-50); padding: 10%; }
-  .pv-stats .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex: 1; align-content: center; }
-  .pv-stats .stat { text-align: center; }
-  .pv-stats .big { font-size: 14px; font-weight: 700; color: var(--c-blue-cobalt); line-height: 1; }
-  .pv-stats .lbl { font-size: 5px; color: var(--c-cobalt-400); margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+  /* Product-layout previews */
+  .pv-appcover { background: var(--c-blue-cobalt); padding: 10%; flex-direction: row; gap: 6px; align-items: center; }
+  .pv-appcover .l { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .pv-appcover .hex { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .pv-appcover .t { height: 6px; width: 70%; background: #fff; border-radius: 1px; margin-top: 3px; }
+  .pv-appcover .s { height: 2px; width: 90%; background: var(--c-cobalt-200); border-radius: 1px; }
+  .pv-appcover .m { flex: 1; align-self: stretch; background: var(--c-cobalt-700); border-radius: 2px; display: flex; flex-direction: column; overflow: hidden; }
+  .pv-appcover .m .bar { height: 6px; background: var(--c-cobalt-900); }
+  .pv-appcover .m .b { flex: 1; margin: 3px; background: #fff; border-radius: 1px; }
 
-  .pv-divider { background: var(--c-cobalt-900); padding: 12%; justify-content: center; }
-  .pv-divider .num { font-size: 18px; font-weight: 700; color: var(--c-orange-knvb); line-height: 1; font-family: var(--conduction-typography-font-family-code); }
-  .pv-divider .lbl { color: white; font-size: 9px; font-weight: 600; margin-top: 4px; }
+  .pv-how { background: white; padding: 10%; }
+  .pv-how .h { width: 45%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-how .row { display: flex; gap: 4px; align-items: stretch; flex: 1; }
+  .pv-how .c { flex: 1; background: var(--c-cobalt-50); border-radius: 2px; padding: 4px; }
+  .pv-how .c .x { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .pv-how .band { height: 8px; background: var(--c-blue-cobalt); border-radius: 1px; margin-top: 5px; }
 
-  .pv-image { background: linear-gradient(135deg, var(--c-cobalt-700), var(--c-blue-cobalt)); padding: 12%; align-items: flex-end; }
-  .pv-image .lbl { color: white; font-size: 8px; font-weight: 600; }
-  .pv-image .ln { color: var(--c-cobalt-200); font-size: 6px; margin-top: 2px; }
+  .pv-ai { background: white; padding: 10%; }
+  .pv-ai .row { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; flex: 1; align-content: center; }
+  .pv-ai .c { background: var(--c-cobalt-50); border-radius: 2px; padding: 5px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .pv-ai .c .x { width: 7px; height: 8px; clip-path: var(--hex-pointy-top); background: var(--c-orange-knvb); }
+  .pv-ai .c .ln { height: 2px; width: 80%; background: var(--c-cobalt-100); border-radius: 1px; }
+  .pv-ai .band { height: 7px; background: var(--c-blue-cobalt); border-radius: 1px; margin-top: 5px; }
 
-  .pv-closing { background: var(--c-cobalt-900); padding: 12%; justify-content: center; align-items: center; text-align: center; }
-  .pv-closing .h { color: white; font-size: 11px; font-weight: 700; }
-  .pv-closing .l { color: var(--c-cobalt-200); font-size: 6px; margin-top: 4px; }
+  .pv-integ { background: white; padding: 10%; }
+  .pv-integ .gl { height: 2px; width: 35%; background: var(--c-blue-cobalt); border-radius: 1px; margin: 0 0 3px; }
+  .pv-integ .row { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; margin-bottom: 5px; }
+  .pv-integ .c { background: var(--c-cobalt-50); border-radius: 1px; height: 16px; }
+  .pv-integ .c.req { border-top: 2px solid var(--c-orange-knvb); }
 
-  .pv-contact { background: white; padding: 10%; }
-  .pv-contact .h { width: 30%; height: 4px; background: var(--c-cobalt-700); border-radius: 1px; margin-bottom: 6px; }
-  .pv-contact .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; margin: 0; max-width: none; }
-  .pv-contact .person { display: flex; gap: 3px; align-items: center; }
-  .pv-contact .av { width: 9px; height: 11px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); flex-shrink: 0; }
-  .pv-contact .lines { flex: 1; }
-  .pv-contact .lines .a { height: 2px; background: var(--c-cobalt-700); border-radius: 1px; width: 70%; }
-  .pv-contact .lines .b { height: 2px; background: var(--c-orange-knvb); border-radius: 1px; width: 50%; margin-top: 1px; }
+  .pv-compete { background: white; padding: 10%; }
+  .pv-compete .h { width: 45%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 5px; }
+  .pv-compete .track { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; margin-bottom: 4px; }
+  .pv-compete .track i { justify-self: center; width: 8px; height: 8px; border-radius: 1px; background: var(--c-blue-cobalt); }
+  .pv-compete .track i:first-child { background: var(--c-orange-knvb); }
+  .pv-compete .row { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; flex: 1; }
+  .pv-compete .c { background: var(--c-cobalt-50); border-radius: 1px; }
+  .pv-compete .c:first-child { background: var(--c-blue-cobalt); }
+
+  .pv-leaves { background: white; padding: 10%; justify-content: center; }
+  .pv-leaves .h { width: 55%; height: 4px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 6px; }
+  .pv-leaves .row { display: grid; grid-template-columns: repeat(6,1fr); gap: 3px; }
+  .pv-leaves .row span { height: 14px; background: var(--c-cobalt-50); border-radius: 1px; }
+  .pv-leaves .stems { display: grid; grid-template-columns: repeat(6,1fr); height: 6px; }
+  .pv-leaves .stems i { justify-self: center; width: 2px; height: 100%; background: var(--c-cobalt-100); }
+  .pv-leaves .trunk { height: 9px; background: var(--c-blue-cobalt); border-radius: 1px; margin-top: 2px; }
+
+  .pv-pricing { background: white; padding: 10%; justify-content: center; }
+  .pv-pricing .hd { height: 6px; background: var(--c-blue-cobalt); border-radius: 1px; margin-bottom: 3px; }
+  .pv-pricing .tr { display: grid; grid-template-columns: 1.3fr 1fr 1fr 0.9fr; gap: 4px; margin-bottom: 3px; align-items: center; }
+  .pv-pricing .tr span { height: 3px; background: var(--c-cobalt-100); border-radius: 1px; }
+  .pv-pricing .tr span.us { background: var(--c-orange-knvb); }
+
+  /* Backgrounds download section */
+  .section-head { max-width: 1280px; margin: 72px auto 0; padding: 0 var(--space-12); }
+  .section-head h2 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); }
+  .section-head p { color: var(--c-cobalt-700); font-size: var(--fs-sm); margin-top: var(--space-2); max-width: 68ch; line-height: 1.5; }
+  .dl-grid { max-width: 1280px; margin: var(--space-6) auto 0; padding: 0 var(--space-12); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .dl-tile { background: white; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .dl-tile .thumb { aspect-ratio: 16/9; border-radius: var(--radius-sm); overflow: hidden; background: var(--c-cobalt-50); }
+  .dl-tile .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dl-tile h3 { font-size: var(--fs-base); font-weight: var(--fw-semibold); }
+  .dl-tile p { color: var(--c-cobalt-700); font-size: var(--fs-xs); line-height: 1.5; }
+  .dl-tile .links { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: auto; }
+  .dl-tile .links a { font-family: var(--conduction-typography-font-family-code); font-size: 11px; padding: 5px 10px; border-radius: var(--radius-sm); background: var(--c-cobalt-50); color: var(--c-blue-cobalt); text-decoration: none; border: 1px solid var(--c-cobalt-100); }
+  .dl-tile .links a:hover { border-color: var(--c-blue-cobalt); }
 
   .footer {
-    max-width: 1280px;
-    margin: 80px auto 64px;
-    padding: 0 var(--space-12);
-    color: var(--c-cobalt-400);
-    font-size: 13px;
+    max-width: 1280px; margin: 80px auto 64px; padding: 0 var(--space-12);
+    color: var(--c-cobalt-400); font-size: 13px;
     display: flex; justify-content: space-between; align-items: baseline;
   }
   .footer code { font-family: var(--conduction-typography-font-family-code); }
@@ -170,123 +275,245 @@
 
 <div class="hero">
   <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; <a href="../print/index.html">Print</a> &nbsp;/&nbsp; Decks</div>
-  <h1>Slide deck templates.</h1>
-  <p>Twelve layouts, one HTML file. 16:9 landscape, tokens-driven, every slide is a <code>section.slide</code> you can lift, edit, and re-order. Print to PDF for sharing, export to .pptx later. Same hex motif, same orange-once-per-screen rule, same Figtree.</p>
+  <h1>Slide deck components.</h1>
+  <p>Twenty-three 16:9 layouts, authored as the <code>&lt;cn-deck&gt;</code> / <code>&lt;cn-slide&gt;</code> component library: fifteen for a session deck, plus the product / ConNext app layouts. Tokens-driven, hex motif, orange-once-per-slide. The HTML is the source of truth; the matching <a href="odf/template.odp" download style="color:var(--c-cobalt-100);">.odp</a> is exported from it. The honeycomb slide <a href="#backgrounds" style="color:var(--c-cobalt-100);">background is downloadable below</a>.</p>
   <div class="meta">
     <span>Aspect<strong>16:9 (1280&times;720)</strong></span>
-    <span>Layouts<strong>13</strong></span>
-    <span>Output<strong>HTML &rarr; PDF (now) &middot; .pptx (later)</strong></span>
+    <span>Layouts<strong>23</strong></span>
+    <span>Output<strong>HTML &rarr; Present &middot; PDF &middot; .odp</strong></span>
   </div>
 </div>
 
 <div class="lead">
-  <h2>Thirteen layouts</h2>
-  <span class="meta">deck-template.html</span>
+  <h2>The component</h2>
+  <span class="meta">cn-deck.css &middot; cn-deck.js</span>
 </div>
 
 <div class="cta">
-  <a class="btn btn-primary" href="template.html">Open the deck &rarr;</a>
+  <a class="btn btn-primary" href="template.html">Open the example deck &rarr;</a>
   <a class="btn btn-secondary" href="template.html" target="_blank">Open in new tab</a>
   <a class="btn btn-secondary" href="odf/template.odp" download>Download <strong style="color: var(--c-blue-cobalt); margin-left: 4px;">.odp</strong></a>
+</div>
+
+<div class="usage">
+  <pre><span class="c">&lt;!-- one stylesheet, one script, no build step --&gt;</span>
+<span class="t">&lt;link</span> rel=<span class="a">"stylesheet"</span> href=<span class="a">"cn-deck.css"</span><span class="t">&gt;</span>
+
+<span class="t">&lt;cn-deck</span> total=<span class="a">"16"</span><span class="t">&gt;</span>
+  <span class="t">&lt;cn-slide</span> layout=<span class="a">"title"</span> eyebrow=<span class="a">"Conduction &middot; startsessie"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Een architectuur die voor Baarn werkt.<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;p</span> class=<span class="a">"sub"</span><span class="t">&gt;</span>Sessie 1: doel, wensen en planning.<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/cn-slide&gt;</span>
+  <span class="c">&lt;!-- ...more slides... --&gt;</span>
+<span class="t">&lt;/cn-deck&gt;</span>
+
+<span class="t">&lt;script</span> src=<span class="a">"cn-deck.js"</span><span class="t">&gt;&lt;/script&gt;</span></pre>
+  <p class="note">The deck auto-numbers every slide (<code>03 / 16</code>), draws the <code>eyebrow</code> top-left, and injects each layout's hex decoration. <code>&lt;cn-deck&gt;</code> adds a Present button: fullscreen, arrow / space / PageUp-Down to navigate, Esc to exit. Opt out of a decoration with <code>nodeco</code>. Set the dark surface manually on any layout with <code>class="is-dark"</code>.</p>
 </div>
 
 <div class="grid">
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-title"><div class="hex"></div><div class="l1">Build dashboards from your own data</div><div class="l2">Conduction &middot; April 2026</div></div></div>
-    <span class="num">01 &middot; Title</span>
-    <h3>Title slide</h3>
-    <p>Cobalt-900 ground, orange hex, headline + presenter line. Always opens the deck.</p>
+    <div class="preview"><div class="pv pv-title"><div class="hex"></div><div class="l1">Een architectuur die voor Baarn werkt.</div><div class="l2">Sessie 1 &middot; juni 2026</div></div></div>
+    <span class="num">01 &middot; <code>title</code></span>
+    <h3>Title</h3>
+    <p>Cobalt honeycomb ground, one orange hex, headline + sub + meta row. Opens the deck.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-intro"><div class="av"></div><div class="body"><div class="h"></div><div class="ln" style="width:50%"></div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="nu"></div></div></div></div>
-    <span class="num">02 &middot; Speaker introduction</span>
+    <div class="preview"><div class="pv pv-intro"><div class="av"></div><div class="body"><div class="h"></div><div class="lab"></div><div class="ln"></div><div class="ln" style="width:80%"></div></div></div></div>
+    <span class="num">02 &middot; <code>intro</code></span>
     <h3>Speaker introduction</h3>
-    <p>Hex avatar plus name, role, "background / nu / vraag mij over" labels. The consultant is a person, not an avatar.</p>
+    <p>Hex monogram plus name, role, "background / nu / vraag mij over" labels. The presenter is a person.</p>
   </div>
 
   <div class="layout-tile">
     <div class="preview"><div class="pv pv-agenda"><div class="h"></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln"></span></div><div class="item"><span class="num"></span><span class="ln" style="width:60%"></span></div></div></div>
-    <span class="num">03 &middot; Agenda</span>
+    <span class="num">03 &middot; <code>agenda</code></span>
     <h3>Agenda</h3>
-    <p>Numbered hex bullets, 3 to 6 items. Use to set expectations and to navigate back to mid-deck.</p>
+    <p>Numbered hex bullets with time estimates, active item orange. 3 to 6 items.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-content"><div class="h"></div><div class="ln"></div><div class="ln" style="width:90%"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div></div></div>
-    <span class="num">04 &middot; Content</span>
+    <div class="preview"><div class="pv pv-content"><div class="h"></div><div class="bl"><span class="x"></span><span class="ln"></span></div><div class="bl"><span class="x"></span><span class="ln" style="width:80%"></span></div><div class="bl"><span class="x"></span><span class="ln" style="width:90%"></span></div></div></div>
+    <span class="num">04 &middot; <code>content</code></span>
     <h3>Content</h3>
-    <p>The workhorse. H2 + body copy or bullets. Underused on purpose, reach for two-column or app spotlight first.</p>
+    <p>The workhorse. H2 + lead paragraph + hex-orange bullets, one claim per line.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-two"><div class="h"></div><div class="row"><div class="col"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:80%"></span></div><div class="col"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:60%"></span></div></div></div></div>
-    <span class="num">05 &middot; Two-column</span>
-    <h3>Two-column</h3>
-    <p>Compare, contrast, before/after. Headers stacked above each column; equal weight.</p>
+    <div class="preview"><div class="pv pv-stats"><div class="row"><div class="card"><div class="big">7</div><div class="lbl">Partners</div></div><div class="card accent"><div class="big">30</div><div class="lbl">Read-only</div></div><div class="card"><div class="big">150</div><div class="lbl">Apps</div></div></div></div></div>
+    <span class="num">05 &middot; <code>stats</code></span>
+    <h3>Stats cards</h3>
+    <p>Three numbers in cards, the anchor one accented (dark + orange). Real numbers, not "ongeveer veel".</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-quote"><div class="q">&ldquo;Eindelijk &eacute;&eacute;n plek&hellip;&rdquo;</div><div class="a">&mdash; Marleen, gemeente X</div></div></div>
-    <span class="num">06 &middot; Quote</span>
+    <div class="preview"><div class="pv pv-quote"><div class="q">Common Ground is prachtig bedacht.</div><div class="a">het uitgangspunt</div></div></div>
+    <span class="num">06 &middot; <code>quote</code></span>
     <h3>Full-bleed quote</h3>
-    <p>Customer voice. White text on cobalt, attribution muted. Used sparingly, never two in a row.</p>
+    <p>Customer voice on cobalt, orange serif quote-mark. Used sparingly, never two in a row.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-app"><div class="glyph"></div><div class="body"><div class="h"></div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div></div></div></div>
-    <span class="num">07 &middot; App spotlight</span>
-    <h3>App spotlight</h3>
-    <p>Hex glyph left, name + tagline + three bullets right. One slide per app. Reuse for partner spotlight.</p>
+    <div class="preview"><div class="pv pv-section"><div class="cluster"><i></i><i></i></div><div class="num">02</div><div class="lbl">Het speelveld in Baarn.</div></div></div>
+    <span class="num">07 &middot; <code>section</code></span>
+    <h3>Section divider</h3>
+    <p>Big mono number, section title, hex cluster. Resets attention between chapters.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-horizons"><div class="h"></div><div class="row"><div class="card"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:70%"></span></div><div class="card"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:60%"></span></div></div></div></div>
+    <span class="num">08 &middot; <code>horizons</code></span>
+    <h3>Two-column cards</h3>
+    <p>Two carded columns with mono kickers and orange accent. Now / straks, met / zonder.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-spotlight"><div class="glyph"></div><div class="body"><div class="h"></div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div></div></div></div>
+    <span class="num">09 &middot; <code>spotlight</code></span>
+    <h3>App / solution spotlight</h3>
+    <p>Hex glyph or monogram left, name + tagline + bullets right. One per app or solution.</p>
   </div>
 
   <div class="layout-tile">
     <div class="preview"><div class="pv pv-compare"><div class="h"></div><div class="row"><div class="col-good"><span class="b"></span><span class="b"></span><span class="b" style="width:70%"></span></div><div class="col-bad"><span class="b"></span><span class="b"></span><span class="b" style="width:60%"></span></div></div></div></div>
-    <span class="num">08 &middot; Comparison</span>
+    <span class="num">10 &middot; <code>comparison</code></span>
     <h3>Comparison</h3>
-    <p>Mint vs terracotta panels. "Met Conduction" / "Zonder Conduction" or pros/cons. Honest, not gloating.</p>
+    <p>Mint vs terracotta, check / cross bullets. Honest, not gloating, equal weight.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-logos"><div class="h"></div><div class="row"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
-    <span class="num">09 &middot; Logo wall</span>
-    <h3>Customer / partner logos</h3>
-    <p>Eight to twelve marks, equal size. Greyscale by default, colour only on the hovered/featured one.</p>
+    <div class="preview"><div class="pv pv-columns"><div class="h"></div><div class="row"><div class="card"><span class="ln"></span><span class="ln" style="width:70%"></span></div><div class="card accent"><span class="ln"></span><span class="ln"></span><span class="ln" style="width:60%"></span></div><div class="card"><span class="ln"></span><span class="ln" style="width:80%"></span></div></div></div></div>
+    <span class="num">11 &middot; <code>columns</code></span>
+    <h3>Three cards / roles</h3>
+    <p>Three card columns with top bars, middle accented. Role split, options, pillars.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-stats"><div class="row"><div class="stat"><div class="big">39k</div><div class="lbl">Tenders</div></div><div class="stat"><div class="big">73</div><div class="lbl">Clusters</div></div><div class="stat"><div class="big">6</div><div class="lbl">Apps</div></div></div></div></div>
-    <span class="num">10 &middot; Stats strip</span>
-    <h3>Stats strip</h3>
-    <p>Three numbers, three labels. Big cobalt digits, small uppercase labels. Use real numbers, not order-of-magnitude.</p>
+    <div class="preview"><div class="pv pv-questions"><div class="h"></div><div class="row"><div class="q"><span class="num"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="q"><span class="num"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="q"><span class="num"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="q"><span class="num"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div></div></div></div>
+    <span class="num">12 &middot; <code>questions</code></span>
+    <h3>Numbered grid</h3>
+    <p>Numbered hex items in two columns. Open questions, checklists, six-up grids.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-divider"><div class="num">02</div><div class="lbl">De aanpak</div></div></div>
-    <span class="num">11 &middot; Section divider</span>
-    <h3>Section divider</h3>
-    <p>Big number, section title. Resets attention between deck chapters. One per chapter, never two in a row.</p>
-  </div>
-
-  <div class="layout-tile">
-    <div class="preview"><div class="pv pv-image"><div class="lbl">Honeycomb backdrop</div><div class="ln">caption goes here</div></div></div>
-    <span class="num">12 &middot; Image / hero</span>
+    <div class="preview"><div class="pv pv-image"><div class="cluster"><i></i><i></i></div><div class="lbl">Eén stack, één cluster.</div><div class="ln">caption goes here</div></div></div>
+    <span class="num">13 &middot; <code>image</code></span>
     <h3>Image / hero</h3>
-    <p>Full-bleed photo or honeycomb backdrop, caption in the corner. The deck's only "loud" layout.</p>
+    <p>Full-bleed honeycomb, heading + lede, hex cluster, footer kicker. The "loud" layout.</p>
   </div>
 
   <div class="layout-tile">
-    <div class="preview"><div class="pv pv-contact"><div class="h"></div><div class="grid"><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div></div></div></div>
-    <span class="num">13 &middot; Contact</span>
+    <div class="preview"><div class="pv pv-timeline"><div class="h"></div><div class="track"><div class="step"><span class="node"></span><span class="card"></span></div><div class="step"><span class="node"></span><span class="card"></span></div><div class="step"><span class="node"></span><span class="card"></span></div><div class="step"><span class="node"></span><span class="card"></span></div><div class="step"><span class="node"></span><span class="card"></span></div></div></div></div>
+    <span class="num">14 &middot; <code>timeline</code></span>
+    <h3>Timeline</h3>
+    <p>Five hex nodes on a connector, cards below, first step active. Plan, roadmap, phases.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-contact"><div class="h"></div><div class="row"><div class="nc"></div><div class="nc"></div><div class="nc"></div></div><div class="person"><span class="av"></span><div class="lines"><div class="a"></div><div class="b"></div></div></div></div></div>
+    <span class="num">15 &middot; <code>contact</code></span>
     <h3>Contact / closing</h3>
-    <p>Two to four people, hex avatars, name + role + email. Last slide of every deck.</p>
+    <p>Three next-step cards plus a hex-avatar contact. Closes with a calendar invite, not "thank you".</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-logos"><div class="h"></div><div class="row"><span></span><span class="f"></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
+    <span class="num">16 &middot; <code>logo-wall</code></span>
+    <h3>Logo wall</h3>
+    <p>Eight to twelve marks on white, greyscale by default, one featured in colour.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-appcover"><div class="l"><div class="hex"></div><div class="t"></div><div class="s"></div><div class="s" style="width:60%"></div></div><div class="m"><div class="bar"></div><div class="b"></div></div></div></div>
+    <span class="num">17 &middot; <code>app-cover</code></span>
+    <h3>App cover</h3>
+    <p>Cobalt cover with an orange app-icon hex and a dashboard mock. Opens a product / app story.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-how"><div class="h"></div><div class="row"><div class="c"><span class="x"></span></div><div class="c"><span class="x"></span></div><div class="c"><span class="x"></span></div></div><div class="band"></div></div></div>
+    <span class="num">18 &middot; <code>how-it-works</code></span>
+    <h3>How it works</h3>
+    <p>Three numbered step cards with orange arrows, plus a blue takeaway band. The 1-2-3 story.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-ai"><div class="row"><div class="c"><span class="x"></span><span class="ln"></span></div><div class="c"><span class="x"></span><span class="ln"></span></div><div class="c"><span class="x"></span><span class="ln"></span></div></div><div class="band"></div></div></div>
+    <span class="num">19 &middot; <code>ai</code></span>
+    <h3>AI (three spotlights)</h3>
+    <p>Three centred cards with an orange spark hex, blue band. The "what AI does here" slide.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-integ"><div class="gl"></div><div class="row"><div class="c req"></div><div class="c"></div><div class="c"></div></div><div class="gl"></div><div class="row"><div class="c"></div><div class="c"></div><div class="c"></div></div></div></div>
+    <span class="num">20 &middot; <code>integrations</code></span>
+    <h3>Integrations grid</h3>
+    <p>Two labelled rows of three cards; the required one carries the single orange dot.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-compete"><div class="h"></div><div class="track"><i></i><i></i><i></i><i></i><i></i></div><div class="row"><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div></div></div></div>
+    <span class="num">21 &middot; <code>competitive-field</code></span>
+    <h3>Competitive field</h3>
+    <p>A node row over five cards with cost footers; our option is orange-and-cobalt.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-leaves"><div class="h"></div><div class="row"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="stems"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="trunk"></div></div></div>
+    <span class="num">22 &middot; <code>leaves-model</code></span>
+    <h3>Leaves model</h3>
+    <p>Leaf cards over a trunk bar, orange stem connectors. One trunk, many leaves, one data layer.</p>
+  </div>
+
+  <div class="layout-tile">
+    <div class="preview"><div class="pv pv-pricing"><div class="hd"></div><div class="tr"><span></span><span></span><span></span><span class="us"></span></div><div class="tr"><span></span><span></span><span></span><span class="us"></span></div><div class="tr"><span></span><span></span><span></span><span class="us"></span></div><div class="tr"><span></span><span></span><span></span><span class="us"></span></div><div class="tr"><span></span><span></span><span></span><span class="us"></span></div></div></div>
+    <span class="num">23 &middot; <code>pricing-table</code></span>
+    <h3>Pricing table</h3>
+    <p>Comparison table with the last (our) column highlighted. Market price versus ConNext.</p>
   </div>
 
 </div>
 
+<div class="section-head" id="backgrounds">
+  <h2>Slide backgrounds</h2>
+  <p>The honeycomb slide ground, for reuse in decks and print. One SVG holds the mesh (and, on the title variant, the left readability fade and the white Conduction-C cell). PNGs are exported at 1280&times;720 and 2560&times;1440 (@2x).</p>
+</div>
+
+<div class="dl-grid">
+  <div class="dl-tile">
+    <div class="thumb"><img src="../../brand/assets/backgrounds/honeycomb-slide-c-white.png" alt="Cobalt honeycomb slide background with left fade and white Conduction C" loading="lazy"></div>
+    <h3>Title background</h3>
+    <p>Cobalt honeycomb + left readability fade + the white Conduction-C cell (bottom-right). The title / section / quote ground.</p>
+    <div class="links">
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-c-white.svg" download>SVG</a>
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-c-white.png" download>PNG</a>
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-c-white@2x.png" download>PNG @2x</a>
+    </div>
+  </div>
+  <div class="dl-tile">
+    <div class="thumb"><img src="../../brand/assets/backgrounds/honeycomb-slide-plain.png" alt="Plain cobalt honeycomb slide background" loading="lazy"></div>
+    <h3>Plain background</h3>
+    <p>Cobalt honeycomb, no fade and no mark. The neutral ground when you place your own content or logo.</p>
+    <div class="links">
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-plain.svg" download>SVG</a>
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-plain.png" download>PNG</a>
+      <a href="../../brand/assets/backgrounds/honeycomb-slide-plain@2x.png" download>PNG @2x</a>
+    </div>
+  </div>
+  <div class="dl-tile">
+    <div class="thumb"><img src="../../brand/assets/backgrounds/honeycomb-slide-plain.png" alt="Seamless honeycomb mesh over cobalt" loading="lazy"></div>
+    <h3>Seamless mesh tile</h3>
+    <p>Transparent white hex outlines, one repeat unit. Tile it over any cobalt surface with <code>background-repeat</code>.</p>
+    <div class="links">
+      <a href="../../brand/assets/backgrounds/honeycomb-mesh-dark.svg" download>SVG</a>
+    </div>
+  </div>
+</div>
+
 <div class="footer">
-  <span>Conduction Design System &middot; <code>theme-conduction-2026</code></span>
+  <span>Conduction Design System &middot; <code>cn-deck</code></span>
   <span><a href="../index.html">&larr; Back to system</a> &nbsp;&middot;&nbsp; <a href="../print/index.html">Up to Print</a></span>
 </div>
 

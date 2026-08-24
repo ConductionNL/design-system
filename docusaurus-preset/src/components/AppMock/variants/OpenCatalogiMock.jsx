@@ -5,13 +5,28 @@
  * search across registers"): centre is a 3×2 grid of catalogue cards,
  * each with a hex glyph in a different family colour to signal the
  * categorical mix. Left nav for catalogues / publications / sources.
+ *
+ * Animation (wave 2): a query types into the search bar, the grid
+ * dims, the three matching cards snap back to full strength, and
+ * their status pills tick mint. Base styles are the filtered end
+ * state (non-matches dimmed); keyframes replay the unfiltered
+ * before-state and the search.
  */
 
 import React from 'react';
 import styles from '../AppMock.module.css';
 
+/* Cards 1, 3 and 5 (indices 0/2/4) match the query; the others dim. */
+const CARDS = [
+  {tone: '', match: true},
+  {tone: 'b', match: false},
+  {tone: 'c', match: true},
+  {tone: 'd', match: false},
+  {tone: 'e', match: true},
+  {tone: '', match: false},
+];
+
 export default function OpenCatalogiMock() {
-  const cards = ['', 'b', 'c', 'd', 'e', ''];
   return (
     <>
       <div className={styles.topbar}>
@@ -36,14 +51,18 @@ export default function OpenCatalogiMock() {
         <div className={styles.col}>
           <div className={styles.head}>
             <div className={styles.row + ' ' + styles.head} style={{width: 30}}></div>
+            {/* Federated search bar — the query types in, the grid filters */}
+            <div className={styles.search}>
+              <div className={styles.sIco}></div>
+              <div className={styles.q}></div>
+            </div>
             <div className={styles.actions}>
-              <div className={styles.btn + ' ' + styles.ghost}></div>
               <div className={styles.btn}></div>
             </div>
           </div>
           <div className={styles.grid}>
-            {cards.map((cls, i) => (
-              <div key={i} className={[styles.card, cls && styles[cls]].filter(Boolean).join(' ')}>
+            {CARDS.map(({tone, match}, i) => (
+              <div key={i} className={[styles.card, tone && styles[tone], match ? styles.match : styles.dim].filter(Boolean).join(' ')}>
                 <div className={styles.ico}></div>
                 <div className={styles.row + ' ' + styles.head}></div>
                 <div className={styles.row}></div>

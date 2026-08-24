@@ -33,6 +33,7 @@ export {default as CtaBanner} from './CtaBanner/CtaBanner.jsx';
 export {default as DownloadPanel} from './DownloadPanel/DownloadPanel.jsx';
 export {default as PlatformOverview} from './PlatformOverview/PlatformOverview.jsx';
 export {default as AppsPreview, AppCard} from './AppsPreview/AppsPreview.jsx';
+export {default as AppGlyph, APP_GLYPH_SLUGS, hasAppGlyph} from './AppGlyph/AppGlyph.jsx';
 
 /* Card-family components (Batch 2). Each pairs with a *Grid sibling
    that handles the surrounding layout, so callers can drop a row
@@ -76,6 +77,10 @@ export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as AppMock} from './AppMock/AppMock.jsx';
 export {default as WidgetMock} from './WidgetMock/WidgetMock.jsx';
+export {default as FlowMock} from './FlowMock/FlowMock.jsx';
+export {default as LeafMock} from './LeafMock/LeafMock.jsx';
+export {default as BuildMock} from './BuildMock/BuildMock.jsx';
+export {default as KanbanMock} from './KanbanMock/KanbanMock.jsx';
 export {default as SidebarMock} from './SidebarMock/SidebarMock.jsx';
 export {default as MockScene} from './MockScene/MockScene.jsx';
 export {default as IntegrationIcon} from './IntegrationIcon/IntegrationIcon.jsx';
@@ -141,3 +146,10 @@ export {default as Prerequisites, PrerequisiteItem} from './Prerequisites/Prereq
 export {default as Troubleshooting, TroubleshootingItem} from './Troubleshooting/Troubleshooting.jsx';
 export {default as NextSteps, NextStep} from './NextSteps/NextSteps.jsx';
 export {default as ContactCta} from './ContactCta/ContactCta.jsx';
+
+/* AiDisclosure — EU Article-50 AI-content disclosure banner/mark.
+   Frontmatter-driven at the top of docs/blog pages (see the
+   DocItem/Content and BlogPostItem/Content theme swizzles); exported
+   here so an author can also drop it inline in MDX, e.g. beside a
+   single AI-generated figure within an otherwise human-written page. */
+export {default as AiDisclosure} from './AiDisclosure/AiDisclosure.jsx';

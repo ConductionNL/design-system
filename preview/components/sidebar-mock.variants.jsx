@@ -26,21 +26,21 @@ import SidebarMock from '../../docusaurus-preset/src/components/SidebarMock/Side
 import AppMock from '../../docusaurus-preset/src/components/AppMock/AppMock.jsx';
 
 const STANDALONE_ITEMS = [
-  { num: '01', kind: 'procest-xwiki',                   label: 'Procest · xWiki',                tag: 'INFERRED',
+  { num: '01', kind: 'procest-xwiki',                   label: 'Dossiq · xWiki',                tag: 'INFERRED',
     desc: 'Pulls the case-handling protocol page out of xWiki and shows it next to the live case. Wiki text body, headings plus paragraphs plus a checklist.' },
-  { num: '02', kind: 'procest-timeline',                label: 'Procest · Timeline',             tag: 'INFERRED',
+  { num: '02', kind: 'procest-timeline',                label: 'Dossiq · Timeline',             tag: 'INFERRED',
     desc: 'Stage history vertical: one done, one active in orange, three to-do. Same .now / .late / .todo modifiers as the AppMock procest timeline.' },
-  { num: '03', kind: 'docudesk-signatures',             label: 'DocuDesk · Signatures',          tag: 'INFERRED',
+  { num: '03', kind: 'docudesk-signatures',             label: 'Filinq · Signatures',          tag: 'INFERRED',
     desc: 'Recipients with status pip: signed (mint), pending (orange), declined (red). Avatar palette mix gives the team-of-five feel.' },
-  { num: '04', kind: 'docudesk-pii-map',                label: 'DocuDesk · PII map',             tag: 'INFERRED',
+  { num: '04', kind: 'docudesk-pii-map',                label: 'Filinq · PII map',             tag: 'INFERRED',
     desc: 'Inline pills marking redacted (red) and suggested-to-redact (orange) spans within paragraphs, plus a count of detected PII categories.' },
   { num: '05', kind: 'openregister-metadata',           label: 'OpenRegister · Metadata',        tag: 'INFERRED',
     desc: 'Object frontmatter as a key/value list: register, schema, slug, created, updated. Plus the primary identifiers section below.' },
   { num: '06', kind: 'opencatalogi-publication-history',label: 'OpenCatalogi · History',         tag: 'INFERRED',
     desc: 'Version history of a publication. Avatar plus version label plus timestamp; mint pip for current, red pip for withdrawn.' },
-  { num: '07', kind: 'openconnector-run-detail',        label: 'OpenConnector · Run logs',       tag: 'INFERRED',
+  { num: '07', kind: 'openconnector-run-detail',        label: 'Integriq · Run logs',       tag: 'INFERRED',
     desc: 'Single run inspected: header, then a vertical log stream with severity-coded timestamps. Last line is a warn or an error so the eye lands on it.' },
-  { num: '08', kind: 'decidesk-decision',               label: 'DeciDesk · Decision detail',     tag: 'INFERRED',
+  { num: '08', kind: 'decidesk-decision',               label: 'Decidiq · Decision detail',     tag: 'INFERRED',
     desc: 'Decision summary, structured fields (date, source meeting, decision-maker), action-items section showing who owns the follow-up.' },
   { num: '09', kind: 'nextcloud-activity',              label: 'Nextcloud · Activity',           tag: 'STOCK',
     desc: 'The stock first-tab activity feed every Nextcloud sidebar carries. Framed for context so MKB readers see where Conduction tabs sit.' },
@@ -65,8 +65,8 @@ export function StandaloneCatalogue() {
 }
 
 const INCONTEXT_ITEMS = [
-  { num: '01', app: 'procest',      kind: 'procest-xwiki',         label: 'Procest with xWiki tab open',
-    desc: 'A Procest case loaded in the main column, the xWiki tab of its sidebar pulled out on the right. The case-handling protocol page reads next to the live case, no app switch needed.' },
+  { num: '01', app: 'procest',      kind: 'procest-xwiki',         label: 'Dossiq with xWiki tab open',
+    desc: 'A Dossiq case loaded in the main column, the xWiki tab of its sidebar pulled out on the right. The case-handling protocol page reads next to the live case, no app switch needed.' },
   { num: '02', app: 'openregister', kind: 'openregister-metadata', label: 'OpenRegister with Metadata tab open',
     desc: 'An OpenRegister object selected in the dashboard. Sidebar shows the object\'s frontmatter on the right: register, schema, slug, owner, identifiers.' },
 ];

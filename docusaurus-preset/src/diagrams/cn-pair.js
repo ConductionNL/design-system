@@ -12,7 +12,7 @@
  *     right-label="xWiki"
  *     right-caption="xwiki.example"
  *     right-color="cobalt-700"
- *     bridge-label="OpenConnector integration">
+ *     bridge-label="Integriq integration">
  *     <svg slot="left-icon" viewBox="0 0 24 24">...</svg>
  *     <svg slot="right-icon" viewBox="0 0 24 24">...</svg>
  *   </cn-pair>

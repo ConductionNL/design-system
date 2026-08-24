@@ -27,7 +27,7 @@
  *       icon={<svg>...</svg>}
  *       title="WOO compliance, by Friday."
  *       outcome={<>A live WOO portal at your <span className="next-blue">Nextcloud</span>-hosted domain.</>}
- *       builtOn={['OpenCatalogi', 'OpenRegister', 'OpenConnector']}
+ *       builtOn={['OpenCatalogi', 'OpenRegister', 'Integriq']}
  *     />
  *   </SolutionGrid>
  */

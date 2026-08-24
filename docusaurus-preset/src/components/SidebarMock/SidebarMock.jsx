@@ -3,8 +3,8 @@
  *
  * Token-painted abstract of the Nextcloud right-side detail panel.
  * Each Conduction app registers tabs into specific Nextcloud
- * sidebars (Procest adds xWiki + Timeline tabs to the case sidebar,
- * DocuDesk adds Signatures + PII Map to the document sidebar, and
+ * sidebars (Dossiq adds xWiki + Timeline tabs to the case sidebar,
+ * Filinq adds Signatures + PII Map to the document sidebar, and
  * so on). A SidebarMock variant represents one such sidebar with
  * one tab active.
  *
@@ -53,7 +53,20 @@
  *                                           .smFrame chrome so the
  *                                           panel slots into
  *                                           AppMock's .body layout
+ *   - running:  boolean (default true)    — false freezes the panel
+ *                                           animation on its settled
+ *                                           end state (same rendering
+ *                                           prefers-reduced-motion
+ *                                           gives)
  *   - className: string
+ *
+ * Animation (wave 5, `.sbLive` in AppMock.module.css): the panel
+ * slides in from the right, the head title/description wipe in, the
+ * active-tab underline travels from the neighbouring tab to the
+ * active one — positioned by the `--sb-ix` / `--sb-n` custom
+ * properties the component sets from the variant's active index —
+ * and the body rows land in a stagger. Base styles are the opened,
+ * settled panel.
  */
 
 import React from 'react';
@@ -85,13 +98,13 @@ import NextcloudActivity             from './variants/NextcloudActivity.jsx';
  * SidebarMock renders that icon in the tab's .ico slot, tinted via
  * currentColor so active tabs read full-cobalt and inactive tabs
  * read muted-cobalt. The icon makes the tab self-documenting:
- * Procest's xWiki tab carries the xWiki icon, DocuDesk's Signatures
+ * Dossiq's xWiki tab carries the xWiki icon, Filinq's Signatures
  * tab carries an activity-style icon for "stuff happens here", etc.
  */
 const VARIANTS = {
   'procest-xwiki': {
     Component: ProcestXWiki,
-    label: 'Procest · Case sidebar, xWiki tab',
+    label: 'Dossiq · Case sidebar, xWiki tab',
     tabs: [
       { id: 'activity',  active: false, icon: 'activity' },
       { id: 'xwiki',     active: true,  icon: 'xwiki' },
@@ -101,7 +114,7 @@ const VARIANTS = {
   },
   'procest-timeline': {
     Component: ProcestTimeline,
-    label: 'Procest · Case sidebar, Timeline tab',
+    label: 'Dossiq · Case sidebar, Timeline tab',
     tabs: [
       { id: 'activity',  active: false, icon: 'activity' },
       { id: 'xwiki',     active: false, icon: 'xwiki' },
@@ -111,7 +124,7 @@ const VARIANTS = {
   },
   'docudesk-signatures': {
     Component: DocuDeskSignatures,
-    label: 'DocuDesk · Document sidebar, Signatures tab',
+    label: 'Filinq · Document sidebar, Signatures tab',
     tabs: [
       { id: 'activity',   active: false, icon: 'activity' },
       { id: 'signatures', active: true,  icon: 'mail' },
@@ -121,7 +134,7 @@ const VARIANTS = {
   },
   'docudesk-pii-map': {
     Component: DocuDeskPiiMap,
-    label: 'DocuDesk · Document sidebar, PII map tab',
+    label: 'Filinq · Document sidebar, PII map tab',
     tabs: [
       { id: 'activity',   active: false, icon: 'activity' },
       { id: 'signatures', active: false, icon: 'mail' },
@@ -149,7 +162,7 @@ const VARIANTS = {
   },
   'openconnector-run-detail': {
     Component: OpenConnectorRunDetail,
-    label: 'OpenConnector · Run sidebar, Logs tab',
+    label: 'Integriq · Run sidebar, Logs tab',
     tabs: [
       { id: 'activity', active: false, icon: 'activity' },
       { id: 'logs',     active: true,  icon: 'n8n' },
@@ -158,7 +171,7 @@ const VARIANTS = {
   },
   'decidesk-decision': {
     Component: DeciDeskDecision,
-    label: 'DeciDesk · Decision sidebar, Detail tab',
+    label: 'Decidiq · Decision sidebar, Detail tab',
     tabs: [
       { id: 'activity', active: false, icon: 'activity' },
       { id: 'detail',   active: true,  icon: 'files' },
@@ -175,7 +188,7 @@ const VARIANTS = {
   },
 };
 
-export default function SidebarMock({ kind, size = 'md', embedded = false, className }) {
+export default function SidebarMock({ kind, size = 'md', embedded = false, running = true, className }) {
   const variant = VARIANTS[kind];
   if (!variant) {
     return (
@@ -187,8 +200,19 @@ export default function SidebarMock({ kind, size = 'md', embedded = false, class
     );
   }
   const { Component, tabs } = variant;
+  /* The travelling underline needs the active tab's index and the tab
+     count; both ride custom properties so the CSS can compute the
+     resting offset. It slides in from the neighbouring tab — from the
+     left normally, from the right when the first tab is the active
+     one (there is no left neighbour to come from). */
+  const activeIx = Math.max(0, tabs.findIndex((t) => t.active));
+  const underlineVars = {
+    '--sb-ix': activeIx,
+    '--sb-n': tabs.length,
+    '--sb-from': activeIx > 0 ? '-100%' : '100%',
+  };
   const panel = (
-    <div className={[amStyles.detail, amStyles.rich].join(' ')}>
+    <div className={[amStyles.detail, amStyles.rich, amStyles.sbLive, !running && amStyles.static].filter(Boolean).join(' ')}>
       <div className={amStyles['sb-head']}>
         <div className={amStyles.ico}></div>
         <div className={amStyles.meta}>
@@ -209,6 +233,9 @@ export default function SidebarMock({ kind, size = 'md', embedded = false, class
               <div className={amStyles.l}></div>
             </div>
           ))}
+          {/* Travelling active-tab underline — rests under the active
+              tab; the loop replays the travel from its neighbour. */}
+          <div className={amStyles['sb-underline']} style={underlineVars}></div>
         </div>
       )}
       <div className={amStyles['sb-body']}>

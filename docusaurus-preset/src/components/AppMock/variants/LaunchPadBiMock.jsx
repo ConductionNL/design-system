@@ -5,6 +5,13 @@
  * on a register without ETL. The mock shows four graph cards in a
  * 2×2 grid (bar chart, line chart, donut KPI, second bar with a
  * different accent), plus a ranked-list table widget on the right.
+ *
+ * Animated (9s loop, --am-dur): the charts draw themselves — bars
+ * grow from the axis in a stagger, the line draws along its path
+ * (pathLength="1" dash technique) and its end dot pops, the donut
+ * sweeps in, and the KPI delta bars fade up (inline delays).
+ * `running={false}` / prefers-reduced-motion show the drawn charts.
+ * Keyframes live in AppMock.module.css (`.lpBi` section).
  */
 
 import React from 'react';
@@ -20,7 +27,7 @@ export default function LaunchPadBiMock() {
         <div className={styles.bell}></div>
         <div className={styles.avatar}></div>
       </div>
-      <div className={[styles.body, styles.launchpad].filter(Boolean).join(' ')}>
+      <div className={[styles.body, styles.launchpad, styles.lpBi].filter(Boolean).join(' ')}>
         <div className={styles.grid}>
           {/* Column 1: Bar chart on top, line chart below */}
           <div className={styles.col}>
@@ -45,7 +52,7 @@ export default function LaunchPadBiMock() {
               <div className={styles.chart}>
                 <svg viewBox="0 0 100 40" preserveAspectRatio="none">
                   <path className={styles.fill}   d="M0,32 L14,24 L28,28 L42,18 L56,22 L70,12 L84,16 L100,8 L100,40 L0,40 Z"/>
-                  <path className={styles.stroke} d="M0,32 L14,24 L28,28 L42,18 L56,22 L70,12 L84,16 L100,8"/>
+                  <path className={styles.stroke} pathLength="1" d="M0,32 L14,24 L28,28 L42,18 L56,22 L70,12 L84,16 L100,8"/>
                   <circle className={styles.dot} cx="100" cy="8" r="2.5"/>
                 </svg>
               </div>
@@ -89,7 +96,7 @@ export default function LaunchPadBiMock() {
               </div>
               <div style={{display: 'flex', alignItems: 'baseline', gap: 4}}>
                 <div style={{height: 12, width: 28, background: 'var(--c-cobalt-900)', borderRadius: 1}}></div>
-                <div style={{height: 4, width: 16, background: 'var(--c-mint-500)', borderRadius: 1}}></div>
+                <div className={styles.biDelta} style={{height: 4, width: 16, background: 'var(--c-mint-500)', borderRadius: 1}}></div>
               </div>
               <div style={{height: 3, width: '70%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
             </div>
@@ -99,7 +106,7 @@ export default function LaunchPadBiMock() {
               </div>
               <div style={{display: 'flex', alignItems: 'baseline', gap: 4}}>
                 <div style={{height: 12, width: 22, background: 'var(--c-cobalt-900)', borderRadius: 1}}></div>
-                <div style={{height: 4, width: 14, background: 'var(--c-orange-knvb)', borderRadius: 1}}></div>
+                <div className={styles.biDelta} style={{height: 4, width: 14, background: 'var(--c-orange-knvb)', borderRadius: 1, animationDelay: '0.2s'}}></div>
               </div>
               <div style={{height: 3, width: '60%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
             </div>
@@ -109,7 +116,7 @@ export default function LaunchPadBiMock() {
               </div>
               <div style={{display: 'flex', alignItems: 'baseline', gap: 4}}>
                 <div style={{height: 12, width: 30, background: 'var(--c-cobalt-900)', borderRadius: 1}}></div>
-                <div style={{height: 4, width: 12, background: 'var(--c-mint-500)', borderRadius: 1}}></div>
+                <div className={styles.biDelta} style={{height: 4, width: 12, background: 'var(--c-mint-500)', borderRadius: 1, animationDelay: '0.4s'}}></div>
               </div>
               <div style={{height: 3, width: '80%', background: 'var(--c-cobalt-200)', borderRadius: 1}}></div>
             </div>

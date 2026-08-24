@@ -1,7 +1,7 @@
 /**
- * Procest · case sidebar, xWiki tab.
+ * Dossiq · case sidebar, xWiki tab.
  *
- * The xWiki integration: Procest pulls the case-handling protocol
+ * The xWiki integration: Dossiq pulls the case-handling protocol
  * page out of xWiki and shows it next to the live case. Body reads
  * as wiki text: a heading, two paragraphs, a subheading, a list of
  * checked steps. Worth saying out loud since it is the integration

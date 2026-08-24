@@ -47,20 +47,29 @@ import styles from './FeatureGrid.module.css';
 
 const STATUS_CLASSES = {stable: '', beta: styles.beta, soon: styles.soon};
 
-export function FeatureItem({label, tip, status = 'stable', href, className}) {
+export function FeatureItem({label, tip, status = 'stable', href, className, showDescription = false}) {
   const hexClass = [styles.h, STATUS_CLASSES[status]].filter(Boolean).join(' ');
-  const body = (
+  const body = showDescription ? (
+    <>
+      <span className={styles.head}>
+        <span className={hexClass} aria-hidden="true" />
+        <span className={styles.label}>{label}</span>
+      </span>
+      {tip && <span className={styles.desc}>{tip}</span>}
+    </>
+  ) : (
     <>
       <span className={hexClass} aria-hidden="true" />
       <span className={styles.label}>{label}</span>
       {tip && <span className={styles.tip}>{tip}</span>}
     </>
   );
+  const cardClass = showDescription ? styles.itemCard : null;
   if (href) {
     const isExternal = /^https?:\/\//.test(href);
     return (
       <a
-        className={[styles.item, styles.itemLink, className].filter(Boolean).join(' ')}
+        className={[styles.item, cardClass, styles.itemLink, className].filter(Boolean).join(' ')}
         href={href}
         title={tip || label}
         {...(isExternal ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
@@ -71,7 +80,7 @@ export function FeatureItem({label, tip, status = 'stable', href, className}) {
   }
   return (
     <div
-      className={[styles.item, className].filter(Boolean).join(' ')}
+      className={[styles.item, cardClass, className].filter(Boolean).join(' ')}
       tabIndex={0}
       title={tip || label}
     >
@@ -84,16 +93,17 @@ export function FeatureGridGroup({label, className}) {
   return <h4 className={[styles.group, className].filter(Boolean).join(' ')}>{label}</h4>;
 }
 
-export default function FeatureGrid({items, legend = false, children, className}) {
+export default function FeatureGrid({items, legend = false, children, className, withDescriptions = false}) {
+  const gridClass = [styles.grid, withDescriptions ? styles.gridCards : null].filter(Boolean).join(' ');
   return (
     <div className={className}>
       {legend && <Legend />}
-      <div className={styles.grid}>
+      <div className={gridClass}>
         {items
           ? items.map((it, i) => (
               it.group
                 ? <FeatureGridGroup key={i} label={it.group} />
-                : <FeatureItem key={i} {...it} />
+                : <FeatureItem key={i} showDescription={withDescriptions} {...it} />
             ))
           : children}
       </div>

@@ -47,6 +47,14 @@
  *     - kind 'status'       → KNVB-orange "ing…" status line
  *   - cursor:    boolean — render a blinking cursor at the bottom
  *   - mode:      string — bottom strip caption ("accept edits on…")
+ *   - running:   boolean (default true) — the trace types itself out:
+ *     each line reveals left-to-right on a 550ms stagger (a per-line
+ *     --at-d delay; the loop period --at-total derives from the line
+ *     count plus a ~2s hold), status-line dots start ticking only
+ *     after their line has appeared, and the loop restarts softly by
+ *     fading lines out in the same order they arrived. `running={false}`
+ *     and prefers-reduced-motion show the full trace at rest (every
+ *     line visible — the meaningful end state).
  */
 
 import React from 'react';
@@ -62,12 +70,25 @@ function bulletClass(b) {
   }
 }
 
-export default function AgentTrace({lines = [], cursor = false, mode, className}) {
+export default function AgentTrace({lines = [], cursor = false, mode, running = true, className}) {
+  /* Typed-reveal timing: line i appears at i × 550ms; after the last
+     line a ~2s hold, then a 600ms fade window before the loop. The
+     CSS animation reads both custom properties. */
+  const STEP = 550;
+  const total = lines.length * STEP + 2600;
+  const delayOf = (i) => ({'--at-d': `${i * STEP}ms`});
   return (
-    <div className={[styles.trace, className].filter(Boolean).join(' ')} role="img" aria-label="Agent trace">
-      <div className={styles.body}>
+    <div
+      className={[styles.trace, !running && styles.static, className].filter(Boolean).join(' ')}
+      role="img"
+      aria-label="Agent trace"
+    >
+      <div className={styles.body} style={{'--at-total': `${total}ms`}}>
         {lines.map((ln, i) => {
-          const indent = ln.indent ? {paddingLeft: `${ln.indent * 18}px`} : undefined;
+          const indent = {
+            ...(ln.indent ? {paddingLeft: `${ln.indent * 18}px`} : null),
+            ...delayOf(i),
+          };
           if (ln.kind === 'expand') {
             return (
               <div key={i} className={[styles.line, styles.expand].join(' ')} style={indent}>
@@ -111,7 +132,7 @@ export default function AgentTrace({lines = [], cursor = false, mode, className}
           );
         })}
         {cursor && (
-          <div className={[styles.line, styles.cursorLine].join(' ')}>
+          <div className={[styles.line, styles.cursorLine].join(' ')} style={delayOf(lines.length)}>
             <span className={styles.prompt}>&gt;</span>
             <span className={styles.cursor} aria-hidden="true"></span>
           </div>

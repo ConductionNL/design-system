@@ -32,6 +32,15 @@
   width: calc(100% - 48px);
   max-width: 640px;
   overflow: hidden;
+
+  /* Cap the panel to the viewport and let the body scroll inside it.
+     Without this the panel grows with the shell scrollback and the game
+     surface until its title bar is pushed off the top of the screen: the
+     consent buttons then sit above the fold with no way to reach them.
+     Flex column so the title bar stays put and only .body scrolls. */
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 48px);
 }
 
 .bar {
@@ -52,7 +61,14 @@
 .title { flex: 1; text-align: center; }
 .title b { color: var(--term-fg); }
 
-.body { padding: 18px 20px; }
+/* min-height:0 is load-bearing: a flex child defaults to min-height:auto,
+   which refuses to shrink below its content, so overflow-y would never
+   engage and the panel would grow past the viewport anyway. */
+.body {
+  padding: 18px 20px;
+  overflow-y: auto;
+  min-height: 0;
+}
 
 .prompt { color: var(--term-fg); margin: 6px 0; }
 .user { color: var(--term-green); }
@@ -164,3 +180,125 @@
   .actions { flex-direction: column; }
   .btn { justify-content: center; }
 }
+
+/* ============================================================
+ * The shell, and the game hiding in it
+ * ============================================================
+ * Colours mirror the kit specimen (preview/cookie-cli.html):
+ * cobalt UFOs, KNVB-orange lasers, green player.
+ *
+ * The game paints by writing HTML into a ref, so its class names are
+ * plain strings that never pass through the CSS-modules rewriter. They
+ * have to be :global() or they would style nothing at all, silently. */
+
+.scrollback {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin-bottom: 4px;
+}
+
+.outBlock { margin-bottom: 6px; }
+
+.out {
+  margin: 4px 0;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--term-fg-dim);
+  white-space: pre-wrap;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.tone_ok   { color: var(--term-green); }
+.tone_warn { color: #F7C76F; }
+.tone_cmt  { color: var(--term-fg-dim); }
+.tone_dir  { color: var(--term-cobalt); }
+
+/* Blinking block cursor after the typed text. */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--term-green);
+  animation: cookieCliBlink 1s steps(2, start) infinite;
+}
+
+@keyframes cookieCliBlink {
+  to { visibility: hidden; }
+}
+
+/* Respect a reduced-motion preference: keep the cursor, drop the blink. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; }
+}
+
+/* Off-screen, not display:none — a hidden input still has to be reachable
+   for mobile keyboards, and display:none would remove it from the a11y
+   tree entirely. */
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.game { padding-top: 4px; }
+
+.gameHud {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  border-top: 1px dashed #1F2A45;
+  border-bottom: 1px dashed #1F2A45;
+  padding: 6px 0;
+  margin-bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gameHud :global(.hud-label) { color: var(--term-fg-dim); font-size: 10px; }
+.gameHud :global(.hud-val)   { color: var(--term-fg); font-weight: 600; }
+
+.gameScreen {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  white-space: pre;
+  padding: 10px 12px;
+  margin: 0;
+  color: var(--term-fg);
+  background: rgba(6, 9, 18, 0.5);
+  border: 1px solid #15203A;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gameFooter {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #1F2A45;
+  font-size: 11px;
+  color: var(--term-fg-dim);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.gameScreen :global(.g-ufo)    { color: var(--term-cobalt); text-shadow: 0 0 6px rgba(104, 146, 217, 0.55); }
+.gameScreen :global(.g-player) { color: var(--term-green);  text-shadow: 0 0 6px rgba(95, 227, 154, 0.55); font-weight: 600; }
+.gameScreen :global(.g-laser)  { color: #F36C21;            text-shadow: 0 0 8px rgba(243, 108, 33, 0.95); font-weight: 700; }
+.gameScreen :global(.g-bomb)   { color: #FF6B7A;            text-shadow: 0 0 6px rgba(255, 107, 122, 0.6); }
+.gameScreen :global(.g-boom)   { color: #F7C76F;            text-shadow: 0 0 10px rgba(247, 199, 111, 0.85); font-weight: 700; }
+
+.gameHud :global(.g-laser)  { color: #F36C21; }
+.gameHud :global(.g-player) { color: var(--term-green); }
+
+.gameFooter :global(.ok)   { color: var(--term-green); }
+.gameFooter :global(.warn) { color: #F7C76F; }
+.gameFooter :global(.cmt)  { color: var(--term-fg-dim); }

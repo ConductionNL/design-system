@@ -1,5 +1,5 @@
 /**
- * Procest · case sidebar, Timeline tab.
+ * Dossiq · case sidebar, Timeline tab.
  *
  * The case stage history vertical, with one done, one active in
  * orange, three to-do. Same .now / .late / .todo modifiers as the

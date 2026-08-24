@@ -1,5 +1,5 @@
 /**
- * PipelinQ · Deals closing widget.
+ * Pipelinq · Deals closing widget.
  *
  * Deals expected to close this week, ranked by value. Reuses .w-mail
  * atom (avatar list with two lines): the avatar reads as the assigned

@@ -55,8 +55,8 @@ const SCENES = [
   },
   {
     num: '02',
-    title: 'Procest, two sidebars in one scene',
-    desc: 'The case sidebar with xWiki open and the OpenConnector run-detail sidebar stand side by side, the werkvoorraad and due-today widgets staggered between them. Two sidebars in one frame is fine; the API does not enforce a centre.',
+    title: 'Dossiq, two sidebars in one scene',
+    desc: 'The case sidebar with xWiki open and the Integriq run-detail sidebar stand side by side, the werkvoorraad and due-today widgets staggered between them. Two sidebars in one frame is fine; the API does not enforce a centre.',
     width: 980,
     height: 480,
     items: [
@@ -70,7 +70,7 @@ const SCENES = [
   {
     num: '03',
     title: 'Document workshop, mixed sizes left to right',
-    desc: 'A document flowing through DocuDesk: drop a file in (sm), the signatures sidebar tracks who has signed (md), pending list keeps it moving (sm), the run-detail sidebar (sm) shows OpenConnector delivering it, the recent-runs widget (sm) closes the loop. Each junction overlaps by ~20px so the eye reads continuity.',
+    desc: 'A document flowing through Filinq: drop a file in (sm), the signatures sidebar tracks who has signed (md), pending list keeps it moving (sm), the run-detail sidebar (sm) shows Integriq delivering it, the recent-runs widget (sm) closes the loop. Each junction overlaps by ~20px so the eye reads continuity.',
     width: 1180,
     height: 460,
     items: [

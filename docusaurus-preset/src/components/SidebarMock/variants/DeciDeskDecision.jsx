@@ -1,5 +1,5 @@
 /**
- * DeciDesk · decision sidebar, Detail tab.
+ * Decidiq · decision sidebar, Detail tab.
  *
  * Body of a single decision: title, decision summary paragraph, then
  * structured fields (date, source meeting, decision-maker) and an

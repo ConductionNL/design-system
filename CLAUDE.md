@@ -32,6 +32,7 @@ The repo is statically served from `main` via GitHub Pages. **Commit and push to
 - **Tokens, not hardcoded values.** Reference `var(--c-cobalt-700)`, `var(--space-5)`, `var(--radius-lg)`. Add new tokens to [tokens.css](tokens.css) before using them.
 - **Pointy-top hexes only.** No flat-top hexes anywhere.
 - **One orange accent per component.** KNVB orange (`--c-orange-knvb`) is for highlights and action buttons. Each component gets at most one orange element, the primary CTA, a single highlighted word, an eyebrow hex bullet. Never use it as a section/panel background fill. A page can compose multiple components and therefore show multiple oranges, but the discipline is per component, not per screen. The `Button` primitive opts in via `tone="orange"`; launchpad and the `DownloadPanel` component ship this way by default.
+  - **Exception, orange on a blue surface.** On a cobalt (blue) background, both the app/icon hex and the primary CTA button go orange so they read against the blue instead of disappearing into it. This overrides the one-accent count: a cobalt-background `DetailHero` shows an orange icon hex *and* an orange primary button together, by design. On the default cream surface both stay cobalt. The treatment follows the surface, not the accent count. `DetailHero` derives both automatically from its `background` prop (`background="cobalt"`); callers can still pass an explicit `iconColor` or `primaryCta.tone` to override.
 - **Partner and client logos on white.** Third-party logos are designed against white and lose contrast on tinted surfaces. Always render them on a white tile, never on cobalt-50 or cobalt-100. If the surrounding surface is tinted, place the logo inside a white frame: a hex (preferred, via `<HexNetwork/>`), a card, or a small white plate. The brand-anchor center hex (Conduction) is the only solid-fill exception.
 - **Sub-brand icon hexes use the brand's own colour, not cobalt.** When a hex represents a partner brand (Nextcloud, Common Ground+) instead of a Conduction surface, the hex fill is the brand's own colour and the glyph inside is the brand's logo:
   - **ConNext / Nextcloud** — Nextcloud logo (`fill: currentColor`, white) on a hex filled with `var(--c-nextcloud-blue)`.
@@ -86,10 +87,10 @@ Replacement: **"Kernel" → "workspace"**. Kernel reads as tech-jargon (OS / Lin
 
 ## Apps versus solutions
 
-- **App**: software we build and ship. Concrete, installable, has a version number. (OpenCatalogi, OpenRegister, DocuDesk, …)
+- **App**: software we build and ship. Concrete, installable, has a version number. (OpenCatalogi, OpenRegister, Filinq, …)
 - **Solution**: a concrete outcome (WOO compliance, a procurement workflow, a public catalogue) built **on** apps. A goal, not a download.
 
-Never write "onze WOO-app": there isn't one. Write "onze WOO-solution, gebouwd op OpenCatalogi, OpenConnector en DocuDesk."
+Never write "onze WOO-app": there isn't one. Write "onze WOO-solution, gebouwd op OpenCatalogi, Integriq en Filinq."
 
 ## Punctuation and capitalisation rules (the AI tells)
 
@@ -113,3 +114,13 @@ Tender / requirement source → Conduction website:
 - "De Oplossing biedt documentcreatiefunctionaliteit om documenten en e-mails op basis van sjablonen te creëren." → "Genereer documenten en e-mails uit sjablonen, direct, zonder plug-in."
 
 Note that the rewrite uses commas where an em-dash would have been the AI-default. Short, comma-separated clauses keep the rhythm without the em-dash tell.
+
+## Product pages: write for the business owner
+
+The `/apps/<slug>` pages have one reader: the owner or office manager of a 10–500 person business who has never heard of OpenRegister. Three extra rules (full text in [brand/taalgebruik.md §16.1](brand/taalgebruik.md), rendered in [preview/identity/voice.html](preview/identity/voice.html)):
+
+- **A · Their vocabulary, not ours.** No platform internals in body copy (OpenRegister, Buildiq, Hermiq, schema, register, delta, layer, manifest, MCP, CalDAV, endpoint, JSON, leaf, token). A platform name may appear only in the CTA label that links to that app's page.
+- **B · Every example proves added value.** Three beats: *today* (what they do by hand) · *instead* (what happens now) · *so* (what it saves). "Accepting a quote starts a flow" is a mechanism; "the moment the quote is accepted, the project exists and the kick-off task is on the right desk" is value. Pick scenes from their day.
+- **C · Ground every scene in shipped functionality.** Spec-only features go in the spec, not on the page.
+
+Card eyebrows are verbs for the reader (*Automate · Make it yours · Talk to it*), never product names. Fixed CTA pair: *"Install from the Nextcloud app store"* · *"Request a demo from a partner"*.

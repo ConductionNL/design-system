@@ -23,15 +23,48 @@
   --ifm-color-primary-lighter:   var(--c-cobalt-300);
   --ifm-color-primary-lightest:  var(--c-cobalt-200);
 
-  /* Accent → KNVB orange (links, CTAs, focus ring) */
-  --ifm-link-color:              var(--c-orange-knvb);
-  --ifm-link-hover-color:        var(--c-cobalt-700);
+  /* Links follow the published rule: cobalt by default, orange on
+     hover. The inverse shipped for a long time, which put the accent
+     on the most repeated element of a documentation site — far past
+     the ~8% of page area the brand budgets for orange — and carried
+     every body link at 3.01:1, under the 4.5:1 WCAG asks of text.
+     Cobalt links measure 9.08:1. Hover takes the text-safe orange
+     (4.67:1) rather than KNVB, because hover is still a text role.
+     Both read from the tokens, so the rule lives in one place. */
+  --ifm-link-color:              var(--conduction-color-link-default);
+  --ifm-link-hover-color:        var(--conduction-color-link-hover);
   --ifm-button-color:             white;
 
   /* Typography → Figtree body, Plex Mono code */
   --ifm-font-family-base:        var(--conduction-typography-font-family-body);
   --ifm-font-family-monospace:   var(--conduction-typography-font-family-code);
-  --ifm-heading-color:           var(--c-cobalt-900);
+
+  /* Headings are brand cobalt, not near-black. The site read as
+     black-on-white with a blue navbar; the token says the heading
+     colour is the brand colour. 9.08:1 on white, so nothing is lost
+     on contrast. */
+  --ifm-heading-color:           var(--conduction-color-text-default);
+
+  /* The brand heading ramp. Infima ships 32/24/20/16/14/13.6, which
+     collapses h4 to body size and h5 below it; the published ramp is
+     48/40/32/24/20/18 and it is the hierarchy every other Conduction
+     surface uses. Sizes come off the --fs-* scale so the ramp has one
+     source. */
+  --ifm-h1-font-size:            var(--fs-5xl);  /* 48px */
+  --ifm-h2-font-size:            var(--fs-4xl);  /* 40px */
+  --ifm-h3-font-size:            var(--fs-3xl);  /* 32px */
+  --ifm-h4-font-size:            var(--fs-2xl);  /* 24px */
+  --ifm-h5-font-size:            var(--fs-xl);   /* 20px */
+  --ifm-h6-font-size:            var(--fs-lg);   /* 18px */
+
+  /* 700 for h1/h2, 600 from h3 down (the rule below). Every heading
+     bold flattens the step between a section and its subsection. */
+  --ifm-heading-font-weight:     var(--fw-bold);
+
+  /* The radius token, actually read. Infima defaults to 0.4rem
+     (6.4px) where the brand publishes 6px. Invisible, but it means
+     the token was present and unused. */
+  --ifm-global-radius:           var(--radius-md);
 
   /* Code blocks */
   --ifm-code-font-size:          92%;
@@ -50,21 +83,38 @@
   --ifm-footer-link-color:       white;
   --ifm-footer-title-color:      var(--c-cobalt-200);
 
+  /* Status → the brand set, replacing Infima's stock #fa383e /
+     #00a400 / #ffba00. All three framework defaults fail as text on
+     white (3.68, 3.33 and 1.71:1) and none of them has any relation
+     to this palette — the direct cost of the design system having
+     published one status colour and no alert treatment. The alert
+     rules further down pair each base with its ink and tint. */
+  --ifm-color-info:              var(--conduction-color-status-info);
+  --ifm-color-success:           var(--conduction-color-status-success);
+  --ifm-color-warning:           var(--conduction-color-status-warning);
+  --ifm-color-danger:            var(--conduction-color-status-error);
+
   /* Spacing rhythm reused from tokens */
   --ifm-spacing-horizontal:      var(--space-6);
   --ifm-spacing-vertical:        var(--space-6);
-  --ifm-line-height-base:        1.55;
+  --ifm-line-height-base:        var(--lh-normal);
 }
 
+/* Dark mode now comes from the tokens — tokens.css publishes the
+   whole semantic layer under [data-theme="dark"], so these are just
+   the Infima names pointed at it. Links go back to the bright KNVB
+   orange here (5.93:1 on cobalt-900): the text-safe orange exists
+   for white grounds and is the one that fails on a dark one. */
 [data-theme='dark'] {
-  --ifm-background-color:        var(--c-cobalt-900);
-  --ifm-background-surface-color: var(--c-cobalt-800);
-  --ifm-color-primary:           var(--c-cobalt-300);
-  --ifm-color-primary-light:     var(--c-cobalt-200);
-  --ifm-link-color:              var(--c-orange-knvb);
-  --ifm-heading-color:           white;
-  --ifm-font-color-base:         var(--c-cobalt-100);
-  --ifm-code-background:         var(--c-cobalt-800);
+  --ifm-background-color:        var(--conduction-color-background-default);
+  --ifm-background-surface-color: var(--conduction-color-background-surface);
+  --ifm-color-primary:           var(--conduction-color-primary);
+  --ifm-color-primary-light:     var(--conduction-color-primary-light);
+  --ifm-link-color:              var(--conduction-color-link-default);
+  --ifm-link-hover-color:        var(--conduction-color-link-hover);
+  --ifm-heading-color:           var(--conduction-color-text-default);
+  --ifm-font-color-base:         var(--conduction-color-text-default);
+  --ifm-code-background:         var(--conduction-color-code-inline-background);
 }
 
 /* ============================================================
@@ -110,8 +160,16 @@
   outline-offset: 2px;
 }
 
-/* Headings keep the brand letter-spacing */
-h1, h2, h3 { letter-spacing: -0.02em; }
+/* Letter-spacing per level, not one value for the top three. Large
+   Figtree sits loose without it; clearly visible at 48px, invisible
+   below about 24px, which is why h4-h6 get none. */
+h1 { letter-spacing: var(--tracking-tight); }
+h2 { letter-spacing: var(--tracking-snug); }
+h3 { letter-spacing: var(--tracking-normal); }
+
+/* The weight step. --ifm-heading-font-weight carries 700 for h1/h2;
+   from h3 down the brand drops to 600 so a subsection reads as one. */
+h3, h4, h5, h6 { font-weight: var(--fw-semibold); }
 
 /* Marketing pages (frontmatter: hide_table_of_contents: true) get
    a flush top edge AND full-width sections. The MDXPage swizzle
@@ -155,6 +213,51 @@ a:not(.navbar__link):not(.footer__link-item):not(.button) {
 }
 a:not(.navbar__link):not(.footer__link-item):not(.button):hover {
   text-decoration-color: var(--c-orange-knvb);
+}
+
+/* ============================================================
+   Alerts / admonitions
+
+   Each status is three values, not one: the base draws the rule and
+   the icon, the ink carries the text, the tint is the ground. Every
+   ink-on-tint pair below clears AAA, so the set survives a later
+   change to the tints.
+
+   Warning is the exception to "the base draws the rule": #F36C21 on
+   its own tint measures 2.76:1, under the 3:1 a component boundary
+   needs, so a warning border takes the ink instead.
+
+   Colour is never the only signal — Docusaurus renders an icon and a
+   label in every admonition, and that is what keeps this readable for
+   anyone who cannot separate the success green from the warning
+   orange (they sit 1.68:1 apart in luminance).
+   ============================================================ */
+.alert--info {
+  --ifm-alert-background-color: var(--conduction-color-status-info-tint);
+  --ifm-alert-foreground-color: var(--conduction-color-status-info-ink);
+  --ifm-alert-border-color:     var(--conduction-color-status-info);
+}
+.alert--success {
+  --ifm-alert-background-color: var(--conduction-color-status-success-tint);
+  --ifm-alert-foreground-color: var(--conduction-color-status-success-ink);
+  --ifm-alert-border-color:     var(--conduction-color-status-success);
+}
+.alert--warning {
+  --ifm-alert-background-color: var(--conduction-color-status-warning-tint);
+  --ifm-alert-foreground-color: var(--conduction-color-status-warning-ink);
+  /* ink, not base — see the note above */
+  --ifm-alert-border-color:     var(--conduction-color-status-warning-ink);
+}
+.alert--danger {
+  --ifm-alert-background-color: var(--conduction-color-status-error-tint);
+  --ifm-alert-foreground-color: var(--conduction-color-status-error-ink);
+  --ifm-alert-border-color:     var(--conduction-color-status-error);
+}
+
+/* Blockquote — a cobalt rule and brand ink, from the tokens. */
+blockquote {
+  border-left: var(--conduction-quote-rule-width) solid var(--conduction-color-quote-border);
+  color: var(--conduction-color-text-default);
 }
 
 /* =========================================================================

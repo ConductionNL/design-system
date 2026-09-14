@@ -188,9 +188,11 @@ conduction-design-system/
 ├─ brand/
 │  ├─ tokens.json                     ← DTCG format (Style Dictionary, Tokens Studio)
 │  └─ assets/
-│     ├─ avatar-conduction.svg            ← cobalt, transparent bg
-│     ├─ avatar-conduction-on-white.svg   ← cobalt on white (default)
-│     └─ avatar-conduction-on-blue.svg    ← white on cobalt (inverse)
+│     ├─ avatar-conduction.svg            ← cobalt, transparent — canonical, use in layouts
+│     ├─ avatar-conduction-on-white.svg   ← square tile, white ground baked in
+│     └─ avatar-conduction-on-blue.svg    ← square tile, cobalt ground baked in
+│                                            tiles are for favicons, social avatars and app
+│                                            icons, where we do not own the background
 ├─ preview/
 │  ├─ index.html                      ← live overview of all design system cards
 │  ├─ type.html                       ← Figtree + IBM Plex Mono ramp

@@ -5,6 +5,10 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Footer, ConNext Website</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tokens.css also arrives with footer.fragment.html, but that is
+     injected asynchronously by include.js. Linking it here means the
+     plain-footer section below never paints before its tokens exist. -->
+<link rel="stylesheet" href="../../tokens.css">
 <style>
   body { margin: 0; background: white; }
 </style>
@@ -54,6 +58,183 @@ module.exports = createConfig({
     <li>Templates for houses (5) + ships (4) ride below the footer as raw HTML so canal-footer.js can <code>.content</code>-clone them — the swizzle injects them via <code>dangerouslySetInnerHTML</code>.</li>
   </ul>
 </aside>
+
+<!-- ============================================================
+     Plain footer — the version for every site that is not
+     conduction.nl. No canvas, no JS, no canal scene.
+     ============================================================ -->
+<style>
+  .plain-doc { max-width: 1280px; margin: 64px auto; padding: 0 56px; font-family: var(--conduction-typography-font-family-body); color: var(--c-blue-cobalt); }
+  .plain-doc .eyebrow {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--c-cobalt-400); margin: 0 0 var(--space-3);
+  }
+  .plain-doc h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 var(--space-4); }
+  .plain-doc p { font-size: 15px; line-height: 1.6; max-width: 72ch; margin: 0 0 var(--space-4); }
+  .plain-doc h3 { font-size: 17px; font-weight: 600; margin: var(--space-8) 0 var(--space-3); }
+  .plain-doc pre {
+    background: var(--conduction-color-code-block-background);
+    color: var(--conduction-color-code-block-text);
+    padding: var(--space-5); border-radius: var(--radius-lg);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12.5px; line-height: 1.65; overflow-x: auto; margin: 0;
+  }
+  .plain-doc code { font-family: var(--conduction-typography-font-family-code); font-size: 0.92em; }
+  .plain-doc .when { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-5); margin: var(--space-5) 0; }
+  .plain-doc .when > div { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .plain-doc .when h4 { margin: 0 0 var(--space-2); font-size: 15px; font-weight: 600; }
+  .plain-doc .when p { font-size: 13.5px; color: var(--c-cobalt-400); margin: 0; }
+
+  /* ---- The plain footer itself. Every colour is a token. ---- */
+  .plain-footer {
+    background: var(--conduction-color-footer-background);
+    color: var(--conduction-color-footer-text);
+    font-family: var(--conduction-typography-font-family-body);
+    padding: var(--space-12) var(--space-16) var(--space-8);
+  }
+  .plain-footer .inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: var(--space-10); }
+  .plain-footer .wm { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--conduction-color-footer-link); margin: 0 0 var(--space-3); }
+  .plain-footer .blurb { font-size: 14px; line-height: 1.55; max-width: 32ch; margin: 0; }
+  .plain-footer h4 {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--conduction-color-footer-title); font-weight: 500; margin: 0 0 var(--space-4);
+  }
+  .plain-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+  .plain-footer ul a { color: var(--conduction-color-footer-link); text-decoration: none; font-size: 14px; }
+  .plain-footer ul a:hover { color: var(--c-orange-knvb); }
+  .plain-footer .legal {
+    max-width: 1280px; margin: var(--space-10) auto 0;
+    padding-top: var(--space-5); border-top: 1px solid rgba(255,255,255,0.12);
+    font-size: 12px; display: flex; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap;
+  }
+  .plain-footer .legal a { color: var(--conduction-color-footer-text); text-decoration: none; }
+  .plain-footer .legal a:hover { color: var(--c-orange-knvb); }
+  @media (max-width: 860px) {
+    .plain-footer .inner { grid-template-columns: 1fr 1fr; }
+    .plain-footer { padding: var(--space-10) var(--space-6) var(--space-6); }
+    .plain-doc { padding: 0 var(--space-6); }
+  }
+</style>
+
+<div class="plain-doc">
+  <p class="eyebrow">Footer &middot; the other 95 percent of sites</p>
+  <h2>A footer you can build in one file</h2>
+  <p>The canal scene above is for conduction.nl. It needs a canvas, two scripts and a set of SVG templates, and it exists because the company site can afford a signature moment. Every other surface, an app, a docs site, a client portal, a print-adjacent page, needs a footer that is just a footer.</p>
+  <p>This is that footer. No JavaScript, no images, no canvas. Every colour reads from a published token, so it inherits the brand without hardcoding a single hex, and it follows a theme change on its own.</p>
+
+  <div class="when">
+    <div>
+      <h4>Use the canal footer</h4>
+      <p>conduction.nl only. It is the brand's set piece and loses its meaning if it turns up on every site.</p>
+    </div>
+    <div>
+      <h4>Use the plain footer</h4>
+      <p>Everywhere else. Apps, docs, portals, sub-brands, anything a partner builds on our stack.</p>
+    </div>
+  </div>
+
+  <h3>Rendered</h3>
+</div>
+
+<footer class="plain-footer">
+  <div class="inner">
+    <div>
+      <p class="wm">Conduction</p>
+      <p class="blurb">Open source software voor de publieke sector. Zes apps, één workspace.</p>
+    </div>
+    <div>
+      <h4>Apps</h4>
+      <ul>
+        <li><a href="#0">OpenCatalogi</a></li>
+        <li><a href="#0">OpenRegister</a></li>
+        <li><a href="#0">Integriq</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Solutions</h4>
+      <ul>
+        <li><a href="#0">Woo-compliance</a></li>
+        <li><a href="#0">Inkoopproces</a></li>
+        <li><a href="#0">Publieke catalogus</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Conduction</h4>
+      <ul>
+        <li><a href="#0">Over ons</a></li>
+        <li><a href="#0">Vacatures</a></li>
+        <li><a href="#0">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="legal">
+    <span>Conduction B.V. &middot; KvK 76741850 &middot; Lauriergracht 14h, Amsterdam &middot; &copy; 2026</span>
+    <span><a href="#0">Privacy</a> &middot; <a href="#0">Voorwaarden</a></span>
+  </div>
+</footer>
+
+<div class="plain-doc">
+  <h3>The tokens it reads</h3>
+  <p>Four tokens carry the whole thing. Point them somewhere else and the footer follows, including into dark mode, where they are already mapped.</p>
+  <pre><code>--conduction-color-footer-background   the ground
+--conduction-color-footer-title        column headings
+--conduction-color-footer-link         link labels and the wordmark
+--conduction-color-footer-text         body copy and the legal bar</code></pre>
+
+  <h3>Markup</h3>
+  <p>One <code>&lt;footer&gt;</code>, a grid of columns, a legal bar. Add or drop columns freely; the grid reflows.</p>
+  <pre><code>&lt;footer class="plain-footer"&gt;
+  &lt;div class="inner"&gt;
+    &lt;div&gt;
+      &lt;p class="wm"&gt;Conduction&lt;/p&gt;
+      &lt;p class="blurb"&gt;Open source software voor de publieke sector.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;h4&gt;Apps&lt;/h4&gt;
+      &lt;ul&gt;&lt;li&gt;&lt;a href="/apps/opencatalogi"&gt;OpenCatalogi&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;!-- more columns --&gt;
+  &lt;/div&gt;
+  &lt;div class="legal"&gt;
+    &lt;span&gt;Conduction B.V. &amp;middot; KvK 76741850 &amp;middot; &amp;copy; 2026&lt;/span&gt;
+    &lt;span&gt;&lt;a href="/privacy"&gt;Privacy&lt;/a&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;</code></pre>
+
+  <h3>Styles</h3>
+  <p>Import <code>tokens.css</code> first, then this. Nothing else is needed.</p>
+  <pre><code>.plain-footer {
+  background: var(--conduction-color-footer-background);
+  color: var(--conduction-color-footer-text);
+  font-family: var(--conduction-typography-font-family-body);
+  padding: var(--space-12) var(--space-16) var(--space-8);
+}
+.plain-footer .inner {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: var(--space-10);
+}
+.plain-footer h4 {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--conduction-color-footer-title); font-weight: 500;
+}
+.plain-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.plain-footer ul a { color: var(--conduction-color-footer-link); text-decoration: none; font-size: 14px; }
+.plain-footer ul a:hover { color: var(--c-orange-knvb); }
+.plain-footer .legal {
+  border-top: 1px solid rgba(255,255,255,0.12);
+  display: flex; justify-content: space-between; flex-wrap: wrap;
+}
+
+@media (max-width: 860px) {
+  .plain-footer .inner { grid-template-columns: 1fr 1fr; }
+}</code></pre>
+
+  <h3>Rules that travel with it</h3>
+  <p>Column headings are nouns, not sentences. Four columns at most, or the grid stops being scannable. The legal bar carries the entity name, KvK number and the year, because that is a legal requirement rather than a design choice. Orange is the hover colour and nothing else: one accent per component still applies, and here the accent is spent on hover.</p>
+</div>
 
 <script src="../include.js"></script>
 

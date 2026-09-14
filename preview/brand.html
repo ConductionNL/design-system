@@ -28,17 +28,36 @@
   .kit-footer a { color: var(--c-cobalt-400); }
 
   .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  /* Cards stretch to the tallest in the row, so the meta becomes a
+     column and the download buttons get pushed to a shared baseline.
+     Without this the card whose filename fits on one line (the
+     transparent one) sits its buttons a line higher than the rest. */
   .logo-card {
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--c-cobalt-100);
+    display: flex; flex-direction: column;
   }
   .logo-card .stage {
     height: 200px;
+    flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center;
   }
+  /* Match the HEXES, not the boxes. A tile is a 300x300 square whose
+     hex spans 258 of it (86%), so a 96px tile shows an 82.6px hex.
+     The transparent mark is cropped tight to the hex, so at 96px it
+     would render a full 96px hex, 16% larger than its neighbours.
+     83px makes every hex on the row the same size. */
   .logo-card .stage img { height: 96px; width: auto; }
-  .logo-card .meta { padding: var(--space-5); background: white; border-top: 1px solid var(--c-cobalt-100); }
+  .logo-card .stage img[src$="avatar-conduction.svg"],
+  .logo-card .stage img[src$="avatar-conduction-white.svg"],
+  .logo-card .stage img[src$="avatar-conduction-orange.svg"] { height: 83px; }
+  .logo-card .meta {
+    padding: var(--space-5); background: white;
+    border-top: 1px solid var(--c-cobalt-100);
+    flex: 1 1 auto; display: flex; flex-direction: column;
+  }
+  .logo-card .meta .fmts { margin-top: auto; }
   .logo-card .name { font-weight: 600; }
   .logo-card .file { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); margin-top: 4px; }
 
@@ -184,13 +203,21 @@
 
   <!-- Conduction logos -->
   <div class="section-label">Conduction hex avatar · 4 variants</div>
+  <p style="margin-bottom: var(--space-5); font-size: 13px; color: var(--c-cobalt-400); line-height: 1.6; max-width: 760px;">
+    <strong style="color: var(--c-blue-cobalt);">Pick by who owns the background.</strong>
+    The transparent avatar is the canonical mark. Use it everywhere you control the surface: pages, decks, print, diagrams. It carries no ground of its own, so it sits on cream, cobalt-50 or a photo without painting a plate behind itself. On dark surfaces reach for the white variant instead.
+    <br><br>
+    The two tiles bake their ground in on purpose. They are square, with the hex inset for safe-area padding, and they exist for the places you do <em>not</em> own the background: favicons, social avatars, app icons. Apple touch icons flatten transparency to black, and a profile picture lands on whatever a platform paints behind it. A cobalt hex on a black circle is why these two are opaque.
+    <br><br>
+    So the tiles are not "the logo for white pages". They are the logo for surfaces we cannot see. Never drop a tile into a layout you control: the transparent mark is correct there, and a tile would show a white or cobalt square the moment the surface behind it is tinted.
+  </p>
   <div class="logo-grid" style="grid-template-columns: repeat(4, 1fr);">
     <div class="logo-card">
       <div class="stage" style="background: white;">
         <img src="../brand/assets/avatar-conduction-on-white.svg" alt="Conduction on white">
       </div>
       <div class="meta">
-        <div class="name">On white · default</div>
+        <div class="name">Tile · white ground</div>
         <div class="file">brand/assets/avatar-conduction-on-white</div>
         <div class="fmts">
           <a href="../brand/assets/avatar-conduction-on-white.svg" download="conduction-avatar-on-white.svg">SVG</a>
@@ -203,7 +230,7 @@
         <img src="../brand/assets/avatar-conduction-on-blue.svg" alt="Conduction on cobalt">
       </div>
       <div class="meta">
-        <div class="name">On cobalt · inverse</div>
+        <div class="name">Tile · cobalt ground</div>
         <div class="file">brand/assets/avatar-conduction-on-blue</div>
         <div class="fmts">
           <a href="../brand/assets/avatar-conduction-on-blue.svg" download="conduction-avatar-on-blue.svg">SVG</a>
@@ -216,7 +243,7 @@
         <img src="../brand/assets/avatar-conduction.svg" alt="Conduction transparent">
       </div>
       <div class="meta">
-        <div class="name">Transparent</div>
+        <div class="name">Transparent · canonical</div>
         <div class="file">brand/assets/avatar-conduction</div>
         <div class="fmts">
           <a href="../brand/assets/avatar-conduction.svg" download="conduction-avatar.svg">SVG</a>

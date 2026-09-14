@@ -16,6 +16,16 @@
   --c-nextcloud-cyan:     #1CAFFF;  /* Nextcloud lighter cyan */
   --c-commonground-yellow: #F6AD00;  /* Common Ground official, commonground.nl */
 
+  /* Vermillion tint + ink — the error pair. Derived, because the brand
+     publishes the base red only. */
+  --c-red-50:             #FCE8EA;  /* error tint — alert ground */
+  --c-red-950:            #421115;  /* error tint, dark mode. Luminance-matched
+                                       to cobalt-800 so the four alert grounds
+                                       read as one set; red-300 on it is 6.59:1 */
+  --c-red-300:            #EF8A92;  /* light vermillion — error text in dark
+                                       mode, 6.51:1 on cobalt-800 */
+  --c-red-700:            #8D1720;  /* error ink — 7.85:1 on red-50 */
+
   /* Cobalt tints — derived for surfaces, hex-prism faces, soft fills */
   --c-cobalt-50:          #EEF2F8;
   --c-cobalt-100:         #DCE3F0;
@@ -58,8 +68,11 @@
   /* — Component family 3: forest (data / trustworthy / NLDS-compliant)
        Distinct from mint — deeper, denser, more "official." Use this
        for hexes that handle data and registers. — */
+  --c-forest-50:          #EEF7EE;  /* success tint — alert ground */
+  --c-forest-950:         #0B280A;  /* success tint, dark mode — 5.98:1 with forest-300 */
   --c-forest-300:         #7DAA7C;
-  --c-forest-500:         #3D7C3A;
+  --c-forest-500:         #3D7C3A;  /* = status success base */
+  --c-forest-700:         #2C5A2A;  /* success ink — 7.37:1 on forest-50 */
 
   /* — Component family 4: terracotta (documents / human work)
        Tuned around the brand vermillion (#AE1C28), so it ties to the
@@ -75,8 +88,15 @@
      Kept in tokens because they have specific jobs elsewhere. */
 
   /* Coral = KNVB orange accent only — focus rings, hover, occasional highlight. */
+  --c-coral-50:           #FFF3EA;  /* warning tint — alert ground */
+  --c-coral-950:          #351B0D;  /* warning tint, dark mode — 9.07:1 with coral-300 */
   --c-coral-300:          #FAB29C;
   --c-coral-500:          #F36C21;  /* = KNVB */
+  --c-coral-600:          #C64E0B;  /* text-safe orange — 4.67:1 on white.
+                                       Same hue as KNVB, dark enough to carry
+                                       16px text. Use for text and link-hover;
+                                       KNVB stays the fill / focus / icon accent. */
+  --c-coral-700:          #833307;  /* warning ink — 7.89:1 on coral-50 */
 
   /* Gold = Conduction Certified mark ONLY. Reserved for the cert avatar
      and trustmark badges. Do not use as a generic family color. */
@@ -99,27 +119,104 @@
   --conduction-color-brand-nextcloud:    var(--c-nextcloud-blue);
   --conduction-color-brand-commonground: var(--c-commonground-yellow);
 
+  /* Primary ramp — the seven steps a consumer needs to build a UI on
+     cobalt: hover fills, pressed states, borders, muted chrome. The
+     primitives already carry the values; naming them semantically
+     stops every downstream product from picking its own. */
+  --conduction-color-primary-lightest: var(--c-cobalt-200);
+  --conduction-color-primary-lighter:  var(--c-cobalt-300);
+  --conduction-color-primary-light:    var(--c-cobalt-400);
+  --conduction-color-primary:          var(--c-cobalt-500);
+  --conduction-color-primary-dark:     var(--c-cobalt-600);
+  --conduction-color-primary-darker:   var(--c-cobalt-700);
+  --conduction-color-primary-darkest:  var(--c-cobalt-800);
+
   /* Background */
   --conduction-color-background-default: var(--c-white);
   --conduction-color-background-inverse: var(--c-blue-cobalt);
   --conduction-color-background-muted:   var(--c-cobalt-50);
+  /* The deep ground every Conduction site actually paints for dark
+     panels, footers and dark mode. Distinct from -inverse, which is
+     the cobalt hero panel. Both are real, so name them separately
+     rather than leave anything downstream guessing which one
+     "inverse" was meant to be. */
+  --conduction-color-background-dark:    var(--c-cobalt-900);
+  --conduction-color-background-surface: var(--c-cobalt-800);
 
   /* Text */
   --conduction-color-text-default: var(--c-blue-cobalt);
   --conduction-color-text-inverse: var(--c-white);
-  --conduction-color-text-accent:  var(--c-orange-knvb);
+  --conduction-color-text-accent:  var(--c-coral-600);
   --conduction-color-text-muted:   var(--c-cobalt-400);
 
   /* Link */
   --conduction-color-link-default: var(--c-blue-cobalt);
-  --conduction-color-link-hover:   var(--c-orange-knvb);
+  --conduction-color-link-hover:   var(--c-coral-600);
 
-  /* Status */
-  --conduction-color-status-error: var(--c-red-vermillion);
+  /* Status — four states, three values each.
+     base = icon, mark, border · ink = text on the tint · tint = ground.
+     Publishing only the base is what left every downstream product
+     inventing the other two. Every ink-on-tint pair below clears AAA.
 
-  /* Border */
-  --conduction-color-border-default: var(--c-cobalt-200);
+     Success is forest, not mint: forest carries text on white at
+     5.07:1 where mint reaches only 3.62:1, and it sits further from
+     the warning orange. Warning is the KNVB orange, the only
+     candidate that clears 3:1 on white — so orange now means brand
+     accent, focus ring and warning at once.
+
+     Two rules travel with this set:
+     1. Never signal a status by colour alone — always an icon or a
+        word beside it (WCAG 1.4.1). Success and warning sit 1.68:1
+        apart in luminance, the classic red-green confusion pair.
+     2. Warning is the exception to "the base draws the border":
+        #F36C21 on its own tint measures 2.76:1, under the 3:1 a
+        component boundary needs, so warning borders take the ink. */
+  --conduction-color-status-info:          var(--c-blue-cobalt);
+  --conduction-color-status-info-ink:      var(--c-cobalt-600);
+  --conduction-color-status-info-tint:     var(--c-cobalt-50);
+
+  --conduction-color-status-success:       var(--c-forest-500);
+  --conduction-color-status-success-ink:   var(--c-forest-700);
+  --conduction-color-status-success-tint:  var(--c-forest-50);
+
+  --conduction-color-status-warning:       var(--c-orange-knvb);
+  --conduction-color-status-warning-ink:   var(--c-coral-700);
+  --conduction-color-status-warning-tint:  var(--c-coral-50);
+
+  --conduction-color-status-error:         var(--c-red-vermillion);
+  --conduction-color-status-error-ink:     var(--c-red-700);
+  --conduction-color-status-error-tint:    var(--c-red-50);
+
+  /* Border
+     -default is cobalt-300, the lightest step that clears the 3:1
+     WCAG 1.4.11 asks of anything outlining a control. cobalt-200
+     (1.79:1) is still the right choice for decorative rules between
+     cards and table rows, where no minimum applies — reach for
+     --c-cobalt-200 directly there. */
+  --conduction-color-border-default: var(--c-cobalt-300);
   --conduction-color-border-strong:  var(--c-blue-cobalt);
+
+  /* Footer — the dark panel conduction.nl has run in production for
+     years with no published counterpart. */
+  --conduction-color-footer-background: var(--c-cobalt-900);
+  --conduction-color-footer-text:       var(--c-cobalt-200);
+  --conduction-color-footer-title:      var(--c-cobalt-200);
+  --conduction-color-footer-link:       var(--c-white);
+
+  /* Code — inline sits on a cobalt tint, blocks on the dark ground. */
+  --conduction-color-code-inline-background: var(--c-cobalt-50);
+  --conduction-color-code-inline-text:       var(--c-blue-cobalt);
+  --conduction-color-code-block-background:  var(--c-cobalt-900);
+  --conduction-color-code-block-text:        var(--c-cobalt-100);
+
+  /* Alert, quote, table of contents — defined downstream twice over
+     (once by conduction.nl, once from the Utrecht side) and the two
+     sets disagreed. These are the conduction.nl values. */
+  --conduction-color-alert-border: var(--c-cobalt-100);
+  --conduction-color-quote-border: var(--c-blue-cobalt);
+  --conduction-color-toc-border:   var(--c-cobalt-100);
+  --conduction-alert-rule-width:   5px;
+  --conduction-quote-rule-width:   3px;
 
   /* ---------- Typography primitives ---------- */
   --conduction-typography-font-family-body:    'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -144,6 +241,14 @@
   --lh-tight:   1.2;
   --lh-normal:  1.5;
   --lh-relaxed: 1.75;
+
+  /* Tracking — large Figtree needs negative letter-spacing to sit
+     the way the brand's own pages do. Visible from about 24px up,
+     invisible below it. Published as tokens so a consumer does not
+     have to read the numbers off a heading rule. */
+  --tracking-tight:  -0.02em;   /* h1 */
+  --tracking-snug:   -0.015em;  /* h2 */
+  --tracking-normal: -0.01em;   /* h3 */
 
   /* ---------- Spacing (proposed scope-B) ---------- */
   --space-1:  4px;
@@ -273,6 +378,154 @@
      Keep this token referenced from artefact stylesheets (not hard-
      coded) so the change is one place. */
   --bleed: 0mm;
+}
+
+/* ============================================================
+   Dark theme
+
+   Every Conduction site has run a dark mode for years with no
+   published counterpart, so each product invented its own. These
+   are the values conduction.nl actually paints, promoted to the
+   token layer: cobalt-900 ground, cobalt-800 surface, cobalt-300
+   primary, cobalt-100 text.
+
+   Only the semantic layer flips. The primitives never move — a
+   theme is a different mapping of the same palette, not a second
+   palette. Two rules hold only here:
+
+     1. Text accent goes back to the bright KNVB orange (5.93:1 on
+        the ground). coral-600 exists because orange is too light
+        for white grounds; on a dark ground that reverses and
+        coral-600 becomes the one that fails.
+     2. Status ink and status rule are the same -300 step. The 500
+        bases are far too dark to sit on cobalt-800 — cobalt-500
+        reaches 1.73:1 there — so in dark the light step does both
+        jobs and the tint is simply the surface.
+
+   The attribute selector is what Docusaurus sets on <html>. The
+   media query covers anything that only follows the OS, guarded
+   so an explicit light choice still wins.
+   ============================================================ */
+:root[data-theme="dark"] {
+  /* Background */
+  --conduction-color-background-default: var(--c-cobalt-900);
+  --conduction-color-background-surface: var(--c-cobalt-800);
+  --conduction-color-background-muted:   var(--c-cobalt-800);
+  --conduction-color-background-inverse: var(--c-cobalt-50);
+
+  /* Primary ramp inverts: the light steps carry, the dark recede */
+  --conduction-color-primary:          var(--c-cobalt-300);
+  --conduction-color-primary-light:    var(--c-cobalt-200);
+  --conduction-color-primary-lighter:  var(--c-cobalt-100);
+  --conduction-color-primary-lightest: var(--c-white);
+  --conduction-color-primary-dark:     var(--c-cobalt-400);
+  --conduction-color-primary-darker:   var(--c-cobalt-500);
+  --conduction-color-primary-darkest:  var(--c-cobalt-600);
+
+  /* Text — 13.85:1 for body, 5.91:1 for muted */
+  --conduction-color-text-default: var(--c-cobalt-100);
+  --conduction-color-text-inverse: var(--c-cobalt-900);
+  --conduction-color-text-muted:   var(--c-cobalt-300);
+  --conduction-color-text-accent:  var(--c-orange-knvb);
+
+  /* Link */
+  --conduction-color-link-default: var(--c-cobalt-300);
+  --conduction-color-link-hover:   var(--c-orange-knvb);
+
+  /* Border — cobalt-300 clears 3:1 on both the ground and the
+     surface; cobalt-400 only manages it on the ground. */
+  --conduction-color-border-default: var(--c-cobalt-300);
+  --conduction-color-border-strong:  var(--c-cobalt-200);
+
+  /* Status — the light step carries both ink and rule, and the
+     surface is the ground. */
+  --conduction-color-status-info:          var(--c-cobalt-300);
+  --conduction-color-status-info-ink:      var(--c-cobalt-300);
+  --conduction-color-status-info-tint:     var(--c-cobalt-800);
+
+  --conduction-color-status-success:       var(--c-forest-300);
+  --conduction-color-status-success-ink:   var(--c-forest-300);
+  --conduction-color-status-success-tint:  var(--c-forest-950);
+
+  --conduction-color-status-warning:       var(--c-coral-300);
+  --conduction-color-status-warning-ink:   var(--c-coral-300);
+  --conduction-color-status-warning-tint:  var(--c-coral-950);
+
+  --conduction-color-status-error:         var(--c-red-300);
+  --conduction-color-status-error-ink:     var(--c-red-300);
+  --conduction-color-status-error-tint:    var(--c-red-950);
+
+  /* Code — the block ground was already dark, so it stays; inline
+     moves off the light tint onto the surface. */
+  --conduction-color-code-inline-background: var(--c-cobalt-800);
+  --conduction-color-code-inline-text:       var(--c-cobalt-100);
+
+  /* Alert, quote, toc */
+  --conduction-color-alert-border: var(--c-cobalt-700);
+  --conduction-color-quote-border: var(--c-cobalt-300);
+  --conduction-color-toc-border:   var(--c-cobalt-700);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Background */
+    --conduction-color-background-default: var(--c-cobalt-900);
+    --conduction-color-background-surface: var(--c-cobalt-800);
+    --conduction-color-background-muted:   var(--c-cobalt-800);
+    --conduction-color-background-inverse: var(--c-cobalt-50);
+
+    /* Primary ramp inverts: the light steps carry, the dark recede */
+    --conduction-color-primary:          var(--c-cobalt-300);
+    --conduction-color-primary-light:    var(--c-cobalt-200);
+    --conduction-color-primary-lighter:  var(--c-cobalt-100);
+    --conduction-color-primary-lightest: var(--c-white);
+    --conduction-color-primary-dark:     var(--c-cobalt-400);
+    --conduction-color-primary-darker:   var(--c-cobalt-500);
+    --conduction-color-primary-darkest:  var(--c-cobalt-600);
+
+    /* Text — 13.85:1 for body, 5.91:1 for muted */
+    --conduction-color-text-default: var(--c-cobalt-100);
+    --conduction-color-text-inverse: var(--c-cobalt-900);
+    --conduction-color-text-muted:   var(--c-cobalt-300);
+    --conduction-color-text-accent:  var(--c-orange-knvb);
+
+    /* Link */
+    --conduction-color-link-default: var(--c-cobalt-300);
+    --conduction-color-link-hover:   var(--c-orange-knvb);
+
+    /* Border — cobalt-300 clears 3:1 on both the ground and the
+       surface; cobalt-400 only manages it on the ground. */
+    --conduction-color-border-default: var(--c-cobalt-300);
+    --conduction-color-border-strong:  var(--c-cobalt-200);
+
+    /* Status — the light step carries both ink and rule, and the
+       surface is the ground. */
+    --conduction-color-status-info:          var(--c-cobalt-300);
+    --conduction-color-status-info-ink:      var(--c-cobalt-300);
+    --conduction-color-status-info-tint:     var(--c-cobalt-800);
+
+    --conduction-color-status-success:       var(--c-forest-300);
+    --conduction-color-status-success-ink:   var(--c-forest-300);
+    --conduction-color-status-success-tint:  var(--c-forest-950);
+
+    --conduction-color-status-warning:       var(--c-coral-300);
+    --conduction-color-status-warning-ink:   var(--c-coral-300);
+    --conduction-color-status-warning-tint:  var(--c-coral-950);
+
+    --conduction-color-status-error:         var(--c-red-300);
+    --conduction-color-status-error-ink:     var(--c-red-300);
+    --conduction-color-status-error-tint:    var(--c-red-950);
+
+    /* Code — the block ground was already dark, so it stays; inline
+       moves off the light tint onto the surface. */
+    --conduction-color-code-inline-background: var(--c-cobalt-800);
+    --conduction-color-code-inline-text:       var(--c-cobalt-100);
+
+    /* Alert, quote, toc */
+    --conduction-color-alert-border: var(--c-cobalt-700);
+    --conduction-color-quote-border: var(--c-cobalt-300);
+    --conduction-color-toc-border:   var(--c-cobalt-700);
+  }
 }
 
 /* ============================================================

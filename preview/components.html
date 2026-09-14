@@ -171,9 +171,38 @@
     font-size: 14px;
     line-height: 1.5;
   }
-  .alert.info { background: var(--c-cobalt-50); border-color: var(--c-blue-cobalt); }
-  .alert.warn { background: #FFF3EA; border-color: var(--c-orange-knvb); }
-  .alert.err { background: #FCE8EA; border-color: var(--c-red-vermillion); color: var(--c-cobalt-700); }
+  /* Three values per status, all from the tokens: the tint is the ground,
+     the ink carries the text, the base draws the rule. Every ink-on-tint
+     pair clears AAA. Before this, the tints were hardcoded and the text
+     stayed cobalt, so an error alert argued with itself in blue.
+
+     Warning is the exception to "the base draws the rule". KNVB orange on
+     its own tint measures 2.76:1, under the 3:1 a component boundary
+     needs, so the warning rule takes the ink instead.
+
+     Colour is never the only signal. Each alert leads with a word, and
+     that word is what carries the meaning for anyone who cannot separate
+     the success green from the warning orange (WCAG 1.4.1). */
+  .alert.info {
+    background: var(--conduction-color-status-info-tint);
+    border-color: var(--conduction-color-status-info);
+    color: var(--conduction-color-status-info-ink);
+  }
+  .alert.ok {
+    background: var(--conduction-color-status-success-tint);
+    border-color: var(--conduction-color-status-success);
+    color: var(--conduction-color-status-success-ink);
+  }
+  .alert.warn {
+    background: var(--conduction-color-status-warning-tint);
+    border-color: var(--conduction-color-status-warning-ink);
+    color: var(--conduction-color-status-warning-ink);
+  }
+  .alert.err {
+    background: var(--conduction-color-status-error-tint);
+    border-color: var(--conduction-color-status-error);
+    color: var(--conduction-color-status-error-ink);
+  }
   .alert strong { font-weight: 600; }
 
   /* Divider with hex */
@@ -979,6 +1008,7 @@
   <div class="section-label">Alerts</div>
   <div class="group">
     <div class="alert info"><strong>Note:</strong> The Nextcloud app store install requires admin permissions on your instance.</div>
+    <div class="alert ok"><strong>Installed:</strong> OpenRegister v2.4 is running. Your first register is ready to fill.</div>
     <div class="alert warn"><strong>Beta:</strong> Integriq v1.2 is in beta. Connector contracts may change before v2.</div>
     <div class="alert err"><strong>Error:</strong> Schema validation failed: missing required field <code>oin</code>.</div>
   </div>

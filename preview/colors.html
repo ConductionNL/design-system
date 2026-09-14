@@ -189,7 +189,10 @@
   .proportion {
     display: grid;
     grid-template-columns: 70fr 20fr 8fr 2fr;
-    height: 88px;
+    /* min-height, not height: the 8% and 2% cells are narrow enough that
+       their labels wrap, and a fixed box squeezed the wrap against the
+       percentage. Letting the bar grow keeps the gutters even. */
+    min-height: var(--space-24);
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--c-cobalt-100);
@@ -197,9 +200,11 @@
   .proportion > div {
     display: flex; flex-direction: column;
     justify-content: space-between;
-    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+    padding: var(--space-4);
     font-family: var(--conduction-typography-font-family-code);
     font-size: 11px;
+    line-height: 1.5;
     letter-spacing: 0.06em;
   }
   .proportion .pct { font-size: 22px; font-family: var(--conduction-typography-font-family-body); font-weight: 700; letter-spacing: -0.01em; }
@@ -253,6 +258,106 @@
   .status-item .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
   .status-item .label { font-weight: 600; }
   .status-item .meta { font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; font-family: var(--conduction-typography-font-family-code); }
+
+  /* ============================================================
+     Semantic token specimens
+
+     Everything below paints from --conduction-color-* rather than
+     from the primitives, so the swatches ARE the published theme.
+     Change a token and this section changes with it. That is the
+     point: a token nobody can see is a token nobody applies right.
+     ============================================================ */
+  .sem-note { font-size: 13px; color: var(--c-cobalt-400); line-height: 1.6; max-width: 760px; margin-bottom: var(--space-5); }
+
+  .theme-switch { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); }
+  .theme-switch button {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-pill);
+    background: white; color: var(--c-cobalt-400); cursor: pointer;
+  }
+  .theme-switch button[aria-pressed="true"] { background: var(--c-blue-cobalt); border-color: var(--c-blue-cobalt); color: white; }
+  .theme-switch .hint { font-size: 12px; color: var(--c-cobalt-400); }
+
+  .tok-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: var(--space-4); }
+  .tok {
+    border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-lg);
+    overflow: hidden; background: white;
+  }
+  .tok .band { height: 64px; }
+  .tok .body { padding: var(--space-4); }
+  .tok .nm { font-weight: 600; font-size: 14px; }
+  .tok .var {
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 10.5px; color: var(--c-cobalt-400);
+    margin-top: 4px; word-break: break-all;
+  }
+  .tok .use { font-size: 12px; color: var(--c-cobalt-400); margin-top: var(--space-2); line-height: 1.5; }
+
+  /* status: base rule, ink text, tint ground, exactly as shipped */
+  .sem-alert {
+    border-left: 3px solid; border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5); font-size: 14px; line-height: 1.5;
+  }
+  .sem-alert + .sem-alert { margin-top: var(--space-3); }
+  .sem-alert strong { font-weight: 600; }
+  .sem-alert .m { font-family: var(--conduction-typography-font-family-code); font-size: 11px; opacity: 0.8; display: block; margin-top: 4px; }
+  .sa-info { background: var(--conduction-color-status-info-tint);    color: var(--conduction-color-status-info-ink);    border-color: var(--conduction-color-status-info); }
+  .sa-ok   { background: var(--conduction-color-status-success-tint); color: var(--conduction-color-status-success-ink); border-color: var(--conduction-color-status-success); }
+  .sa-warn { background: var(--conduction-color-status-warning-tint); color: var(--conduction-color-status-warning-ink); border-color: var(--conduction-color-status-warning-ink); }
+  .sa-err  { background: var(--conduction-color-status-error-tint);   color: var(--conduction-color-status-error-ink);   border-color: var(--conduction-color-status-error); }
+
+  .ramp { display: grid; grid-template-columns: repeat(7, 1fr); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--c-cobalt-100); }
+  .ramp .s { aspect-ratio: 1 / 1.25; padding: var(--space-3); display: flex; align-items: flex-end; font-family: var(--conduction-typography-font-family-code); font-size: 10px; }
+
+  /* borders: the 3:1 rule, on a real control */
+  .field-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-5); }
+  .field-demo .lbl { font-size: 13px; font-weight: 600; color: var(--conduction-color-text-default); }
+  .field-demo .fake-input {
+    border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    color: var(--conduction-color-text-muted); font-size: 15px; margin-top: 6px;
+    background: var(--conduction-color-background-default);
+  }
+  .field-demo .ok-b  { border: 1px solid var(--conduction-color-border-default); }
+  .field-demo .bad-b { border: 1px solid var(--c-cobalt-200); }
+  .field-demo .verdict { font-family: var(--conduction-typography-font-family-code); font-size: 11px; margin-top: 6px; }
+
+  /* component tokens: footer, code, quote, toc */
+  .comp-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); }
+  .foot-demo {
+    background: var(--conduction-color-footer-background);
+    color: var(--conduction-color-footer-text);
+    padding: var(--space-5); border-radius: var(--radius-lg);
+    display: flex; flex-direction: column; gap: 6px; font-size: 13px;
+  }
+  .foot-demo .ft { color: var(--conduction-color-footer-title); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .foot-demo a { color: var(--conduction-color-footer-link); text-decoration: none; }
+  .code-demo code {
+    background: var(--conduction-color-code-inline-background);
+    color: var(--conduction-color-code-inline-text);
+    padding: 2px 6px; border-radius: var(--radius-sm); font-size: 12px;
+  }
+  .code-demo pre {
+    background: var(--conduction-color-code-block-background);
+    color: var(--conduction-color-code-block-text);
+    padding: var(--space-4); border-radius: var(--radius-lg);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 12px; margin: var(--space-3) 0 0; overflow-x: auto;
+  }
+  .quote-demo blockquote {
+    margin: 0; padding-left: var(--space-4);
+    border-left: var(--conduction-quote-rule-width) solid var(--conduction-color-quote-border);
+    color: var(--conduction-color-text-default); font-style: italic; font-size: 14px;
+  }
+  .toc-demo { border-left: 1px solid var(--conduction-color-toc-border); padding-left: var(--space-4); font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+  .toc-demo a { color: var(--conduction-color-link-default); text-decoration: none; }
+  .toc-demo a:hover { color: var(--conduction-color-link-hover); }
+
+  /* surfaces */
+  .surf { border-radius: var(--radius-lg); padding: var(--space-5); border: 1px solid var(--c-cobalt-100); min-height: 92px; display: flex; flex-direction: column; justify-content: center; gap: 4px; font-size: 13px; }
+  .surf .n { font-weight: 600; }
+  .surf .v { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; opacity: 0.75; }
 
   /* Pairing rules */
   .pairs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
@@ -685,8 +790,119 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       Semantic tokens — the published theme, rendered
+       ============================================================ -->
+  <div class="section-label">Semantic tokens · the theme, rendered</div>
+  <p class="sem-note">
+    Everything in this section paints from <code>--conduction-color-*</code>, not from the primitives above. So these are not pictures of the theme, they are the theme. Change a token and this section changes with it.
+    <br><br>
+    Use the switch to flip the token layer to dark. The page chrome around it stays light on purpose: the kit paints its own furniture from the raw primitives, and only the semantic layer has a dark mapping.
+  </p>
+
+  <div class="theme-switch">
+    <button type="button" data-set-theme="light" aria-pressed="true">Light</button>
+    <button type="button" data-set-theme="dark" aria-pressed="false">Dark</button>
+    <span class="hint">flips <code>data-theme</code> on the document</span>
+  </div>
+
+  <!-- Status set -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-6) 0 var(--space-4);">Status · four states, three values each</h3>
+  <p class="sem-note">The base draws the rule and the icon. The ink carries the text. The tint is the ground. Publishing only the base is what left every product downstream inventing the other two. Warning is the one exception to "the base draws the rule": KNVB orange on its own tint measures 2.76:1, under the 3:1 a boundary needs, so its rule takes the ink. Never signal a status by colour alone, always a word or an icon beside it.</p>
+  <div class="sem-alert sa-info"><strong>Note:</strong> The Nextcloud app store install requires admin permissions.<span class="m">info · base #21468B · ink #1B3A75 · tint #EEF2F8 · 9.79:1 AAA</span></div>
+  <div class="sem-alert sa-ok"><strong>Installed:</strong> OpenRegister v2.4 is running. Your first register is ready.<span class="m">success · base #3D7C3A · ink #2C5A2A · tint #EEF7EE · 7.37:1 AAA</span></div>
+  <div class="sem-alert sa-warn"><strong>Beta:</strong> Integriq v1.2 is in beta. Connector contracts may change.<span class="m">warning · base #F36C21 · ink #833307 · tint #FFF3EA · 7.89:1 AAA · rule takes the ink</span></div>
+  <div class="sem-alert sa-err"><strong>Error:</strong> Schema validation failed, missing required field.<span class="m">error · base #AE1C28 · ink #8D1720 · tint #FCE8EA · 7.85:1 AAA</span></div>
+
+  <!-- Primary ramp -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-8) 0 var(--space-4);">Primary ramp · seven steps</h3>
+  <p class="sem-note">The steps a consumer needs to build on cobalt: hover fills, pressed states, borders, muted chrome. The primitives always carried these values; naming them semantically stops every product picking its own.</p>
+  <div class="ramp">
+    <div class="s" style="background: var(--conduction-color-primary-lightest); color: var(--c-cobalt-900);">lightest</div>
+    <div class="s" style="background: var(--conduction-color-primary-lighter); color: var(--c-cobalt-900);">lighter</div>
+    <div class="s" style="background: var(--conduction-color-primary-light); color: white;">light</div>
+    <div class="s" style="background: var(--conduction-color-primary); color: white;">primary</div>
+    <div class="s" style="background: var(--conduction-color-primary-dark); color: white;">dark</div>
+    <div class="s" style="background: var(--conduction-color-primary-darker); color: white;">darker</div>
+    <div class="s" style="background: var(--conduction-color-primary-darkest); color: white;">darkest</div>
+  </div>
+
+  <!-- Surfaces -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-8) 0 var(--space-4);">Surfaces · inverse is not the dark ground</h3>
+  <p class="sem-note">Two different things that one token used to have to mean. <code>inverse</code> is the cobalt panel behind a hero. <code>dark</code> is the deep ground the sites actually paint for footers, code blocks and dark mode. Both are real, so both are named.</p>
+  <div class="tok-grid">
+    <div class="surf" style="background: var(--conduction-color-background-default); color: var(--conduction-color-text-default);"><span class="n">default</span><span class="v">--conduction-color-background-default</span></div>
+    <div class="surf" style="background: var(--conduction-color-background-muted); color: var(--conduction-color-text-default);"><span class="n">muted</span><span class="v">--conduction-color-background-muted</span></div>
+    <div class="surf" style="background: var(--conduction-color-background-inverse); color: var(--conduction-color-text-inverse);"><span class="n">inverse · the cobalt panel</span><span class="v">--conduction-color-background-inverse</span></div>
+    <div class="surf" style="background: var(--conduction-color-background-dark); color: var(--c-cobalt-100);"><span class="n">dark · the deep ground</span><span class="v">--conduction-color-background-dark</span></div>
+    <div class="surf" style="background: var(--conduction-color-background-surface); color: var(--c-cobalt-100);"><span class="n">surface · cards on dark</span><span class="v">--conduction-color-background-surface</span></div>
+  </div>
+
+  <!-- Borders -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-8) 0 var(--space-4);">Borders · 3:1 is not optional on a control</h3>
+  <p class="sem-note">WCAG 1.4.11 asks 3:1 of anything outlining a control. The old default was cobalt-200 at 1.79:1, so a field outline was effectively invisible to some readers. <code>border-default</code> is now cobalt-300. The lighter step is still right for decorative rules between cards and table rows, where no minimum applies, so reach for <code>--c-cobalt-200</code> directly there.</p>
+  <div class="field-demo">
+    <div>
+      <span class="lbl">E-mailadres</span>
+      <div class="fake-input ok-b">naam@gemeente.nl</div>
+      <div class="verdict" style="color: var(--conduction-color-status-success-ink);">border-default · cobalt-300 · 3.02:1 · passes</div>
+    </div>
+    <div>
+      <span class="lbl">E-mailadres</span>
+      <div class="fake-input bad-b">naam@gemeente.nl</div>
+      <div class="verdict" style="color: var(--conduction-color-status-error-ink);">cobalt-200 · 1.79:1 · decorative only</div>
+    </div>
+  </div>
+
+  <!-- Text accent -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-8) 0 var(--space-4);">Accent text · the orange that can carry words</h3>
+  <p class="sem-note">KNVB orange reaches 3.01:1 on white. That is enough for a fill, an icon, a focus ring or a large heading, and not enough for running text. <code>text-accent</code> and <code>link-hover</code> are both text roles, so they point at a darker sibling on the same hue. KNVB itself is unchanged and still the accent.</p>
+  <div class="tok-grid">
+    <div class="tok">
+      <div class="band" style="background: var(--c-orange-knvb);"></div>
+      <div class="body">
+        <div class="nm" style="color: var(--c-orange-knvb);">Bekijk onze componenten</div>
+        <div class="var">--c-orange-knvb · #F36C21</div>
+        <div class="use">3.01:1 · fills, icons, focus rings, large headings. Never body text.</div>
+      </div>
+    </div>
+    <div class="tok">
+      <div class="band" style="background: var(--conduction-color-text-accent);"></div>
+      <div class="body">
+        <div class="nm" style="color: var(--conduction-color-text-accent);">Bekijk onze componenten</div>
+        <div class="var">--conduction-color-text-accent · #C64E0B</div>
+        <div class="use">4.67:1 · accent text and link hover. Same hue, dark enough to read.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Component tokens -->
+  <h3 style="font-size:16px;font-weight:600;margin:var(--space-8) 0 var(--space-4);">Footer, code, quote, table of contents</h3>
+  <p class="sem-note">Four treatments that ran in production for years with no published counterpart, so each product invented its own. These render from the tokens now.</p>
+  <div class="comp-demo">
+    <div class="foot-demo">
+      <span class="ft">Over ons</span>
+      <a href="#0">Onderwerpen</a>
+      <a href="#0">Nieuws</a>
+      <a href="#0">Vacatures</a>
+    </div>
+    <div class="code-demo">
+      <p style="font-size:13px;margin:0;color:var(--conduction-color-text-default);">Install with <code>npm i @conduction/docusaurus-preset</code></p>
+      <pre>npx @conduction/theme build</pre>
+    </div>
+    <div class="quote-demo">
+      <blockquote>Zes apps, één workspace, allemaal open source.</blockquote>
+    </div>
+    <div class="toc-demo">
+      <a href="#0">Status</a>
+      <a href="#0">Primary ramp</a>
+      <a href="#0">Surfaces</a>
+      <a href="#0">Borders</a>
+    </div>
+  </div>
+
   <!-- Pairs -->
-  <div class="section-label">Pairing rules</div>
+  <div class="section-label" style="margin-top: var(--space-10);">Pairing rules</div>
   <div class="pairs">
     <div class="pair-card">
       <div class="demo" style="background: var(--c-blue-cobalt); color: white;"><span class="big">Aa</span></div>
@@ -725,5 +941,27 @@
   <span><a href="index.html">&larr; Back to system</a></span>
 </div>
 
+<script>
+  /* Flips the token layer only. tokens.css maps the dark theme on
+     :root[data-theme="dark"], so the switch has to live on the
+     document element. The kit's own chrome paints from the raw
+     primitives, which never move, so the page around the specimens
+     stays light and only the semantic swatches respond. */
+  (function () {
+    var buttons = document.querySelectorAll('.theme-switch button[data-set-theme]');
+    Array.prototype.forEach.call(buttons, function (btn) {
+      btn.addEventListener('click', function () {
+        var theme = btn.getAttribute('data-set-theme');
+        document.documentElement.setAttribute('data-theme', theme);
+        Array.prototype.forEach.call(buttons, function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+      });
+    });
+    /* Default to light explicitly, so a visitor whose OS is dark does
+       not get the media-query mapping while the switch reads "Light". */
+    document.documentElement.setAttribute('data-theme', 'light');
+  })();
+</script>
 </body>
 </html>

@@ -354,3 +354,86 @@ If a publish fails mid-run, fix the issue and push another commit — `semantic-
 ## License
 
 EUPL-1.2 + MIT.
+
+### Third-party assets
+
+Not every file here is ours. The marks below keep their own terms.
+
+**Font Awesome Free 6** — the `mail`, `phone`, `github` and `linkedin`
+glyphs in `<EmployeeCard/>` are Font Awesome Free icons by Fonticons, Inc.,
+used under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Source: <https://fontawesome.com>. The paths are pasted into the component
+rather than imported, so this notice is the attribution the licence asks
+for — keep it with the code.
+
+Font Awesome's own licence adds, of the brand glyphs among them: *"All
+brand icons are trademarks of their respective owners… Please do not use
+brand logos for any purpose except to represent the company, product, or
+service to which they refer."* Linking to a profile on that service is
+exactly that use.
+
+**Bluesky and Mastodon marks** — the `bluesky` and `mastodon` glyphs are
+not Font Awesome redraws but the brands' own artwork, byte-identical to
+the source files, because both brands prohibit redrawing the mark:
+
+- Bluesky butterfly — © Bluesky Social PBC, from their
+  [brand assets](https://bsky.social/about/support/icons)
+  (`bluesky_media_kit_logo_transparent_4.svg`). Used as a social-media icon
+  linking to a profile, which their
+  [Trademark Policy](https://bsky.social/about/support/trademarks) §4.1
+  permits without prior approval.
+- Mastodon mark — trademark of Mastodon GmbH, from their
+  [Brand Toolkit](https://joinmastodon.org/branding): `/logos/logo-black.svg`
+  and `/logos/logo-white.svg`. Not the `logo-symbol-icon.svg` in the code
+  repo — that is the in-app UI icon and a different, simpler drawing.
+  Mastodon exports black and white as two separate paths rather than one
+  shape in two fills, so both are embedded and the stylesheet shows
+  whichever suits the ground. See their
+  [Trade Mark Policy](https://joinmastodon.org/trademark).
+
+  Two of their guidelines we cannot fully meet at this size, noted here so
+  nobody rediscovers them: the toolkit asks for 36px of clear space on all
+  sides (impossible for a 16px icon in a contact row), and says to use the
+  mark alone "only when the Mastodon brand has been clearly established in
+  the design". A labelled link to a Mastodon profile is the ordinary
+  reading of that, but it is a judgement call, not a written permission the
+  way Bluesky s section 4.1 is.
+
+**GitHub and LinkedIn marks** — the Font Awesome glyphs for these two are
+renditions of registered trademarks, and both owners publish colour rules
+that bind us:
+
+- GitHub — *"The Invertocat and our wordmark should only appear in white,
+  black, or in few cases grey or green."* <https://github.com/logos>
+- LinkedIn — *"LinkedIn members may only use the [in] Logo in three color
+  variations: blue, black, and white."* Their social-icon clause covers
+  this case directly: *"When using the [in] Logo as a part of a line-up of
+  social media icons… use one of the three icon colors we provide."*
+  <https://brand.linkedin.com/in-logo>
+
+### Why every contact icon is black
+
+Four of the six glyphs in `<EmployeeCard/>` are trademarks, and each owner
+restricts the colours their mark may take:
+
+| Mark | Colours the owner permits |
+| --- | --- |
+| GitHub | white, black, occasionally grey or green |
+| LinkedIn | blue, black, white |
+| Bluesky | official blue, black, white |
+| Mastodon | the mark unmodified; black or white where contrast requires |
+
+**Black is the only colour all four permit.** Cobalt — what this row used
+to be — is permitted by none of them. So the row is black, and white on
+the cobalt hover chip, which is the second variant every one of the four
+brands names for that situation.
+
+That settles the four marks. `mail` and `phone` are ordinary Font Awesome
+icons under no such constraint; they are black so the row reads as one
+decision rather than two colours by accident.
+
+The fills are literal `#000`/`#fff`, never palette tokens, so a future
+brand change cannot silently recolour someone else's trademark.
+`[data-mark]` in `EmployeeCard.module.css` marks the glyphs where this is
+a legal requirement rather than a design choice — if the row is ever
+restyled, those must not follow. Do not "tidy" any of it into a token.

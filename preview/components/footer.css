@@ -95,9 +95,13 @@
   to   { transform: translateX(-60px); }
 }
 
-/* ---- Water (cobalt-900) with canal items + waves + footer text ---- */
+/* ---- Water with canal items + waves + footer text ----
+   The ground reads from the published footer token rather than the
+   raw primitive, so a site that remaps the footer gets this scene
+   with it. Same value today (cobalt-900); the difference is that it
+   now follows the token instead of duplicating its value. */
 .canal-footer .water {
-  background: var(--c-cobalt-900);
+  background: var(--conduction-color-footer-background);
   padding: 88px 56px 28px;        /* extra top room reserves a band for the boats */
   position: relative;
   overflow: hidden;
@@ -243,16 +247,20 @@
 
 /* Canal items respond to clicks (override the overlay's pointer-events). */
 .canal-footer .ci { cursor: pointer; pointer-events: auto; }
+/* Column titles and links read from the footer tokens. The old
+   rgba(255,255,255,0.55) measured 6.05:1 on the canal water; the
+   title token is cobalt-200 at 9.99:1, so this is a contrast gain
+   as well as a token fix. */
 .canal-footer h4 {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 11px; letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  color: var(--conduction-color-footer-title);
   font-weight: 500; margin: 0 0 16px;
 }
 .canal-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .canal-footer ul a {
-  color: rgba(255,255,255,0.85);
+  color: var(--conduction-color-footer-link);
   text-decoration: none; font-size: 14px;
 }
 .canal-footer ul a:hover { color: var(--c-orange-knvb); }

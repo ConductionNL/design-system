@@ -44,10 +44,24 @@
  *     linkedin  https://www.linkedin.com/in/<slug>/
  *     bluesky   https://bsky.app/profile/<handle>
  *     mastodon  https://<instance>/@<handle>
+ *
+ *   An http(s) href opens in a new tab, the same rule FeatureGrid,
+ *   ContactCta, ExternalAppShelf, Footer and Navbar already follow: a
+ *   contact link leaves the site for someone's profile, and sending a
+ *   reader away mid-page loses where they were. `mailto:` and `tel:`
+ *   are excluded — they hand off to another application, so a _blank
+ *   on them opens a tab that never paints and stays behind empty.
  */
 
 import React from 'react';
 import styles from './EmployeeCard.module.css';
+
+/* `rel` travels with every `target="_blank"`: without it the opened page
+   receives a `window.opener` handle back into ours. Modern browsers imply
+   `noopener` for _blank, but the preset states it rather than relying on
+   that, and `noreferrer` additionally withholds the Referer header. */
+const externalProps = (href = '') =>
+  /^https?:\/\//.test(href) ? {target: '_blank', rel: 'noopener noreferrer'} : {};
 
 const ICONS = {
   /* Font Awesome Free 6, the SVG set — CC BY 4.0, attributed in the
@@ -136,7 +150,7 @@ export default function EmployeeCard({
         {links.length > 0 && (
           <div className={styles.contacts}>
             {links.map((l, i) => (
-              <a key={i} href={l.href} aria-label={l.label}>{ICONS[l.icon] || l.label}</a>
+              <a key={i} href={l.href} aria-label={l.label} {...externalProps(l.href)}>{ICONS[l.icon] || l.label}</a>
             ))}
           </div>
         )}
@@ -166,7 +180,7 @@ export default function EmployeeCard({
         {links.length > 0 && (
           <div className={styles.contactsInline}>
             {links.map((l, i) => (
-              <a key={i} href={l.href}>{ICONS[l.icon]}{l.label}</a>
+              <a key={i} href={l.href} {...externalProps(l.href)}>{ICONS[l.icon]}{l.label}</a>
             ))}
           </div>
         )}
@@ -177,7 +191,11 @@ export default function EmployeeCard({
   /* default: compact */
   const Tag = links.length > 0 && links[0].href ? 'a' : 'div';
   return (
-    <Tag href={Tag === 'a' ? links[0].href : undefined} className={[styles.cardCompact, className].filter(Boolean).join(' ')}>
+    <Tag
+      href={Tag === 'a' ? links[0].href : undefined}
+      {...(Tag === 'a' ? externalProps(links[0].href) : {})}
+      className={[styles.cardCompact, className].filter(Boolean).join(' ')}
+    >
       <div className={styles.avatar} style={!photo ? {background: avatarColor || 'var(--c-blue-cobalt)'} : undefined}>
         {photo ? <img src={photo} alt={name} /> : initials}
       </div>
@@ -188,7 +206,7 @@ export default function EmployeeCard({
       {links.length > 0 && (
         <div className={styles.linksRow}>
           {links.map((l, i) => (
-            <a key={i} href={l.href} aria-label={l.label}>{ICONS[l.icon]}</a>
+            <a key={i} href={l.href} aria-label={l.label} {...externalProps(l.href)}>{ICONS[l.icon]}</a>
           ))}
         </div>
       )}

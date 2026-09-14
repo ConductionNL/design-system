@@ -85,8 +85,30 @@ const LINK_TEXT = {
   fr: "Découvrez ce que cela signifie et comment Conduction utilise l'IA.",
 };
 
-// Site-relative. The page exists at src/pages/ai.mdx ("How we use AI").
+// Site-relative. The page exists at src/pages/ai.mdx ("How we use AI")
+// on conduction.nl only. Every product docs site uses this preset too,
+// and none of them carries an /ai page, so off conduction.nl the link
+// goes to the policy page on conduction.nl instead of a 404.
 const LINK_HREF = '/ai';
+const POLICY_SITE_HOSTS = ['conduction.nl', 'www.conduction.nl'];
+const POLICY_URL = 'https://conduction.nl/ai';
+
+/**
+ * Where the "read more" link points on a given site.
+ *
+ * @param {string} siteUrl   the site's configured `url` (siteConfig.url)
+ * @param {string} localHref LINK_HREF already passed through useBaseUrl()
+ * @returns {string}
+ */
+function resolveLinkHref(siteUrl, localHref) {
+  let host = '';
+  try {
+    host = new URL(siteUrl).hostname;
+  } catch (e) {
+    host = '';
+  }
+  return POLICY_SITE_HOSTS.indexOf(host) !== -1 ? localHref : POLICY_URL;
+}
 
 /**
  * Localised "read more" text for the disclosure banner.
@@ -190,6 +212,7 @@ module.exports = {
   COPY,
   LINK_TEXT,
   LINK_HREF,
+  POLICY_URL,
   ICONS_BASE_PATH,
   isValidKind,
   resolveAiFrontmatter,
@@ -198,4 +221,5 @@ module.exports = {
   getViewBox,
   getCopy,
   getLinkText,
+  resolveLinkHref,
 };

@@ -11,9 +11,9 @@
  * `@docusaurus/useBaseUrl`) are stubbed via esbuild plugins since this
  * test runs outside an actual Docusaurus build; the useBaseUrl stub
  * prefixes a fake `/base/` the same way the real hook prefixes a
- * site's configured baseUrl, so the assertion is "the resolved icon
- * path for this kind/treatment was passed through base-url
- * resolution", not a snapshot of a real deployed URL.
+ * site's configured baseUrl, so the assertion is "the policy link was
+ * passed through base-url resolution", not a snapshot of a real
+ * deployed URL.
  *
  * @spec openspec/changes/ai-content-disclosure/tasks.md#task-5.2
  */
@@ -42,7 +42,7 @@ const cssModuleStub = {
   },
 };
 
-function docusaurusStub({colorMode, locale}) {
+function docusaurusStub({colorMode, locale, siteUrl}) {
   return {
     name: 'docusaurus-stub',
     setup(b) {
@@ -54,7 +54,7 @@ function docusaurusStub({colorMode, locale}) {
         loader: 'js',
       }));
       b.onLoad({filter: /^docusaurus-context$/, namespace: 'docusaurus-stub'}, () => ({
-        contents: `export default function useDocusaurusContext() { return {i18n: {currentLocale: ${JSON.stringify(locale)}}}; }`,
+        contents: `export default function useDocusaurusContext() { return {i18n: {currentLocale: ${JSON.stringify(locale)}}, siteConfig: {url: ${JSON.stringify(siteUrl)}}}; }`,
         loader: 'js',
       }));
       // Mirrors the real hook's job: prefix the site's baseUrl onto a
@@ -73,7 +73,7 @@ function docusaurusStub({colorMode, locale}) {
 // inside the package instead, mirroring build-kit.mjs's `.tmp-build-kit`.
 const PRESET_ROOT = path.resolve(__dirname, '..', '..', '..', '..');
 
-async function renderAiDisclosure(props, {colorMode = 'light', locale = 'en'} = {}) {
+async function renderAiDisclosure(props, {colorMode = 'light', locale = 'en', siteUrl = 'https://conduction.nl'} = {}) {
   const scratchRoot = path.join(PRESET_ROOT, '.tmp-ai-disclosure-test');
   await fs.mkdir(scratchRoot, {recursive: true});
   const tmpDir = await fs.mkdtemp(path.join(scratchRoot, 'run-'));
@@ -89,7 +89,7 @@ async function renderAiDisclosure(props, {colorMode = 'light', locale = 'en'} = 
       tsconfigRaw: {compilerOptions: {jsx: 'react-jsx', jsxImportSource: 'react'}},
       platform: 'node',
       external: ['react'],
-      plugins: [cssModuleStub, docusaurusStub({colorMode, locale})],
+      plugins: [cssModuleStub, docusaurusStub({colorMode, locale, siteUrl})],
       logLevel: 'warning',
     });
     delete require.cache[require.resolve(outFile)];
@@ -101,20 +101,32 @@ async function renderAiDisclosure(props, {colorMode = 'light', locale = 'en'} = 
   }
 }
 
-test('renders the generated mark + English copy in light mode', async () => {
+test('renders the hexagon mark, English copy and the base-url policy link', async () => {
   const html = await renderAiDisclosure({kind: 'generated'}, {colorMode: 'light', locale: 'en'});
-  assert.match(html, /\/base\/img\/ai-disclosure\/ai-generated-black\.svg/);
+  assert.match(html, /<svg[^>]*aria-label="AI"/);
   assert.match(html, /This page was generated with AI\./);
+  assert.match(html, /href="\/base\/\/ai"/);
+  assert.match(html, /how Conduction uses AI\./);
 });
 
-test('renders the white (light-ink-on-dark) treatment in dark mode', async () => {
-  const html = await renderAiDisclosure({kind: 'modified'}, {colorMode: 'dark', locale: 'en'});
-  assert.match(html, /\/base\/img\/ai-disclosure\/ai-modified-white\.svg/);
+test('renders the same mark in dark mode, with no treatment switch', async () => {
+  const light = await renderAiDisclosure({kind: 'modified'}, {colorMode: 'light', locale: 'en'});
+  const dark = await renderAiDisclosure({kind: 'modified'}, {colorMode: 'dark', locale: 'en'});
+  assert.equal(dark, light);
+  assert.doesNotMatch(dark, /<img/);
 });
 
 test('renders Dutch copy when the active locale is nl', async () => {
   const html = await renderAiDisclosure({kind: 'assisted'}, {colorMode: 'light', locale: 'nl'});
-  assert.match(html, /Deze pagina is geschreven met hulp van AI\./);
+  assert.match(html, /Deze pagina is geschreven met hulp van AI, bijvoorbeeld voor spelling en onderzoek\./);
+});
+
+test('points at the policy page on conduction.nl from a product docs site', async () => {
+  const html = await renderAiDisclosure(
+    {kind: 'assisted'},
+    {colorMode: 'light', locale: 'en', siteUrl: 'https://dossiq.conduction.nl'},
+  );
+  assert.match(html, /href="https:\/\/conduction\.nl\/ai"/);
 });
 
 test('renders nothing for an unrecognised kind', async () => {

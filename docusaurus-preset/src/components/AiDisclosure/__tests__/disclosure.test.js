@@ -35,6 +35,8 @@ const {
   getLinkText,
   LINK_TEXT,
   LINK_HREF,
+  POLICY_URL,
+  resolveLinkHref,
 } = require('../disclosure');
 
 // Icons are vendored as plain static files (not a webpack `.svg`
@@ -260,4 +262,17 @@ test('link text makes no compliance claim either', () => {
       );
     }
   }
+});
+
+test('the link stays site-relative on conduction.nl itself', () => {
+  assert.equal(resolveLinkHref('https://conduction.nl', '/en/ai'), '/en/ai');
+  assert.equal(resolveLinkHref('https://www.conduction.nl/', '/ai'), '/ai');
+});
+
+test('off conduction.nl the link goes to the policy page there, not a local 404', () => {
+  assert.equal(POLICY_URL, 'https://conduction.nl/ai');
+  assert.equal(resolveLinkHref('https://dossiq.conduction.nl', '/ai'), POLICY_URL);
+  assert.equal(resolveLinkHref('https://docs.example.org', '/docs/ai'), POLICY_URL);
+  assert.equal(resolveLinkHref(undefined, '/ai'), POLICY_URL);
+  assert.equal(resolveLinkHref('not a url', '/ai'), POLICY_URL);
 });

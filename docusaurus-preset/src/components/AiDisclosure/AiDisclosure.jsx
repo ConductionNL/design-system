@@ -35,7 +35,7 @@ import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './AiDisclosure.module.css';
-import {isValidKind, getCopy, getLinkText, LINK_HREF, AI_KINDS} from './disclosure';
+import {isValidKind, getCopy, getLinkText, resolveLinkHref, LINK_HREF, AI_KINDS} from './disclosure';
 
 // The Commission's own AI letterforms, lifted verbatim from the
 // vendored Basic mark (static/img/ai-disclosure/ai-black.svg, paths 2
@@ -58,13 +58,13 @@ const AI_LETTER_I =
   'M328.11,353.74c-1.48,0-2.69-.47-3.63-1.41-.94-.94-1.41-2.15-1.41-3.63v-130.93c0-1.48.47-2.68,1.41-3.63s2.15-1.41,3.63-1.41h26.99c1.48,0,2.68.47,3.63,1.41.94.94,1.41,2.15,1.41,3.63v130.93c0,1.48-.47,2.69-1.41,3.63-.94.94-2.15,1.41-3.63,1.41h-26.99Z';
 
 export default function AiDisclosure({kind, className}) {
-  const {i18n} = useDocusaurusContext();
+  const {i18n, siteConfig} = useDocusaurusContext();
   const locale = (i18n && i18n.currentLocale) || 'en';
 
   const isKindValid = isValidKind(kind);
   // useBaseUrl() must run unconditionally (React hooks rule), so it is
   // called even when kind is invalid; the result is unused in that branch.
-  const href = useBaseUrl(LINK_HREF);
+  const href = resolveLinkHref(siteConfig && siteConfig.url, useBaseUrl(LINK_HREF));
 
   if (!isKindValid) {
     if (typeof console !== 'undefined') {

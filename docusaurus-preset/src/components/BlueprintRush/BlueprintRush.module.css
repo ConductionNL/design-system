@@ -1,0 +1,186 @@
+/**
+ * <BlueprintRush /> styles.
+ *
+ * Tokens only. One accent: the clock in its last five seconds. The
+ * blueprint reads as a checklist because that is what it is, and the
+ * state of every slot is a word, not a colour.
+ */
+
+.br {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+.hudLow {
+  background: var(--c-orange-knvb);
+  color: white;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  max-width: 760px;
+}
+@media (max-width: 720px) {
+  .board { grid-template-columns: 1fr; }
+}
+
+.slots {
+  list-style: none;
+  margin: 0;
+  padding: 14px;
+  border: 1px dashed var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--c-cobalt-700);
+  line-height: 1.35;
+}
+
+.slotMark {
+  width: 10px;
+  height: 12px;
+  flex-shrink: 0;
+  clip-path: var(--hex-pointy-top);
+  background: var(--c-cobalt-300);
+}
+.slotDone .slotMark { background: var(--c-mint-500); }
+
+.slotText { flex: 1; }
+.slotDone .slotText { color: var(--c-cobalt-900); }
+
+.slotState {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+  white-space: nowrap;
+}
+.slotDone .slotState { color: var(--c-mint-500); }
+
+.tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+}
+
+.part {
+  padding: 10px 14px;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-pill);
+  background: white;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--c-cobalt-900);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.part:hover:not(:disabled) { border-color: var(--c-blue-cobalt); background: var(--c-cobalt-50); }
+.part:disabled { cursor: default; }
+.part:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+
+.partUsed {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  max-width: 52ch;
+  min-height: 1.5em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slotDone .slotMark { animation: brSet 200ms ease-out; }
+  @keyframes brSet {
+    from { transform: scale(0.4); }
+    to   { transform: scale(1); }
+  }
+}

@@ -62,6 +62,7 @@ export {default as CookieCli} from './CookieCli/CookieCli.jsx';
 export {default as GameModal} from './GameModal/GameModal.jsx';
 export {default as StampRush} from './StampRush/StampRush.jsx';
 export {default as DeadlineDefender} from './DeadlineDefender/DeadlineDefender.jsx';
+export {default as BlueprintRush} from './BlueprintRush/BlueprintRush.jsx';
 
 /* Diagram-set web-component React wrappers (cn-hex, cn-platform,
    cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg, cn-pair,

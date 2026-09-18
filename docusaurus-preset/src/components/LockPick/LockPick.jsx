@@ -188,7 +188,8 @@ export default function LockPick({className}) {
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-valuenow={game ? game.durability : 100}>
+              aria-valuenow={game ? game.durability : 100}
+              aria-label={translate({id: 'preset.lockPick.wearLabel', message: 'How much of this pick is left', description: 'Accessible name of the bar showing the current pick condition'})}>
               <span
                 className={[styles.wearFill, game && game.durability <= 35 && styles.wearLow].filter(Boolean).join(' ')}
                 style={{width: `${game ? game.durability : 100}%`}}

@@ -1,0 +1,202 @@
+/**
+ * <PaintByTokens /> styles.
+ *
+ * The five tones are the five tokens, drawn from the theme rather than
+ * from a palette of their own: that is the point of the game, and it
+ * means a site that reskins the preset reskins the picture with it.
+ *
+ * Every cell also carries its token as a number, so the board is
+ * playable by someone who cannot tell the tones apart.
+ */
+
+.pbt {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+.hudLow { background: var(--c-orange-knvb); color: white; }
+
+/* The five tokens. Nothing else in the file names a colour. */
+.tone0 { --pbt-tone: var(--c-cobalt-50); --pbt-ink: var(--c-cobalt-700); }
+.tone1 { --pbt-tone: var(--c-blue-cobalt); --pbt-ink: white; }
+.tone2 { --pbt-tone: var(--c-cobalt-900); --pbt-ink: white; }
+.tone3 { --pbt-tone: var(--c-cobalt-300); --pbt-ink: var(--c-cobalt-900); }
+.tone4 { --pbt-tone: var(--c-mint-500); --pbt-ink: var(--c-cobalt-900); }
+
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 8px;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-pill);
+  background: white;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--c-cobalt-700);
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+.swatch::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--pbt-tone);
+  border: 1px solid var(--c-cobalt-200);
+}
+.swatch:hover:not(:disabled) { border-color: var(--c-blue-cobalt); }
+.swatch:disabled { opacity: 0.55; cursor: default; }
+.swatch:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+
+.swatchOn {
+  border-color: var(--c-blue-cobalt);
+  background: var(--c-cobalt-50);
+  font-weight: 600;
+  color: var(--c-cobalt-900);
+}
+
+.swatchKey {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  color: var(--c-cobalt-400);
+}
+
+.swatchName { white-space: nowrap; }
+
+.grid {
+  display: grid;
+  gap: 3px;
+  max-width: 460px;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  min-height: 120px;
+}
+
+.cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  color: var(--c-cobalt-400);
+  cursor: pointer;
+  padding: 0;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.cell:hover:not(:disabled) { border-color: var(--c-blue-cobalt); }
+.cell:disabled { cursor: default; }
+.cell:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 1px; }
+
+.cellPainted {
+  background: var(--pbt-tone);
+  border-color: var(--pbt-tone);
+  color: var(--pbt-ink);
+}
+
+.idle {
+  grid-column: 1 / -1;
+  margin: auto;
+  font-size: 14px;
+  color: var(--c-cobalt-400);
+  text-align: center;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  max-width: 52ch;
+  min-height: 1.5em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cellPainted { animation: pbtFill 140ms ease-out; }
+  @keyframes pbtFill {
+    from { transform: scale(0.8); }
+    to   { transform: scale(1); }
+  }
+}

@@ -29,22 +29,37 @@
   width: 100%;
   max-width: 720px;
 }
-.size-sm { max-width: 480px; }
-.size-md { max-width: 720px; }
+/* Scoped to .seamScene on purpose. `size-sm` / `size-md` are class
+   names several mock components share, so the extracted stylesheet
+   merges them into one selector group that can land before
+   .seamScene's own rule. At equal specificity that group loses, the
+   scene keeps the 720px default while the frame inside it caps at
+   480, and the seam then travels 24px past the frame it is crossing.
+   Chaining the two classes settles it by specificity instead of by
+   source order. Keep these in step with AppMock's frame widths: the
+   scene box and the frame box have to be the same box. */
+.seamScene.size-sm { max-width: 480px; }
+.seamScene.size-md { max-width: 720px; }
 
+/* Both layers occupy one grid cell, and the cell carries the frame's
+   own 16/10 ratio. Stacking them with `position: absolute` instead
+   lets the cell take its height from the surrounding column, and then
+   the frame's aspect ratio makes the frame narrower than the box the
+   seam and the clip run across: the seam finishes past the right edge
+   of the frame it is supposed to be crossing. The grid cell and the
+   frame are the same box, so they cannot drift apart. */
 .stack {
   position: relative;
+  display: grid;
   width: 100%;
+  aspect-ratio: 16 / 10;
   isolation: isolate;
 }
 
-/* The stacked layer takes the first layer's box: the stock frame is
-   in flow and sets the height, the themed one is laid over it. */
-.layer { width: 100%; }
-.layer + .layer,
-.themed {
-  position: absolute;
-  inset: 0;
+.layer {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
 }
 
 /* ======================================================================
@@ -150,9 +165,13 @@
     100%      { clip-path: inset(0 100% 0 0); opacity: 1; }
   }
 
+  /* The seam has to share tsWipe's start (14%), end (52%) and range
+     (0 to 100%) exactly. Starting it two percent later and four
+     percent along left the stitch trailing the edge it is supposed to
+     be cutting by about thirty pixels in the middle of the sweep. */
   @keyframes tsSeam {
-    0%, 12%   { left: 0;    opacity: 0; }
-    16%       { left: 4%;   opacity: 1; }
+    0%, 13.9% { left: 0;    opacity: 0; }
+    14%       { left: 0;    opacity: 1; }
     52%       { left: 100%; opacity: 1; }
     60%, 100% { left: 100%; opacity: 0; }
   }

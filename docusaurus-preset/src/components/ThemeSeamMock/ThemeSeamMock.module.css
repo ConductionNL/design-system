@@ -1,0 +1,159 @@
+/**
+ * <ThemeSeamMock /> styles.
+ *
+ * Three things happen here.
+ *
+ * 1. The themed layer sits exactly on top of the stock one and is
+ *    clipped from the left, so animating the clip wipes one finish
+ *    over the other. Both layers render the same frame, so the wipe
+ *    reads as a change of finish rather than a change of screen.
+ * 2. The themed finish is nothing but redefined tokens. Every rule in
+ *    AppMock.module.css paints from the palette and radius tokens, so
+ *    redefining them on an ancestor rethemes the whole frame without
+ *    one component-level override. That is the mock's entire claim.
+ * 3. The seam travels with the clip edge, drawn as a stitch rather
+ *    than a plain line.
+ *
+ * Conventions from the animated-atomics waves apply: one duration
+ * token (--ts-dur) drives the loop, the loop resets while the seam is
+ * invisible, and `.static` / prefers-reduced-motion render the
+ * themed end state rather than a blank or a half-wiped frame.
+ */
+
+.seamScene {
+  --ts-dur: 9s;
+  margin: 0;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 720px;
+}
+.size-sm { max-width: 480px; }
+.size-md { max-width: 720px; }
+
+.stack {
+  position: relative;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* The stacked layer takes the first layer's box: the stock frame is
+   in flow and sets the height, the themed one is laid over it. */
+.layer { width: 100%; }
+.layer + .layer,
+.themed {
+  position: absolute;
+  inset: 0;
+}
+
+/* ======================================================================
+   The finishes
+   ====================================================================== */
+
+/* La Suite: neutral greyscale surfaces, violet accent, four-pixel
+   corners. The values come from the deployed Cunningham palette; the
+   point is not the exact hex but that nothing below the token layer
+   had to change. */
+.lasuite {
+  --c-blue-cobalt: #6A6AF4;
+  --c-cobalt-900: #161616;
+  --c-cobalt-800: #242424;
+  --c-cobalt-700: #3A3A3A;
+  --c-cobalt-600: #6A6A6A;
+  --c-cobalt-500: #6A6AF4;
+  --c-cobalt-400: #929292;
+  --c-cobalt-300: #CECECE;
+  --c-cobalt-200: #E5E5E5;
+  --c-cobalt-100: #EEEEEE;
+  --c-cobalt-50:  #F6F6F6;
+  --c-lavender-500: #6A6AF4;
+  --c-lavender-300: #C5C5FB;
+  --radius-lg: 4px;
+  --radius-md: 4px;
+  --radius-sm: 2px;
+}
+
+/* ======================================================================
+   The seam
+   ====================================================================== */
+
+.seam {
+  position: absolute;
+  top: -2%;
+  bottom: -2%;
+  left: 0;
+  width: 2px;
+  z-index: 2;
+  /* A stitch, not a rule: dashes with a cross-hatch either side. */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      var(--c-cobalt-700) 0 6px,
+      transparent 6px 12px
+    );
+  opacity: 0;
+}
+.seam::before,
+.seam::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 3px,
+      var(--c-cobalt-400) 3px 4px,
+      transparent 4px 12px
+    );
+}
+.seam::before { right: 100%; }
+.seam::after  { left: 100%; }
+
+.caption {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ======================================================================
+   The loop
+   ====================================================================== */
+
+/* End state, and what a frozen frame shows: the themed finish, whole,
+   with no seam across it. */
+.themed { clip-path: inset(0 0 0 0); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .seamScene:not(.static) .themed {
+    animation: tsWipe var(--ts-dur) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .seamScene:not(.static) .seam {
+    animation: tsSeam var(--ts-dur) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  /* Stock frame for the first beat, the finish wipes across, then it
+     holds. The reset happens in one step at the very end, while the
+     themed layer is fading rather than sliding, so no rewind is
+     visible. */
+  @keyframes tsWipe {
+    0%, 14%   { clip-path: inset(0 100% 0 0); opacity: 1; }
+    52%       { clip-path: inset(0 0 0 0);    opacity: 1; }
+    88%       { clip-path: inset(0 0 0 0);    opacity: 1; }
+    97%       { clip-path: inset(0 0 0 0);    opacity: 0; }
+    97.01%    { clip-path: inset(0 100% 0 0); opacity: 0; }
+    100%      { clip-path: inset(0 100% 0 0); opacity: 1; }
+  }
+
+  @keyframes tsSeam {
+    0%, 12%   { left: 0;    opacity: 0; }
+    16%       { left: 4%;   opacity: 1; }
+    52%       { left: 100%; opacity: 1; }
+    60%, 100% { left: 100%; opacity: 0; }
+  }
+}

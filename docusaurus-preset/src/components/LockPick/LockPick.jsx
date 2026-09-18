@@ -28,7 +28,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import {createGame, setPosition, turn, summarise, POSITIONS} from './engine';
+import {createGame, setPosition, turn, give, summarise, POSITIONS} from './engine';
 import styles from './LockPick.module.css';
 
 const GAME_ID = 'lock-pick';
@@ -107,10 +107,18 @@ export default function LockPick({className}) {
 
   const position = game ? game.position : Math.floor(POSITIONS / 2);
   const last = game ? game.last : null;
-  /* The cylinder shows what the last turn achieved, not what the
-     current position would achieve: showing the latter would hand the
-     player the answer by dragging the dial. */
-  const turned = last && (last.result === 'held' || last.result === 'snapped') ? last.give : 0;
+  /* The cylinder answers the pick as it moves, which is how this game
+     has always worked: you feel for the spot and only then commit. The
+     first version showed the last turn's result instead, so the only
+     way to learn anything was to turn, and every turn wore the pick
+     down. Sweeping was impossible and the game became a guessing game
+     with a cost per guess.
+
+     The feel is deliberately coarse, five buckets wide, so the dial
+     narrows the answer without handing it over: the last step is still
+     a commitment. */
+  const turned = game && running ? give(game) : 0;
+  const liveFeel = game && running ? feelCopy(turned) : null;
 
   return (
     <section className={[styles.lp, className].filter(Boolean).join(' ')} aria-labelledby="lock-pick-title">
@@ -145,7 +153,7 @@ export default function LockPick({className}) {
           className={styles.cylinder}
           role="img"
           aria-label={translate(
-            {id: 'preset.lockPick.cylinder', message: 'The cylinder turned {percent} per cent on the last try', description: 'Accessible description of the lock cylinder. {percent} is how far it turned.'},
+            {id: 'preset.lockPick.cylinder', message: 'The cylinder turns {percent} per cent where the pick is now', description: 'Accessible description of the lock cylinder. {percent} is how far it turns at the current pick position.'},
             {percent: Math.round(turned * 100)},
           )}>
           <div className={styles.cylinderFill} style={{transform: `rotate(${-90 + turned * 80}deg)`}} />
@@ -167,6 +175,10 @@ export default function LockPick({className}) {
             disabled={!running}
             onChange={(e) => moveTo(Number(e.target.value))}
           />
+          <p className={styles.feel} role="status" aria-live="polite">
+            {liveFeel || translate({id: 'preset.lockPick.feelIdle', message: 'Take a pick to start feeling for it.', description: 'Placeholder where the live feel line sits before the game starts'})}
+          </p>
+
           <div className={styles.pickRow}>
             <span className={styles.pickLabel}>
               {translate({id: 'preset.lockPick.wear', message: 'This pick', description: 'Label for the lock-pick durability bar'})}

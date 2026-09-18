@@ -65,6 +65,8 @@ export {default as DeadlineDefender} from './DeadlineDefender/DeadlineDefender.j
 export {default as BlueprintRush} from './BlueprintRush/BlueprintRush.jsx';
 export {default as RecordRun} from './RecordRun/RecordRun.jsx';
 export {default as LockPick} from './LockPick/LockPick.jsx';
+export {default as PaintByTokens} from './PaintByTokens/PaintByTokens.jsx';
+export {default as Redaction} from './Redaction/Redaction.jsx';
 
 /* Diagram-set web-component React wrappers (cn-hex, cn-platform,
    cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg, cn-pair,

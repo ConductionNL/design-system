@@ -55,15 +55,22 @@ import styles from './GameModal.module.css';
    not ask again. Per-viewer convenience only; nothing else reads it. */
 const INSTANCE_KEY = 'conduction:mastodon-instance';
 
-const DEFAULT_GAMES = [
-  {id: 'hexrain',      label: 'Twelve apps · hex rain'},
-  {id: 'boats',        label: 'Sink the boats · footer canal'},
-  {id: 'invaders',     label: 'Hex-vaders · cookie CLI'},
-  {id: 'logo-memory',  label: 'Logo memory · clients marquee'},
-  {id: 'kade-cyclist', label: 'Kade cyclist · footer kade'},
-];
+/* The labels are read by every player, so they are translated like any
+   other user-facing string. Each one is "the game · where it hides";
+   the share text keeps only the part before the separator. Built in a
+   function rather than at module scope, because translate() must run
+   inside the render for the active locale to apply. */
+function defaultGames() {
+  return [
+    {id: 'hexrain', label: translate({id: 'preset.gameModal.game.hexrain', message: 'Twelve apps · hex rain', description: 'Name of the hex-rain mini-game and where it hides'})},
+    {id: 'boats', label: translate({id: 'preset.gameModal.game.boats', message: 'Sink the boats · footer canal', description: 'Name of the boat-sinking mini-game and where it hides'})},
+    {id: 'invaders', label: translate({id: 'preset.gameModal.game.invaders', message: 'Hex-vaders · cookie CLI', description: 'Name of the invaders mini-game and where it hides'})},
+    {id: 'logo-memory', label: translate({id: 'preset.gameModal.game.logoMemory', message: 'Logo memory · clients marquee', description: 'Name of the logo-memory mini-game and where it hides'})},
+    {id: 'kade-cyclist', label: translate({id: 'preset.gameModal.game.kadeCyclist', message: 'Kade cyclist · footer kade', description: 'Name of the kade-cyclist mini-game and where it hides'})},
+  ];
+}
 
-export default function GameModal({games = DEFAULT_GAMES, share: shareConfig, className}) {
+export default function GameModal({games: gamesProp, share: shareConfig, className}) {
   const isBrowser = useIsBrowser();
   const {siteConfig, i18n} = useDocusaurusContext();
   const [open, setOpen] = useState(false);
@@ -137,6 +144,15 @@ export default function GameModal({games = DEFAULT_GAMES, share: shareConfig, cl
   }, [event]);
 
   const locale = (i18n && i18n.currentLocale) || 'en';
+  const games = useMemo(() => gamesProp || defaultGames(), [gamesProp]);
+
+  /* Campaign copy can be either a string or a per-locale map, because
+     it comes from the site's themeConfig, which Docusaurus does not
+     translate. A string is used as-is. */
+  const pickLocale = useCallback((value) => {
+    if (!value || typeof value === 'string') return value;
+    return value[locale] || value.en || Object.values(value)[0];
+  }, [locale]);
   const foundCount = useMemo(() => countFound(scores), [scores]);
   const total = games.length;
   const percent = total > 0 ? Math.round((foundCount / total) * 100) : 0;
@@ -366,11 +382,24 @@ export default function GameModal({games = DEFAULT_GAMES, share: shareConfig, cl
             </form>
           )}
 
-          {shareConfig && shareConfig.prize && (
+          {shareConfig && pickLocale(shareConfig.prize) && (
+            /* The prize sentence stays text and only the rules link is
+               a link: a whole underlined paragraph reads as one long
+               link and hides where it goes. */
             <p className={styles.prize}>
-              {shareConfig.prizeHref
-                ? <a href={shareConfig.prizeHref}>{shareConfig.prize}</a>
-                : shareConfig.prize}
+              {pickLocale(shareConfig.prize)}
+              {shareConfig.prizeHref && (
+                <>
+                  {' '}
+                  <a href={shareConfig.prizeHref}>
+                    {pickLocale(shareConfig.prizeLinkLabel) || translate({
+                      id: 'preset.gameModal.share.rules',
+                      message: 'Read the rules',
+                      description: 'Link to the giveaway rules, shown after the prize line in the share block',
+                    })}
+                  </a>
+                </>
+              )}
             </p>
           )}
         </div>

@@ -439,6 +439,11 @@ const baseFooter = () => ({
  *   footer (per-property fallback: any of style/links/copyright the
  *     site omits keeps its brand default — pass `footer: { links: [...] }`
  *     to swap columns while inheriting the KvK/BTW copyright),
+ *   minigamesShare (optional; {hashtag, url, prize, prizeHref,
+ *     prizeLinkLabel} passed to
+ *     the game-over dialog's share block. The hashtag defaults to
+ *     #IReadTheKit and the url to siteConfig.url; prize renders a line
+ *     under the share buttons, linked when prizeHref is given.)
  *   minigames (default true; set false to drop the brand canal-footer's
  *     boat-sinking + kade-cyclist mini-games on product pages while
  *     keeping the static skyline + canal decoration),
@@ -574,6 +579,7 @@ function createConfig(opts) {
            site opts out, while still keeping the static skyline +
            canal decoration. Default true preserves prior behaviour. */
         minigames: opts.minigames !== false,
+        minigamesShare: opts.minigamesShare,
         /* Footer brand block (the wordmark + tagline + triad + socials
            on the left of the canal-footer grid).
              undefined  -> wordmark = 'Conduction' (product-page default;

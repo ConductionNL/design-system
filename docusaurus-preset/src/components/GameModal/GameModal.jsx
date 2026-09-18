@@ -42,10 +42,18 @@
 
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Translate, {translate} from '@docusaurus/Translate';
+import {
+  readScores, writeScores, recordResult, bestFor, foundCount as countFound,
+  totalScore, formatScore,
+} from './scores';
+import {buildShareText, scoreLines, mastodonShareUrl, linkedInShareUrl, normaliseInstance} from './share';
 import styles from './GameModal.module.css';
 
-const STORAGE_KEY = 'conduction:minigames';
+/* The player's Mastodon instance, remembered so the second share does
+   not ask again. Per-viewer convenience only; nothing else reads it. */
+const INSTANCE_KEY = 'conduction:mastodon-instance';
 
 const DEFAULT_GAMES = [
   {id: 'hexrain',      label: 'Twelve apps · hex rain'},
@@ -55,47 +63,38 @@ const DEFAULT_GAMES = [
   {id: 'kade-cyclist', label: 'Kade cyclist · footer kade'},
 ];
 
-function readFound() {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) { return {}; }
-}
-
-function writeFound(found) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(found));
-  } catch (e) {/* fail open */}
-}
-
-export default function GameModal({games = DEFAULT_GAMES, className}) {
+export default function GameModal({games = DEFAULT_GAMES, share: shareConfig, className}) {
   const isBrowser = useIsBrowser();
+  const {siteConfig, i18n} = useDocusaurusContext();
   const [open, setOpen] = useState(false);
   const [event, setEvent] = useState(null);
-  const [found, setFound] = useState({});
+  const [scores, setScores] = useState(() => ({version: 2, games: {}}));
+  /* Share UI state: which network is mid-flow, the remembered Mastodon
+     instance, and the "copied" acknowledgement. */
+  const [instance, setInstance] = useState('');
+  const [askInstance, setAskInstance] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  /* On mount: read found-games table from localStorage and subscribe
-     to the `connext:gameend` event. Each event opens the modal with
-     the supplied copy and (if won) marks the game as found. */
+  /* On mount: read the score table from localStorage and subscribe to
+     the `connext:gameend` event. Each event opens the modal with the
+     supplied copy and folds the result into the table. */
   useEffect(() => {
     if (!isBrowser) return;
-    setFound(readFound());
+    setScores(readScores());
+    try {
+      setInstance(window.localStorage.getItem(INSTANCE_KEY) || '');
+    } catch (e) {/* blocked storage: the player types it again */}
 
     function onEnd(e) {
       const detail = e.detail || {};
       setEvent(detail);
       setOpen(true);
-      /* Discovery vs. victory: any game-end counts the game as "found"
-         because a few of the games (kade-cyclist, future endless
-         runners) never reach a clean win state. The scoreboard pill
-         still reflects the actual performance for that round. */
+      setCopied(false);
+      setAskInstance(false);
       if (detail.id) {
-        setFound((prev) => {
-          if (prev[detail.id]) return prev;
-          const next = {...prev, [detail.id]: true};
-          writeFound(next);
+        setScores((prev) => {
+          const next = recordResult(prev, detail);
+          writeScores(next);
           return next;
         });
       }
@@ -137,9 +136,69 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
     setOpen(false);
   }, [event]);
 
-  const foundCount = useMemo(() => Object.values(found).filter(Boolean).length, [found]);
+  const locale = (i18n && i18n.currentLocale) || 'en';
+  const foundCount = useMemo(() => countFound(scores), [scores]);
   const total = games.length;
   const percent = total > 0 ? Math.round((foundCount / total) * 100) : 0;
+  const grandTotal = useMemo(() => totalScore(scores), [scores]);
+  const lines = useMemo(
+    () => scoreLines(games, (id) => bestFor(scores, id), locale),
+    [games, scores, locale],
+  );
+
+  /* The post the player publishes. Built here so the copy button, the
+     Mastodon link and the LinkedIn link cannot drift apart. */
+  const shareText = useMemo(() => buildShareText({
+    total: grandTotal,
+    lines,
+    foundCount,
+    totalGames: total,
+    hashtag: (shareConfig && shareConfig.hashtag) || '#IReadTheKit',
+    url: (shareConfig && shareConfig.url) || (siteConfig && siteConfig.url) || undefined,
+    locale,
+  }), [grandTotal, lines, foundCount, total, shareConfig, siteConfig, locale]);
+
+  const copyShareText = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      return true;
+    } catch (e) {
+      /* No clipboard permission (or no clipboard): fall back to a
+         hidden textarea, which works everywhere that still supports
+         execCommand, and give up quietly if that fails too. */
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = shareText;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        setCopied(ok);
+        return ok;
+      } catch (e2) { return false; }
+    }
+  }, [shareText]);
+
+  const shareOnMastodon = useCallback((raw) => {
+    const url = mastodonShareUrl(raw, shareText);
+    if (!url) { setAskInstance(true); return; }
+    const host = normaliseInstance(raw);
+    setInstance(host);
+    setAskInstance(false);
+    try { window.localStorage.setItem(INSTANCE_KEY, host); } catch (e) {/* fine */}
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, [shareText]);
+
+  const shareOnLinkedIn = useCallback(async () => {
+    /* LinkedIn stopped honouring prefilled text reliably, so the post
+       goes to the clipboard first and the composer opens for a paste. */
+    await copyShareText();
+    window.open(linkedInShareUrl(shareText), '_blank', 'noopener,noreferrer');
+  }, [copyShareText, shareText]);
 
   if (!isBrowser || !open || !event) return null;
 
@@ -188,26 +247,133 @@ export default function GameModal({games = DEFAULT_GAMES, className}) {
         </div>
 
         <ul className={styles.grid}>
-          {games.map((g) => (
-            <li key={g.id} className={found[g.id] ? styles.gridItemFound : styles.gridItem}>
-              <span className={styles.gridHex} aria-hidden="true" />
-              <span>{g.label}</span>
-            </li>
-          ))}
+          {games.map((g) => {
+            const best = bestFor(scores, g.id);
+            const isFound = Boolean(scores.games[g.id] && scores.games[g.id].found);
+            return (
+              <li key={g.id} className={isFound ? styles.gridItemFound : styles.gridItem}>
+                <span className={styles.gridHex} aria-hidden="true" />
+                <span className={styles.gridLabel}>{g.label}</span>
+                {best !== null && (
+                  <span className={styles.gridScore}>{formatScore(best, locale)}</span>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
+        {grandTotal > 0 && (
+          <p className={styles.total}>
+            <Translate
+              id="preset.gameModal.totalScore"
+              description="Total score line under the games list. {score} is the sum of the player's best score in every game."
+              values={{score: <strong>{formatScore(grandTotal, locale)}</strong>}}>
+              {'Total score {score}'}
+            </Translate>
+          </p>
+        )}
+
         <p className={styles.cta}>
+          {/* Two messages picked here rather than one ICU plural.
+              Docusaurus's translate() only substitutes {placeholder};
+              it does not expand plurals, so an ICU string renders to
+              the reader verbatim, braces and all, in every locale. */}
           {foundCount < total
-            ? translate(
+            ? (total - foundCount === 1
+                ? translate({
+                    id: 'preset.gameModal.cta.remaining.one',
+                    message: 'One more game hidden somewhere. Keep clicking.',
+                    description: 'CTA on the game-over modal when exactly one mini-game is still hidden.',
+                  })
+                : translate(
+                    {
+                      id: 'preset.gameModal.cta.remaining.other',
+                      message: '{remaining} more games hidden somewhere. Keep clicking.',
+                      description: 'CTA on the game-over modal when several mini-games are still hidden. {remaining} is how many.',
+                    },
+                    {remaining: total - foundCount},
+                  ))
+            : translate(
                 {
-                  id: 'preset.gameModal.cta.remaining',
-                  message: '{remaining, plural, one {# more game hidden somewhere. Keep clicking.} other {# more games hidden somewhere. Keep clicking.}}',
-                  description: 'CTA text on the game-over modal when at least one game is still hidden. {remaining} is the count of games still hidden.',
+                  id: 'preset.gameModal.cta.allFound',
+                  message: 'All {total} found. You read the kit.',
+                  description: 'CTA on the game-over modal when every mini-game has been discovered. {total} is how many games there are.',
                 },
-                {remaining: total - foundCount},
-              )
-            : translate({id: 'preset.gameModal.cta.allFound', message: 'All five found. You read the kit.', description: 'CTA text on the game-over modal when the player has discovered every mini-game.'})}
+                {total},
+              )}
         </p>
+
+        {/* Posting a score is the whole competition: there is no
+            leaderboard to submit to, so the share block is where a run
+            turns into something other people can see. */}
+        <div className={styles.share}>
+          <p className={styles.shareHead}>
+            <Translate id="preset.gameModal.share.head" description="Heading above the share buttons on the game-over modal">
+              Post your score
+            </Translate>
+          </p>
+          <p className={styles.shareHint}>
+            <Translate id="preset.gameModal.share.hint" description="Line under the share heading telling the player to attach a screenshot of the modal">
+              Add a screenshot of this card, so people can see the run behind the number.
+            </Translate>
+          </p>
+
+          <div className={styles.shareButtons}>
+            <button
+              type="button"
+              className={styles.shareBtn}
+              onClick={() => (instance ? shareOnMastodon(instance) : setAskInstance(true))}>
+              <Translate id="preset.gameModal.share.mastodon" description="Share-on-Mastodon button label">Mastodon</Translate>
+            </button>
+            <button type="button" className={styles.shareBtn} onClick={shareOnLinkedIn}>
+              <Translate id="preset.gameModal.share.linkedin" description="Share-on-LinkedIn button label">LinkedIn</Translate>
+            </button>
+            <button type="button" className={styles.shareBtn} onClick={copyShareText}>
+              <Translate id="preset.gameModal.share.copy" description="Copy-the-post-text button label">Copy the post</Translate>
+            </button>
+            <span className={styles.shareStatus} role="status" aria-live="polite">
+              {copied && (
+                <Translate id="preset.gameModal.share.copied" description="Confirmation shown after the post text is copied to the clipboard">
+                  Copied. Paste it with your screenshot.
+                </Translate>
+              )}
+            </span>
+          </div>
+
+          {askInstance && (
+            /* Mastodon has no central share endpoint, so the post can
+               only be opened on the player's own instance. Asked once,
+               then remembered. */
+            <form
+              className={styles.instanceRow}
+              onSubmit={(e) => { e.preventDefault(); shareOnMastodon(e.target.elements.instance.value); }}>
+              <label className={styles.instanceLabel} htmlFor="gm-instance">
+                <Translate id="preset.gameModal.share.instanceLabel" description="Label for the input asking which Mastodon instance the player is on">
+                  Your Mastodon instance
+                </Translate>
+              </label>
+              <input
+                id="gm-instance"
+                name="instance"
+                className={styles.instanceInput}
+                defaultValue={instance}
+                placeholder="mastodon.nl"
+                autoComplete="off"
+              />
+              <button type="submit" className={styles.shareBtn}>
+                <Translate id="preset.gameModal.share.instanceGo" description="Submit button next to the Mastodon instance input">Open</Translate>
+              </button>
+            </form>
+          )}
+
+          {shareConfig && shareConfig.prize && (
+            <p className={styles.prize}>
+              {shareConfig.prizeHref
+                ? <a href={shareConfig.prizeHref}>{shareConfig.prize}</a>
+                : shareConfig.prize}
+            </p>
+          )}
+        </div>
 
         <div className={styles.actions}>
           <button type="button" className={styles.btnSecondary} onClick={close}>

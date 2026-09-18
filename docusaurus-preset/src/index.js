@@ -439,6 +439,9 @@ const baseFooter = () => ({
  *   footer (per-property fallback: any of style/links/copyright the
  *     site omits keeps its brand default — pass `footer: { links: [...] }`
  *     to swap columns while inheriting the KvK/BTW copyright),
+ *   minigamesRoster (optional; [{id, label}] of the games this site
+ *     ships, when they are not the preset's default five. A label may
+ *     be a per-locale map, since themeConfig is never translated.)
  *   minigamesShare (optional; {hashtag, url, prize, prizeHref,
  *     prizeLinkLabel} passed to
  *     the game-over dialog's share block. The hashtag defaults to
@@ -580,6 +583,7 @@ function createConfig(opts) {
            canal decoration. Default true preserves prior behaviour. */
         minigames: opts.minigames !== false,
         minigamesShare: opts.minigamesShare,
+        minigamesRoster: opts.minigamesRoster,
         /* Footer brand block (the wordmark + tagline + triad + socials
            on the left of the canal-footer grid).
              undefined  -> wordmark = 'Conduction' (product-page default;

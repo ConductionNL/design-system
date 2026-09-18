@@ -1,0 +1,188 @@
+/**
+ * <StampRush /> styles.
+ *
+ * Tokens only, and one orange accent: the card that must be held back.
+ * Every state is carried by text as well as by colour, because a
+ * player who cannot tell mint from terracotta still has to know which
+ * decision may be adopted.
+ */
+
+.rush {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudScore,
+.hudLives {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+
+/* Capped: across a full content column the six slots become
+   billboards, and a desk you cannot take in at a glance is not a game
+   you can play at speed. */
+.desk {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 560px;
+}
+@media (max-width: 560px) {
+  .desk { grid-template-columns: repeat(2, 1fr); }
+}
+
+.slot {
+  position: relative;
+  aspect-ratio: 5 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 1px dashed var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.slot:disabled { cursor: default; opacity: 0.75; }
+.slot:focus-visible {
+  outline: 2px solid var(--c-blue-cobalt);
+  outline-offset: 2px;
+}
+
+.slotIndex {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  color: var(--c-cobalt-300);
+}
+
+.slotFull {
+  border-style: solid;
+  background: white;
+  box-shadow: var(--shadow-3);
+}
+.slotReady { border-color: var(--c-mint-500); }
+.slotHold  { border-color: var(--c-orange-knvb); }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-cobalt-900);
+  line-height: 1.25;
+}
+
+.cardNote {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-700);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  max-width: 48ch;
+}
+
+/* The card arriving, and the answer to a stamp. Motion only: every
+   state above is already readable without it. */
+@media (prefers-reduced-motion: no-preference) {
+  .slotFull .card { animation: srLand 160ms ease-out both; }
+  @keyframes srLand {
+    from { opacity: 0; transform: translateY(4px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .flashGood { animation: srGood 260ms ease-out; }
+  .flashBad  { animation: srBad 260ms ease-out; }
+  @keyframes srGood {
+    0%   { background: var(--c-mint-300); }
+    100% { background: var(--c-cobalt-50); }
+  }
+  @keyframes srBad {
+    0%, 100% { background: var(--c-cobalt-50); transform: translateX(0); }
+    25%  { background: var(--c-coral-300); transform: translateX(-3px); }
+    75%  { transform: translateX(3px); }
+  }
+}

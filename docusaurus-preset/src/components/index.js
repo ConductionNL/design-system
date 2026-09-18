@@ -60,6 +60,7 @@ export {default as Pipeline, PipelineStep, IconList} from './Pipeline/Pipeline.j
 export {default as FacetedFilters, FilterChip} from './FacetedFilters/FacetedFilters.jsx';
 export {default as CookieCli} from './CookieCli/CookieCli.jsx';
 export {default as GameModal} from './GameModal/GameModal.jsx';
+export {default as StampRush} from './StampRush/StampRush.jsx';
 
 /* Diagram-set web-component React wrappers (cn-hex, cn-platform,
    cn-domain-tree, cn-pipeline, cn-side-box, cn-honeycomb-bg, cn-pair,

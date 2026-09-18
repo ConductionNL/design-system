@@ -144,19 +144,29 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
   }, [event]);
 
   const locale = (i18n && i18n.currentLocale) || 'en';
-  const games = useMemo(() => gamesProp || defaultGames(), [gamesProp]);
 
-  /* Campaign copy can be either a string or a per-locale map, because
-     it comes from the site's themeConfig, which Docusaurus does not
-     translate. A string is used as-is. */
+  /* Copy that reaches this component from a site's themeConfig can be
+     either a string or a per-locale map, because Docusaurus does not
+     translate themeConfig at all. A string is used as-is. */
   const pickLocale = useCallback((value) => {
     if (!value || typeof value === 'string') return value;
     return value[locale] || value.en || Object.values(value)[0];
   }, [locale]);
-  const foundCount = useMemo(() => countFound(scores), [scores]);
+
+  /* The roster: which games this site actually ships. The preset's own
+     five are the default, and a site that hides more of them passes
+     its own list (with per-locale labels, same reason as above). A
+     roster that named a game the site does not ship would leave every
+     player permanently short of "all found". */
+  const games = useMemo(
+    () => (gamesProp || defaultGames()).map((g) => ({...g, label: pickLocale(g.label)})),
+    [gamesProp, pickLocale],
+  );
+  const rosterIds = useMemo(() => games.map((g) => g.id), [games]);
+  const foundCount = useMemo(() => countFound(scores, rosterIds), [scores, rosterIds]);
   const total = games.length;
   const percent = total > 0 ? Math.round((foundCount / total) * 100) : 0;
-  const grandTotal = useMemo(() => totalScore(scores), [scores]);
+  const grandTotal = useMemo(() => totalScore(scores, rosterIds), [scores, rosterIds]);
   const lines = useMemo(
     () => scoreLines(games, (id) => bestFor(scores, id), locale),
     [games, scores, locale],

@@ -58,6 +58,9 @@ export default function Footer() {
      component: the preset ships the mechanism, the site ships the
      giveaway. */
   const minigamesShare = themeConfig.minigamesShare || undefined;
+  /* The roster of games this site ships, when it is not the preset's
+     default five. Labels may be per-locale maps. */
+  const minigamesRoster = themeConfig.minigamesRoster || undefined;
   const footerBrand = themeConfig.footerBrand || null;
   /* legalLinks: opt-in/out of the Privacy / Terms / ISO links inside
      the legal-bar, and the two ISO 9001/27001 certification badges on
@@ -485,7 +488,7 @@ export default function Footer() {
           Only mounted when minigames are on so a product page doesn't
           carry the dialog DOM + listeners for an interaction it can't
           trigger. */}
-      {minigamesOn && <GameModal share={minigamesShare} />}
+      {minigamesOn && <GameModal share={minigamesShare} games={minigamesRoster} />}
     </>
   );
 }

@@ -104,3 +104,20 @@ test('a throwing storage never takes the game-over dialog down with it', () => {
   assert.equal(foundCount(readScores(hostile)), 0);
   assert.doesNotThrow(() => writeScores(migrate(null), hostile));
 });
+
+test('the counts are scoped to the roster, so a stale game cannot exceed the total', () => {
+  /* The storage key is shared across Conduction sites, so a table can
+     hold games this site does not list. Counting them gave "6 / 5
+     found, 120%" the first time a sixth game shipped. */
+  let state = migrate(null);
+  state = recordResult(state, {id: 'boats', score: 18});
+  state = recordResult(state, {id: 'invaders', score: 3400});
+  state = recordResult(state, {id: 'retired-game', score: 999});
+
+  const roster = ['hexrain', 'boats', 'invaders'];
+  assert.equal(foundCount(state, roster), 2, 'a game off the roster was counted as found');
+  assert.equal(totalScore(state, roster), 3418, 'a game off the roster paid into the total');
+
+  assert.equal(foundCount(state), 3, 'without a roster, everything still counts');
+  assert.equal(totalScore(state), 4417);
+});

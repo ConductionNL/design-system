@@ -118,12 +118,29 @@ export function bestFor(state, id) {
   return entry && Number.isFinite(entry.best) ? entry.best : null;
 }
 
-export function foundCount(state) {
-  return Object.values(state.games).filter((g) => g && g.found).length;
+/**
+ * Both counts take the roster of games currently on the site.
+ *
+ * Without it, a score table that remembers a game the site no longer
+ * ships (or one found on a sister site, since the key is the same)
+ * counts towards a total it is not listed in: the dialog then reads
+ * "6 / 5 mini-games found, 120%". Scoping to the roster keeps the
+ * numbers describing the list the player is looking at. Omitting ids
+ * counts everything, which is what a caller without a roster wants.
+ */
+function entries(state, ids) {
+  const all = Object.entries(state.games);
+  if (!ids || !ids.length) return all.map(([, g]) => g);
+  const wanted = new Set(ids);
+  return all.filter(([id]) => wanted.has(id)).map(([, g]) => g);
 }
 
-export function totalScore(state) {
-  return Object.values(state.games)
+export function foundCount(state, ids) {
+  return entries(state, ids).filter((g) => g && g.found).length;
+}
+
+export function totalScore(state, ids) {
+  return entries(state, ids)
     .reduce((sum, g) => sum + (g && Number.isFinite(g.best) ? g.best : 0), 0);
 }
 

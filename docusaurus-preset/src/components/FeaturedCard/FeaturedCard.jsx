@@ -24,6 +24,11 @@
  *     date="2026-05-05"
  *     thumbnail={{ icon: <svg>...</svg> }}
  *   />
+ *
+ * `visual={<AppMock app="openregister" />}` puts a node in the
+ * right-hand column instead of the hex thumbnail, for a card whose
+ * subject is better shown than symbolised. The satellite hexes stand
+ * down when it does.
  */
 
 import React from 'react';
@@ -52,6 +57,7 @@ export default function FeaturedCard({
   dateLabel,
   locale,
   thumbnail,
+  visual,
   accent = 'orange',
   contentType,
   durationMinutes,
@@ -98,6 +104,11 @@ export default function FeaturedCard({
   const metaBits = [readWatch, moduleLabel, moduleSlug ? (moduleTitle || moduleSlug) : null]
     .filter(Boolean);
   const Tag = href ? 'a' : 'div';
+  /* `visual` replaces the hex thumbnail with an arbitrary node (an
+     AppMock, a ThemeSeamMock, a diagram). The satellite hexes are
+     dropped with it: they frame a hex, and they read as clutter
+     around a rectangular frame. */
+  const hasVisual = Boolean(visual);
   const composed = [styles.card, className].filter(Boolean).join(' ');
   const thumbProps = thumbnail || {};
 
@@ -150,7 +161,8 @@ export default function FeaturedCard({
         )}
       </div>
 
-      <div className={styles.visual} aria-hidden="true">
+      <div className={[styles.visual, hasVisual && styles.visualNode].filter(Boolean).join(' ')} aria-hidden="true">
+        {hasVisual ? visual : (<>
         {thumbProps.src
           ? <HexThumbnail size="xl" tone="cobalt" src={thumbProps.src} alt={thumbProps.alt} />
           : <HexThumbnail size="xl" tone={thumbProps.tone || 'cobalt'}>{thumbProps.icon}</HexThumbnail>}
@@ -161,6 +173,7 @@ export default function FeaturedCard({
           styles.s3,
           accent === 'orange' ? styles.s3Orange : styles.s3Cobalt,
         ].join(' ')} />
+        </>)}
       </div>
     </Tag>
   );

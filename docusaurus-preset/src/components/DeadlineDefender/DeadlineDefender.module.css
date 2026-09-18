@@ -1,0 +1,193 @@
+/**
+ * <DeadlineDefender /> styles.
+ *
+ * Tokens only. One accent: the countdown once it is nearly gone. The
+ * case text carries the puzzle, so the colour never has to.
+ */
+
+.dd {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+
+/* The desk holds one case at a time, and keeps its height between two
+   of them so the lanes underneath never jump. */
+.desk {
+  min-height: 132px;
+  display: flex;
+  align-items: center;
+  max-width: 620px;
+}
+
+.file {
+  width: 100%;
+  border: 1px solid var(--c-cobalt-200);
+  border-left: 3px solid var(--c-blue-cobalt);
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  padding: 14px 16px;
+}
+
+.fileNo {
+  margin: 0 0 6px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-cobalt-400);
+}
+
+.fileText {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--c-cobalt-900);
+}
+
+.clock {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-200);
+  overflow: hidden;
+}
+.clockFill {
+  height: 100%;
+  background: var(--c-mint-500);
+  /* The width is set per tick, so the transition only smooths the
+     steps between ticks; it must never outlast one. */
+  transition: width 80ms linear;
+}
+.clockLow { background: var(--c-orange-knvb); }
+
+.empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--c-cobalt-400);
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  max-width: 620px;
+}
+
+.lane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  background: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-cobalt-900);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.lane:hover:not(:disabled) { border-color: var(--c-blue-cobalt); background: var(--c-cobalt-50); }
+.lane:disabled { opacity: 0.55; cursor: default; }
+.lane:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+
+.laneKey {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  color: var(--c-cobalt-400);
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  max-width: 52ch;
+  min-height: 1.5em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .file { animation: ddArrive 140ms ease-out both; }
+  @keyframes ddArrive {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: none; }
+  }
+}

@@ -48,6 +48,10 @@
  * normally holds just the primary + secondary pair; a non-GitHub
  * tertiary still renders for compatibility.
  *
+ * The counter is hidden below MIN_DISPLAYED_DOWNLOADS (see
+ * ../../data/app-downloads), so a newly published app shows the
+ * GitHub chip on its own rather than a number that undersells it.
+ *
  * `background="cobalt"` paints the hero in a full-bleed cobalt panel
  * with white type — the product-page identity used on the
  * {slug}.conduction.nl landings. Default (undefined) keeps the
@@ -60,7 +64,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HexBullet from '../primitives/HexBullet';
 import Button from '../primitives/Button';
 import {deriveStability} from '../../theme/brand.jsx';
-import {downloadsForApp, formatDownloads} from '../../data/app-downloads';
+import {downloadsForApp, formatDownloads, showDownloads} from '../../data/app-downloads';
 import {APPS_REGISTRY, applicationCategoryFor} from '../../data/apps-registry';
 import AppGlyph, {hasAppGlyph} from '../AppGlyph/AppGlyph.jsx';
 import styles from './DetailHero.module.css';
@@ -98,6 +102,9 @@ export default function DetailHero({
   repoHref,
 }) {
   const dlCount = downloads != null ? downloads : (appId ? downloadsForApp(appId) : 0);
+  /* A count under MIN_DISPLAYED_DOWNLOADS renders nowhere: not as the
+     chip, not in the JSON-LD. See showDownloads() for why. */
+  const showDlCount = showDownloads(dlCount);
   /* GitHub repo link for the badge row. Priority: explicit `repoHref`
      prop → a GitHub-pointing tertiaryCta (the old "View on GitHub"
      ghost button, which this hero now renders as a meta-row chip
@@ -187,7 +194,7 @@ export default function DetailHero({
     };
     if (taglineText) schema.description = taglineText;
     if (resolvedVersion) schema.softwareVersion = resolvedVersion.replace(/^v/, '');
-    if (dlCount > 0) {
+    if (showDlCount) {
       /* Surface install count as InteractionCounter rather than
          aggregateRating; downloads are not reviews. */
       schema.interactionStatistic = {
@@ -266,7 +273,7 @@ export default function DetailHero({
 
       <div className={styles.headInner}>
         <div className={styles.copy}>
-          {(resolvedStatus || resolvedVersion || locales || dlCount > 0 || resolvedRepoHref) && (
+          {(resolvedStatus || resolvedVersion || locales || showDlCount || resolvedRepoHref) && (
             <div className={styles.badgeRow}>
               {resolvedStatus && (
                 <span className={styles.badge}>
@@ -276,7 +283,7 @@ export default function DetailHero({
               )}
               {resolvedVersion && <span className={[styles.badge, styles.versionBadge].join(' ')}>{resolvedVersion}</span>}
               {locales && <span className={[styles.badge, styles.versionBadge].join(' ')}>{locales}</span>}
-              {dlCount > 0 && (() => {
+              {showDlCount && (() => {
                 /* The downloads counter links to the repo when one
                    resolves; a plain chip otherwise. */
                 const DlTag = resolvedRepoHref ? 'a' : 'span';

@@ -81,6 +81,7 @@ export {default as ComposeBlock} from './ComposeBlock/ComposeBlock.jsx';
 export {default as AppsGrid} from './AppsGrid/AppsGrid.jsx';
 export {default as AppMock} from './AppMock/AppMock.jsx';
 export {default as WidgetMock} from './WidgetMock/WidgetMock.jsx';
+export {default as ThemeSeamMock} from './ThemeSeamMock/ThemeSeamMock.jsx';
 export {default as FlowMock} from './FlowMock/FlowMock.jsx';
 export {default as LeafMock} from './LeafMock/LeafMock.jsx';
 export {default as BuildMock} from './BuildMock/BuildMock.jsx';

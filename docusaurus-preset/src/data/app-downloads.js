@@ -65,3 +65,24 @@ export function downloadsForApp(appId) {
 export function formatDownloads(n, locale = 'en') {
   return Number(n || 0).toLocaleString(locale);
 }
+
+/* Below this many downloads an app shows no counter at all.
+   A freshly published app sits on a handful of downloads for weeks,
+   and printing "5 downloads" next to it argues against the app. The
+   counter is there to show traction, so it appears once there is
+   traction to show. Aggregate figures (totalDownloads on the
+   Connext and Common Ground pages) are not subject to this: the
+   fleet total is a real number on its own. */
+export const MIN_DISPLAYED_DOWNLOADS = 1000;
+
+/**
+ * Whether a download count is worth putting on screen.
+ *
+ * Used for the per-app counter on DetailHero, including its
+ * schema.org InteractionCounter: a number we hide from the page does
+ * not belong in the structured data either, or search results quote
+ * back the figure the page declines to show.
+ */
+export function showDownloads(n) {
+  return Number(n || 0) >= MIN_DISPLAYED_DOWNLOADS;
+}

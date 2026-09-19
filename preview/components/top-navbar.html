@@ -85,12 +85,20 @@
   .nav-sub a.current { background: var(--conduction-color-surface-subtle); }
 
   /* ---- Locale switcher ---- */
+  /* It is a <button>, so the browser's own chrome has to be turned off
+     explicitly: without this it paints its default border and grey fill, and
+     inherits none of the page's type. The border was the visible one — a
+     light 3D outline around the trigger, which read as a boxed control on the
+     light bar and glowed on the dark one. */
   .locale {
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    border: 0;
+    background: transparent;
     color: var(--conduction-color-text-body);
+    font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -98,8 +106,15 @@
     border-radius: var(--radius-md);
     transition: background 120ms ease;
   }
+  /* Keyboard focus still needs to be visible once the default ring is gone. */
+  .locale:focus-visible {
+    outline: 2px solid var(--c-orange-knvb);
+    outline-offset: 2px;
+  }
   .locale:hover { background: var(--conduction-color-surface-subtle); }
-  .locale > svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+  /* Docusaurus theme-classic draws this same 文A mark in the live navbar;
+     the kit carries a copy so the two surfaces show one control. */
+  .locale > svg { width: 18px; height: 18px; fill: currentColor; }
   .locale > .caret { width: 10px; height: 10px; opacity: 0.6; }
 
   .locale-menu {
@@ -151,13 +166,112 @@
   .stage[data-theme="dark"] {
     --conduction-color-surface-card:   var(--c-cobalt-800);
     --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-surface-sunken: var(--c-cobalt-700);
     --conduction-color-text-body:      var(--c-cobalt-100);
     --conduction-color-text-default:   var(--c-cobalt-100);
     --conduction-color-text-muted:     var(--c-cobalt-300);
     background: var(--c-cobalt-900);
     padding-bottom: var(--space-6, 32px);
   }
+  /* A raised ground inside a panel needs -sunken in dark, not -subtle:
+     -subtle and -card both resolve to cobalt-800 there, so a hover or
+     current row would sit on exactly the colour behind it and the state
+     would read as nothing at all. In light the two differ, which is why
+     the same rule needs saying only once, here. */
+  .stage[data-theme="dark"] .nav-sub a:hover,
+  .stage[data-theme="dark"] .nav-sub a.current,
+  .stage[data-theme="dark"] .locale:hover,
+  .stage[data-theme="dark"] .locale-menu a:hover {
+    background: var(--conduction-color-surface-sunken);
+  }
   .stage[data-theme="dark"] .stage-label { padding-top: var(--space-5, 24px); color: var(--c-cobalt-300); }
+
+  /* ---- The drawer, below 996px ----
+     Shown here in a phone-width frame rather than behind a media query, so
+     both states are on one page. In the component the frame is the viewport
+     and the panel is position: fixed; here it is pinned to the frame. */
+  .phones { display: flex; flex-wrap: wrap; gap: 24px; padding: 0 56px var(--space-6, 32px); }
+  .phone {
+    position: relative; overflow: hidden;
+    width: 390px; max-width: 100%; height: 560px;
+    border: 1px solid var(--c-cobalt-100); border-radius: 12px;
+    background: var(--conduction-color-surface-card);
+  }
+  .phone[data-theme="dark"] {
+    --conduction-color-surface-card:   var(--c-cobalt-800);
+    --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-surface-sunken: var(--c-cobalt-700);
+    --conduction-color-text-body:      var(--c-cobalt-100);
+    --conduction-color-text-default:   var(--c-cobalt-100);
+    --conduction-color-text-muted:     var(--c-cobalt-300);
+    background: var(--c-cobalt-900);
+    border-color: var(--c-cobalt-700);
+  }
+  /* The bar keeps only the wordmark and the burger at this width. */
+  .phone .nav { padding: 12px 16px; }
+  .phone .nav-links, .phone .nav-ctas { display: none; }
+  .phone .burger { display: inline-flex; }
+
+  .burger {
+    display: none; align-items: center; justify-content: center;
+    width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--radius-sm);
+    background: transparent; color: var(--conduction-color-text-body); cursor: pointer;
+  }
+  .burger svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  .drawer {
+    position: absolute; inset: 0; z-index: 200;
+    display: flex; flex-direction: column;
+    background: var(--conduction-color-surface-card);
+    overflow-y: auto;
+  }
+  .drawer-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 20px; border-bottom: 1px solid var(--conduction-color-surface-sunken);
+    flex-shrink: 0;
+  }
+  .drawer-body { display: flex; flex-direction: column; padding: 8px 20px 24px; flex: 1; }
+  .drawer-links { display: flex; flex-direction: column; }
+  .drawer-link {
+    display: flex; align-items: center; min-height: 52px;
+    border-bottom: 1px solid var(--conduction-color-surface-sunken);
+    color: var(--conduction-color-text-body); text-decoration: none;
+    font-size: 17px; font-weight: 500;
+  }
+  .drawer-link:hover { color: var(--c-orange-knvb); }
+  .drawer-link.current { color: var(--c-orange-knvb); font-weight: 700; }
+  .drawer-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .drawer-cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 20px; border-radius: var(--radius-md);
+    background: var(--c-blue-cobalt); color: white;
+    font-size: 16px; font-weight: 600; text-decoration: none;
+  }
+  /* One line, always: the pill is pushed to the end and the labels give up
+     width first — a truncated version number would be worse than none. */
+  .drawer-meta {
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 12px;
+    margin-top: 28px; padding-top: 20px;
+    border-top: 1px solid var(--conduction-color-surface-sunken);
+  }
+  .drawer-meta a {
+    display: inline-flex; align-items: center; gap: 6px; min-width: 0;
+    color: var(--conduction-color-text-body); text-decoration: none; font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .drawer-meta a:hover { color: var(--c-orange-knvb); }
+  /* The GitHub mark takes only black or white — never the hover orange, and
+     never cobalt. Same rule the employee card's contact row documents. */
+  .drawer-meta a svg { width: 18px; height: 18px; fill: #000000; flex-shrink: 0; }
+  .phone[data-theme="dark"] .drawer-meta a svg { fill: #FFFFFF; }
+  .drawer-meta .version {
+    margin-left: auto; flex-shrink: 0;
+    font-family: var(--conduction-typography-font-family-code); font-size: 11px;
+    letter-spacing: 0.04em; color: var(--conduction-color-text-muted);
+    background: var(--conduction-color-surface-subtle);
+    border-radius: var(--radius-pill); padding: 4px 10px; white-space: nowrap;
+  }
+  .phone[data-theme="dark"] .drawer-meta .version { background: var(--conduction-color-surface-sunken); }
 </style>
 </head>
 <body>
@@ -188,7 +302,7 @@
   </div>
   <div class="nav-ctas">
     <button type="button" class="locale" aria-haspopup="menu" aria-expanded="false" data-locale-toggle>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.6 9h16.8M3.6 15h16.8M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="translate-mark"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
       <span data-locale-current>NL</span>
       <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       <div class="locale-menu" role="menu" aria-label="Language">
@@ -272,6 +386,77 @@
   carry .current and both go orange: the parent says which section you are in,
   the subitem says which page.
 -->
+
+
+<section class="stage">
+  <div class="stage-label">Drawer <span class="what">below 996px · light and dark</span></div>
+  <div class="phones">
+    <div class="phone" data-theme="light">
+      <nav class="nav">
+        <div class="left">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+        </div>
+        <button type="button" class="burger" aria-label="Open menu" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </nav>
+      <div class="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="drawer-header">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+          <button type="button" class="burger" aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="drawer-body">
+          <div class="drawer-links">
+            <a href="#" class="drawer-link">Apps</a>
+            <a href="#" class="drawer-link current">Solutions</a>
+            <a href="#" class="drawer-link">Docs</a>
+            <a href="#" class="drawer-link">Support</a>
+            <a href="#" class="drawer-link">About</a>
+            <a href="#" class="drawer-link">Partners</a>
+          </div>
+          <div class="drawer-actions">
+            <a href="#" class="drawer-cta">Install →</a>
+          </div>
+          <div class="drawer-meta">
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.16c-3.2.69-3.87-1.36-3.87-1.36-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .3.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg> GitHub</a>
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg> NL</a>
+            <span class="version">Stable · v3.45.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone" data-theme="dark">
+      <nav class="nav">
+        <div class="left">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+        </div>
+        <button type="button" class="burger" aria-label="Open menu" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </nav>
+      <div class="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="drawer-header">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+          <button type="button" class="burger" aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="drawer-body">
+          <div class="drawer-links">
+            <a href="#" class="drawer-link">Apps</a>
+            <a href="#" class="drawer-link current">Solutions</a>
+            <a href="#" class="drawer-link">Docs</a>
+            <a href="#" class="drawer-link">Support</a>
+            <a href="#" class="drawer-link">About</a>
+            <a href="#" class="drawer-link">Partners</a>
+          </div>
+          <div class="drawer-actions">
+            <a href="#" class="drawer-cta">Install →</a>
+          </div>
+          <div class="drawer-meta">
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.16c-3.2.69-3.87-1.36-3.87-1.36-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .3.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg> GitHub</a>
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg> NL</a>
+            <span class="version">Stable · v3.45.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <link rel="stylesheet" href="_react-usage.css">
 <aside class="react-usage">

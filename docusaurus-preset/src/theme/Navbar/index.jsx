@@ -198,7 +198,7 @@ export default function Navbar() {
      them (the site clips horizontal overflow, so they were not even
      scrollable). Everything goes in, links and CTAs both, because the
      bar has to fit an unknown number of items on an unknown wordmark
-     length — keeping any of them inline only moves the cliff. */
+     length. Keeping any of them inline only moves the cliff. */
   const [menuOpen, setMenuOpen] = React.useState(false);
   const toggleRef = React.useRef(null);
 

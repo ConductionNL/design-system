@@ -41,9 +41,17 @@
 .wordmarkIcon {
   width: 32px;
   height: 32px;
-  display: block;
   flex-shrink: 0;
   object-fit: contain;
+}
+/* `display: block` only when the wordmark holds one image. With
+   `logo.srcDark` set, ThemedImage puts both cuts here and hides one with
+   its own `.themedComponent { display: none }` — a single class selector
+   that a bare `display: block` on this class would outrank, leaving both
+   logos stacked until hydration. :only-of-type counts images, not the
+   wordmark text beside them. */
+img.wordmarkIcon:only-of-type {
+  display: block;
 }
 
 /* Wordmark text wrapper; gives us a single hook for tweaks like
@@ -193,212 +201,328 @@
   white-space: nowrap;
 }
 
-/**
- * Drawer toggle (hamburger).
- *
- * Hidden above the breakpoint. Always rendered in the markup so the
- * button's `aria-controls` resolves during server rendering, when
- * there is no viewport width to branch on.
- *
- * 44px square. WCAG 2.2 SC 2.5.8 (AA) only requires 24x24, which this
- * clears comfortably; 44 is the size a thumb actually wants, and it is
- * the primary control on every phone-width page.
- */
-.menuToggle {
+/* ─────────────────────────────────────────────────────────────────
+   Mobile navigation
+
+   Below 900px the link row and the right-hand chrome are replaced by
+   a hamburger opening a full-screen drawer (see the JSX). The button
+   is hidden above the breakpoint rather than conditionally rendered,
+   so the markup is identical on server and client and nothing has to
+   measure the viewport during hydration.
+   ───────────────────────────────────────────────────────────────── */
+
+.burger {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   padding: 0;
-  border: 1px solid var(--c-cobalt-100);
+  border: 0;
   border-radius: var(--radius-sm);
-  background: var(--conduction-color-surface-card);
+  background: transparent;
   color: var(--conduction-color-text-body);
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
   transition: color 160ms ease, background 160ms ease;
+  /* -webkit-tap-highlight-color kills the grey flash iOS Safari paints
+     over the whole button on touch, which reads as a rendering glitch
+     next to the drawer's own open animation. */
+  -webkit-tap-highlight-color: transparent;
 }
-.menuToggle:hover {
+.burger:hover {
   color: var(--conduction-color-text-default);
   background: var(--conduction-color-surface-subtle);
 }
-
-/**
- * Drawer panel.
- *
- * `display: none` by default rather than relying on the `hidden`
- * attribute alone, because the rules below set a display value and any
- * such declaration overrides the UA default for `[hidden]`. Opening is
- * therefore scoped to the breakpoint AND to `:not([hidden])`, so the
- * panel can never appear on desktop even if the state says open.
- *
- * Positioned against .nav, which is `position: sticky` and so already
- * a containing block for absolutely positioned descendants.
- */
-.drawer {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--conduction-color-surface-card);
-  border-bottom: 1px solid var(--c-cobalt-100);
-  box-shadow: 0 12px 24px rgba(16, 42, 86, 0.10);
-  max-height: 75vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+.burgerGlyph {
+  display: inline-flex;
+  line-height: 1;
+}
+.burgerGlyph :global(svg) {
+  width: 1em;
+  height: 1em;
+  display: block;
 }
 
-.drawerItems {
+/* Full-screen panel. Opaque and fixed to the viewport: on a phone a
+   half-height sheet leaves the page scrolling behind the menu, and the
+   nav links end up competing with the hero they overlap. */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
   display: flex;
   flex-direction: column;
-  padding: 8px 24px 20px;
+  background: var(--conduction-color-surface-card);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-family: var(--conduction-typography-font-family-body);
+  animation: drawerIn 160ms ease-out;
 }
 
-/* Every interactive row in the drawer gets a full-width 44px target.
-   Styling by context rather than by passing a variant down through
-   NavItem keeps the item types (link, cta, github, apiDocs, locale)
-   rendering exactly as they do in the bar. */
-.drawerItems > a {
+@keyframes drawerIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer { animation: none; }
+}
+
+/* Repeats the navbar's own row so the wordmark doesn't jump when the
+   panel opens over it; the close button sits exactly where the
+   hamburger was. */
+.drawerHeader {
   display: flex;
   align-items: center;
-  min-height: 44px;
-  width: 100%;
-  border-bottom: 1px solid var(--c-cobalt-50);
-  font-size: 16px;
-}
-.drawerItems > a:last-child { border-bottom: none; }
-
-/* The locale item is a list, not a single row, so it sizes to its
-   contents and lets the language links below own the 44px rhythm. */
-.drawerItems > .localeWrapper {
-  display: block;
-  width: 100%;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--conduction-color-surface-sunken);
+  flex-shrink: 0;
 }
 
-/* The install CTA keeps its filled treatment but becomes a full-width
-   block, so it reads as the primary action of the drawer. */
-.drawerItems > .cta {
+.drawerBody {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 20px 32px;
+}
+
+.drawerLinks {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section links: 18px rows on a 52px+ target, hairline-separated.
+   Bigger than the navbar's 14px because this is the primary way
+   around the site on a phone, not a secondary strip. */
+.drawerLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--conduction-color-surface-sunken);
+  color: var(--conduction-color-text-body);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.drawerLink:hover,
+.drawerLink:focus-visible {
+  color: var(--c-orange-knvb);
+  text-decoration: none;
+}
+.drawerLinkActive {
+  color: var(--c-orange-knvb);
+}
+
+/* CTAs, full width and stacked at the foot of the link list — the
+   navbar's inline button proportions read as a stray chip once the
+   row is gone. */
+.drawerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.drawerCta {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 16px;
-  border-bottom: none;
-  padding: 12px 16px;
-}
-
-/* Icon-only items (GitHub) need a visible hit area in a vertical list,
-   where there is no neighbouring label to borrow width from. */
-.drawerItems > .iconLink {
-  width: 100%;
-  justify-content: flex-start;
-  height: auto;
-}
-
-/* The version pill is a static chip, not a control: keep it inline and
-   out of the 44px rhythm. */
-.drawerItems > .versionPill {
-  align-self: flex-start;
-  margin-top: 12px;
-}
-
-/**
- * Locale switcher inside the drawer.
- *
- * Two Infima behaviours have to be undone here.
- *
- * First, Infima hides `.navbar__item` outright below 996px, because it
- * expects its own mobile sidebar to take over. Inside this drawer that
- * rule collapses the locale item to a zero-height blank row, so the
- * display value is restored explicitly.
- *
- * Second, the menu is a hover dropdown positioned absolutely. A hover
- * dropdown is the wrong control on touch, and in a vertical panel the
- * absolute menu lands off the side of the screen. Pinning it into the
- * flow and dropping the trigger turns it into what it should be on a
- * phone: a plain list of the available languages.
- */
-.drawer .localeWrapper :global(.navbar__item) {
-  display: block;
-  width: 100%;
-  padding: 0;
-}
-
-/* The trigger just repeats the current locale, which the list already
-   marks as active. Dropping it avoids an "English / English /
-   Nederlands" stutter. */
-.drawer .localeWrapper :global(.navbar__link) {
-  display: none;
-}
-
-.drawer .localeWrapper :global(.dropdown__menu) {
-  position: static;
-  display: block;
-  transform: none;
-  opacity: 1;
-  visibility: visible;
-  box-shadow: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  min-width: 0;
-  max-height: none;
-}
-
-.drawer .localeWrapper :global(.dropdown__link) {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  margin: 0;
-  border-radius: 0;
-  border-bottom: 1px solid var(--c-cobalt-50);
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: var(--c-blue-cobalt);
+  color: white;
   font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 160ms ease;
+}
+.drawerCta:hover {
+  background: var(--c-cobalt-700);
+  color: white;
+  text-decoration: none;
 }
 
-/**
- * Breakpoint.
- *
- * 996px matches Docusaurus's own navbar collapse, so the drawer and
- * the framework's mobile sidebar agree about where "mobile" starts.
- * Measured on conduction.nl: the inline bar needs 571px at its
- * narrowest and 775px with a full item set, so collapsing at 996px
- * clears both with room for sites that add items.
- */
+
+/* Quiet strip: locale switcher, version pill, GitHub. Present, but
+   not competing with the section links or the CTA. */
+.drawerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--conduction-color-surface-sunken);
+}
+
+.drawerMetaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--conduction-color-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.drawerMetaLink:hover {
+  color: var(--conduction-color-text-default);
+  text-decoration: none;
+}
+
+/* Docusaurus's mobile locale dropdown renders Infima `menu__*`
+   markup. Strip the sidebar padding it assumes and restyle the toggle
+   to the brand's quiet-meta voice. */
+.drawerLocale {
+  margin: 0;
+  padding: 0;
+  flex: 1 1 100%;
+}
+.drawerLocale :global(.menu__link) {
+  padding: 6px 0;
+  color: var(--conduction-color-text-body);
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+}
+.drawerLocale :global(.menu__link:hover) {
+  color: var(--c-orange-knvb);
+  background: transparent;
+}
+.drawerLocale :global(.menu__list .menu__list) {
+  padding-left: 16px;
+}
+.drawerLocale :global(.menu__list-item-collapsible:hover) {
+  background: transparent;
+}
+
 @media (max-width: 996px) {
+  /* Long product wordmarks must not push the burger off the bar. The
+     wordmark is also the home link, so it takes the same 44px height as
+     the control it sits opposite. Carried over from the released bar. */
+  .wordmark { min-width: 0; min-height: 44px; }
+  .wordmarkText { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .left { min-width: 0; flex: 1; }
+
   .nav {
-    padding: 12px 16px;
+    padding: 14px 20px;
     gap: 12px;
+    /* Infima pins .navbar to --ifm-navbar-height (60px) and the brand
+       nav does not override it, so a 40px tap target plus padding
+       would spill out of the box it draws its border on. The mobile
+       row sizes itself instead. */
+    height: auto;
   }
   .left { gap: 16px; }
+  /* The inline link row and right-hand chrome move into the drawer.
+     `display: none` rather than an unmounted branch: same markup on
+     both sides of hydration, and the drawer reads the same item list
+     from themeConfig, so nothing is lost. */
+  .links { display: none; }
+  .ctas { display: none; }
+  .burger { display: inline-flex; }
+  .wordmark { font-size: 19px; }
+  .wordmarkIcon { width: 28px; height: 28px; }
+}
 
-  /* The bar keeps only the wordmark and the toggle. */
-  .links,
-  .ctas {
-    display: none;
-  }
+/* Belt and braces: if the viewport crosses the breakpoint before the
+   resize listener fires, the panel is hidden by CSS rather than left
+   covering a desktop layout. */
+@media (min-width: 997px) {
+  .drawer { display: none; }
 
-  .menuToggle {
-    display: inline-flex;
-  }
+/* The meta strip is one line: GitHub, the locale trigger, then the version
+   pill pushed to the end. It wrapped the pill onto a second line as soon as
+   the three together outgrew the panel, which made the strip two rows in one
+   theme and one row in the other for no reason a reader could see. Now the
+   links give up width first — they are labels, and an ellipsis on "GitHub"
+   still reads — while the pill keeps its full width, because a truncated
+   version number is worse than no version number. */
+.drawerMeta {
+  flex-wrap: nowrap;
+}
+.drawerMeta .drawerMetaLink {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawerMeta .versionPill {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+}
 
-  .drawer:not([hidden]) {
-    display: block;
-  }
+/* ============================================================
+   The locale switcher is a control, not a seventh link
 
-  /* Long product wordmarks must not push the toggle off the bar. The
-     wordmark is also the home link, so it gets the same 44px height as
-     the toggle it sits opposite. */
-  .wordmark {
-    font-size: 19px;
-    min-width: 0;
-    min-height: 44px;
-  }
-  .wordmarkText {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .left {
-    min-width: 0;
-    flex: 1;
-  }
+   Everything else on this bar navigates; this one changes a setting.
+   Given the same shape as its neighbours, the only way to learn that is
+   to click it. So it carries the globe and sits in a chip that fills on
+   hover — the same affordance the GitHub mark beside it already has.
+
+   The chip's hover ground is -subtle in light and -sunken in dark,
+   because -subtle and -card both resolve to cobalt-800 in dark: the
+   chip would fill with exactly the colour of the bar behind it.
+   ============================================================ */
+.localeWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--conduction-color-text-body);
+  transition: background 140ms ease, color 140ms ease;
+}
+.localeWrapper:hover {
+  background: var(--conduction-color-surface-subtle);
+}
+[data-theme='dark'] .localeWrapper:hover {
+  background: var(--conduction-color-surface-sunken);
+}
+/* Docusaurus draws the translate mark inside the dropdown; size it with the
+   label rather than letting it inherit theme-classic's 20px default. */
+.localeWrapper svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   The GitHub mark keeps to what GitHub permits
+
+   Every other hover on this bar goes orange, and the icon link used to
+   go cobalt on a -subtle chip. Both are colours the mark may not take:
+   GitHub allows white, black, and in few cases grey or green
+   (github.com/logos), which is the same rule EmployeeCard's contact row
+   documents at length. The glyph is drawn `fill="currentColor"`, so
+   whatever the hover sets, the trademark takes.
+
+   Resting: black, white in dark. Hover: the chip fills cobalt and the
+   mark goes white — the second value every one of those brands names
+   for exactly that situation. Literal #000/#fff, never tokens, so a
+   later palette change cannot recolour someone else's trademark.
+   ============================================================ */
+.iconLink svg {
+  fill: #000000;
+}
+[data-theme='dark'] .iconLink svg {
+  fill: #FFFFFF;
+}
+.iconLink:hover {
+  background: var(--c-blue-cobalt);
+  color: #FFFFFF;
+}
+.iconLink:hover svg {
+  fill: #FFFFFF;
+}
+
+/* The version pill is a raised chip on the bar, and -subtle is the bar's
+   own colour in dark, so it lost its ground there. -sunken puts it
+   1.17:1 off the bar, against the 1.12:1 it has always had in light. */
+[data-theme='dark'] .versionPill {
+  background: var(--conduction-color-surface-sunken);
 }

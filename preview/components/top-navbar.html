@@ -14,28 +14,91 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 22px 56px;
     border-bottom: 1px solid var(--c-cobalt-100);
+    background: var(--conduction-color-surface-card);
   }
   .nav .left { display: flex; align-items: center; gap: 44px; }
-  .wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
+  .wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--conduction-color-text-default); }
   .nav-links { display: flex; gap: 28px; }
   .nav-links a {
-    color: var(--c-cobalt-700); text-decoration: none;
+    color: var(--conduction-color-text-body); text-decoration: none;
     font-size: 14px; font-weight: 500;
   }
+  /* One colour, one meaning: orange says "you are here" (current) or
+     "you are about to go here" (hover). Everything else stays cobalt.
+     The rule is written on .nav-links a, so it covers the subitems in a
+     section dropdown too: a current subitem is the same orange as a
+     current top-level item, never a second colour for the same state. */
   .nav-links a:hover, .nav-links a.current { color: var(--c-orange-knvb); }
-  .nav-links a.current { font-weight: 600; }
+  /* Bold, not semibold. The nav sits at 500, so 600 is one step and
+     reads as a rendering artefact rather than a state. 700 is legible. */
+  .nav-links a.current { font-weight: 700; }
   .nav .nav-ctas { display: flex; align-items: center; gap: 12px; }
-  .nav .ghost { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav .ghost { color: var(--conduction-color-text-body); text-decoration: none; font-size: 14px; font-weight: 500; }
   .nav .cta { background: var(--c-blue-cobalt); color: white; padding: 9px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; text-decoration: none; }
   .nav .cta:hover { background: var(--c-cobalt-700); }
 
+  /* ---- Section dropdown (a nav item with subitems) ----
+     A section with its own pages hangs them under the parent link.
+     Same panel as the locale switcher, opened on hover instead of
+     click, and left-aligned under its trigger. The locale switcher
+     picks a setting; this one navigates, so it never carries the
+     locale menu's cobalt current state. It inherits the nav's own
+     orange-current rule above. */
+  .nav-item { position: relative; display: inline-flex; align-items: center; }
+  .nav-item > a { display: inline-flex; align-items: center; gap: 6px; }
+  .nav-item > a .caret {
+    width: 10px; height: 10px;
+    stroke: currentColor; stroke-width: 2; fill: none;
+    opacity: 0.6;
+  }
+  /* Invisible bridge across the 8px gap, so the panel survives the
+     trip from trigger to first item. */
+  .nav-item.has-sub::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: var(--space-2);
+  }
+  .nav-sub {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    background: var(--conduction-color-surface-card);
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    padding: 6px;
+    min-width: 180px;
+    display: none;
+    z-index: 100;
+  }
+  .nav-item:hover .nav-sub,
+  .nav-item:focus-within .nav-sub { display: block; }
+  .nav-sub a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+  .nav-sub a:hover,
+  .nav-sub a.current { background: var(--conduction-color-surface-subtle); }
+
   /* ---- Locale switcher ---- */
+  /* It is a <button>, so the browser's own chrome has to be turned off
+     explicitly: without this it paints its default border and grey fill, and
+     inherits none of the page's type. The border was the visible one — a
+     light 3D outline around the trigger, which read as a boxed control on the
+     light bar and glowed on the dark one. */
   .locale {
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--c-cobalt-700);
+    border: 0;
+    background: transparent;
+    color: var(--conduction-color-text-body);
+    font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -43,15 +106,22 @@
     border-radius: var(--radius-md);
     transition: background 120ms ease;
   }
-  .locale:hover { background: var(--c-cobalt-50); }
-  .locale > svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+  /* Keyboard focus still needs to be visible once the default ring is gone. */
+  .locale:focus-visible {
+    outline: 2px solid var(--c-orange-knvb);
+    outline-offset: 2px;
+  }
+  .locale:hover { background: var(--conduction-color-surface-subtle); }
+  /* Docusaurus theme-classic draws this same 文A mark in the live navbar;
+     the kit carries a copy so the two surfaces show one control. */
+  .locale > svg { width: 18px; height: 18px; fill: currentColor; }
   .locale > .caret { width: 10px; height: 10px; opacity: 0.6; }
 
   .locale-menu {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    background: white;
+    background: var(--conduction-color-surface-card);
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-2);
@@ -66,20 +136,164 @@
     padding: 8px 12px;
     border-radius: var(--radius-sm);
     text-decoration: none;
-    color: var(--c-cobalt-700);
+    color: var(--conduction-color-text-body);
     font-size: 14px;
   }
-  .locale-menu a:hover { background: var(--c-cobalt-50); color: var(--c-blue-cobalt); }
-  .locale-menu a.current { color: var(--c-blue-cobalt); font-weight: 600; }
+  .locale-menu a:hover { background: var(--conduction-color-surface-subtle); color: var(--conduction-color-text-default); }
+  .locale-menu a.current { color: var(--conduction-color-text-default); font-weight: 600; }
+
+  /* ---- Theme stages ----
+     The bar twice, once per theme, because dark is where this component has
+     the most to prove: every colour it paints has to come from the semantic
+     layer, or the bar stays white while the page behind it goes cobalt-900.
+
+     tokens.css scopes its dark values to `:root[data-theme="dark"]`, which
+     an element inside the page cannot match — that selector only ever hits
+     <html>. So the dark stage repeats the five mappings this component
+     reads. They are tokens.css's own dark values; if that file's dark block
+     moves, move these with it. Nothing else here is theme-aware, which is
+     the point of the exercise. */
+  .stage { position: relative; }
+  .stage + .stage { margin-top: var(--space-6, 32px); }
+  .stage-label {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 0 56px var(--space-3, 12px);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .stage-label .what { text-transform: none; letter-spacing: 0; color: var(--c-cobalt-300); }
+  .stage[data-theme="dark"] {
+    --conduction-color-surface-card:   var(--c-cobalt-800);
+    --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-surface-sunken: var(--c-cobalt-700);
+    --conduction-color-text-body:      var(--c-cobalt-100);
+    --conduction-color-text-default:   var(--c-cobalt-100);
+    --conduction-color-text-muted:     var(--c-cobalt-300);
+    background: var(--c-cobalt-900);
+    padding-bottom: var(--space-6, 32px);
+  }
+  /* A raised ground inside a panel needs -sunken in dark, not -subtle:
+     -subtle and -card both resolve to cobalt-800 there, so a hover or
+     current row would sit on exactly the colour behind it and the state
+     would read as nothing at all. In light the two differ, which is why
+     the same rule needs saying only once, here. */
+  .stage[data-theme="dark"] .nav-sub a:hover,
+  .stage[data-theme="dark"] .nav-sub a.current,
+  .stage[data-theme="dark"] .locale:hover,
+  .stage[data-theme="dark"] .locale-menu a:hover {
+    background: var(--conduction-color-surface-sunken);
+  }
+  .stage[data-theme="dark"] .stage-label { padding-top: var(--space-5, 24px); color: var(--c-cobalt-300); }
+
+  /* ---- The drawer, below 996px ----
+     Shown here in a phone-width frame rather than behind a media query, so
+     both states are on one page. In the component the frame is the viewport
+     and the panel is position: fixed; here it is pinned to the frame. */
+  .phones { display: flex; flex-wrap: wrap; gap: 24px; padding: 0 56px var(--space-6, 32px); }
+  .phone {
+    position: relative; overflow: hidden;
+    width: 390px; max-width: 100%; height: 560px;
+    border: 1px solid var(--c-cobalt-100); border-radius: 12px;
+    background: var(--conduction-color-surface-card);
+  }
+  .phone[data-theme="dark"] {
+    --conduction-color-surface-card:   var(--c-cobalt-800);
+    --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-surface-sunken: var(--c-cobalt-700);
+    --conduction-color-text-body:      var(--c-cobalt-100);
+    --conduction-color-text-default:   var(--c-cobalt-100);
+    --conduction-color-text-muted:     var(--c-cobalt-300);
+    background: var(--c-cobalt-900);
+    border-color: var(--c-cobalt-700);
+  }
+  /* The bar keeps only the wordmark and the burger at this width. */
+  .phone .nav { padding: 12px 16px; }
+  .phone .nav-links, .phone .nav-ctas { display: none; }
+  .phone .burger { display: inline-flex; }
+
+  .burger {
+    display: none; align-items: center; justify-content: center;
+    width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--radius-sm);
+    background: transparent; color: var(--conduction-color-text-body); cursor: pointer;
+  }
+  .burger svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  .drawer {
+    position: absolute; inset: 0; z-index: 200;
+    display: flex; flex-direction: column;
+    background: var(--conduction-color-surface-card);
+    overflow-y: auto;
+  }
+  .drawer-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 20px; border-bottom: 1px solid var(--conduction-color-surface-sunken);
+    flex-shrink: 0;
+  }
+  .drawer-body { display: flex; flex-direction: column; padding: 8px 20px 24px; flex: 1; }
+  .drawer-links { display: flex; flex-direction: column; }
+  .drawer-link {
+    display: flex; align-items: center; min-height: 52px;
+    border-bottom: 1px solid var(--conduction-color-surface-sunken);
+    color: var(--conduction-color-text-body); text-decoration: none;
+    font-size: 17px; font-weight: 500;
+  }
+  .drawer-link:hover { color: var(--c-orange-knvb); }
+  .drawer-link.current { color: var(--c-orange-knvb); font-weight: 700; }
+  .drawer-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .drawer-cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 20px; border-radius: var(--radius-md);
+    background: var(--c-blue-cobalt); color: white;
+    font-size: 16px; font-weight: 600; text-decoration: none;
+  }
+  /* One line, always: the pill is pushed to the end and the labels give up
+     width first — a truncated version number would be worse than none. */
+  .drawer-meta {
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 12px;
+    margin-top: 28px; padding-top: 20px;
+    border-top: 1px solid var(--conduction-color-surface-sunken);
+  }
+  .drawer-meta a {
+    display: inline-flex; align-items: center; gap: 6px; min-width: 0;
+    color: var(--conduction-color-text-body); text-decoration: none; font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .drawer-meta a:hover { color: var(--c-orange-knvb); }
+  /* The GitHub mark takes only black or white — never the hover orange, and
+     never cobalt. Same rule the employee card's contact row documents. */
+  .drawer-meta a svg { width: 18px; height: 18px; fill: #000000; flex-shrink: 0; }
+  .phone[data-theme="dark"] .drawer-meta a svg { fill: #FFFFFF; }
+  .drawer-meta .version {
+    margin-left: auto; flex-shrink: 0;
+    font-family: var(--conduction-typography-font-family-code); font-size: 11px;
+    letter-spacing: 0.04em; color: var(--conduction-color-text-muted);
+    background: var(--conduction-color-surface-subtle);
+    border-radius: var(--radius-pill); padding: 4px 10px; white-space: nowrap;
+  }
+  .phone[data-theme="dark"] .drawer-meta .version { background: var(--conduction-color-surface-sunken); }
 </style>
 </head>
 <body>
 
+<section class="stage" data-theme="light" data-stage-source>
+  <div class="stage-label">Light <span class="what">surface-card · #FFFFFF</span></div>
 <nav class="nav">
   <div class="left">
     <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
     <div class="nav-links">
-      <a href="apps-catalog.html" data-section="apps" data-i18n="nav.apps">Apps</a>
+      <div class="nav-item has-sub">
+        <a href="apps-catalog.html" data-section="apps" data-i18n="nav.apps">Apps
+          <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <div class="nav-sub" role="menu" aria-label="Apps">
+          <a href="app-detail.html" data-subsection="opencatalogi" role="menuitem">OpenCatalogi</a>
+          <a href="app-detail.html" data-subsection="openregister" role="menuitem">OpenRegister</a>
+          <a href="app-detail.html" data-subsection="integriq" role="menuitem">Integriq</a>
+          <a href="app-detail.html" data-subsection="filinq" role="menuitem">Filinq</a>
+          <a href="app-detail.html" data-subsection="launchpad" role="menuitem">LaunchPad</a>
+        </div>
+      </div>
       <a href="solutions-catalog.html" data-section="solutions" data-i18n="nav.solutions">Solutions</a>
       <a href="#" data-section="docs" data-i18n="nav.docs">Docs</a>
       <a href="support.html" data-section="support" data-i18n="nav.support">Support</a>
@@ -88,7 +302,7 @@
   </div>
   <div class="nav-ctas">
     <button type="button" class="locale" aria-haspopup="menu" aria-expanded="false" data-locale-toggle>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3.6 9h16.8M3.6 15h16.8M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="translate-mark"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
       <span data-locale-current>NL</span>
       <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       <div class="locale-menu" role="menu" aria-label="Language">
@@ -100,6 +314,23 @@
     <a href="#" class="cta" data-i18n="nav.install">Install →</a>
   </div>
 </nav>
+</section>
+
+<!-- The dark stage takes a copy of the bar above rather than a second hand-
+     written one: two copies of this markup would drift the moment somebody
+     adds a nav item, and the whole point of showing both themes is that it
+     is the same component either way. -->
+<section class="stage" data-theme="dark" data-stage-clone>
+  <div class="stage-label">Dark <span class="what">surface-card · #102246</span></div>
+</section>
+
+<script>
+  (function () {
+    const source = document.querySelector('[data-stage-source] .nav');
+    const target = document.querySelector('[data-stage-clone]');
+    if (source && target) target.appendChild(source.cloneNode(true));
+  })();
+</script>
 
 <script src="../i18n.js" defer></script>
 
@@ -109,36 +340,123 @@
      each surface (Docusaurus i18n on connext, querystring + dictionary
      on the kit's static pages). The button just exposes the choice. */
   (function () {
-    const root = document.querySelector('[data-locale-toggle]');
-    if (!root) return;
-    const current = root.querySelector('[data-locale-current]');
+    /* Every switcher on the page, not the first one: this preview renders
+       the bar once per theme, and a dropdown that only works in the light
+       copy would read as a bug in the dark one. */
+    const roots = document.querySelectorAll('[data-locale-toggle]');
+    if (!roots.length) return;
 
     /* Read ?lang=… from the URL so the trigger label and active item
        reflect the current selection. Default is NL per huisstijl. */
     const params = new URLSearchParams(window.location.search);
     const lang = (params.get('lang') || 'nl').toLowerCase();
-    if (current) current.textContent = lang.toUpperCase();
-    root.querySelectorAll('[data-locale]').forEach((a) => {
-      a.classList.toggle('current', a.dataset.locale === lang);
+
+    const closeAll = () => roots.forEach((r) => {
+      delete r.dataset.open;
+      r.setAttribute('aria-expanded', 'false');
     });
 
-    function open() { root.dataset.open = '1'; root.setAttribute('aria-expanded', 'true'); }
-    function close() { delete root.dataset.open; root.setAttribute('aria-expanded', 'false'); }
+    roots.forEach((root) => {
+      const current = root.querySelector('[data-locale-current]');
+      if (current) current.textContent = lang.toUpperCase();
+      root.querySelectorAll('[data-locale]').forEach((a) => {
+        a.classList.toggle('current', a.dataset.locale === lang);
+      });
 
-    root.addEventListener('click', (e) => {
-      if (e.target.closest('[data-locale]')) return; /* let link navigate */
-      e.stopPropagation();
-      root.dataset.open === '1' ? close() : open();
+      root.addEventListener('click', (e) => {
+        if (e.target.closest('[data-locale]')) return; /* let link navigate */
+        e.stopPropagation();
+        const wasOpen = root.dataset.open === '1';
+        closeAll();
+        if (!wasOpen) { root.dataset.open = '1'; root.setAttribute('aria-expanded', 'true'); }
+      });
     });
-    document.addEventListener('click', () => close());
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+    document.addEventListener('click', closeAll);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
   })();
 </script>
 
 <!--
   Pages set <body data-current="apps|solutions|docs|support|about"> and include.js
   will add the .current class to the matching link after the navbar is injected.
+
+  A page inside a section with its own dropdown adds
+  <body data-current="apps" data-current-sub="openregister">. Both links then
+  carry .current and both go orange: the parent says which section you are in,
+  the subitem says which page.
 -->
+
+
+<section class="stage">
+  <div class="stage-label">Drawer <span class="what">below 996px · light and dark</span></div>
+  <div class="phones">
+    <div class="phone" data-theme="light">
+      <nav class="nav">
+        <div class="left">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+        </div>
+        <button type="button" class="burger" aria-label="Open menu" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </nav>
+      <div class="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="drawer-header">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+          <button type="button" class="burger" aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="drawer-body">
+          <div class="drawer-links">
+            <a href="#" class="drawer-link">Apps</a>
+            <a href="#" class="drawer-link current">Solutions</a>
+            <a href="#" class="drawer-link">Docs</a>
+            <a href="#" class="drawer-link">Support</a>
+            <a href="#" class="drawer-link">About</a>
+            <a href="#" class="drawer-link">Partners</a>
+          </div>
+          <div class="drawer-actions">
+            <a href="#" class="drawer-cta">Install →</a>
+          </div>
+          <div class="drawer-meta">
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.16c-3.2.69-3.87-1.36-3.87-1.36-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .3.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg> GitHub</a>
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg> NL</a>
+            <span class="version">Stable · v3.45.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone" data-theme="dark">
+      <nav class="nav">
+        <div class="left">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+        </div>
+        <button type="button" class="burger" aria-label="Open menu" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </nav>
+      <div class="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="drawer-header">
+          <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
+          <button type="button" class="burger" aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="drawer-body">
+          <div class="drawer-links">
+            <a href="#" class="drawer-link">Apps</a>
+            <a href="#" class="drawer-link current">Solutions</a>
+            <a href="#" class="drawer-link">Docs</a>
+            <a href="#" class="drawer-link">Support</a>
+            <a href="#" class="drawer-link">About</a>
+            <a href="#" class="drawer-link">Partners</a>
+          </div>
+          <div class="drawer-actions">
+            <a href="#" class="drawer-cta">Install →</a>
+          </div>
+          <div class="drawer-meta">
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.16c-3.2.69-3.87-1.36-3.87-1.36-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .3.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg> GitHub</a>
+            <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg> NL</a>
+            <span class="version">Stable · v3.45.3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <link rel="stylesheet" href="_react-usage.css">
 <aside class="react-usage">
@@ -154,7 +472,11 @@ module.exports = createConfig({
   navbar: {
     title: 'ConNext',
     items: [
-      {to: '/apps',      label: 'Apps',      position: 'left'},
+      {to: '/apps',      label: 'Apps',      position: 'left', items: [
+        {to: '/apps/opencatalogi', label: 'OpenCatalogi'},
+        {to: '/apps/openregister', label: 'OpenRegister'},
+        {to: '/apps/integriq',     label: 'Integriq'},
+      ]},
       {to: '/solutions', label: 'Solutions', position: 'left'},
       {to: '/docs/intro',label: 'Docs',      position: 'left'},
       {to: '/support',   label: 'Support',   position: 'left'},
@@ -171,9 +493,29 @@ module.exports = createConfig({
     <li><code>href</code> external link (a tag)</li>
     <li><code>label</code> display text</li>
     <li><code>position</code> left | right</li>
+    <li><code>items</code> subitems, renders the section dropdown</li>
     <li><code>cta</code> true renders cobalt-fill primary CTA</li>
     <li><code>type</code> localeDropdown for the language switcher</li>
   </ul>
+  <h3>Section dropdown</h3>
+  <p>A section with its own pages hangs them under the parent link. The panel is the locale switcher's panel, opened on hover and left-aligned under its trigger. Keep it to one level: a subitem never opens a third.</p>
+  <p>Do not read the locale switcher as the model for these states. It picks a setting and marks the chosen one in cobalt. A section dropdown navigates, so it follows the nav's own states.</p>
+  <ul class="ru-props">
+    <li><code>default</code> cobalt-700, 14px, weight 500</li>
+    <li><code>hover</code> orange text on a cobalt-50 ground</li>
+    <li><code>current</code> orange text, weight 700, cobalt-50 ground</li>
+  </ul>
+  <p>A current subitem takes the same orange as a current top-level item. One colour carries one meaning: orange is "you are here". A second colour for the same state would add a rule without adding information. Both links go orange together, the parent naming the section and the subitem naming the page.</p>
+  <p>Weight is 700, not 600. The navbar sits at 500, so a single step reads as a rendering artefact rather than a state.</p>
+  <p>This is the one place where two oranges appear in a single component. The one-accent rule governs decorative fills, not state: only one section is ever current, and its parent and child are the same state seen twice.</p>
+  <h3>Dark mode</h3>
+  <p>The two stages above are the same bar under the two themes. Every colour it paints now comes from the semantic layer — <code>surface-card</code> for the bar and both panels, <code>text-body</code> for the links, <code>text-default</code> for the wordmark, <code>surface-subtle</code> for hover and current grounds. Orange and the cobalt CTA stay literal: they are brand values, not theme values, and they read on either ground.</p>
+  <ul class="ru-props">
+    <li><code>still raw</code> the bar's <code>border-bottom</code> is cobalt-100, a pale hairline on a cobalt-900 page</li>
+    <li><code>still raw</code> the site swizzle in conduction-website carries 43 raw values and no tokens — it stays white in dark</li>
+    <li><code>collides</code> <code>surface-subtle</code> equals <code>surface-card</code> in dark, so hover and current grounds in both dropdown panels have no edge against the panel they sit on</li>
+  </ul>
+  <p>The last one is the same collision the employee card's contact chips had, and it wants the same answer: the raised ground goes to <code>surface-sunken</code> in dark rather than staying on <code>surface-subtle</code>.</p>
 </aside>
 
 </body>

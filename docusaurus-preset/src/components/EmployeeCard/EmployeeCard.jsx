@@ -9,6 +9,10 @@
  *
  * The avatar is a 44x50 (compact) or 72x83 (large) pointy-top hex.
  * Pass `initials` for an avatar-fill, or `photo` for a photographed person.
+ * `photoDark` is optional and takes a second cut of the same portrait for
+ * dark mode; without it the one `photo` serves both themes. The hex behind
+ * the drawing is brand cobalt in either theme, so a second cut is a brand
+ * choice, never something dark mode requires.
  *
  * Usage:
  *
@@ -54,6 +58,7 @@
  */
 
 import React from 'react';
+import ThemedImage from '@theme/ThemedImage';
 import styles from './EmployeeCard.module.css';
 
 /* `rel` travels with every `target="_blank"`: without it the opened page
@@ -127,6 +132,35 @@ const ICONS = {
   ),
 };
 
+/* The avatar, in one place for all three variants.
+ *
+ * A portrait may ship a second cut for dark mode: Conduction draws its team
+ * with a cobalt accent for light grounds and an orange one for dark, and the
+ * hex behind the drawing is the same brand blue either way, so the cut is the
+ * only thing that changes. Pass both through `photo` and `photoDark`.
+ *
+ * ThemedImage rather than a CSS background swap or a `<picture>` media query:
+ * it follows `data-theme`, so the pair still holds on a site that offers a
+ * colour-mode toggle, where `prefers-color-scheme` would answer the operating
+ * system instead and leave a toggled reader with the wrong cut. It renders
+ * both sources during SSR and hides one by class, so neither flashes on load
+ * — see the `:only-child` note in the stylesheet, which keeps this working.
+ *
+ * With no `photoDark`, or no `photo` at all, the card behaves exactly as it
+ * did before: one image, or the initials on a coloured hex. */
+function Avatar({className, photo, photoDark, initials, avatarColor, name}) {
+  const fill = !photo ? {background: avatarColor || 'var(--c-blue-cobalt)'} : undefined;
+
+  let portrait = initials;
+  if (photo && photoDark) {
+    portrait = <ThemedImage sources={{light: photo, dark: photoDark}} alt={name} />;
+  } else if (photo) {
+    portrait = <img src={photo} alt={name} />;
+  }
+
+  return <div className={className} style={fill}>{portrait}</div>;
+}
+
 export function TeamGrid({columns = 3, children, className}) {
   const composed = [styles.grid, styles['cols-' + columns], className].filter(Boolean).join(' ');
   return <div className={composed}>{children}</div>;
@@ -138,6 +172,7 @@ export default function EmployeeCard({
   role,
   initials,
   photo,
+  photoDark,
   avatarColor,
   bio,
   apps = [],
@@ -147,9 +182,7 @@ export default function EmployeeCard({
   if (variant === 'photo') {
     return (
       <div className={[styles.cardPhoto, className].filter(Boolean).join(' ')}>
-        <div className={styles.avatarLarge} style={!photo ? {background: avatarColor || 'var(--c-blue-cobalt)'} : undefined}>
-          {photo ? <img src={photo} alt={name} /> : initials}
-        </div>
+        <Avatar className={styles.avatarLarge} photo={photo} photoDark={photoDark} initials={initials} avatarColor={avatarColor} name={name} />
         {name && <div className={styles.name}>{name}</div>}
         {role && <div className={styles.role}>{role}</div>}
         {bio && <p className={styles.bio}>{bio}</p>}
@@ -167,9 +200,7 @@ export default function EmployeeCard({
   if (variant === 'detail') {
     return (
       <div className={[styles.cardDetail, className].filter(Boolean).join(' ')}>
-        <div className={styles.avatarLarge} style={!photo ? {background: avatarColor || 'var(--c-blue-cobalt)'} : undefined}>
-          {photo ? <img src={photo} alt={name} /> : initials}
-        </div>
+        <Avatar className={styles.avatarLarge} photo={photo} photoDark={photoDark} initials={initials} avatarColor={avatarColor} name={name} />
         <div>
           {name && <div className={styles.name}>{name}</div>}
           {role && <div className={styles.role}>{role}</div>}
@@ -202,9 +233,7 @@ export default function EmployeeCard({
       {...(Tag === 'a' ? externalProps(links[0].href) : {})}
       className={[styles.cardCompact, className].filter(Boolean).join(' ')}
     >
-      <div className={styles.avatar} style={!photo ? {background: avatarColor || 'var(--c-blue-cobalt)'} : undefined}>
-        {photo ? <img src={photo} alt={name} /> : initials}
-      </div>
+      <Avatar className={styles.avatar} photo={photo} photoDark={photoDark} initials={initials} avatarColor={avatarColor} name={name} />
       <div className={styles.info}>
         {name && <div className={styles.name}>{name}</div>}
         {role && <div className={styles.role}>{role}</div>}

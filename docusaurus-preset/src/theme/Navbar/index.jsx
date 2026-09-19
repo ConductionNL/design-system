@@ -39,10 +39,16 @@
  * The pill prefix defaults to "Stable" but can be overridden per site
  * (e.g. prefix="Beta" while on a pre-1.0 release line).
  *
+ * Below 996px the link row and the right-hand chrome collapse into a
+ * hamburger that opens a full-screen drawer holding the same items —
+ * section links stacked, locale switcher, CTAs as full-width buttons.
+ * Every item type renders in both places, so a site that adds an item
+ * to themeConfig gets it on mobile without further wiring.
+ *
  * Mirrors preview/components/top-navbar.html in the design-system kit.
  */
 
-import React from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Link from '@docusaurus/Link';
 import {useLocation} from '@docusaurus/router';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -50,9 +56,21 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useThemeConfig} from '@docusaurus/theme-common';
 import {translate} from '@docusaurus/Translate';
 import LocaleDropdownNavbarItem from '@theme/NavbarItem/LocaleDropdownNavbarItem';
+import ThemedImage from '@theme/ThemedImage';
 import {brandFor, productWordmark, deriveStability} from '../brand.jsx';
 import {ICONS} from '../../components/primitives/icons';
 import styles from './styles.module.css';
+
+/**
+ * Width at which the navbar swaps the inline link row for the
+ * hamburger + drawer. Kept in sync by hand with the `@media` block in
+ * styles.module.css — the JS needs it too, to close a drawer that is
+ * still open when the viewport grows back past the breakpoint (a
+ * tablet rotating to landscape, a desktop window being widened), which
+ * would otherwise leave a full-screen overlay stuck over a desktop
+ * layout with no visible way out.
+ */
+const MOBILE_BREAKPOINT = 996;
 
 /**
  * Brand-specific navbar item types live under the `custom-` prefix
@@ -72,6 +90,12 @@ function typeIs(item, kind) {
   return item.type === kind || item.type === 'custom-' + kind;
 }
 
+/** Shared active-route test for internal links (navbar row + drawer). */
+function isActiveRoute(to, location) {
+  return !!to && (location?.pathname === to ||
+                  location?.pathname?.startsWith(to + '/'));
+}
+
 /**
  * Render a single navbar item. The brand navbar supports a small
  * subset of Docusaurus item types plus the three brand-specific types
@@ -80,6 +104,10 @@ function typeIs(item, kind) {
  */
 function NavItem({item, location, appVersion}) {
   if (item.type === 'localeDropdown') {
+    /* The wrapper's whole job is the chip: LocaleDropdownNavbarItem brings
+       its own markup and its own translate mark, and what it lacked was a
+       shape saying "control, not link" — this is the only thing on the bar
+       that changes a setting rather than navigating. */
     return (
       <div className={styles.localeWrapper}>
         <LocaleDropdownNavbarItem mobile={false} {...item} />
@@ -112,8 +140,7 @@ function NavItem({item, location, appVersion}) {
     const label = item.label || translate({id: 'preset.navbar.apiDocs.label', message: 'API Documentation', description: 'Default label for the API Documentation navbar link when the consuming site does not set one'});
     const to = item.to || '/api';
     const href = item.href;
-    const isActive = !href && (location?.pathname === to ||
-                               location?.pathname?.startsWith(to + '/'));
+    const isActive = !href && isActiveRoute(to, location);
     const className = `${styles.link} ${styles.iconLabelLink} ${isActive ? styles.linkActive : ''}`;
     const content = (
       <>
@@ -164,8 +191,7 @@ function NavItem({item, location, appVersion}) {
   /* Internal route */
   if (item.to) {
     const isCta = item.cta === true;
-    const isActive = location?.pathname === item.to ||
-                     location?.pathname?.startsWith(item.to + '/');
+    const isActive = isActiveRoute(item.to, location);
     return (
       <Link
         to={item.to}
@@ -174,6 +200,126 @@ function NavItem({item, location, appVersion}) {
             ? styles.cta
             : `${styles.link} ${isActive ? styles.linkActive : ''}`
         }
+      >
+        {item.label}{isCta && ' →'}
+      </Link>
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Drawer rendering of the same item. Every type the navbar row
+ * understands has a stacked equivalent, so nothing silently disappears
+ * on a phone:
+ *
+ *   section link   → full-width row, active state in orange
+ *   cta / ghost    → full-width button at the foot of the panel
+ *   localeDropdown → Docusaurus's own mobile (collapsible) dropdown
+ *   github         → labelled row; an icon-only target reads as
+ *                    decoration once it is out of the navbar's context
+ *   apiDocs        → labelled row with its icon
+ *   versionPill    → the pill, in the drawer's meta strip
+ *
+ * `onNavigate` closes the drawer. Internal <Link>s need it explicitly:
+ * the route effect in Navbar() closes on a pathname change, but a link
+ * to the page you are already on changes nothing to react to.
+ */
+function DrawerItem({item, location, appVersion, onNavigate}) {
+  if (item.type === 'localeDropdown') {
+    /* Docusaurus's mobile dropdown renders an <li> and relies on
+       Infima's `menu__*` classes, so it needs a <ul class="menu__list">
+       to sit in. `onClick` is forwarded to the locale entries so
+       picking a language closes the drawer. */
+    return (
+      <ul className={`menu__list ${styles.drawerLocale}`}>
+        <LocaleDropdownNavbarItem mobile {...item} onClick={onNavigate} />
+      </ul>
+    );
+  }
+
+  if (typeIs(item, 'versionPill')) {
+    if (!appVersion) return null;
+    const prefix = item.prefix || deriveStability(appVersion);
+    return <span className={styles.versionPill}>{prefix} · v{appVersion}</span>;
+  }
+
+  if (typeIs(item, 'github')) {
+    return (
+      <a
+        href={item.href || 'https://codeberg.org/Conduction'}
+        className={styles.drawerMetaLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onNavigate}
+      >
+        <span className={styles.iconGlyph} aria-hidden="true">{ICONS.github}</span>
+        GitHub
+      </a>
+    );
+  }
+
+  if (typeIs(item, 'apiDocs')) {
+    const label = item.label || translate({id: 'preset.navbar.apiDocs.label', message: 'API Documentation', description: 'Default label for the API Documentation navbar link when the consuming site does not set one'});
+    const to = item.to || '/api';
+    const href = item.href;
+    const content = (
+      <>
+        <span className={styles.iconGlyph} aria-hidden="true">{ICONS.apiDocs}</span>
+        {label}
+      </>
+    );
+    if (href) {
+      return (
+        <a
+          href={href}
+          className={styles.drawerLink}
+          target={href.startsWith('http') ? '_blank' : undefined}
+          rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+          onClick={onNavigate}
+        >
+          {content}
+        </a>
+      );
+    }
+    return (
+      <Link to={to} className={styles.drawerLink} onClick={onNavigate}>
+        {content}
+      </Link>
+    );
+  }
+
+  const isCta = item.cta === true;
+
+  /* External link, no React-router prefetch */
+  if (item.href && !item.to) {
+    return (
+      <a
+        href={item.href}
+        className={isCta ? styles.drawerCta : styles.drawerLink}
+        target={item.href.startsWith('http') ? '_blank' : undefined}
+        rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        onClick={onNavigate}
+      >
+        {item.label}{isCta && ' →'}
+      </a>
+    );
+  }
+
+  /* Internal route */
+  if (item.to) {
+    const isActive = isActiveRoute(item.to, location);
+    return (
+      <Link
+        to={item.to}
+        className={
+          isCta
+            ? styles.drawerCta
+            : `${styles.drawerLink} ${isActive ? styles.drawerLinkActive : ''}`
+        }
+        aria-current={isActive && !isCta ? 'page' : undefined}
+        onClick={onNavigate}
       >
         {item.label}{isCta && ' →'}
       </Link>
@@ -198,36 +344,69 @@ export default function Navbar() {
      them (the site clips horizontal overflow, so they were not even
      scrollable). Everything goes in, links and CTAs both, because the
      bar has to fit an unknown number of items on an unknown wordmark
-     length. Keeping any of them inline only moves the cliff. */
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const toggleRef = React.useRef(null);
+     length. */
+  /* Drawer state. Starts closed on server and client alike so the
+     first client render matches the SSR'd HTML; anything derived from
+     `window` here would hydrate-mismatch. */
+  const [menuOpen, setMenuOpen] = useState(false);
+  const burgerRef = useRef(null);
+  const drawerRef = useRef(null);
 
-  /* Close on navigation. Without this the drawer stays open over the
-     page the visitor just asked for. */
-  React.useEffect(() => {
-    setMenuOpen(false);
-  }, [location.pathname]);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  /* While open: Escape closes and returns focus to the toggle, and the
-     page behind the drawer does not scroll. Both effects are torn down
-     together so a route change mid-gesture cannot strand the body with
-     `overflow: hidden`. */
-  React.useEffect(() => {
+  /* Close on route change. A <Link> inside the drawer swaps the page
+     underneath without unmounting the navbar, so without this the
+     panel would stay parked over the page the visitor just asked for. */
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+
+  /* While open: lock the page behind the panel, close on Escape, and
+     keep Tab inside it. The overlay is opaque and full-screen, so a
+     focus ring wandering onto the page behind would be invisible — a
+     keyboard visitor would be tabbing through links they cannot see. */
+  useEffect(() => {
     if (!menuOpen) return undefined;
+
+    const {body} = document;
+    const previousOverflow = body.style.overflow;
+    body.style.overflow = 'hidden';
+
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setMenuOpen(false);
-        toggleRef.current?.focus();
+        event.preventDefault();
+        closeMenu();
+        burgerRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab' || !drawerRef.current) return;
+      const focusable = drawerRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
+
+    /* Grow past the breakpoint with the panel open (rotation, a
+       widened desktop window) and the hamburger that opened it is gone
+       — drop the overlay rather than trapping the visitor under it. */
+    const media = window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT + 1}px)`);
+    const onMediaChange = (event) => { if (event.matches) closeMenu(); };
+
     document.addEventListener('keydown', onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    media.addEventListener('change', onMediaChange);
     return () => {
+      body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
+      media.removeEventListener('change', onMediaChange);
     };
-  }, [menuOpen]);
+  }, [menuOpen, closeMenu]);
 
   /* Wordmark resolution order:
      1. ConNext / Common Ground sub-brand → custom JSX (Con<Next>, …)
@@ -263,7 +442,9 @@ export default function Navbar() {
      against the current page's path, so the icon 404s on every
      sub-route (e.g. /docs/intro/img/app-logo.svg). */
   const logoSrcRaw = navbar.logo?.src;
+  const logoSrcDarkRaw = navbar.logo?.srcDark;
   const logoSrc = useBaseUrl(logoSrcRaw || '');
+  const logoSrcDark = useBaseUrl(logoSrcDarkRaw || logoSrcRaw || '');
   const logoAlt = navbar.logo?.alt || translate(
     {id: 'preset.navbar.logoAlt', message: '{title} avatar', description: 'Default alt text for the navbar logo. {title} is the site title.'},
     {title: navbar.title},
@@ -284,6 +465,52 @@ export default function Navbar() {
   const leftItems = items.filter(i => i.position !== 'right' && !RIGHT_TYPES.has(i.type));
   const rightItems = items.filter(i => i.position === 'right' || RIGHT_TYPES.has(i.type));
 
+  /* The drawer orders the right-hand chrome differently from the
+     navbar row: "actions" (the Install CTA, external links, API docs)
+     become full-width buttons under the thumb, while "meta" (locale
+     switcher, version pill, GitHub) drops into a quieter strip below
+     them. Same items, priority suited to a phone. */
+  const META_TYPES = new Set([
+    'localeDropdown',
+    'github', 'custom-github',
+    'versionPill', 'custom-versionPill',
+  ]);
+  /* Only a CTA belongs in the actions block. Partners, API docs and anything
+     else on the right of the bar is a destination, not another way to do the
+     thing Install does — sitting them side by side as two full-width buttons
+     read as a choice between equals. They join the links above instead, and
+     the actions block holds the one thing the drawer wants you to do. */
+  const drawerActions = rightItems.filter(i => !META_TYPES.has(i.type) && i.cta === true);
+  const drawerExtraLinks = rightItems.filter(i => !META_TYPES.has(i.type) && i.cta !== true);
+  const drawerMeta = rightItems.filter(i => META_TYPES.has(i.type));
+
+  /* `logo.srcDark` is Docusaurus' own convention and createConfig() has
+     always set it, but this swizzle only ever read `src` — so the dark
+     wordmark every site declared has never rendered. ThemedImage follows
+     data-theme rather than the OS, so it also holds on a site with a
+     colour-mode toggle, and it emits both sources during SSR with one
+     hidden by class (see the :only-of-type note in the stylesheet, which
+     keeps that hiding from being overridden). */
+  const logo = logoSrcRaw ? (
+    logoSrcDarkRaw ? (
+      <ThemedImage
+        sources={{light: logoSrc, dark: logoSrcDark}}
+        alt={logoAlt}
+        className={styles.wordmarkIcon}
+        width="32"
+        height="32"
+      />
+    ) : (
+      <img
+        src={logoSrc}
+        alt={logoAlt}
+        className={styles.wordmarkIcon}
+        width="32"
+        height="32"
+      />
+    )
+  ) : null;
+
   return (
     /* `navbar` (Docusaurus's framework class) is added alongside the
        brand styles.nav so the internal scroll-anchor offset query
@@ -291,66 +518,99 @@ export default function Navbar() {
        previous JS-only class swizzle made every doc page crash with
        "Cannot read properties of null (reading 'clientHeight')" the
        moment Docusaurus ran its anchor logic on a heading scroll. */
-    <nav className={`navbar ${styles.nav}`} role="navigation" aria-label="Main">
-      <div className={styles.left}>
-        <Link to={homeHref} className={styles.wordmark}>
-          {logoSrcRaw && (
-            <img
-              src={logoSrc}
-              alt={logoAlt}
-              className={styles.wordmarkIcon}
-              width="32"
-              height="32"
-            />
-          )}
-          <span className={styles.wordmarkText}>{wordmark}</span>
-        </Link>
-        <div className={styles.links}>
-          {leftItems.map((item, i) => (
+    <>
+      <nav className={`navbar ${styles.nav}`} role="navigation" aria-label="Main">
+        <div className={styles.left}>
+          <Link to={homeHref} className={styles.wordmark}>
+            {logo}
+            <span className={styles.wordmarkText}>{wordmark}</span>
+          </Link>
+          <div className={styles.links}>
+            {leftItems.map((item, i) => (
+              <NavItem key={i} item={item} location={location} appVersion={appVersion} />
+            ))}
+          </div>
+        </div>
+        <div className={styles.ctas}>
+          {rightItems.map((item, i) => (
             <NavItem key={i} item={item} location={location} appVersion={appVersion} />
           ))}
         </div>
-      </div>
-      <div className={styles.ctas}>
-        {rightItems.map((item, i) => (
-          <NavItem key={i} item={item} location={location} appVersion={appVersion} />
-        ))}
-      </div>
+        <button
+          ref={burgerRef}
+          type="button"
+          className={styles.burger}
+          aria-label={translate({id: 'preset.navbar.menu.open', message: 'Open menu', description: 'Accessible label for the button that opens the mobile navigation drawer'})}
+          aria-expanded={menuOpen}
+          aria-controls="conduction-navbar-drawer"
+          onClick={() => setMenuOpen(true)}
+        >
+          <span className={styles.burgerGlyph} aria-hidden="true">{ICONS.menu}</span>
+        </button>
+      </nav>
 
-      {/* Drawer toggle. Rendered on every viewport and hidden with CSS
-          above the breakpoint, so the markup does not depend on a
-          client-side width measurement that SSR cannot make. */}
-      <button
-        ref={toggleRef}
-        type="button"
-        className={styles.menuToggle}
-        aria-expanded={menuOpen}
-        aria-controls="navbar-drawer"
-        aria-label={menuOpen
-          ? translate({id: 'preset.navbar.menu.close', message: 'Close menu', description: 'Accessible label for the navbar drawer toggle while the drawer is open'})
-          : translate({id: 'preset.navbar.menu.open', message: 'Open menu', description: 'Accessible label for the navbar drawer toggle while the drawer is closed'})}
-        onClick={() => setMenuOpen((open) => !open)}
-      >
-        <span className={styles.iconGlyph} aria-hidden="true">
-          {menuOpen ? ICONS.close : ICONS.menu}
-        </span>
-      </button>
+      {menuOpen && (
+        /* Sibling of <nav>, not a child: the nav is a sticky, z-indexed
+           stacking context, and a fixed overlay nested inside it would
+           be confined to that context — layered against the navbar's
+           own neighbours instead of over the whole page. */
+        <div
+          id="conduction-navbar-drawer"
+          ref={drawerRef}
+          className={styles.drawer}
+          role="dialog"
+          aria-modal="true"
+          aria-label={translate({id: 'preset.navbar.menu.label', message: 'Site menu', description: 'Accessible label for the mobile navigation drawer'})}
+        >
+          <div className={styles.drawerHeader}>
+            <Link to={homeHref} className={styles.wordmark} onClick={closeMenu}>
+              {logo}
+              <span className={styles.wordmarkText}>{wordmark}</span>
+            </Link>
+            {/* Focus lands here on open: the first stop inside the
+                panel, and the way straight back out for anyone who
+                opened it by accident. */}
+            <button
+              type="button"
+              className={styles.burger}
+              aria-label={translate({id: 'preset.navbar.menu.close', message: 'Close menu', description: 'Accessible label for the button that closes the mobile navigation drawer'})}
+              onClick={() => { closeMenu(); burgerRef.current?.focus(); }}
+              autoFocus
+            >
+              <span className={styles.burgerGlyph} aria-hidden="true">{ICONS.close}</span>
+            </button>
+          </div>
 
-      {/* Drawer. Kept mounted and hidden so the toggle's aria-controls
-          always resolves to a real element. `hidden` also keeps the
-          links out of the tab order and out of the accessibility tree
-          while closed, which a purely visual `display: none` on the
-          parent would not guarantee across the breakpoint. */}
-      <div id="navbar-drawer" className={styles.drawer} hidden={!menuOpen}>
-        <div className={styles.drawerItems}>
-          {leftItems.map((item, i) => (
-            <NavItem key={`l${i}`} item={item} location={location} appVersion={appVersion} />
-          ))}
-          {rightItems.map((item, i) => (
-            <NavItem key={`r${i}`} item={item} location={location} appVersion={appVersion} />
-          ))}
+          <div className={styles.drawerBody}>
+            {(leftItems.length > 0 || drawerExtraLinks.length > 0) && (
+              <div className={styles.drawerLinks}>
+                {leftItems.map((item, i) => (
+                  <DrawerItem key={`l${i}`} item={item} location={location} appVersion={appVersion} onNavigate={closeMenu} />
+                ))}
+                {drawerExtraLinks.map((item, i) => (
+                  <DrawerItem key={`r${i}`} item={item} location={location} appVersion={appVersion} onNavigate={closeMenu} />
+                ))}
+              </div>
+            )}
+
+            {drawerActions.length > 0 && (
+              <div className={styles.drawerActions}>
+                {drawerActions.map((item, i) => (
+                  <DrawerItem key={i} item={item} location={location} appVersion={appVersion} onNavigate={closeMenu} />
+                ))}
+              </div>
+            )}
+
+            {drawerMeta.length > 0 && (
+              <div className={styles.drawerMeta}>
+                {drawerMeta.map((item, i) => (
+                  <DrawerItem key={i} item={item} location={location} appVersion={appVersion} onNavigate={closeMenu} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      )}
+    </>
   );
 }

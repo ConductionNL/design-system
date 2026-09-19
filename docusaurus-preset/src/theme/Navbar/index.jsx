@@ -104,13 +104,12 @@ function isActiveRoute(to, location) {
  */
 function NavItem({item, location, appVersion}) {
   if (item.type === 'localeDropdown') {
-    /* The globe sits beside Docusaurus' own dropdown rather than inside
-       it: LocaleDropdownNavbarItem renders its own markup and takes no
-       icon, and the mark belongs to the control as a whole. `.localeWrapper`
-       lays the two out as one chip. */
+    /* The wrapper's whole job is the chip: LocaleDropdownNavbarItem brings
+       its own markup and its own translate mark, and what it lacked was a
+       shape saying "control, not link" — this is the only thing on the bar
+       that changes a setting rather than navigating. */
     return (
       <div className={styles.localeWrapper}>
-        <span className={styles.localeGlobe} aria-hidden="true">{ICONS.globe}</span>
         <LocaleDropdownNavbarItem mobile={false} {...item} />
       </div>
     );

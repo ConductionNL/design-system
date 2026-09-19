@@ -38,11 +38,18 @@ class CnPlatform extends HTMLElement {
     const ground = this.hasAttribute('ground');
     const tone = this.getAttribute('tone') || 'cobalt-50';
 
+    /* Semantic surfaces, not raw palette steps, so the stage follows the
+       theme. The `tone` attribute still names the light-mode intent and
+       each branch resolves to the same colour it always did on a white
+       ground; only dark mode changes. A raw `var(--c-cobalt-50)` here
+       stayed pale in dark mode while the legend text on it went light,
+       which is how the caption on the spec-driven-development post ended
+       up at 1.15:1. */
     const stageBg = tone === 'white'
-      ? 'white'
+      ? 'var(--conduction-color-surface-card)'
       : tone === 'light'
-      ? 'var(--c-cobalt-100)'
-      : 'var(--c-cobalt-50)';
+      ? 'var(--conduction-color-surface-sunken)'
+      : 'var(--conduction-color-surface-subtle)';
 
     this.shadowRoot.innerHTML = `
       <style>

@@ -65,6 +65,7 @@ export {default as DeadlineDefender} from './DeadlineDefender/DeadlineDefender.j
 export {default as BlueprintRush} from './BlueprintRush/BlueprintRush.jsx';
 export {default as RecordRun} from './RecordRun/RecordRun.jsx';
 export {default as HiddenGame} from './HiddenGame/HiddenGame.jsx';
+export {default as MonsterRun} from './MonsterRun/MonsterRun.jsx';
 export {default as DiceDuel} from './DiceDuel/DiceDuel.jsx';
 export {default as Reconcile} from './Reconcile/Reconcile.jsx';
 export {default as PipeFit} from './PipeFit/PipeFit.jsx';

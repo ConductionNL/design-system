@@ -46,6 +46,26 @@ export const ICONS = {
       <polyline points="13 6 19 12 13 18"/>
     </svg>
   ),
+
+  /* Hamburger. Opens the navbar drawer below the desktop breakpoint.
+     Three bars rather than a "more" glyph because the drawer holds the
+     whole primary navigation, not an overflow remainder. */
+  menu: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="4" y1="7" x2="20" y2="7"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+      <line x1="4" y1="17" x2="20" y2="17"/>
+    </svg>
+  ),
+
+  /* Close. Dismisses the navbar drawer. Same stroke weight as `menu` so
+     the toggle does not visually jump when the icon swaps. */
+  close: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  ),
 };
 
 /**

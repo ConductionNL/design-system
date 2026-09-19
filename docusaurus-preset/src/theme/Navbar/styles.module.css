@@ -193,15 +193,208 @@
   white-space: nowrap;
 }
 
-/* Responsive collapse, simplified for v1.
-   TODO: hamburger menu like the design-system mock. */
-@media (max-width: 900px) {
+/**
+ * Drawer toggle (hamburger).
+ *
+ * Hidden above the breakpoint. Always rendered in the markup so the
+ * button's `aria-controls` resolves during server rendering, when
+ * there is no viewport width to branch on.
+ *
+ * 44px square: the WCAG 2.2 AA target size (2.5.8) and the smallest
+ * comfortable thumb target.
+ */
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--c-cobalt-700);
+  font-size: 22px;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+.menuToggle:hover {
+  color: var(--c-blue-cobalt);
+  background: var(--c-cobalt-50);
+}
+
+/**
+ * Drawer panel.
+ *
+ * `display: none` by default rather than relying on the `hidden`
+ * attribute alone, because the rules below set a display value and any
+ * such declaration overrides the UA default for `[hidden]`. Opening is
+ * therefore scoped to the breakpoint AND to `:not([hidden])`, so the
+ * panel can never appear on desktop even if the state says open.
+ *
+ * Positioned against .nav, which is `position: sticky` and so already
+ * a containing block for absolutely positioned descendants.
+ */
+.drawer {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-bottom: 1px solid var(--c-cobalt-100);
+  box-shadow: 0 12px 24px rgba(16, 42, 86, 0.10);
+  max-height: 75vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.drawerItems {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 24px 20px;
+}
+
+/* Every interactive row in the drawer gets a full-width 44px target.
+   Styling by context rather than by passing a variant down through
+   NavItem keeps the item types (link, cta, github, apiDocs, locale)
+   rendering exactly as they do in the bar. */
+.drawerItems > a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  width: 100%;
+  border-bottom: 1px solid var(--c-cobalt-50);
+  font-size: 16px;
+}
+.drawerItems > a:last-child { border-bottom: none; }
+
+/* The locale item is a list, not a single row, so it sizes to its
+   contents and lets the language links below own the 44px rhythm. */
+.drawerItems > .localeWrapper {
+  display: block;
+  width: 100%;
+}
+
+/* The install CTA keeps its filled treatment but becomes a full-width
+   block, so it reads as the primary action of the drawer. */
+.drawerItems > .cta {
+  justify-content: center;
+  margin-top: 16px;
+  border-bottom: none;
+  padding: 12px 16px;
+}
+
+/* Icon-only items (GitHub) need a visible hit area in a vertical list,
+   where there is no neighbouring label to borrow width from. */
+.drawerItems > .iconLink {
+  width: 100%;
+  justify-content: flex-start;
+  height: auto;
+}
+
+/* The version pill is a static chip, not a control: keep it inline and
+   out of the 44px rhythm. */
+.drawerItems > .versionPill {
+  align-self: flex-start;
+  margin-top: 12px;
+}
+
+/**
+ * Locale switcher inside the drawer.
+ *
+ * Two Infima behaviours have to be undone here.
+ *
+ * First, Infima hides `.navbar__item` outright below 996px, because it
+ * expects its own mobile sidebar to take over. Inside this drawer that
+ * rule collapses the locale item to a zero-height blank row, so the
+ * display value is restored explicitly.
+ *
+ * Second, the menu is a hover dropdown positioned absolutely. A hover
+ * dropdown is the wrong control on touch, and in a vertical panel the
+ * absolute menu lands off the side of the screen. Pinning it into the
+ * flow and dropping the trigger turns it into what it should be on a
+ * phone: a plain list of the available languages.
+ */
+.drawer .localeWrapper :global(.navbar__item) {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+/* The trigger just repeats the current locale, which the list already
+   marks as active. Dropping it avoids an "English / English /
+   Nederlands" stutter. */
+.drawer .localeWrapper :global(.navbar__link) {
+  display: none;
+}
+
+.drawer .localeWrapper :global(.dropdown__menu) {
+  position: static;
+  display: block;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  max-height: none;
+}
+
+.drawer .localeWrapper :global(.dropdown__link) {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--c-cobalt-50);
+  font-size: 16px;
+}
+
+/**
+ * Breakpoint.
+ *
+ * 996px matches Docusaurus's own navbar collapse, so the drawer and
+ * the framework's mobile sidebar agree about where "mobile" starts.
+ * Measured on conduction.nl: the inline bar needs 571px at its
+ * narrowest and 775px with a full item set, so collapsing at 996px
+ * clears both with room for sites that add items.
+ */
+@media (max-width: 996px) {
   .nav {
-    padding: 16px 24px;
-    flex-wrap: wrap;
-    gap: 16px;
+    padding: 12px 16px;
+    gap: 12px;
   }
   .left { gap: 16px; }
-  .links { gap: 16px; }
-  .ctas { gap: 8px; }
+
+  /* The bar keeps only the wordmark and the toggle. */
+  .links,
+  .ctas {
+    display: none;
+  }
+
+  .menuToggle {
+    display: inline-flex;
+  }
+
+  .drawer:not([hidden]) {
+    display: block;
+  }
+
+  /* Long product wordmarks must not push the toggle off the bar. */
+  .wordmark {
+    font-size: 19px;
+    min-width: 0;
+  }
+  .wordmarkText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .left {
+    min-width: 0;
+    flex: 1;
+  }
 }

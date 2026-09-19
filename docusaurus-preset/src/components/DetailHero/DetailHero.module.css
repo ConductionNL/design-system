@@ -72,9 +72,14 @@
 .crumb a:hover { color: var(--c-orange-knvb); }
 .sep { margin: 0 8px; color: var(--c-cobalt-200); }
 
+/* `minmax(0, …)` rather than a bare `1fr`: an `fr` track carries an
+   automatic min-content floor, so on a 390px phone this track resolved
+   to 454px (the width of the widest nowrap badge row) and pushed the
+   GitHub badge off the screen. Removing the floor lets the track take
+   the container's width and the row wrap inside it. */
 .headInner {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 48px;
   align-items: center;
 }
@@ -83,7 +88,10 @@
   gap: 64px;
 }
 @media (max-width: 900px) {
-  .withIllustration .headInner { grid-template-columns: 1fr; }
+  .withIllustration .headInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
 }
 
 .badgeRow {

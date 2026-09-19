@@ -5,6 +5,7 @@
 
 .filters {
   width: 240px;
+  max-width: 100%;
   font-family: var(--conduction-typography-font-family-body);
 }
 
@@ -130,4 +131,57 @@
 .chipRemove:hover {
   background: var(--c-orange-knvb);
   color: white;
+}
+
+/**
+ * Touch sizing.
+ *
+ * The checkbox itself stays 16px, because growing the box would change
+ * the desktop design. What changes is the hit area: the whole row
+ * becomes the target, which is both larger than 44px and the thing a
+ * visitor actually aims at. The label already toggles the checkbox, so
+ * stretching it across the row is what makes the row tappable.
+ *
+ * WCAG 2.2 AA, 2.5.8 (target size, minimum).
+ */
+@media (max-width: 900px) {
+  .filters {
+    width: 100%;
+  }
+
+  .facet {
+    margin-bottom: 20px;
+  }
+
+  .facetList { gap: 0; }
+
+  .facetList li {
+    min-height: 44px;
+    padding: 0;
+    font-size: 15px;
+    column-gap: 12px;
+  }
+
+  .facetList label {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .clearAll {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  /* Removing a filter chip is a one-handed gesture; 18px is not a
+     target, so the chip grows and its remove button with it. */
+  .chip {
+    min-height: 36px;
+    font-size: 14px;
+  }
+  .chipRemove {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+  }
 }

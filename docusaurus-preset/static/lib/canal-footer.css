@@ -435,3 +435,85 @@
   opacity: 0.18;
   fill: rgba(255,255,255,0.4);
 }
+
+/* ============================================================
+   Responsive collapse.
+
+   The grid above is five `fr` columns with a 48px gap inside 56px
+   side padding. An `fr` track carries an automatic min-content
+   floor, so the columns never shrink below their longest link
+   label ("OpenRegister", "Way of Work"): measured on a 390px
+   phone the footer demanded 773px and the site's
+   `overflow-x: clip` silently swallowed the difference. Three of
+   the five columns were off-screen with no way to scroll to them,
+   and the other two were cut off mid-word.
+
+   `minmax(0, …)` on every track below removes that floor so the
+   declared column count is actually honoured.
+   ============================================================ */
+
+/* Tablet: keep five columns but stop the gap eating the row. */
+@media (max-width: 1100px) {
+  .canal-footer .water { padding: 80px 32px 28px; }
+  .canal-footer .footer-grid {
+    grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+
+/* Small tablet and large phone: two columns, brand across the top. */
+@media (max-width: 900px) {
+  .canal-footer .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+    margin-bottom: 40px;
+  }
+  .canal-footer .brand { grid-column: 1 / -1; }
+}
+
+/* Phone: one column, and every link becomes a real touch target.
+   The link lists lose their 10px gap because the 44px row height
+   provides the separation (WCAG 2.2 AA, 2.5.8 target size). */
+@media (max-width: 600px) {
+  .canal-footer .water { padding: 72px 16px 24px; }
+
+  .canal-footer .footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .canal-footer ul { gap: 0; }
+  .canal-footer ul a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .canal-footer .brand p { max-width: none; }
+
+  /* Legal bar: stack the two halves instead of forcing them onto one
+     line, and give the legal links and ISO badges room to breathe. */
+  .canal-footer .legal-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .canal-footer .legal-bar .left,
+  .canal-footer .legal-bar .right {
+    gap: 12px;
+  }
+  .canal-footer .legal-bar .legal-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .canal-footer .legal-bar .iso-badge { min-height: 36px; }
+
+  /* The mini-game HUD and its game-over panel are pinned to the old
+     56px gutter; bring them inside the narrower one so they cannot
+     hang off the edge of the canal band. */
+  .canal-footer .game-hud,
+  .canal-footer .game-over { right: 16px; }
+  .canal-footer .game-over { min-width: 0; max-width: calc(100vw - 32px); }
+}

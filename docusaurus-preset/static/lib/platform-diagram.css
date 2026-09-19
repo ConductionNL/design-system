@@ -472,3 +472,38 @@ platform-diagram .flow-overlay .flow-line {
    `--pd-hex-progress`, `--pd-list-progress`, `--pd-flow-progress` custom
    properties. JS writes them on every scroll (rAF-throttled) so scrolling
    up reverses the entrance. There is no discrete state machine. */
+
+
+/* ============================================================
+   Narrow viewports.
+
+   The diagram is a fixed three-column composition (1fr 360px 1fr
+   with 64px gutters) whose hexes are corner-anchored with absolute
+   positioning and transforms. It cannot reflow into one column
+   without losing the spatial relationships that are the whole
+   point of it, so below the breakpoint it keeps its geometry and
+   becomes a scrollable region instead, the same treatment a wide
+   table gets.
+
+   Before this, the columns resolved to 820px inside a 342px page
+   and `overflow-x: clip` on the body swallowed the difference:
+   every app link in the left column sat 20px off the left edge of
+   the screen, unreachable and partly cut off.
+   ============================================================ */
+@media (max-width: 900px) {
+  platform-diagram {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Bleed to the full page width so the scrollable area starts at
+       the screen edge rather than inside the section's gutter. */
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  platform-diagram .diagram-grid {
+    min-width: 820px;
+  }
+}

@@ -25,125 +25,17 @@
 
 .body { min-width: 0; }
 
-/* The post's mini-game, across the whole card rather than in the
-   visual's column: the games are wide, and a card squeezed into half a
-   hero reads as an accident. Empty until the game is found. */
-.game {
-  grid-column: 1 / -1;
-  margin-top: var(--space-8);  /* The games hold between 460 and 760px of content, so a card
-     stretched across the whole hero is mostly empty on the right. Wide
-     enough for the widest board, and no wider. */
-  max-width: 820px;
+/* Found, so the visual steps aside and the game takes its column. A
+   sibling selector rather than :has(), so the swap works everywhere;
+   an opener that is still unclicked carries a different value and
+   leaves the visual alone. */
+[data-hidden-game='found'] + .visual { display: none; }
+
+/* A game needs more of the card than a thumbnail does. Progressive: a
+   browser without :has() shows a narrower game, not a broken card. */
+.card:has([data-hidden-game='found']) {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
 }
-.game:empty { display: none; }
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--c-cobalt-300);
-  margin-bottom: var(--space-4);
-}
-
-.title {
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: white;
-  margin: 0 0 var(--space-4);
-}
-@media (max-width: 700px) { .title { font-size: 28px; } }
-
-.lede {
-  font-size: 17px;
-  color: var(--c-cobalt-200);
-  line-height: 1.55;
-  margin: 0 0 var(--space-6);
-  max-width: 50ch;
-  /* `pre-line` keeps the paragraph breaks a summary written as a YAML
-     block scalar carries, while still collapsing runs of spaces. A
-     one-line summary is unaffected: with no newlines in the source
-     there is nothing to preserve. */
-  white-space: pre-line;
-}
-
-.metaBits {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--c-cobalt-200);
-  text-transform: uppercase;
-  margin-bottom: var(--space-4);
-}
-.metaBits .metaBit  { white-space: nowrap; }
-.metaBits .metaSep  { opacity: 0.6; }
-
-/* "For: MKB, Overheid, Developers" — same line treatment as the meta
-   bits but its own row so the audience set never wraps into the
-   duration / module line. On-dark variant of the ContentCard
-   audienceLine. */
-.audienceLine {
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--c-cobalt-200);
-  line-height: 1.4;
-  margin-top: calc(var(--space-3) * -1);
-  margin-bottom: var(--space-4);
-}
-
-.meta { margin-bottom: var(--space-5); }
-
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
-  background: var(--conduction-color-surface-card);
-  color: var(--conduction-color-text-strong);
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  transition: background 120ms ease;
-}
-.card:hover .cta { background: var(--conduction-color-surface-subtle); }
-
-.visual {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  min-height: 300px;
-}
-
-/* A passed-in visual gets the column to itself: no hex to frame, and
-   the node brings its own aspect ratio. */
-.visualNode { display: block; min-height: 0; }
-.visualNode > * { width: 100%; }
-
-.satellite {
-  position: absolute;
-  width: 64px;
-  height: 74px;
-  clip-path: var(--hex-pointy-top);
-}
-.s1 { top: 8px;     left: calc(50% - 160px); background: var(--c-cobalt-700); }
-.s2 { bottom: 12px; right: calc(50% - 168px); background: var(--c-cobalt-700); }
-.s3 { top: 40%;     right: calc(50% - 172px); }
-.s3Orange { background: var(--c-orange-knvb); }
-.s3Cobalt { background: var(--c-cobalt-700); }
-
 @media (max-width: 900px) {
-  .visual { min-height: 240px; }
-  .satellite { width: 48px; height: 56px; }
+  .card:has([data-hidden-game='found']) { grid-template-columns: minmax(0, 1fr); }
 }

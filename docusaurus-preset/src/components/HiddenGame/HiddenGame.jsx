@@ -35,6 +35,14 @@
  * Once found, a game stays found for that browser: reopening the page
  * shows it straight away, because hiding it again would punish the
  * person who solved it.
+ *
+ * The wrapper carries `data-hidden-game="found"` once it is open, and
+ * the `link` opener carries `data-hidden-game="opener"`. That is how a
+ * host can give the game the space something else is using: a product
+ * hero hides its mock when the game beside it is found, with a plain
+ * sibling selector rather than a class from this module. The two
+ * values are distinct because an opener is not a game: the hero keeps
+ * its mock while the way in is still sitting there unclicked.
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -170,7 +178,7 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
        nothing at all: an empty wrapper is the point. */
     if (unlock.kind !== 'link') return null;
     return (
-      <p className={[styles.opener, className].filter(Boolean).join(' ')}>
+      <p className={[styles.opener, className].filter(Boolean).join(' ')} data-hidden-game="opener">
         <button type="button" className={styles.openerButton} onClick={reveal}>
           {unlock.label || translate({
             id: 'preset.hiddenGame.opener',
@@ -183,7 +191,7 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
   }
 
   return (
-    <div className={[styles.found, className].filter(Boolean).join(' ')} ref={holder}>
+    <div className={[styles.found, className].filter(Boolean).join(' ')} ref={holder} data-hidden-game="found">
       {children}
     </div>
   );

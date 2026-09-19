@@ -108,5 +108,12 @@
     document.querySelector('.nav-links a[data-section="' + current + '"]')?.classList.add('current');
   }
 
+  // A page inside a section dropdown adds data-current-sub as well, so the
+  // parent link and the open subitem both read as current.
+  const currentSub = document.body.getAttribute('data-current-sub');
+  if (currentSub) {
+    document.querySelector('.nav-sub a[data-subsection="' + currentSub + '"]')?.classList.add('current');
+  }
+
   document.dispatchEvent(new CustomEvent('includes:ready'));
 })();

@@ -24,7 +24,13 @@
 }
 .avatar { width: 44px; height: 50px; font-size: 16px; }
 .avatarLarge { width: 72px; height: 83px; font-size: 24px; }
-.avatar img, .avatarLarge img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar img, .avatarLarge img { width: 100%; height: 100%; object-fit: cover; }
+/* `display: block` only when the hex holds a single image. With `photoDark`
+   set, ThemedImage puts both cuts in here and hides one with its own
+   `.themedComponent { display: none }` — a class selector this rule would
+   outrank, leaving the two cuts stacked until hydration. The hex is a flex
+   container, so the surviving image is blockified anyway. */
+.avatar > img:only-child, .avatarLarge > img:only-child { display: block; }
 
 /* Compact variant */
 .cardCompact {
@@ -212,3 +218,56 @@
 .contacts a:hover svg[data-mark] {
   fill: #FFFFFF;
 }
+
+/* ============================================================
+   The contact row in dark mode
+
+   Two things break when the ground goes dark, and they compound.
+
+   `--conduction-color-surface-subtle` and `--conduction-color-surface-card`
+   both resolve to cobalt-800 there, so the resting chip lands at 1.00:1
+   against the card it sits on — no chip at all. And the marks stay black,
+   which is 1.34:1 on that ground: present, effectively invisible until
+   someone hovers.
+
+   So the chip lifts one step to `-sunken`, which puts it 1.17:1 off the
+   card — within a whisker of the 1.12:1 the light chip has always had
+   against white. The row keeps reading as five buttons in both themes
+   rather than five buttons in one and five loose glyphs in the other.
+
+   The marks go white, at 13.45:1 on the lifted chip. White is not a new
+   licence question: it is the second value every one of the four brands
+   names beside black, and the value this row already uses on the cobalt
+   hover chip. Literal #FFF for the same reason the resting row is literal
+   #000 — a palette change must not reach a trademark.
+
+   Hover has to move further in dark than it does in light. Cobalt against
+   the lifted chip is only 1.48:1, where light mode jumps 8.08:1 from
+   cobalt-50 to cobalt; cobalt-400 gives 2.48:1 and still carries white at
+   5.42:1. The lighter step is what makes the affordance read.
+   ============================================================ */
+[data-theme='dark'] .linksRow a,
+[data-theme='dark'] .contacts a {
+  background: var(--conduction-color-surface-sunken);
+}
+[data-theme='dark'] .linksRow a:hover,
+[data-theme='dark'] .contacts a:hover {
+  background: var(--c-cobalt-400);
+}
+[data-theme='dark'] .linksRow svg,
+[data-theme='dark'] .contacts svg,
+[data-theme='dark'] .contactsInline svg,
+[data-theme='dark'] .linksRow svg[data-mark],
+[data-theme='dark'] .contacts svg[data-mark],
+[data-theme='dark'] .contactsInline svg[data-mark] {
+  fill: #FFFFFF;
+}
+/* Mastodon's white drawing is a separate file from its black one, so in dark
+   mode it is the one to show at rest — and to keep showing through hover,
+   which the light-mode rules only switch to on hover. */
+[data-theme='dark'] .linksRow .markOnLight,
+[data-theme='dark'] .contacts .markOnLight,
+[data-theme='dark'] .contactsInline .markOnLight { display: none; }
+[data-theme='dark'] .linksRow .markOnDark,
+[data-theme='dark'] .contacts .markOnDark,
+[data-theme='dark'] .contactsInline .markOnDark { display: inline; }

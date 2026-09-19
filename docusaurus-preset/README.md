@@ -428,6 +428,13 @@ to be — is permitted by none of them. So the row is black, and white on
 the cobalt hover chip, which is the second variant every one of the four
 brands names for that situation.
 
+In dark mode the row is white throughout, for the same reason: black sits
+at 1.34:1 on the cobalt-800 card and is effectively invisible, and white is
+the variant all four brands name beside black. The chip lifts to
+`--conduction-color-surface-sunken` there so it still reads as a chip, and
+hover goes to cobalt-400 rather than cobalt, which the lifted chip is too
+close to. See the block at the foot of `EmployeeCard.module.css`.
+
 That settles the four marks. `mail` and `phone` are ordinary Font Awesome
 icons under no such constraint; they are black so the row reads as one
 decision rather than two colours by accident.

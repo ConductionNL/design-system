@@ -37,6 +37,25 @@ export const ICONS = {
     </svg>
   ),
 
+  /* Hamburger + close, the mobile navbar pair. Both are 24×24 stroke
+     glyphs so they share the navbar's optical weight: the burger's
+     three rules and the close cross use the same 2px stroke, and the
+     button swapping one for the other keeps the same box. */
+  menu: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="4" y1="7" x2="20" y2="7"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+      <line x1="4" y1="17" x2="20" y2="17"/>
+    </svg>
+  ),
+
+  close: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="18" y1="6" x2="6" y2="18"/>
+    </svg>
+  ),
+
   /* Generic right arrow used by ghost CTAs. Wrapped in this set so the
      hero CTA can compose `View on GitHub` + `→` with consistent inline
      metrics on any font-size. */

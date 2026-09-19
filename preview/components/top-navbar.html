@@ -14,20 +14,75 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 22px 56px;
     border-bottom: 1px solid var(--c-cobalt-100);
+    background: var(--conduction-color-surface-card);
   }
   .nav .left { display: flex; align-items: center; gap: 44px; }
-  .wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--c-blue-cobalt); }
+  .wm { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--conduction-color-text-default); }
   .nav-links { display: flex; gap: 28px; }
   .nav-links a {
-    color: var(--c-cobalt-700); text-decoration: none;
+    color: var(--conduction-color-text-body); text-decoration: none;
     font-size: 14px; font-weight: 500;
   }
+  /* One colour, one meaning: orange says "you are here" (current) or
+     "you are about to go here" (hover). Everything else stays cobalt.
+     The rule is written on .nav-links a, so it covers the subitems in a
+     section dropdown too: a current subitem is the same orange as a
+     current top-level item, never a second colour for the same state. */
   .nav-links a:hover, .nav-links a.current { color: var(--c-orange-knvb); }
-  .nav-links a.current { font-weight: 600; }
+  /* Bold, not semibold. The nav sits at 500, so 600 is one step and
+     reads as a rendering artefact rather than a state. 700 is legible. */
+  .nav-links a.current { font-weight: 700; }
   .nav .nav-ctas { display: flex; align-items: center; gap: 12px; }
-  .nav .ghost { color: var(--c-cobalt-700); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav .ghost { color: var(--conduction-color-text-body); text-decoration: none; font-size: 14px; font-weight: 500; }
   .nav .cta { background: var(--c-blue-cobalt); color: white; padding: 9px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; text-decoration: none; }
   .nav .cta:hover { background: var(--c-cobalt-700); }
+
+  /* ---- Section dropdown (a nav item with subitems) ----
+     A section with its own pages hangs them under the parent link.
+     Same panel as the locale switcher, opened on hover instead of
+     click, and left-aligned under its trigger. The locale switcher
+     picks a setting; this one navigates, so it never carries the
+     locale menu's cobalt current state. It inherits the nav's own
+     orange-current rule above. */
+  .nav-item { position: relative; display: inline-flex; align-items: center; }
+  .nav-item > a { display: inline-flex; align-items: center; gap: 6px; }
+  .nav-item > a .caret {
+    width: 10px; height: 10px;
+    stroke: currentColor; stroke-width: 2; fill: none;
+    opacity: 0.6;
+  }
+  /* Invisible bridge across the 8px gap, so the panel survives the
+     trip from trigger to first item. */
+  .nav-item.has-sub::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: var(--space-2);
+  }
+  .nav-sub {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    background: var(--conduction-color-surface-card);
+    border: 1px solid var(--c-cobalt-100);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    padding: 6px;
+    min-width: 180px;
+    display: none;
+    z-index: 100;
+  }
+  .nav-item:hover .nav-sub,
+  .nav-item:focus-within .nav-sub { display: block; }
+  .nav-sub a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+  .nav-sub a:hover,
+  .nav-sub a.current { background: var(--conduction-color-surface-subtle); }
 
   /* ---- Locale switcher ---- */
   .locale {
@@ -35,7 +90,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--c-cobalt-700);
+    color: var(--conduction-color-text-body);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -43,7 +98,7 @@
     border-radius: var(--radius-md);
     transition: background 120ms ease;
   }
-  .locale:hover { background: var(--c-cobalt-50); }
+  .locale:hover { background: var(--conduction-color-surface-subtle); }
   .locale > svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
   .locale > .caret { width: 10px; height: 10px; opacity: 0.6; }
 
@@ -51,7 +106,7 @@
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    background: white;
+    background: var(--conduction-color-surface-card);
     border: 1px solid var(--c-cobalt-100);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-2);
@@ -66,20 +121,65 @@
     padding: 8px 12px;
     border-radius: var(--radius-sm);
     text-decoration: none;
-    color: var(--c-cobalt-700);
+    color: var(--conduction-color-text-body);
     font-size: 14px;
   }
-  .locale-menu a:hover { background: var(--c-cobalt-50); color: var(--c-blue-cobalt); }
-  .locale-menu a.current { color: var(--c-blue-cobalt); font-weight: 600; }
+  .locale-menu a:hover { background: var(--conduction-color-surface-subtle); color: var(--conduction-color-text-default); }
+  .locale-menu a.current { color: var(--conduction-color-text-default); font-weight: 600; }
+
+  /* ---- Theme stages ----
+     The bar twice, once per theme, because dark is where this component has
+     the most to prove: every colour it paints has to come from the semantic
+     layer, or the bar stays white while the page behind it goes cobalt-900.
+
+     tokens.css scopes its dark values to `:root[data-theme="dark"]`, which
+     an element inside the page cannot match — that selector only ever hits
+     <html>. So the dark stage repeats the five mappings this component
+     reads. They are tokens.css's own dark values; if that file's dark block
+     moves, move these with it. Nothing else here is theme-aware, which is
+     the point of the exercise. */
+  .stage { position: relative; }
+  .stage + .stage { margin-top: var(--space-6, 32px); }
+  .stage-label {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 0 56px var(--space-3, 12px);
+    font-family: var(--conduction-typography-font-family-code);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-cobalt-400);
+  }
+  .stage-label .what { text-transform: none; letter-spacing: 0; color: var(--c-cobalt-300); }
+  .stage[data-theme="dark"] {
+    --conduction-color-surface-card:   var(--c-cobalt-800);
+    --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-text-body:      var(--c-cobalt-100);
+    --conduction-color-text-default:   var(--c-cobalt-100);
+    --conduction-color-text-muted:     var(--c-cobalt-300);
+    background: var(--c-cobalt-900);
+    padding-bottom: var(--space-6, 32px);
+  }
+  .stage[data-theme="dark"] .stage-label { padding-top: var(--space-5, 24px); color: var(--c-cobalt-300); }
 </style>
 </head>
 <body>
 
+<section class="stage" data-theme="light" data-stage-source>
+  <div class="stage-label">Light <span class="what">surface-card · #FFFFFF</span></div>
 <nav class="nav">
   <div class="left">
     <a href="landing.html" class="wm" style="text-decoration:none">Con<span class="next-blue">Next</span></a>
     <div class="nav-links">
-      <a href="apps-catalog.html" data-section="apps" data-i18n="nav.apps">Apps</a>
+      <div class="nav-item has-sub">
+        <a href="apps-catalog.html" data-section="apps" data-i18n="nav.apps">Apps
+          <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <div class="nav-sub" role="menu" aria-label="Apps">
+          <a href="app-detail.html" data-subsection="opencatalogi" role="menuitem">OpenCatalogi</a>
+          <a href="app-detail.html" data-subsection="openregister" role="menuitem">OpenRegister</a>
+          <a href="app-detail.html" data-subsection="integriq" role="menuitem">Integriq</a>
+          <a href="app-detail.html" data-subsection="filinq" role="menuitem">Filinq</a>
+          <a href="app-detail.html" data-subsection="launchpad" role="menuitem">LaunchPad</a>
+        </div>
+      </div>
       <a href="solutions-catalog.html" data-section="solutions" data-i18n="nav.solutions">Solutions</a>
       <a href="#" data-section="docs" data-i18n="nav.docs">Docs</a>
       <a href="support.html" data-section="support" data-i18n="nav.support">Support</a>
@@ -100,6 +200,23 @@
     <a href="#" class="cta" data-i18n="nav.install">Install →</a>
   </div>
 </nav>
+</section>
+
+<!-- The dark stage takes a copy of the bar above rather than a second hand-
+     written one: two copies of this markup would drift the moment somebody
+     adds a nav item, and the whole point of showing both themes is that it
+     is the same component either way. -->
+<section class="stage" data-theme="dark" data-stage-clone>
+  <div class="stage-label">Dark <span class="what">surface-card · #102246</span></div>
+</section>
+
+<script>
+  (function () {
+    const source = document.querySelector('[data-stage-source] .nav');
+    const target = document.querySelector('[data-stage-clone]');
+    if (source && target) target.appendChild(source.cloneNode(true));
+  })();
+</script>
 
 <script src="../i18n.js" defer></script>
 
@@ -109,35 +226,51 @@
      each surface (Docusaurus i18n on connext, querystring + dictionary
      on the kit's static pages). The button just exposes the choice. */
   (function () {
-    const root = document.querySelector('[data-locale-toggle]');
-    if (!root) return;
-    const current = root.querySelector('[data-locale-current]');
+    /* Every switcher on the page, not the first one: this preview renders
+       the bar once per theme, and a dropdown that only works in the light
+       copy would read as a bug in the dark one. */
+    const roots = document.querySelectorAll('[data-locale-toggle]');
+    if (!roots.length) return;
 
     /* Read ?lang=… from the URL so the trigger label and active item
        reflect the current selection. Default is NL per huisstijl. */
     const params = new URLSearchParams(window.location.search);
     const lang = (params.get('lang') || 'nl').toLowerCase();
-    if (current) current.textContent = lang.toUpperCase();
-    root.querySelectorAll('[data-locale]').forEach((a) => {
-      a.classList.toggle('current', a.dataset.locale === lang);
+
+    const closeAll = () => roots.forEach((r) => {
+      delete r.dataset.open;
+      r.setAttribute('aria-expanded', 'false');
     });
 
-    function open() { root.dataset.open = '1'; root.setAttribute('aria-expanded', 'true'); }
-    function close() { delete root.dataset.open; root.setAttribute('aria-expanded', 'false'); }
+    roots.forEach((root) => {
+      const current = root.querySelector('[data-locale-current]');
+      if (current) current.textContent = lang.toUpperCase();
+      root.querySelectorAll('[data-locale]').forEach((a) => {
+        a.classList.toggle('current', a.dataset.locale === lang);
+      });
 
-    root.addEventListener('click', (e) => {
-      if (e.target.closest('[data-locale]')) return; /* let link navigate */
-      e.stopPropagation();
-      root.dataset.open === '1' ? close() : open();
+      root.addEventListener('click', (e) => {
+        if (e.target.closest('[data-locale]')) return; /* let link navigate */
+        e.stopPropagation();
+        const wasOpen = root.dataset.open === '1';
+        closeAll();
+        if (!wasOpen) { root.dataset.open = '1'; root.setAttribute('aria-expanded', 'true'); }
+      });
     });
-    document.addEventListener('click', () => close());
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+    document.addEventListener('click', closeAll);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
   })();
 </script>
 
 <!--
   Pages set <body data-current="apps|solutions|docs|support|about"> and include.js
   will add the .current class to the matching link after the navbar is injected.
+
+  A page inside a section with its own dropdown adds
+  <body data-current="apps" data-current-sub="openregister">. Both links then
+  carry .current and both go orange: the parent says which section you are in,
+  the subitem says which page.
 -->
 
 <link rel="stylesheet" href="_react-usage.css">
@@ -154,7 +287,11 @@ module.exports = createConfig({
   navbar: {
     title: 'ConNext',
     items: [
-      {to: '/apps',      label: 'Apps',      position: 'left'},
+      {to: '/apps',      label: 'Apps',      position: 'left', items: [
+        {to: '/apps/opencatalogi', label: 'OpenCatalogi'},
+        {to: '/apps/openregister', label: 'OpenRegister'},
+        {to: '/apps/integriq',     label: 'Integriq'},
+      ]},
       {to: '/solutions', label: 'Solutions', position: 'left'},
       {to: '/docs/intro',label: 'Docs',      position: 'left'},
       {to: '/support',   label: 'Support',   position: 'left'},
@@ -171,9 +308,29 @@ module.exports = createConfig({
     <li><code>href</code> external link (a tag)</li>
     <li><code>label</code> display text</li>
     <li><code>position</code> left | right</li>
+    <li><code>items</code> subitems, renders the section dropdown</li>
     <li><code>cta</code> true renders cobalt-fill primary CTA</li>
     <li><code>type</code> localeDropdown for the language switcher</li>
   </ul>
+  <h3>Section dropdown</h3>
+  <p>A section with its own pages hangs them under the parent link. The panel is the locale switcher's panel, opened on hover and left-aligned under its trigger. Keep it to one level: a subitem never opens a third.</p>
+  <p>Do not read the locale switcher as the model for these states. It picks a setting and marks the chosen one in cobalt. A section dropdown navigates, so it follows the nav's own states.</p>
+  <ul class="ru-props">
+    <li><code>default</code> cobalt-700, 14px, weight 500</li>
+    <li><code>hover</code> orange text on a cobalt-50 ground</li>
+    <li><code>current</code> orange text, weight 700, cobalt-50 ground</li>
+  </ul>
+  <p>A current subitem takes the same orange as a current top-level item. One colour carries one meaning: orange is "you are here". A second colour for the same state would add a rule without adding information. Both links go orange together, the parent naming the section and the subitem naming the page.</p>
+  <p>Weight is 700, not 600. The navbar sits at 500, so a single step reads as a rendering artefact rather than a state.</p>
+  <p>This is the one place where two oranges appear in a single component. The one-accent rule governs decorative fills, not state: only one section is ever current, and its parent and child are the same state seen twice.</p>
+  <h3>Dark mode</h3>
+  <p>The two stages above are the same bar under the two themes. Every colour it paints now comes from the semantic layer — <code>surface-card</code> for the bar and both panels, <code>text-body</code> for the links, <code>text-default</code> for the wordmark, <code>surface-subtle</code> for hover and current grounds. Orange and the cobalt CTA stay literal: they are brand values, not theme values, and they read on either ground.</p>
+  <ul class="ru-props">
+    <li><code>still raw</code> the bar's <code>border-bottom</code> is cobalt-100, a pale hairline on a cobalt-900 page</li>
+    <li><code>still raw</code> the site swizzle in conduction-website carries 43 raw values and no tokens — it stays white in dark</li>
+    <li><code>collides</code> <code>surface-subtle</code> equals <code>surface-card</code> in dark, so hover and current grounds in both dropdown panels have no edge against the panel they sit on</li>
+  </ul>
+  <p>The last one is the same collision the employee card's contact chips had, and it wants the same answer: the raised ground goes to <code>surface-sunken</code> in dark rather than staying on <code>surface-subtle</code>.</p>
 </aside>
 
 </body>

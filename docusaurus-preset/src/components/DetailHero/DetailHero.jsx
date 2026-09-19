@@ -32,7 +32,12 @@
  *     icon={<svg>...</svg>}
  *     iconColor="var(--c-blue-cobalt)"
  *     illustration={<AppMock app="launchpad" />}
+ *     game={<HiddenGame id="stamp-rush" unlock={...}><StampRush /></HiddenGame>}
  *   />
+ *
+ * `game` is the app's hidden mini-game. It renders across the full
+ * width of the hero, under the copy and the illustration, and shows
+ * nothing until the player finds it.
  *
  * Each cta object also accepts `tone: "orange"` to flip the primary
  * (or secondary) variant to the KNVB-orange accent. Reserved for
@@ -95,6 +100,7 @@ export default function DetailHero({
   icon,
   iconColor,
   illustration,
+  game,
   className,
   appId,
   downloads,
@@ -393,6 +399,15 @@ export default function DetailHero({
         {hasIllustration && (
           <div className={styles.illustration}>{illustration}</div>
         )}
+
+        {/* The app's hidden mini-game, when it has one. It lives here
+            rather than further down the page because the way in is up
+            here too: you knock on the logo in this hero, and what you
+            unlocked should not be somewhere you have to scroll to find.
+            It spans both columns, so the game gets the width of the
+            hero instead of the width of the mock. While the game is
+            still hidden this renders nothing at all. */}
+        {game && <div className={styles.game}>{game}</div>}
       </div>
     </section>
   );

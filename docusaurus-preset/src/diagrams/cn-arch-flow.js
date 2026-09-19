@@ -87,7 +87,7 @@ class CnArchFlow extends HTMLElement {
         }
 
         .panel {
-          background: var(--c-cobalt-50);
+          background: var(--conduction-color-surface-subtle);
           border: 1px solid var(--c-cobalt-100);
           border-radius: var(--radius-md);
           padding: var(--space-6);
@@ -101,7 +101,7 @@ class CnArchFlow extends HTMLElement {
         }
 
         .arrow {
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
           font-size: 16px;
           flex-shrink: 0;
         }
@@ -111,10 +111,10 @@ class CnArchFlow extends HTMLElement {
           flex: 1 1 0;
           min-width: 80px;
           padding: var(--space-3) var(--space-2);
-          background: white;
+          background: var(--conduction-color-surface-card);
           border: 1px solid var(--c-cobalt-200);
           border-radius: var(--radius-sm);
-          color: var(--c-cobalt-800);
+          color: var(--conduction-color-text-strong);
           font-family: var(--conduction-typography-font-family-code, ui-monospace, monospace);
           font-size: 11px;
           text-align: center;

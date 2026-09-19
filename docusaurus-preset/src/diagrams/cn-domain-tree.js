@@ -84,7 +84,7 @@ class CnDomainTree extends HTMLElement {
         ::slotted([slot="legend"]) {
           display: flex; align-items: center; gap: var(--space-2);
           font-size: 13px;
-          color: var(--c-cobalt-700);
+          color: var(--conduction-color-text-body);
         }
       </style>
 

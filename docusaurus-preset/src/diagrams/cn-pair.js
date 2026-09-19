@@ -92,7 +92,7 @@ class CnPair extends HTMLElement {
           align-items: center;
           gap: var(--space-5);
           padding: var(--space-6);
-          background: var(--c-cobalt-50);
+          background: var(--conduction-color-surface-subtle);
           border-radius: var(--radius-md);
         }
 
@@ -123,12 +123,12 @@ class CnPair extends HTMLElement {
         .label {
           font-size: 16px;
           font-weight: 600;
-          color: var(--c-cobalt-900);
+          color: var(--conduction-color-text-strong);
         }
         .caption {
           font-family: var(--conduction-typography-font-family-code, ui-monospace, monospace);
           font-size: 11px;
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
           letter-spacing: 0.06em;
         }
         .caption:empty { display: none; }
@@ -136,7 +136,7 @@ class CnPair extends HTMLElement {
         .bridge {
           font-family: var(--conduction-typography-font-family-code, ui-monospace, monospace);
           font-size: 12px;
-          color: var(--c-cobalt-700);
+          color: var(--conduction-color-text-body);
           letter-spacing: 0.05em;
           text-align: center;
           max-width: 160px;

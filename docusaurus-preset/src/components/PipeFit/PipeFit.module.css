@@ -1,0 +1,203 @@
+/**
+ * <PipeFit /> styles.
+ *
+ * A line of connectors read left to right, each drawn as two openings
+ * and a barrel. Tokens only, one accent on a join that does not meet.
+ * Every state is also in the button's label, so the route is solvable
+ * without the picture.
+ */
+
+.pf {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+
+.route {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 16px 12px;
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  max-width: 720px;
+  overflow-x: auto;
+}
+
+.end {
+  position: relative;
+  flex-shrink: 0;
+  width: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-900);
+  color: white;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  text-align: center;
+}
+
+/* The three heights an opening can sit at. The end blocks mark theirs
+   with a notch, the connectors with their mouths. */
+.end::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 10px;
+  background: var(--c-mint-500);
+  border-radius: 2px;
+}
+.end.port-0::after { top: 8px; right: -4px; }
+.end.port-1::after { top: 50%; margin-top: -5px; right: -4px; }
+.end.port-2::after { bottom: 8px; right: -4px; }
+.end:last-child::after { right: auto; left: -4px; }
+
+.piece {
+  position: relative;
+  flex: 1;
+  min-width: 68px;
+  height: 84px;
+  border: 1px solid var(--c-cobalt-200);
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.piece:hover:not(:disabled) { border-color: var(--c-blue-cobalt); }
+.piece:disabled { cursor: default; opacity: 0.7; }
+.piece:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+
+.joined { border-color: var(--c-mint-500); }
+.gap { border-color: var(--c-orange-knvb); background: var(--c-cobalt-50); }
+
+.mouth {
+  position: absolute;
+  width: 10px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--c-blue-cobalt);
+}
+.mouth:first-of-type { left: -1px; }
+.mouth:last-of-type { right: -1px; }
+.mouth.port-0 { top: 10px; }
+.mouth.port-1 { top: 50%; margin-top: -6px; }
+.mouth.port-2 { bottom: 10px; }
+
+.barrel {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: var(--c-cobalt-200);
+}
+
+.clock {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-200);
+  overflow: hidden;
+  margin-top: 12px;
+  max-width: 720px;
+}
+.clockFill {
+  height: 100%;
+  background: var(--c-mint-500);
+  transition: width 100ms linear;
+}
+.clockLow { background: var(--c-orange-knvb); }
+
+.idle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--c-cobalt-400);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  max-width: 60ch;
+  min-height: 1.4em;
+}

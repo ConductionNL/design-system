@@ -17,9 +17,9 @@
  *   <FeaturedCard
  *     href="/posts/install-opencatalogi"
  *
- * `game` puts a hidden mini-game across the bottom of the card. Only
- * on a card without `href`: inside a link the card would swallow every
- * click before the game saw it.
+ * `game` puts a hidden mini-game where the visual is, once the reader
+ * finds it. Only on a card without `href`: inside a link the card
+ * would swallow every click before the game saw it.
  *     eyebrow="Featured guide"
  *     title="Install OpenCatalogi in two minutes."
  *     lede="From app store to first register, no terminal required."
@@ -166,6 +166,19 @@ export default function FeaturedCard({
         )}
       </div>
 
+      {/* The post's hidden mini-game, when it has one. It belongs in
+          the hero for the same reason the app games do: the way in is
+          up here, so what you unlocked should be too. It shows
+          nothing until the game is found, and then takes the visual's
+          place.
+
+          Not rendered when the whole card is a link: a game inside an
+          anchor cannot be played, because the card swallows the click
+          before the game sees it. `game` and `href` do not go
+          together, and a card that links somewhere is a teaser, not a
+          place to play. */}
+      {!href && game}
+
       <div className={[styles.visual, hasVisual && styles.visualNode].filter(Boolean).join(' ')} aria-hidden="true">
         {hasVisual ? visual : (<>
         {thumbProps.src
@@ -180,18 +193,6 @@ export default function FeaturedCard({
         ].join(' ')} />
         </>)}
       </div>
-
-      {/* The post's hidden mini-game, when it has one. It belongs in
-          the hero for the same reason the app games do: the way in is
-          up here, so what you unlocked should be too. It spans both
-          columns and shows nothing until the game is found.
-
-          Not rendered when the whole card is a link: a game inside an
-          anchor cannot be played, because the card swallows the click
-          before the game sees it. `game` and `href` do not go
-          together, and a card that links somewhere is a teaser, not a
-          place to play. */}
-      {game && !href && <div className={styles.game}>{game}</div>}
     </Tag>
   );
 }

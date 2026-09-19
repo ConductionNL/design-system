@@ -25,17 +25,20 @@
 
 .body { min-width: 0; }
 
-/* The post's mini-game, across the whole card rather than in the
-   visual's column: the games are wide, and a card squeezed into half a
-   hero reads as an accident. Empty until the game is found. */
-.game {
-  grid-column: 1 / -1;
-  margin-top: var(--space-8);  /* The games hold between 460 and 760px of content, so a card
-     stretched across the whole hero is mostly empty on the right. Wide
-     enough for the widest board, and no wider. */
-  max-width: 820px;
+/* Found, so the visual steps aside and the game takes its column. A
+   sibling selector rather than :has(), so the swap works everywhere;
+   an opener that is still unclicked carries a different value and
+   leaves the visual alone. */
+[data-hidden-game='found'] + .visual { display: none; }
+
+/* A game needs more of the card than a thumbnail does. Progressive: a
+   browser without :has() shows a narrower game, not a broken card. */
+.card:has([data-hidden-game='found']) {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
 }
-.game:empty { display: none; }
+@media (max-width: 900px) {
+  .card:has([data-hidden-game='found']) { grid-template-columns: minmax(0, 1fr); }
+}
 
 .eyebrow {
   display: inline-flex;

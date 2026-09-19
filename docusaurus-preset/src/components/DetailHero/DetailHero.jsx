@@ -35,9 +35,9 @@
  *     game={<HiddenGame id="stamp-rush" unlock={...}><StampRush /></HiddenGame>}
  *   />
  *
- * `game` is the app's hidden mini-game. It renders across the full
- * width of the hero, under the copy and the illustration, and shows
- * nothing until the player finds it.
+ * `game` is the app's hidden mini-game. It shows nothing until the
+ * player finds it, and then takes the illustration's place: the hero
+ * widens that column and the mock steps aside.
  *
  * Each cta object also accepts `tone: "orange"` to flip the primary
  * (or secondary) variant to the KNVB-orange accent. Reserved for
@@ -396,18 +396,25 @@ export default function DetailHero({
           )}
         </div>
 
-        {hasIllustration && (
-          <div className={styles.illustration}>{illustration}</div>
-        )}
+        {/* The app's hidden mini-game, when it has one, and the mock
+            it takes the place of.
 
-        {/* The app's hidden mini-game, when it has one. It lives here
-            rather than further down the page because the way in is up
-            here too: you knock on the logo in this hero, and what you
-            unlocked should not be somewhere you have to scroll to find.
-            It spans both columns, so the game gets the width of the
-            hero instead of the width of the mock. While the game is
-            still hidden this renders nothing at all. */}
-        {game && <div className={styles.game}>{game}</div>}
+            Both live in the same column. The game renders nothing at
+            all until somebody finds it, and once it is open the mock
+            gives way: the way in is up here (you knock on the logo in
+            this hero), so what you unlocked belongs where you were
+            already looking, not below the fold and not beside the
+            picture of the app. The swap is a sibling selector on
+            HiddenGame's own `data-hidden-game="found"`, so the mock
+            stays while a `link` opener is still sitting unclicked. */}
+        {(hasIllustration || game) && (
+          <div className={styles.visual}>
+            {game}
+            {hasIllustration && (
+              <div className={styles.illustration}>{illustration}</div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

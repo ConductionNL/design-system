@@ -323,9 +323,15 @@ export default function DetailHero({
           {title && (
             <h1 className={styles.title}>
               {resolvedIcon && (
+                /* The glyph doubles as a hiding place. <HiddenGame>
+                   attaches its click and hold unlocks to whatever
+                   carries this marker, so a page can hide a game
+                   behind its own logo without the hero knowing which
+                   game, or that there is one. */
                 <span
                   className={styles.titleIcon}
                   style={{background: resolvedIconColor}}
+                  data-hidden-target="app-glyph"
                   aria-hidden="true"
                 >
                   {resolvedIcon}

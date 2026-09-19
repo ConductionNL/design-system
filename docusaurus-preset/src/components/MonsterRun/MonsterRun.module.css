@@ -1,0 +1,231 @@
+/**
+ * <MonsterRun /> styles.
+ *
+ * A side-on strip: the monster on the left, the world walking towards
+ * it. Tokens only, one accent for what would stop it, and the track
+ * also spells out what is coming, so the run is readable without the
+ * picture.
+ */
+
+.mr {
+  border: 1px solid var(--c-cobalt-100);
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-cobalt-900);
+}
+
+.lede {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-cobalt-700);
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-50);
+  color: var(--c-cobalt-900);
+  white-space: nowrap;
+}
+
+/* ======================================================================
+   The strip
+   ====================================================================== */
+
+.stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 132px;
+  padding: 0 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--c-cobalt-50);
+  overflow: hidden;
+}
+
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 2px;
+  background: var(--c-cobalt-200);
+}
+
+/* The monster: a head, a body and one bolt. Three boxes is enough
+   silhouette at this size, and it keeps the whole thing token-built. */
+.monster {
+  position: relative;
+  width: 26px;
+  height: 46px;
+  flex-shrink: 0;
+  z-index: 1;
+  transition: transform 120ms ease-out, height 120ms ease-out;
+}
+.head1 {
+  position: absolute;
+  top: 0;
+  left: 3px;
+  width: 20px;
+  height: 16px;
+  border-radius: 3px 3px 2px 2px;
+  background: var(--c-forest-500, var(--c-mint-500));
+}
+.body1 {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 3px;
+  background: var(--c-cobalt-900);
+}
+.bolt {
+  position: absolute;
+  top: 6px;
+  right: 0;
+  width: 6px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--c-orange-knvb);
+}
+
+.posture-jump { transform: translateY(-34px); }
+.posture-duck { height: 26px; }
+.posture-duck .head1 { top: 0; height: 12px; }
+.posture-duck .body1 { top: 12px; }
+
+.track {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  flex: 1;
+  height: 100%;
+  padding-bottom: 2px;
+}
+
+.cell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  font-size: 8px;
+  line-height: 1.1;
+  text-align: center;
+  color: transparent;
+  overflow: hidden;
+}
+
+/* Only the cells holding something get a box; the rest are air. */
+.obstacle {
+  background: var(--c-orange-knvb);
+  color: white;
+  font-weight: 600;
+}
+.part {
+  background: var(--c-mint-300);
+  color: var(--c-cobalt-900);
+  font-weight: 600;
+}
+
+.low  { height: 34px; align-self: flex-end; }
+.high { height: 30px; align-self: flex-start; margin-top: 8px; }
+
+.ahead {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--c-cobalt-700);
+  min-height: 1.4em;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.action {
+  background: white;
+  color: var(--c-cobalt-900);
+  border: 1px solid var(--c-cobalt-200);
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+.action:hover:not(:disabled) { border-color: var(--c-blue-cobalt); color: var(--c-blue-cobalt); }
+.action:disabled { opacity: 0.5; cursor: default; }
+.action:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--c-cobalt-400);
+  min-height: 1.4em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The posture still changes, it just stops sliding there. */
+  .monster { transition: none; }
+}

@@ -97,6 +97,16 @@
   gap: 48px;
   align-items: center;
 }
+/* A track's minimum and a grid ITEM's minimum are two different things. The
+   tracks above are already minmax(0, 1fr), so they size correctly, but each
+   child still carries the default min-width: auto and simply overflows the
+   correctly sized track. Measured at 320px on /openconnector/ and its Dutch
+   twin: the column was 192px and the child div sat at 270px, running the
+   tagline from x=64 to x=334 in a 320px viewport. Fixing the paragraph
+   inside it does nothing, because the paragraph is not the grid item. */
+.headInner > * {
+  min-width: 0;
+}
 .withIllustration .headInner {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   gap: 64px;
@@ -228,6 +238,7 @@ a.downloadsBadge:hover {
   color: var(--conduction-color-text-body);
   max-width: 60ch;
   margin: 0 0 32px;
+  overflow-wrap: anywhere;
 }
 .tagline :global(.next-blue) { color: var(--c-nextcloud-blue); }
 

@@ -135,6 +135,23 @@
   --conduction-color-background-default: var(--c-white);
   --conduction-color-background-inverse: var(--c-blue-cobalt);
   --conduction-color-background-muted:   var(--c-cobalt-50);
+
+  /* Card and panel surfaces.
+     `background: white` and `background: var(--c-cobalt-50)` are written
+     straight into components about 280 times. Neither can flip, so in
+     dark mode the card stayed white while the text on it went light,
+     which is the second half of the dark-mode failure: correct ink,
+     invisible on a surface that never changed.
+
+     Lossless again: each is the value it replaces in light mode.
+     `-plate` is the exception that must NOT flip. Third-party logos are
+     designed against white and lose contrast on anything else, so the
+     brand rule is a white tile always. Naming it makes that deliberate
+     rather than an oversight the next sweep tries to "fix". */
+  --conduction-color-surface-card:   var(--c-white);
+  --conduction-color-surface-subtle: var(--c-cobalt-50);
+  --conduction-color-surface-sunken: var(--c-cobalt-100);
+  --conduction-color-surface-plate:  var(--c-white);
   /* The deep ground every Conduction site actually paints for dark
      panels, footers and dark mode. Distinct from -inverse, which is
      the cobalt hero panel. Both are real, so name them separately
@@ -148,6 +165,20 @@
   --conduction-color-text-inverse: var(--c-white);
   --conduction-color-text-accent:  var(--c-coral-600);
   --conduction-color-text-muted:   var(--c-cobalt-400);
+
+  /* Text, the two darker inks.
+     Components reach past the semantic layer for these two steps all the
+     time: cobalt-900 for a heading, cobalt-700 for body copy. A raw
+     palette value cannot flip, so in dark mode that ink stayed navy on a
+     navy ground. Measured 2026-09-19: 1,362 elements below 1.5:1 across
+     121 of the 163 pages on conduction.nl, the homepage h1 at exactly
+     1.00.
+
+     These two exist so that migration is lossless. Each resolves to the
+     identical value it replaces in light mode, so nothing moves on a
+     white ground, and only the dark block below has to be right. */
+  --conduction-color-text-strong:  var(--c-cobalt-900);
+  --conduction-color-text-body:    var(--c-cobalt-700);
 
   /* Link */
   --conduction-color-link-default: var(--c-blue-cobalt);
@@ -413,6 +444,17 @@
   --conduction-color-background-muted:   var(--c-cobalt-800);
   --conduction-color-background-inverse: var(--c-cobalt-50);
 
+  /* Card and panel surfaces lift off the cobalt-900 ground rather than
+     sink into it, so a card still reads as a card. `-sunken` goes the
+     other way for the insets that were cobalt-100 on white.
+
+     `-plate` stays white on purpose: it is the tile third-party logos
+     sit on, and those are drawn for a white ground in either mode. */
+  --conduction-color-surface-card:   var(--c-cobalt-800);
+  --conduction-color-surface-subtle: var(--c-cobalt-800);
+  --conduction-color-surface-sunken: var(--c-cobalt-700);
+  --conduction-color-surface-plate:  var(--c-white);
+
   /* Primary ramp inverts: the light steps carry, the dark recede */
   --conduction-color-primary:          var(--c-cobalt-300);
   --conduction-color-primary-light:    var(--c-cobalt-200);
@@ -427,6 +469,12 @@
   --conduction-color-text-inverse: var(--c-cobalt-900);
   --conduction-color-text-muted:   var(--c-cobalt-300);
   --conduction-color-text-accent:  var(--c-orange-knvb);
+
+  /* The two darker inks invert. White for a heading so it outranks body
+     copy the way cobalt-900 outranks cobalt-700 on a white ground, and
+     cobalt-100 for body at 13.85:1 on the cobalt-900 default. */
+  --conduction-color-text-strong:  var(--c-white);
+  --conduction-color-text-body:    var(--c-cobalt-100);
 
   /* Link */
   --conduction-color-link-default: var(--c-cobalt-300);
@@ -488,6 +536,18 @@
     --conduction-color-text-inverse: var(--c-cobalt-900);
     --conduction-color-text-muted:   var(--c-cobalt-300);
     --conduction-color-text-accent:  var(--c-orange-knvb);
+
+    /* Mirrors the [data-theme="dark"] block above. Both have to carry
+       every token: this one is what a visitor gets before the theme
+       script runs, and a token defined in only one of them reverts to
+       its light value for exactly the readers dark mode is for. */
+    --conduction-color-text-strong:  var(--c-white);
+    --conduction-color-text-body:    var(--c-cobalt-100);
+
+    --conduction-color-surface-card:   var(--c-cobalt-800);
+    --conduction-color-surface-subtle: var(--c-cobalt-800);
+    --conduction-color-surface-sunken: var(--c-cobalt-700);
+    --conduction-color-surface-plate:  var(--c-white);
 
     /* Link */
     --conduction-color-link-default: var(--c-cobalt-300);

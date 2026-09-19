@@ -11,7 +11,11 @@
 
 .feature {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  /* minmax(0, 1fr), never a bare 1fr: a grid item's automatic minimum size is
+     min-content, so the track cannot shrink below the widest unbreakable word
+     in it. Third component in this package with the same fault, after
+     Prerequisites and Troubleshooting. */
+  grid-template-columns: 64px minmax(0, 1fr);
   gap: 24px;
 }
 
@@ -40,6 +44,11 @@
   letter-spacing: -0.01em;
   margin: 0 0 8px;
   color: var(--conduction-color-text-strong);
+  /* Package names are one unbreakable token. "@conduction/diagrams web
+     components" overran the cell by 38px at 320px on /build/ and its Dutch
+     twin. `anywhere` rather than `break-word`, because only `anywhere`
+     lowers the min-content size the track is sized against. */
+  overflow-wrap: anywhere;
 }
 .title :global(.next-blue) { color: var(--c-nextcloud-blue); }
 

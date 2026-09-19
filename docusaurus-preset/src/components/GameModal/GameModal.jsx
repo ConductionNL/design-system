@@ -244,174 +244,190 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
       <div className={styles.overlay} onClick={close} />
       <div className={styles.panel}>
         <button type="button" className={styles.close} onClick={close} aria-label={translate({id: 'preset.gameModal.close', message: 'Close', description: 'Accessible label for the close (×) button on the game-over modal'})}>×</button>
-        <p className={styles.eyebrow}>{eyebrow}</p>
-        <h2 className={styles.title} id="gm-title">{title}</h2>
-        <p className={styles.subtitle}>{subtitle}</p>
+        {/* Three blocks, laid out in two columns from 880px up: the
+            headline top left, what you do with the run top right,
+            and the roster of sixteen games across the bottom in two
+            columns of eight. In one column the roster alone ran past
+            the bottom of the window, which put the total and the
+            share buttons out of reach on a laptop. The DOM order is
+            the reading order either way; only the grid moves the
+            roster above the share block on a wide screen. */}
+        <div className={styles.body}>
+          <div className={styles.intro}>
+            <p className={styles.eyebrow}>{eyebrow}</p>
+            <h2 className={styles.title} id="gm-title">{title}</h2>
+            <p className={styles.subtitle}>{subtitle}</p>
 
-        {typeof event.score !== 'undefined' && (
-          <span className={styles.scorePill}>{event.summary || translate({id: 'preset.gameModal.scorePill', message: 'score: {score}', description: 'Default score pill text. {score} is the numeric score.'}, {score: event.score})}</span>
-        )}
+            {typeof event.score !== 'undefined' && (
+              <span className={styles.scorePill}>{event.summary || translate({id: 'preset.gameModal.scorePill', message: 'score: {score}', description: 'Default score pill text. {score} is the numeric score.'}, {score: event.score})}</span>
+            )}
 
-        <div className={styles.progress}>
-          <div className={styles.progressLabel}>
-            <span>
-              <Translate
-                id="preset.gameModal.progress.found"
-                description="Progress label below the game-over copy. {found} bolded count of games discovered; {total} is the total."
-                values={{
-                  found: <strong>{foundCount}</strong>,
-                  total: total,
-                }}>
-                {'{found} / {total} mini-games found'}
-              </Translate>
-            </span>
-            <span>{percent}%</span>
+            <div className={styles.progress}>
+              <div className={styles.progressLabel}>
+                <span>
+                  <Translate
+                    id="preset.gameModal.progress.found"
+                    description="Progress label below the game-over copy. {found} bolded count of games discovered; {total} is the total."
+                    values={{
+                      found: <strong>{foundCount}</strong>,
+                      total: total,
+                    }}>
+                    {'{found} / {total} mini-games found'}
+                  </Translate>
+                </span>
+                <span>{percent}%</span>
+              </div>
+              <div className={styles.progressBar}>
+                <div className={styles.progressFill} style={{width: percent + '%'}} />
+              </div>
+            </div>
           </div>
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{width: percent + '%'}} />
+
+          <div className={styles.roster}>
+            <ul className={styles.grid}>
+              {games.map((g) => {
+                const best = bestFor(scores, g.id);
+                const isFound = Boolean(scores.games[g.id] && scores.games[g.id].found);
+                return (
+                  <li key={g.id} className={isFound ? styles.gridItemFound : styles.gridItem}>
+                    <span className={styles.gridHex} aria-hidden="true" />
+                    <span className={styles.gridLabel}>{g.label}</span>
+                    {best !== null && (
+                      <span className={styles.gridScore}>{formatScore(best, locale)}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </div>
 
-        <ul className={styles.grid}>
-          {games.map((g) => {
-            const best = bestFor(scores, g.id);
-            const isFound = Boolean(scores.games[g.id] && scores.games[g.id].found);
-            return (
-              <li key={g.id} className={isFound ? styles.gridItemFound : styles.gridItem}>
-                <span className={styles.gridHex} aria-hidden="true" />
-                <span className={styles.gridLabel}>{g.label}</span>
-                {best !== null && (
-                  <span className={styles.gridScore}>{formatScore(best, locale)}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+          <div className={styles.aside}>
+            {grandTotal > 0 && (
+              <p className={styles.total}>
+                <Translate
+                  id="preset.gameModal.totalScore"
+                  description="Total score line under the games list. {score} is the sum of the player's best score in every game."
+                  values={{score: <strong>{formatScore(grandTotal, locale)}</strong>}}>
+                  {'Total score {score}'}
+                </Translate>
+              </p>
+            )}
 
-        {grandTotal > 0 && (
-          <p className={styles.total}>
-            <Translate
-              id="preset.gameModal.totalScore"
-              description="Total score line under the games list. {score} is the sum of the player's best score in every game."
-              values={{score: <strong>{formatScore(grandTotal, locale)}</strong>}}>
-              {'Total score {score}'}
-            </Translate>
-          </p>
-        )}
-
-        <p className={styles.cta}>
-          {/* Two messages picked here rather than one ICU plural.
-              Docusaurus's translate() only substitutes {placeholder};
-              it does not expand plurals, so an ICU string renders to
-              the reader verbatim, braces and all, in every locale. */}
-          {foundCount < total
-            ? (total - foundCount === 1
-                ? translate({
-                    id: 'preset.gameModal.cta.remaining.one',
-                    message: 'One more game hidden somewhere. Keep clicking.',
-                    description: 'CTA on the game-over modal when exactly one mini-game is still hidden.',
-                  })
+            <p className={styles.cta}>
+              {/* Two messages picked here rather than one ICU plural.
+                  Docusaurus's translate() only substitutes {placeholder};
+                  it does not expand plurals, so an ICU string renders to
+                  the reader verbatim, braces and all, in every locale. */}
+              {foundCount < total
+                ? (total - foundCount === 1
+                    ? translate({
+                        id: 'preset.gameModal.cta.remaining.one',
+                        message: 'One more game hidden somewhere. Keep clicking.',
+                        description: 'CTA on the game-over modal when exactly one mini-game is still hidden.',
+                      })
+                    : translate(
+                        {
+                          id: 'preset.gameModal.cta.remaining.other',
+                          message: '{remaining} more games hidden somewhere. Keep clicking.',
+                          description: 'CTA on the game-over modal when several mini-games are still hidden. {remaining} is how many.',
+                        },
+                        {remaining: total - foundCount},
+                      ))
                 : translate(
                     {
-                      id: 'preset.gameModal.cta.remaining.other',
-                      message: '{remaining} more games hidden somewhere. Keep clicking.',
-                      description: 'CTA on the game-over modal when several mini-games are still hidden. {remaining} is how many.',
+                      id: 'preset.gameModal.cta.allFound',
+                      message: 'All {total} found. You read the kit.',
+                      description: 'CTA on the game-over modal when every mini-game has been discovered. {total} is how many games there are.',
                     },
-                    {remaining: total - foundCount},
-                  ))
-            : translate(
-                {
-                  id: 'preset.gameModal.cta.allFound',
-                  message: 'All {total} found. You read the kit.',
-                  description: 'CTA on the game-over modal when every mini-game has been discovered. {total} is how many games there are.',
-                },
-                {total},
-              )}
-        </p>
-
-        {/* Posting a score is the whole competition: there is no
-            leaderboard to submit to, so the share block is where a run
-            turns into something other people can see. */}
-        <div className={styles.share}>
-          <p className={styles.shareHead}>
-            <Translate id="preset.gameModal.share.head" description="Heading above the share buttons on the game-over modal">
-              Post your score
-            </Translate>
-          </p>
-          <p className={styles.shareHint}>
-            <Translate id="preset.gameModal.share.hint" description="Line under the share heading telling the player to attach a screenshot of the modal">
-              Add a screenshot of this card, so people can see the run behind the number.
-            </Translate>
-          </p>
-
-          <div className={styles.shareButtons}>
-            <button
-              type="button"
-              className={styles.shareBtn}
-              onClick={() => (instance ? shareOnMastodon(instance) : setAskInstance(true))}>
-              <Translate id="preset.gameModal.share.mastodon" description="Share-on-Mastodon button label">Mastodon</Translate>
-            </button>
-            <button type="button" className={styles.shareBtn} onClick={shareOnLinkedIn}>
-              <Translate id="preset.gameModal.share.linkedin" description="Share-on-LinkedIn button label">LinkedIn</Translate>
-            </button>
-            <button type="button" className={styles.shareBtn} onClick={copyShareText}>
-              <Translate id="preset.gameModal.share.copy" description="Copy-the-post-text button label">Copy the post</Translate>
-            </button>
-            <span className={styles.shareStatus} role="status" aria-live="polite">
-              {copied && (
-                <Translate id="preset.gameModal.share.copied" description="Confirmation shown after the post text is copied to the clipboard">
-                  Copied. Paste it with your screenshot.
-                </Translate>
-              )}
-            </span>
-          </div>
-
-          {askInstance && (
-            /* Mastodon has no central share endpoint, so the post can
-               only be opened on the player's own instance. Asked once,
-               then remembered. */
-            <form
-              className={styles.instanceRow}
-              onSubmit={(e) => { e.preventDefault(); shareOnMastodon(e.target.elements.instance.value); }}>
-              <label className={styles.instanceLabel} htmlFor="gm-instance">
-                <Translate id="preset.gameModal.share.instanceLabel" description="Label for the input asking which Mastodon instance the player is on">
-                  Your Mastodon instance
-                </Translate>
-              </label>
-              <input
-                id="gm-instance"
-                name="instance"
-                className={styles.instanceInput}
-                defaultValue={instance}
-                placeholder="mastodon.nl"
-                autoComplete="off"
-              />
-              <button type="submit" className={styles.shareBtn}>
-                <Translate id="preset.gameModal.share.instanceGo" description="Submit button next to the Mastodon instance input">Open</Translate>
-              </button>
-            </form>
-          )}
-
-          {shareConfig && pickLocale(shareConfig.prize) && (
-            /* The prize sentence stays text and only the rules link is
-               a link: a whole underlined paragraph reads as one long
-               link and hides where it goes. */
-            <p className={styles.prize}>
-              {pickLocale(shareConfig.prize)}
-              {shareConfig.prizeHref && (
-                <>
-                  {' '}
-                  <a href={shareConfig.prizeHref}>
-                    {pickLocale(shareConfig.prizeLinkLabel) || translate({
-                      id: 'preset.gameModal.share.rules',
-                      message: 'Read the rules',
-                      description: 'Link to the giveaway rules, shown after the prize line in the share block',
-                    })}
-                  </a>
-                </>
-              )}
+                    {total},
+                  )}
             </p>
-          )}
+
+            {/* Posting a score is the whole competition: there is no
+                leaderboard to submit to, so the share block is where a run
+                turns into something other people can see. */}
+            <div className={styles.share}>
+              <p className={styles.shareHead}>
+                <Translate id="preset.gameModal.share.head" description="Heading above the share buttons on the game-over modal">
+                  Post your score
+                </Translate>
+              </p>
+              <p className={styles.shareHint}>
+                <Translate id="preset.gameModal.share.hint" description="Line under the share heading telling the player to attach a screenshot of the modal">
+                  Add a screenshot of this card, so people can see the run behind the number.
+                </Translate>
+              </p>
+
+              <div className={styles.shareButtons}>
+                <button
+                  type="button"
+                  className={styles.shareBtn}
+                  onClick={() => (instance ? shareOnMastodon(instance) : setAskInstance(true))}>
+                  <Translate id="preset.gameModal.share.mastodon" description="Share-on-Mastodon button label">Mastodon</Translate>
+                </button>
+                <button type="button" className={styles.shareBtn} onClick={shareOnLinkedIn}>
+                  <Translate id="preset.gameModal.share.linkedin" description="Share-on-LinkedIn button label">LinkedIn</Translate>
+                </button>
+                <button type="button" className={styles.shareBtn} onClick={copyShareText}>
+                  <Translate id="preset.gameModal.share.copy" description="Copy-the-post-text button label">Copy the post</Translate>
+                </button>
+                <span className={styles.shareStatus} role="status" aria-live="polite">
+                  {copied && (
+                    <Translate id="preset.gameModal.share.copied" description="Confirmation shown after the post text is copied to the clipboard">
+                      Copied. Paste it with your screenshot.
+                    </Translate>
+                  )}
+                </span>
+              </div>
+
+              {askInstance && (
+                /* Mastodon has no central share endpoint, so the post can
+                   only be opened on the player's own instance. Asked once,
+                   then remembered. */
+                <form
+                  className={styles.instanceRow}
+                  onSubmit={(e) => { e.preventDefault(); shareOnMastodon(e.target.elements.instance.value); }}>
+                  <label className={styles.instanceLabel} htmlFor="gm-instance">
+                    <Translate id="preset.gameModal.share.instanceLabel" description="Label for the input asking which Mastodon instance the player is on">
+                      Your Mastodon instance
+                    </Translate>
+                  </label>
+                  <input
+                    id="gm-instance"
+                    name="instance"
+                    className={styles.instanceInput}
+                    defaultValue={instance}
+                    placeholder="mastodon.nl"
+                    autoComplete="off"
+                  />
+                  <button type="submit" className={styles.shareBtn}>
+                    <Translate id="preset.gameModal.share.instanceGo" description="Submit button next to the Mastodon instance input">Open</Translate>
+                  </button>
+                </form>
+              )}
+
+              {shareConfig && pickLocale(shareConfig.prize) && (
+                /* The prize sentence stays text and only the rules link is
+                   a link: a whole underlined paragraph reads as one long
+                   link and hides where it goes. */
+                <p className={styles.prize}>
+                  {pickLocale(shareConfig.prize)}
+                  {shareConfig.prizeHref && (
+                    <>
+                      {' '}
+                      <a href={shareConfig.prizeHref}>
+                        {pickLocale(shareConfig.prizeLinkLabel) || translate({
+                          id: 'preset.gameModal.share.rules',
+                          message: 'Read the rules',
+                          description: 'Link to the giveaway rules, shown after the prize line in the share block',
+                        })}
+                      </a>
+                    </>
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className={styles.actions}>

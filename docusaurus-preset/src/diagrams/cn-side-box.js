@@ -45,7 +45,7 @@ class CnSideBox extends HTMLElement {
         :host {
           display: inline-block;
           width: ${widthPx};
-          background: white;
+          background: var(--conduction-color-surface-card);
           border: 1px solid var(--c-cobalt-200);
           border-radius: var(--radius-md);
           padding: ${compact ? '10px 10px 12px' : '14px 14px 16px'};
@@ -57,7 +57,7 @@ class CnSideBox extends HTMLElement {
           font-size: 10px;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
           margin-bottom: ${compact ? '8px' : '12px'};
         }
         .chip:empty { display: none; }
@@ -69,7 +69,7 @@ class CnSideBox extends HTMLElement {
           align-items: center;
           padding: ${compact ? '4px 0' : '6px 0'};
           font-size: ${compact ? '12px' : '13px'};
-          color: var(--c-cobalt-700);
+          color: var(--conduction-color-text-body);
         }
 
         ::slotted([slot="footer"]) {
@@ -78,7 +78,7 @@ class CnSideBox extends HTMLElement {
           border-top: 1px dashed var(--c-cobalt-200);
           font-family: var(--conduction-typography-font-family-code, ui-monospace, monospace);
           font-size: 11px;
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
           text-align: center;
           display: block;
         }

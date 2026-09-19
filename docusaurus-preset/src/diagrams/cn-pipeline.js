@@ -90,7 +90,7 @@ class CnPipeline extends HTMLElement {
         }
 
         .stage {
-          background: var(--c-cobalt-50);
+          background: var(--conduction-color-surface-subtle);
           border-radius: var(--radius-lg);
           padding: var(--space-9) var(--space-7);
           overflow-x: auto;
@@ -117,14 +117,14 @@ class CnPipeline extends HTMLElement {
           font-size: 11px;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
           text-align: center;
         }
         ::slotted([slot="caption"]) {
           font-family: var(--conduction-typography-font-family-code, ui-monospace, monospace);
           font-size: 11px;
           letter-spacing: 0.08em;
-          color: var(--c-cobalt-400);
+          color: var(--conduction-color-text-muted);
         }
 
         @media (max-width: 700px) {

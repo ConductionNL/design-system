@@ -191,6 +191,44 @@ export default function Navbar() {
   const items = navbar.items || [];
   const brand = brandFor(location.pathname, navbar.title);
 
+  /* Mobile drawer. Below the desktop breakpoint the whole primary
+     navigation moves into a drawer, rather than being allowed to
+     overflow the bar: at 390px the inline bar needs about 571px, so
+     the trailing items used to land off-screen with no way to reach
+     them (the site clips horizontal overflow, so they were not even
+     scrollable). Everything goes in, links and CTAs both, because the
+     bar has to fit an unknown number of items on an unknown wordmark
+     length. Keeping any of them inline only moves the cliff. */
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const toggleRef = React.useRef(null);
+
+  /* Close on navigation. Without this the drawer stays open over the
+     page the visitor just asked for. */
+  React.useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  /* While open: Escape closes and returns focus to the toggle, and the
+     page behind the drawer does not scroll. Both effects are torn down
+     together so a route change mid-gesture cannot strand the body with
+     `overflow: hidden`. */
+  React.useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
+
   /* Wordmark resolution order:
      1. ConNext / Common Ground sub-brand → custom JSX (Con<Next>, …)
      2. Conduction product app (Open*, Docu*, My*, …) → prefix-light
@@ -277,6 +315,41 @@ export default function Navbar() {
         {rightItems.map((item, i) => (
           <NavItem key={i} item={item} location={location} appVersion={appVersion} />
         ))}
+      </div>
+
+      {/* Drawer toggle. Rendered on every viewport and hidden with CSS
+          above the breakpoint, so the markup does not depend on a
+          client-side width measurement that SSR cannot make. */}
+      <button
+        ref={toggleRef}
+        type="button"
+        className={styles.menuToggle}
+        aria-expanded={menuOpen}
+        aria-controls="navbar-drawer"
+        aria-label={menuOpen
+          ? translate({id: 'preset.navbar.menu.close', message: 'Close menu', description: 'Accessible label for the navbar drawer toggle while the drawer is open'})
+          : translate({id: 'preset.navbar.menu.open', message: 'Open menu', description: 'Accessible label for the navbar drawer toggle while the drawer is closed'})}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <span className={styles.iconGlyph} aria-hidden="true">
+          {menuOpen ? ICONS.close : ICONS.menu}
+        </span>
+      </button>
+
+      {/* Drawer. Kept mounted and hidden so the toggle's aria-controls
+          always resolves to a real element. `hidden` also keeps the
+          links out of the tab order and out of the accessibility tree
+          while closed, which a purely visual `display: none` on the
+          parent would not guarantee across the breakpoint. */}
+      <div id="navbar-drawer" className={styles.drawer} hidden={!menuOpen}>
+        <div className={styles.drawerItems}>
+          {leftItems.map((item, i) => (
+            <NavItem key={`l${i}`} item={item} location={location} appVersion={appVersion} />
+          ))}
+          {rightItems.map((item, i) => (
+            <NavItem key={`r${i}`} item={item} location={location} appVersion={appVersion} />
+          ))}
+        </div>
       </div>
     </nav>
   );

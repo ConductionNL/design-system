@@ -1,6 +1,15 @@
 /**
  * <GameModal /> styles. Mirrors preview/components/game-modal.css
  * for the panel + overlay; cobalt-on-white per huisstijl.
+ *
+ * From 880px the card is a wide two-column grid: the headline and how
+ * far you are top left, the total and the share block top right, and
+ * the roster of sixteen games across the bottom in two columns of
+ * eight. In a single
+ * narrow column the roster alone ran past the bottom of the window,
+ * which put the total and the share buttons out of reach on a laptop.
+ * Below 880px it stacks in DOM order, because two columns of 190px are
+ * worse than a long card you can scroll.
  */
 
 .modal {
@@ -30,6 +39,39 @@
   width: calc(100% - 48px);
   max-width: 520px;
   box-shadow: var(--shadow-3, 0 30px 80px -20px rgba(10, 23, 47, 0.4));
+  /* A short window is still a window. Scrolling the card is worse than
+     fitting and far better than a Play again button nobody can reach. */
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+
+.body {
+  display: grid;
+  gap: 0;
+}
+
+@media (min-width: 880px) {
+  .panel { max-width: 880px; }
+  .body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'intro aside'
+      'roster roster';
+    column-gap: 40px;
+  }
+  .intro { grid-area: intro; }
+  .aside { grid-area: aside; }
+  .roster { grid-area: roster; }
+
+  /* Eight and eight rather than sixteen. Multi-column fills downwards,
+     so the list still reads in roster order. */
+  .grid {
+    display: block;
+    columns: 2;
+    column-gap: 32px;
+  }
+  .gridItem,
+  .gridItemFound { break-inside: avoid; }
 }
 
 .close {
@@ -86,12 +128,15 @@
   letter-spacing: 0.04em;
   padding: 6px 12px;
   border-radius: var(--radius-pill);
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .progress {
   margin: 24px 0 16px;
 }
+/* Last thing in the headline column, directly above the roster it
+   counts. Nothing follows it there, so it needs no tail margin. */
+.intro .progress { margin-bottom: 0; }
 .progressLabel {
   display: flex;
   justify-content: space-between;
@@ -122,14 +167,15 @@
   margin: 0 0 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 .gridItem,
 .gridItemFound {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--c-cobalt-400);
 }
 .gridItemFound { color: var(--c-cobalt-900); font-weight: 500; }
@@ -152,7 +198,7 @@
 }
 
 .total {
-  margin: 12px 0 0;
+  margin: 0;
   font-size: 15px;
   color: var(--c-cobalt-700);
 }
@@ -248,7 +294,7 @@
 .cta {
   font-size: 13px;
   color: var(--c-cobalt-400);
-  margin: 16px 0 24px;
+  margin: 10px 0 0;
   font-style: italic;
 }
 
@@ -256,6 +302,7 @@
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+  margin-top: 20px;
 }
 
 .btnSecondary {

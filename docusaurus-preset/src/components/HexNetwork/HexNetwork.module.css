@@ -130,6 +130,28 @@
   }
 }
 
+/* The smallest phones still in use. A row is `width: max-content` and the
+   network centres it, so once the row is wider than the column it overflows
+   BOTH sides and the left half lands at a negative x, where the site-wide
+   `overflow-x: clip` means nothing can scroll to it. Measured at 320px on
+   2026-09-19: a three-cell offset row came to 3x96 + 2x6 + (96+6)/2 = 351px
+   inside a 288px panel, and the Acato and Procolix logo links sat at x=-15.
+   A row of three plus the half-pitch offset is 3.5 cells + 2.5 gaps, so the
+   cell has to come down to 64px to fit the ~240px that remains inside the
+   panel padding. */
+@media (max-width: 420px) {
+  .network {
+    --hex-cell-w: 64px;
+    --hex-cell-h: 74px;
+    --hex-row-gap: 4px;
+  }
+  .bg-tinted,
+  .bg-white,
+  .bg-inverse {
+    padding: var(--space-6) var(--space-3);
+  }
+}
+
 /* ============ Scroll variant ============
  * Vertical marquee for the partner-wall pattern. The viewport caps the
  * visible height to N rows; the track holds the rows twice so the

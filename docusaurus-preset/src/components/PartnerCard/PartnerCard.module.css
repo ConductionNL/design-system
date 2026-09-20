@@ -64,8 +64,16 @@
   color: var(--conduction-color-text-body);
 }
 
-/* Service tier: gold pill on a white card. */
-.tier-service .tier { background: var(--c-gold-500); color: var(--conduction-color-text-strong); }
+/* Service tier: gold pill on a white card.
+   The ink is cobalt-900 directly rather than the text-strong token, because
+   the pill's background is a raw palette value and therefore does NOT flip
+   with the theme, while text-strong does: cobalt-900 in light, white in dark.
+   Measured 2026-09-19 on 17 pages, the word "Service" came out white on gold
+   at 2.58:1 in dark mode. This is the mirror of the usual fault. Ink and
+   surface have to flip together, and where the surface cannot flip the ink
+   must not either. Cobalt-900 on gold is also what the brand rule already
+   requires for ink on yellow. */
+.tier-service .tier { background: var(--c-gold-500); color: var(--c-cobalt-900); }
 
 /* Certified tier: cobalt-fill inverse card. The compound .card.tier-certified
    selector is deliberate — it lifts specificity above the plain .card rule

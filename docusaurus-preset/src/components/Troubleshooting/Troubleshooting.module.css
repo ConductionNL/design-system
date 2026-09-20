@@ -31,6 +31,15 @@
   padding: var(--space-4) var(--space-5);
   display: grid;
   gap: var(--space-2);
+  /* A grid item's automatic minimum size is min-content, and a code block
+     inside this one has no min-content to speak of: `white-space: pre` makes
+     the longest command line unbreakable. Measured at 320px on
+     /academy/run-nextcloud-locally/ 2026-09-19: the item grew to 943px inside
+     a 288px list and took 64 paragraphs, list items and inline code spans off
+     the right edge with it, where the page's `overflow-x: clip` means nothing
+     can scroll to them. The `pre` already carries its own `overflow-x: auto`
+     and scrolls perfectly well once it is allowed to be narrow. */
+  min-width: 0;
 }
 
 .symptom {
@@ -68,6 +77,10 @@
   font-size: 16px;
   color: var(--conduction-color-text-body);
   line-height: 1.6;
+  /* Same reason as .item above: this is the grid item that actually holds
+     the code block, so it needs its own escape from the min-content floor
+     or the floor simply moves down one level. */
+  min-width: 0;
 }
 
 .body code {

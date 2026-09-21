@@ -223,6 +223,32 @@ a.downloadsBadge:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* The glyph knocks when somebody clicks it.
+
+   Some pages hide a mini-game behind their own logo, and a hiding
+   place that gives no sign of being touched is indistinguishable
+   from a dead logo — two of the three clicks it takes to open one
+   used to land with nothing happening at all. <HiddenGame> raises
+   data-knock on whatever it is listening to; what a knock looks
+   like is this element's business, not its.
+
+   It swings from the low corner so a gavel reads as a gavel. The
+   flag is only present while the game is still shut, so the logo
+   stops answering once there is nothing left to find. */
+@media (prefers-reduced-motion: no-preference) {
+  .titleIcon[data-knock] svg {
+    transform-origin: 72% 78%;
+    animation: dhKnock 340ms cubic-bezier(0.3, 0.9, 0.35, 1);
+  }
+  @keyframes dhKnock {
+    0%   { transform: rotate(0deg); }
+    28%  { transform: rotate(-26deg) translateY(-2px); }
+    52%  { transform: rotate(16deg); }
+    72%  { transform: rotate(-7deg); }
+    100% { transform: rotate(0deg); }
+  }
+}
 @media (max-width: 1100px) {
   .titleIcon { width: 64px; height: 74px; }
   .titleIcon svg { width: 30px; height: 30px; }

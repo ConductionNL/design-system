@@ -139,9 +139,27 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
 
     if (unlock.kind === 'clicks') {
       const counter = createClickCounter({count: unlock.count || 3, windowMs: unlock.windowMs || 1500});
-      const onClick = () => { if (counter.push(now())) reveal(); };
+      const onClick = () => {
+        /* Knock the thing that was clicked. A hiding place nobody
+           can tell they have found is just a dead logo: without
+           this, two of the three clicks land with no sign that
+           anything is happening and most people stop at one.
+
+           The element belongs to whatever rendered it, so this only
+           raises a flag and lets that component's own stylesheet
+           decide what a knock looks like. Removing it and forcing a
+           reflow first is what makes the animation run again on a
+           second click rather than only the first. */
+        target.removeAttribute('data-knock');
+        void target.offsetWidth;
+        target.setAttribute('data-knock', '');
+        if (counter.push(now())) reveal();
+      };
       target.addEventListener('click', onClick);
-      return () => target.removeEventListener('click', onClick);
+      return () => {
+        target.removeEventListener('click', onClick);
+        target.removeAttribute('data-knock');
+      };
     }
 
     const timer = createHoldTimer({holdMs: unlock.holdMs || 1200});

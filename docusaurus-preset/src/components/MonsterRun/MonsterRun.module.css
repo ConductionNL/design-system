@@ -1,10 +1,12 @@
 /**
  * <MonsterRun /> styles.
  *
- * A side-on strip: the monster on the left, the world walking towards
- * it. Tokens only, one accent for what would stop it, and the track
- * also spells out what is coming, so the run is readable without the
- * picture.
+ * A side-on strip laid out in columns, one column per step of the run.
+ * The monster stands a quarter of the way in rather than off to one
+ * side, so the world passes through him and you can see a block go
+ * under his feet or a slab go over his head. Tokens only, one accent
+ * for what would stop him, and the track also spells out what is
+ * coming, so the run is readable without the picture.
  */
 
 .mr {
@@ -66,110 +68,413 @@
 
 /* ======================================================================
    The strip
+
+   Four numbers decide the whole game, and they only work as a set.
+   Change one and check the other three still read on screen, because
+   a picture that disagrees with ./engine.js is worse than no picture:
+
+     standing (54) walks into the slab, whose underside is at 36  → duck
+     crouching (27) passes under that slab with 9px to spare      → safe
+     standing walks into the block on the ground, 34 tall         → jump
+     airborne (48 off the ground) clears that block by 14px       → safe
+
+   `--mr-slide`, `--mr-lift` and `--mr-gait` are written by the
+   component every frame; everything that moves reads one of them, so
+   the world, the ground and the legs cannot drift apart.
    ====================================================================== */
 
 .stage {
+  --mr-col: clamp(34px, 7.5vw, 56px);
+  --mr-monster: 3;  /* set from the component: MONSTER_COL */
+  --mr-slide: 0;    /* 0 → 1 across one step */
+  --mr-lift: 0;     /* 0 → 1 → 0 across one jump */
+  --mr-gait: 0;     /* -1 → 1, the legs */
+
+  /* Who is what colour. These live on the stage, not on the monster,
+     so the dark-mode override below cannot end up out-specifying
+     .hurt — which sets the same three colours on the monster itself. */
+  --mr-coat: var(--c-cobalt-900);
+  --mr-flesh: var(--c-forest-500);
+  /* One step darker than his coat ever gets, in both themes. It began
+     as the muted text role, which flips to the same cobalt-300 the
+     coat takes in the dark — and the monster disappeared into the mob
+     chasing him, which is the one thing this picture cannot do. */
+  --mr-folk: var(--c-cobalt-400);
+  --mr-hanger: var(--c-orange-knvb);
+  --mr-hanger-op: 0.3;
+
+  --mr-ground: 26px;
+  --mr-stand: 54px;
+  --mr-crouch: 27px;
+  --mr-jump: 48px;
+  --mr-block: 34px;
+  --mr-slab: 34px;
+  --mr-slab-gap: 36px;
+
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  height: 132px;
-  padding: 0 12px 14px;
+  height: 178px;
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-subtle);
   overflow: hidden;
 }
 
-.ground {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12px;
-  height: 2px;
-  background: var(--c-cobalt-200);
+/* On the dark stage his coat was first cobalt-900, which is a
+   silhouette against a silhouette, and then the plain text colour,
+   which turned him white and made him a ghost rather than the monster.
+   Lift the coat to a slate that reads on cobalt-800, and brighten the
+   green so the famous face survives the dark. --mr-folk needs no
+   override: it is already a role token that flips. */
+[data-theme='dark'] .stage {
+  /* cobalt-200, not -300: against the mob's cobalt-400 a -300 coat
+     measures 1.8:1 and he reads as one of the crowd chasing him.
+     At -200 it is 3.2:1 and he is plainly the one being chased. */
+  --mr-coat: var(--c-cobalt-200);
+  --mr-flesh: var(--c-forest-300);
+  /* KNVB orange at 0.3 is a whisper on cobalt-800, and the line is
+     the only thing saying the slab hangs from somewhere rather than
+     floating. Lighter tint, and less of it taken away. */
+  --mr-hanger: var(--c-coral-300);
+  --mr-hanger-op: 0.5;
 }
 
-/* The monster: a head, a body and one bolt. Three boxes is enough
-   silhouette at this size, and it keeps the whole thing token-built. */
-.monster {
-  position: relative;
-  width: 26px;
-  height: 46px;
-  flex-shrink: 0;
+/* The world. One transform for everything on it, so a step is a slide
+   and not a hop. */
+.lane {
+  position: absolute;
+  inset: 0;
   z-index: 1;
-  transition: transform 120ms ease-out, height 120ms ease-out;
-}
-.head1 {
-  position: absolute;
-  top: 0;
-  left: 3px;
-  width: 20px;
-  height: 16px;
-  border-radius: 3px 3px 2px 2px;
-  background: var(--c-forest-500, var(--c-mint-500));
-}
-.body1 {
-  position: absolute;
-  top: 16px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 3px;
-  background: var(--c-cobalt-900);
-}
-.bolt {
-  position: absolute;
-  top: 6px;
-  right: 0;
-  width: 6px;
-  height: 3px;
-  border-radius: 1px;
-  background: var(--c-orange-knvb);
+  transform: translate3d(calc(var(--mr-slide) * var(--mr-col) * -1), 0, 0);
+  will-change: transform;
 }
 
-.posture-jump { transform: translateY(-34px); }
-.posture-duck { height: 26px; }
-.posture-duck .head1 { top: 0; height: 12px; }
-.posture-duck .body1 { top: 12px; }
-
-.track {
+.slot {
+  position: absolute;
+  left: calc(var(--j) * var(--mr-col));
+  width: var(--mr-col);
   display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  flex: 1;
-  height: 100%;
-  padding-bottom: 2px;
+  align-items: center;
+  justify-content: center;
 }
 
-.cell {
-  flex: 1;
-  min-width: 0;
+/* On the ground: jump it. */
+.low {
+  bottom: var(--mr-ground);
+  height: var(--mr-block);
+}
+
+/* Overhead: duck under it. It hangs low enough to take the monster's
+   head off at a run, which is the only reason anyone ever ducks. */
+.high {
+  bottom: calc(var(--mr-ground) + var(--mr-slab-gap));
+  height: var(--mr-slab);
+}
+.high::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 2px;
+  height: 200px;
+  margin-left: -1px;
+  background: var(--mr-hanger);
+  opacity: var(--mr-hanger-op);
+}
+
+.block {
+  width: calc(100% - 8px);
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px;
   border-radius: var(--radius-sm);
-  font-size: 8px;
-  line-height: 1.1;
+  background: var(--c-orange-knvb);
+  color: var(--c-white);
+  font-size: 8.5px;
+  line-height: 1.15;
+  font-weight: 600;
   text-align: center;
-  color: transparent;
   overflow: hidden;
 }
 
-/* Only the cells holding something get a box; the rest are air. */
-.obstacle {
-  background: var(--c-orange-knvb);
-  color: white;
-  font-weight: 600;
+/* Worth picking up. Small, floating and nothing like a wall: a part is
+   collected by running through it, so it must not read as something to
+   jump or duck. It sits at chest height, dead on the monster's line. */
+.pickup {
+  bottom: calc(var(--mr-ground) + 20px);
+  height: 20px;
 }
 .part {
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
   background: var(--c-mint-300);
-  color: var(--conduction-color-text-strong);
-  font-weight: 600;
+  border: 1.5px solid var(--c-mint-500);
+  transform: rotate(45deg);
+  animation: mrFloat 1.6s ease-in-out infinite;
+}
+@keyframes mrFloat {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50%      { transform: translateY(-3px) rotate(45deg); }
 }
 
-.low  { height: 34px; align-self: flex-end; }
-.high { height: 30px; align-self: flex-start; margin-top: 8px; }
+/* The ground, with marks on it that travel at the speed of the world.
+   Without them a clear stretch looks like a still picture. */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--mr-ground);
+  height: 2px;
+  z-index: 0;
+  background: var(--c-cobalt-200);
+}
+.ground::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--c-cobalt-200) 0 calc(var(--mr-col) * 0.3),
+    transparent calc(var(--mr-col) * 0.3) var(--mr-col)
+  );
+  background-position-x: calc(var(--mr-slide) * var(--mr-col) * -1);
+  opacity: 0.7;
+}
+
+/* ======================================================================
+   The monster
+   ====================================================================== */
+
+/* A head, a body, one bolt and two legs, standing in the track rather
+   than beside it. Column MONSTER_COL is where the engine resolves the
+   step, so this is the one thing on the strip that does not slide. */
+.monster {
+  /* His three colours live here so being hit can change all of him at
+     once, rather than putting something on top of him. */
+  --mr-ink: var(--mr-coat);
+  --mr-skin: var(--mr-flesh);
+  --mr-bolt: var(--c-orange-knvb);
+
+  position: absolute;
+  left: calc(var(--mr-monster) * var(--mr-col));
+  width: var(--mr-col);
+  bottom: var(--mr-ground);
+  height: var(--mr-stand);
+  z-index: 2;
+  border-radius: 4px;
+  transform: translate3d(0, calc(var(--mr-lift) * var(--mr-jump) * -1), 0);
+  transition: height 90ms ease-out;
+}
+
+.head1 {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -11px;
+  width: 22px;
+  height: 28%;
+  border-radius: 3px 3px 2px 2px;
+  background: var(--mr-skin);
+}
+.body1 {
+  position: absolute;
+  top: 28%;
+  bottom: 22%;
+  left: 50%;
+  margin-left: -15px;
+  width: 30px;
+  border-radius: 3px;
+  background: var(--mr-ink);
+}
+.bolt {
+  position: absolute;
+  top: 11%;
+  left: calc(50% + 11px);
+  width: 7px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--mr-bolt);
+}
+
+/* The legs swing on the same clock as the world, so the run reads as a
+   run instead of a box being dragged sideways. */
+.leg {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 24%;
+  border-radius: 2px;
+  background: var(--mr-ink);
+  transform-origin: 50% 0;
+}
+.legA {
+  left: calc(50% - 11px);
+  transform: rotate(calc(var(--mr-gait) * 26deg));
+}
+.legB {
+  left: calc(50% + 5px);
+  transform: rotate(calc(var(--mr-gait) * -26deg));
+}
+
+.posture-duck { height: var(--mr-crouch); }
+.posture-duck .leg { transform: none; }
+.posture-jump .legA { transform: rotate(20deg); }
+.posture-jump .legB { transform: rotate(-32deg); }
+
+/* One step of being visibly hit, which is as long as the rules give it.
+   He goes red himself rather than wearing a marker: a box drawn over
+   him reads as a second object on the strip, which is one more thing
+   to parse at the exact moment you are trying to see what went wrong. */
+.hurt {
+  --mr-ink: var(--conduction-color-status-error);
+  --mr-skin: var(--conduction-color-status-error);
+  --mr-bolt: var(--conduction-color-status-error);
+}
+.hurt .head1,
+.hurt .body1 {
+  animation: mrHurt 240ms ease-out;
+}
+@keyframes mrHurt {
+  0%   { transform: translateX(0); }
+  30%  { transform: translateX(-3px); }
+  65%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* ======================================================================
+   The villagers
+
+   The one thing on the strip that is not in the rules. They run at
+   exactly his speed and never gain, which is the whole joke: the mob
+   is permanent, like the maintenance bill he is jumping over.
+
+   Kept small, low-contrast and behind the lane, because the left of
+   the strip is where you read what you have just cleared and that has
+   to stay legible. They bob on --mr-gait, the same run cycle as his
+   legs, so the three of them are running rather than sliding.
+   ====================================================================== */
+
+/* Above the lane, not behind it: they are chasing him down the same
+   road, so they pass in front of what is on it rather than being
+   filed away in the scenery. Equal z-index with the monster and
+   earlier in the DOM, so he still wins if they ever meet. */
+.mob {
+  position: absolute;
+  left: 0;
+  bottom: var(--mr-ground);
+  z-index: 2;
+  width: 62px;
+  height: 38px;
+  /* Solid, not faded. They used to sit behind the lane where a little
+     transparency read as distance; in front of an orange block it just
+     turns them muddy. Their colour does the holding-back now. */
+}
+
+/* Built exactly like the monster — boxy head, boxy body, two legs on
+   the same run cycle — at two thirds the size and one flat colour.
+   Same hand, smaller drawing, so the strip reads as one picture. */
+.villager {
+  position: absolute;
+  bottom: 0;
+  width: 14px;
+}
+.v1 { left: 0;    height: 32px; --mr-swing:  22deg; transform: translateY(calc(var(--mr-gait) * -1.5px)); }
+.v2 { left: 18px; height: 36px; --mr-swing: -20deg; transform: translateY(calc(var(--mr-gait) *  1.5px)); }
+.v3 { left: 36px; height: 30px; --mr-swing:  18deg; transform: translateY(calc(var(--mr-gait) * -1px)); }
+
+.vHead {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -4.5px;
+  width: 9px;
+  height: 28%;
+  border-radius: 3px 3px 2px 2px;
+  background: var(--mr-folk);
+}
+.vBody {
+  position: absolute;
+  top: 28%;
+  bottom: 22%;
+  left: 1px;
+  right: 1px;
+  border-radius: 3px;
+  background: var(--mr-folk);
+}
+
+.vLeg {
+  position: absolute;
+  bottom: 0;
+  width: 4px;
+  height: 24%;
+  border-radius: 2px;
+  background: var(--mr-folk);
+  transform-origin: 50% 0;
+}
+.vLegA { left: calc(50% - 5px); transform: rotate(calc(var(--mr-gait) * var(--mr-swing))); }
+.vLegB { left: calc(50% + 1px); transform: rotate(calc(var(--mr-gait) * var(--mr-swing) * -1)); }
+
+/* Both implements are the same stick, shouldered at the same angle;
+   only what sits on the end of it differs. */
+.fork,
+.torch {
+  position: absolute;
+  left: 11px;
+  width: 2px;
+  background: var(--mr-folk);
+  transform-origin: 50% 100%;
+}
+.fork {
+  bottom: 5px;
+  height: 30px;
+  transform: rotate(18deg);
+}
+.torch {
+  bottom: 7px;
+  height: 22px;
+  transform: rotate(15deg);
+}
+
+/* Three tines, as one repeating gradient rather than three elements. */
+.fork::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: -4px;
+  width: 10px;
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--mr-folk) 0 2px,
+    transparent 2px 4px
+  );
+}
+
+.torch::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: -2px;
+  width: 6px;
+  height: 11px;
+  /* Narrow and pointed at the top: a round blob reads as a balloon. */
+  border-radius: 50% 50% 44% 44% / 74% 74% 26% 26%;
+  background: var(--c-orange-knvb);
+  transform-origin: 50% 100%;
+  animation: mrFlicker 900ms ease-in-out infinite;
+}
+/* Two torches flickering in lockstep read as one blinking light. */
+.v3 .torch::before { animation-delay: -420ms; }
+
+@keyframes mrFlicker {
+  0%, 100% { transform: scale(1, 1); opacity: 1; }
+  40%      { transform: scale(0.92, 1.18); opacity: 0.86; }
+  70%      { transform: scale(1.06, 0.92); opacity: 1; }
+}
 
 .ahead {
   margin: 10px 0 0;
@@ -226,6 +531,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* The posture still changes, it just stops sliding there. */
+  /* The run still moves, because that is the game, but it goes back to
+     a column at a time and nothing swings, floats or shakes on its own.
+     The component stops writing --mr-slide and --mr-gait to match. */
+  .part { animation: none; }
   .monster { transition: none; }
+  .hurt .head1,
+  .hurt .body1 { animation: none; }
+  /* The villagers already stand still: their bob rides --mr-gait,
+     which the component stops writing. Only the torches need telling. */
+  .torch::before { animation: none; }
 }

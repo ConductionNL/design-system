@@ -17,6 +17,23 @@
  * game about picking the right answer. The rules live in ./engine.js
  * with no DOM and no clock.
  *
+ * ## How the picture is built
+ *
+ * The strip is one row of columns, one column per step. The monster
+ * does not stand beside the track, it stands *in* it, at column
+ * MONSTER_COL, and the world walks through him. Everything he has
+ * already answered keeps going, behind him, for another few columns
+ * before it leaves the frame — without that tail a jump reads as the
+ * obstacle blinking out of existence, and you never find out whether
+ * you made it.
+ *
+ * The world slides rather than hops. The engine still moves in whole
+ * steps; the component interpolates between them every frame and
+ * writes the fraction to `--mr-slide`, which the lane, the ground and
+ * the monster's legs all move on. `--mr-lift` and `--mr-gait` are
+ * written the same way, so the jump arc and the running legs keep pace
+ * with a run that speeds up as it goes.
+ *
  * Usage:
  *
  *   <MonsterRun />
@@ -26,17 +43,60 @@
  *
  * Accessibility: jump and duck are real buttons as well as arrow keys,
  * and the track ahead is announced as a sentence, so the run can be
- * played by someone who cannot see it coming.
+ * played by someone who cannot see it coming. Under
+ * `prefers-reduced-motion` the run goes back to moving a column at a
+ * time, because the rules never needed the sliding.
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {flushSync} from 'react-dom';
 import {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import {createGame, step, jump, duck, summarise, LOW} from './engine';
+import {createGame, step, stepMs, jump, duck, summarise, LOW} from './engine';
 import styles from './MonsterRun.module.css';
 
 const GAME_ID = 'monster-run';
-const TICK_MS = 40;
+
+/* How many columns of answered track stay on screen behind the
+   monster. The monster stands on the last one, so the other three are
+   the tail that shows you what you just cleared; the oldest of them
+   slides out of frame rather than blinking off. */
+const TRAIL = 4;
+const MONSTER_COL = TRAIL - 1;
+
+/* The jump. It has to be at full height on the step that clears the
+   block, so the rise ends at the next step boundary however late the
+   key was pressed, and the drop happens after the rules have already
+   put the monster back on his feet. */
+const MIN_RISE_MS = 40;
+const FALL_MS = 100;
+
+const BLANK_TRAIL = Object.freeze(Array.from({length: TRAIL}, () => null));
+
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const clock = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+
+/**
+ * A React key that follows the thing, not the column it is standing in.
+ *
+ * The lane shifts by one every step, so keying on the column made React
+ * unmount and remount every visible cell three times a second: the
+ * pick-ups restarted their float from zero each time, and the churn
+ * showed as a flicker across the strip. The engine's spawn() builds
+ * each cell once and never replaces it, so the object can carry the
+ * identity itself.
+ */
+const cellKeys = new WeakMap();
+let lastCellKey = 0;
+function keyFor(cell) {
+  let key = cellKeys.get(cell);
+  if (key === undefined) {
+    lastCellKey += 1;
+    key = lastCellKey;
+    cellKeys.set(cell, key);
+  }
+  return key;
+}
 
 function obstacleCopy(what) {
   switch (what) {
@@ -62,36 +122,124 @@ function partCopy(what) {
   }
 }
 
+/**
+ * How far off the ground the monster is, 0 to 1.
+ *
+ * Driven by the posture rather than by a timer of its own, so the
+ * picture can never disagree with the rules: while the engine says
+ * 'jump' he is up, and he only comes down once it says 'run'.
+ */
+function liftFor(state, t, air) {
+  if (state.posture === 'jump') {
+    /* The step this jump lands on. Constant for the whole jump, since
+       distance climbs by one every time postureFor drops by one, which
+       makes it a safe way to tell a new jump from the one in progress. */
+    const id = state.distance + state.postureFor;
+    if (!air.current || air.current.id !== id) {
+      air.current = {id, from: t, rise: Math.max(t + MIN_RISE_MS, state.nextStepAt), down: null};
+    }
+    const u = clamp01((t - air.current.from) / Math.max(1, air.current.rise - air.current.from));
+    return 1 - (1 - u) ** 3;
+  }
+  if (air.current) {
+    if (air.current.down == null) air.current.down = t;
+    const u = clamp01((t - air.current.down) / FALL_MS);
+    if (u >= 1) {
+      air.current = null;
+      return 0;
+    }
+    return 1 - u * u;
+  }
+  return 0;
+}
+
 export default function MonsterRun({className}) {
   const {i18n} = useDocusaurusContext();
   const locale = (i18n && i18n.currentLocale) || 'en';
 
-  const [game, setGame] = useState(null);
+  const [view, setView] = useState({game: null, trail: BLANK_TRAIL});
   const gameRef = useRef(null);
+  const trailRef = useRef(BLANK_TRAIL);
+  const stageRef = useRef(null);
+  const airRef = useRef(null);
   const startedAtRef = useRef(0);
   const endedRef = useRef(false);
+  const stillRef = useRef(false);
 
+  const {game, trail} = view;
   const running = Boolean(game) && !game.over;
-  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startedAtRef.current;
+  const now = () => clock() - startedAtRef.current;
+
+  /* Someone who asked for less motion still gets the game; they get it
+     a column at a time, the way it moved before it learned to slide. */
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => { stillRef.current = mq.matches; };
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   const begin = useCallback(() => {
     endedRef.current = false;
-    startedAtRef.current = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    airRef.current = null;
+    trailRef.current = BLANK_TRAIL;
+    startedAtRef.current = clock();
     const fresh = createGame({seed: Math.floor(Math.random() * 2 ** 31), now: 0});
     gameRef.current = fresh;
-    setGame(fresh);
+    setView({game: fresh, trail: BLANK_TRAIL});
   }, []);
 
   useEffect(() => {
     if (!running) return undefined;
-    const id = setInterval(() => {
-      const next = step(gameRef.current, now());
-      if (next !== gameRef.current) {
-        gameRef.current = next;
-        setGame(next);
+    const stage = stageRef.current;
+    let raf = 0;
+
+    const paint = (state, t) => {
+      if (!stage) return;
+      const still = stillRef.current;
+      const slide = still ? 0 : clamp01(1 - (state.nextStepAt - t) / Math.max(1, stepMs(state)));
+      const lift = still ? (state.posture === 'jump' ? 1 : 0) : liftFor(state, t, airRef);
+      stage.style.setProperty('--mr-slide', slide.toFixed(4));
+      stage.style.setProperty('--mr-lift', lift.toFixed(4));
+      stage.style.setProperty('--mr-gait', still ? '0' : Math.sin(Math.PI * (state.distance + slide)).toFixed(4));
+    };
+
+    const frame = () => {
+      raf = requestAnimationFrame(frame);
+      const t = now();
+      let state = gameRef.current;
+
+      /* A backgrounded tab stops the frames but not the clock. Without
+         this the run comes back owing a hundred steps and spends all
+         three stitches catching up before anyone can see it happen. */
+      if (t - state.nextStepAt > 4 * stepMs(state)) {
+        state = {...state, nextStepAt: t + stepMs(state)};
+        gameRef.current = state;
       }
-    }, TICK_MS);
-    return () => clearInterval(id);
+
+      const next = step(state, t);
+      if (next !== state) {
+        trailRef.current = [state.track[0] || null, ...trailRef.current].slice(0, TRAIL);
+        gameRef.current = next;
+        /* Synchronously, so the shifted lane is in the DOM before the
+           slide below is reset to zero for it. React's own scheduling
+           lands the commit after this frame has painted, which showed
+           the new offset against the old columns: one frame of the
+           world snapping backwards, three times a second. */
+        flushSync(() => setView({game: next, trail: trailRef.current}));
+        state = next;
+      }
+
+      paint(state, t);
+    };
+
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      if (stage) stage.style.setProperty('--mr-lift', '0');
+    };
   }, [running]);
 
   useEffect(() => {
@@ -118,10 +266,12 @@ export default function MonsterRun({className}) {
   }, [begin]);
 
   const act = useCallback((what) => {
-    if (!gameRef.current || gameRef.current.over) return;
-    const next = what === 'jump' ? jump(gameRef.current) : duck(gameRef.current);
+    const current = gameRef.current;
+    if (!current || current.over) return;
+    const next = what === 'jump' ? jump(current) : duck(current);
+    if (next === current) return;
     gameRef.current = next;
-    setGame(next);
+    setView({game: next, trail: trailRef.current});
   }, []);
 
   useEffect(() => {
@@ -137,6 +287,11 @@ export default function MonsterRun({className}) {
   const track = game ? game.track : [];
   const posture = game ? game.posture : 'run';
   const last = game ? game.last : null;
+
+  /* One row of columns: the tail on the left, the monster on column
+     MONSTER_COL, and what is coming on the right. The oldest of the
+     tail sits on column 0 and spends the step sliding out of frame. */
+  const lane = [...trail.slice().reverse(), ...track];
 
   /* What is coming, in words, for anyone who cannot watch it come. */
   const incoming = track.slice(0, 4).find((c) => c && c.kind === 'obstacle');
@@ -176,28 +331,61 @@ export default function MonsterRun({className}) {
         </div>
       </header>
 
-      <div className={styles.stage} aria-hidden="true">
-        <div className={[styles.monster, styles[`posture-${posture}`]].filter(Boolean).join(' ')}>
-          <span className={styles.head1} />
-          <span className={styles.body1} />
-          <span className={styles.bolt} />
+      <div
+        className={styles.stage}
+        ref={stageRef}
+        style={{'--mr-monster': String(MONSTER_COL)}}
+        aria-hidden="true">
+        <div className={styles.lane}>
+          {lane.map((cell, j) => {
+            if (!cell) return null;
+            const isObstacle = cell.kind === 'obstacle';
+            return (
+              <div
+                key={keyFor(cell)}
+                className={[
+                  styles.slot,
+                  isObstacle ? (cell.lane === LOW ? styles.low : styles.high) : styles.pickup,
+                ].filter(Boolean).join(' ')}
+                style={{'--j': String(j)}}>
+                {isObstacle
+                  ? <span className={styles.block}>{obstacleCopy(cell.what)}</span>
+                  : <span className={styles.part} />}
+              </div>
+            );
+          })}
         </div>
 
-        <div className={styles.track}>
-          {track.map((cell, i) => (
-            <span
-              key={i}
-              className={[
-                styles.cell,
-                cell && cell.kind === 'obstacle' && styles.obstacle,
-                cell && cell.kind === 'part' && styles.part,
-                cell && cell.lane === LOW ? styles.low : cell && styles.high,
-              ].filter(Boolean).join(' ')}>
-              {cell && (cell.kind === 'obstacle' ? obstacleCopy(cell.what) : partCopy(cell.what))}
+        <span className={styles.ground} />
+
+        {/* The villagers. Scenery, not rules: they run at his speed
+            and never gain, and the stage is aria-hidden, so they cost
+            the game nothing and the screen reader nothing. Built from
+            the same parts as the monster, in the same order. */}
+        <div className={styles.mob}>
+          {[styles.v1, styles.v2, styles.v3].map((who, i) => (
+            <span key={who} className={[styles.villager, who].join(' ')}>
+              <span className={styles.vHead} />
+              <span className={styles.vBody} />
+              <span className={[styles.vLeg, styles.vLegA].join(' ')} />
+              <span className={[styles.vLeg, styles.vLegB].join(' ')} />
+              <span className={i === 1 ? styles.fork : styles.torch} />
             </span>
           ))}
         </div>
-        <span className={styles.ground} />
+
+        <div
+          className={[
+            styles.monster,
+            styles[`posture-${posture}`],
+            last && last.result === 'hit' && styles.hurt,
+          ].filter(Boolean).join(' ')}>
+          <span className={styles.head1} />
+          <span className={styles.body1} />
+          <span className={styles.bolt} />
+          <span className={[styles.leg, styles.legA].join(' ')} />
+          <span className={[styles.leg, styles.legB].join(' ')} />
+        </div>
       </div>
 
       <p className={styles.ahead} role="status" aria-live="polite">

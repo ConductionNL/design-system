@@ -49,29 +49,40 @@ export const DEFAULTS = {
   toleranceFloor: 6,
   toleranceStep: 2,
   durability: 100,
-  /* Turning costs nothing. The cylinder coming round is the lock
-     working, not the pick suffering, so the whole of that is free —
-     and so is letting go the moment it stops. Wear starts when you
-     keep pushing something that has already refused to move.
+  /* Turning costs nothing: the cylinder coming round is the lock
+     working, not the pick suffering. Wear starts the moment it stops,
+     which is the moment you are pushing something that has already
+     refused.
 
-     readMs plus a moment to see where it stopped: charging from the
-     exact millisecond it jams would make the reading itself a tax,
-     and the point of the grace is that a clean glance is free. */
-  graceMs: 300,
-  /* Strain per second under load, scaled by how far the cylinder
-     refuses to move. At the worst angle a fresh pick has about a
-     second and a half in it — enough to take a reading and think, not
-     enough to lean on the thing while you decide.
+     This was readMs plus a beat, and the beat was the problem — a
+     push shorter than the grace cost literally nothing, so most
+     attempts were free and the pick never moved. It is exactly readMs
+     now: free while it turns, charged the instant it does not. */
+  graceMs: 170,
+  /* Wear per second once the cylinder has refused, in two parts.
 
-     Worth knowing before tuning this: a simulated player who sweeps
-     the dial in five glances breaks nothing even at 80/s, because
-     wear comes from staring rather than from probing. The number
-     therefore sets how much a hesitation costs, not how hard the lock
-     is. Difficulty lives in toleranceStart. */
-  strainPerSecond: 65,
-  /* How long the cylinder takes to reach the angle it will hold. Long
-     enough that a reading is not free, short enough to read. */
-  readMs: 250,
+     `strainBase` is charged for any failed push whatever the angle.
+     Without it a near miss cost almost nothing — the distance term is
+     a power curve, so at nine tenths of the way round it was under a
+     point a second and the bar did not visibly move. A push that does
+     not open the lock should always cost something you can see.
+
+     `strainPerSecond` is the part that scales with how far the
+     cylinder refused, and the exponent is what makes a wild guess
+     expensive without making a near miss free. It was squared, which
+     was too forgiving in the top half of the range.
+
+     Together: about 92/s at the far end of the dial and 24/s a hair
+     off the spot, so a fresh pick has roughly a second at the worst
+     angle and four at the best. On the spot there is no wear at all,
+     because that path opens the lock instead. */
+  strainBase: 22,
+  strainPerSecond: 70,
+  strainFalloff: 1.5,
+  /* How long the cylinder takes to reach the angle it will hold.
+     graceMs matches it: the free part of a push is exactly the part
+     where something is still moving. */
+  readMs: 170,
   /* And how long the sweet spot must be held before the lock gives.
      Short: once you are on it the game is over, and making someone
      wait out a second to be told so is only suspense the first time. */
@@ -248,7 +259,9 @@ export function holdTurn(state, now) {
   const charged = Math.min(dt, heldMs - state.cfg.graceMs);
   if (charged <= 0) return {...state, heldMs};
 
-  const strain = state.cfg.strainPerSecond * (1 - turned) ** 2 * (charged / 1000);
+  const rate = state.cfg.strainBase
+    + state.cfg.strainPerSecond * (1 - turned) ** state.cfg.strainFalloff;
+  const strain = rate * (charged / 1000);
   const durability = state.durability - strain;
   if (durability > 0) return {...state, heldMs, durability};
   return snap({...state, heldMs});

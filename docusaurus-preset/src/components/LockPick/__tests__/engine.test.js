@@ -132,13 +132,35 @@ test('pushing a cylinder that has already refused is what costs', () => {
   assert.equal(stare.picks, DEFAULTS.picks - 1, 'leaning on the worst position forever never broke it');
 });
 
-test('the same hold costs far less the closer the pick is', () => {
+test('a failed push always costs something you can see, near or far', () => {
+  /* Both halves of this matter, and the game has got each of them
+     wrong in turn. The wear used to fall away as the square of the
+     distance, so a near miss cost a fraction of a point and the bar
+     did not move — "sometimes it just does not lose health". A flat
+     cost instead would make the distance reading pointless. So:
+     always visible, and still clearly cheaper when you are close. */
   const fresh = createGame({seed: 6});
-  const near = torque(setPosition(fresh, fresh.lock.sweet + fresh.lock.tolerance + 3), 500);
-  const far = torque(setPosition(fresh, fresh.lock.sweet > 50 ? 0 : POSITIONS - 1), 500);
-  assert.ok(near.durability > far.durability, 'distance did not matter');
-  assert.ok(DEFAULTS.durability - near.durability < (DEFAULTS.durability - far.durability) / 3,
-    'being close was barely cheaper than being nowhere near');
+  const hold = DEFAULTS.graceMs + 400;
+  const cost = (pos) => DEFAULTS.durability - torque(setPosition(fresh, pos), hold).durability;
+
+  const near = cost(fresh.lock.sweet + fresh.lock.tolerance + 3);
+  const far = cost(fresh.lock.sweet > 50 ? 0 : POSITIONS - 1);
+
+  assert.ok(near >= 3, `a near miss cost ${near.toFixed(1)}%, which nobody would notice`);
+  assert.ok(far > near * 1.8, `being nowhere near cost ${far.toFixed(1)}% against ${near.toFixed(1)}% — distance stopped mattering`);
+});
+
+test('no push that fails to open the lock is free', () => {
+  /* The grace covers the cylinder turning, and nothing else. A hold
+     that outlasts it pays, whatever the angle — an earlier version
+     gave away a beat on top and most attempts cost nothing at all. */
+  const fresh = createGame({seed: 6});
+  for (const offset of [3, 10, 25, 40]) {
+    const pos = (fresh.lock.sweet + fresh.lock.tolerance + offset) % POSITIONS;
+    const s = torque(setPosition(fresh, pos), DEFAULTS.graceMs + 250);
+    assert.ok(s.durability < DEFAULTS.durability,
+      `a quarter-second past the jam at offset ${offset} cost the pick nothing`);
+  }
 });
 
 test('letting go keeps the pick, and reports what the cylinder did', () => {

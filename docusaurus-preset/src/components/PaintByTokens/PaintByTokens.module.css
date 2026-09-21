@@ -74,6 +74,16 @@
 .tone3 { --pbt-tone: var(--c-cobalt-300); --pbt-ink: var(--c-cobalt-900); }
 .tone4 { --pbt-tone: var(--c-mint-500); --pbt-ink: var(--c-cobalt-900); }
 
+/* Accent is cobalt on a light page and orange on a dark one, which is
+   the same swap the brand makes: the mark has an orange variant
+   precisely because cobalt goes muddy on a dark ground. The house
+   mark is drawn in accent, so it follows the colour mode with it.
+   Ink goes dark on orange — white on KNVB is 2.9:1 and unreadable. */
+[data-theme='dark'] .tone1 {
+  --pbt-tone: var(--c-orange-knvb);
+  --pbt-ink: var(--c-cobalt-900);
+}
+
 .palette {
   display: flex;
   flex-wrap: wrap;
@@ -122,14 +132,38 @@
 
 .swatchName { white-space: nowrap; }
 
+/* The board is portrait — seven cells across, eight down — so the
+   width is held under the old 460px. Cells are square, so every pixel
+   of width here costs eight rows of height. */
 .grid {
   display: grid;
   gap: 3px;
-  max-width: 460px;
+  max-width: 390px;
   padding: 10px;
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-subtle);
   min-height: 120px;
+  transition: gap 220ms ease, box-shadow 220ms ease;
+}
+
+/* The beat after a picture is finished. The gutters close and the
+   cell edges go, so the thing that was painted one square at a time
+   is shown as the single picture it turned out to be. */
+.gridDone {
+  gap: 0;
+  box-shadow: inset 0 0 0 2px var(--conduction-color-status-success);
+}
+/* Only the corners go. The border keeps its tone colour from
+   .cellPainted, which is what lets neighbouring cells of the same
+   token close up into one shape instead of showing a seam. */
+.gridDone .cell { border-radius: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gridDone .cell { animation: pbtShow 300ms ease-out; }
+  @keyframes pbtShow {
+    from { transform: scale(0.88); }
+    to   { transform: scale(1); }
+  }
 }
 
 .cell {

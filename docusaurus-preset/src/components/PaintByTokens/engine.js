@@ -19,8 +19,12 @@
    colours belong to the theme, not to this file. */
 export const TOKENS = ['surface', 'accent', 'ink', 'muted', 'line'];
 
-export const COLS = 8;
-export const ROWS = 6;
+/* Portrait, at the mark's own proportions. The avatar's viewBox is
+   173.2 x 200, so 7/8 = 0.875 lands within a hair of it. The odd
+   width is what buys a centred apex and a five-cell interior, which
+   is the least the C fits into with a gap on both sides. */
+export const COLS = 7;
+export const ROWS = 8;
 
 /* Each picture is a row-per-string map of token indexes. They are
    deliberately readable as pictures in the source, because a picture
@@ -29,58 +33,126 @@ export const PICTURES = [
   {
     name: 'hex',
     rows: [
-      '00111100',
-      '01444410',
-      '14222241',
-      '14222241',
-      '01444410',
-      '00111100',
+      '0011100',
+      '0144410',
+      '1422241',
+      '1422241',
+      '1422241',
+      '1422241',
+      '0144410',
+      '0011100',
     ],
   },
   {
     name: 'stack',
     rows: [
-      '00000000',
-      '11111111',
-      '13333331',
-      '11111111',
-      '12222221',
-      '11111111',
+      '0000000',
+      '1111111',
+      '1333331',
+      '1111111',
+      '1222221',
+      '1111111',
+      '1444441',
+      '1111111',
     ],
   },
   {
     name: 'record',
     rows: [
-      '01111110',
-      '01333310',
-      '01222210',
-      '01222210',
-      '01333310',
-      '01111110',
+      '0111110',
+      '0133310',
+      '0122210',
+      '0122210',
+      '0122210',
+      '0122210',
+      '0133310',
+      '0111110',
     ],
   },
   {
     name: 'flow',
     rows: [
-      '40000004',
-      '04000040',
-      '00422400',
-      '00422400',
-      '04000040',
-      '40000004',
+      '4000004',
+      '0400040',
+      '0044400',
+      '0022200',
+      '0022200',
+      '0044400',
+      '0400040',
+      '4000004',
     ],
   },
 ];
 
+/**
+ * The house mark: the Conduction hexagon with its C inside, at the
+ * coarsest resolution it still survives.
+ *
+ * Ring and C are both `accent`, because the real mark is drawn in one
+ * colour and a two-tone version would be a different logo. `muted`
+ * fills the hex interior so the ring reads as a ring, and it also
+ * holds the one-cell gap that keeps the C from fusing to the ring on
+ * the left — without that gap the whole left half paints as a single
+ * block and the C disappears. `surface` is the ground outside the hex.
+ *
+ * Every run opens on it, and it turns up again now and then in place
+ * of the next picture in the rotation.
+ */
+export const MARK = {
+  name: 'mark',
+  rows: [
+    '0011100',
+    '0133310',
+    '1311131',
+    '1313331',
+    '1313331',
+    '1311131',
+    '0133310',
+    '0011100',
+  ],
+};
+
 export const DEFAULTS = {
-  startMs: 45000,
-  bonusMs: 20000,
+  startMs: 60000,
+  /* Set against a real run rather than a guess: a quick player paints
+     a picture in about 25s, so a bonus below that has them losing
+     from the first one and no ramp can soften it. At 26s the first
+     few pictures roughly pay for themselves, which is what makes the
+     ramp the thing the player feels rather than the opening. */
+  bonusMs: 26000,
   /* A wrong fill costs time rather than a life: the mistake in theming
      is picking by eye, and the cost of that is rework, not disaster. */
   penaltyMs: 3000,
   pointsPerCell: 2,
   pointsPerPicture: 30,
+  /* How often the mark turns up in place of the next picture in the
+     rotation. Roughly one theme in four, and never twice running. */
+  markChance: 0.25,
+  /* A finished picture stays up, whole, before the next one replaces
+     it. Painting one cell at a time you never see the thing you are
+     making; this is the beat where you do. */
+  clearedHoldMs: 1400,
+  /* What a finished picture buys, and how that shrinks.
+
+     A flat bonus is why a run could go on for ever: a player quick
+     enough to paint a picture in less than the bonus gains time on
+     every one, and nothing ever catches up with them. Taking a slice
+     off each time turns that around — the pace that was breaking even
+     at picture one is losing by picture ten — and the floor keeps the
+     last few from being over before they are read. */
+  bonusRampMs: 900,
+  bonusFloorMs: 4000,
 };
+
+/**
+ * What finishing a picture is worth now.
+ *
+ * `finished` is the count before this one, so the first picture pays
+ * the full bonus and the ramp starts biting from the second.
+ */
+export function bonusFor(state) {
+  return Math.max(state.cfg.bonusFloorMs, state.cfg.bonusMs - state.finished * state.cfg.bonusRampMs);
+}
 
 function mulberry32(seed) {
   let a = seed >>> 0;
@@ -92,8 +164,12 @@ function mulberry32(seed) {
   };
 }
 
-function loadPicture(state, index) {
-  const picture = PICTURES[index % PICTURES.length];
+/**
+ * Put a picture on the board. `index` is where the rotation stands,
+ * which is not the same as which picture is showing: the mark leaves
+ * the cursor where it found it.
+ */
+function show(state, picture, index) {
   const cells = [];
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
@@ -101,7 +177,27 @@ function loadPicture(state, index) {
       cells.push({token, painted: false});
     }
   }
-  return {...state, picture: picture.name, cells, pictureIndex: index};
+  /* A picture that has just gone up is never the one being looked at. */
+  return {...state, picture: picture.name, cells, pictureIndex: index, cleared: null};
+}
+
+function fromRotation(state, index) {
+  return show(state, PICTURES[index % PICTURES.length], index);
+}
+
+/**
+ * What comes after a finished picture: usually the next one in the
+ * rotation, now and then the house mark.
+ *
+ * The mark never follows itself — a surprise that repeats is not one —
+ * and it does not move the rotation on, so it interrupts the sequence
+ * rather than eating a place in it.
+ */
+function nextPicture(state) {
+  if (state.picture !== MARK.name && state.random() < state.cfg.markChance) {
+    return show(state, MARK, state.pictureIndex);
+  }
+  return fromRotation(state, state.pictureIndex + 1);
 }
 
 export function createGame({seed = Date.now(), now = 0, config = {}} = {}) {
@@ -116,13 +212,20 @@ export function createGame({seed = Date.now(), now = 0, config = {}} = {}) {
     wrong: 0,
     endsAt: now + cfg.startMs,
     last: null,
+    /* `{at, until}` while a finished picture is being shown, else null. */
+    cleared: null,
     over: false,
   };
-  return loadPicture(base, Math.floor(random() * PICTURES.length));
+  /* Every run opens on the house mark. The rotation cursor is still
+     seeded, so which picture follows it varies from run to run. */
+  return show(base, MARK, Math.floor(random() * PICTURES.length));
 }
 
 export function timeLeft(state, now) {
-  return Math.max(0, state.endsAt - now);
+  /* The clock stops while a finished picture is being looked at: the
+     beat is a reward, and a reward that costs time is a penalty. */
+  const at = state.cleared ? state.cleared.at : now;
+  return Math.max(0, state.endsAt - at);
 }
 
 export function select(state, token) {
@@ -131,8 +234,23 @@ export function select(state, token) {
   return {...state, selected: token};
 }
 
+/**
+ * The clock, one tick at a time: it ends the beat on a finished
+ * picture, and it ends the run on an unfinished one.
+ */
 export function step(state, now) {
   if (state.over) return state;
+
+  /* A finished picture is held, not timed out: nobody loses a run
+     while looking at a theme they already completed. */
+  if (state.cleared) {
+    if (now < state.cleared.until) return state;
+    /* Give back the wall-clock time the beat took. Freezing what the
+       HUD reports is not enough on its own: `endsAt` is absolute, so
+       without this the pause quietly spends the bonus it just paid. */
+    return nextPicture({...state, endsAt: state.endsAt + (now - state.cleared.at)});
+  }
+
   if (timeLeft(state, now) > 0) return state;
   return {...state, over: true, last: {result: 'timeout', at: now}};
 }
@@ -149,7 +267,7 @@ export function remaining(state) {
  * clicking twice is a slip, not a mistake about the theme.
  */
 export function paint(state, index, now) {
-  if (state.over) return state;
+  if (state.over || state.cleared) return state;
   const cell = state.cells[index];
   if (!cell || cell.painted) return state;
 
@@ -174,15 +292,20 @@ export function paint(state, index, now) {
 
   if (cells.some((c) => !c.painted)) return next;
 
-  /* Picture finished: score it, buy time, and deal the next one. */
-  const done = {
+  /* Picture finished: score it, buy time, and hold it up to be looked
+     at. `step` puts the next one on once the beat is over. */
+  const bonus = bonusFor(next);
+  return {
     ...next,
     score: next.score + next.cfg.pointsPerPicture,
     finished: next.finished + 1,
-    endsAt: next.endsAt + next.cfg.bonusMs,
-    last: {result: 'finished', at: now},
+    endsAt: next.endsAt + bonus,
+    /* The bonus goes in the feedback because it is now a number worth
+       watching: seeing it come down is the warning that the run has
+       an end, and the only one the player gets. */
+    last: {result: 'finished', at: now, bonusMs: bonus},
+    cleared: {at: now, until: now + next.cfg.clearedHoldMs},
   };
-  return loadPicture(done, done.pictureIndex + 1);
 }
 
 /** The line that goes on the game-over card and into the post. */

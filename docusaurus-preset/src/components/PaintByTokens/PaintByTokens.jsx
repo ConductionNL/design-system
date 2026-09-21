@@ -138,6 +138,10 @@ export default function PaintByTokens({className}) {
   const cells = game ? game.cells : [];
   const selected = game ? game.selected : 0;
   const last = game ? game.last : null;
+  /* The beat after a picture is finished, while it is still up. The
+     grid closes its gutters for it, so what you painted reads as one
+     picture instead of forty-eight squares. */
+  const showing = Boolean(game && game.cleared);
 
   return (
     <section className={[styles.pbt, className].filter(Boolean).join(' ')} aria-labelledby="paint-by-tokens-title">
@@ -181,7 +185,9 @@ export default function PaintByTokens({className}) {
         ))}
       </div>
 
-      <div className={styles.grid} style={{gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`}}>
+      <div
+        className={[styles.grid, showing && styles.gridDone].filter(Boolean).join(' ')}
+        style={{gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`}}>
         {cells.map((cell, i) => (
           <button
             key={i}
@@ -213,7 +219,10 @@ export default function PaintByTokens({className}) {
             : translate({id: 'preset.paintByTokens.start', message: 'Open a theme', description: 'Button that starts the paint-by-tokens game'})}
         </button>
         <p className={styles.hint} role="status" aria-live="polite">
-          {last && last.result === 'finished' && translate({id: 'preset.paintByTokens.feedback.finished', message: 'Theme done. That bought you twenty seconds.', description: 'Feedback after finishing a picture'})}
+          {last && last.result === 'finished' && translate(
+            {id: 'preset.paintByTokens.feedback.finished', message: 'Theme done. That bought you {seconds} seconds, and the next one buys less.', description: 'Feedback after finishing a picture. {seconds} is the time the finish just added, which shrinks with every picture.'},
+            {seconds: Math.round((last.bonusMs || 0) / 1000)},
+          )}
           {last && last.result === 'wrong' && translate(
             {id: 'preset.paintByTokens.feedback.wrong', message: 'That cell wanted {wanted}, not {used}. Three seconds gone.', description: 'Feedback after filling a cell with the wrong token'},
             {wanted: tokenLabel(last.wanted), used: tokenLabel(last.used)},

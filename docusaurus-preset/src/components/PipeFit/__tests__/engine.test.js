@@ -19,11 +19,20 @@ const {
 } = require('../engine.js');
 
 /**
+ * Let go of a finished route: a solved line is held on screen for a
+ * beat, and only the clock deals the next one.
+ */
+function resume(state) {
+  return state.cleared ? step(state, state.cleared.until) : state;
+}
+
+/**
  * Solve a route by walking it: each piece has exactly one turn that
  * meets what is carried in, so the line settles in one pass.
  */
 function solve(state, now = 0) {
-  let s = state;
+  /* Nothing turns while the route before it is still being shown. */
+  let s = resume(state);
   const finished = s.routes;
   for (let i = 0; i < s.route.pieces.length; i++) {
     /* Whatever the piece before it hands over. */
@@ -86,14 +95,39 @@ test('a line is only connected when every join meets and it reaches the target',
   assert.equal(connected(wrongTarget), false, 'a line that ends nowhere read as connected');
 });
 
-test('finishing a route pays a bonus and deals the next one', () => {
+test('finishing a route pays a bonus, is held on screen, then deals the next one', () => {
   let s = createGame({seed: 3, now: 0});
   s = solve(s, 0);
   assert.equal(s.routes, 1);
-  assert.ok(s.score >= DEFAULTS.pointsPerRoute);
-  assert.ok(s.route, 'no next route arrived');
-  assert.equal(connected(s.route), false);
+  assert.ok(s.score >= DEFAULTS.pointsPerRoute, 'the bonus waited for the hold');
+  assert.ok(s.cleared, 'the finished route was not held');
+  assert.equal(connected(s.route), true, 'the finished route was taken away at once');
   assert.equal(s.lives, DEFAULTS.lives, 'finishing a route cost a life');
+
+  /* Still held a tick before the beat is up. */
+  assert.equal(step(s, s.cleared.until - 1), s);
+
+  const next = step(s, s.cleared.until);
+  assert.equal(next.cleared, null);
+  assert.ok(next.route, 'no next route arrived');
+  assert.equal(connected(next.route), false);
+});
+
+test('nothing turns, and no life is lost, while a finished route is held', () => {
+  let s = createGame({seed: 3, now: 0});
+  s = solve(s, 0);
+  assert.equal(turn(s, 0, s.cleared.at + 1), s, 'a held route could still be fiddled with');
+
+  /* The countdown had run out under the hold; it must not bite. */
+  const late = step(s, Math.max(s.route.expiresAt, s.cleared.until) + 1);
+  assert.equal(late.lives, DEFAULTS.lives, 'a finished route spilled');
+  assert.equal(late.routes, 1);
+});
+
+test('the clock stops while a finished route is held', () => {
+  let s = createGame({seed: 3, now: 0});
+  s = solve(s, 0);
+  assert.equal(remaining(s, s.cleared.at), remaining(s, s.cleared.until));
 });
 
 test('routes get longer, but never longer than a person will finish', () => {
@@ -109,7 +143,10 @@ test('routes get longer, but never longer than a person will finish', () => {
 
 test('turning is never punished, only the route that is never finished', () => {
   let s = createGame({seed: 5, now: 0});
-  for (let i = 0; i < 20; i++) s = turn(s, i % s.route.pieces.length, 10);
+  for (let i = 0; i < 20; i++) {
+    s = resume(s);
+    s = turn(s, i % s.route.pieces.length, 10);
+  }
   assert.equal(s.lives, DEFAULTS.lives, 'fiddling with the connectors cost a life');
   assert.ok(s.turns >= 20);
 });

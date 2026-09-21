@@ -32,6 +32,13 @@ import styles from './PipeFit.module.css';
 const GAME_ID = 'pipe-fit';
 const TICK_MS = 100;
 
+/* Where the three openings sit inside a connector, in the units of the
+   pipe's viewBox. These mirror `.mouth.port-*` in the stylesheet: the
+   drawn line has to arrive exactly at the mouth it is drawn to, so the
+   two sets of numbers move together or not at all. */
+const PIECE_H = 84;
+const PORT_Y = [16, 42, 68];
+
 /* Ports are heights, and heights have names: a route read aloud as
    "top meets middle" is one you can solve with your eyes shut. */
 function portName(port) {
@@ -113,13 +120,23 @@ export default function PipeFit({className}) {
   const route = game ? game.route : null;
   const last = game ? game.last : null;
   const pct = Math.round(left * 100);
+  /* The beat after a route is finished, while it is still on screen. */
+  const celebrating = Boolean(game && game.cleared);
+  const done = connected(route);
 
-  /* What each piece is carrying in, so a join can be judged. */
+  /* What each piece is carrying in, so a join can be judged, and how
+     far the flow actually gets: a join can meet and still be dark,
+     because nothing reaches it from the source. That distinction is
+     what makes the drawn line worth looking at. */
   const carries = [];
+  const lit = [];
   if (route) {
     let carry = route.source;
+    let reaches = true;
     for (const piece of route.pieces) {
       carries.push(carry);
+      reaches = reaches && openings(piece).left === carry;
+      lit.push(reaches);
       carry = openings(piece).right;
     }
   }
@@ -150,7 +167,7 @@ export default function PipeFit({className}) {
 
       {route ? (
         <>
-          <div className={styles.route}>
+          <div className={[styles.route, celebrating && styles.flash].filter(Boolean).join(' ')}>
             <span className={[styles.end, styles[`port-${route.source}`]].join(' ')}>
               {translate({id: 'preset.pipeFit.source', message: 'Source', description: 'The system a record leaves in the pipe-fit game'})}
             </span>
@@ -162,9 +179,9 @@ export default function PipeFit({className}) {
                 <button
                   key={i}
                   type="button"
-                  className={[styles.piece, joined ? styles.joined : styles.gap].join(' ')}
+                  className={[styles.piece, joined ? styles.joined : styles.gap, lit[i] && styles.lit].filter(Boolean).join(' ')}
                   onClick={() => rotate(i)}
-                  disabled={!running}
+                  disabled={!running || celebrating}
                   aria-label={translate(
                     {id: 'preset.pipeFit.piece', message: 'Connector {n}: opens {in} to {out}, {state}. Turn it.', description: 'Accessible label for one connector. {in} and {out} are openings, {state} says whether it meets the piece before it.'},
                     {
@@ -177,13 +194,26 @@ export default function PipeFit({className}) {
                     },
                   )}>
                   <span className={[styles.mouth, styles[`port-${inPort}`]].join(' ')} aria-hidden="true" />
-                  <span className={styles.barrel} aria-hidden="true" />
+                  {/* The pipe itself: in at one opening, out at the
+                      other. Stretched to whatever width the piece got,
+                      with the stroke held at its drawn weight. */}
+                  <svg
+                    className={styles.pipe}
+                    viewBox={`0 0 100 ${PIECE_H}`}
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    focusable="false">
+                    <path
+                      d={`M0 ${PORT_Y[inPort]} H46 V${PORT_Y[outPort]} H100`}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
                   <span className={[styles.mouth, styles[`port-${outPort}`]].join(' ')} aria-hidden="true" />
                 </button>
               );
             })}
 
-            <span className={[styles.end, styles[`port-${route.target}`]].join(' ')}>
+            <span className={[styles.end, styles[`port-${route.target}`], !done && styles.endOpen].filter(Boolean).join(' ')}>
               {translate({id: 'preset.pipeFit.target', message: 'Consumer', description: 'The system a record arrives at in the pipe-fit game'})}
             </span>
           </div>

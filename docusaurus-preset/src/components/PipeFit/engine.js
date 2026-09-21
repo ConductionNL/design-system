@@ -30,6 +30,10 @@ export const DEFAULTS = {
   rampPerPoint: 55,
   pointsPerTurn: 1,
   pointsPerRoute: 20,
+  /* A finished route stays on screen for a beat before the next one
+     is dealt. Without it the reward for solving a puzzle is the
+     puzzle vanishing, which reads as a glitch rather than a win. */
+  clearedHoldMs: 900,
 };
 
 function mulberry32(seed) {
@@ -102,7 +106,8 @@ function deal(state, now, length) {
     };
     if (!connected(scrambled)) break;
   }
-  return {...state, route: scrambled};
+  /* A fresh route is never the one being celebrated. */
+  return {...state, route: scrambled, cleared: null};
 }
 
 export function createGame({seed = Date.now(), now = 0, config = {}} = {}) {
@@ -116,6 +121,8 @@ export function createGame({seed = Date.now(), now = 0, config = {}} = {}) {
     routes: 0,
     turns: 0,
     last: null,
+    /* `{at, until}` while a finished route is being shown, else null. */
+    cleared: null,
     over: false,
   };
   return deal(base, now, cfg.lengthStart);
@@ -125,7 +132,10 @@ export function remaining(state, now) {
   if (!state.route) return 0;
   const total = state.route.expiresAt - state.route.startedAt;
   if (total <= 0) return 0;
-  return Math.min(1, Math.max(0, (state.route.expiresAt - now) / total));
+  /* The clock stops on a finished route: the beat spent looking at a
+     line that works should not be charged to the player. */
+  const at = state.cleared ? state.cleared.at : now;
+  return Math.min(1, Math.max(0, (state.route.expiresAt - at) / total));
 }
 
 function nextLength(state) {
@@ -136,12 +146,13 @@ function nextLength(state) {
 /**
  * Turn one connector.
  *
- * Completing the route scores and deals the next one. Turning is never
- * punished: the mistake this game is about is the route that was never
- * finished, not the fiddling on the way there.
+ * Completing the route scores and holds it on screen; `step` deals the
+ * next one once the hold is up. Turning is never punished: the mistake
+ * this game is about is the route that was never finished, not the
+ * fiddling on the way there.
  */
 export function turn(state, index, now) {
-  if (state.over || !state.route) return state;
+  if (state.over || !state.route || state.cleared) return state;
   if (!Number.isInteger(index) || index < 0 || index >= state.route.pieces.length) return state;
 
   const pieces = state.route.pieces.map((p, i) => (i === index ? {...p, turn: (p.turn + 1) % PORTS} : p));
@@ -150,18 +161,32 @@ export function turn(state, index, now) {
 
   if (!connected(route)) return {...turned, last: {result: 'turned', at: now}};
 
-  const cleared = {
+  /* The route stays as the player left it, whole, until the hold is
+     up. Scoring happens now so the HUD moves on the click that earned
+     it rather than a second later. */
+  return {
     ...turned,
     score: turned.score + turned.cfg.pointsPerRoute,
     routes: turned.routes + 1,
     last: {result: 'connected', at: now},
+    cleared: {at: now, until: now + turned.cfg.clearedHoldMs},
   };
-  return deal(cleared, now, nextLength(cleared));
 }
 
-/** The payload arrives; an unfinished route costs a life. */
+/**
+ * The clock, one tick at a time: it ends the beat on a finished route,
+ * and it takes a life off one that was never finished.
+ */
 export function step(state, now) {
   if (state.over || !state.route) return state;
+
+  /* A finished route is held, not expired: the countdown cannot take a
+     life off a line that already works. */
+  if (state.cleared) {
+    if (now < state.cleared.until) return state;
+    return deal(state, now, nextLength(state));
+  }
+
   if (now < state.route.expiresAt) return state;
 
   const lives = state.lives - 1;

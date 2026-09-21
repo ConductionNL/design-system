@@ -6,8 +6,10 @@
  * runs end to end, before the payload arrives and finds a gap.
  *
  * Turning a connector moves both its openings at once, so fixing the
- * join on one side can break the join on the other. That is the whole
- * puzzle, and it is what connecting two systems actually feels like.
+ * join on one side can break the join on the other. Some connectors
+ * are wired to the ones either side of them and drag those round too,
+ * which is what stops the route falling to a single left-to-right
+ * walk. Both are what connecting two systems actually feels like.
  *
  * The rules live in ./engine.js with no DOM and no clock.
  *
@@ -31,6 +33,13 @@ import styles from './PipeFit.module.css';
 
 const GAME_ID = 'pipe-fit';
 const TICK_MS = 100;
+
+/* Where the three openings sit inside a connector, in the units of the
+   pipe's viewBox. These mirror `.mouth.port-*` in the stylesheet: the
+   drawn line has to arrive exactly at the mouth it is drawn to, so the
+   two sets of numbers move together or not at all. */
+const PIECE_H = 84;
+const PORT_Y = [16, 42, 68];
 
 /* Ports are heights, and heights have names: a route read aloud as
    "top meets middle" is one you can solve with your eyes shut. */
@@ -113,13 +122,23 @@ export default function PipeFit({className}) {
   const route = game ? game.route : null;
   const last = game ? game.last : null;
   const pct = Math.round(left * 100);
+  /* The beat after a route is finished, while it is still on screen. */
+  const celebrating = Boolean(game && game.cleared);
+  const done = connected(route);
 
-  /* What each piece is carrying in, so a join can be judged. */
+  /* What each piece is carrying in, so a join can be judged, and how
+     far the flow actually gets: a join can meet and still be dark,
+     because nothing reaches it from the source. That distinction is
+     what makes the drawn line worth looking at. */
   const carries = [];
+  const lit = [];
   if (route) {
     let carry = route.source;
+    let reaches = true;
     for (const piece of route.pieces) {
       carries.push(carry);
+      reaches = reaches && openings(piece).left === carry;
+      lit.push(reaches);
       carry = openings(piece).right;
     }
   }
@@ -135,7 +154,7 @@ export default function PipeFit({className}) {
             {translate({id: 'preset.pipeFit.title', message: 'Make the connection', description: 'Name of the Integriq mini-game'})}
           </h3>
           <p className={styles.lede}>
-            {translate({id: 'preset.pipeFit.lede', message: 'A record is on its way from one system to another and the route is half built. Turn the connectors until the line runs end to end. Turning one moves both its openings, which is the whole problem.', description: 'One-line explanation of the pipe-fit rules'})}
+            {translate({id: 'preset.pipeFit.lede', message: 'A record is on its way from one system to another and the route is half built. Turn the connectors until the line runs end to end. Turning one moves both its openings — and a marked one takes the connectors either side of it round with it.', description: 'One-line explanation of the pipe-fit rules'})}
           </p>
         </div>
         <div className={styles.hud} role="status" aria-live="polite">
@@ -150,7 +169,7 @@ export default function PipeFit({className}) {
 
       {route ? (
         <>
-          <div className={styles.route}>
+          <div className={[styles.route, celebrating && styles.flash].filter(Boolean).join(' ')}>
             <span className={[styles.end, styles[`port-${route.source}`]].join(' ')}>
               {translate({id: 'preset.pipeFit.source', message: 'Source', description: 'The system a record leaves in the pipe-fit game'})}
             </span>
@@ -158,32 +177,55 @@ export default function PipeFit({className}) {
             {route.pieces.map((piece, i) => {
               const {left: inPort, right: outPort} = openings(piece);
               const joined = inPort === carries[i];
+              /* Wired to its neighbours: turning it turns them. */
+              const drags = Boolean(route.coupled && route.coupled[i]);
               return (
                 <button
                   key={i}
                   type="button"
-                  className={[styles.piece, joined ? styles.joined : styles.gap].join(' ')}
+                  className={[styles.piece, joined ? styles.joined : styles.gap, lit[i] && styles.lit, drags && styles.ganged].filter(Boolean).join(' ')}
                   onClick={() => rotate(i)}
-                  disabled={!running}
+                  disabled={!running || celebrating}
                   aria-label={translate(
                     {id: 'preset.pipeFit.piece', message: 'Connector {n}: opens {in} to {out}, {state}. Turn it.', description: 'Accessible label for one connector. {in} and {out} are openings, {state} says whether it meets the piece before it.'},
                     {
                       n: i + 1,
                       in: portName(inPort),
                       out: portName(outPort),
-                      state: joined
-                        ? translate({id: 'preset.pipeFit.piece.joined', message: 'meets the one before it', description: 'State of a connector that lines up'})
-                        : translate({id: 'preset.pipeFit.piece.gap', message: 'does not meet the one before it', description: 'State of a connector that does not line up'}),
+                      state: [
+                        joined
+                          ? translate({id: 'preset.pipeFit.piece.joined', message: 'meets the one before it', description: 'State of a connector that lines up'})
+                          : translate({id: 'preset.pipeFit.piece.gap', message: 'does not meet the one before it', description: 'State of a connector that does not line up'}),
+                        drags && translate({id: 'preset.pipeFit.piece.ganged', message: 'wired to its neighbours, so they turn with it', description: 'Said of a connector that drags the connectors either side of it round when it is turned'}),
+                      ].filter(Boolean).join(', '),
                     },
                   )}>
-                  <span className={[styles.mouth, styles[`port-${inPort}`]].join(' ')} aria-hidden="true" />
-                  <span className={styles.barrel} aria-hidden="true" />
-                  <span className={[styles.mouth, styles[`port-${outPort}`]].join(' ')} aria-hidden="true" />
+                  <span className={[styles.mouth, styles.mouthIn, styles[`port-${inPort}`]].join(' ')} aria-hidden="true" />
+                  {/* The pipe itself: in at one opening, out at the
+                      other. Stretched to whatever width the piece got,
+                      with the stroke held at its drawn weight. */}
+                  <svg
+                    className={styles.pipe}
+                    viewBox={`0 0 100 ${PIECE_H}`}
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    focusable="false">
+                    <path
+                      d={`M0 ${PORT_Y[inPort]} H46 V${PORT_Y[outPort]} H100`}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                  <span className={[styles.mouth, styles.mouthOut, styles[`port-${outPort}`]].join(' ')} aria-hidden="true" />
+                  {/* Says it is wired to the connectors either side.
+                      Without it the coupling is a trap rather than a
+                      puzzle: a player cannot plan around a rule the
+                      board never showed them. */}
+                  {drags && <span className={styles.gangMark} aria-hidden="true" />}
                 </button>
               );
             })}
 
-            <span className={[styles.end, styles[`port-${route.target}`]].join(' ')}>
+            <span className={[styles.end, styles[`port-${route.target}`], !done && styles.endOpen].filter(Boolean).join(' ')}>
               {translate({id: 'preset.pipeFit.target', message: 'Consumer', description: 'The system a record arrives at in the pipe-fit game'})}
             </span>
           </div>
@@ -213,7 +255,7 @@ export default function PipeFit({className}) {
         <p className={styles.hint} role="status" aria-live="polite">
           {last && last.result === 'connected' && translate({id: 'preset.pipeFit.feedback.connected', message: 'Through. The next one is longer.', description: 'Feedback after completing a route'})}
           {last && last.result === 'spilled' && translate({id: 'preset.pipeFit.feedback.spilled', message: 'The payload arrived and found a gap.', description: 'Feedback after the clock runs out'})}
-          {(!last || last.result === 'turned') && translate({id: 'preset.pipeFit.hint', message: 'Click a connector to turn it. Both of its openings move together.', description: 'Hint under the pipe-fit route'})}
+          {(!last || last.result === 'turned') && translate({id: 'preset.pipeFit.hint', message: 'Click a connector to turn it. Both of its openings move together, and a marked one drags its neighbours round too.', description: 'Hint under the pipe-fit route'})}
         </p>
       </footer>
     </section>

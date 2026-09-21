@@ -1,13 +1,19 @@
 /**
  * <Reconcile /> styles.
  *
- * Two columns that read like a statement beside a ledger. Tokens only,
- * one accent on the clock when the month is nearly up. A picked-up
+ * Two columns that read like a statement beside a ledger. A picked-up
  * payment says so in its pressed state as well as its border.
+ *
+ * Every colour comes from a semantic token, never the raw palette: a
+ * palette step cannot flip, so a cobalt-100 hairline stays pale on a
+ * dark ground and a cobalt-900 focus ring disappears into it. The
+ * three verdicts take the status trio — forest for a sheet cleared,
+ * coral for a fumble, red for money out of the door — which carry
+ * their own dark values.
  */
 
 .rc {
-  border: 1px solid var(--c-cobalt-100);
+  border: 1px solid var(--conduction-color-alert-border);
   border-radius: var(--radius-lg);
   background: var(--conduction-color-surface-card);
   padding: clamp(16px, 3vw, 28px);
@@ -51,6 +57,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
   font-family: var(--conduction-typography-font-family-code);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
@@ -63,14 +70,49 @@
   white-space: nowrap;
 }
 
+/* What the run can still afford to get wrong. A bar rather than three
+   pips, because the mistakes are not worth the same as each other. */
+.marginTrack {
+  display: block;
+  width: 88px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--conduction-color-surface-sunken);
+  overflow: hidden;
+}
+.marginFill {
+  display: block;
+  height: 100%;
+  background: var(--conduction-color-status-success);
+  transition: width 200ms ease-out;
+}
+.marginLow { background: var(--conduction-color-status-error); }
+
 .sheet {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 16px;
   max-width: 720px;
+  padding: 8px;
+  margin: -8px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: border-color 160ms ease, background 160ms ease;
 }
 @media (max-width: 700px) {
   .sheet { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The beat, on the paperwork. A cleared statement goes green for its
+   half-second; anything that cost margin goes coral for longer, with
+   the rows themselves marked underneath. */
+.sheetClear {
+  border-color: var(--conduction-color-status-success);
+  background: var(--conduction-color-status-success-tint);
+}
+.sheetSlip {
+  border-color: var(--conduction-color-status-warning);
+  background: var(--conduction-color-status-warning-tint);
 }
 
 .column {
@@ -98,11 +140,25 @@
 }
 
 .row { display: flex; gap: 6px; }
+
+/* A handled statement line is spent and steps back. A settled invoice
+   does not: it stays legible and clickable, because paying one twice
+   is the mistake this game is about and a greyed-out row would hand
+   that answer over. It is marked settled instead. */
 .rowDone {
   display: flex;
   gap: 6px;
   opacity: 0.4;
 }
+.rowSettled {
+  display: flex;
+  gap: 6px;
+}
+.rowSettled .drop {
+  border-style: dashed;
+  background: var(--conduction-color-surface-sunken);
+}
+.rowSettled .amount { text-decoration: line-through; }
 
 .pick,
 .drop {
@@ -112,7 +168,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 9px 12px;
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   font-family: inherit;
@@ -121,18 +177,53 @@
   transition: border-color 120ms ease, background 120ms ease;
 }
 .pick:hover:not(:disabled),
-.drop:hover:not(:disabled) { border-color: var(--c-blue-cobalt); }
+.drop:hover:not(:disabled) { border-color: var(--conduction-color-border-strong); }
 .pick:disabled,
 .drop:disabled { cursor: default; }
 .pick:focus-visible,
-.drop:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.drop:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 /* The payment in hand. */
 .picked {
-  border-color: var(--c-blue-cobalt);
+  border-color: var(--conduction-color-border-strong);
   background: var(--conduction-color-surface-subtle);
-  box-shadow: inset 0 0 0 1px var(--c-blue-cobalt);
+  box-shadow: inset 0 0 0 1px var(--conduction-color-border-strong);
 }
+
+/* What a beat marks on the sheet. Two classes deep so they outrank the
+   row's own resting state, including a settled invoice's dashes. */
+.mark_wrong .pick,
+.mark_wrong .drop {
+  border-style: solid;
+  border-color: var(--conduction-color-status-error);
+  background: var(--conduction-color-status-error-tint);
+  box-shadow: 0 0 0 1px var(--conduction-color-status-error);
+}
+.mark_right .pick,
+.mark_right .drop {
+  border-style: solid;
+  border-color: var(--conduction-color-status-success);
+  background: var(--conduction-color-status-success-tint);
+  box-shadow: 0 0 0 1px var(--conduction-color-status-success);
+}
+.mark_open .pick,
+.mark_open .drop {
+  border-style: solid;
+  border-color: var(--conduction-color-status-warning);
+  background: var(--conduction-color-status-warning-tint);
+}
+.mark_wrong .amount,
+.mark_wrong .ref { color: var(--conduction-color-status-error-ink); }
+.mark_right .amount,
+.mark_right .ref { color: var(--conduction-color-status-success-ink); }
+.mark_open .amount,
+.mark_open .ref { color: var(--conduction-color-status-warning-ink); }
+
+/* A marked row is never dimmed: the point of the beat is to read it. */
+.rowDone.mark_wrong,
+.rowDone.mark_right,
+.rowDone.mark_open { opacity: 1; }
+.mark_wrong .amount { text-decoration: none; }
 
 .amount {
   font-family: var(--conduction-typography-font-family-code);
@@ -150,7 +241,7 @@
 
 .flag {
   padding: 9px 10px;
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   font-family: inherit;
@@ -159,14 +250,17 @@
   cursor: pointer;
   transition: border-color 120ms ease, color 120ms ease;
 }
-.flag:hover:not(:disabled) { border-color: var(--c-orange-knvb); color: var(--c-orange-knvb); }
+.flag:hover:not(:disabled) {
+  border-color: var(--conduction-color-status-warning);
+  color: var(--conduction-color-status-warning-ink);
+}
 .flag:disabled { cursor: default; opacity: 0.6; }
-.flag:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.flag:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .clock {
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--c-cobalt-200);
+  background: var(--conduction-color-surface-sunken);
   overflow: hidden;
   margin-top: 12px;
   max-width: 720px;
@@ -205,13 +299,26 @@
   transition: background 120ms ease;
 }
 .start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
-.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+.start:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
 
 .hint {
   margin: 0;
   flex-basis: 100%;
   font-size: 12px;
   color: var(--conduction-color-text-muted);
-  max-width: 60ch;
+  max-width: 62ch;
   min-height: 1.4em;
+}
+.hintGood { color: var(--conduction-color-status-success-ink); }
+.hintCost { color: var(--conduction-color-status-warning-ink); font-weight: 500; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* One pulse on whatever the beat marked wrong: on a seven-line sheet
+     a bordered row is easy to read straight past. */
+  .mark_wrong .pick,
+  .mark_wrong .drop { animation: rcMark 620ms ease-out 2; }
+  @keyframes rcMark {
+    0%, 100% { box-shadow: 0 0 0 1px var(--conduction-color-status-error); }
+    50%      { box-shadow: 0 0 0 4px var(--conduction-color-status-error); }
+  }
 }

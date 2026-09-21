@@ -4,10 +4,16 @@
  * The document reads as a document: a page, a sentence, words you can
  * click. A blacked-out word keeps its width, because the shape of what
  * was removed is exactly what a redacted page looks like.
+ *
+ * The marker draws in the page's own ink, which is the whole trick of
+ * this file: on white paper that is a black bar, and on a dark page it
+ * is a white one. A black bar on a dark page is not a redaction, it is
+ * a hole, and it reads as a rendering bug rather than as a decision
+ * somebody made.
  */
 
 .rd {
-  border: 1px solid var(--c-cobalt-100);
+  border: 1px solid var(--conduction-color-alert-border);
   border-radius: var(--radius-lg);
   background: var(--conduction-color-surface-card);
   padding: clamp(16px, 3vw, 28px);
@@ -64,13 +70,41 @@
 }
 
 .paper {
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   padding: 18px;
   max-width: 660px;
   min-height: 130px;
   box-shadow: var(--shadow-3);
+}
+
+/* The page that just went out with something on it. The edge goes red
+   for the beat it is held, so the breach is on the document and not
+   only in a line of text under it. */
+.paperBreach {
+  border-color: var(--conduction-color-status-error);
+}
+
+/* The page that went out safe but striped. Orange edge, and the bars
+   that could have stayed give their words back. */
+.paperOver {
+  border-color: var(--conduction-color-status-warning);
+}
+
+/* And the page that went out right. Green edge, and every bar on it
+   turns the same green for a moment — the confirmation is the marks
+   the player made, not a badge dropped on top of them. Nothing about
+   this beat is long: it is over before a fast player has read the
+   first word of the next page. */
+.paperClean {
+  border-color: var(--conduction-color-status-success);
+}
+.paperClean .wordBlacked {
+  background-image: linear-gradient(
+    var(--conduction-color-status-success),
+    var(--conduction-color-status-success)
+  );
 }
 
 .doc {
@@ -93,21 +127,73 @@
   transition: background 100ms ease;
 }
 .word:hover:not(:disabled) { background: var(--conduction-color-surface-sunken); }
-.word:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 1px; }
+.word:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 1px; }
 .word:disabled { cursor: default; }
 
-/* The marker. The word keeps its width and loses its ink, which is
-   what a redacted page actually looks like. */
+/* The marker. The word keeps its width and loses its ink: a square bar
+   in whatever the page writes with, so the same rule gives a black bar
+   on white and a white one in the dark.
+
+   Drawn as a gradient rather than a background colour so the sweep
+   below has a background-size to animate, and padded in `em` on the
+   vertical only — horizontal padding on an inline box would move the
+   words around it, vertical padding just makes the bar a bar. */
 .wordBlacked {
-  background: var(--c-cobalt-900);
+  background-color: transparent;
+  background-image: linear-gradient(
+    var(--conduction-color-text-strong),
+    var(--conduction-color-text-strong)
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border-radius: 0;
+  padding: 0.2em 3px;
   color: transparent;
 }
-.wordBlacked:hover { background: var(--c-cobalt-900); }
+
+/* What went out. This one is not covered, because being perfectly
+   readable is the whole problem with it: it stays legible and gets
+   ringed in the error pair for as long as the page is held. */
+.wordMissed {
+  background-color: var(--conduction-color-status-error-tint);
+  background-image: none;
+  color: var(--conduction-color-status-error-ink);
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px var(--conduction-color-status-error);
+  font-weight: 600;
+}
+
+/* What was covered and did not have to be.
+ *
+ * The mirror of .wordMissed, and drawn as its mirror on purpose: a
+ * breach is readable when it should be covered, this is covered when
+ * it should be readable, and the two never land on the same page —
+ * publishing stops at the breach and never scores the stripes.
+ *
+ * Two background layers, because the whole point is the ink coming
+ * back off: the warning tint underneath at full width, the black bar
+ * on top at no width. Sized from the right so the word appears the
+ * way it is read. The keyframes below start the bar at full width and
+ * the text at transparent — which is exactly how the word looked a
+ * moment ago — so the animation is the ink being taken back.
+ */
+.wordOverRedacted {
+  background-image:
+    linear-gradient(var(--conduction-color-text-strong), var(--conduction-color-text-strong)),
+    linear-gradient(var(--conduction-color-status-warning-tint), var(--conduction-color-status-warning-tint));
+  background-repeat: no-repeat, no-repeat;
+  background-position: right center, left center;
+  background-size: 0 100%, 100% 100%;
+  color: var(--conduction-color-status-warning-ink);
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px var(--conduction-color-status-warning);
+  font-weight: 600;
+}
 
 .clock {
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--c-cobalt-200);
+  background: var(--conduction-color-surface-sunken);
   overflow: hidden;
 }
 .clockFill {
@@ -145,12 +231,12 @@
 }
 .publish:hover:not(:disabled) { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
 .publish:disabled { opacity: 0.5; cursor: default; }
-.publish:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+.publish:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
 
 .start {
   background: var(--conduction-color-surface-card);
   color: var(--conduction-color-text-body);
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   padding: 10px 18px;
   border-radius: var(--radius-md);
   font-family: inherit;
@@ -159,8 +245,8 @@
   cursor: pointer;
   transition: border-color 120ms ease;
 }
-.start:hover { border-color: var(--c-blue-cobalt); color: var(--conduction-color-text-default); }
-.start:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.start:hover { border-color: var(--conduction-color-border-strong); color: var(--conduction-color-text-default); }
+.start:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .hint {
   margin: 0;
@@ -170,11 +256,74 @@
   max-width: 60ch;
   min-height: 1.5em;
 }
+/* A breach is the one thing here worth raising your voice about, and a
+   clean page the one thing worth saying well done for. */
+.hintBreach {
+  color: var(--conduction-color-status-error-ink);
+  font-weight: 500;
+}
+.hintOver {
+  color: var(--conduction-color-status-warning-ink);
+}
+.hintClean {
+  color: var(--conduction-color-status-success-ink);
+}
 
 @media (prefers-reduced-motion: no-preference) {
+  /* The bar wipes across the word, left to right, the way a marker
+     does. It is the one bit of motion in the game and it is what makes
+     a click feel like it landed. */
   .wordBlacked { animation: rdMark 120ms ease-out; }
   @keyframes rdMark {
     from { background-size: 0 100%; }
     to   { background-size: 100% 100%; }
+  }
+
+  /* Two pulses, well inside the hold. A field that went out readable
+     has to be findable in a page of twenty words at a glance, and a
+     ring that only sits there is easy to read straight past. */
+  .wordMissed { animation: rdMissed 700ms ease-out 2; }
+  @keyframes rdMissed {
+    0%, 100% { box-shadow: 0 0 0 2px var(--conduction-color-status-error); }
+    50%      { box-shadow: 0 0 0 5px var(--conduction-color-status-error); }
+  }
+
+  /* One green bloom off every bar on a page that went out right, and
+     one off the page itself. Two classes deep, so it outranks the
+     marker sweep above, which has finished long before this runs.
+
+     The motion is the whole of it and none of the meaning: with motion
+     turned off the bars and the edge still go green, which is the part
+     that says the page was correct. */
+  .paperClean .wordBlacked { animation: rdCleanBar 360ms ease-out; }
+  @keyframes rdCleanBar {
+    0%, 100% { box-shadow: 0 0 0 0 var(--conduction-color-status-success-tint); }
+    40%      { box-shadow: 0 0 0 4px var(--conduction-color-status-success-tint); }
+  }
+
+  .paperClean { animation: rdCleanPage 360ms ease-out; }
+  @keyframes rdCleanPage {
+    0%, 100% { box-shadow: var(--shadow-3); }
+    40%      { box-shadow: 0 0 0 3px var(--conduction-color-status-success-tint), var(--shadow-3); }
+  }
+
+  /* The ink comes back off. It starts as the black bar the word was a
+     frame ago and ends as the word, which is the lesson in one move:
+     this is what the reader would have got.
+
+     Slow enough to be a lift rather than a flicker, and well inside
+     the beat, so the word it gives back can still be read afterwards.
+     With motion turned off the word is simply already back, in orange
+     and ringed — the same information, no performance. */
+  .wordOverRedacted { animation: rdLift 400ms ease-out; }
+  @keyframes rdLift {
+    from {
+      background-size: 100% 100%, 100% 100%;
+      color: transparent;
+    }
+    to {
+      background-size: 0 100%, 100% 100%;
+      color: var(--conduction-color-status-warning-ink);
+    }
   }
 }

@@ -63,10 +63,32 @@
 }
 
 .field {
+  position: relative;
   padding: 16px;
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-subtle);
   max-width: 560px;
+  /* The blow-by-blow is drawn over this box and centred in it, so it
+     needs to be the positioning context and to clip what overruns. */
+  overflow: hidden;
+}
+
+/* One combatant: a face, its name and its bar, with room over the top
+   for whatever just happened to it. Both sides use it, so a blow
+   reads the same way whichever way it went. */
+.side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sideBody { flex: 1; min-width: 0; }
+
+.face {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  color: var(--conduction-color-text-strong);
 }
 
 .monster {
@@ -81,7 +103,6 @@
   border-radius: var(--radius-pill);
   background: var(--c-cobalt-200);
   overflow: hidden;
-  margin-bottom: 16px;
 }
 .woundsFill {
   display: block;
@@ -94,20 +115,41 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin: 18px 0;
 }
 
 .die {
+  display: block;
   width: 52px;
   height: 52px;
+  padding: 0;
   border: 2px solid var(--c-cobalt-200);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
-  font-family: var(--conduction-typography-font-family-code);
-  font-size: 20px;
-  font-weight: 700;
   color: var(--conduction-color-text-strong);
   cursor: pointer;
   transition: border-color 120ms ease, transform 120ms ease;
+}
+
+/* A real die face: nine slots, and the face decides which carry a
+   pip. The number is still in the button's label, so the pips are
+   the picture and not the information. */
+.pips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+  box-sizing: border-box;
+  place-items: center;
+}
+.pip { width: 8px; height: 8px; }
+.pipOn {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
 }
 .die:hover:not(:disabled) { border-color: var(--c-blue-cobalt); }
 .die:disabled { opacity: 0.55; cursor: default; }
@@ -118,6 +160,139 @@
   border-color: var(--c-mint-500);
   background: var(--c-mint-300);
   transform: translateY(-3px);
+}
+
+/* The throw. Only dice that actually went back in the cup carry this
+   class, so pushing your luck shows you exactly what you risked and
+   what you kept out of it. */
+@media (prefers-reduced-motion: no-preference) {
+  .tumble { animation: ddTumble 320ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+  @keyframes ddTumble {
+    0%   { transform: rotate(-58deg) scale(0.72); opacity: 0.35; }
+    55%  { transform: rotate(14deg) scale(1.08); opacity: 1; }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+}
+
+/* The player's side of the duel, drawn exactly like the monster's so
+   the two bars read as the same kind of thing. Only the colour
+   differs: the monster is the accent, you are the one still standing
+   until the bar says otherwise. */
+.hero {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: var(--conduction-color-text-strong);
+}
+
+.health {
+  display: block;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-cobalt-200);
+  overflow: hidden;
+}
+.healthFill {
+  display: block;
+  height: 100%;
+  background: var(--conduction-color-status-success);
+  transition: width 200ms ease-out, background 200ms ease;
+}
+.healthLow { background: var(--conduction-color-status-error); }
+
+/* ============================================================
+   The blow-by-blow. Three marks, all keyed on the round so they
+   replay, all purely decorative — every number they show is also in
+   the sentence under the buttons, and none of them sit in the tab
+   order or the accessibility tree.
+
+   They are deliberately staggered rather than simultaneous: your
+   swing lands, then the answer, then what the answer cost. A round
+   where everything happens at once reads as one event.
+   ============================================================ */
+
+/* One layer over the whole board, with every mark stacked in the same
+   grid cell so they all land dead centre. It never takes a click, so
+   the dice stay live while the round plays out. */
+.fx {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.fx > * { grid-area: 1 / 1; opacity: 0; }
+
+.sword {
+  width: clamp(96px, 34%, 150px);
+  height: auto;
+  color: var(--conduction-color-text-strong);
+}
+.rake {
+  width: clamp(88px, 30%, 132px);
+  height: auto;
+  color: var(--conduction-color-status-error);
+}
+
+/* Both figures are red: they are both damage, and what separates them
+   is the mark that came immediately before. */
+.dealt,
+.taken {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: clamp(28px, 9vw, 44px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--conduction-color-status-error);
+  text-shadow: 0 2px 10px var(--conduction-color-surface-card);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The round in order: sword, what it cost the monster, a pause,
+     its claws, what they cost you. The delays are the whole point —
+     four things at once is one event, four things in sequence is a
+     fight. The gap in the middle is the turn changing hands, and
+     without it the answer reads as part of your own swing.
+
+     The claws land at 1500ms, which `BITE_AT_MS` in the component
+     matches so the health bar empties on the blow rather than before
+     it. Move one and move the other. */
+  .sword { animation: ddSword 480ms cubic-bezier(0.3, 0.9, 0.35, 1); }
+  .dealt { animation: ddNumber 700ms ease-out 340ms; }
+  .rake  { animation: ddRake 420ms ease-out 1500ms; }
+  .taken { animation: ddNumber 700ms ease-out 1820ms; }
+  .reel  { animation: ddReel 320ms ease-out 240ms; }
+
+  @keyframes ddSword {
+    0%   { opacity: 0; transform: rotate(-72deg) translateY(-26px) scale(0.8); }
+    30%  { opacity: 1; }
+    70%  { opacity: 1; transform: rotate(18deg) scale(1.06); }
+    100% { opacity: 0; transform: rotate(26deg) translateY(10px) scale(1); }
+  }
+  @keyframes ddRake {
+    0%   { opacity: 0; transform: translateX(16px) scale(0.85) rotate(-8deg); }
+    35%  { opacity: 1; transform: translateX(0) scale(1.05) rotate(0deg); }
+    100% { opacity: 0; transform: translateX(-14px) scale(1.1) rotate(4deg); }
+  }
+  @keyframes ddNumber {
+    0%   { opacity: 0; transform: translateY(10px) scale(0.85); }
+    25%  { opacity: 1; transform: translateY(0) scale(1); }
+    70%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-24px) scale(1); }
+  }
+  /* The thing you hit takes it, rather than standing there evenly. */
+  @keyframes ddReel {
+    0%   { transform: translateX(0) rotate(0deg); }
+    30%  { transform: translateX(5px) rotate(7deg); }
+    60%  { transform: translateX(-3px) rotate(-4deg); }
+    100% { transform: translateX(0) rotate(0deg); }
+  }
+}
+
+/* With motion off these would sit on the board permanently, so the
+   layer does not render at all; the round is still fully described in
+   words under the buttons. */
+@media (prefers-reduced-motion: reduce) {
+  .fx { display: none; }
 }
 
 .worth {

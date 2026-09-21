@@ -63,7 +63,7 @@ export {default as GameModal} from './GameModal/GameModal.jsx';
 export {default as StampRush} from './StampRush/StampRush.jsx';
 export {default as DeadlineDefender} from './DeadlineDefender/DeadlineDefender.jsx';
 export {default as BlueprintRush} from './BlueprintRush/BlueprintRush.jsx';
-export {default as RecordRun} from './RecordRun/RecordRun.jsx';
+export {default as FullStack} from './FullStack/FullStack.jsx';
 export {default as HiddenGame} from './HiddenGame/HiddenGame.jsx';
 export {default as MonsterRun} from './MonsterRun/MonsterRun.jsx';
 export {default as DiceDuel} from './DiceDuel/DiceDuel.jsx';

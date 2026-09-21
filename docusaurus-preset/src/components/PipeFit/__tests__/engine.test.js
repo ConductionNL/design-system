@@ -19,28 +19,128 @@ const {
 } = require('../engine.js');
 
 /**
- * Solve a route by walking it: each piece has exactly one turn that
- * meets what is carried in, so the line settles in one pass.
+ * Let go of a finished route: a solved line is held on screen for a
+ * beat, and only the clock deals the next one.
  */
-function solve(state, now = 0) {
-  let s = state;
-  const finished = s.routes;
-  for (let i = 0; i < s.route.pieces.length; i++) {
-    /* Whatever the piece before it hands over. */
-    let carry = s.route.source;
-    for (let k = 0; k < i; k++) carry = openings(s.route.pieces[k]).right;
+function resume(state) {
+  return state.cleared ? step(state, state.cleared.until) : state;
+}
 
+/**
+ * Turn each connector in turn until it meets the one before it.
+ *
+ * This used to be the solver, because it used to always work. It is
+ * kept as a measure of how much of a puzzle a route actually is: a
+ * game where this settles every line has no thinking in it, which is
+ * what the connectors that drag their neighbours exist to stop.
+ */
+function walk(state, now = 0, dir = 'ltr') {
+  let s = resume(state);
+  const finished = s.routes;
+  const n = s.route.pieces.length;
+  const order = dir === 'ltr' ? [...Array(n).keys()] : [...Array(n).keys()].reverse();
+
+  for (const i of order) {
     for (let t = 0; t < PORTS; t++) {
-      if (openings(s.route.pieces[i]).left === carry) break;
+      const ps = s.route.pieces;
+      let want;
+      if (dir === 'ltr') {
+        want = s.route.source;
+        for (let k = 0; k < i; k++) want = openings(ps[k]).right;
+        if (openings(ps[i]).left === want) break;
+      } else {
+        want = s.route.target;
+        for (let k = n - 1; k > i; k--) want = openings(ps[k]).left;
+        if (openings(ps[i]).right === want) break;
+      }
       s = turn(s, i, now);
-      /* The last turn of a route replaces it with the next one, so
-         stop here: carrying on would solve a route nobody asked for,
-         which is how this walk first read as a failure. */
       if (s.over || s.routes > finished) return s;
     }
   }
   return s;
 }
+
+/**
+ * Actually solve a route, by searching how many times each connector
+ * has to be turned.
+ *
+ * A walk is no longer enough — that is the point of the change — so
+ * proving a route can be finished means finding the turns rather
+ * than assuming the obvious ones work. Three turns per connector and
+ * six connectors at most is a few hundred combinations, which is
+ * nothing, and it proves solvability rather than trusting it.
+ */
+function solve(state, now = 0) {
+  const start = resume(state);
+  const n = start.route.pieces.length;
+
+  const counts = new Array(n).fill(0);
+  const climb = (i) => {
+    if (i === n) {
+      let s = start;
+      const finished = s.routes;
+      for (let k = 0; k < n; k++) {
+        for (let t = 0; t < counts[k]; t++) {
+          s = turn(s, k, now);
+          if (s.over || s.routes > finished) return s;
+        }
+      }
+      return null;
+    }
+    for (let t = 0; t < PORTS; t++) {
+      counts[i] = t;
+      const found = climb(i + 1);
+      if (found) return found;
+    }
+    counts[i] = 0;
+    return null;
+  };
+
+  return climb(0) || start;
+}
+
+test('a route cannot be settled just by walking it, either way round', () => {
+  /* The whole point of a connector that drags its neighbours. When
+     every route fell to a left-to-right walk the game had 3.1 clicks
+     and no decision in it; making a connector drag only the one
+     before it would have been no better, because the same walk run
+     backwards would then solve everything instead. Both directions
+     have to fail often, and neither may be the trick. */
+  let ltr = 0;
+  let rtl = 0;
+  const runs = 120;
+  for (let seed = 1; seed <= runs; seed++) {
+    /* coupledFrom 0, because this is a test of the coupling and
+       the opening routes deliberately have none of it. */
+    const cfg = {coupledFrom: 0};
+    if (walk(createGame({seed, now: 0, config: cfg}), 0, 'ltr').routes > 0) ltr++;
+    if (walk(createGame({seed, now: 0, config: cfg}), 0, 'rtl').routes > 0) rtl++;
+  }
+
+  assert.ok(ltr < runs * 0.75, `a plain walk settled ${ltr} of ${runs} routes`);
+  assert.ok(rtl < runs * 0.75, `walking backwards settled ${rtl} of ${runs} routes`);
+  /* And it is not so hard that the obvious move never helps. */
+  assert.ok(ltr > runs * 0.2, `a plain walk settled only ${ltr} of ${runs} routes`);
+  assert.ok(Math.abs(ltr - rtl) < runs * 0.2, 'one direction is much better than the other');
+});
+
+test('the opening routes are not wired up, so nobody meets the rule cold', () => {
+  /* A rule that only bites sometimes is a rule nobody works out
+     while also reading a board for the first time. It starts once
+     the player has a few routes behind them. */
+  for (let seed = 1; seed <= 60; seed++) {
+    const s = createGame({seed, now: 0});
+    assert.ok(s.route.coupled.every((c) => !c), `seed ${seed}: the first route was already wired up`);
+  }
+
+  /* And it does start. */
+  let wired = 0;
+  for (let seed = 1; seed <= 60; seed++) {
+    const late = createGame({seed, now: 0, config: {coupledFrom: 0}});
+    if (late.route.coupled.some(Boolean)) wired++;
+  }
+  assert.ok(wired > 50, `only ${wired} of 60 routes wired up once it starts`);
+});
 
 test('a route is dealt, out of true, with a source and a target', () => {
   const s = createGame({seed: 1, now: 0});
@@ -86,14 +186,39 @@ test('a line is only connected when every join meets and it reaches the target',
   assert.equal(connected(wrongTarget), false, 'a line that ends nowhere read as connected');
 });
 
-test('finishing a route pays a bonus and deals the next one', () => {
+test('finishing a route pays a bonus, is held on screen, then deals the next one', () => {
   let s = createGame({seed: 3, now: 0});
   s = solve(s, 0);
   assert.equal(s.routes, 1);
-  assert.ok(s.score >= DEFAULTS.pointsPerRoute);
-  assert.ok(s.route, 'no next route arrived');
-  assert.equal(connected(s.route), false);
+  assert.ok(s.score >= DEFAULTS.pointsPerRoute, 'the bonus waited for the hold');
+  assert.ok(s.cleared, 'the finished route was not held');
+  assert.equal(connected(s.route), true, 'the finished route was taken away at once');
   assert.equal(s.lives, DEFAULTS.lives, 'finishing a route cost a life');
+
+  /* Still held a tick before the beat is up. */
+  assert.equal(step(s, s.cleared.until - 1), s);
+
+  const next = step(s, s.cleared.until);
+  assert.equal(next.cleared, null);
+  assert.ok(next.route, 'no next route arrived');
+  assert.equal(connected(next.route), false);
+});
+
+test('nothing turns, and no life is lost, while a finished route is held', () => {
+  let s = createGame({seed: 3, now: 0});
+  s = solve(s, 0);
+  assert.equal(turn(s, 0, s.cleared.at + 1), s, 'a held route could still be fiddled with');
+
+  /* The countdown had run out under the hold; it must not bite. */
+  const late = step(s, Math.max(s.route.expiresAt, s.cleared.until) + 1);
+  assert.equal(late.lives, DEFAULTS.lives, 'a finished route spilled');
+  assert.equal(late.routes, 1);
+});
+
+test('the clock stops while a finished route is held', () => {
+  let s = createGame({seed: 3, now: 0});
+  s = solve(s, 0);
+  assert.equal(remaining(s, s.cleared.at), remaining(s, s.cleared.until));
 });
 
 test('routes get longer, but never longer than a person will finish', () => {
@@ -109,7 +234,10 @@ test('routes get longer, but never longer than a person will finish', () => {
 
 test('turning is never punished, only the route that is never finished', () => {
   let s = createGame({seed: 5, now: 0});
-  for (let i = 0; i < 20; i++) s = turn(s, i % s.route.pieces.length, 10);
+  for (let i = 0; i < 20; i++) {
+    s = resume(s);
+    s = turn(s, i % s.route.pieces.length, 10);
+  }
   assert.equal(s.lives, DEFAULTS.lives, 'fiddling with the connectors cost a life');
   assert.ok(s.turns >= 20);
 });

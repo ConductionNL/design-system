@@ -28,6 +28,7 @@ import {brandFor} from '../brand.jsx';
 import {useLazyScript} from '../../utils/lazyScript';
 import {useLazyStylesheet} from '../../utils/lazyStylesheet';
 import GameModal from '../../components/GameModal/GameModal';
+import ScoreCardLink from '../../components/GameModal/ScoreCardLink';
 
 function FooterLink({label, href, to}) {
   if (href) {
@@ -428,6 +429,11 @@ export default function Footer() {
                   </svg>
                 </a>
               </div>
+              {/* Under the brand block, not in the legal bar: that bar
+                  is KvK, BTW, IBAN, Privacy and Terms, and a score
+                  card is none of those. Renders nothing until the
+                  visitor has found a game. */}
+              {minigamesOn && <ScoreCardLink games={minigamesRoster} />}
             </div>
 
             {links.map((column, i) => (

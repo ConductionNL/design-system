@@ -1,0 +1,390 @@
+/**
+ * <FullStack /> styles.
+ *
+ * A well of app tiles. Every colour comes from the semantic token
+ * layer, never the raw palette: a palette step cannot flip, so a
+ * cobalt hairline stays pale on a dark ground.
+ *
+ * The tiles are deliberately the brand's own — an app glyph on the
+ * card surface, tinted with the accent — and not the piece colours of
+ * the famous falling-block game, whose particular palette is part of
+ * what a court has already found protectable. See the note at the top
+ * of ./engine.js.
+ */
+
+.fs {
+  border: 1px solid var(--conduction-color-alert-border);
+  border-radius: var(--radius-lg);
+  background: var(--conduction-color-surface-card);
+  padding: clamp(16px, 3vw, 28px);
+  font-family: var(--conduction-typography-font-family-body);
+
+  /* One width for the well and everything under it.
+   *
+   * The well is seven across and twelve down, so its picture is far
+   * taller than it is wide — which means HEIGHT is what runs out, and
+   * sizing it by width put a 700px well on a laptop at 100%. So the
+   * width is derived from the viewport height instead, and the well's
+   * own aspect ratio decides the rest. The floor keeps the glyphs
+   * legible on a short window; the ceiling stops it filling a big
+   * monitor with one mini-game.
+   */
+  --fs-well: clamp(154px, 26vh, 290px);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+/* Both halves must be allowed to shrink. Without this the HUD sized
+   itself to its content and ran off the edge of a narrow card, taking
+   the layers and next-piece readouts with it. */
+.head > div {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-orange-knvb);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--conduction-color-text-strong);
+}
+
+.lede {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--conduction-color-text-body);
+}
+
+.hud {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.hudPill {
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--conduction-color-surface-subtle);
+  color: var(--conduction-color-text-strong);
+  white-space: nowrap;
+}
+
+/* What is coming, said in words with its glyph beside it rather than
+   drawn as a second little well of its own. */
+.hudNext {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px 5px 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--conduction-color-border-default);
+  color: var(--conduction-color-text-body);
+  white-space: nowrap;
+}
+.hudNextGlyph {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  color: var(--conduction-color-text-accent);
+}
+
+/* The well is narrow and the card is wide, so the controls, the
+   preview and the readout go BESIDE it rather than under it. Stacked
+   underneath they added about a hundred and fifty pixels of height to
+   a card that has to fit on a laptop at 100%. */
+.play {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px 18px;
+}
+
+.left {
+  flex: 0 0 auto;
+  width: var(--fs-well);
+  max-width: 100%;
+}
+
+.side {
+  flex: 1 1 210px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+}
+
+/* Rows as well as columns, so the cells take their height from the
+   grid rather than from their own width — that is what lets the well
+   be sized by height at all. */
+.well {
+  display: grid;
+  grid-template-columns: repeat(var(--fs-cols, 7), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--fs-rows, 12), minmax(0, 1fr));
+  aspect-ratio: var(--fs-cols, 7) / var(--fs-rows, 12);
+  gap: 2px;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: var(--radius-md);
+  background: var(--conduction-color-surface-sunken);
+  border: 1px solid var(--conduction-color-border-default);
+}
+
+.cell {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--conduction-color-surface-card);
+  opacity: 0.45;
+}
+
+/* A tile with an app on it. The glyph takes the accent so the well
+   reads as brand rather than as confetti. */
+.cellFull {
+  opacity: 1;
+  background: var(--conduction-color-surface-plate);
+  box-shadow: inset 0 0 0 1px var(--conduction-color-border-default);
+  color: var(--conduction-color-text-accent);
+}
+
+/* The group still in the air. */
+.cellFalling {
+  box-shadow: inset 0 0 0 2px var(--conduction-color-border-strong);
+}
+
+/* A finished layer, for the beat it is held. */
+.cellClearing {
+  background: var(--conduction-color-status-success-tint);
+  box-shadow: inset 0 0 0 2px var(--conduction-color-status-success);
+  color: var(--conduction-color-status-success-ink);
+}
+
+.glyph {
+  width: 68%;
+  height: 68%;
+  fill: currentColor;
+}
+
+.idle {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--conduction-color-text-muted);
+  background: var(--conduction-color-surface-sunken);
+  border-radius: var(--radius-md);
+}
+
+/* What is coming. The frame is a fixed square so a single tile and a
+   five-tile plus occupy the same room: a preview that resized would
+   move the card every time a piece was dealt. */
+.next {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.nextLabel {
+  margin: 0;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--conduction-color-text-muted);
+}
+.nextFrame {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: var(--radius-md);
+  background: var(--conduction-color-surface-sunken);
+  border: 1px solid var(--conduction-color-border-default);
+}
+.nextGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--fs-pw, 1), 18px);
+  grid-template-rows: repeat(var(--fs-ph, 1), 18px);
+  gap: 2px;
+}
+.nextCaption {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--conduction-color-text-body);
+  min-height: 2.7em;
+}
+
+/* How deep each column is, and the way to move the piece there. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(var(--fs-cols, 7), minmax(0, 1fr));
+  gap: 3px;
+  padding: 0 6px;
+  margin-top: 6px;
+}
+
+.column {
+  padding: 5px 0;
+  border: 1px solid var(--conduction-color-border-default);
+  border-radius: var(--radius-sm);
+  background: var(--conduction-color-surface-card);
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--conduction-color-text-muted);
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.column:hover:not(:disabled) {
+  border-color: var(--conduction-color-border-strong);
+  color: var(--conduction-color-text-strong);
+}
+.column:disabled { cursor: default; opacity: 0.6; }
+.column:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
+
+.columnHere {
+  border-color: var(--conduction-color-border-strong);
+  color: var(--conduction-color-text-strong);
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.control {
+  flex: 1 1 auto;
+  min-width: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 10px;
+  border: 1px solid var(--conduction-color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--conduction-color-surface-card);
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--conduction-color-text-body);
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.control:hover:not(:disabled) {
+  border-color: var(--conduction-color-border-strong);
+  color: var(--conduction-color-text-strong);
+}
+.control:disabled { cursor: default; opacity: 0.55; }
+.control:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
+
+/* The key that does the same thing as the button it sits on. */
+.controlKey {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 5px;
+  border: 1px solid var(--conduction-color-border-default);
+  border-radius: 3px;
+  color: var(--conduction-color-text-muted);
+}
+.control:hover:not(:disabled) .controlKey { border-color: var(--conduction-color-border-strong); }
+
+/* Both of these change length as the run goes on — a finished layer
+   says more than a landed piece — and a card that resizes under the
+   player every time they score is worse than a quiet one. So the room
+   for the longest line is reserved up front. */
+.readout {
+  margin: 10px 0 0;
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--conduction-color-text-muted);
+  max-width: 46ch;
+  min-height: 4.4em;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.start {
+  background: var(--c-blue-cobalt);
+  color: white;
+  border: 1px solid var(--c-blue-cobalt);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+.start:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
+
+.hint {
+  margin: 0;
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--conduction-color-text-muted);
+  max-width: 62ch;
+  line-height: 1.45;
+  min-height: 2.9em;
+}
+.hintGood { color: var(--conduction-color-status-success-ink); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* A finished layer lifts for the beat it is held, so the reward for
+     filling it is not the thing you filled disappearing. */
+  .cellClearing { animation: fsLayer 480ms ease-out; }
+  @keyframes fsLayer {
+    0%   { box-shadow: inset 0 0 0 2px var(--conduction-color-status-success); }
+    45%  { box-shadow: inset 0 0 0 6px var(--conduction-color-status-success); }
+    100% { box-shadow: inset 0 0 0 2px var(--conduction-color-status-success); }
+  }
+}

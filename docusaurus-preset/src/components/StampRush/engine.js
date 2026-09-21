@@ -70,6 +70,9 @@ export function createGame({seed = Date.now(), now = 0, config = {}} = {}) {
     mistakes: 0,
     startedAt: now,
     nextSpawnAt: now + cfg.spawnStartMs,
+    /* Where and when a decision was last let lapse, so the board can
+       show the life it cost. Null until one is. */
+    lastMiss: null,
     over: false,
   };
 }
@@ -107,6 +110,11 @@ export function step(state, now) {
     next.slots[i] = null;
     if (card.kind === READY) {
       next = {...loseLife(next), slots: next.slots};
+      /* Say where it happened and when. Letting a decision lapse
+         costs exactly what a bad stamp costs, but the player did
+         nothing, so without a record of it the life just goes and
+         the board looks the same as a card timing out harmlessly. */
+      next.lastMiss = {slot: i, at: now};
       if (next.over) return next;
     } else {
       next.held = next.held + 1;

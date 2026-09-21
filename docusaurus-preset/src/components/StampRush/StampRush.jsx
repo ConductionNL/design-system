@@ -34,6 +34,19 @@ import {createGame, step, stamp, summarise, SLOTS, READY, NO_QUORUM, CONFLICT} f
 import styles from './StampRush.module.css';
 
 const GAME_ID = 'stamp-rush';
+
+/* How long a stamp takes: down, land, and the mark fading off the
+   card. Matches the last animation in the stylesheet, and kept short
+   because a slot can be refilled 420ms after it empties. */
+const STAMP_MS = 700;
+
+/* How long the lives readout stays lit after one is lost. */
+const HURT_MS = 700;
+
+/* And how long the last one is given before the run is scored, so
+   the mark that ended it lands, the count reaches nought and both
+   are on screen for a beat before the card covers the board. */
+const OVER_AFTER_MS = 1400;
 const TICK_MS = 100;
 
 function cardCopy(card) {
@@ -67,7 +80,12 @@ export default function StampRush({className}) {
   const locale = (i18n && i18n.currentLocale) || 'en';
 
   const [game, setGame] = useState(null);
+  /* {slot, kind, at} — the stamp or the lapse being shown. */
   const [flash, setFlash] = useState(null);
+  /* Lit briefly after a life goes, whichever way it went. */
+  const [hurt, setHurt] = useState(false);
+  const livesRef = useRef(null);
+  const missRef = useRef(null);
   /* The run is kept in a ref as well, because the tick and the
      game-over dispatch both read it outside React's render cycle. */
   const gameRef = useRef(null);
@@ -83,6 +101,9 @@ export default function StampRush({className}) {
     gameRef.current = fresh;
     setGame(fresh);
     setFlash(null);
+    setHurt(false);
+    livesRef.current = fresh.lives;
+    missRef.current = null;
   }, []);
 
   /* The clock. One interval for the whole board: cards expire and
@@ -98,12 +119,19 @@ export default function StampRush({className}) {
     return () => clearInterval(id);
   }, [running]);
 
-  /* Game over: tell the shared dialog once, with a line it can post. */
+  /* Game over: tell the shared dialog once, with a line it can post.
+
+     Not on the tick the run ended. The stamp or the lapse that took
+     the last life still has to land and the count still has to reach
+     nought, and a card thrown up over the top of both leaves the
+     player with no idea what finished them. Cleared on restart, so a
+     quick replay never gets the old run's card. */
+  const over = Boolean(game && game.over);
   useEffect(() => {
-    if (!game || !game.over || endedRef.current) return;
+    if (!over || endedRef.current) return undefined;
     endedRef.current = true;
-    if (typeof window === 'undefined') return;
-    window.dispatchEvent(new CustomEvent('connext:gameend', {
+    if (typeof window === 'undefined') return undefined;
+    const id = setTimeout(() => window.dispatchEvent(new CustomEvent('connext:gameend', {
       detail: {
         id: GAME_ID,
         won: false,
@@ -112,8 +140,13 @@ export default function StampRush({className}) {
         title: translate({id: 'preset.stampRush.over.title', message: 'The meeting ran out of patience.', description: 'Headline on the game-over dialog after a stamp-rush run'}),
         subtitle: translate({id: 'preset.stampRush.over.subtitle', message: 'Three bad stamps and the chair takes the pen back.', description: 'Subtitle on the game-over dialog after a stamp-rush run'}),
       },
-    }));
-  }, [game, locale]);
+    })), OVER_AFTER_MS);
+    return () => clearTimeout(id);
+    /* On `over` rather than on `game`: the board keeps re-rendering
+       while the last mark plays, and this effect's cleanup cancels
+       the very timer that raises the card. Watching the whole run
+       object would arm it and then throw it away on the next tick. */
+  }, [over, locale]);
 
   /* "Play again" in the dialog restarts this game in place. */
   useEffect(() => {
@@ -123,6 +156,49 @@ export default function StampRush({className}) {
     return () => window.removeEventListener('connext:gamereplay', onReplay);
   }, [begin]);
 
+  /* The stamp coming down, landing, and its mark fading, end to end.
+     Kept on a timer rather than read off onAnimationEnd: that event
+     bubbles from whichever of the three animations finishes first,
+     which would tear the rest off the moment the quickest was done. */
+  useEffect(() => {
+    if (!flash) return undefined;
+    const id = setTimeout(() => setFlash(null), STAMP_MS);
+    return () => clearTimeout(id);
+  }, [flash]);
+
+  /* A mark belongs to the decision it was made on, so it goes the
+     moment the next one lands in that place. Without this the board
+     deals a fresh card under an ADOPTED still drying on the desk,
+     and the stamp reads as belonging to the card now under it. */
+  useEffect(() => {
+    if (!flash || !game) return;
+    if (game.slots[flash.slot]) setFlash(null);
+  }, [game, flash]);
+
+  /* A decision left to lapse costs a life for doing nothing, so the
+     desk it lapsed on says so. */
+  useEffect(() => {
+    if (!game || !game.lastMiss) return;
+    if (missRef.current === game.lastMiss.at) return;
+    missRef.current = game.lastMiss.at;
+    setFlash({slot: game.lastMiss.slot, kind: 'missed', at: game.lastMiss.at});
+  }, [game]);
+
+  /* And the count itself reacts, whichever way the life went: a
+     number quietly going from 3 to 2 is not something anybody reads
+     mid-round. */
+  useEffect(() => {
+    if (!game) return undefined;
+    if (livesRef.current === null || game.lives >= livesRef.current) {
+      livesRef.current = game.lives;
+      return undefined;
+    }
+    livesRef.current = game.lives;
+    setHurt(true);
+    const id = setTimeout(() => setHurt(false), HURT_MS);
+    return () => clearTimeout(id);
+  }, [game]);
+
   const hit = useCallback((slot) => {
     if (!gameRef.current || gameRef.current.over) return;
     const card = gameRef.current.slots[slot];
@@ -131,7 +207,7 @@ export default function StampRush({className}) {
     const next = stamp(gameRef.current, slot, now);
     gameRef.current = next;
     setGame(next);
-    setFlash({slot, good: card.kind === READY, at: now});
+    setFlash({slot, kind: card.kind === READY ? 'good' : 'bad', at: now});
   }, []);
 
   /* Number keys 1 to 6, so the game is playable without a mouse and
@@ -170,7 +246,7 @@ export default function StampRush({className}) {
           <span className={styles.hudScore}>
             {translate({id: 'preset.stampRush.hud.score', message: 'Score {score}', description: 'Score readout on the stamp-rush HUD'}, {score: Number(score).toLocaleString(locale)})}
           </span>
-          <span className={styles.hudLives}>
+          <span className={[styles.hudLives, hurt && styles.hudHurt].filter(Boolean).join(' ')}>
             {translate({id: 'preset.stampRush.hud.lives', message: 'Stamps left {lives}', description: 'Remaining-lives readout on the stamp-rush HUD'}, {lives})}
           </span>
         </div>
@@ -190,10 +266,10 @@ export default function StampRush({className}) {
                 card && styles.slotFull,
                 card && card.kind === READY && styles.slotReady,
                 card && card.kind !== READY && styles.slotHold,
-                isFlash && (flash.good ? styles.flashGood : styles.flashBad),
+                isFlash && flash.kind === 'good' && styles.flashGood,
+                isFlash && flash.kind === 'bad' && styles.flashBad,
               ].filter(Boolean).join(' ')}
               onClick={() => hit(i)}
-              onAnimationEnd={() => setFlash((f) => (f && f.slot === i ? null : f))}
               disabled={!running}
               aria-label={copy
                 ? translate(
@@ -210,6 +286,27 @@ export default function StampRush({className}) {
                 <span className={styles.card}>
                   <span className={styles.cardTitle}>{copy.title}</span>
                   <span className={styles.cardNote}>{copy.note}</span>
+                </span>
+              )}
+              {/* The stamp, and what it leaves behind. Keyed on the
+                  moment of the stamp so hitting the same desk twice
+                  plays twice. Decoration only: the score, the lives
+                  and the card replacing this one all say what
+                  happened without it. */}
+              {isFlash && (
+                <span className={styles.press} key={flash.at} aria-hidden="true">
+                  {flash.kind !== 'missed' && (
+                  <svg className={styles.tool} viewBox="0 0 48 48" fill="currentColor" focusable="false">
+                    <rect x="18" y="3" width="12" height="9" rx="4" />
+                    <rect x="21" y="11" width="6" height="9" />
+                    <rect x="9" y="19" width="30" height="8" rx="3" />
+                  </svg>
+                  )}
+                  <span className={[styles.mark, styles['mark' + flash.kind]].join(' ')}>
+                    {flash.kind === 'good' && translate({id: 'preset.stampRush.mark.adopted', message: 'ADOPTED', description: 'The word a stamp leaves on a decision that was right to adopt. Short and upper case: it is a rubber stamp.'})}
+                    {flash.kind === 'bad' && translate({id: 'preset.stampRush.mark.void', message: 'VOID', description: 'The word a stamp leaves on a decision that should have been held back'})}
+                    {flash.kind === 'missed' && translate({id: 'preset.stampRush.mark.lapsed', message: 'LAPSED', description: 'The word left on a decision nobody got to in time, which costs a life'})}
+                  </span>
                 </span>
               )}
             </button>

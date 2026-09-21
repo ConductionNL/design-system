@@ -1,0 +1,100 @@
+/**
+ * <CompletionBadge /> styles.
+ *
+ * Two states, two themes, four blocks — and every block sets all five
+ * variables rather than only the ones that differ.
+ *
+ * That is deliberate, and it is the trap this file fell into once
+ * already. `[data-theme='dark'] .badge` weighs (0,2,0) and `.complete`
+ * weighs (0,1,0), so the dark locked rule beats the earned rule
+ * whatever order they sit in — an earned badge is still a .badge.
+ * Source order only settles ties, so the only safe arrangement is a
+ * dark earned block of equal weight, placed last, that re-declares
+ * everything the dark locked block set. Leave one variable out of it
+ * and that one silently reverts to grey in the dark.
+ *
+ * Locked is greyscale in both themes, because "grey until you have
+ * found them all" is the whole idea; the neutrals are the palette's
+ * own gray ramp rather than a washed-out blue, so it reads as absent
+ * colour rather than as a cold blue. Earned is Conduction's cobalt
+ * and orange, with a white enamel centre that stays white on a dark
+ * card — a medal is an object, and objects do not restyle themselves
+ * for the page they are lying on.
+ */
+
+/* Locked, light: present but drained. Soft enough to sit under the
+   progress label without competing with it. */
+.badge {
+  --badge-ribbon: var(--c-gray-300);
+  --badge-rosette: var(--conduction-color-surface-sunken);
+  --badge-ring: var(--c-gray-300);
+  --badge-plate: var(--conduction-color-surface-card);
+  --badge-mark: var(--c-gray-500);
+
+  flex: none;
+  line-height: 0;
+}
+
+/* Locked, dark. The same weight against its own ground: a rosette one
+   step off the card, a grey ring to give it an edge, and tails darker
+   than the card so they read as sitting behind it. The first attempt
+   lifted the rosette to cobalt-600, which came out richer and bluer
+   than the earned badge — the locked state looked like the prize. */
+[data-theme='dark'] .badge {
+  --badge-ribbon: var(--c-cobalt-900);
+  --badge-rosette: var(--c-cobalt-700);
+  --badge-ring: var(--c-gray-500);
+  --badge-plate: var(--conduction-color-surface-card);
+  --badge-mark: var(--c-gray-500);
+}
+
+/* Earned, light. */
+.complete {
+  --badge-ribbon: var(--c-cobalt-700);
+  --badge-rosette: var(--c-cobalt-500);
+  --badge-ring: var(--c-orange-knvb);
+  --badge-plate: var(--c-white);
+  --badge-mark: var(--c-cobalt-500);
+}
+
+/* Earned, dark. The rosette lifts a step to cobalt-400, because
+   cobalt-500 against a cobalt-800 card is the same blue twice and the
+   points of the star disappear into it. Orange stays the raw brand
+   orange rather than the coral the warning token becomes in the dark,
+   so the ring matches the progress bar filling up beside it. */
+[data-theme='dark'] .complete {
+  --badge-ribbon: var(--c-cobalt-600);
+  --badge-rosette: var(--c-cobalt-400);
+  --badge-ring: var(--c-orange-knvb);
+  --badge-plate: var(--c-white);
+  --badge-mark: var(--c-cobalt-500);
+}
+
+.art {
+  display: block;
+  width: 46px;
+  height: auto;
+}
+
+.ribbon { fill: var(--badge-ribbon); }
+.rosette { fill: var(--badge-rosette); }
+.ring { fill: var(--badge-ring); }
+.plate { fill: var(--badge-plate); }
+.mark { fill: var(--badge-mark); }
+.markInner { fill: var(--badge-plate); }
+
+/* Earning it is a moment, so it gets one — once, on the render that
+   flips the class, and never on a card reopened later, because the
+   animation is on the element rather than on a state change it cannot
+   see. A half-second is enough to notice and short enough that it is
+   over before anyone reads the line beside it. */
+@media (prefers-reduced-motion: no-preference) {
+  .complete .art {
+    animation: badgeEarned 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    transform-origin: 50% 38%;
+  }
+  @keyframes badgeEarned {
+    from { transform: scale(0.82) rotate(-8deg); opacity: 0.4; }
+    to   { transform: none; opacity: 1; }
+  }
+}

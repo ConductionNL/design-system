@@ -99,15 +99,233 @@
   transition: transform 180ms ease-out;
 }
 
+/* The pick itself, sitting in the keyhole at whatever angle the dial
+   puts it. It gives nothing away — it shows where you have put it,
+   which you already know — and it is the thing that makes the dial
+   feel like a lock rather than a slider with a number on it.
+
+   Pivoted at the centre of the cylinder and swept across 170 degrees,
+   just short of flat either way, so both ends of the dial are visibly
+   ends rather than running off the edge. */
+.pickArm {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 4px;
+  height: 44px;
+  margin-left: -2px;
+  border-radius: 2px 2px 0 0;
+  /* Steel: the strong ink, which is near-black on the light cylinder
+     and white on the dark one. The halo is the cylinder's own
+     background, and it is what makes the pick read as an object
+     lying in the lock rather than a third indicator line — without
+     it the pick, the keyway and the turn bar all run together. */
+  background: var(--conduction-color-text-strong);
+  box-shadow: 0 0 0 1.5px var(--conduction-color-surface-card);
+  transform-origin: 50% 100%;
+  transition: transform 90ms ease-out;
+}
+/* The hook on the end, bent the way a pick is. */
+.pickArm::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 11px;
+  height: 4px;
+  border-radius: 2px;
+  background: inherit;
+  box-shadow: inherit;
+  transform: rotate(-34deg);
+  transform-origin: 0 50%;
+}
+/* And the grip, thickening towards the hand. */
+.pickArm::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: -2px;
+  width: 8px;
+  height: 16px;
+  border-radius: 3px;
+  background: inherit;
+  box-shadow: inherit;
+}
+
+/* Going in. Slides down the keyway and settles, once, when the pick
+   is taken — so "Take a pick" is something you watch happen rather
+   than a label changing. */
+.pickIn { animation: lpPickIn 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes lpPickIn {
+  0%   { opacity: 0; transform: translateY(-26px) rotate(-85deg); }
+  55%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* A replacement waits its turn: the broken one has 600ms to come
+   apart and then the keyway is empty for half a second before the
+   next pick drops in. `backwards` is what holds it off stage — the
+   0% frame applies through the delay, so it is not sitting there
+   fully drawn while the old one is still snapping. */
+.pickAfterBreak {
+  animation-delay: 1100ms;
+  animation-fill-mode: backwards;
+}
+
+/* Under load it bites and stops following the dial smoothly. */
+.pickArmLoaded { transition: none; }
+
+/* The pick that just went. A ghost of the old one, left at the angle
+   it broke at while the replacement drops in behind it: the body
+   jolts and fades, the hooked tip lets go and spins off. Quick —
+   this is a punctuation mark, not a cut scene. */
+.pickBroken {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 4px;
+  height: 44px;
+  margin-left: -2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--conduction-color-status-error);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  /* The angle it broke at comes in as --lp-angle rather than as an
+     inline transform, because the keyframes below add a bend to it.
+     A keyframe that set `transform` outright would drop the angle and
+     the broken pick would jump upright at the moment it snapped. */
+  transform: rotate(var(--lp-angle, 0deg));
+  animation: lpSnapBody 600ms ease-out forwards;
+}
+.pickBroken::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 11px;
+  height: 4px;
+  border-radius: 2px;
+  background: inherit;
+  transform-origin: 0 50%;
+  animation: lpSnapTip 600ms cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+}
+/* It bends before it goes, which is the half of a snap you feel. */
+@keyframes lpSnapBody {
+  0%   { opacity: 1; height: 44px; transform: rotate(var(--lp-angle, 0deg)); }
+  14%  { opacity: 1; height: 44px; transform: rotate(calc(var(--lp-angle, 0deg) - 3deg)); }
+  20%  { height: 44px; transform: rotate(calc(var(--lp-angle, 0deg) + 4deg)); }
+  26%  { height: 26px; transform: rotate(var(--lp-angle, 0deg)); }
+  70%  { opacity: 1; height: 26px; transform: rotate(var(--lp-angle, 0deg)); }
+  100% { opacity: 0; height: 26px; transform: rotate(var(--lp-angle, 0deg)); }
+}
+@keyframes lpSnapTip {
+  0%   { opacity: 1; transform: rotate(-34deg) translate(0, 0); }
+  20%  { opacity: 1; transform: rotate(-30deg) translate(1px, 0); }
+  100% { opacity: 0; transform: rotate(190deg) translate(22px, 16px); }
+}
+
+/* And the lock giving — the one moment in the game worth watching, so
+   it gets nearly a second and three things happening at once. The
+   whole plug turns with the pick still in it, the cam holds round and
+   goes the colour of a thing that worked, and a ring goes out from
+   the keyway. Then everything returns and the next lock is sitting
+   there shut. */
+.cylinderOpened { animation: lpOpenHousing 900ms cubic-bezier(0.18, 0.9, 0.24, 1); }
+.cylinderOpened .cylinderFill { animation: lpOpen 900ms cubic-bezier(0.18, 0.9, 0.24, 1); }
+.cylinderOpened::before { animation: lpOpenPlug 900ms ease-out; }
+.cylinderOpened::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  border-radius: 50%;
+  border: 2px solid var(--conduction-color-status-success);
+  pointer-events: none;
+  animation: lpOpenRing 900ms ease-out;
+}
+
+/* The plug turning, pick and keyway going round with it. */
+@keyframes lpOpenHousing {
+  0%   { transform: rotate(0deg); }
+  16%  { transform: rotate(13deg); }
+  62%  { transform: rotate(13deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes lpOpen {
+  0%   { transform: rotate(-8deg); background: var(--conduction-color-status-success); }
+  62%  { transform: rotate(-8deg); background: var(--conduction-color-status-success); }
+  100% { background: var(--c-blue-cobalt); }
+}
+@keyframes lpOpenPlug {
+  0%   { border-color: var(--conduction-color-status-success); transform: scale(1.07); }
+  20%  { border-color: var(--conduction-color-status-success); transform: scale(1); }
+  62%  { border-color: var(--conduction-color-status-success); }
+  100% { border-color: var(--c-cobalt-200); }
+}
+@keyframes lpOpenRing {
+  0%   { opacity: 0; transform: scale(1); }
+  14%  { opacity: 0.85; transform: scale(1); }
+  58%  { opacity: 0; transform: scale(1.75); }
+  100% { opacity: 0; transform: scale(1.75); }
+}
+
+/* Under load the cylinder is driven frame by frame from the engine,
+   so the transition would only smear it a fifth of a second behind
+   the truth. Taking it off here leaves it on for the way back: let go
+   and the cylinder springs shut, which is the tell that you did not
+   have it. */
+.cylinderLoaded { transition: none; }
+
+/* And the housing shakes while the pick takes the strain. Small
+   enough to read as effort rather than as a fault. */
+.cylinderShake { animation: lpStrain 90ms linear infinite; }
+@keyframes lpStrain {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(0.6px, -0.4px); }
+  75%      { transform: translate(-0.5px, 0.5px); }
+}
+
+/* A keyway, not a dot: the round pin chamber with the blade slot
+   dropping out of it. Two shapes is the difference between something
+   you read as a lock and something you read as a gauge. */
 .keyhole {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 14px;
-  height: 14px;
-  margin: -7px 0 0 -7px;
+  width: 16px;
+  height: 16px;
+  margin: -10px 0 0 -8px;
   border-radius: 50%;
-  background: var(--c-cobalt-900);
+  background: var(--conduction-color-text-strong);
+}
+.keyhole::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 7px;
+  height: 13px;
+  margin-left: -3.5px;
+  border-radius: 0 0 2px 2px;
+  background: inherit;
+}
+
+/* The plug the keyway sits in, so the cylinder has a face rather than
+   being an empty circle with lines across it. */
+.cylinder::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  border-radius: 50%;
+  border: 2px solid var(--c-cobalt-200);
+  background: var(--conduction-color-surface-card);
 }
 
 .dial {
@@ -162,6 +380,13 @@
   background: var(--c-mint-500);
   transition: width 160ms ease-out;
 }
+
+/* Same reason as the cylinder: while the pick is wearing, the bar is
+   the thing you are watching to decide whether to let go, so it has
+   to be the truth and not a smoothed version of it a moment late. */
+.wearLive {
+  transition: none;
+}
 .wearLow { background: var(--c-orange-knvb); }
 
 .foot {
@@ -185,6 +410,12 @@
   transition: background 120ms ease;
 }
 .turn:hover:not(:disabled) { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
+/* Held down, so it stays pressed for as long as the torque is on. */
+.turnLoaded,
+.turnLoaded:hover:not(:disabled) {
+  background: var(--c-cobalt-900);
+  border-color: var(--c-cobalt-900);
+}
 .turn:disabled { opacity: 0.5; cursor: default; }
 .turn:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
 
@@ -209,4 +440,32 @@
   font-size: 13px;
   color: var(--conduction-color-text-body);
   min-height: 1.5em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The four things that move on their own. The cylinder and the wear
+     bar are left alone on purpose: they are not decoration, they are
+     the reading the whole game is played on, and they only move while
+     a key or a finger is being held down. */
+  .cylinderShake,
+  .pickIn,
+  .cylinderOpened,
+  .cylinderOpened .cylinderFill,
+  .cylinderOpened::before,
+  .cylinderOpened::after { animation: none; }
+  /* The replacement still waits its turn, it just appears rather than
+     sliding: the pause is the sequence, not the motion. */
+  .pickAfterBreak { animation: lpPickPlain 420ms steps(1, end) 1100ms backwards; }
+  @keyframes lpPickPlain {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  /* The break still needs to say a pick went, so keep the colour and
+     drop the flight: it appears, it is red, it goes. */
+  .pickBroken { animation: lpSnapPlain 320ms steps(1, end) forwards; }
+  .pickBroken::before { animation: none; }
+  @keyframes lpSnapPlain {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
 }

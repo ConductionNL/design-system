@@ -223,6 +223,185 @@ a.downloadsBadge:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* The glyph knocks when somebody clicks it.
+
+   Some pages hide a mini-game behind their own logo, and a hiding
+   place that gives no sign of being touched is indistinguishable
+   from a dead logo — two of the three clicks it takes to open one
+   used to land with nothing happening at all. <HiddenGame> raises
+   data-knock on whatever it is listening to; what a knock looks
+   like is this element's business, not its.
+
+   It swings from the low corner so a gavel reads as a gavel. The
+   flag is only present while the game is still shut, so the logo
+   stops answering once there is nothing left to find. */
+@media (prefers-reduced-motion: no-preference) {
+  /* :not() rather than trusting source order. A page that asks for
+     coins still carries [data-knock], so the two rules would weigh
+     the same and whichever came last would win — the kind of thing
+     that works until somebody moves a block. Spelled out, they are
+     simply mutually exclusive. */
+  .titleIcon[data-knock]:not([data-knock='coins']) svg {
+    transform-origin: 72% 78%;
+    animation: dhKnock 340ms cubic-bezier(0.3, 0.9, 0.35, 1);
+  }
+  @keyframes dhKnock {
+    0%   { transform: rotate(0deg); }
+    28%  { transform: rotate(-26deg) translateY(-2px); }
+    52%  { transform: rotate(16deg); }
+    72%  { transform: rotate(-7deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  /* And it strains when somebody holds it.
+
+     Keepiq hides a lock behind this glyph, opened by pressing and
+     holding for 1400ms — a second and a half of a logo doing nothing
+     is a second and a half of wondering whether it is broken. So the
+     glyph shakes under the finger, harder the longer it is held, and
+     the shake running away with itself is the tell that something is
+     about to give.
+
+     <HiddenGame> sets --hold-progress from 0 to 1 while the press is
+     down and takes it away on release. Everything here is scaled off
+     it, so the whole build-up is one variable: the shake starts at
+     nothing and cannot be seen until the hold is real, which keeps a
+     stray click from twitching the logo. */
+  .titleIcon[data-hold] svg {
+    /* Not linear: a shake that grows evenly reads as a wobble that
+       happens to stop. This starts slow and runs away with itself, so
+       the last third is where it looks like something is about to
+       give — 0.5px at a quarter of the way in, 1.4 at half, 4 at the
+       end. Both terms are plain numbers, which is the one shape calc
+       lets you multiply two variables in. */
+    --dh-ramp: calc(var(--hold-progress, 0) * (0.4 + 0.6 * var(--hold-progress, 0)));
+    --dh-shake: calc(var(--dh-ramp) * 4px);
+    --dh-tilt: calc(var(--dh-ramp) * 4.5deg);
+    /* And faster as it goes, 150ms a cycle down to 70. Amplitude
+       alone reads as a bigger wobble; the pitch rising with it is
+       what reads as strain. */
+    animation: dhStrain calc(150ms - var(--hold-progress, 0) * 80ms) linear infinite;
+  }
+  @keyframes dhStrain {
+    0%   { transform: translate(calc(var(--dh-shake) * -1), 0) rotate(calc(var(--dh-tilt) * -1)); }
+    25%  { transform: translate(var(--dh-shake), calc(var(--dh-shake) * -0.6)) rotate(var(--dh-tilt)); }
+    50%  { transform: translate(calc(var(--dh-shake) * -0.8), var(--dh-shake)) rotate(calc(var(--dh-tilt) * -0.7)); }
+    75%  { transform: translate(var(--dh-shake), calc(var(--dh-shake) * 0.4)) rotate(calc(var(--dh-tilt) * 0.8)); }
+    100% { transform: translate(calc(var(--dh-shake) * -1), 0) rotate(calc(var(--dh-tilt) * -1)); }
+  }
+
+  /* The tile squeezes with it, so the lock reads as being worked
+     rather than the icon having come loose inside it. */
+  .titleIcon[data-hold] {
+    transform: scale(calc(1 - var(--hold-progress, 0) * 0.04));
+    transition: transform 90ms linear;
+  }
+}
+
+/* Held still under reduced motion: no shake, but the press still has
+   to answer or the hiding place is silent again. The tile brightens
+   instead, on the same variable. */
+@media (prefers-reduced-motion: reduce) {
+  .titleIcon[data-hold] {
+    filter: brightness(calc(1 + var(--hold-progress, 0) * 0.35));
+  }
+}
+
+/* ---- the glyph's own reactions, per page ---------------------------
+   <HiddenGame> passes the page's chosen word through as the value of
+   data-knock, and sets data-hidden-open once the game is found. What
+   either of those looks like is this file's business. */
+
+/* The wrapper exists for the coins. The hex itself is clipped to its
+   own outline, so anything that has to leave it has to live beside
+   it rather than inside it. */
+.titleIconWrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.coins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Above the hex, so a coin passes in front of the mark on its way
+     down rather than disappearing behind it. */
+  z-index: 1;
+}
+
+/* One coin, made on the click that throws it and removed when it
+   lands. Bigger than a scatter of small ones would be: a single coin
+   has to carry the whole gesture, and at 9px it read as a speck. The
+   rim and the inner disc are one element — two inset shadows, no
+   extra nodes for something that exists for eight hundred
+   milliseconds. */
+.coins .coin {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--c-gold-300);
+  box-shadow:
+    inset 0 0 0 2.5px var(--c-gold-500),
+    inset 0 -3px 5px -2px rgba(0, 0, 0, 0.35);
+  will-change: transform, opacity;
+  animation: dhCoinDrop 820ms cubic-bezier(0.4, 0.02, 0.7, 1) forwards;
+}
+
+/* Shillinq counts money, so its mark drops a coin when knocked — one
+   per click, thrown by the effect in DetailHero.jsx.
+
+   Not inside a reduced-motion query, unlike the knock and the strain
+   above. The animation is the only thing that ever makes a coin
+   visible or clears it away, so a coin whose keyframes did not apply
+   would hang under the mark for good. The preference is honoured one
+   step earlier instead: with motion turned down, no coin is made. */
+/* Full opacity for most of the fall and gone only at the end: a coin
+   that starts fading as it leaves reads as a smudge rather than as
+   money, and on the cobalt hero it disappears almost at once. The
+   lift at 16% is the spill — it comes up out of the mark before
+   gravity gets it.
+
+   The drift, the distance and the spin are set per coin in JS, so
+   five clicks throw five different coins rather than the same one
+   five times. */
+@keyframes dhCoinDrop {
+  0%   { opacity: 0; transform: translate(-50%, 4px) scale(0.45) rotate(0deg); }
+  16%  { opacity: 1; transform: translate(-50%, -10px) scale(1) rotate(calc(var(--spin, 300deg) * 0.08)); }
+  72%  { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--dx, 24px)), var(--dy, 84px))
+      scale(0.82)
+      rotate(calc(var(--spin, 300deg) + var(--tilt, 0deg)));
+  }
+}
+
+/* Keepiq's mark is a padlock, so once it has been picked it stops
+   being shut. The glyph is a rect for the body and a single path for
+   the shackle, so the shackle is the only thing that has to move:
+   swing it about the foot of its right leg and the left leg lifts
+   clear of the body, which is what an open padlock looks like.
+   view-box, so 16px 11px means those coordinates in the glyph's own
+   24x24 space rather than a share of the rendered box.
+
+   The open lock is a state, not an animation, so it holds either way
+   — only the swing to it is behind the motion preference. */
+.titleIcon[data-hidden-open='unlock'] svg > path {
+  transform-box: view-box;
+  transform-origin: 16px 11px;
+  transform: rotate(38deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .titleIcon[data-hidden-open='unlock'] svg > path {
+    transition: transform 460ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+}
 @media (max-width: 1100px) {
   .titleIcon { width: 64px; height: 74px; }
   .titleIcon svg { width: 30px; height: 30px; }

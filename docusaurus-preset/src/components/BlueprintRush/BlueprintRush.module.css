@@ -1,13 +1,20 @@
 /**
  * <BlueprintRush /> styles.
  *
- * Tokens only. One accent: the clock in its last five seconds. The
- * blueprint reads as a checklist because that is what it is, and the
- * state of every slot is a word, not a colour.
+ * Semantic tokens only, bar the brand plate on .start. One accent:
+ * the clock in its last five seconds. The rail reads as a flow
+ * because that is what it is, and the state of every place on it is
+ * a word, not a colour.
+ *
+ * The raw cobalt steps this file used to carry could not flip. The
+ * hairlines came out near-white on the dark card, and cobalt blue on
+ * the next place to fill measured 1.62:1 against it: the one slot
+ * the player is being asked to look at was the one they could not
+ * see.
  */
 
 .br {
-  border: 1px solid var(--c-cobalt-100);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-lg);
   background: var(--conduction-color-surface-card);
   padding: clamp(16px, 3vw, 28px);
@@ -58,7 +65,7 @@
 .hudPill {
   padding: 6px 10px;
   border-radius: var(--radius-pill);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
   color: var(--conduction-color-text-strong);
   white-space: nowrap;
 }
@@ -78,46 +85,100 @@
   .board { grid-template-columns: minmax(0, 1fr); }
 }
 
-.slots {
+/* ============================================================
+   The rail: the flow, left to right, with a link drawn between
+   each place and the next. A laid part is the strong ink; the place
+   waiting for the next one is outlined and says so. Both states are
+   also words in the list, so the rail reads without colour.
+   ============================================================ */
+.rail {
   list-style: none;
   margin: 0;
   padding: 14px;
-  border: 1px dashed var(--c-cobalt-200);
+  border: 1px dashed var(--conduction-color-border-default);
   border-radius: var(--radius-md);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 18px;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.node {
+  position: relative;
+  flex: 1 1 110px;
+  min-width: 110px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--conduction-color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--conduction-color-surface-card);
+  transition: border-color 140ms ease, background 140ms ease;
 }
 
-.slot {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--conduction-color-text-body);
-  line-height: 1.35;
+/* The link to the next place. Drawn on the node rather than between
+   them so it survives the row wrapping; the last one has nothing to
+   point at and drops it. */
+.node::after {
+  content: '';
+  position: absolute;
+  right: -18px;
+  top: 50%;
+  width: 18px;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--conduction-color-border-default);
+}
+.node:last-child::after { display: none; }
+.nodeLaid::after { background: var(--conduction-color-status-success); }
+
+/* The beat after a flow is finished: it stays up, whole, with the
+   whole rail lit rather than each place separately, so what reads
+   is the app rather than the last part that went into it. */
+.railDone {
+  border-style: solid;
+  border-color: var(--conduction-color-status-success);
+  background: var(--conduction-color-status-success-tint);
 }
 
-.slotMark {
-  width: 10px;
-  height: 12px;
-  flex-shrink: 0;
-  clip-path: var(--hex-pointy-top);
-  background: var(--c-cobalt-300);
-}
-.slotDone .slotMark { background: var(--c-mint-500); }
-
-.slotText { flex: 1; }
-.slotDone .slotText { color: var(--conduction-color-text-strong); }
-
-.slotState {
+.nodeIndex {
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 11px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
   color: var(--conduction-color-text-muted);
-  white-space: nowrap;
 }
-.slotDone .slotState { color: var(--c-mint-500); }
+
+.nodeText {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--conduction-color-text-muted);
+}
+
+/* The line under a laid part, saying what it is for. Muted, so the
+   name still leads and the rail scans as a sequence of steps. */
+.nodePurpose {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--conduction-color-text-muted);
+}
+
+.nodeLaid {
+  border-color: var(--conduction-color-status-success);
+}
+.nodeLaid .nodeText {
+  color: var(--conduction-color-text-strong);
+  font-weight: 600;
+}
+
+/* Where the next part goes. */
+.nodeNext {
+  border-color: var(--conduction-color-border-strong);
+  border-style: dashed;
+}
+.nodeNext .nodeText { color: var(--conduction-color-text-default); }
 
 .tray {
   display: flex;
@@ -126,25 +187,69 @@
   align-content: flex-start;
 }
 
+/* A part in the shelf. A card rather than a pill: it carries what
+   the part is, what it is for, and what has to come before it. */
 .part {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  min-width: 150px;
   padding: 10px 14px;
-  border: 1px solid var(--c-cobalt-200);
-  border-radius: var(--radius-pill);
+  border: 1px solid var(--conduction-color-border-default);
+  border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   font-family: inherit;
-  font-size: 13px;
   color: var(--conduction-color-text-strong);
   cursor: pointer;
-  transition: border-color 120ms ease, background 120ms ease;
+  transition: border-color 120ms ease, background 120ms ease, opacity 120ms ease;
 }
-.part:hover:not(:disabled) { border-color: var(--c-blue-cobalt); background: var(--conduction-color-surface-subtle); }
+.partName { font-size: 13px; font-weight: 600; }
+.partPurpose {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--conduction-color-text-muted);
+}
+/* What the part needs, stated flatly and never coloured. An earlier
+   version turned this green once the requirement was met, which
+   answered the puzzle for the player: the game became find the green
+   card. Whether what it needs is already on the rail is for the
+   player to look up. */
+.partNeeds {
+  font-family: var(--conduction-typography-font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--conduction-color-text-muted);
+}
+
+.part:hover:not(:disabled) { border-color: var(--conduction-color-border-strong); background: var(--conduction-color-surface-sunken); }
 .part:disabled { cursor: default; }
-.part:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.part:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .partUsed {
   opacity: 0.45;
   text-decoration: line-through;
 }
+
+/* The part a hint is pointing at. The only moment the board tells
+   you an answer, and it was paid for — so it is allowed to shout.
+   The feedback line names it too, for anyone not looking. */
+.partHinted {
+  border-color: var(--conduction-color-status-success);
+  box-shadow: 0 0 0 3px var(--conduction-color-status-success-tint);
+}
+
+/* Tried and refused. Struck through in the error colour and out of
+   the running until the rail moves, so what is left narrows in
+   front of the player instead of being something they have to hold
+   in their head. The label says so too, for anyone not looking. */
+.partRuledOut {
+  border-color: var(--conduction-color-status-error);
+  background: var(--conduction-color-status-error-tint);
+  opacity: 0.75;
+}
+.partRuledOut .partName { text-decoration: line-through; }
+.partRuledOut .partNeeds { color: var(--conduction-color-status-error); }
 
 .foot {
   display: flex;
@@ -154,6 +259,10 @@
   margin-top: 16px;
 }
 
+/* The one place the raw palette is still right, and the same call
+   Deadline defender makes: a solid brand plate has to stay the brand
+   colour in both themes, so it cannot ride --conduction-color-primary,
+   which lightens in the dark and would leave white text on pale blue. */
 .start {
   background: var(--c-blue-cobalt);
   color: white;
@@ -167,7 +276,22 @@
   transition: background 120ms ease;
 }
 .start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
-.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+.start:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
+
+.ask {
+  background: transparent;
+  color: var(--conduction-color-text-body);
+  border: 1px solid var(--conduction-color-border-default);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.ask:hover:not(:disabled) { border-color: var(--c-orange-knvb); color: var(--c-orange-knvb); }
+.ask:disabled { opacity: 0.5; cursor: default; }
+.ask:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .hint {
   margin: 0;
@@ -178,9 +302,12 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .slotDone .slotMark { animation: brSet 200ms ease-out; }
+  /* A part settling into its place. Gentler than the old tick mark
+     this replaced — that was a ten-pixel glyph, this is a card the
+     width of the rail, and the same scale on it reads as a lurch. */
+  .nodeLaid { animation: brSet 220ms ease-out; }
   @keyframes brSet {
-    from { transform: scale(0.4); }
-    to   { transform: scale(1); }
+    from { transform: scale(0.94); opacity: 0.4; }
+    to   { transform: scale(1); opacity: 1; }
   }
 }

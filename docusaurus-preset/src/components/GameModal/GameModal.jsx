@@ -44,11 +44,14 @@ import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Translate, {translate} from '@docusaurus/Translate';
+import Link from '@docusaurus/Link';
+import {requestOpen} from '../HiddenGame/handoff';
 import {
   readScores, writeScores, recordResult, bestFor, foundCount as countFound,
   totalScore, formatScore,
 } from './scores';
 import {buildShareText, scoreLines, mastodonShareUrl, linkedInShareUrl, normaliseInstance} from './share';
+import CompletionBadge from './CompletionBadge';
 import styles from './GameModal.module.css';
 
 /* The player's Mastodon instance, remembered so the second share does
@@ -106,8 +109,23 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
         });
       }
     }
+    /* The same card, opened on purpose rather than by losing. No
+       detail, so nothing is recorded and the "that run" copy stays
+       out of the way — it is the roster, the total and the share
+       block the player came for. */
+    function onCard() {
+      setEvent({review: true});
+      setOpen(true);
+      setCopied(false);
+      setAskInstance(false);
+    }
+
     window.addEventListener('connext:gameend', onEnd);
-    return () => window.removeEventListener('connext:gameend', onEnd);
+    window.addEventListener('connext:gamecard', onCard);
+    return () => {
+      window.removeEventListener('connext:gameend', onEnd);
+      window.removeEventListener('connext:gamecard', onCard);
+    };
   }, [isBrowser]);
 
   /* Escape closes the modal. */
@@ -228,13 +246,20 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
 
   if (!isBrowser || !open || !event) return null;
 
-  const eyebrow = event.won
+  /* Opened from the footer rather than by a run ending: the heading
+     should say what this is, not report on a game nobody just
+     played. */
+  const eyebrow = event.review
+    ? translate({id: 'preset.gameModal.eyebrow.card', message: 'Your score card', description: 'Eyebrow when the card is opened deliberately from the footer rather than by finishing a game'})
+    : event.won
     ? translate({id: 'preset.gameModal.eyebrow.won', message: 'Mini-game complete', description: 'Eyebrow above the game-over heading when the player won'})
     : translate({id: 'preset.gameModal.eyebrow.lost', message: 'Game over', description: 'Eyebrow above the game-over heading when the player lost'});
-  const title = event.title || (event.won
+  const title = (event.review && translate({id: 'preset.gameModal.title.card', message: 'Where you have got to.', description: 'Headline when the card is opened deliberately from the footer'}))
+    || event.title || (event.won
     ? translate({id: 'preset.gameModal.title.won', message: 'Nice run.', description: 'Default headline on the game-over modal when the player won'})
     : translate({id: 'preset.gameModal.title.lost', message: "That's all of them.", description: 'Default headline on the game-over modal when the player lost'}));
-  const subtitle = event.subtitle ||
+  const subtitle = (event.review && translate({id: 'preset.gameModal.subtitle.card', message: 'Every game you have found, and what it scored. The ones you have found are links back to them.', description: 'Subtitle when the card is opened deliberately from the footer'}))
+    || event.subtitle ||
     (event.won
       ? translate({id: 'preset.gameModal.subtitle.won', message: "You've cleared a hidden Conduction mini-game.", description: 'Default subtitle on the game-over modal when the player won'})
       : translate({id: 'preset.gameModal.subtitle.lost', message: "Try again any time, the rain doesn't stop.", description: 'Default subtitle on the game-over modal when the player lost'}));
@@ -262,23 +287,30 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
               <span className={styles.scorePill}>{event.summary || translate({id: 'preset.gameModal.scorePill', message: 'score: {score}', description: 'Default score pill text. {score} is the numeric score.'}, {score: event.score})}</span>
             )}
 
+            {/* The rosette rides beside the bar rather than above it:
+                the bar is the count and the rosette is the prize for
+                filling it, and side by side they read as one line of
+                progress instead of two separate announcements. */}
             <div className={styles.progress}>
-              <div className={styles.progressLabel}>
-                <span>
-                  <Translate
-                    id="preset.gameModal.progress.found"
-                    description="Progress label below the game-over copy. {found} bolded count of games discovered; {total} is the total."
-                    values={{
-                      found: <strong>{foundCount}</strong>,
-                      total: total,
-                    }}>
-                    {'{found} / {total} mini-games found'}
-                  </Translate>
-                </span>
-                <span>{percent}%</span>
-              </div>
-              <div className={styles.progressBar}>
-                <div className={styles.progressFill} style={{width: percent + '%'}} />
+              <CompletionBadge found={foundCount} total={total} />
+              <div className={styles.progressMeter}>
+                <div className={styles.progressLabel}>
+                  <span>
+                    <Translate
+                      id="preset.gameModal.progress.found"
+                      description="Progress label below the game-over copy. {found} bolded count of games discovered; {total} is the total."
+                      values={{
+                        found: <strong>{foundCount}</strong>,
+                        total: total,
+                      }}>
+                      {'{found} / {total} mini-games found'}
+                    </Translate>
+                  </span>
+                  <span>{percent}%</span>
+                </div>
+                <div className={styles.progressBar}>
+                  <div className={styles.progressFill} style={{width: percent + '%'}} />
+                </div>
               </div>
             </div>
           </div>
@@ -288,10 +320,27 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
               {games.map((g) => {
                 const best = bestFor(scores, g.id);
                 const isFound = Boolean(scores.games[g.id] && scores.games[g.id].found);
+                /* A found game's name is the way back to it: route to
+                   the page it lives on and leave a note asking it to
+                   open on arrival. Only found games, and only ones the
+                   site gave a path — a link on a game nobody has found
+                   would hand over every riddle in the roster, and the
+                   five that live in the footer or the cookie bar are
+                   on every page, so there is nowhere to send anyone. */
+                const canVisit = isFound && Boolean(g.path);
                 return (
                   <li key={g.id} className={isFound ? styles.gridItemFound : styles.gridItem}>
                     <span className={styles.gridHex} aria-hidden="true" />
-                    <span className={styles.gridLabel}>{g.label}</span>
+                    {canVisit ? (
+                      <Link
+                        className={[styles.gridLabel, styles.gridLink].join(' ')}
+                        to={g.path}
+                        onClick={() => { requestOpen(g.id); close(); }}>
+                        {g.label}
+                      </Link>
+                    ) : (
+                      <span className={styles.gridLabel}>{g.label}</span>
+                    )}
                     {best !== null && (
                       <span className={styles.gridScore}>{formatScore(best, locale)}</span>
                     )}
@@ -431,12 +480,25 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
         </div>
 
         <div className={styles.actions}>
+          {/* Said here, next to Close, because this is the moment the
+              card is about to disappear and the question "how do I get
+              that back" is one keystroke away. */}
+          <p className={styles.whereAgain}>
+            <Translate
+              id="preset.gameModal.whereAgain"
+              description="Line by the close button telling the player the score card can be reopened from the site footer">
+              You can open this card again from the footer, on any page.
+            </Translate>
+          </p>
           <button type="button" className={styles.btnSecondary} onClick={close}>
             <Translate id="preset.gameModal.action.close" description="Close button label on the game-over modal">Close</Translate>
           </button>
-          <button type="button" className={styles.btnPrimary} onClick={replay}>
-            <Translate id="preset.gameModal.action.replay" description="Replay button label on the game-over modal">Play again</Translate>
-          </button>
+          {/* Nothing to replay when the card was opened on purpose. */}
+          {!event.review && (
+            <button type="button" className={styles.btnPrimary} onClick={replay}>
+              <Translate id="preset.gameModal.action.replay" description="Replay button label on the game-over modal">Play again</Translate>
+            </button>
+          )}
         </div>
       </div>
     </div>

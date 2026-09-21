@@ -22,7 +22,11 @@
  *   clicks    {target, count = 3, windowMs}  clicks on an element carrying
  *                                            data-hidden-target="<target>"
  *   hold      {target, holdMs}               press and hold that element
- *   type      {word}                         type a word anywhere on the page
+ *   type      {word} or {words: [...]}       type a word anywhere on the page;
+ *                                            `words` accepts any of several
+ *                                            spellings, and a short one
+ *                                            swallows every longer one
+ *                                            ending in it
  *   konami    {}                             the Konami code
  *   select    {minLength, settleMs}          select a run of text and pause
  *   link      {}                             renders its own quiet opener
@@ -110,7 +114,7 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
 
     const matcher = unlock.kind === 'konami'
       ? createSequenceMatcher(KONAMI)
-      : createWordMatcher(unlock.word || '');
+      : createWordMatcher(unlock.words || unlock.word || '');
 
     const onKey = (e) => {
       /* Never steal from a field somebody is typing in. */
@@ -120,7 +124,11 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isBrowser, open, unlock.kind, unlock.word, reveal]);
+    /* `words` is joined rather than passed as an array: a fresh array
+       literal in the page's JSX is a new reference on every render,
+       which would tear the listener down and rebuild it — losing
+       whatever the visitor had typed so far. */
+  }, [isBrowser, open, unlock.kind, unlock.word, (unlock.words || []).join('\u0000'), reveal]);
 
   /* Clicks and holds attach to whatever carries the target marker. */
   useEffect(() => {

@@ -45,15 +45,24 @@ export function createSequenceMatcher(sequence) {
 }
 
 /**
- * A word typed anywhere on the page.
+ * A word — or any of several — typed anywhere on the page.
  *
- * Keeps a rolling buffer the length of the word rather than resetting
- * on every mistake, so typing "hunthunter2" still opens it. Anything
- * that is not a single printable character is ignored, so shift,
- * arrows and tabbing about are harmless.
+ * Keeps a rolling buffer the length of the longest word rather than
+ * resetting on every mistake, so typing "hunthunter2" still opens it.
+ * Anything that is not a single printable character is ignored, so
+ * shift, arrows and tabbing about are harmless.
+ *
+ * Several spellings are a courtesy: a riddle whose answer you know
+ * but cannot type the way its author did is not a riddle, it is a
+ * password. Note that a short word swallows every longer one ending
+ * in it — give it "20" and "nat20" will never match on its own,
+ * because "20" has already fired by then.
  */
 export function createWordMatcher(word) {
-  const wanted = String(word).toLowerCase();
+  const wanted = (Array.isArray(word) ? word : [word])
+    .map((w) => String(w == null ? '' : w).toLowerCase())
+    .filter(Boolean);
+  const longest = wanted.reduce((n, w) => Math.max(n, w.length), 1);
   let buffer = '';
 
   return {
@@ -62,8 +71,8 @@ export function createWordMatcher(word) {
     push(key) {
       const k = String(key || '');
       if (k.length !== 1) return false;
-      buffer = (buffer + k.toLowerCase()).slice(-wanted.length);
-      if (buffer === wanted) {
+      buffer = (buffer + k.toLowerCase()).slice(-longest);
+      if (wanted.some((w) => buffer.endsWith(w))) {
         buffer = '';
         return true;
       }

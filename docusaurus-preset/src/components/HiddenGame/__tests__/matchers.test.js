@@ -65,6 +65,35 @@ test('a word that is only half typed stays shut', () => {
   assert.equal(m.buffer, 'hunter');
 });
 
+test('several spellings all open it, spaces and all', () => {
+  const words = ['nat20', 'natural20', 'nat 20', 'natural 20'];
+  for (const typed of words) {
+    const m = createWordMatcher(words);
+    assert.equal(feed(m, typed.split('')), 1, `"${typed}" did not open it`);
+  }
+
+  /* And a near miss still does not. */
+  const m = createWordMatcher(words);
+  assert.equal(feed(m, 'natural2'.split('')), 0);
+});
+
+test('a short spelling swallows every longer one ending in it', () => {
+  /* Worth pinning because it is surprising: the buffer is as long as
+     the longest word and fires on any suffix, so "20" matches part
+     way through "nat20" and the longer spellings never get their own
+     turn. Harmless here — same game either way — but it means a
+     two-character word opens on anything ending in those two. */
+  const m = createWordMatcher(['20', 'nat20', 'natural20']);
+  assert.equal(feed(m, 'nat20'.split('')), 1, 'it fired more than once for one word');
+  m.reset();
+  assert.equal(feed(m, '2024'.split('')), 1, '"20" no longer fires inside a longer number');
+});
+
+test('a word list with nothing usable in it never fires', () => {
+  const m = createWordMatcher(['', null, undefined]);
+  assert.equal(feed(m, 'anything at all'.split('')), 0);
+});
+
 test('three clicks in a row open it; three clicks spread out do not', () => {
   const quick = createClickCounter({count: 3, windowMs: 1500});
   assert.equal(quick.push(0), false);

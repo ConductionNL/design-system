@@ -63,7 +63,7 @@
  * existing on-cream rendering used by the connext apps detail pages.
  */
 
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HexBullet from '../primitives/HexBullet';
@@ -148,6 +148,58 @@ export default function DetailHero({
      {slug}.conduction.nl landings. Default (undefined) keeps the
      existing on-cream rendering used by connext apps detail pages. */
   const bgClass = background === 'cobalt' ? styles.bgCobalt : null;
+
+  /* A page whose knock spills money gets one coin per click, and each
+     coin is its own element with its own life.
+
+     That is the whole reason this is JavaScript rather than another
+     CSS rule keyed on data-knock. <HiddenGame> restarts that flag on
+     every click, which is right for the gavel — it should swing again
+     from the top — but wrong for money: Shillinq's riddle is five
+     clicks in a second or so, and a restarted animation drags the
+     coin that is still in the air back to the mark. Nothing ever
+     lands. A coin made on the click that throws it is untouched by
+     the next one.
+
+     <HiddenGame> only says a knock happened. What falls, how far and
+     for how long is this file's business, the same bargain the CSS
+     reactions keep. */
+  const iconRef = useRef(null);
+  const coinsRef = useRef(null);
+  useEffect(() => {
+    const icon = iconRef.current;
+    const layer = coinsRef.current;
+    if (!icon || !layer) return undefined;
+
+    /* No shower for anyone who asked not to be shown one. The click
+       still opens the game; it just does it quietly. */
+    const still = typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const onKnock = (e) => {
+      if (!e.detail || e.detail.react !== 'coins' || still) return;
+      const coin = document.createElement('i');
+      coin.className = styles.coin;
+      /* Every coin takes its own path, or five clicks drop the same
+         coin five times down the same line. */
+      const dir = Math.random() < 0.5 ? -1 : 1;
+      coin.style.setProperty('--dx', `${dir * (14 + Math.random() * 30)}px`);
+      coin.style.setProperty('--dy', `${74 + Math.random() * 34}px`);
+      coin.style.setProperty('--spin', `${dir * (220 + Math.random() * 260)}deg`);
+      coin.style.setProperty('--tilt', `${(Math.random() - 0.5) * 16}deg`);
+      coin.addEventListener('animationend', () => coin.remove(), {once: true});
+      layer.appendChild(coin);
+    };
+
+    icon.addEventListener('connext:knock', onKnock);
+    return () => {
+      icon.removeEventListener('connext:knock', onKnock);
+      /* Leaving the page mid-shower should not leave coins behind in
+         a detached node that never finishes animating. */
+      while (layer.firstChild) layer.removeChild(layer.firstChild);
+    };
+  }, [game]);
 
   /* Reconcile the hero's badge row with the navbar version pill so
      they can't drift apart. When the caller doesn't pass `version`
@@ -334,13 +386,25 @@ export default function DetailHero({
                    carries this marker, so a page can hide a game
                    behind its own logo without the hero knowing which
                    game, or that there is one. */
-                <span
-                  className={styles.titleIcon}
-                  style={{background: resolvedIconColor}}
-                  data-hidden-target="app-glyph"
-                  aria-hidden="true"
-                >
-                  {resolvedIcon}
+                <span className={styles.titleIconWrap}>
+                  <span
+                    ref={iconRef}
+                    className={styles.titleIcon}
+                    style={{background: resolvedIconColor}}
+                    data-hidden-target="app-glyph"
+                    aria-hidden="true"
+                  >
+                    {resolvedIcon}
+                  </span>
+                  {/* Where the coins land. Empty: each one is made on
+                      the click that throws it (see the effect above)
+                      and removed when it has fallen.
+
+                      It lives out here rather than in the hex because
+                      the hex is clip-path'd to its own outline —
+                      anything inside it is cut off at the edge, which
+                      is the one thing falling coins must not be. */}
+                  {game && <span ref={coinsRef} className={styles.coins} aria-hidden="true" />}
                 </span>
               )}
               <span className={styles.titleText}>{title}</span>

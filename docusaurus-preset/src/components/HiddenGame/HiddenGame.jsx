@@ -152,7 +152,26 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
            second click rather than only the first. */
         target.removeAttribute('data-knock');
         void target.offsetWidth;
-        target.setAttribute('data-knock', '');
+        /* The flag carries the page's chosen flavour, or nothing at
+           all. A gavel swings; a bank's mark drops money. Which of
+           those it is belongs to the page, not here — this only
+           passes the word along, and [data-knock] on its own still
+           matches whatever a page left unnamed. */
+        target.setAttribute('data-knock', unlock.react || '');
+        /* And an event beside the flag, because they say different
+           things. The flag is a state — "this was just knocked" — and
+           restarting it is the whole point for a gavel, which should
+           swing again from the top on every click.
+
+           Money does not work that way. Five clicks in a second is
+           what the riddle asks for, and each one has to leave its own
+           coin falling while the next arrives; a restarted animation
+           yanks the last one back to the mark. An event fires once
+           and is gone, so whatever is listening can spawn something
+           per click and let each finish on its own. */
+        target.dispatchEvent(new CustomEvent('connext:knock', {
+          detail: {react: unlock.react || ''},
+        }));
         if (counter.push(now())) reveal();
       };
       target.addEventListener('click', onClick);
@@ -162,23 +181,75 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
       };
     }
 
-    const timer = createHoldTimer({holdMs: unlock.holdMs || 1200});
-    let poll = null;
-    const start = () => {
-      timer.start(now());
-      poll = setInterval(() => { if (timer.check(now())) { clearInterval(poll); reveal(); } }, 100);
+    const holdMs = unlock.holdMs || 1200;
+    const timer = createHoldTimer({holdMs});
+    let frame = null;
+    let startedAt = 0;
+
+    /* Same bargain as the knock above: this says how far into the hold
+       the visitor is and nothing about what that looks like. The
+       element owns the strain — it is the one that knows it is a lock
+       rather than a logo.
+
+       On a frame rather than a 100ms interval, because the point of
+       the flag is a shake that grows smoothly under the finger; in
+       tenth-second steps it reads as a stutter. */
+    const tick = () => {
+      const t = now();
+      const progress = Math.min(1, (t - startedAt) / holdMs);
+      target.style.setProperty('--hold-progress', progress.toFixed(3));
+      if (timer.check(t)) { release(); reveal(); return; }
+      frame = requestAnimationFrame(tick);
     };
-    const stop = () => { timer.cancel(); if (poll) clearInterval(poll); };
+
+    const release = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = null;
+      timer.cancel();
+      target.removeAttribute('data-hold');
+      target.style.removeProperty('--hold-progress');
+    };
+
+    const start = () => {
+      startedAt = now();
+      timer.start(startedAt);
+      target.setAttribute('data-hold', '');
+      target.style.setProperty('--hold-progress', '0');
+      frame = requestAnimationFrame(tick);
+    };
+
     target.addEventListener('pointerdown', start);
-    target.addEventListener('pointerup', stop);
-    target.addEventListener('pointerleave', stop);
+    target.addEventListener('pointerup', release);
+    target.addEventListener('pointerleave', release);
+    /* A finger that slides off, or the browser taking the gesture for
+       a scroll, never sends pointerup — without this the lock would
+       keep straining after the hand had gone. */
+    target.addEventListener('pointercancel', release);
     return () => {
-      stop();
+      release();
       target.removeEventListener('pointerdown', start);
-      target.removeEventListener('pointerup', stop);
-      target.removeEventListener('pointerleave', stop);
+      target.removeEventListener('pointerup', release);
+      target.removeEventListener('pointerleave', release);
+      target.removeEventListener('pointercancel', release);
     };
   }, [isBrowser, open, unlock.kind, unlock.target, unlock.count, unlock.windowMs, unlock.holdMs, reveal]);
+
+  /* Once the game is open, the hiding place has been solved, and the
+     thing that hid it can say so for the rest of the visit. Keepiq's
+     mark is a padlock, and a padlock that has been picked should not
+     still be shut.
+
+     A separate flag from data-knock and data-hold, because those are
+     the reaction to being touched and this is a standing state. It
+     carries the same flavour word, so a page that asked for nothing
+     gets a marker it can ignore rather than a surprise. */
+  useEffect(() => {
+    if (!isBrowser || !open || !unlock.target) return undefined;
+    const target = document.querySelector(`[data-hidden-target="${unlock.target}"]`);
+    if (!target) return undefined;
+    target.setAttribute('data-hidden-open', unlock.react || '');
+    return () => target.removeAttribute('data-hidden-open');
+  }, [isBrowser, open, unlock.target, unlock.react]);
 
   /* Selecting text, for the game about selecting text. */
   useEffect(() => {

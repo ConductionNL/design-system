@@ -36,9 +36,16 @@
  * the e2e suite gets in without re-testing the matchers through a
  * browser.
  *
- * Once found, a game stays found for that browser: reopening the page
- * shows it straight away, because hiding it again would punish the
- * person who solved it.
+ * A game stays open for the visit that found it, and no longer than
+ * that. Reload, or leave and come back, and the page is a product
+ * page again — you solve the riddle afresh to play.
+ *
+ * It used to be remembered in localStorage, on the reasoning that
+ * hiding it again punished the person who solved it. That had it
+ * backwards: the page is here to explain the product, and a game
+ * pinned open on every future visit quietly takes that job away from
+ * it. Finding it is the reward, and finding it again costs seconds.
+ * `#play-<id>` is still the way back in without the riddle.
  *
  * The wrapper carries `data-hidden-game="found"` once it is open, and
  * the `link` opener carries `data-hidden-game="opener"`. That is how a
@@ -56,27 +63,8 @@ import {
   createSequenceMatcher, createWordMatcher, createClickCounter,
   createHoldTimer, createSelectionWatcher, KONAMI,
 } from './matchers';
+import {takeOpen} from './handoff';
 import styles from './HiddenGame.module.css';
-
-const FOUND_KEY = 'conduction:minigames-found';
-
-function readFound(id) {
-  if (typeof window === 'undefined') return false;
-  try {
-    const raw = window.localStorage.getItem(FOUND_KEY);
-    return Boolean(raw && JSON.parse(raw)[id]);
-  } catch (e) { return false; }
-}
-
-function writeFound(id) {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = window.localStorage.getItem(FOUND_KEY);
-    const found = raw ? JSON.parse(raw) : {};
-    found[id] = true;
-    window.localStorage.setItem(FOUND_KEY, JSON.stringify(found));
-  } catch (e) {/* fail open: the game still opened, it just won't be remembered */}
-}
 
 const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
@@ -90,7 +78,6 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
     if (openedRef.current) return;
     openedRef.current = true;
     setOpen(true);
-    writeFound(id);
     /* Bring it into view: a game that opens below the fold looks like
        nothing happened, and the player goes back to poking the logo. */
     window.requestAnimationFrame(() => {
@@ -98,14 +85,26 @@ export default function HiddenGame({id, unlock = {}, children, className}) {
     });
   }, [id]);
 
-  /* Already found here before, or linked to directly. */
+  /* The two ways in that are not the riddle: a direct #play- link, and
+     the roster in the game-over modal sending you here on purpose.
+     Both are deliberate acts by someone who already knows the game is
+     here, so neither makes a fresh visit anything but a product page.
+
+     takeOpen is called first and unconditionally, so the note is always
+     consumed even when the hash would have opened the game anyway; left
+     lying around it would spring the next page that renders this id. */
   useEffect(() => {
     if (!isBrowser) return;
-    if (readFound(id) || window.location.hash === `#play-${id}`) {
+    const sentHere = takeOpen(id);
+    if (sentHere) {
+      /* Through reveal(), for the scroll: arriving at the top of a long
+         page with the game somewhere below looks like a dead link. */
+      reveal();
+    } else if (window.location.hash === `#play-${id}`) {
       openedRef.current = true;
       setOpen(true);
     }
-  }, [isBrowser, id]);
+  }, [isBrowser, id, reveal]);
 
   /* Typed words and the Konami code both listen on the document. */
   useEffect(() => {

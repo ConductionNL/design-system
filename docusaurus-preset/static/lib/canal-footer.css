@@ -31,22 +31,36 @@
   display: block;
   shape-rendering: geometricPrecision;
 }
-/* Each house's CSS dimensions = ~0.6 of viewBox dims so the row stays compact. */
-.canal-footer .h-a { width: 48px; height: 120px; }
+/* Each house's CSS dimensions = exactly 0.6 of its viewBox dims, so the row
+   stays compact AND every facade fills its own wrapper edge to edge. That
+   second part is not cosmetic bookkeeping: the svgs carry no
+   preserveAspectRatio, so they default to xMidYMid meet and are letterboxed
+   whenever the box aspect differs from the viewBox aspect. h-d was 102px
+   against a 90x180 viewBox, which scaled the drawing to 51px inside a 54px
+   box and left 1.5px of white down each side — enough to out-run the -2px
+   wrapper overlap and show as a seam. h-a was off by the same mistake, just
+   too little to see. Keep these at viewBox x 0.6 or the seams come back. */
+.canal-footer .h-a { width: 48px; height: 121.2px; }
 .canal-footer .h-b { width: 60px; height: 132px; }
 .canal-footer .h-c { width: 42px; height: 144px; }
-.canal-footer .h-d { width: 54px; height: 102px; }
+.canal-footer .h-d { width: 54px; height: 108px; }
 .canal-footer .h-e { width: 57px; height: 126px; }
 .canal-footer .house.flipped { transform: scaleX(-1); }
 
-/* "House #14" — the Conduction office. Centre of the skyline, painted
-   in light cobalt blue with a small white house-number next to the door. */
+/* "House #14" — the Conduction office. Centre of the skyline, always the
+   same facade (see OFFICE_HOUSE in canal-footer.js), painted in light
+   cobalt blue with a small white house-number next to the door. */
 .canal-footer .house-conduction .house path { fill: var(--c-blue-cobalt); }
 .canal-footer .house-conduction::after {
   content: '14';
   position: absolute;
   bottom: 8px;
-  left: calc(50% + 12px);
+  /* Anchored to the facade's own right edge. Offsetting from the centre
+     instead — the old calc(50% + 12px) — put the number at 33-43px along
+     a 42px-wide facade, hanging it over the house next door. Every door
+     renders 9.6px wide whatever the type, so 4px in from the right still
+     clears it on all five. */
+  right: 4px;
   color: white;
   font-family: var(--conduction-typography-font-family-base, 'Inter', system-ui, sans-serif);
   font-size: 9px;
@@ -241,6 +255,25 @@
 
 /* Canal items respond to clicks (override the overlay's pointer-events). */
 .canal-footer .ci { cursor: pointer; pointer-events: auto; }
+
+/* The footer doubles as the game board, and the canal and the link columns
+   are one text flow — so a burst of sinking clicks used to highlight half the
+   footer, and a press on that highlight started a text drag that swallowed
+   every click after it. Nothing up here is worth selecting, so nothing up
+   here is selectable; canal-footer.js does the same at mousedown, and this
+   also stops the long-press callout on a phone.
+
+   The legal bar and the game-over card keep their text: they sit away from
+   the boats, so a selection there can't turn into a drag mid-game. */
+.canal-footer {
+  -webkit-user-select: none;
+  user-select: none;
+}
+.canal-footer .legal-bar,
+.canal-footer .game-over {
+  -webkit-user-select: text;
+  user-select: text;
+}
 .canal-footer h4 {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 11px; letter-spacing: 0.14em;

@@ -1,14 +1,25 @@
 /* Kade Cyclist minigame styles. Pairs with kade-cyclist.js. The stage
-   overlays the .kade strip; while the game is active the kade flips to
+   overlays the .kade strip; while the game is active the kade widens
+   from its ambient 30px to three 18px lanes and flips to
    overflow: visible so the HUD and game-over panel can extend above
    into the skyline area. Hazards are absolutely positioned within the
-   track and animated leftward via the kc-drift-l keyframe (duration is
-   set inline by the script so the difficulty ramp can shorten it).
+   track and animated across it by the kc-drift-l / kc-drift-r keyframes
+   (duration is set inline by the script so the difficulty ramp can
+   shorten it).
    Tokens used: --c-cobalt-900, --c-cobalt-700, --c-orange-knvb,
    --conduction-typography-font-family-body. */
 
-/* Active state: let the HUD and game-over banner rise above the kade. */
-.canal-footer .kade:has(.kc-stage) { overflow: visible; }
+/* Active state: widen the quay to fit road + two bike paths, and let
+   the HUD and game-over banner rise above the kade. The transition
+   plays the widening as the round opens and folds the quay back when
+   the stage is torn down. */
+.canal-footer .kade {
+  transition: height 340ms cubic-bezier(0.34, 1.12, 0.64, 1);
+}
+.canal-footer .kade:has(.kc-stage) {
+  overflow: visible;
+  height: 54px;
+}
 
 .kc-stage {
   position: absolute;
@@ -18,7 +29,13 @@
   font-family: var(--conduction-typography-font-family-body, 'Figtree', system-ui, sans-serif);
 }
 
-/* ============ Track + lanes ============ */
+/* ============ Track + lanes ============
+
+   Three 18px rows, top to bottom: the road (grey asphalt, motor
+   traffic, fast) and two bike paths (the red-brown a Dutch fietspad is
+   paved in). The JS lane keys are road / mid / bottom and the row
+   offsets below are duplicated there as sprite positions — keep the
+   two files in step. */
 
 .kc-track {
   position: absolute;
@@ -29,29 +46,35 @@
 .kc-lane {
   position: absolute;
   left: 0; right: 0;
-  height: 50%;
+  height: 18px;
   pointer-events: none;
-  /* Subtle dashed divider hint between lanes once the game is on */
 }
-.kc-lane-top    { top: 0; }
-.kc-lane-bottom { bottom: 0; }
-/* Lane divider — kept always visible during gameplay (more prominent
-   than the original ambient kade) so the player can read which lane
-   each hazard is in at a glance. */
-.kc-track::before {
+.kc-lane-road   { top: 0;    background: #8b8d93; }
+.kc-lane-mid    { top: 18px; background: #a2685a; }
+.kc-lane-bottom { top: 36px; background: #a2685a; }
+
+/* Kerb line between the road and the bike path — solid, the way the
+   separation is painted on a real quay. */
+.kc-lane-road::after {
   content: "";
   position: absolute;
-  left: 0; right: 0;
-  top: 50%;
+  left: 0; right: 0; bottom: 0;
   height: 2px;
-  margin-top: -1px;
+  background: rgba(255, 255, 255, 0.55);
+}
+/* Dashed divider down the middle of the bike path — the two halves run
+   opposite ways, so this is the centre line, and it also lets the player
+   read which half each rider is in at a glance. */
+.kc-lane-mid::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
   background: repeating-linear-gradient(
     to right,
-    rgba(10, 23, 47, 0.45) 0 8px,
-    transparent 8px 14px
+    rgba(255, 255, 255, 0.5) 0 8px,
+    transparent 8px 16px
   );
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* ============ Player ============ */
@@ -61,17 +84,19 @@
   /* The runtime sets --kc-player-x to the centre x of the blue
      Conduction house in the skyline, so the cyclist visually sits
      under the brand-anchor house. Fallback covers the case where the
-     skyline hasn't been built yet. */
-  left: var(--kc-player-x, 14%);
+     skyline hasn't been built yet — it centres the player, which is
+     what gives both directions of the bike path a runway. */
+  left: var(--kc-player-x, 50%);
   width: 22px;
   height: 16px;
   z-index: 6;
-  transition: top 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              bottom 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: top 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: drop-shadow(0 1px 0 rgba(247, 127, 14, 0.4));
 }
-.kc-player[data-lane="top"]    { top: 0px; bottom: auto; }
-.kc-player[data-lane="bottom"] { bottom: 0px; top: auto; }
+/* One row per lane — 1px of slack inside each 18px row. */
+.kc-player[data-lane="road"]   { top: 1px; }
+.kc-player[data-lane="mid"]    { top: 19px; }
+.kc-player[data-lane="bottom"] { top: 37px; }
 .kc-player-svg { display: block; }
 
 .kc-player.crashed {
@@ -85,11 +110,23 @@
   100% { transform: rotate(20deg) translateY(0); }
 }
 
-/* ============ Hazards ============ */
+/* ============ Hazards ============
+
+   The -96px offset and the 100vw + 260px travel below are mirrored in
+   kade-cyclist.js as SPAWN_OFFSET / TRAVEL_EXTRA — the script needs
+   them to predict when a hazard will cover the player's x, which is
+   how it guarantees an open lane. Change them in both places.
+
+   data-dir carries the lane's direction: 'l' enters from the right and
+   drifts left (the road and the upper half of the bike path), 'r'
+   enters from the left and drifts right (the lower half). Every sprite
+   is drawn facing right, so it is the 'l' ones that get mirrored to
+   face the way they are going — on the inner svg, because the
+   wrapper's own transform is the drift. */
 
 .kc-hazard {
   position: absolute;
-  right: -64px;
+  right: -96px;
   height: 16px;
   z-index: 5;
   animation-name: kc-drift-l;
@@ -97,12 +134,24 @@
   animation-fill-mode: forwards;
   animation-iteration-count: 1;
 }
-.kc-hazard[data-lane="top"]    { top: 0px; }
-.kc-hazard[data-lane="bottom"] { bottom: 0px; }
+.kc-hazard[data-lane="road"]   { top: 1px; }
+.kc-hazard[data-lane="mid"]    { top: 19px; }
+.kc-hazard[data-lane="bottom"] { top: 37px; }
+
+.kc-hazard[data-dir="r"] {
+  right: auto;
+  left: -96px;
+  animation-name: kc-drift-r;
+}
+.kc-hazard[data-dir="l"] .kc-hazard-svg { transform: scaleX(-1); }
 
 @keyframes kc-drift-l {
   from { transform: translateX(0); }
-  to   { transform: translateX(calc(-100vw - 200px)); }
+  to   { transform: translateX(calc(-100vw - 260px)); }
+}
+@keyframes kc-drift-r {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(100vw + 260px)); }
 }
 .kc-hazard-svg { display: block; }
 
@@ -246,6 +295,7 @@
 /* ============ Reduced motion ============ */
 
 @media (prefers-reduced-motion: reduce) {
+  .canal-footer .kade,
   .kc-player,
   .kc-over,
   .kc-player.crashed {

@@ -43,6 +43,30 @@
   const skyline = root.querySelector('.skyline');
   const houseTypes  = ['h-a', 'h-b', 'h-c', 'h-d', 'h-e'];
   const houseWidths = { 'h-a': 48, 'h-b': 60, 'h-c': 42, 'h-d': 54, 'h-e': 57 };
+  /* The Conduction office is always the same grachtenpand. It used to be
+     whichever type the middle slot happened to roll, so the building
+     changed on every page load and could be mirrored on top of that —
+     and one of the five, the 42px-wide h-c, is too narrow for the house
+     number to sit beside its door. */
+  const OFFICE_HOUSE = 'h-d';
+  /* Facades for the two slots either side of the office. The office is
+     the shortest house on the canal at 108px, and it only stands out
+     when its neighbours stand over it — left to the roll it kept landing
+     level with the row and disappeared into it. These are the two
+     tallest types, 132 and 144, so whichever pair comes up clears the
+     office by 24px or more. They are drawn independently and still take
+     the usual mirror roll, so the pair varies from load to load. */
+  const OFFICE_NEIGHBOURS = ['h-b', 'h-c'];
+
+  /* Replace a slot's facade in place, keeping the wrapper (and anything
+     already bound to it) and re-rolling the mirror. */
+  function fillWrap(wrap, type, flipped) {
+    const tpl = document.getElementById('tpl-' + type);
+    if (!tpl) return;
+    wrap.innerHTML = '';
+    wrap.appendChild(tpl.content.cloneNode(true));
+    if (flipped) wrap.querySelector('svg').classList.add('flipped');
+  }
 
   function buildSkyline() {
     skyline.innerHTML = '';
@@ -65,7 +89,23 @@
       total += houseWidths[pick];
     }
     const all = skyline.querySelectorAll('.house-wrap');
-    if (all.length) all[Math.floor(all.length / 2)].classList.add('house-conduction');
+    if (all.length) {
+      const mid = Math.floor(all.length / 2);
+
+      /* Swap whatever the middle slot rolled for the office facade,
+         unflipped — the office is one building, not five. Then stand a
+         tall house in the slot either side of it. Replacing three slots
+         moves the row's total width by at most 54px, and the row is
+         built 200px past the viewport, so it still fills the width. */
+      fillWrap(all[mid], OFFICE_HOUSE, false);
+      all[mid].classList.add('house-conduction');
+
+      [mid - 1, mid + 1].forEach(function (i) {
+        if (!all[i]) return;
+        const pick = OFFICE_NEIGHBOURS[(Math.random() * OFFICE_NEIGHBOURS.length) | 0];
+        fillWrap(all[i], pick, Math.random() < 0.30);
+      });
+    }
   }
 
   // ===== Random per-item drift speeds for the initial fleet =====
@@ -365,7 +405,6 @@
     clone._anim = anim;
     anim.onfinish = () => { if (!clone.dataset.sinking) clone.remove(); };
 
-    clone.addEventListener('click', () => onShipClick(clone));
     return clone;
   }
 
@@ -497,11 +536,150 @@
       if (b.dataset.wired) return;
       b.dataset.wired = '1';
       b.title = 'click to sink';
-      b.addEventListener('click', () => onShipClick(b));
     });
   }
 
+  /* ===== Hitting a boat =====
+     Boats used to listen for 'click', which only fires when the pointer goes
+     down AND up on the same element. At the 5× end of the ramp a boat covers
+     roughly 60px during an ordinary 150ms press — more than the swimmer or
+     the periscope is wide — so the mouseup landed on the water and the click
+     was dispatched on the container instead: a shot that looked dead-on did
+     nothing. Sinking on pointerdown fires the moment the button goes down,
+     which is the moment the player aimed at, and it skips the touch-tap
+     delay too.
+
+     Delegating from the root also covers spawned boats without a listener
+     each, and survives the clone-and-append the spawn loop does.
+
+     MISS_SLOP forgives a near miss: hit-testing uses the position the main
+     thread last laid out, while the compositor has already drawn a fast boat
+     a few pixels further along, so an honest hit can land in the water. A
+     pointerdown that hits nothing falls back to the nearest boat whose box is
+     within this many pixels. Tune it from a real run — bigger is more
+     forgiving, and at some point the late game stops biting. */
+  const MISS_SLOP = 18;
+
+  function boatNearPoint(x, y) {
+    let best = null;
+    let bestDist = Infinity;
+    canalItems.querySelectorAll('.ci').forEach((el) => {
+      if (el.dataset.sinking) return;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const dx = Math.max(r.left - x, 0, x - r.right);
+      const dy = Math.max(r.top - y, 0, y - r.bottom);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= MISS_SLOP && dist < bestDist) { bestDist = dist; best = el; }
+    });
+    return best;
+  }
+
+  function boatAtEvent(e) {
+    const direct = e.target.closest && e.target.closest('.ci');
+    if (direct) return direct;
+    /* Only shots that hit nothing interactive get the slop, so a press on a
+       footer link or on the game-over card can never sink a boat drifting
+       past just above it. */
+    if (e.target.closest && e.target.closest('a, button, .game-over')) return null;
+    return boatNearPoint(e.clientX, e.clientY);
+  }
+
+  /* A finger resting on a boat while the page is scrolled must not sink it,
+     and on touch there is no way to know that at pointerdown. So touch waits
+     for pointerup and sinks only if the finger stayed put; mouse and pen fire
+     straight away, which is the whole point of the change. */
+  const TAP_SLOP = 12;
+  let touchStart = null;
+
+  function onCanalPointerDown(e) {
+    if (e.button !== 0) return;
+    if (e.pointerType === 'touch') {
+      const boat = boatAtEvent(e);
+      touchStart = boat ? { id: e.pointerId, x: e.clientX, y: e.clientY, boat } : null;
+      return;
+    }
+    const boat = boatAtEvent(e);
+    if (!boat) return;
+    e.preventDefault();
+    /* Cancelling pointerdown suppresses the compatibility mousedown in some
+       browsers, so blockGameSelection may never see this press. */
+    clearStraySelection();
+    onShipClick(boat);
+  }
+
+  function onCanalPointerUp(e) {
+    if (!touchStart || e.pointerId !== touchStart.id) return;
+    const moved = Math.hypot(e.clientX - touchStart.x, e.clientY - touchStart.y);
+    const boat = touchStart.boat;
+    touchStart = null;
+    /* The boat has drifted on since the tap began, so re-check what is under
+       the finger now and fall back to what it started on. */
+    if (moved <= TAP_SLOP) onShipClick(boatAtEvent(e) || boat);
+  }
+
+  function onCanalPointerCancel(e) {
+    if (touchStart && e.pointerId === touchStart.id) touchStart = null;
+  }
+
+  /* ===== Sinking must never select or drag the footer =====
+     Clicking fast means clicking while the mouse is still moving, so a press
+     that was meant as a shot is a one-pixel drag. The water and the link
+     columns are one text flow, so that drag anchors at the nearest text
+     offset and highlights something — and then the real trap springs: press
+     on text that is already selected, move a pixel, and the browser starts a
+     native drag of that text. While it runs, every further click goes into
+     the drag instead of into a boat, which is the "I can't click any more"
+     part. The ghost of the dragged letter next to the cursor is that drag.
+
+     Three rules kill it:
+       1. Cancel the mousedown default across the footer, so a press in the
+          canal or the link columns can never start a selection. Interactive
+          elements are left alone so a click still focuses them, and the legal
+          bar and the game-over card stay selectable — they sit away from the
+          boats, so a selection there can't turn into a drag mid-game.
+       2. Clear a stray selection on such a press. The browser normally
+          collapses a selection on mousedown; rule 1 suppresses that, so
+          without this an old highlight would sit in the footer for good.
+       3. Refuse dragstart outright. Nothing in a footer is worth dragging,
+          and this is the one that guarantees a burst of clicking can never
+          lock itself out.
+     None of it touches the click event, so links keep working. */
+  const SELECTABLE = '.legal-bar, .game-over';
+  const INTERACTIVE = 'a, button, input, textarea, select, label, [tabindex]';
+
+  function blockGameSelection(e) {
+    if (e.button !== 0) return;
+    const t = e.target;
+    if (!t.closest) return;
+    const spared = t.closest(SELECTABLE) || t.closest(INTERACTIVE);
+    if (spared && e.detail <= 1) return;
+    e.preventDefault();
+    clearStraySelection();
+  }
+
+  /* Drops a highlight the player never asked for. Anything they selected
+     themselves in the legal bar or on the game-over card is left alone. */
+  function clearStraySelection() {
+    const sel = window.getSelection && window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+    const node = sel.anchorNode;
+    const anchor = node && (node.nodeType === 1 ? node : node.parentElement);
+    if (anchor && anchor.closest && anchor.closest(SELECTABLE)) return;
+    sel.removeAllRanges();
+  }
+
+  function blockFooterDrag(e) {
+    if (e.target.closest && e.target.closest(SELECTABLE)) return;
+    e.preventDefault();
+  }
+
     // ===== Bootstrap =====
+    root.addEventListener('pointerdown', onCanalPointerDown);
+    root.addEventListener('pointerup', onCanalPointerUp);
+    root.addEventListener('pointercancel', onCanalPointerCancel);
+    root.addEventListener('mousedown', blockGameSelection);
+    root.addEventListener('dragstart', blockFooterDrag);
     buildSkyline();
     rollSpeeds();
     wireConductionHouse();

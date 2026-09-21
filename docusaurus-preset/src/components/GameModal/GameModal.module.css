@@ -67,16 +67,9 @@
   .aside { grid-area: aside; }
   .roster { grid-area: roster; }
 
-  /* Eight and eight rather than sixteen. Multi-column fills downwards,
-     so the list still reads in roster order. */
-  .grid {
-    display: block;
-    columns: 2;
-    column-gap: 56px;
-  }
   .roster { margin-top: 36px; }
-  .gridItem,
-  .gridItemFound { break-inside: avoid; }
+  /* The roster's own two columns are set further down, next to the
+     rules they have to beat — see the note above .grid. */
 }
 
 .close {
@@ -195,6 +188,36 @@
   color: var(--conduction-color-text-muted);
 }
 .gridItemFound { color: var(--conduction-color-text-strong); font-weight: 500; }
+
+/* Eight and eight rather than sixteen. Multi-column fills downwards,
+   so the list still reads in roster order.
+
+   This sits AFTER the flex rules above rather than up with the rest of
+   the wide-screen layout, and that is the whole point of it. A media
+   query adds no specificity, so the `.grid` up there and the `.grid`
+   here weigh the same and source order decides — with this block at
+   the top of the file the plain `display: flex` below it won, `columns`
+   was inert on a flex container, and all sixteen games stacked in one
+   column. That made the card about twice as tall as it needed to be
+   and gave it a scrollbar on a window it fits in comfortably.
+
+   Row spacing has to be a margin here too: `gap` does nothing in a
+   multi-column block, so the 7px from the flex rule would go with it. */
+@media (min-width: 880px) {
+  .grid {
+    display: block;
+    columns: 2;
+    column-gap: 56px;
+  }
+  .gridItem,
+  .gridItemFound {
+    margin-bottom: 7px;
+    break-inside: avoid;
+  }
+  /* No trailing margin inside a scroll container: those few pixels are
+     exactly what puts a scrollbar on a card that otherwise fits. */
+  .grid > :last-child { margin-bottom: 0; }
+}
 .gridHex {
   width: 10px;
   height: 12px;

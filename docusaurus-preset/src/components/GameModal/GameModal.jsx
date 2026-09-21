@@ -44,6 +44,8 @@ import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Translate, {translate} from '@docusaurus/Translate';
+import Link from '@docusaurus/Link';
+import {requestOpen} from '../HiddenGame/handoff';
 import {
   readScores, writeScores, recordResult, bestFor, foundCount as countFound,
   totalScore, formatScore,
@@ -288,10 +290,27 @@ export default function GameModal({games: gamesProp, share: shareConfig, classNa
               {games.map((g) => {
                 const best = bestFor(scores, g.id);
                 const isFound = Boolean(scores.games[g.id] && scores.games[g.id].found);
+                /* A found game's name is the way back to it: route to
+                   the page it lives on and leave a note asking it to
+                   open on arrival. Only found games, and only ones the
+                   site gave a path — a link on a game nobody has found
+                   would hand over every riddle in the roster, and the
+                   five that live in the footer or the cookie bar are
+                   on every page, so there is nowhere to send anyone. */
+                const canVisit = isFound && Boolean(g.path);
                 return (
                   <li key={g.id} className={isFound ? styles.gridItemFound : styles.gridItem}>
                     <span className={styles.gridHex} aria-hidden="true" />
-                    <span className={styles.gridLabel}>{g.label}</span>
+                    {canVisit ? (
+                      <Link
+                        className={[styles.gridLabel, styles.gridLink].join(' ')}
+                        to={g.path}
+                        onClick={() => { requestOpen(g.id); close(); }}>
+                        {g.label}
+                      </Link>
+                    ) : (
+                      <span className={styles.gridLabel}>{g.label}</span>
+                    )}
                     {best !== null && (
                       <span className={styles.gridScore}>{formatScore(best, locale)}</span>
                     )}

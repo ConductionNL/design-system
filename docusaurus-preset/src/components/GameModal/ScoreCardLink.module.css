@@ -1,0 +1,74 @@
+/**
+ * <ScoreCardLink /> styles.
+ *
+ * Sits under the brand block in the footer, below the social icons.
+ * Not in the legal bar: that row is KvK, BTW, IBAN, Privacy and
+ * Terms, and somebody's game score is none of those.
+ *
+ * Inherits its colour from the brand block rather than setting one,
+ * so it follows the footer wherever the footer goes. It carries no
+ * opacity of its own — the first version dimmed itself a further 0.85
+ * on top of the ink it inherited and landed at 4.71:1, inside AA by
+ * two hundredths and half the contrast of the links beside it.
+ */
+
+/* Clear of the social icons rather than tucked under them: the icons
+   are a row of boxes, so a gap that looks right against plain text
+   reads as crowding against their edges. */
+.wrap {
+  margin: var(--space-10) 0 0;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  /* The brand paragraph's own ink. Set rather than inherited: as a
+     div this no longer picks it up from `.brand p`, and the footer
+     is always the dark canal, so the value does not flip. */
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover { text-decoration: underline; }
+
+.link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* The same small orange mark the brand line above it uses, so the
+   link reads as part of that block rather than as something that
+   wandered in from the link grid. */
+.pip {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--c-orange-knvb);
+}
+
+/* Everything found. The footer is always the dark canal, so this is
+   the one place in the kit where full white is the right ink rather
+   than a token: it is the same ink the footer's own links use, and it
+   lifts the line out of the 0.7 prose around it without inventing a
+   colour. The pip becomes a filled ring — a mark that reads as
+   finished next to the square of the unfinished state, so the change
+   is not carried by brightness alone. */
+.complete {
+  color: #fff;
+  font-weight: 600;
+}
+
+.pipDone {
+  border-radius: 50%;
+  background: var(--c-orange-knvb);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
+}

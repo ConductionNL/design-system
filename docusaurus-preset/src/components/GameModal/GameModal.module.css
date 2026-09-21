@@ -138,6 +138,17 @@
 
 .progress {
   margin: 24px 0 16px;
+  /* The rosette sits to the left of the bar it belongs to. It never
+     shrinks; the meter takes whatever is left, with min-width 0 so a
+     long translated label wraps inside the column instead of pushing
+     the badge off the panel. */
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.progressMeter {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 /* Last thing in the headline column, directly above the roster it
    counts. Nothing follows it there, so it needs no tail margin. */
@@ -323,9 +334,22 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   justify-content: flex-end;
   margin-top: 32px;
+}
+
+/* Takes the left of the actions row and pushes the buttons right, so
+   it reads as a footnote to Close rather than as another control. On
+   a narrow card it wraps onto its own line above them. */
+.whereAgain {
+  margin: 0 auto 0 0;
+  max-width: 30ch;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--conduction-color-text-muted);
 }
 
 .btnSecondary {

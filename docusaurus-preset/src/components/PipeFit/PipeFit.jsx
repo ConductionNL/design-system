@@ -6,8 +6,10 @@
  * runs end to end, before the payload arrives and finds a gap.
  *
  * Turning a connector moves both its openings at once, so fixing the
- * join on one side can break the join on the other. That is the whole
- * puzzle, and it is what connecting two systems actually feels like.
+ * join on one side can break the join on the other. Some connectors
+ * are wired to the ones either side of them and drag those round too,
+ * which is what stops the route falling to a single left-to-right
+ * walk. Both are what connecting two systems actually feels like.
  *
  * The rules live in ./engine.js with no DOM and no clock.
  *
@@ -152,7 +154,7 @@ export default function PipeFit({className}) {
             {translate({id: 'preset.pipeFit.title', message: 'Make the connection', description: 'Name of the Integriq mini-game'})}
           </h3>
           <p className={styles.lede}>
-            {translate({id: 'preset.pipeFit.lede', message: 'A record is on its way from one system to another and the route is half built. Turn the connectors until the line runs end to end. Turning one moves both its openings, which is the whole problem.', description: 'One-line explanation of the pipe-fit rules'})}
+            {translate({id: 'preset.pipeFit.lede', message: 'A record is on its way from one system to another and the route is half built. Turn the connectors until the line runs end to end. Turning one moves both its openings — and a marked one takes the connectors either side of it round with it.', description: 'One-line explanation of the pipe-fit rules'})}
           </p>
         </div>
         <div className={styles.hud} role="status" aria-live="polite">
@@ -175,11 +177,13 @@ export default function PipeFit({className}) {
             {route.pieces.map((piece, i) => {
               const {left: inPort, right: outPort} = openings(piece);
               const joined = inPort === carries[i];
+              /* Wired to its neighbours: turning it turns them. */
+              const drags = Boolean(route.coupled && route.coupled[i]);
               return (
                 <button
                   key={i}
                   type="button"
-                  className={[styles.piece, joined ? styles.joined : styles.gap, lit[i] && styles.lit].filter(Boolean).join(' ')}
+                  className={[styles.piece, joined ? styles.joined : styles.gap, lit[i] && styles.lit, drags && styles.ganged].filter(Boolean).join(' ')}
                   onClick={() => rotate(i)}
                   disabled={!running || celebrating}
                   aria-label={translate(
@@ -188,12 +192,15 @@ export default function PipeFit({className}) {
                       n: i + 1,
                       in: portName(inPort),
                       out: portName(outPort),
-                      state: joined
-                        ? translate({id: 'preset.pipeFit.piece.joined', message: 'meets the one before it', description: 'State of a connector that lines up'})
-                        : translate({id: 'preset.pipeFit.piece.gap', message: 'does not meet the one before it', description: 'State of a connector that does not line up'}),
+                      state: [
+                        joined
+                          ? translate({id: 'preset.pipeFit.piece.joined', message: 'meets the one before it', description: 'State of a connector that lines up'})
+                          : translate({id: 'preset.pipeFit.piece.gap', message: 'does not meet the one before it', description: 'State of a connector that does not line up'}),
+                        drags && translate({id: 'preset.pipeFit.piece.ganged', message: 'wired to its neighbours, so they turn with it', description: 'Said of a connector that drags the connectors either side of it round when it is turned'}),
+                      ].filter(Boolean).join(', '),
                     },
                   )}>
-                  <span className={[styles.mouth, styles[`port-${inPort}`]].join(' ')} aria-hidden="true" />
+                  <span className={[styles.mouth, styles.mouthIn, styles[`port-${inPort}`]].join(' ')} aria-hidden="true" />
                   {/* The pipe itself: in at one opening, out at the
                       other. Stretched to whatever width the piece got,
                       with the stroke held at its drawn weight. */}
@@ -208,7 +215,12 @@ export default function PipeFit({className}) {
                       vectorEffect="non-scaling-stroke"
                     />
                   </svg>
-                  <span className={[styles.mouth, styles[`port-${outPort}`]].join(' ')} aria-hidden="true" />
+                  <span className={[styles.mouth, styles.mouthOut, styles[`port-${outPort}`]].join(' ')} aria-hidden="true" />
+                  {/* Says it is wired to the connectors either side.
+                      Without it the coupling is a trap rather than a
+                      puzzle: a player cannot plan around a rule the
+                      board never showed them. */}
+                  {drags && <span className={styles.gangMark} aria-hidden="true" />}
                 </button>
               );
             })}
@@ -243,7 +255,7 @@ export default function PipeFit({className}) {
         <p className={styles.hint} role="status" aria-live="polite">
           {last && last.result === 'connected' && translate({id: 'preset.pipeFit.feedback.connected', message: 'Through. The next one is longer.', description: 'Feedback after completing a route'})}
           {last && last.result === 'spilled' && translate({id: 'preset.pipeFit.feedback.spilled', message: 'The payload arrived and found a gap.', description: 'Feedback after the clock runs out'})}
-          {(!last || last.result === 'turned') && translate({id: 'preset.pipeFit.hint', message: 'Click a connector to turn it. Both of its openings move together.', description: 'Hint under the pipe-fit route'})}
+          {(!last || last.result === 'turned') && translate({id: 'preset.pipeFit.hint', message: 'Click a connector to turn it. Both of its openings move together, and a marked one drags its neighbours round too.', description: 'Hint under the pipe-fit route'})}
         </p>
       </footer>
     </section>

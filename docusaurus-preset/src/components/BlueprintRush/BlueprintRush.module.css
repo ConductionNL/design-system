@@ -1,13 +1,20 @@
 /**
  * <BlueprintRush /> styles.
  *
- * Tokens only. One accent: the clock in its last five seconds. The
- * rail reads as a flow because that is what it is, and the state of
- * every place on it is a word, not a colour.
+ * Semantic tokens only, bar the brand plate on .start. One accent:
+ * the clock in its last five seconds. The rail reads as a flow
+ * because that is what it is, and the state of every place on it is
+ * a word, not a colour.
+ *
+ * The raw cobalt steps this file used to carry could not flip. The
+ * hairlines came out near-white on the dark card, and cobalt blue on
+ * the next place to fill measured 1.62:1 against it: the one slot
+ * the player is being asked to look at was the one they could not
+ * see.
  */
 
 .br {
-  border: 1px solid var(--c-cobalt-100);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-lg);
   background: var(--conduction-color-surface-card);
   padding: clamp(16px, 3vw, 28px);
@@ -58,7 +65,7 @@
 .hudPill {
   padding: 6px 10px;
   border-radius: var(--radius-pill);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
   color: var(--conduction-color-text-strong);
   white-space: nowrap;
 }
@@ -88,9 +95,9 @@
   list-style: none;
   margin: 0;
   padding: 14px;
-  border: 1px dashed var(--c-cobalt-200);
+  border: 1px dashed var(--conduction-color-border-default);
   border-radius: var(--radius-md);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -106,7 +113,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 10px 12px;
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   transition: border-color 140ms ease, background 140ms ease;
@@ -123,7 +130,7 @@
   width: 18px;
   height: 2px;
   margin-top: -1px;
-  background: var(--c-cobalt-200);
+  background: var(--conduction-color-border-default);
 }
 .node:last-child::after { display: none; }
 .nodeLaid::after { background: var(--conduction-color-status-success); }
@@ -168,10 +175,10 @@
 
 /* Where the next part goes. */
 .nodeNext {
-  border-color: var(--c-blue-cobalt);
+  border-color: var(--conduction-color-border-strong);
   border-style: dashed;
 }
-.nodeNext .nodeText { color: var(--c-blue-cobalt); }
+.nodeNext .nodeText { color: var(--conduction-color-text-default); }
 
 .tray {
   display: flex;
@@ -189,7 +196,7 @@
   text-align: left;
   min-width: 150px;
   padding: 10px 14px;
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   border-radius: var(--radius-md);
   background: var(--conduction-color-surface-card);
   font-family: inherit;
@@ -215,9 +222,9 @@
   color: var(--conduction-color-text-muted);
 }
 
-.part:hover:not(:disabled) { border-color: var(--c-blue-cobalt); background: var(--conduction-color-surface-subtle); }
+.part:hover:not(:disabled) { border-color: var(--conduction-color-border-strong); background: var(--conduction-color-surface-sunken); }
 .part:disabled { cursor: default; }
-.part:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.part:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .partUsed {
   opacity: 0.45;
@@ -252,6 +259,10 @@
   margin-top: 16px;
 }
 
+/* The one place the raw palette is still right, and the same call
+   Deadline defender makes: a solid brand plate has to stay the brand
+   colour in both themes, so it cannot ride --conduction-color-primary,
+   which lightens in the dark and would leave white text on pale blue. */
 .start {
   background: var(--c-blue-cobalt);
   color: white;
@@ -265,12 +276,12 @@
   transition: background 120ms ease;
 }
 .start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
-.start:focus-visible { outline: 2px solid var(--c-cobalt-900); outline-offset: 2px; }
+.start:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
 
 .ask {
   background: transparent;
   color: var(--conduction-color-text-body);
-  border: 1px solid var(--c-cobalt-200);
+  border: 1px solid var(--conduction-color-border-default);
   padding: 10px 16px;
   border-radius: var(--radius-md);
   font-family: inherit;
@@ -280,7 +291,7 @@
 }
 .ask:hover:not(:disabled) { border-color: var(--c-orange-knvb); color: var(--c-orange-knvb); }
 .ask:disabled { opacity: 0.5; cursor: default; }
-.ask:focus-visible { outline: 2px solid var(--c-blue-cobalt); outline-offset: 2px; }
+.ask:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 .hint {
   margin: 0;

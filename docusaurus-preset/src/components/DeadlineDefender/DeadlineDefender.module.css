@@ -65,10 +65,13 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+/* -sunken, not -subtle: in dark mode -subtle resolves to the same
+   cobalt-800 as the card it sits on, so the pill lost its ground and
+   the score read as loose text. */
 .hudPill {
   padding: 6px 10px;
   border-radius: var(--radius-pill);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
   color: var(--conduction-color-text-strong);
   white-space: nowrap;
 }
@@ -141,11 +144,14 @@
   color: var(--conduction-color-text-muted);
 }
 
+/* The subject chip rides the surfaces rather than the info status:
+   the info tint is the card colour in both themes, so the chip was
+   invisible on a case that had not been answered yet. */
 .subject {
   padding: 2px 7px;
   border-radius: var(--radius-pill);
-  background: var(--conduction-color-status-info-tint);
-  color: var(--conduction-color-status-info-ink);
+  background: var(--conduction-color-surface-sunken);
+  color: var(--conduction-color-text-strong);
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -216,9 +222,13 @@
 }
 .lane:hover:not(:disabled) {
   border-color: var(--conduction-color-border-strong);
-  background: var(--conduction-color-surface-subtle);
+  background: var(--conduction-color-surface-sunken);
 }
-.lane:disabled { opacity: 0.55; cursor: default; }
+/* Out of play for the length of the verdict beat — but the player is
+   still reading the lanes to see where the case should have gone, so
+   the dimming stops at the point where the hairline still clears 3:1
+   on the dark card. 0.55 put it at 2.51:1. */
+.lane:disabled { opacity: 0.7; cursor: default; }
 .lane:focus-visible { outline: 2px solid var(--conduction-color-border-strong); outline-offset: 2px; }
 
 /* Where the case should have gone, and — when it is not the same

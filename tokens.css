@@ -164,6 +164,22 @@
   --conduction-color-text-default: var(--c-blue-cobalt);
   --conduction-color-text-inverse: var(--c-white);
   --conduction-color-text-accent:  var(--c-coral-600);
+
+  /* Focus indicator: the brand's KNVB ring plus a halo behind it.
+     Measured 2026-09-22, no single colour clears SC 1.4.11's 3:1 on every
+     surface this site puts a control on. KNVB is 2.68:1 on a cobalt-50
+     panel and 1.00:1 on an orange button; coral-600 is 1.94:1 on a cobalt
+     hero; white fails on light grounds and cobalt-900 on dark ones. Swapping
+     the ring colour only moves which surface fails, which a first attempt at
+     this did.
+     So the ring keeps its brand job and a second ring sits outside it,
+     carrying the opposite luminance: cobalt-900 in light, white in dark.
+     Every surface then has at least one of the two at 3:1 or better, worst
+     case 5.93:1 on the orange button. The halo is a box-shadow, which an
+     ancestor's overflow can clip, so the ring stays the outline: if the halo
+     is ever clipped the result is today's behaviour, never worse. */
+  --conduction-color-focus-ring:   var(--c-orange-knvb);
+  --conduction-color-focus-halo:   var(--c-cobalt-900);
   --conduction-color-text-muted:   var(--c-cobalt-400);
 
   /* Text, the two darker inks.
@@ -478,6 +494,8 @@
   --conduction-color-text-inverse: var(--c-cobalt-900);
   --conduction-color-text-muted:   var(--c-cobalt-200);
   --conduction-color-text-accent:  var(--c-orange-knvb);
+  --conduction-color-focus-ring:   var(--c-orange-knvb);
+  --conduction-color-focus-halo:   var(--c-white);
 
   /* The two darker inks invert. White for a heading so it outranks body
      copy the way cobalt-900 outranks cobalt-700 on a white ground, and
@@ -547,6 +565,8 @@
     --conduction-color-text-inverse: var(--c-cobalt-900);
     --conduction-color-text-muted:   var(--c-cobalt-200);
     --conduction-color-text-accent:  var(--c-orange-knvb);
+    --conduction-color-focus-ring:   var(--c-orange-knvb);
+    --conduction-color-focus-halo:   var(--c-white);
 
     /* Mirrors the [data-theme="dark"] block above. Both have to carry
        every token: this one is what a visitor gets before the theme

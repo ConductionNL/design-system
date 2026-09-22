@@ -44,9 +44,18 @@
   border-radius: inherit;
   z-index: 1;
 }
+/* The ring was blue-cobalt and the certified card IS blue-cobalt, so focus
+   on that card was rgb(33,70,139) on rgb(33,70,139): exactly 1.00:1, an
+   indicator a keyboard user cannot see at all. On the default card it was
+   1.73:1 against cobalt-800 in dark. Inherit the themed ring instead, and
+   override only the card that is blue in BOTH themes, where white is 9.08:1
+   and the themed ring would be 1.94:1. */
 .cardLink:focus-visible {
-  outline: 2px solid var(--c-blue-cobalt);
+  outline: 2px solid var(--conduction-color-focus-ring);
   outline-offset: -2px;
+}
+.tier-certified .cardLink:focus-visible {
+  outline-color: var(--c-white);
 }
 
 .tier {

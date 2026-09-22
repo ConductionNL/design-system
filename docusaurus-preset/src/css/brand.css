@@ -161,15 +161,18 @@
   color: white;
 }
 
-/* Focus ring, never default Infima blue. The colour follows the theme,
-   because a single value cannot clear 3:1 everywhere: KNVB orange measured
-   2.68:1 on a cobalt-50 panel in light mode on 2026-09-22, which is a real
-   SC 1.4.11 failure on every focusable element sitting on a tinted panel.
-   The token is coral-600 in light (4.16:1 there, 4.67:1 on white) and stays
-   KNVB in dark (5.21:1 on a card). */
+/* Focus indicator, never default Infima blue. Two rings, not one: the brand's
+   KNVB outline plus a halo of the opposite luminance behind it, because no
+   single colour clears 3:1 on every surface this site puts a control on.
+   KNVB alone is 2.68:1 on a cobalt-50 panel and 1.00:1 on an orange button.
+   With the halo the worst case is 5.93:1. See tokens.css for the table.
+   The outline carries the brand and is never clipped; the halo is a
+   box-shadow and an ancestor's overflow can clip it, in which case this
+   degrades to the previous single-ring behaviour rather than to nothing. */
 *:focus-visible {
   outline: 2px solid var(--conduction-color-focus-ring);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--conduction-color-focus-halo);
 }
 
 /* Letter-spacing per level, not one value for the top three. Large

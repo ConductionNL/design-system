@@ -142,13 +142,50 @@ test('a large count keeps rendering', () => {
   assert.match(render({downloads: 9079}), /9,079 downloads/);
 });
 
+/**
+ * Pull the SoftwareApplication JSON-LD out of the rendered markup and parse it.
+ *
+ * The raw string cannot be matched with a regex containing quotes. This test
+ * stubs <Head> as a passthrough fragment, so React renders the JSON as a text
+ * child of <script> and `renderToStaticMarkup` escapes every quote to &quot;.
+ * That is an artefact of the stub, not of the product: on the real site
+ * Docusaurus's Head puts the JSON through Helmet and the published markup is
+ * valid, verified against /apps/openregister/ on 2026-09-22.
+ *
+ * Asserting on the parsed object rather than on the serialised text keeps the
+ * test about what is published, and survives whatever the harness does to the
+ * quotes.
+ */
+function softwareApplicationLd(html) {
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+  for (const [, raw] of blocks) {
+    const decoded = raw
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+    const parsed = JSON.parse(decoded);
+    if (parsed['@type'] === 'SoftwareApplication') return parsed;
+  }
+  return null;
+}
+
 test('the structured data follows the chip, so a hidden number is not published', () => {
   const low = render({downloads: MIN_DISPLAYED_DOWNLOADS - 1});
   assert.doesNotMatch(low, /InteractionCounter/, 'JSON-LD advertises a count the page hides');
 
   const high = render({downloads: MIN_DISPLAYED_DOWNLOADS});
   assert.match(high, /InteractionCounter/);
-  assert.match(high, /"userInteractionCount":1000/);
+
+  const ld = softwareApplicationLd(high);
+  assert.ok(ld, 'a SoftwareApplication block should be published');
+  assert.equal(
+    ld.interactionStatistic.userInteractionCount,
+    MIN_DISPLAYED_DOWNLOADS,
+    'the published count should be the one the chip shows',
+  );
+  assert.equal(ld.interactionStatistic['@type'], 'InteractionCounter');
 });
 
 test('the rest of the badge row survives a suppressed counter', () => {

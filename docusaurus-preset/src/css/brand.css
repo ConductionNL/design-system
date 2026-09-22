@@ -127,12 +127,23 @@
 /* Brand citation, "Next" in Nextcloud-blue */
 .next-blue { color: var(--conduction-color-brand-nextcloud); }
 
-/* Brand citation, "Common Ground" in CG-yellow */
-.cg-yellow { color: var(--conduction-color-brand-commonground); }
+/* Brand citation, "Common Ground" in CG-yellow.
+   The citation token, not the fill token. The brand yellow is 1.93:1 as text
+   on white, and the kit only ever sanctions it as a FILL with cobalt-900 ink
+   on it (see the Common Ground+ hex rule). The citation keeps the hue at a
+   lightness that can carry a word: 5.11:1 on white in light mode, and the
+   real brand yellow in dark, where it is 9.26:1 on the cobalt-900 ground. */
+.cg-yellow { color: var(--conduction-color-brand-commonground-text); }
 
 /* KNVB-orange highlight, for the rare emphasised word per "one orange
-   per screen" rule. Reserved for highlights, never primary fills. */
-.knvb-orange { color: var(--c-orange-knvb); }
+   per screen" rule. Reserved for highlights, never primary fills.
+   The text-accent token rather than KNVB itself, because the kit already
+   decided this: coral-600 is documented as the "text-safe orange, 4.67:1 on
+   white... use for text and link-hover; KNVB stays the fill / focus / icon
+   accent". Rendering a word in KNVB was 2.68:1 on a cobalt-50 panel, which is
+   the rule being broken rather than a new judgement. text-accent is coral-600
+   in light and KNVB in dark, where the bright orange is the readable one. */
+.knvb-orange { color: var(--conduction-color-text-accent); }
 
 /* Common Ground+ wordmark — tri-colour brand mark for the productized
    Common Ground offering. "Common" in Conduction cobalt, "Ground" in
@@ -340,7 +351,7 @@ blockquote {
 .menu__list-item-collapsible > .menu__link,
 .menu__link--sublist {
   font-family: var(--conduction-typography-font-family-code);
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--conduction-color-text-muted);

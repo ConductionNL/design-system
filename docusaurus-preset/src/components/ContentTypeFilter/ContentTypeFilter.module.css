@@ -33,9 +33,22 @@
   text-decoration: none;
   color: var(--conduction-color-text-body);
 }
+/* The site-wide two-ring indicator, not a hardcoded cobalt outline. A single
+   ring cannot clear 3:1 on every surface, and this chip has two: the card
+   surface when it is inactive, and a solid cobalt fill when it is active. A
+   cobalt ring on the active chip measured exactly 1.00:1. */
 .chip:focus-visible {
-  outline: 2px solid var(--c-blue-cobalt);
+  outline: 2px solid var(--conduction-color-focus-ring);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--conduction-color-focus-halo);
+}
+
+/* The active chip paints its own cobalt fill in BOTH themes, so its ground
+   never flips and the halo must not flip either. The themed halo is
+   cobalt-900 in light, which on that fill is 1.97:1: this was the reading
+   the sweep reported on /academy/ 2026-09-22. White is 9.08:1 there. */
+.chip.active:focus-visible {
+  box-shadow: 0 0 0 4px var(--c-white);
 }
 
 .chip.active {

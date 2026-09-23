@@ -175,6 +175,20 @@ a.appPill:hover {
 }
 .become:hover { border-color: var(--c-blue-cobalt); transform: none; box-shadow: var(--shadow-1); }
 
+/* This tile needs its own focus rule because of the `box-shadow: none` above.
+   The global `*:focus-visible` paints two rings, an outline plus a halo of
+   opposite luminance, precisely because no single colour clears 3:1 on every
+   surface this site uses. The halo is a box-shadow, and `.become` sets
+   box-shadow to none at the same specificity, so only the outline survived.
+   Measured on 39 app pages 2026-09-22: the indicator was KNVB on the
+   cobalt-50 tile, 2.68:1 against the 3:1 that SC 2.4.11 asks. The halo is
+   cobalt-900 on that tile, 15.89:1, so restoring it is what fixes this. */
+.become:focus-visible {
+  outline: 2px solid var(--conduction-color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--conduction-color-focus-halo);
+}
+
 .becomeEyebrow {
   font-family: var(--conduction-typography-font-family-code);
   font-size: 11px;

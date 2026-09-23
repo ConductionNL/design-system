@@ -276,7 +276,15 @@
   transition: background 120ms ease;
 }
 .start:hover { background: var(--c-cobalt-700); border-color: var(--c-cobalt-700); }
-.start:focus-visible { outline: 2px solid var(--conduction-color-text-strong); outline-offset: 2px; }
+/* Two rings, and a white halo because this button paints its own cobalt
+   fill. A dark ring on that fill was 1.97:1. The halo sits against the
+   button (9.08:1) and the KNVB outline sits against the page (3.01:1 on
+   white), so each ring is measured against its own backdrop. */
+.start:focus-visible {
+  outline: 2px solid var(--conduction-color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--c-white);
+}
 
 .ask {
   background: transparent;

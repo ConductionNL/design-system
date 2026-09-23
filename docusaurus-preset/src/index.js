@@ -22,6 +22,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const {prismTheme} = require('./prism-theme.js');
 
 /**
  * Resolve the app version that drives the navbar "Stable · v{x.y.z}"
@@ -560,6 +561,17 @@ function createConfig(opts) {
           disableSwitch: false,
           respectPrefersColorScheme: true,
         },
+        /* The brand syntax theme. Without this, Docusaurus falls back to
+           palenight, which paints its own background over the
+           --ifm-pre-background brand.css sets and writes every token
+           colour as an inline style. See ./prism-theme.js for why that
+           cannot be fixed in CSS, and for the measured ratios. Both slots
+           take the same object because the kit declares one code-block
+           ground, dark on a light page as much as on a dark one. */
+        prism: {
+          theme: prismTheme,
+          darkTheme: prismTheme,
+        },
         navbar: Object.assign(baseNavbar(opts.title, opts.repoUrl), opts.navbar || {}),
         /* Per-property fallback so a site can override one slice of the
            footer (e.g. just `links`) and inherit the rest from the brand.
@@ -722,4 +734,8 @@ module.exports = {
   baseFooter,
   baseFooterLinks,
   baseFooterCopyright,
+  /* Exported so a site can extend it rather than replace it. Passing
+     themeConfig.prism wholesale silently drops every token this object
+     sets, and palenight is no longer behind it to catch the difference. */
+  prismTheme,
 };

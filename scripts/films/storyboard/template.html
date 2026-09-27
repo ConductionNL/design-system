@@ -1,0 +1,409 @@
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+	:root {
+		--ground: #EEF2F8;
+		--surface: #FFFFFF;
+		--ink: #0A172F;
+		--ink-body: #152D5C;
+		--ink-soft: #4D69A4;
+		--line: #DCE3F0;
+		--brand: #21468B;
+		--brand-ink: #FFFFFF;
+		--chip: #EEF2F8;
+		--ok: #2C5A2A;
+		--ok-tint: #EEF7EE;
+		--warn: #833307;
+		--warn-tint: #FFF3EA;
+		--accent: #F36C21;
+		--next: #0082C9;
+		--mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+		--sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+		--card-w: 232px;
+		--l-general-bg: #DCE3F0; --l-general-ink: #152D5C; --l-general-line: #21468B;
+		--l-app-bg: #EEF7EE; --l-app-ink: #2C5A2A; --l-app-line: #3D7C3A;
+		--l-brand-bg: #FFFFFF; --l-brand-ink: #4D69A4; --l-brand-line: #8095BD;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme="light"]) {
+			color-scheme: dark;
+			--ground: #0A172F;
+			--surface: #102246;
+			--ink: #EEF2F8;
+			--ink-body: #DCE3F0;
+			--ink-soft: #8095BD;
+			--line: #1B3A75;
+			--brand: #4D69A4;
+			--chip: #152D5C;
+			--ok: #7DAA7C;
+			--ok-tint: #0B280A;
+			--warn: #FAB29C;
+			--warn-tint: #351B0D;
+			--next: #1CAFFF;
+			--l-general-bg: #152D5C; --l-general-ink: #DCE3F0; --l-general-line: #8095BD;
+			--l-app-bg: #0B280A; --l-app-ink: #7DAA7C; --l-app-line: #7DAA7C;
+			--l-brand-bg: #102246; --l-brand-ink: #B6C2DD; --l-brand-line: #4D69A4;
+		}
+	}
+	:root[data-theme="dark"] {
+		color-scheme: dark;
+		--ground: #0A172F;
+		--surface: #102246;
+		--ink: #EEF2F8;
+		--ink-body: #DCE3F0;
+		--ink-soft: #8095BD;
+		--line: #1B3A75;
+		--brand: #4D69A4;
+		--chip: #152D5C;
+		--ok: #7DAA7C;
+		--ok-tint: #0B280A;
+		--warn: #FAB29C;
+		--warn-tint: #351B0D;
+		--next: #1CAFFF;
+		--l-general-bg: #152D5C; --l-general-ink: #DCE3F0; --l-general-line: #8095BD;
+		--l-app-bg: #0B280A; --l-app-ink: #7DAA7C; --l-app-line: #7DAA7C;
+		--l-brand-bg: #102246; --l-brand-ink: #B6C2DD; --l-brand-line: #4D69A4;
+	}
+
+	body { background: var(--ground); color: var(--ink-body); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+	.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 64px; display: grid; gap: 40px; }
+	h1, h2, h3 { color: var(--ink); margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
+	h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.05; font-weight: 700; }
+	h2 { font-size: 24px; font-weight: 700; }
+	h3 { font-size: 15px; font-weight: 600; }
+	p { margin: 0; }
+	a { color: var(--ink); text-underline-offset: 3px; }
+	a:hover { color: var(--accent); }
+	.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+	.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+	.next { color: var(--next); }
+
+	/* Header */
+	header { display: grid; gap: 14px; }
+	header .lede { max-width: 62ch; font-size: 17px; color: var(--ink-body); }
+	.spec { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+	.spec span { font-family: var(--mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; color: var(--ink-body); }
+	.status { font-size: 13px; color: var(--ink-soft); min-height: 1.5em; }
+	.status b { color: var(--ink); }
+
+	/* A direction */
+	.dir { display: grid; gap: 16px; padding-block: 24px 8px; border-top: 1px solid var(--line); }
+	.dir-head { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start; }
+	.hex { width: 44px; height: 50px; display: grid; place-items: center; background: var(--brand); color: var(--brand-ink);
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); font-weight: 700; font-size: 20px; }
+	.dir.picked .hex { background: var(--accent); }
+	.dir-title { display: grid; gap: 6px; }
+	.dir-title .logline { max-width: 70ch; }
+	.refs { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink-soft); }
+	.refs a { color: var(--ink-soft); }
+	.pick { font: 600 14px var(--sans); border: 1.5px solid var(--brand); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 9px 14px; cursor: pointer; white-space: nowrap; }
+	.pick:hover { border-color: var(--accent); }
+	.pick:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+	.pick[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+	.dir.picked .pick[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+	.pick:disabled { opacity: 0.55; cursor: default; }
+
+	/* The 8-bar ruler: scenes at their true length */
+	.ruler { position: relative; height: 38px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+	.ruler .bar { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--line); }
+	.ruler .bar i { position: absolute; top: 2px; left: 4px; font: 500 10px var(--mono); font-style: normal; color: var(--ink-soft); }
+	.ruler .seg { position: absolute; bottom: 4px; height: 16px; border-radius: 3px; background: var(--chip); border: 1px solid var(--line);
+		font: 500 10.5px var(--mono); color: var(--ink-body); padding-inline: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 14px; }
+	.ruler-wrap { overflow-x: auto; }
+	.ruler-wrap .ruler { min-width: 560px; }
+
+	/* Strip of scene cards */
+	.strip { display: grid; grid-auto-flow: column; grid-auto-columns: var(--card-w); gap: 14px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; }
+	.card { scroll-snap-align: start; display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+	.still { width: 100%; height: auto; aspect-ratio: 9 / 16; max-width: 100%; border-radius: 4px; display: block; background: #21468B; object-fit: contain; }
+	.meta { display: flex; justify-content: space-between; gap: 6px; font: 500 11.5px var(--mono); color: var(--ink-soft); }
+	.words { color: var(--ink); font-weight: 600; font-size: 15px; line-height: 1.3; white-space: pre-line; }
+	.words.empty { color: var(--ink-soft); font-weight: 400; font-style: italic; }
+	dl { margin: 0; display: grid; gap: 6px; font-size: 13px; }
+	dt { font: 500 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+	dd { margin: 0; color: var(--ink-body); }
+	.read { display: inline-block; font: 500 11px var(--mono); padding: 2px 6px; border-radius: 3px; }
+	.read.ok { background: var(--ok-tint); color: var(--ok); }
+	.read.tight { background: var(--warn-tint); color: var(--warn); }
+	.note { display: grid; gap: 4px; }
+	.note label { font: 500 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+	textarea { font: 14px var(--sans); color: var(--ink); background: var(--ground); border: 1px solid var(--line); border-radius: 5px; padding: 7px 8px; resize: vertical; min-height: 58px; width: 100%; box-sizing: border-box; }
+	textarea:disabled { opacity: 0.6; }
+	.saved { font: 11px var(--mono); color: var(--ink-soft); min-height: 1.2em; }
+	.overall { display: grid; gap: 6px; max-width: 720px; }
+	.questions { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; max-width: 820px; }
+	.questions ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+	.questions li::marker { font-family: var(--mono); color: var(--ink-soft); }
+	details.qs { font-size: 13.5px; max-width: 76ch; }
+	details.qs summary { cursor: pointer; color: var(--ink-soft); font: 500 12px var(--mono); letter-spacing: 0.04em; }
+	details.qs ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+	/* Layers: what every app film shares, what belongs to one app, what is the brand frame */
+	.layer { display: inline-block; font: 500 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; border: 1px solid transparent; }
+	.layer.general, .ruler .seg.general { background: var(--l-general-bg); color: var(--l-general-ink); border-color: var(--l-general-line); }
+	.layer.app, .ruler .seg.app { background: var(--l-app-bg); color: var(--l-app-ink); border-color: var(--l-app-line); }
+	.layer.brand, .ruler .seg.brand { background: var(--l-brand-bg); color: var(--l-brand-ink); border-color: var(--l-brand-line); }
+	.card.general { box-shadow: inset 0 3px 0 var(--l-general-line); }
+	.card.app { box-shadow: inset 0 3px 0 var(--l-app-line); }
+	.card.brand { box-shadow: inset 0 3px 0 var(--l-brand-line); }
+	.hex svg { width: 24px; height: 24px; fill: currentColor; }
+
+	/* The divide table */
+	.divide { display: grid; gap: 10px; }
+	.divide-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+	.divide table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+	.divide th, .divide td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+	.divide thead th { font: 500 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+	.divide tbody tr:last-child td { border-bottom: 0; }
+	.divide td.cap { color: var(--ink); font-weight: 600; width: 22%; }
+	.divide td.cap .layer { margin-bottom: 6px; }
+
+	footer { font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 16px; }
+
+	@media (max-width: 640px) {
+		.dir-head { grid-template-columns: auto 1fr; }
+		.dir-head .pick { grid-column: 1 / -1; justify-self: start; }
+		:root { --card-w: 78vw; }
+	}
+	@media (prefers-reduced-motion: reduce) { .strip { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+	<header>
+		<span class="eyebrow" id="eyebrow"></span>
+		<h1 id="headline"></h1>
+		<p class="lede" id="lede"></p>
+		<div class="spec" id="spec"></div>
+		<p class="status" id="status" aria-live="polite"></p>
+		<section class="questions" id="questions" hidden aria-labelledby="q-title">
+			<h3 id="q-title">Decisions for you, before the build</h3>
+			<ol id="q-list"></ol>
+		</section>
+		<section class="divide" id="divide" hidden aria-labelledby="d-title">
+			<h2 id="d-title"></h2>
+			<p id="d-lede" style="max-width:70ch"></p>
+			<div class="divide-wrap"><table><thead><tr id="d-head"></tr></thead><tbody id="d-body"></tbody></table></div>
+		</section>
+	</header>
+	<main id="dirs"></main>
+	<footer id="foot"></footer>
+</div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(() => {
+	const D = JSON.parse(document.getElementById('data').textContent)
+	const $ = (s, r = document) => r.querySelector(s)
+	const h = (tag, attrs = {}, ...kids) => {
+		const n = document.createElement(tag)
+		for (const [k, v] of Object.entries(attrs)) {
+			if (v === null || v === undefined || v === false) continue
+			if (k === 'text') n.textContent = v
+			else if (k === 'class') n.className = v
+			else n.setAttribute(k, v)
+		}
+		for (const k of kids.flat()) if (k) n.append(k)
+		return n
+	}
+	const spb = 60 / D.film.bpm
+	const fps = D.film.fps
+	const dur = D.film.duration
+	const beatLabel = (t) => { const b = Math.round(t / spb * 1000) / 1000; const whole = Math.floor(b + 1e-6); return `${Math.floor(whole / 4) + 1}.${(whole % 4) + 1}` }
+	const frame = (t) => 'f' + String(Math.round(t * fps)).padStart(3, '0')
+	const wordCount = (s) => (s || '').replace(/\n/g, ' ').split(/\s+/).filter(Boolean).length
+
+	$('#eyebrow').textContent = D.film.eyebrow
+	$('#headline').textContent = D.film.headline
+	$('#lede').textContent = D.film.lede
+	for (const s of D.film.spec) $('#spec').append(h('span', { text: s }))
+	$('#foot').textContent = D.film.footer
+	if (D.film.questions && D.film.questions.length) {
+		for (const q of D.film.questions) $('#q-list').append(h('li', { text: q }))
+		$('#questions').hidden = false
+	}
+
+	// mode 'pick-one': choose one direction. mode 'approve-each': approve every film on its own.
+	const approveEach = D.film.mode === 'approve-each'
+	const LAYER = { general: 'General', app: 'App-specific', brand: 'Brand' }
+	const layerChip = (l) => (l && LAYER[l]) ? h('span', { class: 'layer ' + l, text: LAYER[l] }) : null
+	const SVGNS = 'http://www.w3.org/2000/svg'
+	const glyphSvg = (g) => {
+		const svg = document.createElementNS(SVGNS, 'svg')
+		svg.setAttribute('viewBox', g.viewBox)
+		svg.setAttribute('aria-hidden', 'true')
+		// Built from the brand's own glyph files by the generator; parsed as SVG, not HTML.
+		const doc = new DOMParser().parseFromString(`<svg xmlns="${SVGNS}">${g.inner}</svg>`, 'image/svg+xml')
+		for (const n of [...doc.documentElement.childNodes]) svg.append(document.importNode(n, true))
+		return svg
+	}
+
+	if (D.film.divide) {
+		const dv = D.film.divide
+		$('#d-title').textContent = dv.title
+		$('#d-lede').textContent = dv.lede || ''
+		$('#d-head').append(h('th', { scope: 'col', text: 'Capability' }), h('th', { scope: 'col', text: 'What the viewer sees' }), ...D.variants.map((v) => h('th', { scope: 'col', text: v.label || v.variant })))
+		for (const r of dv.rows) {
+			$('#d-body').append(h('tr', {},
+				h('td', { class: 'cap' }, layerChip(r.layer), h('div', { text: r.capability })),
+				h('td', { text: r.what }),
+				...D.variants.map((v) => h('td', { text: (r.cells && r.cells[v.variant]) || 'Not in this film' }))))
+		}
+		$('#divide').hidden = false
+	}
+
+	const state = { pick: null, approved: {}, notes: {}, db: null, writable: true }
+	const els = { dirs: {}, notes: {} }
+
+	for (const v of D.variants) {
+		const name = v.label || `direction ${v.variant}`
+		const sec = h('section', { class: 'dir', id: 'dir-' + v.variant, 'aria-labelledby': 'h-' + v.variant })
+		const pick = h('button', { class: 'pick', type: 'button', 'aria-pressed': 'false', id: 'pick-' + v.variant, text: approveEach ? 'Approve this storyboard' : 'Pick this direction' })
+		pick.addEventListener('click', () => (approveEach ? approve(v.variant) : choose(v.variant)))
+		const refs = h('div', { class: 'refs' }, h('span', { text: 'After:' }), ...v.references.map((r) => h('a', { href: r.url, target: '_blank', rel: 'noopener', title: r.borrow, text: r.name })))
+		const hex = h('div', { class: 'hex', 'aria-hidden': 'true' })
+		if (v.glyph) hex.append(glyphSvg(v.glyph))
+		else hex.textContent = v.variant
+		sec.append(h('div', { class: 'dir-head' },
+			hex,
+			h('div', { class: 'dir-title' }, h('h2', { id: 'h-' + v.variant, text: v.label ? `${v.label} · ${v.title}` : `${v.variant} · ${v.title}` }), h('p', { class: 'logline', text: v.logline }), refs,
+				h('p', { class: 'mono', style: 'font-size:12px;color:var(--ink-soft)', text: `${v.words_total} words on screen · ${v.scenes.length} scenes` }),
+				(v.open_questions && v.open_questions.length) ? h('details', { class: 'qs' }, h('summary', { text: `Open questions from the designer (${v.open_questions.length})` }), h('ul', {}, ...v.open_questions.map((q) => h('li', { text: q })))) : null),
+			pick))
+
+		// Ruler
+		const ruler = h('div', { class: 'ruler', role: 'img', 'aria-label': `Timeline of direction ${v.variant}: ${v.scenes.length} scenes over ${dur} seconds` })
+		const bars = Math.round(dur / (spb * 4))
+		for (let b = 0; b < bars; b++) ruler.append(h('div', { class: 'bar', style: `left:${(b * spb * 4 / dur) * 100}%` }, h('i', { text: String(b + 1) })))
+		v.scenes.forEach((s, i) => ruler.append(h('div', { class: 'seg' + (s.layer ? ' ' + s.layer : ''), style: `left:calc(${s.start / dur * 100}% + 2px);width:calc(${(s.end - s.start) / dur * 100}% - 4px)`, title: `${s.title}${s.layer ? ' (' + LAYER[s.layer] + ')' : ''}`, text: `${i + 1} ${s.title}` })))
+		sec.append(h('div', { class: 'ruler-wrap' }, ruler))
+
+		// Strip
+		const strip = h('div', { class: 'strip', role: 'list', 'aria-label': `Scenes of direction ${v.variant}` })
+		v.scenes.forEach((s, i) => {
+			const n = wordCount(s.words)
+			const need = n ? Math.max(1.5, 0.4 * n) : 0
+			const has = s.end - s.start
+			const readChip = n ? h('span', { class: 'read ' + (has + 1e-6 >= need ? 'ok' : 'tight'), text: `${n} words · needs ${need.toFixed(1)} s · has ${has.toFixed(2)} s` }) : h('span', { class: 'read ok', text: 'no words' })
+			const key = `${v.variant}-${s.id}`
+			const ta = h('textarea', { id: 'note-' + key, rows: '2', placeholder: 'Note for this scene' })
+			const saved = h('span', { class: 'saved', id: 'saved-' + key })
+			ta.addEventListener('input', () => { saved.textContent = '' })
+			ta.addEventListener('change', () => saveNote(key, ta.value, saved))
+			els.notes[key] = { ta, saved }
+			strip.append(h('article', { class: 'card' + (s.layer ? ' ' + s.layer : ''), role: 'listitem', 'aria-label': `Scene ${i + 1}: ${s.title}${s.layer ? ', ' + LAYER[s.layer] : ''}` },
+				h('img', { class: 'still', src: s.still, alt: `Key frame of scene ${i + 1}, ${s.title}. On screen: ${s.words ? s.words.replace(/\n/g, ' ') : 'no words'}`, loading: 'lazy', width: '540', height: '960' }),
+				h('div', { class: 'meta' }, h('span', { text: `${i + 1} · bar ${beatLabel(s.start)}–${beatLabel(s.end - 1e-3)}` }), h('span', { text: `${frame(s.start)}–${frame(s.end)}` })),
+				h('div', { style: 'display:grid;gap:8px;align-content:start' },
+					layerChip(s.layer),
+					h('h3', { text: s.title }),
+					s.module ? h('p', { class: 'mono', style: 'font-size:11.5px;color:var(--ink-soft)', text: `Shared module: ${s.module}` }) : null,
+					h('p', { class: 'words' + (s.words ? '' : ' empty'), text: s.words || 'No words on screen' }),
+					readChip,
+					h('dl', {}, h('dt', { text: 'Motion' }), h('dd', { text: s.motion }), h('dt', { text: 'Sound' }), h('dd', { text: s.sound }), s.borrow ? h('dt', { text: 'Borrowed from' }) : null, s.borrow ? h('dd', { text: s.borrow }) : null)),
+				h('div', { class: 'note' }, h('label', { for: 'note-' + key, text: 'Your note' }), ta, saved)))
+		})
+		sec.append(strip)
+
+		const okey = `${v.variant}-overall`
+		const ota = h('textarea', { id: 'note-' + okey, rows: '2', placeholder: `What should change in ${name} as a whole?` })
+		const osaved = h('span', { class: 'saved', id: 'saved-' + okey })
+		ota.addEventListener('input', () => { osaved.textContent = '' })
+		ota.addEventListener('change', () => saveNote(okey, ota.value, osaved))
+		els.notes[okey] = { ta: ota, saved: osaved }
+		sec.append(h('div', { class: 'overall' }, h('label', { class: 'eyebrow', for: 'note-' + okey, text: `Note on ${name}` }), ota, osaved))
+
+		els.dirs[v.variant] = { sec, pick }
+		$('#dirs').append(sec)
+	}
+
+	const labelOf = (k) => { const v = D.variants.find((x) => x.variant === k); return v && v.label ? v.label : `direction ${k}` }
+
+	function renderPick() {
+		for (const [k, { sec, pick }] of Object.entries(els.dirs)) {
+			const on = approveEach ? !!state.approved[k] : state.pick === k
+			sec.classList.toggle('picked', on)
+			pick.setAttribute('aria-pressed', on ? 'true' : 'false')
+			pick.textContent = approveEach ? (on ? 'Approved' : 'Approve this storyboard') : (on ? 'Picked' : 'Pick this direction')
+		}
+		$('#status').innerHTML = ''
+		if (!state.db) { $('#status').textContent = 'Approvals, picks and notes save for signed-in viewers of the published page.'; return }
+		if (approveEach) {
+			const done = Object.keys(state.approved).filter((k) => state.approved[k])
+			if (done.length) $('#status').append('Approved: ', h('b', { text: done.map(labelOf).join(' and ') }), '. Claude reads approvals and notes before building.')
+			else $('#status').textContent = 'Nothing approved yet. Approve a storyboard, or leave a note on any scene.'
+			return
+		}
+		if (state.pick) $('#status').append('Picked: ', h('b', { text: labelOf(state.pick) }), '. Claude reads your pick and notes before building.')
+		else $('#status').textContent = 'No direction picked yet. Pick one, and leave a note on any scene.'
+	}
+
+	async function approve(variant) {
+		if (!state.db || !state.writable) return
+		const next = !state.approved[variant]
+		state.approved[variant] = next
+		renderPick()
+		try { await state.db.doc('approvals/' + variant).set({ approved: next, at: new Date().toISOString() }) }
+		catch (e) { readOnly(e) }
+	}
+
+	async function choose(variant) {
+		if (!state.db || !state.writable) return
+		const next = state.pick === variant ? null : variant
+		state.pick = next
+		renderPick()
+		try { await state.db.doc('picks/current').set({ variant: next, at: new Date().toISOString() }) }
+		catch (e) { readOnly(e) }
+	}
+
+	async function saveNote(key, text, saved) {
+		if (!state.db || !state.writable) return
+		if ((state.notes[key] || '') === text) return
+		state.notes[key] = text
+		saved.textContent = 'Saving…'
+		try {
+			await state.db.doc('notes/' + key).set({ text, at: new Date().toISOString() })
+			saved.textContent = 'Saved'
+		} catch (e) { readOnly(e); saved.textContent = 'Not saved' }
+	}
+
+	function readOnly(e) {
+		if (e && e.code === 'invalid_argument') {
+			state.writable = false
+			for (const { pick } of Object.values(els.dirs)) pick.disabled = true
+			for (const { ta } of Object.values(els.notes)) ta.disabled = true
+			$('#status').textContent = 'You can read this storyboard, but your access does not allow picks or notes.'
+		}
+	}
+
+	renderPick()
+	const claude = window.claude
+	if (claude && typeof claude.use === 'function') {
+		claude.use('db').then((db) => {
+			if (!db) { renderPick(); return }
+			state.db = db
+			renderPick()
+			if (approveEach) {
+				db.collection('approvals').onSnapshot((qs) => {
+					for (const d of qs.docs) state.approved[d.id] = !!(d.data() || {}).approved
+					renderPick()
+				}, () => {})
+			} else {
+				db.doc('picks/current').onSnapshot((snap) => {
+					state.pick = snap.exists ? (snap.data().variant || null) : null
+					renderPick()
+				}, () => {})
+			}
+			db.collection('notes').onSnapshot((qs) => {
+				for (const d of qs.docs) {
+					const text = (d.data() || {}).text || ''
+					state.notes[d.id] = text
+					const n = els.notes[d.id]
+					if (n && document.activeElement !== n.ta) n.ta.value = text
+				}
+			}, () => {})
+		})
+	}
+})()
+</script>

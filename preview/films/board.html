@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Film storyboard frames</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+	html, body { margin: 0; background: #0A172F; }
+	svg { display: block; }
+</style>
+</head>
+<body>
+<!--
+	Storyboard harness for every film. ?film=<slug>&v=<variant> loads
+	<slug>/boards/<variant>/board.js, which exports `meta` and `boards` (one key
+	frame per scene, each with a draw(ctx) function). Board i occupies film time
+	[i, i+1), so a still of board i is taken at t = i + 0.5:
+	  node scripts/films/film.mjs stills --root <repo> --page 'preview/films/board.html?film=connext&v=A' --times 0.5,1.5 ...
+	The frames are drawn with the same engine as the film, so an approved still is
+	what gets animated.
+-->
+<script type="module">
+import { Film, loadFonts } from './_lib/stage.js'
+import { FONTS } from './_lib/brand.js'
+import { loadBrandAssets } from './_lib/assets.js'
+
+const q = new URLSearchParams(location.search)
+const slug = (q.get('film') || 'connext').replace(/[^a-z0-9_-]/g, '')
+const variant = (q.get('v') || 'A').replace(/[^A-Za-z0-9_-]/g, '')
+const mod = await import(`./${slug}/boards/${variant}/board.js`)
+const film = new Film({
+	mount: document.body,
+	format: q.get('format') || '9x16',
+	duration: mod.boards.length,
+	fps: 1,
+	background: mod.meta.background || '#21468B',
+	safe: mod.meta.safe || { top: 0, bottom: 0, left: 0, right: 0 },
+})
+await loadFonts(FONTS)
+await loadBrandAssets(film.defs)
+mod.boards.forEach((b, i) => {
+	film.scene(b.id, i, i + 1, (ctx) => {
+		const update = b.draw(ctx)
+		return typeof update === 'function' ? update : () => {}
+	})
+})
+film.board = { film: slug, meta: mod.meta, boards: mod.boards.map(({ draw, ...rest }, i) => ({ ...rest, stillAt: i + 0.5 })) }
+film.start()
+</script>
+</body>
+</html>

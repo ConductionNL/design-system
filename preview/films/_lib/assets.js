@@ -4,7 +4,9 @@
  *   g-<app id>                 the app's real icon (img/app.svg), currentColor
  *   nc-files, nc-mail, ...     Nextcloud's own bundled apps, line icons, currentColor
  *   nextcloud-logo             the Nextcloud mark, currentColor (white on a #0082C9 hex)
- *   icon-bell                  the notification bell (Lucide), stroke currentColor
+ *   icon-bell, icon-contacts,  UI icons (Lucide, brand/assets/icons/), stroke currentColor:
+ *   icon-tasks, icon-polls,    bell, contacts, tasks, polls, photos, forms
+ *   icon-photos, icon-forms
  *   avatar-conduction          the Conduction hex avatar, currentColor
  *   wordmark-connext           "Con" cobalt + "Next" Nextcloud blue, for light grounds
  *   wordmark-connext-white     "Con" white + "Next" Nextcloud blue, for cobalt grounds
@@ -34,6 +36,9 @@ export const APP_NAMES = {
 
 export const NC_APPS = ['files', 'mail', 'calendar', 'talk', 'decks', 'activity']
 
+/** UI icons in brand/assets/icons/ (Lucide line icons, the brand's UI iconography), loaded as icon-<name>. */
+export const UI_ICONS = ['bell', 'contacts', 'tasks', 'polls', 'photos', 'forms']
+
 export async function loadBrandAssets(defs) {
 	await Promise.all([
 		loadSymbols(defs, Object.fromEntries(APP_IDS.map((id) => [`g-${id}`, `${BRAND}/apps/glyphs/${id}.svg`]))),
@@ -45,8 +50,8 @@ export async function loadBrandAssets(defs) {
 			'wordmark-conduction-white': `${BRAND}/wordmark-conduction-white.svg`,
 		}),
 		loadSymbols(defs, { 'avatar-conduction': `${BRAND}/avatar-conduction.svg`, 'nextcloud-logo': `${BRAND}/nextcloud-logo.svg` }, { recolor: true }),
-		// UI icons (Lucide line icons, the brand's UI iconography): icon-bell for notifications.
-		loadSymbols(defs, { 'icon-bell': `${BRAND}/icons/bell.svg` }, { recolor: true }),
+		// UI icons (Lucide line icons, the brand's UI iconography).
+		loadSymbols(defs, Object.fromEntries(UI_ICONS.map((id) => [`icon-${id}`, `${BRAND}/icons/${id}.svg`])), { recolor: true }),
 	])
 }
 

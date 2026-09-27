@@ -223,6 +223,152 @@ export function bass(bus, t0, { gain = 0.28, note = 38, dur = 0.4, cutoff = 900 
 	}
 }
 
+/* ---------- Electricity: the Conduction opening's voices (crackle, arc, hum, charge, powerOn) ---------- */
+
+const clamp1 = (x) => Math.max(-1, Math.min(1, x))
+
+/** One spark impulse: a click and a short resonant ring at pitch f, panned. */
+function spark(bus, t0, { amp, freq, ring, pan, nz, phase }) {
+	const n = Math.floor((ring * 6 + 0.002) * SR), s0 = Math.floor(t0 * SR)
+	for (let i = 0; i < n; i++) {
+		const t = i / SR
+		const v = 0.6 * Math.sin(2 * Math.PI * freq * t + phase) * Math.exp(-t / ring) + 0.4 * nz() * Math.exp(-t / 0.00035)
+		write(bus, s0 + i, v * Math.min(1, i / 6), pan, amp)
+	}
+}
+
+/**
+ * Electric crackle: sparse, seeded impulses, each a click plus a short resonant
+ * ring at a random pitch between freqLo and freqHi, with now and then a lower,
+ * longer snap for body. Two ways to drive it:
+ *   events: [[t, pan, amp], ...]  times relative to t0; every event fires a
+ *     burst of 1 to `burst` impulses there, so the crackle follows the picture
+ *     (the opening sends one event per cell its front charges, at that cell's pan);
+ *   dur + density: a plain texture of `density` impulses a second at `pan`.
+ */
+export function crackle(bus, t0, { events = null, dur = 1, density = 60, gain = 0.2, pan = 0, spread = 0.22, freqLo = 1200, freqHi = 7500, burst = 3, snaps = 0.12, seed = 21 } = {}) {
+	const nz = noise(seed)
+	const u = () => (nz() + 1) / 2
+	let list = events
+	if (!list) {
+		list = []
+		for (let t = 0; t < dur;) {
+			t += -Math.log(1 - u() * 0.999) / density
+			if (t < dur) list.push([t, pan, 1])
+		}
+	}
+	for (const [te, pe = pan, ae = 1] of list) {
+		const count = events ? 1 + Math.floor(u() * burst) : 1
+		let tt = te
+		for (let k = 0; k < count; k++) {
+			if (k) tt += 0.002 + u() * 0.014
+			const snap = u() < snaps
+			spark(bus, t0 + tt, {
+				amp: gain * ae * (snap ? 0.8 : 0.3 + 0.7 * u() * u()),
+				freq: snap ? 350 + u() * 550 : freqLo * Math.pow(freqHi / freqLo, u()),
+				ring: snap ? 0.004 + u() * 0.004 : 0.0007 + u() * 0.0024,
+				pan: clamp1(pe + (u() * 2 - 1) * spread),
+				nz,
+				phase: u() * Math.PI * 2,
+			})
+		}
+	}
+}
+
+/**
+ * Arc: a spark jumping a gap. A short FM chirp that falls from `from` to `to`,
+ * over a noise burst whose band follows the chirp, softly clipped. dur sets
+ * the length of the fall (the tail rings about twice that).
+ */
+export function arc(bus, t0, { gain = 0.25, from = 4800, to = 600, dur = 0.08, index = 5, ratio = 1.41, noiseMix = 0.6, pan = 0, seed = 31 } = {}) {
+	const n = Math.floor((dur * 2.4 + 0.01) * SR), s0 = Math.floor(t0 * SR)
+	const nz = noise(seed), bp = biquad()
+	let pc = 0, pm = 0
+	for (let i = 0; i < n; i++) {
+		const t = i / SR
+		const f = to + (from - to) * Math.exp(-t / (dur * 0.35))
+		if (i % 16 === 0) bp.set('bandpass', Math.min(f * 1.2, 16000), 2.2)
+		pm += (2 * Math.PI * f * ratio) / SR
+		pc += (2 * Math.PI * f) / SR
+		const I = index * Math.exp(-t / (dur * 0.5))
+		// the arc flickers: a coarse amplitude buzz at about 140 Hz
+		const flick = 0.78 + 0.22 * Math.sign(Math.sin(2 * Math.PI * 140 * t))
+		const env = Math.min(1, i / (0.0006 * SR)) * Math.exp(-t / (dur * 0.42)) * flick
+		const v = Math.tanh((Math.sin(pc + I * Math.sin(pm)) * (1 - noiseMix * 0.5) + bp.run(nz()) * noiseMix * 2.5) * 1.4)
+		write(bus, s0 + i, v * env, pan, gain)
+	}
+}
+
+/**
+ * Mains hum: a fundamental (50 Hz by default; 49 sits on G, whose third
+ * harmonic is the D of the house key) and its harmonics, driven into a soft
+ * clip, through a lowpass that opens and closes with the charge. Stereo from
+ * two filters a few percent apart. points: [[t, level 0..1, cutoff Hz], ...]
+ * relative to t0, interpolated (level linearly, cutoff exponentially).
+ */
+export function hum(bus, t0, { dur = 4, base = 50, gain = 0.12, points = [[0, 1, 800]], drive = 2, width = 0.06, seed = 41 } = {}) {
+	const n = Math.floor(dur * SR), s0 = Math.floor(t0 * SR)
+	const lpL = biquad(), lpR = biquad(), hpL = biquad().set('highpass', 38, 0.7), hpR = biquad().set('highpass', 38, 0.7)
+	const nz = noise(seed)
+	const norm = Math.tanh(drive * 1.6)
+	let ph = 0, seg = 0
+	for (let i = 0; i < n; i++) {
+		const t = i / SR
+		while (seg < points.length - 2 && t > points[seg + 1][0]) seg++
+		const a = points[seg], b = points[Math.min(seg + 1, points.length - 1)]
+		const p = b[0] > a[0] ? Math.max(0, Math.min(1, (t - a[0]) / (b[0] - a[0]))) : 1
+		const level = a[1] + (b[1] - a[1]) * p
+		if (i % 32 === 0) {
+			const cut = a[2] * Math.pow(b[2] / a[2], p)
+			lpL.set('lowpass', cut * (1 - width), 0.9)
+			lpR.set('lowpass', cut * (1 + width), 0.9)
+		}
+		ph += (2 * Math.PI * base * (1 + 0.002 * Math.sin(2 * Math.PI * 0.37 * t))) / SR
+		const raw = Math.sin(ph) + 0.6 * Math.sin(2 * ph + 0.3) + 0.35 * Math.sin(3 * ph + 1.1) + 0.18 * Math.sin(5 * ph + 0.4)
+		const v = Math.tanh(drive * raw) / norm + nz() * 0.015
+		const i2 = s0 + i
+		if (i2 < 0 || i2 >= bus.n) continue
+		bus.L[i2] += hpL.run(lpL.run(v)) * level * gain
+		bus.R[i2] += hpR.run(lpR.run(v)) * level * gain
+	}
+}
+
+/** Charge: a capacitor whine that rises from `from` to `to` and stops dead at t0 + dur, where the circuit closes. */
+export function charge(bus, t0, { gain = 0.06, dur = 1, from = 300, to = 2000, pan = 0 } = {}) {
+	const n = Math.floor(dur * SR), s0 = Math.floor(t0 * SR)
+	let ph = 0, pm = 0
+	for (let i = 0; i < n; i++) {
+		const p = i / n
+		const f = from * Math.pow(to / from, Math.pow(p, 1.4))
+		pm += (2 * Math.PI * f * 2) / SR
+		ph += (2 * Math.PI * f) / SR
+		const v = Math.sin(ph + 0.35 * Math.sin(pm)) * Math.pow(p, 1.8) * Math.min(1, (n - i) / (0.004 * SR))
+		write(bus, s0 + i, v, pan, gain)
+	}
+}
+
+/**
+ * Power-on: the switch closing. A clean bright transient, the contact's short
+ * thud, a low thump that falls from `from` to `to` (D1 by default), and a
+ * short metallic ping at `ping`. Layer the house bell over it for a tone.
+ */
+export function powerOn(bus, t0, { gain = 0.6, from = 120, to = 36.7, decay = 0.6, ping = 2349.3, bright = 0.35, seed = 51 } = {}) {
+	const n = Math.floor(decay * 2.5 * SR), s0 = Math.floor(t0 * SR)
+	const nz = noise(seed), hp = biquad().set('highpass', 2500, 0.7), lp = biquad().set('lowpass', 380, 0.7)
+	let ph = 0, pp = 0, pp2 = 0
+	for (let i = 0; i < n; i++) {
+		const t = i / SR
+		ph += (2 * Math.PI * (to + (from - to) * Math.exp(-t * 16))) / SR
+		const thump = Math.tanh(1.4 * Math.sin(ph)) * Math.exp(-t / (decay * 0.45)) * Math.min(1, i / (0.0015 * SR))
+		const click = hp.run(nz()) * Math.exp(-t / 0.0025) * 1.2
+		const body = lp.run(nz()) * Math.exp(-t / 0.03) * 0.5
+		pp += (2 * Math.PI * ping) / SR
+		pp2 += (2 * Math.PI * ping * 2.76) / SR
+		const tink = (Math.sin(pp) * Math.exp(-t / 0.09) + 0.35 * Math.sin(pp2) * Math.exp(-t / 0.025)) * bright
+		write(bus, s0 + i, thump + click + body + tink, 0, gain)
+	}
+}
+
 /* ---------- Mix utilities ---------- */
 
 export function mixInto(dst, src, gain = 1) {

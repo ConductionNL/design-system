@@ -9,6 +9,8 @@
  *   { duration, bpm, cues: [{ t, kind, ...params }], music: { ... } }
  *
  * Sound-effect kinds: tick, pluck, bell, whoosh, riser, impact, kick, clap, hat.
+ * Electricity (the Conduction opening): crackle, arc, hum, charge, powerOn (see lib/synth.mjs).
+ *   hum plays on a dry bus that the kicks, impacts and power-ons duck, with no reverb send.
  * music (all optional): { bars, chords: [[midi, ...] per bar], bass: [midi per bar],
  *   parts: { kick: [[fromBar, toBar]], hat: [...], clap: [...], bass: [...], pad: [...] }, loop }
  * loop: true folds the tails past the end onto the start (and skips the first bar's slow pad attack),
@@ -34,7 +36,8 @@ const run = (bin, a) => new Promise((ok, fail) => {
 })
 
 const data = JSON.parse(await readFile(resolve(args.cues), 'utf8'))
-const { duration, bpm = 128, cues = [], music = {} } = data
+const { duration, bpm = 128, cues = [] } = data
+const music = data.music || {} // a film without a bed may export music: null
 const spb = 60 / bpm
 const bar = (n) => n * 4 * spb
 const inRange = (ranges, b) => (ranges || []).some(([f, t]) => b >= f && b < t)
@@ -43,6 +46,7 @@ const tail = 1.2
 const drums = S.makeBus(duration + tail)
 const musicBus = S.makeBus(duration + tail)
 const sfx = S.makeBus(duration + tail)
+const dry = S.makeBus(duration + tail) // ducked like the music, never sent to the reverb (a reverberant hum is mud)
 const kickTimes = []
 
 /* ---- Music bed ---- */
@@ -75,6 +79,11 @@ const kinds = {
 	kick: (c) => { S.kick(drums, c.t, c); kickTimes.push(c.t) },
 	clap: (c) => S.clap(sfx, c.t, c),
 	hat: (c) => S.hat(sfx, c.t, c),
+	crackle: (c) => S.crackle(sfx, c.t, c),
+	arc: (c) => S.arc(sfx, c.t, c),
+	charge: (c) => S.charge(sfx, c.t, c),
+	hum: (c) => S.hum(dry, c.t, c),
+	powerOn: (c) => { S.powerOn(sfx, c.t, c); kickTimes.push(c.t) },
 }
 const unknown = new Set()
 for (const c of cues) {
@@ -85,10 +94,12 @@ if (unknown.size) console.error('ignored cue kinds:', [...unknown].join(', '))
 
 /* ---- Mix ---- */
 S.duck(musicBus, kickTimes, { depth: 0.6, release: 0.18 })
+S.duck(dry, kickTimes, { depth: 0.6, release: 0.18 })
 const master = S.makeBus(duration + tail)
 S.mixInto(master, drums, 1)
 S.mixInto(master, musicBus, 1)
 S.mixInto(master, sfx, 1)
+S.mixInto(master, dry, 1)
 const send = S.makeBus(duration + tail)
 S.mixInto(send, musicBus, 0.5)
 S.mixInto(send, sfx, 0.8)

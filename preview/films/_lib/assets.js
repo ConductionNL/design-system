@@ -4,6 +4,7 @@
  *   g-<app id>                 the app's real icon (img/app.svg), currentColor
  *   nc-files, nc-mail, ...     Nextcloud's own bundled apps, line icons, currentColor
  *   nextcloud-logo             the Nextcloud mark, currentColor (white on a #0082C9 hex)
+ *   icon-bell                  the notification bell (Lucide), stroke currentColor
  *   avatar-conduction          the Conduction hex avatar, currentColor
  *   wordmark-connext           "Con" cobalt + "Next" Nextcloud blue, for light grounds
  *   wordmark-connext-white     "Con" white + "Next" Nextcloud blue, for cobalt grounds
@@ -44,6 +45,8 @@ export async function loadBrandAssets(defs) {
 			'wordmark-conduction-white': `${BRAND}/wordmark-conduction-white.svg`,
 		}),
 		loadSymbols(defs, { 'avatar-conduction': `${BRAND}/avatar-conduction.svg`, 'nextcloud-logo': `${BRAND}/nextcloud-logo.svg` }, { recolor: true }),
+		// UI icons (Lucide line icons, the brand's UI iconography): icon-bell for notifications.
+		loadSymbols(defs, { 'icon-bell': `${BRAND}/icons/bell.svg` }, { recolor: true }),
 	])
 }
 

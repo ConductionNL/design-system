@@ -1,0 +1,714 @@
+{
+ "film": "connext",
+ "checked": "2026-09-27",
+ "format": {
+  "master": "1080x1920",
+  "feed": "1080x1350, cropped from the master at y 120-1470",
+  "fps": 25,
+  "duration_s": 15.0,
+  "frames": 375,
+  "bpm": 128,
+  "bars": 8,
+  "safe_box": {
+   "x": [
+    120,
+    780
+   ],
+   "y": [
+    288,
+    1248
+   ],
+   "note": "right edge may run to 888 above y 840",
+   "source": "social research: strictest official figure per edge across YouTube, Meta, TikTok (LinkedIn publishes none)"
+  },
+  "encode": "H.264 High@4.1, two-pass VBR 10 Mbps (max 12), closed GOP 2 s, BT.709, AAC-LC 48 kHz 192 kbps, +faststart",
+  "loudness": "-14 LUFS integrated, true peak -1.5 dBTP before AAC, LRA 7"
+ },
+ "platform_specs": [
+  {
+   "platform": "LinkedIn",
+   "placement": "Sponsored Content video ad, 9:16 vertical (mobile feed and vertical video feed)",
+   "aspect": "9:16. LinkedIn also accepts 4:5, 1:1 and 16:9, with a 5% aspect tolerance.",
+   "resolution": "1080x1920 is the maximum. The minimum is 360x640, and the help page names 720x1280 as recommended. Deliver 1080x1920.",
+   "fps": "The help page says 'less than 30 FPS'. The marketing spec page says '30 frames per second' is recommended. 25 fps satisfies both readings. Never use 50 or 60.",
+   "video_codec": "MP4 container, H.264 or VP8. File size 75 KB to 500 MB. No bitrate is published for ads; organic video is limited to 192 kbps to 30 Mbps.",
+   "audio": "AAC or MPEG4, with a sample rate below 64 kHz.",
+   "max_length_or_notes": "3 s to 30 min. LinkedIn recommends 15 to 30 s and reports up to a 300% completion lift for 7 to 15 s videos. For 5 to 15 s videos it suggests trying loops 'similar to animated gifs'. Captions are optional and must be SRT. Third-party spec guides report that 9:16 ads serve only on mobile. That is not on LinkedIn's spec page, but it is a reason to also ship the 4:5 cut.",
+   "ui_overlay_safe_zone": "LinkedIn publishes no overlay safe zone. A third-party measurement of the mobile vertical UI gives top 108 / bottom 320 / left 60 / right 120 px. That is unofficial, and the unified zone (288/672/120/300) contains it.",
+   "source": "https://www.linkedin.com/help/lms/answer/a424737 ; https://business.linkedin.com/advertise/ads/sponsored-content/video-ads/specs ; https://business.linkedin.com/marketing-solutions/success/best-practices/video-ad-tips ; https://www.aicarousels.com/free-tools/linkedin-safe-zone-checker (unofficial)"
+  },
+  {
+   "platform": "LinkedIn",
+   "placement": "Sponsored Content video ad, 4:5 feed (desktop and mobile)",
+   "aspect": "4:5",
+   "resolution": "1080x1350 is the maximum. The minimum is 360x450, and 720x900 is named as recommended.",
+   "fps": "The same rules as the 9:16 ad: below 30 per the help page, 30 recommended per the marketing page. Use 25 CFR.",
+   "video_codec": "MP4, H.264 or VP8, 75 KB to 500 MB.",
+   "audio": "AAC or MPEG4, below 64 kHz.",
+   "max_length_or_notes": "3 s to 30 min. Do not upload 1440x1800 here, because 1080x1350 is LinkedIn's 4:5 maximum.",
+   "ui_overlay_safe_zone": "No official safe zone. The player overlays a mute toggle, a captions button and a progress bar along the bottom. Keep 65 px at the sides, 68 px at the top and 135 px at the bottom clear (derived). See feed_cut_4x5.",
+   "source": "https://www.linkedin.com/help/lms/answer/a424737 ; https://business.linkedin.com/advertise/ads/sponsored-content/video-ads/specs"
+  },
+  {
+   "platform": "LinkedIn",
+   "placement": "Organic video post (member profile or Company Page)",
+   "aspect": "Any ratio from 1:2.4 to 2.4:1, so both 9:16 and 4:5 are allowed.",
+   "resolution": "256x144 to 4096x2304. Deliver 1080x1920 or 1080x1350.",
+   "fps": "10 to 60 fps",
+   "video_codec": "Members may upload MP4, MOV and others. Company Pages list MP4 with H264/AVC, VP8 or VP9, and no longer accept MOV. Bitrate 192 kbps to 30 Mbps. File size 75 KB to 5 GB.",
+   "audio": "Pages list AAC among the supported types. No sample-rate rule is published for organic posts, so use the ad rule (below 64 kHz), which 48 kHz satisfies.",
+   "max_length_or_notes": "Members: 3 s minimum from desktop, 2 s from mobile, 15 min maximum. Pages: 3 s to 10 min. LinkedIn reports 80% of feed video views happen with the sound off.",
+   "ui_overlay_safe_zone": "No official safe zone. Use the unified 288/672/120/300 for 9:16 and the feed_cut_4x5 margins for 4:5.",
+   "source": "https://www.linkedin.com/help/linkedin/answer/a548372 ; https://www.linkedin.com/help/linkedin/answer/a1311816 ; https://www.linkedin.com/business/marketing/blog/linkedin-ads/ready-to-get-started-with-video-ads-on-linkedin-here-are-9-things-you-need-to-know"
+  },
+  {
+   "platform": "Instagram",
+   "placement": "Reels (organic and Reels ads)",
+   "aspect": "9:16. The API accepts 0.01:1 to 10:1 but recommends 9:16 'to avoid cropping'.",
+   "resolution": "The ads guide now lists 1440x2560 as recommended. 1080x1920 is accepted, since the minimum width is 250 px for ads under 30 s. The Graph API caps horizontal size at 1920 px. Deliver 1080x1920. A 1440x2560 upscale for Meta ads is optional and uses the same percentage safe zone.",
+   "fps": "23 to 60 fps (API), fixed frame rate (ads guide).",
+   "video_codec": "H.264 (or HEVC), progressive scan, closed GOP, 4:2:0, square pixels, VBR up to 25 Mbps. MP4 or MOV with the moov atom at the front and no edit lists (Graph API).",
+   "audio": "AAC, 48 kHz maximum, mono or stereo, 128 kbps (API). The ads guide asks for stereo AAC at 128 kbps or more.",
+   "max_length_or_notes": "Ads: 0 s to 15 min, 4 GB maximum. Graph API: 3 s to 15 min, 300 MB maximum. Organic Reels were raised to 3 minutes in January 2025. Since then the profile grid shows Reels as a 3:4 crop.",
+   "ui_overlay_safe_zone": "Top 269 / bottom 672 / left 65 / right 65 px. This is Meta's official 14% top, 35% bottom and 6% per side, clear of text, logos and key elements.",
+   "source": "https://www.facebook.com/business/ads-guide/update/video/instagram-reels ; https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media ; https://www.socialmediatoday.com/news/instagram-officially-expands-reels-length-3-minutes/737766/"
+  },
+  {
+   "platform": "Facebook",
+   "placement": "Reels (organic and Reels ads)",
+   "aspect": "9:16",
+   "resolution": "The ads guide recommends 1440x2560. The Reels API recommends 1080x1920 with a 540x960 minimum. Deliver 1080x1920.",
+   "fps": "24 to 60 fps, fixed frame rate, progressive scan.",
+   "video_codec": "H.264 or H.265 (VP9 and AV1 also supported), 4:2:0, closed GOP of 2 to 5 s. MP4 recommended.",
+   "audio": "AAC-LC, stereo, 48 kHz, 128 kbps or more.",
+   "max_length_or_notes": "API-published Reels: 3 to 90 s. Reels ads: no maximum, 4 GB. Meta's Reels page says sound is on by default in Reels. Meta also reports that 9:16 Reels ads with audio and key elements in the safe zone had 34.5% lower cost per result than image ads.",
+   "ui_overlay_safe_zone": "Top 269 / bottom 672 / left 65 / right 65 px (Meta's official 14% / 35% / 6% / 6%).",
+   "source": "https://www.facebook.com/business/ads-guide/update/video/facebook-facebook-reels ; https://developers.facebook.com/docs/video-api/guides/reels-publishing ; https://www.facebook.com/business/ads/facebook-instagram-reels-ads"
+  },
+  {
+   "platform": "Facebook and Instagram",
+   "placement": "Feed (4:5), organic and ads",
+   "aspect": "4:5",
+   "resolution": "The Facebook Feed ads guide recommends 1440x1800 (4:5). 1080x1350 has the same ratio and is accepted.",
+   "fps": "Fixed frame rate.",
+   "video_codec": "H.264, square pixels, fixed frame rate, progressive scan. MP4, MOV or GIF, 4 GB maximum.",
+   "audio": "Stereo AAC at 128 kbps or more.",
+   "max_length_or_notes": "1 s to 241 min. With some objectives, the ad footer (headline, description, CTA) is not shown in Facebook mobile Feed.",
+   "ui_overlay_safe_zone": "Meta publishes no overlay safe zone for 4:5 Feed video. Use the derived margins in feed_cut_4x5: 65 px sides, 68 px top, 135 px bottom.",
+   "source": "https://www.facebook.com/business/ads-guide/update/video/facebook-feed"
+  },
+  {
+   "platform": "TikTok",
+   "placement": "For You feed: organic posts and In-Feed auction ads (non-Spark and Spark)",
+   "aspect": "9:16 (recommended for ads). 1:1 and 16:9 are also accepted.",
+   "resolution": "Ads need at least 540x960. The Content Posting API accepts 360 to 4096 px per side. Deliver 1080x1920.",
+   "fps": "23 to 60 fps (Content Posting API).",
+   "video_codec": "H.264 recommended (H.265, VP8 and VP9 accepted). MP4 recommended. Ads: bitrate of at least 516 kbps and 500 MB or less. API: 4 GB or less.",
+   "audio": "No codec is published. TikTok's creative basics require sound or music. Use AAC-LC 48 kHz stereo.",
+   "max_length_or_notes": "Organic: 3 min as standard, 5 or 10 min for some creators. In-Feed ads: up to 10 min. Ad captions are shown 'in white with a uniform font that can't be customized'. Businesses must use the Commercial Music Library.",
+   "ui_overlay_safe_zone": "From TikTok's official In-Feed standard template, measured from the alpha channel and scaled to 1080x1920: top 240 / bottom 660 / left 120 / right 120 above y=840. Right widens to 300 below y=840 for the action rail. The 'with anchor' templates are stricter: top 253, right 239 below y=360, and a bottom that grows with caption length (812 px for 1 line, 879 for 2, 947 for 3, 1015 for 4). TikTok says the safe zone depends on dimension, ad caption length and add-ons.",
+   "source": "https://ads.tiktok.com/help/article/tiktok-auction-in-feed-ads (template zips: https://lf-tt4b.tiktokcdn.com/obj/i18nblog/tt4b_cms/en-US/5jqet0ab9qci-10e7f5Vig4uhAscNP8XPB0.zip standard, https://lf-tt4b.tiktokcdn.com/obj/i18nblog/tt4b_cms/en-US/5jqet0ab9qci-2ECwVwzIZXPqszI99UlWm3.zip with anchor) ; https://developers.tiktok.com/doc/content-posting-api-media-transfer-guide ; https://ads.tiktok.com/help/article/creative-best-practices"
+  },
+  {
+   "platform": "TikTok",
+   "placement": "TopView (reservation ad, first ad on app open)",
+   "aspect": "9:16",
+   "resolution": "At least 540x960. Deliver 1080x1920.",
+   "fps": "Not published. Use 23 to 60 per the API.",
+   "video_codec": "MP4, MOV, MPEG or 3GP, 500 MB or less. Bitrate of at least 2,500 kbps.",
+   "audio": "'Must be present and clear; cannot be silent.'",
+   "max_length_or_notes": "5 to 60 s, with 9 to 15 s recommended, so a 15 s film fits.",
+   "ui_overlay_safe_zone": "A separate TopView safe-zone zip covers the open-screen and in-feed states. Keep text inside the In-Feed standard zone (240/660/120/120, right 300 below y=840).",
+   "source": "https://ads.tiktok.com/help/article/tiktok-reservation-topview"
+  },
+  {
+   "platform": "YouTube",
+   "placement": "Shorts (organic)",
+   "aspect": "9:16 or 1:1. Uploads since 15 Oct 2024 that are square or vertical and up to 3 min long are classified as Shorts.",
+   "resolution": "1080x1920",
+   "fps": "'Content should be encoded and uploaded in the same frame rate it was recorded' (24, 25, 30, 48, 50 or 60).",
+   "video_codec": "H.264 High Profile, progressive, 2 consecutive B-frames, closed GOP of half the frame rate, CABAC, VBR, 4:2:0. MP4 with the moov atom at the front (Fast Start) and no edit lists. 8 Mbps for 1080p SDR at 24/25/30 fps.",
+   "audio": "AAC-LC (or Opus), 48 kHz, 384 kbps stereo.",
+   "max_length_or_notes": "Up to 3 min. Since 31 Mar 2025 a Shorts view counts on every start or replay, so loops count.",
+   "ui_overlay_safe_zone": "Top 288 / bottom 672 / left 48 / right 192 px. Measured from Google's official vertical overlay PNG, which leaves a transparent 840x960 box at x 48-888, y 288-1248.",
+   "source": "https://support.google.com/youtube/answer/15424877 ; https://support.google.com/youtube/answer/1722171 ; https://services.google.com/fh/files/misc/youtubesafezoneoverlay_vertical_final.png ; https://techcrunch.com/2025/03/26/youtube-is-changing-how-youtube-shorts-views-are-counted"
+  },
+  {
+   "platform": "YouTube",
+   "placement": "Shorts ads (Google Ads: Demand Gen, Video View/Reach, PMax)",
+   "aspect": "9:16 recommended. Horizontal assets serve with blurred top and bottom.",
+   "resolution": "1080x1920 recommended, 720x1280 minimum.",
+   "fps": "Same as the upload settings.",
+   "video_codec": "Many formats accepted, 256 GB or less. Encode to the YouTube upload settings above.",
+   "audio": "Google says using sound (music, voiceover or both) in Shorts ads 'has been shown to increase conversions by over 20%'.",
+   "max_length_or_notes": "Up to 3 min, but only the first 60 s play in the Shorts feed, so under 60 s is recommended. The platform CTA button appears 3 s in for PMax, App and Demand Gen, and 10 s in for Video View and Reach. Campaigns with only vertical assets may not serve on in-feed or Watch Next inventory.",
+   "ui_overlay_safe_zone": "Top 288 / bottom 672 / left 48 / right 192 px from Google's official vertical safe-zone overlay. The right-hand panel holds like, dislike, comment and share.",
+   "source": "https://support.google.com/google-ads/answer/16041697 ; https://support.google.com/google-ads/answer/13547298 ; https://support.google.com/google-ads/answer/9128498"
+  }
+ ],
+ "reading": {
+  "words_per_second": "Plan 2.5 words per second (about 150 wpm) for Dutch on-screen text over moving picture. The hard ceiling is 3.0 words per second (180 wpm) and 17 characters per second. The anchors: BBC subtitles run at 160-180 wpm, or 0.33-0.375 s per word. EBU says typical practice is no more than 140 wpm, because reading from a screen is 20-30% slower than print. Netflix's Dutch guide caps adult subtitles at 17 characters per second, 42 characters per line and two lines. The 2.5 figure sits at the EBU end because the text competes with the picture: BBC 4.3.4 says to allow more time when a lot is happening in the picture. TikTok's advice to show '5-10 words per second' is an outlier meant for skim text and does not suit B2B and government readers.",
+  "min_on_screen_seconds_per_line": "Hold each line for max(1.5 s, 0.4 s × the number of words in it), counted from when the last word is fully visible. That makes a 4-word line 1.6 s, a 6-word line 2.4 s and an 8-word line 3.2 s. A single-line card typically runs 2-3.5 s (EBU). The absolute floor is 0.83 s (Netflix: 5/6 s, 20 frames at 24 fps), and only a one- or two-word punch should go that short. Add about 1 s for a logo or label card (BBC 4.3.3), and hold longer when a line crosses a shot change or contains a long figure such as '12.353' (BBC 4.3.6 and 4.3.7). In 15 s that allows about 20-30 on-screen words in total, including the end card.",
+  "source": "https://www.bbc.co.uk/accessibility/forproducts/guides/subtitles/ (sections 4, 4.1, 4.3) ; https://tech.ebu.ch/docs/i/i044.pdf ; https://partnerhelp.netflixstudios.com/hc/en-us/articles/215350158-Dutch-Timed-Text-Style-Guide ; https://partnerhelp.netflixstudios.com/hc/en-us/articles/215758617-Timed-Text-Style-Guide-General-Requirements ; https://ads.tiktok.com/help/article/creative-best-practices"
+ },
+ "brand_assets": {
+  "app_glyphs": [
+   {
+    "id": "buildiq",
+    "repo": "ConductionNL/buildiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "e91b80116c1ad6031a1a3a8915759d029fec2849",
+    "glyph": "brand/assets/apps/glyphs/buildiq.svg"
+   },
+   {
+    "id": "decidiq",
+    "repo": "ConductionNL/decidiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "68361c25dbf1ebbd8133de1f83117a0a426895c1",
+    "glyph": "brand/assets/apps/glyphs/decidiq.svg"
+   },
+   {
+    "id": "dossiq",
+    "repo": "ConductionNL/dossiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "6a6ddd33277e1d4c059a5d2a1c0ef3f32db45a75",
+    "glyph": "brand/assets/apps/glyphs/dossiq.svg"
+   },
+   {
+    "id": "filinq",
+    "repo": "ConductionNL/filinq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "777723abd5ac28454bc5b446fc432b094d2581be",
+    "glyph": "brand/assets/apps/glyphs/filinq.svg"
+   },
+   {
+    "id": "hermiq",
+    "repo": "ConductionNL/hermiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "06d93195b72ce47c93c34c04380ae3aceedd04e4",
+    "glyph": "brand/assets/apps/glyphs/hermiq.svg"
+   },
+   {
+    "id": "humaniq",
+    "repo": "ConductionNL/humaniq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "8b9d262937ad6453168e72d0410eb50fab656447",
+    "glyph": "brand/assets/apps/glyphs/humaniq.svg"
+   },
+   {
+    "id": "integriq",
+    "repo": "ConductionNL/integriq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "810063c96c689931855bc84c811f2d0d9b173493",
+    "glyph": "brand/assets/apps/glyphs/integriq.svg"
+   },
+   {
+    "id": "keepiq",
+    "repo": "ConductionNL/keepiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "b17492b868cbac6e39ce46439fedb8831863271d",
+    "glyph": "brand/assets/apps/glyphs/keepiq.svg"
+   },
+   {
+    "id": "larpinq",
+    "repo": "ConductionNL/larpinq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "3eaee0ca23cc05055c59e26084c220a7f79c4e05",
+    "glyph": "brand/assets/apps/glyphs/larpinq.svg"
+   },
+   {
+    "id": "launchpad",
+    "repo": "ConductionNL/launchpad",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "2ec4f313e5ad0af19c80de0f1cdffde3da19ca45",
+    "glyph": "brand/assets/apps/glyphs/launchpad.svg"
+   },
+   {
+    "id": "learniq",
+    "repo": "ConductionNL/learniq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "7c7f054385dc328070ebb91e15171ec53b8b2c72",
+    "glyph": "brand/assets/apps/glyphs/learniq.svg"
+   },
+   {
+    "id": "opencatalogi",
+    "repo": "ConductionNL/opencatalogi",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "26f8792abf51a2af68569f3e425ca467facf1e1a",
+    "glyph": "brand/assets/apps/glyphs/opencatalogi.svg"
+   },
+   {
+    "id": "openregister",
+    "repo": "ConductionNL/openregister",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "a61e2721aff41a2fe054e6d3aa3bc6b8b0658c8a",
+    "glyph": "brand/assets/apps/glyphs/openregister.svg"
+   },
+   {
+    "id": "pipelinq",
+    "repo": "ConductionNL/pipelinq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "ba1078a76ba386046b1a9e09432cf7ef873c96a7",
+    "glyph": "brand/assets/apps/glyphs/pipelinq.svg"
+   },
+   {
+    "id": "planninq",
+    "repo": "ConductionNL/planninq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "ef37ab58d58ab637abf853a6a8fb12fd7b8c3765",
+    "glyph": "brand/assets/apps/glyphs/planninq.svg"
+   },
+   {
+    "id": "portaliq",
+    "repo": "ConductionNL/portaliq",
+    "ref": "development",
+    "file": "img/app-store.svg (glyph only; img/app.svg is the template placeholder)",
+    "blob_sha": "1cc1132554439e8a6645b20ba57ec78ac7690882",
+    "glyph": "brand/assets/apps/glyphs/portaliq.svg"
+   },
+   {
+    "id": "shillinq",
+    "repo": "ConductionNL/shillinq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "40fcc1ef8f079bc7256a5bba560551c4b161f705",
+    "glyph": "brand/assets/apps/glyphs/shillinq.svg"
+   },
+   {
+    "id": "stackiq",
+    "repo": "ConductionNL/stackiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "86d1f87e58410bbdd43c4acafb645810cccf7e0f",
+    "glyph": "brand/assets/apps/glyphs/stackiq.svg"
+   },
+   {
+    "id": "thematiq",
+    "repo": "ConductionNL/thematiq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "5404ff9fdf8bb52184142b387ea21abe47ce5522",
+    "glyph": "brand/assets/apps/glyphs/thematiq.svg"
+   },
+   {
+    "id": "versioniq",
+    "repo": "ConductionNL/versioniq",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "051b5a5be548f05d8185418a43c33e030658c482",
+    "glyph": "brand/assets/apps/glyphs/versioniq.svg"
+   },
+   {
+    "id": "zaakafhandelapp",
+    "repo": "ConductionNL/zaakafhandelapp",
+    "ref": "development",
+    "file": "img/app.svg",
+    "blob_sha": "51ef619fe8e7b80ffcea4c3c0b296bcbac613005",
+    "glyph": "brand/assets/apps/glyphs/zaakafhandelapp.svg"
+   }
+  ],
+  "marks": [
+   "brand/assets/wordmark-connext.svg",
+   "brand/assets/wordmark-connext-white.svg",
+   "brand/assets/wordmark-conduction.svg",
+   "brand/assets/wordmark-conduction-white.svg",
+   "brand/assets/avatar-conduction.svg",
+   "brand/assets/nextcloud-logo.svg",
+   "brand/assets/integrations/nextcloud-bundled/*.svg"
+  ],
+  "fonts": [
+   "brand/assets/fonts/figtree/woff2/Figtree-{400,500,600,700}-latin.woff2",
+   "brand/assets/fonts/ibm-plex-mono/woff2/IBMPlexMono-500-latin.woff2"
+  ],
+  "tokens": "tokens.css, mirrored in preview/films/_lib/brand.js"
+ },
+ "claims": {
+  "shipped": [
+   {
+    "claim": "All your apps keep their records in one place, on your own server. Every change is logged with who did it and when.",
+    "apps": [
+     "OpenRegister",
+     "Pipelinq",
+     "Shillinq",
+     "Dossiq",
+     "Filinq",
+     "all core apps"
+    ],
+    "source": "openregister v2.1.0 (Nextcloud app store stable 2.1.0); pipelinq v0.5.1 lib/Settings/pipelinq_register.json; hydra/openspec/architecture/adr-001-data-layer.md:1-3; adr-022-apps-consume-or-abstractions.md:36-60"
+   },
+   {
+    "claim": "Open a client or a project and its files, mails, meetings and chats are right there. Nobody copies things between tabs.",
+    "apps": [
+     "OpenRegister",
+     "Nextcloud Files",
+     "Nextcloud Mail",
+     "Nextcloud Calendar",
+     "Nextcloud Contacts",
+     "Nextcloud Talk",
+     "Nextcloud Deck"
+    ],
+    "source": "openregister v2.1.0 lib/Service/Integration/IntegrationRegistry.php:55 and lib/Service/Integration/Providers/*.php (23 files); hydra adr-019-integration-registry.md:5-10 (says 22 providers)"
+   },
+   {
+    "claim": "A client in your CRM is the same contact as in your address book. Change the phone number once and it is right on your phone too.",
+    "apps": [
+     "Pipelinq",
+     "Nextcloud Contacts"
+    ],
+    "source": "pipelinq v0.5.1 lib/Service/ContactSyncService.php:60 (Contact-FIRST create); lib/Service/ContactVcardWriterService.php"
+   },
+   {
+    "claim": "Your clients log in to one portal in your own house style. There they see their invoices, quotes, requests and contracts, from every app you run.",
+    "apps": [
+     "Portaliq",
+     "Pipelinq",
+     "Shillinq",
+     "Filinq",
+     "Dossiq",
+     "Decidiq",
+     "Learniq",
+     "Stackiq",
+     "Larpinq"
+    ],
+    "source": "portaliq v0.2.0 lib/Contribution/PortalContributionRegistry.php:63, :97, :415; pipelinq v0.5.1 lib/Portal/PortalContributionProvider.php:172-251; shillinq v0.5.0 lib/Portal/PortalContributionProvider.php:229-356; hydra adr-046-portal-contribution-contract.md:45-50 (says twelve apps)"
+   },
+   {
+    "claim": "Pick a client and a template and the letter or contract fills itself in. Name, address and amounts come straight from the client's details, so nobody types them twice.",
+    "apps": [
+     "Filinq",
+     "Pipelinq",
+     "any app with records"
+    ],
+    "source": "filinq v0.2.0 lib/Controller/DocumentController.php:80-107 (POST api/documents/generate); lib/Service/DocumentRenderPipeline.php"
+   },
+   {
+    "claim": "Your client gets a link, opens their portal and signs on their phone. Nothing to print, scan or chase, and every step is logged.",
+    "apps": [
+     "Filinq",
+     "Portaliq"
+    ],
+    "source": "filinq v0.2.0 lib/Portal/PortalContributionProvider.php:26-36; lib/Service/SigningService.php"
+   },
+   {
+    "claim": "One start screen with your deals, your tasks, your calendar and your mail, from every app you use. You arrange it yourself.",
+    "apps": [
+     "LaunchPad",
+     "Pipelinq",
+     "Dossiq",
+     "Nextcloud Calendar",
+     "Nextcloud Mail"
+    ],
+    "source": "launchpad v1.1.0 lib/Service/WidgetService.php:22, :87; README.md (v1.1.0) 'works with every existing Nextcloud dashboard widget'; pipelinq v0.5.1 lib/Dashboard/DealsOverviewWidget.php:33"
+   },
+   {
+    "claim": "Set it up once. When a quote is accepted or an invoice goes overdue, the next task lands on the right desk and the right person gets a message.",
+    "apps": [
+     "OpenRegister",
+     "Shillinq",
+     "Pipelinq",
+     "Nextcloud Talk"
+    ],
+    "source": "openregister v2.1.0 lib/Service/Flow/Nodes/TriggerObjectNode.php:67, UserTaskNode.php:93, ObjectWriteNode.php:124, SendNotificationNode.php:49; src/manifest.json:226-230"
+   },
+   {
+    "claim": "The right colleague hears about it in the same Nextcloud notification bell where they see a shared file or a chat mention.",
+    "apps": [
+     "OpenRegister",
+     "Shillinq",
+     "Decidiq",
+     "Filinq",
+     "Dossiq",
+     "Pipelinq"
+    ],
+    "source": "openregister v2.1.0 lib/Service/Notification/AnnotationNotificationDispatcher.php:77; hydra adr-031-schema-declarative-business-logic.md"
+   },
+   {
+    "claim": "Approve your team's hours, click Send to billing, and a draft invoice with those hours is waiting in your bookkeeping.",
+    "apps": [
+     "Pipelinq",
+     "Shillinq"
+    ],
+    "source": "pipelinq v0.5.1 lib/Service/TimeBillingHandoffService.php:102, :145; lib/Service/SettingsService.php:209 (default 'false'); src/components/billing/ClientBillingHandoffSection.vue:59; shillinq v0.5.0 lib/Service/TimeIntakeService.php:132; appinfo/routes.php:204-209"
+   },
+   {
+    "claim": "Your webshop, bookkeeping package or a supplier's system feeds the same records, on a schedule you choose. A delivery that fails is retried, and what still fails ends up on one list you can replay.",
+    "apps": [
+     "Integriq",
+     "OpenRegister",
+     "Pipelinq",
+     "Shillinq"
+    ],
+    "source": "integriq v0.4.4 appinfo/info.xml:8; lib/Service/SynchronizationService.php:88"
+   },
+   {
+    "claim": "Ask a question about your clients or quotes and get the answer instead of a report to build. The assistant only does what you allow and asks before it changes anything.",
+    "apps": [
+     "Hermiq",
+     "OpenRegister",
+     "Pipelinq",
+     "Filinq"
+    ],
+    "source": "openregister v2.1.0 lib/Mcp/BuiltIn/ObjectsToolProvider.php:45; hermiq v0.2.0 lib/Controller/ToolOversightController.php:81, lib/Mcp/HermiqToolProvider.php:152"
+   },
+   {
+    "claim": "Choose what to make public and it appears in your online catalogue, where other organisations' catalogues can find it.",
+    "apps": [
+     "OpenCatalogi",
+     "OpenRegister"
+    ],
+    "source": "opencatalogi v2.1.0 appinfo/info.xml <summary lang=\"en\">"
+   }
+  ],
+  "never_show": [
+   {
+    "claim": "Every app shows which outside systems it is connected to, in one list.",
+    "why": "integriq origin/development lib/Service/ConnectionRegistryService.php; git log -S app_connection → 3d222e85 2026-09-14; not present at tag v0.4.4 (git grep app_connection v0.4.4 -- lib returned nothing)"
+   },
+   {
+    "claim": "Enter a client once and your CRM, invoices and contracts all show the new details.",
+    "why": "shillinq v0.5.0 lib/Settings/register.d/add-shillinq-bookkeeping-compliance.json:215-225; claim at conduction-website src/pages/apps/openregister.mdx:41-43"
+   },
+   {
+    "claim": "A quote your client signs lands straight in your books.",
+    "why": "shillinq v0.5.0 lib/AppInfo/SigningDelegationRegistration.php:126; lib/Reporting/Generator/AbstractDocumentReportGenerator.php:103, :373; filinq v0.2.0 appinfo/info.xml <id>filinq</id> <namespace>Filinq</namespace>; claim at src/pages/apps/shillinq.mdx:114"
+   },
+   {
+    "claim": "A client request in the CRM becomes a case for the team that handles it.",
+    "why": "hydra/openspec/architecture/adr-051-semantic-object-handoff.md:25-37; dossiq v0.4.0 git grep handoff -- lib returned nothing"
+   },
+   {
+    "claim": "Enter hours and salary once, and the payslip and bookkeeping entry come out.",
+    "why": "gh api repos/ConductionNL/humaniq/releases/latest → 404; apps.nextcloud.com/api/v1/platform/32.0.0/apps.json (fetched 2026-09-27) has no humaniq; claim at src/pages/apps/humaniq.mdx:251, :258"
+   }
+  ],
+  "avoid": [
+   "Any single app count without a decision on which one. The live English site says 22 apps and 36 in the diagram. The live Dutch site says 12 and 24. Slogans say twelve, llms.txt ~17, the /apps page '15 in the store', and cn-platform six. The fleet has 21 core apps, of which 19 are in the Nextcloud app store. The 22 includes Anonymiq, which is not a core app.",
+   "'21,744 downloads' or 'installs'. The figure is stale (generated 2026-06-08), counts GitHub release downloads under pre-rename ids, and /apps shows 21,677 'installs' from the same file.",
+   "'Enter a client once and your CRM, invoices and contracts all update' (openregister.mdx:42). In released code Shillinq keeps its own debtor record. What is shipped: the CRM client is your Nextcloud address-book contact.",
+   "'A quote your client signs lands straight in your books' (shillinq.mdx:114). Released Shillinq 0.5.0 listens for an OCA\\DocuDesk event and probes isInstalled('docudesk'), while released Filinq 0.2.0 is OCA\\Filinq, so it silently does nothing.",
+   "Payroll to journal entry, and payslips through Filinq (humaniq.mdx). Humaniq has no stable release and is not in the app store.",
+   "A request in the CRM becoming a case (Pipelinq to Dossiq). ADR-051 says zero code implements it.",
+   "Integriq's shared connection list. It landed 2026-09-14, after stable 0.4.4, and is beta only.",
+   "'Send to billing' as on by default. It is behind an admin switch that defaults to off (pipelinq SettingsService.php:209).",
+   "'Every app can hand its actions to an assistant'. Only some apps declare actions: Filinq 17, Pipelinq 9, and Shillinq, Dossiq and Decidiq 0.",
+   "Pre-built automations. The flow engine ships, but the customer draws each flow.",
+   "Version or status numbers from the site. AppsPreview shows OpenRegister 'STABLE v3.1' and Integriq 'BETA v1.2'. Detail pages show 'Beta v0.2' for OpenRegister and every app as Beta. The app store has OpenRegister 2.1.0 and Integriq 0.4.4.",
+   "'Maintained since 2019' for OpenRegister (repo created 2024-08-24), and 'Five years in' (founded 2019).",
+   "Four languages (nl/en/de/fr). The website ships English and Dutch only.",
+   "Apps that do not exist or are archived: Accountinq and Purchasinq (no repo), DeskDesk (archived). All three are in the committed design-system roster. Also 'Pipelinq = recruitment pipeline' (committed apps.html). It is a CRM.",
+   "Showing OpenAI, Claude, Mistral or other third-party logos as ConNext apps. The cn-platform example puts an 'OpenAI' hex among the 'six apps'. The site frames them as 'Open source we use, not own' and adapters.",
+   "Mixing the two managed-tenant prices: EN '€250 per component per month' vs NL '€250 per app per maand'.",
+   "Trademarks: the planning app is Planninq, never 'planiq' (an Anaplan trademark).",
+   "Trademarks: Nextcloud is cited, not claimed. Do not imply Nextcloud GmbH makes or endorses ConNext. Nextcloud blue #0082C9 is reserved for the 'Next' in the wordmark, the word Nextcloud and the workspace hex.",
+   "Trademarks: never 'Common Ground 2' or 'Common Ground Next'. The Conduction framing is 'Common Ground+'.",
+   "Spelling drift: the academy writes 'Connext' and the diagram 'ShillinQ'. The brand forms are ConNext and Shillinq.",
+   "Banned words and CTAs: 'ecosystem' when not concrete (taalgebruik §12.2), 'platform that', 'seamless', 'synergy', 'kernel', 'digital transformation'.",
+   "CTAs: 'Get started', 'Book a demo' and 'Try the demo' are banned. Use 'Install from the Nextcloud app store' and 'Request a demo from a partner'.",
+   "NLDS as a selling point.",
+   "Customer claims for SMB. All 43 client logos are public sector, and the 60/30/10 split is marked indicative.",
+   "Platform internals on screen (OpenRegister, schema, register, MCP, JSON, endpoint).",
+   "The em-dash in the home hero lede (index.mdx:33), per the no-em-dash voice rule."
+  ]
+ },
+ "facts": [
+  {
+   "claim": "Apps in the ecosystem, English site headline stat",
+   "value": "22",
+   "source": "https://www.conduction.nl/connext/ and https://www.conduction.nl/ (live, fetched 2026-09-27); conduction-website development src/data/apps-catalog.js:203 (APP_COUNT = keys of PRESENTATION)",
+   "confidence": "conflicting",
+   "conflict_note": "The 22 counts the 21 core apps plus Anonymiq, a Python ExApp that the fleet rules keep out of the core list, and it includes in-development Keepiq and Versioniq. The Dutch site says 12 ('12 apps in het ecosysteem', 'Twaalf open-source apps'). Design-system slogans and taalgebruik say twelve ('Twelve apps. All open source.'). llms.txt says '~17 apps' and lists 15. Committed design-system apps.html says 'Twenty-two core apps' but lists 23 rows; an uncommitted edit in flight changes it to 21. cn-platform says 'Six apps'."
+  },
+  {
+   "claim": "Core apps in the fleet (internal scope of record)",
+   "value": "21",
+   "source": "apps-extra/.claude/CLAUDE.md core list; verified: all 21 repos have a development branch and an <id> in appinfo/info.xml (gh api ...?ref=development)",
+   "confidence": "verified",
+   "conflict_note": "The website shows 21 app detail pages (src/pages/apps/*.mdx) but a headline of 22. hydra ADR-022 still says '~13 Nextcloud apps'."
+  },
+  {
+   "claim": "Core apps with a release in the Nextcloud app store under their current id",
+   "value": "19 of 21 (all except Humaniq and Planninq)",
+   "source": "https://apps.nextcloud.com/api/v1/platform/32.0.0/apps.json fetched 2026-09-27",
+   "confidence": "verified",
+   "conflict_note": "The website /apps page says '15 apps in the store', computed from download data generated 2026-06-08 under pre-rename ids."
+  },
+  {
+   "claim": "Apps in the platform diagram, including external tools",
+   "value": "36 (EN) / 24 (NL)",
+   "source": "EN: src/pages/connext.mdx:39 (ECOSYSTEM_COUNT = 22 + INTEGRATED_COUNT 14, apps-catalog.js:204-205), live /connext/; NL: i18n/nl/docusaurus-plugin-content-pages/connext.mdx:37 'Vierentwintig apps', live /nl/connext/",
+   "confidence": "conflicting",
+   "conflict_note": "The design-system platform-overview also says 'Twenty-four apps'. The identity foundation/products pages count Technical Core 5, Workplace 9, AI 3, Integrated 7. The website diagram lists Technical Core 9, Solutions 4, Workspace 7, Integrated 12, Builder 1."
+  },
+  {
+   "claim": "External open-source tools integrated",
+   "value": "14",
+   "source": "src/data/apps-catalog.js:204 (INTEGRATED_COUNT); ExternalAppShelf on src/pages/connext.mdx lists 14",
+   "confidence": "stated_by_one_source",
+   "conflict_note": "The same page's diagram lists 12 in 'Integrated Apps'."
+  },
+  {
+   "claim": "Downloads",
+   "value": "21,744",
+   "source": "live https://www.conduction.nl/ and /connext/ StatsStrip; conduction-website development data/app-downloads.json totals.downloads (21,688 GitHub + 56 Codeberg), generated_at 2026-06-08",
+   "confidence": "conflicting",
+   "conflict_note": "The data is 3.5 months stale and counts GitHub release-asset downloads under old ids, not installs. The /apps page shows '21,677 installs' from the same file. The app store API gives no download counts."
+  },
+  {
+   "claim": "Certified and partner implementers",
+   "value": "11",
+   "source": "src/data/partners-catalog.js:41-160 (PARTNERS_DATA, totalPartners :203); live /connext/",
+   "confidence": "stated_by_one_source"
+  },
+  {
+   "claim": "Founded",
+   "value": "2019",
+   "source": "src/pages/about.mdx:17; static/llms.txt; GitHub org ConductionNL created 2019-01-14",
+   "confidence": "verified",
+   "conflict_note": "about.mdx:17 says 'Five years in', but 2019 to 2026 is seven. openregister.mdx:21 says OpenRegister has been 'maintained by Conduction since 2019', while its repo was created 2024-08-24."
+  },
+  {
+   "claim": "Install time",
+   "value": "2 min, admin required",
+   "source": "src/pages/connext.mdx StatsStrip ('2 min from app store install to working solution'); preview/identity/slogans.html ('Two-minute install. Admin required.')",
+   "confidence": "stated_by_one_source",
+   "conflict_note": "A marketing claim, not measured anywhere I read."
+  },
+  {
+   "claim": "Price of the apps",
+   "value": "€0, support optional",
+   "source": "src/pages/connext.mdx StatsStrip; preview/identity/foundation.html ('All apps are always free and open source')",
+   "confidence": "verified"
+  },
+  {
+   "claim": "Licence",
+   "value": "EUPL-1.2",
+   "source": "static/llms.txt; src/pages/connext.mdx:309; brand/taalgebruik.md §7.4",
+   "confidence": "verified"
+  },
+  {
+   "claim": "Certifications",
+   "value": "ISO 27001:2022 and ISO 9001:2015",
+   "source": "static/llms.txt; src/pages/about.mdx:202",
+   "confidence": "stated_by_one_source"
+  },
+  {
+   "claim": "Languages",
+   "value": "English and Dutch",
+   "source": "conduction-website docusaurus.config.js:129-130 (locales ['en','nl']); 19 of 21 core info.xml carry en+nl summaries (Thematiq and Versioniq have one)",
+   "confidence": "conflicting",
+   "conflict_note": "preview/identity/websites.html says the sites ship nl, en, de and fr. /en/connext/ returns 404 (English lives at the root)."
+  },
+  {
+   "claim": "Nextcloud features that link to a record",
+   "value": "23 providers plus 5 built-in",
+   "source": "openregister v2.1.0 lib/Service/Integration/Providers (23) + BuiltinProviders (5)",
+   "confidence": "conflicting",
+   "conflict_note": "hydra ADR-019 says 22 integration providers ship."
+  },
+  {
+   "claim": "Apps that feed the client portal",
+   "value": "8 released apps resolve (Filinq, Stackiq, Larpinq, Dossiq, Pipelinq, Shillinq, Learniq, Decidiq)",
+   "source": "PortalContributionProvider.php present at each stable tag; portaliq v0.2.0 PortalContributionRegistry.php:415",
+   "confidence": "conflicting",
+   "conflict_note": "ADR-046 says twelve apps implement it. ZaakAfhandelApp ships a provider, but the class lookup likely misses on case."
+  },
+  {
+   "claim": "Client logos on the website",
+   "value": "43, all public sector",
+   "source": "@conduction/docusaurus-preset 3.50.1 src/components/Clients/Clients.jsx:30 (DEFAULT_CLIENTS)",
+   "confidence": "stated_by_one_source",
+   "conflict_note": "The page shows no count. audience.html gives the customer base as Gov 60% / SMB 30% / Dev 10%, marked 'indicative'."
+  },
+  {
+   "claim": "Managed tenant price",
+   "value": "from €250 per component per month",
+   "source": "src/pages/connext.mdx:321",
+   "confidence": "conflicting",
+   "conflict_note": "The live Dutch page says 'vanaf €250 per app per maand'."
+  },
+  {
+   "claim": "Apps in the local ConNext demo stack",
+   "value": "eleven apps on one Nextcloud",
+   "source": "academy/2026-08-27-set-up-the-connext-ecosystem/index.mdx:23",
+   "confidence": "stated_by_one_source"
+  },
+  {
+   "claim": "Workspace integrations showcased",
+   "value": "Seven ecosystems, one workspace",
+   "source": "src/pages/connext.mdx:151",
+   "confidence": "stated_by_one_source"
+  }
+ ],
+ "references": "see storyboard; scouted on whatships.com 2026-09-27 (Replit Parallel Agents, Firecrawl Free Keyless, X Ticker and X Numbers, Claude mobile tools, Yoya, ChatGPT personal finance)",
+ "sound": {
+  "source": "synthesised in code by scripts/films/lib/synth.mjs; no samples, no licensed music",
+  "licence": "none needed"
+ },
+ "decisions": [
+  {
+   "decision": "Direction A (One take) is the ConNext film; direction C (Proof) is the template for every app film; B is set aside",
+   "who": "Ruben, 2026-09-27 (in order: B for ConNext and A for apps, then C for apps, then A for ConNext)",
+   "storyboard": "https://claude.ai/artifact/1WSvitSmedqWQoCh2NiK7e (republished after an account switch; the first copy was https://claude.ai/artifact/DAbwgSvmJMtSdnfNckeJAu)"
+  },
+  {
+   "decision": "English only for this first cut",
+   "deviation_from": "CLAUDE.md: NL and EN are both required",
+   "who": "Ruben, 2026-09-27"
+  },
+  {
+   "decision": "No app count on screen",
+   "why": "sources conflict: 21 core apps, 22 on the English site, 12 and 24 on the Dutch site, 36 in the diagram"
+  },
+  {
+   "decision": "\"Enter a client once and every app updates\" is not claimed",
+   "why": "not shipped: Shillinq keeps its own debtor record (story research)"
+  },
+  {
+   "decision": "The word \"ecosystem\" never appears on screen",
+   "why": "preview/identity/slogans.html bans it; brand/taalgebruik.md 12.2"
+  },
+  {
+   "decision": "25 fps, not 60",
+   "why": "LinkedIn asks for under 30 fps; 25 satisfies every platform"
+  },
+  {
+   "decision": "128 BPM grid, cuts snapped to the nearest frame",
+   "why": "15.00 s is exactly 8 bars; at 25 fps a beat is 11.72 frames, so cuts land within 20 ms of the beat"
+  },
+  {
+   "decision": "Portaliq uses its store icon (MDI login-variant)",
+   "why": "its img/app.svg is still the app-template placeholder; to be confirmed by Ruben"
+  },
+  {
+   "decision": "Pure Conduction brand, no maker credit",
+   "who": "Ruben, 2026-09-27"
+  }
+ ],
+ "storyboards": [
+  {
+   "what": "Three directions for the ConNext film (A, B, C); A picked",
+   "url": "https://claude.ai/artifact/1WSvitSmedqWQoCh2NiK7e",
+   "page_dir": "~/memcap-work/ds-connext-film-review/storyboard-connext"
+  },
+  {
+   "what": "ConNext film (A) plus Pipelinq and Learniq app films (C), with the general/app-specific divide",
+   "url": "https://claude.ai/artifact/S1k6GmTVncCgKrQaLWroHr",
+   "page_dir": "~/memcap-work/ds-connext-film-review/storyboard-films"
+  }
+ ]
+}

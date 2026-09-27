@@ -108,6 +108,19 @@ get random changes; these get exact ones:
 - **Render** the master and the feed cut, and write every source and decision into
   `sources.json`.
 
+## House rules decided for films (Ruben, 2026-09-27)
+
+- **16:9 landscape, 1920 x 1080.** Text safe box x 120 to 1800, y 96 to 930 (the bottom
+  150 px hold the player's controls). Type sits in a left column, picture and UI on the right.
+  A vertical cut is a separate decision, not the default.
+- **No terracotta (brown).** Not as a ground, a hex or a file pip. App hexes are cobalt.
+- **Orange is text, never a box behind text.** The accent word and the install call are
+  KNVB orange at headline size (64 px or more, weight 700): 3.0:1 on cobalt, 5.9:1 on
+  cobalt-900. Black or white text in an orange box reads dated. Orange shapes are still fine,
+  and orange text counts as the scene's one orange.
+- **The word Nextcloud stays white** in copy. Nextcloud blue (#0082C9) is 2.2:1 on cobalt;
+  it stays on the "Next" of the ConNext wordmark and on the workspace hex.
+
 ## Which direction for which film
 
 Decided by Ruben on 2026-09-27, after the first three-variant storyboard:

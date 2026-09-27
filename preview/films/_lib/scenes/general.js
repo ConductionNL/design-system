@@ -1,11 +1,12 @@
 /**
- * The shared key frames of every app film: the hook, the three GENERAL scenes
- * (what every app shares: the common data layer, flows and the assistant) and
- * the BRAND outro. Each factory draws the SAME composition for every app and
- * takes the app's own content as parameters, so a Pipelinq film and a Learniq
- * film show one layout with two different records in it.
+ * The shared key frames of every app film: the hook, the four GENERAL scenes
+ * (what every app shares: the common data layer, notifications, flows and the
+ * assistant) and the BRAND outro. Each factory draws the SAME composition for
+ * every app and takes the app's own content as parameters, so a Pipelinq film
+ * and a Learniq film show one layout with two different records in it.
  *
- *   hookFrame(ctx, p)       APP      caption over the app's own UI, app hex at LOOP_ANCHOR
+ *   hookFrame(ctx, p)       APP      caption in the type column, the app's own UI in the
+ *                                    window on the right, app hex at LOOP_ANCHOR
  *   dataLayerFrame(ctx, p)  GENERAL  one record: its fields, its change log, and the
  *                                    Nextcloud apps that link in (files, mail, meetings, chats)
  *   notifyFrame(ctx, p)     GENERAL  an event on a record, and the notification landing with
@@ -17,40 +18,91 @@
  *   outroFrame(ctx, p)      BRAND    the honeycomb round the Nextcloud workspace hex, this
  *                                    app singled out, the wordmark and the install call
  *
- * Every word sits in the text box (x 120 to 780, y 288 to 1248). UI stays greeked
- * (bars, pills, cards), as the design system's mocks are: only the caption, the
- * CTA and the app name label are words. One orange per frame; on the cobalt
- * ground the app icon hex and the CTA may both take it. Hexes are pointy-top and
- * never rotated. Colours from C.* only; marks and glyphs are real symbols.
+ * 16:9, 1920 x 1080 (bible, revised 2026-09-27). Layout grammar: the small mark
+ * and the caption sit in the type column (x 120 to 840, first baseline y 480),
+ * the picture sits right of it (from x 940), and every word stays inside the
+ * text box (x 120 to 1800, y 96 to 930). The positions come from ui.js layout()
+ * for the frame's ctx.W x ctx.H.
+ *
+ *   hook and proofs  the AppMock window, drawn in mock space at u = 2.5 exactly as
+ *                    the approved 9:16 boards drew it, shown at 0.8 with its top-left
+ *                    corner at (940, 160), bleeding off the right and bottom edges
+ *   general scenes   the approved 9:16 compositions (local x 120 to 780, y 640 to
+ *                    1240), placed at 1.25x so local (120, 640) lands on (970, 160):
+ *                    the cards fill x 970 to 1795, y 160 to 910
+ *   outro            the wordmark and the install call in the type column, the
+ *                    honeycomb on the right with this app's cell on LOOP_ANCHOR
+ *
+ * UI stays greeked (bars, pills, cards), as the design system's mocks are: only
+ * the caption, the install call and the app name label are words. One orange per
+ * frame, and orange is never a box behind text: an accent word is an orange
+ * word, the install call is one line of orange text (Nextcloud included). On the
+ * cobalt ground the app icon hex and the install call may both take the orange.
+ * No brown anywhere. Hexes are pointy-top and never rotated. Colours from C.*
+ * only; marks and glyphs are real symbols.
  *
  * The general scenes carry one device the app scenes do not: the honeycomb field
- * rising under the UI, the shared layer every app stands on, which the outro
- * then closes round the Nextcloud hex.
+ * rising from the bottom of the frame under the UI, the shared layer every app
+ * stands on, which the outro then closes round the Nextcloud hex.
  */
-import { el, set, measure, textBlock } from '../stage.js'
+import { el, textBlock } from '../stage.js'
 import { SQRT3 } from '../core.js'
 import { C } from '../brand.js'
 import { APP_NAMES } from '../assets.js'
 import {
-	TYPE, rect, bar, circle, hex, use, clipped, mark, caption, chrome, appTag, ncTag,
+	TYPE, layout, rect, bar, circle, hex, use, clipped, mark, chrome, appTag, ncTag, fitCaptionSize,
 	topbar, nav, panel, statusPill, idlePill, wHead, widgetTile, personRow, fileRow, calendarGrid,
 	button, toggle, bubble, flowNode, flowEdge, dotCanvas, honeyField, workspaceCluster, CORNERS,
 } from '../ui.js'
 
-/** Where the app's hex sits on frame 1 (the hook) and where the outro puts it back: the loop. */
-export const LOOP_ANCHOR = { x: 195, y: 835, r: 44 }
-
-/** The install call, exactly as the bible writes it. */
-const CTA_TEXT = 'Install from the\nNextcloud app store'
-
-/** Stage px per mock CSS px, as direction C. */
+/** Stage px per mock CSS px inside the window's mock space, as direction C. */
 const U = 2.5
+
+/**
+ * The app window. `nav` is the rail in CSS px (narrower than the 9:16 crop, so
+ * the main column keeps the 9:16 boards' width of about 855 mock px); `row1` is
+ * the first content row in mock px below the window top: the anchor line.
+ */
+export const WINDOW = { nav: 110, row1: 205 }
+
+/** The window's place and scale on a W x H frame, and the loop anchor in stage px. */
+function windowAt(W, H) {
+	const { x, y, s } = layout(W, H).win
+	const contentX = (WINDOW.nav + 14) * U
+	return { x, y, s, contentX, anchor: { x: x + s * contentX, y: y + s * WINDOW.row1, r: 44 } }
+}
+
+/**
+ * Where the app's hex sits on frame 1 (on the window's first content row, at the
+ * main column's left edge, as in the 9:16 boards) and where the outro puts it
+ * back: the outro's app cell lands on exactly this point, so the loop only
+ * shrinks it. (1188, 324) on 1920 x 1080.
+ */
+export const LOOP_ANCHOR = windowAt(1920, 1080).anchor
+
+/** The install call, exactly as the bible writes it: one whole line of orange text (Ruben, round 3). */
+const CTA_TEXT = 'Install from the\nNextcloud app store'
 
 /* ---------- small shared pieces ---------- */
 
-/** The shared layer: an unlit honeycomb rising from below the UI, denser toward the bottom. */
-function sharedField(g, { cx = 450, cy = 1560, top = 1000, scale = 0.7 } = {}) {
-	return honeyField(g, cx, cy, 80, 10, { top, scale, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
+/** The general scenes' placement: the 9:16 composition's local box (from x 120, y 640), scaled into the picture region at layout().ui. */
+const GENERAL = { s: 1.25, x: 120, y: 640 }
+
+/** A group in the general scenes' local coordinates (x 120 to 780, y 640 to 1240 as drawn in 9:16). */
+function generalView(ctx) {
+	const { ui } = layout(ctx.W, ctx.H)
+	const tx = ui.x - GENERAL.s * GENERAL.x
+	const ty = ui.y - GENERAL.s * GENERAL.y
+	return el('g', { transform: `translate(${tx} ${ty}) scale(${GENERAL.s})` }, ctx.g)
+}
+
+/**
+ * The shared layer: an unlit honeycomb rising from the bottom of the frame,
+ * densest under the picture, fading toward the type column; nothing above y 660,
+ * so the caption keeps a clean ground.
+ */
+function sharedField(ctx, { cx = ctx.W * 0.62, cy = ctx.H + 150, top = ctx.H * 0.61, scale = 0.7 } = {}) {
+	return honeyField(ctx.g, cx, cy, 80, 10, { top, scale, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
 }
 
 /** A record's avatar: a person is a circle, a thing (course, product, case) a hex, anything else a rounded square. */
@@ -77,8 +129,9 @@ function trailing(g, kind, xRight, cy, u, p = 0.5) {
 /* ---------- HOOK (app layer, drawn by the template from app parameters) ---------- */
 
 /**
- * hookFrame(ctx, p): frame 1, the thumbnail. A legible caption over the app's
- * own UI (the AppMock window of direction C), the app's hex at LOOP_ANCHOR.
+ * hookFrame(ctx, p): frame 1, the thumbnail. A legible caption in the type
+ * column beside the app's own UI (the AppMock window of direction C), the app's
+ * hex at LOOP_ANCHOR. The proofs reuse it with their own drawUI.
  *
  *   app        the app id (glyph g-<app>)
  *   caption    at most 6 words, two lines
@@ -91,29 +144,43 @@ function trailing(g, kind, xRight, cy, u, p = 0.5) {
  *   rows       list: [{ avatar, w, trail: 'mint'|'idle'|'progress', p }]
  *   columns    board: [[card widths], ...]
  *   nav        { items, active }
+ *   header     the page header (title bar, two buttons); default on, except for the
+ *              'board' pattern, whose column heads take its place. A drawUI that fills
+ *              the top with its own lanes passes false.
+ *
+ * drawUI(win, geom) draws in the window's mock space (u = 2.5, origin at the
+ * window's top-left corner): geom.x and geom.r bound the main column (about 855
+ * px), geom.anchor.y is the first content row (the loop anchor's line), geom.visB
+ * the mock y of the frame's bottom edge.
  */
 export function hookFrame(ctx, p) {
 	const { app, caption: text, pattern = 'detail', tagFill = 'orange', drawUI, accent = null } = p
 	const g = ctx.g
 	chrome(ctx, { text })
 	const u = U
-	const X0 = -235, Y0 = 630, FW = 720 * u, FH = 1920 - Y0 + 60
-	const win = clipped(g, X0, Y0, FW, FH, 10 * u)
-	rect(win, X0, Y0, FW, FH, C.white)
-	topbar(win, X0, Y0, FW, u, { fill: C.cobalt900 })
-	const NW = 158 * u
-	nav(win, X0, Y0 + 24 * u, NW, FH - 24 * u, u, { items: p.nav?.items ?? 7, active: p.nav?.active ?? 1 })
-	const geom = { x: X0 + NW + 14 * u, r: X0 + (720 - 187) * u - 14 * u, top: Y0 + 24 * u, Y0, u, anchor: LOOP_ANCHOR, accent: tagFill === 'orange' ? null : accent }
-	rect(win, X0 + (720 - 187) * u, Y0 + 24 * u, u, FH, C.cobalt100)
+	const w0 = windowAt(ctx.W, ctx.H)
+	const view = el('g', { transform: `translate(${w0.x} ${w0.y}) scale(${w0.s})` }, g)
+	const visR = (ctx.W - w0.x) / w0.s
+	const visB = (ctx.H - w0.y) / w0.s
+	// The AppMock frame at 720 CSS px: wider than the view, so its right side (the sidebar) and its foot bleed off the frame.
+	const FW = 720 * u, FH = visB + 60
+	const win = clipped(view, 0, 0, FW, FH, 10 * u)
+	rect(win, 0, 0, FW, FH, C.white)
+	topbar(win, 0, 0, FW, u, { fill: C.cobalt900 })
+	const NW = WINDOW.nav * u
+	nav(win, 0, 24 * u, NW, FH - 24 * u, u, { items: p.nav?.items ?? 7, active: p.nav?.active ?? 1 })
+	const geom = { x: w0.contentX, r: Math.min((720 - 187 - 14) * u, visR - 48 / w0.s), top: 24 * u, Y0: 0, u, anchor: { x: w0.contentX, y: WINDOW.row1 }, visB, accent: tagFill === 'orange' ? null : accent }
+	rect(win, (720 - 187) * u, 24 * u, u, FH, C.cobalt100)
 	// pageHeader: title bar, ghost + primary (a board's column heads take its place)
-	if (pattern !== 'board' || drawUI) {
-		bar(win, geom.x, Y0 + 95, 250, 35, C.cobalt)
-		rect(win, geom.r - 95, Y0 + 95, 95, 35, C.cobalt, 3 * u)
-		rect(win, geom.r - 200, Y0 + 95, 95, 35, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	if (p.header ?? (pattern !== 'board' || !!drawUI)) {
+		bar(win, geom.x, 95, 250, 35, C.cobalt)
+		rect(win, geom.r - 95, 95, 95, 35, C.cobalt, 3 * u)
+		rect(win, geom.r - 200, 95, 95, 35, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
 	}
 	if (drawUI) drawUI(win, geom)
 	else HOOK_PATTERNS[pattern](win, geom, p)
-	appTag(g, LOOP_ANCHOR.x, LOOP_ANCHOR.y, LOOP_ANCHOR.r, app, { fill: tagFill === 'orange' ? C.orange : C.cobalt })
+	const a = w0.anchor
+	appTag(g, a.x, a.y, a.r, app, { fill: tagFill === 'orange' ? C.orange : C.cobalt })
 	if (p.ncAt) ncTag(g, p.ncAt[0], p.ncAt[1], 44)
 }
 
@@ -127,23 +194,23 @@ const TILE_BODY = {
 }
 
 const HOOK_PATTERNS = {
-	/** One record: overview panel on the anchor line, then widget tiles (the first four inside the text box). */
+	/** One record: overview panel on the anchor line, then widget tiles in three columns and an activity panel. */
 	detail(w, geom, p) {
 		const { u } = geom
 		const rec = p.record || {}
 		const oy = geom.anchor.y - 50, oh = 100
 		panel(w, geom.x, oy, geom.r - geom.x, oh, u)
-		avatar(w, 290, oy + oh / 2, 32, rec.avatar, C.cobalt300)
-		bar(w, 340, oy + 28, rec.title ?? 230, 20, C.cobalt900)
-		bar(w, 340, oy + 60, rec.sub ?? 320, 10, C.cobalt300)
-		if (rec.status === 'idle') idlePill(w, 668, oy + oh / 2, u)
-		else if (rec.status !== 'none') statusPill(w, 668, oy + oh / 2, u)
+		avatar(w, geom.x + 95, oy + oh / 2, 32, rec.avatar, C.cobalt300)
+		bar(w, geom.x + 145, oy + 28, rec.title ?? 230, 20, C.cobalt900)
+		bar(w, geom.x + 145, oy + 60, rec.sub ?? 320, 10, C.cobalt300)
+		if (rec.status === 'idle') idlePill(w, geom.x + 473, oy + oh / 2, u)
+		else if (rec.status !== 'none') statusPill(w, geom.x + 473, oy + oh / 2, u)
 		for (let i = 0; i < 3; i++) {
-			bar(w, 830, oy + 24 + i * 22, 50, 8, C.cobalt400)
-			bar(w, 895, oy + 24 + i * 22, 130 - i * 20, 8, C.cobalt700)
+			bar(w, geom.x + 635, oy + 24 + i * 22, 50, 8, C.cobalt400)
+			bar(w, geom.x + 700, oy + 24 + i * 22, 130 - i * 20, 8, C.cobalt700)
 		}
 		const tiles = p.tiles || [{ icon: 'nc-calendar', body: 'calendar' }, { icon: 'nc-mail', body: 'mail' }, { icon: 'nc-files', body: 'files' }, { icon: 'nc-talk', body: 'talk' }]
-		const tw = 280, th = 175, gx = 22
+		const gx = 22, tw = Math.floor((geom.r - geom.x - 2 * gx) / 3), th = 175
 		const rowsY = [geom.Y0 + 278, geom.Y0 + 278 + th + 22]
 		const at = [[0, 0], [1, 0], [0, 1], [1, 1], [2, 0], [2, 1]]
 		tiles.slice(0, 6).forEach((t, i) => {
@@ -219,9 +286,9 @@ export function dataLayerFrame(ctx, p) {
 	const record = { avatar: 'person', title: 230, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [56, 170], [56, 96]], ...p.record }
 	const history = (p.history || [{ av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 140 }, { av: C.cobalt300, w: 190 }, { av: C.cobalt200, w: 120 }]).slice(0, 4)
 	const links = (p.links || ['nc-files', 'nc-mail', 'nc-calendar', 'nc-talk']).slice(0, 4)
-	const g = ctx.g
 	chrome(ctx, { text })
-	sharedField(g)
+	sharedField(ctx)
+	const g = generalView(ctx)
 
 	// The record: avatar, name, status, and its fields in two columns.
 	const rx = 170, ry = 640, rw = 610, rh = 236
@@ -294,9 +361,9 @@ export function notifyFrame(ctx, p) {
 	const stage = Math.min(p.event?.stage ?? 2, stages - 1)
 	const notices = (p.notices || [{ app }, { icon: 'nc-files' }, { icon: 'nc-talk' }]).slice(0, 3)
 	const recipients = (p.recipients || [C.cobalt300]).slice(0, 2)
-	const g = ctx.g
 	chrome(ctx, { text })
-	sharedField(g)
+	sharedField(ctx)
+	const g = generalView(ctx)
 
 	// The record, and the stage of its life it just reached.
 	const rx = 170, ry = 640, rw = 610, rh = 212
@@ -326,7 +393,8 @@ export function notifyFrame(ctx, p) {
 	rect(g, hx, hy, hw, hh, C.cobalt900, 4 * U)
 	rect(g, hx + 50, hy + hh / 2 - 13, 40, 26, C.white, 13)
 	for (let i = 0; i < 6; i++) rect(g, hx + 108 + i * 34, hy + hh / 2 - 9, 18, 18, C.white, 2.5, { 'fill-opacity': 0.7 })
-	circle(g, bellX, hy + hh / 2, 12, C.white)
+	// The bell: the Lucide bell (brand/assets/icons/bell.svg), white on Nextcloud's header.
+	use(g, 'icon-bell', bellX - 16, hy + hh / 2 - 16, 32, 32, C.white)
 	circle(g, bellX + 11, hy + hh / 2 - 10, 7.5, C.orange, { stroke: C.cobalt900, 'stroke-width': 3 })
 	recipients.forEach((av, i) => circle(g, hx + hw - 36 - i * 24, hy + hh / 2, 15, av, { stroke: C.cobalt900, 'stroke-width': 3 }))
 	ncTag(g, hx, hy + hh / 2, 32, { ringW: 5 })
@@ -365,9 +433,9 @@ export function notifyFrame(ctx, p) {
 export function flowsFrame(ctx, p) {
 	const { app, caption: text } = p
 	const trigger = { app, ...p.trigger }
-	const g = ctx.g
 	chrome(ctx, { text })
-	sharedField(g)
+	sharedField(ctx)
+	const g = generalView(ctx)
 
 	const x0 = 150, y0 = 640, w0 = 630, h0 = 600
 	dotCanvas(g, x0, y0, w0, h0, U)
@@ -397,7 +465,7 @@ export function flowsFrame(ctx, p) {
  * The surface is an assistant chat in the vocabulary of HermiqMock: question
  * right, the answer left built from the app's records, and, only for an app
  * whose assistant actions change records, an approval card whose Allow button
- * is the frame's one orange: it waits for you.
+ * carries the frame's one orange as a ring round it: it waits for you.
  *
  * AI is as strong as each app's actions (divide.md): Pipelinq real (forecast,
  * create a lead, log a contact moment); Learniq weak (two read-only course
@@ -417,11 +485,11 @@ export function aiFrame(ctx, p) {
 	const question = { w: 330, lines: [0.78, 0.5], ...p.question }
 	const rows = (p.answer?.rows || [{ avatar: 'person', w: 190, trail: 'idle' }, { avatar: 'person', w: 160, trail: 'idle' }, { avatar: 'person', w: 210, trail: 'mint' }]).slice(0, 3)
 	const permission = { toggles: [], ask: false, ...p.permission }
-	const g = ctx.g
 	chrome(ctx, { text })
-	sharedField(g)
+	sharedField(ctx)
+	const g = generalView(ctx)
 
-	// Without an approval card the chat ends on the follow-up, so the card closes above the box edge.
+	// Without an approval card the chat ends on the follow-up, so the card is shorter.
 	const x = 150, y = 640, w = 630, h = permission.ask ? 700 : 580
 	const card = clipped(g, x, y, w, h, 4 * U)
 	rect(card, x, y, w, h, C.white)
@@ -455,7 +523,7 @@ export function aiFrame(ctx, p) {
 		trailing(g, r.trail, ax + aw - 32, cy, 2, r.p)
 	})
 
-	// It asks first: the approval card, Allow waiting in orange.
+	// It asks first: the approval card, Allow waiting inside an orange ring.
 	if (permission.ask) {
 		const py = ay + ah + 20, pw = 540, ph = 1238 - py
 		bubble(g, ax, py, pw, ph, U, { side: 'agent' })
@@ -470,7 +538,7 @@ export function aiFrame(ctx, p) {
 		bubble(g, x + w - 30 - fw, ay + ah + 24, fw, 48, U, { side: 'user' })
 		bar(g, x + w - 30 - fw + 24, ay + ah + 44, (fw - 48) * 0.7, 8, C.cobalt700)
 	}
-	// The prompt row, below the box: texture only.
+	// The prompt row, at the card's foot: texture only.
 	rect(card, x + 30, y + h - 62, w - 60 - 70, 40, C.white, 4 * U, { stroke: C.cobalt200, 'stroke-width': U })
 	rect(card, x + w - 30 - 56, y + h - 62, 56, 40, C.cobalt, 4 * U)
 }
@@ -480,39 +548,44 @@ export function aiFrame(ctx, p) {
 /**
  * outroFrame(ctx, p): the honeycomb closes round the Nextcloud workspace hex
  * with this app's hex singled out (orange: the app icon exception on cobalt),
- * the ConNext wordmark and the install call on the orange button. Its app
- * cell sits up-left of the workspace hex, a short slide from LOOP_ANCHOR, so the
- * last beat can carry it back to frame 1.
+ * the ConNext wordmark and the install call in orange text. The type column
+ * holds the wordmark and the install call; the cluster sits right of it with the
+ * app cell up-left of the workspace hex, exactly on LOOP_ANCHOR, so the last
+ * beat only has to shrink it back to frame 1's tag.
  *
  *   app         the app id
  *   name        the label next to its hex (defaults to APP_NAMES)
  *   neighbours  up to 4 other app ids (white cells), placed so the ring stays balanced:
  *               1 -> SE; 2 -> NE, S; 3 -> NE, SE, SW; 4 -> NE, SE, S, SW. Corners without
- *               an app stay unlit field. The N corner stays open under the CTA.
+ *               an app stay unlit field.
  */
 export function outroFrame(ctx, p) {
 	const { app, neighbours = [] } = p
 	const name = p.name || APP_NAMES[app] || app
 	const g = ctx.g
-	mark(g, { h: 120 })
-	// The CTA as the primary button: C.orange, ink C.cobalt900 (5.9:1; white would be 3.0:1).
-	const btn = rect(g, 80, 432, 100, 226, C.orange, 15)
-	const t = caption(g, CTA_TEXT, C.cobalt900, { y: 524, size: 72, lh: 78 })
-	set(btn, { width: (t.width + 40 + 40).toFixed(1) })
+	const l = layout(ctx.W, ctx.H)
+	const anchor = windowAt(ctx.W, ctx.H).anchor
 
-	const r = 64, gap = 8
+	// The cluster, round the workspace hex, its NW cell on the loop anchor.
+	const r = 80, gap = 8
 	const s = r + gap / SQRT3
-	const labelSize = 34
-	const lw = measure(name, { size: labelSize, weight: 600, tracking: -0.02 })
-	const half = (SQRT3 / 2) * r
-	const cx = Math.max(470, TYPE.x + lw + 22 + half + 1.5 * SQRT3 * s)
-	const cy = 930
+	const cx = anchor.x + 1.5 * SQRT3 * s
+	const cy = anchor.y + 1.5 * s
 	const n = Math.min(neighbours.length, 4)
 	const slots = [[], [CORNERS.se], [CORNERS.ne, CORNERS.s], [CORNERS.ne, CORNERS.se, CORNERS.sw], [CORNERS.ne, CORNERS.se, CORNERS.s, CORNERS.sw]][n]
 	const ring = [{ ...CORNERS.nw, id: app, fill: C.orange, glyph: C.white }, ...neighbours.slice(0, n).map((id, i) => ({ ...slots[i], id }))]
-	const cl = workspaceCluster(g, cx, cy, r, gap, { ring, open: [CORNERS.n], fieldTop: 720, fieldScale: 0.5, W: ctx.W, H: ctx.H })
-	const [, ay] = cl.cells[app]
-	textBlock(g, name, { x: TYPE.x, y: ay + labelSize * 0.36, size: labelSize, weight: 600, fill: C.white, tracking: -0.02, clip: false })
+	const cl = workspaceCluster(g, cx, cy, r, gap, { ring, open: [], fieldTop: -Infinity, fieldScale: 0.5, W: ctx.W, H: ctx.H })
+	// The app name label, right-aligned against its hex.
+	const [ax, ay] = cl.cells[app]
+	const labelSize = 36
+	textBlock(g, name, { x: ax - (SQRT3 / 2) * r - 24, y: ay + labelSize * 0.36, anchor: 'end', size: labelSize, weight: 600, fill: C.white, tracking: -0.02, clip: false })
+
+	// The type column: the wordmark where the small mark sat, the install call under it.
+	const markH = 120
+	mark(g, { h: markH })
+	const size = fitCaptionSize(CTA_TEXT, { size: 96, box: l.col.stretch + 20 - l.col.x })
+	const lh = Math.round(size * 1.07)
+	textBlock(g, CTA_TEXT, { x: TYPE.x, y: l.type.markY + markH + 44 + Math.round(size * 0.7), size, weight: 700, fill: C.orange, lineHeight: lh / size, tracking: -0.02, clip: false })
 }
 
 /* ---------- registry, copy and motion ---------- */
@@ -527,7 +600,8 @@ export const FRAMES = { hook: hookFrame, dataLayer: dataLayerFrame, notify: noti
  * the template with one-word fills; `fits` names the plans it fits (2 proofs:
  * 6 words in the general slot; 1 proof: 8). `use` says where divide.md
  * (apps/divide.md, from the Pipelinq 0.5.1 and Learniq 0.3.0 research) allows it.
- * Captions are fitted to the text box by chrome() (fitCaption), 96 px down to 72.
+ * Captions are fitted to the type column by chrome() (fitCaption), 112 px down
+ * to 80, or 72 to 80 px on a line that may run to x 880.
  */
 export const COPY = {
 	dataLayer: {
@@ -575,13 +649,14 @@ const SPB = 60 / 128
 const t = (b) => (Math.round(b * SPB * 25) / 25).toFixed(2)
 const bb = (b) => `${Math.floor(b / 4) + 1}.${(b % 4) + 1}`
 const at = (b) => `${bb(b)} (${t(b)} s)`
+const A = `(${Math.round(LOOP_ANCHOR.x)}, ${Math.round(LOOP_ANCHOR.y)})`
 
 export const MOTION = {
-	hook: (s) => `Frame 1 is this key frame exactly: the mark, the caption, the app's own UI and its hex at the loop anchor (${LOOP_ANCHOR.x}, ${LOOP_ANCHOR.y}), no fade and nothing still to arrive. Hold two beats (0 to ${t(2)} s). From ${at(2)} to ${at(5)} the camera pushes in inside the app window, 1.00 to 3.0 (ease.brand), about the UI element proof 1 grows out of; the window's top edge stays at y 630 so the caption keeps its cobalt band. Out on ${at(5)}: that element snaps into an upright hex that grows past the frame (hexCut, ease.snap, one beat) and becomes proof 1's ground. The caption holds until the hex edge passes it (2.60 s).`,
-	proof: (s) => `The hex fill is the new ground. The app's UI lands (0.35 s, ease.brand); its app tag lands on ${at(s.from + 1)} at 2.0x and settles to 1.0 in 0.2 s (ease.brand). The caption rises in a quick stagger from the cut, every word in by ${(s.start + 0.24).toFixed(2)} s. From ${at(s.from + 2)} to ${at(s.from + 4)} the scene's own camera idea plays: a push in on the detail that proves it, or the values landing one per beat. Out on ${at(s.to - 1)}: a hex grows from the next scene's source element (hexCut, ease.snap, one beat). Caption clears at ${s.clears.toFixed(2)} s.`,
-	dataLayer: (s) => `The hex fill lands as the cobalt ground and the record card drops in (0.35 s, ease.brand) with the app tag pinned to it. On ${at(s.from + 1)} the history rows land top to bottom a 16th apart and the Nextcloud tiles slide in from the right one per 16th, the Nextcloud tag last; the honeycomb field pops in beneath, ring by ring from the bottom on 16ths (the shared layer every app stands on). On ${at(s.from + 3)} a new row pushes in at the top of the history with the orange pip: who changed it, and when. Out on ${at(s.to - 1)}: the cards step down (0.85, ease.exit) and the app tag lifts off the record and travels to its cell in the outro cluster, over the field that stays. Caption clears at ${s.clears.toFixed(2)} s.`,
-	notify: (s) => `The hex fill lands as the cobalt ground; the record card drops in with the app tag, and Nextcloud's header slides down under it with the Nextcloud tag. On ${at(s.from + 1)} the record's stage marker steps forward one stage (the lavender hex pops 1.3x and settles) and the honeycomb field pops in beneath. On ${at(s.from + 2)} a pulse runs down the wire to the bell (one beat, ease.brand); the bell's orange badge pops on ${at(s.from + 3)} with a tick, and the popover drops open under it (0.2 s), the new notice sliding in on top of the file share and the chat mention. Out on ${at(s.to - 1)}: the cards step down and the app tag lifts off the record and travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
-	flows: (s) => `The hex fill lands as the cobalt ground and the flow canvas drops in with its dot grid. The nodes are placed one per 16th as if drawn by hand (the trigger with the app tag, then two steps) and the edges draw between them (stroke reveal, 0.2 s each). On ${at(s.from + 2)} the next node lifts off (its flat shadow steps out 10 px) and travels toward its slot; the dashed orange slot appears on ${at(s.from + 3)}, and the node settles into it on ${at(s.from + 4)} with a tick, its dashed edge turning solid. No run line: nothing runs in this scene. The field pops in beneath. Out on ${at(s.to - 1)}: the canvas steps down and the app tag on the trigger travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
-	ai: (s) => `The hex fill lands as the cobalt ground and the chat card drops in with the app tag on its header. On ${at(s.from + 1)} the question pops in right; typing dots for two 16ths; the answer grows and its rows land a 16th apart. On ${at(s.from + 3)} either the approval card lands and the orange Allow button waits (no press: it asks first), or, for a read-only app, the follow-up question pops in. The honeycomb field pops in beneath. Out on ${at(s.to - 1)}: the card steps down and the app tag travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
-	outro: (s) => `On ${at(s.from)} the app hex from the general scene lands in its cell up-left of the Nextcloud hex and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the app name label rises beside it. The Nextcloud workspace hex lands at 1.4x and settles to 1.0 on ${at(s.from + 1)}; the field pops outward ring by ring on 16ths, nothing orbits. On ${at(s.from + 2)} the small mark scales up (anchored top left) to the 120 px wordmark, the orange button wipes in left to right (0.2 s, ease.brand) and the CTA rises inside it, line 2 a 16th behind, all in by ${(+t(s.from + 2) + 0.24).toFixed(2)} s. Hold to 15.00, no fade. Loop, in the last beat (${t(31)} to 15.00 s) with the CTA still on screen: the wordmark shrinks back to the 64 px mark, the field, the neighbour cells, the Nextcloud hex and the label step out, and the app cell slides to the loop anchor (${LOOP_ANCHOR.x}, ${LOOP_ANCHOR.y}) and shrinks to ${LOOP_ANCHOR.r} px. The cut to frame 1 then changes the words and lays the app's UI in behind a hex that has not moved.`,
+	hook: (s) => `Frame 1 is this key frame exactly: the mark and the caption in the type column, the app's own UI in the window on the right and its hex at the loop anchor ${A}, no fade and nothing still to arrive. Hold two beats (0 to ${t(2)} s). From ${at(2)} to ${at(5)} the camera pushes in inside the app window, 1.00 to 3.0 (ease.brand), about the UI element proof 1 grows out of; the window's left edge stays at x ${layout().win.x} so the caption keeps its cobalt column. Out on ${at(5)}: that element snaps into an upright hex that grows past the frame (hexCut, ease.snap, one beat) and becomes proof 1's ground. The caption holds until the hex edge passes it (2.60 s).`,
+	proof: (s) => `The hex fill is the new ground. The app's UI lands in the window (0.35 s, ease.brand); its app tag lands on ${at(s.from + 1)} at 2.0x and settles to 1.0 in 0.2 s (ease.brand). The caption rises in the type column in a quick stagger from the cut, every word in by ${(s.start + 0.24).toFixed(2)} s. From ${at(s.from + 2)} to ${at(s.from + 4)} the scene's own camera idea plays: a push in on the detail that proves it, or the values landing one per beat. Out on ${at(s.to - 1)}: a hex grows from the next scene's source element (hexCut, ease.snap, one beat). Caption clears at ${s.clears.toFixed(2)} s.`,
+	dataLayer: (s) => `The hex fill lands as the cobalt ground and the record card drops in on the right (0.35 s, ease.brand) with the app tag pinned to it. On ${at(s.from + 1)} the history rows land top to bottom a 16th apart and the Nextcloud tiles slide in from the right one per 16th, the Nextcloud tag last; the honeycomb field pops in from the bottom edge, ring by ring on 16ths (the shared layer every app stands on). On ${at(s.from + 3)} a new row pushes in at the top of the history with the orange pip: who changed it, and when. Out on ${at(s.to - 1)}: the cards step down (0.85, ease.exit) and the app tag lifts off the record and travels to its cell in the outro cluster, over the field that stays. Caption clears at ${s.clears.toFixed(2)} s.`,
+	notify: (s) => `The hex fill lands as the cobalt ground; the record card drops in on the right with the app tag, and Nextcloud's header slides down under it with the Nextcloud tag. On ${at(s.from + 1)} the record's stage marker steps forward one stage (the lavender hex pops 1.3x and settles) and the honeycomb field pops in from the bottom edge. On ${at(s.from + 2)} a pulse runs down the wire to the bell (one beat, ease.brand); the bell's orange badge pops on ${at(s.from + 3)} with a tick, and the popover drops open under it (0.2 s), the new notice sliding in on top of the file share and the chat mention. Out on ${at(s.to - 1)}: the cards step down and the app tag lifts off the record and travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
+	flows: (s) => `The hex fill lands as the cobalt ground and the flow canvas drops in on the right with its dot grid. The nodes are placed one per 16th as if drawn by hand (the trigger with the app tag, then two steps) and the edges draw between them (stroke reveal, 0.2 s each). On ${at(s.from + 2)} the next node lifts off (its flat shadow steps out 10 px) and travels toward its slot; the dashed orange slot appears on ${at(s.from + 3)}, and the node settles into it on ${at(s.from + 4)} with a tick, its dashed edge turning solid. No run line: nothing runs in this scene. The field pops in from the bottom edge. Out on ${at(s.to - 1)}: the canvas steps down and the app tag on the trigger travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
+	ai: (s) => `The hex fill lands as the cobalt ground and the chat card drops in on the right with the app tag on its header. On ${at(s.from + 1)} the question pops in right; typing dots for two 16ths; the answer grows and its rows land a 16th apart. On ${at(s.from + 3)} either the approval card lands and the orange ring round Allow waits (no press: it asks first), or, for a read-only app, the follow-up question pops in. The honeycomb field pops in from the bottom edge. Out on ${at(s.to - 1)}: the card steps down and the app tag travels to its cell in the outro cluster. Caption clears at ${s.clears.toFixed(2)} s.`,
+	outro: (s) => `On ${at(s.from)} the app hex from the general scene lands in its cell up-left of the Nextcloud hex, on the loop anchor ${A}, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the app name label rises to its left. The Nextcloud workspace hex lands at 1.4x and settles to 1.0 on ${at(s.from + 1)}; the field pops outward ring by ring on 16ths, nothing orbits. On ${at(s.from + 2)} the small mark scales up (anchored top left) to the 120 px wordmark and the install call rises under it as one line of orange text, line 2 a 16th behind, all in by ${(+t(s.from + 2) + 0.24).toFixed(2)} s. Hold to 18.75, no fade. Loop, in the last beat (${t(39)} to 18.75 s) with the install call still on screen: the wordmark shrinks back to the ${TYPE.markH} px mark, the field, the neighbour cells, the Nextcloud hex and the label step out, and the app cell shrinks in place to ${LOOP_ANCHOR.r} px (turning cobalt when the hook's tag is cobalt). The cut to frame 1 then changes the words and lays the app's UI in behind a hex that has not moved.`,
 }

@@ -2,7 +2,7 @@
 /**
  * Captures a time-driven film page frame by frame and encodes it.
  *
- *   node film.mjs render --root <dir> --page <path> --out film.mp4 [--format 9x16] [--fps 60]
+ *   node film.mjs render --root <dir> --page <path> --out film.mp4 [--format 16x9] [--fps 25]
  *                        [--blur 4] [--shutter 0.5] [--scale 1] [--workers 6] [--audio mix.wav]
  *   node film.mjs stills --root <dir> --page <path> --times 0.5,1,2 --outdir dir [--scale 0.5]
  *   node film.mjs sheet  --root <dir> --page <path> --every 0.5 --out sheet.png [--cols 6] [--scale 0.25]
@@ -84,9 +84,8 @@ async function setup() {
 	const root = args.root || process.cwd()
 	const server = await serve(root)
 	const port = server.address().port
-	const fmt = args.format || '9x16'
 	const page = args.page.replace(/^\//, '')
-	const url = `http://127.0.0.1:${port}/${page}${page.includes('?') ? '&' : '?'}capture&format=${fmt}`
+	const url = `http://127.0.0.1:${port}/${page}${page.includes('?') ? '&' : '?'}capture${args.format ? `&format=${args.format}` : ''}`
 	const browser = await chromium.launch({ executablePath: chromePath(), args: ['--font-render-hinting=none', '--disable-lcd-text', '--force-color-profile=srgb'] })
 	const probe = await openPage(browser, url, 1080, 1920)
 	const meta = await probe.page.evaluate(() => JSON.parse(JSON.stringify(window.__film)))

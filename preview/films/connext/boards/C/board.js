@@ -5,8 +5,9 @@
  * wordmark and the install call.
  *
  * UI atoms (AppMock, WidgetMock, SidebarMock, phone), the document page, the
- * closing cluster and the small wordmark live in the shared _lib/ui.js, promoted
- * from this variant's own helpers so every app film speaks the same UI language.
+ * closing cluster and the small wordmark were promoted from this variant's own
+ * helpers to the shared _lib/ui.js. Since every film went 16:9 (2026-09-27) this
+ * archived vertical board imports the frozen 9:16 copy, ./ui-9x16.js.
  *
  * Text box: every word sits inside x 120 to 780, y 288 to 1248, so the &safe
  * overlay (meta.safe right 300, drawn over the full height) stays free of words.
@@ -21,7 +22,7 @@ import {
 	rect, bar, circle, hex, ground, clipped, caption, appTag, ncTag, mark,
 	topbar, nav, panel, statusPill, phone,
 	widgetTile, personRow, fileRow, calendarGrid, docPage, workspaceCluster,
-} from '../../../_lib/ui.js'
+} from './ui-9x16.js'
 
 const CAM = typeof location !== 'undefined' && new URLSearchParams(location.search).has('cam')
 

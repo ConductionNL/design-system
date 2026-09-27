@@ -14,14 +14,14 @@
  * ("Renewal due", "Course overdue") paraphrase divide.md and the app-specific
  * hook UI is a placeholder until each film's storyboard supplies sourced content.
  *
- *   board.html?film=_template&v=demo   (board i sits at t = i + 0.5)
+ *   board.html?film=_template&v=demo   (board i sits at t = i + 0.5; 16:9, 1920 x 1080)
  *
  * It also runs appFilm() on both sets (with stub proofs) and puts the resolved
  * slot plan and the word budget in meta.plans, so `film.mjs cues` can read them.
  */
 import { C } from '../../../_lib/brand.js'
 import { FRAMES, COPY, fill } from '../../../_lib/scenes/general.js'
-import { appFilm, CTA } from '../../../_lib/appfilm.js'
+import { appFilm, CTA, FORMAT, SAFE } from '../../../_lib/appfilm.js'
 
 const tpl = (mod, id) => COPY[mod].templates.find((t) => t.id === id).text
 
@@ -152,7 +152,8 @@ export const meta = {
 	id: 'demo',
 	title: 'App-film template: parameterisation proof',
 	logline: 'The six shared key frames of every app film (hook, data layer, notification, flows, assistant, outro), each drawn twice: a CRM-like record and a course-like record. Layout proofs, not claims.',
+	format: FORMAT,
 	background: C.cobalt,
-	safe: { top: 288, bottom: 672, left: 120, right: 300 },
+	safe: { ...SAFE },
 	plans: { A: strip(filmA), B: strip(filmB) },
 }

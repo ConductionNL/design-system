@@ -1,5 +1,9 @@
 /**
  * Pipelinq app film, direction C ("Proof"), on the shared app-film template.
+ * 16:9, 1920 x 1080 since 2026-09-27: the captions sit in the type column and
+ * the drawUI functions below draw into the hook window's mock space (u = 2.5,
+ * main column geom.x to geom.r, about 855 px, first row on geom.anchor.y), the
+ * same geometry the approved 9:16 stills used, now shown at 0.8 on the right.
  *
  * Every word and moment is in Pipelinq 0.5.1, the stable app-store release
  * (tag v0.5.1 = 6dd0bde), per ds-connext-film-review/apps/pipelinq/research.json:
@@ -23,7 +27,7 @@ import { rect, bar, circle, panel, statusPill, idlePill } from '../../../_lib/ui
 const REFS = [
 	{ name: 'X Ticker and X Numbers', url: 'https://whatships.com/videos/x-ticker/', borrow: 'A short caption over the product UI and the hex that grows out of a UI element into the next scene.' },
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Push into the UI only until the detail reads, hold, never cut on a word.' },
-	{ name: 'Yoya', url: 'https://whatships.com/videos/yoya/', borrow: 'Type in the top third, UI below, one orange per scene.' },
+	{ name: 'Yoya', url: 'https://whatships.com/videos/yoya/', borrow: 'A small logo over the type, the type in its own column beside the product UI, one orange per scene.' },
 ]
 
 /** A deal card on the board. */
@@ -123,7 +127,7 @@ const content = {
 			source: 'research.json scene "The Monday pipeline" and feature "Sales and operational dashboards" (v0.5.1)',
 			motion: 'Continuous from the hook: the lifted card is dragged right into the next lane (ease.snap, one beat), lands with a small spring, and on the landing beat the camera pulls down to the sales overview, where the newest forecast bar grows to its new height. Caption rises on 2.3 as the drag starts.',
 			sound: 'Whoosh on the drag, a tick as the card lands, a rising pluck as the forecast bar grows. Kick enters on bar 3.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'The forecast\nupdates itself.', drawUI: forecastUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'The forecast\nupdates itself.', drawUI: forecastUI, tagFill: 'cobalt', header: false }),
 		},
 		{
 			id: 'renewal',

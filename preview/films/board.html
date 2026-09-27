@@ -30,7 +30,8 @@ const variant = (q.get('v') || 'A').replace(/[^A-Za-z0-9_-]/g, '')
 const mod = await import(`./${slug}/boards/${variant}/board.js`)
 const film = new Film({
 	mount: document.body,
-	format: q.get('format') || '9x16',
+	// A board declares its own format (meta.format, e.g. '16x9'); ?format= overrides it for tests.
+	format: q.get('format') || mod.meta.format || '9x16',
 	duration: mod.boards.length,
 	fps: 1,
 	background: mod.meta.background || '#21468B',

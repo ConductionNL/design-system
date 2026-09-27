@@ -10,7 +10,9 @@
  *
  * Sound-effect kinds: tick, pluck, bell, whoosh, riser, impact, kick, clap, hat.
  * music (all optional): { bars, chords: [[midi, ...] per bar], bass: [midi per bar],
- *   parts: { kick: [[fromBar, toBar]], hat: [...], clap: [...], bass: [...], pad: [...] } }
+ *   parts: { kick: [[fromBar, toBar]], hat: [...], clap: [...], bass: [...], pad: [...] }, loop }
+ * loop: true folds the tails past the end onto the start (and skips the first bar's slow pad attack),
+ *   for a film whose last frame flows into frame 1.
  * Bars count from 0; ranges are [from, to) in bars.
  */
 import { readFile, writeFile } from 'node:fs/promises'
@@ -54,7 +56,7 @@ for (let b = 0; b < bars; b++) {
 		if (inRange(parts.clap, b) && (beat === 1 || beat === 3)) S.clap(drums, t, { gain: 0.28, seed: 20 + b * 4 + beat })
 	}
 	const chord = music.chords?.[b % music.chords.length]
-	if (chord && inRange(parts.pad, b)) S.pad(musicBus, bar(b), { notes: chord, dur: bar(1), gain: 0.05, cutoff: 1500, attack: b === 0 ? 0.8 : 0.05, release: 0.4 })
+	if (chord && inRange(parts.pad, b)) S.pad(musicBus, bar(b), { notes: chord, dur: bar(1), gain: 0.05, cutoff: 1500, attack: b === 0 && !music.loop ? 0.8 : 0.05, release: 0.4 })
 	const root = music.bass?.[b % music.bass.length]
 	if (root !== undefined && inRange(parts.bass, b)) {
 		// Offbeat eighths: the pulse that gives a 128 BPM bed its lift.
@@ -91,10 +93,16 @@ const send = S.makeBus(duration + tail)
 S.mixInto(send, musicBus, 0.5)
 S.mixInto(send, sfx, 0.8)
 S.mixInto(master, S.reverb(send, { room: 0.8, damp: 0.45 }), 0.35)
-// Fade the last 80 ms so the loop point never clicks, then trim to the film length.
+// music.loop (a film whose last frame flows into frame 1): fold everything that rings past the end (pad
+// release, reverb, bell tail) back onto the start, so the bed carries across the loop point without a dip.
+// Otherwise fade the last 80 ms so the loop point never clicks. Then trim to the film length.
 const n = Math.round(duration * S.SR)
-const fade = Math.round(0.08 * S.SR)
-for (let i = 0; i < fade; i++) { const g = i / fade; master.L[n - 1 - i] *= g; master.R[n - 1 - i] *= g }
+if (music.loop) {
+	for (let i = n; i < master.n; i++) { master.L[i - n] += master.L[i]; master.R[i - n] += master.R[i] }
+} else {
+	const fade = Math.round(0.08 * S.SR)
+	for (let i = 0; i < fade; i++) { const g = i / fade; master.L[n - 1 - i] *= g; master.R[n - 1 - i] *= g }
+}
 master.n = n
 master.L = master.L.subarray(0, n)
 master.R = master.R.subarray(0, n)

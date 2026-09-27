@@ -1,5 +1,11 @@
 /**
  * Learniq app film, direction C ("Proof"), on the shared app-film template.
+ * 16:9, 1920 x 1080 since 2026-09-27: the captions sit in the type column and
+ * the drawUI functions below draw into the hook window's mock space (u = 2.5,
+ * main column geom.x to geom.r, about 855 px, first row on geom.anchor.y), the
+ * same geometry the approved 9:16 stills used, now shown at 0.8 on the right.
+ * The opening frame gives its one orange to the rule that falls short, so the
+ * Learniq hex on the loop anchor is cobalt there.
  *
  * Every word and moment is in Learniq 0.3.0, the stable app-store release
  * (tag v0.3.0 = 2f84a83), per ds-connext-film-review/apps/learniq/research.json:
@@ -26,7 +32,7 @@ import { rect, bar, hex, panel, statusPill, idlePill, fileRow, button } from '..
 const REFS = [
 	{ name: 'X Ticker and X Numbers', url: 'https://whatships.com/videos/x-ticker/', borrow: 'A short caption over the product UI and the hex that grows out of a UI element into the next scene.' },
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Push into the UI only until the detail reads, hold, never cut on a word.' },
-	{ name: 'Yoya', url: 'https://whatships.com/videos/yoya/', borrow: 'Type in the top third, UI below, one orange per scene.' },
+	{ name: 'Yoya', url: 'https://whatships.com/videos/yoya/', borrow: 'A small logo over the type, the type in its own column beside the product UI, one orange per scene.' },
 ]
 
 /** A coverage bar: cobalt-100 track, forest fill (on track) or the scene's orange (short of the bar you set). */
@@ -35,6 +41,17 @@ function coverage(w, x, cy, width, p, u, short = false) {
 	rect(w, x, cy - h / 2, width, h, C.cobalt100, h / 2)
 	rect(w, x, cy - h / 2, width * p, h, short ? C.orange : C.forest, h / 2)
 	rect(w, x + width * 0.8, cy - h, u, 2 * h, C.cobalt400)
+}
+
+/**
+ * The 'expiring soon' status: the status pill's shape with orange ink on white
+ * and an orange edge. Orange is never a box behind a label, greeked or not.
+ */
+function soonPill(w, x, cy, u) {
+	const pw = 43 * u, h = 11 * u
+	rect(w, x, cy - h / 2, pw, h, C.white, h / 2, { stroke: C.orange, 'stroke-width': 1.2 * u })
+	hex(w, x + 9 * u, cy, 3.5 * u, C.orange)
+	bar(w, x + 15 * u, cy - 1.5 * u, 22 * u, 3 * u, C.orange)
 }
 
 /** Hook: the regulations list, each rule's coverage against the threshold you set. */
@@ -76,7 +93,7 @@ function certificateUI(w, geom) {
 		if (i > 0) rect(w, lx + 20, cy - 46, lw - 40, u, C.cobalt50)
 		hex(w, lx + 50, cy, 18, C.cobalt200, 3)
 		bar(w, lx + 84, cy - 10, 120, 9, C.cobalt900)
-		if (row.s === 'soon') rect(w, lx + 84, cy + 10, 110, 12 * u / 2.5 * 2, C.orange, 6)
+		if (row.s === 'soon') soonPill(w, lx + 84, cy + 18, u)
 		else statusPill(w, lx + 84, cy + 18, u)
 	})
 }
@@ -112,11 +129,12 @@ const content = {
 	references: REFS,
 	hook: {
 		title: 'Coverage per rule',
-		caption: 'Who finished the\nmandatory training?',
+		// Shortened in round 3 so it sets at headline size; the coverage bars per rule carry "mandatory".
+		caption: 'Who finished\nthe training?',
 		// The rule that falls short is the scene's one orange, so the app hex stays cobalt here.
 		ui: { drawUI: regulationsUI, tagFill: 'cobalt' },
 		source: 'research.json feature "Regulations with live coverage percentage and red/amber/green" (v0.3.0) and scene 1',
-		motion: 'Frame 1 is this frame: the question set, the regulations list on screen, the Learniq hex (orange) on the loop anchor. The coverage bars fill left to right one frame apart over the first beat; the rule short of its bar fills orange last. Slow push in across the bar.',
+		motion: 'Frame 1 is this frame: the question set in the type column, the regulations list in the window, the Learniq hex (cobalt: the one orange is the rule that falls short) on the loop anchor. The coverage bars fill left to right one frame apart over the first beat; the rule short of its bar fills orange last. Slow push in across the bar.',
 		sound: 'Gentle open: pad and offbeat bass only, no stinger on frame 1. A soft rising pluck per bar as they fill.',
 	},
 	proofs: [
@@ -143,7 +161,8 @@ const content = {
 	],
 	general: {
 		module: 'notify',
-		caption: 'Course overdue?\nThe right person hears.',
+		// Shortened in round 3; 0.3.0 tells the manager and HR when a mandatory course is overdue.
+		caption: 'Course overdue?\nManagers hear.',
 		source: 'story.json mechanic 8; research.json notifications (v0.3.0): a reminder 3 days before a mandatory course is due, the manager and HR told when it is overdue',
 		params: {
 			record: { avatar: 'hex', title: 260, sub: 120, status: 'none' },

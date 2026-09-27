@@ -9,51 +9,21 @@
  * 24px, nav 22%, col padding 14px, panel radius 4px, frame radius 10px, bars 3
  * to 8px, flow nodes with a 4px kind bar. Colours come from _lib/brand.js only.
  *
- * Promoted from connext/boards/C/ui.js (direction C, "Proof"). Nothing in here
- * names a product, an app or a claim: content arrives as parameters.
+ * Promoted from connext/boards/C/ui.js (direction C, "Proof"). The functions C
+ * used are unchanged, so C's stills render byte for byte as before. Nothing in
+ * here names a product, an app or a claim: content arrives as parameters.
  *
- * 16:9 since 2026-09-27 (bible: every film is 1920 x 1080). The 9:16 version is
- * frozen as connext/boards/C/ui-9x16.js for the archived vertical ConNext board.
- * Frame-dependent defaults now assume 1920 x 1080; pass ctx.W / ctx.H where a
- * helper takes W and H. No brown anywhere (the documents family is out of the
- * films): file pips and document rules are cobalt tints, and nothing puts text
- * (or a greeked label) in an orange box.
+ * ARCHIVE (2026-09-27): the 9:16 copy of _lib/ui.js as it stood when every film
+ * went 16:9. Only the archived vertical ConNext board C imports it, so its
+ * approved stills keep rendering. New films use _lib/ui.js.
  */
-import { el, textBlock, nextId, measure } from './stage.js'
-import { hexPath, SQRT3 } from './core.js'
-import { C } from './brand.js'
-import { MARK_BOX } from './assets.js'
-
-/**
- * The 16:9 grid, derived from the frame size so one place holds every number
- * (bible, "Format and grid"). For 1920 x 1080:
- *
- *   box    the text safe box, x 120 to 1800, y 96 to 930 (the bottom 150 px stay
- *          free of words for the player's controls)
- *   col    the type column, x 120 to 840 (720 px, about 16 characters at 112 px);
- *          a line that cannot fit at 80 px may run to x 860 at 72 to 80 px
- *   win    the app window's top-left corner (940, 160) and its scale: the
- *          AppMock is drawn in mock space at u = 2.5, as the 9:16 boards drew
- *          it, and shown at 0.8, so it bleeds off the right and bottom edges
- *   type   the small mark top left at y 300 (72 px), the caption's first
- *          baseline at y 480, 112 px on a 120 px line: the chapter group sits a
- *          little above the box's centre, left of the picture
- *   ui     where a general scene's cards start: x 970, y 160 (they end by x 1795),
- *          so a stretched caption line keeps 100 px of cobalt before them
- */
-export function layout(W = 1920, H = 1080) {
-	const r10 = (v) => Math.round(v / 10) * 10
-	const box = { x: 120, y: 96, r: W - 120, b: H - 150 }
-	const col = { x: box.x, r: r10(W * 0.4375), stretch: r10(W * 0.448) }
-	const win = { x: r10(W * 0.49), y: r10(H * 0.148), s: 0.8 }
-	const type = { x: box.x, markY: r10(H * 0.278), markH: 72, y1: r10(H * 0.444), size: 112, lh: 120 }
-	return { W, H, box, col, win, type, ui: { x: win.x + 30, y: win.y } }
-}
-
-const L16 = layout()
+import { el, textBlock, nextId, measure } from '../../../_lib/stage.js'
+import { hexPath, SQRT3 } from '../../../_lib/core.js'
+import { C } from '../../../_lib/brand.js'
+import { MARK_BOX } from '../../../_lib/assets.js'
 
 /** Caption grid, shared by every scene so type never jumps between cuts. */
-export const TYPE = { x: L16.type.x, y1: L16.type.y1, size: L16.type.size, lh: L16.type.lh, col: L16.col.r, markY: L16.type.markY, markH: L16.type.markH }
+export const TYPE = { x: 120, y1: 440, size: 96, lh: 102 }
 
 export const rect = (g, x, y, w, h, fill, r = 0, extra = {}) => el('rect', { x, y, width: w, height: h, rx: r, fill, ...extra }, g)
 /** A placeholder text line: the mock's `.row` / `.l1` / `.l2` bars. */
@@ -74,11 +44,10 @@ export function clipped(g, x, y, w, h, r) {
 }
 
 /**
- * The ConNext wordmark as a small mark at the top of the type column (the Yoya
- * chapter logo), placed so its ink starts at x 120. The symbol's C starts 4.24
- * units into the 80-unit box.
+ * The ConNext wordmark as a small top-left mark (the Yoya chapter logo), placed
+ * so its ink starts at x 120. The symbol's C starts 4.24 units into the 80-unit box.
  */
-export function mark(g, { light = false, h = TYPE.markH, x = TYPE.x, y = TYPE.markY } = {}) {
+export function mark(g, { light = false, h = 64, x = TYPE.x, y = 288 } = {}) {
 	const id = light ? 'wordmark-connext' : 'wordmark-connext-white'
 	const [bw, bh] = MARK_BOX[id]
 	return use(g, id, x - (4.24 * h) / bh, y, (h * bw) / bh, h)
@@ -90,21 +59,20 @@ export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYP
 }
 
 /**
- * The caption size that keeps every line in the type column, for copy that is
- * poured in from data. First choice: 112 px, or the largest size down to 80 px
- * that keeps the longest line inside x 120 to 840. A line too long for that
- * (more than about 18 characters) may run to x 860 at 72 to 80 px, still clear
- * of the app window at x 940 and the general scenes' cards at x 970. Below 72 px it stays 72 and reports the overflow
- * as a page error, so a stills run names it.
+ * The caption size that keeps every line in the text box, for copy that is
+ * poured in from data. First choice: the whole line inside x 120 to 780 at
+ * 80 px or more. Otherwise the bible's allowance above y 840 (lines may run to
+ * x 888; fitted to 872 for a margin, as measured and drawn widths differ by a few px) at 72 to 88 px. Below 72 px (the card minimum) it stays 72 and reports
+ * the overflow as a page error, so a stills run names it.
  */
-export function fitCaptionSize(text, { size = TYPE.size, box = TYPE.col - TYPE.x, stretch = L16.col.stretch - TYPE.x, min = 72 } = {}) {
+export function fitCaptionSize(text, { size = TYPE.size, box = 660, stretch = 752, min = 72 } = {}) {
 	const w = Math.max(...text.split('\n').map((l) => measure(l.replace(/[*_]/g, ''), { size, weight: 700, tracking: -0.02 })))
 	if (w <= box) return size
 	const inBox = Math.floor((size * box) / w)
 	if (inBox >= 80) return inBox
 	const wide = Math.floor((size * stretch) / w)
-	if (wide >= min) return Math.min(wide, 80)
-	console.error(`caption overflows the type column even at ${min} px: ${JSON.stringify(text)}`)
+	if (wide >= min) return Math.min(wide, 88)
+	console.error(`caption overflows the text box even at ${min} px: ${JSON.stringify(text)}`)
 	return min
 }
 
@@ -249,8 +217,8 @@ export function personRow(g, x, y, w, u, av, l1) {
 	bar(g, x + 14 * u + 5 * u, y + 7 * u + 5, w - 19 * u - 10, 2 * u, C.cobalt200)
 }
 
-/** WidgetMock file row: a hex pip (a cobalt tint: the documents family is out of the films) and a line. */
-export function fileRow(g, x, y, lw, u, { pip = C.cobalt300, ink = C.cobalt200 } = {}) {
+/** WidgetMock file row: a document-family hex pip and a line. */
+export function fileRow(g, x, y, lw, u, { pip = C.terracotta300, ink = C.cobalt200 } = {}) {
 	hex(g, x + 5.5 * u, y + 6.5 * u, 6.5 * u, pip)
 	bar(g, x + 11 * u + 5 * u, y + 6.5 * u - 3.75, lw, 3 * u, ink)
 }
@@ -288,15 +256,10 @@ export function sidebarTabs(g, x, y, w, u, icons, { active = 0, h = 22 } = {}) {
 	return h * u
 }
 
-/**
- * A button: 'primary' (cobalt), 'ghost' (outlined) or 'accent' (the scene's one
- * orange). The accent is a primary button with an orange ring round it, never an
- * orange fill: a label (even a greeked one) never sits in an orange box.
- */
+/** A button: 'primary' (cobalt), 'ghost' (outlined) or 'accent' (the scene's one orange). */
 export function button(g, x, y, w, h, u, { kind = 'primary', label = 0.46 } = {}) {
-	const fill = kind === 'ghost' ? C.white : C.cobalt
+	const fill = kind === 'accent' ? C.orange : kind === 'primary' ? C.cobalt : C.white
 	const extra = kind === 'ghost' ? { stroke: C.cobalt200, 'stroke-width': u } : {}
-	if (kind === 'accent') rect(g, x - 3 * u, y - 3 * u, w + 6 * u, h + 6 * u, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 1.6 * u })
 	rect(g, x, y, w, h, fill, 4 * u, extra)
 	const ink = kind === 'ghost' ? C.cobalt400 : C.white
 	const lw = w * label
@@ -389,12 +352,12 @@ export const hexWidthOf = (r) => SQRT3 * r
 /* ---------- Documents ---------- */
 
 /**
- * A generated document page: a cobalt rule on top, heading, body
+ * A generated document page: a family-coloured rule on top, heading, body
  * lines, labelled field slots holding values, more body, and a signature line.
  * `values` are the slot value widths; the last may take the scene's orange.
  * Returns the slots [{ x, cy }] so wires can run into them.
  */
-export function docPage(g, x, y, w, h, { k = 1, values = [118, 96, 72], lastOrange = true, shadow = C.cobalt100, rule = C.cobalt } = {}) {
+export function docPage(g, x, y, w, h, { k = 1, values = [118, 96, 72], lastOrange = true, shadow = C.cobalt100, rule = C.terracotta } = {}) {
 	if (shadow) rect(g, x, y + 14 * k, w, h, shadow, 8 * k)
 	const pg = clipped(g, x, y, w, h, 8 * k)
 	rect(pg, x, y, w, h, C.white)
@@ -437,9 +400,9 @@ export function honeyAt(cx, cy, r, gap) {
 /**
  * The unlit honeycomb field: cobalt-400 cells whose opacity steps down with
  * ring distance (depth from opacity only, never blur). `skip(q, r, d)` leaves a
- * cell out; cells above `top` (pass -Infinity for none) or off the frame are not drawn.
+ * cell out; cells above `top` or off the frame are not drawn.
  */
-export function honeyField(g, cx, cy, r, gap, { skip = () => false, top = Infinity, bottom = Infinity, alpha = FIELD_ALPHA, scale = 1, W = 1920, H = 1080, extent = 16, fill = C.cobalt400, floor = 0.05 } = {}) {
+export function honeyField(g, cx, cy, r, gap, { skip = () => false, top = Infinity, bottom = Infinity, alpha = FIELD_ALPHA, scale = 1, W = 1080, H = 1920, extent = 14, fill = C.cobalt400, floor = 0.05 } = {}) {
 	const at = honeyAt(cx, cy, r, gap)
 	const field = el('g', {}, g)
 	for (let q = -extent; q <= extent; q++) {
@@ -476,7 +439,7 @@ export const CORNERS = {
  *
  * Returns { at, s, R, cells: { id: [x, y] } }.
  */
-export function workspaceCluster(g, cx, cy, r, gap, { ring = [], open = [], fieldTop = Infinity, fieldScale = 1, W = 1920, H = 1080, edge = C.cobalt, cellFill = C.white, glyphFill = C.cobalt } = {}) {
+export function workspaceCluster(g, cx, cy, r, gap, { ring = [], open = [], fieldTop = Infinity, fieldScale = 1, W = 1080, H = 1920, edge = C.cobalt, cellFill = C.white, glyphFill = C.cobalt } = {}) {
 	const s = r + gap / SQRT3
 	const at = honeyAt(cx, cy, r, gap)
 	const lit = new Set(ring.map((c) => `${c.q},${c.r}`))
@@ -510,7 +473,7 @@ export function workspaceCluster(g, cx, cy, r, gap, { ring = [], open = [], fiel
  * divided by the apothem ratio. The match cut grows a hex from a UI element to
  * this size, so the next scene's ground is the hex itself.
  */
-export function hexCover(cx, cy, W = 1920, H = 1080) {
+export function hexCover(cx, cy, W = 1080, H = 1920) {
 	const a = SQRT3 / 2
 	let need = 0
 	for (const [x, y] of [[0, 0], [W, 0], [0, H], [W, H]]) {

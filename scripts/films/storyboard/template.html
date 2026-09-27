@@ -150,6 +150,10 @@
 	.card.brand { box-shadow: inset 0 3px 0 var(--l-brand-line); }
 	.hex svg { width: 24px; height: 24px; fill: currentColor; }
 
+	/* A rendered film above its storyboard */
+	.screen { max-width: 960px; }
+	video.film { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; max-width: 100%; background: #0A172F; border-radius: 8px; border: 1px solid var(--line); }
+
 	/* The divide table */
 	.divide { display: grid; gap: 10px; }
 	.divide-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
@@ -279,10 +283,18 @@
 			pick))
 
 		// Ruler
-		const ruler = h('div', { class: 'ruler', role: 'img', 'aria-label': `Timeline of direction ${v.variant}: ${v.scenes.length} scenes over ${dur} seconds` })
-		const bars = Math.round(dur / (spb * 4))
-		for (let b = 0; b < bars; b++) ruler.append(h('div', { class: 'bar', style: `left:${(b * spb * 4 / dur) * 100}%` }, h('i', { text: String(b + 1) })))
-		v.scenes.forEach((s, i) => ruler.append(h('div', { class: 'seg' + (s.layer ? ' ' + s.layer : ''), style: `left:calc(${s.start / dur * 100}% + 2px);width:calc(${(s.end - s.start) / dur * 100}% - 4px)`, title: `${s.title}${s.layer ? ' (' + LAYER[s.layer] + ')' : ''}`, text: `${i + 1} ${s.title}` })))
+		// Each film has its own length (an opening, a film, an app film); fall back to the page's.
+		const vdur = v.duration || dur
+		const ruler = h('div', { class: 'ruler', role: 'img', 'aria-label': `Timeline of ${name}: ${v.scenes.length} scenes over ${vdur} seconds` })
+		const bars = Math.round(vdur / (spb * 4))
+		for (let b = 0; b < bars; b++) ruler.append(h('div', { class: 'bar', style: `left:${(b * spb * 4 / vdur) * 100}%` }, h('i', { text: String(b + 1) })))
+		v.scenes.forEach((s, i) => ruler.append(h('div', { class: 'seg' + (s.layer ? ' ' + s.layer : ''), style: `left:calc(${s.start / vdur * 100}% + 2px);width:calc(${(s.end - s.start) / vdur * 100}% - 4px)`, title: `${s.title}${s.layer ? ' (' + LAYER[s.layer] + ')' : ''}`, text: `${i + 1} ${s.title}` })))
+		// A film that is already animated shows its render above the storyboard (muted, like a feed).
+		if (v.video) {
+			const vid = h('video', { class: 'film', src: v.video, controls: '', playsinline: '', muted: '', loop: '', preload: 'metadata', poster: v.poster || null, 'aria-label': `${v.label || v.variant}, rendered` })
+			vid.muted = true
+			sec.append(h('div', { class: 'screen' }, vid, v.videoNote ? h('p', { class: 'mono', style: 'font-size:12px;color:var(--ink-soft);margin:8px 0 0', text: v.videoNote }) : null))
+		}
 		sec.append(h('div', { class: 'ruler-wrap' }, ruler))
 
 		// Strip

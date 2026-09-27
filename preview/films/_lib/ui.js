@@ -22,7 +22,7 @@
 import { el, textBlock, nextId, measure } from './stage.js'
 import { hexPath, SQRT3 } from './core.js'
 import { C } from './brand.js'
-import { MARK_BOX } from './assets.js'
+import { MARK_BOX, APP_NAMES } from './assets.js'
 
 /**
  * The 16:9 grid, derived from the frame size so one place holds every number
@@ -84,6 +84,15 @@ export function mark(g, { light = false, h = TYPE.markH, x = TYPE.x, y = TYPE.ma
 	return use(g, id, x - (4.24 * h) / bh, y, (h * bw) / bh, h)
 }
 
+/**
+ * The app's own name where the ConNext mark sits, for app films (Ruben, round 4). Same place,
+ * same cap height and baseline as the wordmark (Figtree 700 at 0.8 h, baseline at 0.75 h).
+ */
+export function appMark(g, app, { light = false, h = TYPE.markH, x = TYPE.x, y = TYPE.markY } = {}) {
+	const name = APP_NAMES[app] || app
+	return textBlock(g, name, { x, y: y + h * 0.75, size: Math.round(h * 0.8), weight: 700, fill: light ? C.cobalt : C.white, tracking: -0.02, clip: false })
+}
+
 /** The scene caption: Figtree 700, sentence case, left-aligned at x 120. */
 export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYPE.lh } = {}) {
 	return textBlock(g, text, { x: TYPE.x, y, size, weight: 700, fill, lineHeight: lh / size, tracking: -0.02, clip: false })
@@ -120,11 +129,13 @@ export function fitCaption(g, text, fill, opts = {}) {
  * `ground` is 'cobalt' (the stage colour, nothing drawn), 'light' (cobalt-50)
  * or 'white'. Returns the ink colour to use for anything else on that ground.
  */
-export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts } = {}) {
+export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts, app } = {}) {
 	const light = gr !== 'cobalt'
 	if (gr === 'light') ground(ctx, C.cobalt50)
 	if (gr === 'white') ground(ctx, C.white)
-	mark(ctx.g, { light })
+	// An app film names its app here; the ConNext film and the shared modules keep the ConNext mark.
+	if (app) appMark(ctx.g, app, { light })
+	else mark(ctx.g, { light })
 	const ink = light ? C.cobalt : C.white
 	const cap = text ? fitCaption(ctx.g, text, ink, captionOpts) : null
 	return { light, ink, caption: cap }

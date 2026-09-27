@@ -156,7 +156,7 @@ function trailing(g, kind, xRight, cy, u, p = 0.5) {
 export function hookFrame(ctx, p) {
 	const { app, caption: text, pattern = 'detail', tagFill = 'orange', drawUI, accent = null } = p
 	const g = ctx.g
-	chrome(ctx, { text })
+	chrome(ctx, { text, app })
 	const u = U
 	const w0 = windowAt(ctx.W, ctx.H)
 	const view = el('g', { transform: `translate(${w0.x} ${w0.y}) scale(${w0.s})` }, g)
@@ -286,7 +286,7 @@ export function dataLayerFrame(ctx, p) {
 	const record = { avatar: 'person', title: 230, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [56, 170], [56, 96]], ...p.record }
 	const history = (p.history || [{ av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 140 }, { av: C.cobalt300, w: 190 }, { av: C.cobalt200, w: 120 }]).slice(0, 4)
 	const links = (p.links || ['nc-files', 'nc-mail', 'nc-calendar', 'nc-talk']).slice(0, 4)
-	chrome(ctx, { text })
+	chrome(ctx, { text, app })
 	sharedField(ctx)
 	const g = generalView(ctx)
 
@@ -361,7 +361,7 @@ export function notifyFrame(ctx, p) {
 	const stage = Math.min(p.event?.stage ?? 2, stages - 1)
 	const notices = (p.notices || [{ app }, { icon: 'nc-files' }, { icon: 'nc-talk' }]).slice(0, 3)
 	const recipients = (p.recipients || [C.cobalt300]).slice(0, 2)
-	chrome(ctx, { text })
+	chrome(ctx, { text, app })
 	sharedField(ctx)
 	const g = generalView(ctx)
 
@@ -433,7 +433,7 @@ export function notifyFrame(ctx, p) {
 export function flowsFrame(ctx, p) {
 	const { app, caption: text } = p
 	const trigger = { app, ...p.trigger }
-	chrome(ctx, { text })
+	chrome(ctx, { text, app })
 	sharedField(ctx)
 	const g = generalView(ctx)
 
@@ -485,7 +485,7 @@ export function aiFrame(ctx, p) {
 	const question = { w: 330, lines: [0.78, 0.5], ...p.question }
 	const rows = (p.answer?.rows || [{ avatar: 'person', w: 190, trail: 'idle' }, { avatar: 'person', w: 160, trail: 'idle' }, { avatar: 'person', w: 210, trail: 'mint' }]).slice(0, 3)
 	const permission = { toggles: [], ask: false, ...p.permission }
-	chrome(ctx, { text })
+	chrome(ctx, { text, app })
 	sharedField(ctx)
 	const g = generalView(ctx)
 

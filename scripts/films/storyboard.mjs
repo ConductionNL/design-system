@@ -43,6 +43,16 @@ for (const v of variants) {
 		v.glyph = { viewBox, inner }
 	}
 	await mkdir(join(out, 'stills', v.variant), { recursive: true })
+	// An animated film's render (and its poster) is published next to the page.
+	for (const key of ['video', 'poster']) {
+		if (v[key] && v[key].startsWith('/')) {
+			await mkdir(join(out, 'video'), { recursive: true })
+			const rel = `video/${v.variant}-${basename(v[key])}`
+			await copyFile(v[key], join(out, rel))
+			files[rel] = join(out, rel)
+			v[key] = rel
+		}
+	}
 	for (const s of v.scenes) {
 		const rel = `stills/${v.variant}/${s.id}-${basename(s.still)}`
 		await copyFile(s.still, join(out, rel))

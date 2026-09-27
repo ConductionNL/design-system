@@ -4,20 +4,30 @@ import GLYPHS from '../../data/app-glyphs.json';
 /**
  * AppGlyph — the single source of truth for Conduction app logos.
  *
- * Renders the canonical app glyph keyed by slug, extracted verbatim
- * from the identity brand kit (identity.conduction.nl/apps, the
- * `#g-<slug>` symbols in preview/apps.html). Every surface that shows
- * an app mark (the /apps detail heroes, the ConNext platform diagram,
- * the apps catalogue grid) consumes this component so the logo is the
- * same everywhere instead of a hand-drawn placeholder per page.
+ * Renders the canonical app glyph keyed by slug. The slug is the app's
+ * current id (info.xml <id>); the old ids from the 2026-08 rename
+ * (docudesk, procest, planix, ...) stay as aliases for the same glyph.
+ * Every surface that shows an app mark (the /apps detail heroes, the
+ * ConNext platform diagram, the apps catalogue grid) consumes this
+ * component so the logo is the same everywhere instead of a
+ * hand-drawn placeholder per page.
  *
  * Usage:
  *   import {AppGlyph} from '@conduction/docusaurus-preset/components';
  *   <AppGlyph app="opencatalogi" />
  *
  * Unknown slugs render nothing (returns null) so a consumer never
- * breaks over a missing glyph; add the slug to the brand kit and
- * regenerate src/data/app-glyphs.json to fill it in.
+ * breaks over a missing glyph. src/data/app-glyphs.json is generated,
+ * never hand-edited: the source is brand/assets/apps/glyphs/<id>.svg
+ * (each app's img/app.svg, single colour). To add or update a glyph,
+ * put the file there and run `node scripts/build-app-glyphs.mjs` from
+ * the design-system root. Four legacy keys have no glyph file and are
+ * carried over from the existing JSON: openanonymiser, deskdesk,
+ * financeq and purchaseq.
+ *
+ * APP_GLYPH_SLUGS lists every key, so it includes the old-id aliases
+ * (docudesk, procest, ...) next to the current ids. Do not use it as a
+ * list of apps.
  *
  * The glyph inherits color via `fill: currentColor`, so wrap it in a
  * element with the desired `color` (the DetailHero hex, a catalogue

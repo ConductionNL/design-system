@@ -126,6 +126,13 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for companies. Set your decision rules once, complaints arrive with their facts, you spot the pattern before you decide, and every decision shows who and when.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Dossiq cell', toName: 'the decision rules', note: 'the app cell opens into the rules you set once (#1)' },
+		intake: { type: 'whip', fromName: 'the rules', toName: 'the incoming complaint', note: 'from setting up to what arrives: a whip on the beat reads as the next thing coming in (#11)' },
+		pattern: { type: 'cluster', fromName: 'the complaint', toName: 'the pattern row', note: 'single complaints gathering into one row is the pattern: many cases, one view (#10)' },
+		'general-dataLayer': { type: 'match', fromName: 'the orange pattern', toName: 'the history entry', note: 'the pattern you spotted leads to a decision, and its orange lands as the entry that shows who and when' },
+	},
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#3 grid-cell ripple', '#2 zoom-out sentence build'],
 	neighbours: ['pipelinq', 'humaniq'],
 	builtOnApps: ['pipelinq'],

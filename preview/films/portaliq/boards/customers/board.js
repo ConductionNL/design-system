@@ -107,6 +107,13 @@ const content = {
 	record: { one: 'request', many: 'requests' },
 	logline: 'For housing corporations and associations: a tenant reports a repair from their phone, sees the fitter booked, a member fixes their own details, and every change is on record.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the phone', note: 'the app cell opens into the tenant\'s phone (#1)' },
+		booked: { type: 'match', fromName: 'the report button', toName: 'the booked slot', note: 'the repair the tenant reported is the one that gets booked: its orange carries across' },
+		details: { type: 'whip', fromName: 'the booking', toName: 'the member\'s details', note: 'a different customer, a different page: a whip on the beat marks the switch (#11)' },
+		'general-dataLayer': { type: 'zoom', fromName: 'the changed detail', toName: 'the history', note: 'we push into the detail the member just fixed and come out on its written trail' },
+	},
 	techniques: ['#9 text-swap on a held diagram', '#11 whip-pan on the beat', '#2 zoom-out sentence build'],
 	neighbours: ['pipelinq', 'planninq'],
 	builtOnApps: ['pipelinq'],

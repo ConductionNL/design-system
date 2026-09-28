@@ -133,6 +133,13 @@ const content = {
 	record: { one: 'citizen', many: 'citizens' },
 	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, invoices, permits, letters and chats in one view; the right knowledge appears while you type; and refer, note, call back or hand a task to a colleague, who hears at once.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Pipelinq cell', toName: 'the caller\'s file', note: 'the promise asks about one call; the app\'s own cell opening into the ringing screen answers it without a cut, the app becoming the scene' },
+		view: { type: 'zoom', fromName: 'the open file', toName: 'the one view', note: 'the file opens and we go into it: pushing through the file lands on everything inside it, which is what the caption claims' },
+		knowledge: { type: 'swap', fromName: 'the one view', toName: 'the typed answer', note: 'same window, same client: holding the frame and swapping only the words says the answer comes from what is already on screen' },
+		'general-notify': { type: 'match', fromName: 'the orange answer', toName: 'the handover in Nextcloud', note: 'the answer the agent just gave is the thing that gets passed on, so the same orange shape travels into the colleague\'s notice' },
+	},
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge', '#4 typewriter', '#9 text-swap on a held card'],
 	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],

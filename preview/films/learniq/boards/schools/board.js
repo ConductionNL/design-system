@@ -130,6 +130,13 @@ const content = {
 	record: { one: 'pupil', many: 'pupils' },
 	logline: 'For schools, with the parent side in the film: the student file holds everything about one pupil, the teacher sees the class in one view, a parent excuses their child from their phone and the register updates, and the 16-hour report goes out on time. It does not remove the work; it makes it easier to carry.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Learniq cell', toName: 'the pupil\'s file', note: 'the app cell opens into one pupil\'s file: one shape becoming one file matches "One pupil, one file"' },
+		teacher: { type: 'cluster', fromName: 'the pupil\'s file', toName: 'the class view', note: 'from one pupil to the whole class: the file breaks into many cells that settle as the class register (#10)' },
+		excuse: { type: 'swap', fromName: 'the class view', toName: 'the updated register row', note: 'the register stays put and only the one row changes; holding the window proves the update happens in the same register (#9)' },
+		'general-notify': { type: 'match', fromName: 'the orange absence', toName: 'the report to the attendance officer', note: 'the absence that just landed is what crosses the limit, so the same orange carries into the report' },
+	},
 	techniques: ['#2 zoom-out (student file to teacher view)', '#4 typewriter', '#3 grid-cell ripple'],
 	neighbours: ['portaliq'],
 	builtOnApps: ['portaliq'],

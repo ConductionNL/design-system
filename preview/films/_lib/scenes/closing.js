@@ -462,8 +462,15 @@ CLOSING.connect = {
 	loads: [G(1, 2), G(1, 4), G(2, 1), G(2, 2), G(2, 3), G(2, 4), G(3, 1)], // the first holds two beats, then one a beat
 	linkDur: 0.22,
 	zoom: [G(4, 1), G(4, 3)], // two beats: the camera pulls back and the family comes into view
-	enhanced: G(4, 1), // the swapping line becomes "Enhanced by Conduction" as the zoom starts
-	out: G(5) - EXIT,
+	// Round 26 (the tk lane's frame audit): every line holds its reading time, max(1.5 s, 0.4 s a word),
+	// fully up. The swapping line names two of the seven apps (the apps still load one a beat): "Reply from
+	// Mail" 1.64 s up, "Share in Files" 2.57 s; "Enhanced by Conduction" lands a beat before the zoom and is
+	// up 1.77 s before it leaves.
+	lines: ['mail', 'files'],
+	enhanced: G(3, 4),
+	// Round 26: everything has left four frames before the bar line, so the hand-off into the install
+	// board has clear air (four frames here, two more before the install board's first shape).
+	out: G(5) - EXIT - F(4),
 	key: G(4, 4) + F(6),
 }
 CLOSING.install21 = {
@@ -668,8 +675,10 @@ function drawConnect(g, t, p, W = 1920) {
 	risingText(g, c1, { x: TX, y: Y.first, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), q)
 	const m0 = K.typeIn + SPB / 4
 	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), q)
-	LOAD_ORDER.forEach((id, i) => {
-		const t0 = K.loads[i], t1 = i + 1 < LOAD_ORDER.length ? K.loads[i + 1] : K.enhanced
+	const shown = K.lines.map((id) => LOAD_ORDER.indexOf(id))
+	shown.forEach((i, j) => {
+		const id = LOAD_ORDER[i]
+		const t0 = K.loads[i], t1 = j + 1 < shown.length ? K.loads[shown[j + 1]] : K.enhanced
 		if (t < t0 || t >= t1 + EXIT) return
 		const [verb, name] = T.loads[id]
 		risingText(g, `${verb} _${name}_`, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, accent2: C.nextcloudCyan, tracking: -0.01 }, inv(t0, t0 + RISE, t), inv(t1, t1 + EXIT, t))
@@ -750,7 +759,7 @@ function drawInstallCurrent(g, t, p, W = 1920) {
 	// The wire: from the frame's left edge in, down past each word, then out under the last to the avatar.
 	const reach = (i) => K.words[i]
 	const segs = [
-		{ d: [[0, ys[0]], [wx, ys[0]]], t0: 0, t1: reach(0) },
+		{ d: [[0, ys[0]], [wx, ys[0]]], t0: F(2), t1: reach(0) }, // Round 26: from the third frame, after clear air
 		{ d: [[wx, ys[0]], [wx, ys[1]]], t0: reach(0), t1: reach(1) },
 		{ d: [[wx, ys[1]], [wx, ys[2]]], t0: reach(1), t1: reach(2) },
 	]
@@ -923,5 +932,5 @@ export function installFrame(ctx, p = {}) {
 /** The on-screen words of the Round 21/22 pieces, for a board's word list. */
 export function closingWords(lang = 'en') {
 	const T = CLOSING_TEXT[lang === 'nl' ? 'nl' : 'en']
-	return { builtOn: `${T.builtOn.join('\n')}\n${LOAD_ORDER.map((id) => T.loads[id].join(' ')).join(' / ')}\n${T.enhanced}`, install: `${T.slogans.join('\n')}\n${T.line}` }
+	return { builtOn: `${T.builtOn.join('\n')}\n${CLOSING.connect.lines.map((id) => T.loads[id].join(' ')).join(' / ')}\n${T.enhanced}`, install: `${T.slogans.join('\n')}\n${T.line}` }
 }

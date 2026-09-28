@@ -150,6 +150,14 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 25: for the municipality, what a resident does in one portal: view and pay invoices, check and update current products, send a message and add a file to the case, change their own details, and see who viewed their data.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the invoices', note: 'the app cell opens into the resident\'s portal: one place, as the question promised (#1)' },
+		products: { type: 'swap', fromName: 'the invoices', toName: 'the product being updated', note: 'the same portal window holds and only the page inside changes: everything in one place, shown by not leaving it (#9)' },
+		messages: { type: 'whip', fromName: 'the products', toName: 'the reply with its file', note: 'to the inbox on the beat: a whip reads as the resident moving to the next tab (#11)' },
+		profile: { type: 'match', fromName: 'the orange attachment', toName: 'the field being changed', note: 'the resident\'s own action carries on: the orange from the message they sent lands on the detail they change' },
+		'general-dataLayer': { type: 'zoom', fromName: 'the changed detail', toName: 'the log of who viewed it', note: 'we push into the resident\'s own data and come out on who looked at it: the data and its viewing log are one thing' },
+	},
 	techniques: ['#10 cluster-to-container merge', '#4 typewriter', '#9 text-swap on a held window'],
 	maxWords: 40,
 	neighbours: ['dossiq', 'shillinq'],

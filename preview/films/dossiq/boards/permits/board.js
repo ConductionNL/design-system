@@ -113,6 +113,13 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for permits and enforcement. National data arrives in the permit case, you redact before you publish, the objection file builds itself, and every decision shows who and when.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Dossiq cell', toName: 'the permit case', note: 'the app cell opens into the permit case with national data in it (#1)' },
+		redact: { type: 'zoom', fromName: 'the case file', toName: 'the document to redact', note: 'we push into the case\'s document and come out on it being redacted: same file, closer' },
+		objection: { type: 'match', fromName: 'the redacted passage', toName: 'the objection file', note: 'the published decision is what the objection is about, so its orange carries into the file that builds itself' },
+		'general-dataLayer': { type: 'hexWipe', fromName: 'the objection file', toName: 'the record and its history', note: 'a chapter change to the shared data layer, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge'],
 	neighbours: ['filinq', 'decidiq'],
 	builtOnApps: ['filinq'],

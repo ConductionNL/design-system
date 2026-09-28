@@ -68,6 +68,13 @@ const content = {
 	record: { one: 'client', many: 'clients' },
 	logline: 'For the sales team of a 10 to 500 person business: every deal on one board, a forecast that follows the drag, all your deals as rows in Nextcloud Tables, and your own dashboards and flows built on them.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'cluster', fromName: 'the orange Pipelinq cell', toName: 'the board', note: 'loose deals drifting together into one board performs the caption "every deal, one board" (#10)' },
+		forecast: { type: 'match', fromName: 'the orange deal card', toName: 'the dragged deal', note: 'the deal we see on the board is the one we drag: its card carries across, so the eye never has to find it again' },
+		tables: { type: 'whip', fromName: 'the forecast', toName: 'the Tables grid', note: 'a move to another app, Nextcloud Tables: the whip reads as turning your head to the next screen on the beat (#11)' },
+		'general-flows': { type: 'hexWipe', fromName: 'the Tables grid', toName: 'the flow canvas', note: 'a chapter change from the app to the shared capability; the stepped wipe marks it as a new chapter (#5)' },
+	},
 	techniques: ['#9 text-swap on a held diagram', '#11 whip-pan on the beat', '#10 cluster-to-container merge', '#2 zoom-out sentence build'],
 	neighbours: ['shillinq', 'portaliq'],
 	builtOnApps: ['shillinq'],

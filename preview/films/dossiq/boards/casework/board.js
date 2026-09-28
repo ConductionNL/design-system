@@ -383,6 +383,15 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for municipal and social-domain casework. Decisions due in one backlog with its deadline, the whole workspace (mail, files, meetings, chats) in the case, guidance as you decide, international and local standards built in, a flow that follows the decision, and every decision on the record. No AI in this film.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'cluster', fromName: 'the orange Dossiq cell', toName: 'the backlog', note: 'decisions from everywhere gathering into one backlog is the caption performed (#10)' },
+		documents: { type: 'zoom', fromName: 'the case due first', toName: 'the case workspace', note: 'pushing into the top case of the backlog opens it: we arrive inside the case, where the documents are' },
+		knowledge: { type: 'swap', fromName: 'the workspace', toName: 'the guidance', note: 'the case stays on screen while the guidance appears in it; the held window says it happens while you work (#9)' },
+		standards: { type: 'whip', fromName: 'the guidance', toName: 'the three standards', note: 'from the desk to what sits under it: a whip on the beat gives the energy the archiving film\'s design starts with (#11)' },
+		automate: { type: 'hexWipe', fromName: 'the standards', toName: 'the flow', note: 'a chapter change from the standards to the flow canvas, a stepped wipe on the beat (#5)' },
+		trail: { type: 'match', fromName: 'the decision step', toName: 'the record entry', note: 'the decision the flow just took is the line that lands in the record, so its orange carries over' },
+	},
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	maxWords: 40,
 	promiseFirst: true,

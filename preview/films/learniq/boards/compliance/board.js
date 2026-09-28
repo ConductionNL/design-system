@@ -88,6 +88,13 @@ const content = {
 	record: { one: 'course', many: 'courses' },
 	logline: 'For the compliance officer: every rule\'s coverage live on one page, a signed record nobody can quietly edit, a certificate in the learner\'s own wallet, and the manager told when training runs overdue.',
 	references: REFS,
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Learniq cell', toName: 'the coverage page', note: 'the app cell opens into its one page of coverage (#1)' },
+		sealed: { type: 'zoom', fromName: 'the rule with a gap', toName: 'the signed record', note: 'we push into one rule\'s row and come out on its signed proof: the detail behind the overview' },
+		wallet: { type: 'match', fromName: 'the seal', toName: 'the certificate in the wallet', note: 'the sealed proof is the certificate: the same orange mark travels from the record into the phone' },
+		'general-notify': { type: 'hexWipe', fromName: 'the phone', toName: 'the manager\'s notice', note: 'a chapter change to the shared notifications; the stepped wipe marks it (#5)' },
+	},
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#6 hard diagonal wipe'],
 	neighbours: ['humaniq', 'portaliq'],
 	builtOnApps: ['humaniq'],

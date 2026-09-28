@@ -177,11 +177,11 @@ export function drawScreen(g, sc, drawUI, { open = 1, app, st, topFill } = {}) {
 }
 
 /** The app's tag on the window's anchor (hookFrame's appTag), in mock px inside the window group. */
-export function windowTag(inner, app, { fill = C.cobalt, s = 1 } = {}) {
+export function windowTag(inner, app, { fill = C.cobalt, sx = 1 } = {}) {
 	const a = { x: (WINDOW.nav + 14) * U, y: WINDOW.row1 }
-	// hookFrame draws it on the stage at radius 44 over a 0.8 window: 55 mock px.
-	if (s <= 0.001) return
-	const t = el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${a.x} ${a.y}) scale(${s.toFixed(4)}) translate(${-a.x} ${-a.y})` } : {}, inner)
+	// hookFrame draws it on the stage at radius 44 over a 0.8 window: 55 mock px. Round 27: it flips in (sx), never scales.
+	if (sx <= 0.001) return
+	const t = el('g', flipTf(a.x, a.y, sx), inner)
 	appTag(t, a.x, a.y, 55, app, { fill })
 }
 
@@ -227,6 +227,20 @@ export function wordBuild(parent, text, opts, { at, step = F(2.8), rise = F(5), 
 		})
 	}
 }
+
+/**
+ * Round 27 (all films): a hex always FLIPS in, turning over as in the opening: its width goes to nothing and back,
+ * the back face showing first, the front after the edge. Never a rotation, never a uniform pop or scale.
+ *   flip(t, t0)   { u, front, sx } over FLIP seconds from t0
+ *   flipIn(t, t0) the width of something that turns over from nothing (front face only)
+ */
+export const FLIP = F(6)
+export function flip(t, t0, dur = FLIP) {
+	const u = clamp((t - t0) / dur)
+	return { u, front: u >= 0.5, sx: Math.abs(Math.cos(Math.PI * u)) }
+}
+export const flipIn = (t, t0, dur = FLIP / 2) => (t < t0 ? 0 : ease.outCubic(clamp((t - t0) / dur)))
+export const flipTf = (x, y, sx) => (sx >= 0.9995 ? {} : { transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${Math.max(sx, 0.001).toFixed(4)} 1) translate(${(-x).toFixed(2)} ${(-y).toFixed(2)})` })
 
 /** Spring helpers. */
 export const pop = (s, { freq = 2.8, zeta = 0.55 } = {}) => (s <= 0 ? 0 : spring(s, { freq, zeta }))

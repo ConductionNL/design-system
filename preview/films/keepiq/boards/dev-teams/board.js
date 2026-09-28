@@ -33,7 +33,7 @@ import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, appMark, button, chrome, honeyField, layout } from '../../../_lib/ui.js'
 import { ease, hexPath } from '../../../_lib/core.js'
-import { current } from '../../../tkfilm/lib.js'
+import { current, drawField, CAM_HO } from '../../../tkfilm/lib.js'
 
 const REFS = [
 	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'Text typed live under the UI.' },
@@ -136,7 +136,7 @@ export function partnerRequestUI(w, geom, st = {}) {
 /** st: views ('' or '1'), ring 0..1, link 0..1, open 0..1 (the recipient reads it), burn 0..1 (the link is gone). */
 export function onceLinkUI(w, geom, st = {}) {
 	const { u } = geom
-	const { views = '1', ring = 1, link = 1, open = 1, burn = 0 } = st
+	const { views = '1', ring = 1, link = 1, open = 1, burn = 0, cardSx = 1 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	const lw = width * 0.58
 	panel(w, x, top, lw, 600, u)
@@ -160,7 +160,8 @@ export function onceLinkUI(w, geom, st = {}) {
 	const rx = x + lw + 24, rw = width - lw - 24
 	if (open > 0) {
 		const oy = 40 * (1 - ease.brand(open))
-		const og = el('g', { opacity: Math.min(1, open * 2).toFixed(3), transform: `translate(0 ${oy.toFixed(1)})` }, w)
+		const ccx = rx + rw / 2, ccy = top + 170
+		const og = el('g', { opacity: Math.min(1, open * 2).toFixed(3), transform: `translate(0 ${oy.toFixed(1)})${cardSx < 0.9995 ? ` translate(${ccx} ${ccy}) scale(${Math.max(cardSx, 0.001).toFixed(4)} 1) translate(${-ccx} ${-ccy})` : ''}` }, w)
 		panel(og, rx, top + 60, rw, 220, u)
 		for (let i = 0; i < 8; i++) circle(og, rx + 40 + i * 22, top + 130, 6, C.cobalt900)
 		bar(og, rx + 30, top + 180, rw - 100, 8, C.cobalt300)
@@ -185,7 +186,7 @@ export function onceLinkUI(w, geom, st = {}) {
  */
 const USAGE_CAPTION = 'Every use: who,\nwhen, where, why'
 function usageFrame(ctx) {
-	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq' })
+	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq', mark: 'Usage' })
 	honeyField(ctx.g, ctx.W * 0.62, ctx.H + 150, 80, 10, { top: ctx.H * 0.61, scale: 0.7, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
 	const { ui } = layout(ctx.W, ctx.H)
 	const g = el('g', { transform: `translate(${ui.x - 1.25 * 120} ${ui.y - 1.25 * 640}) scale(1.25)` }, ctx.g)
@@ -203,7 +204,7 @@ export function usageContent(g, st = {}) {
 	bar(g, x + 116, 672, 200, 14, C.cobalt900)
 	const days = [0.3, 0.5, 0.4, 0.7, 0.45, 0.6, 0.35, 0.8, 0.55, 0.65, 0.5, 0.9]
 	days.forEach((h, i) => { const k = Math.max(0, Math.min(1, bars * days.length - i)); if (k > 0) rect(g, x + 70 + i * 43, 790 - 70 * h * k, 26, 70 * h * k, i === days.length - 1 ? C.mint : C.cobalt300, 3) })
-	if (tag > 0) appTag(g, x, 700, 40 * tag, 'keepiq', { ringW: 5 })
+	if (tag > 0) appTag(el('g', tag < 0.9995 ? { transform: `translate(${x} 700) scale(${tag.toFixed(4)} 1) translate(${-x} -700)` } : {}, g), x, 700, 40, 'keepiq', { ringW: 5 })
 	// the uses: who, when, where, what for
 	const ty = 830
 	panel(g, x, ty, w, 410, U)
@@ -252,28 +253,30 @@ export function outsideBox(g, x, y, w = 300, h = 240, { s = 1, lock = true } = {
 }
 
 /** Story 1: "The key to your own house?", "own" the scene's one orange, the lock cell on the right. */
+/** Round 27c: the house is a cell of the opening's field, at the grid's size; the section title is "Ownership". */
+export const HOUSE = [4, 0]
 function storyOne(ctx) {
 	const g = el('g', {}, ctx.g)
-	appMark(g, 'keepiq')
+	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: (gg, x, y) => lockCell(gg, x, y, 150) } : undefined))
+	appMark(g, 'Ownership')
 	WA(g, 'The key to', 120, 580, 140)
 	WA(g, 'your *own* house?', 120, 820, 170)
-	lockCell(g, 1560, 560, 170)
 }
 
 /** Story 2: "Kept by someone else's app?", "someone else's" in orange; the lock gone from its cell into an outside box. */
 function storyTwo(ctx) {
 	const g = el('g', {}, ctx.g)
-	appMark(g, 'keepiq')
+	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: (gg, x, y) => el('path', { d: hexPath(x, y, 150, 10), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, gg) } : undefined))
+	appMark(g, 'Ownership')
 	WA(g, 'Kept by', 120, 600, 150)
 	WA(g, '*someone* *else\'s* app?', 120, 860, 160)
-	el('path', { d: hexPath(1560, 560, 170, 14), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, g)
 	outsideBox(g, 1440, 120, 320, 250)
 }
 
 const content = {
 	app: 'keepiq',
 	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
-	anchors: { promise: [1440, 560], hook: [1470, 245] },
+	anchors: { promise: [1512, 540], hook: [1476, 245] },
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
 	promise: 'The key to\nyour own house?',
 	promiseLine: 'Human and machine passwords in one vault, on your own server',
@@ -300,7 +303,7 @@ const content = {
 			source: 'Round 22b (Ruben: requesting passwords or certificates from other users or other organisations is critical to the process). Spec secret-requests on development: "A user or application can request that a secret be filled in by an external party"; requestable fields, a fill-in link, values encrypted on receipt with the requester\'s public certificate, optional expiry. keepiq.json usp-ask-once-fill-once (verified). Label: NIS2 / Cyberbeveiligingswet and BIO2 are named in Keepiq docs/FEATURES.md and spec compliance-reporting as the credential-hygiene drivers for Dutch government; the film names them as context only and claims no legal requirement.',
 			motion: 'Out of the hook the vault turns to a request. The request panel builds on the right, "Password" and "Certificate" ticking mint one a sixteenth, the small "NIS2 · BIO2" label settling top right. On beat 2 the fill-in link runs in block by block and takes the orange ring; a straight wire carries it left into the partner organisation\'s box, where the fill-in page opens and a masked value types itself in (technique #4), then the value runs back along the wire into the vault.',
 			sound: 'Ticks on the fields, a whoosh along the wire, key ticks under the dots, a soft lock click as it lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nfrom partners', drawUI: partnerRequestUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nfrom partners', drawUI: partnerRequestUI, tagFill: 'cobalt', mark: 'Requests' }),
 		},
 		{
 			id: 'once',
@@ -309,7 +312,7 @@ const content = {
 			source: 'Round 22b (Ruben: offering a one-time download or view link). Specs ephemeral-send ("The send burns after a configurable number of views (default 1), optionally expires, and can be revoked. Anyone with the link can read it once without an account.") and link-sharing (usage limit, auto-deletion when the limit is reached).',
 			motion: 'Hard cut on the beat to "Send by link": the masked value, "Max views" set to 1 inside the orange ring, the expiry, the link. The recipient\'s card opens on the right, the value readable once with a mint pill; on beat 3 the card below fades to its burned state (technique #9, text-swap on a held diagram: only the recipient\'s card changes).',
 			sound: 'A click on "1", a pluck as the recipient opens it, a soft dry puff as the link burns.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt', mark: 'One-time links' }),
 		},
 	],
 	general: {

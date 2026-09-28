@@ -38,7 +38,7 @@ import { repaint } from './ui.js'
 import { tokensUI, storeUI, nldesignUI } from './boards/government/board.js'
 import {
 	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen, worldTf,
-	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, powerBurst,
+	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, flip, flipIn, flipTf, FLIP,
 } from '../tkfilm/lib.js'
 
 const APP = 'thematiq'
@@ -67,13 +67,16 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 
 /* ============================================================ the world and its cells */
 
+// Round 27c: every hex is a cell of the grid. The three story cells turn over into the brand's own tones; the colours
+// cell IS the workspace cell (it turns over into Nextcloud blue), the screens sit in the row under the Thematiq cell.
 const CELL = {
-	lav: [4, -1], mint: [4, 0], forest: [3, 1], // story 1: the three things you colour yourself
-	nc: [6, -1], // story 2 and scene 3: the stock workspace, then the token editor inside it
-	store: [7, -1], // scene 4
-	nld: [8, -1], // scene 5
-	app: [7, -2], // the Thematiq cell, where Built on's lead lands
+	a: [4, -1], b: [4, 0], c: [3, 1], // story 1: car, house, colours (the board's STORY_CELLS)
+	nc: [3, 1], // story 2 and scene 3: the colours cell turned stock Nextcloud blue, then the token editor inside it
+	store: [4, 1], // scene 4
+	nld: [5, 1], // scene 5
+	app: [4, 0], // the Thematiq cell, where Built on's lead lands
 }
+const FILLS = { a: C.cobalt300, b: C.cobalt200, c: C.white }
 const XY = Object.fromEntries(Object.entries(CELL).map(([k, v]) => [k, cellXY(...v)]))
 const SC = { tokens: screenIn(...CELL.nc), store: screenIn(...CELL.store), nld: screenIn(...CELL.nld) }
 
@@ -84,13 +87,12 @@ const T = {
 	// story 1: one word per sixteenth, a colour cell with each noun
 	// one word per sixteenth, so the whole card is up with its reading hold (7 words, 2.8 s) before it leaves
 	w1: [B(0.4), B(0.4) + S16], w2: [B(0.4) + 2 * S16, B(0.4) + 3 * S16], w3: [B(0.4) + 4 * S16, B(0.4) + 5 * S16],
-	cells: { lav: B(0.4) + S16, mint: B(0.4) + 3 * S16, forest: B(0.4) + 5 * S16 },
+	cells: { a: B(0.4) + S16, b: B(0.4) + 3 * S16, c: B(0.4) + 5 * S16 },
 	settle: B(3), // the letters of "colours" stop flicking and land in orange
 	s1Out: B(8.6),
 	// story 2
 	pan: [B(8.2), B(9.4)],
-	morph: [B(8.3), B(9.1)], // Round 26 match cut: the forest cell (your colour) glides to the workspace cell and turns stock Nextcloud blue
-	nc: B(9.1), // the workspace cell lands, the Nextcloud mark in it
+	nc: B(8.9), // Round 26/27c match cut: the colours cell turns over into stock Nextcloud blue, the Nextcloud mark in it
 	w4: [B(9.4), B(9.4) + S16], // "Your workspace,"
 	w5: [B(10.3), B(10.3) + S16, B(10.3) + 2 * S16], // "not your style?"
 	s2Out: B(15.6),
@@ -163,9 +165,10 @@ const camera = (t) => (t < T.cut ? takeA(t) : takeB(t))
 
 /* ============================================================ cell looks */
 
-const glyphCell = (g, wx, wy, fill, id, s = 1, glyph = C.white) => {
-	if (s <= 0.001) return
-	const t = el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${wx} ${wy}) scale(${s.toFixed(4)}) translate(${-wx} ${-wy})` } : {}, g)
+/** A cell at the grid's size; sx is its width while it turns over (Round 27: hexes flip, never scale). */
+const glyphCell = (g, wx, wy, fill, id, sx = 1, glyph = C.white) => {
+	if (sx <= 0.001) return
+	const t = el('g', flipTf(wx, wy, sx), g)
 	el('path', { d: hexPath(wx, wy, R, ROUND), fill }, t)
 	if (id === 'nextcloud') {
 		const [bw, bh] = MARK_BOX['nextcloud-logo'], w = R * 1.12, h = (w * bh) / bw
@@ -175,8 +178,17 @@ const glyphCell = (g, wx, wy, fill, id, s = 1, glyph = C.white) => {
 		el('use', { href: `#g-${id}`, x: wx - sz / 2, y: wy - sz / 2, width: sz, height: sz, color: glyph }, t)
 	}
 }
-/** Stepped exit of a cell: full, cobalt-200, ghost (three frames, on the grid). */
-const steppedOff = (t, t0) => (t < t0 ? 1 : t < t0 + F(1) ? 0.85 : t < t0 + F(2) ? 0.5 : 0)
+/** A cell turning over from the ghost field into `front` at t0, and (if tBack) back into the ghost at tBack. */
+function turnCell(g, x, y, t, t0, front, tBack = Infinity) {
+	if (t < t0) return false
+	const back = t >= tBack
+	const f = back ? flip(t, tBack) : flip(t, t0)
+	const showFront = back ? !f.front : f.front
+	if (back && f.u >= 1) return false
+	if (showFront) front(g, x, y, f.sx)
+	else glyphCell(g, x, y, C.cobalt600, null, f.sx)
+	return true
+}
 
 /** The token editor's state at film time t. */
 function tokensState(t) {
@@ -223,16 +235,20 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 		drawFar(layer, cam, { alpha: 0.5 * clamp(1.4 - cam.z / 8, 0.25, 1) })
 		const look = (qq, rr, info) => {
 			const k = info.k
-			// story 1: the colour cells
-			if (k === CELL.lav.join()) { const s = pop(t - T.cells.lav) * steppedOff(t, T.s1Out); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.lavender, null, s) } : undefined }
-			if (k === CELL.mint.join()) { const s = pop(t - T.cells.mint) * steppedOff(t, T.s1Out + F(1)); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.mint, null, s) } : undefined }
-			if (k === CELL.forest.join()) { if (t >= T.morph[0]) return undefined; const s = pop(t - T.cells.forest); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.forest, null, s) } : undefined }
+			// the Thematiq cell at the end: it turns over into orange on Built on's lead (checked first: it is story cell b)
+			if (k === CELL.app.join() && t >= T.appOn) return { draw: (g, x, y) => turnCell(g, x, y, t, T.appOn, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, C.orange, APP, sx)) }
+			// story 1: the three cells turn over into the brand's tones as their words land; a and b turn back on the way out
+			if (k === CELL.a.join() && t >= T.cells.a && t < T.s1Out + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.a, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.a, null, sx), T.s1Out) }
+			if (k === CELL.b.join() && t >= T.cells.b && t < T.s1Out + F(1) + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.b, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.b, null, sx), T.s1Out + F(1)) }
+			if (k === CELL.c.join() && t >= T.cells.c && t < T.nc) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.c, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.c, null, sx)) }
 			// the workspace cell: stock Nextcloud blue, drained into the ground on the push, the token editor inside
 			if (k === CELL.nc.join() && t >= T.nc) {
 				const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
 				return { draw: (g, x, y) => {
-					const s = t < T.nc + 0.6 ? 1 + 0.12 * (1 - spring(t - T.nc, { freq: 3, zeta: 0.45 })) : 1
-					glyphCell(g, x, y, mix(C.nextcloud, C.cobalt600, drain), drain < 1 ? 'nextcloud' : null, s, mix(C.white, C.cobalt600, drain))
+					// the colours cell turns over (white on its back) into stock Nextcloud blue with the Nextcloud mark
+					const f = flip(t, T.nc)
+					if (!f.front) glyphCell(g, x, y, FILLS.c, null, f.sx)
+					else glyphCell(g, x, y, mix(C.nextcloud, C.cobalt600, drain), drain < 1 ? 'nextcloud' : null, f.sx, mix(C.white, C.cobalt600, drain))
 					if (t >= T.push[0]) {
 						const inner = drawScreen(g, SC.tokens, (w, geom) => {
 							// the stepped hex wipe: the whole workspace repaints from Nextcloud blue into the house style
@@ -241,9 +257,8 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 							tokensUI(w, geom, tokensState(t))
 							ripple(w, TOKEN_ROWS, T.rows, t)
 							if (t < T.swatch + 0.5) { const cg = el('g', { opacity: (1 - inv(T.swatch + 0.2, T.swatch + 0.5, t)).toFixed(3) }, w); current(cg, [[275, GTOP + 146], [GX + GW - 278, GTOP + 146], [GX + GW - 278, GTOP + 168]], ease.inOutCubic(inv(...T.cur3, t)), { w: 5, spark: 13 }) }
-							powerBurst(w, GX + GW - 278, GTOP + 196, inv(T.swatch, T.swatch + 0.3, t), { r: 12, reach: 60 })
 						})
-						windowTag(inner, APP, { s: pop(t - T.tag3) })
+						windowTag(inner, APP, { sx: flipIn(t, T.tag3) })
 						inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
 					}
 				} }
@@ -251,29 +266,21 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			if (k === CELL.store.join() && t >= T.cut) return { draw: (g, x, y) => {
 				glyphCell(g, x, y, C.cobalt600, null, 1)
 				const inner = drawScreen(g, SC.store, (w, geom) => { storeUI(w, geom, storeState(t)); ripple(w, STORE_CARDS.slice(1), T.cards, t) /* your template card is there from the cut: its swatch is the match */ })
-				windowTag(inner, APP, { s: pop(t - T.tag4) })
+				windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
 			} }
 			if (k === CELL.nld.join() && t >= T.cut) return { draw: (g, x, y) => {
 				glyphCell(g, x, y, C.cobalt600, null, 1)
 				const inner = drawScreen(g, SC.nld, (w, geom) => {
 					nldesignUI(w, geom, nldState(t))
 					current(w, [[GX + 432, GTOP + 300], [GX + 452, GTOP + 300], [GX + 452, GTOP + 364], [GX + 470, GTOP + 364]], ease.inOutCubic(inv(...T.cur6, t)), { w: 5, spark: 12 })
-					powerBurst(w, GX + 470, GTOP + 364, inv(T.upload, T.upload + 0.3, t), { r: 12, reach: 60 })
 				})
-				windowTag(inner, APP, { s: pop(t - T.tag5) })
+				windowTag(inner, APP, { sx: flipIn(t, T.tag5) })
 			} }
-			if (k === CELL.app.join() && t >= T.appOn) return { draw: (g, x, y) => glyphCell(g, x, y, C.orange, APP, pop(t - T.appOn, { freq: 2.6, zeta: 0.5 })) }
 			return undefined
 		}
 		const wg = drawField(layer, cam, look)
-		// Round 26: story 1 to story 2 is a match cut, not a wire: the forest cell, the colour you picked, glides across the
-		// lattice to the workspace cell and turns into Nextcloud's stock blue as it lands (the Nextcloud mark appears at T.nc).
-		if (t >= T.morph[0] && t < T.nc) {
-			const u = ease.snap(inv(...T.morph, t))
-			const [fx, fy] = XY.forest, [nx, ny] = XY.nc
-			const x = lerp(fx, nx, u), y = lerp(fy, ny, u) - 90 * Math.sin(Math.PI * u)
-			glyphCell(wg, x, y, mix(C.forest, C.nextcloud, ease.inOutCubic(inv(0.35, 1, u))), null, 1 + 0.18 * Math.sin(Math.PI * u))
-		}
+		// Round 26/27c: story 1 to story 2 is a match cut on the grid itself: the colours cell stays where it is while the camera
+		// slides right, and turns over into Nextcloud's stock blue (the other two turn back into the field).
 		drawNear(layer, cam, NEAR, { alpha: 0.07 * clamp((2.2 - cam.z) / 1.2) })
 	}
 }, { post: 0.001 })
@@ -302,10 +309,10 @@ const artOut = (g, t, t0) => {
 }
 
 // the chapter mark, the whole body
-// the chapter mark: up through the story and each screen, off for the zoom-through and the whip so no screen crosses it
-;[[T.mark, B(23)], [B(25), B(31.4)], [B(32.5), T.capOut]].forEach(([rise, leave], i) => {
+// Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
+;[['Ownership', T.mark, T.s2Out], ['Design tokens', B(16) + F(6), B(23)], ['Store', B(25), B(31.4)], ['NL Design System', B(32.5), T.capOut]].forEach(([title, rise, leave], i) => {
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
-		const c = caption(ctx.g, { text: 'Thematiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
+		const c = caption(ctx.g, { text: title, size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
 		return (t) => c.set(t)
 	})
 })
@@ -317,7 +324,7 @@ film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
 	const b = textBlock(g, 'your house,', { x: 300, y: 700, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
 	const c = textBlock(g, 'your', { x: 120, y: 885, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false })
 	const d = textBlock(g, 'colours', { x: 120 + c.width + 0.28 * 190, y: 885, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false, split: 'char' })
-	const fam = [C.lavender, C.mint, C.forest]
+	const fam = [C.white, C.cobalt200, C.cobalt300] // Round 27c: the letters flick through the brand's own tones before the orange
 	return (t) => {
 		slamItems(a.items, T.w1, t)
 		slamItems(b.items, T.w2, t)
@@ -335,13 +342,13 @@ film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
 })
 cue(T.w1[0], 'tick', { freq: 1318.51, gain: 0.14 })
 cue(T.w1[1], 'click', { gain: 0.16, freq: 2600, seed: 101, dry: true })
-cue(T.cells.lav, 'pluck', { freq: 587.33, gain: 0.2, pan: 0.5 })
+cue(T.cells.a, 'pluck', { freq: 587.33, gain: 0.2, pan: 0.5 })
 cue(T.w2[0], 'tick', { freq: 1479.98, gain: 0.14 })
 cue(T.w2[1], 'click', { gain: 0.16, freq: 2700, seed: 102, dry: true })
-cue(T.cells.mint, 'pluck', { freq: 739.99, gain: 0.2, pan: 0.6 })
+cue(T.cells.b, 'pluck', { freq: 739.99, gain: 0.2, pan: 0.6 })
 cue(T.w3[0], 'kick', { gain: 0.3, pitch: 120, end: 50, decay: 0.2, click: 0.1 })
 for (let i = 0; i < 7; i++) cue(T.w3[1] + i * S16 * 0.25, 'tick', { freq: [1760, 1975.53, 2349.32][i % 3], gain: 0.09, decay: 0.04, pan: -0.3 + i * 0.1 })
-cue(T.cells.forest, 'pluck', { freq: 880, gain: 0.22, pan: 0.5 })
+cue(T.cells.c, 'pluck', { freq: 880, gain: 0.22, pan: 0.5 })
 cue(T.settle, 'click', { gain: 0.28, freq: 2400, seed: 103, dry: true })
 
 // story 2: "Your workspace," "not your style?"
@@ -356,9 +363,9 @@ film.scene('t-story2', T.w4[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
 		artOut(g, t, T.s2Out)
 	}
 })
-// the match cut: the forest cell glides into the workspace and lands in stock blue with a click
-cue(T.morph[0], 'whoosh', { dur: T.morph[1] - T.morph[0] + 0.1, from: 700, to: 3000, panFrom: -0.2, panTo: 0.5, gain: 0.12 })
-cue(T.nc, 'kick', { gain: 0.22, pitch: 100, end: 45, decay: 0.22, click: 0.06 })
+// the match cut: the colours cell turns over into stock blue with a dry click
+cue(T.nc + FLIP / 2, 'click', { gain: 0.28, freq: 2600, seed: 107, dry: true, pan: 0.5 })
+cue(T.nc + FLIP / 2, 'kick', { gain: 0.18, pitch: 100, end: 45, decay: 0.2, click: 0.05 })
 cue(T.nc, 'click', { gain: 0.3, freq: 2800, seed: 104, dry: true, pan: 0.5 })
 cue(T.pan[0], 'whoosh', { dur: 0.8, from: 500, to: 2600, panFrom: -0.3, panTo: 0.4, gain: 0.14 })
 cue(T.w4[0], 'kick', { gain: 0.25, pitch: 110, end: 48, decay: 0.2, click: 0.08 })

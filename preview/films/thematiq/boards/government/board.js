@@ -25,6 +25,8 @@ import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { el, textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, hex, panel, use, button, appMark } from '../../../_lib/ui.js'
+import { hexPath } from '../../../_lib/core.js'
+import { drawField, CAM_HO, camOn, cellXY } from '../../../tkfilm/lib.js'
 
 const REFS = [
 	{ name: 'Replit Parallel Agents', url: 'https://whatships.com/videos/replit-parallel-agents/', borrow: 'The sentence builds as the camera pulls back.' },
@@ -35,28 +37,42 @@ const T = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weig
 
 /* ---------- the story: word art ---------- */
 
+/**
+ * Round 27c: the story sits on the opening's own field and every hex is a cell of that grid, at its size.
+ * The three things you pick yourself are three cells turned over into the brand's own tones (no off-palette
+ * colours); the section title is "Ownership", never the app name.
+ */
+export const STORY_CELLS = { a: [4, -1], b: [4, 0], c: [3, 1] } // car, house, colours; c becomes the workspace
+export const STORY_FILLS = { a: C.cobalt300, b: C.cobalt200, c: C.white }
+const cellHex = (g, x, y, fill, R0) => el('path', { d: hexPath(x, y, R0, R0 * 0.068), fill }, g)
+
 /** Story 1: three everyday things you style yourself; the last word is the scene's one orange. */
 function storyOne(ctx) {
 	const g = el('g', {}, ctx.g)
-	appMark(g, 'thematiq')
-	T(g, 'Your car,', 120, 560, 150, { fill: C.white, tracking: -0.03 })
-	T(g, 'your house,', 300, 720, 150, { fill: C.white, tracking: -0.03 })
-	T(g, 'your colours', 120, 910, 190, { fill: C.orange, tracking: -0.03 })
-	// three solid colour hexes, one per thing you pick yourself (three families)
-	;[[1560, 420, C.lavender], [1690, 590, C.mint], [1560, 760, C.forest]].forEach(([cx, cy, f]) => hex(g, cx, cy, 90, f, 12))
+	const look = (q, r, info) => {
+		for (const k of ['a', 'b', 'c']) if (info.k === STORY_CELLS[k].join()) return { draw: (gg, x, y) => cellHex(gg, x, y, STORY_FILLS[k], 150) }
+		return undefined
+	}
+	drawField(g, CAM_HO, look)
+	appMark(g, 'Ownership')
+	T(g, 'Your car,', 120, 540, 150, { fill: C.white, tracking: -0.03 })
+	T(g, 'your house,', 300, 700, 150, { fill: C.white, tracking: -0.03 })
+	T(g, 'your colours', 120, 885, 190, { fill: C.orange, tracking: -0.03 })
 }
 
-/** Story 2: the workspace in stock Nextcloud blue, the question with "your style" in orange. */
+/** Story 2: the camera has slid right; the colours cell has turned over into stock Nextcloud blue, the same for everyone. */
+export const S2_CAM = camOn(...cellXY(...STORY_CELLS.c), 1620, 300, 1.0)
 function storyTwo(ctx) {
 	const g = el('g', {}, ctx.g)
-	appMark(g, 'thematiq')
+	const look = (q, r, info) => (info.k === STORY_CELLS.c.join() ? { draw: (gg, x, y) => {
+		cellHex(gg, x, y, C.nextcloud, 150)
+		const w = 150 * 1.12
+		use(gg, 'nextcloud-logo', x - w / 2, y - w * 0.25, w, w * 0.5, C.white)
+	} } : undefined)
+	drawField(g, S2_CAM, look)
+	appMark(g, 'Ownership')
 	T(g, 'Your workspace,', 120, 600, 150, { fill: C.white, tracking: -0.03 })
-	// the accent: textBlock sets *...* in the accent colour
 	textBlock(g, 'not *your* *style?*', { x: 120, y: 860, size: 180, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
-	// the stock workspace: one Nextcloud-blue hex with the Nextcloud mark, the same for everyone
-	hex(g, 1620, 300, 150, C.nextcloud, 18)
-	const w = 150 * 1.12
-	use(g, 'nextcloud-logo', 1620 - w / 2, 300 - w * 0.25, w, w * 0.5, C.white)
 }
 
 /* ---------- scene 3: the real token editor ---------- */
@@ -194,7 +210,7 @@ const content = {
 	app: 'thematiq',
 	// Round 24: the current's key elements where the orange is word art (the wire must not cross the words):
 	// story 1 lands on the forest colour cell's left point, story 2 on the stock Nextcloud hex's.
-	anchors: { promise: [1500, 760], hook: [1526, 300] },
+	anchors: { promise: [1395, 743], hook: [1526, 300] },
 	audience: { slug: 'government', name: 'Government and brands', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) and a company\'s head of marketing (Iris Bakker) folded in (Round 20: one Thematiq film)' },
 	promise: 'Your car,\nyour house,\nyour colours',
 	promiseLine: 'Do you really own it if you cannot style it your way? Thematiq makes Nextcloud yours: your tokens, your templates, your NL Design house style',
@@ -221,7 +237,7 @@ const content = {
 			source: 'Real screen: Custom Token Overrides (docs/img/token-editor-*.png, import-export-buttons.png). docs/features/token-editor.md on development: "4 category tabs grouping the 53 editable tokens by area". Specs token-editor-ui, token-import-export.',
 			motion: 'The core, scene 3. The hex lands as the swatch of the first row and the real token editor builds round it: the grey header with Download and Upload, the four tabs ("Login page & Branding" active), then technique #3, grid-cell ripple: the token rows step 20% to 40% to full from the top, each with its CSS variable, swatch, hex field and reset. On beat 3 the first swatch takes the orange ring, turns from Nextcloud blue to the house colour and the blue custom dot pops after "Primary color".',
 			sound: 'A ripple of ticks with the rows, a click on the swatch, a pluck as the custom dot pops.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt', mark: 'Design tokens' }),
 		},
 		{
 			id: 'store',
@@ -230,7 +246,7 @@ const content = {
 			source: 'Rounds 21 and 22 (Ruben: share your templates through the store). No real screen yet: change catalogue-theme-gallery (open) lists shared sets with name, organisation, swatches, licence, source and contrast result; drawn in the look of the Nextcloud app store (docs/img/appstore-listing.png).',
 			motion: 'Hard cut on the beat to the store, in the Nextcloud app store\'s look: its blue bar with the Nextcloud mark, "App store" and the search field, the category rail. Technique #3: the house-style cards step in in waves, swatches first, their rating dots filling. Your template is the first card; on beat 3 its share button takes the orange ring and fills.',
 			sound: 'A ripple of ticks per wave, a click on share.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your templates\nin the store', drawUI: storeUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your templates\nin the store', drawUI: storeUI, tagFill: 'cobalt', mark: 'Store' }),
 		},
 	],
 	general: {
@@ -252,5 +268,5 @@ const film = audienceFilm(content)
 const B = (id) => film.boards.find((b) => b.id === id)
 Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', drawBase: storyOne })
 Object.assign(B('hook'), { drawBase: storyTwo })
-Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }) })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt', mark: 'NL Design System' }) })
 export const { meta, boards } = film

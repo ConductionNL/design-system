@@ -38,7 +38,7 @@ import { caption } from '../connext/lib/type.js'
 import { partnerRequestUI, onceLinkUI, usageContent, outsideBox } from './boards/dev-teams/board.js'
 import {
 	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen,
-	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, powerBurst,
+	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, flip, flipIn, flipTf, FLIP,
 } from '../tkfilm/lib.js'
 
 const APP = 'keepiq'
@@ -113,8 +113,10 @@ const T = {
 	open: B(26.4),
 	burn: [B(28.2), B(29.2)],
 	// scene 5, every use
-	// Round 26 hex wipe: the honeycomb steps on over the frame from the right, the cut sits under it, it steps off
-	wipe: [B(30.8), B(31.6), B(32.4)],
+	// Round 27c: the pull back from the link, a wave of cells turning over on the grid toward the dashboard, the push in
+	out: [B(30.7), B(31.4)],
+	wave: [B(30.9), B(31.9)],
+	in: [B(31.5), B(32.4)],
 	bars: [B(32.4), B(33.4)],
 	rows: B(33.5),
 	cur5: [B(34.4), B(35.1)],
@@ -128,22 +130,21 @@ const T = {
 
 const END = camOn(...XY.house, 1330, 236, 118 / 150)
 const PUSH = bezier(0.62, 0, 0.12, 1)
-const takeA = take([
+const MID = camOn(...XY.once.map((v, i) => (v + XY.usage[i]) / 2), 1300, 560, 1.15)
+const camera = take([
 	rest(CAM_HO, OPEN, { k: HO_RATE, pivot: [960, 540] }),
 	rest(SC.request.key, T.push[1], { k: 0.006, pivot: [1300, 520] }),
 	rest(SC.once.key, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(MID, T.out[1], { k: 0.02, pivot: [1300, 560] }),
+	rest(U_KEY, T.in[1], { k: 0.008, pivot: [1300, 560] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
 ], [
 	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
 	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },
-])
-const takeB = take([
-	rest(U_KEY, T.wipe[1], { k: 0.008, pivot: [1300, 560] }),
-	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
-], [
+	{ from: T.out[0], to: T.out[1], ease: ease.brand, blend: 'pivot' },
+	{ from: T.in[0], to: T.in[1], ease: PUSH, blend: 'pivot' },
 	{ from: T.pull[0], to: T.pull[1], ease: ease.brand, blend: 'pivot' },
 ])
-/** The one camera: take A to the middle of the hex wipe (the frame is covered), take B after it. */
-const camera = (t) => (t < T.wipe[1] ? takeA(t) : takeB(t))
 
 /* ============================================================ pieces */
 
@@ -154,16 +155,20 @@ function lockGlyph(g, x, y, size, color) {
 /** The house cell: white with the lock (story), a dashed outline when the lock has left, Keepiq's own cobalt cell once it is home. */
 function houseCell(g, x, y, t) {
 	if (t < T.house) return
-	const s = pop(t - T.house, { freq: 2.6, zeta: 0.5 })
-	const hg = scaled(g, x, y, s)
+	// Round 27: it turns over from the ghost field (back face) into the white house with its lock
+	const f = flip(t, T.house)
+	if (!f.front) return el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, el('g', flipTf(x, y, f.sx), g))
+	const hg = el('g', flipTf(x, y, f.sx), g)
 	const gone = t >= T.lift[0] && t < T.home
 	const home = t >= T.home
 	if (gone) {
 		el('path', { d: hexPath(x, y, R, ROUND), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, hg)
 	} else if (home) {
 		const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
-		const hs = t < T.push[0] ? pop(t - T.home, { freq: 3, zeta: 0.5 }) : 1
-		const hh = scaled(hg, x, y, hs)
+		// the lock comes home: the dashed cell turns over into Keepiq's own
+		const fh = flip(t, T.home - FLIP / 2)
+		const hh = el('g', flipTf(x, y, fh.sx), hg)
+		if (!fh.front) return el('path', { d: hexPath(x, y, R, ROUND), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, hh)
 		// Keepiq's own cell: cobalt with a white ring (the app tag's look), draining into the ground on the push
 		if (drain < 1) el('path', { d: hexPath(x, y, R + 8, ROUND + 1), fill: mix(C.white, C.cobalt600, drain) }, hh)
 		el('path', { d: hexPath(x, y, R, ROUND), fill: mix(C.cobalt, C.cobalt600, drain) }, hh)
@@ -182,26 +187,6 @@ function lockInFlight(g, t) {
 	const bx = BOX.x + BOX.w / 2, by = BOX.y + BOX.h / 2 + 10
 	const x = lerp(hx, bx, u), y = lerp(hy, by, u) - 60 * Math.sin(Math.PI * u)
 	lockGlyph(g, x, y, lerp(R * 0.84, 90 / CAM_HO.z * 0.9, u), lerp(1, 0, 0) ? C.white : C.white)
-}
-
-/** The recipient's card breaking into small hexes that step off (the link is gone after one view). */
-function burnHexes(w, t) {
-	const u = inv(...T.burn, t)
-	if (u <= 0 || u >= 1) return
-	// the recipient card's region in mock px (onceLinkUI: rx = x + lw + 24, top + 60, rw x 220)
-	const x = 310, width = 987.5, top = 145, lw = width * 0.58
-	const rx = x + lw + 24, rw = width - lw - 24
-	const r = 16, sx = r * Math.sqrt(3) + 4, sy = r * 1.5 + 4
-	let n = 0
-	for (let yy = top + 70; yy < top + 270; yy += sy) {
-		for (let xx = rx + 10 + ((n++ % 2) * sx) / 2; xx < rx + rw - 8; xx += sx) {
-			const d = Math.hypot(xx - (rx + rw / 2), yy - (top + 170)) / 160
-			const step = Math.floor((u * 1.6 - d * 0.6) / 0.2)
-			const a = step < 0 ? 1 : step === 0 ? 0.7 : step === 1 ? 0.35 : 0
-			if (a <= 0) continue
-			el('path', { d: hexPath(xx, yy, r * (0.6 + 0.4 * a), 3), fill: C.cobalt100, 'fill-opacity': a.toFixed(2) }, w)
-		}
-	}
 }
 
 const MOCK = { x: 310, top: 145, width: 987.5 }
@@ -230,7 +215,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 						fill: 8 * inv(...T.fill, t),
 						back: t >= T.back[1] + 0.3 ? 0 : ease.inOutCubic(inv(...T.back, t)) || 0,
 					}))
-					windowTag(inner, APP, { s: pop(t - T.tag3) })
+					windowTag(inner, APP, { sx: flipIn(t, T.tag3) })
 					inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
 				}
 			} }
@@ -238,20 +223,36 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const inner = drawScreen(g, SC.once, (w, geom) => {
 					const burnt = inv(...T.burn, t)
-					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: burnt > 0 ? 0 : ease.brand(inv(T.open, T.open + 0.35, t)), burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
-					burnHexes(w, t)
-					powerBurst(w, MOCK.x + 22 + 83, MOCK.top + 245, inv(T.views, T.views + 0.3, t), { r: 12, reach: 60 })
+					// Round 27: after its one view the recipient's card turns over to nothing (width to zero), and the link is gone
+					const cardSx = burnt <= 0 ? 1 : Math.max(0, Math.cos(Math.PI / 2 * ease.inCubic(clamp(burnt * 1.6))))
+					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: ease.brand(inv(T.open, T.open + 0.35, t)), cardSx, burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
 				})
-				windowTag(inner, APP, { s: pop(t - T.tag4) })
+				windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
 			} }
-			if (k === CELL.usage.join() && t >= T.wipe[1]) return { draw: (g, x, y) => {
+			if (k === CELL.usage.join() && t >= T.wave[1]) return { draw: (g, x, y) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
-				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: pop(t - T.bars[0]) })
+				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: flipIn(t, T.bars[0]) })
 				// the current into the newest use, from the day bars' today (local coords)
 				current(ug, [[800, 720], [800, 934], [794, 934]], ease.inOutCubic(inv(...T.cur5, t)), { w: 5, spark: 11 })
-				powerBurst(ug, 184, 934, inv(T.ring5, T.ring5 + 0.3, t), { r: 10, reach: 50 })
 			} }
+			// Round 27c: once to usage is a wave of cells turning over on the grid itself, from the link's cell to the dashboard's
+			if (t >= T.wave[0] && t < T.wave[1] + FLIP * 2) {
+				const [ox, oy] = XY.once, [ux, uy] = XY.usage
+				const [wx, wy] = cellXY(qq, rr)
+				const dx = ux - ox, dy = uy - oy, L = Math.hypot(dx, dy)
+				const along = ((wx - ox) * dx + (wy - oy) * dy) / (L * L) // 0 at the link's cell, 1 at the dashboard's
+				const across = Math.abs((wx - ox) * dy - (wy - oy) * dx) / L
+				if (along > -1.2 && along < 2.2 && across < 700) {
+					const t0 = lerp(T.wave[0], T.wave[1] - FLIP * 2, clamp((along + 1.2) / 3.4))
+					if (t >= t0 && t < t0 + FLIP * 2) return { draw: (g, x, y) => {
+						const f = flip(t, t0, FLIP * 2)
+						// the back is the ghost; the face that passes is cobalt-200, and it turns back into the ghost
+						const face = f.u < 0.5 ? (f.u < 0.25 ? C.cobalt600 : C.cobalt200) : (f.u < 0.75 ? C.cobalt200 : C.cobalt600)
+						el('path', { d: hexPath(x, y, R, ROUND), fill: face }, el('g', flipTf(x, y, f.sx), g))
+					} }
+				}
+			}
 			return undefined
 		}
 		const wg = drawField(layer, cam, look)
@@ -268,37 +269,12 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 	}
 }, { post: 0.001 })
 
-/**
- * Round 26 hex wipe (once to usage): a screen-space honeycomb steps on over the frame from the right edge,
- * each cell 20% to 60% to full a frame apart, until the frame is covered on the middle beat; the camera cuts
- * under it; the cells step off again from the right, revealing the usage dashboard. Pointy-top, never rotated,
- * solid fills (the ground's own cobalt with the ghost field's cobalt-600).
- */
-film.scene('wipe', T.wipe[0], T.wipe[2], (ctx) => {
-	const layer = el('g', { 'data-layer': 'hex-wipe' }, ctx.g)
-	const r = 118, gap = 6, sx = (r + gap / Math.sqrt(3)) * Math.sqrt(3), sy = (r + gap / Math.sqrt(3)) * 1.5
-	const cells = []
-	for (let row = -1; row * sy < 1080 + r; row++) for (let col = -1; col * sx < 1920 + r; col++) cells.push([col * sx + (row % 2 ? sx / 2 : 0), row * sy])
-	return (t) => {
-		layer.replaceChildren()
-		const [a, m, b] = T.wipe
-		for (const [x, y] of cells) {
-			const d = 1 - x / 1920 // the right edge first
-			const on = inv(a + d * (m - a - 0.12), a + d * (m - a - 0.12) + 0.12, t)
-			const off = inv(m + d * (b - m - 0.12), m + d * (b - m - 0.12) + 0.12, t)
-			const k = t < m ? on : 1 - off
-			const step = k <= 0 ? 0 : k < 0.34 ? 0.2 : k < 0.67 ? 0.6 : 1
-			if (step <= 0) continue
-			const rr = (r + gap) * step + (step >= 1 ? 2 : 0)
-			el('path', { d: hexPath(x, y, rr, rr * 0.08), fill: step >= 1 ? C.cobalt : C.cobalt600 }, layer)
-		}
-	}
-})
-
 /** The end: the house cell is Keepiq's, in orange, on Built on's lead. */
 function glyphApp(g, x, y, t) {
-	const s = pop(t - T.appOn, { freq: 2.6, zeta: 0.5 })
-	const hg = scaled(g, x, y, s)
+	// Round 27: Keepiq's cell turns over into orange on Built on's lead
+	const f = flip(t, T.appOn)
+	const hg = el('g', flipTf(x, y, f.sx), g)
+	if (!f.front) return el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, hg)
 	el('path', { d: hexPath(x, y, R, ROUND), fill: C.orange }, hg)
 	lockGlyph(hg, x, y, R * 0.84, C.white)
 }
@@ -324,10 +300,10 @@ const artOut = (g, t, t0) => {
 	g.setAttribute('opacity', (1 - p).toFixed(3))
 }
 
-// the chapter mark: up through the story and each screen, off for the whip and the hex wipe
-;[[T.mark, B(23.3)], [B(24.5), B(30.6)], [B(32.5), T.capOut]].forEach(([rise, leave], i) => {
+// Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
+;[['Ownership', T.mark, T.s2Out], ['Requests', B(16) + F(6), B(23.3)], ['One-time links', B(24.5), B(30.6)], ['Usage', B(32.5), T.capOut]].forEach(([title, rise, leave], i) => {
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
-		const c = caption(ctx.g, { text: 'Keepiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
+		const c = caption(ctx.g, { text: title, size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
 		return (t) => c.set(t)
 	})
 })
@@ -406,12 +382,12 @@ cue(T.tag4, 'pluck', { freq: 659.26, gain: 0.18, pan: 0.2 })
 cue(T.views, 'arc', { gain: 0.1, pan: 0.1 })
 cue(T.views, 'click', { gain: 0.32, freq: 2600, seed: 129, dry: true, pan: 0.1 })
 cue(T.open, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.6 })
-cue(T.burn[0], 'whoosh', { dur: T.burn[1] - T.burn[0], from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
-for (let i = 0; i < 5; i++) cue(T.burn[0] + i * S16, 'hat', { gain: 0.1, pan: 0.5, seed: 50 + i })
+cue(T.burn[0], 'whoosh', { dur: 0.4, from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
+cue(T.burn[0] + 0.3, 'click', { gain: 0.24, freq: 2000, seed: 51, dry: true, pan: 0.6 })
 // scene 5
-for (let i = 0; i < 6; i++) cue(lerp(T.wipe[0], T.wipe[1], i / 6), 'hat', { gain: 0.1, pan: 0.7 - i * 0.25, seed: 60 + i })
-cue(T.wipe[1], 'kick', { gain: 0.3, pitch: 110, end: 44, decay: 0.24, click: 0.08 })
-for (let i = 0; i < 6; i++) cue(lerp(T.wipe[1], T.wipe[2], i / 6), 'tick', { freq: 2349.32 - i * 120, gain: 0.05, decay: 0.03, pan: 0.7 - i * 0.25 })
+cue(T.out[0], 'whoosh', { dur: 0.7, from: 3000, to: 500, panFrom: 0.4, panTo: 0, gain: 0.16 })
+for (let i = 0; i < 8; i++) cue(lerp(T.wave[0], T.wave[1] - FLIP, i / 8), 'click', { gain: 0.1, freq: 2200 + i * 90, seed: 60 + i, dry: true, pan: 0.6 - i * 0.15 })
+cue(T.in[0], 'whoosh', { dur: 0.9, from: 400, to: 4600, panFrom: -0.2, panTo: 0.3, gain: 0.2 })
 for (let i = 0; i < 6; i++) cue(lerp(...T.bars, i / 6), 'tick', { freq: 1174.66 * Math.pow(2, i / 12 * 2), gain: 0.07, pan: 0.3 })
 for (let i = 0; i < 5; i++) cue(T.rows + i * S16, 'tick', { freq: [1318.51, 1479.98, 1567.98, 1760, 1975.53][i], gain: 0.09, pan: 0.2 })
 cue(T.cur5[0], 'crackle', { dur: T.cur5[1] - T.cur5[0], density: 55, gain: 0.06, pan: 0.4 })

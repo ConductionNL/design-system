@@ -130,12 +130,14 @@ export function fitCaption(g, text, fill, opts = {}) {
  * `ground` is 'cobalt' (the stage colour, nothing drawn), 'light' (cobalt-50)
  * or 'white'. Returns the ink colour to use for anything else on that ground.
  */
-export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts, app } = {}) {
+export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts, app, mark: section } = {}) {
 	const light = gr !== 'cobalt'
 	if (gr === 'light') ground(ctx, C.cobalt50)
 	if (gr === 'white') ground(ctx, C.white)
 	// An app film names its app here; the ConNext film and the shared modules keep the ConNext mark.
-	if (app) appMark(ctx.g, app, { light })
+	// Round 27c (ds-tk-film): a section title in the mark's place when the board names one; the app name lives in the lead cell.
+	if (section) appMark(ctx.g, section, { light })
+	else if (app) appMark(ctx.g, app, { light })
 	else mark(ctx.g, { light })
 	const ink = light ? C.cobalt : C.white
 	const cap = text ? fitCaption(ctx.g, text, ink, captionOpts) : null

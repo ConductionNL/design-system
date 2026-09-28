@@ -25,7 +25,7 @@ import { textBlock } from './stage.js'
 import { SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
-import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, beatT, PLANS, DURATION as BODY } from './appfilm.js'
+import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, SPB, beatT, barBeat, PLANS, DURATION as BODY } from './appfilm.js'
 import { LOOP_ANCHOR } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
@@ -84,6 +84,26 @@ export function audienceBoards(content) {
 		motion: content.promiseMotion || `On ${s2(last.start)} (bar ${barOf(last.start)}) the app tag from the general scene lifts off its card and lands in its cell up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it in a quick stagger (every word in by ${s2(last.shows)}) and holds to ${s2(promiseClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which the Built on piece picks up as its ground, no cut.`,
 		sound: content.promiseSound || 'A pluck as the app cell lands, a low thud under the Nextcloud hex, a soft pad swell under the promise. A crisp click on the bar line into Built on.',
 		draw: (ctx) => promiseFrame(ctx, { app, promise, neighbours }),
+	}
+
+	// Round 15 (Ruben): a product film opens its body on the promise, straight after the opening's
+	// handover, and the proofs follow. The promise and the first proof take 8 beats each (the
+	// template's 7 + 9), so the body keeps its length; every caption keeps its rise and clear.
+	if (content.promiseFirst) {
+		const pr = boards.pop()
+		boards.unshift(pr)
+		const beatsOf = (b, i) => Math.round((b.end - b.start) / SPB)
+		const lens = boards.map(beatsOf)
+		const total = lens.reduce((a, v) => a + v, 0)
+		lens[0] = 8
+		lens[1] = total - 8 - lens.slice(2).reduce((a, v) => a + v, 0)
+		let beat = 0
+		boards.forEach((b, i) => {
+			const start = OPEN + beatT(beat), end = OPEN + beatT(beat + lens[i])
+			const shows = start + 0.24, clears = end - 0.16
+			Object.assign(b, { start, end, shows, clears, hold: +(clears - shows).toFixed(2), bars: `${barBeat(beat + 12)}-${barBeat(beat + lens[i] - 1 + 12)}` })
+			beat += lens[i]
+		})
 	}
 
 	const opening = {

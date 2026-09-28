@@ -29,6 +29,7 @@ import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { el, textBlock, measure } from '../../../_lib/stage.js'
+import { ease } from '../../../_lib/core.js'
 import { rect, bar, circle, hex, panel, statusPill, idlePill, docPage, button, dotCanvas, flowNode } from '../../../_lib/ui.js'
 
 const REFS = [
@@ -165,7 +166,9 @@ export function knowledgeUI(w, geom, a = {}) {
  * a.wire 0..1 the wires draw down, a.split 0..1 the orange split hex pops, a.boxes 0..3 boxes landed.
  */
 export function standardsUI(w, geom, a = {}) {
-	const A = { wire: 1, split: 1, boxes: 3, ...a }
+	// a.fields(i) 0..1 the rows of box i fill; a.swap 0..1 the Dutch head swaps "ZGW" for "ZGW / StUF"
+	// on the held diagram (#9 text-swap, the archiving film's device).
+	const A = { wire: 1, split: 1, boxes: 3, fields: () => 1, swap: 1, ...a }
 	const { u } = geom
 	// Narrower than the window's column, so every label and tag ends inside the text safe box
 	// (x 1800 on stage; the window shows mock space at 0.8 from x 940).
@@ -194,8 +197,9 @@ export function standardsUI(w, geom, a = {}) {
 		rect(w, bx, by, bw, 130, C.cobalt50, 0)
 		// A long name breaks over two lines inside its box head; under it, where the standard holds
 		// (Round 15: one international standard, two local ones), as a small tag.
-		const two = label.includes('\n')
-		textBlock(w, label, { x: bx + 18, y: by + 40, size: 34, weight: 600, fill: C.cobalt, lineHeight: 1.05, clip: false })
+		const two = typeof label === 'string' && label.includes('\n')
+		if (typeof label === 'string') textBlock(w, label, { x: bx + 18, y: by + 40, size: 34, weight: 600, fill: C.cobalt, lineHeight: 1.05, clip: false })
+		else label(w, bx)
 		const ty = by + (two ? 86 : 62)
 		const tagW = measure(where, { size: 28, weight: 600 }) + 18
 		rect(w, bx + 14, ty, tagW, 38, where === 'International' ? C.cobalt : C.cobalt200, 19)
@@ -206,16 +210,26 @@ export function standardsUI(w, geom, a = {}) {
 	if (A.boxes <= 0.001) return
 	const b0 = box(0, 'CMMN 1.1', 'International')
 	rect(w, b0 + 22, by + 150, bw - 44, 180, 'none', 12 * u, { stroke: C.cobalt300, 'stroke-width': u })
-	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r]) => rect(w, b0 + 42 + c * ((bw - 84) / 2 + 10), by + 170 + r * 76, (bw - 104) / 2, 52, C.cobalt100, 6 * u))
+	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r], k) => { if (A.fields(0) * 4 - k > 0.001) rect(w, b0 + 42 + c * ((bw - 84) / 2 + 10), by + 170 + r * 76, (bw - 104) / 2, 52, C.cobalt100, 6 * u) })
 	// The Dutch and the Danish case standards: their fields filled.
 	// OIO sits in the middle box so its long label stays inside the text safe box (x 1800).
-	;[[1, 'OIO Sag og\nDokument', 'Denmark'], [2, 'ZGW', 'Netherlands']].forEach(([i, label, where]) => {
+		// The Dutch head: "ZGW" swaps for "ZGW / StUF" in its clip (#9); at rest it names both.
+	const dutch = (g, bx) => {
+		const q = A.swap
+		const words = q <= 0 ? [['ZGW', 0]] : q >= 1 ? [['ZGW / StUF', 0]] : [['ZGW', -40 * ease.exit(q)], ['ZGW / StUF', 40 * (1 - ease.brand(q))]]
+		for (const [wd, dy] of words) {
+			const blk = textBlock(g, wd, { x: bx + 18, y: by + 40, size: 34, weight: 600, fill: C.cobalt, clip: true })
+			if (Math.abs(dy) > 1e-3) for (const it of blk.items) it.node.setAttribute('transform', `translate(0 ${dy.toFixed(2)})`)
+		}
+	}
+	;[[1, 'OIO Sag og\nDokument', 'Denmark'], [2, dutch, 'Netherlands']].forEach(([i, label, where]) => {
 		if (A.boxes - i <= 0.001) return
 		const bx = box(i, label, where)
 		for (let k = 0; k < 3; k++) {
+			const fp = Math.max(0, Math.min(1, A.fields(i) * 3 - k))
 			const fy = by + 176 + k * 56
-			bar(w, bx + 22, fy, 70, 8, C.cobalt400)
-			bar(w, bx + 108, fy - 2, bw - 150 - k * 14, 11, C.cobalt900)
+			bar(w, bx + 22, fy, 70 * fp, 8, C.cobalt400)
+			bar(w, bx + 108, fy - 2, (bw - 150 - k * 14) * fp, 11, C.cobalt900)
 		}
 	})
 }
@@ -322,6 +336,8 @@ const content = {
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	maxWords: 40,
+	promiseFirst: true,
+	promiseMotion: 'Round 15: the body opens here, straight after the opening\'s handover. The Dossiq cell pops in on the opening\'s field, on the loop anchor, and turns orange; the neighbour cells lock in and the Nextcloud hex settles, while the field fades from the opening\'s shading. "Dossiq" sits as the chapter mark; the promise rises under it. Out on the bar line: a hard cut to the backlog.',
 	neighbours: ['portaliq', 'filinq'],
 	builtOnApps: ['filinq'],
 	hook: {
@@ -356,7 +372,7 @@ const content = {
 			title: 'International and local standards, built in',
 			caption: 'International and local\nstandards, built in',
 			source: 'Dossiq specs: case-management/spec.md:17 and case-types/spec.md:27 (Standards: CMMN 1.1, ZGW; on origin/development), plus OIO Sag og Dokument (Denmark) added to the same two lines in ConductionNL/dossiq#3174 (Ruben, 2026-09-28, open, not merged); positioning dossiq.md:96,104 (ZGW).',
-			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. The case lands on top; on the next beat square-cornered wires run down to three boxes, splitting at one orange hex, and they fill one per beat: the international case model (its plan of stages and tasks), the Dutch and the Danish case standards (their fields). Each box head names its standard and, in a small tag under it, where it holds: CMMN 1.1 International, OIO Sag og Dokument Denmark, ZGW Netherlands (Round 15), so the caption and the picture say one international standard and two local ones with the sound off.',
+			motion: 'The archiving film\'s standards design (Round 15): the window whips in from the right in 5 frames (ease.snap); the case lands; square-cornered wires draw down, along, then down into three boxes, and the orange split hex pops as they split; the boxes land a half beat apart and their rows fill one per sixteenth. Each head names its standard with a small tag under it: CMMN 1.1 International, OIO Sag og Dokument Denmark, and the Dutch box, where technique #9 swaps the held head from "ZGW" to "ZGW / StUF" on beat 5 while the wires hold.',
 			sound: 'Four dry clicks on the wipe, a line-draw hiss, a pluck as each box fills.',
 			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'International and local\nstandards, built in', drawUI: standardsUI, tagFill: 'cobalt' }),
 		},

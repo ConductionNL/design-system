@@ -12,13 +12,17 @@
  *            from "Human and machine passwords, one vault")
  *   hook     apps use passwords without reading them: the pipeline fetches its password at run
  *            time, masked, on a short lease, nothing written to disk (Ruben's line, Round 20)
- *   proof 1  request a password by link: one field, filled in once (the public-IT film's proof)
- *   proof 2  the vault's own certificate authority renews a certificate before it lapses
+ *   proof 1  Round 22b: request a password or a certificate from a partner organisation (or a
+ *            colleague) by fill-in link; a small sourced "NIS2 · BIO2" label, context only
+ *   proof 2  Round 22b: a one-time link: the value can be read once, then the link is gone
  *   general  a usage dashboard, not the change log (Round 20): for each password, who used it
  *            (a person or an app), when, where and what for
+ *   CUT (Round 22b): "Your certificates renew themselves". With the two new scenes the body came to 34
+ *            words, over the bible's 30, and this lane's template has no 3-proof (12-bar) plan; the
+ *            certificate request stays in the picture of proof 1.
  *
- * Techniques (refs/techniques.md): #4 typewriter (the run log, the masked value), #11 whip-pan
- * on the beat (into the certificates), #3 grid-cell ripple as rows (the usage rows), #2 zoom-out
+ * Techniques (refs/techniques.md): #4 typewriter (the run log, the masked value), #9 text-swap
+ * on a held diagram (the burned link), #3 grid-cell ripple as rows (the usage rows), #2 zoom-out
  * sentence build (the question).
  */
 import { C } from '../../../_lib/brand.js'
@@ -64,55 +68,88 @@ function pipelineUI(w, geom) {
 	rect(w, x + 30, ly + 290, (width - 60) * 0.35, 10, C.mint, 5)
 }
 
-/** Proof 1: the certificate list, one certificate renewing itself before it lapses; the authority healthy. */
-function certUI(w, geom) {
+const TX = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weight: o.weight ?? 600, fill: o.fill ?? C.cobalt900, clip: false, tracking: -0.01 })
+
+/**
+ * Proof 1 (Round 22b): request a password or a certificate from a partner organisation. The partner is an
+ * outside system, so a plain box on the left; the request (spec secret-requests: requestable fields, a
+ * fill-in link, values encrypted on receipt with the requester's certificate, optional expiry) on the right.
+ */
+function partnerRequestUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
-	panel(w, x, top, width, 120, u)
-	use(w, 'icon-lock', x + 110, top + 36, 48, 48, C.cobalt)
-	bar(w, x + 180, top + 40, 240, 16, C.cobalt900)
-	statusPill(w, x + width - 140, top + 60, u)
-	panel(w, x, top + 150, width, 450, u)
-	const left = [0.8, 0.9, 0.08, 0.6, 0.7]
-	left.forEach((p, i) => {
-		const cy = top + 200 + i * 86
-		if (i > 0) rect(w, x + 24, cy - 43, width - 48, u, C.cobalt50)
-		rect(w, x + 40, cy - 22, 44, 44, C.cobalt50, 4)
-		use(w, 'icon-lock', x + 48, cy - 14, 28, 28, C.cobalt400)
-		bar(w, x + 110, cy - 12, [220, 180, 240, 160, 200][i], 10, C.cobalt900)
-		bar(w, x + 110, cy + 8, 120, 7, C.cobalt300)
-		// the time left: a track; the third was nearly out and has just been renewed to full
-		const tx = x + 420, tw = width - 620
-		rect(w, tx, cy - 6, tw, 12, C.cobalt100, 6)
-		rect(w, tx, cy - 6, tw * (i === 2 ? 1 : p), 12, i === 2 ? C.mint : C.cobalt400, 6)
-		if (i === 2) statusPill(w, x + width - 150, cy, u)
+	// the partner organisation: a plain box with its own people, the fill-in page open on its side
+	const bw = 250
+	rect(w, x, top + 190, bw, 360, C.cobalt50, 5 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	for (let k = 0; k < 3; k++) { circle(w, x + 40, top + 240 + k * 50, 14, [C.cobalt300, C.cobalt200, C.cobalt300][k]); bar(w, x + 66, top + 236 + k * 50, [120, 90, 110][k], 8, C.cobalt400) }
+	panel(w, x + 20, top + 400, bw - 40, 120, u)
+	for (let i = 0; i < 8; i++) circle(w, x + 50 + i * 20, top + 442, 6, C.cobalt900)
+	rect(w, x + 40, top + 470, 90, 28, C.cobalt, 3 * u)
+	// the wire: the fill-in link out, the value back into the vault (straight, square corners)
+	rect(w, x + bw, top + 370, 60, 3 * u, C.cobalt300)
+	// the request
+	const rx = x + bw + 60, rw = width - bw - 60
+	panel(w, rx, top, rw, 600, u)
+	use(w, 'icon-lock', rx + 30, top + 26, 36, 36, C.cobalt)
+	TX(w, 'Request', rx + 80, top + 54, 24)
+	// the small, sourced label (docs/FEATURES.md, spec compliance-reporting): context, not a claim
+	rect(w, rx + rw - 150, top + 24, 124, 38, C.cobalt50, 19)
+	TX(w, 'NIS2 · BIO2', rx + rw - 136, top + 50, 17, { fill: C.cobalt })
+	// the requestable fields: a password and a certificate, both ticked
+	;[['Password', true], ['Certificate', true], ['Username', false]].forEach(([t, on], i) => {
+		const cy = top + 120 + i * 62
+		rect(w, rx + 30, cy - 16, 32, 32, on ? C.mint : C.white, 4, on ? {} : { stroke: C.cobalt300, 'stroke-width': u })
+		if (on) use(w, 'icon-check', rx + 34, cy - 12, 24, 24, C.white)
+		TX(w, t, rx + 80, cy + 7, 20, { weight: 500 })
 	})
-	rect(w, x + 24, top + 200 + 2 * 86 - 36, width - 48, 72, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	// to whom, and until when
+	bar(w, rx + 30, top + 320, 90, 8, C.cobalt400)
+	rect(w, rx + 30, top + 336, rw - 60, 48, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	bar(w, rx + 46, top + 356, 190, 9, C.cobalt900)
+	bar(w, rx + 30, top + 408, 70, 8, C.cobalt400)
+	rect(w, rx + 30, top + 424, 170, 44, C.cobalt50, 3 * u)
+	bar(w, rx + 46, top + 442, 100, 8, C.cobalt700)
+	// the fill-in link, the scene's one orange
+	rect(w, rx + 30, top + 500, rw - 60, 56, C.cobalt50, 3 * u)
+	for (let i = 0; i < 12; i++) rect(w, rx + 50 + i * 22, top + 520, i % 5 === 4 ? 8 : 15, 15, C.cobalt700, 2)
+	rect(w, rx + 22, top + 492, rw - 44, 72, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 1: the request link and the one field it asks for, masked as it is typed. */
-function requestUI(w, geom) {
+/**
+ * Proof 2 (Round 22b): a one-time link. Specs ephemeral-send (burn after read, default one view, optional
+ * expiry and password, no account needed) and link-sharing (usage limit, auto-deletion). Left: the send
+ * being made, "1 view" ringed. Right: the recipient's side, opened once, then gone.
+ */
+function onceLinkUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
-	// the request: who asks, the link, one expiry
-	panel(w, x, top, width, 170, u)
-	circle(w, x + 60, top + 60, 24, C.cobalt300)
-	bar(w, x + 100, top + 48, 240, 12, C.cobalt900)
-	rect(w, x + 40, top + 104, width - 240, 40, C.cobalt50, 4 * u)
-	for (let i = 0; i < 14; i++) rect(w, x + 56 + i * 24, top + 116, i % 5 === 4 ? 8 : 16, 16, C.cobalt700, 2)
-	button(w, x + width - 180, top + 100, 140, 48, u, { kind: 'ghost' })
-	// the fill-in page: one field, masked dots typing in, the lock
-	const fy = top + 210
-	panel(w, x + 80, fy, width - 160, 330, u)
-	use(w, 'icon-lock', x + 120, fy + 36, 44, 44, C.cobalt)
-	bar(w, x + 180, fy + 50, 220, 14, C.cobalt900)
-	bar(w, x + 120, fy + 120, 130, 9, C.cobalt400)
-	rect(w, x + 120, fy + 144, width - 240, 60, C.white, 4 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	for (let i = 0; i < 11; i++) circle(w, x + 150 + i * 30, fy + 174, 8, C.cobalt900)
-	rect(w, x + 150 + 11 * 30 - 6, fy + 158, 3, 32, C.cobalt400)
-	rect(w, x + 114, fy + 138, width - 228, 72, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
-	rect(w, x + width - 300, fy + 250, 180, 52, C.cobalt, 4 * u)
-	bar(w, x + width - 250, fy + 272, 80, 8, C.white)
+	const lw = width * 0.58
+	panel(w, x, top, lw, 600, u)
+	TX(w, 'Send by link', x + 110, top + 54, 24)
+	// the value, masked
+	rect(w, x + 30, top + 100, lw - 60, 56, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	for (let i = 0; i < 12; i++) circle(w, x + 60 + i * 22, top + 128, 7, C.cobalt900)
+	// max views and expiry
+	TX(w, 'Max views', x + 30, top + 206, 18, { weight: 500, fill: C.cobalt700 })
+	rect(w, x + 30, top + 220, 150, 50, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	TX(w, '1', x + 50, top + 254, 24)
+	rect(w, x + 22, top + 212, 166, 66, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	TX(w, 'Expires', x + 230, top + 206, 18, { weight: 500, fill: C.cobalt700 })
+	rect(w, x + 230, top + 220, lw - 260, 50, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	bar(w, x + 250, top + 241, 110, 9, C.cobalt900)
+	// the link
+	rect(w, x + 30, top + 320, lw - 60, 56, C.cobalt50, 3 * u)
+	for (let i = 0; i < 12; i++) rect(w, x + 50 + i * 22, top + 340, i % 5 === 4 ? 8 : 15, 15, C.cobalt700, 2)
+	button(w, x + lw - 210, top + 520, 180, 52, u)
+	// the recipient: opened once, then the link is gone
+	const rx = x + lw + 24, rw = width - lw - 24
+	panel(w, rx, top + 60, rw, 220, u)
+	for (let i = 0; i < 8; i++) circle(w, rx + 40 + i * 22, top + 130, 6, C.cobalt900)
+	bar(w, rx + 30, top + 180, rw - 100, 8, C.cobalt300)
+	statusPill(w, rx + 30, top + 236, u)
+	panel(w, rx, top + 320, rw, 160, u, { fill: C.cobalt50 })
+	bar(w, rx + 30, top + 380, rw - 90, 10, C.cobalt200)
+	bar(w, rx + 30, top + 410, rw - 150, 8, C.cobalt100)
 }
 
 /**
@@ -123,7 +160,7 @@ function requestUI(w, geom) {
  * (the Nextcloud app or pipeline it was used from) and what for. The newest use, by an app, is
  * the one orange ring.
  */
-const USAGE_CAPTION = 'Every use: who,\nwhen, where and why'
+const USAGE_CAPTION = 'Every use: who,\nwhen, where, why'
 function usageFrame(ctx) {
 	const U = 2.5
 	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq' })
@@ -166,9 +203,9 @@ const content = {
 	promiseLine: 'Human and machine passwords in one vault, on your own server',
 	title: 'Keepiq',
 	record: { one: 'password', many: 'passwords' },
-	logline: 'What if apps shared your team\'s vault? Apps use passwords without reading them, colleagues fill in a password by link, your own certificates renew themselves, and every use shows who, when, where and why.',
+	logline: 'What if apps shared your team\'s vault? Apps use passwords without reading them, you request passwords and certificates from partner organisations by link, you share a value by a link that vanishes after one view, and every use shows who, when, where and why.',
 	references: REFS,
-	techniques: ['#4 typewriter caption (the run log, the masked value)', '#11 whip-pan on the beat', '#3 grid-cell ripple (the usage rows)', '#2 zoom-out sentence build (the question)'],
+	techniques: ['#4 typewriter caption (the run log, the masked value)', '#9 text-swap on a held diagram (the burned link)', '#3 grid-cell ripple (the usage rows)', '#2 zoom-out sentence build (the question)'],
 	neighbours: ['integriq', 'openregister'],
 	builtOnApps: ['integriq'],
 	hook: {
@@ -182,27 +219,27 @@ const content = {
 	proofs: [
 		{
 			id: 'request',
-			title: 'Request passwords by link',
-			caption: 'Request passwords\nby link',
-			source: 'From the public-IT film (Round 20 merge). keepiq.json usp-ask-once-fill-once (verified): "Ask a colleague for one value that gets filled in once." Spec secret-requests (fill-in link, encrypted on receipt, write without read).',
-			motion: 'The hex lands as the request. The link runs in block by block; the fill-in page drops under it. Technique #4, typewriter: the masked value types itself into the one field, a dot every 0.1 s inside the orange ring, the cursor blinking after the last. The send button lands and the page closes into the vault row.',
-			sound: 'Key ticks under the dots, a soft lock click as it is sent.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nby link', drawUI: requestUI, tagFill: 'cobalt' }),
+			title: 'Request passwords from partners',
+			caption: 'Request passwords\nfrom partners',
+			source: 'Round 22b (Ruben: requesting passwords or certificates from other users or other organisations is critical to the process). Spec secret-requests on development: "A user or application can request that a secret be filled in by an external party"; requestable fields, a fill-in link, values encrypted on receipt with the requester\'s public certificate, optional expiry. keepiq.json usp-ask-once-fill-once (verified). Label: NIS2 / Cyberbeveiligingswet and BIO2 are named in Keepiq docs/FEATURES.md and spec compliance-reporting as the credential-hygiene drivers for Dutch government; the film names them as context only and claims no legal requirement.',
+			motion: 'Out of the hook the vault turns to a request. The request panel builds on the right, "Password" and "Certificate" ticking mint one a sixteenth, the small "NIS2 · BIO2" label settling top right. On beat 2 the fill-in link runs in block by block and takes the orange ring; a straight wire carries it left into the partner organisation\'s box, where the fill-in page opens and a masked value types itself in (technique #4), then the value runs back along the wire into the vault.',
+			sound: 'Ticks on the fields, a whoosh along the wire, key ticks under the dots, a soft lock click as it lands.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nfrom partners', drawUI: partnerRequestUI, tagFill: 'cobalt' }),
 		},
 		{
-			id: 'certificates',
-			title: 'Your certificates renew themselves',
-			caption: 'Your certificates\nrenew themselves',
-			source: 'keepiq.json usp-own-certificate-authority (verified): "Your vault runs its own certificate authority that renews itself." Spec certificate-lifecycle (inventory, expiry monitoring, guided renewal, CA health).',
-			motion: 'Technique #11, whip-pan on the beat: a 5-frame whip (ease.snap, --blur 4) lands on the certificate list. The third certificate\'s time-left track is almost empty; on beat 3 it refills to full in mint, its row takes the orange ring and a mint pill. The authority\'s health pill stays mint above.',
-			sound: 'A whoosh on the whip, a rising tick as the track refills, a pluck on the pill.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Your certificates\nrenew themselves', drawUI: certUI, tagFill: 'cobalt' }),
+			id: 'once',
+			title: 'Links that vanish after one view',
+			caption: 'Links that vanish\nafter one view',
+			source: 'Round 22b (Ruben: offering a one-time download or view link). Specs ephemeral-send ("The send burns after a configurable number of views (default 1), optionally expires, and can be revoked. Anyone with the link can read it once without an account.") and link-sharing (usage limit, auto-deletion when the limit is reached).',
+			motion: 'Hard cut on the beat to "Send by link": the masked value, "Max views" set to 1 inside the orange ring, the expiry, the link. The recipient\'s card opens on the right, the value readable once with a mint pill; on beat 3 the card below fades to its burned state (technique #9, text-swap on a held diagram: only the recipient\'s card changes).',
+			sound: 'A click on "1", a pluck as the recipient opens it, a soft dry puff as the link burns.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'dataLayer',
-		title: 'Every use: who, when, where and why',
-		caption: 'Every use: who,\nwhen, where and why',
+		title: 'Every use: who, when, where, why',
+		caption: 'Every use: who,\nwhen, where, why',
 		source: 'Ruben, Round 20 (a dashboard of when, where, what for and by whom, person or app, each password was used). Spec secret-audit-trail (every read recorded with timestamp, actor: user, application, system or link visitor, and event type; per-secret activity view, admin audit view with filters). "Where" and "what for" go beyond the fields that spec names today.',
 		motion: 'Round 20, the usage dashboard replaces the change log. The hex fill lands as the cobalt ground; the password card drops in on the right (0.35 s, ease.brand) with its uses per day, the bars growing left to right, today\'s in mint. On the next beat the uses table lays in under it; its four small column labels (Who, When, Where, What for) land first, then technique #3, grid-cell ripple as rows: the uses step 20% to 40% to full from the top, each with a person\'s avatar or an app\'s hex (Integriq, OpenRegister), the time, the Nextcloud app it came from and a purpose pill. The newest, by an app, takes the orange ring. The honeycomb field pops in from the bottom edge. Out: the cards step down (0.85, ease.exit) and the app tag travels into Built on Nextcloud.',
 		params: {},

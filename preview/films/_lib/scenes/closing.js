@@ -571,7 +571,9 @@ function turnInto(t, tField, tApp) {
 	return { field: 0, app: ease.outCubic(inv(fm, fm + F(2), t)) }
 }
 const fieldAt = (d) => F(1) + Math.min(d, 9) * F(1)
-const fieldShade = (d) => Math.max(0.18, 0.9 - d * 0.12)
+// Round 27d: ring 3, the one field ring between the C and the family, is shaded like ring 2 so it reads
+// when zoomed out (same colour, a touch more contrast).
+const fieldShade = (d) => (d === 3 ? 0.75 : Math.max(0.18, 0.9 - d * 0.12))
 /**
  * The re-zoom's turn-over for a cell d steps from the lead: the front squashes shut, then the back
  * opens. Returns { front, back } x scales (one of them 0).

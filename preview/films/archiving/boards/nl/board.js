@@ -45,7 +45,7 @@ const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR
 
 /** The Dutch closing words (the shared pieces take them as options, closing.js). */
 const BUILT_ON = { caption: 'Gebouwd op', markText: 'Nextcloud' }
-const INSTALL_NL = { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source en gratis' }
+const INSTALL_NL = { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source' }
 
 /* ---------- the frame every body scene shares ---------- */
 
@@ -338,7 +338,7 @@ export const boards = [
 	{
 		id: 'install', layer: 'brand', module: 'install', title: 'Install board (shared, Dutch slogans)',
 		start: OPEN + BODY + BUILT, end: TOTAL, bars: `${barOf(OPEN + BODY + BUILT)}-${barOf(TOTAL - 0.01)}`,
-		words: [...INSTALL_NL.slogans, INSTALL_NL.line].join('\n'), gloss: 'Install the app / Use the app / Your data stays yours / Always 100% open source and free',
+		words: [...INSTALL_NL.slogans, INSTALL_NL.line].join('\n'), gloss: 'Install the app / Use the app / Your data stays yours / Always 100% open source',
 		apps: ['conduction'],
 		motion: 'The shared install board as it is, with its slogans in Dutch: the Nextcloud cell travels to the corner and turns over into the Conduction avatar, the wordmark header, the three slogans ("Installeer de app" in orange), then the open-source line. Holds to the end, no fade.',
 		sound: 'A dry click as the cell turns, a click and a low impact on the call, ticks on the next two, the pad resolves.',

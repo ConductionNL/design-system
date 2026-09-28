@@ -39,7 +39,7 @@ if (Math.abs(START.install + INSTALL - DURATION) > 1e-6) console.error('duration
 
 for (const sc of SCENES) film.scene(sc.id, O + sc.start, O + sc.end, BUILDERS[sc.id])
 film.scene('builtOn', START.builtOn, START.install, (ctx) => builtOnScene(ctx, { apps: ['dossiq', 'filinq'], caption: 'Gebouwd op', markText: 'Nextcloud' }))
-film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source en gratis' }), { post: 0.001 })
+film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source' }), { post: 0.001 })
 
 /* ---------- sound cues, next to the motion that causes them (film seconds) ---------- */
 const at = (id, b) => O + SCENES.find((s) => s.id === id).start + b * SPB

@@ -72,7 +72,7 @@ function retentionUI(w, geom) {
 	;[x + 90, x + 420, x + 640].forEach((hx) => bar(w, hx, top + 30, 90, 8, C.cobalt400))
 	const due = [1, 2, 4, 6]
 	for (let r = 0; r < 7; r++) {
-		const cy = top + 90 + r * 66
+		const cy = top + 130 + r * 62 // Round 27c: the first row starts clear of the app tag (no hex over another)
 		if (r) rect(w, x + 20, cy - 33, width - 40, u, C.cobalt50)
 		hex(w, x + 56, cy, 16, C.cobalt300, 2)
 		bar(w, x + 90, cy - 6, 250 - (r % 3) * 40, 10, C.cobalt900)
@@ -135,6 +135,15 @@ const content = {
 	references: REFS,
 	techniques: ['#4 typewriter (the new field)', '#3 grid-cell ripple (records due flag themselves)', '#10 cluster-to-container merge (the privacy export)'],
 	neighbours: ['dossiq', 'portaliq', 'integriq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Registers', hook: 'Data model', retention: 'Retention', privacy: 'Privacy', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'zoom', fromName: 'the orange OpenRegister cell', toName: 'the new field', note: 'the camera goes into the register itself: from the promise to the record type the keeper edits'},
+		retention: {type: 'swap', fromName: 'the record type editor', toName: 'the records list', note: 'the same app window holds; only its content changes, from what a record is to the records themselves (#9)'},
+		privacy: {type: 'cluster', fromName: 'the records list', toName: 'the export package', note: 'the records break into loose pieces that gather into one export, the thing the caption promises (#10)'},
+		'general-dataLayer': {'type': 'hexWipe', 'fromName': 'the export', 'toName': 'the record history', 'note': 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	hook: {
 		title: 'New field? No developer needed',
 		caption: 'New field?\nNo developer needed',
@@ -177,7 +186,7 @@ const content = {
 	},
 	builtOnLit: true,
 	builtOnApps: ['dossiq', 'portaliq', 'integriq'],
-	builtOnMotion: 'Rounds 21 and 22 (_lib/scenes/closing.js builtOnScene with lead: \'openregister\', 4 bars): the ConNext film\'s component connection section with OpenRegister, the data layer, as the lead. OpenRegister pops in orange high on the right; "Built on" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Reply from Mail" ... "Manage from Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, OpenRegister still the one orange; the line becomes "Enhanced by Conduction". Every hex is the grid\'s own size. Everything leaves in the last four frames.',
+	builtOnMotion: 'Round 27 (_lib/scenes/closing.js builtOnScene with lead: \'openregister\', 4 bars; OpenRegister, the data layer, leads): OpenRegister flips in orange (every hex turns over by squashing; nothing pops or scales in); "Built on" and "Nextcloud" rise under the white Nextcloud mark, no name label by the cell. Nine Nextcloud apps flip in one a beat, in Nextcloud blue, round OpenRegister on the ring two out, open to the right: a C, the Conduction C, with OpenRegister at its heart; each gets a line drawn on FROM OpenRegister out to it, a Nextcloud-cyan head riding the line\'s front. The line under the headline names two of them, each held its reading time ("Reply from Mail", then "Share in Files", the name in Nextcloud cyan). A beat before bar 4 it becomes "Enhanced by Conduction"; on bar 4 the camera pulls back over two beats and the Conduction family flips in as a hexagonal ring round the C (the ring three out), each linked to its nearest cell, OpenRegister still the one orange. On the last beat the camera comes back in while every cell turns over, ring by ring from OpenRegister: they become the install board\'s quiet field and OpenRegister turns over into the Conduction avatar. The type leaves four frames before the bar line. Every hex is one grid cell at one radius.',
 	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the OpenRegister cell lands on the loop anchor and turns orange (the app icon exception on cobalt), the apps that keep their records in it (Dossiq, Portaliq, Integriq) lock in white round the Nextcloud hex. Under "OpenRegister" the question builds one word per sixteenth from two frames after the handover, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the OpenRegister cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 

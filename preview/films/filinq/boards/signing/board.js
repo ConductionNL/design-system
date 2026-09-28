@@ -125,6 +125,15 @@ const content = {
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge (details into the document)', '#11 whip-pan on the beat (to the phone)', '#4 typewriter (the changed clause)'],
 	neighbours: ['pipelinq', 'portaliq', 'openregister'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Contracts', hook: 'Templates', sign: 'Signing', template: 'Governance', 'general-flows': 'Automation'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'grow', fromName: 'the orange Filinq cell', toName: 'the filled document', note: 'a hex opens out of Filinq and the document fills itself inside it (#1)'},
+		sign: {type: 'match', fromName: 'the last filled value', toName: 'the sign button', note: 'the document just filled is the one signed: its orange carries to the phone'},
+		template: {type: 'swap', fromName: 'the signing screen', toName: 'the locked template', note: 'the window holds and the template behind the document steps in (#9)'},
+		'general-flows': {type: 'hexWipe', fromName: 'the template', toName: 'the flow canvas', note: 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['portaliq'],
 	hook: {
 		title: 'Pick a template, it fills itself',

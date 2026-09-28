@@ -132,6 +132,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the scan)', '#9 text-swap on a held diagram (found to removed)', '#5 stepped hex wipe (into the request)'],
 	neighbours: ['dossiq', 'openregister', 'portaliq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Disclosure', hook: 'Detection', redact: 'Redaction', request: 'Requests', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'zoom', fromName: 'the orange Filinq cell', toName: 'the found data', note: 'the camera goes into the document where the personal data sits'},
+		redact: {type: 'swap', fromName: 'the scanned page', toName: 'the checked page', note: 'the page holds and each match turns from found to removed (#9)'},
+		request: {type: 'cluster', fromName: 'the checked page', toName: 'the request screen', note: 'the checked documents gather into the one request they belong to (#10)'},
+		'general-dataLayer': {'type': 'hexWipe', 'fromName': 'the request', 'toName': 'the redaction history', 'note': 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['dossiq'],
 	hook: {
 		title: 'Names, ID numbers, bank accounts: found',

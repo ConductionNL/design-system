@@ -120,6 +120,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the live read)', '#9 text-swap on a held diagram (the bridge)', '#11 whip-pan on the beat (into the sign-in)'],
 	neighbours: ['openregister', 'dossiq', 'portaliq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Integration', hook: 'Base registries', bridge: 'Case systems', signin: 'Sign-in', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'grow', fromName: 'the orange Integriq cell', toName: 'the live read', note: 'a hex opens out of Integriq and the connected registry is inside it (#1)'},
+		bridge: {type: 'match', fromName: 'the orange live-read token', toName: 'the arriving message', note: 'the token that read the citizen live is the message that crosses the bridge'},
+		signin: {type: 'whip', fromName: 'the bridge', toName: 'the resident\'s phone', note: 'a move to the resident\'s side, a different screen: the whip reads as turning your head on the beat (#11)'},
+		'general-notify': {type: 'hexWipe', fromName: 'the sign-in', toName: 'the failing connection', note: 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['openregister'],
 	hook: {
 		title: 'Citizen data read live, never copied',

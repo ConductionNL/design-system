@@ -121,6 +121,15 @@ const content = {
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge (the landscape)', '#2 zoom-out (row to connections)', '#3 grid-cell ripple (the BIO matrix)'],
 	neighbours: ['openregister', 'opencatalogi', 'integriq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Architecture', hook: 'Landscape', dependencies: 'Dependencies', bio: 'Security', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'cluster', fromName: 'the orange Stackiq cell', toName: 'the landscape list', note: 'loose notes and lists gather into one list, the caption\'s promise (#10)'},
+		dependencies: {type: 'zoom', fromName: 'the orange application row', toName: 'its connections', note: 'the camera goes into one application to see what it touches'},
+		bio: {type: 'swap', fromName: 'the connection diagram', toName: 'the security matrix', note: 'the window holds and the matrix steps in (#9)'},
+		'general-notify': {type: 'hexWipe', fromName: 'the matrix', toName: 'the contract notice', note: 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['opencatalogi'],
 	hook: {
 		title: 'Every application, owner and supplier',

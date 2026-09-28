@@ -127,6 +127,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the new column)', '#9 text-swap on a held diagram (the filters)', '#1 dot-grows-to-fill (as a hex, into the other organisation)'],
 	neighbours: ['dossiq', 'pipelinq', 'portaliq', 'integriq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Vendors', hook: 'Data model', systems: 'Integrations', federation: 'Federation', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'zoom', fromName: 'the orange OpenRegister cell', toName: 'the new field chip', note: 'the camera goes into the data model the vendor builds on'},
+		systems: {type: 'match', fromName: 'the orange new field', toName: 'the reading system', note: 'the field just added is what the other systems read: its orange carries over'},
+		federation: {type: 'swap', fromName: 'the systems diagram', toName: 'the two organisations\' records', note: 'the window holds and the other organisation\'s records step in beside yours (#9)'},
+		'general-dataLayer': {'type': 'hexWipe', 'fromName': 'the linked records', 'toName': 'the record history', 'note': 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	hook: {
 		title: 'Change the model, records follow',
 		caption: 'Change the model,\nrecords follow',
@@ -169,7 +178,7 @@ const content = {
 	},
 	builtOnLit: true,
 	builtOnApps: ['dossiq', 'pipelinq', 'portaliq'],
-	builtOnMotion: 'Rounds 21 and 22 (_lib/scenes/closing.js builtOnScene with lead: \'openregister\', 4 bars): the ConNext film\'s component connection section with OpenRegister, the data layer, as the lead. OpenRegister pops in orange high on the right; "Built on" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Reply from Mail" ... "Manage from Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, OpenRegister still the one orange; the line becomes "Enhanced by Conduction". Every hex is the grid\'s own size. Everything leaves in the last four frames.',
+	builtOnMotion: 'Round 27 (_lib/scenes/closing.js builtOnScene with lead: \'openregister\', 4 bars; OpenRegister, the data layer, leads): OpenRegister flips in orange (every hex turns over by squashing; nothing pops or scales in); "Built on" and "Nextcloud" rise under the white Nextcloud mark, no name label by the cell. Nine Nextcloud apps flip in one a beat, in Nextcloud blue, round OpenRegister on the ring two out, open to the right: a C, the Conduction C, with OpenRegister at its heart; each gets a line drawn on FROM OpenRegister out to it, a Nextcloud-cyan head riding the line\'s front. The line under the headline names two of them, each held its reading time ("Reply from Mail", then "Share in Files", the name in Nextcloud cyan). A beat before bar 4 it becomes "Enhanced by Conduction"; on bar 4 the camera pulls back over two beats and the Conduction family flips in as a hexagonal ring round the C (the ring three out), each linked to its nearest cell, OpenRegister still the one orange. On the last beat the camera comes back in while every cell turns over, ring by ring from OpenRegister: they become the install board\'s quiet field and OpenRegister turns over into the Conduction avatar. The type leaves four frames before the bar line. Every hex is one grid cell at one radius.',
 	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the OpenRegister cell lands on the loop anchor and turns orange, the apps built on it (Dossiq, Pipelinq, Portaliq, Integriq) lock in white round the Nextcloud hex: the vendor\'s app would sit there too. Under "OpenRegister" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the OpenRegister cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 

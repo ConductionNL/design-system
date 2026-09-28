@@ -1,18 +1,18 @@
 /**
- * Archiving (nl): the first Dutch film (Round 10, Ruben, 2026-09-28). Not an app film but an
- * answer to a government question: how a Nextcloud workspace, with Conduction's apps and the
- * ZGW and ZDS standards, keeps you in line with MDTO and the Archiefwet. Core idea: pick
- * Nextcloud as your workspace and archiving stops being a verb and becomes the default.
+ * Archiving (nl): the first Dutch film (Round 10, Ruben, 2026-09-28), reworked in Round 16 around
+ * one premise: store correctly in Nextcloud, the workspace people already use, and you no longer
+ * need a separate DMS or archiving tool. Archiving happens where people work. The e-Depot is no
+ * longer a proof (Round 16: not a strong sale).
  *
  * Dutch on screen for this film only. Claims and sources: ds-connext-film-review/archiving/research.json.
  *
  *   opening  BRAND  the shared Conduction opening, 3 bars
- *   hook     the record manager's worry: "Is dit straks wel archiefwaardig?"  (mark: Archiefwet)
- *   proof 1  metadata written as the document is made                        (mark: MDTO)
+ *   hook     two worlds: "Nog een apart archief nodig?"                     (mark: Archiefwet)
+ *   proof 1  stored and described where you work                               (mark: MDTO, NEN-ISO 16175 label)
  *   proof 2  the retention period follows the case type                       (mark: Selectielijst)
- *   proof 3  destroyed or transferred, with proof                              (mark: e-Depot)
+ *   proof 3  destroyed on time, with approval and a trail, from the workspace  (mark: Vernietiging)
  *   proof 4  every case system speaks the same language                       (mark: ZGW en ZDS)
- *   promise  "Archiefwaardig vanaf het begin"                                 (mark: Nextcloud)
+ *   promise  "Je werkplek is het archief"                                      (mark: Nextcloud)
  *   builtOn  BRAND  "Built on Nextcloud", on screen in Dutch: "Gebouwd op Nextcloud"
  *   install  BRAND  the shared install board, its slogans in Dutch
  *
@@ -25,7 +25,7 @@
  *
  * Techniques (refs/techniques.md): #4 typewriter (the metadata types itself), #3 grid-cell
  * ripple (the selectielijst lights up to the case type's row), #1 dot-grows-to-fill as an upright
- * hex (into the e-Depot), #9 text-swap on a held diagram (the standards swap on the wires).
+ * hex (into the destruction round), #9 text-swap on a held diagram (the standards swap on the wires).
  */
 import { C } from '../../../_lib/brand.js'
 import { el, textBlock } from '../../../_lib/stage.js'
@@ -117,8 +117,35 @@ function docWithMeta(w, geom, { filled, ringPanel = false, ringField = -1, stand
 	if (ringPanel) rect(w, px - 8, top - 8, pw + 16, 616, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Hook: the document is done, its archival fields are empty: the worry, ringed. */
-const hookUI = (w, geom) => docWithMeta(w, geom, { filled: 0, ringPanel: true })
+/**
+ * Hook (Round 16): two worlds. The document done in the workspace (left, its metadata filled), and a
+ * separate archive (right, a grey second system) where the same fields wait to be typed again. The
+ * one orange rings the duplicate.
+ */
+function hookUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, top = geom.top, width = geom.r - geom.x
+	const lw = 400
+	docPage(w, x, top, lw, 560, { k: lw / 500, values: [118, 96, 72], lastOrange: false })
+	// The re-filing: a square-cornered arrow from the workspace into the other system.
+	const ax = x + lw + 10, ay = top + 250
+	rect(w, ax, ay - 1.5 * u, 70, 3 * u, C.cobalt300)
+	hex(w, ax + 76, ay, 10, C.cobalt300, 1)
+	// The separate archive: another system's chrome (grey), the same fields again, half typed.
+	const sx = ax + 100, sw = x + width - sx
+	rect(w, sx, top, sw, 560, C.cobalt50, 6 * u, { stroke: C.gray300, 'stroke-width': u })
+	rect(w, sx, top, sw, 56, C.gray300, 0)
+	mono(w, 'apart archief', sx + 24, top + 38, 26, C.cobalt700)
+	;['waardering', 'bewaartermijn', 'informatiecategorie', 'archiefvormer'].forEach((f, i) => {
+		const fy = top + 96 + i * 104
+		mono(w, f, sx + 24, fy + 8, 26)
+		rect(w, sx + 24, fy + 24, sw - 48, 44, C.white, 6, { stroke: C.cobalt200, 'stroke-width': u, 'stroke-dasharray': i < 1 ? 'none' : '10 8' })
+		if (i < 1) bar(w, sx + 40, fy + 41, 120, 11, C.cobalt900)
+		if (i === 1) rect(w, sx + 40, fy + 33, 3 * u, 26, C.cobalt)
+	})
+	// The one orange: the fields typed a second time.
+	rect(w, sx + 12, top + 72, sw - 24, 196, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
 
 /** Proof 1: the same document, the fields filling as it is made; the last one types on. */
 const mdtoUI = (w, geom) => docWithMeta(w, geom, { filled: 0.75, ringField: 4, standard: 'NEN-ISO 16175' })
@@ -158,32 +185,45 @@ function selectieUI(w, geom) {
 	rect(w, x + 60, ry + 25 - 1.5 * u, 40, 3 * u, C.cobalt300)
 }
 
-/** Proof 3: on the date, one record is destroyed with a certificate, the other goes to the e-Depot; below, the trail. */
-function edepotUI(w, geom) {
+/**
+ * Proof 3 (Round 16): destruction on time, from the same workspace. The records due today (left),
+ * the approval (right: a person, an approved pill, the one orange on the approve step), and under
+ * both the verklaring van vernietiging and the trail, chained row by row.
+ */
+function destroyUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.top, width = geom.r - geom.x
 	const bw = (width - 30) / 2
-	// Left: the verklaring van vernietiging, a page with a seal.
+	// Left: the destruction list, records due on their date.
 	panel(w, x, top, bw, 330, u)
-	mono(w, 'vernietigd', x + 28, top + 44, 28, C.cobalt700)
-	docPage(w, x + 40, top + 70, bw - 80, 230, { k: 0.4, values: [96, 72], lastOrange: false, shadow: null })
-	hex(w, x + bw - 80, top + 260, 26, C.forest, 3)
-	// Right: the e-Depot, the package arriving (stacked cells: the SIP), the one orange where it lands.
+	mono(w, 'vernietigingslijst', x + 28, top + 44, 28, C.cobalt700)
+	for (let i = 0; i < 4; i++) {
+		const ry = top + 80 + i * 58
+		rect(w, x + 20, ry, bw - 40, 46, i % 2 ? C.white : C.cobalt50, 4)
+		hex(w, x + 48, ry + 23, 12, C.lavender, 2)
+		bar(w, x + 72, ry + 18, [150, 120, 170, 130][i], 10, C.cobalt900)
+		bar(w, x + bw - 120, ry + 19, 70, 8, C.cobalt300)
+	}
+	// Right: the approval, a person and the approved step.
 	const rx = x + bw + 30
 	panel(w, rx, top, bw, 330, u)
-	mono(w, 'overgebracht', rx + 28, top + 44, 28, C.cobalt700)
-	rect(w, rx + 40, top + 90, bw - 80, 200, C.cobalt50, 6 * u)
-	;[[0, 0], [1, 0], [0.5, -0.86]].forEach(([c, r]) => hex(w, rx + bw / 2 - 30 + c * 60, top + 210 + r * 52, 28, C.cobalt, 3))
-	hex(w, rx + bw / 2 + 60, top + 150, 18, C.orange, 2)
-	// The trail: rows chained by a line through small hexes, nothing to rewrite.
+	mono(w, 'akkoord', rx + 28, top + 44, 28, C.cobalt700)
+	circle(w, rx + 70, top + 130, 34, C.cobalt300)
+	bar(w, rx + 122, top + 112, 160, 12, C.cobalt900)
+	bar(w, rx + 122, top + 138, 110, 8, C.cobalt300)
+	statusPill(w, rx + 40, top + 230, u)
+	hex(w, rx + bw - 60, top + 230, 18, C.orange, 2)
+	// Under both: the verklaring and the trail, rows chained through small hexes.
 	const ty = top + 360
 	panel(w, x, ty, width, 260, u)
+	docPage(w, x + width - 190, ty + 26, 160, 210, { k: 0.3, values: [96, 72], lastOrange: false, shadow: null })
+	hex(w, x + width - 60, ty + 210, 18, C.forest, 3)
 	rect(w, x + 50 - 1.5 * u, ty + 40, 3 * u, 180, C.cobalt200)
 	for (let i = 0; i < 4; i++) {
 		const cy = ty + 44 + i * 58
 		hex(w, x + 50, cy, 13, C.cobalt400, 2)
 		bar(w, x + 84, cy - 6, [260, 220, 300, 240][i], 11, C.cobalt900)
-		bar(w, x + width - 230, cy - 5, 190, 9, C.cobalt200)
+		bar(w, x + 400, cy - 5, 190, 9, C.cobalt200)
 	}
 }
 
@@ -238,22 +278,22 @@ const REFS = [
 
 const BODY_SCENES = [
 	{
-		id: 'hook', from: 0, to: 7, mark: 'Archiefwet', caption: 'Is dit straks wel\narchiefwaardig?', tag: { nc: true }, ui: hookUI,
-		title: 'The worry: will this hold up as a record?',
-		gloss: 'Will this be fit for the archive later?',
+		id: 'hook', from: 0, to: 7, mark: 'Archiefwet', caption: 'Nog een apart\narchief nodig?', tag: { nc: true }, ui: hookUI,
+		title: 'Two worlds: work in one place, file again in another',
+		gloss: 'Do you still need a separate archive?',
 		apps: ['nextcloud'],
-		motion: 'Frame 1 is the thumbnail: the question in the type column, a finished document in Nextcloud on the right, its archival fields empty (dashed slots) and the panel ringed in orange: the worry. Nextcloud\'s own hex sits on the loop anchor. Two beats still, then the camera pushes in on the empty panel (1.0 to 1.6, ease.brand). On beat 6 the first empty slot blinks once: the cue for proof 1.',
-		sound: 'Gentle open, no stinger: pad and offbeat bass. A soft low tick as the orange ring draws.',
-		source: 'The record manager\'s question (Ruben, Round 10 brief). Nextcloud as the workspace: bible truth 10.',
+		motion: 'The window slides in over the opening\'s fading handover field. Left the finished document in the workspace; a square-cornered arrow carries it into a second, grey system on the right, the separate archive, where the same fields wait to be typed again; a cursor blinks in the second one. On beat 3 the orange ring draws round the fields typed twice: the pain. On beat 6 the arrow and the grey system flick out one frame early: the cue for proof 1, where the metadata stays in the workspace.',
+		sound: 'Gentle open, no stinger. Two dull ticks as the arrow re-files, a low tick as the orange ring draws.',
+		source: 'Ruben, Round 16: the pain of two worlds (work in the workspace, re-file into a separate archive or DMS, metadata typed twice). Nextcloud as the workspace: bible truth 10.',
 	},
 	{
-		id: 'mdto', from: 7, to: 15, mark: 'MDTO', caption: 'Beschreven\nterwijl je het maakt', tag: { app: 'filinq' }, ui: mdtoUI,
-		title: 'The metadata is written as the document is made',
-		gloss: 'Described while you make it',
+		id: 'mdto', from: 7, to: 15, mark: 'MDTO', caption: 'Bewaard\nwaar je werkt', tag: { app: 'filinq' }, ui: mdtoUI,
+		title: 'Kept where you work, described as it is made',
+		gloss: 'Kept where you work (the MDTO fields typing in say: described as you make it)',
 		apps: ['filinq', 'openregister'],
 		motion: 'Technique #4, typewriter. No cut: the push-in holds on the panel and the dashed slots fill top to bottom, one per beat, each value typing on at one greeked character pair per 0.1 s with a hard on and off, a cursor after it. The field names are MDTO\'s own (waardering, bewaartermijn, informatiecategorie, archiefvormer, dekkingInTijd) as small mono labels. The slot being typed takes the orange ring. The panel head carries one small label, NEN-ISO 16175 (Round 12): the records-management standard the metadata follows, a label only, never "certified" or "compliant". Filinq\'s hex on the anchor: the document is Filinq\'s.',
 		sound: 'Soft key ticks under the typing, a pluck as each field completes, a brighter pluck on the last.',
-		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test). NEN-ISO 16175 label: openregister archivering-vernietiging spec:665 (NEN-ISO 16175-1:2020, the successor to NEN 2082).',
+		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test). NEN-ISO 16175 label: openregister archivering-vernietiging spec:665 (NEN-ISO 16175-1:2020, the successor to NEN 2082). Stored in the workspace: procest document-zaakdossier spec:14 (every document a Nextcloud file in the case\'s own folder); openregister object-interactions spec:154 (files stored in Nextcloud\'s filesystem via IRootFolder, linked to the record).',
 	},
 	{
 		id: 'selectielijst', from: 15, to: 23, mark: 'Selectielijst', caption: 'Het zaaktype kent\nzijn bewaartermijn', tag: { app: 'dossiq' }, ui: selectieUI,
@@ -265,26 +305,26 @@ const BODY_SCENES = [
 		source: 'research.json c2: procest archief-edepot-handover spec:14 (per-zaaktype retention: bewaartermijn, selectielijst categorie/versie, e-Depot bestemming, MDTO version); case-types spec:81 (archiefnominatie per result type); openregister retention-management spec:49 and :79; Filinq archiefwet-retention-engine proposal.',
 	},
 	{
-		id: 'edepot', from: 23, to: 31, mark: 'e-Depot', caption: 'Op tijd vernietigd\nof overgebracht', tag: { app: 'openregister' }, ui: edepotUI,
-		title: 'Destroyed or transferred on time, with proof',
-		gloss: 'Destroyed or transferred, on time (the proof is the trail on screen)',
+		id: 'vernietiging', from: 23, to: 31, mark: 'Vernietiging', caption: 'Vernietigd met\nakkoord en spoor', tag: { app: 'openregister' }, ui: destroyUI,
+		title: 'Destroyed on time, with approval and a trail, from the same workspace',
+		gloss: 'Destroyed with approval and a trail (on time: the date comes from the selectielijst beat before)',
 		apps: ['openregister'],
-		motion: 'Technique #1, dot-grows-to-fill as an upright hex: the orange result hex from proof 2 grows past the frame (hexCut, ease.snap, one beat) and shrinks into this scene\'s landing point in the e-Depot. Left the record goes out with its verklaring van vernietiging (a page with a seal); right the package lands in the e-Depot as three stacked cells. Under both, the trail builds row by row, each row chained to the last through a small hex: every step recorded, nothing to rewrite.',
-		sound: 'A whoosh through the hex, a low thud as the package lands, a tick per trail row.',
-		source: 'research.json c3: openregister retention-management spec:108, :136 (approval), :174 (certificate), :189 (legal hold); edepot-transfer spec:36 (SIP), :162 (read-only), :180 (trail); edepot-proof-of-transfer spec:37; audit-hash-chain spec:34 (SHA-256 chain); positioning openregister usp-archive-destroy (verified).',
+		motion: 'Technique #1, dot-grows-to-fill as an upright hex: the orange result hex from proof 2 grows past the frame (ease.snap, one beat) and the new window opens out of a hex at the approve step. Left the destruction list, records due on their date, rows landing one a sixteenth; right the approval, a person and the approved pill, the orange hex on the approve step; under both the verklaring van vernietiging lands with its seal and the trail builds row by row, chained through small hexes. All in the same workspace window: no second system.',
+		sound: 'A whoosh through the hex, ticks as the list rows land, a crisp click on the approval, a tick per trail row.',
+		source: 'research.json c3: openregister retention-management spec:108 (destruction lists via a background job), :136 (multi-step approval), :174 (destruction certificates), :189 (legal hold); archivering-vernietiging spec:529 (the file deletion logged as archival.file_destroyed); audit-hash-chain spec:34 (SHA-256 chain); positioning openregister usp-archive-destroy (verified). The e-Depot is no longer a proof (Round 16).',
 	},
 	{
 		id: 'standards', from: 31, to: 39, mark: 'ZGW en ZDS', caption: 'Elk zaaksysteem\nspreekt dezelfde taal', tag: { app: 'dossiq' }, ui: standardsUI,
 		title: 'Every case system speaks the same language',
 		gloss: 'Every case system speaks the same language',
 		apps: ['dossiq', 'filinq'],
-		motion: 'Technique #9, text-swap on a held diagram. Whip in (4 frames, ease.snap). The case sits on top; square-cornered wires split at the orange hex to two boxes whose fields fill one per beat. The diagram then holds while only the box heads swap: ZGW stays, the second head steps from StUF-ZKN to StUF-ZDS on the next beat. Stillness after the busy e-Depot beat.',
+		motion: 'Technique #9, text-swap on a held diagram. Whip in (4 frames, ease.snap). The case sits on top; square-cornered wires split at the orange hex to two boxes whose fields fill one per beat. The diagram then holds while only the box heads swap: ZGW stays, the second head steps from StUF-ZKN to StUF-ZDS on the next beat. Stillness after the busy destruction beat.',
 		sound: 'A whip whoosh, a line-draw hiss, a pluck per box, a dry click on the swap.',
 		source: 'research.json c4: procest zgw-api-mapping, zgw-brc, zgw-autorisaties-api, stuf-integration, stuf-zkn-outbound; docudesk generate-store-in-case-system (ZGW and StUF-ZDS sources). ZDS is named only in Filinq\'s change.',
 	},
 ]
 
-const PROMISE = { from: 39, to: 48, mark: 'Nextcloud', text: 'Archiefwaardig\nvanaf het begin' }
+const PROMISE = { from: 39, to: 48, mark: 'Nextcloud', text: 'Je werkplek\nis het archief' }
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.floor(t / BAR + 1e-6) + 1
@@ -316,14 +356,14 @@ export const boards = [
 	},
 	...BODY_SCENES.map(bodyBoard),
 	{
-		id: 'promise', layer: 'brand', module: 'promise', title: 'The promise: fit for the archive from the start',
+		id: 'promise', layer: 'brand', module: 'promise', title: 'The promise: your workspace is the archive',
 		start: pStart, end: OPEN + BODY, bars: `${barOf(pStart)}-${barOf(OPEN + BODY - 0.01)}`,
-		words: PROMISE.text, mark: PROMISE.mark, gloss: 'Fit for the archive from the start',
+		words: PROMISE.text, mark: PROMISE.mark, gloss: 'Your workspace is the archive',
 		shows: pShows, clears: pClears, hold: +(pClears - pShows).toFixed(2),
 		apps: ['openregister', 'dossiq', 'filinq', 'nextcloud'],
-		motion: `The answer to the hook's question, in its own word. The three apps that do the archiving land round the Nextcloud workspace hex, OpenRegister in orange up-left on the loop anchor (the app icon exception on cobalt), Dossiq and Filinq in white; the Nextcloud hex lands at 1.4x and settles. "Nextcloud" as the chapter mark, the promise rises under it by ${s2(pShows)} and holds to ${s2(pClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which Built on picks up, no cut.`,
+		motion: `The answer to the hook's question: no separate archive, the workspace is it. The three apps that do the archiving land round the Nextcloud workspace hex, OpenRegister in orange up-left on the loop anchor (the app icon exception on cobalt), Dossiq and Filinq in white; the Nextcloud hex lands at 1.4x and settles. "Nextcloud" as the chapter mark, the promise rises under it by ${s2(pShows)} and holds to ${s2(pClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which Built on picks up, no cut.`,
 		sound: 'A pluck as OpenRegister lands, a low thud under the Nextcloud hex, a soft pad swell under the promise. A crisp click on the bar line.',
-		source: 'Ruben, Round 10: pick Nextcloud as the workspace and archiving becomes the default. The three apps: research.json appsDoingArchivingWork.',
+		source: 'Ruben, Round 16: store correctly in Nextcloud and you need no separate DMS or archiving tool. The three apps: research.json appsDoingArchivingWork.',
 		draw: (ctx) => promiseFrame(ctx, PROMISE),
 	},
 	{
@@ -363,17 +403,17 @@ function budget() {
 		return { id: b.id, words, hold: b.hold, need: +need.toFixed(2), issues }
 	})
 	const total = rows.reduce((a, r) => a + r.words, 0)
-	const filmIssues = total < 25 || total > 30 ? [`${total} words in the body (brief: 25 to 30)`] : []
+	const filmIssues = total < 25 || total > 32 ? [`${total} words in the body (Round 16 brief: 25 to 32)`] : []
 	return { total, ok: !filmIssues.length && rows.every((r) => !r.issues.length), filmIssues, rows }
 }
 
 export const meta = {
 	id: 'archiving-nl',
-	title: 'Archiveren als standaard (nl)',
+	title: 'Je werkplek is het archief (nl)',
 	language: 'nl',
-	logline: 'A Dutch release film answering a government question: with Nextcloud as the workspace and OpenRegister, Dossiq and Filinq on it, a record is described in MDTO terms as it is made, keeps the retention period of its case type, is destroyed or transferred to the e-Depot on time with proof, and every case system reads it over ZGW or StUF-ZDS. Archiving stops being a task and becomes the default.',
+	logline: 'A Dutch release film on one premise (Round 16): store correctly in Nextcloud, the workspace people already use, and you need no separate DMS or archive. A document is stored and described in MDTO terms where you work, keeps the retention period of its case type, is destroyed on time with approval and a trail from the same workspace, and every case system reads it over ZGW or StUF-ZDS.',
 	references: REFS,
-	techniques: ['#4 typewriter (the metadata types itself)', '#3 grid-cell ripple (the selectielijst)', '#1 dot-grows-to-fill as an upright hex (into the e-Depot)', '#9 text-swap on a held diagram (the standards)'],
+	techniques: ['#4 typewriter (the metadata types itself)', '#3 grid-cell ripple (the selectielijst)', '#1 dot-grows-to-fill as an upright hex (into the destruction round)', '#9 text-swap on a held diagram (the standards)'],
 	template: 'archiving (archFrame on the app-film grid)',
 	format: '16x9',
 	background: C.cobalt,

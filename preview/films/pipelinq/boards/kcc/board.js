@@ -127,8 +127,8 @@ function knowledgeUI(w, geom) {
 const content = {
 	app: 'pipelinq',
 	audience: { slug: 'kcc', name: 'Municipal contact centres', persona: 'Sanne de Wit, KCC officer; the head of the contact centre buys' },
-	promise: 'The whole citizen,\none click',
-	promiseLine: 'The whole citizen in one click: every case, invoice, permit and contact, the answer at hand while you talk, and nothing dropped when you hand it on',
+	promise: 'Answered on\nthe first call',
+	promiseLine: 'The citizen answered on the first call: every case, invoice, permit and contact on one view, the answer at hand while you talk, and nothing dropped when you pass it on',
 	title: 'Pipelinq for contact centres',
 	record: { one: 'citizen', many: 'citizens' },
 	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, invoices, permits, letters and chats in one view; the right knowledge appears while you type; and refer, note, call back or hand a task to a colleague, who hears at once.',
@@ -137,8 +137,8 @@ const content = {
 	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'The phone rings, the citizen opens',
-		caption: 'The phone rings,\nthe citizen opens',
+		title: 'The phone rings, their file opens',
+		caption: 'The phone rings,\ntheir file opens',
 		ui: { drawUI: callUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 8: "a call pop-up at the right of the screen that opens the citizen dashboard in one click"',
 		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the agent\'s list in the window, the Pipelinq hex (cobalt: the one orange is the Open ring) on the loop anchor. On beat 2 the call pop-up slides in from the right edge (0.3 s, ease.brand) with a small flat shadow; its ringing pip pulses twice (scale 1.0 to 1.3, on the beat). On beat 5 Open presses (scale 0.97 and back). Out: technique #1, the Open button becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat); its fill is the citizen dashboard\'s ground.',
@@ -166,8 +166,8 @@ const content = {
 	],
 	general: {
 		module: 'notify',
-		title: 'Refer, note, call back, nobody drops it',
-		caption: 'Refer, note, call back:\nnobody drops it',
+		title: 'Pass it to a colleague, nothing dropped',
+		caption: 'Pass it to a colleague,\nnothing dropped',
 		source: 'Ruben, Round 8 and 9: "refer to a colleague, callback note, notes on cases, tasks for colleagues"; story.json mechanic 8 (the right colleague hears in the Nextcloud notifications)',
 		motion: 'Technique #9, text-swap on a held card: the citizen\'s record card holds on the right; its action chip swaps one per beat (refer, note, call back, task: the old chip leaves upward as the new rises, 4 frames), and on the last the stage marker steps on, a pulse runs down the wire to the Nextcloud header and the colleague\'s notice drops in on top of the list. The caption holds whole. Out: the card steps down and the app tag travels to its cell in the promise cluster.',
 		params: {

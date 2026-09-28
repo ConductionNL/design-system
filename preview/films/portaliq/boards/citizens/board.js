@@ -143,8 +143,8 @@ const content = {
 	neighbours: ['dossiq', 'pipelinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'Your case, no phone call',
-		caption: 'Your case,\nno phone call',
+		title: 'Check your case without calling',
+		caption: 'Check your case\nwithout calling',
 		ui: { drawUI: caseUI, tagFill: 'cobalt', header: false },
 		source: 'positioning portaliq sp-gov-identity-signin ("Residents and businesses already sign in with DigiD or eHerkenning."), sp-case-status-tracking ("Your case\'s status and its documents sit on one page."), usp-fleet-data-in-your-portal (verified)',
 		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the portal page in the window, the Portaliq hex (cobalt: the one orange is the current step) on the loop anchor. Over the first two beats the three lower rows start as loose hexes carrying their apps\' glyphs (Dossiq, Shillinq, Filinq) scattered over the frame and each tweens into its row on ease.brand, arriving within one beat: what is theirs from every app, in one portal. The status stepper fills to the current step, which takes the orange ring.',
@@ -162,12 +162,12 @@ const content = {
 		},
 		{
 			id: 'receipt',
-			title: 'No account, just a receipt code',
-			caption: 'No account,\njust a receipt code',
+			title: 'Report anonymously, keep a receipt code',
+			caption: 'Report anonymously,\nkeep a receipt code',
 			source: 'positioning portaliq usp-anonymous-reporting: "File a report with no account and keep a receipt code." (verified)',
 			motion: 'Technique #4, typewriter. The portal header drops its signed-in person (nobody is signed in). The report is already sent (mint); in the ringed box below the receipt code types itself, one character every 0.1 s, hard on and off, with a cursor. Out on the last beat: technique #6, a cobalt-900 diagonal wipe crosses left to right in 5 frames into the colleague\'s side.',
 			sound: 'Key clicks under the typing, a percussive hit on the wipe.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'No account,\njust a receipt code', drawUI: receiptUI, tagFill: 'cobalt', header: false }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Report anonymously,\nkeep a receipt code', drawUI: receiptUI, tagFill: 'cobalt', header: false }),
 		},
 	],
 	general: {

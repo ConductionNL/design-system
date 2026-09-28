@@ -118,8 +118,8 @@ function patternUI(w, geom) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'organisations', name: 'Organisation cases (beyond positioning)', persona: 'The head of customer service, HR or legal at a company, who owns complaints, HR and legal cases; the operations or IT lead buys' },
-	promise: 'Your process,\nevery case',
-	promiseLine: 'Handle every kind of case the way your company decides, the same way every time, on your own server',
+	promise: 'Every case handled\nyour way, every time',
+	promiseLine: 'Every case handled your way, every time: your own process, complaints numbered and owned, patterns spotted, on your own server',
 	title: 'Dossiq for organisations',
 	record: { one: 'case', many: 'cases' },
 	logline: 'For companies: draw your own case process once, every complaint arrives with a number, an owner and a deadline, the complaint that keeps coming back shows itself, and every change is on record.',
@@ -147,12 +147,12 @@ const content = {
 		},
 		{
 			id: 'pattern',
-			title: 'Keeps coming back? You see it',
-			caption: 'Keeps coming back?\nYou see it',
+			title: 'Same complaint again? Spot the pattern',
+			caption: 'Same complaint again?\nSpot the pattern',
 			source: 'Dossiq spec complaint-management: "Frequency analysis MUST detect patterns in complaints ... recurring complaints about the same subject, department, or employee". Beyond positioning.',
 			motion: 'Push down to the complaints by subject and week. Technique #3, grid-cell ripple: the hex grid steps 20% to 40% to full opacity in waves from the left, week by week (0.3 s per wave); one subject\'s row keeps lighting week after week, and on the last wave the row takes the orange ring.',
 			sound: 'A soft ripple of ticks with each wave, a low pluck as the row is ringed.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Keeps coming back?\nYou see it', drawUI: patternUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Same complaint again?\nSpot the pattern', drawUI: patternUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

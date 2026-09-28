@@ -25,6 +25,7 @@
  * #3 grid-cell ripple (the register cells in the teacher view step on in waves).
  */
 import { C } from '../../../_lib/brand.js'
+import { textBlock } from '../../../_lib/stage.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, statusPill, idlePill, phone, bubble, use } from '../../../_lib/ui.js'
@@ -123,8 +124,8 @@ function excuseUI(w, geom) {
 const content = {
 	app: 'learniq',
 	audience: { slug: 'schools', name: 'Schools and parents', persona: 'Marloes ten Berge, learning support coordinator, and the parents who excuse their child from their phone; the school board\'s ICT coordinator buys' },
-	promise: 'The same work,\neasier to carry',
-	promiseLine: 'Everything about a pupil in one place, and one view for the teacher: the same work, easier to carry, on the school\'s own server',
+	promise: 'Every pupil\'s file,\nfor every teacher',
+	promiseLine: 'Every pupil\'s file, for every teacher: one file per pupil and one class view, on the school\'s own server',
 	title: 'Learniq for schools',
 	record: { one: 'pupil', many: 'pupils' },
 	logline: 'For schools, with the parent side in the film: the student file holds everything about one pupil, the teacher sees the class in one view, a parent excuses their child from their phone and the register updates, and the 16-hour report goes out on time. It does not remove the work; it makes it easier to carry.',
@@ -143,27 +144,27 @@ const content = {
 	proofs: [
 		{
 			id: 'teacher',
-			title: 'All you need, in one place',
-			caption: 'All you need,\nin one place',
+			title: 'Marks and absence, one class view',
+			caption: 'Marks and absence,\none class view',
 			source: 'Ruben, Round 11: "one integrated view of information for teachers"; claimed honestly (the work stays, it gets easier to carry); positioning learniq sp-grade-your-way, sp-statutory-attendance',
 			motion: 'Continuous from the hook (technique #2, zoom-out): the file has become the ringed row; the class view settles round it. Technique #3, grid-cell ripple: the week\'s attendance cells step 20% to 40% to full opacity in waves across the class, row by row, then the marks bars grow and the note hexes pop. The caption rises as the pull-back ends. Nothing on screen says less work: the same rows, one view.',
 			sound: 'A ripple of ticks with the attendance waves, a pluck as the marks land.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'All you need,\nin one place', drawUI: teacherUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Marks and absence,\none class view', drawUI: teacherUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'excuse',
-			title: 'A parent excuses, the register updates',
-			caption: 'A parent excuses,\nthe register updates',
+			title: 'Absence reported, the register updates',
+			caption: 'Absence reported,\nthe register updates',
 			source: 'positioning learniq sp-statutory-attendance scene: "The register updates itself the moment a guardian sends an excuse."',
 			motion: 'Technique #4, typewriter. The parent\'s phone rises into the window; the excuse types itself in the bubble (one greeked character pair per 0.1 s, hard on and off) with a cursor, then sends (the pill turns mint). On the send beat the absent cell turns lavender (excused) and takes the orange edge. The caption rises as the typing starts.',
 			sound: 'Tiny key clicks under the typing, a soft send swoosh, a pluck as the cell changes.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'A parent excuses,\nthe register updates', drawUI: excuseUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Absence reported,\nthe register updates', drawUI: excuseUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'notify',
-		title: '16 hours missed, reported on time',
-		caption: '16 hours missed?\nReported on time',
+		title: 'Absence limit hit, reported on time',
+		caption: 'Absence limit hit?\nReported on time',
 		source: 'positioning learniq sp-statutory-attendance: the Leerplichtwet 16-hour threshold, reported through the national absence desk within five working days; story.json mechanic 8 (the right person hears)',
 		params: {
 			record: { avatar: 'person', title: 240, sub: 150, status: 'none' },
@@ -175,4 +176,15 @@ const content = {
 	},
 }
 
-export const { meta, boards } = audienceFilm(content)
+const film = audienceFilm(content)
+// Round 18: the local term stays as a small label in the picture; the caption says it in plain words.
+const gen = film.boards.find((b) => b.id === 'general-notify')
+if (gen) {
+	const draw = gen.draw
+	gen.draw = (ctx) => {
+		const r = draw(ctx)
+		textBlock(ctx.g, 'Leerplichtwet · 16 hours', { x: 1090, y: 466, size: 28, weight: 500, family: 'IBM Plex Mono', fill: C.white, clip: false })
+		return r
+	}
+}
+export const { meta, boards } = film

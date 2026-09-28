@@ -121,21 +121,21 @@ const content = {
 	proofs: [
 		{
 			id: 'booked',
-			title: 'See the fitter booked, live',
-			caption: 'See the fitter\nbooked, live',
+			title: 'Watch your repair get booked',
+			caption: 'Watch your repair\nget booked',
 			source: 'positioning portaliq sp-case-status-tracking; research.json proof moment "sees a fitter get booked on screen, and the status updates live without a phone call"',
 			motion: 'Technique #9: no cut. The phone holds where it was; only the caption swaps (4 frames), the phone\'s send button turns into its mint "sent" pill, and beside it the status grows top to bottom: reported (mint), booked (cobalt, the orange ring stepping out once) with the fitter and the date chip dropping in. Out on the last beat: technique #11, a 5-frame whip-pan left (ease.snap, --blur 4).',
 			sound: 'A pluck as each step lands, a brighter one on booked, a short whoosh on the whip.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'See the fitter\nbooked, live', drawUI: bookedUI, tagFill: 'cobalt', header: false }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Watch your repair\nget booked', drawUI: bookedUI, tagFill: 'cobalt', header: false }),
 		},
 		{
 			id: 'details',
-			title: 'Fix your details, no ticket',
-			caption: 'Fix your details,\nno ticket',
+			title: 'Members fix their own details',
+			caption: 'Members fix their\nown details',
 			source: 'positioning portaliq usp-self-service-corrections: "You fix, withdraw or undo your own request without calling anyone." (verified); research.json proof moment for cg-chambers-associations',
 			motion: 'The whip lands on a member\'s profile. The second field opens for editing in place (its edge turns orange), the old value leaves upward and the new one types in, the cursor blinks twice, and the field\'s pill turns mint: saved, no ticket opened.',
 			sound: 'Key clicks under the new value, a soft pluck as it saves.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Fix your details,\nno ticket', drawUI: detailsUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Members fix their\nown details', drawUI: detailsUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

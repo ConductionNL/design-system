@@ -65,6 +65,10 @@ export function backlogUI(w, geom, a = {}) {
 			bar(w, lx + 70, cy + 26, Math.min(cw, lw - 110), 10, C.cobalt900)
 			bar(w, lx + 70, cy + 46, Math.min(cw, lw - 110) * 0.5, 7, C.cobalt300)
 			circle(w, lx + lw - 50, cy + 74, 14, c === 1 ? C.cobalt400 : C.cobalt200)
+			// Round 18: every case shows its deadline, a term track (how much of the term is used).
+			const dl = [0.3, 0.55, 0.8, 0.45][(i + c) % 4]
+			rect(w, lx + 30, cy + 70, 120, 8, C.cobalt100, 4)
+			rect(w, lx + 30, cy + 70, 120 * dl, 8, dl > 0.75 ? C.lavender : C.cobalt400, 4)
 			w = root
 		})
 	})
@@ -328,8 +332,8 @@ export function shareUI(w, geom, a = {}) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'casework', name: 'Municipal casework', persona: 'Mireille Hendriks, case handler; Femke van Dijk, social-domain consultant; the manager of public services buys' },
-	promise: 'The whole team,\nevery case',
-	promiseLine: 'Your team works every case from one backlog, with its documents and knowledge at hand, kept in international, Danish and Dutch case standards, on the Nextcloud you already run',
+	promise: 'Every case,\nevery deadline met',
+	promiseLine: 'Every case, every deadline met: one backlog with each case\'s deadline in view, documents and guidance at hand, international and local standards built in, on the Nextcloud you already run',
 	title: 'Dossiq for municipal casework',
 	record: { one: 'case', many: 'cases' },
 	logline: 'For municipal and social-domain casework: one backlog the whole team works from, documents edited right in the case, the related knowledge appearing while you work, every case in CMMN, OIO Sag og Dokument and ZGW, and flows you draw once and share through the store. No AI in this film. Body 12 bars (Round 15).',
@@ -345,27 +349,27 @@ const content = {
 		caption: 'Your team,\none backlog',
 		ui: { drawUI: backlogUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 8: "work backlog, overview, working in teams"; Dossiq specs my-work, add-work-queue, werkvoorraad-intelligent-queue, reassignment-bulk-action',
-		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the backlog in three lanes, the Dossiq hex (cobalt: the one orange is the picked-up case) on the loop anchor. Over the first two beats the case cards start as loose hexes scattered over the window and each tweens into its lane on ease.brand, arriving within one beat. On beat 5 one card moves from the team\'s lane to a colleague\'s (ease.snap) and takes the orange ring.',
+		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the backlog in three lanes, each case with its deadline track (Round 18), the Dossiq hex (cobalt: the one orange is the picked-up case) on the loop anchor. Over the first two beats the case cards start as loose hexes scattered over the window and each tweens into its lane on ease.brand, arriving within one beat. On beat 5 one card moves from the team\'s lane to a colleague\'s (ease.snap) and takes the orange ring.',
 		sound: 'Gentle open. A run of soft ticks as the cards land, a pluck as the case changes hands.',
 	},
 	proofs: [
 		{
 			id: 'documents',
-			title: 'Edited right in the case',
-			caption: 'Edited right\nin the case',
+			title: 'Edit documents inside the case',
+			caption: 'Edit documents\ninside the case',
 			source: 'Ruben, Round 8 ("automatic document creation and editing documents (Word files) from inside the case through Nextcloud") and Round 15 (edit a case\'s attached documents from the workspace, or create them from templates); Dossiq specs document-zaakdossier, template-library, beschikking-generatie',
 			motion: 'Technique #1: the picked-up case\'s ring becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and lands as the case\'s documents. The second document\'s row takes the orange ring and the editor slides in beside it under Nextcloud\'s blue toolbar; the template\'s values fill a sixteenth apart, then one line is edited on. No second window, no download: right in the case.',
 			sound: 'A whoosh through the hex, a soft click as the editor opens, three plucks as the values fill, light key ticks.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Edited right\nin the case', drawUI: documentsUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Edit documents\ninside the case', drawUI: documentsUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'knowledge',
-			title: 'While you work, the answers appear',
-			caption: 'While you work,\nthe answers appear',
+			title: 'Type a note, guidance appears',
+			caption: 'Type a note,\nguidance appears',
 			source: 'Ruben, Round 9 and 15: the knowledge graph, related knowledge appearing while you work the case, the same device as the Pipelinq contact-centre film ("Start typing, the answer appears")',
 			motion: 'Technique #4, typewriter, as in the Pipelinq contact-centre film: the case note types itself on (greeked characters in steps, hard on and off, a cursor); after the first line the related knowledge items land in the panel on the right one per beat, linked by a thin line, and the best match takes the orange ring. Out: technique #5, four upright hexes step in from the right edge 70 ms apart.',
 			sound: 'Soft key ticks under the typing, a pluck as each item lands, four dry clicks on the wipe.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'While you work,\nthe answers appear', drawUI: knowledgeUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Type a note,\nguidance appears', drawUI: knowledgeUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'standards',
@@ -387,12 +391,12 @@ const content = {
 		},
 		{
 			id: 'share',
-			title: 'Share your case types and flows',
-			caption: 'Share your case types\nand flows',
+			title: 'Built once, reused by councils',
+			caption: 'Built once,\nreused by councils',
 			source: 'Ruben, Round 8 ("share case types and workflows through the store") and Round 15 (a case type and a flow go to the store and land at a second organisation); Dossiq specs workflow-import-export, case-type-publish-validation',
 			motion: 'One council\'s column on the left, the store (a side box) in the middle, a second organisation\'s empty column on the right. On the beat the case type card lifts a copy into the store (ease.brand), the flow card a sixteenth behind; on the next beat both copies slide out to the right and settle into the empty slots, which take the orange ring together.',
 			sound: 'A soft whoosh as the copies go in, a second as they come out, a pluck as they land.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your case types\nand flows', drawUI: shareUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Built once,\nreused by councils', drawUI: shareUI, tagFill: 'cobalt' }),
 		},
 	],
 

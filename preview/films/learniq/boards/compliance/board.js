@@ -82,8 +82,8 @@ function walletUI(w, geom) {
 const content = {
 	app: 'learniq',
 	audience: { slug: 'compliance', name: 'Compliance training', persona: 'Robert de Groot, compliance officer; the HR and L&D manager co-buys' },
-	promise: 'Ready before\nthe inspector asks',
-	promiseLine: 'Every rule\'s training coverage on one page, before the inspector asks',
+	promise: 'Training proof,\nready for inspectors',
+	promiseLine: 'Training proof, ready for inspectors: every rule\'s coverage on one page, signed records, certificates in staff phone wallets',
 	title: 'Learniq for compliance training',
 	record: { one: 'course', many: 'courses' },
 	logline: 'For the compliance officer: every rule\'s coverage live on one page, a signed record nobody can quietly edit, a certificate in the learner\'s own wallet, and the manager told when training runs overdue.',
@@ -92,8 +92,8 @@ const content = {
 	neighbours: ['humaniq', 'portaliq'],
 	builtOnApps: ['humaniq'],
 	hook: {
-		title: 'Every rule, one page',
-		caption: 'Every rule,\none page',
+		title: 'Every rule\'s coverage, one page',
+		caption: 'Every rule\'s coverage,\none page',
 		ui: { drawUI: regulationsUI, tagFill: 'cobalt' },
 		source: 'positioning learniq usp-compliance-coverage: "Set your own red and amber line for every rule\'s coverage." (verified)',
 		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the regulations list, the Learniq hex (cobalt: the one orange is the rule that falls short) on the loop anchor. The coverage bars fill left to right one frame apart; the threshold ticks drop onto each track; the rule short of its line fills orange last. Out: technique #1, the short rule\'s orange bar end becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and shrinks into the attestation\'s lock.',
@@ -111,12 +111,12 @@ const content = {
 		},
 		{
 			id: 'wallet',
-			title: 'A certificate in their own wallet',
-			caption: 'A certificate in\ntheir own wallet',
+			title: 'Certificates in staff phone wallets',
+			caption: 'Certificates in\nstaff phone wallets',
 			source: 'positioning learniq usp-eu-wallet-credentials: "Sign a certificate and push it to a digital wallet. A withdrawal follows it there." (verified)',
 			motion: 'The wipe reveals the certificate. Three small hexes step right from its seal (the last orange), the phone rises into the window, and the new credential drops onto the top of the wallet stack (spring), pushing the older cards down 50 px.',
 			sound: 'Three plucks up the scale as the hexes step, a soft thud as the card lands in the wallet.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'A certificate in\ntheir own wallet', drawUI: walletUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Certificates in\nstaff phone wallets', drawUI: walletUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

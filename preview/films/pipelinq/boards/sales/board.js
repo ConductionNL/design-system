@@ -62,8 +62,8 @@ function tablesUI(w, geom) {
 const content = {
 	app: 'pipelinq',
 	audience: { slug: 'sales', name: 'Sales teams', persona: 'Tom Jansen, office manager and sales lead; Fatima Yildiz, practice owner' },
-	promise: 'Your data,\nyour own dashboards',
-	promiseLine: 'Your sales data in Nextcloud, and the dashboards and flows you build on it yourself',
+	promise: 'Know which deals\nwill close',
+	promiseLine: 'Know which deals will close: every deal on one board, a forecast that follows the drag, your data in Nextcloud Tables and flows that act on it',
 	title: 'Pipelinq for sales teams',
 	record: { one: 'client', many: 'clients' },
 	logline: 'For the sales team of a 10 to 500 person business: every deal on one board, a forecast that follows the drag, all your deals as rows in Nextcloud Tables, and your own dashboards and flows built on them.',
@@ -92,21 +92,21 @@ const content = {
 		{
 			id: 'tables',
 			title: 'Your data in Nextcloud Tables',
-			caption: 'Your data in\nNextcloud _Tables_',
+			caption: 'Sort and filter\nin Nextcloud _Tables_',
 			source: 'Ruben, Round 8: "all your data in Nextcloud Tables, build your own dashboards and flows on it"',
 			motion: 'The whip lands on the Tables view. Technique #10, cluster-to-container merge: the deal cards from the board drift in as loose shapes and each drops into its row (ease.brand, all within one beat), the stage pill, value and owner filling a sixteenth later. On the next beat one filter chip is tapped and its orange ring steps out; the rows re-sort. "Tables" is set in Nextcloud cyan in the caption.',
 			sound: 'A short whoosh landing from the whip, a run of ticks as the rows fill, a dry click on the chip.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Your data in\nNextcloud _Tables_', captionOpts: { accent2: C.nextcloudCyan }, drawUI: tablesUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Sort and filter\nin Nextcloud _Tables_', captionOpts: { accent2: C.nextcloudCyan }, drawUI: tablesUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'flows',
-		title: 'Build your own dashboards and flows',
-		caption: 'Build your own\ndashboards and flows',
+		title: 'Quote accepted? Your flow does the rest',
+		caption: 'Quote accepted?\nYour flow does the rest',
 		source: 'Ruben, Round 8 (dashboards and flows on your own data); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "Your", "data," then "your own dashboards" on the second line; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "Know", "which", "deals" then "will close" on the second line; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

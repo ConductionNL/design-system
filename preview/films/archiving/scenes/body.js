@@ -2,12 +2,12 @@
  * Archiving film (nl), the body: six scenes on the 128 BPM grid, each redrawn from its local
  * time every frame (a pure function of time). Key frames and words: boards/nl/board.js (round 12).
  *
- *   hook          7 beats  the question; the window slides in over the opening's handover field
+ *   hook          7 beats  two worlds: the document re-filed into a separate archive, its metadata typed twice
  *   mdto          8 beats  #4 typewriter: the metadata fields type themselves, NEN-ISO 16175 heads the panel
  *   selectielijst 8 beats  #3 grid-cell ripple through the list; the last beat is #1's hex growing out of the result
- *   edepot        8 beats  #1 continued: the new scene opens out of a hex at the e-Depot landing point
+ *   vernietiging  8 beats  #1 continued: the destruction round opens out of a hex at the approve step
  *   standards     8 beats  whip in; #9 text-swap on the held diagram (StUF-ZKN steps to StUF-ZDS)
- *   promise       9 beats  the three apps land round the Nextcloud hex
+ *   promise       9 beats  the three apps land round the Nextcloud hex: your workspace is the archive (Round 16)
  *
  * Captions (the chapter mark and the caption) rise out of their line clips in 6 frames, line 2 a
  * frame behind, and leave upward in 4 frames, gone 2 frames before the scene ends, so every
@@ -33,12 +33,12 @@ export const EXIT = F(4)
 export const leaveAt = (dur) => snap(dur - F(6))
 
 export const SCENES = [
-	{ id: 'hook', beats: 7, mark: 'Archiefwet', text: 'Is dit straks wel\narchiefwaardig?', rise: F(12) },
-	{ id: 'mdto', beats: 8, mark: 'MDTO', text: 'Beschreven\nterwijl je het maakt', rise: F(1) },
+	{ id: 'hook', beats: 7, mark: 'Archiefwet', text: 'Nog een apart\narchief nodig?', rise: F(12) },
+	{ id: 'mdto', beats: 8, mark: 'MDTO', text: 'Bewaard\nwaar je werkt', rise: F(1) },
 	{ id: 'selectielijst', beats: 8, mark: 'Selectielijst', text: 'Het zaaktype kent\nzijn bewaartermijn', rise: F(1) },
-	{ id: 'edepot', beats: 8, mark: 'e-Depot', text: 'Op tijd vernietigd\nof overgebracht', rise: F(3) },
+	{ id: 'vernietiging', beats: 8, mark: 'Vernietiging', text: 'Vernietigd met\nakkoord en spoor', rise: F(3) },
 	{ id: 'standards', beats: 8, mark: 'ZGW en ZDS', text: 'Elk zaaksysteem\nspreekt dezelfde taal', rise: F(5) },
-	{ id: 'promise', beats: 9, mark: 'Nextcloud', text: 'Archiefwaardig\nvanaf het begin', rise: F(8) },
+	{ id: 'promise', beats: 9, mark: 'Nextcloud', text: 'Je werkplek\nis het archief', rise: F(8) },
 ]
 let acc = 0
 for (const s of SCENES) { s.start = snap(beat(acc)); acc += s.beats; s.end = snap(beat(acc)); s.dur = s.end - s.start }
@@ -162,6 +162,43 @@ function docWithMeta(w, geom, t, phase, { ringP = 0, blink = false } = {}) {
 	}
 }
 
+/**
+ * Hook (Round 16): two worlds. The document done in the workspace (left); an arrow re-files it into
+ * a separate archive (a grey second system, right) where the same fields are typed a second time;
+ * the orange ring draws round the fields typed twice.
+ */
+function twoWorlds(w, geom, t) {
+	const { u } = geom
+	const x = geom.x, top = geom.top, width = geom.r - geom.x
+	const lw = 400
+	docPage(w, x, top, lw, 560, { k: lw / 500, values: [118, 96, 72], lastOrange: false })
+	const ax = x + lw + 10, ay = top + 250
+	const ap = ease.brand(inv(beat(1.25), beat(1.75), t))
+	if (ap > 0.001) {
+		rect(w, ax, ay - 1.5 * u, 70 * ap, 3 * u, C.cobalt300)
+		if (ap > 0.95) hex(w, ax + 76, ay, 10, C.cobalt300, 1)
+	}
+	const sx = ax + 100, sw = x + width - sx
+	const sp = ease.brand(inv(beat(1.5), beat(1.5) + 0.35, t))
+	if (sp <= 0.001) return
+	const sg = el('g', { opacity: sp.toFixed(3), transform: `translate(${(60 * (1 - sp)).toFixed(2)} 0)` }, w)
+	rect(sg, sx, top, sw, 560, C.cobalt50, 6 * u, { stroke: C.gray300, 'stroke-width': u })
+	rect(sg, sx, top, sw, 56, C.gray300, 0)
+	mono(sg, 'apart archief', sx + 24, top + 38, 26, C.cobalt700)
+	;['waardering', 'bewaartermijn', 'informatiecategorie', 'archiefvormer'].forEach((f, i) => {
+		const fy = top + 96 + i * 104
+		mono(sg, f, sx + 24, fy + 8, 26)
+		// The second typing: the first field fills, the second has its cursor.
+		const t0 = beat(2 + i * 0.75)
+		const v = i < 2 && t >= t0 ? Math.min(120, 20 * (Math.floor((t - t0) / 0.1) + 1)) : 0
+		rect(sg, sx + 24, fy + 24, sw - 48, 44, C.white, 6, { stroke: C.cobalt200, 'stroke-width': u, 'stroke-dasharray': v ? 'none' : '10 8' })
+		if (v) bar(sg, sx + 40, fy + 41, i === 0 ? v : Math.min(v, 40), 11, C.cobalt900)
+		if (i === 1 && v) rect(sg, sx + 40 + Math.min(v, 40) + 6, fy + 33, 3 * u, 26, C.cobalt, 0, { opacity: Math.floor(t * 4) % 2 ? 0 : 1 })
+	})
+	const ringP = ease.brand(inv(beat(3.5), beat(3.5) + 0.35, t))
+	if (ringP > 0.001) rect(sg, sx + 12, top + 72, sw - 24, 196, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, pathLength: 1, 'stroke-dasharray': `${ringP.toFixed(4)} 1` })
+}
+
 export function hookScene(ctx) {
 	const layer = el('g', { 'data-layer': 'hook' }, ctx.g)
 	const sc = SCENES[0]
@@ -174,9 +211,7 @@ export function hookScene(ctx) {
 		if (fa > 0.001) handoverGround(el('g', { opacity: fa.toFixed(3) }, layer))
 		const dx = 760 * (1 - ease.brand(inv(F(2), F(2) + 0.62, t)))
 		const { win, geom } = windowAt(layer, dx, ctx)
-		const ringP = ease.brand(inv(beat(2.5), beat(2.5) + 0.35, t))
-		const blink = t >= beat(5.5) && t < beat(5.5) + F(3)
-		docWithMeta(win, geom, t, 'hook', { ringP, blink })
+		twoWorlds(win, geom, t)
 		const ts = pop(t, F(8))
 		if (ts > 0.001) { const tg = scaled(layer, LOOP_ANCHOR.x + dx, LOOP_ANCHOR.y, ts); tag(tg, 'nc', dx) }
 		drawType(layer, sc, t)
@@ -270,63 +305,68 @@ export function selectieScene(ctx) {
 	}
 }
 
-/* ---------------------------------------------------------------- e-Depot */
+/* ---------------------------------------------------------------- vernietiging */
 
-const EDEP = (geom) => {
+/** The destruction round's geometry; the approve step (the one orange) is where #1 lands. */
+const DEST = (geom) => {
 	const x = geom.x, top = geom.top, width = geom.r - geom.x
 	const bw = (width - 30) / 2, rx = x + bw + 30
-	return { x, top, width, bw, rx, lx: rx + bw / 2 + 60, ly: top + 150 }
+	return { x, top, width, bw, rx, ox: rx + bw - 60, oy: top + 230 }
 }
 
-export function edepotScene(ctx) {
-	const layer = el('g', { 'data-layer': 'edepot' }, ctx.g)
+export function destroyScene(ctx) {
+	const layer = el('g', { 'data-layer': 'vernietiging' }, ctx.g)
 	const sc = SCENES[3]
 	return (T) => {
 		const t = clamp(T - ctx.start, 0, sc.dur)
 		layer.replaceChildren()
-		// #1, second half: the new window opens out of a hex at the e-Depot landing point.
+		// #1, second half: the window opens out of a hex at the approve step.
 		const geomProbe = { x: (WINDOW.nav + 14) * U, top: WINDOW.row1 + 60, r: Math.min((720 - 187 - 14) * U, (1920 - W0.x) / W0.s - 48 / W0.s) }
-		const E0 = EDEP(geomProbe)
-		const [sx, sy] = toStage(E0.lx, E0.ly)
+		const D0 = DEST(geomProbe)
+		const [sx, sy] = toStage(D0.ox, D0.oy)
 		const op = ease.snap(inv(0, SPB, t))
 		let host = layer
 		if (op < 1) {
-			const id = nextId('edclip')
+			const id = nextId('dclip')
 			const cp = el('clipPath', { id }, layer)
 			el('path', { d: hexPath(sx, sy, lerp(18 * W0.s, hexCover(sx, sy), op), 0) }, cp)
 			host = el('g', { 'clip-path': `url(#${id})` }, layer)
 		}
 		const { win, geom } = windowAt(host, 0, ctx)
 		const { u } = geom
-		const { x, top, width, bw, rx, lx, ly } = EDEP(geom)
-		// Left: destroyed, with its verklaring van vernietiging (a page with a seal).
-		const a = ease.brand(inv(beat(1), beat(1) + 0.4, t))
-		if (a > 0.001) {
-			const lg = el('g', { opacity: a.toFixed(3), transform: `translate(0 ${(40 * (1 - a)).toFixed(2)})` }, win)
-			panel(lg, x, top, bw, 330, u)
-			mono(lg, 'vernietigd', x + 28, top + 44, 28, C.cobalt700)
-			docPage(lg, x + 40, top + 70, bw - 80, 230, { k: 0.4, values: [96, 72], lastOrange: false, shadow: null })
-			const ss = pop(t, beat(2.25))
-			if (ss > 0.001) hex(scaled(lg, x + bw - 80, top + 260, ss), x + bw - 80, top + 260, 26, C.forest, 3)
+		const { x, top, width, bw, rx, ox, oy } = DEST(geom)
+		// Left: the destruction list, the records due, a row a sixteenth.
+		panel(win, x, top, bw, 330, u)
+		mono(win, 'vernietigingslijst', x + 28, top + 44, 28, C.cobalt700)
+		for (let i = 0; i < 4; i++) {
+			const t0 = beat(1 + i * 0.25)
+			if (t < t0) continue
+			const rp = ease.brand(inv(t0, t0 + 0.25, t))
+			const ry = top + 80 + i * 58
+			const rg = el('g', { opacity: rp.toFixed(3), transform: `translate(${(-30 * (1 - rp)).toFixed(2)} 0)` }, win)
+			rect(rg, x + 20, ry, bw - 40, 46, i % 2 ? C.white : C.cobalt50, 4)
+			hex(rg, x + 48, ry + 23, 12, C.lavender, 2)
+			bar(rg, x + 72, ry + 18, [150, 120, 170, 130][i], 10, C.cobalt900)
+			bar(rg, x + bw - 120, ry + 19, 70, 8, C.cobalt300)
 		}
-		// Right: transferred, the package landing in the e-Depot as three stacked cells.
+		// Right: the approval, a person, then the approved pill on beat 2.5.
 		panel(win, rx, top, bw, 330, u)
-		mono(win, 'overgebracht', rx + 28, top + 44, 28, C.cobalt700)
-		rect(win, rx + 40, top + 90, bw - 80, 200, C.cobalt50, 6 * u)
-		;[[0, 0], [1, 0], [0.5, -0.86]].forEach(([c, r], i) => {
-			const t0 = beat(1.5 + i * 0.5)
-			if (t < t0) return
-			const dp = ease.brand(inv(t0, t0 + 0.3, t))
-			const cx = rx + bw / 2 - 30 + c * 60, cy = top + 210 + r * 52
-			hex(win, cx, cy - 90 * (1 - dp), 28, C.cobalt, 3, { opacity: dp.toFixed(3) })
-		})
-		hex(win, lx, ly, 18, C.orange, 2)
-		// The trail: rows chained through small hexes, one every 0.75 beat.
+		mono(win, 'akkoord', rx + 28, top + 44, 28, C.cobalt700)
+		circle(win, rx + 70, top + 130, 34, C.cobalt300)
+		bar(win, rx + 122, top + 112, 160, 12, C.cobalt900)
+		bar(win, rx + 122, top + 138, 110, 8, C.cobalt300)
+		const pp = pop(t, beat(2.5))
+		if (pp > 0.001) statusPill(scaled(win, rx + 40 + 50, top + 230, pp), rx + 40, top + 230, u)
+		hex(win, ox, oy, 18, C.orange, 2)
+		// Under both: the verklaring with its seal, and the trail, chained row by row.
 		const ty = top + 360
 		const tp = ease.brand(inv(beat(3), beat(3) + 0.3, t))
 		if (tp > 0.001) {
 			const tg = el('g', { opacity: tp.toFixed(3) }, win)
 			panel(tg, x, ty, width, 260, u)
+			docPage(tg, x + width - 190, ty + 26, 160, 210, { k: 0.3, values: [96, 72], lastOrange: false, shadow: null })
+			const ss = pop(t, beat(5.75))
+			if (ss > 0.001) hex(scaled(tg, x + width - 60, ty + 210, ss), x + width - 60, ty + 210, 18, C.forest, 3)
 			const n = [0, 1, 2, 3].filter((i) => t >= beat(3.5 + i * 0.75)).length
 			if (n > 1) rect(tg, x + 50 - 1.5 * u, ty + 44, 3 * u, (n - 1) * 58, C.cobalt200)
 			for (let i = 0; i < n; i++) {
@@ -334,11 +374,10 @@ export function edepotScene(ctx) {
 				const rp = ease.brand(inv(beat(3.5 + i * 0.75), beat(3.5 + i * 0.75) + 0.25, t))
 				if (rp > 0.001) hex(tg, x + 50, cy, 13 * rp, C.cobalt400, 2 * rp)
 				bar(tg, x + 84, cy - 6, [260, 220, 300, 240][i] * rp, 11, C.cobalt900)
-				bar(tg, x + width - 230, cy - 5, 190 * rp, 9, C.cobalt200)
+				bar(tg, x + 400, cy - 5, 190 * rp, 9, C.cobalt200)
 			}
 		}
-		if (op >= 1) tag(layer, 'openregister')
-		else tag(host, 'openregister')
+		tag(op >= 1 ? layer : host, 'openregister')
 		drawType(layer, sc, t)
 	}
 }
@@ -438,7 +477,7 @@ export function promiseScene(ctx) {
 	}
 }
 
-export const BUILDERS = { hook: hookScene, mdto: mdtoScene, selectielijst: selectieScene, edepot: edepotScene, standards: standardsScene, promise: promiseScene }
+export const BUILDERS = { hook: hookScene, mdto: mdtoScene, selectielijst: selectieScene, vernietiging: destroyScene, standards: standardsScene, promise: promiseScene }
 
 /** For the score: when each mdto field starts typing (local s) and how many character pairs it types. */
 export const TYPE_AT_EXPORT = FIELDS.map((_, i) => ({ t0: TYPE_AT[i], pairs: Math.ceil(VALS[i] / 20) }))

@@ -26,7 +26,7 @@
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { textBlock } from '../../../_lib/stage.js'
+import { el, textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, hex, panel, statusPill, docPage } from '../../../_lib/ui.js'
 
 const REFS = [
@@ -35,8 +35,13 @@ const REFS = [
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'A stepped wipe of flat shapes between chapters.' },
 ]
 
-/** Hook: the backlog in team lanes (new, mine, the team's), each case with its type and owner. */
-function backlogUI(w, geom) {
+/**
+ * Hook: the backlog in team lanes (new, mine, the team's), each case with its type and owner.
+ * `a` is the film's animation state (defaults = the resting frame the storyboard shows):
+ * a.card(c, i) -> { dx, dy, o } for each card, a.ring 0..1 for the picked-up card's ring.
+ */
+export function backlogUI(w, geom, a = {}) {
+	const root = w
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	const lw = (width - 40) / 3
@@ -47,45 +52,76 @@ function backlogUI(w, geom) {
 		bar(w, lx + 20, top + 26, 100, 10, C.cobalt700)
 		rect(w, lx + lw - 56, top + 20, 36, 22, C.cobalt100, 11)
 		cards.forEach((cw, i) => {
+			const m = a.card ? a.card(c, i) : null
+			if (m && m.o <= 0.001) return
+			const cg = m ? el('g', { transform: `translate(${m.dx.toFixed(1)} ${m.dy.toFixed(1)})`, opacity: m.o.toFixed(3) }, w) : w
+			w = cg
 			const cy = top + 66 + i * 118
 			panel(w, lx + 12, cy, lw - 24, 104, u)
 			hex(w, lx + 44, cy + 34, 14, i === 0 && c === 0 ? C.lavender : C.cobalt300, 2)
 			bar(w, lx + 70, cy + 26, Math.min(cw, lw - 110), 10, C.cobalt900)
 			bar(w, lx + 70, cy + 46, Math.min(cw, lw - 110) * 0.5, 7, C.cobalt300)
 			circle(w, lx + lw - 50, cy + 74, 14, c === 1 ? C.cobalt400 : C.cobalt200)
+			w = root
 		})
 	})
 	// The case just picked up by a colleague: its card ringed, the scene's one orange.
-	rect(w, x + (lw + 20) + 6, top + 60 + 118, lw - 12, 116, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	const ring = a.ring ?? 1
+	if (ring > 0.001) {
+		const rs = 1 + 0.12 * (1 - ring), rcx = x + (lw + 20) + lw / 2, rcy = top + 60 + 118 + 58
+		const rg = el('g', { transform: `translate(${rcx} ${rcy}) scale(${rs.toFixed(3)}) translate(${-rcx} ${-rcy})`, opacity: Math.min(1, ring * 2).toFixed(3) }, w)
+		rect(rg, x + (lw + 20) + 6, top + 60 + 118, lw - 12, 116, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	}
+	return { ringCentre: [x + (lw + 20) + lw / 2, top + 60 + 118 + 58] }
 }
 
-/** Proof 1: the letter open in Word inside Nextcloud, and related knowledge landing beside it as you work. */
-function letterUI(w, geom) {
+/**
+ * Proof 1: the letter open in Word inside Nextcloud, and related knowledge landing beside it as you work.
+ * a.bar 0..1 the toolbar drops in, a.fill 0..1 the case values fill the letter, a.type 0..1 the edited
+ * line types on (stepped), a.items 0..3 knowledge items landed, a.ring 0..1 the best match ringed.
+ */
+export function letterUI(w, geom, a = {}) {
+	const A = { bar: 1, fill: 1, type: 1, items: 3, ring: 1, ...a }
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	// The editor: a Nextcloud-blue toolbar (Nextcloud's own office editing), the drafted letter in it,
 	// a cursor in the line being edited.
 	const ew = 500
 	panel(w, x, top, ew, 580, u)
-	rect(w, x, top, ew, 56, C.nextcloud, 0)
-	for (let i = 0; i < 6; i++) rect(w, x + 24 + i * 44, top + 16, 28, 24, C.white, 3, { opacity: 0.85 })
-	docPage(w, x + 30, top + 80, ew - 60, 600, { k: (ew - 60) / 500, values: [118, 96, 72], lastOrange: false, shadow: null })
-	rect(w, x + 30 + 44 * ((ew - 60) / 500) + 330, top + 80 + 172 * ((ew - 60) / 500), 3 * u, 22, C.cobalt)
+	const k = (ew - 60) / 500
+	docPage(w, x + 30, top + 80, ew - 60, 600, { k, values: [118, 96, 72].map((v, i) => v * Math.max(0, Math.min(1, A.fill * 3 - i))), lastOrange: false, shadow: null })
+	// The line being edited, typed on in steps (hard on and off), the cursor at its end.
+	const tw = 250 * k * Math.floor(A.type * 14) / 14
+	if (tw > 0) bar(w, x + 30 + 44 * k, top + 80 + 190 * k, tw, 10 * k, C.cobalt900)
+	rect(w, x + 30 + 44 * k + tw + 4, top + 80 + 184 * k, 3 * u, 22, C.cobalt)
+	// The toolbar drops in over the page.
+	if (A.bar > 0.001) {
+		const tg = el('g', { transform: `translate(0 ${(-56 * (1 - A.bar)).toFixed(1)})` }, w)
+		rect(tg, x, top, ew, 56, C.nextcloud, 0)
+		for (let i = 0; i < 6; i++) rect(tg, x + 24 + i * 44, top + 16, 28, 24, C.white, 3, { opacity: 0.85 })
+	}
 	// The knowledge beside it: related items linked in a small graph, the best match ringed (the one orange).
 	const kx = x + ew + 30, kw = width - ew - 30
 	panel(w, kx, top, kw, 580, u)
 	bar(w, kx + 30, top + 40, 120, 10, C.cobalt400)
 	rect(w, kx + 70 - 1.5 * u, top + 130, 3 * u, 240, C.cobalt200)
 	;[[top + 130, C.cobalt], [top + 250, C.cobalt300], [top + 370, C.cobalt300]].forEach(([ny, f], i) => {
-		hex(w, kx + 70, ny, 22, f, 3)
-		bar(w, kx + 114, ny - 14, kw - 170 - i * 30, 11, C.cobalt900)
-		bar(w, kx + 114, ny + 8, (kw - 170) * 0.6, 7, C.cobalt300)
+		const p = Math.max(0, Math.min(1, A.items - i))
+		if (p <= 0.001) return
+		const ig = el('g', { transform: `translate(0 ${(24 * (1 - p)).toFixed(1)})`, opacity: p.toFixed(3) }, w)
+		hex(ig, kx + 70, ny, 22, f, 3)
+		bar(ig, kx + 114, ny - 14, kw - 170 - i * 30, 11, C.cobalt900)
+		bar(ig, kx + 114, ny + 8, (kw - 170) * 0.6, 7, C.cobalt300)
 	})
-	rect(w, kx + 14, top + 90, kw - 28, 82, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (A.ring > 0.001) rect(w, kx + 14, top + 90, kw - 28, 82, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: A.ring.toFixed(3) })
 }
 
-/** Proof 2: one case, kept in three standards: the international case model, the Dutch and the Danish case standard. */
-function standardsUI(w, geom) {
+/**
+ * Proof 2: one case, kept in three standards: the international case model, the Dutch and the Danish case standard.
+ * a.wire 0..1 the wires draw down, a.split 0..1 the orange split hex pops, a.boxes 0..3 boxes landed.
+ */
+export function standardsUI(w, geom, a = {}) {
+	const A = { wire: 1, split: 1, boxes: 3, ...a }
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	// The case.
@@ -97,11 +133,16 @@ function standardsUI(w, geom) {
 	// Square-cornered wires down to the three standards, splitting at one orange hex.
 	const gap = 20, bw = (width - 2 * gap) / 3, by = top + 220
 	const cx = (i) => x + i * (bw + gap) + bw / 2
-	rect(w, x + 64 - 1.5 * u, top + 130, 3 * u, 50, C.cobalt300)
-	rect(w, x + 64, top + 178, cx(2) - x - 64, 3 * u, C.cobalt300)
-	for (let i = 0; i < 3; i++) rect(w, cx(i) - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
-	hex(w, cx(1), top + 178 + 1.5 * u, 16, C.orange, 2)
+	// The wires draw in three legs: down from the case, along, then down into each box.
+	const w1 = Math.min(1, A.wire * 3), w2 = Math.max(0, Math.min(1, A.wire * 3 - 1)), w3 = Math.max(0, Math.min(1, A.wire * 3 - 2))
+	if (w1 > 0) rect(w, x + 64 - 1.5 * u, top + 130, 3 * u, 50 * w1, C.cobalt300)
+	if (w2 > 0) rect(w, x + 64, top + 178, (cx(2) - x - 64) * w2, 3 * u, C.cobalt300)
+	if (w3 > 0) for (let i = 0; i < 3; i++) rect(w, cx(i) - 1.5 * u, top + 178, 3 * u, (by - top - 178) * w3, C.cobalt300)
+	if (A.split > 0.001) hex(w, cx(1), top + 178 + 1.5 * u, 16 * A.split, C.orange, 2)
+	const root = w
 	const box = (i, label) => {
+		const p = Math.max(0, Math.min(1, A.boxes - i))
+		w = p < 1 ? el('g', { transform: `translate(0 ${(40 * (1 - p)).toFixed(1)})`, opacity: p.toFixed(3) }, root) : root
 		const bx = x + i * (bw + gap)
 		panel(w, bx, by, bw, 360, u)
 		rect(w, bx, by, bw, 88, C.cobalt50, 0)
@@ -111,12 +152,14 @@ function standardsUI(w, geom) {
 		return bx
 	}
 	// The international case model: a plan of stages and tasks.
+	if (A.boxes <= 0.001) return
 	const b0 = box(0, 'CMMN 1.1')
 	rect(w, b0 + 22, by + 110, bw - 44, 220, 'none', 12 * u, { stroke: C.cobalt300, 'stroke-width': u })
 	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r]) => rect(w, b0 + 42 + c * ((bw - 84) / 2 + 10), by + 130 + r * 90, (bw - 104) / 2, 60, C.cobalt100, 6 * u))
 	// The Dutch and the Danish case standards: their fields filled.
 	// OIO sits in the middle box so its long label stays inside the text safe box (x 1800).
 	;[[1, 'OIO Sag og\nDokument'], [2, 'ZGW']].forEach(([i, label]) => {
+		if (A.boxes - i <= 0.001) return
 		const bx = box(i, label)
 		for (let k = 0; k < 4; k++) {
 			const fy = by + 126 + k * 56

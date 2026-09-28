@@ -124,6 +124,15 @@ const content = {
 	references: REFS,
 	techniques: ['#9 text-swap on a held diagram (the stat breakdown)', '#2 zoom-out (stat to the XP history)', '#11 whip-pan on the beat (XP history to the gate)'],
 	neighbours: [],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Campaigns', hook: 'Characters', xp: 'Experience', gate: 'Events', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'zoom', fromName: 'the orange Larpinq cell', toName: 'the stat', note: 'the camera goes into the character sheet'},
+		xp: {type: 'swap', fromName: 'the character sheet', toName: 'the XP history', note: 'the window holds and the history behind the stat steps in (#9)'},
+		gate: {type: 'whip', fromName: 'the XP history', toName: 'the gate roster', note: 'a move to the event itself, a different screen: the whip turns your head on the beat (#11)'},
+		'general-notify': {type: 'hexWipe', fromName: 'the gate roster', toName: 'the submitted sheet', note: 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: [],
 	hook: {
 		title: 'Every stat shows its cause',

@@ -127,6 +127,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the timetable generating)', '#9 text-swap on a held diagram (the exam links)', '#1 dot-grows-to-fill as an upright hex (into the cover request)'],
 	neighbours: ['learniq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Timetables', hook: 'Scheduling', exam: 'Exams', cover: 'Cover', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'cluster', fromName: 'the orange Planninq cell', toName: 'the timetable', note: 'the rules gather into one timetable (#10)'},
+		exam: {type: 'match', fromName: 'the orange lesson', toName: 'the exam', note: 'the lesson in the timetable is the slot the exam takes: its orange carries over'},
+		cover: {type: 'grow', fromName: 'the ill teacher\'s lesson', toName: 'the cover request', note: 'the lesson opens out as a hex and the cover request is inside it (#1)'},
+		'general-dataLayer': {'type': 'hexWipe', 'fromName': 'the cover request', 'toName': 'the change history', 'note': 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['learniq'],
 	hook: {
 		title: 'Timetable built from your rules',

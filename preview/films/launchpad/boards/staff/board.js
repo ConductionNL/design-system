@@ -29,6 +29,9 @@ import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, widgetTile, calendarGrid, personRow, button, chrome, honeyField, layout, appTag, ncTag } from '../../../_lib/ui.js'
 
+/** Round 27c: no hex floats over another; a marker that would sit under the app tag (on geom.anchor, window px) steps out. */
+const clearOfTag = (hx, hy, a) => !a || Math.hypot(hx - a.x, hy - a.y) > 90
+
 const REFS = [
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Loose shapes drift together into one container.' },
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells stepping on in waves; a stepped wipe of flat shapes.' },
@@ -66,7 +69,7 @@ function readUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	panel(w, x, top, width, 300, u)
-	hex(w, x + 50, top + 50, 20, C.lavender, 2)
+	if (clearOfTag(x + 50, top + 50, geom.anchor)) hex(w, x + 50, top + 50, 20, C.lavender, 2)
 	bar(w, x + 86, top + 38, 300, 16, C.cobalt900)
 	bar(w, x + 86, top + 66, 160, 8, C.cobalt300)
 	for (let i = 0; i < 3; i++) bar(w, x + 40, top + 112 + i * 30, width - 120 - i * 90, 9, C.cobalt200)
@@ -169,6 +172,15 @@ const content = {
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge (app tiles into the start screen)', '#3 grid-cell ripple (the read confirmations)', '#5 stepped hex wipe (the rollout)'],
 	neighbours: ['pipelinq', 'dossiq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Intranet', hook: 'Start screen', read: 'Announcements', rollout: 'Rollout', 'general-dataLayer': 'Hosting'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'cluster', fromName: 'the orange LaunchPad cell', toName: 'the start screen', note: 'loose widgets gather into one start screen, the caption\'s promise (#10)'},
+		read: {type: 'swap', fromName: 'the start screen', toName: 'the announcement', note: 'the grid holds and the announcement steps in (#9)'},
+		rollout: {type: 'hexWipe', fromName: 'the announcement', toName: 'the template view', note: 'a change of role, from reader to editor; the stepped wipe marks it (#5)'},
+		'general-dataLayer': {'type': 'match', 'fromName': 'the orange template', 'toName': 'the server rack', 'note': 'the one change carries to the server it runs on: its orange lands on the rack'},
+	},
 	builtOnApps: ['pipelinq'],
 	hook: {
 		title: 'Your whole day, on one screen',

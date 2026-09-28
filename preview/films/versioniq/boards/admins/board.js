@@ -26,18 +26,21 @@ import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, statusPill, idlePill, button, toggle } from '../../../_lib/ui.js'
 
+/** Round 27c: no hex floats over another; a marker that would sit under the app tag (on geom.anchor, window px) steps out. */
+const clearOfTag = (hx, hy, a) => !a || Math.hypot(hx - a.x, hy - a.y) > 90
+
 const REFS = [
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells stepping on in waves, read as the system at work.' },
 	{ name: 'Yoya', url: 'https://whatships.com/videos/yoya/', borrow: 'A flat diagonal wipe across the frame in 0.2 s, on the beat.' },
 ]
 
 /** The installed apps: hex, name, the version pill. Returns the row centres. */
-function appRows(w, x, top, width, u, n, { from = 0 } = {}) {
+function appRows(w, x, top, width, u, n, { from = 0, anchor = null } = {}) {
 	const ys = []
 	for (let r = 0; r < n; r++) {
 		const cy = top + r * 70
 		if (r > 0) rect(w, x + 20, cy - 35, width - 40, u, C.cobalt50)
-		hex(w, x + 50, cy, 16, C.cobalt, 2)
+		if (clearOfTag(x + 50, cy, anchor)) hex(w, x + 50, cy, 16, C.cobalt, 2)
 		bar(w, x + 84, cy - 5, 140 - ((r + from) % 3) * 24, 10, C.cobalt900)
 		rect(w, x + 300, cy - 15, 88, 30, C.cobalt50, 15)
 		bar(w, x + 316, cy - 4, 56, 8, C.cobalt700)
@@ -56,7 +59,7 @@ function advisoryUI(w, geom) {
 	bar(w, x + 140, top + 36, 260, 14, C.cobalt900)
 	bar(w, x + 140, top + 64, 160, 9, C.cobalt700)
 	panel(w, x, top + 134, width, 490, u)
-	const ys = appRows(w, x, top + 184, width, u, 7)
+	const ys = appRows(w, x, top + 184, width, u, 7, { anchor: geom.anchor })
 	ys.forEach((cy, r) => { if (r === 3) rect(w, x + width - 170, cy - 15, 120, 30, C.lavender300, 15); else statusPill(w, x + width - 160, cy, u) })
 	// The straight line from the advisory to the one branch it hits, and that row ringed.
 	const hit = ys[3]
@@ -94,7 +97,7 @@ function pinUI(w, geom) {
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	panel(w, x, top, width, 600, u)
 	;[x + 30, x + 300, x + width - 250].forEach((hx) => bar(w, hx, top + 30, 80, 8, C.cobalt400))
-	const ys = appRows(w, x, top + 94, width, u, 7, { from: 1 })
+	const ys = appRows(w, x, top + 94, width, u, 7, { from: 1, anchor: geom.anchor })
 	ys.forEach((cy, r) => {
 		toggle(w, x + width - 250, cy, u, r !== 5)
 		if (r === 2) {
@@ -118,6 +121,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the advisory check)', '#6 hard diagonal wipe (the rollback)', '#9 text-swap on a held diagram (the pin list)'],
 	neighbours: [],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'App versions', hook: 'Security', rollback: 'Rollback', pin: 'Version pins', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'grow', fromName: 'the orange Versioniq cell', toName: 'the advisory', note: 'a hex opens out of Versioniq and the advisory is inside it (#1)'},
+		rollback: {type: 'hexWipe', fromName: 'the advisory', toName: 'the version history', note: 'a hard change of task, from finding to undoing; the stepped wipe marks it (#5)'},
+		pin: {type: 'swap', fromName: 'the version history', toName: 'the pinned apps', note: 'the list holds and only the drifting row changes (#9)'},
+		'general-notify': {type: 'match', fromName: 'the flagged pin', toName: 'the scheduled update', note: 'the flagged app is the one whose update the users hear about'},
+	},
 	builtOnApps: [],
 	hook: {
 		title: 'Security advisory? See what it hits',

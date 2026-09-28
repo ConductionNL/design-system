@@ -24,6 +24,9 @@ import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, idlePill } from '../../../_lib/ui.js'
 import { textBlock } from '../../../_lib/stage.js'
 
+/** Round 27c: no hex floats over another; a marker that would sit under the app tag (on geom.anchor, window px) steps out. */
+const clearOfTag = (hx, hy, a) => !a || Math.hypot(hx - a.x, hy - a.y) > 90
+
 const REFS = [
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells stepping on in waves.' },
 	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'A mark grows to fill the frame and becomes the next scene; a line typed letter by letter.' },
@@ -40,7 +43,7 @@ function deadlineUI(w, geom) {
 	left.forEach((p, r) => {
 		const cy = top + 96 + r * 74
 		if (r > 0) rect(w, x + 20, cy - 37, width - 40, u, C.cobalt50)
-		hex(w, x + 50, cy, 16, r === 2 ? C.lavender : C.cobalt200, 2)
+		if (clearOfTag(x + 50, cy, geom.anchor)) hex(w, x + 50, cy, 16, r === 2 ? C.lavender : C.cobalt200, 2)
 		bar(w, x + 84, cy - 12, 150 - (r % 3) * 24, 10, C.cobalt900)
 		bar(w, x + 84, cy + 6, 90, 7, C.cobalt300)
 		bar(w, x + 250, cy - 5, 120 + ((r * 41) % 90), 10, C.cobalt200)
@@ -124,6 +127,15 @@ const content = {
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the fields tick before the index takes them)', '#1 dot-grows-to-fill as an upright hex (index row to reading room)', '#4 typewriter (the resident\'s search)'],
 	neighbours: ['filinq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Disclosure', hook: 'Deadlines', index: 'National index', search: 'Public access', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'zoom', fromName: 'the orange OpenCatalogi cell', toName: 'the flagged deadline', note: 'the camera goes into the request list where the deadline sits'},
+		index: {type: 'match', fromName: 'the flagged request', toName: 'the ringed index row', note: 'the request that was due is the publication that reaches the index'},
+		search: {type: 'grow', fromName: 'the ringed index row', toName: 'the public reading room', note: 'the index row opens out as a hex and the reading room is inside it (#1)'},
+		'general-dataLayer': {'type': 'hexWipe', 'fromName': 'the reading room', 'toName': 'the publication history', 'note': 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['filinq'],
 	hook: {
 		title: 'Disclosure deadline? Flagged in time',

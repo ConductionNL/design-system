@@ -122,6 +122,15 @@ const content = {
 	references: REFS,
 	techniques: ['#1 dot-grows-to-fill as an upright hex (blocked badge to the contractor view)', '#10 cluster-to-container merge (one project stays)', '#3 grid-cell ripple (the risk grid)'],
 	neighbours: ['dossiq', 'portaliq'],
+	// Round 27c: the section title above each caption (never the app name).
+	sections: {promise: 'Projects', hook: 'Planning', contractor: 'Access', risks: 'Risks', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-off into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: {type: 'cluster', fromName: 'the orange Planninq cell', toName: 'the board', note: 'loose tasks gather into one board in lanes (#10)'},
+		contractor: {type: 'grow', fromName: 'the blocked badge', toName: 'the contractor\'s view', note: 'the blocked badge opens out as a hex and the contractor\'s own view is inside it (#1)'},
+		risks: {type: 'whip', fromName: 'the contractor\'s view', toName: 'the risk log', note: 'a move to the project office\'s screen: the whip turns your head on the beat (#11)'},
+		'general-notify': {type: 'hexWipe', fromName: 'the risk log', toName: 'the moved task', note: 'a chapter change from the app\'s own screens to the shared capability; the stepped wipe marks the new chapter (#5)'},
+	},
 	builtOnApps: ['portaliq'],
 	hook: {
 		title: 'Blocked task? Flagged on day one',

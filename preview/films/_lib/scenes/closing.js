@@ -670,8 +670,12 @@ function connectCues(cue) {
 
 /* ---------- the install board: three concepts (Round 22); 'current' is the default ---------- */
 
-/** Type for the install board without a header: the three words at headline size, the line under them. */
-const INSTALL22 = { first: 400, size: 116, lh: 124, lineSize: 72, lineGap: 104, avatar: { x: 1560, y: 330, r: 92 } }
+/**
+ * Type for the install board without a header: the three words at headline size, the line under them.
+ * lineGap 140 (was 104): the current's wire under the last word keeps clear air (about 60 px at 1080p)
+ * above the final line's cap height, in English and Dutch.
+ */
+const INSTALL22 = { first: 400, size: 116, lh: 124, lineSize: 72, lineGap: 140, avatar: { x: 1560, y: 330, r: 92 } }
 const installWords = (p) => {
 	const T = CLOSING_TEXT[p.lang === 'nl' ? 'nl' : 'en']
 	return { slogans: p.slogans || T.slogans, line: p.line || T.line }

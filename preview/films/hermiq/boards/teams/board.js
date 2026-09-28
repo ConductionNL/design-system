@@ -118,6 +118,15 @@ const content = {
 	record: { one: 'agent', many: 'agents' },
 	logline: 'For a company that wants an assistant its staff can use: switch on only the tools an agent needs, let it run on its own schedule and post in Talk, test a skill on cases before you trust it, and ask about your records while it asks before it changes anything. Honest AI: it only does what you allow.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Team assistant', 'hook': 'Tools', 'schedule': 'Schedules', 'tested': 'Testing', 'general-ai': 'Assistant'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Hermiq cell', toName: 'the tool list', note: 'the app cell opens into the agent\'s tools (#1)' },
+		schedule: { type: 'match', fromName: 'the switch just turned on', toName: 'today\'s run', note: 'the tool switched on is what runs today: the orange carries from the switch to the slot' },
+		tested: { type: 'zoom', fromName: 'the posted report', toName: 'the test cases', note: 'we push into the agent\'s skill and come out on the cases it is tested on: same agent, closer' },
+		'general-ai': { type: 'hexWipe', fromName: 'the test scores', toName: 'the assistant chat', note: 'a chapter change from setting up the agent to asking it, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#9 text-swap on a held diagram (the switches)', '#1 dot-grows-to-fill (as a hex, schedule slot into Talk)', '#3 grid-cell ripple (the test cases)'],
 	neighbours: [],
 	builtOnApps: [],

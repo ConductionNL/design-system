@@ -63,11 +63,12 @@ function minutesUI(w, geom) {
 	panel(w, x, top, aw, 600, u)
 	for (let i = 0; i < 5; i++) {
 		const cy = top + 60 + i * 100
-		hex(w, x + 44, cy, 16, C.cobalt, 2)
-		bar(w, x + 76, cy - 12, 210 - (i % 3) * 30, 12, C.cobalt900)
+		// Round 27c: this column sits clear of the app tag on the loop anchor (no hex over another).
+		hex(w, x + 84, cy, 16, C.cobalt, 2)
+		bar(w, x + 116, cy - 12, 190 - (i % 3) * 30, 12, C.cobalt900)
 		// The decision taken on this item: a mint pip (carried) or idle.
-		if (i < 4) hex(w, x + 86, cy + 20, 7, i === 1 ? C.cobalt300 : C.mint, 1)
-		bar(w, x + 102, cy + 16, 90, 7, C.cobalt300)
+		if (i < 4) hex(w, x + 126, cy + 20, 7, i === 1 ? C.cobalt300 : C.mint, 1)
+		bar(w, x + 142, cy + 16, 90, 7, C.cobalt300)
 	}
 	// The minutes: a page whose items fill in order; the one being drafted has a cursor.
 	const mx = x + aw + 24, mw = width - aw - 24
@@ -118,6 +119,15 @@ const content = {
 	record: { one: 'decision', many: 'decisions' },
 	logline: 'For board, association and works council secretaries: a member who declares a conflict sits that vote out, the minutes are drafted from what was decided, the meeting closes into one sealed file, and an action\'s owner hears when it falls due. The promise card asks it (Round 19): What if every decision was on record?',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Boards', 'hook': 'Conflicts', 'minutes': 'Minutes', 'sealed': 'Archive', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Decidiq cell', toName: 'the members on this vote', note: 'the app cell opens into the vote the member sits out (#1)' },
+		minutes: { type: 'zoom', fromName: 'the recused row', toName: 'the minutes', note: 'we push into the agenda\'s decisions and come out on the minutes drafted from them: same meeting, closer' },
+		sealed: { type: 'cluster', fromName: 'the minutes item', toName: 'the sealed meeting file', note: 'agenda, papers, votes and minutes drift together into one file, which is the caption (#10)' },
+		'general-notify': { type: 'hexWipe', fromName: 'the sealed file', toName: 'the action and its notice', note: 'a chapter change from the meeting to the shared notifications, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#9 text-swap on a held diagram (the vote list)', '#4 typewriter (the minutes)', '#10 cluster-to-container merge (into the sealed file)', '#5 stepped hex wipe'],
 	neighbours: ['filinq', 'portaliq'],
 	builtOnApps: ['filinq'],
@@ -126,7 +136,7 @@ const content = {
 		caption: 'Conflicted? You sit\nthis vote out',
 		ui: { drawUI: conflictUI, tagFill: 'cobalt' },
 		source: 'positioning decidiq usp-conflict-of-interest, verified ("Declare a conflict of interest and the system keeps you out of that vote."); spec conflict-of-interest. Not an "only we" line.',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the members on this vote, the Decidiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; on beat 3 only row 4 changes: its vote slot empties to a dashed outline, the lavender "declared" pip pops in, the row dims, and the orange ring lands round it.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the members on this vote, the Decidiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; on beat 3 only row 4 changes: its vote slot empties to a dashed outline, the lavender "declared" pip flips in (Round 27: a hex turns over, never pops), the row dims, and the orange ring lands round it.',
 		sound: 'One soft tick as the slot empties, a low pluck as the ring lands.',
 	},
 	proofs: [

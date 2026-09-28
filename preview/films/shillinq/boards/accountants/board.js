@@ -60,8 +60,9 @@ function elimUI(w, geom) {
 	;[0, 1].forEach((k) => {
 		const lx = k ? x + width - lw : x
 		panel(w, lx, top, lw, 560, u)
-		hex(w, lx + 40, top + 40, 16, C.cobalt, 2)
-		bar(w, lx + 66, top + 34, 140, 12, C.cobalt900)
+		// Round 27c: this column sits clear of the app tag on the loop anchor (no hex over another).
+		hex(w, lx + 80, top + 40, 16, C.cobalt, 2)
+		bar(w, lx + 106, top + 34, 140, 12, C.cobalt900)
 		for (let i = 0; i < 6; i++) {
 			const cy = top + 110 + i * 70
 			const ic = i === 2 || i === 4
@@ -98,8 +99,9 @@ function wbsoUI(w, geom) {
 	const rd = [true, false, true, false, true]
 	rows.forEach((row, r) => {
 		const cy = top + 100 + r * 76
-		hex(w, x + 44, cy, 14, rd[r] ? C.lavender : C.cobalt200, 2)
-		bar(w, x + 70, cy - 6, 130 - (r % 3) * 20, 11, C.cobalt900)
+		// Round 27c: this column sits clear of the app tag on the loop anchor (no hex over another).
+		hex(w, x + 84, cy, 14, rd[r] ? C.lavender : C.cobalt200, 2)
+		bar(w, x + 106, cy - 6, 110 - (r % 3) * 20, 11, C.cobalt900)
 		for (let c = 0; c < cols; c++) if (row[c] === '1') rect(w, gx + c * cw + 6, cy - 22, cw - 12, 44, rd[r] ? C.lavender300 : C.cobalt100, 4 * u)
 	})
 	// The export, ready: the accent button (an orange ring round it, the one orange).
@@ -111,12 +113,21 @@ function wbsoUI(w, geom) {
 const content = {
 	app: 'shillinq',
 	audience: { slug: 'accountants', name: 'Accountancy practices', persona: 'Hicham El Amrani, practice owner of a bookkeeping office' },
-	promise: 'What if every client\'s\nbooks were audit-ready?',
+	promise: 'What if every\nclient\'s books were\naudit-ready?',
 	promiseLine: 'Every client\'s books in one place, the group and tax work generated, one clear trail',
 	title: 'Shillinq for accountancy practices',
 	record: { one: 'client', many: 'clients' },
 	logline: 'For the bookkeeping office: every client\'s books under the practice\'s own login, group eliminations generated from the postings, R&D hours tagged and ready for the WBSO claim, and every change showing who and when.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Practice', 'hook': 'Clients', 'eliminations': 'Group accounts', 'wbso': 'Tax relief', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Shillinq cell', toName: 'the practice\'s clients', note: 'the app cell opens into every client under one login (#1)' },
+		eliminations: { type: 'zoom', fromName: 'the ringed client', toName: 'the group ledgers', note: 'we push into one client and come out on its group companies\' ledgers: same client, closer' },
+		wbso: { type: 'whip', fromName: 'the generated entry', toName: 'the timesheet', note: 'a move to another task, the week\'s hours, on the beat (#11)' },
+		'general-dataLayer': { type: 'hexWipe', fromName: 'the R&D export', toName: 'the record and its history', note: 'a chapter change from the work to the shared audit trail, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#8 one-take glide across cards (the client list)', '#1 dot-grows-to-fill (as a hex, client into its ledgers)', '#3 grid-cell ripple (the R&D hours)'],
 	neighbours: ['pipelinq', 'portaliq'],
 	builtOnApps: ['portaliq'],

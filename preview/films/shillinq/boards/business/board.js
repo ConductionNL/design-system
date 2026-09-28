@@ -122,6 +122,15 @@ const content = {
 	record: { one: 'invoice', many: 'invoices' },
 	logline: 'For the office manager and the freelancer: the bank feed matches itself to the invoices, the VAT return fills itself in from the books, an invoice naming another account number is stopped before it is paid, and the right person hears when an invoice goes overdue.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Bookkeeping', 'hook': 'Bank', 'vat': 'VAT', 'stopped': 'Payments', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'cluster', fromName: 'the orange Shillinq cell', toName: 'the bank lines and invoices', note: 'bank lines drift in and settle against their invoices, which is the caption (#10)' },
+		vat: { type: 'grow', fromName: 'the last match', toName: 'the VAT return', note: 'the matched books open out into the return that fills itself in (#1)' },
+		stopped: { type: 'whip', fromName: 'the VAT return', toName: 'the payment run', note: 'a move to another screen, the payment run, on the beat (#11)' },
+		'general-notify': { type: 'hexWipe', fromName: 'the payment on hold', toName: 'the invoice and its notice', note: 'a chapter change from the books to the shared notifications, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#10 cluster-to-container merge (bank lines onto invoices)', '#4 typewriter (the VAT boxes)', '#6 hard diagonal wipe', '#9 text-swap on a held diagram (one payment stops)'],
 	neighbours: ['pipelinq', 'portaliq'],
 	builtOnApps: ['pipelinq'],

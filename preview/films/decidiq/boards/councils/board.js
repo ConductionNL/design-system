@@ -95,9 +95,10 @@ function recordingUI(w, geom) {
 	panel(w, x, top, aw, 600, u)
 	for (let i = 0; i < 5; i++) {
 		const cy = top + 60 + i * 100
-		hex(w, x + 44, cy, 16, i === 2 ? C.lavender : C.cobalt300, 2)
-		bar(w, x + 76, cy - 12, 200 - (i % 3) * 30, 12, C.cobalt900)
-		bar(w, x + 76, cy + 10, 110, 7, C.cobalt300)
+		// Round 27c: this column sits clear of the app tag on the loop anchor (no hex over another).
+		hex(w, x + 84, cy, 16, i === 2 ? C.lavender : C.cobalt300, 2)
+		bar(w, x + 116, cy - 12, 180 - (i % 3) * 30, 12, C.cobalt900)
+		bar(w, x + 116, cy + 10, 110, 7, C.cobalt300)
 	}
 	// The clicked item: the one orange.
 	rect(w, x + 12, top + 60 + 2 * 100 - 40, aw - 24, 80, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
@@ -123,6 +124,15 @@ const content = {
 	record: { one: 'meeting', many: 'meetings' },
 	logline: 'For the griffie: every paper on its agenda item, members voting from their own seat with the count closing live, a click on an agenda item that jumps the recording to that moment, and the right person hearing when a motion carries. The promise card asks it (Round 19): What if decisions went public today?',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Council meetings', 'hook': 'Agenda', 'vote': 'Voting', 'moment': 'Recordings', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'cluster', fromName: 'the orange Decidiq cell', toName: 'the agenda', note: 'loose papers drifting together onto their agenda items performs the caption "every paper on its agenda item" (#10)' },
+		vote: { type: 'grow', fromName: 'the landed paper', toName: 'the chamber', note: 'the item on the agenda opens out into the vote on it: shape becomes scene (#1)' },
+		moment: { type: 'whip', fromName: 'the vote count', toName: 'the recording', note: 'a move to another screen, the recording, on the beat (#11)' },
+		'general-notify': { type: 'hexWipe', fromName: 'the recording', toName: 'the record and its notice', note: 'a chapter change from the meeting to the shared notifications, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#10 cluster-to-container merge (papers onto items)', '#3 grid-cell ripple (seats lighting)', '#1 dot-grows-to-fill (as a hex, marker into the recording)'],
 	neighbours: ['opencatalogi', 'filinq'],
 	builtOnApps: ['filinq'],

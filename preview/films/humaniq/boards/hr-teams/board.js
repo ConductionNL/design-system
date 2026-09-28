@@ -126,6 +126,15 @@ const content = {
 	record: { one: 'employee', many: 'employees' },
 	logline: 'For HR at a municipality or a growing employer: every Gatekeeper step of a sickness case on time, a new hire\'s address filled in from citizen records, a contract made and signed from one record, and the manager hearing about a leave request. No payroll in this film.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'HR', 'hook': 'Sick leave', 'hire': 'Onboarding', 'contract': 'Contracts', 'general-notify': 'Notifications'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Humaniq cell', toName: 'the sickness case', note: 'the app cell opens into one sickness case and its milestones (#1)' },
+		hire: { type: 'whip', fromName: 'the next milestone', toName: 'the new hire form', note: 'a move to another task, a new hire, on the beat (#11)' },
+		contract: { type: 'cluster', fromName: 'the filled-in address', toName: 'the contract', note: 'the record\'s fields drift together into the contract page, which is the caption (#10)' },
+		'general-notify': { type: 'hexWipe', fromName: 'the signed contract', toName: 'the leave request and its notice', note: 'a chapter change from the file to the shared notifications, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#3 grid-cell ripple (the milestones)', '#4 typewriter (the address)', '#10 cluster-to-container merge (details into the contract)'],
 	neighbours: ['filinq', 'portaliq'],
 	builtOnApps: ['filinq'],
@@ -134,7 +143,7 @@ const content = {
 		caption: 'Sick leave, every\nstep on time',
 		ui: { drawUI: sickUI, tagFill: 'cobalt' },
 		source: 'positioning humaniq sp-sickness-poortwachter ("The app tracks every Gatekeeper milestone for you."); spec verzuim-wvp (Wet verbetering poortwachter)',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, one sickness case with its milestone line, the Humaniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the milestone hexes step 20% to 40% to full in a wave from the left, the done ones turning mint, and the wave stops on the next one due, which pops to lavender; the orange hex ring lands round it on beat 5 and its task slides in at the top of the list.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, one sickness case with its milestone line, the Humaniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the milestone hexes step 20% to 40% to full in a wave from the left, the done ones turning mint, and the wave stops on the next one due, which flips over to lavender (Round 27); the orange hex ring lands round it on beat 5 and its task slides in at the top of the list.',
 		sound: 'A ripple of ticks, a pluck on the next milestone.',
 	},
 	proofs: [

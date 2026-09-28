@@ -42,9 +42,10 @@ function agentsUI(w, geom) {
 	classes.forEach((k, i) => {
 		const cy = top + 70 + i * 104
 		if (i > 0) rect(w, x + 24, cy - 52, width - 48, u, C.cobalt50)
-		hex(w, x + 64, cy, 24, i === 4 ? C.lavender : C.cobalt, 3)
-		bar(w, x + 106, cy - 14, 200 - (i % 3) * 30, 13, C.cobalt900)
-		bar(w, x + 106, cy + 10, 120, 7, C.cobalt300)
+		// Round 27c: this column sits clear of the app tag on the loop anchor (no hex over another).
+		hex(w, x + 104, cy, 24, i === 4 ? C.lavender : C.cobalt, 3)
+		bar(w, x + 146, cy - 14, 200 - (i % 3) * 30, 13, C.cobalt900)
+		bar(w, x + 146, cy + 10, 120, 7, C.cobalt300)
 		// The risk scale: four small hexes, the class filled up to its step.
 		for (let s = 0; s < 4; s++) hex(w, x + width - 260 + s * 44, cy, 15, s <= k ? (k === 2 ? C.lavender : C.cobalt400) : C.cobalt100, 2)
 		idlePill(w, x + width - 70, cy, u, { w: 30 })
@@ -121,6 +122,15 @@ const content = {
 	record: { one: 'agent', many: 'agents' },
 	logline: 'For government, banks, insurers and care: every agent carries its AI Act risk class from the start, sensitive data only reaches a model cleared for it, every run shows each step it took, and the assistant asks before it changes anything. Honest AI: nothing happens that a person did not allow.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'AI governance', 'hook': 'Risk classes', 'routing': 'Data routing', 'run': 'Run history', 'general-ai': 'Assistant'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'grow', fromName: 'the orange Hermiq cell', toName: 'the agent register', note: 'the app cell opens into the agents and their risk classes (#1)' },
+		routing: { type: 'whip', fromName: 'the risk scale', toName: 'the routing view', note: 'a move to another screen, where data meets the models, on the beat (#11)' },
+		run: { type: 'match', fromName: 'the cleared model', toName: 'the step that waited', note: 'the model the data was cleared for is the run we open: its orange carries into the step that waited for a person' },
+		'general-ai': { type: 'grow', fromName: 'the ringed step', toName: 'the assistant chat', note: 'the step that waited for a person grows into the chat where the assistant asks first (#1)' },
+	},
 	techniques: ['#3 grid-cell ripple (the risk scale)', '#6 hard diagonal wipe (into the routing)', '#4 typewriter (the run\'s steps)', '#1 dot-grows-to-fill (as a hex, into the assistant)'],
 	neighbours: [],
 	builtOnApps: [],

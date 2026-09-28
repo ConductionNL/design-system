@@ -112,6 +112,15 @@ const content = {
 	record: { one: 'shift', many: 'shifts' },
 	logline: 'For roster planners in care and shift work: the roster is checked against the Working Hours Act before it goes out, a shift only takes someone with the certificate it needs, clocking in only works at the work site, and every change shows who and when. No payroll in this film.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: {'promise': 'Rostering', 'hook': 'Working hours', 'certified': 'Certificates', 'clock': 'Clock-in', 'general-dataLayer': 'Audit trail'},
+	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
+	transitions: {
+		hook: { type: 'cluster', fromName: 'the orange Humaniq cell', toName: 'the week\'s roster', note: 'loose shifts drift together into the week and the one that breaks the law lands ringed (#10)' },
+		certified: { type: 'zoom', fromName: 'the flagged shift', toName: 'the open shift and its people', note: 'we push into the flagged shift and come out on who may fill it: same shift, closer' },
+		clock: { type: 'whip', fromName: 'the certified row', toName: 'the site plan', note: 'a move to the work site and the phone, on the beat (#11)' },
+		'general-dataLayer': { type: 'hexWipe', fromName: 'the clock-in', toName: 'the record and its history', note: 'a chapter change from the floor to the shared audit trail, a stepped wipe on the beat (#5)' },
+	},
 	techniques: ['#3 grid-cell ripple (the roster check)', '#9 text-swap on a held diagram (who may take the shift)', '#1 dot-grows-to-fill (as a hex, site zone into the phone)'],
 	neighbours: ['filinq', 'portaliq'],
 	builtOnApps: ['filinq'],

@@ -15,7 +15,7 @@
  *            verified; spec federation)
  *   general  the data layer: audit trail and retention already built in (platform
  *            every-change-logged, strong; usp-archive-destroy, verified)
- *   promise  "What if the database was ready?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
+ *   promise  "What if you never built a database?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the new column steps through the
  * existing records), #1 dot-grows-to-fill as an upright hex (from the store into the other
@@ -119,7 +119,7 @@ function federationUI(w, geom) {
 const content = {
 	app: 'openregister',
 	audience: { slug: 'vendors', name: 'Software vendors and integrators', persona: 'Bram Koster, integration specialist at a 40-person vendor building permit apps for municipalities (cg-govtech-vendors)' },
-	promise: 'What if the database\nwas ready?',
+	promise: 'What if you never\nbuilt a database?',
 	promiseLine: 'Build your app on a record store with the audit trail and retention already in it',
 	title: 'OpenRegister for software vendors',
 	record: { one: 'record', many: 'records' },
@@ -157,8 +157,8 @@ const content = {
 	],
 	general: {
 		module: 'dataLayer',
-		title: 'Audit trail and retention, built in',
-		caption: 'Audit trail and\nretention, built in',
+		title: 'Audit trail, retention: built in',
+		caption: 'Audit trail, retention:\nbuilt in',
 		source: 'positioning openregister platform every-change-logged, strong, and usp-archive-destroy, verified; cg-govtech-vendors buying trigger ("a client tender requiring an audit trail and a retention policy"); specs audit-trail-immutable, retention-management',
 		params: {
 			record: { avatar: 'hex', title: 240, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },

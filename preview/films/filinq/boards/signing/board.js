@@ -15,7 +15,7 @@
  *            template-management REQ-TMPL-09 version diff)
  *   general  flows: signed, and a flow you drew takes over (platform draw-your-flows, medium;
  *            sp-app-integrations); the customer draws the flow, never "pre-built"
- *   promise  "What if the right version got signed?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
+ *   promise  "What if nobody signed the wrong version?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #10 cluster-to-container merge (the record's details drift
  * into the document's slots), #11 whip-pan on the beat (to the signer's phone), #4 typewriter
@@ -117,7 +117,7 @@ function templateUI(w, geom) {
 const content = {
 	app: 'filinq',
 	audience: { slug: 'signing', name: 'Notaries, law firms and insurers', persona: 'Peter van Dijk, notaris (six-person office); Sanne Bakker, policy officer for customer letters at an insurer' },
-	promise: 'What if the right\nversion got signed?',
+	promise: 'What if nobody signed\nthe wrong version?',
 	promiseLine: 'The right version of every document, filled from the record, signed and filed',
 	title: 'Filinq for notaries and insurers',
 	record: { one: 'document', many: 'documents' },

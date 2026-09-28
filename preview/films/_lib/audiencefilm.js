@@ -25,8 +25,8 @@ import { textBlock } from './stage.js'
 import { SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
-import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, SPB, beatT, barBeat, PLANS, DURATION as BODY } from './appfilm.js'
-import { LOOP_ANCHOR } from './scenes/general.js'
+import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, SPB, SIXTEENTH, RISE, CLEAR, FPS, snap, beatT, barBeat, PLANS, DURATION as BODY } from './appfilm.js'
+import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.js'
@@ -39,6 +39,15 @@ export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars, for 
 export const bodyLength = (n) => beatT(PLANS[n].at(-1).to)
 
 const s2 = (t) => `${t.toFixed(2)} s`
+
+/** Round 15: the promise opens the body, 9 beats (the outro's length), and every other slot moves 9 beats later. */
+export const PROMISE_BEATS = 9
+/** The promise's words start rising 2 frames after the opening's handover and build one word per sixteenth. */
+export const PROMISE_LEAD = 2 / FPS
+/** How every 10-bar body ends (Round 15, the same in every film, as in the tk, l1 and l2 clones). */
+export const BODY_END = 'Body end (Round 15, the same in every film): this last proof holds its caption to four frames before the bar line and no card follows. On the bar line its cards step down and the app tag lifts off and travels into Built on Nextcloud, where the app name returns in its own cell.'
+/** The Built on piece picks the tag up (Round 15). */
+export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles in the app\'s own cell, so the app name returns without a card of its own.'
 const barOf = (t) => Math.round(t / BAR) + 1
 
 /**
@@ -84,6 +93,40 @@ export function audienceBoards(content) {
 		motion: content.promiseMotion || `On ${s2(last.start)} (bar ${barOf(last.start)}) the app tag from the general scene lifts off its card and lands in its cell up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it in a quick stagger (every word in by ${s2(last.shows)}) and holds to ${s2(promiseClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which the Built on piece picks up as its ground, no cut.`,
 		sound: content.promiseSound || 'A pluck as the app cell lands, a low thud under the Nextcloud hex, a soft pad swell under the promise. A crisp click on the bar line into Built on.',
 		draw: (ctx) => promiseFrame(ctx, { app, promise, neighbours }),
+	}
+
+	// Round 15, the default for every 10-bar audience film (matching the tk, l1 and l2 clones): the
+	// promise opens the body (9 beats), hook, proofs and the general scene follow 9 beats later, and
+	// the body ends on the general scene; the app name returns in Built on (BODY_END, BUILT_IN).
+	if (!content.promiseFirst) {
+		const pr = boards.pop()
+		const beatOf = (t) => Math.round((t - OPEN) / SPB)
+		const timed = (b, from, to, shows) => {
+			const start = OPEN + beatT(from), end = OPEN + beatT(to)
+			const clears = OPEN + snap(beatT(to) - CLEAR)
+			return { ...b, start, end, bars: `${barBeat(from + 12)}-${barBeat(to - 1 + 12)}`, shows, clears, hold: +(clears - shows).toFixed(2) }
+		}
+		const promiseWords = wordCount(promise)
+		const pb = timed(pr, 0, PROMISE_BEATS, OPEN + snap(PROMISE_LEAD + RISE + (promiseWords - 1) * SIXTEENTH))
+		const P = { from: s2(OPEN), shows: s2(pb.shows), clears: s2(pb.clears), out: s2(pb.end) }
+		pb.motion = content.promiseMotion || `Round 15, the body opens here. On ${P.from}, straight after the opening's handover on its plain field, the app cell lands up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it from two frames after the handover, one word per sixteenth (every word in by ${P.shows}), and holds to ${P.clears}. Out on ${P.out}: the field, the neighbours and the Nextcloud hex step out on 16ths and the app cell shrinks in place on the loop anchor to the hook's tag (turning cobalt when the hook's tag is cobalt) while the hook's window lays in behind it.`
+		pb.sound = content.promiseSound || 'The body\'s bed enters gently under the promise (pad and offbeat bass, no stinger): a pluck as the app cell lands, a low thud under the Nextcloud hex. A short whoosh as the cluster steps out into the hook.'
+		const rest = boards.map((b) => {
+			const from = beatOf(b.start) + PROMISE_BEATS, to = beatOf(b.end) + PROMISE_BEATS
+			const r = timed(b, from, to, OPEN + snap(beatT(from) + RISE))
+			if (b.id === 'hook') {
+				// No longer frame 1 of the body: it comes in behind the app cell the promise leaves on the loop anchor.
+				r.motion = (content.hook?.motion || MOTION.hook({ from, to })).replace(/Frame 1 is (this key frame exactly|this frame)/, 'In behind the app hex the promise leaves on the loop anchor, the key frame is exactly this').replace(/\s*Frame 1 reads:/, ' In behind the app hex the promise leaves on the loop anchor:')
+				if (!content.hook?.sound) r.sound = 'A soft pluck as the push starts; a tick on the cell that becomes the hex; whoosh under the fill.'
+			}
+			if (b === boards[boards.length - 1]) {
+				// The body ends here (BODY_END): the hand-off to the outro cluster is replaced.
+				const base = (b.motion || '').replace(/ Out on [^:]*: (?:(?!\. ).)*?outro cluster.*?\./, '').replace(/ Out: the (cards?|canvas) steps? down and the app tag (lifts off the record and )?travels to its cell in the (outro|promise) cluster\.?/, '')
+				r.motion = `${base} ${BODY_END}`
+			}
+			return r
+		})
+		boards.splice(0, boards.length, pb, ...rest)
 	}
 
 	// Round 15 (Ruben): a product film opens its body on the promise, straight after the opening's
@@ -137,7 +180,7 @@ export function audienceBoards(content) {
 		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
 		words: 'Built on\nNextcloud',
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
+		motion: `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.${content.promiseFirst ? '' : ` ${BUILT_IN}`}`,
 		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
 		source: 'Shared module: round4/facts.json fact a.',
 		draw: (ctx) => { builtOnFrame(ctx, { app, apps: builtOnApps, on: 'nextcloud' }) },

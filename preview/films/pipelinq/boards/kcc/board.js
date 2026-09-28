@@ -14,6 +14,8 @@
  *   general  notifications, carrying the hand-offs (Round 9): refer to a colleague, a note, a
  *            callback, a task; the colleague hears at once
  *   promise  "The whole citizen, one click"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the pop-up's
  * open button becomes the dashboard), #9 text-swap on a held card (the hand-offs), #10 loose-shape cluster-to-container merge (cases,
@@ -139,7 +141,7 @@ const content = {
 		caption: 'The phone rings,\nthe citizen opens',
 		ui: { drawUI: callUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 8: "a call pop-up at the right of the screen that opens the citizen dashboard in one click"',
-		motion: 'Frame 1 reads: caption, the agent\'s list in the window, the Pipelinq hex (cobalt: the one orange is the Open ring) on the loop anchor. On beat 2 the call pop-up slides in from the right edge (0.3 s, ease.brand) with a small flat shadow; its ringing pip pulses twice (scale 1.0 to 1.3, on the beat). On beat 5 Open presses (scale 0.97 and back). Out: technique #1, the Open button becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat); its fill is the citizen dashboard\'s ground.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the agent\'s list in the window, the Pipelinq hex (cobalt: the one orange is the Open ring) on the loop anchor. On beat 2 the call pop-up slides in from the right edge (0.3 s, ease.brand) with a small flat shadow; its ringing pip pulses twice (scale 1.0 to 1.3, on the beat). On beat 5 Open presses (scale 0.97 and back). Out: technique #1, the Open button becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat); its fill is the citizen dashboard\'s ground.',
 		sound: 'Gentle open. Two soft ring pulses (a synth pluck, not a bell) as the pip beats, a dry click on Open, a whoosh through the hex.',
 	},
 	proofs: [

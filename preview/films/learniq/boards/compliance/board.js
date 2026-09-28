@@ -8,6 +8,8 @@
  *   proof 2  a certificate goes into the learner's own wallet (usp-eu-wallet-credentials)
  *   general  notifications: a mandatory course goes overdue and the manager hears
  *   promise  "Ready before the inspector asks"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the short rule's
  * orange bar becomes the seal), #6 hard diagonal wipe on the beat (into the wallet).
@@ -94,7 +96,7 @@ const content = {
 		caption: 'Every rule,\none page',
 		ui: { drawUI: regulationsUI, tagFill: 'cobalt' },
 		source: 'positioning learniq usp-compliance-coverage: "Set your own red and amber line for every rule\'s coverage." (verified)',
-		motion: 'Frame 1 reads: caption, the regulations list, the Learniq hex (cobalt: the one orange is the rule that falls short) on the loop anchor. The coverage bars fill left to right one frame apart; the threshold ticks drop onto each track; the rule short of its line fills orange last. Out: technique #1, the short rule\'s orange bar end becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and shrinks into the attestation\'s lock.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the regulations list, the Learniq hex (cobalt: the one orange is the rule that falls short) on the loop anchor. The coverage bars fill left to right one frame apart; the threshold ticks drop onto each track; the rule short of its line fills orange last. Out: technique #1, the short rule\'s orange bar end becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and shrinks into the attestation\'s lock.',
 		sound: 'Gentle open: pad and offbeat bass. A rising pluck per bar as they fill, a whoosh through the hex.',
 	},
 	proofs: [

@@ -14,6 +14,8 @@
  *            frequency analysis per subject)
  *   general  the data layer: every change shows who and when
  *   promise  "Your process, every case"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the new step
  * becomes the complaint scene), #3 grid-cell ripple (the pattern grid lights in waves),
@@ -130,7 +132,7 @@ const content = {
 		caption: 'Draw your\nprocess once',
 		ui: { drawUI: processUI, tagFill: 'cobalt' },
 		source: 'Dossiq specs case-types ("Case types are configurable definitions that control the behavior of cases": statuses, roles, fields, deadlines) and visual-workflow-editor ("build workflow definitions by placing status nodes and connecting them"). Beyond positioning.',
-		motion: 'Frame 1 reads: caption, the case type\'s canvas with three steps placed, the Dossiq hex (cobalt: the one orange is the dashed slot) on the loop anchor. The edges draw between the steps (stroke reveal, 0.2 s each), the branch drops below step two; on beat 4 the fourth step lifts off (flat shadow steps out) and settles into its dashed orange slot with a tick, the step panel below filling its three fields. Out: technique #1, the new step\'s slot becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) into the complaint scene.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the case type\'s canvas with three steps placed, the Dossiq hex (cobalt: the one orange is the dashed slot) on the loop anchor. The edges draw between the steps (stroke reveal, 0.2 s each), the branch drops below step two; on beat 4 the fourth step lifts off (flat shadow steps out) and settles into its dashed orange slot with a tick, the step panel below filling its three fields. Out: technique #1, the new step\'s slot becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) into the complaint scene.',
 		sound: 'Gentle open: pad and offbeat bass only. A soft tick per edge, a firmer tick as the step lands, a whoosh through the hex.',
 	},
 	proofs: [
@@ -164,7 +166,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Dossiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Dossiq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Dossiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Dossiq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

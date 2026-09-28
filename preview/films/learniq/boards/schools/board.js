@@ -14,6 +14,8 @@
  *   general  notifications: a pupil crosses the 16-hour line and the report goes out on time,
  *            the attendance officer hears (sp-statutory-attendance, Leerplichtwet)
  *   promise  "The same work, easier to carry"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Both Round 11 keepers fit (29 words): the parent excuse is proof 2 and the 16-hour report
  * moves into the notification slot, since the student file now carries the dossier.
@@ -135,7 +137,7 @@ const content = {
 		caption: 'One pupil,\none file',
 		ui: { drawUI: pupilFileUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 11 (open on the student file, the leerlingdossier); positioning learniq sp-learner-support-dossier ("Start a support plan from a template and add the everyday note in the same place.")',
-		motion: 'Frame 1 reads: caption, the student file in the window (the pupil, attendance, marks, the support plan, the parents), the Learniq hex (cobalt: the one orange is the newest note\'s ring) on the loop anchor. The tiles land a sixteenth apart; on beat 4 a new note drops into the support plan and its tile takes the orange ring. Out: technique #2, the camera pulls back (ease.brand) and the whole file shrinks into one row of the teacher\'s class view.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the student file in the window (the pupil, attendance, marks, the support plan, the parents), the Learniq hex (cobalt: the one orange is the newest note\'s ring) on the loop anchor. The tiles land a sixteenth apart; on beat 4 a new note drops into the support plan and its tile takes the orange ring. Out: technique #2, the camera pulls back (ease.brand) and the whole file shrinks into one row of the teacher\'s class view.',
 		sound: 'Gentle open. Four soft ticks as the tiles land, a pluck as the note arrives, a long soft whoosh on the pull-back.',
 	},
 	proofs: [

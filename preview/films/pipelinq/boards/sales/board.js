@@ -10,6 +10,8 @@
  *   proof 2  all your deals in Nextcloud Tables, as rows you can sort and filter (Round 8 note)
  *   general  flows: build your own dashboards and flows on that data (Round 8 note)
  *   promise  "Your data, your own dashboards"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * The Tables app has no icon in brand/assets (nc-* holds files, mail, calendar, talk, decks,
  * activity), so none is drawn: the table sits under a Nextcloud-blue header and the name
@@ -74,7 +76,7 @@ const content = {
 		caption: 'Every deal,\none board',
 		ui: { pattern: 'board', columns: [[200, 160, 180], [170, 210], [190, 150, 170]] },
 		source: 'positioning pipelinq sp-pipeline-board: "Drag a lead from one pipeline stage to the next."',
-		motion: 'Frame 1 is this frame: the board already on screen, caption set, the Pipelinq hex (orange) on the loop anchor. Cards settle one frame apart; a slow push in (1.00 to 1.04). Technique #9 starts here: the board is the held diagram for the next scene.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: the board already on screen, caption set, the Pipelinq hex (orange) on the loop anchor. Cards settle one frame apart; a slow push in (1.00 to 1.04). Technique #9 starts here: the board is the held diagram for the next scene.',
 		sound: 'Gentle open: pad and offbeat bass only. Soft ticks as the cards settle.',
 	},
 	proofs: [
@@ -104,7 +106,7 @@ const content = {
 		source: 'Ruben, Round 8 (dashboards and flows on your own data); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "Your", "data," then "your own dashboards" on the second line; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "Your", "data," then "your own dashboards" on the second line; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

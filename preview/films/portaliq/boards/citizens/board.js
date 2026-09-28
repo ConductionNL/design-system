@@ -11,6 +11,8 @@
  *   proof 2  a report without an account, and a receipt code to follow it (usp-anonymous-reporting)
  *   general  notifications: a new request, and the right colleague hears at once
  *   promise  "The portal answers, not the phone"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the hook:
  * cases from several apps merge into one portal page), #4 typewriter (the receipt code),
@@ -145,7 +147,7 @@ const content = {
 		caption: 'Your case,\nno phone call',
 		ui: { drawUI: caseUI, tagFill: 'cobalt', header: false },
 		source: 'positioning portaliq sp-gov-identity-signin ("Residents and businesses already sign in with DigiD or eHerkenning."), sp-case-status-tracking ("Your case\'s status and its documents sit on one page."), usp-fleet-data-in-your-portal (verified)',
-		motion: 'Technique #10, cluster-to-container merge. Frame 1 reads: caption, the portal page in the window, the Portaliq hex (cobalt: the one orange is the current step) on the loop anchor. Over the first two beats the three lower rows start as loose hexes carrying their apps\' glyphs (Dossiq, Shillinq, Filinq) scattered over the frame and each tweens into its row on ease.brand, arriving within one beat: what is theirs from every app, in one portal. The status stepper fills to the current step, which takes the orange ring.',
+		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the portal page in the window, the Portaliq hex (cobalt: the one orange is the current step) on the loop anchor. Over the first two beats the three lower rows start as loose hexes carrying their apps\' glyphs (Dossiq, Shillinq, Filinq) scattered over the frame and each tweens into its row on ease.brand, arriving within one beat: what is theirs from every app, in one portal. The status stepper fills to the current step, which takes the orange ring.',
 		sound: 'Gentle open. Three soft ticks as the rows land, a pluck on the current step.',
 	},
 	proofs: [

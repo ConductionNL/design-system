@@ -345,7 +345,7 @@ const content = {
 		caption: 'Your team,\none backlog',
 		ui: { drawUI: backlogUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 8: "work backlog, overview, working in teams"; Dossiq specs my-work, add-work-queue, werkvoorraad-intelligent-queue, reassignment-bulk-action',
-		motion: 'Technique #10, cluster-to-container merge. Frame 1 reads: caption, the backlog in three lanes, the Dossiq hex (cobalt: the one orange is the picked-up case) on the loop anchor. Over the first two beats the case cards start as loose hexes scattered over the window and each tweens into its lane on ease.brand, arriving within one beat. On beat 5 one card moves from the team\'s lane to a colleague\'s (ease.snap) and takes the orange ring.',
+		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the backlog in three lanes, the Dossiq hex (cobalt: the one orange is the picked-up case) on the loop anchor. Over the first two beats the case cards start as loose hexes scattered over the window and each tweens into its lane on ease.brand, arriving within one beat. On beat 5 one card moves from the team\'s lane to a colleague\'s (ease.snap) and takes the orange ring.',
 		sound: 'Gentle open. A run of soft ticks as the cards land, a pluck as the case changes hands.',
 	},
 	proofs: [

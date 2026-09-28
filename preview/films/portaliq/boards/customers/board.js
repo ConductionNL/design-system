@@ -10,6 +10,8 @@
  *   proof 2  a member fixes their own details, no ticket (usp-self-service-corrections)
  *   general  the data layer: every change shows who and when, the written trail
  *   promise  "A written trail, not a phone queue"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #9 text-swap on a held diagram (hook to proof 1: the phone
  * holds, the caption swaps and the status grows under it), #11 whip-pan on the beat (proof 1
@@ -113,7 +115,7 @@ const content = {
 		caption: 'Report a repair\nfrom your phone',
 		ui: { drawUI: reportUI, tagFill: 'cobalt', header: false },
 		source: 'positioning portaliq sp-case-status-tracking ("Your case\'s status and its documents sit on one page.") and customer group cg-housing-corporations; research.json proof moment "a tenant reports a repair"',
-		motion: 'Frame 1 reads: caption, the tenant\'s phone with the portal in house style, the Portaliq hex (cobalt: the one orange is the send button\'s ring) on the loop anchor. The photo tile lands, a kind-of-repair chip turns cobalt (a tap), the description lines draw in; on beat 6 the send button presses. The phone is the held picture for technique #9.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the tenant\'s phone with the portal in house style, the Portaliq hex (cobalt: the one orange is the send button\'s ring) on the loop anchor. The photo tile lands, a kind-of-repair chip turns cobalt (a tap), the description lines draw in; on beat 6 the send button presses. The phone is the held picture for technique #9.',
 		sound: 'Gentle open. A tick on the chip, a dry click on send.',
 	},
 	proofs: [
@@ -147,7 +149,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Portaliq cell lands on the loop anchor and turns orange. Under "Portaliq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Portaliq cell lands on the loop anchor and turns orange. Under "Portaliq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

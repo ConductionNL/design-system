@@ -10,6 +10,8 @@
  *   proof 2  the objection file builds itself from the case (usp-redact-objection)
  *   general  the data layer: every change shows who and when
  *   promise  "Permit to objection, one case"
+ *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
+ *   general scene and the app name returns in Built on Nextcloud)
  *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the redaction bar
  * becomes the objection scene's ground), #10 loose-shape cluster-to-container merge (the
@@ -117,7 +119,7 @@ const content = {
 		caption: 'Straight into the\nnational permit system',
 		ui: { drawUI: nationalUI, tagFill: 'cobalt' },
 		source: 'positioning dossiq usp-omgevingswet: "Send a permit request straight into the national Omgevingswet system." (verified)',
-		motion: 'Frame 1 reads: caption, the permit case left and the national system as a side box right, the Dossiq hex (cobalt) on the loop anchor. On beat 2 a pulse runs out along the top wire (square corners, 0.3 s); on beat 4 the reply runs back along the lower wire in orange and its pip lands on the case, whose pill turns mint. Nothing is retyped: no form appears.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the permit case left and the national system as a side box right, the Dossiq hex (cobalt) on the loop anchor. On beat 2 a pulse runs out along the top wire (square corners, 0.3 s); on beat 4 the reply runs back along the lower wire in orange and its pip lands on the case, whose pill turns mint. Nothing is retyped: no form appears.',
 		sound: 'Gentle open. A soft outgoing pluck on the send, a lower answering pluck as the reply lands.',
 	},
 	proofs: [

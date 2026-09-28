@@ -125,8 +125,8 @@ const content = {
 		caption: 'Only the tools\nit needs',
 		ui: { drawUI: toolsUI, tagFill: 'cobalt' },
 		source: 'positioning hermiq sp-tools ("Grant an agent exactly the tools it needs, nothing more."); specs agent-tool-governance, agent-capability-profile',
-		motion: 'Frame 1 reads: caption, the agent\'s tool list, the Hermiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; switches flip one per beat (two on, one left off), and on beat 5 the last needed tool turns on and takes the orange ring. Nothing else moves.',
-		sound: 'Gentle open. A dry switch click per flip, a pluck on the ringed one.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the agent\'s tool list, the Hermiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; switches flip one per beat (two on, one left off), and on beat 5 the last needed tool turns on and takes the orange ring. Nothing else moves.',
+		sound: 'A dry switch click per flip, a pluck on the ringed one.',
 	},
 	proofs: [
 		{

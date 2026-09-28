@@ -123,8 +123,8 @@ const content = {
 		caption: 'All your clients,\none login',
 		ui: { drawUI: clientsUI, tagFill: 'cobalt' },
 		source: 'positioning shillinq sp-audit ("Give your accountant their own access to review the books."); cg-accounting-firms ("running many clients\' administrations from one office"); specs accountant-portal, bookkeeping-multi-administratie',
-		motion: 'Frame 1 reads: caption, the practice\'s login and its clients, the Shillinq hex (cobalt) on the loop anchor. Technique #8, one-take glide: the camera glides down the client cards without a cut (ease.brand), settles on the third and pushes in slightly as the orange ring lands round it on beat 5.',
-		sound: 'Gentle open. A soft slide under the glide, a pluck on the ring.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the practice\'s login and its clients, the Shillinq hex (cobalt) on the loop anchor. Technique #8, one-take glide: the camera glides down the client cards without a cut (ease.brand), settles on the third and pushes in slightly as the orange ring lands round it on beat 5.',
+		sound: 'A soft slide under the glide, a pluck on the ring.',
 	},
 	proofs: [
 		{

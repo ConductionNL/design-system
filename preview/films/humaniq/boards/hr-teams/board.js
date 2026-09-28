@@ -134,8 +134,8 @@ const content = {
 		caption: 'Sick leave, every\nstep on time',
 		ui: { drawUI: sickUI, tagFill: 'cobalt' },
 		source: 'positioning humaniq sp-sickness-poortwachter ("The app tracks every Gatekeeper milestone for you."); spec verzuim-wvp (Wet verbetering poortwachter)',
-		motion: 'Frame 1 reads: caption, one sickness case with its milestone line, the Humaniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the milestone hexes step 20% to 40% to full in a wave from the left, the done ones turning mint, and the wave stops on the next one due, which pops to lavender; the orange hex ring lands round it on beat 5 and its task slides in at the top of the list.',
-		sound: 'Gentle open. A ripple of ticks, a pluck on the next milestone.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, one sickness case with its milestone line, the Humaniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the milestone hexes step 20% to 40% to full in a wave from the left, the done ones turning mint, and the wave stops on the next one due, which pops to lavender; the orange hex ring lands round it on beat 5 and its task slides in at the top of the list.',
+		sound: 'A ripple of ticks, a pluck on the next milestone.',
 	},
 	proofs: [
 		{

@@ -131,8 +131,8 @@ const content = {
 		caption: 'Every paper on\nits agenda item',
 		ui: { drawUI: agendaUI, tagFill: 'cobalt' },
 		source: 'positioning decidiq sp-agenda-papers ("Drag items into order and attach each paper to its slot."); spec agenda-builder, agenda-management',
-		motion: 'Frame 1 reads: caption, the agenda in the window, the Decidiq hex (cobalt: the one orange is the landing paper\'s ring) on the loop anchor. Technique #10: loose page shapes drift in from the right over two beats and each drops onto its item (ease.brand), arriving within one beat. On beat 4 item 3 is dragged up one place (ease.snap, the rows below close up) and its last paper lands with the orange ring.',
-		sound: 'Gentle open. A run of soft ticks as the papers land, a short slide as the item moves.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the agenda in the window, the Decidiq hex (cobalt: the one orange is the landing paper\'s ring) on the loop anchor. Technique #10: loose page shapes drift in from the right over two beats and each drops onto its item (ease.brand), arriving within one beat. On beat 4 item 3 is dragged up one place (ease.snap, the rows below close up) and its last paper lands with the orange ring.',
+		sound: 'A run of soft ticks as the papers land, a short slide as the item moves.',
 	},
 	proofs: [
 		{

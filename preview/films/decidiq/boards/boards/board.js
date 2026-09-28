@@ -126,8 +126,8 @@ const content = {
 		caption: 'Conflicted? You sit\nthis vote out',
 		ui: { drawUI: conflictUI, tagFill: 'cobalt' },
 		source: 'positioning decidiq usp-conflict-of-interest, verified ("Declare a conflict of interest and the system keeps you out of that vote."); spec conflict-of-interest. Not an "only we" line.',
-		motion: 'Frame 1 reads: caption, the members on this vote, the Decidiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; on beat 3 only row 4 changes: its vote slot empties to a dashed outline, the lavender "declared" pip pops in, the row dims, and the orange ring lands round it.',
-		sound: 'Gentle open. One soft tick as the slot empties, a low pluck as the ring lands.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the members on this vote, the Decidiq hex (cobalt) on the loop anchor. Technique #9, text-swap on a held diagram: the list holds still; on beat 3 only row 4 changes: its vote slot empties to a dashed outline, the lavender "declared" pip pops in, the row dims, and the orange ring lands round it.',
+		sound: 'One soft tick as the slot empties, a low pluck as the ring lands.',
 	},
 	proofs: [
 		{

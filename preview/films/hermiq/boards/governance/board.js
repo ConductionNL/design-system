@@ -129,8 +129,8 @@ const content = {
 		caption: 'Every agent,\nits risk class',
 		ui: { drawUI: agentsUI, tagFill: 'cobalt' },
 		source: 'positioning hermiq usp-ai-act-paperwork, verified ("Every agent gets its risk class the moment it\'s made."); specs agent-lifecycle-governance, ai-feature-governance, algoritmeregister-publication',
-		motion: 'Frame 1 reads: caption, the agents with their risk scales, the Hermiq hex (cobalt) on the loop anchor. On beat 2 a new agent row slides in at the foot (ease.brand). Technique #3, grid-cell ripple: its four scale hexes step 20% to 40% to full in two quick waves and settle on its class; the orange ring lands round the scale on beat 5.',
-		sound: 'Gentle open. A ripple of ticks with the waves, a pluck as the class settles.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the agents with their risk scales, the Hermiq hex (cobalt) on the loop anchor. On beat 2 a new agent row slides in at the foot (ease.brand). Technique #3, grid-cell ripple: its four scale hexes step 20% to 40% to full in two quick waves and settle on its class; the orange ring lands round the scale on beat 5.',
+		sound: 'A ripple of ticks with the waves, a pluck as the class settles.',
 	},
 	proofs: [
 		{

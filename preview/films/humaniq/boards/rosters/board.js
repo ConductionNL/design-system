@@ -120,8 +120,8 @@ const content = {
 		caption: 'Every roster, checked\nagainst the law',
 		ui: { drawUI: rosterUI, tagFill: 'cobalt' },
 		source: 'positioning humaniq usp-working-hours-act, thin ("A roster gets checked against the Working Hours Act before you publish it."; "the roster warns you before you publish a breach"); spec rostering. Thin: no "only we".',
-		motion: 'Frame 1 reads: caption, the week\'s roster, the Humaniq hex (cobalt) on the loop anchor, Publish as a ghost button. Technique #3, grid-cell ripple: the check runs over the roster in a wave, day by day, each shift stepping 40% to full; it stops on one shift that leaves too little rest, which turns lavender and takes the orange ring on beat 5. Publish stays a ghost.',
-		sound: 'Gentle open. A ripple of ticks, a low double tick on the flagged shift.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the week\'s roster, the Humaniq hex (cobalt) on the loop anchor, Publish as a ghost button. Technique #3, grid-cell ripple: the check runs over the roster in a wave, day by day, each shift stepping 40% to full; it stops on one shift that leaves too little rest, which turns lavender and takes the orange ring on beat 5. Publish stays a ghost.',
+		sound: 'A ripple of ticks, a low double tick on the flagged shift.',
 	},
 	proofs: [
 		{

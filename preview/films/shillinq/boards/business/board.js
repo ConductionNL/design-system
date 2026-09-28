@@ -130,8 +130,8 @@ const content = {
 		caption: 'Your bank feed\nmatches itself',
 		ui: { drawUI: bankUI, tagFill: 'cobalt' },
 		source: 'positioning shillinq sp-bank ("Have your bank feed matched to invoices on its own."); specs bookkeeping-bank-reconciliation, bookkeeping-bank-connectors',
-		motion: 'Frame 1 reads: caption, the bank lines and the open invoices, the Shillinq hex (cobalt) on the loop anchor. Technique #10: the bank lines arrive as loose bars from the left edge and each settles against its invoice (ease.brand, within one beat), a mint join drawing between them and the invoice pill turning mint; one stays open (no match yet). On beat 5 the last pair joins and takes the orange ring.',
-		sound: 'Gentle open. A tick per join, a pluck on the last.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the bank lines and the open invoices, the Shillinq hex (cobalt) on the loop anchor. Technique #10: the bank lines arrive as loose bars from the left edge and each settles against its invoice (ease.brand, within one beat), a mint join drawing between them and the invoice pill turning mint; one stays open (no match yet). On beat 5 the last pair joins and takes the orange ring.',
+		sound: 'A tick per join, a pluck on the last.',
 	},
 	proofs: [
 		{

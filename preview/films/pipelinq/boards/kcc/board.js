@@ -1,181 +1,174 @@
 /**
- * Pipelinq, audience film: municipal contact centres (KCC). Direction C on the
- * app-film template, wrapped in the shared modules by _lib/audiencefilm.js.
+ * Pipelinq, audience film: municipal contact centres (KCC). Direction C on the app-film
+ * template, wrapped by _lib/audiencefilm.js. Reworked in Round 8 (Ruben, 2026-09-28): the
+ * ID-lookup log and the holiday-skipping callback are out (weak); these are the strong
+ * moments he named. Positioning: ds-connext-film-review/audiences/positioning.md.
  *
- * Round 7 (Ruben, 2026-09-28): release film for the future; features in the positioning
- * matrix count as built. Positioning: ds-connext-film-review/audiences/positioning.md.
+ *   hook     the phone rings, a call pop-up slides in at the right, one click opens the
+ *            citizen dashboard (Round 8 note)
+ *   proof 1  the 360 view of the citizen: cases, products, invoices and permits (Round 8
+ *            note; positioning sp-360-timeline)
+ *   proof 2  related knowledge items appear while the agent types the contact moment (the
+ *            knowledge graph; Round 8 note)
+ *   general  the data layer: every letter, mail and chat with the citizen on the dashboard
+ *   promise  "The whole citizen, one click"
  *
- *   hook     one citizen, one timeline (sp-360-timeline)
- *   proof 1  every ID lookup logged and pseudonymised (usp-citizen-data-lawful)
- *   proof 2  the callback deadline skips the public holiday (usp-legal-deadlines)
- *   general  the assistant sorts incoming mail into the right request, and asks first
- *            (usp-mail-triage; platform assistant-asks-first)
- *   promise  "Answer on the first call"
+ * Kept in reserve (no room in 10 bars at 25 to 30 words): hand-offs (refer to a colleague,
+ * a callback note, notes on cases, tasks for colleagues).
  *
- * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (hook),
- * #4 typewriter (proof 1, the ID typed then masked), #1 dot-grows-to-fill match cut as an
- * upright hex (proof 2 into the assistant).
+ * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the pop-up's
+ * open button becomes the dashboard), #10 loose-shape cluster-to-container merge (cases,
+ * products, invoices and permits gather into the 360 view), #4 typewriter (the contact
+ * moment typed while the knowledge items land).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, hex, panel, statusPill, idlePill, use } from '../../../_lib/ui.js'
+import { rect, bar, circle, hex, panel, statusPill, idlePill, button, use } from '../../../_lib/ui.js'
 
 const REFS = [
+	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'A mark on a UI element grows to fill the frame and becomes the next scene; typed characters.' },
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Loose shapes drift together and merge into one container.' },
-	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'Typed characters, and a dot that grows to fill the frame as the cut.' },
 ]
 
-/** A timeline entry: a channel pip on the rail, a line of text, a trailing pill. */
-function entry(w, x, cy, lw, u, { pip = C.cobalt300, icon = null, pill = 'idle' } = {}) {
-	hex(w, x + 30, cy, 22, pip, 3)
-	if (icon) use(w, icon, x + 17, cy - 13, 26, 26, C.white)
-	bar(w, x + 74, cy - 12, lw, 10, C.cobalt900)
-	bar(w, x + 74, cy + 8, lw * 0.5, 7, C.cobalt300)
-	if (pill === 'mint') statusPill(w, x + 700, cy, u)
-	else idlePill(w, x + 710, cy, u)
-}
-
-/** Hook: the citizen page, every contact on one timeline. */
-function timelineUI(w, geom) {
+/** Hook: the agent's queue, and the call pop-up at the right edge with its open button. */
+function callUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	// The citizen: avatar, name, the masked ID, status.
-	panel(w, x, top, width, 150, u)
-	circle(w, x + 70, top + 75, 40, C.cobalt300)
-	bar(w, x + 130, top + 50, 260, 18, C.cobalt900)
-	for (let i = 0; i < 9; i++) circle(w, x + 138 + i * 18, top + 100, 5, C.cobalt300)
-	statusPill(w, x + width - 150, top + 75, u)
-	// The timeline: a call, a mail, a request, a complaint, a callback.
-	const ty = top + 180
-	panel(w, x, ty, width, 12 + 5 * 92 + 12, u)
-	rect(w, x + 58, ty + 40, 3 * u, 5 * 92 - 60, C.cobalt100)
-	const rows = [
-		{ lw: 240, icon: 'icon-contacts', pill: 'mint' },
-		{ lw: 200, icon: 'nc-mail' },
-		{ lw: 280, pip: C.lavender, pill: 'mint' },
-		{ lw: 220, icon: 'nc-talk' },
-		{ lw: 180, icon: 'nc-calendar' },
-	]
-	rows.forEach((r, i) => entry(w, x + 28, ty + 58 + i * 92, r.lw, u, r))
-}
-
-/** Proof 1: the lookup, typed then masked, and the log row it writes. */
-function lookupUI(w, geom) {
-	const { u } = geom
-	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	panel(w, x, top, width, 250, u)
-	bar(w, x + 40, top + 44, 150, 10, C.cobalt400)
-	// The ID field: three digits still typed, the rest already masked (typewriter, then mask).
-	rect(w, x + 40, top + 76, 520, 80, C.white, 4 * u, { stroke: C.cobalt300, 'stroke-width': u })
-	for (let i = 0; i < 3; i++) rect(w, x + 66 + i * 34, top + 98, 20, 36, C.cobalt900, 3)
-	for (let i = 3; i < 9; i++) circle(w, x + 76 + i * 34, top + 116, 8, C.cobalt400)
-	rect(w, x + 66 + 9 * 34, top + 94, 3 * u, 44, C.cobalt)
-	rect(w, x + width - 230, top + 84, 190, 64, C.cobalt, 4 * u)
-	bar(w, x + width - 180, top + 112, 90, 9, C.white)
-	bar(w, x + 40, top + 196, 300, 8, C.cobalt200)
-	// The lookup log: the new row on top with the scene's one orange, who and when.
-	const ly = top + 280
-	panel(w, x, ly, width, 12 + 4 * 84 + 12, u)
-	;[{ w: 250, pip: C.orange }, { w: 210 }, { w: 270 }, { w: 190 }].forEach((r, i) => {
-		const cy = ly + 54 + i * 84
-		if (i > 0) rect(w, x + 24, cy - 42, width - 48, u, C.cobalt50)
-		circle(w, x + 60, cy, 18, i % 2 ? C.cobalt200 : C.cobalt300)
-		bar(w, x + 96, cy - 12, r.w, 10, C.cobalt900)
-		for (let k = 0; k < 6; k++) circle(w, x + 102 + k * 14, cy + 12, 4, C.cobalt300)
-		bar(w, x + width - 170, cy - 4, 110, 8, C.cobalt200)
-		if (r.pip) hex(w, x + width - 40, cy, 11, r.pip, 2)
+	// The agent's work behind it: a quiet list of contact moments.
+	panel(w, x, top, width, 12 + 5 * 80 + 12, u)
+	;[220, 180, 240, 200, 170].forEach((lw, i) => {
+		const cy = geom.anchor.y - 8 + i * 80
+		if (i > 0) rect(w, x + 24, cy - 40, width - 48, u, C.cobalt50)
+		circle(w, x + 64, cy, 18, C.cobalt200)
+		bar(w, x + 100, cy - 10, lw, 10, C.cobalt300)
+		bar(w, x + 100, cy + 8, lw * 0.5, 7, C.cobalt100)
 	})
+	// The call pop-up, slid in at the right: caller, a ringing pip, and Open (the one orange, as a ring).
+	const pw = 420, px = geom.r - pw + 30, py = top + 250
+	rect(w, px + 10, py + 12, pw, 250, C.cobalt200, 6 * u)
+	panel(w, px, py, pw, 250, u)
+	rect(w, px, py, pw, 10 * u, C.cobalt, 0)
+	use(w, 'icon-contacts', px + 34, py + 60, 44, 44, C.cobalt)
+	bar(w, px + 100, py + 64, 190, 16, C.cobalt900)
+	bar(w, px + 100, py + 94, 130, 9, C.cobalt300)
+	hex(w, px + pw - 50, py + 80, 12, C.mint, 2)
+	button(w, px + 34, py + 160, 150, 56, u, { kind: 'ghost' })
+	button(w, px + 204, py + 160, 180, 56, u, { kind: 'accent' })
 }
 
-/** Proof 2: two working weeks; the callback's deadline hops over the public holiday. */
-function deadlineUI(w, geom) {
+/** Proof 1: the citizen dashboard, a 360 view: cases, products, invoices, permits round the person. */
+function viewUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	// The promised callback.
-	panel(w, x, top, width, 130, u)
-	bar(w, x + 90, top + 44, 280, 16, C.cobalt900)
-	bar(w, x + 90, top + 76, 180, 9, C.cobalt300)
-	idlePill(w, x + width - 150, top + 65, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
-	// Ten working days, weekends dimmed, the holiday hatched; the deadline marker on the day after it.
-	const cy0 = top + 170, cw = (width - 60) / 7, ch = 170
-	panel(w, x, cy0, width, 2 * ch + 90, u)
-	for (let d = 0; d < 7; d++) bar(w, x + 30 + d * cw + 14, cy0 + 26, 40, 8, C.cobalt300)
-	for (let r = 0; r < 2; r++) {
-		for (let d = 0; d < 7; d++) {
-			const cx = x + 30 + d * cw, cy = cy0 + 60 + r * ch
-			const weekend = d >= 5
-			const holiday = r === 1 && d === 0
-			const due = r === 1 && d === 1
-			rect(w, cx + 4, cy, cw - 8, ch - 12, weekend ? C.cobalt50 : C.white, 3 * u, { stroke: C.cobalt100, 'stroke-width': u })
-			bar(w, cx + 16, cy + 14, 22, 8, weekend ? C.cobalt200 : C.cobalt400)
-			if (holiday) {
-				rect(w, cx + 4, cy, cw - 8, ch - 12, C.cobalt50, 3 * u)
-				for (let k = 0; k < 3; k++) rect(w, cx + 18, cy + 40 + k * 14, cw - 44, 5, C.cobalt200, 2)
-			}
-			if (due) {
-				rect(w, cx + 4, cy, cw - 8, ch - 12, 'none', 3 * u, { stroke: C.orange, 'stroke-width': 3 * u })
-				hex(w, cx + cw / 2, cy + 100, 22, C.orange, 3)
-			}
+	panel(w, x, top, width, 140, u)
+	circle(w, x + 70, top + 70, 40, C.cobalt300)
+	bar(w, x + 130, top + 46, 260, 18, C.cobalt900)
+	bar(w, x + 130, top + 80, 170, 9, C.cobalt300)
+	statusPill(w, x + width - 150, top + 70, u)
+	// Four tiles: each a kind of thing the citizen has, with its app glyph and two rows.
+	const tiles = [['dossiq', 'cases'], ['pipelinq', 'products'], ['shillinq', 'invoices'], ['dossiq', 'permits']]
+	const tw = (width - 20) / 2, th = 200
+	tiles.forEach(([id], i) => {
+		const tx = x + (i % 2) * (tw + 20), ty = top + 170 + Math.floor(i / 2) * (th + 20)
+		panel(w, tx, ty, tw, th, u)
+		hex(w, tx + 44, ty + 44, 22, C.cobalt, 3)
+		use(w, `g-${id}`, tx + 30, ty + 30, 28, 28, C.white)
+		bar(w, tx + 82, ty + 38, 110, 12, C.cobalt700)
+		rect(w, tx + tw - 70, ty + 30, 44, 28, C.cobalt50, 14)
+		for (let k = 0; k < 2; k++) {
+			bar(w, tx + 30, ty + 100 + k * 44, tw * 0.5 - k * 40, 10, C.cobalt900)
+			if (i === 3 && k === 0) statusPill(w, tx + tw - 150, ty + 104, u)
+			else idlePill(w, tx + tw - 110, ty + 104 + k * 44, u)
 		}
-	}
-	// Where the deadline would have fallen: a faint outline on the holiday, an arrow of steps to the new day.
-	const hx = x + 30 + cw / 2, hy = cy0 + 60 + ch + 100
-	hex(w, hx, hy, 22, 'none', 3, { stroke: C.cobalt300, 'stroke-width': 2 * u, 'stroke-dasharray': '6 6' })
-	rect(w, hx + 28, hy - 2, cw - 56, 4, C.cobalt300)
+	})
+	// The permit that just landed: its tile ringed, the scene's one orange.
+	const px = x + tw + 20, py = top + 170 + th + 20
+	rect(w, px - 6, py - 6, tw + 12, th + 12, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
+
+/** Proof 2: the contact moment being typed, and the related knowledge items landing beside it. */
+function knowledgeUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
+	const fw = 470
+	panel(w, x, top, fw, 520, u)
+	bar(w, x + 36, top + 40, 150, 10, C.cobalt400)
+	// The note, typed: two full lines and a third still going, with the cursor.
+	rect(w, x + 36, top + 70, fw - 72, 220, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	bar(w, x + 56, top + 98, 330, 10, C.cobalt900)
+	bar(w, x + 56, top + 128, 300, 10, C.cobalt900)
+	bar(w, x + 56, top + 158, 140, 10, C.cobalt900)
+	rect(w, x + 56 + 148, top + 150, 3 * u, 26, C.cobalt)
+	// Channel and subject chips, a save button.
+	rect(w, x + 36, top + 320, 110, 36, C.cobalt50, 18)
+	rect(w, x + 158, top + 320, 140, 36, C.lavender300, 18)
+	button(w, x + fw - 196, top + 430, 160, 56, u)
+	// The knowledge items: related articles appear as you type, linked to each other (a small graph).
+	const kx = x + fw + 30, kw = width - fw - 30
+	panel(w, kx, top, kw, 520, u)
+	bar(w, kx + 30, top + 40, 120, 10, C.cobalt400)
+	const nodes = [[kx + 70, top + 130], [kx + 70, top + 250], [kx + 70, top + 370]]
+	rect(w, kx + 70 - 1.5 * u, top + 130, 3 * u, 240, C.cobalt200)
+	nodes.forEach(([nx, ny], i) => {
+		hex(w, nx, ny, 22, i === 0 ? C.cobalt : C.cobalt300, 3)
+		bar(w, nx + 44, ny - 14, kw - 150 - i * 30, 11, C.cobalt900)
+		bar(w, nx + 44, ny + 8, (kw - 150) * 0.6, 7, C.cobalt300)
+	})
+	rect(w, kx + 14, top + 90, kw - 28, 82, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
 const content = {
 	app: 'pipelinq',
 	audience: { slug: 'kcc', name: 'Municipal contact centres', persona: 'Sanne de Wit, KCC officer; the head of the contact centre buys' },
-	promise: 'Answer on\nthe first call',
-	promiseLine: 'Answer the citizen on the first call, and prove every lookup was lawful',
+	promise: 'The whole citizen,\none click',
+	promiseLine: 'The whole citizen in one click: every case, invoice, permit and contact, and the answer at hand while you talk',
 	title: 'Pipelinq for contact centres',
 	record: { one: 'citizen', many: 'citizens' },
-	logline: 'For the municipal contact centre: one citizen on one timeline, every ID lookup logged and masked, a callback deadline that skips the holiday, and mail sorted before anyone opens it.',
+	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, products, invoices and permits in one view; the right knowledge appears while you type; and every letter, mail and chat is on the same page.',
 	references: REFS,
-	techniques: ['#10 cluster-to-container merge', '#4 typewriter', '#1 dot-grows-to-fill (as a hex)'],
-	neighbours: ['portaliq', 'dossiq'],
-	builtOnApps: ['portaliq'],
+	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge', '#4 typewriter'],
+	neighbours: ['dossiq', 'shillinq'],
+	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'One citizen, one timeline',
-		caption: 'One citizen,\none timeline',
-		ui: { drawUI: timelineUI },
-		source: 'positioning pipelinq sp-360-timeline: "See every past contact with a client in one timeline."',
-		motion: 'Technique #10, cluster-to-container merge. Frame 1 already reads: caption set, the timeline in the window, the Pipelinq hex (orange) on the loop anchor. Over the first two beats five loose shapes (a phone, a mail, a request, a chat, a date: small hexes scattered over the window at seeded positions) each tween into their row on the timeline (ease.brand), arriving within one beat, the rail drawing down behind them. Then a slow push in on the citizen header (1.00 to 1.06). Out on 2.3: the masked ID dots are the hand-off into proof 1.',
-		sound: 'Gentle open: pad and offbeat bass only. Five soft ticks as the shapes land in their rows.',
+		title: 'The phone rings, the citizen opens',
+		caption: 'The phone rings,\nthe citizen opens',
+		ui: { drawUI: callUI, tagFill: 'cobalt' },
+		source: 'Ruben, Round 8: "a call pop-up at the right of the screen that opens the citizen dashboard in one click"',
+		motion: 'Frame 1 reads: caption, the agent\'s list in the window, the Pipelinq hex (cobalt: the one orange is the Open ring) on the loop anchor. On beat 2 the call pop-up slides in from the right edge (0.3 s, ease.brand) with a small flat shadow; its ringing pip pulses twice (scale 1.0 to 1.3, on the beat). On beat 5 Open presses (scale 0.97 and back). Out: technique #1, the Open button becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat); its fill is the citizen dashboard\'s ground.',
+		sound: 'Gentle open. Two soft ring pulses (a synth pluck, not a bell) as the pip beats, a dry click on Open, a whoosh through the hex.',
 	},
 	proofs: [
 		{
-			id: 'lookup',
-			title: 'Every ID lookup logged and masked',
-			caption: 'Every ID lookup\nlogged and masked',
-			source: 'positioning pipelinq usp-citizen-data-lawful: "Every BSN lookup gets logged and pseudonymised." (confidence verified)',
-			motion: 'Technique #4, typewriter. Hex match cut from the header\'s masked ID into the lookup field. The ID types itself one digit per frame pair (0.08 s apart, hard on and off), and the moment the lookup runs each digit after the third flips to a dot, left to right, one per frame. On the next beat a new row pushes in on top of the lookup log with the orange pip: who looked, and when. The caption rises as the typing starts.',
-			sound: 'Tiny key ticks under the typing (synth clicks, not a bell), a soft thud as the log row lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every ID lookup\nlogged and masked', drawUI: lookupUI, tagFill: 'cobalt' }),
+			id: 'view',
+			title: 'Cases, invoices, permits, one view',
+			caption: 'Cases, invoices,\npermits, one view',
+			source: 'Ruben, Round 8: "360° citizen view (all cases, products, invoices, permits)"; positioning pipelinq sp-360-timeline',
+			motion: 'Technique #10, cluster-to-container merge. The hex shrinks into the citizen\'s avatar. Four loose hexes carrying their apps\' glyphs (cases, products, invoices, permits) sit scattered over the window, then each tweens into its tile on ease.brand, all landing within one beat; the tiles\' rows drop in a sixteenth apart, and the permits tile, the last to land, takes the orange ring.',
+			sound: 'Four ticks as the tiles land, a pluck as the last tile is ringed.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Cases, invoices,\npermits, one view', drawUI: viewUI, tagFill: 'cobalt' }),
 		},
 		{
-			id: 'deadline',
-			title: 'The callback date skips the holiday',
-			caption: 'The callback date\nskips the holiday',
-			source: 'positioning pipelinq usp-legal-deadlines: "Deadlines skip Dutch public holidays automatically." (confidence verified)',
-			motion: 'Push down from the log to the promised callback. Its deadline marker lands on the hatched public holiday (dashed outline), holds a beat, then steps one day right on the beat (ease.snap) into the next working day, which takes the orange edge. Out on the last beat: technique #1 as an upright hex, the orange marker grows to fill the frame (hexCut, ease.snap) and its fill becomes the assistant scene\'s ground.',
-			sound: 'A pluck as the marker lands on the holiday, a lower pluck as it steps off, a whoosh through the hex fill.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'The callback date\nskips the holiday', drawUI: deadlineUI, tagFill: 'cobalt' }),
+			id: 'knowledge',
+			title: 'Start typing, the answer appears',
+			caption: 'Start typing,\nthe answer appears',
+			source: 'Ruben, Round 8: "related knowledge items (xWiki knowledge graph) appear while typing a contact moment"',
+			motion: 'Push down to the contact moment. Technique #4, typewriter: the note types itself (greeked characters one pair per 0.1 s, hard on and off, a cursor). After the first line, related knowledge items land in the panel on the right one per beat, linked by a thin line (a small graph), and the best match takes the orange ring. The caption rises as the typing starts.',
+			sound: 'Soft key ticks under the typing, a pluck as each item lands.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Start typing,\nthe answer appears', drawUI: knowledgeUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
-		module: 'ai',
-		title: 'Mail sorted before you open it',
-		caption: 'Mail sorted\nbefore you open it',
-		source: 'positioning pipelinq usp-mail-triage ("Incoming mail sorts itself into the right request.", verified), platform usp assistant-asks-first',
+		module: 'dataLayer',
+		title: 'Every letter, mail and chat',
+		caption: 'Every letter, mail\nand chat, right there',
+		source: 'Ruben, Round 8: "every contact with the citizen (letters, mail, chat) on that dashboard"; story.json mechanics 0 and 1',
 		params: {
-			question: { w: 360, lines: [0.84, 0.6] },
-			answer: { rows: [{ avatar: 'hex', w: 210, trail: 'mint' }, { avatar: 'hex', w: 170, trail: 'idle' }, { avatar: 'person', w: 190, trail: 'idle' }] },
-			permission: { ask: true },
+			record: { avatar: 'person', title: 230, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },
+			history: [{ av: C.cobalt300, w: 180 }, { av: C.cobalt200, w: 150 }, { av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 130 }],
+			links: ['nc-files', 'nc-mail', 'nc-talk'],
 		},
-		sound: 'A soft pop as the mail arrives, three ticks as it is sorted, a dry click as the approval card lands and waits.',
+		sound: 'A pluck as the letters, mail and chat link in, a tick on the newest contact.',
 	},
 }
 

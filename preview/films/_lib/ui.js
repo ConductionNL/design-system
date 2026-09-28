@@ -94,8 +94,8 @@ export function appMark(g, app, { light = false, h = TYPE.markH, x = TYPE.x, y =
 }
 
 /** The scene caption: Figtree 700, sentence case, left-aligned at x 120. */
-export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYPE.lh } = {}) {
-	return textBlock(g, text, { x: TYPE.x, y, size, weight: 700, fill, lineHeight: lh / size, tracking: -0.02, clip: false })
+export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYPE.lh, accent, accent2 } = {}) {
+	return textBlock(g, text, { x: TYPE.x, y, size, weight: 700, fill, accent, accent2, lineHeight: lh / size, tracking: -0.02, clip: false })
 }
 
 /**
@@ -120,7 +120,8 @@ export function fitCaptionSize(text, { size = TYPE.size, box = TYPE.col - TYPE.x
 /** caption() at the size fitCaptionSize() picks, with the grid's line height. */
 export function fitCaption(g, text, fill, opts = {}) {
 	const size = fitCaptionSize(text, opts)
-	return caption(g, text, fill, { y: opts.y ?? TYPE.y1, size, lh: Math.round((size * TYPE.lh) / TYPE.size) })
+	// _word_ in a caption takes accent2: a Nextcloud app's name in Nextcloud cyan (round 6).
+	return caption(g, text, fill, { y: opts.y ?? TYPE.y1, size, lh: Math.round((size * TYPE.lh) / TYPE.size), accent: opts.accent, accent2: opts.accent2 })
 }
 
 /**

@@ -156,7 +156,7 @@ function trailing(g, kind, xRight, cy, u, p = 0.5) {
 export function hookFrame(ctx, p) {
 	const { app, caption: text, pattern = 'detail', tagFill = 'orange', drawUI, accent = null } = p
 	const g = ctx.g
-	chrome(ctx, { text, app })
+	chrome(ctx, { text, app, captionOpts: p.captionOpts })
 	const u = U
 	const w0 = windowAt(ctx.W, ctx.H)
 	const view = el('g', { transform: `translate(${w0.x} ${w0.y}) scale(${w0.s})` }, g)

@@ -37,7 +37,7 @@ export const APP_NAMES = {
 export const NC_APPS = ['files', 'mail', 'calendar', 'talk', 'decks', 'activity']
 
 /** UI icons in brand/assets/icons/ (Lucide line icons, the brand's UI iconography), loaded as icon-<name>. */
-export const UI_ICONS = ['bell', 'contacts', 'tasks', 'polls', 'photos', 'forms']
+export const UI_ICONS = ['bell', 'contacts', 'tasks', 'polls', 'photos', 'forms', 'lock']
 
 export async function loadBrandAssets(defs) {
 	await Promise.all([

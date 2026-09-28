@@ -1,25 +1,29 @@
 /**
- * ConNext film, round 5 (storyboard A18): the body's words. 27 on-screen words in the
- * body (the closing pieces carry their own: 2 and 17, _lib/scenes/closing.js), each
- * held for max(1.5 s, 0.4 s x words) from the frame it is fully up, all in the left
- * column of the safe box (x 120 to 1800, y 96 to 930).
+ * ConNext film, round 6 (storyboard A19): the body's words. No full stop at the end of
+ * any line (Ruben, round 6). Every caption is held for max(1.5 s, 0.4 s x words) from the
+ * frame it is fully up, in the left column of the safe box (x 120 to 1800, y 96 to 930).
  *
- * Hand-over (director, 2026-09-27, unchanged): a caption fully leaves (4 frames) before
- * the next one rises, with at least 2 clear frames between; it rises only once the
- * ground behind it is settled; while it leaves it is glued to the world, so it rides out
- * with its ground if the camera has started to move. Two-line captions lead with line 1
- * by a frame. The body opens on a cut after the shared opening, with "Start a lead."
- * already set (as round 3's frame 1 was).
+ * Hand-over (round 3, unchanged): a caption fully leaves (4 frames, 3 where tight) before
+ * the next rises, with at least 2 clear frames between; it rises only on a settled ground;
+ * while it leaves it is glued to the world. Two-line captions lead with line 1 by a frame.
  *
- * Round 3's version is kept in the review folder (round5/round3-film/scenes/type.js).
+ * s1's line under "Start a lead" is the one exception, on purpose: one line whose words
+ * change with each component that loads, a masked swap inside one clip band (the old words
+ * leave upward as the new ones rise, both in 4 frames), the action in white and the name in
+ * Nextcloud cyan. Each version of the line is its own scene (t-s1-<name>) so the checks can
+ * read it; the last holds, then leaves with the headline.
+ *
+ * The round-5 version is kept in the review folder (round6/round5-film/scenes/type.js).
  */
+import { el, textBlock } from '../../_lib/stage.js'
 import { ease, inv } from '../../_lib/core.js'
-import { TYPE, MARK } from '../boards/A18/board.js'
-import { T, RISE, EXIT, START } from '../boards/A18/timing.js'
+import { TYPE, MARK, LINE, lineText } from '../boards/A19/board.js'
+import { T, RISE, EXIT, EXIT3, SWAP, START, LOADS } from '../boards/A19/timing.js'
 import { glue, glueAttr } from '../lib/camera.js'
-import { caption, wordmark } from '../lib/type.js'
+import { caption, wordmark, leaveCurve } from '../lib/type.js'
 
 const O = START.body
+const TX = 120
 
 export function buildType(film, camera) {
 	const all = []
@@ -30,8 +34,30 @@ export function buildType(film, camera) {
 		return (t) => parts.forEach((p) => p.set(t))
 	})
 
-	/* s1 · set on the cut (no rise), leaves on bar 2 before the apps lift. */
-	add('t-s1', b(0), b(T.openOut) + EXIT, (ctx) => [caption(ctx.g, TYPE.s1, { leave: b(T.openOut), camera })])
+	/* s1 · rises on the handover field (the opening's last frame is ground and field only, no cut); leaves with its last line. */
+	add('t-s1', b(0), b(T.openOut) + EXIT, (ctx) => [caption(ctx.g, TYPE.s1, { rise: b(0), leave: b(T.openOut), camera })])
+
+	/* s1 · the line under it: one version per component, swapping in one clip band. */
+	LOADS.forEach((l, i) => {
+		const inAt = b(l.at)
+		const last = i === LOADS.length - 1
+		const outAt = last ? b(T.openOut) : b(LOADS[i + 1].at)
+		const outDur = last ? EXIT : SWAP
+		film.scene(`t-s1-${l.name.toLowerCase()}`, inAt, outAt + outDur, (ctx) => {
+			const group = el('g', {}, ctx.g)
+			const blk = textBlock(group, lineText(l), { x: TX, y: LINE.y, size: LINE.size, weight: 700, fill: LINE.fill, accent: LINE.accent, tracking: -0.02 })
+			const d = LINE.size * 1.35
+			return (t) => {
+				let dy = 0
+				if (t < inAt + SWAP) dy = d * (1 - ease.brand(inv(inAt, inAt + SWAP, t)))
+				if (t >= outAt) dy = -d * leaveCurve(inv(outAt, outAt + outDur, t))
+				const tr = Math.abs(dy) > 1e-3 ? `translate(0 ${dy.toFixed(2)})` : null
+				for (const it of blk.items) tr ? it.node.setAttribute('transform', tr) : it.node.removeAttribute('transform')
+				const gl = last && t >= outAt ? glueAttr(glue(camera(outAt), camera(t))) : null
+				gl ? group.setAttribute('transform', gl) : group.removeAttribute('transform')
+			}
+		})
+	})
 
 	/* s2 · the wordmark rises once the pull back has all but settled, then rides out with the world on the push into Filinq. */
 	film.scene('t-s2', b(T.wmIn) - RISE, b(T.push[0]) + 0.5, (ctx) => {
@@ -44,16 +70,13 @@ export function buildType(film, camera) {
 		}
 	})
 
-	/* s3 · once the white Filinq hex covers the type column; leaves as the camera hops east. */
 	add('t-s3', b(T.s3In) - RISE, b(T.hop1[0]) + EXIT, (ctx) => [caption(ctx.g, TYPE.s3, { rise: b(T.s3In), lead: 0, leave: b(T.hop1[0]), camera })])
-	/* s4 · once the white Portaliq ground fills the column; leaves as the camera pulls up to the lane. */
 	add('t-s4', b(T.s4In) - RISE, b(T.flowOut[0]) + EXIT, (ctx) => [caption(ctx.g, TYPE.s4, { rise: b(T.s4In), leave: b(T.flowOut[0]), camera })])
-	/* s5 · white on the cobalt once the pull up has settled; leaves before the push into Nextcloud. */
 	add('t-s5', b(T.s5In) - RISE, b(T.s5Out) + EXIT, (ctx) => [caption(ctx.g, TYPE.s5, { rise: b(T.s5In), leave: b(T.s5Out), camera })])
-	/* s6 · white on the cobalt inside the Nextcloud cell, once it fills the column; leaves as the camera hops east. */
 	add('t-s6', b(T.s6In) - RISE, b(T.hop3[0]) + EXIT, (ctx) => [caption(ctx.g, TYPE.s6, { rise: b(T.s6In), leave: b(T.hop3[0]), camera })])
-	/* s7 · rises with the change it waits on; leaves before the pull out. */
-	add('t-s7', b(T.s7In) - RISE, b(T.s7Out) + EXIT, (ctx) => [caption(ctx.g, TYPE.s7, { rise: b(T.s7In), leave: b(T.s7Out), camera })])
+	/* s7 · the question beat, then "It prepares actions and suggestions" two clear frames later, in the same shot. */
+	add('t-s7a', b(T.s7aIn) - RISE, b(T.s7aOut) + EXIT3, (ctx) => [caption(ctx.g, TYPE.s7a, { rise: b(T.s7aIn), leave: b(T.s7aOut), exit: EXIT3, camera })])
+	add('t-s7b', b(T.s7bIn) - RISE, b(T.s7bOut) + EXIT, (ctx) => [caption(ctx.g, TYPE.s7b, { rise: b(T.s7bIn), leave: b(T.s7bOut), camera })])
 
 	return all
 }

@@ -1,6 +1,6 @@
 /**
  * The shared closing modules of every film (Ruben, round 4, 2026-09-27; restyled in
- * round 5, 2026-09-28).
+ * round 5 and round 6, 2026-09-28).
  *
  * Films are modular: the shared Conduction opening, the film's own body, then these
  * two pieces, the same in every film. Each is a SCENE (a pure function of its own
@@ -11,8 +11,10 @@
  *   builtOnFrame(ctx, p)          middle, Nextcloud as the ground it stands on, the Nextcloud
  *                                 apps it links a record to round it, the film's app on top
  *   installScene(ctx, p)   BRAND  3 bars. The install board as slogans (round 5): "Install
- *   installFrame(ctx, p)          the app." (orange: the call) / "Use the app." / "Own your
- *                                 data." and "Always 100% open source and free to use."
+ *   installFrame(ctx, p)          the app" (orange: the call) / "Use the app" / "Own your data"
+ *                                 and "Always 100% open source and free to use"; round 6: no
+ *                                 full stops, the Conduction wordmark as the header and the
+ *                                 Conduction avatar where the Nextcloud cell was
  *
  *   film.scene('builtOn', t0, t0 + CLOSING.builtOn.dur, (ctx) => builtOnScene(ctx, { app }))
  *   film.scene('install', t1, t1 + CLOSING.install.dur, (ctx) => installScene(ctx, { app }))
@@ -51,23 +53,28 @@ const F = (n) => n / 24
 const RISE = F(4)
 const EXIT = F(4)
 
-/** The pieces' lengths and their beats, in local seconds. */
+/**
+ * The pieces' lengths and their beats, in local seconds. Round 6: the closing piece builds at
+ * once (Ruben: "tighten the nearly empty half second"): the data layer drops three frames in,
+ * the words rise on the second frame, the apps start popping on the second beat.
+ */
 export const CLOSING = {
 	builtOn: {
 		bars: 2, dur: G(3),
 		nextcloud: G(1, 1), // Nextcloud lands first, at 1.4x, settling in 0.2 s: the ground
-		layer: G(1, 2), // the data layer drops onto it
-		typeIn: F(8), // "Built on" rises, the wordmark a sixteenth behind
-		ring: [G(1, 3), G(1, 3, 1), G(1, 3, 2), G(1, 3, 3), G(1, 4), G(1, 4, 1)], // the six nearest apps
-		tasks: G(1, 4, 2),
-		more: [G(1, 4, 3), G(2, 1), G(2, 1, 1), G(2, 1, 2)], // the quieter outer cells
-		top: G(2, 2), // the film's app (or the story's apps) lands on top
+		layer: F(3), // the data layer drops onto it straight away
+		typeIn: F(2), // "Built on" rises, the wordmark a sixteenth behind
+		ring: [G(1, 2), G(1, 2, 1), G(1, 2, 2), G(1, 2, 3), G(1, 3), G(1, 3, 1)], // the six nearest apps, one a sixteenth
+		tasks: G(1, 3, 2),
+		more: [G(1, 3, 3), G(1, 4), G(1, 4, 1), G(1, 4, 2)], // the quieter outer cells
+		top: G(2, 1), // the film's app (or the story's apps) lands on top, on the bar
 		out: G(2, 4), // the type leaves; the cells step off toward the Nextcloud cell, which the install board takes over
 		key: 3.0,
 	},
 	install: {
 		bars: 3, dur: G(4),
-		travel: [0, 0.42], // the Nextcloud cell travels from the closing piece to its corner
+		travel: [0, 0.42], // the Nextcloud cell travels from the closing piece to its corner...
+		flip: [0.42, 0.66], // ...and turns over, by scale, into the Conduction avatar (the opening's device; never a rotation)
 		mark: F(2),
 		slogans: [F(4), G(1, 2), G(1, 3)],
 		line: G(2, 1),
@@ -125,7 +132,7 @@ export const BUILT_ON = {
 const cellAt = ([q, r]) => axial(BUILT_ON.centre[0], BUILT_ON.centre[1], q, r, BUILT_ON.size, BUILT_ON.gap)
 /** Where the Nextcloud cell sits in the closing piece; the install board picks it up there. */
 export const NEXTCLOUD_AT = { x: cellAt(BUILT_ON.nextcloud)[0], y: cellAt(BUILT_ON.nextcloud)[1], r: BUILT_ON.size }
-/** And where the install board puts it: top right, in a quiet honeycomb. */
+/** And where the install board puts it, turned over into the Conduction avatar: top right, in a quiet honeycomb. */
 export const INSTALL_NC = { x: 1560, y: 300, r: 70, gap: 9 }
 
 /** A hex with an icon or glyph centred in it, scaled about its centre by s. */
@@ -166,18 +173,18 @@ function risingText(g, text, opts, p, q = 0) {
 	if (Math.abs(dy) > 1e-3) for (const it of blk.items) it.node.setAttribute('transform', `translate(0 ${dy.toFixed(2)})`)
 }
 
-/** The ConNext wordmark in a clip box, rising (p) or leaving (q) like a line of type. */
-function risingMark(g, x, y, h, p, q = 0) {
+/** A wordmark (ConNext by default) in a clip box, rising (p) or leaving (q) like a line of type. */
+function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white') {
 	if (p <= 0.001 || q >= 0.999) return
-	const [bw, bh] = MARK_BOX['wordmark-connext-white']
+	const [bw, bh] = MARK_BOX[id]
 	const w = (h * bw) / bh
 	const x0 = x - (4.24 * h) / bh
-	const id = nextId('wmclip')
-	const cp = el('clipPath', { id }, g)
+	const clipId = nextId('wmclip')
+	const cp = el('clipPath', { id: clipId }, g)
 	el('rect', { x: x0 - 12, y: y - 12, width: w + 24, height: h + 24 }, cp)
-	const clipG = el('g', { 'clip-path': `url(#${id})` }, g)
+	const clipG = el('g', { 'clip-path': `url(#${clipId})` }, g)
 	const dy = q > 0 ? -(h + 24) * q * q : (h + 24) * (1 - ease.brand(p))
-	el('use', { href: '#wordmark-connext-white', x: x0, y: y + dy, width: w, height: h }, clipG)
+	el('use', { href: `#${id}`, x: x0, y: y + dy, width: w, height: h }, clipG)
 }
 
 /* ---------- BRAND: built on ConNext ---------- */
@@ -285,23 +292,27 @@ export function builtOnFrame(ctx, p = {}) {
 	return { cells: Object.fromEntries(Object.entries(BUILT_ON.ring).map(([k, v]) => [k, cellAt(v)])), size: BUILT_ON.size }
 }
 
-/* ---------- BRAND: the install board, as slogans (round 5) ---------- */
+/* ---------- BRAND: the install board, as slogans (round 5; round 6: Conduction, no full stops) ---------- */
 
-/** The words, and why each sentence is true (story.json facts). */
+/** The words (round 6: no full stop at the end of any line), and why each is true (story.json facts). */
 export const INSTALL = {
-	slogans: ['Install the app.', 'Use the app.', 'Own your data.'],
-	line: 'Always 100% open source and free to use.',
+	slogans: ['Install the app', 'Use the app', 'Own your data'],
+	line: 'Always 100% open source and free to use',
 	/** Kept for boards that read the call: the first slogan is the call now. */
-	call: 'Install the app.',
+	call: 'Install the app',
 	sources: {
-		'Install the app. Use the app.': 'Ruben, round 5; every core app but Humaniq and Planninq has a release in the Nextcloud app store (story.json facts, apps.json fetched 2026-09-27)',
-		'Own your data.': 'story.json mechanics[0]: all your apps keep their records in one place, on your own server; bible truth 10 (your own server)',
-		'Always 100% open source and free to use.': 'story.json facts: licence EUPL-1.2 (verified), price of the apps €0, support optional (verified)',
+		'Install the app / Use the app': 'Ruben, round 5; every core app but Humaniq and Planninq has a release in the Nextcloud app store (story.json facts, apps.json fetched 2026-09-27)',
+		'Own your data': 'story.json mechanics[0]: all your apps keep their records in one place, on your own server; bible truth 10 (your own server)',
+		'Always 100% open source and free to use': 'story.json facts: licence EUPL-1.2 (verified), price of the apps €0, support optional (verified)',
 	},
 }
 
-/** Type sizes, measured: the slogans at headline size, the line at 64 px (the caption minimum). */
-const INSTALL_TYPE = { markY: 206, markH: 96, slogan: 104, sloganLh: 112, first: 420, lineSize: 64, gap: 66 }
+/**
+ * Type sizes, measured: the Conduction wordmark as the header, the slogans at headline size,
+ * the line at 72 px (round 6: "clearly larger", it reads in a phone feed; 1310 px wide, inside
+ * the safe box).
+ */
+const INSTALL_TYPE = { markY: 206, markH: 96, slogan: 104, sloganLh: 112, first: 420, lineSize: 72, gap: 70 }
 
 function drawInstall(g, t, p, W = 1920) {
 	const { app = null } = p
@@ -324,14 +335,32 @@ function drawInstall(g, t, p, W = 1920) {
 			el('path', { d: hexPath(x, y, N.r * Math.min(1, s), N.r * 0.1), fill: C.cobalt600, 'fill-opacity': Math.max(0.25, 1 - d * 0.2).toFixed(3) }, g)
 		}
 	}
-	nextcloudCell(g, cx, cy, r)
+	// Round 6: the Nextcloud cell turns over into the Conduction avatar (a scale flip about its
+	// vertical axis, the opening's own device: a pointy-top hex is never rotated).
+	const [f0, f1] = K.flip, fm = (f0 + f1) / 2
+	if (t < fm) {
+		const sx = 1 - ease.inCubic(inv(f0, fm, t))
+		if (sx > 0.001) {
+			const fg = el('g', sx < 1 ? { transform: `translate(${cx} ${cy}) scale(${sx.toFixed(4)} 1) translate(${-cx} ${-cy})` } : {}, g)
+			nextcloudCell(fg, cx, cy, r)
+		}
+	} else {
+		const sx = ease.outCubic(inv(fm, f1, t))
+		if (sx > 0.001) {
+			const [aw, ah] = MARK_BOX['avatar-conduction']
+			const h = 2 * N.r, w = (h * aw) / ah
+			const fg = el('g', sx < 1 ? { transform: `translate(${N.x} ${N.y}) scale(${sx.toFixed(4)} 1) translate(${-N.x} ${-N.y})` } : {}, g)
+			el('use', { href: '#avatar-conduction', x: N.x - w / 2, y: N.y - h / 2, width: w, height: h, color: C.white }, fg)
+		}
+	}
 	if (app) {
 		const [ax, ay] = axial(N.x, N.y, 0, -1, N.r, N.gap)
-		cell(g, ax, ay, N.r, C.orange, { glyph: app, color: C.white, s: pop(t, K.travel[1]) })
+		cell(g, ax, ay, N.r, C.orange, { glyph: app, color: C.white, s: pop(t, K.flip[1]) })
 	}
 
-	// The type column: the wordmark, the three slogans (the first orange: the call), the line.
-	risingMark(g, TX, TY.markY, TY.markH, inv(K.mark, K.mark + RISE, t))
+	// The type column: the Conduction wordmark as the header (round 6), the three slogans (the first
+	// orange: the call), the line.
+	risingMark(g, TX, TY.markY, TY.markH, inv(K.mark, K.mark + RISE, t), 0, 'wordmark-conduction-white')
 	INSTALL.slogans.forEach((s, i) => {
 		const t0 = K.slogans[i]
 		risingText(g, s, { x: TX, y: TY.first + i * TY.sloganLh, size: TY.slogan, weight: 700, fill: i === 0 ? C.orange : C.white, tracking: -0.02 }, inv(t0, t0 + RISE, t))
@@ -340,10 +369,11 @@ function drawInstall(g, t, p, W = 1920) {
 	risingText(g, INSTALL.line, { x: TX, y: lineY, size: TY.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.line, K.line + RISE, t))
 }
 
-/** The sound: a crisp click on the call (round 5: a click where the sonic-logo bell was), soft ticks on the next two, a pluck on the line. */
+/** The sound: a soft whoosh as Nextcloud travels, a dry click as it turns over into the avatar, a crisp click on the call, soft ticks on the next two, a pluck on the line. */
 function installCues(cue) {
 	const K = CLOSING.install
 	cue(K.travel[0], 'whoosh', { dur: 0.45, from: 600, to: 2400, panFrom: -0.2, panTo: 0.5, gain: 0.1 })
+	cue((K.flip[0] + K.flip[1]) / 2, 'click', { gain: 0.2, freq: 3000, pan: 0.5, seed: 72, dry: true })
 	cue(K.slogans[0], 'click', { gain: 0.34, freq: 2600, seed: 71 })
 	cue(K.slogans[0], 'impact', { gain: 0.32, from: 90, to: 32, decay: 1.0 })
 	cue(K.slogans[1], 'tick', { freq: 1318.51, gain: 0.12 })

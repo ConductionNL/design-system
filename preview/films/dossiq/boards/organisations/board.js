@@ -1,4 +1,6 @@
 /**
+ * ROUND 21 (Ruben): recast as a decision-making tool (the right decision, on time, on the right
+ * information from the whole workspace).
  * Dossiq, audience film: organisation cases (private sector). BEYOND POSITIONING: the
  * positioning names no private-sector Dossiq audience; Ruben asked for this film (Round 7
  * decisions, 2026-09-28). Built from Dossiq's own specs on development (procest clone):
@@ -118,18 +120,18 @@ function patternUI(w, geom) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'organisations', name: 'Organisation cases (beyond positioning)', persona: 'The head of customer service, HR or legal at a company, who owns complaints, HR and legal cases; the operations or IT lead buys' },
-	promise: 'What if every case\nfollowed your process?',
-	promiseLine: 'Every case handled your way, every time: your own process, complaints numbered and owned, patterns spotted, on your own server',
+	promise: 'What if every decision\nfollowed your rules?',
+	promiseLine: 'Every decision follows your rules: rules set once, complaints arriving with their facts, patterns spotted before you decide, and every decision showing who and when',
 	title: 'Dossiq for organisations',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For companies: draw your own case process once, every complaint arrives with a number, an owner and a deadline, the complaint that keeps coming back shows itself, and every change is on record.',
+	logline: 'Round 21: Dossiq as a decision-making tool for companies. Set your decision rules once, complaints arrive with their facts, you spot the pattern before you decide, and every decision shows who and when.',
 	references: REFS,
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#3 grid-cell ripple', '#2 zoom-out sentence build'],
 	neighbours: ['pipelinq', 'humaniq'],
 	builtOnApps: ['pipelinq'],
 	hook: {
-		title: 'Draw your process once',
-		caption: 'Draw your\nprocess once',
+		title: 'Set your decision rules once',
+		caption: 'Set your decision\nrules once',
 		ui: { drawUI: processUI, tagFill: 'cobalt' },
 		source: 'Dossiq specs case-types ("Case types are configurable definitions that control the behavior of cases": statuses, roles, fields, deadlines) and visual-workflow-editor ("build workflow definitions by placing status nodes and connecting them"). Beyond positioning.',
 		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the case type\'s canvas with three steps placed, the Dossiq hex (cobalt: the one orange is the dashed slot) on the loop anchor. The edges draw between the steps (stroke reveal, 0.2 s each), the branch drops below step two; on beat 4 the fourth step lifts off (flat shadow steps out) and settles into its dashed orange slot with a tick, the step panel below filling its three fields. Out: technique #1, the new step\'s slot becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) into the complaint scene.',
@@ -138,26 +140,26 @@ const content = {
 	proofs: [
 		{
 			id: 'intake',
-			title: 'Every complaint numbered and owned',
-			caption: 'Every complaint\nnumbered and owned',
+			title: 'Complaints arrive with their facts',
+			caption: 'Complaints arrive\nwith their facts',
 			source: 'Dossiq spec complaint-management: "Complaint numbering is sequential per year"; categories carry "default handler (user or group), and SLA override (custom deadline)"; deadlines enforced. Beyond positioning.',
 			motion: 'The hex fill lands as the complaint\'s header. The number types itself into its field one block per frame pair (inside the orange ring), then category, owner and deadline fill top to bottom a sixteenth apart, each pill turning mint as it lands; the deadline track starts at its first tenth.',
 			sound: 'Quick key ticks under the number, three plucks as the facts land.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every complaint\nnumbered and owned', drawUI: intakeUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Complaints arrive\nwith their facts', drawUI: intakeUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'pattern',
-			title: 'Same complaint again? Spot the pattern',
-			caption: 'Same complaint again?\nSpot the pattern',
+			title: 'Spot the pattern before you decide',
+			caption: 'Spot the pattern\nbefore you decide',
 			source: 'Dossiq spec complaint-management: "Frequency analysis MUST detect patterns in complaints ... recurring complaints about the same subject, department, or employee". Beyond positioning.',
 			motion: 'Push down to the complaints by subject and week. Technique #3, grid-cell ripple: the hex grid steps 20% to 40% to full opacity in waves from the left, week by week (0.3 s per wave); one subject\'s row keeps lighting week after week, and on the last wave the row takes the orange ring.',
 			sound: 'A soft ripple of ticks with each wave, a low pluck as the row is ringed.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Same complaint again?\nSpot the pattern', drawUI: patternUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Spot the pattern\nbefore you decide', drawUI: patternUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'dataLayer',
-		caption: 'Every change shows\nwho and when',
+		caption: 'Every decision shows\nwho and when',
 		source: 'story.json mechanics 0; COPY.dataLayer D1; Dossiq case-history-surface spec',
 		params: {
 			record: { avatar: 'hex', title: 240, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },

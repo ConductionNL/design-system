@@ -1,4 +1,6 @@
 /**
+ * ROUND 21 (Ruben): recast as a decision-making tool (the right decision, on time, on the right
+ * information from the whole workspace).
  * Dossiq, audience film: permits, supervision and enforcement (VTH). Direction C on the
  * app-film template, wrapped by _lib/audiencefilm.js. Round 7: matrix features count as
  * built. Research: ds-connext-film-review/apps/dossiq/research.json; positioning:
@@ -105,18 +107,18 @@ function objectionUI(w, geom) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'permits', name: 'Permits and enforcement', persona: 'Bram Kuijpers, permit officer; the VTH department manager buys' },
-	promise: 'What if a permit\nwas one case?',
-	promiseLine: 'From permit to objection in one case, with nothing retyped into the national system',
+	promise: 'What if every permit\ndecision stood firm?',
+	promiseLine: 'Every permit decision stands firm: national data arrives in the permit case, redaction before publication, the objection file ready, and every decision showing who and when',
 	title: 'Dossiq for permits and enforcement',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For permits and enforcement: a permit case that goes straight into the national permit system and gets its reply back, redaction without leaving the case, and an objection file that builds itself, every change on record.',
+	logline: 'Round 21: Dossiq as a decision-making tool for permits and enforcement. National data arrives in the permit case, you redact before you publish, the objection file builds itself, and every decision shows who and when.',
 	references: REFS,
 	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge'],
 	neighbours: ['filinq', 'decidiq'],
 	builtOnApps: ['filinq'],
 	hook: {
-		title: 'Straight into the national permit system',
-		caption: 'Straight into the\nnational permit system',
+		title: 'National data, in the permit case',
+		caption: 'National data,\nin the permit case',
 		ui: { drawUI: nationalUI, tagFill: 'cobalt' },
 		source: 'positioning dossiq usp-omgevingswet: "Send a permit request straight into the national Omgevingswet system." (verified)',
 		motion: 'In behind the app hex the promise leaves on the loop anchor: caption, the permit case left and the national system as a side box right, the Dossiq hex (cobalt) on the loop anchor. On beat 2 a pulse runs out along the top wire (square corners, 0.3 s); on beat 4 the reply runs back along the lower wire in orange and its pip lands on the case, whose pill turns mint. Nothing is retyped: no form appears.',
@@ -125,12 +127,12 @@ const content = {
 	proofs: [
 		{
 			id: 'redact',
-			title: 'Redact inside the case',
-			caption: 'Redact inside\nthe case',
+			title: 'Redact before you publish',
+			caption: 'Redact before\nyou publish',
 			source: 'positioning dossiq usp-redact-objection: "Redact a document without leaving the case it belongs to." (verified)',
 			motion: 'Hex match cut from the reply pip into the document view. The redaction tool is on (its button cobalt); three lines are swept one after another into solid bars (each bar grows left to right in 6 frames), the orange ring following the cursor to the last. The case sidebar stays on screen: you never left it. Out: technique #1 as an upright hex, the last redaction bar grows to fill the frame (hexCut, ease.snap, one beat) and its cobalt-900 is the next ground for one frame before the objection scene lands.',
 			sound: 'Three dry swipes, one per bar, a whoosh through the hex fill.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Redact inside\nthe case', drawUI: redactUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Redact before\nyou publish', drawUI: redactUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'objection',
@@ -144,7 +146,7 @@ const content = {
 	],
 	general: {
 		module: 'dataLayer',
-		caption: 'Every change shows\nwho and when',
+		caption: 'Every decision shows\nwho and when',
 		source: 'story.json mechanics 0; COPY.dataLayer D1; positioning dossiq sp-search-access and platform audit trail',
 		params: {
 			record: { avatar: 'hex', title: 240, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },

@@ -1,5 +1,10 @@
 /**
  * Dossiq, audience film: municipal casework (municipalities and the social domain).
+ * ROUND 21 (Ruben): the whole pitch is a decision-making tool: the right decision, when it is needed and
+ * the way it is needed, on the right information from the whole workspace. Question "What if every
+ * decision was right, on time?"; the backlog shows every decision due, the case holds the whole
+ * workspace, guidance appears as you decide, the standards stay, the flow follows your decision, and
+ * the share scene becomes the decision's trail ("Every decision, on the record").
  * Direction C on the app-film template, wrapped by _lib/audiencefilm.js. Reworked in Round 8
  * (no AI: the general slot is the flow builder) and Round 9 (Ruben, 2026-09-28): the knowledge
  * graph is back, a standards beat is added, and "You decide who sees this case" is dropped as
@@ -98,7 +103,10 @@ export function documentsUI(w, geom, a = {}) {
 	bar(w, x + 30, top + 40, 120, 10, C.cobalt400)
 	;[190, 150, 170, 130].forEach((fw, i) => {
 		const cy = top + 110 + i * 70
-		rect(w, x + 30, cy - 20, 30, 40, i === 1 ? C.nextcloud : C.cobalt200, 3)
+		// Round 21: the case's items come from the whole workspace: a mail, a document, a meeting, a chat.
+		const src = ['nc-mail', 'nc-files', 'nc-calendar', 'nc-talk'][i]
+		rect(w, x + 26, cy - 20, 40, 40, C.nextcloud, 4)
+		el('use', { href: `#${src}`, x: x + 32, y: cy - 14, width: 28, height: 28, color: C.white }, w)
 		bar(w, x + 76, cy - 10, fw * 0.9, 10, C.cobalt900)
 		bar(w, x + 76, cy + 8, fw * 0.5, 7, C.cobalt300)
 	})
@@ -329,14 +337,51 @@ export function shareUI(w, geom, a = {}) {
 	if (A.ring > 0.001) rect(w, rx - 6, top + 110 - 6, cw + 12, 2 * ch + 20 + 12, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: A.ring.toFixed(3) })
 }
 
+/**
+ * Proof 5 (Round 21): the decision and its trail. The decision card, signed and locked, and under it
+ * the trail: who supplied which fact, who decided, when, each on its own row, the decision's row ringed.
+ * a.rows 0..5 trail rows landed, a.sign 0..1 the signature drawn, a.ring 0..1.
+ */
+export function trailUI(w, geom, a = {}) {
+	const A = { rows: 5, sign: 1, ring: 1, ...a }
+	const { u } = geom
+	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
+	// The decision: status decided (mint), the signature in steps, the lock.
+	panel(w, x, top, width, 170, u)
+	hex(w, x + 64, top + 60, 28, C.lavender, 4)
+	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
+	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
+	statusPill(w, x + width - 160, top + 60, u)
+	const steps = [[0, 0, 40], [40, -12, 30], [70, 6, 36], [106, -8, 44], [150, 4, 30]]
+	steps.forEach(([dx, dy, lw], i) => { if (A.sign * 5 - i > 0) rect(w, x + 120 + dx, top + 126 + dy, lw * Math.min(1, A.sign * 5 - i), 5, C.cobalt700, 2) })
+	rect(w, x + 120, top + 146, 220, 3, C.cobalt300)
+	// The trail: each fact and step, who and when.
+	const ty = top + 200
+	panel(w, x, ty, width, 12 + 5 * 70 + 12, u)
+	const rows = [['nc-mail', 200], ['nc-files', 170], ['nc-calendar', 150], [null, 210], [null, 180]]
+	rows.forEach(([icon, lw], i) => {
+		const p = Math.max(0, Math.min(1, A.rows - i))
+		if (p <= 0.001) return
+		const cy = ty + 47 + i * 70
+		const rg = el('g', { opacity: p.toFixed(3), transform: `translate(0 ${(16 * (1 - p)).toFixed(1)})` }, w)
+		if (i > 0) rect(rg, x + 24, cy - 35, width - 48, u, C.cobalt50)
+		circle(rg, x + 60, cy, 18, i % 2 ? C.cobalt200 : C.cobalt300)
+		if (icon) { rect(rg, x + 92, cy - 16, 32, 32, C.nextcloud, 4); el('use', { href: `#${icon}`, x: x + 97, y: cy - 11, width: 22, height: 22, color: C.white }, rg) }
+		else hex(rg, x + 108, cy, 14, C.lavender, 2)
+		bar(rg, x + 140, cy - 8, lw, 10, C.cobalt900)
+		bar(rg, x + width - 170, cy - 4, 110, 8, C.cobalt200)
+	})
+	if (A.ring > 0.001) rect(w, x + 14, ty + 47 + 3 * 70 - 32, width - 28, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: A.ring.toFixed(3) })
+}
+
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'casework', name: 'Municipal casework', persona: 'Mireille Hendriks, case handler; Femke van Dijk, social-domain consultant; the manager of public services buys' },
-	promise: 'What if every case\nmet its deadline?',
-	promiseLine: 'Every case, every deadline met: one backlog with each case\'s deadline in view, documents and guidance at hand, international and local standards built in, on the Nextcloud you already run',
+	promise: 'What if every decision\nwas right, on time?',
+	promiseLine: 'Right decisions, on time: decisions due in one backlog, the facts from the whole workspace in the case, guidance as you decide, international and local standards built in, a flow that follows your decision, and every decision on the record',
 	title: 'Dossiq for municipal casework',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For municipal and social-domain casework: one backlog the whole team works from, documents edited right in the case, the related knowledge appearing while you work, every case in CMMN, OIO Sag og Dokument and ZGW, and flows you draw once and share through the store. No AI in this film. Body 12 bars (Round 15).',
+	logline: 'Round 21: Dossiq as a decision-making tool for municipal and social-domain casework. Decisions due in one backlog with its deadline, the whole workspace (mail, files, meetings, chats) in the case, guidance as you decide, international and local standards built in, a flow that follows the decision, and every decision on the record. No AI in this film.',
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	maxWords: 40,
@@ -345,8 +390,8 @@ const content = {
 	neighbours: ['portaliq', 'filinq'],
 	builtOnApps: ['filinq'],
 	hook: {
-		title: 'Your team, one backlog',
-		caption: 'Your team,\none backlog',
+		title: 'Decisions due, one backlog',
+		caption: 'Decisions due,\none backlog',
 		ui: { drawUI: backlogUI, tagFill: 'cobalt' },
 		source: 'Ruben, Round 8: "work backlog, overview, working in teams"; Dossiq specs my-work, add-work-queue, werkvoorraad-intelligent-queue, reassignment-bulk-action',
 		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the backlog in three lanes, each case with its deadline track (Round 18), the Dossiq hex (cobalt: the one orange is the picked-up case) on the loop anchor. Over the first two beats the case cards start as loose hexes scattered over the window and each tweens into its lane on ease.brand, arriving within one beat. On beat 5 one card moves from the team\'s lane to a colleague\'s (ease.snap) and takes the orange ring.',
@@ -355,21 +400,21 @@ const content = {
 	proofs: [
 		{
 			id: 'documents',
-			title: 'Edit documents inside the case',
-			caption: 'Edit documents\ninside the case',
+			title: 'The whole workspace, in the case',
+			caption: 'The whole workspace,\nin the case',
 			source: 'Ruben, Round 8 ("automatic document creation and editing documents (Word files) from inside the case through Nextcloud") and Round 15 (edit a case\'s attached documents from the workspace, or create them from templates); Dossiq specs document-zaakdossier, template-library, beschikking-generatie',
 			motion: 'Technique #1: the picked-up case\'s ring becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and lands as the case\'s documents. The second document\'s row takes the orange ring and the editor slides in beside it under Nextcloud\'s blue toolbar; the template\'s values fill a sixteenth apart, then one line is edited on. No second window, no download: right in the case.',
 			sound: 'A whoosh through the hex, a soft click as the editor opens, three plucks as the values fill, light key ticks.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Edit documents\ninside the case', drawUI: documentsUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'The whole workspace,\nin the case', drawUI: documentsUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'knowledge',
-			title: 'Type a note, guidance appears',
-			caption: 'Type a note,\nguidance appears',
+			title: 'Guidance appears as you decide',
+			caption: 'Guidance appears\nas you decide',
 			source: 'Ruben, Round 9 and 15: the knowledge graph, related knowledge appearing while you work the case, the same device as the Pipelinq contact-centre film ("Start typing, the answer appears")',
 			motion: 'Technique #4, typewriter, as in the Pipelinq contact-centre film: the case note types itself on (greeked characters in steps, hard on and off, a cursor); after the first line the related knowledge items land in the panel on the right one per beat, linked by a thin line, and the best match takes the orange ring. Out: technique #5, four upright hexes step in from the right edge 70 ms apart.',
 			sound: 'Soft key ticks under the typing, a pluck as each item lands, four dry clicks on the wipe.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Type a note,\nguidance appears', drawUI: knowledgeUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Guidance appears\nas you decide', drawUI: knowledgeUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'standards',
@@ -382,21 +427,21 @@ const content = {
 		},
 		{
 			id: 'automate',
-			title: 'Draw a flow, the work runs itself',
-			caption: 'Draw a flow,\nthe work runs itself',
+			title: 'You decide, the flow follows',
+			caption: 'You decide,\nthe flow follows',
 			source: 'Ruben, Round 8 (flow builder) and Round 15 (users automate their own work by drawing a flow; show the case step it takes over); Dossiq specs visual-workflow-editor, workflow-definitions-to-flow, automatic-actions; story.json mechanic 7 (the customer draws each flow, never pre-built)',
-			motion: 'The shared capability, told in Dossiq\'s own window. The canvas lands; the three nodes are placed one per sixteenth as if drawn by hand (trigger, check, action), the square-cornered edges draw between them. On the next beat the camera eases down to the case\'s steps: the second step turns mint and done, the flow\'s small mark beside it, and its row takes the orange ring. Nobody clicked it: the flow did.',
+			motion: 'The shared capability, told in Dossiq\'s own window, as the decision\'s follow-through (Round 21). The canvas lands; the flow\'s three nodes are placed one per sixteenth (the decision taken, a check, the action), square-cornered edges draw between them. On the next beat the camera eases down to the case\'s steps: the step that follows the decision turns mint and done, the flow\'s mark beside it, and its row takes the orange ring. You decided; the flow did the rest.',
 			sound: 'A tick per node, a soft hiss per edge, a crisp click as the step turns done.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Draw a flow,\nthe work runs itself', drawUI: automateUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'You decide,\nthe flow follows', drawUI: automateUI, tagFill: 'cobalt' }),
 		},
 		{
-			id: 'share',
-			title: 'Built once, reused by councils',
-			caption: 'Built once,\nreused by councils',
-			source: 'Ruben, Round 8 ("share case types and workflows through the store") and Round 15 (a case type and a flow go to the store and land at a second organisation); Dossiq specs workflow-import-export, case-type-publish-validation',
-			motion: 'One council\'s column on the left, the store (a side box) in the middle, a second organisation\'s empty column on the right. On the beat the case type card lifts a copy into the store (ease.brand), the flow card a sixteenth behind; on the next beat both copies slide out to the right and settle into the empty slots, which take the orange ring together.',
-			sound: 'A soft whoosh as the copies go in, a second as they come out, a pluck as they land.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Built once,\nreused by councils', drawUI: shareUI, tagFill: 'cobalt' }),
+			id: 'trail',
+			title: 'Every decision, on the record',
+			caption: 'Every decision,\non the record',
+			source: 'Ruben, Round 21 (the decision and its trail); story.json mechanics 0 (every change logged, who and when); Dossiq specs besluitvorming-workflow, beschikking-generatie, case-history-surface, libresign-besluit-signing',
+			motion: 'The decision lands signed: the signature draws in five flat strokes, the status turns decided. Under it the trail fills a sixteenth apart, the facts it rested on first (a mail, a document, a meeting from the workspace), then the steps; on the beat the decision\'s own row takes the orange ring. The body ends here, a hard cut on the bar to Built on Nextcloud, where the workspace the facts came from is drawn.',
+			sound: 'Five soft ticks for the signature, a run of ticks as the trail fills, a pluck as the decision is ringed.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every decision,\non the record', drawUI: trailUI, tagFill: 'cobalt' }),
 		},
 	],
 

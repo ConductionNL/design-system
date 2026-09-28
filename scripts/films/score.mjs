@@ -8,7 +8,8 @@
  * cues.json is what `film.mjs cues` exports from a film page:
  *   { duration, bpm, cues: [{ t, kind, ...params }], music: { ... } }
  *
- * Sound-effect kinds: tick, pluck, bell, whoosh, riser, impact, kick, clap, hat.
+ * Sound-effect kinds: tick, pluck, bell, whoosh, riser, impact, kick, clap, hat (and more below).
+ * Any cue may carry dry: true to skip the reverb send.
  * Electricity (the Conduction opening): crackle, arc, hum, charge, powerOn (see lib/synth.mjs).
  * click: a crisp switch click, the accent sound since round 5 (use it where a bell was; bell stays for old cue lists).
  *   hum plays on a dry bus that the kicks, impacts and power-ons duck, with no reverb send.
@@ -46,7 +47,10 @@ const inRange = (ranges, b) => (ranges || []).some(([f, t]) => b >= f && b < t)
 const tail = 1.2
 const drums = S.makeBus(duration + tail)
 const musicBus = S.makeBus(duration + tail)
-const sfx = S.makeBus(duration + tail)
+// Sound effects go through the reverb send unless a cue says dry: true (a click that must stay a click).
+const sfxWet = S.makeBus(duration + tail)
+const sfxDry = S.makeBus(duration + tail)
+let sfx = sfxWet
 const dry = S.makeBus(duration + tail) // ducked like the music, never sent to the reverb (a reverberant hum is mud)
 const kickTimes = []
 
@@ -89,6 +93,7 @@ const kinds = {
 }
 const unknown = new Set()
 for (const c of cues) {
+	sfx = c.dry ? sfxDry : sfxWet
 	if (kinds[c.kind]) kinds[c.kind](c)
 	else unknown.add(c.kind)
 }
@@ -100,11 +105,12 @@ S.duck(dry, kickTimes, { depth: 0.6, release: 0.18 })
 const master = S.makeBus(duration + tail)
 S.mixInto(master, drums, 1)
 S.mixInto(master, musicBus, 1)
-S.mixInto(master, sfx, 1)
+S.mixInto(master, sfxWet, 1)
+S.mixInto(master, sfxDry, 1)
 S.mixInto(master, dry, 1)
 const send = S.makeBus(duration + tail)
 S.mixInto(send, musicBus, 0.5)
-S.mixInto(send, sfx, 0.8)
+S.mixInto(send, sfxWet, 0.8)
 S.mixInto(master, S.reverb(send, { room: 0.8, damp: 0.45 }), 0.35)
 // music.loop (a film whose last frame flows into frame 1): fold everything that rings past the end (pad
 // release, reverb, bell tail) back onto the start, so the bed carries across the loop point without a dip.

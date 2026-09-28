@@ -573,8 +573,10 @@ export function openingCues() {
 	cue(0, 'crackle', { events: outEvents, gain: 0.22, seed: 22, freqLo: 1600, freqHi: 9000 })
 
 	// The name powers on: a clean switch, a low thump, and a crisp click on top (round 5: a click, never a bell).
-	cue(T.powerOn, 'powerOn', { gain: 0.5, from: 118, to: 36.7, decay: 0.7, ping: 2349.32, seed: 51 })
-	cue(T.powerOn, 'click', { gain: 0.4, freq: 2600, seed: 61 })
+	// Round 6: the name lands on a click, not a ping. No tonal tink (bright 0), and a short, nearly flat
+	// thump (a long 118 -> 37 Hz slide read as a 'boing').
+	cue(T.powerOn, 'powerOn', { gain: 0.45, from: 64, to: 48, decay: 0.16, bright: 0, seed: 51, dry: true })
+	cue(T.powerOn, 'click', { gain: 0.5, freq: 2600, seed: 61, dry: true }) // dry: no reverb 'ting' on the last sound
 	return cues
 }
 

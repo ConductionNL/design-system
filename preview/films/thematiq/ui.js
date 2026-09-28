@@ -1,5 +1,5 @@
 /**
- * Thematiq's hero device, shared by both Thematiq audience films: the app window
+ * Thematiq's hero device (one Thematiq film since Round 20): the app window
  * repainting from Nextcloud's default blue into the customer's own house style.
  * It draws inside a hookFrame drawUI (window mock space, u = 2.5), over the chrome
  * hookFrame already drew: the topbar, the nav head card, the page title bar and the

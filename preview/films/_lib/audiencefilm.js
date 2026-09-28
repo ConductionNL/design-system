@@ -16,10 +16,13 @@
  *                      ENDS here (Round 15, BODY_END): the last proof holds, no card follows,
  *                      and its app tag travels into Built on, where the app name returns
  *   builtOn   BRAND    the shared closing piece as "Built on Nextcloud" (Round 10: no ConNext in
- *                      app and audience films), 2 bars, this app on top
- *   install   BRAND    the shared install board, 3 bars
+ *                      app and audience films). Round 21: the connection scene, 3 bars: this
+ *                      app is the lead cell, the 7 Nextcloud apps load one per beat on their own
+ *                      connectors, and the "verb + app" line swaps with each
+ *   install   BRAND    the shared install board, 3 bars. Round 21: Install it / Use it / Own it,
+ *                      the orange moving and landing on "Own it", then the open-source line
  *
- * Opening 3 + body 10 + built on 2 + install 3 = 18 bars, 33.75 s at 128 BPM, 24 fps.
+ * Opening 3 + body 10 + built on 3 + install 3 = 19 bars, 35.625 s at 128 BPM, 24 fps (Round 21).
  * The body keeps the template's slot plan and reading budget; only the times shift by
  * the opening's 5.625 s.
  *
@@ -52,11 +55,11 @@ export const PROMISE_LEAD = 2 / FPS
 /**
  * How every body ends (Round 15, the same in every film): on its last proof, the general scene,
  * holding its caption to 4 frames before the bar line. No card follows and no words are added;
- * the app name comes back in the Built on piece, in its own cell.
+ * the app name comes back in the Built on piece, as its lead cell (Round 21).
  */
-export const BODY_END = 'Body end (Round 15, the same in every film): this last proof holds its caption to four frames before the bar line and no card follows. On the bar line its cards step down and the app tag lifts off and travels into Built on Nextcloud, where the app name returns in its own cell.'
+export const BODY_END = 'Body end (Round 15, the same in every film): this last proof holds its caption to four frames before the bar line and no card follows. On the bar line its cards step down and the app tag lifts off and travels into Built on Nextcloud, where it becomes the lead cell of the connection scene (Round 21) and the app name returns beside it.'
 /** The Built on piece picks the tag up (Round 15). */
-export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles in the app\'s own cell, so the app name returns without a card of its own.'
+export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles as the lead cell high on the right, orange, with the app name beside it (Round 21), so the name returns without a card of its own.'
 
 /**
  * The promise card: the template's outro cluster (the app cell up-left of the
@@ -166,7 +169,7 @@ export function audienceBoards(content) {
 		id: 'install',
 		layer: 'brand',
 		module: 'install',
-		title: 'Install the app, use the app, own your data (shared install board)',
+		title: 'Install it, use it, own it (shared install board, Round 21)',
 		start: t1,
 		end: t1 + INSTALL_DUR,
 		bars: `${barOf(t1)}.1-${barOf(t1) + 2}.4`,

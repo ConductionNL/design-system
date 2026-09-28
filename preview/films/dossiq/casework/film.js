@@ -5,14 +5,14 @@
  *   0 to 5.63 s       the shared Conduction opening (_lib/scenes/opening.js), 3 bars, handing over
  *                     on its field, which the hook builds on
  *   5.63 to 31.88 s   the body, 14 bars (Round 15 final; the storyboard's times, board.js promiseFirst):
- *                     promise "The whole team, every case", straight after the opening's handover,
- *                     backlog "Your team, one backlog" (#10 cluster merge, #1 hex cut out),
- *                     documents "Edited right in the case" (the editor opens beside the case's files),
- *                     knowledge "While you work, the answers appear" (#4 typewriter, #5 stepped wipe out),
+ *                     promise "Every case, every deadline met", straight after the opening's handover,
+ *                     backlog "Your team, one backlog", each case with its deadline (#10 cluster merge, #1 hex cut out),
+ *                     documents "Edit documents inside the case" (the editor opens beside the case's files),
+ *                     knowledge "Type a note, guidance appears" (#4 typewriter, #5 stepped wipe out),
  *                     standards "International and local standards, built in" (the archiving film's
  *                     design: whip in, wires, three tagged boxes, #9 swap ZGW to ZGW / StUF),
  *                     automate "Draw a flow, the work runs itself" (the shared capability),
- *                     share "Share your case types and flows"; the body ends here, a hard cut to Built on
+ *                     share "Built once, reused by councils"; the body ends here, a hard cut to Built on
  *   31.88 to 35.63 s  the shared closing piece, "Built on Nextcloud" (closing.js, on: 'nextcloud'), 2 bars
  *   35.63 to 41.25 s  the shared install board (closing.js), 3 bars
  *
@@ -200,7 +200,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 /* ---------- 2 · documents: edited right in the case (the editor opens beside the case's files) ---------- */
 {
 	const s = S_DOCS, D = s.end - s.start
-	const c = cap('documents', 'Edited right\nin the case', s.start + RISE, s.end - 0.16)
+	const c = cap('documents', 'Edit documents\ninside the case', s.start + RISE, s.end - 0.16)
 	bodyScene('documents', s, (g, u, t) => {
 		appWindow(g, {
 			land: inv(0, 0.35, u),
@@ -227,7 +227,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 {
 	const s = S_KNOW, D = s.end - s.start
 	const cutAt = D - SPB
-	const c = cap('knowledge', 'While you work,\nthe answers appear', s.start + RISE, s.start + cutAt)
+	const c = cap('knowledge', 'Type a note,\nguidance appears', s.start + RISE, s.start + cutAt)
 	const ITEMS = [1.3, 1.3 + SPB, 1.3 + 2 * SPB]
 	bodyScene('knowledge', s, (g, u, t) => {
 		appWindow(g, {
@@ -324,7 +324,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 /* ---------- 6 · share: your case types and flows, through the store to a second organisation ---------- */
 {
 	const s = S_SHARE, D = s.end - s.start
-	const c = cap('share', 'Share your case types\nand flows', s.start + RISE, s.end - 0.16)
+	const c = cap('share', 'Built once,\nreused by councils', s.start + RISE, s.end - 0.16)
 	const GO = 0.6, LAND = GO + 2 * SPB
 	bodyScene('share', s, (g, u, t) => {
 		appWindow(g, {
@@ -346,10 +346,10 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	cue(t0 + LAND + 0.75, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.5 })
 }
 
-/* ---------- 1 · promise, first (Round 15): the whole team, every case ---------- */
+/* ---------- 1 · promise, first (Round 15; words Round 18): every case, every deadline met ---------- */
 {
 	const s = S_PROMISE
-	const c = cap('promise', 'The whole team,\nevery case', s.start + RISE, s.end - 0.16)
+	const c = cap('promise', 'Every case,\nevery deadline met', s.start + RISE, s.end - 0.16)
 	bodyScene('promise', s, (g, u, t) => {
 		// The opening's field, fading out as the cluster lands on it: no cut from the opening.
 		if (u < 0.8) { const hg = handoverGround(g); hg.setAttribute('opacity', (1 - ease.inOutCubic(inv(0, 0.8, u))).toFixed(3)) }

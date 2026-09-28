@@ -14,7 +14,7 @@
  *   general  your dashboards on your own server (COPY.dataLayer D3; bible 10). Round 18: REDRAWN so the
  *            picture shows the claim: the staff start screens wired down into your own server rack,
  *            Nextcloud on it, the rack ringed (it replaces the shared data-layer picture of the history)
- *   promise  "One start screen for everyone"
+ *   question "What if everyone started from one screen?" (Round 19: the promise card as a question, from "One start screen for everyone"; the proofs answer it)
  *
  * No assistant: the AI widget (launchpad-ai-dashboard-assistant) exists, but this film also
  * speaks to local government (Round 8 spirit).
@@ -161,7 +161,7 @@ function ownServerFrame(ctx) {
 const content = {
 	app: 'launchpad',
 	audience: { slug: 'staff', name: 'Staff start screen', persona: 'Annemieke de Groot, ICT manager at a municipality; Thijs Verhagen, IT manager at a 140-person company; Esther van Dijk, head of communications at a hospital group' },
-	promise: 'One start screen\nfor everyone',
+	promise: 'What if everyone\nstarted from\none screen?',
 	promiseLine: 'One start screen for all your staff, built from the apps you already run, on your own server',
 	title: 'LaunchPad for your staff',
 	record: { one: 'dashboard', many: 'dashboards' },
@@ -175,7 +175,7 @@ const content = {
 		caption: 'Your whole day,\non one screen',
 		ui: { drawUI: startUI, tagFill: 'cobalt' },
 		source: 'bible "What is true" 7 ("One start screen. Your deals, tasks, calendar and mail from every app, arranged your way."); positioning launchpad sp-tiles-launch, sp-content-widgets; specs tiles, live-data-tile-widget, calendar-widget',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the start screen, the LaunchPad hex (cobalt) on the loop anchor. Technique #10: the app tiles, the calendar, the mail and the figure start as loose shapes scattered over the right of the frame and drift into their grid slots on ease.brand, all landing on beat 3; the status dots pop mint a sixteenth later; the live figure\'s last bar grows and the panel takes the orange ring.',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the start screen, the LaunchPad hex (cobalt) on the loop anchor. Technique #10: the app tiles, the calendar, the mail and the figure start as loose shapes scattered over the right of the frame and drift into their grid slots on ease.brand, all landing on beat 3; the status dots pop mint a sixteenth later; the live figure\'s last bar grows and the panel takes the orange ring.',
 		sound: 'Gentle open. A soft whoosh as the shapes drift in, a tick per landing, a pluck on the live figure.',
 	},
 	proofs: [

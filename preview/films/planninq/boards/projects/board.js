@@ -12,7 +12,7 @@
  *            verified; spec project-delivery)
  *   general  notifications: a task moves and the right person hears (spec task-notifications;
  *            COPY.notify N2)
- *   promise  "Plans the whole team trusts"
+ *   question "What if everyone trusted the plan?" (Round 19: the promise card as a question, from "Plans the whole team trusts"; the proofs answer it)
  *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (from the blocked
  * badge into the contractor's view), #10 cluster-to-container merge (the other projects fall
@@ -114,7 +114,7 @@ function riskUI(w, geom) {
 const content = {
 	app: 'planninq',
 	audience: { slug: 'projects', name: 'Project teams', persona: 'Sander de Boer, project leader at a municipal project office; Lisanne Mulder, project lead at an engineering consultancy; the programme director or portfolio manager buys' },
-	promise: 'Plans the whole\nteam trusts',
+	promise: 'What if everyone\ntrusted the plan?',
 	promiseLine: 'Plans the whole team can trust: blockers flagged on day one, contractors in their own lane, every risk scored and answered',
 	title: 'Planninq for project teams',
 	record: { one: 'task', many: 'tasks' },
@@ -128,7 +128,7 @@ const content = {
 		caption: 'Blocked task?\nFlagged on day one',
 		ui: { drawUI: boardUI, tagFill: 'cobalt' },
 		source: 'positioning planninq usp-trustworthy-schedule (verified): "See a blocked task flagged before it costs you a deadline."; specs task-dependencies, kanban-board',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the board in three lanes, the Planninq hex (cobalt) on the loop anchor. The cards land a sixteenth apart; on beat 3 the dependency line draws from the upstream card to the one waiting on it (straight, right angles, lavender), the blocked badge pops and the card takes the orange ring.',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the board in three lanes, the Planninq hex (cobalt) on the loop anchor. The cards land a sixteenth apart; on beat 3 the dependency line draws from the upstream card to the one waiting on it (straight, right angles, lavender), the blocked badge pops and the card takes the orange ring.',
 		sound: 'Gentle open. Ticks as the cards land, a soft draw under the line, a low tick on the badge.',
 	},
 	proofs: [

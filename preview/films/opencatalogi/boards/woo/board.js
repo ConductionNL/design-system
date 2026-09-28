@@ -12,7 +12,7 @@
  *   proof 2  residents search everything published, no account needed (sp-public-search;
  *            specs search, catalogs)
  *   general  the data layer: every publish shows who and when (sp-publish-and-track; D1)
- *   promise  "Disclosed on time, easy to find"
+ *   question "What if no disclosure ever ran late?" (Round 19: the promise card as a question, from "Disclosed on time, easy to find"; the proofs answer it)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the publication's fields tick in
  * waves before the index takes it), #1 dot-grows-to-fill as an upright hex (from the index
@@ -116,7 +116,7 @@ function searchUI(w, geom) {
 const content = {
 	app: 'opencatalogi',
 	audience: { slug: 'woo', name: 'Woo publishing', persona: 'Naomi Verhoeven, Woo coordinator at a municipality of 55,000; Bram Kuijpers, informatiebeheerder at a waterschap; the head of information management buys' },
-	promise: 'Disclosed on time,\neasy to find',
+	promise: 'What if no\ndisclosure\never ran late?',
 	promiseLine: 'Everything you must disclose under the Woo, published on time and easy to find, on storage your organisation controls',
 	title: 'OpenCatalogi for Woo publishing',
 	record: { one: 'publication', many: 'publications' },
@@ -130,7 +130,7 @@ const content = {
 		caption: 'Disclosure deadline?\nFlagged in time',
 		ui: { drawUI: deadlineUI, tagFill: 'cobalt' },
 		source: 'positioning opencatalogi usp-woo-deadline (verified): "The statutory decision deadline warns you before it passes."; spec woo-transparency. Round 17: "Woo" alone is not said on an English film; "disclosure deadline" covers the Dutch Woo and access-to-documents rules elsewhere',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the Woo requests with their deadline bars, the OpenCatalogi hex (cobalt) on the loop anchor. The deadline bars run down a sixteenth apart; on beat 3 the third row\'s bar turns lavender, the flag hex pops beside it and the row takes the orange ring. Out: the ringed row slides up and becomes the publication header of the next scene (hex match cut).',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the Woo requests with their deadline bars, the OpenCatalogi hex (cobalt) on the loop anchor. The deadline bars run down a sixteenth apart; on beat 3 the third row\'s bar turns lavender, the flag hex pops beside it and the row takes the orange ring. Out: the ringed row slides up and becomes the publication header of the next scene (hex match cut).',
 		sound: 'Gentle open. Soft ticks as the bars run down, a pluck as the flag lands.',
 	},
 	proofs: [

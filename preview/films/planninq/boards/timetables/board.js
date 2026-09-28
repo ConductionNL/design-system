@@ -11,7 +11,7 @@
  *   proof 2  a teacher is ill: free colleagues are asked at once, the first yes covers
  *            (usp-cover-absence; thin, so shown as a feature, never an only-we claim)
  *   general  the data layer: every change shows who and when (COPY.dataLayer D1)
- *   promise  "A timetable that keeps up"
+ *   question "What if your timetable kept up?" (Round 19: the promise card as a question, from "A timetable that keeps up"; the proofs answer it)
  *
  * The absence register (usp-attendance-register) stays with Learniq, which tells that story.
  *
@@ -119,7 +119,7 @@ function coverUI(w, geom) {
 const content = {
 	app: 'planninq',
 	audience: { slug: 'timetables', name: 'School timetables', persona: 'Emma Visser, roostermaker at a 1,100-student school in Arnhem; Daan Willems, roosteraar at a hogeschool; the head of education logistics buys' },
-	promise: 'A timetable\nthat keeps up',
+	promise: 'What if your\ntimetable kept up?',
 	promiseLine: 'A timetable that keeps up: generated from your rules, exams booked with room and invigilator, cover found when a teacher is ill',
 	title: 'Planninq for school timetables',
 	record: { one: 'lesson', many: 'lessons' },
@@ -133,7 +133,7 @@ const content = {
 		caption: 'Timetable built\nfrom your rules',
 		ui: { drawUI: generateUI, tagFill: 'cobalt' },
 		source: 'positioning planninq sp-generate-timetable ("Generate a whole timetable from teachers and rooms."; "the generator builds it from your constraints"); planix openspec/changes/school-timetable-target',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the rules on the left (teachers, rooms, constraints, each switched on), the empty week on the right, the Planninq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the week fills itself in diagonal waves from the top left, each cell stepping 20% to 40% to full; one lesson takes the orange ring as the last wave lands.',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the rules on the left (teachers, rooms, constraints, each switched on), the empty week on the right, the Planninq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the week fills itself in diagonal waves from the top left, each cell stepping 20% to 40% to full; one lesson takes the orange ring as the last wave lands.',
 		sound: 'Gentle open. A long ripple of soft ticks as the week fills, a pluck on the ringed lesson.',
 	},
 	proofs: [

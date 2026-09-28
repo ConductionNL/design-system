@@ -2,10 +2,10 @@
  * Larpinq, audience film: LARP organisers, clubs and commercial event producers in one film
  * (Round 17, Ruben, 2026-09-28: fold the event producers into the clubs film and keep the
  * strongest three proofs across both). Direction C on the app-film template, wrapped by
- * _lib/audiencefilm.js; promise first (Round 15). Positioning:
+ * _lib/audiencefilm.js; question first (Rounds 15 and 19). Positioning:
  * ds-connext-film-review/audiences/positioning-l3.md.
  *
- *   promise  "Your campaign, all in one place"
+ *   question "What if your campaign had one home?" (Round 19: the promise card as a question, from "Your campaign, all in one place"; the proofs answer it)
  *   hook     campaign continuity: open any stat and see which skill, item or condition caused
  *            it (usp-stat-breakdown, verified; specs game-mechanics, larping-skill-widget)
  *   proof 1  every experience (XP) award with who gave it and why (usp-xp-accountability,
@@ -116,7 +116,7 @@ function gateUI(w, geom) {
 const content = {
 	app: 'larpinq',
 	audience: { slug: 'clubs', name: 'LARP clubs and event producers', persona: 'Anne Verhoeven, chair and game master of Ravensteijn, a 60-member association; Bram de Vries, operations lead at Grimveld Events, a 400-ticket weekend; the club board or the event owner buys' },
-	promise: 'Your campaign,\nall in one place',
+	promise: 'What if your\ncampaign had\none home?',
 	promiseLine: 'Your whole campaign in one place, from the character sheet to the gate: every stat explained, every XP award with its reason, tickets and check-in on the same record',
 	title: 'Larpinq for clubs and event producers',
 	record: { one: 'character', many: 'characters' },
@@ -130,7 +130,7 @@ const content = {
 		caption: 'Every stat\nshows its cause',
 		ui: { drawUI: statUI, tagFill: 'cobalt' },
 		source: 'positioning larpinq usp-stat-breakdown (verified): "Open any stat and see which skill, item or condition caused it."; specs game-mechanics, larping-skill-widget',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the character sheet with its stats, the Larpinq hex (cobalt) on the loop anchor. On beat 2 the second stat is opened: its ring closes (the one orange) and the trunk line draws out at right angles to three causes, a skill, an item and a condition, each landing a sixteenth apart with its plus or minus. Technique #9: the diagram then holds still while the caption alone swaps in; nothing else moves for a beat.',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the character sheet with its stats, the Larpinq hex (cobalt) on the loop anchor. On beat 2 the second stat is opened: its ring closes (the one orange) and the trunk line draws out at right angles to three causes, a skill, an item and a condition, each landing a sixteenth apart with its plus or minus. Technique #9: the diagram then holds still while the caption alone swaps in; nothing else moves for a beat.',
 		sound: 'Gentle open. A pluck as the stat opens, three ticks as the causes land, then quiet under the hold.',
 	},
 	proofs: [

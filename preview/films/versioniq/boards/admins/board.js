@@ -13,7 +13,7 @@
  *            spec version-pinning)
  *   general  notifications: users hear what is about to change, in their own language
  *            (usp-advance-notice-language, verified; spec changelog-visibility)
- *   promise  "Every app on your chosen version" (Round 18 copy pass)
+ *   question "What if you chose every app's version?" (Round 19: the promise card as a question, from "Every app on your chosen version"; the proofs answer it)
  *
  * No fleet claim across many instances (not in the specs).
  *
@@ -110,7 +110,7 @@ function pinUI(w, geom) {
 const content = {
 	app: 'versioniq',
 	audience: { slug: 'admins', name: 'Nextcloud admins', persona: 'Willem Dekker, CISO at a municipality; Femke Jansen, Nextcloud service manager at a hosting provider; Marieke Vos, IT-beheerder at a hospital; Bas Willemsen, ICT-beheerder at a school board' },
-	promise: 'Every app on\nyour chosen version',
+	promise: "What if you\nchose every\napp's version?",
 	promiseLine: 'Every app on the version you choose: advisories matched to what you run, a bad update undone in one action, pins that hold',
 	title: 'Versioniq for Nextcloud admins',
 	record: { one: 'app', many: 'apps' },
@@ -124,7 +124,7 @@ const content = {
 		caption: 'Security advisory?\nSee what it hits',
 		ui: { drawUI: advisoryUI, tagFill: 'cobalt' },
 		source: 'positioning versioniq usp-ncsc-nextcloud-advisories (verified): "Advisories are matched to the exact branch an app runs, not just its name."; sp-advisory-match; spec security-advisory-correlation',
-		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the advisory card over the installed apps, the Versioniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the check runs down the list, each row stepping 20% to full and its mint pill popping; on the fourth row the pill turns lavender, the straight line drops from the advisory to it and the row takes the orange ring.',
+		motion: 'Out of the question the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the advisory card over the installed apps, the Versioniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the check runs down the list, each row stepping 20% to full and its mint pill popping; on the fourth row the pill turns lavender, the straight line drops from the advisory to it and the row takes the orange ring.',
 		sound: 'Gentle open. A ripple of ticks down the list, a low tick on the match.',
 	},
 	proofs: [

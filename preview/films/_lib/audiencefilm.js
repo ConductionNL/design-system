@@ -16,10 +16,11 @@
  *                      ENDS here (Round 15, BODY_END): the last proof holds, no card follows,
  *                      and its app tag travels into Built on, where the app name returns
  *   builtOn   BRAND    the shared closing piece as "Built on Nextcloud" (Round 10: no ConNext in
- *                      app and audience films), 2 bars, this app on top
- *   install   BRAND    the shared install board, 3 bars
+ *                      app and audience films); Round 21: the connection scene, 3 bars, this app
+ *                      as the lead cell and the seven Nextcloud apps loading on their connectors
+ *   install   BRAND    the shared install board, 3 bars; Round 21: Install it / Use it / Own it
  *
- * Opening 3 + body 10 + built on 2 + install 3 = 18 bars, 33.75 s at 128 BPM, 24 fps.
+ * Opening 3 + body 10 + built on 3 + install 3 = 19 bars, 35.625 s at 128 BPM, 24 fps (Round 21).
  * The body keeps the template's slot plan and reading budget; only the times shift by
  * the opening's 5.625 s.
  *
@@ -34,11 +35,13 @@ import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.js'
+import { BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from './scenes/closing.js'
 
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
-export const BUILT = 2 * BAR
-export const INSTALL_DUR = 3 * BAR
-export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars
+// Round 21: the new shared closing, 3 bars each (a 10-bar body film runs 35.625 s, 19 bars).
+export const BUILT = BUILT_ON_DUR
+export const INSTALL_DUR = INSTALL21_DUR
+export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.round(t / BAR) + 1
@@ -148,15 +151,15 @@ export function audienceBoards(content) {
 		id: 'builtOn',
 		layer: 'brand',
 		module: 'builtOn',
-		title: 'Built on Nextcloud (shared closing piece)',
+		title: 'Built on Nextcloud: the connection scene (shared closing piece, Round 21)',
 		start: t0,
 		end: t0 + BUILT,
-		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
-		words: 'Built on\nNextcloud',
-		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: `${content.builtOnMotion || `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`} ${BUILT_IN}`,
-		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
-		source: 'Shared module: round4/facts.json fact a.',
+		bars: `${barOf(t0)}.1-${barOf(t0) + 2}.4`,
+		words: closingWords('en').builtOn,
+		apps: ['nextcloud', builtOnLit ? 'openregister' : app, ...builtOnApps],
+		motion: `${content.builtOnMotion || `Round 21, the shared connection scene (_lib/scenes/closing.js builtOnScene, 3 bars; the ConNext film's component connection section). ${builtOnLit ? 'OpenRegister, the data layer, is the lead cell' : `${name} is the lead cell`}: it pops in orange top right on the second frame${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}, and "Built on" rises in the left column with "Nextcloud" a sixteenth behind. Then the seven Nextcloud apps a record links to load one by one into the grid below it (Mail, Calendar, Contacts, Files, Talk, Tasks, Deck; the first holds two beats, then one a beat), each on its own square-cornered connector drawn from the lead's foot. One line under the headline swaps with each app, verb plus app name, the name in Nextcloud cyan ("Reply from Mail", "Plan in Calendar", ... "Manage from Deck"): the old words leave upward as the new rise. In the last four frames everything leaves into the install board. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`} ${BUILT_IN}`,
+		sound: 'A pluck and a low impact as the lead cell lands, a rising run of seven ticks as the apps load, a whoosh into the install board.',
+		source: 'Shared module: closing.js NC_LINKS (the Nextcloud apps a record links to, round4/facts.json fact a).',
 		// builtOnLit (Round 14, OpenRegister films): the data layer itself is the lit cell, so the app is not repeated on top.
 		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true } : { app, apps: builtOnApps, on: 'nextcloud' }) },
 	}
@@ -165,15 +168,15 @@ export function audienceBoards(content) {
 		id: 'install',
 		layer: 'brand',
 		module: 'install',
-		title: 'Install the app, use the app, own your data (shared install board)',
+		title: 'Install it, use it, own it (shared install board, Round 21)',
 		start: t1,
 		end: t1 + INSTALL_DUR,
 		bars: `${barOf(t1)}.1-${barOf(t1) + 2}.4`,
-		words: `${INSTALL.slogans.join('\n')}\n${INSTALL.line}`,
+		words: closingWords('en').install,
 		apps: ['conduction'],
-		motion: 'The shared install board as it is (_lib/scenes/closing.js installScene): the Nextcloud cell travels to the corner and turns over into the Conduction avatar, the wordmark header, the three slogans ("Install the app" in orange), then the open-source line. Holds to the end, no fade.',
-		sound: 'A dry click as the cell turns, a click and a low impact on "Install the app", ticks on the next two, the pad resolves.',
-		source: 'Shared module: INSTALL.sources in closing.js.',
+		motion: 'Round 21, the shared install board (_lib/scenes/closing.js installScene, 3 bars): a Nextcloud cell pops in top right in a quiet honeycomb and turns over, by scale, into the Conduction avatar, with the Conduction wordmark as the header. "Install it", "Use it" and "Own it" rise one a beat; the orange moves to each line as it rises and lands on "Own it", where it stays. Then "The code stays open source, your data stays yours" rises on two lines under them. Holds to the end, no fade.',
+		sound: 'A tick as the cell pops in, a dry click as it turns, a click on each slogan with a low impact on "Own it", a pluck under the open-source line.',
+		source: 'Shared module: closing.js CLOSING_TEXT (Round 21) and INSTALL.sources.',
 		draw: (ctx) => { installFrame(ctx, {}) },
 	}
 	return [opening, ...boards, built, install]
@@ -211,6 +214,7 @@ export function audienceFilm(content) {
 		promise: content.promiseLine || content.promise,
 		techniques: content.techniques || [],
 		duration: TOTAL,
+		bars: 3 + Math.round(BODY / BAR) + Math.round((BUILT + INSTALL_DUR) / BAR),
 		budget: audienceBudget(boards),
 	}
 	return { meta, boards }

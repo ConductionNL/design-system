@@ -135,10 +135,12 @@ export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts, app } = 
 	if (gr === 'light') ground(ctx, C.cobalt50)
 	if (gr === 'white') ground(ctx, C.white)
 	// An app film names its app here; the ConNext film and the shared modules keep the ConNext mark.
-	if (app) appMark(ctx.g, app, { light })
-	else mark(ctx.g, { light })
+	// Round 26: the mark and the caption carry data-role, so a transition can hold them while the picture moves.
+	const m = app ? appMark(ctx.g, app, { light }) : mark(ctx.g, { light })
+	;(m.group || m).setAttribute('data-role', 'mark')
 	const ink = light ? C.cobalt : C.white
 	const cap = text ? fitCaption(ctx.g, text, ink, captionOpts) : null
+	if (cap) cap.group.setAttribute('data-role', 'caption')
 	return { light, ink, caption: cap }
 }
 

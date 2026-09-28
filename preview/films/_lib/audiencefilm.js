@@ -34,11 +34,12 @@ import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.js'
+import { BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from './scenes/closing.js'
 
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
-export const BUILT = 2 * BAR
-export const INSTALL_DUR = 3 * BAR
-export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars
+export const BUILT = BUILT_ON_DUR // Round 21: the connection scene, 3 bars
+export const INSTALL_DUR = INSTALL21_DUR // Round 21: Install it, Use it, Own it, 3 bars
+export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 35.625 s, 19 bars with a 10-bar body
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.round(t / BAR) + 1
@@ -151,14 +152,14 @@ export function audienceBoards(content) {
 		title: 'Built on Nextcloud (shared closing piece)',
 		start: t0,
 		end: t0 + BUILT,
-		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
-		words: 'Built on\nNextcloud',
+		bars: `${barOf(t0)}.1-${barOf(t0) + 2}.4`,
+		words: closingWords('en').builtOn,
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
 		motion: `${content.builtOnMotion || `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`} ${BUILT_IN}`,
 		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
 		source: 'Shared module: round4/facts.json fact a.',
 		// builtOnLit (Round 14, OpenRegister films): the data layer itself is the lit cell, so the app is not repeated on top.
-		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true } : { app, apps: builtOnApps, on: 'nextcloud' }) },
+		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true, lead: 'openregister' } : { app, apps: builtOnApps, on: 'nextcloud' }) },
 	}
 	const t1 = t0 + BUILT
 	const install = {
@@ -169,7 +170,7 @@ export function audienceBoards(content) {
 		start: t1,
 		end: t1 + INSTALL_DUR,
 		bars: `${barOf(t1)}.1-${barOf(t1) + 2}.4`,
-		words: `${INSTALL.slogans.join('\n')}\n${INSTALL.line}`,
+		words: closingWords('en').install,
 		apps: ['conduction'],
 		motion: 'The shared install board as it is (_lib/scenes/closing.js installScene): the Nextcloud cell travels to the corner and turns over into the Conduction avatar, the wordmark header, the three slogans ("Install the app" in orange), then the open-source line. Holds to the end, no fade.',
 		sound: 'A dry click as the cell turns, a click and a low impact on "Install the app", ticks on the next two, the pad resolves.',
@@ -211,6 +212,7 @@ export function audienceFilm(content) {
 		promise: content.promiseLine || content.promise,
 		techniques: content.techniques || [],
 		duration: TOTAL,
+		bars: 3 + Math.round(BODY / BAR) + Math.round((BUILT + INSTALL_DUR) / BAR),
 		budget: audienceBudget(boards),
 	}
 	return { meta, boards }

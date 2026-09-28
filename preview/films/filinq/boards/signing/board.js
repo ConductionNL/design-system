@@ -156,8 +156,8 @@ const content = {
 	],
 	general: {
 		module: 'flows',
-		title: 'Signed? Your flow takes over',
-		caption: 'Signed? Your flow\ntakes over',
+		title: 'Signed? Next step starts itself',
+		caption: 'Signed? Next step\nstarts itself',
 		source: 'positioning filinq platform draw-your-flows, medium ("A document being created or changed can trigger a rule the organisation drew itself") and sp-app-integrations ("call other tools on a change"); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},

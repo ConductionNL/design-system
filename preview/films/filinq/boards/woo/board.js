@@ -13,7 +13,7 @@
  *   proof 2  one screen carries the Woo request from intake to publication
  *            (sp-woo-request-end-to-end; specs dossier-register, anonymisation-grondslagen-summary)
  *   general  the data layer: who redacted what, and when (platform every-change-logged, strong)
- *   promise  "Publish safely, from your server" (own-server, strong: the data never leaves)
+ *   promise  "Personal data found before you publish" (Round 18: softened, found and checked, not a guarantee)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the scan runs down the page in a wave),
  * #9 text-swap on a held diagram (the page holds while each match turns from found to removed),
@@ -96,7 +96,9 @@ function wooUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	panel(w, x, top, width, 150, u)
-	bar(w, x + 90, top + 32, 260, 16, C.cobalt900)
+	// The request's kind as a small label (Round 18: the caption says it in plain words, the acronym stays in the picture).
+	textBlock(w, 'Woo', { x: x + 90, y: top + 58, size: 36, weight: 700, fill: C.cobalt, clip: false })
+	bar(w, x + 190, top + 40, 220, 16, C.cobalt900)
 	rect(w, x + width - 240, top + 26, 200, 32, C.lavender300, 16)
 	// Five steps on one line, square: intake, collect, assess, redact, publish. The current one is an orange hex.
 	const sx = x + 90, step = (width - 180) / 4, sy = top + 104
@@ -122,8 +124,8 @@ function wooUI(w, geom) {
 const content = {
 	app: 'filinq',
 	audience: { slug: 'woo', name: 'Government Woo and records teams', persona: 'Marieke Jansen, Woo coordinator (municipality); Willem de Groot, jurist (central government)' },
-	promise: 'Publish safely,\nfrom your server',
-	promiseLine: 'Redact and publish on the Nextcloud you already run; the personal data never leaves your server',
+	promise: 'Personal data found\nbefore you publish',
+	promiseLine: 'Personal data found and checked before you publish, on the Nextcloud you already run',
 	title: 'Filinq for Woo teams',
 	record: { one: 'document', many: 'documents' },
 	logline: 'For the teams that answer Woo requests: every document scanned for a BSN, an IBAN or a name, each match checked by a person and removed for real, the whole request on one screen, and who redacted what on record, all on the organisation\'s own server. No "only we" claim: every Filinq USP is thin.',
@@ -132,8 +134,8 @@ const content = {
 	neighbours: ['dossiq', 'openregister', 'portaliq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'BSN, IBAN, names: found for you',
-		caption: 'BSN, IBAN, names:\nfound for you',
+		title: 'Names, ID numbers, bank accounts: found',
+		caption: 'Names, ID numbers,\nbank accounts: found',
 		ui: { drawUI: detectUI, tagFill: 'cobalt' },
 		source: 'positioning filinq sp-detect-personal-data ("Every document gets scanned for a BSN, an IBAN or a name automatically."); spec anonymization',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the document page with its found spans in lavender, the list of matches on the right (BSN, IBAN, Name as small labels), the Filinq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the scan runs down the page line by line in a wave (each line stepping 20% to 40% to full), and each span it finds turns lavender while its match drops into the list on the same sixteenth. The third span takes the orange ring.',
@@ -151,12 +153,12 @@ const content = {
 		},
 		{
 			id: 'request',
-			title: 'One Woo request, one screen',
-			caption: 'One Woo request,\none screen',
+			title: 'One disclosure request, one screen',
+			caption: 'One disclosure\nrequest, one screen',
 			source: 'positioning filinq sp-woo-request-end-to-end ("One screen carries a Woo request from collection to publication."); specs dossier-register (Woo Art. 5 grounds), anonymisation-grondslagen-summary',
 			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. The request lands: its five steps on one square line, the done ones mint, the current step an orange hex; the documents drop in underneath one a sixteenth, each with its ground chip and state.',
 			sound: 'Four dry clicks on the wipe, a tick per document.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'One Woo request,\none screen', drawUI: wooUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'One disclosure\nrequest, one screen', drawUI: wooUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

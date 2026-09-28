@@ -14,7 +14,7 @@
  *   general  notifications: a source starts failing, Integriq stops calling it and you hear first
  *            (usp-self-healing-sync, verified: http-call-engine REQ-008 per-source circuit breaker;
  *            sp-watch-every-call; spec openconnector-notifications)
- *   promise  "Every outside system, connected to Nextcloud" (the positioning one-liner)
+ *   promise  "Connect any system to Nextcloud" (Round 18 copy pass)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the live read fills the record in a
  * wave, techniques.md names it for Integriq's feed), #9 text-swap on a held diagram (the bridge
@@ -112,8 +112,8 @@ function signInUI(w, geom) {
 const content = {
 	app: 'integriq',
 	audience: { slug: 'integration', name: 'Government integration teams', persona: 'Daan Verhoeven, integratiespecialist (municipality); Renske Bakker, integratiearchitect (province); Youssef El Amrani, integration developer at a vendor' },
-	promise: 'Outside systems,\nplugged in',
-	promiseLine: 'Connect the base registries and every other outside system to your Nextcloud',
+	promise: 'Connect any system\nto Nextcloud',
+	promiseLine: 'Connect any system, the base registries included, to your Nextcloud',
 	title: 'Integriq for integration teams',
 	record: { one: 'connection', many: 'connections' },
 	logline: 'For the teams that connect a municipality, province or vendor product to the base registries and case systems: read the citizen live from the source, bridge StUF and ZGW, let residents sign in with DigiD, and hear first when a source starts failing, while Integriq stops calling it.',
@@ -122,8 +122,8 @@ const content = {
 	neighbours: ['openregister', 'dossiq', 'portaliq'],
 	builtOnApps: ['openregister'],
 	hook: {
-		title: 'The citizen, live from the source',
-		caption: 'The citizen, live\nfrom the source',
+		title: 'Citizen data read live, never copied',
+		caption: 'Citizen data read live,\nnever copied',
 		ui: { drawUI: liveReadUI, tagFill: 'cobalt' },
 		source: 'positioning integriq usp-registry-live-read, verified ("Read a citizen or company straight from the source, live."; scene: "the lookup reads straight from the base itself"); spec connector-catalog (BRP HaalCentraal source, category "Government registers")',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the base registry as a side box on the left (BRP as a small label), the citizen\'s record on the right, the Integriq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: an orange hex runs along the square wire (the live read) and the record\'s fields step from 20% to 40% to full mint in a wave, top to bottom, within one bar. No copy lands anywhere: when the read ends the wire stays live.',
@@ -132,27 +132,27 @@ const content = {
 	proofs: [
 		{
 			id: 'bridge',
-			title: 'StUF to ZGW, bridged for you',
-			caption: 'StUF to ZGW,\nbridged for you',
+			title: 'Old and new case systems, bridged',
+			caption: 'Old and new case\nsystems, bridged',
 			source: 'positioning integriq usp-case-system-bridge, verified ("Bridge an old case system and a new one automatically."; scene: "a bridge translates between the two versions for you"); specs stuf-zkn-bridge (StUF-ZKN 3.10), zgw-version-translation',
 			motion: 'The old case system (StUF) and the new one (ZGW) stand as side boxes, the Integriq hex between them on square wires. Technique #9, text-swap on a held diagram: the diagram holds; message tokens leave the left box, pass through the hex and arrive on the right as fields, one per beat, and the box heads\' small labels stay put. The arriving message takes the orange ring on the last beat.',
 			sound: 'A soft whoosh per message through the hex, a pluck as each lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'StUF to ZGW,\nbridged for you', drawUI: bridgeUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Old and new case\nsystems, bridged', drawUI: bridgeUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'signin',
-			title: 'DigiD sign-in, ready to use',
-			caption: 'DigiD sign-in,\nready to use',
+			title: 'Residents sign in with government login',
+			caption: 'Residents sign in\nwith government login',
 			source: 'positioning integriq usp-citizen-login, verified ("Let a resident sign in the way the law already requires."; scene: "the sign-in flow the law requires ships out of the box"); spec digid-eherkenning-auth-adapter',
 			motion: 'Technique #11, whip-pan: a 5-frame move on ease.snap (rendered with --blur 4) from the bridge to the resident\'s phone, over the portal page. The code dots fill one per sixteenth, the sign-in button takes the orange ring, the pill turns mint and the portal behind fills with their own items.',
 			sound: 'A short whoosh on the whip, soft key ticks on the code, a dry click on sign-in.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'DigiD sign-in,\nready to use', drawUI: signInUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Residents sign in\nwith government login', drawUI: signInUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'notify',
-		title: 'A source fails? You hear first',
-		caption: 'A source fails?\nYou hear first',
+		title: 'A connection fails? You hear first',
+		caption: 'A connection fails?\nYou hear first',
 		source: 'positioning integriq usp-self-healing-sync, verified ("it cuts itself off and you switch it back on"; spec http-call-engine REQ-008 per-source circuit breaker) and sp-watch-every-call ("you get a message the moment it starts failing"); spec openconnector-notifications; story.json mechanic 8',
 		params: {
 			record: { avatar: 'square', title: 240, sub: 150, status: 'none' },

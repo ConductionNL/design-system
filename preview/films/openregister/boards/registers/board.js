@@ -136,8 +136,8 @@ const content = {
 	techniques: ['#4 typewriter (the new field)', '#3 grid-cell ripple (records due flag themselves)', '#10 cluster-to-container merge (the privacy export)'],
 	neighbours: ['dossiq', 'portaliq', 'integriq'],
 	hook: {
-		title: 'New record type? No developer',
-		caption: 'New record type?\nNo developer',
+		title: 'New field? No developer needed',
+		caption: 'New field?\nNo developer needed',
 		ui: { drawUI: typeEditorUI, tagFill: 'cobalt' },
 		source: 'positioning openregister sp-model-without-code ("Add a new record type yourself, with no developer needed."); specs no-code-app-builder, runtime-schema-api',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the record type editor (its fields on the left, the form it makes on the right), the OpenRegister hex (cobalt: the one orange is the new field\'s ring) on the loop anchor. Technique #4, typewriter: in the dashed new row the field name types itself (greeked characters one pair per 0.1 s, hard on and off, a cursor), its type chip drops in, the row fills and takes the orange ring, and on the same beat its input appears last in the live form on the right. Out: a hard cut on the beat.',
@@ -146,21 +146,21 @@ const content = {
 	proofs: [
 		{
 			id: 'retention',
-			title: 'Destroyed on time, once you approve',
-			caption: 'Destroyed on time,\nonce you approve',
+			title: 'Old records destroyed once you approve',
+			caption: 'Old records destroyed\nonce you approve',
 			source: 'positioning openregister usp-archive-destroy, verified ("A record destroys itself on its retention date, once approved."; scene: "The record already knows its own retention date and flags itself."); specs archival-destruction-workflow, retention-management',
 			motion: 'Technique #3, grid-cell ripple: the list of records holds; their retention date chips step from 20% to 40% to full in a wave down the list, and the ones past their date turn lavender and flag themselves (the pill goes idle). On beat 4 the approval card rises under the list and its button takes the orange ring; nothing is destroyed before the approve. The caption rises as the wave starts.',
 			sound: 'A ripple of soft ticks with the wave, a dry click on the approve.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Destroyed on time,\nonce you approve', drawUI: retentionUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Old records destroyed\nonce you approve', drawUI: retentionUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'privacy',
-			title: 'A privacy request, one export away',
-			caption: 'A privacy request,\none export away',
+			title: 'Privacy requests, one export away',
+			caption: 'Privacy requests,\none export away',
 			source: 'positioning openregister usp-gdpr-subject-rights, verified ("A citizen\'s data request pulls straight from their own record."; scene: "One export area gathers everything tied to that record."); spec gdpr-data-subject-rights',
 			motion: 'Technique #10, cluster-to-container merge: the request lands on top (a person, the request type in lavender); the four cards holding their data start as loose hexes scattered over the window and tween into place on ease.brand; then square-cornered wires run down from each and join, and the export package builds at the join and takes the orange ring as its status turns mint.',
 			sound: 'Four soft ticks as the cards land, a line-draw hiss down the wires, a pluck as the export completes.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'A privacy request,\none export away', drawUI: privacyUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Privacy requests,\none export away', drawUI: privacyUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

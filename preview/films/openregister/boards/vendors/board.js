@@ -128,8 +128,8 @@ const content = {
 	techniques: ['#3 grid-cell ripple (the new column)', '#9 text-swap on a held diagram (the filters)', '#1 dot-grows-to-fill (as a hex, into the other organisation)'],
 	neighbours: ['dossiq', 'pipelinq', 'portaliq', 'integriq'],
 	hook: {
-		title: 'Change a type, the records follow',
-		caption: 'Change a type,\nthe records follow',
+		title: 'Change the model, records follow',
+		caption: 'Change the model,\nrecords follow',
 		ui: { drawUI: liveModelUI, tagFill: 'cobalt' },
 		source: 'positioning openregister usp-live-model, verified ("Change a record type and existing records move with it."); spec schema-migration (typed changelog, version bump, objects stamped and migrated)',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the record type\'s fields as chips over the table of its records, the OpenRegister hex (cobalt) on the loop anchor. On beat 2 a new field chip pops in at the end of the row (lavender) and takes the orange ring. Technique #3, grid-cell ripple: its column steps into the table row by row, each new cell stepping 20% to 40% to full, top to bottom within one bar; nothing goes offline.',
@@ -147,12 +147,12 @@ const content = {
 		},
 		{
 			id: 'federation',
-			title: 'Their records, live, no copy',
-			caption: 'Their records, live,\nno copy',
+			title: 'Another organisation\'s records, live, no copy',
+			caption: 'Another organisation\'s\nrecords, live, no copy',
 			source: 'positioning openregister usp-connect-registers, verified ("Read another organisation\'s records live, as if they were your own."; scene: "You read their records live, without copying a single row."); spec federation',
 			motion: 'Technique #1, dot-grows-to-fill as an upright hex: the ringed filter chip becomes a hex that grows past the frame (ease.snap, one beat) and shrinks into the right panel, the other organisation\'s records behind a dashed edge. Their rows light up and appear in your list on mint wires, each with a dashed outline (read live, never copied); the newest takes the orange ring.',
 			sound: 'A whoosh through the hex, a pluck per row that links in.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Their records, live,\nno copy', drawUI: federationUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Another organisation\'s\nrecords, live, no copy', drawUI: federationUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

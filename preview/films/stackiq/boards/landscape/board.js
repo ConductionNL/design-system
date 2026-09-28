@@ -13,7 +13,7 @@
  *            bio-compliance-assessment)
  *   general  notifications: a contract nears expiry and the owner hears (sp-contract-lifecycle;
  *            spec softwarecatalog-notifications, the contract-expiry rule)
- *   promise  "What you run, in one place" (the positioning one-liner)
+ *   promise  "Everything you run, one list" (Round 18 copy pass)
  *
  * The thin USPs (vulnerability to version, AI Act, licence position, organisation merge) are not
  * used. Applications in the customer's landscape are drawn as rectangles: hexes are installable
@@ -113,8 +113,8 @@ function bioUI(w, geom) {
 const content = {
 	app: 'stackiq',
 	audience: { slug: 'landscape', name: 'Government architects and CIOs', persona: 'Sanne de Boer, enterprise architect (municipality); Bas Kramer, portfolio architect (province); Maartje Hendriks, CIO (central government)' },
-	promise: 'What you run,\nin one place',
-	promiseLine: 'See every application your organisation runs, in one place',
+	promise: 'Everything you run,\none list',
+	promiseLine: 'Every application your organisation runs, in one list',
 	title: 'Stackiq for architects',
 	record: { one: 'application', many: 'applications' },
 	logline: 'For the architects who have to answer what the organisation runs: every application with its owner and supplier, every connection before you touch it, every application against the BIO, and the owner hears when a contract nears its end.',
@@ -133,21 +133,21 @@ const content = {
 	proofs: [
 		{
 			id: 'dependencies',
-			title: 'Every connection, before you touch it',
-			caption: 'Every connection,\nbefore you touch it',
+			title: 'See every link before changing it',
+			caption: 'See every link\nbefore changing it',
 			source: 'positioning stackiq sp-dependency-mapping ("Every connection an application has shows on its own page and diagram."; so: "a retirement plan starts from evidence, not a guess"); spec archimate-import (elements and relationships)',
 			motion: 'Technique #2, zoom-out: the camera pushes into the ringed row until it fills the window, then pulls back on ease.brand as its connections appear round it: square-cornered wires step out to six applications, one per eighth note, so the picture always just fits. The centre application keeps the orange ring.',
 			sound: 'A soft whoosh on the push, a tick per connection as it lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every connection,\nbefore you touch it', drawUI: dependencyUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'See every link\nbefore changing it', drawUI: dependencyUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'bio',
-			title: 'Checked against every BIO measure',
-			caption: 'Checked against\nevery BIO measure',
+			title: 'Security rules checked per application',
+			caption: 'Security rules checked\nper application',
 			source: 'positioning stackiq usp-bio-compliance, verified ("Every application shows verified, claimed or missing against each BIO measure."; scene: "one matrix shows every application against every BIO measure"); spec bio-compliance-assessment',
 			motion: 'Technique #3, grid-cell ripple: the matrix (applications down, measures across, BIO as a small label) fills in waves from the top-left cell by axial distance, each cell stepping 20% to 40% to full: verified mint, claimed lavender, missing left open with a dashed edge. On the last beat the first missing measure takes the orange ring.',
 			sound: 'A ripple of soft ticks across the matrix, a low tick on the ringed cell.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Checked against\nevery BIO measure', drawUI: bioUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Security rules checked\nper application', drawUI: bioUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

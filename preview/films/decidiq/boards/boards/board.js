@@ -151,8 +151,8 @@ const content = {
 	],
 	general: {
 		module: 'notify',
-		title: 'Due date passed? The owner hears',
-		caption: 'Due date passed?\nThe owner hears',
+		title: 'Action overdue? The owner hears',
+		caption: 'Action overdue?\nThe owner hears',
 		source: 'positioning decidiq sp-action-items ("Every decision becomes an action item with an owner and a date."; "a due date passes and someone actually gets flagged"); specs action-item-board-via-deck-leaf, decidesk-notifications',
 		params: {
 			record: { avatar: 'hex', title: 230, sub: 150, status: 'idle' },

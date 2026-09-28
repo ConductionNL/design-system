@@ -14,7 +14,7 @@
  *            (usp-skills-that-prove-themselves, verified; specs agent-evals, skill-maturity)
  *   general  the assistant: ask about your records, it asks first (COPY.ai A1 + A2;
  *            spec human-approval-gate)
- *   promise  "Only what you allow"
+ *   promise  "AI within your rules" (Round 18: AI may be said on screen)
  *
  * Techniques (refs/techniques.md): #9 text-swap on a held diagram (the tool list holds, only the
  * switches flip), #1 dot-grows-to-fill as an upright hex (the schedule slot becomes the Talk
@@ -23,6 +23,7 @@
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
+import { textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, hex, panel, toggle, bubble, use } from '../../../_lib/ui.js'
 
 const REFS = [
@@ -71,7 +72,7 @@ function scheduleUI(w, geom) {
 	panel(w, tx, top, tw, 560, u)
 	rect(w, tx, top, tw, 70, C.nextcloud, 0)
 	use(w, 'nc-talk', tx + 24, top + 15, 40, 40, C.white)
-	bar(w, tx + 80, top + 30, 140, 12, C.white)
+	textBlock(w, 'Talk', { x: tx + 78, y: top + 47, size: 32, weight: 600, fill: C.white, clip: false })
 	bubble(w, tx + 24, top + 100, tw - 90, 190, u, { side: 'agent' })
 	hex(w, tx + 60, top + 136, 18, C.cobalt, 2)
 	bar(w, tx + 90, top + 128, 120, 10, C.cobalt900)
@@ -111,7 +112,7 @@ function evalUI(w, geom) {
 const content = {
 	app: 'hermiq',
 	audience: { slug: 'teams', name: 'Teams at work', persona: 'Bas Mulder, IT director of a professional-services company, and the staff who use the assistant' },
-	promise: 'Only what\nyou allow',
+	promise: 'AI within\nyour rules',
 	promiseLine: 'Agents your team can use every day, that only do what you allow',
 	title: 'Hermiq for teams',
 	record: { one: 'agent', many: 'agents' },
@@ -131,12 +132,12 @@ const content = {
 	proofs: [
 		{
 			id: 'schedule',
-			title: 'On its schedule, straight to Talk',
-			caption: 'On its schedule,\nstraight to _Talk_',
+			title: 'Scheduled reports, posted to your chat',
+			caption: 'Scheduled reports,\nposted to your chat',
 			source: 'positioning hermiq sp-schedules ("Give an agent its own schedule, down to the minute.") and sp-channels ("Send an agent\'s output straight to email or chat."); specs agent-schedule, talk-delivery ("Deliver run output to Nextcloud Talk")',
-			motion: 'A hex grows from the ringed switch (hexCut) into the week. The runs fill their slots (lavender) a sixteenth apart; today\'s slot takes the orange ring. Technique #1: that slot grows as an upright hex across to the Talk room and shrinks into the agent\'s post, which types on (greeked lines). "Talk" is set in Nextcloud cyan in the caption; the Talk header is Nextcloud blue.',
+			motion: 'A hex grows from the ringed switch (hexCut) into the week. The runs fill their slots (lavender) a sixteenth apart; today\'s slot takes the orange ring. Technique #1: that slot grows as an upright hex across to the Talk room and shrinks into the agent\'s post, which types on (greeked lines). Round 18: the caption says "your chat" in plain words; the Talk header is Nextcloud blue and carries the small label "Talk".',
 			sound: 'Ticks as the slots fill, a whoosh through the hex, a soft pop as the post lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'On its schedule,\nstraight to _Talk_', captionOpts: { accent2: C.nextcloudCyan }, drawUI: scheduleUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Scheduled reports,\nposted to your chat', drawUI: scheduleUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'tested',

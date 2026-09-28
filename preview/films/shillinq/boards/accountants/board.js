@@ -20,6 +20,7 @@
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
+import { textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, hex, panel, statusPill, idlePill, button } from '../../../_lib/ui.js'
 
 const REFS = [
@@ -103,7 +104,8 @@ function wbsoUI(w, geom) {
 	})
 	// The export, ready: the accent button (an orange ring round it, the one orange).
 	button(w, x + width - 260, top + 520, 220, 56, u, { kind: 'accent' })
-	bar(w, x + 30, top + 540, 240, 12, C.cobalt700)
+	// Round 18: the scheme's name as a small label in the picture; the caption says what it is.
+	textBlock(w, 'WBSO', { x: x + 30, y: top + 560, size: 32, weight: 600, fill: C.cobalt, clip: false })
 }
 
 const content = {
@@ -138,12 +140,12 @@ const content = {
 		},
 		{
 			id: 'wbso',
-			title: 'R&D hours tagged, ready for WBSO',
-			caption: 'R&D hours tagged,\nready for WBSO',
+			title: 'R&D hours tagged for tax relief',
+			caption: 'R&D hours tagged\nfor tax relief',
 			source: 'positioning shillinq usp-corporate-tax-positions, verified ("Tag R&D hours and export them ready for the WBSO claim."); specs wbso-uren-tagging-and-export, bookkeeping-wbso-sno-administratie',
-			motion: 'Technique #3, grid-cell ripple: the week\'s hours step on in a wave; the projects marked R&D tag lavender row by row, the rest stay cobalt-100. On the bar line the export button takes its orange ring: ready, not sent.',
+			motion: 'Technique #3, grid-cell ripple: the week\'s hours step on in a wave; the projects marked R&D tag lavender row by row, the rest stay cobalt-100. On the bar line the export button takes its orange ring: ready, not sent. Round 18: the caption says "tax relief" (the review\'s "for the tax claim" is 7 words in a 6-word slot); the export row carries the small label WBSO.',
 			sound: 'A ripple of ticks, a pluck on the export.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'R&D hours tagged,\nready for WBSO', drawUI: wbsoUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'R&D hours tagged\nfor tax relief', drawUI: wbsoUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

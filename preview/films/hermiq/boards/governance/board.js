@@ -16,7 +16,7 @@
  *            run-replay-and-dry-run)
  *   general  the assistant: it asks before it changes anything; the approval card waits
  *            (sp-oversight-baseline; specs human-approval-gate, talk-approval-reactions)
- *   promise  "Only what you allow, on the record"
+ *   promise  "AI that does only what you allow" (Round 18: AI may be said on screen)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the risk scale steps in waves until the
  * class settles), #6 hard diagonal wipe (into the routing), #4 typewriter (the run's steps land
@@ -115,7 +115,7 @@ function runUI(w, geom) {
 const content = {
 	app: 'hermiq',
 	audience: { slug: 'governance', name: 'Regulated organisations', persona: 'Marleen de Groot, algorithm register coordinator at a municipality; Rutger van Dijk, CISO at a bank; Aisha Boukhari, data protection officer in care' },
-	promise: 'Only what you allow,\non the record',
+	promise: 'AI that does only\nwhat you allow',
 	promiseLine: 'Agents that only do what you allow, with every step on the record',
 	title: 'Hermiq for regulated organisations',
 	record: { one: 'agent', many: 'agents' },
@@ -144,12 +144,12 @@ const content = {
 		},
 		{
 			id: 'run',
-			title: 'Open any run, see every step',
-			caption: 'Open any run,\nsee every step',
+			title: 'See every step an agent took',
+			caption: 'See every step\nan agent took',
 			source: 'positioning hermiq sp-observability ("Open any run and see each step it took."); specs run-audit-log, run-replay-and-dry-run',
 			motion: 'A hex grows from the cleared model (hexCut) into the run view. Technique #4, typewriter: the steps land one per beat down the spine, each line typed on in greeked pairs 0.1 s apart; the third step, the one that waited for a person, holds a beat longer and takes the orange ring.',
 			sound: 'Soft key ticks per line, a pluck on the ringed step.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Open any run,\nsee every step', drawUI: runUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'See every step\nan agent took', drawUI: runUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

@@ -10,7 +10,7 @@
  *            pay (usp-spend-controls, verified; specs payment-control-guards, bookkeeping-ccm-rule-engine)
  *   general  notifications: an invoice goes overdue and the right person hears (bible fact 8;
  *            spec bookkeeping-credit-control-dunning)
- *   promise  "Books that follow your country's rules"
+ *   promise  "Books that keep themselves up to date" (Round 18 copy pass)
  *
  * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (bank lines drop onto
  * their invoices), #4 typewriter (the VAT boxes fill), #6 hard diagonal wipe (into the payment
@@ -116,7 +116,7 @@ function guardUI(w, geom) {
 const content = {
 	app: 'shillinq',
 	audience: { slug: 'business', name: 'Businesses and freelancers', persona: 'Wouter de Groot, office manager of a small business; Daan Willemsen, a freelancer billing his own clients' },
-	promise: 'Books that follow\nyour country\'s rules',
+	promise: 'Books that keep\nthemselves up to date',
 	promiseLine: 'Books that follow your country\'s rules and keep up by themselves: the bank matched, the VAT return filled in, a wrong payment stopped',
 	title: 'Shillinq for businesses',
 	record: { one: 'invoice', many: 'invoices' },
@@ -126,8 +126,8 @@ const content = {
 	neighbours: ['pipelinq', 'portaliq'],
 	builtOnApps: ['pipelinq'],
 	hook: {
-		title: 'Your bank feed matches itself',
-		caption: 'Your bank feed\nmatches itself',
+		title: 'Bank payments match their invoices',
+		caption: 'Bank payments match\ntheir invoices',
 		ui: { drawUI: bankUI, tagFill: 'cobalt' },
 		source: 'positioning shillinq sp-bank ("Have your bank feed matched to invoices on its own."); specs bookkeeping-bank-reconciliation, bookkeeping-bank-connectors',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the bank lines and the open invoices, the Shillinq hex (cobalt) on the loop anchor. Technique #10: the bank lines arrive as loose bars from the left edge and each settles against its invoice (ease.brand, within one beat), a mint join drawing between them and the invoice pill turning mint; one stays open (no match yet). On beat 5 the last pair joins and takes the orange ring.',

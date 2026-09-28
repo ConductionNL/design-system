@@ -11,7 +11,7 @@
  *            (sp-run-the-meeting; spec meeting-transcription)
  *   general  notifications: a motion carries and the right person hears
  *            (sp-action-items, sp-motion-tracking; spec decidesk-notifications)
- *   promise  "Every meeting, open to all" (sp-publish-transparency: the publishing click)
+ *   promise  "Decisions public the same day" (Round 18 copy pass) (sp-publish-transparency: the publishing click)
  *
  * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the papers drop
  * onto their items), #3 grid-cell ripple (the seats light in waves as the votes come in),
@@ -117,11 +117,11 @@ function recordingUI(w, geom) {
 const content = {
 	app: 'decidiq',
 	audience: { slug: 'councils', name: 'Municipal councils', persona: 'Marieke van Dijk, griffier, and the council office; the presidium signs off' },
-	promise: 'Every meeting,\nopen to all',
+	promise: 'Decisions public\nthe same day',
 	promiseLine: 'Every council meeting, from agenda to decision, open to the public the same day',
 	title: 'Decidiq for councils',
 	record: { one: 'meeting', many: 'meetings' },
-	logline: 'For the griffie: every paper on its agenda item, members voting from their own seat with the count closing live, a click on an agenda item that jumps the recording to that moment, and the right person hearing when a motion carries. The promise: every meeting open to all.',
+	logline: 'For the griffie: every paper on its agenda item, members voting from their own seat with the count closing live, a click on an agenda item that jumps the recording to that moment, and the right person hearing when a motion carries. The promise: decisions public the same day.',
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge (papers onto items)', '#3 grid-cell ripple (seats lighting)', '#1 dot-grows-to-fill (as a hex, marker into the recording)'],
 	neighbours: ['opencatalogi', 'filinq'],
@@ -146,12 +146,12 @@ const content = {
 		},
 		{
 			id: 'moment',
-			title: 'Click an item, watch that moment',
-			caption: 'Click an item,\nwatch that moment',
+			title: 'Replay any item in one click',
+			caption: 'Replay any item\nin one click',
 			source: 'positioning decidiq sp-run-the-meeting ("Stream the meeting and jump straight to the moment it was discussed."); spec meeting-transcription, digital-meetings-and-recurrence',
 			motion: 'Whip (technique #11 lite, 5 frames, ease.snap) onto the recording view. Item 3 in the agenda is clicked: its orange ring steps out; technique #1, its lavender marker on the timeline grows as an upright hex over the player and shrinks back, and the playhead has jumped to it, the progress filling to that point in one move.',
 			sound: 'A click, a quick whoosh through the hex, a soft room tone as the recording picks up.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Click an item,\nwatch that moment', drawUI: recordingUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Replay any item\nin one click', drawUI: recordingUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

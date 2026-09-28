@@ -149,12 +149,12 @@ const content = {
 		},
 		{
 			id: 'contract',
-			title: 'One record, one signed contract',
-			caption: 'One record,\none signed contract',
+			title: 'Contracts filled in and signed',
+			caption: 'Contracts filled in\nand signed',
 			source: 'positioning humaniq sp-employee-file ("Generate a contract and have it signed from one record."); specs offer-esign, humaniq-docudesk-documents',
 			motion: 'Technique #10: the record\'s fields lift off as loose bars, drift right and drop into the contract page\'s lines (ease.brand, within one beat). On beat 4 the signature line draws, the signed pill turns mint and the orange ring lands round the signature.',
 			sound: 'Soft ticks as the fields land, a pen scratch, a pluck as it is signed.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'One record,\none signed contract', drawUI: contractUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Contracts filled in\nand signed', drawUI: contractUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

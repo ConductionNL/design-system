@@ -4,14 +4,15 @@
  *
  *   0 to 5.63 s       the shared Conduction opening (_lib/scenes/opening.js), 3 bars, handing over
  *                     on its field, which the hook builds on
- *   5.63 to 31.88 s   the body, 14 bars (Round 15; appfilm.js plan(5), seven scenes):
- *                     hook "Your team, one backlog" (#10 cluster merge, #1 hex cut out),
+ *   5.63 to 31.88 s   the body, 14 bars (Round 15 final; the storyboard's times, board.js promiseFirst):
+ *                     promise "The whole team, every case", straight after the opening's handover,
+ *                     backlog "Your team, one backlog" (#10 cluster merge, #1 hex cut out),
  *                     documents "Edited right in the case" (the editor opens beside the case's files),
  *                     knowledge "While you work, the answers appear" (#4 typewriter, #5 stepped wipe out),
- *                     standards "International and local standards, built in" (three tagged boxes),
+ *                     standards "International and local standards, built in" (the archiving film's
+ *                     design: whip in, wires, three tagged boxes, #9 swap ZGW to ZGW / StUF),
  *                     automate "Draw a flow, the work runs itself" (the shared capability),
- *                     share "Share your case types and flows" (to the store, out to a second organisation),
- *                     promise "The whole team, every case"
+ *                     share "Share your case types and flows"; the body ends here, a hard cut to Built on
  *   31.88 to 35.63 s  the shared closing piece, "Built on Nextcloud" (closing.js, on: 'nextcloud'), 2 bars
  *   35.63 to 41.25 s  the shared install board (closing.js), 3 bars
  *
@@ -30,7 +31,7 @@ import { plan, hexCut, SPB, BAR, FPS, BPM } from '../../_lib/appfilm.js'
 import { FRAMES, WINDOW, LOOP_ANCHOR } from '../../_lib/scenes/general.js'
 import { promiseFrame } from '../../_lib/audiencefilm.js'
 import { TYPE, layout, rect, clipped, topbar, nav, appTag, appMark, fitCaptionSize, bar } from '../../_lib/ui.js'
-import { backlogUI, documentsUI, knowledgeUI, standardsUI, automateUI, shareUI } from '../boards/casework/board.js'
+import { backlogUI, documentsUI, knowledgeUI, standardsUI, automateUI, shareUI, boards as BOARDS } from '../boards/casework/board.js'
 
 const APP = 'dossiq'
 const U = 2.5
@@ -53,8 +54,11 @@ const bodyAt = addOpening(film, { at: 0 })
 if (Math.abs(bodyAt - OPEN) > 1e-6) console.error(`opening ends at ${bodyAt}, expected ${OPEN}`)
 
 /* ---------- the slots, in film time ---------- */
-const P = plan(5).map((s) => ({ ...s, start: s.start + OPEN, end: s.end + OPEN }))
-const [S_HOOK, S_DOCS, S_KNOW, S_STD, S_AUTO, S_SHARE, S_PROMISE] = P
+// The slots come from the storyboard, so the film and its board keep one timing (promise first).
+const B = Object.fromEntries(BOARDS.map((b) => [b.id, { slot: b.id, start: b.start, end: b.end }]))
+const [S_PROMISE, S_HOOK, S_DOCS, S_KNOW, S_STD, S_AUTO, S_SHARE] = ['promise', 'hook', 'documents', 'knowledge', 'standards', 'automate', 'share'].map((k) => B[k])
+const P = [S_PROMISE, S_HOOK, S_DOCS, S_KNOW, S_STD, S_AUTO, S_SHARE]
+if (Math.abs(S_SHARE.end - (OPEN + BODY)) > 1e-6) console.error(`body ends at ${S_SHARE.end}, expected ${OPEN + BODY}`)
 
 /* ---------- shared pieces ---------- */
 
@@ -68,11 +72,11 @@ const toStage = (mx, my) => [W0.x + W0.s * mx, W0.y + W0.s * my]
  * the mark animate on their own. `land` 0..1 lands it (rises 60 px, fades in); `push` scales the
  * UI inside the window about `about` (mock space); drawUI(w, geom) draws the content.
  */
-function appWindow(g, { drawUI, land = 1, push = 1, about = [900, 600], header = true, tag = 1 }) {
+function appWindow(g, { drawUI, land = 1, push = 1, about = [900, 600], header = true, tag = 1, dx = 0 }) {
 	const visR = (1920 - W0.x) / W0.s
 	const visB = (1080 - W0.y) / W0.s
 	const dy = 60 * (1 - ease.brand(land))
-	const outer = el('g', { opacity: clamp(land * 2).toFixed(3), transform: `translate(0 ${dy.toFixed(1)})` }, g)
+	const outer = el('g', { opacity: clamp(land * 2).toFixed(3), transform: `translate(${dx.toFixed(1)} ${dy.toFixed(1)})` }, g)
 	const view = el('g', { transform: `translate(${W0.x} ${W0.y}) scale(${W0.s})` }, outer)
 	const FW = 720 * U, FH = visB + 60
 	const win = clipped(view, 0, 0, FW, FH, 10 * U)
@@ -94,7 +98,7 @@ function appWindow(g, { drawUI, land = 1, push = 1, about = [900, 600], header =
 	const ts = tag >= 1 ? 1 : Math.max(0, tag)
 	if (ts > 0.001) {
 		const a = LOOP_ANCHOR
-		const tg = el('g', { transform: `translate(${a.x} ${a.y + dy}) scale(${ts.toFixed(3)}) translate(${-a.x} ${-a.y})` }, g)
+		const tg = el('g', { transform: `translate(${a.x + dx} ${a.y + dy}) scale(${ts.toFixed(3)}) translate(${-a.x} ${-a.y})` }, g)
 		appTag(tg, a.x, a.y, a.r, APP, { fill: C.cobalt })
 	}
 	return { geom, out, push, about }
@@ -148,7 +152,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 {
 	const s = S_HOOK, D = s.end - s.start
 	const cutAt = D - SPB
-	const c = cap('hook', 'Your team,\none backlog', s.start + RISE * 0 + 0.24, s.start + cutAt)
+	const c = cap('hook', 'Your team,\none backlog', s.start + RISE, s.start + cutAt)
 	// Seeded scatter for the cards: each starts somewhere over the window and flies to its lane.
 	const R = rand(71)
 	const scatter = {}
@@ -156,8 +160,6 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	const RING_AT = 5 * SPB // beat 5: a colleague picks the case up
 	let ringStage = null
 	bodyScene('hook', s, (g, u, t) => {
-		// The opening's field, fading under the landing window: no cut from the opening.
-		if (u < 0.6) { const hg = handoverGround(g); hg.setAttribute('opacity', (1 - ease.inOutCubic(inv(0, 0.6, u))).toFixed(3)) }
 		const push = 1 + 0.05 * ease.inOutCubic(inv(1.0, cutAt, u))
 		const w = appWindow(g, {
 			land: inv(0, 0.45, u),
@@ -257,31 +259,37 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	;[0, 1, 2, 3].forEach((i) => cue(t0 + cutAt + i * 0.07, 'click', { gain: 0.14, freq: 2400 + i * 300, pan: 0.6 - i * 0.2, seed: 90 + i, dry: true }))
 }
 
-/* ---------- 4 · standards: CMMN, OIO, ZGW (wires, boxes one per beat) ---------- */
+/* ---------- 4 · standards: international and local (the archiving film's design, #9 swap) ---------- */
 {
 	const s = S_STD, D = s.end - s.start
 	const c = cap('standards', 'International and local\nstandards, built in', s.start + RISE, s.end - 0.16)
-	const BOX = [1.2, 1.2 + SPB, 1.2 + 2 * SPB]
+	const b = (n) => n * SPB
+	const BOX = [b(2.5), b(3), b(3.5)]
+	const SWAP = b(5)
 	bodyScene('standards', s, (g, u, t) => {
-		// The wipe's last hex, shrinking back off to the right as the case lands under it.
-		if (u < 0.3) el('path', { d: hexPath(1920 + 60 - 825, 560, 1500 * (1 - ease.brand(inv(0, 0.3, u)))), fill: C.cobalt }, g)
+		// The whip: the window arrives from the right in 5 frames (ease.snap; the motion blur smears it).
+		const dx = 520 * (1 - ease.snap(inv(0, F(5), u)))
 		appWindow(g, {
-			land: inv(0.05, 0.4, u),
-			push: 1 + 0.03 * ease.inOutCubic(inv(0.5, D, u)),
-			about: [CONTENT_X + 427, WINDOW.row1 + 350],
+			dx,
+			push: 1 + 0.03 * ease.inOutCubic(inv(b(2.5), D, u)),
+			about: [CONTENT_X + 376, WINDOW.row1 + 350],
 			drawUI: (win, geom) => standardsUI(win, geom, {
-				wire: ease.inOutCubic(inv(0.47, 1.0, u)),
-				split: u < 1.0 ? 0 : Math.min(1.2, spring(u - 1.0, { freq: 2.6, zeta: 0.5 })),
-				boxes: BOX.reduce((a, t0) => a + ease.brand(inv(t0, t0 + 0.3, u)), 0),
+				wire: inv(b(1), b(2.4), u),
+				split: u < b(2) ? 0 : Math.min(1.2, spring(u - b(2), { freq: 2.6, zeta: 0.55 })),
+				boxes: BOX.reduce((a, t0) => a + ease.brand(inv(t0, t0 + 0.35, u)), 0),
+				fields: (i) => ease.brand(inv(BOX[i] + b(0.25), BOX[i] + b(1.25), u)),
+				swap: inv(SWAP, SWAP + F(4), u),
 			}),
 		})
 		appMark(g, APP)
 		captionAt(g, c.text, t, c.up, c.out)
 	})
 	const t0 = s.start
-	cue(t0 + 0.47, 'whoosh', { dur: 0.5, from: 1200, to: 3200, panFrom: -0.2, panTo: 0.4, gain: 0.07 })
-	cue(t0 + 1.0, 'click', { gain: 0.18, freq: 3000, pan: 0.2, seed: 101, dry: true })
+	cue(t0, 'whoosh', { dur: 0.3, from: 3000, to: 800, panFrom: 0.8, panTo: 0.1, gain: 0.12 })
+	cue(t0 + b(1), 'whoosh', { dur: 0.5, from: 1200, to: 3200, panFrom: -0.2, panTo: 0.4, gain: 0.06 })
+	cue(t0 + b(2), 'click', { gain: 0.18, freq: 3000, pan: 0.2, seed: 101, dry: true })
 	BOX.forEach((d, i) => cue(t0 + d, 'pluck', { freq: [987.8, 1174.7, 1318.5][i], gain: 0.2, pan: -0.3 + i * 0.3 }))
+	cue(t0 + SWAP, 'tick', { freq: 2349.3, gain: 0.14, pan: 0.5 })
 }
 
 /* ---------- 5 · automate (the shared capability): draw a flow, the work runs itself ---------- */
@@ -338,23 +346,24 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	cue(t0 + LAND + 0.75, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.5 })
 }
 
-/* ---------- 7 · promise: the whole team, every case ---------- */
+/* ---------- 1 · promise, first (Round 15): the whole team, every case ---------- */
 {
 	const s = S_PROMISE
 	const c = cap('promise', 'The whole team,\nevery case', s.start + RISE, s.end - 0.16)
 	bodyScene('promise', s, (g, u, t) => {
+		// The opening's field, fading out as the cluster lands on it: no cut from the opening.
+		if (u < 0.8) { const hg = handoverGround(g); hg.setAttribute('opacity', (1 - ease.inOutCubic(inv(0, 0.8, u))).toFixed(3)) }
 		const fg = el('g', {}, g)
 		promiseFrame({ g: fg, W: 1920, H: 1080 }, { app: APP, promise: '', neighbours: ['portaliq', 'filinq'] })
 		const kids = [...fg.childNodes].slice(1)
-		const sc = u < 0 ? 0 : Math.min(1.08, spring(u, { freq: 2.4, zeta: 0.6 }))
+		const sc = u < 0.1 ? 0 : Math.min(1.08, spring(u - 0.1, { freq: 2.4, zeta: 0.6 }))
 		const cx = 1450, cy = 480
-		const body = el('g', { opacity: clamp(u / 0.2).toFixed(3), transform: `translate(${cx} ${cy}) scale(${(0.6 + 0.4 * sc).toFixed(4)}) translate(${-cx} ${-cy})` }, fg)
+		const body = el('g', { opacity: clamp((u - 0.1) / 0.2).toFixed(3), transform: `translate(${cx} ${cy}) scale(${(0.6 + 0.4 * sc).toFixed(4)}) translate(${-cx} ${-cy})` }, fg)
 		for (const k of kids) body.appendChild(k)
 		captionAt(g, c.text, t, c.up, c.out)
 	})
-	cue(s.start + 0.02, 'pluck', { freq: 1174.66, gain: 0.24, pan: 0.3 })
-	cue(s.start + 0.05, 'impact', { gain: 0.35, from: 80, to: 36, decay: 0.8 })
-	cue(s.end - 0.05, 'click', { gain: 0.2, freq: 2900, pan: 0, seed: 111, dry: true })
+	cue(s.start + 0.1, 'pluck', { freq: 1174.66, gain: 0.24, pan: 0.3 })
+	cue(s.start + 0.12, 'impact', { gain: 0.35, from: 80, to: 36, decay: 0.8 })
 }
 
 /* ---------- the closing pieces: Built on Nextcloud, then the install board ---------- */

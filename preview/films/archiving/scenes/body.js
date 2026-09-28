@@ -332,7 +332,7 @@ export function edepotScene(ctx) {
 			for (let i = 0; i < n; i++) {
 				const cy = ty + 44 + i * 58
 				const rp = ease.brand(inv(beat(3.5 + i * 0.75), beat(3.5 + i * 0.75) + 0.25, t))
-				hex(tg, x + 50, cy, 13 * rp, C.cobalt400, 2)
+				if (rp > 0.001) hex(tg, x + 50, cy, 13 * rp, C.cobalt400, 2 * rp)
 				bar(tg, x + 84, cy - 6, [260, 220, 300, 240][i] * rp, 11, C.cobalt900)
 				bar(tg, x + width - 230, cy - 5, 190 * rp, 9, C.cobalt200)
 			}

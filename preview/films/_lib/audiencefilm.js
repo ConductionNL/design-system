@@ -178,8 +178,8 @@ export function audienceBoards(content) {
 		bars: `${barOf(t1)}.1-${barOf(t1) + 2}.4`,
 		words: closingWords('en').install,
 		apps: ['conduction'],
-		motion: 'Round 22 (_lib/scenes/closing.js installScene, concept current, 3 bars): "Install it", "Use it" and "Own it" are laid in dim; a current runs in from the left edge down a square-cornered wire beside them and powers each word on as it reaches it, one a beat, the orange moving to each and landing on "Own it"; it runs on under "Own it" to the Conduction avatar top right, which powers on. Then "The code stays open source, the data stays yours" rises on two lines and holds to the end. No header.',
-		sound: 'A low charge under the dim words, a crackle along the wire, an arc and a click as each word powers on, a power-on click as the avatar lights, a pluck on the line, the pad resolves.',
+		motion: 'Transition in (Round 26, the round-21 hand-off restored): Built on leaves in its last four frames; on the bar line a Nextcloud cell pops in top right, in a quiet honeycomb that steps on round it, and turns over by scale (never a rotation) into the Conduction avatar, which waits dim. Round 22 (_lib/scenes/closing.js installScene, concept current, 3 bars): a current runs in from the left edge down a square-cornered wire, and "Install it", "Use it" and "Own it" each rise out of their line as it reaches them, one a beat, the orange moving to each and landing on "Own it"; it runs on under "Own it" to the avatar, which powers on. Then "The code stays open source, the data stays yours" rises on two lines and holds to the end. No header.',
+		sound: 'A tick as the Nextcloud cell pops in and a dry click as it turns over, a low charge, a crackle along the wire, an arc and a click as each word rises, a power-on click as the avatar lights, a pluck on the line, the pad resolves.',
 		source: 'Shared module: INSTALL.sources in closing.js.',
 		draw: (ctx) => { installFrame(ctx, {}) },
 	}

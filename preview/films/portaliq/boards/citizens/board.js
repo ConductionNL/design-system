@@ -1,27 +1,28 @@
 /**
  * Portaliq, audience film: the citizen portal (municipalities). Direction C on the app-film
- * template, wrapped by _lib/audiencefilm.js. Round 7: matrix features count as built.
- * Research: ds-connext-film-review/apps/portaliq/research.json; positioning:
- * ds-connext-film-review/audiences/positioning.md.
+ * template, wrapped by _lib/audiencefilm.js (promise first, the current motif). Round 25 (Ruben,
+ * 2026-09-28): rebuilt around what a resident does in the portal, on the 12-bar plan (three proofs):
  *
- *   hook     a resident signs in with the government login and sees their case, its status
- *            and the decision letter (sp-gov-identity-signin, sp-case-status-tracking),
- *            cases from the municipality's other apps in the same portal (usp-fleet-data-in-your-portal)
- *   proof 1  they withdraw their own request, no phone call (usp-self-service-corrections)
- *   proof 2  a report without an account, and a receipt code to follow it (usp-anonymous-reporting)
- *   general  notifications: a new request, and the right colleague hears at once
- *   promise  "The portal answers, not the phone"
- *   (Round 15: the promise opens the body, straight after the opening; the body ends on the
- *   general scene and the app name returns in Built on Nextcloud)
+ *   promise  "What if everything was in one place?"
+ *   hook     view and pay your invoices (Shillinq invoices in the portal, paid from their row:
+ *            openspec/changes/contribution-pay-screen, intake-pay-on-submit; usp-fleet-data-in-your-portal)
+ *   proof 1  check your current products and update them yourself (a sibling app's records and
+ *            actions in the portal: usp-fleet-data-in-your-portal; self-service: usp-self-service-corrections)
+ *   proof 2  send a message and add a file to your case (inbox-reply-with-attachments, sp-unified-inbox)
+ *   proof 3  change your own details (identity-profile-page)
+ *   general  see who viewed your data (the data layer's log of who and when; OpenRegister's audit trail,
+ *            Dossiq avg-verwerkingenlogging; sp-multitenant-admin-audit)
  *
- * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the hook:
- * cases from several apps merge into one portal page), #4 typewriter (the receipt code),
- * #6 hard diagonal wipe on the beat (into the colleague's side).
+ * Dropped in Round 25: "withdraw it yourself" and the anonymous report (the six asked-for proofs fill
+ * the 12 bars; withdrawing lives on as one of the self-service actions on the products scene).
+ *
+ * Techniques: #10 cluster-to-container merge (the invoices gather from the council's apps), #4
+ * typewriter (the message and the changed detail), #9 text-swap on the held window (products).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, hex, panel, statusPill, idlePill, button, use } from '../../../_lib/ui.js'
+import { rect, bar, circle, hex, panel, statusPill, idlePill, button, use, bubble } from '../../../_lib/ui.js'
 
 const REFS = [
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Loose shapes drift together into one container.' },
@@ -56,131 +57,151 @@ function stepper(w, x, cy, width, current, u, { accent = true } = {}) {
 	}
 }
 
-/** Hook: signed in, the case with its status and its decision letter; more cases below from other apps. */
-function caseUI(w, geom) {
-	const { u } = geom
-	const x = geom.x, width = geom.r - geom.x
-	const y = portalHead(w, geom)
-	panel(w, x, y, width, 300, u)
-	bar(w, x + 40, y + 40, 260, 16, C.cobalt900)
-	bar(w, x + 40, y + 70, 170, 9, C.cobalt300)
-	stepper(w, x + 70, y + 150, width - 420, 2, u)
-	// The decision letter, attached: a page with a cobalt rule.
-	const lx = x + width - 250
-	rect(w, lx, y + 60, 180, 210, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	rect(w, lx, y + 60, 180, 14, C.cobalt, 0)
-	for (let i = 0; i < 6; i++) bar(w, lx + 20, y + 100 + i * 24, 130 - (i % 3) * 20, 6, C.cobalt200)
-	// More of what is theirs, from the municipality's other apps: each row carries its app's glyph.
-	const ry = y + 330
-	panel(w, x, ry, width, 12 + 3 * 76 + 12, u)
-	;[['dossiq', 220], ['shillinq', 180], ['filinq', 200]].forEach(([id, lw], i) => {
-		const cy = ry + 50 + i * 76
-		if (i > 0) rect(w, x + 24, cy - 38, width - 48, u, C.cobalt50)
-		hex(w, x + 60, cy, 20, C.cobalt, 3)
-		use(w, `g-${id}`, x + 47, cy - 13, 26, 26, C.white)
-		bar(w, x + 100, cy - 10, lw, 10, C.cobalt900)
-		bar(w, x + 100, cy + 8, lw * 0.5, 7, C.cobalt300)
-		if (i === 1) statusPill(w, x + width - 160, cy, u)
-		else idlePill(w, x + width - 150, cy, u)
-	})
-}
-
-/** Proof 1: the request, withdrawn by the resident: the ghost button pressed, the case marked withdrawn. */
-function withdrawUI(w, geom) {
+/** Hook: your invoices from the council's apps, one row ringed with its pay button. */
+function invoicesUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x
 	const y = portalHead(w, geom)
 	panel(w, x, y, width, 420, u)
-	bar(w, x + 40, y + 40, 260, 16, C.cobalt900)
-	bar(w, x + 40, y + 70, 170, 9, C.cobalt300)
-	idlePill(w, x + width - 150, y + 55, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
-	for (let i = 0; i < 3; i++) bar(w, x + 40, y + 130 + i * 34, 420 - i * 60, 9, C.cobalt100)
-	// The confirm step: Keep it (ghost) and Withdraw (primary, ringed: the tap).
-	rect(w, x + 40, y + 250, width - 80, u, C.cobalt50)
-	bar(w, x + 40, y + 290, 240, 10, C.cobalt700)
-	button(w, x + width - 460, y + 320, 190, 64, u, { kind: 'ghost' })
-	button(w, x + width - 250, y + 320, 210, 64, u, { kind: 'accent' })
+	bar(w, x + 40, y + 36, 200, 14, C.cobalt900)
+	;[['shillinq', 210, 'due'], ['shillinq', 180, 'paid'], ['dossiq', 200, 'paid'], ['shillinq', 160, 'paid']].forEach(([id, lw, st], i) => {
+		const cy = y + 100 + i * 78
+		if (i > 0) rect(w, x + 24, cy - 39, width - 48, u, C.cobalt50)
+		hex(w, x + 60, cy, 20, C.cobalt, 3)
+		use(w, `g-${id}`, x + 47, cy - 13, 26, 26, C.white)
+		bar(w, x + 100, cy - 10, lw, 10, C.cobalt900)
+		bar(w, x + 100, cy + 8, lw * 0.5, 7, C.cobalt300)
+		bar(w, x + width - 330, cy - 5, 90, 11, C.cobalt700)
+		if (st === 'due') button(w, x + width - 190, cy - 26, 150, 52, u, { kind: 'accent' })
+		else statusPill(w, x + width - 160, cy, u)
+	})
 }
 
-/** Proof 2: a report with no account: the form, and the receipt code being typed out. */
-function receiptUI(w, geom) {
+/** Proof 1: your current products (a permit, a subscription, a container pass), each with its status and a change button. */
+function productsUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x
-	const y = portalHead(w, geom, { signedIn: false })
-	panel(w, x, y, width, 480, u)
-	// The report, sent: a photo tile and two filled fields, ticked.
-	rect(w, x + 40, y + 40, 200, 150, C.cobalt50, 3 * u)
-	hex(w, x + 140, y + 115, 26, C.cobalt200, 3)
-	for (let i = 0; i < 2; i++) {
-		bar(w, x + 280, y + 50 + i * 80, 90, 8, C.cobalt400)
-		rect(w, x + 280, y + 68 + i * 80, width - 320, 44, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
-		bar(w, x + 296, y + 86 + i * 80, 220 - i * 60, 9, C.cobalt900)
-	}
-	statusPill(w, x + 40, y + 230, u)
-	// The receipt code: eight slots, six typed, a cursor, the box ringed (the one orange).
-	const cy = y + 330
-	rect(w, x + 40, cy, width - 80, 110, C.cobalt50, 4 * u)
-	rect(w, x + 34, cy - 6, width - 68, 122, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
-	const sw = (width - 160) / 8
-	for (let i = 0; i < 8; i++) {
-		const sx = x + 80 + i * sw
-		rect(w, sx, cy + 20, sw - 14, 70, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
-		if (i < 6) rect(w, sx + (sw - 14) / 2 - 10, cy + 38, 20, 34, C.cobalt900, 3)
-		if (i === 6) rect(w, sx + 10, cy + 32, 3 * u, 46, C.cobalt)
-	}
+	const y = portalHead(w, geom)
+	const cw = (width - 20) / 2, ch = 190
+	;[0, 1, 2, 3].forEach((i) => {
+		const cx = x + (i % 2) * (cw + 20), cy = y + Math.floor(i / 2) * (ch + 20)
+		panel(w, cx, cy, cw, ch, u)
+		hex(w, cx + 44, cy + 44, 20, i === 1 ? C.lavender : C.cobalt300, 3)
+		bar(w, cx + 80, cy + 36, 150, 12, C.cobalt900)
+		bar(w, cx + 80, cy + 60, 100, 8, C.cobalt300)
+		if (i === 1) idlePill(w, cx + cw - 110, cy + 44, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
+		else statusPill(w, cx + cw - 140, cy + 44, u)
+		button(w, cx + 30, cy + ch - 76, 130, 50, u, { kind: i === 1 ? 'accent' : 'ghost' })
+	})
+}
+
+/** Proof 2: the message thread with the council: their message, your reply with a file, and the file added to your case. */
+function messagesUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, width = geom.r - geom.x
+	const y = portalHead(w, geom)
+	panel(w, x, y, width, 470, u)
+	// The council's message, left.
+	bubble(w, x + 30, y + 30, 460, 110, u, { side: 'agent' })
+	bar(w, x + 56, y + 60, 300, 10, C.cobalt700)
+	bar(w, x + 56, y + 86, 220, 8, C.cobalt300)
+	// Your reply, right, with a file chip attached.
+	bubble(w, x + width - 490, y + 170, 460, 150, u, { side: 'user' })
+	bar(w, x + width - 464, y + 200, 280, 10, C.cobalt700)
+	bar(w, x + width - 464, y + 224, 180, 8, C.cobalt700)
+	rect(w, x + width - 464, y + 252, 240, 44, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	use(w, 'nc-files', x + width - 452, y + 262, 24, 24, C.nextcloud)
+	bar(w, x + width - 418, y + 268, 150, 9, C.cobalt900)
+	// Added to your case: the case row under the thread, its new file pip ringed.
+	rect(w, x + 24, y + 360, width - 48, u, C.cobalt50)
+	hex(w, x + 60, y + 410, 20, C.lavender, 3)
+	bar(w, x + 100, y + 400, 240, 11, C.cobalt900)
+	rect(w, x + width - 250, y + 392, 180, 36, C.cobalt50, 18)
+	use(w, 'nc-files', x + width - 240, y + 398, 24, 24, C.nextcloud)
+	bar(w, x + width - 206, y + 406, 110, 8, C.cobalt700)
+	rect(w, x + width - 258, y + 384, 196, 52, 'none', 26, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
+
+/** Proof 3: your own details, one being changed in place and saved. */
+function profileUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, width = geom.r - geom.x
+	const y = portalHead(w, geom)
+	panel(w, x, y, width, 440, u)
+	circle(w, x + 80, y + 70, 40, C.cobalt300)
+	bar(w, x + 140, y + 56, 220, 16, C.cobalt900)
+	bar(w, x + 140, y + 86, 150, 9, C.cobalt300)
+	;[[200, false], [240, true], [170, false]].forEach(([lw, edit], i) => {
+		const cy = y + 170 + i * 88
+		bar(w, x + 40, cy - 26, 110, 8, C.cobalt400)
+		rect(w, x + 40, cy - 10, width - 260, 52, C.white, 3 * u, { stroke: edit ? C.orange : C.cobalt100, 'stroke-width': edit ? 2.5 * u : u })
+		bar(w, x + 60, cy + 10, lw, 11, C.cobalt900)
+		if (edit) { rect(w, x + 60 + lw + 8, cy + 2, 3 * u, 30, C.cobalt); statusPill(w, x + width - 190, cy + 16, u) }
+		else idlePill(w, x + width - 180, cy + 16, u, { w: 30 })
+	})
 }
 
 const content = {
 	app: 'portaliq',
 	audience: { slug: 'citizens', name: 'Citizen portal', persona: 'Willem Postma, head of digital services at a municipality' },
-	promise: 'What if nobody\nhad to call?',
-	promiseLine: 'One portal in your house style that answers, so the phone does not have to',
+	promise: 'What if everything\nwas in one place?',
+	promiseLine: 'Everything a resident has with the council in one portal: invoices paid, products updated, messages and files on the case, their own details, and who viewed their data',
 	title: 'Portaliq for citizens',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For the municipality: residents sign in with the government login and see their case, its status and the decision letter; withdraw a request themselves; report without an account and keep a receipt code; and the right colleague hears about every new request.',
+	logline: 'Round 25: for the municipality, what a resident does in one portal: view and pay invoices, check and update current products, send a message and add a file to the case, change their own details, and see who viewed their data.',
 	references: REFS,
-	techniques: ['#10 cluster-to-container merge', '#4 typewriter', '#6 hard diagonal wipe'],
-	neighbours: ['dossiq', 'pipelinq'],
+	techniques: ['#10 cluster-to-container merge', '#4 typewriter', '#9 text-swap on a held window'],
+	maxWords: 40,
+	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'Check your case without calling',
-		caption: 'Check your case\nwithout calling',
-		ui: { drawUI: caseUI, tagFill: 'cobalt', header: false },
-		source: 'positioning portaliq sp-gov-identity-signin ("Residents and businesses already sign in with DigiD or eHerkenning."), sp-case-status-tracking ("Your case\'s status and its documents sit on one page."), usp-fleet-data-in-your-portal (verified)',
-		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: caption, the portal page in the window, the Portaliq hex (cobalt: the one orange is the current step) on the loop anchor. Over the first two beats the three lower rows start as loose hexes carrying their apps\' glyphs (Dossiq, Shillinq, Filinq) scattered over the frame and each tweens into its row on ease.brand, arriving within one beat: what is theirs from every app, in one portal. The status stepper fills to the current step, which takes the orange ring.',
-		sound: 'Gentle open. Three soft ticks as the rows land, a pluck on the current step.',
+		title: 'View and pay your invoices',
+		caption: 'View and pay\nyour invoices',
+		ui: { drawUI: invoicesUI, tagFill: 'cobalt', header: false },
+		source: 'Portaliq openspec/changes/contribution-pay-screen (Shillinq invoices in the portal, paid from their row) and intake-pay-on-submit; positioning usp-fleet-data-in-your-portal',
+		motion: 'Technique #10, cluster-to-container merge. In behind the app hex the promise leaves on the loop anchor: the portal in the council\'s house style lays in, and the invoice rows start as loose hexes carrying their apps\' glyphs (Shillinq, Dossiq) and tween into the list on ease.brand, arriving within one beat. The open invoice keeps its Pay button, ringed in orange; on beat 5 it presses and its row turns paid.',
+		sound: 'Soft ticks as the rows land, a dry click on Pay.',
 	},
 	proofs: [
 		{
-			id: 'withdraw',
-			title: 'Changed your mind? Withdraw it yourself',
-			caption: 'Changed your mind?\nWithdraw it yourself',
-			source: 'positioning portaliq usp-self-service-corrections: "You fix, withdraw or undo your own request without calling anyone." (verified)',
-			motion: 'Hex match cut from the current step into the request\'s pill. The confirm row slides open, the withdraw button presses (scale 0.97 and back) inside its orange ring, and the pill turns to withdrawn. No staff step, no call.',
-			sound: 'A soft whoosh as the row opens, a dry click on the press.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Changed your mind?\nWithdraw it yourself', drawUI: withdrawUI, tagFill: 'cobalt', header: false }),
+			id: 'products',
+			title: 'Check and update your products',
+			caption: 'Check your products,\nupdate them yourself',
+			source: 'Portaliq positioning usp-fleet-data-in-your-portal (a sibling app\'s records and actions in the portal) and usp-self-service-corrections (fix, withdraw or undo your own request yourself)',
+			motion: 'Technique #9, text-swap on a held window: the portal head holds while the page under it swaps from invoices to products. Four cards (a permit, a subscription, a pass, a service) land a sixteenth apart; the second, due for renewal, holds its Change button in the orange ring and presses on the beat, its status turning current.',
+			sound: 'A soft swish as the page swaps, a tick per card, a click on Change.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Check your products,\nupdate them yourself', drawUI: productsUI, tagFill: 'cobalt', header: false }),
 		},
 		{
-			id: 'receipt',
-			title: 'Report anonymously, keep a receipt code',
-			caption: 'Report anonymously,\nkeep a receipt code',
-			source: 'positioning portaliq usp-anonymous-reporting: "File a report with no account and keep a receipt code." (verified)',
-			motion: 'Technique #4, typewriter. The portal header drops its signed-in person (nobody is signed in). The report is already sent (mint); in the ringed box below the receipt code types itself, one character every 0.1 s, hard on and off, with a cursor. Out on the last beat: technique #6, a cobalt-900 diagonal wipe crosses left to right in 5 frames into the colleague\'s side.',
-			sound: 'Key clicks under the typing, a percussive hit on the wipe.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Report anonymously,\nkeep a receipt code', drawUI: receiptUI, tagFill: 'cobalt', header: false }),
+			id: 'messages',
+			title: 'Messages and files on your case',
+			caption: 'Messages and files\non your case',
+			source: 'Portaliq openspec/changes/inbox-reply-with-attachments (reply in the portal, attach a file) and positioning sp-unified-inbox ("Every message about you lands in one inbox, with an alert.")',
+			motion: 'Technique #4, typewriter: the council\'s message sits left; the reply types itself on the right, a file chip drops onto it, it sends; on the next beat the file lands on the case row underneath, ringed in orange: added to your case.',
+			sound: 'Key clicks under the reply, a soft send swoosh, a tick as the file lands on the case.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Messages and files\non your case', drawUI: messagesUI, tagFill: 'cobalt', header: false }),
+		},
+		{
+			id: 'profile',
+			title: 'Change your own details',
+			caption: 'Change your\nown details',
+			source: 'Portaliq openspec/changes/identity-profile-page (see and change your own portal details; PATCH /portal/api/identity/details)',
+			motion: 'The profile lays in; the second field opens in place (its edge turns orange), the old value leaves upward and the new one types on, and its pill turns mint: saved, by the resident.',
+			sound: 'Key clicks under the new value, a pluck as it saves.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Change your\nown details', drawUI: profileUI, tagFill: 'cobalt', header: false }),
 		},
 	],
 	general: {
-		module: 'notify',
-		caption: 'New request?\nThe right person hears',
-		source: 'story.json mechanic 8; positioning portaliq sp-unified-inbox and platform notifications',
+		module: 'dataLayer',
+		title: 'See who viewed your data',
+		caption: 'See who viewed\nyour data',
+		source: 'The data layer logs who and when (story.json mechanics 0; OpenRegister audit trail); Dossiq specs avg-verwerkingenlogging; Portaliq positioning sp-multitenant-admin-audit ("Editors and admins get separate rights that are always logged.")',
 		params: {
-			record: { avatar: 'square', title: 250, sub: 140, status: 'none' },
-			event: { stage: 1, stages: 4 },
-			notices: [{ app: 'portaliq' }, { icon: 'nc-mail' }, { icon: 'nc-files' }],
-			recipients: [C.cobalt300],
+			record: { avatar: 'person', title: 230, sub: 150, status: 'mint', fields: [[56, 140], [56, 120], [64, 160], [48, 96]] },
+			history: [{ av: C.cobalt300, w: 190 }, { av: C.lavender300, w: 150 }, { av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 130 }],
+			links: ['nc-mail', 'nc-files', 'nc-talk'],
 		},
-		sound: 'A dry click as the notice lands (no bell), a tick for the colleague who gets it.',
+		sound: 'A tick for each view in the log, the newest with a pluck.',
 	},
 }
 

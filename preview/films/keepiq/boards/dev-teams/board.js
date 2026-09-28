@@ -8,29 +8,31 @@
  * on development (machine-secret-leases, secret-store-api, keepiq-cli, secret-requests,
  * certificate-lifecycle, secret-audit-trail).
  *
- *   question "What if apps shared your team's vault?" (Round 19: the promise as a question,
- *            from "Human and machine passwords, one vault")
- *   hook     apps use passwords without reading them: the pipeline fetches its password at run
- *            time, masked, on a short lease, nothing written to disk (Ruben's line, Round 20)
+ *   story 1  Round 25b, word art, the sister of Thematiq's story: "The key to your own house?", the lock
+ *            cell popping into the field (the promise slot; replaces the Round 19 question)
+ *   story 2  word art: "Kept by someone else's app?", the lock leaving the honeycomb for a plain outside
+ *            box (someone else's app, an outside system, so a box, and no name) (the hook slot)
  *   proof 1  Round 22b: request a password or a certificate from a partner organisation (or a
  *            colleague) by fill-in link; a small sourced "NIS2 · BIO2" label, context only
  *   proof 2  Round 22b: a one-time link: the value can be read once, then the link is gone
  *   general  a usage dashboard, not the change log (Round 20): for each password, who used it
  *            (a person or an app), when, where and what for
+ *   CUT (Round 25b): "Apps use passwords without reading them" (the pipeline): with the two story cards
+ *            the body would be 34 words; the proofs that answer the story (request, one-time link, every
+ *            use visible) stay. The pipeline UI stays in this file, unused.
  *   CUT (Round 22b): "Your certificates renew themselves". With the two new scenes the body came to 34
  *            words, over the bible's 30, and this lane's template has no 3-proof (12-bar) plan; the
  *            certificate request stays in the picture of proof 1.
  *
- * Techniques (refs/techniques.md): #4 typewriter (the run log, the masked value), #9 text-swap
- * on a held diagram (the burned link), #3 grid-cell ripple as rows (the usage rows), #2 zoom-out
- * sentence build (the question).
+ * Techniques (refs/techniques.md): #2 sentence build as word art (the story), #4 typewriter (the masked value), #9 text-swap
+ * on a held diagram (the burned link), #3 grid-cell ripple as rows (the usage rows).
  */
 import { C } from '../../../_lib/brand.js'
 import { el, textBlock } from '../../../_lib/stage.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, button, chrome, honeyField, layout } from '../../../_lib/ui.js'
-import { ease } from '../../../_lib/core.js'
+import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, appMark, button, chrome, honeyField, layout } from '../../../_lib/ui.js'
+import { ease, hexPath } from '../../../_lib/core.js'
 import { current } from '../../../tkfilm/lib.js'
 
 const REFS = [
@@ -224,25 +226,71 @@ export function usageContent(g, st = {}) {
 	if (ring > 0) rect(g, x + 14, ty + 104 - 28, w - 28, 56, 'none', 5 * U, { stroke: C.orange, 'stroke-width': 2.5 * U, 'stroke-opacity': ring })
 }
 
+/* ---------- the story (Round 25b): word art, the sister of Thematiq's ---------- */
+
+const WA = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weight: 700, fill: o.fill ?? C.white, accent: C.orange, tracking: -0.03, clip: false, split: o.split })
+
+/** The house-hex with its lock: the Keepiq glyph on a white cell (the key to your own house). */
+export function lockCell(g, cx, cy, r = 150, { fill = C.white, glyph = C.cobalt, s = 1 } = {}) {
+	if (s <= 0.001) return
+	const t = el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${cx} ${cy}) scale(${s.toFixed(4)}) translate(${-cx} ${-cy})` } : {}, g)
+	el('path', { d: hexPath(cx, cy, r, r * 0.08), fill }, t)
+	const sz = r * 0.84
+	use(t, 'g-keepiq', cx - sz / 2, cy - sz / 2, sz, sz, glyph)
+}
+
+/** Someone else's app: an outside system, so a plain box (never a hex), with no name, the key inside it. */
+export function outsideBox(g, x, y, w = 300, h = 240, { s = 1 } = {}) {
+	if (s <= 0.001) return
+	const cx = x + w / 2, cy = y + h / 2
+	const t = el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${cx} ${cy}) scale(${s.toFixed(4)}) translate(${-cx} ${-cy})` } : {}, g)
+	rect(t, x, y, w, h, C.cobalt50, 14, { stroke: C.cobalt200, 'stroke-width': 3 })
+	rect(t, x, y, w, 44, C.cobalt200, 14)
+	rect(t, x, y + 30, w, 14, C.cobalt200)
+	for (let i = 0; i < 3; i++) circle(t, x + 26 + i * 22, y + 22, 6, C.white)
+	use(t, 'icon-lock', cx - 45, cy - 18, 90, 90, C.cobalt300)
+}
+
+/** Story 1: "The key to your own house?", "own" the scene's one orange, the lock cell on the right. */
+function storyOne(ctx) {
+	const g = el('g', {}, ctx.g)
+	appMark(g, 'keepiq')
+	WA(g, 'The key to', 120, 580, 140)
+	WA(g, 'your *own* house?', 120, 820, 170)
+	lockCell(g, 1560, 560, 170)
+}
+
+/** Story 2: "Kept by someone else's app?", "someone else's" in orange; the lock gone from its cell into an outside box. */
+function storyTwo(ctx) {
+	const g = el('g', {}, ctx.g)
+	appMark(g, 'keepiq')
+	WA(g, 'Kept by', 120, 600, 150)
+	WA(g, '*someone* *else\'s* app?', 120, 860, 160)
+	el('path', { d: hexPath(1560, 560, 170, 14), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, g)
+	outsideBox(g, 1440, 120, 320, 250)
+}
+
 const content = {
 	app: 'keepiq',
+	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
+	anchors: { promise: [1440, 560], hook: [1470, 245] },
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
-	promise: 'What if apps shared\nyour team\'s vault?',
+	promise: 'The key to\nyour own house?',
 	promiseLine: 'Human and machine passwords in one vault, on your own server',
 	title: 'Keepiq',
 	record: { one: 'password', many: 'passwords' },
-	logline: 'What if apps shared your team\'s vault? Apps use passwords without reading them, you request passwords and certificates from partner organisations by link, you share a value by a link that vanishes after one view, and every use shows who, when, where and why.',
+	logline: 'An ownership story: the key to your own house, kept by someone else\'s app? Then the answer, on your own server: request passwords and certificates from partner organisations by link, share a value by a link that vanishes after one view, and every use shows who, when, where and why.',
 	references: REFS,
-	techniques: ['#4 typewriter caption (the run log, the masked value)', '#9 text-swap on a held diagram (the burned link)', '#3 grid-cell ripple (the usage rows)', '#2 zoom-out sentence build (the question)'],
+	techniques: ['#2 sentence build as word art (the story)', '#4 typewriter (the masked value)', '#9 text-swap on a held diagram (the burned link)', '#3 grid-cell ripple (the usage rows)'],
 	neighbours: ['integriq', 'openregister'],
 	builtOnApps: ['integriq'],
 	hook: {
-		title: 'Apps use passwords without reading them',
-		caption: 'Apps use passwords\nwithout reading them',
-		ui: { drawUI: pipelineUI, tagFill: 'cobalt' },
-		source: 'Ruben, Round 20 ("Apps use passwords without reading them"). keepiq.json sp-cicd-machine-secrets: "Fetch a secret in your pipeline without writing it to disk." Specs machine-secret-leases (short-lived lease per fetch), secret-store-api, keepiq-cli.',
-		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, an app\'s pipeline run with its four steps, the fetch step ringed. Technique #4, typewriter: the run log types itself line by line under the steps (0.1 s per character block); on the fetch line the password arrives only as masked dots, never in clear, and the lease bar below starts counting down: the app uses it and nobody reads it. Out: the hex match cut from the lock on the fetch step.',
-		sound: 'Quick key ticks under the log, a soft lock click on the fetch, a low tick as the lease starts.',
+		title: 'Story 2: Kept by someone else\'s app?',
+		caption: 'Kept by\nsomeone else\'s app?',
+		ui: { drawUI: () => {}, tagFill: 'cobalt' },
+		source: 'Round 25b (Ruben): "Who is content with an external password app or a browser plugin? Can we be sovereign if we don\'t own the key to our own house?" No competitor named: someone else\'s app is a plain outside box.',
+		motion: 'Word art, the story\'s turn. The lock glyph lifts out of its cell (the cell left as a dashed outline) and travels on ease.snap up and out of the honeycomb into a plain outside box top right, which pops in to take it; "Kept by" slams in at 150 px, then "someone else\'s app?" at 170 px, "someone else\'s" in orange (the scene\'s one orange). Holds; out: the camera turns back into the honeycomb, to the request.',
+		sound: 'A soft whoosh as the lock leaves, a dull thud as the box closes on it, a hard tick per word, a short silence before the question.',
 	},
 	proofs: [
 		{
@@ -273,10 +321,13 @@ const content = {
 		params: {},
 		sound: 'Rising ticks as the day bars grow, a soft ripple of ticks per row, a click on the ring.',
 	},
-	promiseMotion: 'Round 19: the promise card is a question, and the proofs answer it (no answer card). Technique #2, zoom-out sentence build, the body\'s opening statement. Straight after the opening\'s handover, on its plain field, the Keepiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Keepiq" the question builds one word per sixteenth from two frames after the handover while the type column eases back. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Keepiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Round 25b: the question becomes a small ownership story in word art (story 1 of 2), the sister of Thematiq\'s. Straight after the opening\'s handover, on its plain field, "Keepiq" sits small as the chapter mark and the words slam in large, one word per sixteenth: "The key to" at 150 px, then "your own house?" at 170 px, "own" in orange (the scene\'s one orange), while a white cell with the lock pops into the field on the right as "key" lands. Holds to four frames before beat 9, then the story turns.',
+	promiseSound: 'The body\'s bed enters gently under the story: a soft tick per word, a pluck and a low thud as the lock cell lands.',
 }
 
 const film = audienceFilm(content)
 // Round 20: the general slot draws the usage dashboard instead of the shared change log.
 film.boards.find((b) => b.id === 'general-dataLayer').drawBase = usageFrame
+Object.assign(film.boards.find((b) => b.id === 'promise'), { title: 'Story 1: The key to your own house?', drawBase: storyOne })
+film.boards.find((b) => b.id === 'hook').drawBase = storyTwo
 export const { meta, boards } = film

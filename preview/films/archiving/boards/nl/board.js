@@ -45,7 +45,7 @@ const INSTALL_DUR = INSTALL21_DUR
 const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR
 
 /** The Dutch closing words (the shared pieces take them as options, closing.js). */
-/** The closing pieces in Dutch (Round 21: lang 'nl'), OpenRegister as the lead, Dossiq and Filinq beside it. */
+/** The closing pieces in Dutch (Round 21: lang 'nl'), OpenRegister as the lead (Round 22: the piece draws no neighbour cells, so apps is ignored). */
 const CLOSE = { lang: 'nl', lead: 'openregister', apps: ['dossiq', 'filinq'] }
 const NL = closingWords('nl')
 
@@ -360,7 +360,7 @@ export const boards = [
 		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + Math.round(BUILT / BAR) - 1}.4`,
 		words: NL.builtOn, gloss: 'Built on Nextcloud / Reply from Mail / Plan in Calendar / Save to Contacts / Share in Files / Chat in Talk / Follow up in Tasks / Manage from Deck / Enhanced by Conduction',
 		apps: ['openregister', 'dossiq', 'filinq', 'nextcloud'],
-		motion: 'Rounds 21 and 22 (closing.js builtOnScene, lang nl, 4 bars): the ConNext film\'s component connection section with OpenRegister as the lead. OpenRegister pops in orange high on the right with Dossiq and Filinq beside it in white; "Gebouwd op" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Antwoord vanuit Mail" ... "Beheer vanuit Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, OpenRegister still the one orange; the line becomes "Verrijkt door Conduction". Every hex is the grid\'s own size. Everything leaves in the last four frames.',
+		motion: 'Rounds 21 and 22 (closing.js builtOnScene, lang nl, 4 bars): the ConNext film\'s component connection section with OpenRegister as the lead. OpenRegister pops in orange high on the right; "Gebouwd op" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Antwoord vanuit Mail" ... "Beheer vanuit Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, OpenRegister still the one orange; the line becomes "Verrijkt door Conduction". Every hex is the grid\'s own size. Everything leaves in the last four frames.',
 		sound: 'A pluck and a low thud as the lead lands, a tick up the scale as each Nextcloud app connects, a soft whoosh as the camera pulls back to the family.',
 		source: 'Shared module (closing.js at ds-connext-film 60b2036, Round 22); the component lines are what the data layer links a record to (NC_LINKS, round4/facts.json fact a).',
 		draw: (ctx) => { builtOnFrame(ctx, CLOSE) },

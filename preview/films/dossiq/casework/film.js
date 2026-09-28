@@ -4,16 +4,18 @@
  *
  *   0 to 5.63 s       the shared Conduction opening (_lib/scenes/opening.js), 3 bars, handing over
  *                     on its field, which the hook builds on
- *   5.63 to 24.38 s   the body, 10 bars on the app-film template (appfilm.js plan(2)):
- *                     hook "Your team's work, one backlog" (#10 cluster merge, #1 hex cut out),
- *                     letter "Drafted in Word, the answers appear" (#4 typewriter, #5 stepped wipe out),
- *                     standards "CMMN, OIO, ZGW: every case fits" (wires, boxes one per beat),
- *                     flows "Draw flows, share them in the store" (general: the flow builder),
+ *   5.63 to 31.88 s   the body, 14 bars (Round 15; appfilm.js plan(5), seven scenes):
+ *                     hook "Your team, one backlog" (#10 cluster merge, #1 hex cut out),
+ *                     documents "Edited right in the case" (the editor opens beside the case's files),
+ *                     knowledge "While you work, the answers appear" (#4 typewriter, #5 stepped wipe out),
+ *                     standards "International and local standards, built in" (three tagged boxes),
+ *                     automate "Draw a flow, the work runs itself" (the shared capability),
+ *                     share "Share your case types and flows" (to the store, out to a second organisation),
  *                     promise "The whole team, every case"
- *   24.38 to 28.13 s  the shared closing piece, "Built on Nextcloud" (closing.js, on: 'nextcloud'), 2 bars
- *   28.13 to 33.75 s  the shared install board (closing.js), 3 bars
+ *   31.88 to 35.63 s  the shared closing piece, "Built on Nextcloud" (closing.js, on: 'nextcloud'), 2 bars
+ *   35.63 to 41.25 s  the shared install board (closing.js), 3 bars
  *
- * 1920 x 1080, 24 fps, 18 bars at 128 BPM (810 frames, 45 a bar). No loop. Every frame is a pure
+ * 1920 x 1080, 24 fps, 22 bars at 128 BPM (990 frames, 45 a bar). No loop. Every frame is a pure
  * function of time: each body scene redraws its layer from its local time. The board's UI
  * functions take an animation state whose defaults are the approved still, so a scene at rest
  * is exactly its storyboard frame.
@@ -28,16 +30,16 @@ import { plan, hexCut, SPB, BAR, FPS, BPM } from '../../_lib/appfilm.js'
 import { FRAMES, WINDOW, LOOP_ANCHOR } from '../../_lib/scenes/general.js'
 import { promiseFrame } from '../../_lib/audiencefilm.js'
 import { TYPE, layout, rect, clipped, topbar, nav, appTag, appMark, fitCaptionSize, bar } from '../../_lib/ui.js'
-import { backlogUI, letterUI, standardsUI } from '../boards/casework/board.js'
+import { backlogUI, documentsUI, knowledgeUI, standardsUI, automateUI, shareUI } from '../boards/casework/board.js'
 
 const APP = 'dossiq'
 const U = 2.5
 const F = (n) => n / FPS
 const OPEN = 3 * BAR
-const BODY = 10 * BAR
+const BODY = 14 * BAR
 const BUILT = 2 * BAR
 const INSTALL = 3 * BAR
-const DURATION = OPEN + BODY + BUILT + INSTALL // 33.75 s
+const DURATION = OPEN + BODY + BUILT + INSTALL // 41.25 s
 const RISE = 0.24
 const EXIT = F(4)
 
@@ -51,8 +53,8 @@ const bodyAt = addOpening(film, { at: 0 })
 if (Math.abs(bodyAt - OPEN) > 1e-6) console.error(`opening ends at ${bodyAt}, expected ${OPEN}`)
 
 /* ---------- the slots, in film time ---------- */
-const P = plan(2).map((s) => ({ ...s, start: s.start + OPEN, end: s.end + OPEN }))
-const [S_HOOK, S_LETTER, S_STD, S_FLOWS, S_PROMISE] = P
+const P = plan(5).map((s) => ({ ...s, start: s.start + OPEN, end: s.end + OPEN }))
+const [S_HOOK, S_DOCS, S_KNOW, S_STD, S_AUTO, S_SHARE, S_PROMISE] = P
 
 /* ---------- shared pieces ---------- */
 
@@ -146,7 +148,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 {
 	const s = S_HOOK, D = s.end - s.start
 	const cutAt = D - SPB
-	const c = cap('hook', "Your team's work,\none backlog", s.start + RISE * 0 + 0.24, s.start + cutAt)
+	const c = cap('hook', 'Your team,\none backlog', s.start + RISE * 0 + 0.24, s.start + cutAt)
 	// Seeded scatter for the cards: each starts somewhere over the window and flies to its lane.
 	const R = rand(71)
 	const scatter = {}
@@ -193,23 +195,47 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	cue(t0 + cutAt, 'whoosh', { dur: 0.5, from: 400, to: 4200, panFrom: 0.2, panTo: -0.3, gain: 0.16 })
 }
 
-/* ---------- 2 · letter: drafted in Word, the answers appear (#4 typewriter, #5 stepped wipe out) ---------- */
+/* ---------- 2 · documents: edited right in the case (the editor opens beside the case's files) ---------- */
 {
-	const s = S_LETTER, D = s.end - s.start
+	const s = S_DOCS, D = s.end - s.start
+	const c = cap('documents', 'Edited right\nin the case', s.start + RISE, s.end - 0.16)
+	bodyScene('documents', s, (g, u, t) => {
+		appWindow(g, {
+			land: inv(0, 0.35, u),
+			push: 1 + 0.03 * ease.inOutCubic(inv(0.4, D, u)),
+			about: [CONTENT_X + 500, WINDOW.row1 + 250],
+			drawUI: (win, geom) => documentsUI(win, geom, {
+				ring: ease.brand(inv(0.45, 0.65, u)),
+				open: ease.brand(inv(0.7, 1.1, u)),
+				fill: ease.brand(inv(1.2, 1.8, u)),
+				edit: inv(1.9, 3.2, u),
+			}),
+		})
+		appMark(g, APP)
+		captionAt(g, c.text, t, c.up, c.out)
+	})
+	const t0 = s.start
+	cue(t0 + 0.45, 'tick', { freq: 1760, gain: 0.12, pan: -0.2 })
+	cue(t0 + 0.7, 'click', { gain: 0.16, freq: 2800, pan: 0.3, seed: 81, dry: true })
+	;[1.2, 1.4, 1.6].forEach((d, i) => cue(t0 + d, 'pluck', { freq: [880, 987.8, 1174.7][i], gain: 0.16, pan: 0.2 }))
+	for (let k = 0; k < 12; k++) cue(t0 + 1.9 + (k * 1.3) / 12, 'tick', { freq: 3100 + (k % 3) * 200, gain: 0.05, decay: 0.02, pan: 0.2 })
+}
+
+/* ---------- 3 · knowledge: while you work, the answers appear (#4 typewriter, #5 stepped wipe out) ---------- */
+{
+	const s = S_KNOW, D = s.end - s.start
 	const cutAt = D - SPB
-	const c = cap('letter', 'Drafted in Word,\nthe answers appear', s.start + RISE, s.start + cutAt)
-	const ITEMS = [1.4, 1.4 + SPB, 1.4 + 2 * SPB]
-	bodyScene('letter', s, (g, u, t) => {
+	const c = cap('knowledge', 'While you work,\nthe answers appear', s.start + RISE, s.start + cutAt)
+	const ITEMS = [1.3, 1.3 + SPB, 1.3 + 2 * SPB]
+	bodyScene('knowledge', s, (g, u, t) => {
 		appWindow(g, {
 			land: inv(0, 0.35, u),
 			push: 1 + 0.03 * ease.inOutCubic(inv(0.4, cutAt, u)),
 			about: [CONTENT_X + 250, WINDOW.row1 + 250],
-			drawUI: (win, geom) => letterUI(win, geom, {
-				bar: ease.brand(inv(0.3, 0.55, u)),
-				fill: ease.brand(inv(0.5, 1.1, u)),
-				type: inv(1.1, 2.7, u),
+			drawUI: (win, geom) => knowledgeUI(win, geom, {
+				type: inv(0.4, 2.6, u),
 				items: ITEMS.reduce((a, t0) => a + ease.brand(inv(t0, t0 + 0.22, u)), 0),
-				ring: ease.brand(inv(2.75, 2.95, u)),
+				ring: ease.brand(inv(2.7, 2.9, u)),
 			}),
 		})
 		// Out: technique #5, four upright hexes step in from the right edge, 70 ms apart.
@@ -226,17 +252,15 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 		captionAt(g, c.text, t, c.up, c.out)
 	})
 	const t0 = s.start
-	cue(t0 + 0.3, 'click', { gain: 0.16, freq: 2800, pan: 0.3, seed: 81, dry: true })
-	;[0.55, 0.75, 0.95].forEach((d, i) => cue(t0 + d, 'pluck', { freq: [880, 987.8, 1174.7][i], gain: 0.16, pan: 0.2 }))
-	for (let k = 0; k < 14; k++) cue(t0 + 1.1 + (k * 1.6) / 14, 'tick', { freq: 3100 + (k % 3) * 200, gain: 0.05, decay: 0.02, pan: 0.1 })
+	for (let k = 0; k < 16; k++) cue(t0 + 0.4 + (k * 2.2) / 16, 'tick', { freq: 3100 + (k % 3) * 200, gain: 0.05, decay: 0.02, pan: -0.1 })
 	ITEMS.forEach((d, i) => cue(t0 + d, 'pluck', { freq: [1318.5, 1480, 1661.2][i], gain: 0.18, pan: 0.5 }))
 	;[0, 1, 2, 3].forEach((i) => cue(t0 + cutAt + i * 0.07, 'click', { gain: 0.14, freq: 2400 + i * 300, pan: 0.6 - i * 0.2, seed: 90 + i, dry: true }))
 }
 
-/* ---------- 3 · standards: CMMN, OIO, ZGW (wires, boxes one per beat) ---------- */
+/* ---------- 4 · standards: CMMN, OIO, ZGW (wires, boxes one per beat) ---------- */
 {
 	const s = S_STD, D = s.end - s.start
-	const c = cap('standards', 'CMMN, OIO, ZGW:\nevery case fits', s.start + RISE, s.end - 0.16)
+	const c = cap('standards', 'International and local\nstandards, built in', s.start + RISE, s.end - 0.16)
 	const BOX = [1.2, 1.2 + SPB, 1.2 + 2 * SPB]
 	bodyScene('standards', s, (g, u, t) => {
 		// The wipe's last hex, shrinking back off to the right as the case lands under it.
@@ -260,28 +284,61 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	BOX.forEach((d, i) => cue(t0 + d, 'pluck', { freq: [987.8, 1174.7, 1318.5][i], gain: 0.2, pan: -0.3 + i * 0.3 }))
 }
 
-/* ---------- 4 · flows (general): draw flows, share them in the store ---------- */
+/* ---------- 5 · automate (the shared capability): draw a flow, the work runs itself ---------- */
 {
-	const s = S_FLOWS, D = s.end - s.start
-	const c = cap('flows', 'Draw flows,\nshare them in the store', s.start + RISE, s.end - 0.16)
-	bodyScene('flows', s, (g, u, t) => {
-		// The general frame without its caption; its first child is the app mark, which stays put.
-		const fg = el('g', {}, g)
-		FRAMES.flows({ g: fg, W: 1920, H: 1080 }, { app: APP, caption: '' })
-		const kids = [...fg.childNodes].slice(1)
-		const land = ease.brand(inv(0, 0.4, u))
-		const drift = 0.02 * ease.inOutCubic(inv(0.4, D, u))
-		const body = el('g', { opacity: clamp(land * 2).toFixed(3), transform: `translate(0 ${(80 * (1 - land)).toFixed(1)}) translate(1380 540) scale(${(1 + drift).toFixed(4)}) translate(-1380 -540)` }, fg)
-		for (const k of kids) body.appendChild(k)
+	const s = S_AUTO, D = s.end - s.start
+	const c = cap('automate', 'Draw a flow,\nthe work runs itself', s.start + RISE, s.end - 0.16)
+	const NODES = [0.45, 0.45 + SPB / 4, 0.45 + SPB / 2]
+	const DONE = 0.45 + 3 * SPB
+	bodyScene('automate', s, (g, u, t) => {
+		appWindow(g, {
+			land: inv(0, 0.35, u),
+			// The camera eases down from the canvas to the case's steps once the flow is drawn.
+			push: 1 + 0.04 * ease.inOutCubic(inv(1.4, D, u)),
+			about: [CONTENT_X + 427, WINDOW.row1 + 150 + 250 * ease.inOutCubic(inv(1.4, 2.2, u))],
+			drawUI: (win, geom) => automateUI(win, geom, {
+				nodes: NODES.reduce((a, t0) => a + ease.brand(inv(t0, t0 + 0.2, u)), 0),
+				edges: ease.inOutCubic(inv(0.75, 1.3, u)),
+				done: u >= DONE ? 1 : 0,
+				ring: ease.brand(inv(DONE, DONE + 0.2, u)),
+			}),
+		})
+		appMark(g, APP)
 		captionAt(g, c.text, t, c.up, c.out)
 	})
 	const t0 = s.start
-	cue(t0 + 0.05, 'whoosh', { dur: 0.45, from: 600, to: 2400, panFrom: 0.5, panTo: 0, gain: 0.1 })
-	;[0.5, 0.62, 0.74].forEach((d, i) => cue(t0 + d, 'tick', { freq: [1760, 1975.5, 2217.5][i], gain: 0.12, pan: 0.1 * i }))
-	cue(t0 + 1.4, 'pluck', { freq: 1318.5, gain: 0.2, pan: 0.3 })
+	NODES.forEach((d, i) => cue(t0 + d, 'tick', { freq: [1760, 1975.5, 2217.5][i], gain: 0.12, pan: -0.3 + i * 0.3 }))
+	cue(t0 + 0.75, 'whoosh', { dur: 0.5, from: 1200, to: 3200, panFrom: -0.4, panTo: 0.4, gain: 0.06 })
+	cue(t0 + DONE, 'click', { gain: 0.2, freq: 3000, pan: 0.2, seed: 121, dry: true })
+	cue(t0 + DONE + 0.02, 'pluck', { freq: 1318.5, gain: 0.18, pan: 0.2 })
 }
 
-/* ---------- 5 · promise: the whole team, every case ---------- */
+/* ---------- 6 · share: your case types and flows, through the store to a second organisation ---------- */
+{
+	const s = S_SHARE, D = s.end - s.start
+	const c = cap('share', 'Share your case types\nand flows', s.start + RISE, s.end - 0.16)
+	const GO = 0.6, LAND = GO + 2 * SPB
+	bodyScene('share', s, (g, u, t) => {
+		appWindow(g, {
+			land: inv(0, 0.35, u),
+			push: 1 + 0.03 * ease.inOutCubic(inv(0.4, D, u)),
+			about: [CONTENT_X + 376, WINDOW.row1 + 250],
+			drawUI: (win, geom) => shareUI(win, geom, {
+				go: ease.brand(inv(GO, GO + 0.7, u)),
+				land: ease.brand(inv(LAND, LAND + 0.7, u)),
+				ring: ease.brand(inv(LAND + 0.75, LAND + 0.95, u)),
+			}),
+		})
+		appMark(g, APP)
+		captionAt(g, c.text, t, c.up, c.out)
+	})
+	const t0 = s.start
+	cue(t0 + GO, 'whoosh', { dur: 0.5, from: 600, to: 2400, panFrom: -0.5, panTo: 0, gain: 0.08 })
+	cue(t0 + LAND, 'whoosh', { dur: 0.5, from: 800, to: 2800, panFrom: 0, panTo: 0.5, gain: 0.08 })
+	cue(t0 + LAND + 0.75, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.5 })
+}
+
+/* ---------- 7 · promise: the whole team, every case ---------- */
 {
 	const s = S_PROMISE
 	const c = cap('promise', 'The whole team,\nevery case', s.start + RISE, s.end - 0.16)
@@ -307,27 +364,31 @@ film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}),
 
 /** The bed, in D: silent under the opening, pad from the body, kick and hats under the proofs, thinning for the closing, resolving on D. */
 film.music = {
-	bars: 18,
+	bars: 22,
 	chords: [
 		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62],
 		[50, 54, 61, 64], // 3 Dmaj9: the backlog
-		[47, 54, 57, 61], // 4 Bm9: the letter
-		[47, 50, 54, 57], // 5 Gmaj9: the answers
-		[49, 52, 57, 59], // 6 A add9: the standards
-		[47, 50, 54, 57], // 7 Gmaj9: the boxes
-		[49, 52, 54, 57], // 8 F#m7: the flows
-		[47, 50, 54, 61], // 9 Bm add9
-		[47, 50, 54, 59], // 10 Gmaj7: the promise
-		[50, 52, 57, 59], // 11 A sus4 add9
-		[50, 54, 61, 64], // 12 Dmaj9: built on
-		[47, 54, 57, 61], // 13 Bm9
-		[47, 50, 54, 57], // 14 Gmaj9: install the app
-		[49, 52, 57, 59], // 15 A add9
-		[47, 50, 54, 57], // 16 Gmaj9
-		[50, 54, 57, 62], // 17 D
+		[47, 54, 57, 61], // 4 Bm9: documents
+		[47, 50, 54, 57], // 5 Gmaj9: edited in the case
+		[49, 52, 57, 59], // 6 A add9: knowledge
+		[47, 50, 54, 57], // 7 Gmaj9: the answers
+		[49, 52, 54, 57], // 8 F#m7: standards
+		[47, 50, 54, 61], // 9 Bm add9: three boxes
+		[47, 50, 54, 59], // 10 Gmaj7: automate
+		[50, 54, 55, 59], // 11 Em9: the step runs itself
+		[47, 50, 54, 57], // 12 Gmaj9: share
+		[49, 52, 57, 59], // 13 A add9: landing at the other council
+		[47, 50, 54, 59], // 14 Gmaj7: the promise
+		[50, 52, 57, 59], // 15 A sus4 add9
+		[50, 54, 61, 64], // 16 Dmaj9: built on
+		[47, 54, 57, 61], // 17 Bm9
+		[47, 50, 54, 57], // 18 Gmaj9: install the app
+		[49, 52, 57, 59], // 19 A add9
+		[47, 50, 54, 57], // 20 Gmaj9
+		[50, 54, 57, 62], // 21 D
 	],
-	bass: [38, 38, 38, 38, 35, 43, 45, 43, 42, 35, 43, 45, 38, 35, 43, 45, 43, 38],
-	parts: { pad: [[3, 18]], bass: [[4, 17]], kick: [[4, 11]], hat: [[5, 11]], clap: [[6, 10]] },
+	bass: [38, 38, 38, 38, 35, 43, 45, 43, 42, 35, 43, 40, 43, 45, 43, 45, 38, 35, 43, 45, 43, 38],
+	parts: { pad: [[3, 22]], bass: [[4, 21]], kick: [[4, 15]], hat: [[5, 15]], clap: [[6, 14]] },
 	loop: false,
 }
 

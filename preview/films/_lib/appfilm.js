@@ -102,6 +102,32 @@ export const PLANS = {
 		{ slot: 'general', layer: 'general', from: 23, to: 31, maxWords: 7 },
 		{ slot: 'outro', layer: 'brand', from: 31, to: 40, maxWords: 7 },
 	],
+	/**
+	 * Three proofs on a 12-bar body (48 beats), for an audience film whose story needs a third
+	 * moment (Round 15, Dossiq casework): hook 7, three proofs of 8, general 8, outro 9 beats.
+	 */
+	3: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 15, maxWords: 6 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 15, to: 23, maxWords: 6 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 23, to: 31, maxWords: 6 },
+		{ slot: 'general', layer: 'general', from: 31, to: 39, maxWords: 7 },
+		{ slot: 'outro', layer: 'brand', from: 39, to: 48, maxWords: 7 },
+	],
+	/**
+	 * Five moments on a 14-bar body (56 beats), Round 15 (Dossiq casework): hook 7, five scenes of
+	 * 8 and the outro 9 beats. The fourth moment is the shared capability (layer general), told
+	 * with the app's own UI, and a fifth app moment follows it.
+	 */
+	5: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 15, maxWords: 6 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 15, to: 23, maxWords: 6 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 23, to: 31, maxWords: 6 },
+		{ slot: 'proof', index: 3, layer: 'general', from: 31, to: 39, maxWords: 7 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 39, to: 47, maxWords: 6 },
+		{ slot: 'outro', layer: 'brand', from: 47, to: 56, maxWords: 7 },
+	],
 	1: [
 		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
 		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 19, maxWords: 8 },
@@ -113,14 +139,15 @@ export const PLANS = {
 /** The plan with times resolved: seconds (frame-snapped), bar.beat labels, and when the caption shows and clears. */
 export function plan(nProofs = 2) {
 	const p = PLANS[nProofs]
-	if (!p) throw new Error(`appfilm: a film has 1 or 2 proof moments, not ${nProofs}`)
+	if (!p) throw new Error(`appfilm: a film has 1, 2, 3 or 5 proof moments, not ${nProofs}`)
 	return p.map((s) => {
 		const start = beatT(s.from)
 		const end = beatT(s.to)
 		const shows = s.slot === 'hook' ? 0 : snap(start + RISE)
 		// The CTA builds two beats into the outro and holds to the loop: see MOTION.outro.
 		const ctaIn = snap(beatT(PLANS[nProofs].at(-1).from + 2) + RISE)
-		const clears = s.slot === 'outro' ? DURATION : snap(end - CLEAR)
+		// The outro holds to the end of the body (18.75 s on 10 bars, 22.5 s on 12).
+		const clears = s.slot === 'outro' ? beatT(p.at(-1).to) : snap(end - CLEAR)
 		const visible = s.slot === 'outro' ? ctaIn : shows
 		return { ...s, start, end, bars: `${barBeat(s.from)}-${barBeat(s.to - 1)}`, shows: visible, clears, hold: +(clears - visible).toFixed(2) }
 	})

@@ -25,7 +25,7 @@ import { textBlock } from './stage.js'
 import { SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
-import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, DURATION as BODY } from './appfilm.js'
+import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, beatT, PLANS, DURATION as BODY } from './appfilm.js'
 import { LOOP_ANCHOR } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
@@ -34,7 +34,9 @@ import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.j
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
 export const BUILT = 2 * BAR
 export const INSTALL_DUR = 3 * BAR
-export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars
+export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars, for a 10-bar body
+/** The body length for a film with n proofs: 18.75 s on the 10-bar plans, 22.5 s on the 12-bar plan. */
+export const bodyLength = (n) => beatT(PLANS[n].at(-1).to)
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.round(t / BAR) + 1
@@ -63,6 +65,7 @@ export function promiseFrame(ctx, { app, promise, neighbours = [] }) {
 export function audienceBoards(content) {
 	const { app, promise, neighbours = [], builtOnApps = [] } = content
 	const name = content.name || APP_NAMES[app] || app
+	const BODY = bodyLength((content.proofs || []).length)
 	const body = appBoards({ ...content, outro: { neighbours } })
 	const shift = (b) => ({ ...b, start: b.start + OPEN, end: b.end + OPEN, shows: b.shows + OPEN, clears: b.clears + OPEN })
 	const boards = body.map(shift)
@@ -138,8 +141,8 @@ export function audienceBoards(content) {
 	return [opening, ...boards, built, install]
 }
 
-/** The word budget of the body (hook to promise; the bible's 20 to 30), with the shared modules listed apart. */
-export function audienceBudget(boards) {
+/** The word budget of the body (hook to promise; the bible's 20 to 30, or up to max), with the shared modules listed apart. */
+export function audienceBudget(boards, max = 30) {
 	const body = boards.filter((b) => !['opening', 'builtOn', 'install'].includes(b.module))
 	const rows = body.map((b) => {
 		const words = wordCount(b.words)
@@ -156,7 +159,7 @@ export function audienceBudget(boards) {
 		return { id: b.id, words, hold: b.hold, need: +need.toFixed(2), issues }
 	})
 	const total = rows.reduce((a, r) => a + r.words, 0)
-	const filmIssues = total < 20 || total > 30 ? [`${total} words in the body (bible: 20 to 30)`] : []
+	const filmIssues = total < 20 || total > max ? [`${total} words in the body (bible: 20 to ${max})`] : []
 	return { total, ok: !filmIssues.length && rows.every((r) => !r.issues.length), filmIssues, rows }
 }
 
@@ -169,8 +172,9 @@ export function audienceFilm(content) {
 		audience: content.audience,
 		promise: content.promiseLine || content.promise,
 		techniques: content.techniques || [],
-		duration: TOTAL,
-		budget: audienceBudget(boards),
+		duration: OPEN + bodyLength((content.proofs || []).length) + BUILT + INSTALL_DUR,
+		bars: 3 + Math.round(bodyLength((content.proofs || []).length) / BAR) + 5,
+		budget: audienceBudget(boards, content.maxWords || 30),
 	}
 	return { meta, boards }
 }

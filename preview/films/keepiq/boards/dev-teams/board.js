@@ -11,7 +11,7 @@
  *   proof 2  your other apps keep their connection keys in the same vault (Integriq is the
  *            evidenced one and the only app hex drawn; the rest are outside systems, boxes)
  *   general  the data layer: every change to a secret shows who and when
- *   promise  "Human and machine secrets, one vault"
+ *   promise  "Human and machine passwords, one vault" (Round 18: "passwords" in both Keepiq films)
  *
  * Techniques (refs/techniques.md): #4 typewriter (the pipeline log types itself), #11 whip-pan
  * on the beat (into the certificates), #10 loose-shape cluster-to-container merge (the keys drift
@@ -120,18 +120,18 @@ function appKeysUI(w, geom) {
 const content = {
 	app: 'keepiq',
 	audience: { slug: 'dev-teams', name: 'Software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot); the head of engineering or platform lead buys' },
-	promise: 'Human and machine\nsecrets, one vault',
-	promiseLine: 'Human and machine secrets in one vault, on your own server',
+	promise: 'Human and machine\npasswords, one vault',
+	promiseLine: 'Human and machine passwords in one vault, on your own server',
 	title: 'Keepiq for software teams',
 	record: { one: 'secret', many: 'secrets' },
-	logline: 'For software teams: pipelines fetch their secrets with nothing on disk, your own certificates renew themselves, your apps keep their keys in the same vault, and every change is on record.',
+	logline: 'For software teams: pipelines fetch their passwords without writing them to disk, your own certificates renew themselves, your apps keep their keys in the same vault, and every change is on record.',
 	references: REFS,
 	techniques: ['#4 typewriter caption (the run log)', '#11 whip-pan on the beat', '#10 loose-shape cluster-to-container merge', '#2 zoom-out sentence build'],
 	neighbours: ['integriq', 'openregister'],
 	builtOnApps: ['integriq'],
 	hook: {
-		title: 'Pipelines fetch it, nothing on disk',
-		caption: 'Pipelines fetch it,\nnothing on disk',
+		title: 'Pipeline passwords never touch disk',
+		caption: 'Pipeline passwords\nnever touch disk',
 		ui: { drawUI: pipelineUI, tagFill: 'cobalt' },
 		source: 'keepiq.json sp-cicd-machine-secrets: "Fetch a secret in your pipeline without writing it to disk." Specs machine-secret-leases (short-lived lease per fetch), secret-store-api, keepiq-cli.',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, a pipeline run with its four steps, the fetch step ringed. Technique #4, typewriter: the run log types itself line by line under the steps (0.1 s per character block); on the fetch line the secret arrives as masked dots and the lease bar below starts counting down. Out: the hex match cut from the lock on the fetch step.',

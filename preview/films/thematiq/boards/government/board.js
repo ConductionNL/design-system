@@ -11,7 +11,7 @@
  *   proof 1  see every value that will change, tick which ones to take (apply dialog)
  *   proof 2  WCAG contrast proven: every colour pair checked, the evidence report downloads
  *   general  the data layer: every change shows who and when
- *   promise  "Your house style, live and accessible"
+ *   promise  "Nextcloud in your own house style" (Round 18 copy pass)
  *
  * Techniques (refs/techniques.md): #5 stepped hex wipe (the repaint), #3 grid-cell ripple (the
  * contrast pairs pass in waves), #2 zoom-out sentence build (the promise).
@@ -19,6 +19,7 @@
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
+import { textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, panel, statusPill, use, docPage, button, widgetTile } from '../../../_lib/ui.js'
 import { repaint } from '../../ui.js'
 
@@ -91,7 +92,9 @@ function contrastUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, 470, 620, u)
-	bar(w, x + 36, top + 36, 220, 14, C.cobalt900)
+	// the standard as a small label (Round 18: plain words in the caption, the acronym in the picture)
+	textBlock(w, 'WCAG', { x: x + 110, y: top + 56, size: 32, weight: 600, fill: C.cobalt, clip: false })
+	bar(w, x + 226, top + 38, 140, 12, C.cobalt300)
 	const pairs = [[C.forest, C.white], [C.white, C.forest], [C.cobalt900, C.cobalt50], [C.forest, C.cobalt50], [C.cobalt900, C.forest300], [C.white, C.cobalt400]]
 	pairs.forEach(([bg, ink], i) => {
 		const cy = top + 104 + i * 80
@@ -111,8 +114,8 @@ function contrastUI(w, geom) {
 const content = {
 	app: 'thematiq',
 	audience: { slug: 'government', name: 'Government', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) folded in' },
-	promise: 'Your house style,\nlive and accessible',
-	promiseLine: "Your government's house style goes live in Nextcloud, checked against WCAG first",
+	promise: 'Nextcloud in your\nown house style',
+	promiseLine: "Nextcloud in your government's own house style, checked for accessibility first",
 	title: 'Thematiq for government',
 	record: { one: 'house style', many: 'house styles' },
 	logline: 'For government: pick your organisation and Nextcloud turns into your own house style, see every change before you switch, prove the contrast in one download, and every change is on record.',
@@ -121,8 +124,8 @@ const content = {
 	neighbours: ['portaliq', 'launchpad'],
 	builtOnApps: ['portaliq'],
 	hook: {
-		title: 'One pick, your house style',
-		caption: 'One pick,\nyour house style',
+		title: 'Pick your organisation, the style loads',
+		caption: 'Pick your organisation,\nthe style loads',
 		ui: { drawUI: styleUI, tagFill: 'cobalt' },
 		source: 'thematiq.json usp-government-house-styles (verified): "Pick your organisation and the exact house style loads." Specs token-sets (shipped sets in token-sets.json: Rijkshuisstijl, VNG, provinces, municipalities; no count on screen).',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the organisation picker open, the workspace still in Nextcloud blue. On beat 2 the chosen row takes its orange ring with a tick. Technique #5, stepped hex wipe: a column of pointy-top hexes in three stepped sizes enters the window from the left edge and crosses it on ease.snap in four flat steps (one per eighth), and everything behind it repaints: the topbar, the nav head, the title bar, the tile heads and the primary button turn from Nextcloud blue into the house style. The still is the wipe at mid-window. Out: the hex match cut from the wipe column into the dialog.',
@@ -140,12 +143,12 @@ const content = {
 		},
 		{
 			id: 'contrast',
-			title: 'Contrast proven, one WCAG report',
-			caption: 'Contrast proven,\none WCAG report',
+			title: 'Accessibility proof, one download',
+			caption: 'Accessibility proof,\none download',
 			source: 'thematiq.json usp-prove-the-contrast (verified): "Download a compliance report proving your active colours meet WCAG contrast." Specs token-set-contrast-audit, compliance-evidence.',
 			motion: 'Technique #3, grid-cell ripple: the colour pairs step 20% to 40% to full opacity in waves from the top, and each pass settles its mint pill. On the last wave the report page slides out beside them, its rule in the house style, and the download row takes the orange ring.',
 			sound: 'A ripple of ticks per wave, a paper slide, a click on the download.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Contrast proven,\none WCAG report', drawUI: contrastUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Accessibility proof,\none download', drawUI: contrastUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

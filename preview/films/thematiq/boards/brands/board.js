@@ -148,12 +148,12 @@ const content = {
 	proofs: [
 		{
 			id: 'picker',
-			title: 'A colour picker for every value',
-			caption: 'A colour picker\nfor every value',
+			title: 'Change any colour yourself',
+			caption: 'Change any colour\nyourself',
 			source: 'thematiq.json sp-token-editor: "Open a colour picker for each value, already grouped in tabs." Spec token-editor-ui.',
 			motion: 'Technique #11, whip-pan on the beat: the camera whips across two tabs (5 frames each, ease.snap, --blur 4) and lands on the colour tab. The picker opens on the first value; the chosen swatch takes the orange ring and the value row\'s swatch follows it.',
 			sound: 'Two short whooshes on the whips, a pluck as the picker opens, a tick on the swatch.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'A colour picker\nfor every value', drawUI: pickerUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Change any colour\nyourself', drawUI: pickerUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'trial',

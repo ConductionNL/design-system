@@ -10,7 +10,7 @@
  *   proof 1  request a password by link: one field, filled in once, straight into the vault
  *   proof 2  every vault event forwarded to the SIEM the team already watches
  *   general  notifications, carrying the decoy: a decoy login is touched and you hear at once
- *   promise  "Your team's secrets, on your Nextcloud"
+ *   promise  "Your team's passwords, on your Nextcloud" (Round 18 copy pass)
  *
  * Techniques (refs/techniques.md): #9 text-swap on a held diagram (the roles swap on the held
  * folder), #4 typewriter (the masked value types itself in), #3 grid-cell ripple as rows (the
@@ -19,6 +19,7 @@
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
+import { textBlock } from '../../../_lib/stage.js'
 import { rect, bar, circle, panel, statusPill, idlePill, use, button } from '../../../_lib/ui.js'
 
 const REFS = [
@@ -108,9 +109,11 @@ function siemUI(w, geom) {
 	// the outside system: a plain box, dark, with its own feed of the same rows
 	const bx = x + width - 24 - 0.3 * width, bw = 0.3 * width + 24
 	rect(w, bx + 18, top + 60, bw - 18, 480, C.cobalt900, 5 * u)
-	for (let i = 0; i < 8; i++) {
-		bar(w, bx + 44, top + 100 + i * 52, 14, 8, i === 0 ? C.mint300 : C.cobalt400)
-		bar(w, bx + 70, top + 100 + i * 52, (bw - 120) * [0.9, 0.6, 0.8, 0.7, 0.5, 0.8, 0.6, 0.7][i], 8, C.cobalt300)
+	// the outside system's kind as a small label in its box (Round 18: the acronym in the picture)
+	textBlock(w, 'SIEM', { x: bx + 44, y: top + 112, size: 32, weight: 600, fill: C.white, clip: false })
+	for (let i = 0; i < 7; i++) {
+		bar(w, bx + 44, top + 152 + i * 50, 14, 8, i === 0 ? C.mint300 : C.cobalt400)
+		bar(w, bx + 70, top + 152 + i * 50, (bw - 120) * [0.9, 0.6, 0.8, 0.7, 0.5, 0.8, 0.6, 0.7][i], 8, C.cobalt300)
 	}
 	statusPill(w, bx + bw - 110, top + 500, u)
 }
@@ -118,18 +121,18 @@ function siemUI(w, geom) {
 const content = {
 	app: 'keepiq',
 	audience: { slug: 'public-it', name: 'Public-sector IT', persona: 'The municipal system administrator (Bas Kuiper); the CISO or information manager buys' },
-	promise: "Your team's secrets,\non your Nextcloud",
-	promiseLine: "Keep your team's secrets safe on the Nextcloud you already run",
+	promise: "Your team's\npasswords, on\nyour Nextcloud",
+	promiseLine: "Keep your team's passwords safe on the Nextcloud you already run",
 	title: 'Keepiq for public-sector IT',
 	record: { one: 'secret', many: 'secrets' },
-	logline: 'For government IT: a role per person on every shared folder, passwords requested by link, every vault event in your SIEM, and a decoy login that tells you the moment it is touched.',
+	logline: 'For government IT: a role per person on every shared folder, passwords requested by link, every vault event in your security log (SIEM), and a decoy login that tells you the moment it is opened.',
 	references: REFS,
 	techniques: ['#9 text-swap on a held diagram', '#4 typewriter caption (masked value)', '#3 grid-cell ripple (event rows)', '#2 zoom-out sentence build'],
 	neighbours: ['integriq', 'openregister'],
 	builtOnApps: ['integriq'],
 	hook: {
-		title: 'Shared logins, a role per person',
-		caption: 'Shared logins,\na role per person',
+		title: 'Shared logins, rights per person',
+		caption: 'Shared logins,\nrights per person',
 		ui: { drawUI: folderUI, tagFill: 'cobalt' },
 		source: 'keepiq.json sp-team-folder-roles: "Give a shared folder its own access level per person." Specs team-folder-sharing, folder-permission-grades.',
 		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the team folder with its members and role pills. Technique #9, text-swap on a held diagram: the folder holds still; only the third member\'s role changes, the menu opening under it and "edit" taking the orange ring on beat 3, the pill swapping in place. Out: the hex match cut from the pill into the request scene.',
@@ -147,17 +150,17 @@ const content = {
 		},
 		{
 			id: 'siem',
-			title: 'Every vault event to your SIEM',
-			caption: 'Every vault event\nto your SIEM',
+			title: 'Vault events feed your security log',
+			caption: 'Vault events feed\nyour security log',
 			source: 'keepiq.json sp-siem-forwarding: "Forward every vault event to the SIEM your team already watches." Spec siem-audit-export (syslog and signed webhook sinks).',
 			motion: 'Technique #3, grid-cell ripple, as rows: the event log fills in waves from the top, each row stepping 20% to 40% to full, and a pulse runs along its wire into the dark box on the right, where the same row lands. The newest row takes the orange ring.',
 			sound: 'A soft ripple of ticks per wave, a low pulse along each wire.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every vault event\nto your SIEM', drawUI: siemUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Vault events feed\nyour security log', drawUI: siemUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'notify',
-		caption: 'Decoy touched?\nYou hear at once',
+		caption: 'Decoy login opened?\nYou hear at once',
 		source: 'keepiq.json usp-decoy-credentials (verified): "Plant a decoy credential that alerts you the moment it\'s touched." Spec honey-credentials (high-severity alert to owner and admins). COPY.notify.',
 		params: {
 			record: { avatar: 'square', title: 220, sub: 150, status: 'idle' },

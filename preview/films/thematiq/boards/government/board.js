@@ -7,7 +7,7 @@
  * sp-token-editor, usp-prove-the-contrast, sp-audit-trail) and Thematiq's repo on development
  * (docs/features/token-editor.md: "4 category tabs grouping the 53 editable tokens"; specs
  * token-sets, nl-design, custom-token-sets, token-editor-ui, token-set-contrast-audit,
- * theming-audit; change catalogue-theme-gallery: an opt-in gallery of community and supplier
+ * theming-audit; change catalogue-theme-gallery: an opt-in catalogue of community and supplier
  * token sets, each with its contrast result, installed by an administrator).
  *
  *   question "What if Nextcloud had your house style?" (Round 19, from "Nextcloud in your own
@@ -16,17 +16,18 @@
  *            government) and Nextcloud repaints into your house style (a stepped hex wipe)
  *   proof 1  your house-style templates (manage, upload, activate) and all 53 design tokens you
  *            can adjust, in four tabs
- *   proof 2  share house styles through the gallery: sets from other organisations and
+ *   proof 2  share house styles through the store (Round 21, drawn in the Nextcloud app store's
+ *            look): sets from other organisations and
  *            suppliers, each with its contrast result (WCAG), one installed
  *   general  the data layer: every change shows who and when
  *
  * Round 20 USPs Ruben missed, all in the picture: template management (proof 1, left), the
  * number of design tokens (proof 1, caption and label), sharing templates through the store
- * (proof 2; the specs call it the theme gallery), NL Design System themes for Dutch government
+ * (proof 2, "through the store" per Round 21; the change behind it is catalogue-theme-gallery), NL Design System themes for Dutch government
  * (the hook's picker label).
  *
  * Techniques (refs/techniques.md): #5 stepped hex wipe (the repaint), #3 grid-cell ripple (the
- * token rows, the gallery cards), #2 zoom-out sentence build (the question).
+ * token rows, the store cards), #2 zoom-out sentence build (the question).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
@@ -117,13 +118,16 @@ function tokensUI(w, geom) {
 	rect(w, ex + 14, top + 124 + 72 - 30, ew - 28, 60, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 2: the gallery: house styles other organisations and suppliers shared, each with its contrast result; one installing. */
-function galleryUI(w, geom) {
+/** Proof 2 (Round 21): the store, in the Nextcloud app store's look: a search field, house-style cards other organisations and suppliers shared, each with its rating and contrast result; one being installed. */
+function storeUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 610, u)
-	textBlock(w, 'Gallery', { x: x + 110, y: top + 54, size: 26, weight: 600, fill: C.cobalt900, clip: false })
-	button(w, x + width - 200, top + 22, 170, 50, u, { kind: 'ghost' })
+	textBlock(w, 'App store', { x: x + 110, y: top + 54, size: 26, weight: 600, fill: C.cobalt900, clip: false })
+	// the store's search field
+	rect(w, x + width - 330, top + 22, 300, 50, C.cobalt50, 25)
+	circle(w, x + width - 300, top + 47, 9, 'none', { stroke: C.cobalt400, 'stroke-width': u })
+	bar(w, x + width - 278, top + 43, 120, 8, C.cobalt300)
 	const pals = [[C.forest, C.forest300], [C.lavender, C.lavender300], [C.cobalt, C.cobalt300], [C.mint, C.mint300]]
 	const cw = (width - 90) / 2, ch = 240
 	pals.forEach(([a, b2], i) => {
@@ -134,6 +138,8 @@ function galleryUI(w, geom) {
 		rect(w, cx + cw * 0.8, cy, cw * 0.2, 56, C.white, 0)
 		bar(w, cx + 24, cy + 84, [180, 150, 200, 140][i], 11, C.cobalt900)
 		bar(w, cx + 24, cy + 112, 120, 8, C.cobalt300)
+		// the store's rating: five dots, filled by score
+		for (let k = 0; k < 5; k++) circle(w, cx + cw - 150 + k * 24, cy + 116, 7, k < [5, 4, 4, 5][i] ? C.cobalt400 : C.cobalt100)
 		// the contrast result, the small WCAG label on a mint pill
 		rect(w, cx + 24, cy + 150, 110, 36, C.mint300, 18)
 		textBlock(w, 'WCAG', { x: cx + 44, y: cy + 176, size: 20, weight: 600, fill: C.cobalt900, clip: false })
@@ -151,9 +157,9 @@ const content = {
 	promiseLine: "Nextcloud in your government's own house style, checked for accessibility first",
 	title: 'Thematiq',
 	record: { one: 'house style', many: 'house styles' },
-	logline: 'What if Nextcloud had your house style? Pick your organisation from the NL Design System themes and Nextcloud repaints, manage your own templates and adjust 53 design tokens, share house styles through the gallery with their contrast result, and every change is on record.',
+	logline: 'What if Nextcloud had your house style? Pick your organisation from the NL Design System themes and Nextcloud repaints, manage your own templates and adjust 53 design tokens, share house styles through the store with their contrast result, and every change is on record.',
 	references: REFS,
-	techniques: ['#5 stepped hex wipe', '#3 grid-cell ripple (token rows, gallery cards)', '#2 zoom-out sentence build (the question)'],
+	techniques: ['#5 stepped hex wipe', '#3 grid-cell ripple (token rows, store cards)', '#2 zoom-out sentence build (the question)'],
 	neighbours: ['portaliq', 'launchpad'],
 	builtOnApps: ['portaliq'],
 	hook: {
@@ -175,13 +181,13 @@ const content = {
 			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt' }),
 		},
 		{
-			id: 'gallery',
-			title: 'Share house styles through the gallery',
-			caption: 'Share house styles\nthrough the gallery',
-			source: 'Round 20 (sharing templates through the store). Thematiq change catalogue-theme-gallery on development: an opt-in gallery of community and supplier token sets with name, organisation, swatches, licence, source and the contrast result; a contribution guide for getting a set in; installing is an administrator\'s choice. Contrast: spec token-set-contrast-audit, thematiq.json usp-prove-the-contrast.',
-			motion: 'Hard cut on the beat to the gallery. Technique #3, grid-cell ripple: the four house-style cards step in from 20% to full in waves, swatches first, each settling its mint WCAG pill (the contrast result). On beat 3 the first card\'s install button takes the orange ring and fills.',
+			id: 'store',
+			title: 'Share house styles through the store',
+			caption: 'Share house styles\nthrough the store',
+			source: 'Rounds 20 and 21 (sharing templates through the store, drawn as the Nextcloud app store). Thematiq change catalogue-theme-gallery on development: an opt-in gallery of community and supplier token sets with name, organisation, swatches, licence, source and the contrast result; a contribution guide for getting a set in; installing is an administrator\'s choice. Contrast: spec token-set-contrast-audit, thematiq.json usp-prove-the-contrast.',
+			motion: 'Hard cut on the beat to the store, in the Nextcloud app store\'s look (a search field, cards with a rating). Technique #3, grid-cell ripple: the four house-style cards step in from 20% to full in waves, swatches first, each settling its mint WCAG pill (the contrast result). On beat 3 the first card\'s install button takes the orange ring and fills.',
 			sound: 'A ripple of ticks per wave, a pluck per WCAG pill, a click on install.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share house styles\nthrough the gallery', drawUI: galleryUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share house styles\nthrough the store', drawUI: storeUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

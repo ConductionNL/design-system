@@ -18,7 +18,7 @@
  *
  * The body runs 12 bars (48 beats): the question 12 beats, four proofs of 9 (Round 19). Modular
  * durations sit on bar boundaries (Round 4), so the body is longer than the template's 10 bars.
- * Opening 3 + body 12 + built on 3 + install 3 = 21 bars, 39.375 s (Round 21: both closing pieces 3 bars).
+ * Opening 3 + body 12 + built on 4 + install 3 = 22 bars, 41.25 s (Round 22: Built on 4 bars).
  *
  * The chapter mark above each caption names the standard or law the scene answers to (the slot
  * where an app film puts the app's name); the caption says what it does for you.
@@ -39,7 +39,7 @@ import { builtOnFrame, installFrame, BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR,
 const U = 2.5
 const OPEN = OPENING.duration
 const BODY = 12 * BAR
-// Round 21: both closing pieces are 3 bars (the shared closing.js).
+// Round 22: Built on is 4 bars, the install board 3 (the shared closing.js).
 const BUILT = BUILT_ON_DUR
 const INSTALL_DUR = INSTALL21_DUR
 const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR
@@ -356,23 +356,23 @@ export const boards = [
 	},
 	...BODY_SCENES.map(bodyBoard),
 	{
-		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Gebouwd op Nextcloud (shared closing piece, Round 21)',
-		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + 2}.4`,
-		words: NL.builtOn, gloss: 'Built on Nextcloud / Reply from Mail / Plan in Calendar / Save to Contacts / Share in Files / Chat in Talk / Follow up in Tasks / Manage from Deck',
+		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Gebouwd op Nextcloud, verrijkt door Conduction (shared closing piece, Round 22)',
+		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + Math.round(BUILT / BAR) - 1}.4`,
+		words: NL.builtOn, gloss: 'Built on Nextcloud / Reply from Mail / Plan in Calendar / Save to Contacts / Share in Files / Chat in Talk / Follow up in Tasks / Manage from Deck / Enhanced by Conduction',
 		apps: ['openregister', 'dossiq', 'filinq', 'nextcloud'],
-		motion: 'The shared Round 21 piece (closing.js builtOnScene, lang nl), 3 bars: the connection scene. OpenRegister is the lead cell, orange, top right, with Dossiq and Filinq beside it in white; "Gebouwd op" rises with "Nextcloud" a sixteenth behind. Then Nextcloud\'s own apps load one by one into the grid below the lead, each on its own square-cornered connector, the first holding two beats and then one a beat, while one line under the headline swaps verb and name ("Antwoord vanuit Mail", "Plan in Agenda", "Bewaar in Contacten", "Deel in Bestanden", "Chat in Talk", "Volg op in Taken", "Beheer vanuit Deck"), the name in Nextcloud cyan; the last line holds 1.5 s. Everything leaves in the last four frames into the install board.',
-		sound: 'A pluck and a low thud as the lead lands, a tick up the scale as each Nextcloud app connects.',
-		source: 'Shared module (closing.js at ds-connext-film aa33d0f, Round 21); the component lines are what the data layer links a record to (NC_LINKS, round4/facts.json fact a).',
+		motion: 'Rounds 21 and 22 (closing.js builtOnScene, lang nl, 4 bars): the ConNext film\'s component connection section with OpenRegister as the lead. OpenRegister pops in orange high on the right with Dossiq and Filinq beside it in white; "Gebouwd op" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Antwoord vanuit Mail" ... "Beheer vanuit Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, OpenRegister still the one orange; the line becomes "Verrijkt door Conduction". Every hex is the grid\'s own size. Everything leaves in the last four frames.',
+		sound: 'A pluck and a low thud as the lead lands, a tick up the scale as each Nextcloud app connects, a soft whoosh as the camera pulls back to the family.',
+		source: 'Shared module (closing.js at ds-connext-film 60b2036, Round 22); the component lines are what the data layer links a record to (NC_LINKS, round4/facts.json fact a).',
 		draw: (ctx) => { builtOnFrame(ctx, CLOSE) },
 	},
 	{
-		id: 'install', layer: 'brand', module: 'install', title: 'Installeer het, gebruik het, bezit het (shared install board, Round 21)',
+		id: 'install', layer: 'brand', module: 'install', title: 'Installeer het, gebruik het, bezit het (shared install board, Round 22)',
 		start: OPEN + BODY + BUILT, end: TOTAL, bars: `${barOf(OPEN + BODY + BUILT)}.1-${barOf(OPEN + BODY + BUILT) + 2}.4`,
 		words: NL.install, gloss: 'Install it / Use it / Own it / The code stays open source, your data stays yours',
 		apps: ['conduction'],
-		motion: 'The shared Round 21 install board (closing.js installScene, lang nl), 3 bars: the Nextcloud cell pops in top right and turns over, by a width scale, into the Conduction avatar; the Conduction wordmark heads the column; "Installeer het", "Gebruik het", "Bezit het" rise one after another and the orange moves to each line as it rises, landing on "Bezit het"; then "De code blijft open source, / je data blijft van jou" on two lines. Holds to the end, no fade.',
-		sound: 'A dry click as the cell turns over, a click on each slogan as the orange moves, a pluck on the last line; the bed resolves.',
-		source: 'Shared module (closing.js at ds-connext-film aa33d0f, Round 21): CLOSING_TEXT.nl.',
+		motion: 'Round 22 (closing.js installScene, concept current, lang nl, 3 bars): "Installeer het", "Gebruik het" and "Bezit het" are laid in dim; a current runs in from the left edge down a square-cornered wire beside them and powers each word on as it reaches it, one a beat, the orange moving to each and landing on "Bezit het"; it runs on under "Bezit het" to the Conduction avatar top right, which powers on. Then "De code blijft open source, / de data blijft van jou" rises on two lines and holds to the end. No header.',
+		sound: 'The current\'s crackle along the wire, a click as each word powers on, a power-on as the avatar lights, a pluck on the last line; the bed resolves.',
+		source: 'Shared module (closing.js at ds-connext-film 60b2036, Round 22): CLOSING_TEXT.nl.',
 		draw: (ctx) => { installFrame(ctx, CLOSE) },
 	},
 ]

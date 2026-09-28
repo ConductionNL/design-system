@@ -5,10 +5,10 @@
  *   0 to 5.63 s        the shared Conduction opening (_lib/scenes/opening.js), 3 bars, handing over on its field
  *   5.63 to 28.13 s    the body (./scenes/body.js), 12 bars: two worlds (a separate archive?), MDTO, selectielijst,
  *                      vernietiging, ZGW en ZDS, the promise: je werkplek is het archief (Round 16)
- *   28.13 to 33.75 s   "Gebouwd op Nextcloud", the shared Round 21 connection piece (lang nl), 3 bars
- *   33.75 to 39.38 s   the shared Round 21 install board, "Installeer het / Gebruik het / Bezit het", 3 bars
+ *   28.13 to 35.63 s   "Gebouwd op Nextcloud", verrijkt door Conduction: the shared Round 22 connection piece (lang nl), 4 bars
+ *   35.63 to 41.25 s   the shared Round 22 install board (the current), "Installeer het / Gebruik het / Bezit het", 3 bars
  *
- * 1920 x 1080, 24 fps, 21 bars at 128 BPM (945 frames, 45 a bar). The master rendered at 7689c5e used the round-6 closing (37.5 s). No loop; the install board holds
+ * 1920 x 1080, 24 fps, 22 bars at 128 BPM (990 frames, 45 a bar). The master rendered at 7689c5e used the round-6 closing (37.5 s). No loop; the install board holds
  * to the last frame and the bed resolves on D. No bell anywhere: clicks (Round 5).
  */
 import { Film, loadFonts } from '../_lib/stage.js'
@@ -18,10 +18,10 @@ import { addOpening, OPENING } from '../_lib/scenes/opening.js'
 import { builtOnScene, installScene, BUILT_ON_DUR, INSTALL_DUR } from '../_lib/scenes/closing.js'
 import { SCENES, BODY, BUILDERS, SPB, BAR, FPS, TYPE_AT_EXPORT } from './scenes/body.js'
 
-// Round 21: both closing pieces are 3 bars (the shared closing.js).
+// Round 22: Built on is 4 bars, the install board 3 (the shared closing.js).
 const BUILT = BUILT_ON_DUR
 const INSTALL = INSTALL_DUR
-const DURATION = OPENING.duration + BODY + BUILT + INSTALL // 39.375
+const DURATION = OPENING.duration + BODY + BUILT + INSTALL // 41.25
 const film = new Film({
 	mount: document.getElementById('film'),
 	format: '16x9',
@@ -90,7 +90,7 @@ cue(START.builtOn - 0.02, 'click', { gain: 0.26, freq: 2600, seed: 75 })
  * pieces and resolves on D for the last bar.
  */
 film.music = {
-	bars: 21,
+	bars: 22,
 	chords: [
 		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62], // 0-2 the opening (no pad)
 		[47, 50, 54, 57], // 3 Gmaj9 (open): two worlds
@@ -108,12 +108,13 @@ film.music = {
 		[50, 54, 61, 64], // 15 Dmaj9: gebouwd op Nextcloud
 		[47, 54, 57, 61], // 16 Bm9
 		[49, 52, 57, 59], // 17 A add9: the last component line holds
-		[47, 50, 54, 57], // 18 Gmaj9: installeer het
-		[49, 52, 57, 59], // 19 A add9: bezit het
-		[50, 54, 57, 62], // 20 D: de code blijft open source
+		[47, 50, 54, 57], // 18 Gmaj9: the pull back, verrijkt door Conduction
+		[47, 50, 54, 57], // 19 Gmaj9: installeer het
+		[49, 52, 57, 59], // 20 A add9: bezit het
+		[50, 54, 57, 62], // 21 D: de code blijft open source
 	],
-	bass: [38, 38, 38, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 43, 45, 38, 35, 45, 43, 45, 38],
-	parts: { pad: [[3, 21]], bass: [[5, 20]], kick: [[7, 15]], hat: [[9, 15]], clap: [[11, 14]] },
+	bass: [38, 38, 38, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 43, 45, 38, 35, 45, 43, 43, 45, 38],
+	parts: { pad: [[3, 22]], bass: [[5, 21]], kick: [[7, 15]], hat: [[9, 15]], clap: [[11, 14]] },
 	loop: false,
 }
 

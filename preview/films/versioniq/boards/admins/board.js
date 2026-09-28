@@ -124,7 +124,7 @@ const content = {
 		caption: 'New advisory?\nSee what it hits',
 		ui: { drawUI: advisoryUI, tagFill: 'cobalt' },
 		source: 'positioning versioniq usp-ncsc-nextcloud-advisories (verified): "Advisories are matched to the exact branch an app runs, not just its name."; sp-advisory-match; spec security-advisory-correlation',
-		motion: 'Frame 1 reads: caption, the advisory card over the installed apps, the Versioniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the check runs down the list, each row stepping 20% to full and its mint pill popping; on the fourth row the pill turns lavender, the straight line drops from the advisory to it and the row takes the orange ring.',
+		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the advisory card over the installed apps, the Versioniq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the check runs down the list, each row stepping 20% to full and its mint pill popping; on the fourth row the pill turns lavender, the straight line drops from the advisory to it and the row takes the orange ring.',
 		sound: 'Gentle open. A ripple of ticks down the list, a low tick on the match.',
 	},
 	proofs: [

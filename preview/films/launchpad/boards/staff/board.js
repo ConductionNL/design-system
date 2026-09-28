@@ -127,7 +127,7 @@ const content = {
 		caption: 'Your whole day,\non one screen',
 		ui: { drawUI: startUI, tagFill: 'cobalt' },
 		source: 'bible "What is true" 7 ("One start screen. Your deals, tasks, calendar and mail from every app, arranged your way."); positioning launchpad sp-tiles-launch, sp-content-widgets; specs tiles, live-data-tile-widget, calendar-widget',
-		motion: 'Frame 1 reads: caption, the start screen, the LaunchPad hex (cobalt) on the loop anchor. Technique #10: the app tiles, the calendar, the mail and the figure start as loose shapes scattered over the right of the frame and drift into their grid slots on ease.brand, all landing on beat 3; the status dots pop mint a sixteenth later; the live figure\'s last bar grows and the panel takes the orange ring.',
+		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the start screen, the LaunchPad hex (cobalt) on the loop anchor. Technique #10: the app tiles, the calendar, the mail and the figure start as loose shapes scattered over the right of the frame and drift into their grid slots on ease.brand, all landing on beat 3; the status dots pop mint a sixteenth later; the live figure\'s last bar grows and the panel takes the orange ring.',
 		sound: 'Gentle open. A soft whoosh as the shapes drift in, a tick per landing, a pluck on the live figure.',
 	},
 	proofs: [

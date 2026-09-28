@@ -103,7 +103,7 @@ const content = {
 		caption: 'Tickets by role,\nsee who paid',
 		ui: { drawUI: ticketUI, tagFill: 'cobalt' },
 		source: 'positioning larpinq sp-registration-payment ("Sell tickets by role and see who has paid."; counted as built, Round 7)',
-		motion: 'Frame 1 reads: caption, the three ticket roles with their prices, the registrations, the Larpinq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the paid pills step on in waves down the list (20%, 40%, full); one row stays idle and takes the orange ring on beat 4.',
+		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the three ticket roles with their prices, the registrations, the Larpinq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the paid pills step on in waves down the list (20%, 40%, full); one row stays idle and takes the orange ring on beat 4.',
 		sound: 'Gentle open. A ripple of soft ticks with the paid pills, a low tick on the unpaid row.',
 	},
 	proofs: [

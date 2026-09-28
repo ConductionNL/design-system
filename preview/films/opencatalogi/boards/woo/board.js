@@ -126,7 +126,7 @@ const content = {
 		caption: 'Woo deadline?\nFlagged in time',
 		ui: { drawUI: deadlineUI, tagFill: 'cobalt' },
 		source: 'positioning opencatalogi usp-woo-deadline (verified): "The statutory decision deadline warns you before it passes."; spec woo-transparency',
-		motion: 'Frame 1 reads: caption, the Woo requests with their deadline bars, the OpenCatalogi hex (cobalt) on the loop anchor. The deadline bars run down a sixteenth apart; on beat 3 the third row\'s bar turns lavender, the flag hex pops beside it and the row takes the orange ring. Out: the ringed row slides up and becomes the publication header of the next scene (hex match cut).',
+		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the Woo requests with their deadline bars, the OpenCatalogi hex (cobalt) on the loop anchor. The deadline bars run down a sixteenth apart; on beat 3 the third row\'s bar turns lavender, the flag hex pops beside it and the row takes the orange ring. Out: the ringed row slides up and becomes the publication header of the next scene (hex match cut).',
 		sound: 'Gentle open. Soft ticks as the bars run down, a pluck as the flag lands.',
 	},
 	proofs: [

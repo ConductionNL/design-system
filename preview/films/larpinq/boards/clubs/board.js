@@ -135,7 +135,7 @@ const content = {
 		caption: 'Every stat\nshows its cause',
 		ui: { drawUI: statUI, tagFill: 'cobalt' },
 		source: 'positioning larpinq usp-stat-breakdown (verified): "Open any stat and see which skill, item or condition caused it."; specs game-mechanics, larping-skill-widget',
-		motion: 'Frame 1 reads: caption, the character sheet with its stats, the Larpinq hex (cobalt) on the loop anchor. On beat 2 the second stat is opened: its ring closes (the one orange) and the trunk line draws out at right angles to three causes, a skill, an item and a condition, each landing a sixteenth apart with its plus or minus. Technique #9: the diagram then holds still while the caption alone swaps in; nothing else moves for a beat.',
+		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the character sheet with its stats, the Larpinq hex (cobalt) on the loop anchor. On beat 2 the second stat is opened: its ring closes (the one orange) and the trunk line draws out at right angles to three causes, a skill, an item and a condition, each landing a sixteenth apart with its plus or minus. Technique #9: the diagram then holds still while the caption alone swaps in; nothing else moves for a beat.',
 		sound: 'Gentle open. A pluck as the stat opens, three ticks as the causes land, then quiet under the hold.',
 	},
 	proofs: [

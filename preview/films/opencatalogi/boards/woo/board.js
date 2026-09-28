@@ -136,12 +136,12 @@ const content = {
 	proofs: [
 		{
 			id: 'index',
-			title: 'Picked up by the national index',
-			caption: 'Picked up by the\nnational index',
+			title: 'Every publication in the national index',
+			caption: 'Every publication\nin the national index',
 			source: 'positioning opencatalogi sp-woo-index ("The national index finds your publications on its own.") and usp-index-language (verified: "Publications carry the exact fields the national index reads."); specs dcat-ap-harvest, structured-data-discoverability',
 			motion: 'A small tag on the index box reads "Woo · EU Open Data Directive" (the two regimes the feed serves: spec dcat-ap-harvest, DCAT-AP-NL for the national index and High-Value Dataset classification under the EU Open Data Directive, Implementing Regulation (EU) 2023/138). Technique #3, grid-cell ripple: the publication\'s fields step from 20% to 40% to full opacity in a wave top to bottom and each mint tick pops as its field lands. On the bar line the straight line runs out to the index box on the right (an outside system: a rectangle, never a hex) and the newest index row slides in and takes the orange ring. Nobody presses send.',
 			sound: 'A ripple of ticks with the fields, a soft whoosh along the line, a pluck as the row lands in the index.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Picked up by the\nnational index', drawUI: indexUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every publication\nin the national index', drawUI: indexUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'search',

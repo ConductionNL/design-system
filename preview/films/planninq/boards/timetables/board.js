@@ -139,12 +139,12 @@ const content = {
 	proofs: [
 		{
 			id: 'exam',
-			title: 'Exam, room and invigilator at once',
-			caption: 'Exam, room and\ninvigilator at once',
+			title: 'Exam booked with room and invigilator',
+			caption: 'Exam booked with\nroom and invigilator',
 			source: 'positioning planninq sp-exam-room-booking ("Schedule an exam with its room and invigilators together."; "books the room and the invigilator in one pass")',
 			motion: 'Hard cut on the beat to the exam. The trunk line drops and branches right at right angles: the room lands, then the invigilator, a sixteenth apart, each with its mint booked pill. Technique #9: the three linked slots then hold still while only the caption reads.',
 			sound: 'A tick per branch, a pluck per booked pill, then quiet under the hold.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Exam, room and\ninvigilator at once', drawUI: examUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Exam booked with\nroom and invigilator', drawUI: examUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'cover',

@@ -145,12 +145,12 @@ const content = {
 		},
 		{
 			id: 'gate',
-			title: 'Paid, checked in, XP follows',
-			caption: 'Paid, checked in,\nXP follows',
+			title: 'Gate check-in, XP follows',
+			caption: 'Gate check-in,\nXP follows',
 			source: 'positioning larpinq sp-registration-payment ("Sell tickets by role and see who has paid.") and sp-run-events ("Record who actually showed up and let their experience follow from that."); specs event-checkin-roster, event-xp-awards',
 			motion: 'Technique #11, whip-pan: a 5-frame move to the right on ease.snap (render --blur 4) from the XP history to the gate roster. Every row already carries its ticket role and a mint paid pill; rows are checked one by one (the box fills mint with a quick scale) and a beat later the lavender XP pill slides out beside each. The third row, just checked, takes the orange ring.',
 			sound: 'A whip on the pan, a dry click per check, a pluck as each XP pill arrives.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Paid, checked in,\nXP follows', drawUI: gateUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Gate check-in,\nXP follows', drawUI: gateUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

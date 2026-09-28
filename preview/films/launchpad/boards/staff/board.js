@@ -11,7 +11,9 @@
  *            verified; spec dashboard-acknowledgements)
  *   proof 2  one template change pushed to every dashboard, merged the way you choose
  *            (usp-rollout-at-scale, verified; specs admin-templates, dashboard-cascade-events)
- *   general  the data layer: your dashboards on your own server (COPY.dataLayer D3; bible 10)
+ *   general  your dashboards on your own server (COPY.dataLayer D3; bible 10). Round 18: REDRAWN so the
+ *            picture shows the claim: the staff start screens wired down into your own server rack,
+ *            Nextcloud on it, the rack ringed (it replaces the shared data-layer picture of the history)
  *   promise  "One start screen for everyone"
  *
  * No assistant: the AI widget (launchpad-ai-dashboard-assistant) exists, but this film also
@@ -22,9 +24,10 @@
  * across the staff), #5 stepped hex wipe (the template change crossing into every dashboard).
  */
 import { C } from '../../../_lib/brand.js'
+import { el } from '../../../_lib/stage.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, hex, panel, widgetTile, calendarGrid, personRow, button } from '../../../_lib/ui.js'
+import { rect, bar, circle, hex, panel, widgetTile, calendarGrid, personRow, button, chrome, honeyField, layout, appTag, ncTag } from '../../../_lib/ui.js'
 
 const REFS = [
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Loose shapes drift together into one container.' },
@@ -110,6 +113,51 @@ function rolloutUI(w, geom) {
 	}
 }
 
+/**
+ * General slot, Round 18: "Your dashboards, on your own server" drawn as what it says. Local
+ * coordinates of the shared general scenes (x 170 to 780, y 640 to 1240, scale 1.25), so the
+ * picture sits where every other film's general scene sits. Three staff start screens (the
+ * LaunchPad tag pinned to the first) wire straight down into a server rack of four units with
+ * mint status lights; the Nextcloud hex sits on the rack (it runs there); the one orange is the
+ * ring round the rack: your own server is the answer of the scene.
+ */
+const SERVER_CAPTION = 'Your dashboards,\non your own server'
+function ownServerFrame(ctx) {
+	const U = 2.5
+	chrome(ctx, { text: SERVER_CAPTION, app: 'launchpad' })
+	honeyField(ctx.g, ctx.W * 0.62, ctx.H + 150, 80, 10, { top: ctx.H * 0.61, scale: 0.7, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
+	const { ui } = layout(ctx.W, ctx.H)
+	const g = el('g', { transform: `translate(${ui.x - 1.25 * 120} ${ui.y - 1.25 * 640}) scale(1.25)` }, ctx.g)
+	// the staff start screens, each a small dashboard of tiles
+	const sw = 190, gap = 20, sy = 640, sh = 170, ry = 900
+	for (let i = 0; i < 3; i++) {
+		const sx = 170 + i * (sw + gap)
+		rect(g, sx + sw / 2 - 1.5, sy + sh, 3, ry - sy - sh, C.cobalt300)
+		panel(g, sx, sy, sw, sh, U)
+		rect(g, sx, sy, sw, 18, C.cobalt, 4)
+		for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
+			const tx = sx + 16 + c * 56, ty = sy + 34 + r * 64
+			rect(g, tx, ty, 48, 52, r === 0 && c === 0 ? C.cobalt100 : C.cobalt50, 3)
+			if (r === 1 || c === 2) circle(g, tx + 38, ty + 42, 5, C.mint)
+		}
+	}
+	appTag(g, 170, sy + 18, 36, 'launchpad', { ringW: 5 })
+	// your own server: a rack of four units, status lights mint
+	const rx = 170, rw = 610, rh = 300
+	panel(g, rx, ry, rw, rh, U)
+	for (let k = 0; k < 4; k++) {
+		const uy = ry + 26 + k * 66
+		rect(g, rx + 40, uy, rw - 80, 52, C.cobalt900, 3 * U)
+		for (let v = 0; v < 6; v++) rect(g, rx + 70 + v * 22, uy + 16, 10, 20, C.cobalt700, 2)
+		bar(g, rx + 250, uy + 22, [150, 120, 170, 110][k], 8, C.cobalt400)
+		circle(g, rx + rw - 110, uy + 26, 7, C.mint)
+		circle(g, rx + rw - 84, uy + 26, 7, k === 2 ? C.cobalt400 : C.mint)
+	}
+	ncTag(g, rx, ry + rh / 2, 38, { ringW: 5 })
+	// the answer: the ring round your own server
+	rect(g, rx - 12, ry - 12, rw + 24, rh + 24, 'none', 6 * U, { stroke: C.orange, 'stroke-width': 2.5 * U })
+}
+
 const content = {
 	app: 'launchpad',
 	audience: { slug: 'staff', name: 'Staff start screen', persona: 'Annemieke de Groot, ICT manager at a municipality; Thijs Verhagen, IT manager at a 140-person company; Esther van Dijk, head of communications at a hospital group' },
@@ -155,12 +203,16 @@ const content = {
 		title: 'Your dashboards, on your own server',
 		caption: 'Your dashboards,\non your own server',
 		source: 'COPY.dataLayer D3 ("Your {many}, on your own server.", story.json mechanics[0]); bible "What is true" 10',
+		motion: 'Round 18, redrawn to show its own claim. The hex fill lands as the cobalt ground; three staff start screens drop in on the right a sixteenth apart (0.35 s, ease.brand), the LaunchPad tag pinned to the first. On the next beat a straight wire runs down from each screen and the server rack lands under them, its four units sliding in a sixteenth apart and their status lights popping mint; the Nextcloud hex lands on the rack\'s edge (Nextcloud runs there). On the third beat the orange ring closes round the rack: your own server. The honeycomb field pops in from the bottom edge. Out: the cards step down (0.85, ease.exit) and the app tag travels into Built on Nextcloud.',
 		params: {
 			record: { avatar: 'square', title: 230, sub: 150, status: 'mint' },
 			links: ['nc-calendar', 'nc-mail', 'nc-files'],
 		},
-		sound: 'Ticks as the history rows land, a pluck on the newest.',
+		sound: 'A tick per start screen, a low soft thud as the rack lands, a click as the ring closes.',
 	},
 }
 
-export const { meta, boards } = audienceFilm(content)
+const film = audienceFilm(content)
+// Round 18: the general slot draws the own-server picture instead of the shared data-layer history.
+film.boards.find((b) => b.id === 'general-dataLayer').draw = ownServerFrame
+export const { meta, boards } = film

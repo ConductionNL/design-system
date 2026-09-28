@@ -125,8 +125,8 @@ const content = {
 		caption: 'One pick,\nyour house style',
 		ui: { drawUI: styleUI, tagFill: 'cobalt' },
 		source: 'thematiq.json usp-government-house-styles (verified): "Pick your organisation and the exact house style loads." Specs token-sets (shipped sets in token-sets.json: Rijkshuisstijl, VNG, provinces, municipalities; no count on screen).',
-		motion: 'Frame 1 reads: caption, the organisation picker open, the workspace still in Nextcloud blue. On beat 2 the chosen row takes its orange ring with a tick. Technique #5, stepped hex wipe: a column of pointy-top hexes in three stepped sizes enters the window from the left edge and crosses it on ease.snap in four flat steps (one per eighth), and everything behind it repaints: the topbar, the nav head, the title bar, the tile heads and the primary button turn from Nextcloud blue into the house style. The still is the wipe at mid-window. Out: the hex match cut from the wipe column into the dialog.',
-		sound: 'Gentle open, no stinger: pad and offbeat bass. A tick as the row is picked, four dry clicks as the wipe steps, a soft whoosh behind it.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the organisation picker open, the workspace still in Nextcloud blue. On beat 2 the chosen row takes its orange ring with a tick. Technique #5, stepped hex wipe: a column of pointy-top hexes in three stepped sizes enters the window from the left edge and crosses it on ease.snap in four flat steps (one per eighth), and everything behind it repaints: the topbar, the nav head, the title bar, the tile heads and the primary button turn from Nextcloud blue into the house style. The still is the wipe at mid-window. Out: the hex match cut from the wipe column into the dialog.',
+		sound: 'A tick as the row is picked, four dry clicks as the wipe steps, a soft whoosh behind it.',
 	},
 	proofs: [
 		{
@@ -159,7 +159,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Thematiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Thematiq" the promise builds one word per eighth note, each word slamming in large while the type column eases back (ease.brand) so the line always just fits. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Thematiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Thematiq" the promise builds one word per sixteenth from two frames after the handover, each word slamming in large while the type column eases back (ease.brand) so the line always just fits. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Thematiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

@@ -134,8 +134,8 @@ const content = {
 		caption: 'Pipelines fetch it,\nnothing on disk',
 		ui: { drawUI: pipelineUI, tagFill: 'cobalt' },
 		source: 'keepiq.json sp-cicd-machine-secrets: "Fetch a secret in your pipeline without writing it to disk." Specs machine-secret-leases (short-lived lease per fetch), secret-store-api, keepiq-cli.',
-		motion: 'Frame 1 reads: caption, a pipeline run with its four steps, the fetch step ringed. Technique #4, typewriter: the run log types itself line by line under the steps (0.1 s per character block); on the fetch line the secret arrives as masked dots and the lease bar below starts counting down. Out: the hex match cut from the lock on the fetch step.',
-		sound: 'Gentle open. Quick key ticks under the log, a soft lock click on the fetch, a low tick as the lease starts.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, a pipeline run with its four steps, the fetch step ringed. Technique #4, typewriter: the run log types itself line by line under the steps (0.1 s per character block); on the fetch line the secret arrives as masked dots and the lease bar below starts counting down. Out: the hex match cut from the lock on the fetch step.',
+		sound: 'Quick key ticks under the log, a soft lock click on the fetch, a low tick as the lease starts.',
 	},
 	proofs: [
 		{
@@ -169,7 +169,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Keepiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Keepiq" the promise builds one word per eighth note while the type column eases back. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Keepiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Keepiq" the promise builds one word per sixteenth from two frames after the handover while the type column eases back. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Keepiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

@@ -132,8 +132,8 @@ const content = {
 		caption: 'Shared logins,\na role per person',
 		ui: { drawUI: folderUI, tagFill: 'cobalt' },
 		source: 'keepiq.json sp-team-folder-roles: "Give a shared folder its own access level per person." Specs team-folder-sharing, folder-permission-grades.',
-		motion: 'Frame 1 reads: caption, the team folder with its members and role pills. Technique #9, text-swap on a held diagram: the folder holds still; only the third member\'s role changes, the menu opening under it and "edit" taking the orange ring on beat 3, the pill swapping in place. Out: the hex match cut from the pill into the request scene.',
-		sound: 'Gentle open: pad and offbeat bass. A pluck as the menu opens, a tick as the role swaps.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the team folder with its members and role pills. Technique #9, text-swap on a held diagram: the folder holds still; only the third member\'s role changes, the menu opening under it and "edit" taking the orange ring on beat 3, the pill swapping in place. Out: the hex match cut from the pill into the request scene.',
+		sound: 'A pluck as the menu opens, a tick as the role swaps.',
 	},
 	proofs: [
 		{
@@ -168,7 +168,7 @@ const content = {
 		motion: 'The decoy login card sits in the vault; someone opens it and its last stage lights lavender. A wire runs to the bell in Nextcloud\'s header, the badge lands (the one orange), and the Keepiq notice tops the popover for the owner and the admin, two avatars.',
 		sound: 'A dry click as the decoy is opened, a pluck as the notice lands. No bell sound.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Keepiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Keepiq" the promise builds one word per eighth note while the type column eases back. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Keepiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Keepiq" the promise builds one word per sixteenth from two frames after the handover while the type column eases back. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Keepiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

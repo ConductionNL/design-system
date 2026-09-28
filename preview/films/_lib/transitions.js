@@ -265,13 +265,16 @@ const DRAW = {
 		else if (aOut > 0) A.pic.setAttribute('transform', about(a[0], a[1], 1 - aOut))
 		if (u < 0) {
 			B.pic.setAttribute('display', 'none')
+			// One orange at a time: the token is the key element now, so the original steps out of A.
+			if (A.token) A.token.node.setAttribute('visibility', 'hidden')
 			const sA = Math.sqrt(A.key.w * A.key.h), sB = Math.sqrt(B.key.w * B.key.h)
 			const s = lerp(1, sB / Math.max(sA, 1), k) * (1 + 0.12 * Math.sin(Math.PI * k))
 			const x = lerp(a[0], b[0], k), y = lerp(a[1], b[1], k)
 			if (A.token) {
 				const g = el('g', { transform: `translate(${(x - a[0]).toFixed(2)} ${(y - a[1]).toFixed(2)}) ${about(a[0], a[1], s)}` }, over)
 				const inner = el('g', { transform: A.token.matrix }, g)
-				inner.appendChild(A.token.node.cloneNode(true))
+				const copy = inner.appendChild(A.token.node.cloneNode(true))
+				copy.removeAttribute('visibility')
 			} else el('path', { d: hexPath(x, y, 40 * s, 6), fill: C.orange }, over)
 		} else {
 			// On the beat B cuts in round the landed element, with a small settle about it.
@@ -559,6 +562,7 @@ export function playBody(film, boards, { t0 = 0, need, exclude = [], audit = nul
 				L.under.replaceChildren()
 				if (!on) return
 				for (const a of ['transform', 'opacity', 'clip-path', 'display']) L.pic.removeAttribute(a)
+				if (L.token) L.token.node.removeAttribute('visibility')
 				// One mark at a time: the outgoing board's until the cut, then the incoming one's.
 				if (L.mark) L.mark.setAttribute('display', (!h || ft >= h.cut) && (!hn || ft < hn.cut) ? 'inline' : 'none')
 				if (drawCaption(L.cap, ft, caps[i].t0, caps[i].t1)) capUp = true

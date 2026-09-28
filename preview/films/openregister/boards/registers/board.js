@@ -140,8 +140,8 @@ const content = {
 		caption: 'New record type?\nNo developer',
 		ui: { drawUI: typeEditorUI, tagFill: 'cobalt' },
 		source: 'positioning openregister sp-model-without-code ("Add a new record type yourself, with no developer needed."); specs no-code-app-builder, runtime-schema-api',
-		motion: 'Frame 1 reads: caption, the record type editor (its fields on the left, the form it makes on the right), the OpenRegister hex (cobalt: the one orange is the new field\'s ring) on the loop anchor. Technique #4, typewriter: in the dashed new row the field name types itself (greeked characters one pair per 0.1 s, hard on and off, a cursor), its type chip drops in, the row fills and takes the orange ring, and on the same beat its input appears last in the live form on the right. Out: a hard cut on the beat.',
-		sound: 'Gentle open. Soft key ticks under the typing, a pluck as the input appears in the form.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the record type editor (its fields on the left, the form it makes on the right), the OpenRegister hex (cobalt: the one orange is the new field\'s ring) on the loop anchor. Technique #4, typewriter: in the dashed new row the field name types itself (greeked characters one pair per 0.1 s, hard on and off, a cursor), its type chip drops in, the row fills and takes the orange ring, and on the same beat its input appears last in the live form on the right. Out: a hard cut on the beat.',
+		sound: 'Soft key ticks under the typing, a pluck as the input appears in the form.',
 	},
 	proofs: [
 		{
@@ -178,7 +178,7 @@ const content = {
 	builtOnLit: true,
 	builtOnApps: ['dossiq', 'portaliq', 'integriq'],
 	builtOnMotion: 'The shared piece with the Round 14 option (_lib/scenes/closing.js, on: \'nextcloud\', litLayer: true): Nextcloud lands low right, the data layer drops onto it and this time it is the lit cell, orange with the OpenRegister glyph, its name rising beside it; "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them; the Nextcloud apps pop in round it one a sixteenth; on its second bar Dossiq, Portaliq and Integriq, the apps that keep their records in it, land on top in white. OpenRegister is not repeated on top: it is the layer.',
-	promiseMotion: 'Technique #2, zoom-out sentence build. The OpenRegister cell lands on the loop anchor and turns orange (the app icon exception on cobalt), the apps that keep their records in it (Dossiq, Portaliq, Integriq) lock in white round the Nextcloud hex. Under "OpenRegister" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on, where OpenRegister lights up as the data layer.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the OpenRegister cell lands on the loop anchor and turns orange (the app icon exception on cobalt), the apps that keep their records in it (Dossiq, Portaliq, Integriq) lock in white round the Nextcloud hex. Under "OpenRegister" the promise builds one word per sixteenth from two frames after the handover, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the OpenRegister cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

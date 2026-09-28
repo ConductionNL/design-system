@@ -12,7 +12,7 @@
  *                                 apps it links a record to round it, the film's app on top
  *   installScene(ctx, p)   BRAND  3 bars. The install board as slogans (round 5): "Install
  *   installFrame(ctx, p)          the app" (orange: the call) / "Use the app" / "Own your data"
- *                                 and "Always 100% open source and free to use"; round 6: no
+ *                                 and "Always 100% open source" (round 15: no "free"); round 6: no
  *                                 full stops, the Conduction wordmark as the header and the
  *                                 Conduction avatar where the Nextcloud cell was
  *
@@ -314,19 +314,21 @@ export function builtOnFrame(ctx, p = {}) {
 /** The words (round 6: no full stop at the end of any line), and why each is true (story.json facts). */
 export const INSTALL = {
 	slogans: ['Install the app', 'Use the app', 'Own your data'],
-	line: 'Always 100% open source and free to use',
+	// Round 15 (Ruben): no "free" anywhere; the line is the licence only.
+	line: 'Always 100% open source',
 	/** Kept for boards that read the call: the first slogan is the call now. */
 	call: 'Install the app',
 	sources: {
 		'Install the app / Use the app': 'Ruben, round 5; every core app but Humaniq and Planninq has a release in the Nextcloud app store (story.json facts, apps.json fetched 2026-09-27)',
 		'Own your data': 'story.json mechanics[0]: all your apps keep their records in one place, on your own server; bible truth 10 (your own server)',
-		'Always 100% open source and free to use': 'story.json facts: licence EUPL-1.2 (verified), price of the apps €0, support optional (verified)',
+		'Always 100% open source': 'story.json facts: licence EUPL-1.2 (verified)',
 	},
 }
 
 /**
  * Type sizes, measured: the Conduction wordmark as the header, the slogans at headline size,
- * the line at 72 px (round 6: "clearly larger", it reads in a phone feed; 1310 px wide, inside
+ * the line at 72 px (round 6: "clearly larger", it reads in a phone feed; round 15 shortened it to
+ * "Always 100% open source", well inside
  * the safe box).
  */
 const INSTALL_TYPE = { markY: 206, markH: 96, slogan: 104, sloganLh: 112, first: 420, lineSize: 72, gap: 70 }

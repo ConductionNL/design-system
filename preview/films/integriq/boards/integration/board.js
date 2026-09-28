@@ -126,8 +126,8 @@ const content = {
 		caption: 'The citizen, live\nfrom the source',
 		ui: { drawUI: liveReadUI, tagFill: 'cobalt' },
 		source: 'positioning integriq usp-registry-live-read, verified ("Read a citizen or company straight from the source, live."; scene: "the lookup reads straight from the base itself"); spec connector-catalog (BRP HaalCentraal source, category "Government registers")',
-		motion: 'Frame 1 reads: caption, the base registry as a side box on the left (BRP as a small label), the citizen\'s record on the right, the Integriq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: an orange hex runs along the square wire (the live read) and the record\'s fields step from 20% to 40% to full mint in a wave, top to bottom, within one bar. No copy lands anywhere: when the read ends the wire stays live.',
-		sound: 'Gentle open. A soft pulse along the wire, a ripple of ticks as the fields fill.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the base registry as a side box on the left (BRP as a small label), the citizen\'s record on the right, the Integriq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: an orange hex runs along the square wire (the live read) and the record\'s fields step from 20% to 40% to full mint in a wave, top to bottom, within one bar. No copy lands anywhere: when the read ends the wire stays live.',
+		sound: 'A soft pulse along the wire, a ripple of ticks as the fields fill.',
 	},
 	proofs: [
 		{
@@ -162,7 +162,7 @@ const content = {
 		},
 		sound: 'A low tick as the source trips, a dry click as the notice lands (no bell).',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Integriq cell lands on the loop anchor and turns orange, OpenRegister, Dossiq and Portaliq lock in white round the Nextcloud hex. Under "Integriq" the promise builds one word per eighth note while the type column\'s camera eases back; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Integriq cell lands on the loop anchor and turns orange, OpenRegister, Dossiq and Portaliq lock in white round the Nextcloud hex. Under "Integriq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Integriq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

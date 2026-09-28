@@ -4,13 +4,17 @@
  * sit round it, so every audience film has the same modular shape:
  *
  *   opening   BRAND    the shared Conduction opening, 3 bars (_lib/scenes/opening.js)
- *   hook      APP      proof moment 1, legible on frame 1 of the body
+ *   promise   BRAND    Round 15: the body OPENS on the promise, right after the opening's
+ *                      handover. The app's cell lands in the honeycomb round Nextcloud; the
+ *                      app name and the film's ONE promise in the type column. It replaces
+ *                      the template's outro: the install call is said once, on the shared
+ *                      install board, not twice
+ *   hook      APP      proof moment 1, laid in behind the app cell the promise leaves on
+ *                      the loop anchor
  *   proof x2  APP      proof moments 2 and 3
- *   general   GENERAL  one shared capability, filled with this audience's content
- *   promise   BRAND    the app's cell lands in the honeycomb round Nextcloud; the app
- *                      name and the film's ONE promise in the type column. It replaces
- *                      the template's outro: the install call is said once, on the
- *                      shared install board, not twice
+ *   general   GENERAL  one shared capability, filled with this audience's content. The body
+ *                      ENDS here (Round 15, BODY_END): the last proof holds, no card follows,
+ *                      and its app tag travels into Built on, where the app name returns
  *   builtOn   BRAND    the shared closing piece as "Built on Nextcloud" (Round 10: no ConNext in
  *                      app and audience films), 2 bars, this app on top
  *   install   BRAND    the shared install board, 3 bars
@@ -25,8 +29,8 @@ import { textBlock } from './stage.js'
 import { SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
-import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, DURATION as BODY } from './appfilm.js'
-import { LOOP_ANCHOR } from './scenes/general.js'
+import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, SPB, SIXTEENTH, RISE, CLEAR, FPS, snap, beatT, barBeat, DURATION as BODY } from './appfilm.js'
+import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.js'
@@ -38,6 +42,20 @@ export const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR // 33.75 s, 18 bars
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.round(t / BAR) + 1
+
+/** Round 15: the promise opens the body, 9 beats (the outro's length), and every other slot moves 9 beats later. */
+export const PROMISE_BEATS = 9
+/** The promise's words start rising 2 frames after the opening's handover and build one word per sixteenth. */
+export const PROMISE_LEAD = 2 / FPS
+
+/**
+ * How every body ends (Round 15, the same in every film): on its last proof, the general scene,
+ * holding its caption to 4 frames before the bar line. No card follows and no words are added;
+ * the app name comes back in the Built on piece, in its own cell.
+ */
+export const BODY_END = 'Body end (Round 15, the same in every film): this last proof holds its caption to four frames before the bar line and no card follows. On the bar line its cards step down and the app tag lifts off and travels into Built on Nextcloud, where the app name returns in its own cell.'
+/** The Built on piece picks the tag up (Round 15). */
+export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles in the app\'s own cell, so the app name returns without a card of its own.'
 
 /**
  * The promise card: the template's outro cluster (the app cell up-left of the
@@ -64,24 +82,46 @@ export function audienceBoards(content) {
 	const { app, promise, neighbours = [], builtOnApps = [], builtOnLit = false } = content
 	const name = content.name || APP_NAMES[app] || app
 	const body = appBoards({ ...content, outro: { neighbours } })
-	const shift = (b) => ({ ...b, start: b.start + OPEN, end: b.end + OPEN, shows: b.shows + OPEN, clears: b.clears + OPEN })
-	const boards = body.map(shift)
 
-	// The template's outro becomes the promise.
-	const last = boards[boards.length - 1]
-	const promiseClears = OPEN + BODY - 0.16
-	boards[boards.length - 1] = {
-		...last,
+	// Round 15: the template's outro becomes the promise and moves to the front; the rest keep
+	// their lengths and move PROMISE_BEATS later, so the body is still 10 bars.
+	const outro = body[body.length - 1]
+	const beatOf = (t) => Math.round(t / SPB)
+	const timed = (b, from, to, shows) => {
+		const start = beatT(from), end = beatT(to)
+		const clears = snap(end - CLEAR)
+		return { ...b, start, end, bars: `${barBeat(from)}-${barBeat(to - 1)}`, shows, clears, hold: +(clears - shows).toFixed(2) }
+	}
+	const promiseWords = wordCount(promise)
+	const promiseBoard = {
+		...timed(outro, 0, PROMISE_BEATS, snap(PROMISE_LEAD + RISE + (promiseWords - 1) * SIXTEENTH)),
 		id: 'promise',
 		module: 'promise',
 		title: `${name}: the promise`,
 		words: `${name}\n${promise}`,
-		clears: promiseClears,
-		hold: +(promiseClears - last.shows).toFixed(2),
-		motion: content.promiseMotion || `On ${s2(last.start)} (bar ${barOf(last.start)}) the app tag from the general scene lifts off its card and lands in its cell up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it in a quick stagger (every word in by ${s2(last.shows)}) and holds to ${s2(promiseClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which the Built on piece picks up as its ground, no cut.`,
-		sound: content.promiseSound || 'A pluck as the app cell lands, a low thud under the Nextcloud hex, a soft pad swell under the promise. A crisp click on the bar line into Built on.',
-		draw: (ctx) => promiseFrame(ctx, { app, promise, neighbours }),
 	}
+	const P = { from: s2(OPEN), shows: s2(OPEN + promiseBoard.shows), clears: s2(OPEN + promiseBoard.clears), out: s2(OPEN + promiseBoard.end) }
+	promiseBoard.motion = content.promiseMotion || `Round 15, the body opens here. On ${P.from}, straight after the opening's handover on its plain field, the app cell lands up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it from two frames after the handover, one word per sixteenth (every word in by ${P.shows}), and holds to ${P.clears}. Out on ${P.out}: the field, the neighbours and the Nextcloud hex step out on 16ths and the app cell shrinks in place on the loop anchor to the hook's tag (turning cobalt when the hook's tag is cobalt) while the hook's window lays in behind it.`
+	promiseBoard.sound = content.promiseSound || 'The body\'s bed enters gently under the promise (pad and offbeat bass, no stinger): a pluck as the app cell lands, a low thud under the Nextcloud hex. A short whoosh as the cluster steps out into the hook.'
+	promiseBoard.draw = (ctx) => promiseFrame(ctx, { app, promise, neighbours })
+
+	const rest = body.slice(0, -1).map((b) => {
+		const from = beatOf(b.start) + PROMISE_BEATS, to = beatOf(b.end) + PROMISE_BEATS
+		const r = timed(b, from, to, snap(beatT(from) + RISE))
+		if (b.id === 'hook') {
+			// No longer frame 1 of the body: it comes in behind the app cell the promise leaves on the loop anchor.
+			if (!content.hook?.motion) r.motion = MOTION.hook({ from, to }).replace('Frame 1 is this key frame exactly', 'In behind the app hex the promise leaves on the loop anchor, the key frame is exactly this')
+			if (!content.hook?.sound) r.sound = 'A soft pluck as the push starts; a tick on the cell that becomes the hex; whoosh under the fill.'
+		}
+		if (b.layer === 'general') {
+			// The body ends here (BODY_END): the shared note's hand-off to the outro cluster is replaced.
+			const base = content.general?.motion || MOTION[b.module]({ from, to, clears: r.clears }).replace(/ Out on [^:]*: (?:(?!\. ).)*?outro cluster.*?\./, '')
+			r.motion = `${base} ${BODY_END}`
+		}
+		return r
+	})
+	const shift = (b) => ({ ...b, start: b.start + OPEN, end: b.end + OPEN, shows: b.shows + OPEN, clears: b.clears + OPEN })
+	const boards = [promiseBoard, ...rest].map(shift)
 
 	const opening = {
 		id: 'opening',
@@ -93,8 +133,8 @@ export function audienceBoards(content) {
 		bars: '1.1-3.4',
 		words: '',
 		apps: ['openregister'],
-		motion: `The shared opening as it is (_lib/scenes/opening.js addOpening, 3 bars, ${s2(OPEN)}): the hex canvas, the ripple to the app cluster, the ripple that steps them off, the company name, the dry click. It hands over on a plain field; the body's hook frame builds on the next downbeat.`,
-		sound: 'The opening\'s own: hum, crackle, arcs, sparks, power-on ending on a dry click. The body\'s bed enters with the hook.',
+		motion: `The shared opening as it is (_lib/scenes/opening.js addOpening, 3 bars, ${s2(OPEN)}): the hex canvas, the ripple to the app cluster, the ripple that steps them off, the company name, the dry click. It hands over on a plain field; the body's promise card builds on the next downbeat (Round 15).`,
+		sound: 'The opening\'s own: hum, crackle, arcs, sparks, power-on ending on a dry click. The body\'s bed enters with the promise.',
 		source: 'Shared module, no claim.',
 		draw(ctx) {
 			const up = buildOpening(ctx.g, { defs: ctx.defs })
@@ -114,7 +154,7 @@ export function audienceBoards(content) {
 		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
 		words: 'Built on\nNextcloud',
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: content.builtOnMotion || `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
+		motion: `${content.builtOnMotion || `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`} ${BUILT_IN}`,
 		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
 		source: 'Shared module: round4/facts.json fact a.',
 		// builtOnLit (Round 14, OpenRegister films): the data layer itself is the lit cell, so the app is not repeated on top.
@@ -139,7 +179,7 @@ export function audienceBoards(content) {
 	return [opening, ...boards, built, install]
 }
 
-/** The word budget of the body (hook to promise; the bible's 20 to 30), with the shared modules listed apart. */
+/** The word budget of the body (promise to the last proof; the bible's 20 to 30), with the shared modules listed apart. */
 export function audienceBudget(boards) {
 	const body = boards.filter((b) => !['opening', 'builtOn', 'install'].includes(b.module))
 	const rows = body.map((b) => {

@@ -131,8 +131,8 @@ const content = {
 		caption: 'Pick a template,\nit fills itself',
 		ui: { drawUI: generateUI, tagFill: 'cobalt' },
 		source: 'positioning filinq sp-generate-from-record ("Pick a template and a case and the letter fills itself."); spec document-creatie-sjablonen (merge data resolved from the record)',
-		motion: 'Frame 1 reads: caption, the client\'s record and the template list on the left, the document on the right, the Filinq hex (cobalt) on the loop anchor. The picked template row lights. Technique #10, cluster-to-container merge: the record\'s details lift off as small loose shapes, drift along square wires and settle into the document\'s slots within one beat; the last value lands orange.',
-		sound: 'Gentle open. A tick on the template pick, three plucks as the values land.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the client\'s record and the template list on the left, the document on the right, the Filinq hex (cobalt) on the loop anchor. The picked template row lights. Technique #10, cluster-to-container merge: the record\'s details lift off as small loose shapes, drift along square wires and settle into the document\'s slots within one beat; the last value lands orange.',
+		sound: 'A tick on the template pick, three plucks as the values land.',
 	},
 	proofs: [
 		{
@@ -161,7 +161,7 @@ const content = {
 		source: 'positioning filinq platform draw-your-flows, medium ("A document being created or changed can trigger a rule the organisation drew itself") and sp-app-integrations ("call other tools on a change"); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Filinq cell lands on the loop anchor and turns orange, Pipelinq, Portaliq and OpenRegister lock in white round the Nextcloud hex. Under "Filinq" the promise builds one word per eighth note while the type column\'s camera eases back; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Filinq cell lands on the loop anchor and turns orange, Pipelinq, Portaliq and OpenRegister lock in white round the Nextcloud hex. Under "Filinq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Filinq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

@@ -127,8 +127,8 @@ const content = {
 		caption: 'Every application,\nowner and supplier',
 		ui: { drawUI: landscapeUI, tagFill: 'cobalt' },
 		source: 'positioning stackiq sp-landscape-register ("Every application carries its own supplier and owner."); spec application-lifecycle-tracking (planned, in use, phasing out)',
-		motion: 'Frame 1 reads: caption, the landscape as one list (application, owner, supplier, lifecycle phase), the Stackiq hex (cobalt) on the loop anchor. Technique #10, cluster-to-container merge: over the first two beats the rows start as loose square icons scattered over the window (a shared drive, a catalogue, colleagues\' notes) and each tweens into its row on ease.brand, arriving within one beat; then owners, suppliers and phase pills fill a sixteenth apart. On beat 5 one row takes the orange ring.',
-		sound: 'Gentle open. A run of soft ticks as the rows land, a pluck on the ringed row.',
+		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the landscape as one list (application, owner, supplier, lifecycle phase), the Stackiq hex (cobalt) on the loop anchor. Technique #10, cluster-to-container merge: over the first two beats the rows start as loose square icons scattered over the window (a shared drive, a catalogue, colleagues\' notes) and each tweens into its row on ease.brand, arriving within one beat; then owners, suppliers and phase pills fill a sixteenth apart. On beat 5 one row takes the orange ring.',
+		sound: 'A run of soft ticks as the rows land, a pluck on the ringed row.',
 	},
 	proofs: [
 		{
@@ -163,7 +163,7 @@ const content = {
 		},
 		sound: 'A low tick as the contract reaches its stage, a dry click as the notice lands (no bell).',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Stackiq cell lands on the loop anchor and turns orange, OpenRegister, OpenCatalogi and Integriq lock in white round the Nextcloud hex. Under "Stackiq" the promise builds one word per eighth note while the type column\'s camera eases back; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Stackiq cell lands on the loop anchor and turns orange, OpenRegister, OpenCatalogi and Integriq lock in white round the Nextcloud hex. Under "Stackiq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Stackiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

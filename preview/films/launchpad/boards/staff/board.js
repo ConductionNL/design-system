@@ -209,10 +209,11 @@ const content = {
 			links: ['nc-calendar', 'nc-mail', 'nc-files'],
 		},
 		sound: 'A tick per start screen, a low soft thud as the rack lands, a click as the ring closes.',
+		// Round 18: the general slot draws the own-server picture instead of the shared data-layer history
+		// (passed in, not swapped in afterwards, so the Round 24 current wraps it like every other scene).
+		draw: ownServerFrame,
 	},
 }
 
 const film = audienceFilm(content)
-// Round 18: the general slot draws the own-server picture instead of the shared data-layer history.
-film.boards.find((b) => b.id === 'general-dataLayer').draw = ownServerFrame
 export const { meta, boards } = film

@@ -520,6 +520,16 @@ function connectRoute(pos) {
 	return { d: `M${lx} ${foot}V${bus}H${x}V${top}`, len: (bus - foot) + Math.abs(x - lx) + (top - bus) }
 }
 
+/** The same route as points, for the current's head. */
+function connectPoints(pos) {
+	const [lx, ly] = CONNECT.lead, [x, y] = cxy(pos), R = HEX_R
+	const foot = ly + R, top = y - R
+	const [, y1] = cxy([-1, 2])
+	const bus = foot + ((y1 - R) - foot) * CONNECT.line.bus
+	if (Math.abs(x - lx) < 0.5) return [[lx, foot], [lx, top]]
+	return [[lx, foot], [lx, bus], [x, bus], [x, top]]
+}
+
 /** The camera for the zoom (k 0 to 1): a world point to a screen point. */
 function camOf(k) {
 	const Z = CONNECT.zoom
@@ -616,6 +626,14 @@ function drawConnect(g, t, p, W = 1920) {
 		if (pr <= 0.001) return
 		const { d, len } = connectRoute(CONNECT.cells[id])
 		el('path', { d, ...lineAttrs, ...(pr < 1 ? { 'stroke-dasharray': `${len.toFixed(1)} ${len.toFixed(1)}`, 'stroke-dashoffset': (len * (1 - pr)).toFixed(1) } : {}) }, world)
+		// Round 24: the current runs each connector; its head (Nextcloud cyan: the lead holds the orange) rides the front.
+		if (pr < 1) {
+			const pts = connectPoints(CONNECT.cells[id])
+			const lens = pts.slice(1).map((pt, j) => Math.hypot(pt[0] - pts[j][0], pt[1] - pts[j][1]))
+			let left = lens.reduce((a, v) => a + v, 0) * pr, hx = pts[0][0], hy = pts[0][1]
+			for (let j = 0; j < lens.length && left > 0; j++) { const u = Math.min(1, left / lens[j]); hx = lerp(pts[j][0], pts[j + 1][0], u); hy = lerp(pts[j][1], pts[j + 1][1], u); left -= lens[j] }
+			el('path', { d: hexPath(hx, hy, 13, 3), fill: C.nextcloudCyan }, world)
+		}
 	})
 	// The Nextcloud apps, in Nextcloud blue with white icons.
 	LOAD_ORDER.forEach((id, i) => {

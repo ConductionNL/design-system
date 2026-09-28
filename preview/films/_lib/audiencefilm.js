@@ -30,6 +30,7 @@ import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
 import { chrome, workspaceCluster, CORNERS } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING, BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from './scenes/closing.js'
+import { CURRENT, keyElement, landing, boardCurrent } from './current.js'
 
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
 // Round 21: the new Built on piece is 3 bars, the install board 3 bars.
@@ -202,7 +203,41 @@ export function audienceBoards(content) {
 		source: 'Shared module: INSTALL.sources in closing.js.',
 		draw: (ctx) => { installFrame(ctx, {}) },
 	}
+	withCurrent(boards, content)
 	return [opening, ...boards, built, install]
+}
+
+/**
+ * Round 24: the current carries every body hand-off. Each body board gets its incoming wire: from the
+ * previous board's key element (for the first, the frame's centre, where the opening powered on) to this
+ * board's key element, the thing the caption is about. The key element is the scene's orange, measured
+ * from the rendered frame, unless the content names an anchor: content.anchors = { <board id>: [x, y] }
+ * (stage px). The head is Nextcloud cyan, since the key element holds the scene's one orange. Stills only need
+ * the arrived state, so the wire is drawn once, on the board's first visible render.
+ */
+function withCurrent(boards, content) {
+	const anchors = []
+	boards.forEach((b, i) => {
+		const draw = b.draw
+		b.drawBase = draw // the frame without its wire, for pages that animate the current themselves
+		b.currentAnchor = content.anchors?.[b.id] || null
+		b.draw = (ctx) => {
+			const up = draw(ctx)
+			let done = false
+			return (t) => {
+				if (typeof up === 'function') up(t)
+				if (done || ctx.g.getAttribute('display') === 'none') return
+				done = true
+				const named = content.anchors?.[b.id]
+				const key = named ? { x: named[0], y: named[1], w: 60, h: 60 } : keyElement(ctx.g, { exclude: b.id === 'promise' ? [] : [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
+				if (!key) return
+				anchors[i] = [key.x, key.y]
+				const from = i === 0 ? CURRENT.origin : (anchors[i - 1] || CURRENT.origin)
+				const to = landing(key, from)
+				boardCurrent(ctx.g, { from, to, element: key, headColor: C.nextcloudCyan })
+			}
+		}
+	})
 }
 
 /** The word budget of the body (hook to promise; the bible's 20 to 30, or up to max), with the shared modules listed apart. */

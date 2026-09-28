@@ -2,7 +2,7 @@
  * The Conduction opening: the sting in front of every Conduction film.
  *
  * Three bars at 128 BPM (5.625 s, 135 frames at 24 fps). A calm honeycomb in
- * cobalt holds a dormant cluster of all 21 app glyphs. A current runs in from
+ * cobalt holds a dormant cluster of 20 app glyphs. A current runs in from
  * the edges of the frame toward the heart of the cluster: a travelling front
  * with a sharp white leading edge and a tail that decays in steps, every cell
  * charging with a spring as it arrives and small arcs jumping the gap to the
@@ -29,7 +29,7 @@
  *   const bodyStart = addOpening(film, { at: 0 })   // returns the opening's end time
  *
  * Sound cues (crackle, arc, hum, powerOn, plus the house tick, kick, impact,
- * whoosh and bell) are recorded with film.cue next to the motion that causes
+ * whoosh and click) are recorded with film.cue next to the motion that causes
  * them; scripts/films/score.mjs renders them.
  */
 import { el, set, nextId } from '../stage.js'
@@ -72,8 +72,12 @@ const hexDist = (q, r) => (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2
 const NEIGHBOURS = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]]
 
 /**
- * The cluster: rows of 3, 4, 7, 4 and 3 cells, mirror-symmetric and wide for
- * the landscape frame, 21 cells for the 21 apps. The heart is OpenRegister
+ * The cluster: 20 apps (round 5: Buildiq is out of the films, it moves to
+ * Nextcloud). The radius-2 honeycomb round the heart (rows of 3, 4, 5, 4 and
+ * 3) plus one cell at the right end of the middle row, where the name will be
+ * written: a honeycomb with a centre cell is only exactly symmetric with an
+ * odd count, so the twentieth cell points the way the name goes. The camera
+ * centres the cluster's mass, not its heart (see CX0). The heart is OpenRegister
  * (every app keeps its records in it); the first ring holds the apps a
  * customer meets first; the three cells right of the heart turn over to the
  * name.
@@ -84,9 +88,9 @@ const CLUSTER = {
 	'1,0': 'pipelinq', '1,-1': 'opencatalogi', '0,-1': 'filinq', '-1,0': 'integriq', '-1,1': 'launchpad', '0,1': 'portaliq',
 	// second ring, clockwise from east
 	'2,0': 'dossiq', '2,-1': 'shillinq', '2,-2': 'thematiq', '1,-2': 'learniq', '0,-2': 'decidiq', '-1,-1': 'hermiq',
-	'-2,0': 'buildiq', '-2,1': 'stackiq', '-2,2': 'keepiq', '-1,2': 'humaniq', '0,2': 'planninq', '1,1': 'versioniq',
-	// the two ends of the middle row
-	'3,0': 'larpinq', '-3,0': 'zaakafhandelapp',
+	'-2,0': 'zaakafhandelapp', '-2,1': 'stackiq', '-2,2': 'keepiq', '-1,2': 'humaniq', '0,2': 'planninq', '1,1': 'versioniq',
+	// the right end of the middle row: the name's last tile
+	'3,0': 'larpinq',
 }
 /** The cells whose backs carry the wordmark, left to right. */
 const NAME_CELLS = ['1,0', '2,0', '3,0']
@@ -105,6 +109,8 @@ const WM_W = (WM_H * WMW) / WMH
 const WM = { x: AW / 2 + 0.295 * AH, y: -WM_H / 2, w: WM_W, h: WM_H }
 /** The lockup's visible extent (the wordmark file keeps a few units of side bearing on the right). */
 const LOCK_CX = (-AW / 2 + WM.x + WM.w - (5 * WM_H) / WMH) / 2
+/** The cluster's centre of mass: the camera frames it there until the glide, so the silhouette sits balanced. */
+const CX0 = Object.keys(CLUSTER).reduce((a, k) => a + cellXY(...k.split(',').map(Number))[0], 0) / Object.keys(CLUSTER).length
 
 /* ------------------------------------------------------------ helpers */
 
@@ -167,7 +173,7 @@ const Z4 = 1.28 // the hold keeps pushing, slowly, so the held name stays alive
 const GLIDE = bezier(0.42, 0, 0.1, 1)
 
 export function camera(t) {
-	let z, x = 0
+	let z, x = CX0
 	// The recoil starts on the frame of the hit (not mid-frame), so the blur sub-samples of that frame agree.
 	if (fi(t) < fi(T.connect)) {
 		z = lerp(Z0, Z1, Math.pow(clamp(t / T.connect), 2.1))
@@ -179,7 +185,7 @@ export function camera(t) {
 	} else if (t < T.glide[1]) {
 		const p = GLIDE(inv(T.glide[0], T.glide[1], t))
 		z = Math.exp(lerp(Math.log(Z2), Math.log(Z3), p))
-		x = LOCK_CX * p
+		x = lerp(CX0, LOCK_CX, p)
 	} else {
 		z = lerp(Z3, Z4, inv(T.glide[1], T.end, t))
 		x = LOCK_CX
@@ -503,7 +509,8 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
  * the apps light ring by ring (A5, B5, C#6), a big arc and a low thud on the
  * heart; a soft heartbeat while the network is live; four rising sparks as
  * the tiles turn over to the name (D6, E6, F#6, A6); and on the bar 3
- * downbeat a clean power-on with the house bell an octave down (D5), the hum
+ * downbeat a clean power-on with a crisp switch click on top (round 5: no
+ * bell anywhere), the hum
  * settling underneath and fading into the film.
  */
 export function openingCues() {
@@ -565,9 +572,9 @@ export function openingCues() {
 	outEvents.sort((a, b) => a[0] - b[0])
 	cue(0, 'crackle', { events: outEvents, gain: 0.22, seed: 22, freqLo: 1600, freqHi: 9000 })
 
-	// The name powers on: a clean switch, a low thump, the house bell an octave down.
+	// The name powers on: a clean switch, a low thump, and a crisp click on top (round 5: a click, never a bell).
 	cue(T.powerOn, 'powerOn', { gain: 0.5, from: 118, to: 36.7, decay: 0.7, ping: 2349.32, seed: 51 })
-	cue(T.powerOn, 'bell', { freq: 587.33, gain: 0.24, decay: 2.2 })
+	cue(T.powerOn, 'click', { gain: 0.4, freq: 2600, seed: 61 })
 	return cues
 }
 

@@ -10,6 +10,7 @@
  *
  * Sound-effect kinds: tick, pluck, bell, whoosh, riser, impact, kick, clap, hat.
  * Electricity (the Conduction opening): crackle, arc, hum, charge, powerOn (see lib/synth.mjs).
+ * click: a crisp switch click, the accent sound since round 5 (use it where a bell was; bell stays for old cue lists).
  *   hum plays on a dry bus that the kicks, impacts and power-ons duck, with no reverb send.
  * music (all optional): { bars, chords: [[midi, ...] per bar], bass: [midi per bar],
  *   parts: { kick: [[fromBar, toBar]], hat: [...], clap: [...], bass: [...], pad: [...] }, loop }
@@ -84,6 +85,7 @@ const kinds = {
 	charge: (c) => S.charge(sfx, c.t, c),
 	hum: (c) => S.hum(dry, c.t, c),
 	powerOn: (c) => { S.powerOn(sfx, c.t, c); kickTimes.push(c.t) },
+	click: (c) => S.click(sfx, c.t, c),
 }
 const unknown = new Set()
 for (const c of cues) {

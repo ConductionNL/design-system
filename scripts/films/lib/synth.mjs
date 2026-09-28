@@ -369,6 +369,32 @@ export function powerOn(bus, t0, { gain = 0.6, from = 120, to = 36.7, decay = 0.
 	}
 }
 
+/**
+ * Click: a crisp switch click, the house's accent sound since round 5 (it
+ * replaces the bell everywhere; the bell stays in this file only for older
+ * cue lists). Three layers, seeded:
+ *   a broadband transient, 3 ms of highpassed noise (hard gate at `ms`);
+ *   a short resonant body, a damped ring at `freq` (2 to 3 kHz) with a
+ *     quieter inharmonic partial, decaying in `decay` seconds;
+ *   a very small low thump (110 to 70 Hz) at `thump` of the level.
+ */
+export function click(bus, t0, { gain = 0.4, freq = 2600, decay = 0.008, ms = 3, body = 0.55, thump = 0.12, pan = 0, seed = 61 } = {}) {
+	const n = Math.floor(0.07 * SR), s0 = Math.floor(t0 * SR)
+	const nz = noise(seed), hp = biquad().set('highpass', 1500, 0.7)
+	const gate = (ms / 1000) * SR
+	let pb = 0, pb2 = 0, pt = 0
+	for (let i = 0; i < n; i++) {
+		const t = i / SR
+		const tr = i < gate ? hp.run(nz()) * Math.exp(-t / 0.0009) * Math.min(1, (gate - i) / 24) : 0
+		pb += (2 * Math.PI * freq) / SR
+		pb2 += (2 * Math.PI * freq * 1.53) / SR
+		const bd = (Math.sin(pb) + 0.35 * Math.sin(pb2 + 0.9)) * Math.exp(-t / decay) * body * Math.min(1, i / 8)
+		pt += (2 * Math.PI * (70 + 40 * Math.exp(-t * 80))) / SR
+		const th = Math.sin(pt) * Math.exp(-t / 0.016) * thump * Math.min(1, i / 48)
+		write(bus, s0 + i, tr + bd + th, pan, gain)
+	}
+}
+
 /* ---------- Mix utilities ---------- */
 
 export function mixInto(dst, src, gain = 1) {

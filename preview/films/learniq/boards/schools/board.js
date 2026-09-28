@@ -92,12 +92,12 @@ function thresholdUI(w, geom) {
 
 const content = {
 	app: 'learniq',
-	audience: { slug: 'schools', name: 'Schools', persona: 'Marloes ten Berge, learning support coordinator; the school board\'s ICT coordinator buys' },
+	audience: { slug: 'schools', name: 'Schools and parents', persona: 'Marloes ten Berge, learning support coordinator, and the parents who excuse their child from their phone; the school board\'s ICT coordinator buys' },
 	promise: 'Absence reported\non time',
 	promiseLine: 'Absence reported the way the law expects, on time, from the school\'s own server',
 	title: 'Learniq for schools',
 	record: { one: 'pupil', many: 'pupils' },
-	logline: 'For schools: the register counts every absence, a parent\'s excuse updates it, a pupil who crosses the 16-hour line is reported in time, and each pupil has one dossier.',
+	logline: 'For schools, with the parent side in the film: the register counts every absence, a parent excuses their child from their phone and the register updates itself, a pupil who crosses the 16-hour line is reported in time, and each pupil has one dossier.',
 	references: REFS,
 	techniques: ['#3 grid-cell ripple', '#4 typewriter', '#5 stepped hex wipe'],
 	neighbours: ['portaliq'],

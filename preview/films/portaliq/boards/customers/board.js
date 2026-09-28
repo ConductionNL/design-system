@@ -1,7 +1,8 @@
 /**
- * Portaliq, audience film: the customer portal (housing corporations, associations; schools
- * fold in). Direction C on the app-film template, wrapped by _lib/audiencefilm.js. Round 7:
- * matrix features count as built. Research: ds-connext-film-review/apps/portaliq/research.json;
+ * Portaliq, audience film: the customer portal (housing corporations, associations). Schools
+ * are not in this film (Ruben, Round 7 decisions): the parent side lives in the Learniq schools film.
+ * Direction C on the app-film template, wrapped by _lib/audiencefilm.js. Round 7: matrix
+ * features count as built. Research: ds-connext-film-review/apps/portaliq/research.json;
  * positioning: ds-connext-film-review/audiences/positioning.md.
  *
  *   hook     a tenant reports a repair from the portal on their phone (sp-case-status-tracking)

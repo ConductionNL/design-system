@@ -6,12 +6,13 @@
  *   opening   BRAND    the shared Conduction opening, 3 bars (_lib/scenes/opening.js)
  *   hook      APP      proof moment 1, legible on frame 1 of the body
  *   proof x2  APP      proof moments 2 and 3
- *   general   GENERAL  one ConNext capability, filled with this audience's content
+ *   general   GENERAL  one shared capability, filled with this audience's content
  *   promise   BRAND    the app's cell lands in the honeycomb round Nextcloud; the app
  *                      name and the film's ONE promise in the type column. It replaces
  *                      the template's outro: the install call is said once, on the
  *                      shared install board, not twice
- *   builtOn   BRAND    the shared "Built on ConNext" piece, 2 bars, this app on top
+ *   builtOn   BRAND    the shared closing piece as "Built on Nextcloud" (Round 10: no ConNext in
+ *                      app and audience films), 2 bars, this app on top
  *   install   BRAND    the shared install board, 3 bars
  *
  * Opening 3 + body 10 + built on 2 + install 3 = 18 bars, 33.75 s at 128 BPM, 24 fps.
@@ -107,16 +108,16 @@ export function audienceBoards(content) {
 		id: 'builtOn',
 		layer: 'brand',
 		module: 'builtOn',
-		title: 'Built on ConNext (shared closing piece)',
+		title: 'Built on Nextcloud (shared closing piece)',
 		start: t0,
 		end: t0 + BUILT,
 		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
-		words: 'Built on [ConNext wordmark]',
+		words: 'Built on\nNextcloud',
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: `The shared piece (_lib/scenes/closing.js builtOnScene): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with the wordmark, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
+		motion: `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
 		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
 		source: 'Shared module: round4/facts.json fact a.',
-		draw: (ctx) => { builtOnFrame(ctx, { app, apps: builtOnApps }) },
+		draw: (ctx) => { builtOnFrame(ctx, { app, apps: builtOnApps, on: 'nextcloud' }) },
 	}
 	const t1 = t0 + BUILT
 	const install = {

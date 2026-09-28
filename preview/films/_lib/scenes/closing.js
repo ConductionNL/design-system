@@ -174,17 +174,17 @@ function risingText(g, text, opts, p, q = 0) {
 }
 
 /** A wordmark (ConNext by default) in a clip box, rising (p) or leaving (q) like a line of type. */
-function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white') {
+function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white', { color, inset = 4.24 } = {}) {
 	if (p <= 0.001 || q >= 0.999) return
 	const [bw, bh] = MARK_BOX[id]
 	const w = (h * bw) / bh
-	const x0 = x - (4.24 * h) / bh
+	const x0 = x - (inset * h) / bh
 	const clipId = nextId('wmclip')
 	const cp = el('clipPath', { id: clipId }, g)
 	el('rect', { x: x0 - 12, y: y - 12, width: w + 24, height: h + 24 }, cp)
 	const clipG = el('g', { 'clip-path': `url(#${clipId})` }, g)
 	const dy = q > 0 ? -(h + 24) * q * q : (h + 24) * (1 - ease.brand(p))
-	el('use', { href: `#${id}`, x: x0, y: y + dy, width: w, height: h }, clipG)
+	el('use', { href: `#${id}`, x: x0, y: y + dy, width: w, height: h, ...(color ? { color } : {}) }, clipG)
 }
 
 /* ---------- BRAND: built on ConNext ---------- */
@@ -196,9 +196,12 @@ function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white') {
  *            film passes the apps of its story; at most two with an app, three without
  *   caption  the live words before the wordmark (default 'Built on')
  *   label    false hides the app's name label (default true when app is set)
+ *   on       'connext' (default: the ConNext wordmark after the words, as the ConNext film has it) or
+ *            'nextcloud' (Round 10, app and audience films: "Built on Nextcloud" in live type, white,
+ *            with the Nextcloud mark where a scene's chapter mark sits; no ConNext anywhere)
  */
 function drawBuiltOn(g, t, p, W = 1920) {
-	const { app = null, apps = [], caption = 'Built on', label = true } = p
+	const { app = null, apps = [], caption = 'Built on', label = true, on = 'connext' } = p
 	const K = CLOSING.builtOn
 	const L = BUILT_ON
 	const leaving = t >= K.out
@@ -260,7 +263,12 @@ function drawBuiltOn(g, t, p, W = 1920) {
 	const q = leaving ? inv(K.out, K.out + EXIT, t) : 0
 	risingText(g, caption, { x: TX, y: 468, size: 112, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), q)
 	const m0 = K.typeIn + SPB / 4
-	risingMark(g, TX, 506, 128, inv(m0, m0 + RISE, t), q)
+	if (on === 'nextcloud') {
+		// Round 10: "Built on Nextcloud". The word Nextcloud stays white (running copy); the Nextcloud
+		// mark rises where a scene's chapter mark sits, white on the cobalt ground.
+		risingText(g, 'Nextcloud', { x: TX, y: 588, size: 112, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), q)
+		risingMark(g, TX, 300, 72, inv(K.typeIn, K.typeIn + RISE, t), q, 'nextcloud-logo', { color: C.white, inset: 0 })
+	} else risingMark(g, TX, 506, 128, inv(m0, m0 + RISE, t), q)
 }
 
 /** The sound of the piece, in local seconds: thuds as the ground and the layer land, ticks up the scale as the apps pop in. */

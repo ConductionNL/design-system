@@ -1,0 +1,429 @@
+/**
+ * The Keepiq film (Round 23: the portfolio animation pass; storyboard keepiq/boards/dev-teams, Round 25b
+ * ownership story). 1920 x 1080, 24 fps, 20 bars at 128 BPM, 37.5 s. The sister of the Thematiq film:
+ * the same one-take honeycomb, the same word-art language, the same current.
+ *
+ *   0 to 5.63 s       the shared Conduction opening, handing over on its field
+ *   5.63 to 24.38 s   the body, ONE take (tkfilm/lib.js):
+ *                     story 1, word art on the opening's field: "The key to" "your own house?", a white
+ *                       house-cell with its lock popping into the field as "key" lands, "own" in orange;
+ *                     story 2: the lock lifts out of the house (the cell left as a dashed outline) and
+ *                       travels up and out of the honeycomb into a plain outside box that pops in to take
+ *                       it: "Kept by someone else's app?";
+ *                     the answer: a current runs from the box back down to the house, the lock comes home
+ *                       and the cell turns into Keepiq's own; the push INTO it: the request, the fill-in
+ *                       link powered on, the current carrying it out to the partner's box, the masked
+ *                       value typing itself in there and running back into the vault;
+ *                     a fly to the next cell: a link that vanishes after one view, the recipient's card
+ *                       opening once and then breaking into small hexes that step off;
+ *                     a fly to the usage dashboard: the day bars growing, the uses rippling in, the
+ *                       newest (by an app) powered on;
+ *                     the pull back: the house cell turns orange exactly where Built on's lead lands,
+ *                       a hard cut on the bar;
+ *   24.38 to 31.88 s  the shared Built on Nextcloud piece (closing.js, 4 bars)
+ *   31.88 to 37.5 s   the shared install board (closing.js, 3 bars)
+ *
+ * No competitor is named: someone else's app is a plain outside box. Accents are clicks; the current sounds
+ * as charge, crackle, arc and click. No bell.
+ */
+import { Film, loadFonts } from '../_lib/stage.js'
+import { FONTS } from '../_lib/brand.js'
+import { loadBrandAssets } from '../_lib/assets.js'
+import { addOpening } from '../_lib/scenes/opening.js'
+import { builtOnScene, installScene } from '../_lib/scenes/closing.js'
+import { TYPE, layout, fitCaptionSize, use } from '../_lib/ui.js'
+import { bezier } from '../_lib/core.js'
+import { rest, take, glue, glueAttr } from '../connext/lib/camera.js'
+import { caption } from '../connext/lib/type.js'
+import { partnerRequestUI, onceLinkUI, usageContent, outsideBox } from './boards/dev-teams/board.js'
+import {
+	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen,
+	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, powerBurst,
+} from '../tkfilm/lib.js'
+
+const APP = 'keepiq'
+const BPM = 128
+const SPB = 60 / BPM
+const BAR = 4 * SPB
+const S16 = SPB / 4
+const OPEN = 3 * BAR
+const BODY = 10 * BAR
+const T_BUILT = OPEN + BODY
+const BUILT = 4 * BAR
+const INSTALL = 3 * BAR
+const DURATION = T_BUILT + BUILT + INSTALL
+const EXIT = F(4)
+const B = (beat) => OPEN + beat * SPB
+
+const q = new URLSearchParams(location.search)
+const film = new Film({ mount: document.getElementById('film'), format: '16x9', fps: 24, duration: DURATION, bpm: BPM, background: C.cobalt, safe: { top: 96, bottom: 150, left: 120, right: 120 } })
+await loadFonts(FONTS)
+await loadBrandAssets(film.defs)
+const bodyAt = addOpening(film, { at: 0 })
+if (Math.abs(bodyAt - OPEN) > 1e-6) console.error(`opening ends at ${bodyAt}, expected ${OPEN}`)
+const cue = (t, kind, o = {}) => film.cue(t, kind, o)
+
+/* ============================================================ the world */
+
+const CELL = { house: [4, 0], once: [5, 0], usage: [4, 1] }
+const XY = Object.fromEntries(Object.entries(CELL).map(([k, v]) => [k, cellXY(...v)]))
+const SC = { request: screenIn(...CELL.house), once: screenIn(...CELL.once) }
+/** The usage dashboard in its cell: general-scene local coordinates (x 120 to 780, y 640 to 1240) at 0.2 world units each. */
+const UI0 = layout(1920, 1080).ui
+const US = 0.2
+const U_AT = [XY.usage[0] - 70, XY.usage[1] - 62] // world point of local (120, 640)
+const U_KEY = camOn(U_AT[0], U_AT[1], UI0.x, UI0.y, 1.25 / US)
+/** The outside box, in world units (story 2): top right of the story's framing, outside the lattice's lit cells. */
+const BOX = (() => {
+	// the storyboard's box, top right, placed so that after the handover camera's slow push it sits near (1420, 150)
+	const z = CAM_HO.z
+	const x = (1360 - CAM_HO.px) / z, y = (200 - CAM_HO.py) / z
+	return { x, y, w: 320 / z, h: 250 / z }
+})()
+
+const T = {
+	mark: OPEN + F(3),
+	w1: [B(0.75), B(0.75) + S16, B(0.75) + 2 * S16], // "The key to"
+	house: B(1) + S16, // the house cell with its lock, as "key" lands
+	w2: [B(2.5), B(2.5) + S16, B(2.75) + S16], // "your own house?"
+	s1Out: B(8.6),
+	lift: [B(8.6), B(9.4)], // the lock leaves the house for the box
+	box: B(8.8),
+	w3: [B(9.5), B(9.5) + S16], // "Kept by"
+	w4: [B(11.5), B(11.5) + S16, B(11.5) + 2 * S16], // "someone else's app?"
+	cur1: [B(14.3), B(15.2)], // the current from the box back to the house
+	home: B(15.2), // the lock comes home; the cell turns into Keepiq's
+	s2Out: B(15.6),
+	push: [B(15.45), B(16.3)],
+	// scene 3, the request (13.125 to 16.875)
+	tag3: B(16.2),
+	ticks: [B(16.6), B(16.6) + S16],
+	link: [B(17), B(17.8)],
+	ring3: B(17.8),
+	out: [B(18.1), B(18.9)], // the current out to the partner with the link
+	fill: [B(19), B(20.2)], // the partner types the value
+	back: [B(20.4), B(21.3)], // the value back into the vault
+	stored: B(21.3),
+	// scene 4, the one-time link
+	fly1: [B(23.3), B(24.4)],
+	cur4: [B(23.1), B(24)],
+	tag4: B(24.2),
+	views: B(24.9),
+	link4: [B(25.3), B(26)],
+	open: B(26.4),
+	burn: [B(28.2), B(29.2)],
+	// scene 5, every use
+	fly2: [B(31.2), B(32.4)],
+	bars: [B(32.4), B(33.4)],
+	rows: B(33.5),
+	cur5: [B(34.4), B(35.1)],
+	ring5: B(35.1),
+	pull: [B(36.6), B(39.8)],
+	appOn: B(37.3),
+}
+
+/* ============================================================ the camera */
+
+const END = camOn(...XY.house, 1330, 236, 118 / 150)
+const PUSH = bezier(0.62, 0, 0.12, 1)
+const rests = [
+	rest(CAM_HO, OPEN, { k: HO_RATE, pivot: [960, 540] }),
+	rest(SC.request.key, T.push[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(SC.once.key, T.fly1[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(U_KEY, T.fly2[1], { k: 0.008, pivot: [1300, 560] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
+]
+const moves = [
+	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
+	{ from: T.fly1[0], to: T.fly1[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
+	{ from: T.fly2[0], to: T.fly2[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
+	{ from: T.pull[0], to: T.pull[1], ease: ease.brand, blend: 'pivot' },
+]
+const camera = take(rests, moves)
+
+/* ============================================================ pieces */
+
+const scaled = (g, x, y, s) => el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${x} ${y}) scale(${Math.max(s, 0.0001).toFixed(4)}) translate(${-x} ${-y})` } : {}, g)
+function lockGlyph(g, x, y, size, color) {
+	el('use', { href: '#g-keepiq', x: x - size / 2, y: y - size / 2, width: size, height: size, color }, g)
+}
+/** The house cell: white with the lock (story), a dashed outline when the lock has left, Keepiq's own cobalt cell once it is home. */
+function houseCell(g, x, y, t) {
+	if (t < T.house) return
+	const s = pop(t - T.house, { freq: 2.6, zeta: 0.5 })
+	const hg = scaled(g, x, y, s)
+	const gone = t >= T.lift[0] && t < T.home
+	const home = t >= T.home
+	if (gone) {
+		el('path', { d: hexPath(x, y, R, ROUND), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, hg)
+	} else if (home) {
+		const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
+		const hs = t < T.push[0] ? pop(t - T.home, { freq: 3, zeta: 0.5 }) : 1
+		const hh = scaled(hg, x, y, hs)
+		// Keepiq's own cell: cobalt with a white ring (the app tag's look), draining into the ground on the push
+		if (drain < 1) el('path', { d: hexPath(x, y, R + 8, ROUND + 1), fill: mix(C.white, C.cobalt600, drain) }, hh)
+		el('path', { d: hexPath(x, y, R, ROUND), fill: mix(C.cobalt, C.cobalt600, drain) }, hh)
+		if (drain < 1) lockGlyph(hh, x, y, R * 0.84, mix(C.white, C.cobalt600, drain))
+	} else {
+		el('path', { d: hexPath(x, y, R, ROUND), fill: C.white }, hg)
+		lockGlyph(hg, x, y, R * 0.84, C.cobalt)
+	}
+}
+/** The lock in flight (story 2): from the house up into the box. */
+function lockInFlight(g, t) {
+	if (t < T.lift[0] || t >= T.lift[1] + F(2)) return
+	const u = ease.snap(inv(...T.lift, t))
+	const [hx, hy] = XY.house
+	const bx = BOX.x + BOX.w / 2, by = BOX.y + BOX.h / 2 + 10
+	const x = lerp(hx, bx, u), y = lerp(hy, by, u) - 60 * Math.sin(Math.PI * u)
+	lockGlyph(g, x, y, lerp(R * 0.84, 90 / CAM_HO.z * 0.9, u), lerp(1, 0, 0) ? C.white : C.white)
+}
+
+/** The recipient's card breaking into small hexes that step off (the link is gone after one view). */
+function burnHexes(w, t) {
+	const u = inv(...T.burn, t)
+	if (u <= 0 || u >= 1) return
+	// the recipient card's region in mock px (onceLinkUI: rx = x + lw + 24, top + 60, rw x 220)
+	const x = 310, width = 987.5, top = 145, lw = width * 0.58
+	const rx = x + lw + 24, rw = width - lw - 24
+	const r = 16, sx = r * Math.sqrt(3) + 4, sy = r * 1.5 + 4
+	let n = 0
+	for (let yy = top + 70; yy < top + 270; yy += sy) {
+		for (let xx = rx + 10 + ((n++ % 2) * sx) / 2; xx < rx + rw - 8; xx += sx) {
+			const d = Math.hypot(xx - (rx + rw / 2), yy - (top + 170)) / 160
+			const step = Math.floor((u * 1.6 - d * 0.6) / 0.2)
+			const a = step < 0 ? 1 : step === 0 ? 0.7 : step === 1 ? 0.35 : 0
+			if (a <= 0) continue
+			el('path', { d: hexPath(xx, yy, r * (0.6 + 0.4 * a), 3), fill: C.cobalt100, 'fill-opacity': a.toFixed(2) }, w)
+		}
+	}
+}
+
+const MOCK = { x: 310, top: 145, width: 987.5 }
+
+/* ============================================================ the world scene */
+
+const NEAR = [[1400, -800, 520], [2800, 200, 640], [500, 1000, 460], [3600, -800, 560]]
+
+film.scene('world', OPEN, T_BUILT, (ctx) => {
+	const layer = el('g', { 'data-layer': 'world' }, ctx.g)
+	return (t) => {
+		layer.replaceChildren()
+		const cam = camera(t)
+		drawFar(layer, cam, { alpha: 0.5 * clamp(1.4 - cam.z / 8, 0.25, 1) })
+		const look = (qq, rr, info) => {
+			const k = info.k
+			if (k === CELL.house.join() && t >= T.house) return { draw: (g, x, y) => {
+				if (t >= T.appOn) return glyphApp(g, x, y, t)
+				houseCell(g, x, y, t)
+				if (t >= T.push[0] && t < T.appOn + 0.2) {
+					const inner = drawScreen(g, SC.request, (w, geom) => partnerRequestUI(w, geom, {
+						ticks: (t >= T.ticks[0] ? 1 : 0) + (t >= T.ticks[1] ? 1 : 0),
+						link: ease.outCubic(inv(...T.link, t)),
+						ring: t < T.ring3 ? 0 : 1,
+						wire: ease.inOutCubic(inv(...T.out, t)),
+						fill: 8 * inv(...T.fill, t),
+						back: t >= T.back[1] + 0.3 ? 0 : ease.inOutCubic(inv(...T.back, t)) || 0,
+					}))
+					windowTag(inner, APP, { s: pop(t - T.tag3) })
+					inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
+				}
+			} }
+			if (k === CELL.once.join() && t >= T.cur4[1] - 0.05) return { draw: (g, x, y) => {
+				el('path', { d: hexPath(x, y, R * pop(t - (T.cur4[1] - 0.05), { freq: 3, zeta: 0.6 }), ROUND), fill: C.cobalt600 }, g)
+				const inner = drawScreen(g, SC.once, (w, geom) => {
+					const burnt = inv(...T.burn, t)
+					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: burnt > 0 ? 0 : ease.brand(inv(T.open, T.open + 0.35, t)), burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
+					burnHexes(w, t)
+					powerBurst(w, MOCK.x + 22 + 83, MOCK.top + 245, inv(T.views, T.views + 0.3, t), { r: 12, reach: 60 })
+				})
+				windowTag(inner, APP, { s: pop(t - T.tag4) })
+			} }
+			if (k === CELL.usage.join() && t >= T.fly2[0] + 0.3) return { draw: (g, x, y) => {
+				el('path', { d: hexPath(x, y, R * pop(t - (T.fly2[0] + 0.3), { freq: 3, zeta: 0.6 }), ROUND), fill: C.cobalt600 }, g)
+				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
+				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: pop(t - T.bars[0]) })
+				// the current into the newest use, from the day bars' today (local coords)
+				current(ug, [[800, 720], [800, 934], [794, 934]], ease.inOutCubic(inv(...T.cur5, t)), { w: 5, spark: 11 })
+				powerBurst(ug, 184, 934, inv(T.ring5, T.ring5 + 0.3, t), { r: 10, reach: 50 })
+			} }
+			return undefined
+		}
+		const wg = drawField(layer, cam, look)
+		// story 2: the box, the lock in flight, the current home
+		if (t >= T.box && t < T.push[0] + 0.4) {
+			const s = t < T.cur1[1] + 0.15 ? pop(t - T.box, { freq: 2.8, zeta: 0.55 }) : 1 - ease.inCubic(inv(T.cur1[1] + 0.15, T.cur1[1] + 0.45, t))
+			const bg = el('g', { transform: `translate(${BOX.x} ${BOX.y}) scale(${(1 / CAM_HO.z).toFixed(4)})` }, wg)
+			outsideBox(bg, 0, 0, 320, 250, { s })
+		}
+		lockInFlight(wg, t)
+		const fade = (a) => 1 - inv(a, a + 0.3, t)
+		const wire = (pts, span, o) => { const f = fade(span[1] + 0.05); if (f <= 0) return; const cg = el('g', { opacity: f.toFixed(3) }, wg); current(cg, pts, ease.inOutCubic(inv(...span, t)), o) }
+		const [hx, hy] = XY.house
+		wire([[BOX.x + BOX.w / 2, BOX.y + BOX.h], [BOX.x + BOX.w / 2, hy - R * 1.05], [hx, hy - R * 1.05], [hx, hy - R * 0.98]], T.cur1, { w: 5 / cam.z, spark: 12 / cam.z })
+		const band = (a, b) => [[a[0] + 70, a[1] + 55], [b[0] - 70, b[1] + 55]]
+		const wl = 5 / Math.max(cam.z, 0.2)
+		wire(band(XY.house, XY.once), T.cur4, { w: wl, spark: 9 / Math.max(cam.z, 0.2) })
+		drawNear(layer, cam, NEAR, { alpha: 0.07 * clamp((2.2 - cam.z) / 1.2) })
+	}
+}, { post: 0.001 })
+
+/** The end: the house cell is Keepiq's, in orange, on Built on's lead. */
+function glyphApp(g, x, y, t) {
+	const s = pop(t - T.appOn, { freq: 2.6, zeta: 0.5 })
+	const hg = scaled(g, x, y, s)
+	el('path', { d: hexPath(x, y, R, ROUND), fill: C.orange }, hg)
+	lockGlyph(hg, x, y, R * 0.84, C.white)
+}
+
+/* ============================================================ the words */
+
+function slamItems(items, times, t, { from = 1.5 } = {}) {
+	items.forEach((it, i) => {
+		const t0 = times[Math.min(i, times.length - 1)]
+		const s = t - t0
+		if (s < 0) { it.node.setAttribute('opacity', '0'); return }
+		const k = s < F(2) ? s / F(2) : 1
+		const sc = 1 + (from - 1) * (1 - spring(s, { freq: 3.4, zeta: 0.5 }))
+		const cx = it.x + it.w / 2, cy = it.y
+		it.node.setAttribute('opacity', k.toFixed(3))
+		Math.abs(sc - 1) > 1e-4 ? it.node.setAttribute('transform', `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) scale(${sc.toFixed(4)}) translate(${-cx.toFixed(1)} ${-cy.toFixed(1)})`) : it.node.removeAttribute('transform')
+	})
+}
+const artOut = (g, t, t0) => {
+	if (t < t0) return
+	const p = inv(t0, t0 + EXIT, t)
+	g.setAttribute('transform', `translate(0 ${(-90 * p * p).toFixed(1)})`)
+	g.setAttribute('opacity', (1 - p).toFixed(3))
+}
+
+film.scene('t-mark', T.mark, T_BUILT, (ctx) => {
+	const c = caption(ctx.g, { text: 'Keepiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise: T.mark, leave: T_BUILT - 0.17, camera })
+	return (t) => c.set(t)
+})
+
+film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
+	const g = el('g', {}, ctx.g)
+	const a = textBlock(g, 'The key to', { x: 120, y: 580, size: 140, weight: 700, fill: C.white, tracking: -0.03, clip: false })
+	const b = textBlock(g, 'your *own* house?', { x: 120, y: 820, size: 170, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	return (t) => {
+		slamItems(a.items, T.w1, t)
+		slamItems(b.items, T.w2, t, { from: 1.7 })
+		artOut(g, t, T.s1Out)
+	}
+})
+film.scene('t-story2', T.w3[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
+	const g = el('g', {}, ctx.g)
+	const a = textBlock(g, 'Kept by', { x: 120, y: 600, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
+	const b = textBlock(g, '*someone* *else\'s* app?', { x: 120, y: 860, size: 160, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	return (t) => {
+		slamItems(a.items, T.w3, t)
+		slamItems(b.items, T.w4, t, { from: 1.7 })
+		if (t >= T.s2Out) { const gl = glueAttr(glue(camera(T.s2Out), camera(t))); gl ? g.setAttribute('transform', gl) : g.removeAttribute('transform'); g.setAttribute('opacity', (1 - inv(T.s2Out, T.s2Out + EXIT, t)).toFixed(3)) }
+	}
+})
+
+const CAPS = [
+	['request', 'Request passwords\nfrom partners', B(16) + F(6), B(23)],
+	['once', 'Links that vanish\nafter one view', B(24.5), B(31)],
+	['usage', 'Every use: who,\nwhen, where, why', B(32.5), T_BUILT - 0.17],
+]
+for (const [id, text, rise, leave] of CAPS) {
+	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
+		const c = caption(ctx.g, { text, size: fitCaptionSize(text), y: TYPE.y1, lineHeight: TYPE.lh / TYPE.size, fill: C.white }, { rise, leave, camera })
+		return (t) => c.set(t)
+	})
+}
+
+/* ============================================================ sound */
+
+// story 1
+T.w1.forEach((t, i) => cue(t, i === 1 ? 'kick' : 'tick', i === 1 ? { gain: 0.26, pitch: 110, end: 48, decay: 0.2, click: 0.08 } : { freq: [1318.51, 0, 1479.98][i], gain: 0.13 }))
+cue(T.house, 'pluck', { freq: 587.33, gain: 0.24, pan: 0.5 })
+cue(T.house + 0.02, 'impact', { gain: 0.3, from: 80, to: 36, decay: 0.7 })
+cue(T.w2[0], 'tick', { freq: 1567.98, gain: 0.13 })
+cue(T.w2[1], 'click', { gain: 0.3, freq: 2400, seed: 121, dry: true })
+cue(T.w2[2], 'tick', { freq: 1760, gain: 0.13 })
+// story 2
+cue(T.lift[0], 'whoosh', { dur: T.lift[1] - T.lift[0] + 0.1, from: 600, to: 3600, panFrom: 0.4, panTo: 0.7, gain: 0.16 })
+cue(T.box, 'kick', { gain: 0.2, pitch: 90, end: 44, decay: 0.24, click: 0.05 })
+cue(T.lift[1], 'click', { gain: 0.26, freq: 2000, seed: 122, dry: true, pan: 0.6 })
+cue(T.w3[0], 'tick', { freq: 1174.66, gain: 0.13 })
+cue(T.w3[1], 'tick', { freq: 1318.51, gain: 0.13 })
+cue(T.w4[0], 'impact', { gain: 0.36, from: 90, to: 34, decay: 0.9 })
+cue(T.w4[2], 'click', { gain: 0.24, freq: 2500, seed: 123, dry: true })
+// the current home: charge, crackle, arc, click
+cue(T.cur1[0], 'charge', { gain: 0.05, dur: T.cur1[1] - T.cur1[0], from: 300, to: 1800, pan: 0.6 })
+cue(T.cur1[0] + 0.08, 'crackle', { dur: T.cur1[1] - T.cur1[0] - 0.1, density: 60, gain: 0.07, pan: 0.6 })
+cue(T.home, 'arc', { gain: 0.14, pan: 0.5 })
+cue(T.home, 'click', { gain: 0.32, freq: 2800, seed: 124, dry: true, pan: 0.5 })
+cue(T.push[0] - 0.05, 'whoosh', { dur: 0.9, from: 400, to: 4800, panFrom: 0.4, panTo: 0, gain: 0.24 })
+// scene 3
+cue(T.tag3, 'pluck', { freq: 587.33, gain: 0.2, pan: 0.2 })
+T.ticks.forEach((t, i) => cue(t, 'tick', { freq: [1318.51, 1479.98][i], gain: 0.12, pan: 0.4 }))
+for (let i = 0; i < 6; i++) cue(lerp(...T.link, i / 6), 'tick', { freq: 2637, gain: 0.05, decay: 0.03, pan: 0.3 })
+cue(T.ring3, 'click', { gain: 0.3, freq: 2700, seed: 125, dry: true, pan: 0.3 })
+cue(T.out[0], 'crackle', { dur: T.out[1] - T.out[0], density: 60, gain: 0.06, pan: -0.1 })
+cue(T.out[1], 'arc', { gain: 0.1, pan: -0.2 })
+cue(T.out[1], 'click', { gain: 0.22, freq: 2900, seed: 126, dry: true, pan: -0.2 })
+for (let i = 0; i < 8; i++) cue(lerp(...T.fill, i / 8), 'tick', { freq: 2349.32, gain: 0.05, decay: 0.03, pan: -0.3 })
+cue(T.back[0], 'crackle', { dur: T.back[1] - T.back[0], density: 55, gain: 0.06, pan: 0.2 })
+cue(T.stored, 'click', { gain: 0.3, freq: 2600, seed: 127, dry: true, pan: 0.4 })
+cue(T.stored + 0.03, 'pluck', { freq: 880, gain: 0.2, pan: 0.4 })
+// scene 4
+cue(T.fly1[0] - 0.05, 'whoosh', { dur: 1.2, from: 3000, to: 400, panFrom: -0.2, panTo: 0.6, gain: 0.2 })
+cue(T.cur4[0], 'crackle', { dur: T.cur4[1] - T.cur4[0], density: 50, gain: 0.06, pan: 0.2 })
+cue(T.cur4[1], 'click', { gain: 0.26, freq: 2900, seed: 128, dry: true, pan: 0.4 })
+cue(T.tag4, 'pluck', { freq: 659.26, gain: 0.18, pan: 0.2 })
+cue(T.views, 'arc', { gain: 0.1, pan: 0.1 })
+cue(T.views, 'click', { gain: 0.32, freq: 2600, seed: 129, dry: true, pan: 0.1 })
+cue(T.open, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.6 })
+cue(T.burn[0], 'whoosh', { dur: T.burn[1] - T.burn[0], from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
+for (let i = 0; i < 5; i++) cue(T.burn[0] + i * S16, 'hat', { gain: 0.1, pan: 0.5, seed: 50 + i })
+// scene 5
+cue(T.fly2[0] - 0.05, 'whoosh', { dur: 1.3, from: 3000, to: 400, panFrom: 0.2, panTo: -0.4, gain: 0.2 })
+for (let i = 0; i < 6; i++) cue(lerp(...T.bars, i / 6), 'tick', { freq: 1174.66 * Math.pow(2, i / 12 * 2), gain: 0.07, pan: 0.3 })
+for (let i = 0; i < 5; i++) cue(T.rows + i * S16, 'tick', { freq: [1318.51, 1479.98, 1567.98, 1760, 1975.53][i], gain: 0.09, pan: 0.2 })
+cue(T.cur5[0], 'crackle', { dur: T.cur5[1] - T.cur5[0], density: 55, gain: 0.06, pan: 0.4 })
+cue(T.ring5, 'arc', { gain: 0.1, pan: 0.3 })
+cue(T.ring5, 'click', { gain: 0.3, freq: 2800, seed: 130, dry: true, pan: 0.3 })
+cue(T.pull[0] - 0.05, 'whoosh', { dur: 1.1, from: 3200, to: 300, panFrom: 0.3, panTo: -0.2, gain: 0.2 })
+cue(T.appOn, 'pluck', { freq: 587.33, gain: 0.24, pan: 0.4 })
+cue(T.appOn, 'click', { gain: 0.26, freq: 2800, seed: 131, dry: true, pan: 0.4 })
+
+/* ============================================================ the closing pieces */
+film.scene('builtOn', T_BUILT, T_BUILT + BUILT, (ctx) => builtOnScene(ctx, { app: APP, apps: ['integriq'], on: 'nextcloud' }))
+film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}), { post: 0.001 })
+
+/** The bed, in B minor then D: silent under the opening, pad from the story, the kick from the request, resolving on D. */
+film.music = {
+	bars: 20,
+	chords: [
+		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62], // 0-2 the opening
+		[47, 54, 57, 61], // 3 Bm9: the key to
+		[47, 50, 54, 57], // 4 Gmaj9: your own house?
+		[45, 52, 57, 59], // 5 A sus: kept by
+		[42, 49, 54, 57], // 6 F#m7: someone else's app?
+		[50, 54, 61, 64], // 7 Dmaj9: the key comes home, the request
+		[47, 50, 54, 57], // 8 Gmaj9: the partner fills it in
+		[49, 52, 57, 59], // 9 A add9: one view
+		[47, 50, 54, 61], // 10 Bm add9: gone
+		[47, 50, 54, 59], // 11 Gmaj7: every use
+		[49, 52, 57, 59], // 12 A add9: the pull back
+		[50, 54, 61, 64], // 13 Dmaj9: built on
+		[47, 54, 57, 61], // 14 Bm9
+		[47, 50, 54, 57], // 15 Gmaj9
+		[49, 52, 57, 59], // 16 A add9: enhanced by Conduction
+		[47, 50, 54, 57], // 17 Gmaj9: install it
+		[49, 52, 57, 59], // 18 A add9
+		[50, 54, 57, 62], // 19 D: own it
+	],
+	bass: [38, 38, 38, 35, 43, 45, 42, 38, 43, 45, 35, 43, 45, 38, 35, 43, 45, 43, 45, 38],
+	parts: { pad: [[3, 20]], bass: [[4, 19]], kick: [[7, 13]], hat: [[7, 13]], clap: [[9, 12]] },
+	loop: false,
+}
+
+film.board = { film: 'keepiq', meta: { title: 'Keepiq' } }
+window.__keepiq = { T, OPEN, BODY, BUILT, INSTALL, DURATION, CELL }
+if (q.has('dump')) console.log(JSON.stringify(window.__keepiq))
+film.start()

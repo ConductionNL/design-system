@@ -10,7 +10,7 @@
  *            pay (usp-spend-controls, verified; specs payment-control-guards, bookkeeping-ccm-rule-engine)
  *   general  notifications: an invoice goes overdue and the right person hears (bible fact 8;
  *            spec bookkeeping-credit-control-dunning)
- *   promise  "Books that keep themselves up to date" (Round 18 copy pass)
+ *   promise  asked as a question (Round 19): "What if your books updated themselves?" (was "Books that keep themselves up to date")
  *
  * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (bank lines drop onto
  * their invoices), #4 typewriter (the VAT boxes fill), #6 hard diagonal wipe (into the payment
@@ -116,7 +116,7 @@ function guardUI(w, geom) {
 const content = {
 	app: 'shillinq',
 	audience: { slug: 'business', name: 'Businesses and freelancers', persona: 'Wouter de Groot, office manager of a small business; Daan Willemsen, a freelancer billing his own clients' },
-	promise: 'Books that keep\nthemselves up to date',
+	promise: 'What if your books\nupdated themselves?',
 	promiseLine: 'Books that follow your country\'s rules and keep up by themselves: the bank matched, the VAT return filled in, a wrong payment stopped',
 	title: 'Shillinq for businesses',
 	record: { one: 'invoice', many: 'invoices' },

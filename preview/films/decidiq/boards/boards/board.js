@@ -11,7 +11,7 @@
  *            (usp-proof-package, verified; spec resolution-minutes)
  *   general  notifications: an action's due date passes and its owner hears
  *            (sp-action-items; specs action-item-board-via-deck-leaf, decidesk-notifications)
- *   promise  "Every decision, on the record"
+ *   promise  asked as a question (Round 19): "What if every decision was on record?" (was "Every decision, on the record")
  *
  * Techniques (refs/techniques.md): #9 text-swap on a held diagram (the vote list holds, only the
  * conflicted member's row changes), #4 typewriter (the minutes fill item by item), #10 loose-shape
@@ -112,11 +112,11 @@ function sealUI(w, geom) {
 const content = {
 	app: 'decidiq',
 	audience: { slug: 'boards', name: 'Boards and associations', persona: 'Wouter de Groot, board secretary; Anke Willems, association secretary; Sandra de Boer, works council secretary' },
-	promise: 'Every decision,\non the record',
+	promise: 'What if every decision\nwas on record?',
 	promiseLine: 'Every decision defensible: conflicts kept out of the vote, minutes from what was decided, the whole meeting sealed in one file',
 	title: 'Decidiq for boards and associations',
 	record: { one: 'decision', many: 'decisions' },
-	logline: 'For board, association and works council secretaries: a member who declares a conflict sits that vote out, the minutes are drafted from what was decided, the meeting closes into one sealed file, and an action\'s owner hears when it falls due. The promise: every decision on the record.',
+	logline: 'For board, association and works council secretaries: a member who declares a conflict sits that vote out, the minutes are drafted from what was decided, the meeting closes into one sealed file, and an action\'s owner hears when it falls due. The promise card asks it (Round 19): What if every decision was on record?',
 	references: REFS,
 	techniques: ['#9 text-swap on a held diagram (the vote list)', '#4 typewriter (the minutes)', '#10 cluster-to-container merge (into the sealed file)', '#5 stepped hex wipe'],
 	neighbours: ['filinq', 'portaliq'],

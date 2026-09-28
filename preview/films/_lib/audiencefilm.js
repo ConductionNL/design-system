@@ -97,11 +97,11 @@ export function audienceBoards(content) {
 		...timed(outro, 0, PROMISE_BEATS, snap(PROMISE_LEAD + RISE + (promiseWords - 1) * SIXTEENTH)),
 		id: 'promise',
 		module: 'promise',
-		title: `${name}: the promise`,
+		title: `${name}: the question`,
 		words: `${name}\n${promise}`,
 	}
 	const P = { from: s2(OPEN), shows: s2(OPEN + promiseBoard.shows), clears: s2(OPEN + promiseBoard.clears), out: s2(OPEN + promiseBoard.end) }
-	promiseBoard.motion = content.promiseMotion || `Round 15, the body opens here. On ${P.from}, straight after the opening's handover on its plain field, the app cell lands up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise rises under it from two frames after the handover, one word per sixteenth (every word in by ${P.shows}), and holds to ${P.clears}. Out on ${P.out}: the field, the neighbours and the Nextcloud hex step out on 16ths and the app cell shrinks in place on the loop anchor to the hook's tag (turning cobalt when the hook's tag is cobalt) while the hook's window lays in behind it.`
+	promiseBoard.motion = content.promiseMotion || `Round 15, the body opens here. On ${P.from}, straight after the opening's handover on its plain field, the app cell lands up-left of the Nextcloud hex, on the loop anchor, and turns orange (the app icon exception on cobalt); the neighbour cells lock in white and the Nextcloud workspace hex lands at 1.4x and settles to 1.0 a beat later, the field popping outward ring by ring on 16ths. "${name}" sits as the chapter mark; the promise, asked as a "What if ...?" question (Round 19: no answer card follows, the proofs answer it), rises under it from two frames after the handover, one word per sixteenth (every word in by ${P.shows}), and holds to ${P.clears}. Out on ${P.out}: the field, the neighbours and the Nextcloud hex step out on 16ths and the app cell shrinks in place on the loop anchor to the hook's tag (turning cobalt when the hook's tag is cobalt) while the hook's window lays in behind it.`
 	promiseBoard.sound = content.promiseSound || 'The body\'s bed enters gently under the promise (pad and offbeat bass, no stinger): a pluck as the app cell lands, a low thud under the Nextcloud hex. A short whoosh as the cluster steps out into the hook.'
 	promiseBoard.draw = (ctx) => promiseFrame(ctx, { app, promise, neighbours })
 

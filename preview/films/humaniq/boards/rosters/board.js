@@ -12,7 +12,7 @@
  *            (usp-competence-gated-rostering; spec rostering)
  *   proof 2  clock in at the work site, nowhere else (usp-geofenced-clockin; spec time-attendance)
  *   general  the data layer: every change shows who and when (COPY.dataLayer D1)
- *   promise  "Rosters that know the rules"
+ *   promise  asked as a question (Round 19): "What if rosters knew the rules?" (was "Rosters that know the rules")
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the check runs over the roster in a
  * wave), #9 text-swap on a held diagram (the candidate list holds; only who may take the shift
@@ -106,7 +106,7 @@ function clockUI(w, geom) {
 const content = {
 	app: 'humaniq',
 	audience: { slug: 'rosters', name: 'Rosters', persona: 'Wendy Scholten, roster planner in care; Kevin de Groot, operations manager at a shift employer' },
-	promise: 'Rosters that\nknow the rules',
+	promise: 'What if rosters\nknew the rules?',
 	promiseLine: 'Rosters that know the rules: the Working Hours Act, the certificates a shift needs, a clock-in at the work site',
 	title: 'Humaniq for rosters',
 	record: { one: 'shift', many: 'shifts' },

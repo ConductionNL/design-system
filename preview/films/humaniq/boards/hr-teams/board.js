@@ -15,7 +15,7 @@
  *            humaniq-docudesk-documents)
  *   general  notifications: a leave request and the manager hears (sp-leave-calendar;
  *            specs leave-calendar-nc, leave-management)
- *   promise  "Dutch HR rules, built into the work"
+ *   promise  asked as a question (Round 19): "What if HR work followed Dutch rules?" (was "Dutch HR rules, built into the work")
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the Gatekeeper milestones light in a
  * wave up to the next one due), #4 typewriter (the address types itself into the form),
@@ -120,7 +120,7 @@ function contractUI(w, geom) {
 const content = {
 	app: 'humaniq',
 	audience: { slug: 'hr-teams', name: 'HR teams', persona: 'Marloes Bakker, HR adviser at a municipality; Youssef El Amrani, HR manager at a mid-size employer' },
-	promise: 'Dutch HR rules,\nbuilt into the work',
+	promise: 'What if HR work\nfollowed Dutch rules?',
 	promiseLine: 'The Dutch HR rules in the daily work: sickness steps on time, new hires filled in, contracts signed from one record',
 	title: 'Humaniq for HR teams',
 	record: { one: 'employee', many: 'employees' },

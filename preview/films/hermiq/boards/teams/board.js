@@ -14,7 +14,7 @@
  *            (usp-skills-that-prove-themselves, verified; specs agent-evals, skill-maturity)
  *   general  the assistant: ask about your records, it asks first (COPY.ai A1 + A2;
  *            spec human-approval-gate)
- *   promise  "AI within your rules" (Round 18: AI may be said on screen)
+ *   promise  asked as a question (Round 19): "What if AI followed your rules?" (was "AI within your rules")
  *
  * Techniques (refs/techniques.md): #9 text-swap on a held diagram (the tool list holds, only the
  * switches flip), #1 dot-grows-to-fill as an upright hex (the schedule slot becomes the Talk
@@ -112,7 +112,7 @@ function evalUI(w, geom) {
 const content = {
 	app: 'hermiq',
 	audience: { slug: 'teams', name: 'Teams at work', persona: 'Bas Mulder, IT director of a professional-services company, and the staff who use the assistant' },
-	promise: 'AI within\nyour rules',
+	promise: 'What if AI followed\nyour rules?',
 	promiseLine: 'Agents your team can use every day, that only do what you allow',
 	title: 'Hermiq for teams',
 	record: { one: 'agent', many: 'agents' },

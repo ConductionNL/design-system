@@ -11,7 +11,7 @@
  *            specs wbso-uren-tagging-and-export, bookkeeping-wbso-sno-administratie)
  *   general  the data layer: every change shows who and when (COPY.dataLayer D1; spec
  *            bookkeeping-audit-trail)
- *   promise  "Every client's books, one clear trail"
+ *   promise  asked as a question (Round 19): "What if every client's books were audit-ready?" (was "Every client's books, one clear trail")
  *
  * Techniques (refs/techniques.md): #8 one-take glide across cards (the camera glides down the
  * client list and pushes into one), #1 dot-grows-to-fill as an upright hex (the client's group
@@ -111,7 +111,7 @@ function wbsoUI(w, geom) {
 const content = {
 	app: 'shillinq',
 	audience: { slug: 'accountants', name: 'Accountancy practices', persona: 'Hicham El Amrani, practice owner of a bookkeeping office' },
-	promise: 'Every client\'s books,\none clear trail',
+	promise: 'What if every client\'s\nbooks were audit-ready?',
 	promiseLine: 'Every client\'s books in one place, the group and tax work generated, one clear trail',
 	title: 'Shillinq for accountancy practices',
 	record: { one: 'client', many: 'clients' },

@@ -11,7 +11,7 @@
  *            (sp-run-the-meeting; spec meeting-transcription)
  *   general  notifications: a motion carries and the right person hears
  *            (sp-action-items, sp-motion-tracking; spec decidesk-notifications)
- *   promise  "Decisions public the same day" (Round 18 copy pass) (sp-publish-transparency: the publishing click)
+ *   promise  asked as a question (Round 19): "What if decisions went public today?" (was "Decisions public the same day")
  *
  * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the papers drop
  * onto their items), #3 grid-cell ripple (the seats light in waves as the votes come in),
@@ -117,11 +117,11 @@ function recordingUI(w, geom) {
 const content = {
 	app: 'decidiq',
 	audience: { slug: 'councils', name: 'Municipal councils', persona: 'Marieke van Dijk, griffier, and the council office; the presidium signs off' },
-	promise: 'Decisions public\nthe same day',
+	promise: 'What if decisions\nwent public today?',
 	promiseLine: 'Every council meeting, from agenda to decision, open to the public the same day',
 	title: 'Decidiq for councils',
 	record: { one: 'meeting', many: 'meetings' },
-	logline: 'For the griffie: every paper on its agenda item, members voting from their own seat with the count closing live, a click on an agenda item that jumps the recording to that moment, and the right person hearing when a motion carries. The promise: decisions public the same day.',
+	logline: 'For the griffie: every paper on its agenda item, members voting from their own seat with the count closing live, a click on an agenda item that jumps the recording to that moment, and the right person hearing when a motion carries. The promise card asks it (Round 19): What if decisions went public today?',
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge (papers onto items)', '#3 grid-cell ripple (seats lighting)', '#1 dot-grows-to-fill (as a hex, marker into the recording)'],
 	neighbours: ['opencatalogi', 'filinq'],

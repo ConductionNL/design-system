@@ -16,7 +16,7 @@
  *            run-replay-and-dry-run)
  *   general  the assistant: it asks before it changes anything; the approval card waits
  *            (sp-oversight-baseline; specs human-approval-gate, talk-approval-reactions)
- *   promise  "AI that does only what you allow" (Round 18: AI may be said on screen)
+ *   promise  asked as a question (Round 19): "What if you controlled what AI does?" (was "AI that does only what you allow")
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the risk scale steps in waves until the
  * class settles), #6 hard diagonal wipe (into the routing), #4 typewriter (the run's steps land
@@ -115,7 +115,7 @@ function runUI(w, geom) {
 const content = {
 	app: 'hermiq',
 	audience: { slug: 'governance', name: 'Regulated organisations', persona: 'Marleen de Groot, algorithm register coordinator at a municipality; Rutger van Dijk, CISO at a bank; Aisha Boukhari, data protection officer in care' },
-	promise: 'AI that does only\nwhat you allow',
+	promise: 'What if you controlled\nwhat AI does?',
 	promiseLine: 'Agents that only do what you allow, with every step on the record',
 	title: 'Hermiq for regulated organisations',
 	record: { one: 'agent', many: 'agents' },

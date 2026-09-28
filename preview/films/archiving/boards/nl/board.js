@@ -66,7 +66,7 @@ function chapter(g, text) {
  * archFrame: hookFrame's composition (the AppMock window on the right, the caption in the type
  * column, a tag hex on the loop anchor) with the chapter mark free, so it can name a standard.
  */
-function archFrame(ctx, { mark, caption, drawUI, tag = { app: 'openregister' } }) {
+function archFrame(ctx, { mark, caption, drawUI, header = null }) {
 	const g = ctx.g
 	chapter(g, mark)
 	fitCaption(g, caption, C.white)
@@ -82,12 +82,11 @@ function archFrame(ctx, { mark, caption, drawUI, tag = { app: 'openregister' } }
 	const x = (WINDOW.nav + 14) * U
 	const geom = { x, r: Math.min((720 - 187 - 14) * U, visR - 48 / w0.s), u: U, top: WINDOW.row1 + 60, visB }
 	rect(win, (720 - 187) * U, 24 * U, U, FH, C.cobalt100)
-	bar(win, geom.x, 95, 250, 35, C.cobalt)
+	if (header) textBlock(win, header, { x: geom.x, y: 124, size: 36, weight: 600, fill: C.cobalt, clip: false })
+	else bar(win, geom.x, 95, 250, 35, C.cobalt)
 	rect(win, geom.r - 95, 95, 95, 35, C.cobalt, 3 * U)
 	drawUI(win, geom)
-	const a = LOOP_ANCHOR
-	if (tag.nc) ncTag(g, a.x, a.y, a.r)
-	else appTag(g, a.x, a.y, a.r, tag.app, { fill: C.cobalt })
+	// Round 27c: no tag hex on the loop anchor (no hex floats over the grid).
 }
 
 /** Small mono label inside the mock (a field name), IBM Plex Mono 500. */
@@ -163,7 +162,7 @@ function selectieUI(w, geom) {
 	const x = geom.x, top = geom.top, width = geom.r - geom.x
 	// The case and its type.
 	panel(w, x, top, width, 120, u)
-	hex(w, x + 60, top + 60, 28, C.lavender, 4)
+	hex(w, x + 60, top + 60, 28, C.cobalt300, 4)
 	bar(w, x + 110, top + 40, 240, 16, C.cobalt900)
 	mono(w, 'zaaktype', x + 110, top + 92, 26)
 	bar(w, x + 250, top + 82, 180, 11, C.cobalt700)
@@ -207,7 +206,7 @@ function destroyUI(w, geom) {
 	for (let i = 0; i < 4; i++) {
 		const ry = top + 80 + i * 58
 		rect(w, x + 20, ry, bw - 40, 46, i % 2 ? C.white : C.cobalt50, 4)
-		hex(w, x + 48, ry + 23, 12, C.lavender, 2)
+		hex(w, x + 48, ry + 23, 12, C.cobalt300, 2)
 		bar(w, x + 72, ry + 18, [150, 120, 170, 130][i], 10, C.cobalt900)
 		bar(w, x + bw - 120, ry + 19, 70, 8, C.cobalt300)
 	}
@@ -224,7 +223,7 @@ function destroyUI(w, geom) {
 	const ty = top + 360
 	panel(w, x, ty, width, 260, u)
 	docPage(w, x + width - 190, ty + 26, 160, 210, { k: 0.3, values: [96, 72], lastOrange: false, shadow: null })
-	hex(w, x + width - 60, ty + 210, 18, C.forest, 3)
+	hex(w, x + width - 60, ty + 210, 18, C.cobalt, 3)
 	rect(w, x + 50 - 1.5 * u, ty + 40, 3 * u, 180, C.cobalt200)
 	for (let i = 0; i < 4; i++) {
 		const cy = ty + 44 + i * 58
@@ -240,7 +239,7 @@ function standardsUI(w, geom) {
 	const x = geom.x, top = geom.top, width = geom.r - geom.x
 	// The workspace: the case with its documents, the one store.
 	panel(w, x, top, width, 130, u)
-	hex(w, x + 64, top + 65, 28, C.lavender, 4)
+	hex(w, x + 64, top + 65, 28, C.cobalt300, 4)
 	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
 	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 160, top + 65, u)
@@ -291,7 +290,7 @@ const BODY_SCENES = [
 		source: 'Ruben, Rounds 16 and 19: the question up front, the two worlds under it. Chapter mark "Soevereine werkplek" (Round 20).',
 	},
 	{
-		id: 'mdto', from: 12, to: 21, mark: 'MDTO · ISO 16175 · Archiefwet', caption: 'Compliant waar je\nwerkt, niet achteraf', tag: { app: 'filinq' }, ui: mdtoUI,
+		id: 'mdto', from: 12, to: 21, mark: 'Metadata', header: 'MDTO · ISO 16175 · Archiefwet', caption: 'Compliant waar je\nwerkt, niet achteraf', tag: { app: 'filinq' }, ui: mdtoUI,
 		title: 'Compliant where you work, not afterwards',
 		gloss: 'Compliant where you work, not afterwards',
 		apps: ['filinq', 'openregister'],
@@ -300,7 +299,7 @@ const BODY_SCENES = [
 		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test). NEN-ISO 16175 label: openregister archivering-vernietiging spec:665 (NEN-ISO 16175-1:2020, the successor to NEN 2082). Stored in the workspace: procest document-zaakdossier spec:14 (every document a Nextcloud file in the case\'s own folder); openregister object-interactions spec:154 (files stored in Nextcloud\'s filesystem via IRootFolder, linked to the record).',
 	},
 	{
-		id: 'selectielijst', from: 21, to: 30, mark: 'Selectielijst', caption: 'Elk dossier krijgt\nvanzelf zijn termijn', tag: { app: 'dossiq' }, ui: selectieUI,
+		id: 'selectielijst', from: 21, to: 30, mark: 'Bewaartermijn', caption: 'Elk dossier krijgt\nvanzelf zijn termijn', tag: { app: 'dossiq' }, ui: selectieUI,
 		title: 'Every file gets its retention period automatically',
 		gloss: 'Every file (documents and cases) gets its retention period automatically',
 		apps: ['dossiq', 'openregister'],
@@ -318,7 +317,7 @@ const BODY_SCENES = [
 		source: 'research.json c3: openregister retention-management spec:108 (destruction lists via a background job), :136 (multi-step approval), :174 (destruction certificates), :189 (legal hold); archivering-vernietiging spec:529 (the file deletion logged as archival.file_destroyed); audit-hash-chain spec:34 (SHA-256 chain); positioning openregister usp-archive-destroy (verified). The e-Depot is no longer a proof (Round 16).',
 	},
 	{
-		id: 'standards', from: 39, to: 48, mark: 'ZGW · ZDS · StUF · OIO · CMMN', caption: 'Je werkplek is het\nDMS voor elk systeem', tag: { app: 'dossiq' }, ui: standardsUI,
+		id: 'standards', from: 39, to: 48, mark: 'Standaarden', caption: 'Je werkplek is het\nDMS voor elk systeem', tag: { app: 'dossiq' }, ui: standardsUI,
 		title: 'Your workspace is the DMS for every system',
 		gloss: 'Your workspace is the DMS for every system',
 		apps: ['dossiq', 'filinq'],
@@ -342,7 +341,7 @@ function bodyBoard(sc) {
 		bars: `${barOf(start)}-${barOf(end - 0.01)}`,
 		words: sc.caption, mark: sc.mark, gloss: sc.gloss, shows, clears, hold: +(clears - shows).toFixed(2),
 		apps: sc.apps, motion: sc.motion, sound: sc.sound, source: sc.source,
-		draw: (ctx) => archFrame(ctx, { mark: sc.mark, caption: sc.caption, drawUI: sc.ui, tag: sc.tag }),
+		draw: (ctx) => archFrame(ctx, { mark: sc.mark, caption: sc.caption, drawUI: sc.ui, header: sc.header }),
 	}
 }
 
@@ -355,7 +354,7 @@ export const boards = [
 		sound: 'The opening\'s own, ending on a dry click.', source: 'Shared module, no claim.',
 		draw(ctx) { const up = buildOpening(ctx.g, { defs: ctx.defs }); const k = OPENING.T.powerOn + 0.9; up(k); return () => up(k) },
 	},
-	...withCurrent(BODY_SCENES.map(bodyBoard), {}),
+	...withCurrent(BODY_SCENES.map(bodyBoard), {}, ['hook']),
 	{
 		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Gebouwd op Nextcloud, verrijkt door Conduction (shared closing piece, Round 22)',
 		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + Math.round(BUILT / BAR) - 1}.4`,
@@ -385,9 +384,10 @@ export const boards = [
  * the scene's orange measured from the rendered frame, unless content.anchors names it
  * ({ <board id>: [x, y] }, stage px). Cyan head; drawn once, on the board's first visible render.
  */
-function withCurrent(boards, content) {
+function withCurrent(boards, content, only = null) {
 	const anchors = []
 	boards.forEach((b, i) => {
+		if (only && !only.includes(b.id)) return
 		const draw = b.draw
 		b.drawBase = draw // the frame without its wire, for pages that animate the current themselves
 		b.currentAnchor = content.anchors?.[b.id] || null

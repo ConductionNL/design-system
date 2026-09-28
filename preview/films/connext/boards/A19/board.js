@@ -364,7 +364,7 @@ export const boards = [
 		module: 'builtOn',
 		claim_source: 'round4/facts.json fact a (OpenRegister 2.1.0 links a record to Files, Mail, Calendar, Contacts, Talk, Deck, Tasks and more). No Nextcloud Notes. story.json mechanics[0].',
 		draw(ctx) {
-			builtOnFrame(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'] })
+			builtOnFrame(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'], legacy: true })
 		},
 	},
 
@@ -385,7 +385,7 @@ export const boards = [
 		module: 'install',
 		claim_source: Object.entries(INSTALL.sources).map(([k, v]) => `"${k}": ${v}`).join(' '),
 		draw(ctx) {
-			installFrame(ctx, {})
+			installFrame(ctx, { legacy: true })
 		},
 	},
 ]

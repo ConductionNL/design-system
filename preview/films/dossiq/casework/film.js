@@ -366,10 +366,11 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	cue(s.start + 0.12, 'impact', { gain: 0.35, from: 80, to: 36, decay: 0.8 })
 }
 
-/* ---------- the closing pieces: Built on Nextcloud, then the install board ---------- */
+/* ---------- the closing pieces: Built on Nextcloud, then the install board (legacy: true keeps this
+   rendered master reproducible; the Round 21 closing arrives with the next re-render) ---------- */
 const T_BUILT = OPEN + BODY
-film.scene('builtOn', T_BUILT, T_BUILT + BUILT, (ctx) => builtOnScene(ctx, { app: APP, apps: ['filinq'], on: 'nextcloud' }))
-film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}), { post: 0.001 })
+film.scene('builtOn', T_BUILT, T_BUILT + BUILT, (ctx) => builtOnScene(ctx, { app: APP, apps: ['filinq'], on: 'nextcloud', legacy: true }))
+film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, { legacy: true }), { post: 0.001 })
 
 /** The bed, in D: silent under the opening, pad from the body, kick and hats under the proofs, thinning for the closing, resolving on D. */
 film.music = {

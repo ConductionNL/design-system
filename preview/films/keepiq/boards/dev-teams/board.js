@@ -30,6 +30,8 @@ import { el, textBlock } from '../../../_lib/stage.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, button, chrome, honeyField, layout } from '../../../_lib/ui.js'
+import { ease } from '../../../_lib/core.js'
+import { current } from '../../../tkfilm/lib.js'
 
 const REFS = [
 	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'Text typed live under the UI.' },
@@ -38,8 +40,10 @@ const REFS = [
 ]
 
 /** Hook: a pipeline run; the fetch step pulls the secret into memory, the disk slot stays empty. */
-function pipelineUI(w, geom) {
+/** st (the film's state; defaults are the still): steps 0..4 done, ring 0..1, log 0..5 lines typed, dots 0..8, lease 0..1 left. */
+export function pipelineUI(w, geom, st = {}) {
 	const { u } = geom
+	const { steps = 2, ring = 1, log = 5, dots = 8, lease = 0.35 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 190, u)
 	const nw = 160, nh = 86, gap = 30, y = top + 52
@@ -47,25 +51,27 @@ function pipelineUI(w, geom) {
 		const nx = x + 40 + i * (nw + gap)
 		if (i > 0) rect(w, nx - gap, y + nh / 2 - 1.5 * u, gap, 3 * u, C.cobalt300)
 		flowNode(w, nx, y, nw, nh, u, { kind: i === 0 ? 'trigger' : 'step' })
-		if (i < 2) statusPill(w, nx + nw - 70, y + nh - 20, u)
+		if (i < steps) statusPill(w, nx + nw - 70, y + nh - 20, u)
 	}
 	// the fetch step: ringed in orange, a lock on it
 	const fx = x + 40 + 2 * (nw + gap)
 	use(w, 'icon-lock', fx + nw - 50, y + 12, 32, 32, C.cobalt)
-	rect(w, fx - 8, y - 8, nw + 16, nh + 16, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (ring > 0) rect(w, fx - 8, y - 8, nw + 16, nh + 16, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 	// the run log: dark, typed line by line, the secret masked and held in memory only
 	const ly = top + 220
 	rect(w, x, ly, width, 330, C.cobalt900, 5 * u)
 	const lines = [0.5, 0.7, 0.4, 0.62, 0.55]
 	lines.forEach((p, i) => {
+		const typed = Math.min(1, Math.max(0, log - i))
+		if (typed <= 0) return
 		const cy = ly + 50 + i * 50
 		bar(w, x + 30, cy - 4, 16, 8, i === 2 ? C.mint300 : C.cobalt400)
-		bar(w, x + 60, cy - 4, (width - 120) * p, 8, C.cobalt300)
-		if (i === 2) for (let k = 0; k < 8; k++) circle(w, x + 60 + (width - 120) * p + 30 + k * 20, cy, 6, C.white)
+		bar(w, x + 60, cy - 4, (width - 120) * p * typed, 8, C.cobalt300)
+		if (i === 2 && typed >= 1) for (let k = 0; k < Math.min(8, Math.floor(dots)); k++) circle(w, x + 60 + (width - 120) * p + 30 + k * 20, cy, 6, C.white)
 	})
 	// the lease: a short timer bar, counting down
 	rect(w, x + 30, ly + 290, width - 60, 10, C.cobalt700, 5)
-	rect(w, x + 30, ly + 290, (width - 60) * 0.35, 10, C.mint, 5)
+	if (lease > 0) rect(w, x + 30, ly + 290, (width - 60) * lease, 10, C.mint, 5)
 }
 
 const TX = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weight: o.weight ?? 600, fill: o.fill ?? C.cobalt900, clip: false, tracking: -0.01 })
@@ -75,18 +81,23 @@ const TX = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, wei
  * outside system, so a plain box on the left; the request (spec secret-requests: requestable fields, a
  * fill-in link, values encrypted on receipt with the requester's certificate, optional expiry) on the right.
  */
-function partnerRequestUI(w, geom) {
+/** st: ticks 0..2 (fields ticked), link 0..1 (the link typing in), ring 0..1, wire 0..1 (the link out to the partner), fill 0..8 (the partner's masked value), back 0..1 (the value back into the vault). */
+export function partnerRequestUI(w, geom, st = {}) {
 	const { u } = geom
+	const { ticks = 2, link = 1, ring = 1, wire = 1, fill = 8, back = 1 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	// the partner organisation: a plain box with its own people, the fill-in page open on its side
 	const bw = 250
 	rect(w, x, top + 190, bw, 360, C.cobalt50, 5 * u, { stroke: C.cobalt200, 'stroke-width': u })
 	for (let k = 0; k < 3; k++) { circle(w, x + 40, top + 240 + k * 50, 14, [C.cobalt300, C.cobalt200, C.cobalt300][k]); bar(w, x + 66, top + 236 + k * 50, [120, 90, 110][k], 8, C.cobalt400) }
 	panel(w, x + 20, top + 400, bw - 40, 120, u)
-	for (let i = 0; i < 8; i++) circle(w, x + 50 + i * 20, top + 442, 6, C.cobalt900)
+	for (let i = 0; i < Math.min(8, Math.floor(fill)); i++) circle(w, x + 50 + i * 20, top + 442, 6, C.cobalt900)
 	rect(w, x + 40, top + 470, 90, 28, C.cobalt, 3 * u)
 	// the wire: the fill-in link out, the value back into the vault (straight, square corners)
-	rect(w, x + bw, top + 370, 60, 3 * u, C.cobalt300)
+	// the wire (Round 24 current): out to the partner with the link, back with the value
+	const rx0 = x + bw + 60
+	current(w, [[rx0 + 30, top + 528], [rx0 - 30, top + 528], [rx0 - 30, top + 370], [x + bw, top + 370]], wire, { w: 3 * u, spark: 10, stroke: C.cobalt300 })
+	if (back > 0 && back < 1) current(w, [[x + bw, top + 390], [rx0 - 14, top + 390], [rx0 - 14, top + 130], [rx0, top + 130]], back, { w: 3 * u, spark: 10, stroke: C.mint300 })
 	// the request
 	const rx = x + bw + 60, rw = width - bw - 60
 	panel(w, rx, top, rw, 600, u)
@@ -96,7 +107,7 @@ function partnerRequestUI(w, geom) {
 	rect(w, rx + rw - 150, top + 24, 124, 38, C.cobalt50, 19)
 	TX(w, 'NIS2 · BIO2', rx + rw - 136, top + 50, 17, { fill: C.cobalt })
 	// the requestable fields: a password and a certificate, both ticked
-	;[['Password', true], ['Certificate', true], ['Username', false]].forEach(([t, on], i) => {
+	;[['Password', ticks >= 1], ['Certificate', ticks >= 2], ['Username', false]].forEach(([t, on], i) => {
 		const cy = top + 120 + i * 62
 		rect(w, rx + 30, cy - 16, 32, 32, on ? C.mint : C.white, 4, on ? {} : { stroke: C.cobalt300, 'stroke-width': u })
 		if (on) use(w, 'icon-check', rx + 34, cy - 12, 24, 24, C.white)
@@ -111,8 +122,8 @@ function partnerRequestUI(w, geom) {
 	bar(w, rx + 46, top + 442, 100, 8, C.cobalt700)
 	// the fill-in link, the scene's one orange
 	rect(w, rx + 30, top + 500, rw - 60, 56, C.cobalt50, 3 * u)
-	for (let i = 0; i < 12; i++) rect(w, rx + 50 + i * 22, top + 520, i % 5 === 4 ? 8 : 15, 15, C.cobalt700, 2)
-	rect(w, rx + 22, top + 492, rw - 44, 72, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	for (let i = 0; i < Math.round(12 * link); i++) rect(w, rx + 50 + i * 22, top + 520, i % 5 === 4 ? 8 : 15, 15, C.cobalt700, 2)
+	if (ring > 0) rect(w, rx + 22, top + 492, rw - 44, 72, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 }
 
 /**
@@ -120,8 +131,10 @@ function partnerRequestUI(w, geom) {
  * expiry and password, no account needed) and link-sharing (usage limit, auto-deletion). Left: the send
  * being made, "1 view" ringed. Right: the recipient's side, opened once, then gone.
  */
-function onceLinkUI(w, geom) {
+/** st: views ('' or '1'), ring 0..1, link 0..1, open 0..1 (the recipient reads it), burn 0..1 (the link is gone). */
+export function onceLinkUI(w, geom, st = {}) {
 	const { u } = geom
+	const { views = '1', ring = 1, link = 1, open = 1, burn = 0 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	const lw = width * 0.58
 	panel(w, x, top, lw, 600, u)
@@ -132,24 +145,32 @@ function onceLinkUI(w, geom) {
 	// max views and expiry
 	TX(w, 'Max views', x + 30, top + 206, 18, { weight: 500, fill: C.cobalt700 })
 	rect(w, x + 30, top + 220, 150, 50, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
-	TX(w, '1', x + 50, top + 254, 24)
-	rect(w, x + 22, top + 212, 166, 66, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (views) TX(w, views, x + 50, top + 254, 24)
+	if (ring > 0) rect(w, x + 22, top + 212, 166, 66, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 	TX(w, 'Expires', x + 230, top + 206, 18, { weight: 500, fill: C.cobalt700 })
 	rect(w, x + 230, top + 220, lw - 260, 50, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
 	bar(w, x + 250, top + 241, 110, 9, C.cobalt900)
 	// the link
 	rect(w, x + 30, top + 320, lw - 60, 56, C.cobalt50, 3 * u)
-	for (let i = 0; i < 12; i++) rect(w, x + 50 + i * 22, top + 340, i % 5 === 4 ? 8 : 15, 15, C.cobalt700, 2)
+	for (let i = 0; i < Math.round(12 * link); i++) rect(w, x + 50 + i * 22, top + 340, i % 5 === 4 ? 8 : 15, 15, burn > 0 ? C.cobalt200 : C.cobalt700, 2)
 	button(w, x + lw - 210, top + 520, 180, 52, u)
 	// the recipient: opened once, then the link is gone
 	const rx = x + lw + 24, rw = width - lw - 24
-	panel(w, rx, top + 60, rw, 220, u)
-	for (let i = 0; i < 8; i++) circle(w, rx + 40 + i * 22, top + 130, 6, C.cobalt900)
-	bar(w, rx + 30, top + 180, rw - 100, 8, C.cobalt300)
-	statusPill(w, rx + 30, top + 236, u)
-	panel(w, rx, top + 320, rw, 160, u, { fill: C.cobalt50 })
-	bar(w, rx + 30, top + 380, rw - 90, 10, C.cobalt200)
-	bar(w, rx + 30, top + 410, rw - 150, 8, C.cobalt100)
+	if (open > 0) {
+		const oy = 40 * (1 - ease.brand(open))
+		const og = el('g', { opacity: Math.min(1, open * 2).toFixed(3), transform: `translate(0 ${oy.toFixed(1)})` }, w)
+		panel(og, rx, top + 60, rw, 220, u)
+		for (let i = 0; i < 8; i++) circle(og, rx + 40 + i * 22, top + 130, 6, C.cobalt900)
+		bar(og, rx + 30, top + 180, rw - 100, 8, C.cobalt300)
+		statusPill(og, rx + 30, top + 236, u)
+	}
+	// the second visit: the link is gone (burn 1)
+	if (burn > 0) {
+		const bg = el('g', { opacity: Math.min(1, burn * 2).toFixed(3) }, w)
+		panel(bg, rx, top + 320, rw, 160, u, { fill: C.cobalt50 })
+		bar(bg, rx + 30, top + 380, rw - 90, 10, C.cobalt200)
+		bar(bg, rx + 30, top + 410, rw - 150, 8, C.cobalt100)
+	}
 }
 
 /**
@@ -162,19 +183,25 @@ function onceLinkUI(w, geom) {
  */
 const USAGE_CAPTION = 'Every use: who,\nwhen, where, why'
 function usageFrame(ctx) {
-	const U = 2.5
 	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq' })
 	honeyField(ctx.g, ctx.W * 0.62, ctx.H + 150, 80, 10, { top: ctx.H * 0.61, scale: 0.7, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
 	const { ui } = layout(ctx.W, ctx.H)
 	const g = el('g', { transform: `translate(${ui.x - 1.25 * 120} ${ui.y - 1.25 * 640}) scale(1.25)` }, ctx.g)
+	usageContent(g)
+}
+
+/** The dashboard itself, in the general local coordinates. st: bars 0..1 (the day bars growing), rows 0..5, ring 0..1, tag 0..1. */
+export function usageContent(g, st = {}) {
+	const U = 2.5
+	const { bars = 1, rows: nRows = 5, ring = 1, tag = 1 } = st
 	// the password and its uses per day
 	const x = 170, w = 610
 	panel(g, x, 640, w, 170, U)
 	use(g, 'icon-lock', x + 70, 664, 32, 32, C.cobalt)
 	bar(g, x + 116, 672, 200, 14, C.cobalt900)
 	const days = [0.3, 0.5, 0.4, 0.7, 0.45, 0.6, 0.35, 0.8, 0.55, 0.65, 0.5, 0.9]
-	days.forEach((h, i) => rect(g, x + 70 + i * 43, 790 - 70 * h, 26, 70 * h, i === days.length - 1 ? C.mint : C.cobalt300, 3))
-	appTag(g, x, 700, 40, 'keepiq', { ringW: 5 })
+	days.forEach((h, i) => { const k = Math.max(0, Math.min(1, bars * days.length - i)); if (k > 0) rect(g, x + 70 + i * 43, 790 - 70 * h * k, 26, 70 * h * k, i === days.length - 1 ? C.mint : C.cobalt300, 3) })
+	if (tag > 0) appTag(g, x, 700, 40 * tag, 'keepiq', { ringW: 5 })
 	// the uses: who, when, where, what for
 	const ty = 830
 	panel(g, x, ty, w, 410, U)
@@ -183,6 +210,7 @@ function usageFrame(ctx) {
 	rect(g, x + 24, ty + 62, w - 48, U / 2, C.cobalt100)
 	const rows = [['app', 'integriq', 'nc-files', C.lavender300], ['person', C.cobalt300, 'nc-mail', C.mint300], ['app', 'openregister', 'nc-activity', C.lavender300], ['person', C.cobalt200, 'nc-talk', C.cobalt100], ['person', C.cobalt300, 'nc-files', C.mint300]]
 	rows.forEach(([kind, who, where, why], i) => {
+		if (i >= nRows) return
 		const cy = ty + 104 + i * 62
 		if (i > 0) rect(g, x + 24, cy - 31, w - 48, U / 2, C.cobalt50)
 		if (kind === 'app') appTag(g, x + 62, cy, 20, who, { ringW: 0 })
@@ -193,7 +221,7 @@ function usageFrame(ctx) {
 		rect(g, x + 450, cy - 15, 120, 30, why, 15)
 		bar(g, x + 472, cy - 3, 76, 6, C.cobalt900)
 	})
-	rect(g, x + 14, ty + 104 - 28, w - 28, 56, 'none', 5 * U, { stroke: C.orange, 'stroke-width': 2.5 * U })
+	if (ring > 0) rect(g, x + 14, ty + 104 - 28, w - 28, 56, 'none', 5 * U, { stroke: C.orange, 'stroke-width': 2.5 * U, 'stroke-opacity': ring })
 }
 
 const content = {
@@ -250,5 +278,5 @@ const content = {
 
 const film = audienceFilm(content)
 // Round 20: the general slot draws the usage dashboard instead of the shared change log.
-film.boards.find((b) => b.id === 'general-dataLayer').draw = usageFrame
+film.boards.find((b) => b.id === 'general-dataLayer').drawBase = usageFrame
 export const { meta, boards } = film

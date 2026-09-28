@@ -62,8 +62,13 @@ function storyTwo(ctx) {
 /* ---------- scene 3: the real token editor ---------- */
 
 /** Custom Token Overrides (token-editor-*.png): header with Download and Upload, four tabs, token rows. */
-function tokensUI(w, geom) {
+/**
+ * st (the film's animation state; the defaults are the approved still): sw0 the first swatch's colour,
+ * ring 0..1, dot 0..1 (the custom badge).
+ */
+export function tokensUI(w, geom, st = {}) {
 	const { u } = geom
+	const { sw0 = C.forest, ring = 1, dot = 1 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 610, u)
 	// the grey header bar
@@ -82,12 +87,12 @@ function tokensUI(w, geom) {
 	})
 	rect(w, x, top + 146, width, u / 2, C.cobalt100)
 	// one row per token: label, its CSS variable, swatch, hex field, reset
-	const rows = [['Primary color', C.forest, true], ['Primary text color', C.white, false], ['Primary hover color', C.forest300, false], ['Primary element color', C.forest, false], ['Primary element hover', C.cobalt900, false]]
+	const rows = [['Primary color', sw0, true], ['Primary text color', C.white, false], ['Primary hover color', C.forest300, false], ['Primary element color', C.forest, false], ['Primary element hover', C.cobalt900, false]]
 	rows.forEach(([label, sw, custom], i) => {
 		const cy = top + 196 + i * 82
 		if (i > 0) rect(w, x + 16, cy - 41, width - 32, u / 2, C.cobalt50)
 		T(w, label, x + 30, cy - 4, 19, { weight: 500 })
-		if (custom) circle(w, x + 30 + label.length * 9.6 + 12, cy - 10, 6, C.cobalt)
+		if (custom && dot > 0) circle(w, x + 30 + label.length * 9.6 + 12, cy - 10, 6 * dot, C.cobalt)
 		bar(w, x + 30, cy + 14, [130, 160, 170, 180, 210][i], 6, C.cobalt300)
 		rect(w, x + width - 300, cy - 22, 44, 44, C.white, 3 * u, { stroke: C.cobalt400, 'stroke-width': u })
 		rect(w, x + width - 290, cy - 14, 24, 28, sw, 2, sw === C.white ? { stroke: C.cobalt300, 'stroke-width': u / 2 } : {})
@@ -97,14 +102,16 @@ function tokensUI(w, geom) {
 		circle(w, x + width - 75, cy, 9, 'none', { stroke: C.cobalt, 'stroke-width': u })
 	})
 	// the token being adjusted, the scene's one orange: the swatch of the first row
-	rect(w, x + width - 308, top + 196 - 30, 60, 60, 'none', 4 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (ring > 0) rect(w, x + width - 308, top + 196 - 30, 60, 60, 'none', 4 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 }
 
 /* ---------- scene 4: the store ---------- */
 
 /** The store, in the Nextcloud app store's look (appstore-listing.png): blue bar, search, rail, template cards. */
-function storeUI(w, geom) {
+/** st: ring 0..1, pressed 0..1 (the share button filling), stars 0..1 (the rating dots filling). */
+export function storeUI(w, geom, st = {}) {
 	const { u } = geom
+	const { ring = 1, pressed = 1, stars = 1 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 610, u)
 	// the store's own blue top bar: the Nextcloud mark, "App store", the search field
@@ -130,18 +137,20 @@ function storeUI(w, geom) {
 		rect(w, cx + cw * 0.85, cy, cw * 0.15, 60, C.white)
 		bar(w, cx + 22, cy + 88, [170, 140, 190, 130][i], 11, C.cobalt900)
 		bar(w, cx + 22, cy + 114, 110, 8, C.cobalt300)
-		for (let k = 0; k < 5; k++) circle(w, cx + 30 + k * 22, cy + 150, 7, k < [5, 4, 4, 5][i] ? C.nextcloud : C.cobalt100)
-		button(w, cx + cw - 150, cy + ch - 66, 128, 46, u, { kind: i === 0 ? 'primary' : 'ghost' })
+		for (let k = 0; k < 5; k++) circle(w, cx + 30 + k * 22, cy + 150, 7, k < Math.round([5, 4, 4, 5][i] * stars) ? C.nextcloud : C.cobalt100)
+		button(w, cx + cw - 150, cy + ch - 66, 128, 46, u, { kind: i === 0 && pressed >= 0.5 ? 'primary' : 'ghost' })
 	})
 	// yours: the share button on the first card, the scene's one orange
-	rect(w, gx + cw - 158, top + 96 + ch - 74, 144, 62, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (ring > 0) rect(w, gx + cw - 158, top + 96 + ch - 74, 144, 62, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 }
 
 /* ---------- scene 5: the NL Design import ---------- */
 
 /** NL Design System Theme (admin-nl-design-panel.png, guide-dropdown-open.png) and the custom token set upload. */
-function nldesignUI(w, geom) {
+/** st: sel (the selected row of the set list), name 0..1 and file 0..1 (the upload fields filling), ring 0..1, landed 0..1 (the imported set in the list). */
+export function nldesignUI(w, geom, st = {}) {
 	const { u } = geom
+	const { sel = 0, name = 1, file = 1, ring = 1, landed = 1 } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 620, u)
 	T(w, 'NL Design System Theme', x + 110, top + 52, 30)
@@ -155,24 +164,25 @@ function nldesignUI(w, geom) {
 	rect(w, x + 30, top + 178, 400, 214, C.white, 3 * u, { stroke: C.cobalt900, 'stroke-width': u })
 	;['Rijkshuisstijl', 'Gemeente Amsterdam', 'Gemeente Den Haag', 'Gemeente Utrecht', 'Gemeente Rotterdam'].forEach((t, i) => {
 		const ly = top + 214 + i * 38
-		if (i === 0) rect(w, x + 34, ly - 26, 392, 36, C.cobalt50, 2)
+		if (i === Math.round(sel)) rect(w, x + 34, ly - 26, 392, 36, C.cobalt50, 2)
 		T(w, t, x + 50, ly, 18, { weight: 500 })
 	})
 	// custom token sets: upload your own NL Design CSS or W3C Design Tokens file
 	T(w, 'Custom token sets', x + 470, top + 162, 20)
 	T(w, 'Token set name', x + 470, top + 204, 16, { weight: 500, fill: C.cobalt700 })
 	rect(w, x + 470, top + 216, width - 500, 44, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
-	bar(w, x + 486, top + 234, 150, 8, C.cobalt900)
+	if (name > 0) bar(w, x + 486, top + 234, 150 * name, 8, C.cobalt900)
 	rect(w, x + 470, top + 276, width - 500, 44, C.cobalt50, 3 * u)
-	bar(w, x + 486, top + 294, 180, 8, C.cobalt400)
+	if (file > 0) bar(w, x + 486, top + 294, 180 * file, 8, C.cobalt400)
 	rect(w, x + 470, top + 340, 250, 48, C.cobalt, 4 * u)
 	T(w, 'Choose file and upload', x + 486, top + 371, 16, { fill: C.white, weight: 600 })
 	// the upload, the scene's one orange
-	rect(w, x + 462, top + 332, 266, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	if (ring > 0) rect(w, x + 462, top + 332, 266, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
 	// below: the imported set lands in the list of custom sets
 	panel(w, x + 30, top + 420, width - 60, 170, u)
 	;[[C.forest, C.forest300], [C.cobalt, C.cobalt300]].forEach(([a, b], i) => {
-		const ry = top + 470 + i * 64
+		if (i === 0 && landed <= 0) return
+		const ry = top + 470 + i * 64 - (i === 0 ? 30 * (1 - landed) : 0)
 		rect(w, x + 56, ry - 16, 28, 28, a, 3)
 		rect(w, x + 88, ry - 16, 28, 28, b, 3)
 		bar(w, x + 136, ry - 4, [200, 150][i], 9, C.cobalt900)
@@ -182,6 +192,9 @@ function nldesignUI(w, geom) {
 
 const content = {
 	app: 'thematiq',
+	// Round 24: the current's key elements where the orange is word art (the wire must not cross the words):
+	// story 1 lands on the forest colour cell's left point, story 2 on the stock Nextcloud hex's.
+	anchors: { promise: [1500, 760], hook: [1526, 300] },
 	audience: { slug: 'government', name: 'Government and brands', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) and a company\'s head of marketing (Iris Bakker) folded in (Round 20: one Thematiq film)' },
 	promise: 'Your car,\nyour house,\nyour colours',
 	promiseLine: 'Do you really own it if you cannot style it your way? Thematiq makes Nextcloud yours: your tokens, your templates, your NL Design house style',
@@ -237,7 +250,7 @@ const film = audienceFilm(content)
 // Round 22: the two story cards are word art, and the NL Design import takes the general slot's time
 // as an app scene (there is no data-layer scene in this film).
 const B = (id) => film.boards.find((b) => b.id === id)
-Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', draw: storyOne })
-Object.assign(B('hook'), { draw: storyTwo })
-Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', draw: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }) })
+Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', drawBase: storyOne })
+Object.assign(B('hook'), { drawBase: storyTwo })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }) })
 export const { meta, boards } = film

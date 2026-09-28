@@ -96,6 +96,13 @@
 	.dir.picked .hex { background: var(--accent); }
 	.dir-title { display: grid; gap: 6px; }
 	.dir-title .logline { max-width: 70ch; }
+	/* Audience films: one group per app, a positioning line above each film's boards */
+	.group-head { margin: 40px 0 0; padding-top: 24px; border-top: 2px solid var(--ink); font-size: 26px; }
+	.group-head + .dir { border-top: 0; }
+	.positioning { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 6px 0 4px; font-size: 14px; max-width: 80ch; }
+	.positioning dt { font: 500 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-top: 3px; }
+	.positioning dd { margin: 0; }
+	.positioning dd.promise { font-weight: 600; }
 	.refs { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink-soft); }
 	.refs a { color: var(--ink-soft); }
 	.pick { font: 600 14px var(--sans); border: 1.5px solid var(--brand); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 9px 14px; cursor: pointer; white-space: nowrap; }
@@ -266,8 +273,11 @@
 	const state = { pick: null, approved: {}, notes: {}, db: null, writable: true }
 	const els = { dirs: {}, notes: {} }
 
+	let lastGroup = null
 	for (const v of D.variants) {
 		const name = v.label || `direction ${v.variant}`
+		// An audience page groups its films by app (v.group) and shows each film's positioning (v.positioning).
+		if (v.group && v.group !== lastGroup) { $('#dirs').append(h('h2', { class: 'group-head', text: v.group })); lastGroup = v.group }
 		const sec = h('section', { class: 'dir', id: 'dir-' + v.variant, 'aria-labelledby': 'h-' + v.variant })
 		const pick = h('button', { class: 'pick', type: 'button', 'aria-pressed': 'false', id: 'pick-' + v.variant, text: approveEach ? 'Approve this storyboard' : 'Pick this direction' })
 		pick.addEventListener('click', () => (approveEach ? approve(v.variant) : choose(v.variant)))
@@ -277,7 +287,7 @@
 		else hex.textContent = v.variant
 		sec.append(h('div', { class: 'dir-head' },
 			hex,
-			h('div', { class: 'dir-title' }, h('h2', { id: 'h-' + v.variant, text: v.label ? `${v.label} · ${v.title}` : `${v.variant} · ${v.title}` }), h('p', { class: 'logline', text: v.logline }), refs,
+			h('div', { class: 'dir-title' }, h('h2', { id: 'h-' + v.variant, text: v.label ? `${v.label} · ${v.title}` : `${v.variant} · ${v.title}` }), v.positioning ? h('dl', { class: 'positioning' }, ...Object.entries(v.positioning).flatMap(([k, val]) => [h('dt', { text: k }), h('dd', { class: k === 'promise' ? 'promise' : '', text: val })])) : null, h('p', { class: 'logline', text: v.logline }), refs,
 				h('p', { class: 'mono', style: 'font-size:12px;color:var(--ink-soft)', text: `${v.words_total} words on screen · ${v.scenes.length} scenes` }),
 				(v.open_questions && v.open_questions.length) ? h('details', { class: 'qs' }, h('summary', { text: `Open questions from the designer (${v.open_questions.length})` }), h('ul', {}, ...v.open_questions.map((q) => h('li', { text: q })))) : null),
 			pick))

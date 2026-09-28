@@ -31,7 +31,7 @@ const REFS = [
 ]
 
 /** A deal card on the board. */
-function card(w, x, y, cw, u, { lw = 180, lifted = false, accent = false } = {}) {
+export function card(w, x, y, cw, u, { lw = 180, lifted = false, accent = false } = {}) {
 	const h = 110
 	if (lifted) rect(w, x + 10, y + 12, cw, h, C.cobalt200, 4 * u)
 	panel(w, x, y, cw, h, u, { stroke: accent ? C.orange : C.cobalt100 })
@@ -43,7 +43,7 @@ function card(w, x, y, cw, u, { lw = 180, lifted = false, accent = false } = {})
 }
 
 /** Board columns (stage lanes) from x, with card widths per column. */
-function lanes(w, geom, cols, { skip = [] } = {}) {
+export function lanes(w, geom, cols, { skip = [] } = {}) {
 	const { u } = geom
 	const cw = 270, gap = 20, top = geom.anchor.y - 55
 	cols.forEach((cards, c) => {
@@ -57,7 +57,7 @@ function lanes(w, geom, cols, { skip = [] } = {}) {
 }
 
 /** Proof 1: a deal lifted mid-drag into the next stage, and the forecast answering below. */
-function forecastUI(w, geom) {
+export function forecastUI(w, geom) {
 	const { u } = geom
 	const { cw, gap, top } = lanes(w, geom, [[200, 160], [170], [190, 150]], { skip: [] })
 	// The dragged deal: lifted between lane 2 and 3, the scene's one orange.
@@ -78,7 +78,7 @@ function forecastUI(w, geom) {
 }
 
 /** Proof 2: the contracts list with one entering its renewal window, and the renewal deal that opened itself. */
-function renewalUI(w, geom) {
+export function renewalUI(w, geom) {
 	const { u } = geom
 	const top = geom.anchor.y - 50
 	const width = geom.r - geom.x

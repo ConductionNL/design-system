@@ -150,6 +150,8 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 25: for the municipality, what a resident does in one portal: view and pay invoices, check and update current products, send a message and add a file to the case, change their own details, and see who viewed their data.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Citizen portal', hook: 'Invoices', products: 'Products', messages: 'Messages', profile: 'Profile', 'general-dataLayer': 'Privacy' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the invoices', note: 'the app cell opens into the resident\'s portal: one place, as the question promised (#1)' },

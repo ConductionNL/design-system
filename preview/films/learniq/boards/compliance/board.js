@@ -88,6 +88,8 @@ const content = {
 	record: { one: 'course', many: 'courses' },
 	logline: 'For the compliance officer: every rule\'s coverage live on one page, a signed record nobody can quietly edit, a certificate in the learner\'s own wallet, and the manager told when training runs overdue.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Compliance', hook: 'Coverage', sealed: 'Proof', wallet: 'Certificates', 'general-notify': 'Reminders' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Learniq cell', toName: 'the coverage page', note: 'the app cell opens into its one page of coverage (#1)' },

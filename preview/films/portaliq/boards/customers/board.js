@@ -107,6 +107,8 @@ const content = {
 	record: { one: 'request', many: 'requests' },
 	logline: 'For housing corporations and associations: a tenant reports a repair from their phone, sees the fitter booked, a member fixes their own details, and every change is on record.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Customer portal', hook: 'Repairs', booked: 'Planning', details: 'Self-service', 'general-dataLayer': 'Audit trail' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the phone', note: 'the app cell opens into the tenant\'s phone (#1)' },

@@ -83,9 +83,10 @@ function objectionUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	panel(w, x, top, width, 150, u)
-	hex(w, x + 70, top + 75, 30, C.lavender, 4)
-	bar(w, x + 130, top + 50, 260, 16, C.cobalt900)
-	bar(w, x + 130, top + 84, 170, 9, C.cobalt300)
+	// Round 27c: the record type hex sits clear of the app tag on the loop anchor (no hex over another).
+	hex(w, x + 110, top + 75, 30, C.lavender, 4)
+	bar(w, x + 170, top + 50, 260, 16, C.cobalt900)
+	bar(w, x + 170, top + 84, 170, 9, C.cobalt300)
 	idlePill(w, x + width - 150, top + 75, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
 	// The file: the redacted page (mini, its black bars), the decision, the case history, the hearing date.
 	const fy = top + 180
@@ -113,6 +114,8 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for permits and enforcement. National data arrives in the permit case, you redact before you publish, the objection file builds itself, and every decision shows who and when.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Permits', hook: 'Base registers', redact: 'Publication', objection: 'Objections', 'general-dataLayer': 'Audit trail' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Dossiq cell', toName: 'the permit case', note: 'the app cell opens into the permit case with national data in it (#1)' },

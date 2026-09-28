@@ -133,6 +133,8 @@ const content = {
 	record: { one: 'citizen', many: 'citizens' },
 	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, invoices, permits, letters and chats in one view; the right knowledge appears while you type; and refer, note, call back or hand a task to a colleague, who hears at once.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Contact centre', hook: 'Incoming calls', view: 'Client view', knowledge: 'Knowledge', 'general-notify': 'Handover' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Pipelinq cell', toName: 'the caller\'s file', note: 'the promise asks about one call; the app\'s own cell opening into the ringing screen answers it without a cut, the app becoming the scene' },

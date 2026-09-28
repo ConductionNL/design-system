@@ -130,6 +130,8 @@ const content = {
 	record: { one: 'pupil', many: 'pupils' },
 	logline: 'For schools, with the parent side in the film: the student file holds everything about one pupil, the teacher sees the class in one view, a parent excuses their child from their phone and the register updates, and the 16-hour report goes out on time. It does not remove the work; it makes it easier to carry.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Schools', hook: 'Pupil file', teacher: 'Class view', excuse: 'Attendance', 'general-notify': 'Reporting' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Learniq cell', toName: 'the pupil\'s file', note: 'the app cell opens into one pupil\'s file: one shape becoming one file matches "One pupil, one file"' },

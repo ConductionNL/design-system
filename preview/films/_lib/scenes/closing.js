@@ -61,7 +61,7 @@
  * Depends only on the engine (stage, core, brand, assets), so every film can import it.
  */
 import { el, textBlock, measure, nextId } from '../stage.js'
-import { hexPath, SQRT3, ease, spring, inv, clamp, lerp, mix } from '../core.js'
+import { hexPath, SQRT3, ease, spring, inv, clamp, lerp, mix, axialRing } from '../core.js'
 import { C } from '../brand.js'
 import { APP_NAMES, MARK_BOX } from '../assets.js'
 
@@ -454,31 +454,32 @@ export const CLOSING_WORDS = { builtOn: 'Built on', install: [...INSTALL.slogans
  *             stays yours" (NL "De code blijft open source, de data blijft van jou").
  */
 
-/** The lengths and beats (local seconds). */
+/** The lengths and beats (local seconds). Round 27: see the ROUND 27 note above CONNECT. */
 CLOSING.connect = {
 	bars: 4, dur: G(5),
-	lead: F(2), // the lead cell pops in on the second frame
+	lead: F(2), // the lead cell flips in on the second frame
 	typeIn: F(2), // "Built on" rises, "Nextcloud" a sixteenth behind
-	loads: [G(1, 2), G(1, 4), G(2, 1), G(2, 2), G(2, 3), G(2, 4), G(3, 1)], // the first holds two beats, then one a beat
+	// The nine Nextcloud cells flip in one a beat round the C, top arm first, each as its line arrives.
+	loads: [G(1, 2), G(1, 3), G(1, 4), G(2, 1), G(2, 2), G(2, 3), G(2, 4), G(3, 1), G(3, 2)],
 	linkDur: 0.22,
-	zoom: [G(4, 1), G(4, 3)], // two beats: the camera pulls back and the family comes into view
-	// Round 26 (the tk lane's frame audit): every line holds its reading time, max(1.5 s, 0.4 s a word),
-	// fully up. The swapping line names two of the seven apps (the apps still load one a beat): "Reply from
-	// Mail" 1.64 s up, "Share in Files" 2.57 s; "Enhanced by Conduction" lands a beat before the zoom and is
-	// up 1.77 s before it leaves.
+	// Every line holds its reading time, max(1.5 s, 0.4 s a word), fully up (Round 26, the tk lane's audit):
+	// the swapping line names two apps, "Reply from Mail" (1.64 s up) and "Share in Files" (2.57 s), and
+	// "Enhanced by Conduction" lands a beat before the zoom (1.77 s up).
 	lines: ['mail', 'files'],
 	enhanced: G(3, 4),
-	// Round 26: everything has left four frames before the bar line, so the hand-off into the install
-	// board has clear air (four frames here, two more before the install board's first shape).
-	out: G(5) - EXIT - F(4),
-	key: G(4, 4) + F(6),
+	zoom: [G(4, 1), G(4, 3)], // two beats: the camera pulls back and the family ring flips in round the C
+	// Round 27b: the re-zoom. The camera comes back in on the last beat while every cell turns over and
+	// becomes the install board's field; the lead turns over into the Conduction avatar.
+	rezoom: [G(4, 4), G(5)],
+	out: G(5) - EXIT - F(4), // the type leaves over four frames, four frames before the bar line
+	key: G(4, 3) + F(4),
 }
 CLOSING.install21 = {
 	bars: 3, dur: G(4),
-	// Round 26: the round-21 hand-off is back. A Nextcloud cell pops in where the avatar sits and turns
-	// over into it (a scale flip, never a rotation), and each word rises as the current reaches it.
-	nc: F(2), flip: [0.3, 0.54],
-	words: [F(4), G(1, 2), G(1, 3)], // each word rises (or lands) one a beat as the current reaches it; the orange moves to it
+	// Round 27b: no wire. The field and the avatar are already there (Built on turned them over); the
+	// words rise one a beat from the fifth frame (eight clear frames after Built on's type), the orange
+	// moving to each and landing on "Own it", then the line.
+	words: [F(4), G(1, 2), G(1, 3)],
 	line: G(1, 4) + F(2),
 	key: 4.6,
 }
@@ -504,84 +505,76 @@ export const CLOSING_TEXT = {
 }
 /** The Conduction family, as the opening's cluster holds it (Buildiq is out of the films). */
 const FAMILY = ['openregister', 'pipelinq', 'opencatalogi', 'filinq', 'integriq', 'launchpad', 'portaliq', 'dossiq', 'shillinq', 'thematiq', 'learniq', 'decidiq', 'hermiq', 'zaakafhandelapp', 'stackiq', 'keepiq', 'humaniq', 'planninq', 'versioniq', 'larpinq']
-/** The order the components load in (the A19 s1 order) and their cells: three in the row under the gap, four under those. */
-const LOAD_ORDER = ['mail', 'calendar', 'contacts', 'files', 'talk', 'tasks', 'deck']
-export const CONNECT = {
-	size: 118, gap: 14,
-	lead: [1330, 236],
-	cells: { contacts: [-2, 2], mail: [-1, 2], calendar: [0, 2], deck: [-3, 3], files: [-2, 3], talk: [-1, 3], tasks: [0, 3] },
-	line: { width: 8, bus: 0.5 },
-	zoom: { z: 0.46, centre: [-1.5, 2], screen: [1390, 540] }, // the world point that ends on screen at `screen`
-	type: { markY: 250, markH: 60, first: 420, size: 112, lh: 118, lineY: 668, lineSize: 72 },
-}
-const cxy = ([q, r]) => axial(CONNECT.lead[0], CONNECT.lead[1], q, r, CONNECT.size, CONNECT.gap)
-const iconOf = (id) => NC_LINKS.find((l) => l.id === id).icon
-/** The one hex every cell in the piece uses, so field cells and app cells are the same size (Round 22). */
-const HEX_R = CONNECT.size
-const HEX_ROUND = CONNECT.size * 0.1
-
-/** The square-cornered route from the lead's foot to a cell's top point, and its length. */
-function connectRoute(pos) {
-	const [lx, ly] = CONNECT.lead, [x, y] = cxy(pos), R = HEX_R
-	const foot = ly + R, top = y - R
-	const [, y1] = cxy([-1, 2])
-	const bus = foot + ((y1 - R) - foot) * CONNECT.line.bus
-	if (Math.abs(x - lx) < 0.5) return { d: `M${lx} ${foot}V${top}`, len: top - foot }
-	return { d: `M${lx} ${foot}V${bus}H${x}V${top}`, len: (bus - foot) + Math.abs(x - lx) + (top - bus) }
-}
-
-/** The same route as points, for the current's head. */
-function connectPoints(pos) {
-	const [lx, ly] = CONNECT.lead, [x, y] = cxy(pos), R = HEX_R
-	const foot = ly + R, top = y - R
-	const [, y1] = cxy([-1, 2])
-	const bus = foot + ((y1 - R) - foot) * CONNECT.line.bus
-	if (Math.abs(x - lx) < 0.5) return [[lx, foot], [lx, top]]
-	return [[lx, foot], [lx, bus], [x, bus], [x, top]]
-}
-
-/** The camera for the zoom (k 0 to 1): a world point to a screen point. */
-function camOf(k) {
-	const Z = CONNECT.zoom
-	const [wx, wy] = cxy(Z.centre)
-	const z = lerp(1, Z.z, k)
-	const sx = lerp(wx, Z.screen[0], k), sy = lerp(wy, Z.screen[1], k)
-	return { z, apply: (x, y) => [sx + z * (x - wx), sy + z * (y - wy)], transform: `translate(${sx.toFixed(2)} ${sy.toFixed(2)}) scale(${z.toFixed(4)}) translate(${(-wx).toFixed(2)} ${(-wy).toFixed(2)})` }
-}
 
 /**
- * The family's cells: two steps out from the composition (one empty ring between, so each app's line to
- * the nearest composition cell reads), nearest the centre first, only where they land inside the picture
- * once zoomed out. Each carries `to`: the composition cell its line runs to.
+ * ROUND 27 (Ruben, from the Keepiq render):
+ *   - the Nextcloud cells form a C on the grid (the Conduction C: the ring two out from the lead, open to
+ *     the right), with the orange lead at its heart; the connector lines run FROM the lead TO each cell;
+ *   - after the zoom-out the white family cells form a hexagonal ring round it (the ring three out: 18
+ *     cells, so with 19 apps besides the lead the last in FAMILY order, Larpinq, sits out);
+ *   - no app-name label beside the lead;
+ *   - every hex FLIPS in (turns over by squashing, like the opening), never pops or scales in; lines are
+ *     drawn on; every hex is one grid cell at the one grid radius (HEX_R, also the install avatar);
+ *   - Round 27b: the hand-off into the install board is the cells turning over while the camera zooms
+ *     back in: they become the install board's field, and the lead becomes the Conduction avatar.
+ * World space: the lead's cell is the origin of the grid.
  */
+const LOAD_ORDER = ['mail', 'calendar', 'contacts', 'tasks', 'files', 'talk', 'deck', 'activity', 'polls']
+const C_CELLS = [[2, -2], [1, -2], [0, -2], [-1, -1], [-2, 0], [-2, 1], [-2, 2], [-1, 2], [0, 2]] // top tip round to the bottom tip
+export const CONNECT = {
+	size: 92, gap: 14,
+	cells: Object.fromEntries(LOAD_ORDER.map((id, i) => [id, C_CELLS[i]])),
+	line: { width: 7 },
+	cam: { start: { at: [1482, 538], z: 1 }, out: { at: [1405, 522], z: 0.78 } },
+	type: { markY: 250, markH: 60, first: 420, size: 112, lh: 118, lineY: 668, lineSize: 72 },
+}
+const HEX_R = CONNECT.size
+const HEX_ROUND = CONNECT.size * 0.1
+const cxy = ([q, r]) => axial(0, 0, q, r, CONNECT.size, CONNECT.gap)
+const iconOf = (id) => NC_LINKS.find((l) => l.id === id).icon
 const hexDist = (a, b) => (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[0] + a[1] - b[0] - b[1])) / 2
-const FAMILY_CELLS = (() => {
-	const comp = [[0, 0], ...Object.values(CONNECT.cells)]
-	const cam = camOf(1)
-	const [cx, cy] = cxy(CONNECT.zoom.centre)
-	const out = []
-	for (let r = -6; r <= 10; r++) {
-		for (let q = -12; q <= 9; q++) {
-			const dmin = Math.min(...comp.map((c) => hexDist([q, r], c)))
-			if (dmin !== 2) continue
-			const [x, y] = cxy([q, r])
-			const [sx, sy] = cam.apply(x, y)
-			const rr = HEX_R * cam.z
-			if (sx - rr < 930 || sx + rr > 1900 || sy - rr < 30 || sy + rr > 1050) continue
-			const to = comp.filter((c) => hexDist([q, r], c) === 2).sort((a, b) => Math.hypot(...[0, 1].map((k) => cxy(a)[k] - x)) - Math.hypot(...[0, 1].map((k) => cxy(b)[k] - x)))[0]
-			out.push({ q, r, x, y, to: cxy(to), d: Math.hypot(x - cx, (y - cy) * 1.1) })
-		}
-	}
-	out.sort((a, b) => a.d - b.d)
-	return out
-})()
+/** The install board's avatar: one grid cell, at the grid radius (Round 27b), top right. */
+const AVATAR = { x: 1560, y: 330 }
+/** The install board's quiet field: grid cells top right, shaded by their distance from the avatar. */
+function installShade(q, r, W = 1920) {
+	const [wx, wy] = cxy([q, r])
+	const x = AVATAR.x + wx, y = AVATAR.y + wy
+	const d = hexDist([q, r], [0, 0])
+	if (d === 0 || d > 4 || x < 1180 || y > 700 || x > W + HEX_R || y < -HEX_R) return null
+	return Math.max(0.25, 1 - d * 0.2)
+}
 
-/** One hex of the piece at world (x, y), scaled about its centre by s. */
-function unit(g, x, y, fill, { icon = null, glyph = null, color = C.cobalt, box = null, s = 1, opacity = 1 } = {}) {
-	if (s <= 0.001 || opacity <= 0.001) return
+/** The camera at local time t: out to the family, then back in onto the install board's avatar. */
+function camAt(t) {
+	const K = CLOSING.connect, S = CONNECT.cam.start, O = CONNECT.cam.out
+	const kOut = ease.brand(inv(K.zoom[0], K.zoom[1], t))
+	const kIn = ease.inOutCubic(inv(K.rezoom[0], K.rezoom[1], t))
+	let z = lerp(S.z, O.z, kOut), at = [lerp(S.at[0], O.at[0], kOut), lerp(S.at[1], O.at[1], kOut)]
+	z = lerp(z, 1, kIn)
+	at = [lerp(at[0], AVATAR.x, kIn), lerp(at[1], AVATAR.y, kIn)]
+	return { z, apply: (x, y) => [at[0] + z * x, at[1] + z * y], transform: `translate(${at[0].toFixed(2)} ${at[1].toFixed(2)}) scale(${z.toFixed(4)})` }
+}
+
+/** A flip in: the cell turns over by squashing (x scale 0 to 1), never a pop, never a rotation. */
+const flipIn = (t, t0, dur = F(4)) => (t < t0 ? 0 : ease.outCubic(inv(t0, t0 + dur, t)))
+/**
+ * The re-zoom's turn-over for a cell d steps from the lead: the front squashes shut, then the back
+ * opens. Returns { front, back } x scales (one of them 0).
+ */
+function turnOver(t, d) {
+	const K = CLOSING.connect
+	const f0 = K.rezoom[0] + d * F(1) * 0.5, f1 = f0 + F(6), fm = (f0 + f1) / 2
+	if (t < f0) return { front: 1, back: 0 }
+	if (t < fm) return { front: 1 - ease.inCubic(inv(f0, fm, t)), back: 0 }
+	return { front: 0, back: ease.outCubic(inv(fm, f1, t)) }
+}
+
+/** One grid cell at world (x, y), squashed to sx (0 to 1). */
+function unit(g, x, y, fill, { icon = null, glyph = null, color = C.cobalt, box = null, sx = 1, opacity = 1 } = {}) {
+	if (sx <= 0.001 || opacity <= 0.001) return
 	const attrs = {}
-	if (opacity < 1) attrs.opacity = opacity.toFixed(3)
-	if (Math.abs(s - 1) > 1e-4) attrs.transform = `translate(${x} ${y}) scale(${s.toFixed(4)}) translate(${-x} ${-y})`
+	if (opacity < 1) attrs['fill-opacity'] = opacity.toFixed(3)
+	if (Math.abs(sx - 1) > 1e-4) attrs.transform = `translate(${x} ${y}) scale(${sx.toFixed(4)} 1) translate(${-x} ${-y})`
 	const cg = el('g', attrs, g)
 	el('path', { d: hexPath(x, y, HEX_R, HEX_ROUND), fill, 'data-hex': 'unit' }, cg)
 	const id = icon || (glyph ? `g-${glyph}` : null)
@@ -590,91 +583,111 @@ function unit(g, x, y, fill, { icon = null, glyph = null, color = C.cobalt, box 
 		el('use', { href: `#${id}`, x: x - w / 2, y: y - h / 2, width: w, height: h, color }, cg)
 	}
 }
+/** The install board's field cell and avatar, drawn at world (x, y) (so the re-zoom can turn them over). */
+function fieldCell(g, x, y, shade, sx = 1) {
+	unit(g, x, y, C.cobalt600, { sx, opacity: shade })
+}
+function avatarAt(g, x, y, sx = 1) {
+	if (sx <= 0.001) return
+	const [aw, ah] = MARK_BOX['avatar-conduction']
+	const h = 2 * HEX_R, w = (h * aw) / ah
+	const fg = el('g', Math.abs(sx - 1) > 1e-4 ? { transform: `translate(${x} ${y}) scale(${sx.toFixed(4)} 1) translate(${-x} ${-y})` } : {}, g)
+	el('use', { href: '#avatar-conduction', x: x - w / 2, y: y - h / 2, width: w, height: h, color: C.white }, fg)
+}
+
+/** The family ring: the ring three out, clockwise from the top left, in FAMILY order. */
+function familyCells(lead) {
+	const fam = FAMILY.filter((id) => id !== lead)
+	const ring = axialRing(3)
+	const occupied = new Set([[0, 0], ...C_CELLS].map((c) => c.join(',')))
+	return ring.slice(0, fam.length).map((c, i) => {
+		const near = [[0, 0], ...C_CELLS].filter((k) => occupied.has(k.join(','))).sort((a, b) => hexDist(c, a) - hexDist(c, b) || Math.hypot(...[0, 1].map((j) => cxy(a)[j] - cxy(c)[j])) - Math.hypot(...[0, 1].map((j) => cxy(b)[j] - cxy(c)[j])))[0]
+		return { id: fam[i], q: c[0], r: c[1], to: near }
+	})
+}
 
 function drawConnect(g, t, p, W = 1920) {
 	const K = CLOSING.connect
 	const T = CLOSING_TEXT[p.lang === 'nl' ? 'nl' : 'en']
 	const lead = p.lead || (p.litLayer ? 'openregister' : p.app) || 'openregister'
-	const leaving = t >= K.out
-	const q = leaving ? inv(K.out, K.out + EXIT, t) : 0
-	const [lx, ly] = CONNECT.lead
-	const kz = ease.brand(inv(K.zoom[0], K.zoom[1], t))
-	const cam = camOf(kz)
+	const qType = t >= K.out ? inv(K.out, K.out + EXIT, t) : 0
+	const cam = camAt(t)
 	const world = el('g', { transform: cam.transform }, g)
+	const fam = familyCells(lead)
+	const taken = new Set([[0, 0], ...C_CELLS, ...fam.map((f) => [f.q, f.r])].map((c) => c.join(',')))
+	const unlink = 1 - inv(K.rezoom[0], K.rezoom[0] + F(4), t) // the lines draw off as the cells turn over
+	const visible = (x, y) => { const [sx, sy] = cam.apply(x, y), rr = HEX_R * cam.z; return !(sx < 880 - rr || sx > W + rr || sy < -rr || sy > 1080 + rr) }
+	/** A cell's back face after the re-zoom: the install field, the avatar, or nothing. */
+	const back = (q, r, x, y, sx) => {
+		if (sx <= 0) return
+		if (q === 0 && r === 0) return avatarAt(world, x, y, sx)
+		const sh = installShade(q, r, W)
+		if (sh != null) fieldCell(world, x, y, sh, sx)
+	}
 
-	// The quiet field: unlit cells, the same hex as every app cell, shaded by distance from the lead.
-	const taken = new Set([[0, 0], ...Object.values(CONNECT.cells), ...FAMILY_CELLS.slice(0, FAMILY.length).map((c) => [c.q, c.r])].map((c) => c.join(',')))
-	for (let r = -6; r <= 10; r++) {
-		for (let qq = -12; qq <= 9; qq++) {
-			if (taken.has(`${qq},${r}`)) continue
-			const [x, y] = cxy([qq, r])
-			const [sx, sy] = cam.apply(x, y)
-			const rr = HEX_R * cam.z
-			if (sx < 900 - rr || sx > W + rr || sy < -rr || sy > 1080 + rr) continue
-			const d = Math.hypot(x - lx, (y - ly) * 0.8) / (HEX_R * SQRT3)
-			const s = pop(t, F(1) + Math.min(d, 6) * F(1)) * (1 - q)
-			if (s <= 0.001) continue
-			el('path', { d: hexPath(x, y, HEX_R * Math.min(1, s), HEX_ROUND), fill: C.cobalt600, 'fill-opacity': Math.max(0.18, 0.9 - d * 0.1).toFixed(3), 'data-hex': 'field' }, world)
+	// The quiet field: unlit grid cells, the same hex as every app cell, shaded by distance from the lead.
+	for (let r = -7; r <= 7; r++) {
+		for (let q = -11; q <= 11; q++) {
+			if (taken.has(`${q},${r}`)) continue
+			const [x, y] = cxy([q, r])
+			const d = hexDist([q, r], [0, 0])
+			const inSoon = visible(x, y), fin = installShade(q, r, W) != null
+			if (!inSoon && !fin) continue
+			const o = turnOver(t, d)
+			// The ring round the lead stays clear ground, so its lines out to the C read on the cobalt.
+			const s = d === 1 ? 0 : flipIn(t, F(1) + Math.min(d, 7) * F(1)) * o.front
+			if (s > 0.001 && inSoon) unit(world, x, y, C.cobalt600, { sx: s, opacity: Math.max(0.18, 0.9 - d * 0.12) })
+			back(q, r, x, y, o.back)
 		}
 	}
-	// The family's lines, under every cell: each app to its nearest composition cell, drawing as the camera pulls back.
-	const fam = FAMILY.filter((id) => id !== lead)
-	fam.forEach((id, i) => {
-		const c = FAMILY_CELLS[i]
-		if (!c) return
+	// The family's lines, under every cell: each app to its nearest cell of the composition, drawn on.
+	const lineAttrs = { fill: 'none', stroke: C.cobalt200, 'stroke-width': CONNECT.line.width, 'stroke-linecap': 'butt' }
+	fam.forEach((f, i) => {
 		const t0 = K.zoom[0] + 0.05 + i * (F(1) * 0.6)
-		const pr = ease.brand(inv(t0, t0 + 0.3, t)) * (1 - q)
+		const pr = ease.brand(inv(t0, t0 + 0.3, t)) * unlink
 		if (pr <= 0.001) return
-		const [tx, ty] = c.to
-		el('line', { x1: tx, y1: ty, x2: lerp(tx, c.x, pr), y2: lerp(ty, c.y, pr), stroke: C.cobalt200, 'stroke-width': CONNECT.line.width * 1.4, 'stroke-linecap': 'butt' }, world)
+		const [tx, ty] = cxy(f.to), [fx, fy] = cxy([f.q, f.r])
+		el('line', { x1: tx, y1: ty, x2: lerp(tx, fx, pr), y2: lerp(ty, fy, pr), ...lineAttrs }, world)
 	})
-	// The connectors: one per component, running out as its cell pops in.
-	const lineAttrs = { fill: 'none', stroke: C.cobalt200, 'stroke-width': CONNECT.line.width, 'stroke-linecap': 'butt', 'stroke-linejoin': 'miter' }
+	// The connectors: from the lead out to each Nextcloud cell, drawn on as the cell flips in (a line, no
+	// spark: Round 27c, no hex floats over the grid).
 	LOAD_ORDER.forEach((id, i) => {
 		const t0 = K.loads[i] - K.linkDur
-		const pr = inv(t0, K.loads[i], t) * (1 - q)
+		const pr = inv(t0, K.loads[i], t) * unlink
 		if (pr <= 0.001) return
-		const { d, len } = connectRoute(CONNECT.cells[id])
-		el('path', { d, ...lineAttrs, ...(pr < 1 ? { 'stroke-dasharray': `${len.toFixed(1)} ${len.toFixed(1)}`, 'stroke-dashoffset': (len * (1 - pr)).toFixed(1) } : {}) }, world)
-		// Round 24: the current runs each connector; its head (Nextcloud cyan: the lead holds the orange) rides the front.
-		if (pr < 1) {
-			const pts = connectPoints(CONNECT.cells[id])
-			const lens = pts.slice(1).map((pt, j) => Math.hypot(pt[0] - pts[j][0], pt[1] - pts[j][1]))
-			let left = lens.reduce((a, v) => a + v, 0) * pr, hx = pts[0][0], hy = pts[0][1]
-			for (let j = 0; j < lens.length && left > 0; j++) { const u = Math.min(1, left / lens[j]); hx = lerp(pts[j][0], pts[j + 1][0], u); hy = lerp(pts[j][1], pts[j + 1][1], u); left -= lens[j] }
-			el('path', { d: hexPath(hx, hy, 13, 3), fill: C.nextcloudCyan }, world)
-		}
-	})
-	// The Nextcloud apps, in Nextcloud blue with white icons.
-	LOAD_ORDER.forEach((id, i) => {
 		const [x, y] = cxy(CONNECT.cells[id])
-		unit(world, x, y, C.nextcloud, { icon: iconOf(id), color: C.white, s: pop(t, K.loads[i]) * off(t, K.out) })
+		const L = Math.hypot(x, y), ux = x / L, uy = y / L
+		const a = HEX_R * 0.9, b = L - HEX_R * 0.9
+		const e = lerp(a, b, pr)
+		el('line', { x1: ux * a, y1: uy * a, x2: ux * e, y2: uy * e, ...lineAttrs }, world)
 	})
-	// The family: white cells with their glyphs, popping in as their lines arrive.
-	fam.forEach((id, i) => {
-		const c = FAMILY_CELLS[i]
-		if (!c) return
-		const t0 = K.zoom[0] + 0.3 + i * (F(1) * 0.6)
-		unit(world, c.x, c.y, C.white, { glyph: id, color: C.cobalt, s: pop(t, t0) * off(t, K.out) })
+	// The Nextcloud apps, in Nextcloud blue with white icons, flipping in; they turn over at the re-zoom.
+	LOAD_ORDER.forEach((id, i) => {
+		const [q, r] = CONNECT.cells[id], [x, y] = cxy([q, r])
+		const o = turnOver(t, 2)
+		unit(world, x, y, C.nextcloud, { icon: iconOf(id), color: C.white, sx: flipIn(t, K.loads[i]) * o.front })
+		back(q, r, x, y, o.back)
 	})
-	// The lead: the film's app (or OpenRegister), the frame's one orange.
-	unit(world, lx, ly, C.orange, { glyph: lead, color: C.white, s: pop(t, K.lead) * off(t, K.out) })
-	if (p.label !== false) {
-		// The lead's name, left of it, in screen space so it keeps its size as the camera pulls back.
-		const [sx, sy] = cam.apply(lx - (SQRT3 / 2) * HEX_R, ly)
-		const size = 34
-		// It leaves as the camera starts to pull back, before the family could crowd it.
-		risingText(g, APP_NAMES[lead] || lead, { x: sx - 22, y: sy + size * 0.36, anchor: 'end', size, weight: 600, fill: C.white, tracking: -0.02 }, inv(K.lead + F(2), K.lead + F(2) + RISE, t), leaving ? q : inv(K.zoom[0], K.zoom[0] + EXIT, t))
-	}
+	// The family: white cells with their glyphs, flipping in as their lines arrive.
+	fam.forEach((f, i) => {
+		const [x, y] = cxy([f.q, f.r])
+		const o = turnOver(t, 3)
+		unit(world, x, y, C.white, { glyph: f.id, color: C.cobalt, sx: flipIn(t, K.zoom[0] + 0.3 + i * (F(1) * 0.6)) * o.front })
+		back(f.q, f.r, x, y, o.back)
+	})
+	// The lead: the film's app (or OpenRegister), the frame's one orange; it turns over into the avatar.
+	const o = turnOver(t, 0)
+	unit(world, 0, 0, C.orange, { glyph: lead, color: C.white, sx: flipIn(t, K.lead) * o.front })
+	back(0, 0, 0, 0, o.back)
 
 	// The type column: the Nextcloud mark, "Built on" / "Nextcloud", and the one swapping line that ends
 	// on "Enhanced by Conduction".
 	const Y = CONNECT.type
 	const [c1, c2] = [p.caption || T.builtOn[0], p.markText || T.builtOn[1]]
-	risingMark(g, TX, Y.markY, Y.markH, inv(K.typeIn, K.typeIn + RISE, t), q, 'nextcloud-logo', { color: C.white, inset: 0 })
-	risingText(g, c1, { x: TX, y: Y.first, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), q)
+	risingMark(g, TX, Y.markY, Y.markH, inv(K.typeIn, K.typeIn + RISE, t), qType, 'nextcloud-logo', { color: C.white, inset: 0 })
+	risingText(g, c1, { x: TX, y: Y.first, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), qType)
 	const m0 = K.typeIn + SPB / 4
-	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), q)
+	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), qType)
 	const shown = K.lines.map((id) => LOAD_ORDER.indexOf(id))
 	shown.forEach((i, j) => {
 		const id = LOAD_ORDER[i]
@@ -683,29 +696,32 @@ function drawConnect(g, t, p, W = 1920) {
 		const [verb, name] = T.loads[id]
 		risingText(g, `${verb} _${name}_`, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, accent2: C.nextcloudCyan, tracking: -0.01 }, inv(t0, t0 + RISE, t), inv(t1, t1 + EXIT, t))
 	})
-	risingText(g, T.enhanced, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.enhanced, K.enhanced + RISE, t), q)
+	risingText(g, T.enhanced, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.enhanced, K.enhanced + RISE, t), qType)
 }
 
 function connectCues(cue) {
 	const K = CLOSING.connect
-	cue(K.lead, 'pluck', { freq: 1174.66, gain: 0.24 })
-	cue(K.lead + 0.02, 'impact', { gain: 0.22, from: 110, to: 48, decay: 0.5 })
-	const notes = [1174.66, 1318.51, 1479.98, 1567.98, 1760, 1975.53, 2349.32]
-	K.loads.forEach((t, i) => cue(t, 'tick', { freq: notes[i], gain: 0.13, pan: [-0.3, 0, 0.3, -0.4, -0.1, 0.2, 0.45][i] }))
+	cue(K.lead, 'click', { gain: 0.24, freq: 2600, seed: 81, dry: true })
+	cue(K.lead + 0.02, 'impact', { gain: 0.2, from: 110, to: 48, decay: 0.5 })
+	const notes = [1174.66, 1318.51, 1479.98, 1567.98, 1760, 1975.53, 2217.46, 2349.32, 2637.02]
+	K.loads.forEach((t, i) => cue(t, 'tick', { freq: notes[i], gain: 0.12, pan: -0.4 + i * 0.1 }))
 	cue(K.zoom[0] - 0.02, 'whoosh', { dur: 0.9, from: 500, to: 3200, panFrom: -0.2, panTo: 0.3, gain: 0.12 })
 	for (let i = 0; i < 8; i++) cue(K.zoom[0] + 0.3 + i * 0.05, 'tick', { freq: 2349.32 + i * 90, gain: 0.05, decay: 0.03, pan: -0.5 + i * 0.14 })
 	cue(K.enhanced, 'pluck', { freq: 880, gain: 0.18, decay: 0.6 })
-	cue(K.out - 0.05, 'whoosh', { dur: 0.4, from: 2600, to: 600, panFrom: 0.3, panTo: -0.2, gain: 0.08 })
+	// The re-zoom: a rising whoosh as the camera comes back in, soft ticks as the rings turn over, a dry
+	// click as the lead turns into the avatar.
+	cue(K.rezoom[0] - 0.02, 'whoosh', { dur: 0.5, from: 3000, to: 700, panFrom: 0.2, panTo: 0.4, gain: 0.1 })
+	for (let d = 1; d <= 4; d++) cue(K.rezoom[0] + d * F(1) * 0.5 + F(3), 'tick', { freq: 1760 + d * 120, gain: 0.05, decay: 0.03, pan: 0.2 + d * 0.05 })
+	cue(K.rezoom[0] + F(3), 'click', { gain: 0.26, freq: 3000, seed: 82, dry: true })
 }
 
 /* ---------- the install board: three concepts (Round 22); 'current' is the default ---------- */
 
 /**
  * Type for the install board without a header: the three words at headline size, the line under them.
- * lineGap 140 (was 104): the current's wire under the last word keeps clear air (about 60 px at 1080p)
- * above the final line's cap height, in English and Dutch.
+ * lineGap 140 keeps the air round the line in English and Dutch. The avatar is one grid cell (HEX_R).
  */
-const INSTALL22 = { first: 400, size: 116, lh: 124, lineSize: 72, lineGap: 140, avatar: { x: 1560, y: 330, r: 92 } }
+const INSTALL22 = { first: 400, size: 116, lh: 124, lineSize: 72, lineGap: 140, avatar: { x: AVATAR.x, y: AVATAR.y, r: HEX_R } }
 const installWords = (p) => {
 	const T = CLOSING_TEXT[p.lang === 'nl' ? 'nl' : 'en']
 	return { slogans: p.slogans || T.slogans, line: p.line || T.line }
@@ -742,73 +758,28 @@ function avatarCell(g, x, y, r, s = 1, power = 1) {
 }
 
 /**
- * Concept 'current' (the pick): the Conduction idea itself. Round 26 restores the round-21 hand-off
- * from Built on: a Nextcloud cell pops in top right and turns over, by scale, into the Conduction
- * avatar (dim, waiting for power), and the words rise one a beat. A current runs down a square-cornered
- * wire left of them and each word rises out of its line as the current reaches it (the orange moving to
- * each and landing on "Own it"), then the current runs on from "Own it" to the avatar, which powers on.
- * Sound: a tick as Nextcloud pops in, a dry click as it turns over, a crackle along the wire, an arc and
- * a click per word, a power-on click at the end.
+ * Concept 'current' (the pick; Round 27b drops its wire): the field and the Conduction avatar are already
+ * in place, turned over from Built on's cells in the re-zoom (the same grid cells, the same shades), so
+ * nothing pops in. "Install it", "Use it" and "Own it" rise out of their lines one a beat, the orange
+ * moving to each and landing on "Own it", then the open-source line rises. Sound: a click per word, a
+ * low thud under "Own it", a pluck on the line.
  */
 function drawInstallCurrent(g, t, p, W = 1920) {
-	const K = CLOSING.install21, I = INSTALL22, A = I.avatar
+	const K = CLOSING.install21, I = INSTALL22
 	const { slogans, line } = installWords(p)
-	quietComb(g, t, A.x, A.y, 70, 9, W)
-	const ys = slogans.map((_, i) => I.first + i * I.lh - I.size * 0.34)
-	const wx = 84
-	// The wire: from the frame's left edge in, down past each word, then out under the last to the avatar.
-	const reach = (i) => K.words[i]
-	const segs = [
-		{ d: [[0, ys[0]], [wx, ys[0]]], t0: F(2), t1: reach(0) }, // Round 26: from the third frame, after clear air
-		{ d: [[wx, ys[0]], [wx, ys[1]]], t0: reach(0), t1: reach(1) },
-		{ d: [[wx, ys[1]], [wx, ys[2]]], t0: reach(1), t1: reach(2) },
-	]
-	const under = I.first + 2 * I.lh + 24 // just under the baseline of the last word
-	segs.push({ d: [[wx, ys[2]], [wx, under], [A.x, under], [A.x, A.y + A.r * 0.9]], t0: reach(2) + 0.12, t1: reach(2) + 0.62 })
-	const head = []
-	segs.forEach((sg) => {
-		const k = inv(sg.t0, sg.t1, t)
-		if (k <= 0) return
-		const pts = sg.d, lens = pts.slice(1).map((pt, i) => Math.hypot(pt[0] - pts[i][0], pt[1] - pts[i][1]))
-		const total = lens.reduce((a, v) => a + v, 0)
-		let left = total * k, path = `M${pts[0][0]} ${pts[0][1]}`, hx = pts[0][0], hy = pts[0][1]
-		for (let i = 0; i < lens.length && left > 0; i++) {
-			const u = Math.min(1, left / lens[i])
-			hx = lerp(pts[i][0], pts[i + 1][0], u); hy = lerp(pts[i][1], pts[i + 1][1], u)
-			path += `L${hx.toFixed(1)} ${hy.toFixed(1)}`
-			left -= lens[i]
-		}
-		el('path', { d: path, fill: 'none', stroke: C.cobalt200, 'stroke-width': 5, 'stroke-linejoin': 'miter' }, g)
-		if (k < 1) head.push([hx, hy])
-	})
-	// The spark: a small orange hex at the head of the current, never rotated.
-	for (const [hx, hy] of head) el('path', { d: hexPath(hx, hy, 11, 2), fill: C.orange }, g)
-	// The words (round 21): each rises out of its line as the current reaches it; the orange on the newest.
-	slogans.forEach((s, i) => {
-		const on = t >= K.words[i]
-		const pulse = on ? 1 + 0.04 * (1 - spring(t - K.words[i], { freq: 3.2, zeta: 0.5 })) : 1
-		const fill = orangeOn(t, i) ? C.orange : C.white
-		const y = I.first + i * I.lh
-		const sg = el('g', Math.abs(pulse - 1) > 1e-4 ? { transform: `translate(${TX} ${y}) scale(${pulse.toFixed(4)}) translate(${-TX} ${-y})` } : {}, g)
-		risingText(sg, s, { x: TX, y, size: I.size, weight: 700, fill, tracking: -0.02 }, inv(K.words[i], K.words[i] + RISE, t))
-	})
-	// The round-21 hand-off: a Nextcloud cell pops in where the avatar sits and turns over into it, by
-	// scale (never a rotation); the avatar waits dim and powers on when the current arrives.
-	const [f0, f1] = K.flip, fm = (f0 + f1) / 2
-	const arrive = K.words[2] + 0.62
-	if (t < fm) {
-		const sx = (1 - ease.inCubic(inv(f0, fm, t))) * Math.min(1, pop(t, K.nc))
-		if (sx > 0.001) {
-			const fg = el('g', sx < 1 ? { transform: `translate(${A.x} ${A.y}) scale(${sx.toFixed(4)} 1) translate(${-A.x} ${-A.y})` } : {}, g)
-			nextcloudCell(fg, A.x, A.y, A.r)
-		}
-	} else {
-		const sx = ease.outCubic(inv(fm, f1, t))
-		if (sx > 0.001) {
-			const fg = el('g', sx < 1 ? { transform: `translate(${A.x} ${A.y}) scale(${sx.toFixed(4)} 1) translate(${-A.x} ${-A.y})` } : {}, g)
-			avatarCell(fg, A.x, A.y, A.r, 1, ease.outCubic(inv(arrive, arrive + 0.12, t)) * 0.75 + 0.25)
+	for (let r = -5; r <= 5; r++) {
+		for (let q = -6; q <= 6; q++) {
+			const sh = installShade(q, r, W)
+			if (sh == null) continue
+			const [x, y] = cxy([q, r])
+			fieldCell(g, AVATAR.x + x, AVATAR.y + y, sh)
 		}
 	}
+	avatarAt(g, AVATAR.x, AVATAR.y)
+	slogans.forEach((s, i) => {
+		const y = I.first + i * I.lh
+		risingText(g, s, { x: TX, y, size: I.size, weight: 700, fill: orangeOn(t, i) ? C.orange : C.white, tracking: -0.02 }, inv(K.words[i], K.words[i] + RISE, t))
+	})
 	installLine(g, t, line)
 }
 
@@ -874,17 +845,8 @@ export const INSTALL_DEFAULT = 'current'
 function install21Cues(cue, concept = INSTALL_DEFAULT) {
 	const K = CLOSING.install21
 	if (concept === 'current') {
-		cue(0.02, 'charge', { gain: 0.05, dur: K.words[0], from: 300, to: 1600 })
-		cue(K.nc, 'tick', { freq: 1760, gain: 0.1, pan: 0.5 })
-		cue((K.flip[0] + K.flip[1]) / 2, 'click', { gain: 0.2, freq: 3000, pan: 0.5, seed: 72, dry: true })
-		K.words.forEach((t, i) => {
-			cue(t - 0.12, 'crackle', { dur: 0.14, density: 70, gain: 0.08, pan: -0.5 })
-			cue(t, 'arc', { gain: 0.14, pan: -0.4 })
-			cue(t, 'click', { gain: 0.22 + i * 0.05, freq: 2600 + i * 150, seed: 71 + i, dry: true })
-		})
-		cue(K.words[2] + 0.12, 'crackle', { dur: 0.5, density: 60, gain: 0.07, pan: 0.2 })
-		cue(K.words[2] + 0.62, 'powerOn', { gain: 0.45, ping: 0, bright: 0.2 })
-		cue(K.words[2] + 0.62, 'click', { gain: 0.3, freq: 3000, seed: 80, dry: true })
+		K.words.forEach((t, i) => cue(t, 'click', { gain: 0.24 + i * 0.05, freq: 2600 + i * 150, seed: 71 + i, dry: true }))
+		cue(K.words[2], 'impact', { gain: 0.26, from: 90, to: 32, decay: 0.9 })
 	} else {
 		K.words.forEach((t, i) => cue(t, 'click', { gain: 0.24 + i * 0.05, freq: 2600 + i * 150, seed: 71 + i, dry: true }))
 		if (concept === 'lock') K.words.forEach((t) => cue(t - 0.28, 'whoosh', { dur: 0.3, from: 3000, to: 900, gain: 0.07 }))
@@ -909,7 +871,7 @@ export function builtOnScene(ctx, p = {}) {
 export function builtOnFrame(ctx, p = {}) {
 	if (p.legacy) return legacyBuiltOnFrame(ctx, p)
 	drawConnect(el('g', {}, ctx.g), p.at ?? CLOSING.connect.key, p, ctx.W)
-	return { cells: Object.fromEntries(Object.entries(CONNECT.cells).map(([k, v]) => [k, cxy(v)])), size: HEX_R }
+	return { cells: Object.fromEntries(Object.entries(CONNECT.cells).map(([k, v]) => [k, cxy(v)])), size: HEX_R, cam: camAt(p.at ?? CLOSING.connect.key) }
 }
 
 export function installScene(ctx, p = {}) {

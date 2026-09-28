@@ -68,6 +68,8 @@ const content = {
 	record: { one: 'client', many: 'clients' },
 	logline: 'For the sales team of a 10 to 500 person business: every deal on one board, a forecast that follows the drag, all your deals as rows in Nextcloud Tables, and your own dashboards and flows built on them.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Sales', hook: 'Pipeline', forecast: 'Forecast', tables: 'Integrations', 'general-flows': 'Automation' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'cluster', fromName: 'the orange Pipelinq cell', toName: 'the board', note: 'loose deals drifting together into one board performs the caption "every deal, one board" (#10)' },

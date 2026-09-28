@@ -66,7 +66,8 @@ export function backlogUI(w, geom, a = {}) {
 			w = cg
 			const cy = top + 66 + i * 118
 			panel(w, lx + 12, cy, lw - 24, 104, u)
-			hex(w, lx + 44, cy + 34, 14, i === 0 && c === 0 ? C.lavender : C.cobalt300, 2)
+			// Round 27c: a step right, so the first card's type hex clears the app tag on the loop anchor.
+			hex(w, lx + 52, cy + 34, 14, i === 0 && c === 0 ? C.lavender : C.cobalt300, 2)
 			bar(w, lx + 70, cy + 26, Math.min(cw, lw - 110), 10, C.cobalt900)
 			bar(w, lx + 70, cy + 46, Math.min(cw, lw - 110) * 0.5, 7, C.cobalt300)
 			circle(w, lx + lw - 50, cy + 74, 14, c === 1 ? C.cobalt400 : C.cobalt200)
@@ -187,9 +188,10 @@ export function standardsUI(w, geom, a = {}) {
 	const x = geom.x, top = geom.anchor.y - 60, width = Math.min(geom.r - geom.x, 752)
 	// The case.
 	panel(w, x, top, width, 130, u)
-	hex(w, x + 64, top + 65, 28, C.lavender, 4)
-	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
-	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
+	// Round 27c: the record type hex sits clear of the app tag on the loop anchor (no hex over another).
+	hex(w, x + 104, top + 65, 28, C.lavender, 4)
+	bar(w, x + 160, top + 44, 260, 16, C.cobalt900)
+	bar(w, x + 160, top + 76, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 160, top + 65, u)
 	// Square-cornered wires down to the three standards, splitting at one orange hex.
 	const gap = 20, bw = (width - 2 * gap) / 3, by = top + 220
@@ -348,9 +350,10 @@ export function trailUI(w, geom, a = {}) {
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	// The decision: status decided (mint), the signature in steps, the lock.
 	panel(w, x, top, width, 170, u)
-	hex(w, x + 64, top + 60, 28, C.lavender, 4)
-	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
-	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
+	// Round 27c: the record type hex sits clear of the app tag on the loop anchor (no hex over another).
+	hex(w, x + 104, top + 60, 28, C.lavender, 4)
+	bar(w, x + 160, top + 44, 260, 16, C.cobalt900)
+	bar(w, x + 160, top + 76, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 160, top + 60, u)
 	const steps = [[0, 0, 40], [40, -12, 30], [70, 6, 36], [106, -8, 44], [150, 4, 30]]
 	steps.forEach(([dx, dy, lw], i) => { if (A.sign * 5 - i > 0) rect(w, x + 120 + dx, top + 126 + dy, lw * Math.min(1, A.sign * 5 - i), 5, C.cobalt700, 2) })
@@ -383,6 +386,8 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for municipal and social-domain casework. Decisions due in one backlog with its deadline, the whole workspace (mail, files, meetings, chats) in the case, guidance as you decide, international and local standards built in, a flow that follows the decision, and every decision on the record. No AI in this film.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Casework', hook: 'Backlog', documents: 'Documents', knowledge: 'Guidance', standards: 'Standards', automate: 'Automation', trail: 'Audit trail' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'cluster', fromName: 'the orange Dossiq cell', toName: 'the backlog', note: 'decisions from everywhere gathering into one backlog is the caption performed (#10)' },

@@ -67,11 +67,12 @@ function intakeUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
 	panel(w, x, top, width, 190, u)
-	hex(w, x + 70, top + 70, 30, C.lavender, 4)
+	// Round 27c: the record type hex sits clear of the app tag on the loop anchor (no hex over another).
+	hex(w, x + 110, top + 70, 30, C.lavender, 4)
 	// The number, set on arrival: a mono-like run of blocks with the orange ring.
-	rect(w, x + 130, top + 40, 230, 50, C.cobalt50, 4 * u)
-	for (let i = 0; i < 9; i++) rect(w, x + 146 + i * 23, top + 54, i === 2 || i === 7 ? 8 : 16, 22, C.cobalt900, 2)
-	rect(w, x + 124, top + 34, 242, 62, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	rect(w, x + 170, top + 40, 230, 50, C.cobalt50, 4 * u)
+	for (let i = 0; i < 9; i++) rect(w, x + 186 + i * 23, top + 54, i === 2 || i === 7 ? 8 : 16, 22, C.cobalt900, 2)
+	rect(w, x + 164, top + 34, 242, 62, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 	bar(w, x + 130, top + 124, 260, 12, C.cobalt700)
 	idlePill(w, x + width - 150, top + 70, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
 	// Category, owner, deadline: the three facts the category fills in.
@@ -126,6 +127,8 @@ const content = {
 	record: { one: 'case', many: 'cases' },
 	logline: 'Round 21: Dossiq as a decision-making tool for companies. Set your decision rules once, complaints arrive with their facts, you spot the pattern before you decide, and every decision shows who and when.',
 	references: REFS,
+	// Round 27c: the section title each scene's small mark shows (not the app name).
+	sections: { promise: 'Decisions', hook: 'Rules', intake: 'Intake', pattern: 'Insight', 'general-dataLayer': 'Audit trail' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Dossiq cell', toName: 'the decision rules', note: 'the app cell opens into the rules you set once (#1)' },

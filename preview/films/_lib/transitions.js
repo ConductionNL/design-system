@@ -30,7 +30,9 @@
  *     the type column; B's caption rises only after the transition leaves the column (capIn), so there
  *     are always at least 2 clear frames; while a caption is visible, the transition's moving layers
  *     are clipped away from the caption column (guard), so nothing crosses a visible caption;
- *   - flat: solid fills, pointy-top hexes, never rotated; one orange at a time;
+ *   - flat: solid fills, pointy-top hexes, never rotated; one orange at a time; a hex that enters FLIPS in
+ *     (turns over by squashing, Round 27), never pops or scales in (the grow and wipe hexes are shapes
+ *     that open or step, not cells arriving);
  *   - sound: clicks, ticks, whooshes, arcs; never a bell.
  *
  * Self-contained: imports the engine (stage, core, brand) and current.js for the fallback.
@@ -43,6 +45,7 @@ import { el } from './stage.js'
 import { ease, inv, lerp, clamp, rand, hexPath, spring, SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { CURRENT, keyElement, landing, sceneCurrent, currentCues } from './current.js'
+import { clearFieldUnder } from './ui.js'
 
 const FPS = 24
 const F = (n) => n / FPS
@@ -172,6 +175,31 @@ function tokenOf(key, host) {
 	return { node: n, matrix: `matrix(${[m.a, m.b, m.c, m.d, m.e, m.f].map((v) => +v.toFixed(4)).join(' ')})` }
 }
 
+/**
+ * Round 27c audit: every hex should sit exactly on a grid cell at the grid size. Lists the hex-shaped
+ * paths of a picture (stage px) and the pairs that overlap without sharing a centre (a hex floating over
+ * another, or over the field). Concentric pairs (a tag's ring round its hex) are fine.
+ */
+function hexAudit(pic) {
+	const hexes = []
+	for (const e of pic.querySelectorAll('path')) {
+		if (e.closest('clipPath') || e.closest('[data-current]')) continue
+		const d = e.getAttribute('d') || ''
+		if ((d.match(/[LQ]/g) || []).length < 5) continue
+		const b = stageBox(e)
+		if (b.w < 16 || Math.abs(b.w / b.h - SQRT3 / 2) > 0.06) continue
+		hexes.push({ x: +(b.x + b.w / 2).toFixed(1), y: +(b.y + b.h / 2).toFixed(1), r: +(b.h / 2).toFixed(1), fill: e.getAttribute('fill') })
+	}
+	const clashes = []
+	for (let i = 0; i < hexes.length; i++) for (let j = i + 1; j < hexes.length; j++) {
+		const a = hexes[i], b = hexes[j]
+		const dist = Math.hypot(a.x - b.x, a.y - b.y)
+		if (dist < 3) continue
+		if (dist < (a.r + b.r) * 0.84) clashes.push({ a, b, dist: +dist.toFixed(1) })
+	}
+	return { count: hexes.length, radii: [...new Set(hexes.map((h) => Math.round(h.r)))].sort((p, q) => p - q), clashes }
+}
+
 /* ---------- the caption: rises out of its line, leaves upward ---------- */
 
 let capIds = 0
@@ -297,8 +325,8 @@ const DRAW = {
 			B.pic.setAttribute('display', 'none')
 			steps.forEach(([t0, f, fill]) => {
 				if (u < t0) return
-				// A step: it lands at 92% and snaps to full on its next frame (a mechanical step, not a tween).
-				const r = R * f * (u < t0 + F(1) ? 0.92 : 1)
+				// A step: on in one frame at its full size (a mechanical step, never a tween or a scale-in).
+				const r = R * f
 				el('path', { d: hexPath(cx, y, r, 0), fill, 'data-guard': 1 }, over)
 			})
 		} else {
@@ -376,10 +404,12 @@ const DRAW = {
 			const sx = Math.max(COLUMN.x1 + 40, a.x + a.w / 2 + Math.cos(ang) * a.w * 0.5 * rad), sy = a.y + a.h / 2 + Math.sin(ang) * a.h * 0.5 * rad
 			const t0 = -T.lead + R() * F(2)
 			const k = ease.brand(inv(t0, arrive, u))
-			const born = Math.min(1, spring(Math.max(0, u - t0), { freq: 4, zeta: 0.7 }))
-			const r = lerp(8 + R() * 10, rr * 1.03, ease.inCubic(k)) * born
-			if (u < t0 || r < 0.5) return
-			el('path', { d: hexPath(lerp(sx, ex, k), lerp(sy, ey, k), r, r * 0.12), fill: i % 5 ? C.white : C.cobalt100, 'data-guard': 1 }, over)
+			// Each hex flips in (turns over by squashing, Round 27), then grows to its slot as it drifts.
+			const flip = ease.outCubic(inv(t0, t0 + F(3), u))
+			const r = lerp(14 + R() * 10, rr * 1.03, ease.inCubic(k))
+			if (u < t0 || flip <= 0.001) return
+			const cx = lerp(sx, ex, k), cy = lerp(sy, ey, k)
+			el('path', { d: hexPath(cx, cy, r, r * 0.12), fill: i % 5 ? C.white : C.cobalt100, transform: `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) scale(${flip.toFixed(4)} 1) translate(${(-cx).toFixed(1)} ${(-cy).toFixed(1)})`, 'data-guard': 1 }, over)
 		})
 		// The orange one: the key element, travelling from A's to B's.
 		const ka = ease.brand(inv(-T.lead + F(1), arrive, u))
@@ -472,7 +502,7 @@ export function captionTimes(boards, hands, need = () => 0) {
  *     exclude  points whose orange is not a key element (the app tag on the loop anchor)
  * Returns { hands, caps } for the page's board data.
  */
-export function playBody(film, boards, { t0 = 0, need, exclude = [] } = {}) {
+export function playBody(film, boards, { t0 = 0, need, exclude = [], audit = null } = {}) {
 	const hands = handOffs(boards)
 	const caps = captionTimes(boards, hands, need)
 	const dur = film.duration
@@ -500,12 +530,14 @@ export function playBody(film, boards, { t0 = 0, need, exclude = [] } = {}) {
 			for (const L of layers) {
 				L.g.setAttribute('display', 'inline')
 				L.top.setAttribute('display', 'inline')
+				clearFieldUnder(L.pic)
 				L.key = findKey(L.pic, L.b.id === 'promise' ? [] : exclude)
 				if (L.b.currentAnchor) L.key = { ...(L.key || {}), x: L.b.currentAnchor[0], y: L.b.currentAnchor[1], w: L.key?.w || 60, h: L.key?.h || 60 }
 				if (!L.key) L.key = { x: 1370, y: 540, w: 60, h: 60 }
 				L.box = containerOf(L.pic)
 				L.token = L.key.node ? tokenOf(L.key, over) : null
 				L.cap = L.capG ? { g: L.capG, lines: captionLines(L.capG) } : null
+				if (audit) audit[L.b.id] = hexAudit(L.pic)
 				L.g.setAttribute('display', 'none')
 				L.top.setAttribute('display', 'none')
 			}

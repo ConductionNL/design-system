@@ -32,9 +32,10 @@ const film = new Film({ mount: document.getElementById('film'), format: '16x9', 
 await loadFonts(FONTS)
 await loadBrandAssets(film.defs)
 const need = (b) => holdFor(b.id === 'promise' ? wordCount((b.words || '').split('\n').slice(1).join(' ')) : wordCount(b.words))
-const { hands, caps } = playBody(film, body, { t0: from, need, exclude: [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
+const audit = q.has('audit') ? {} : null
+const { hands, caps } = playBody(film, body, { t0: from, need, exclude: [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]], audit })
 const bars = Math.ceil(film.duration / (4 * 60 / 128))
 film.music = { bars, chords: [[50, 54, 61, 64], [47, 54, 57, 61], [47, 50, 54, 57], [49, 52, 57, 59]], bass: [38, 35, 43, 45], parts: { pad: [[0, bars]], bass: [[0, bars]], hat: [[0, bars]] }, loop: false }
-film.board = { film: 'transitions', meta: { title: `Scene transitions, ${slug} ${variant}` }, t0: from, hands: hands.map(({ tr, ...h }) => ({ ...h, note: tr.note || '' })), caps }
+film.board = { film: 'transitions', meta: { title: `Scene transitions, ${slug} ${variant}` }, t0: from, hands: hands.map(({ tr, ...h }) => ({ ...h, note: tr.note || '' })), caps, audit }
 for (const c of caps) if (c.hold + 1e-6 < c.need) console.error(`caption ${c.id} holds ${c.hold} s, needs ${c.need} s`)
 film.start()

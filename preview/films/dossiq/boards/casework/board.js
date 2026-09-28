@@ -11,11 +11,11 @@
  *            Nextcloud, and related knowledge (the knowledge graph) lands beside it while you
  *            work, the same device as the Pipelinq contact-centre film (Round 8 and 9 notes;
  *            Dossiq specs beschikking-generatie, template-library, document-zaakdossier)
- *   proof 2  standards: every case speaks CMMN (international) and ZGW (Dutch). Sources:
+ *   proof 2  standards: CMMN (international), ZGW (Dutch), OIO Sag og Dokument (Danish; added
+ *            to the specs in ConductionNL/dossiq#3174, Ruben 2026-09-28). Sources:
  *            procest origin/development openspec/specs/case-management/spec.md:17 and
  *            case-types/spec.md:27 ("Standards: CMMN 1.1 ... ZGW"); positioning dossiq.md:96,
- *            104, 290 ("speak the ZGW case standard"). A Danish standard is not named in any
- *            source, so none is shown (unresolved, see PROGRESS.md)
+ *            104, 290 ("speak the ZGW case standard")
  *   general  flows: draw flows, share them in the store (Round 8 note)
  *   promise  "The whole team, every case"
  *
@@ -84,7 +84,7 @@ function letterUI(w, geom) {
 	rect(w, kx + 14, top + 90, kw - 28, 82, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 2: one case, kept in two standards: the international case model and the Dutch case standard. */
+/** Proof 2: one case, kept in three standards: the international case model, the Dutch and the Danish case standard. */
 function standardsUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
@@ -94,30 +94,36 @@ function standardsUI(w, geom) {
 	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
 	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 160, top + 65, u)
-	// Square-cornered wires down to the two standards.
-	const bw = (width - 30) / 2, by = top + 220
+	// Square-cornered wires down to the three standards, splitting at one orange hex.
+	const gap = 20, bw = (width - 2 * gap) / 3, by = top + 220
+	const cx = (i) => x + i * (bw + gap) + bw / 2
 	rect(w, x + 64 - 1.5 * u, top + 130, 3 * u, 50, C.cobalt300)
-	rect(w, x + 64, top + 178, bw + 30 + bw / 2 - 64, 3 * u, C.cobalt300)
-	rect(w, x + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
-	rect(w, x + bw + 30 + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
-	// Where the one case splits into both standards: the scene's one orange.
-	hex(w, x + bw + 15, top + 178 + 1.5 * u, 16, C.orange, 2)
-	// Left: the international case model, a plan of stages and tasks.
-	const box = (bx, label) => {
+	rect(w, x + 64, top + 178, cx(2) - x - 64, 3 * u, C.cobalt300)
+	for (let i = 0; i < 3; i++) rect(w, cx(i) - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
+	hex(w, cx(1), top + 178 + 1.5 * u, 16, C.orange, 2)
+	const box = (i, label) => {
+		const bx = x + i * (bw + gap)
 		panel(w, bx, by, bw, 360, u)
-		rect(w, bx, by, bw, 64, C.cobalt50, 0)
-		textBlock(w, label, { x: bx + 28, y: by + 44, size: 36, weight: 600, fill: C.cobalt, clip: false })
+		rect(w, bx, by, bw, 88, C.cobalt50, 0)
+		// A long name breaks over two lines inside its box head.
+		const two = label.includes('\n')
+		textBlock(w, label, { x: bx + 22, y: by + (two ? 36 : 56), size: two ? 30 : 36, weight: 600, fill: C.cobalt, lineHeight: 1.1, clip: false })
+		return bx
 	}
-	box(x, 'CMMN 1.1')
-	rect(w, x + 30, by + 100, bw - 60, 220, 'none', 12 * u, { stroke: C.cobalt300, 'stroke-width': u })
-	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r]) => rect(w, x + 60 + c * ((bw - 120) / 2 + 20), by + 130 + r * 90, (bw - 140) / 2, 60, C.cobalt100, 6 * u))
-	// Right: the Dutch case standard, its fields filled.
-	box(x + bw + 30, 'ZGW')
-	for (let i = 0; i < 4; i++) {
-		const fy = by + 110 + i * 60
-		bar(w, x + bw + 60, fy, 90, 8, C.cobalt400)
-		bar(w, x + bw + 170, fy - 2, 140 - i * 16, 11, C.cobalt900)
-	}
+	// The international case model: a plan of stages and tasks.
+	const b0 = box(0, 'CMMN 1.1')
+	rect(w, b0 + 22, by + 110, bw - 44, 220, 'none', 12 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r]) => rect(w, b0 + 42 + c * ((bw - 84) / 2 + 10), by + 130 + r * 90, (bw - 104) / 2, 60, C.cobalt100, 6 * u))
+	// The Dutch and the Danish case standards: their fields filled.
+	// OIO sits in the middle box so its long label stays inside the text safe box (x 1800).
+	;[[1, 'OIO Sag og\nDokument'], [2, 'ZGW']].forEach(([i, label]) => {
+		const bx = box(i, label)
+		for (let k = 0; k < 4; k++) {
+			const fy = by + 126 + k * 56
+			bar(w, bx + 22, fy, 70, 8, C.cobalt400)
+			bar(w, bx + 108, fy - 2, bw - 150 - k * 14, 11, C.cobalt900)
+		}
+	})
 }
 
 const content = {
@@ -127,7 +133,7 @@ const content = {
 	promiseLine: 'Your team works every case from one backlog, with its letters and knowledge at hand, kept in international and Dutch case standards, on the Nextcloud you already run',
 	title: 'Dossiq for municipal casework',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For municipal and social-domain casework: one backlog the whole team works from, a letter drafted in Word inside Nextcloud with the related knowledge beside it, every case in CMMN and ZGW, and flows you draw once and share through the store. No AI in this film.',
+	logline: 'For municipal and social-domain casework: one backlog the whole team works from, a letter drafted in Word inside Nextcloud with the related knowledge beside it, every case in CMMN, ZGW and OIO Sag og Dokument, and flows you draw once and share through the store. No AI in this film.',
 	references: REFS,
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	neighbours: ['portaliq', 'filinq'],
@@ -152,12 +158,12 @@ const content = {
 		},
 		{
 			id: 'standards',
-			title: 'Every case speaks CMMN and ZGW',
-			caption: 'Every case speaks\nCMMN and ZGW',
-			source: 'Dossiq specs on development: case-management/spec.md:17 "Standards: CMMN 1.1 (CasePlanModel), Schema.org (Project), ZGW (Zaak)"; case-types/spec.md:27 "Standards: CMMN 1.1 (CaseDefinition), ZGW Catalogi API (ZaakType)"; positioning dossiq.md:96,104 ("speak the ZGW case standard"). A Danish standard is not named in any source: unresolved, not shown.',
-			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. The case lands on top; on the next beat square-cornered wires run down to two boxes, splitting at one orange hex, and they fill one per beat: left the international case model (its plan of stages and tasks), right the Dutch case standard (its fields). The labels CMMN 1.1 and ZGW sit in the boxes\' heads as small labels.',
+			title: 'CMMN, OIO, ZGW: every case fits',
+			caption: 'CMMN, OIO, ZGW:\nevery case fits',
+			source: 'Dossiq specs: case-management/spec.md:17 and case-types/spec.md:27 (Standards: CMMN 1.1, ZGW; on origin/development), plus OIO Sag og Dokument (Denmark) added to the same two lines in ConductionNL/dossiq#3174 (Ruben, 2026-09-28, open, not merged); positioning dossiq.md:96,104 (ZGW).',
+			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. The case lands on top; on the next beat square-cornered wires run down to three boxes, splitting at one orange hex, and they fill one per beat: the international case model (its plan of stages and tasks), the Dutch and the Danish case standards (their fields). The labels CMMN 1.1, ZGW and OIO Sag og Dokument sit in the boxes\' heads as small labels, so the three names read muted.',
 			sound: 'Four dry clicks on the wipe, a line-draw hiss, a pluck as each box fills.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every case speaks\nCMMN and ZGW', drawUI: standardsUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'CMMN, OIO, ZGW:\nevery case fits', drawUI: standardsUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

@@ -61,7 +61,7 @@ export function promiseFrame(ctx, { app, promise, neighbours = [] }) {
 
 /** Every board of an audience film, with film times, layers and modules. */
 export function audienceBoards(content) {
-	const { app, promise, neighbours = [], builtOnApps = [] } = content
+	const { app, promise, neighbours = [], builtOnApps = [], builtOnLit = false } = content
 	const name = content.name || APP_NAMES[app] || app
 	const body = appBoards({ ...content, outro: { neighbours } })
 	const shift = (b) => ({ ...b, start: b.start + OPEN, end: b.end + OPEN, shows: b.shows + OPEN, clears: b.clears + OPEN })
@@ -114,10 +114,11 @@ export function audienceBoards(content) {
 		bars: `${barOf(t0)}.1-${barOf(t0) + 1}.4`,
 		words: 'Built on\nNextcloud',
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
+		motion: content.builtOnMotion || `The shared piece (_lib/scenes/closing.js builtOnScene, on: 'nextcloud'; Round 10): Nextcloud lands low right, the data layer drops onto it, "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them, the Nextcloud apps pop in round it one a sixteenth, and on its second bar ${name} lands on top in orange${builtOnApps.length ? `, with ${builtOnApps.map((a) => APP_NAMES[a] || a).join(' and ')} beside it in white` : ''}. Everything general (data layer, notifications, flows, the assistant) is told here, not in the body.`,
 		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck as the top row lands.',
 		source: 'Shared module: round4/facts.json fact a.',
-		draw: (ctx) => { builtOnFrame(ctx, { app, apps: builtOnApps, on: 'nextcloud' }) },
+		// builtOnLit (Round 14, OpenRegister films): the data layer itself is the lit cell, so the app is not repeated on top.
+		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true } : { app, apps: builtOnApps, on: 'nextcloud' }) },
 	}
 	const t1 = t0 + BUILT
 	const install = {

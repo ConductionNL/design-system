@@ -199,9 +199,12 @@ function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white', { color
  *   on       'connext' (default: the ConNext wordmark after the words, as the ConNext film has it) or
  *            'nextcloud' (Round 10, app and audience films: "Built on Nextcloud" in live type, white,
  *            with the Nextcloud mark where a scene's chapter mark sits; no ConNext anywhere)
+ *   litLayer false (default) keeps the data layer cobalt. true (Round 14, the OpenRegister films) lights
+ *            the data layer itself: its cell turns orange (the frame's one orange, so pass no `app`),
+ *            labelled "OpenRegister" beside it; the top row then carries the apps built on it, in white
  */
 function drawBuiltOn(g, t, p, W = 1920) {
-	const { app = null, apps = [], caption = 'Built on', label = true, on = 'connext' } = p
+	const { app = null, apps = [], caption = 'Built on', label = true, on = 'connext', litLayer = false } = p
 	const K = CLOSING.builtOn
 	const L = BUILT_ON
 	const leaving = t >= K.out
@@ -230,7 +233,13 @@ function drawBuiltOn(g, t, p, W = 1920) {
 	const [lx, ly] = cellAt(L.layer)
 	if (t >= K.layer) {
 		const dy = -180 * (1 - ease.brand(inv(K.layer, K.layer + 0.28, t)))
-		cell(g, lx, ly + dy, L.size - 5, C.cobalt, { glyph: 'openregister', color: C.white, ring: 5, s: off(t, offAt.layer) })
+		cell(g, lx, ly + dy, L.size - 5, litLayer ? C.orange : C.cobalt, { glyph: 'openregister', color: C.white, ring: 5, s: off(t, offAt.layer) })
+	}
+	// Round 14: the lit data layer carries its name, left of the ring, level with it.
+	if (litLayer && label && t >= K.layer) {
+		const [tx] = cellAt(L.ring.talk)
+		const size = 34
+		risingText(g, APP_NAMES.openregister, { x: tx - (SQRT3 / 2) * L.size - 22, y: ly + size * 0.36, anchor: 'end', size, weight: 600, fill: C.white, tracking: -0.02 }, inv(K.layer, K.layer + RISE, t), leaving ? inv(K.out, K.out + EXIT, t) : 0)
 	}
 
 	// The Nextcloud apps it links a record to: white cells, cobalt icons, popping in one a sixteenth.

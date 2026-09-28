@@ -3,8 +3,9 @@
  * (cg-govtech-vendors). Direction C on the app-film template, wrapped by _lib/audiencefilm.js.
  * Lane L1, 2026-09-28. Positioning: ds-connext-film-review/audiences/positioning-l1.md.
  *
- * Like the register keepers' film, it drops the Built on Nextcloud closing (OpenRegister is that
- * data layer) and hands from the promise straight to the install board.
+ * Round 14 (Ruben, 2026-09-28): it closes on the Built on Nextcloud piece with OpenRegister itself
+ * lit as the data layer (closing.js litLayer, via builtOnLit), not on a Built on piece with this app
+ * on top; 18 bars, 33.75 s like every audience film.
  *
  *   hook     change a record type and the existing records move with it (usp-live-model,
  *            verified; spec schema-migration)
@@ -22,7 +23,7 @@
  * each consumer's filter chip swaps in).
  */
 import { C } from '../../../_lib/brand.js'
-import { audienceFilm, TOTAL, BUILT } from '../../../_lib/audiencefilm.js'
+import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, statusPill } from '../../../_lib/ui.js'
 
@@ -122,7 +123,7 @@ const content = {
 	promiseLine: 'Build your app on a record store with the audit trail and retention already in it',
 	title: 'OpenRegister for software vendors',
 	record: { one: 'record', many: 'records' },
-	logline: 'For vendors and integrators who build case, permit and citizen apps for government: change a record type and the records follow, let any system read and write the same records through its own filter, read another organisation\'s records live, and get the audit trail and retention a tender asks for without building them. No Built on closing: OpenRegister is that layer.',
+	logline: 'For vendors and integrators who build case, permit and citizen apps for government: change a record type and the records follow, let any system read and write the same records through its own filter, read another organisation\'s records live, and get the audit trail and retention a tender asks for without building them. It closes on Built on Nextcloud with OpenRegister lit as the data layer.',
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the new column)', '#9 text-swap on a held diagram (the filters)', '#1 dot-grows-to-fill (as a hex, into the other organisation)'],
 	neighbours: ['dossiq', 'pipelinq', 'portaliq', 'integriq'],
@@ -166,11 +167,10 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The OpenRegister cell lands on the loop anchor and turns orange, the apps built on it (Dossiq, Pipelinq, Portaliq, Integriq) lock in white round the Nextcloud hex: the vendor\'s app would sit there too. Under "OpenRegister" the promise builds one word per eighth note while the type column\'s camera eases back; at rest it is the key frame. Holds to the bar line, then the Nextcloud cell travels to the corner for the install board (no Built on piece in this film).',
+	builtOnLit: true,
+	builtOnApps: ['dossiq', 'pipelinq', 'portaliq'],
+	builtOnMotion: 'The shared piece with the Round 14 option (_lib/scenes/closing.js, on: \'nextcloud\', litLayer: true): Nextcloud lands low right, the data layer drops onto it and this time it is the lit cell, orange with the OpenRegister glyph, its name rising beside it; "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them; the Nextcloud apps pop in round it one a sixteenth; on its second bar Dossiq, Pipelinq and Portaliq, the apps that keep their records in it, land on top in white. OpenRegister is not repeated on top: it is the layer.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The OpenRegister cell lands on the loop anchor and turns orange, the apps built on it (Dossiq, Pipelinq, Portaliq, Integriq) lock in white round the Nextcloud hex: the vendor\'s app would sit there too. Under "OpenRegister" the promise builds one word per eighth note while the type column\'s camera eases back; at rest it is the key frame. Holds to the bar line, then the cells step toward Nextcloud for Built on, where OpenRegister lights up as the data layer.',
 }
 
-const film = audienceFilm(content)
-// No Built on Nextcloud closing: OpenRegister is that data layer (lane prompt). The install board follows the promise.
-const boards = film.boards.filter((b) => b.module !== 'builtOn').map((b) => (b.module === 'install' ? { ...b, start: b.start - BUILT, end: b.end - BUILT, bars: '14.1-16.4' } : b))
-export const meta = { ...film.meta, duration: TOTAL - BUILT, note: 'No Built on Nextcloud piece: OpenRegister is the data layer it shows (16 bars, 30 s).' }
-export { boards }
+export const { meta, boards } = audienceFilm(content)

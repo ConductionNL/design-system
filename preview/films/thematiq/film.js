@@ -82,16 +82,17 @@ const SC = { tokens: screenIn(...CELL.nc), store: screenIn(...CELL.store), nld: 
 const T = {
 	mark: OPEN + F(3),
 	// story 1: one word per sixteenth, a colour cell with each noun
-	w1: [B(0.75), B(0.75) + S16], w2: [B(1.75), B(1.75) + S16], w3: [B(2.75), B(3)],
-	cells: { lav: B(1) , mint: B(2), forest: B(3) },
-	settle: B(5), // the letters of "colours" land in orange
+	// one word per sixteenth, so the whole card is up with its reading hold (7 words, 2.8 s) before it leaves
+	w1: [B(0.4), B(0.4) + S16], w2: [B(0.4) + 2 * S16, B(0.4) + 3 * S16], w3: [B(0.4) + 4 * S16, B(0.4) + 5 * S16],
+	cells: { lav: B(0.4) + S16, mint: B(0.4) + 3 * S16, forest: B(0.4) + 5 * S16 },
+	settle: B(3), // the letters of "colours" stop flicking and land in orange
 	s1Out: B(8.6),
 	// story 2
 	pan: [B(8.2), B(9.4)],
-	cur1: [B(8.4), B(9.4)], // the current from the forest cell to the workspace cell
-	nc: B(9.4), // the workspace cell powers on
-	w4: [B(9.9), B(9.9) + S16], // "Your workspace,"
-	w5: [B(11.75), B(11.75) + S16, B(11.75) + 2 * S16], // "not your style?"
+	morph: [B(8.3), B(9.1)], // Round 26 match cut: the forest cell (your colour) glides to the workspace cell and turns stock Nextcloud blue
+	nc: B(9.1), // the workspace cell lands, the Nextcloud mark in it
+	w4: [B(9.4), B(9.4) + S16], // "Your workspace,"
+	w5: [B(10.3), B(10.3) + S16, B(10.3) + 2 * S16], // "not your style?"
 	s2Out: B(15.6),
 	push: [B(15.35), B(16.2)], // into the workspace cell
 	// scene 3, tokens (13.125 to 16.875)
@@ -101,23 +102,27 @@ const T = {
 	swatch: B(17.9),
 	wipe: [B(18.5), B(20)],
 	// scene 4, the store
-	fly1: [B(23.3), B(24.4)],
-	cur4: [B(23.1), B(24)],
-	tag4: B(24.2),
-	cards: B(24.45),
-	share: B(26),
+	// Round 26 zoom-through: the push into the house-colour swatch until it fills the frame, the cut on the bar line into the
+	// store's first template card (the same forest), and the pull out of it
+	zin: [B(23), B(23.8)], // the push into the swatch; it fills the frame two frames before the bar line
+	cut: B(24),
+	zout: [B(24) + F(2), B(24.9)],
+	tag4: B(24.9),
+	cards: B(25),
+	share: B(26.3),
 	// scene 5, NL Design
-	fly2: [B(31.3), B(32.4)],
-	cur5: [B(31.1), B(32)],
-	tag5: B(32.2),
+	// Round 26 whip-pan: a six-frame snap to the next cell (render --blur 4)
+	whip: [B(31.6), B(31.6) + F(7)],
+	tag5: B(32.1),
 	sel: B(32.5),
 	name: [B(33.2), B(33.9)],
 	file: [B(34), B(34.6)],
 	cur6: [B(34.6), B(35)],
 	upload: B(35),
 	landed: B(35.5),
-	pull: [B(36.6), B(39.8)],
-	appOn: B(37.4),
+	pull: [B(38.3), B(39.9)], // after the last caption and the mark have left: nothing crosses the words
+	capOut: B(38.1),
+	appOn: B(38.9),
 }
 
 /* ============================================================ the camera */
@@ -125,22 +130,36 @@ const T = {
 const S2 = camOn(...XY.nc, 1620, 300, 1.0)
 const END = camOn(...XY.app, 1330, 236, 118 / 150)
 const PUSH = bezier(0.62, 0, 0.12, 1)
-const rests = [
+/** Mock px inside a screen to world. */
+const inScreen = (sc, mx, my) => [sc.at[0] + sc.s * mx, sc.at[1] + sc.s * my]
+// the zoom-through: the token row's swatch (mock 1007.5 + 12, 327 + 14) and the store's first card swatch (mock 510 + 101, 241 + 30)
+const SW_A = inScreen(SC.tokens, 1019.5, 341)
+const SW_B = inScreen(SC.store, 611, 271)
+const Z_A = camOn(...SW_A, 960, 540, 1700) // 1.7 x 2.0 world units of forest fill the frame
+const Z_B = camOn(...SW_B, 960, 540, 380) // the card's 14.2 x 4.2 world units of forest fill it too
+const WHIP_TO = { ...SC.nld.key }
+const takeA = take([
 	rest(CAM_HO, OPEN, { k: HO_RATE, pivot: [960, 540] }),
 	rest(S2, T.pan[1], { k: 0.014, pivot: [1620, 300] }),
 	rest(SC.tokens.key, T.push[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(SC.store.key, T.fly1[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(SC.nld.key, T.fly2[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
-]
-const moves = [
+	rest(Z_A, T.zin[1], { k: 0.2, pivot: [960, 540] }),
+], [
 	{ from: T.pan[0], to: T.pan[1], ease: ease.brand, blend: 'pivot' },
 	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
-	{ from: T.fly1[0], to: T.fly1[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
-	{ from: T.fly2[0], to: T.fly2[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
+	{ from: T.zin[0], to: T.zin[1], ease: ease.inCubic, blend: 'pivot' },
+])
+const takeB = take([
+	rest(Z_B, T.zout[0], { k: -0.2, pivot: [960, 540] }),
+	rest(SC.store.key, T.zout[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(WHIP_TO, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
+], [
+	{ from: T.zout[0], to: T.zout[1], ease: ease.outCubic, blend: 'pivot' },
+	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },
 	{ from: T.pull[0], to: T.pull[1], ease: ease.brand, blend: 'pivot' },
-]
-const camera = take(rests, moves)
+])
+/** The one camera: take A to the bar line of the zoom-through, take B after it (the cut sits inside one colour). */
+const camera = (t) => (t < T.cut ? takeA(t) : takeB(t))
 
 /* ============================================================ cell looks */
 
@@ -207,12 +226,12 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			// story 1: the colour cells
 			if (k === CELL.lav.join()) { const s = pop(t - T.cells.lav) * steppedOff(t, T.s1Out); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.lavender, null, s) } : undefined }
 			if (k === CELL.mint.join()) { const s = pop(t - T.cells.mint) * steppedOff(t, T.s1Out + F(1)); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.mint, null, s) } : undefined }
-			if (k === CELL.forest.join()) { const s = pop(t - T.cells.forest) * steppedOff(t, T.cur1[1] + F(2)); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.forest, null, s) } : undefined }
+			if (k === CELL.forest.join()) { if (t >= T.morph[0]) return undefined; const s = pop(t - T.cells.forest); return s > 0 ? { draw: (g, x, y) => glyphCell(g, x, y, C.forest, null, s) } : undefined }
 			// the workspace cell: stock Nextcloud blue, drained into the ground on the push, the token editor inside
 			if (k === CELL.nc.join() && t >= T.nc) {
 				const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
 				return { draw: (g, x, y) => {
-					const s = pop(t - T.nc, { freq: 2.6, zeta: 0.6 })
+					const s = t < T.nc + 0.6 ? 1 + 0.12 * (1 - spring(t - T.nc, { freq: 3, zeta: 0.45 })) : 1
 					glyphCell(g, x, y, mix(C.nextcloud, C.cobalt600, drain), drain < 1 ? 'nextcloud' : null, s, mix(C.white, C.cobalt600, drain))
 					if (t >= T.push[0]) {
 						const inner = drawScreen(g, SC.tokens, (w, geom) => {
@@ -221,7 +240,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 							repaint(w, geom, { mode: 'wipe', at, from: [C.nextcloud, C.cobalt50], to: [C.forest, C.forest300] })
 							tokensUI(w, geom, tokensState(t))
 							ripple(w, TOKEN_ROWS, T.rows, t)
-							current(w, [[275, GTOP + 146], [GX + GW - 278, GTOP + 146], [GX + GW - 278, GTOP + 168]], ease.inOutCubic(inv(...T.cur3, t)), { w: 5, spark: 13 })
+							if (t < T.swatch + 0.5) { const cg = el('g', { opacity: (1 - inv(T.swatch + 0.2, T.swatch + 0.5, t)).toFixed(3) }, w); current(cg, [[275, GTOP + 146], [GX + GW - 278, GTOP + 146], [GX + GW - 278, GTOP + 168]], ease.inOutCubic(inv(...T.cur3, t)), { w: 5, spark: 13 }) }
 							powerBurst(w, GX + GW - 278, GTOP + 196, inv(T.swatch, T.swatch + 0.3, t), { r: 12, reach: 60 })
 						})
 						windowTag(inner, APP, { s: pop(t - T.tag3) })
@@ -229,13 +248,13 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 					}
 				} }
 			}
-			if (k === CELL.store.join() && t >= T.cur4[1] - 0.05) return { draw: (g, x, y) => {
-				glyphCell(g, x, y, C.cobalt600, null, pop(t - (T.cur4[1] - 0.05), { freq: 3, zeta: 0.6 }))
-				const inner = drawScreen(g, SC.store, (w, geom) => { storeUI(w, geom, storeState(t)); ripple(w, STORE_CARDS, T.cards, t) })
+			if (k === CELL.store.join() && t >= T.cut) return { draw: (g, x, y) => {
+				glyphCell(g, x, y, C.cobalt600, null, 1)
+				const inner = drawScreen(g, SC.store, (w, geom) => { storeUI(w, geom, storeState(t)); ripple(w, STORE_CARDS.slice(1), T.cards, t) /* your template card is there from the cut: its swatch is the match */ })
 				windowTag(inner, APP, { s: pop(t - T.tag4) })
 			} }
-			if (k === CELL.nld.join() && t >= T.cur5[1] - 0.05) return { draw: (g, x, y) => {
-				glyphCell(g, x, y, C.cobalt600, null, pop(t - (T.cur5[1] - 0.05), { freq: 3, zeta: 0.6 }))
+			if (k === CELL.nld.join() && t >= T.cut) return { draw: (g, x, y) => {
+				glyphCell(g, x, y, C.cobalt600, null, 1)
 				const inner = drawScreen(g, SC.nld, (w, geom) => {
 					nldesignUI(w, geom, nldState(t))
 					current(w, [[GX + 432, GTOP + 300], [GX + 452, GTOP + 300], [GX + 452, GTOP + 364], [GX + 470, GTOP + 364]], ease.inOutCubic(inv(...T.cur6, t)), { w: 5, spark: 12 })
@@ -247,16 +266,14 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			return undefined
 		}
 		const wg = drawField(layer, cam, look)
-		// the currents in world space: the hand-offs
-		const [fx, fy] = XY.forest, [nx, ny] = XY.nc, [sx, sy] = XY.store, [lx, ly] = XY.nld
-		const wl = 5 / Math.max(cam.z, 0.2)
-		const fade = (a) => 1 - inv(a, a + 0.3, t)
-		const wire = (pts, span, o) => { const f = fade(span[1] + 0.05); if (f <= 0) return; const cg = el('g', { opacity: f.toFixed(3) }, wg); current(cg, pts, ease.inOutCubic(inv(...span, t)), o) }
-		wire([[fx, fy], [fx, ny], [nx - R * 0.87, ny]], T.cur1, { w: 5 / cam.z, spark: 12 / cam.z })
-		if (t < T.push[0] + 0.2) powerBurst(wg, nx - R * 0.6, ny, inv(T.nc, T.nc + 0.35, t), { r: 12 / cam.z * 1.4, reach: 80 / cam.z })
-		const band = (a, b) => [[a[0] + 70, a[1] + 55], [b[0] - 70, b[1] + 55]]
-		wire(band(XY.nc, XY.store), T.cur4, { w: wl, spark: 9 / Math.max(cam.z, 0.2) })
-		wire(band(XY.store, XY.nld), T.cur5, { w: wl, spark: 9 / Math.max(cam.z, 0.2) })
+		// Round 26: story 1 to story 2 is a match cut, not a wire: the forest cell, the colour you picked, glides across the
+		// lattice to the workspace cell and turns into Nextcloud's stock blue as it lands (the Nextcloud mark appears at T.nc).
+		if (t >= T.morph[0] && t < T.nc) {
+			const u = ease.snap(inv(...T.morph, t))
+			const [fx, fy] = XY.forest, [nx, ny] = XY.nc
+			const x = lerp(fx, nx, u), y = lerp(fy, ny, u) - 90 * Math.sin(Math.PI * u)
+			glyphCell(wg, x, y, mix(C.forest, C.nextcloud, ease.inOutCubic(inv(0.35, 1, u))), null, 1 + 0.18 * Math.sin(Math.PI * u))
+		}
 		drawNear(layer, cam, NEAR, { alpha: 0.07 * clamp((2.2 - cam.z) / 1.2) })
 	}
 }, { post: 0.001 })
@@ -270,8 +287,8 @@ function slamItems(items, times, t, { from = 1.5 } = {}) {
 		const s = t - t0
 		if (s < 0) { it.node.setAttribute('opacity', '0'); return }
 		const k = s < F(2) ? s / F(2) : 1
-		const sc = 1 + (from - 1) * (1 - spring(s, { freq: 3.4, zeta: 0.5 }))
-		const cx = it.x + it.w / 2, cy = it.y
+		const sc = 1 + (from - 1) * (1 - spring(s, { freq: 3.4, zeta: 0.5 })) * (1 - inv(0.16, 0.25, s))
+		const cx = it.x, cy = it.y
 		it.node.setAttribute('opacity', k.toFixed(3))
 		Math.abs(sc - 1) > 1e-4 ? it.node.setAttribute('transform', `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) scale(${sc.toFixed(4)}) translate(${-cx.toFixed(1)} ${-cy.toFixed(1)})`) : it.node.removeAttribute('transform')
 	})
@@ -285,18 +302,21 @@ const artOut = (g, t, t0) => {
 }
 
 // the chapter mark, the whole body
-film.scene('t-mark', T.mark, T_BUILT, (ctx) => {
-	const c = caption(ctx.g, { text: 'Thematiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise: T.mark, leave: T_BUILT - 0.17, camera })
-	return (t) => c.set(t)
+// the chapter mark: up through the story and each screen, off for the zoom-through and the whip so no screen crosses it
+;[[T.mark, B(23)], [B(25), B(31.4)], [B(32.5), T.capOut]].forEach(([rise, leave], i) => {
+	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
+		const c = caption(ctx.g, { text: 'Thematiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
+		return (t) => c.set(t)
+	})
 })
 
 // story 1: "Your car," "your house," "your colours"
 film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
 	const g = el('g', {}, ctx.g)
-	const a = textBlock(g, 'Your car,', { x: 120, y: 560, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
-	const b = textBlock(g, 'your house,', { x: 300, y: 720, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
-	const c = textBlock(g, 'your', { x: 120, y: 910, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false })
-	const d = textBlock(g, 'colours', { x: 120 + c.width + 0.28 * 190, y: 910, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false, split: 'char' })
+	const a = textBlock(g, 'Your car,', { x: 120, y: 540, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
+	const b = textBlock(g, 'your house,', { x: 300, y: 700, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
+	const c = textBlock(g, 'your', { x: 120, y: 885, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false })
+	const d = textBlock(g, 'colours', { x: 120 + c.width + 0.28 * 190, y: 885, size: 190, weight: 700, fill: C.orange, tracking: -0.03, clip: false, split: 'char' })
 	const fam = [C.lavender, C.mint, C.forest]
 	return (t) => {
 		slamItems(a.items, T.w1, t)
@@ -304,11 +324,11 @@ film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
 		slamItems(c.items, [T.w3[0]], t)
 		// the letters of "colours" land one per half sixteenth, each flicking through the three families (a sixteenth each) before the orange
 		d.items.forEach((it, i) => {
-			const t0 = T.w3[1] + i * S16 * 0.5
+			const t0 = T.w3[1] + i * S16 * 0.25
 			slamItems([it], [t0], t, { from: 1.9 })
 			const s = t - t0
 			const k = Math.floor(s / S16)
-			it.node.setAttribute('fill', s < 0 || t >= T.settle - i * F(0.5) || k >= 6 ? C.orange : fam[(i + k) % 3])
+			it.node.setAttribute('fill', s < 0 || t >= T.settle || k >= 7 ? C.orange : fam[(i + k) % 3])
 		})
 		artOut(g, t, T.s1Out)
 	}
@@ -320,7 +340,7 @@ cue(T.w2[0], 'tick', { freq: 1479.98, gain: 0.14 })
 cue(T.w2[1], 'click', { gain: 0.16, freq: 2700, seed: 102, dry: true })
 cue(T.cells.mint, 'pluck', { freq: 739.99, gain: 0.2, pan: 0.6 })
 cue(T.w3[0], 'kick', { gain: 0.3, pitch: 120, end: 50, decay: 0.2, click: 0.1 })
-for (let i = 0; i < 7; i++) cue(T.w3[1] + i * S16 * 0.5, 'tick', { freq: [1760, 1975.53, 2349.32][i % 3], gain: 0.09, decay: 0.04, pan: -0.3 + i * 0.1 })
+for (let i = 0; i < 7; i++) cue(T.w3[1] + i * S16 * 0.25, 'tick', { freq: [1760, 1975.53, 2349.32][i % 3], gain: 0.09, decay: 0.04, pan: -0.3 + i * 0.1 })
 cue(T.cells.forest, 'pluck', { freq: 880, gain: 0.22, pan: 0.5 })
 cue(T.settle, 'click', { gain: 0.28, freq: 2400, seed: 103, dry: true })
 
@@ -333,13 +353,12 @@ film.scene('t-story2', T.w4[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
 		slamItems(a.items, T.w4, t)
 		slamItems(b.items, T.w5, t, { from: 1.7 })
 		// a glue to the world while it leaves: the words ride out on the push
-		if (t >= T.s2Out) { const gl = glueAttr(glue(camera(T.s2Out), camera(t))); gl ? g.setAttribute('transform', gl) : g.removeAttribute('transform'); g.setAttribute('opacity', (1 - inv(T.s2Out, T.s2Out + EXIT, t)).toFixed(3)) }
+		artOut(g, t, T.s2Out)
 	}
 })
-// the current: charge, crackle along the wire, an arc and a click as the workspace powers on
-cue(T.cur1[0], 'charge', { gain: 0.05, dur: T.cur1[1] - T.cur1[0], from: 300, to: 1800 })
-cue(T.cur1[0] + 0.1, 'crackle', { dur: T.cur1[1] - T.cur1[0] - 0.1, density: 60, gain: 0.07, pan: 0.3 })
-cue(T.nc, 'arc', { gain: 0.14, pan: 0.5 })
+// the match cut: the forest cell glides into the workspace and lands in stock blue with a click
+cue(T.morph[0], 'whoosh', { dur: T.morph[1] - T.morph[0] + 0.1, from: 700, to: 3000, panFrom: -0.2, panTo: 0.5, gain: 0.12 })
+cue(T.nc, 'kick', { gain: 0.22, pitch: 100, end: 45, decay: 0.22, click: 0.06 })
 cue(T.nc, 'click', { gain: 0.3, freq: 2800, seed: 104, dry: true, pan: 0.5 })
 cue(T.pan[0], 'whoosh', { dur: 0.8, from: 500, to: 2600, panFrom: -0.3, panTo: 0.4, gain: 0.14 })
 cue(T.w4[0], 'kick', { gain: 0.25, pitch: 110, end: 48, decay: 0.2, click: 0.08 })
@@ -354,8 +373,8 @@ cue(T.push[0] - 0.05, 'whoosh', { dur: 0.9, from: 400, to: 4800, panFrom: 0.4, p
 /* ---------- the three captions of the screens ---------- */
 const CAPS = [
 	['tokens', 'Adjust 53\ndesign tokens', B(16) + F(6), B(23)],
-	['store', 'Share your templates\nin the store', B(24.5), B(31)],
-	['nld', 'Bring your NL Design\ntokens along', B(32.5), T_BUILT - 0.17],
+	['store', 'Share your templates\nin the store', B(25), B(31.4)],
+	['nld', 'Bring your NL Design\ntokens along', B(32.5), T.capOut],
 ]
 for (const [id, text, rise, leave] of CAPS) {
 	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -375,17 +394,17 @@ cue(T.swatch + 0.1, 'pluck', { freq: 1174.66, gain: 0.18, pan: 0.6 })
 cue(T.wipe[0], 'whoosh', { dur: T.wipe[1] - T.wipe[0], from: 300, to: 3600, panFrom: -0.5, panTo: 0.7, gain: 0.18 })
 for (let i = 0; i < 4; i++) cue(lerp(T.wipe[0], T.wipe[1], (i + 0.5) / 4), 'click', { gain: 0.14, freq: 2200 + i * 200, seed: 110 + i, dry: true, pan: -0.3 + i * 0.3 })
 // scene 4
-cue(T.fly1[0] - 0.05, 'whoosh', { dur: 1.2, from: 3000, to: 400, panFrom: -0.2, panTo: 0.6, gain: 0.2 })
-cue(T.cur4[0], 'crackle', { dur: T.cur4[1] - T.cur4[0], density: 50, gain: 0.06, pan: 0.2 })
-cue(T.cur4[1], 'click', { gain: 0.26, freq: 2900, seed: 114, dry: true, pan: 0.4 })
+cue(T.zin[0], 'riser', { dur: T.zin[1] - T.zin[0], gain: 0.12, root: 50 })
+cue(T.zin[1] - 0.3, 'whoosh', { dur: 0.45, from: 400, to: 6000, panFrom: 0, panTo: 0, gain: 0.2 })
+cue(T.cut, 'impact', { gain: 0.4, from: 90, to: 36, decay: 0.8 })
+cue(T.zout[0] + 0.05, 'whoosh', { dur: 0.8, from: 5000, to: 500, panFrom: 0, panTo: 0.3, gain: 0.14 })
 cue(T.tag4, 'pluck', { freq: 659.26, gain: 0.18, pan: 0.2 })
 for (let i = 0; i < 4; i++) cue(T.cards + i * S16, 'tick', { freq: [1318.51, 1479.98, 1760, 1975.53][i], gain: 0.1, pan: -0.2 + i * 0.2 })
 cue(T.share, 'click', { gain: 0.34, freq: 2600, seed: 115, dry: true, pan: 0.2 })
 cue(T.share + 0.05, 'pluck', { freq: 1318.51, gain: 0.2, pan: 0.2 })
 // scene 5
-cue(T.fly2[0] - 0.05, 'whoosh', { dur: 1.2, from: 3000, to: 400, panFrom: -0.2, panTo: 0.6, gain: 0.2 })
-cue(T.cur5[0], 'crackle', { dur: T.cur5[1] - T.cur5[0], density: 50, gain: 0.06, pan: 0.2 })
-cue(T.cur5[1], 'click', { gain: 0.26, freq: 3000, seed: 116, dry: true, pan: 0.4 })
+cue(T.whip[0] - 0.04, 'whoosh', { dur: 0.36, from: 1200, to: 7000, panFrom: -0.8, panTo: 0.8, gain: 0.26 })
+cue(T.whip[1], 'click', { gain: 0.3, freq: 2400, seed: 116, dry: true, pan: 0.5 })
 cue(T.tag5, 'pluck', { freq: 739.99, gain: 0.18, pan: 0.2 })
 for (let i = 1; i <= 3; i++) cue(T.sel + i * S16, 'tick', { freq: 1567.98 + i * 100, gain: 0.08, pan: -0.3 })
 cue(T.file[0], 'whoosh', { dur: 0.5, from: 800, to: 2400, panFrom: 0.2, panTo: 0.5, gain: 0.06 })

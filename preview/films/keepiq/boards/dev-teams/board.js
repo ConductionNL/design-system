@@ -240,7 +240,7 @@ export function lockCell(g, cx, cy, r = 150, { fill = C.white, glyph = C.cobalt,
 }
 
 /** Someone else's app: an outside system, so a plain box (never a hex), with no name, the key inside it. */
-export function outsideBox(g, x, y, w = 300, h = 240, { s = 1 } = {}) {
+export function outsideBox(g, x, y, w = 300, h = 240, { s = 1, lock = true } = {}) {
 	if (s <= 0.001) return
 	const cx = x + w / 2, cy = y + h / 2
 	const t = el('g', Math.abs(s - 1) > 1e-4 ? { transform: `translate(${cx} ${cy}) scale(${s.toFixed(4)}) translate(${-cx} ${-cy})` } : {}, g)
@@ -248,7 +248,7 @@ export function outsideBox(g, x, y, w = 300, h = 240, { s = 1 } = {}) {
 	rect(t, x, y, w, 44, C.cobalt200, 14)
 	rect(t, x, y + 30, w, 14, C.cobalt200)
 	for (let i = 0; i < 3; i++) circle(t, x + 26 + i * 22, y + 22, 6, C.white)
-	use(t, 'icon-lock', cx - 45, cy - 18, 90, 90, C.cobalt300)
+	if (lock) use(t, 'icon-lock', cx - 45, cy - 18, 90, 90, C.cobalt300)
 }
 
 /** Story 1: "The key to your own house?", "own" the scene's one orange, the lock cell on the right. */

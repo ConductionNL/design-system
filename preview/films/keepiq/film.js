@@ -83,15 +83,15 @@ const BOX = (() => {
 
 const T = {
 	mark: OPEN + F(3),
-	w1: [B(0.75), B(0.75) + S16, B(0.75) + 2 * S16], // "The key to"
-	house: B(1) + S16, // the house cell with its lock, as "key" lands
-	w2: [B(2.5), B(2.5) + S16, B(2.75) + S16], // "your own house?"
+	w1: [B(0.5), B(0.5) + S16, B(0.5) + 2 * S16], // "The key to"
+	house: B(0.5) + S16, // the house cell with its lock, as "key" lands
+	w2: [B(1.5), B(1.5) + S16, B(1.5) + 2 * S16], // "your own house?" (all up with its 2.4 s reading hold)
 	s1Out: B(8.6),
 	lift: [B(8.6), B(9.4)], // the lock leaves the house for the box
 	box: B(8.8),
-	w3: [B(9.5), B(9.5) + S16], // "Kept by"
-	w4: [B(11.5), B(11.5) + S16, B(11.5) + 2 * S16], // "someone else's app?"
-	cur1: [B(14.3), B(15.2)], // the current from the box back to the house
+	w3: [B(9.3), B(9.3) + S16], // "Kept by"
+	w4: [B(10.2), B(10.2) + S16, B(10.2) + 2 * S16], // "someone else's app?" (all up with its 2 s hold)
+	ret: [B(14.4), B(15.2)], // Round 26: the lock flies back out of the box into its house (the story's own element carries the hand-off)
 	home: B(15.2), // the lock comes home; the cell turns into Keepiq's
 	s2Out: B(15.6),
 	push: [B(15.45), B(16.3)],
@@ -105,41 +105,45 @@ const T = {
 	back: [B(20.4), B(21.3)], // the value back into the vault
 	stored: B(21.3),
 	// scene 4, the one-time link
-	fly1: [B(23.3), B(24.4)],
-	cur4: [B(23.1), B(24)],
-	tag4: B(24.2),
+	// Round 26 whip-pan: a seven-frame snap to the next cell (render --blur 4)
+	whip: [B(23.6), B(23.6) + F(7)],
+	tag4: B(24),
 	views: B(24.9),
 	link4: [B(25.3), B(26)],
 	open: B(26.4),
 	burn: [B(28.2), B(29.2)],
 	// scene 5, every use
-	fly2: [B(31.2), B(32.4)],
+	// Round 26 hex wipe: the honeycomb steps on over the frame from the right, the cut sits under it, it steps off
+	wipe: [B(30.8), B(31.6), B(32.4)],
 	bars: [B(32.4), B(33.4)],
 	rows: B(33.5),
 	cur5: [B(34.4), B(35.1)],
 	ring5: B(35.1),
-	pull: [B(36.6), B(39.8)],
-	appOn: B(37.3),
+	pull: [B(38.3), B(39.9)], // after the last caption and the mark have left: nothing crosses the words
+	capOut: B(38.1),
+	appOn: B(38.9),
 }
 
 /* ============================================================ the camera */
 
 const END = camOn(...XY.house, 1330, 236, 118 / 150)
 const PUSH = bezier(0.62, 0, 0.12, 1)
-const rests = [
+const takeA = take([
 	rest(CAM_HO, OPEN, { k: HO_RATE, pivot: [960, 540] }),
 	rest(SC.request.key, T.push[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(SC.once.key, T.fly1[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(U_KEY, T.fly2[1], { k: 0.008, pivot: [1300, 560] }),
-	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
-]
-const moves = [
+	rest(SC.once.key, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
+], [
 	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
-	{ from: T.fly1[0], to: T.fly1[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
-	{ from: T.fly2[0], to: T.fly2[1], ease: ease.inOutCubic, blend: 'fly', rho: 1.6 },
+	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },
+])
+const takeB = take([
+	rest(U_KEY, T.wipe[1], { k: 0.008, pivot: [1300, 560] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
+], [
 	{ from: T.pull[0], to: T.pull[1], ease: ease.brand, blend: 'pivot' },
-]
-const camera = take(rests, moves)
+])
+/** The one camera: take A to the middle of the hex wipe (the frame is covered), take B after it. */
+const camera = (t) => (t < T.wipe[1] ? takeA(t) : takeB(t))
 
 /* ============================================================ pieces */
 
@@ -171,8 +175,9 @@ function houseCell(g, x, y, t) {
 }
 /** The lock in flight (story 2): from the house up into the box. */
 function lockInFlight(g, t) {
-	if (t < T.lift[0] || t >= T.lift[1] + F(2)) return
-	const u = ease.snap(inv(...T.lift, t))
+	const back = t >= T.ret[0] && t < T.ret[1] + F(1)
+	if (!back && (t < T.lift[0] || t >= T.lift[1] + F(2))) return
+	const u = back ? 1 - ease.snap(inv(...T.ret, t)) : ease.snap(inv(...T.lift, t))
 	const [hx, hy] = XY.house
 	const bx = BOX.x + BOX.w / 2, by = BOX.y + BOX.h / 2 + 10
 	const x = lerp(hx, bx, u), y = lerp(hy, by, u) - 60 * Math.sin(Math.PI * u)
@@ -229,8 +234,8 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 					inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
 				}
 			} }
-			if (k === CELL.once.join() && t >= T.cur4[1] - 0.05) return { draw: (g, x, y) => {
-				el('path', { d: hexPath(x, y, R * pop(t - (T.cur4[1] - 0.05), { freq: 3, zeta: 0.6 }), ROUND), fill: C.cobalt600 }, g)
+			if (k === CELL.once.join() && t >= T.whip[0] - 0.4) return { draw: (g, x, y) => {
+				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const inner = drawScreen(g, SC.once, (w, geom) => {
 					const burnt = inv(...T.burn, t)
 					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: burnt > 0 ? 0 : ease.brand(inv(T.open, T.open + 0.35, t)), burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
@@ -239,8 +244,8 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 				})
 				windowTag(inner, APP, { s: pop(t - T.tag4) })
 			} }
-			if (k === CELL.usage.join() && t >= T.fly2[0] + 0.3) return { draw: (g, x, y) => {
-				el('path', { d: hexPath(x, y, R * pop(t - (T.fly2[0] + 0.3), { freq: 3, zeta: 0.6 }), ROUND), fill: C.cobalt600 }, g)
+			if (k === CELL.usage.join() && t >= T.wipe[1]) return { draw: (g, x, y) => {
+				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
 				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: pop(t - T.bars[0]) })
 				// the current into the newest use, from the day bars' today (local coords)
@@ -251,22 +256,44 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 		}
 		const wg = drawField(layer, cam, look)
 		// story 2: the box, the lock in flight, the current home
-		if (t >= T.box && t < T.push[0] + 0.4) {
-			const s = t < T.cur1[1] + 0.15 ? pop(t - T.box, { freq: 2.8, zeta: 0.55 }) : 1 - ease.inCubic(inv(T.cur1[1] + 0.15, T.cur1[1] + 0.45, t))
+		if (t >= T.box && t < T.home + 0.4) {
+			const s = t < T.home + 0.1 ? pop(t - T.box, { freq: 2.8, zeta: 0.55 }) : 1 - ease.inCubic(inv(T.home + 0.1, T.home + 0.35, t))
 			const bg = el('g', { transform: `translate(${BOX.x} ${BOX.y}) scale(${(1 / CAM_HO.z).toFixed(4)})` }, wg)
-			outsideBox(bg, 0, 0, 320, 250, { s })
+			outsideBox(bg, 0, 0, 320, 250, { s, lock: t >= T.lift[1] && t < T.ret[0] })
 		}
 		lockInFlight(wg, t)
 		const fade = (a) => 1 - inv(a, a + 0.3, t)
 		const wire = (pts, span, o) => { const f = fade(span[1] + 0.05); if (f <= 0) return; const cg = el('g', { opacity: f.toFixed(3) }, wg); current(cg, pts, ease.inOutCubic(inv(...span, t)), o) }
-		const [hx, hy] = XY.house
-		wire([[BOX.x + BOX.w / 2, BOX.y + BOX.h], [BOX.x + BOX.w / 2, hy - R * 1.05], [hx, hy - R * 1.05], [hx, hy - R * 0.98]], T.cur1, { w: 5 / cam.z, spark: 12 / cam.z })
-		const band = (a, b) => [[a[0] + 70, a[1] + 55], [b[0] - 70, b[1] + 55]]
-		const wl = 5 / Math.max(cam.z, 0.2)
-		wire(band(XY.house, XY.once), T.cur4, { w: wl, spark: 9 / Math.max(cam.z, 0.2) })
 		drawNear(layer, cam, NEAR, { alpha: 0.07 * clamp((2.2 - cam.z) / 1.2) })
 	}
 }, { post: 0.001 })
+
+/**
+ * Round 26 hex wipe (once to usage): a screen-space honeycomb steps on over the frame from the right edge,
+ * each cell 20% to 60% to full a frame apart, until the frame is covered on the middle beat; the camera cuts
+ * under it; the cells step off again from the right, revealing the usage dashboard. Pointy-top, never rotated,
+ * solid fills (the ground's own cobalt with the ghost field's cobalt-600).
+ */
+film.scene('wipe', T.wipe[0], T.wipe[2], (ctx) => {
+	const layer = el('g', { 'data-layer': 'hex-wipe' }, ctx.g)
+	const r = 118, gap = 6, sx = (r + gap / Math.sqrt(3)) * Math.sqrt(3), sy = (r + gap / Math.sqrt(3)) * 1.5
+	const cells = []
+	for (let row = -1; row * sy < 1080 + r; row++) for (let col = -1; col * sx < 1920 + r; col++) cells.push([col * sx + (row % 2 ? sx / 2 : 0), row * sy])
+	return (t) => {
+		layer.replaceChildren()
+		const [a, m, b] = T.wipe
+		for (const [x, y] of cells) {
+			const d = 1 - x / 1920 // the right edge first
+			const on = inv(a + d * (m - a - 0.12), a + d * (m - a - 0.12) + 0.12, t)
+			const off = inv(m + d * (b - m - 0.12), m + d * (b - m - 0.12) + 0.12, t)
+			const k = t < m ? on : 1 - off
+			const step = k <= 0 ? 0 : k < 0.34 ? 0.2 : k < 0.67 ? 0.6 : 1
+			if (step <= 0) continue
+			const rr = (r + gap) * step + (step >= 1 ? 2 : 0)
+			el('path', { d: hexPath(x, y, rr, rr * 0.08), fill: step >= 1 ? C.cobalt : C.cobalt600 }, layer)
+		}
+	}
+})
 
 /** The end: the house cell is Keepiq's, in orange, on Built on's lead. */
 function glyphApp(g, x, y, t) {
@@ -284,8 +311,8 @@ function slamItems(items, times, t, { from = 1.5 } = {}) {
 		const s = t - t0
 		if (s < 0) { it.node.setAttribute('opacity', '0'); return }
 		const k = s < F(2) ? s / F(2) : 1
-		const sc = 1 + (from - 1) * (1 - spring(s, { freq: 3.4, zeta: 0.5 }))
-		const cx = it.x + it.w / 2, cy = it.y
+		const sc = 1 + (from - 1) * (1 - spring(s, { freq: 3.4, zeta: 0.5 })) * (1 - inv(0.16, 0.25, s))
+		const cx = it.x, cy = it.y
 		it.node.setAttribute('opacity', k.toFixed(3))
 		Math.abs(sc - 1) > 1e-4 ? it.node.setAttribute('transform', `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) scale(${sc.toFixed(4)}) translate(${-cx.toFixed(1)} ${-cy.toFixed(1)})`) : it.node.removeAttribute('transform')
 	})
@@ -297,9 +324,12 @@ const artOut = (g, t, t0) => {
 	g.setAttribute('opacity', (1 - p).toFixed(3))
 }
 
-film.scene('t-mark', T.mark, T_BUILT, (ctx) => {
-	const c = caption(ctx.g, { text: 'Keepiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise: T.mark, leave: T_BUILT - 0.17, camera })
-	return (t) => c.set(t)
+// the chapter mark: up through the story and each screen, off for the whip and the hex wipe
+;[[T.mark, B(23.3)], [B(24.5), B(30.6)], [B(32.5), T.capOut]].forEach(([rise, leave], i) => {
+	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
+		const c = caption(ctx.g, { text: 'Keepiq', size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
+		return (t) => c.set(t)
+	})
 })
 
 film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
@@ -319,14 +349,14 @@ film.scene('t-story2', T.w3[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
 	return (t) => {
 		slamItems(a.items, T.w3, t)
 		slamItems(b.items, T.w4, t, { from: 1.7 })
-		if (t >= T.s2Out) { const gl = glueAttr(glue(camera(T.s2Out), camera(t))); gl ? g.setAttribute('transform', gl) : g.removeAttribute('transform'); g.setAttribute('opacity', (1 - inv(T.s2Out, T.s2Out + EXIT, t)).toFixed(3)) }
+		artOut(g, t, T.s2Out)
 	}
 })
 
 const CAPS = [
-	['request', 'Request passwords\nfrom partners', B(16) + F(6), B(23)],
-	['once', 'Links that vanish\nafter one view', B(24.5), B(31)],
-	['usage', 'Every use: who,\nwhen, where, why', B(32.5), T_BUILT - 0.17],
+	['request', 'Request passwords\nfrom partners', B(16) + F(6), B(23.3)],
+	['once', 'Links that vanish\nafter one view', B(24.5), B(30.6)],
+	['usage', 'Every use: who,\nwhen, where, why', B(32.5), T.capOut],
 ]
 for (const [id, text, rise, leave] of CAPS) {
 	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -352,10 +382,9 @@ cue(T.w3[0], 'tick', { freq: 1174.66, gain: 0.13 })
 cue(T.w3[1], 'tick', { freq: 1318.51, gain: 0.13 })
 cue(T.w4[0], 'impact', { gain: 0.36, from: 90, to: 34, decay: 0.9 })
 cue(T.w4[2], 'click', { gain: 0.24, freq: 2500, seed: 123, dry: true })
-// the current home: charge, crackle, arc, click
-cue(T.cur1[0], 'charge', { gain: 0.05, dur: T.cur1[1] - T.cur1[0], from: 300, to: 1800, pan: 0.6 })
-cue(T.cur1[0] + 0.08, 'crackle', { dur: T.cur1[1] - T.cur1[0] - 0.1, density: 60, gain: 0.07, pan: 0.6 })
-cue(T.home, 'arc', { gain: 0.14, pan: 0.5 })
+// the lock comes home: a whoosh down out of the box, a thud and a click as it lands
+cue(T.ret[0], 'whoosh', { dur: T.ret[1] - T.ret[0] + 0.1, from: 3600, to: 600, panFrom: 0.7, panTo: 0.4, gain: 0.16 })
+cue(T.home, 'kick', { gain: 0.24, pitch: 100, end: 45, decay: 0.22, click: 0.06 })
 cue(T.home, 'click', { gain: 0.32, freq: 2800, seed: 124, dry: true, pan: 0.5 })
 cue(T.push[0] - 0.05, 'whoosh', { dur: 0.9, from: 400, to: 4800, panFrom: 0.4, panTo: 0, gain: 0.24 })
 // scene 3
@@ -371,9 +400,8 @@ cue(T.back[0], 'crackle', { dur: T.back[1] - T.back[0], density: 55, gain: 0.06,
 cue(T.stored, 'click', { gain: 0.3, freq: 2600, seed: 127, dry: true, pan: 0.4 })
 cue(T.stored + 0.03, 'pluck', { freq: 880, gain: 0.2, pan: 0.4 })
 // scene 4
-cue(T.fly1[0] - 0.05, 'whoosh', { dur: 1.2, from: 3000, to: 400, panFrom: -0.2, panTo: 0.6, gain: 0.2 })
-cue(T.cur4[0], 'crackle', { dur: T.cur4[1] - T.cur4[0], density: 50, gain: 0.06, pan: 0.2 })
-cue(T.cur4[1], 'click', { gain: 0.26, freq: 2900, seed: 128, dry: true, pan: 0.4 })
+cue(T.whip[0] - 0.04, 'whoosh', { dur: 0.36, from: 1200, to: 7000, panFrom: -0.8, panTo: 0.8, gain: 0.26 })
+cue(T.whip[1], 'click', { gain: 0.3, freq: 2400, seed: 128, dry: true, pan: 0.5 })
 cue(T.tag4, 'pluck', { freq: 659.26, gain: 0.18, pan: 0.2 })
 cue(T.views, 'arc', { gain: 0.1, pan: 0.1 })
 cue(T.views, 'click', { gain: 0.32, freq: 2600, seed: 129, dry: true, pan: 0.1 })
@@ -381,7 +409,9 @@ cue(T.open, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.6 })
 cue(T.burn[0], 'whoosh', { dur: T.burn[1] - T.burn[0], from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
 for (let i = 0; i < 5; i++) cue(T.burn[0] + i * S16, 'hat', { gain: 0.1, pan: 0.5, seed: 50 + i })
 // scene 5
-cue(T.fly2[0] - 0.05, 'whoosh', { dur: 1.3, from: 3000, to: 400, panFrom: 0.2, panTo: -0.4, gain: 0.2 })
+for (let i = 0; i < 6; i++) cue(lerp(T.wipe[0], T.wipe[1], i / 6), 'hat', { gain: 0.1, pan: 0.7 - i * 0.25, seed: 60 + i })
+cue(T.wipe[1], 'kick', { gain: 0.3, pitch: 110, end: 44, decay: 0.24, click: 0.08 })
+for (let i = 0; i < 6; i++) cue(lerp(T.wipe[1], T.wipe[2], i / 6), 'tick', { freq: 2349.32 - i * 120, gain: 0.05, decay: 0.03, pan: 0.7 - i * 0.25 })
 for (let i = 0; i < 6; i++) cue(lerp(...T.bars, i / 6), 'tick', { freq: 1174.66 * Math.pow(2, i / 12 * 2), gain: 0.07, pan: 0.3 })
 for (let i = 0; i < 5; i++) cue(T.rows + i * S16, 'tick', { freq: [1318.51, 1479.98, 1567.98, 1760, 1975.53][i], gain: 0.09, pan: 0.2 })
 cue(T.cur5[0], 'crackle', { dur: T.cur5[1] - T.cur5[0], density: 55, gain: 0.06, pan: 0.4 })

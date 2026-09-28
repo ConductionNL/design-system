@@ -198,7 +198,8 @@ function risingMark(g, x, y, h, p, q = 0, id = 'wordmark-connext-white') {
  *   label    false hides the app's name label (default true when app is set)
  */
 function drawBuiltOn(g, t, p, W = 1920) {
-	const { app = null, apps = [], caption = 'Built on', label = true } = p
+	// markText (archiving film, Round 10): live words in place of the wordmark, e.g. 'Nextcloud'.
+	const { app = null, apps = [], caption = 'Built on', label = true, markText = null } = p
 	const K = CLOSING.builtOn
 	const L = BUILT_ON
 	const leaving = t >= K.out
@@ -260,7 +261,8 @@ function drawBuiltOn(g, t, p, W = 1920) {
 	const q = leaving ? inv(K.out, K.out + EXIT, t) : 0
 	risingText(g, caption, { x: TX, y: 468, size: 112, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), q)
 	const m0 = K.typeIn + SPB / 4
-	risingMark(g, TX, 506, 128, inv(m0, m0 + RISE, t), q)
+	if (markText) risingText(g, markText, { x: TX, y: 588, size: 112, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), q)
+	else risingMark(g, TX, 506, 128, inv(m0, m0 + RISE, t), q)
 }
 
 /** The sound of the piece, in local seconds: thuds as the ground and the layer land, ticks up the scale as the apps pop in. */
@@ -315,7 +317,8 @@ export const INSTALL = {
 const INSTALL_TYPE = { markY: 206, markH: 96, slogan: 104, sloganLh: 112, first: 420, lineSize: 72, gap: 70 }
 
 function drawInstall(g, t, p, W = 1920) {
-	const { app = null } = p
+	// slogans / line (archiving film, Round 10): the same board in another language.
+	const { app = null, slogans = INSTALL.slogans, line = INSTALL.line } = p
 	const K = CLOSING.install
 	const TY = INSTALL_TYPE
 
@@ -361,12 +364,12 @@ function drawInstall(g, t, p, W = 1920) {
 	// The type column: the Conduction wordmark as the header (round 6), the three slogans (the first
 	// orange: the call), the line.
 	risingMark(g, TX, TY.markY, TY.markH, inv(K.mark, K.mark + RISE, t), 0, 'wordmark-conduction-white')
-	INSTALL.slogans.forEach((s, i) => {
+	slogans.forEach((s, i) => {
 		const t0 = K.slogans[i]
 		risingText(g, s, { x: TX, y: TY.first + i * TY.sloganLh, size: TY.slogan, weight: 700, fill: i === 0 ? C.orange : C.white, tracking: -0.02 }, inv(t0, t0 + RISE, t))
 	})
 	const lineY = TY.first + 2 * TY.sloganLh + TY.gap + TY.lineSize
-	risingText(g, INSTALL.line, { x: TX, y: lineY, size: TY.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.line, K.line + RISE, t))
+	risingText(g, line, { x: TX, y: lineY, size: TY.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.line, K.line + RISE, t))
 }
 
 /** The sound: a soft whoosh as Nextcloud travels, a dry click as it turns over into the avatar, a crisp click on the call, soft ticks on the next two, a pluck on the line. */

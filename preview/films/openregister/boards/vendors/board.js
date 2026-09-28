@@ -15,7 +15,7 @@
  *            verified; spec federation)
  *   general  the data layer: audit trail and retention already built in (platform
  *            every-change-logged, strong; usp-archive-destroy, verified)
- *   promise  "Build your app, not the database"
+ *   promise  "What if the database was ready?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the new column steps through the
  * existing records), #1 dot-grows-to-fill as an upright hex (from the store into the other
@@ -119,7 +119,7 @@ function federationUI(w, geom) {
 const content = {
 	app: 'openregister',
 	audience: { slug: 'vendors', name: 'Software vendors and integrators', persona: 'Bram Koster, integration specialist at a 40-person vendor building permit apps for municipalities (cg-govtech-vendors)' },
-	promise: 'Build your app,\nnot the database',
+	promise: 'What if the database\nwas ready?',
 	promiseLine: 'Build your app on a record store with the audit trail and retention already in it',
 	title: 'OpenRegister for software vendors',
 	record: { one: 'record', many: 'records' },
@@ -132,7 +132,7 @@ const content = {
 		caption: 'Change the model,\nrecords follow',
 		ui: { drawUI: liveModelUI, tagFill: 'cobalt' },
 		source: 'positioning openregister usp-live-model, verified ("Change a record type and existing records move with it."); spec schema-migration (typed changelog, version bump, objects stamped and migrated)',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the record type\'s fields as chips over the table of its records, the OpenRegister hex (cobalt) on the loop anchor. On beat 2 a new field chip pops in at the end of the row (lavender) and takes the orange ring. Technique #3, grid-cell ripple: its column steps into the table row by row, each new cell stepping 20% to 40% to full, top to bottom within one bar; nothing goes offline.',
+		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the record type\'s fields as chips over the table of its records, the OpenRegister hex (cobalt) on the loop anchor. On beat 2 a new field chip pops in at the end of the row (lavender) and takes the orange ring. Technique #3, grid-cell ripple: its column steps into the table row by row, each new cell stepping 20% to 40% to full, top to bottom within one bar; nothing goes offline.',
 		sound: 'A pluck as the chip lands, a run of soft ticks down the column.',
 	},
 	proofs: [
@@ -170,7 +170,7 @@ const content = {
 	builtOnLit: true,
 	builtOnApps: ['dossiq', 'pipelinq', 'portaliq'],
 	builtOnMotion: 'The shared piece with the Round 14 option (_lib/scenes/closing.js, on: \'nextcloud\', litLayer: true): Nextcloud lands low right, the data layer drops onto it and this time it is the lit cell, orange with the OpenRegister glyph, its name rising beside it; "Built on" rises with "Nextcloud" a sixteenth behind and the white Nextcloud mark above them; the Nextcloud apps pop in round it one a sixteenth; on its second bar Dossiq, Pipelinq and Portaliq, the apps that keep their records in it, land on top in white. OpenRegister is not repeated on top: it is the layer.',
-	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the OpenRegister cell lands on the loop anchor and turns orange, the apps built on it (Dossiq, Pipelinq, Portaliq, Integriq) lock in white round the Nextcloud hex: the vendor\'s app would sit there too. Under "OpenRegister" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the OpenRegister cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the OpenRegister cell lands on the loop anchor and turns orange, the apps built on it (Dossiq, Pipelinq, Portaliq, Integriq) lock in white round the Nextcloud hex: the vendor\'s app would sit there too. Under "OpenRegister" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the OpenRegister cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

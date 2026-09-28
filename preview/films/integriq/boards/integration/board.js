@@ -14,7 +14,7 @@
  *   general  notifications: a source starts failing, Integriq stops calling it and you hear first
  *            (usp-self-healing-sync, verified: http-call-engine REQ-008 per-source circuit breaker;
  *            sp-watch-every-call; spec openconnector-notifications)
- *   promise  "Connect any system to Nextcloud" (Round 18 copy pass)
+ *   promise  "What if Nextcloud reached every system?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the live read fills the record in a
  * wave, techniques.md names it for Integriq's feed), #9 text-swap on a held diagram (the bridge
@@ -112,7 +112,7 @@ function signInUI(w, geom) {
 const content = {
 	app: 'integriq',
 	audience: { slug: 'integration', name: 'Government integration teams', persona: 'Daan Verhoeven, integratiespecialist (municipality); Renske Bakker, integratiearchitect (province); Youssef El Amrani, integration developer at a vendor' },
-	promise: 'Connect any system\nto Nextcloud',
+	promise: 'What if Nextcloud\nreached every system?',
 	promiseLine: 'Connect any system, the base registries included, to your Nextcloud',
 	title: 'Integriq for integration teams',
 	record: { one: 'connection', many: 'connections' },
@@ -126,7 +126,7 @@ const content = {
 		caption: 'Citizen data read live,\nnever copied',
 		ui: { drawUI: liveReadUI, tagFill: 'cobalt' },
 		source: 'positioning integriq usp-registry-live-read, verified ("Read a citizen or company straight from the source, live."; scene: "the lookup reads straight from the base itself"); spec connector-catalog (BRP HaalCentraal source, category "Government registers")',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the base registry as a side box on the left (BRP as a small label), the citizen\'s record on the right, the Integriq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: an orange hex runs along the square wire (the live read) and the record\'s fields step from 20% to 40% to full mint in a wave, top to bottom, within one bar. No copy lands anywhere: when the read ends the wire stays live.',
+		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the base registry as a side box on the left (BRP as a small label), the citizen\'s record on the right, the Integriq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: an orange hex runs along the square wire (the live read) and the record\'s fields step from 20% to 40% to full mint in a wave, top to bottom, within one bar. No copy lands anywhere: when the read ends the wire stays live.',
 		sound: 'A soft pulse along the wire, a ripple of ticks as the fields fill.',
 	},
 	proofs: [
@@ -151,8 +151,8 @@ const content = {
 	],
 	general: {
 		module: 'notify',
-		title: 'A connection fails? You hear first',
-		caption: 'A connection fails?\nYou hear first',
+		title: 'Connection down? You hear first',
+		caption: 'Connection down?\nYou hear first',
 		source: 'positioning integriq usp-self-healing-sync, verified ("it cuts itself off and you switch it back on"; spec http-call-engine REQ-008 per-source circuit breaker) and sp-watch-every-call ("you get a message the moment it starts failing"); spec openconnector-notifications; story.json mechanic 8',
 		params: {
 			record: { avatar: 'square', title: 240, sub: 150, status: 'none' },
@@ -162,7 +162,7 @@ const content = {
 		},
 		sound: 'A low tick as the source trips, a dry click as the notice lands (no bell).',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Integriq cell lands on the loop anchor and turns orange, OpenRegister, Dossiq and Portaliq lock in white round the Nextcloud hex. Under "Integriq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Integriq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the Integriq cell lands on the loop anchor and turns orange, OpenRegister, Dossiq and Portaliq lock in white round the Nextcloud hex. Under "Integriq" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Integriq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

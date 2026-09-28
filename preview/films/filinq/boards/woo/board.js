@@ -13,7 +13,7 @@
  *   proof 2  one screen carries the Woo request from intake to publication
  *            (sp-woo-request-end-to-end; specs dossier-register, anonymisation-grondslagen-summary)
  *   general  the data layer: who redacted what, and when (platform every-change-logged, strong)
- *   promise  "Personal data found before you publish" (Round 18: softened, found and checked, not a guarantee)
+ *   promise  "What if personal data was caught first?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #3 grid-cell ripple (the scan runs down the page in a wave),
  * #9 text-swap on a held diagram (the page holds while each match turns from found to removed),
@@ -124,7 +124,7 @@ function wooUI(w, geom) {
 const content = {
 	app: 'filinq',
 	audience: { slug: 'woo', name: 'Government Woo and records teams', persona: 'Marieke Jansen, Woo coordinator (municipality); Willem de Groot, jurist (central government)' },
-	promise: 'Personal data found\nbefore you publish',
+	promise: 'What if personal data\nwas caught first?',
 	promiseLine: 'Personal data found and checked before you publish, on the Nextcloud you already run',
 	title: 'Filinq for Woo teams',
 	record: { one: 'document', many: 'documents' },
@@ -138,7 +138,7 @@ const content = {
 		caption: 'Names, ID numbers,\nbank accounts: found',
 		ui: { drawUI: detectUI, tagFill: 'cobalt' },
 		source: 'positioning filinq sp-detect-personal-data ("Every document gets scanned for a BSN, an IBAN or a name automatically."); spec anonymization',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the document page with its found spans in lavender, the list of matches on the right (BSN, IBAN, Name as small labels), the Filinq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the scan runs down the page line by line in a wave (each line stepping 20% to 40% to full), and each span it finds turns lavender while its match drops into the list on the same sixteenth. The third span takes the orange ring.',
+		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the document page with its found spans in lavender, the list of matches on the right (BSN, IBAN, Name as small labels), the Filinq hex (cobalt) on the loop anchor. Technique #3, grid-cell ripple: the scan runs down the page line by line in a wave (each line stepping 20% to 40% to full), and each span it finds turns lavender while its match drops into the list on the same sixteenth. The third span takes the orange ring.',
 		sound: 'A soft ripple of ticks with the scan, a pluck per match.',
 	},
 	proofs: [
@@ -173,7 +173,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Filinq cell lands on the loop anchor and turns orange, Dossiq, OpenRegister and Portaliq lock in white round the Nextcloud hex. Under "Filinq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Filinq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the Filinq cell lands on the loop anchor and turns orange, Dossiq, OpenRegister and Portaliq lock in white round the Nextcloud hex. Under "Filinq" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Filinq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

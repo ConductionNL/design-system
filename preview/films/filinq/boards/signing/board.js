@@ -15,7 +15,7 @@
  *            template-management REQ-TMPL-09 version diff)
  *   general  flows: signed, and a flow you drew takes over (platform draw-your-flows, medium;
  *            sp-app-integrations); the customer draws the flow, never "pre-built"
- *   promise  "The right version, signed and filed"
+ *   promise  "What if the right version got signed?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * Techniques (refs/techniques.md): #10 cluster-to-container merge (the record's details drift
  * into the document's slots), #11 whip-pan on the beat (to the signer's phone), #4 typewriter
@@ -117,7 +117,7 @@ function templateUI(w, geom) {
 const content = {
 	app: 'filinq',
 	audience: { slug: 'signing', name: 'Notaries, law firms and insurers', persona: 'Peter van Dijk, notaris (six-person office); Sanne Bakker, policy officer for customer letters at an insurer' },
-	promise: 'The right version,\nsigned and filed',
+	promise: 'What if the right\nversion got signed?',
 	promiseLine: 'The right version of every document, filled from the record, signed and filed',
 	title: 'Filinq for notaries and insurers',
 	record: { one: 'document', many: 'documents' },
@@ -131,18 +131,18 @@ const content = {
 		caption: 'Pick a template,\nit fills itself',
 		ui: { drawUI: generateUI, tagFill: 'cobalt' },
 		source: 'positioning filinq sp-generate-from-record ("Pick a template and a case and the letter fills itself."); spec document-creatie-sjablonen (merge data resolved from the record)',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the client\'s record and the template list on the left, the document on the right, the Filinq hex (cobalt) on the loop anchor. The picked template row lights. Technique #10, cluster-to-container merge: the record\'s details lift off as small loose shapes, drift along square wires and settle into the document\'s slots within one beat; the last value lands orange.',
+		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the client\'s record and the template list on the left, the document on the right, the Filinq hex (cobalt) on the loop anchor. The picked template row lights. Technique #10, cluster-to-container merge: the record\'s details lift off as small loose shapes, drift along square wires and settle into the document\'s slots within one beat; the last value lands orange.',
 		sound: 'A tick on the template pick, three plucks as the values land.',
 	},
 	proofs: [
 		{
 			id: 'sign',
-			title: 'Signed on a phone, same day',
-			caption: 'Signed on a phone,\nsame day',
+			title: 'Signed by phone, same day',
+			caption: 'Signed by phone,\nsame day',
 			source: 'positioning filinq sp-e-signing ("Send a document to one or more people and follow it to a signature."; scene: "a signer opens it on a phone and signs there"; so: "a decision is signed the same day it was written"); specs document-signing, portal-signing-surface',
 			motion: 'Technique #11, whip-pan: a 5-frame move on ease.snap (rendered with --blur 4) from the filled document to the signer\'s phone. The signature draws itself on the line in one stroke, the sign button takes the orange ring, and behind the phone the first signer\'s pill turns mint.',
 			sound: 'A short whoosh on the whip, a scratch of pen under the stroke, a dry click on sign.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Signed on a phone,\nsame day', drawUI: signUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Signed by phone,\nsame day', drawUI: signUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'template',
@@ -161,7 +161,7 @@ const content = {
 		source: 'positioning filinq platform draw-your-flows, medium ("A document being created or changed can trigger a rule the organisation drew itself") and sp-app-integrations ("call other tools on a change"); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Filinq cell lands on the loop anchor and turns orange, Pipelinq, Portaliq and OpenRegister lock in white round the Nextcloud hex. Under "Filinq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Filinq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the Filinq cell lands on the loop anchor and turns orange, Pipelinq, Portaliq and OpenRegister lock in white round the Nextcloud hex. Under "Filinq" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Filinq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

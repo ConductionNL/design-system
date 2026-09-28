@@ -13,7 +13,7 @@
  *            bio-compliance-assessment)
  *   general  notifications: a contract nears expiry and the owner hears (sp-contract-lifecycle;
  *            spec softwarecatalog-notifications, the contract-expiry rule)
- *   promise  "Everything you run, one list" (Round 18 copy pass)
+ *   promise  "What if you saw everything you run?" (Round 19: the promise asked as a question; no answer card, the proofs answer it)
  *
  * The thin USPs (vulnerability to version, AI Act, licence position, organisation merge) are not
  * used. Applications in the customer's landscape are drawn as rectangles: hexes are installable
@@ -113,7 +113,7 @@ function bioUI(w, geom) {
 const content = {
 	app: 'stackiq',
 	audience: { slug: 'landscape', name: 'Government architects and CIOs', persona: 'Sanne de Boer, enterprise architect (municipality); Bas Kramer, portfolio architect (province); Maartje Hendriks, CIO (central government)' },
-	promise: 'Everything you run,\none list',
+	promise: 'What if you saw\neverything you run?',
 	promiseLine: 'Every application your organisation runs, in one list',
 	title: 'Stackiq for architects',
 	record: { one: 'application', many: 'applications' },
@@ -127,7 +127,7 @@ const content = {
 		caption: 'Every application,\nowner and supplier',
 		ui: { drawUI: landscapeUI, tagFill: 'cobalt' },
 		source: 'positioning stackiq sp-landscape-register ("Every application carries its own supplier and owner."); spec application-lifecycle-tracking (planned, in use, phasing out)',
-		motion: 'In behind the app hex the promise leaves on the loop anchor, the key frame reads: caption, the landscape as one list (application, owner, supplier, lifecycle phase), the Stackiq hex (cobalt) on the loop anchor. Technique #10, cluster-to-container merge: over the first two beats the rows start as loose square icons scattered over the window (a shared drive, a catalogue, colleagues\' notes) and each tweens into its row on ease.brand, arriving within one beat; then owners, suppliers and phase pills fill a sixteenth apart. On beat 5 one row takes the orange ring.',
+		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the landscape as one list (application, owner, supplier, lifecycle phase), the Stackiq hex (cobalt) on the loop anchor. Technique #10, cluster-to-container merge: over the first two beats the rows start as loose square icons scattered over the window (a shared drive, a catalogue, colleagues\' notes) and each tweens into its row on ease.brand, arriving within one beat; then owners, suppliers and phase pills fill a sixteenth apart. On beat 5 one row takes the orange ring.',
 		sound: 'A run of soft ticks as the rows land, a pluck on the ringed row.',
 	},
 	proofs: [
@@ -163,7 +163,7 @@ const content = {
 		},
 		sound: 'A low tick as the contract reaches its stage, a dry click as the notice lands (no bell).',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15). Straight after the opening\'s handover, on its plain field, the Stackiq cell lands on the loop anchor and turns orange, OpenRegister, OpenCatalogi and Integriq lock in white round the Nextcloud hex. Under "Stackiq" the promise builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Stackiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Technique #2, zoom-out sentence build, now the body\'s opening statement (Round 15), asked as a question (Round 19: no answer card follows, the proofs answer it). Straight after the opening\'s handover, on its plain field, the Stackiq cell lands on the loop anchor and turns orange, OpenRegister, OpenCatalogi and Integriq lock in white round the Nextcloud hex. Under "Stackiq" the question builds one word per sixteenth from two frames after the handover while the type column\'s camera eases back; at rest it is the key frame. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Stackiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
 }
 
 export const { meta, boards } = audienceFilm(content)

@@ -1,4 +1,24 @@
 /**
+ * ROUND 21 (Ruben, 2026-09-28), the default for every film from now on:
+ *   builtOnScene / builtOnFrame  "Built on Nextcloud" as the ConNext film's component connection
+ *                                section (the A19 s1 scene): the film's app is the LEAD cell (orange),
+ *                                the Nextcloud apps load one by one into the grid below it, each on its
+ *                                own orthogonal connector, while one line under the headline swaps
+ *                                "verb + name" (the name in Nextcloud cyan). 3 bars (was 2).
+ *                                Options: app (the lead), apps (up to two white cells beside the lead),
+ *                                lead ('openregister' for the OpenRegister films; litLayer: true means
+ *                                the same), lang ('en' | 'nl': "Gebouwd op Nextcloud" and Dutch lines),
+ *                                caption / markText (override the two headline lines), label, sound.
+ *   installScene / installFrame  "Install it" / "Use it" / "Own it", the orange moving line by line and
+ *                                landing on "Own it", then "The code stays open source, your data stays
+ *                                yours" on two lines; NL "Installeer het" / "Gebruik het" / "Bezit het",
+ *                                "De code blijft open source, je data blijft van jou". 3 bars. Options:
+ *                                lang, slogans, line (overrides), app.
+ *   Pass legacy: true to either for the round-6 pieces (the finished ConNext film and the rendered
+ *   Dossiq film use it, so their masters stay reproducible). CLOSING.connect / CLOSING.install21 hold
+ *   the new lengths; CLOSING.builtOn / CLOSING.install the legacy ones. BUILT_ON_DUR and INSTALL_DUR
+ *   give the lengths a film must reserve for the default pieces.
+ *
  * The shared closing modules of every film (Ruben, round 4, 2026-09-27; restyled in
  * round 5 and round 6, 2026-09-28).
  *
@@ -294,7 +314,7 @@ function builtOnCues(cue) {
 }
 
 /** The scene: builds nothing up front, redraws from local time every frame. Returns update(t). */
-export function builtOnScene(ctx, p = {}) {
+function legacyBuiltOnScene(ctx, p = {}) {
 	const layer = el('g', { 'data-layer': 'built-on' }, ctx.g)
 	if (ctx.cue && p.sound !== false) builtOnCues((t, kind, o) => ctx.cue(ctx.start + t, kind, o))
 	return (t) => {
@@ -304,7 +324,7 @@ export function builtOnScene(ctx, p = {}) {
 }
 
 /** The storyboard key frame: the scene at its key time (or p.at). */
-export function builtOnFrame(ctx, p = {}) {
+function legacyBuiltOnFrame(ctx, p = {}) {
 	drawBuiltOn(el('g', {}, ctx.g), p.at ?? CLOSING.builtOn.key, p, ctx.W)
 	return { cells: Object.fromEntries(Object.entries(BUILT_ON.ring).map(([k, v]) => [k, cellAt(v)])), size: BUILT_ON.size }
 }
@@ -400,7 +420,7 @@ function installCues(cue) {
 	cue(K.line, 'pluck', { freq: 880, gain: 0.2, decay: 0.8 })
 }
 
-export function installScene(ctx, p = {}) {
+function legacyInstallScene(ctx, p = {}) {
 	const layer = el('g', { 'data-layer': 'install' }, ctx.g)
 	if (ctx.cue && p.sound !== false) installCues((t, kind, o) => ctx.cue(ctx.start + t, kind, o))
 	return (t) => {
@@ -409,10 +429,251 @@ export function installScene(ctx, p = {}) {
 	}
 }
 
-export function installFrame(ctx, p = {}) {
+function legacyInstallFrame(ctx, p = {}) {
 	drawInstall(el('g', {}, ctx.g), p.at ?? CLOSING.install.key, p, ctx.W)
 	return { type: INSTALL_TYPE }
 }
 
 /** Board-free check: every word the pieces put on screen, for a word count. */
 export const CLOSING_WORDS = { builtOn: 'Built on', install: [...INSTALL.slogans, INSTALL.line].join(' ') }
+
+
+/* ================================================================== ROUND 21 ================ */
+
+/** The new lengths and beats (local seconds). Built on grows to 3 bars so the last component line holds 1.5 s. */
+CLOSING.connect = {
+	bars: 3, dur: G(4),
+	lead: F(2), // the lead cell pops in on the second frame
+	typeIn: F(2), // "Built on" rises, "Nextcloud" a sixteenth behind
+	loads: [G(1, 2), G(1, 4), G(2, 1), G(2, 2), G(2, 3), G(2, 4), G(3, 1)], // the first holds two beats, then one a beat
+	linkDur: 0.22,
+	out: G(4) - EXIT, // everything leaves in the last four frames, into the install board
+	key: G(3, 3),
+}
+CLOSING.install21 = {
+	bars: 3, dur: G(4),
+	avatar: F(2), // the Nextcloud cell pops in top right and turns over into the Conduction avatar
+	flip: [0.3, 0.54],
+	mark: F(2),
+	slogans: [F(4), G(1, 2), G(1, 3)], // the orange moves to each line as it rises and stays on the last
+	line: G(1, 4) + F(2),
+	key: 4.6,
+}
+export const BUILT_ON_DUR = CLOSING.connect.dur
+export const INSTALL_DUR = CLOSING.install21.dur
+
+/** The words, English and Dutch. The component lines are what the data layer links a record to (NC_LINKS). */
+export const CLOSING_TEXT = {
+	en: {
+		builtOn: ['Built on', 'Nextcloud'],
+		loads: { mail: ['Reply from', 'Mail'], calendar: ['Plan in', 'Calendar'], contacts: ['Save to', 'Contacts'], files: ['Share in', 'Files'], talk: ['Chat in', 'Talk'], tasks: ['Follow up in', 'Tasks'], deck: ['Manage from', 'Deck'] },
+		slogans: ['Install it', 'Use it', 'Own it'],
+		line: 'The code stays open source,\nyour data stays yours',
+	},
+	nl: {
+		builtOn: ['Gebouwd op', 'Nextcloud'],
+		loads: { mail: ['Antwoord vanuit', 'Mail'], calendar: ['Plan in', 'Agenda'], contacts: ['Bewaar in', 'Contacten'], files: ['Deel in', 'Bestanden'], talk: ['Chat in', 'Talk'], tasks: ['Volg op in', 'Taken'], deck: ['Beheer vanuit', 'Deck'] },
+		slogans: ['Installeer het', 'Gebruik het', 'Bezit het'],
+		line: 'De code blijft open source,\nje data blijft van jou',
+	},
+}
+/** The order the components load in (the A19 s1 order) and their cells: three in the row under the gap, four under those. */
+const LOAD_ORDER = ['mail', 'calendar', 'contacts', 'files', 'talk', 'tasks', 'deck']
+export const CONNECT = {
+	size: 118, gap: 14,
+	lead: [1330, 236],
+	cells: { contacts: [-2, 2], mail: [-1, 2], calendar: [0, 2], deck: [-3, 3], files: [-2, 3], talk: [-1, 3], tasks: [0, 3] },
+	beside: [[1, 0], [2, 0]], // to the lead's right, so the name label left of the lead is only ever its own
+	line: { width: 8, bus: 0.5 }, // the bus runs halfway between the lead's foot and the first row's top points
+	type: { markY: 250, markH: 60, first: 420, size: 112, lh: 118, lineY: 668, lineSize: 72 },
+}
+const cxy = ([q, r]) => axial(CONNECT.lead[0], CONNECT.lead[1], q, r, CONNECT.size, CONNECT.gap)
+const iconOf = (id) => NC_LINKS.find((l) => l.id === id).icon
+
+/** The square-cornered route from the lead's foot to a cell's top point, and its length. */
+function connectRoute(pos) {
+	const [lx, ly] = CONNECT.lead, [x, y] = cxy(pos), R = CONNECT.size
+	const foot = ly + R, top = y - R
+	const [, y1] = cxy([-1, 2])
+	const bus = foot + ((y1 - R) - foot) * CONNECT.line.bus
+	if (Math.abs(x - lx) < 0.5) return { d: `M${lx} ${foot}V${top}`, len: top - foot }
+	return { d: `M${lx} ${foot}V${bus}H${x}V${top}`, len: (bus - foot) + Math.abs(x - lx) + (top - bus) }
+}
+
+function drawConnect(g, t, p, W = 1920) {
+	const K = CLOSING.connect
+	const T = CLOSING_TEXT[p.lang === 'nl' ? 'nl' : 'en']
+	const lead = p.lead || (p.litLayer ? 'openregister' : p.app) || 'openregister'
+	const apps = (p.apps || []).slice(0, 2)
+	const leaving = t >= K.out
+	const q = leaving ? inv(K.out, K.out + EXIT, t) : 0
+	const R = CONNECT.size
+	const [lx, ly] = CONNECT.lead
+
+	// The quiet field: unlit cells round the composition, shaded by distance from the lead.
+	const taken = new Set([[0, 0], ...Object.values(CONNECT.cells), ...CONNECT.beside.slice(0, apps.length)].map((c) => c.join(',')))
+	for (let r = -2; r <= 4; r++) {
+		for (let qq = -7; qq <= 5; qq++) {
+			if (taken.has(`${qq},${r}`)) continue
+			const [x, y] = cxy([qq, r])
+			if (x < 900 - R || x > W + R || y < -R || y > 1080 + R) continue
+			const d = Math.hypot(x - lx, (y - ly) * 0.8) / (R * SQRT3)
+			const s = pop(t, F(1) + d * F(1)) * (1 - q)
+			if (s <= 0.001) continue
+			el('path', { d: hexPath(x, y, R * Math.min(1, s), R * 0.1), fill: C.cobalt600, 'fill-opacity': Math.max(0.2, 0.9 - d * 0.14).toFixed(3) }, g)
+		}
+	}
+	// The connectors: one per component, running out as its cell pops in.
+	const lineAttrs = { fill: 'none', stroke: C.cobalt200, 'stroke-width': CONNECT.line.width, 'stroke-linecap': 'butt', 'stroke-linejoin': 'miter' }
+	LOAD_ORDER.forEach((id, i) => {
+		const t0 = K.loads[i] - K.linkDur
+		const pr = inv(t0, K.loads[i], t) * (1 - q)
+		if (pr <= 0.001) return
+		const { d, len } = connectRoute(CONNECT.cells[id])
+		el('path', { d, ...lineAttrs, ...(pr < 1 ? { 'stroke-dasharray': `${len.toFixed(1)} ${len.toFixed(1)}`, 'stroke-dashoffset': (len * (1 - pr)).toFixed(1) } : {}) }, g)
+	})
+	// The Nextcloud apps, in Nextcloud blue with white icons.
+	LOAD_ORDER.forEach((id, i) => {
+		const [x, y] = cxy(CONNECT.cells[id])
+		cell(g, x, y, R, C.nextcloud, { icon: iconOf(id), color: C.white, s: pop(t, K.loads[i]) * off(t, K.out) })
+	})
+	// The lead (the film's app, or OpenRegister), orange, and the apps beside it in white.
+	apps.forEach((id, i) => {
+		const [x, y] = cxy(CONNECT.beside[i])
+		cell(g, x, y, R, C.white, { glyph: id, color: C.cobalt, s: pop(t, K.lead + F(3 + 2 * i)) * off(t, K.out) })
+	})
+	cell(g, lx, ly, R, C.orange, { glyph: lead, color: C.white, s: pop(t, K.lead) * off(t, K.out) })
+	if (p.label !== false) {
+		const size = 34
+		risingText(g, APP_NAMES[lead] || lead, { x: lx - (SQRT3 / 2) * R - 22, y: ly + size * 0.36, anchor: 'end', size, weight: 600, fill: C.white, tracking: -0.02 }, inv(K.lead + F(2), K.lead + F(2) + RISE, t), q)
+	}
+
+	// The type column: the Nextcloud mark, "Built on" / "Nextcloud", and the one swapping line.
+	const Y = CONNECT.type
+	const [c1, c2] = [p.caption || T.builtOn[0], p.markText || T.builtOn[1]]
+	risingMark(g, TX, Y.markY, Y.markH, inv(K.typeIn, K.typeIn + RISE, t), q, 'nextcloud-logo', { color: C.white, inset: 0 })
+	risingText(g, c1, { x: TX, y: Y.first, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), q)
+	const m0 = K.typeIn + SPB / 4
+	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), q)
+	// One line whose words change: the old leaves upward as the new rises (4 frames), the name in cyan.
+	LOAD_ORDER.forEach((id, i) => {
+		const t0 = K.loads[i], t1 = i + 1 < LOAD_ORDER.length ? K.loads[i + 1] : K.out
+		if (t < t0 || t >= t1 + EXIT) return
+		const [verb, name] = T.loads[id]
+		const out = t1 === K.out ? q : inv(t1, t1 + EXIT, t)
+		risingText(g, `${verb} _${name}_`, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, accent2: C.nextcloudCyan, tracking: -0.01 }, inv(t0, t0 + RISE, t), out)
+	})
+}
+
+function connectCues(cue) {
+	const K = CLOSING.connect
+	cue(K.lead, 'pluck', { freq: 1174.66, gain: 0.24 })
+	cue(K.lead + 0.02, 'impact', { gain: 0.22, from: 110, to: 48, decay: 0.5 })
+	const notes = [1174.66, 1318.51, 1479.98, 1567.98, 1760, 1975.53, 2349.32]
+	K.loads.forEach((t, i) => cue(t, 'tick', { freq: notes[i], gain: 0.13, pan: [-0.3, 0, 0.3, -0.4, -0.1, 0.2, 0.45][i] }))
+	cue(K.out - 0.05, 'whoosh', { dur: 0.4, from: 2600, to: 600, panFrom: 0.3, panTo: -0.2, gain: 0.1 })
+}
+
+function drawInstall21(g, t, p, W = 1920) {
+	const K = CLOSING.install21
+	const T = CLOSING_TEXT[p.lang === 'nl' ? 'nl' : 'en']
+	const slogans = p.slogans || T.slogans
+	const line = p.line || T.line
+	const TY = INSTALL_TYPE
+	const N = INSTALL_NC
+	// The quiet honeycomb top right, stepping on round the avatar.
+	for (let qq = -4; qq <= 4; qq++) {
+		for (let rr = -4; rr <= 3; rr++) {
+			const [x, y] = axial(N.x, N.y, qq, rr, N.r, N.gap)
+			const d = (Math.abs(qq) + Math.abs(rr) + Math.abs(qq + rr)) / 2
+			if (y > 560 || x < 1200 || x > W + N.r || y < -N.r) continue
+			if (qq === 0 && rr === 0) continue
+			if (p.app && qq === 0 && rr === -1) continue
+			const s = pop(t, 0.1 + d * F(1))
+			if (s <= 0.001) continue
+			el('path', { d: hexPath(x, y, N.r * Math.min(1, s), N.r * 0.1), fill: C.cobalt600, 'fill-opacity': Math.max(0.25, 1 - d * 0.2).toFixed(3) }, g)
+		}
+	}
+	// A Nextcloud cell pops in and turns over into the Conduction avatar (a scale flip, never a rotation).
+	const [f0, f1] = K.flip, fm = (f0 + f1) / 2
+	if (t < fm) {
+		const sx = (1 - ease.inCubic(inv(f0, fm, t))) * Math.min(1, pop(t, K.avatar))
+		if (sx > 0.001) {
+			const fg = el('g', sx < 1 ? { transform: `translate(${N.x} ${N.y}) scale(${sx.toFixed(4)} 1) translate(${-N.x} ${-N.y})` } : {}, g)
+			nextcloudCell(fg, N.x, N.y, N.r)
+		}
+	} else {
+		const sx = ease.outCubic(inv(fm, f1, t))
+		if (sx > 0.001) {
+			const [aw, ah] = MARK_BOX['avatar-conduction']
+			const h = 2 * N.r, w = (h * aw) / ah
+			const fg = el('g', sx < 1 ? { transform: `translate(${N.x} ${N.y}) scale(${sx.toFixed(4)} 1) translate(${-N.x} ${-N.y})` } : {}, g)
+			el('use', { href: '#avatar-conduction', x: N.x - w / 2, y: N.y - h / 2, width: w, height: h, color: C.white }, fg)
+		}
+	}
+	if (p.app) {
+		const [ax, ay] = axial(N.x, N.y, 0, -1, N.r, N.gap)
+		cell(g, ax, ay, N.r, C.white, { glyph: p.app, color: C.cobalt, s: pop(t, K.flip[1]) })
+	}
+	// The Conduction wordmark header; the slogans, the orange moving to each as it rises and staying on
+	// the last (one orange at any frame); then the line, two lines at 72 px.
+	risingMark(g, TX, TY.markY, TY.markH, inv(K.mark, K.mark + RISE, t), 0, 'wordmark-conduction-white')
+	slogans.forEach((s, i) => {
+		const t0 = K.slogans[i], next = K.slogans[i + 1]
+		const orange = t >= t0 && (next === undefined || t < next)
+		risingText(g, s, { x: TX, y: TY.first + i * TY.sloganLh, size: TY.slogan, weight: 700, fill: orange ? C.orange : C.white, tracking: -0.02 }, inv(t0, t0 + RISE, t))
+	})
+	const lineY = TY.first + 2 * TY.sloganLh + TY.gap + TY.lineSize
+	risingText(g, line, { x: TX, y: lineY, size: TY.lineSize, weight: 600, fill: C.white, tracking: -0.01, lineHeight: 1.12 }, inv(K.line, K.line + RISE, t))
+}
+
+function install21Cues(cue) {
+	const K = CLOSING.install21
+	cue(K.avatar, 'tick', { freq: 1760, gain: 0.1, pan: 0.5 })
+	cue((K.flip[0] + K.flip[1]) / 2, 'click', { gain: 0.2, freq: 3000, pan: 0.5, seed: 72, dry: true })
+	cue(K.slogans[0], 'click', { gain: 0.3, freq: 2600, seed: 71, dry: true })
+	cue(K.slogans[1], 'click', { gain: 0.26, freq: 2750, seed: 73, dry: true })
+	cue(K.slogans[2], 'click', { gain: 0.34, freq: 2900, seed: 74, dry: true })
+	cue(K.slogans[2], 'impact', { gain: 0.3, from: 90, to: 32, decay: 1.0 })
+	cue(K.line, 'pluck', { freq: 880, gain: 0.2, decay: 0.8 })
+}
+
+/* ---------- the exported pieces (Round 21 by default; legacy: true for the round-6 pieces) ---------- */
+
+export function builtOnScene(ctx, p = {}) {
+	if (p.legacy) return legacyBuiltOnScene(ctx, p)
+	const layer = el('g', { 'data-layer': 'built-on' }, ctx.g)
+	if (ctx.cue && p.sound !== false) connectCues((t, kind, o) => ctx.cue(ctx.start + t, kind, o))
+	return (t) => {
+		layer.replaceChildren()
+		drawConnect(layer, clamp(t - ctx.start, 0, CLOSING.connect.dur), p, ctx.W)
+	}
+}
+
+export function builtOnFrame(ctx, p = {}) {
+	if (p.legacy) return legacyBuiltOnFrame(ctx, p)
+	drawConnect(el('g', {}, ctx.g), p.at ?? CLOSING.connect.key, p, ctx.W)
+	return { cells: Object.fromEntries(Object.entries(CONNECT.cells).map(([k, v]) => [k, cxy(v)])), size: CONNECT.size }
+}
+
+export function installScene(ctx, p = {}) {
+	if (p.legacy) return legacyInstallScene(ctx, p)
+	const layer = el('g', { 'data-layer': 'install' }, ctx.g)
+	if (ctx.cue && p.sound !== false) install21Cues((t, kind, o) => ctx.cue(ctx.start + t, kind, o))
+	return (t) => {
+		layer.replaceChildren()
+		drawInstall21(layer, clamp(t - ctx.start, 0, CLOSING.install21.dur), p, ctx.W)
+	}
+}
+
+export function installFrame(ctx, p = {}) {
+	if (p.legacy) return legacyInstallFrame(ctx, p)
+	drawInstall21(el('g', {}, ctx.g), p.at ?? CLOSING.install21.key, p, ctx.W)
+	return { type: INSTALL_TYPE }
+}
+
+/** The on-screen words of the Round 21 pieces, for a board's word list. */
+export function closingWords(lang = 'en') {
+	const T = CLOSING_TEXT[lang === 'nl' ? 'nl' : 'en']
+	return { builtOn: `${T.builtOn.join('\n')}\n${LOAD_ORDER.map((id) => T.loads[id].join(' ')).join(' / ')}`, install: `${T.slogans.join('\n')}\n${T.line}` }
+}

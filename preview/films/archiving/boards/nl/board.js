@@ -34,6 +34,7 @@ import { BAR, beatT, snap, RISE, CLEAR, holdFor, wordCount, SAFE } from '../../.
 import { LOOP_ANCHOR, WINDOW } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, statusPill, docPage, clipped, topbar, nav, appTag, ncTag, fitCaption, layout, TYPE, workspaceCluster, CORNERS } from '../../../_lib/ui.js'
 import { buildOpening, OPENING } from '../../../_lib/scenes/opening.js'
+import { CURRENT, keyElement, landing, boardCurrent } from '../../../_lib/current.js'
 import { builtOnFrame, installFrame, BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from '../../../_lib/scenes/closing.js'
 
 const U = 2.5
@@ -354,7 +355,7 @@ export const boards = [
 		sound: 'The opening\'s own, ending on a dry click.', source: 'Shared module, no claim.',
 		draw(ctx) { const up = buildOpening(ctx.g, { defs: ctx.defs }); const k = OPENING.T.powerOn + 0.9; up(k); return () => up(k) },
 	},
-	...BODY_SCENES.map(bodyBoard),
+	...withCurrent(BODY_SCENES.map(bodyBoard), {}),
 	{
 		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Gebouwd op Nextcloud, verrijkt door Conduction (shared closing piece, Round 22)',
 		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + Math.round(BUILT / BAR) - 1}.4`,
@@ -376,6 +377,39 @@ export const boards = [
 		draw: (ctx) => { installFrame(ctx, CLOSE) },
 	},
 ]
+
+/**
+ * Round 24: the current carries every body hand-off (withCurrent, as in _lib/audiencefilm.js at
+ * ds-connext-film 8f2eda4). Each body board gets its incoming wire: from the previous board's key
+ * element (for the first, the frame's centre, where the opening powered on) to this board's key element,
+ * the scene's orange measured from the rendered frame, unless content.anchors names it
+ * ({ <board id>: [x, y] }, stage px). Cyan head; drawn once, on the board's first visible render.
+ */
+function withCurrent(boards, content) {
+	const anchors = []
+	boards.forEach((b, i) => {
+		const draw = b.draw
+		b.drawBase = draw // the frame without its wire, for pages that animate the current themselves
+		b.currentAnchor = content.anchors?.[b.id] || null
+		b.draw = (ctx) => {
+			const up = draw(ctx)
+			let done = false
+			return (t) => {
+				if (typeof up === 'function') up(t)
+				if (done || ctx.g.getAttribute('display') === 'none') return
+				done = true
+				const named = content.anchors?.[b.id]
+				const key = named ? { x: named[0], y: named[1], w: 60, h: 60 } : keyElement(ctx.g, { exclude: [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
+				if (!key) return
+				anchors[i] = [key.x, key.y]
+				const from = i === 0 ? CURRENT.origin : (anchors[i - 1] || CURRENT.origin)
+				const to = landing(key, from)
+				boardCurrent(ctx.g, { from, to, element: key, headColor: C.nextcloudCyan })
+			}
+		}
+	})
+	return boards
+}
 
 /** The body's reading budget (the bible: 20 to 30 words; hold max(1.5 s, 0.4 s x words); max 8 words and 2 lines a card). */
 function budget() {

@@ -67,9 +67,9 @@ export function backlogUI(w, geom, a = {}) {
 			const cy = top + 66 + i * 118
 			panel(w, lx + 12, cy, lw - 24, 104, u)
 			// Round 27c: a step right, so the first card's type hex clears the app tag on the loop anchor.
-			hex(w, lx + 52, cy + 34, 14, i === 0 && c === 0 ? C.lavender : C.cobalt300, 2)
-			bar(w, lx + 70, cy + 26, Math.min(cw, lw - 110), 10, C.cobalt900)
-			bar(w, lx + 70, cy + 46, Math.min(cw, lw - 110) * 0.5, 7, C.cobalt300)
+			hex(w, lx + 86, cy + 34, 14, i === 0 && c === 0 ? C.lavender : C.cobalt300, 2)
+			bar(w, lx + 112, cy + 26, Math.min(cw, lw - 152), 10, C.cobalt900)
+			bar(w, lx + 112, cy + 46, Math.min(cw, lw - 152) * 0.5, 7, C.cobalt300)
 			circle(w, lx + lw - 50, cy + 74, 14, c === 1 ? C.cobalt400 : C.cobalt200)
 			// Round 18: every case shows its deadline, a term track (how much of the term is used).
 			const dl = [0.3, 0.55, 0.8, 0.45][(i + c) % 4]
@@ -390,17 +390,17 @@ const content = {
 	sections: { promise: 'Casework', hook: 'Backlog', documents: 'Documents', knowledge: 'Guidance', standards: 'Standards', automate: 'Automation', trail: 'Audit trail' },
 	// Round 26: the designed hand-offs into each body board (preview/films/_lib/transitions.js).
 	transitions: {
-		hook: { type: 'cluster', fromName: 'the orange Dossiq cell', toName: 'the backlog', note: 'decisions from everywhere gathering into one backlog is the caption performed (#10)' },
-		documents: { type: 'zoom', fromName: 'the case due first', toName: 'the case workspace', note: 'pushing into the top case of the backlog opens it: we arrive inside the case, where the documents are' },
+		hook: { type: 'cluster', fromName: 'the orange Dossiq cell', toName: 'the backlog', note: 'decisions from everywhere gathering into one backlog is the caption performed (#10); in the film the case cards drift in as loose hexes and merge into their lanes' },
+		documents: { type: 'grow', fromName: 'the picked-up case', toName: 'the case workspace', note: 'the case a colleague just picked up opens into its workspace: the ringed card becomes a hex that grows past the frame, and the workspace is inside it (#1)' },
 		knowledge: { type: 'swap', fromName: 'the workspace', toName: 'the guidance', note: 'the case stays on screen while the guidance appears in it; the held window says it happens while you work (#9)' },
-		standards: { type: 'whip', fromName: 'the guidance', toName: 'the three standards', note: 'from the desk to what sits under it: a whip on the beat gives the energy the archiving film\'s design starts with (#11)' },
-		automate: { type: 'hexWipe', fromName: 'the standards', toName: 'the flow', note: 'a chapter change from the standards to the flow canvas, a stepped wipe on the beat (#5)' },
-		trail: { type: 'match', fromName: 'the decision step', toName: 'the record entry', note: 'the decision the flow just took is the line that lands in the record, so its orange carries over' },
+		standards: { type: 'hexWipe', fromName: 'the guidance', toName: 'the three standards', note: 'from the desk to what sits under it: four hexes step in from the right edge and the standards window whips in behind them (#5, #11)' },
+		automate: { type: 'whip', fromName: 'the standards', toName: 'the flow', note: 'the standards leave left and the flow arrives from the right on the beat: from the rules to the work that follows them (#11)' },
+		trail: { type: 'zoom', fromName: 'the step that ran', toName: 'the decision on the record', note: 'we push into the step the flow just took and come out on the decision it recorded: the same decision, closer' },
 	},
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	maxWords: 40,
 	promiseFirst: true,
-	promiseMotion: 'Round 15: the body opens here, straight after the opening\'s handover. The Dossiq cell pops in on the opening\'s field, on the loop anchor, and turns orange; the neighbour cells lock in and the Nextcloud hex settles, while the field fades from the opening\'s shading. "Dossiq" sits as the chapter mark; the promise rises under it as a question, "What if every case met its deadline?" (Round 19: no answer card; the proofs answer it). Out on the bar line: a hard cut to the backlog.',
+	promiseMotion: 'Round 15, re-rendered in round 27: the body opens here, straight after the opening\'s handover. The Dossiq cluster flips in on the opening\'s field (it turns over by squashing, never pops or scales in), Dossiq orange on the loop anchor, the neighbour cells and the Nextcloud hex with it, while the field fades from the opening\'s shading. The small mark reads the section, "Casework" (Round 27c); the promise rises under it as a question, "What if every decision was right, on time?" (8 words, fully up 3.24 s; no answer card, the proofs answer it). Out on the bar line: the case cards drift in as loose hexes and merge into the backlog.',
 	neighbours: ['portaliq', 'filinq'],
 	builtOnApps: ['filinq'],
 	hook: {

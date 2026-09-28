@@ -10,14 +10,13 @@
  *            note; positioning sp-360-timeline)
  *   proof 2  related knowledge items appear while the agent types the contact moment (the
  *            knowledge graph; Round 8 note)
- *   general  the data layer: every letter, mail and chat with the citizen on the dashboard
+ *            and, Round 9, every letter and chat on the same view (the contacts tile)
+ *   general  notifications, carrying the hand-offs (Round 9): refer to a colleague, a note, a
+ *            callback, a task; the colleague hears at once
  *   promise  "The whole citizen, one click"
  *
- * Kept in reserve (no room in 10 bars at 25 to 30 words): hand-offs (refer to a colleague,
- * a callback note, notes on cases, tasks for colleagues).
- *
  * Techniques (refs/techniques.md): #1 dot-grows-to-fill as an upright hex (the pop-up's
- * open button becomes the dashboard), #10 loose-shape cluster-to-container merge (cases,
+ * open button becomes the dashboard), #9 text-swap on a held card (the hand-offs), #10 loose-shape cluster-to-container merge (cases,
  * products, invoices and permits gather into the 360 view), #4 typewriter (the contact
  * moment typed while the knowledge items land).
  */
@@ -67,14 +66,19 @@ function viewUI(w, geom) {
 	bar(w, x + 130, top + 80, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 150, top + 70, u)
 	// Four tiles: each a kind of thing the citizen has, with its app glyph and two rows.
-	const tiles = [['dossiq', 'cases'], ['pipelinq', 'products'], ['shillinq', 'invoices'], ['dossiq', 'permits']]
+	const tiles = [['dossiq', 'cases'], ['shillinq', 'invoices'], ['dossiq', 'permits'], [null, 'contacts']]
 	const tw = (width - 20) / 2, th = 200
 	tiles.forEach(([id], i) => {
 		const tx = x + (i % 2) * (tw + 20), ty = top + 170 + Math.floor(i / 2) * (th + 20)
 		panel(w, tx, ty, tw, th, u)
-		hex(w, tx + 44, ty + 44, 22, C.cobalt, 3)
-		use(w, `g-${id}`, tx + 30, ty + 30, 28, 28, C.white)
-		bar(w, tx + 82, ty + 38, 110, 12, C.cobalt700)
+		if (id) {
+			hex(w, tx + 44, ty + 44, 22, C.cobalt, 3)
+			use(w, `g-${id}`, tx + 30, ty + 30, 28, 28, C.white)
+		} else {
+			// Every contact with the citizen: letters (files), mail and chat, Nextcloud's own apps in Nextcloud blue.
+			;['nc-files', 'nc-mail', 'nc-talk'].forEach((ic, k) => { hex(w, tx + 44 + k * 50, ty + 44, 20, C.nextcloud, 3); use(w, ic, tx + 32 + k * 50, ty + 32, 24, 24, C.white) })
+		}
+		bar(w, tx + (id ? 82 : 186), ty + 38, 110, 12, C.cobalt700)
 		rect(w, tx + tw - 70, ty + 30, 44, 28, C.cobalt50, 14)
 		for (let k = 0; k < 2; k++) {
 			bar(w, tx + 30, ty + 100 + k * 44, tw * 0.5 - k * 40, 10, C.cobalt900)
@@ -82,7 +86,7 @@ function viewUI(w, geom) {
 			else idlePill(w, tx + tw - 110, ty + 104 + k * 44, u)
 		}
 	})
-	// The permit that just landed: its tile ringed, the scene's one orange.
+	// The contacts, the last tile to land: ringed, the scene's one orange.
 	const px = x + tw + 20, py = top + 170 + th + 20
 	rect(w, px - 6, py - 6, tw + 12, th + 12, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
@@ -122,12 +126,12 @@ const content = {
 	app: 'pipelinq',
 	audience: { slug: 'kcc', name: 'Municipal contact centres', persona: 'Sanne de Wit, KCC officer; the head of the contact centre buys' },
 	promise: 'The whole citizen,\none click',
-	promiseLine: 'The whole citizen in one click: every case, invoice, permit and contact, and the answer at hand while you talk',
+	promiseLine: 'The whole citizen in one click: every case, invoice, permit and contact, the answer at hand while you talk, and nothing dropped when you hand it on',
 	title: 'Pipelinq for contact centres',
 	record: { one: 'citizen', many: 'citizens' },
-	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, products, invoices and permits in one view; the right knowledge appears while you type; and every letter, mail and chat is on the same page.',
+	logline: 'For the municipal contact centre: the phone rings and one click opens the citizen; cases, invoices, permits, letters and chats in one view; the right knowledge appears while you type; and refer, note, call back or hand a task to a colleague, who hears at once.',
 	references: REFS,
-	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge', '#4 typewriter'],
+	techniques: ['#1 dot-grows-to-fill (as a hex)', '#10 cluster-to-container merge', '#4 typewriter', '#9 text-swap on a held card'],
 	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
@@ -141,12 +145,12 @@ const content = {
 	proofs: [
 		{
 			id: 'view',
-			title: 'Cases, invoices, permits, one view',
-			caption: 'Cases, invoices,\npermits, one view',
-			source: 'Ruben, Round 8: "360° citizen view (all cases, products, invoices, permits)"; positioning pipelinq sp-360-timeline',
-			motion: 'Technique #10, cluster-to-container merge. The hex shrinks into the citizen\'s avatar. Four loose hexes carrying their apps\' glyphs (cases, products, invoices, permits) sit scattered over the window, then each tweens into its tile on ease.brand, all landing within one beat; the tiles\' rows drop in a sixteenth apart, and the permits tile, the last to land, takes the orange ring.',
+			title: 'Cases, invoices, letters, chats, one view',
+			caption: 'Cases, invoices, letters,\nchats, one view',
+			source: 'Ruben, Round 8: "360° citizen view (all cases, products, invoices, permits)" and "every contact with the citizen (letters, mail, chat) on that dashboard"; positioning pipelinq sp-360-timeline',
+			motion: 'Technique #10, cluster-to-container merge. The hex shrinks into the citizen\'s avatar. Four loose hexes (cases, invoices, permits, and the contacts carrying Nextcloud\'s Files, Mail and Talk in Nextcloud blue) sit scattered over the window, then each tweens into its tile on ease.brand, all landing within one beat; the tiles\' rows drop in a sixteenth apart, and the contacts tile, the last to land, takes the orange ring.',
 			sound: 'Four ticks as the tiles land, a pluck as the last tile is ringed.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Cases, invoices,\npermits, one view', drawUI: viewUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Cases, invoices, letters,\nchats, one view', drawUI: viewUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'knowledge',
@@ -159,16 +163,18 @@ const content = {
 		},
 	],
 	general: {
-		module: 'dataLayer',
-		title: 'Every letter, mail and chat',
-		caption: 'Every letter, mail\nand chat, right there',
-		source: 'Ruben, Round 8: "every contact with the citizen (letters, mail, chat) on that dashboard"; story.json mechanics 0 and 1',
+		module: 'notify',
+		title: 'Refer, note, call back, nobody drops it',
+		caption: 'Refer, note, call back:\nnobody drops it',
+		source: 'Ruben, Round 8 and 9: "refer to a colleague, callback note, notes on cases, tasks for colleagues"; story.json mechanic 8 (the right colleague hears in the Nextcloud notifications)',
+		motion: 'Technique #9, text-swap on a held card: the citizen\'s record card holds on the right; its action chip swaps one per beat (refer, note, call back, task: the old chip leaves upward as the new rises, 4 frames), and on the last the stage marker steps on, a pulse runs down the wire to the Nextcloud header and the colleague\'s notice drops in on top of the list. The caption holds whole. Out: the card steps down and the app tag travels to its cell in the promise cluster.',
 		params: {
-			record: { avatar: 'person', title: 230, sub: 160, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },
-			history: [{ av: C.cobalt300, w: 180 }, { av: C.cobalt200, w: 150 }, { av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 130 }],
-			links: ['nc-files', 'nc-mail', 'nc-talk'],
+			record: { avatar: 'person', title: 240, sub: 150, status: 'none' },
+			event: { stage: 2, stages: 4 },
+			notices: [{ app: 'pipelinq' }, { icon: 'nc-mail' }, { icon: 'nc-talk' }],
+			recipients: [C.cobalt300, C.lavender300],
 		},
-		sound: 'A pluck as the letters, mail and chat link in, a tick on the newest contact.',
+		sound: 'Four soft clicks as the chip swaps, a dry click as the notice lands (no bell).',
 	},
 }
 

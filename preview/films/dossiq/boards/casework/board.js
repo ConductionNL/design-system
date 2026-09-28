@@ -1,32 +1,33 @@
 /**
  * Dossiq, audience film: municipal casework (municipalities and the social domain).
  * Direction C on the app-film template, wrapped by _lib/audiencefilm.js. Reworked in Round 8
- * (Ruben, 2026-09-28): no AI in this film (it scares this audience), so the general slot is
- * the flow builder; the proofs are the strong ones he named. The deadline and stand-in beats
- * are out: at 25 to 30 words they no longer earn a slot over these.
- * Positioning: ds-connext-film-review/audiences/positioning.md.
+ * (no AI: the general slot is the flow builder) and Round 9 (Ruben, 2026-09-28): the knowledge
+ * graph is back, a standards beat is added, and "You decide who sees this case" is dropped as
+ * the weakest beat. Positioning: ds-connext-film-review/audiences/positioning.md.
  *
- *   hook     the team's work backlog: every case, who has it, working as a team (Round 8
- *            note; Dossiq specs my-work, add-work-queue, werkvoorraad-intelligent-queue)
- *   proof 1  the letter drafts itself from the case and opens as a Word file in Nextcloud,
- *            edited without leaving the case (Round 8 note; Dossiq specs beschikking-generatie,
- *            template-library, document-zaakdossier)
- *   proof 2  access rights per case: you decide who sees this case (Round 8 note; Dossiq spec
- *            people-on-the-case, role-routing-via-or-rbac)
- *   general  flows: draw the flow, share it through the store (Round 8 note: sharing case types
- *            and workflows through the store; Dossiq spec workflow-import-export)
+ *   hook     the team's work backlog: every case in lanes, working as a team (Round 8 note;
+ *            Dossiq specs my-work, add-work-queue, werkvoorraad-intelligent-queue)
+ *   proof 1  one take, two beats: the letter drafts itself and is edited as a Word file inside
+ *            Nextcloud, and related knowledge (the knowledge graph) lands beside it while you
+ *            work, the same device as the Pipelinq contact-centre film (Round 8 and 9 notes;
+ *            Dossiq specs beschikking-generatie, template-library, document-zaakdossier)
+ *   proof 2  standards: every case speaks CMMN (international) and ZGW (Dutch). Sources:
+ *            procest origin/development openspec/specs/case-management/spec.md:17 and
+ *            case-types/spec.md:27 ("Standards: CMMN 1.1 ... ZGW"); positioning dossiq.md:96,
+ *            104, 290 ("speak the ZGW case standard"). A Danish standard is not named in any
+ *            source, so none is shown (unresolved, see PROGRESS.md)
+ *   general  flows: draw flows, share them in the store (Round 8 note)
  *   promise  "The whole team, every case"
  *
- * Kept in reserve: the knowledge graph (it carries the Pipelinq KCC film), deadlines, stand-in.
- *
- * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the backlog
- * gathers into team lanes), #1 dot-grows-to-fill as an upright hex (the template becomes the
- * letter), #5 stepped hex wipe (into access rights).
+ * Techniques (refs/techniques.md): #10 loose-shape cluster-to-container merge (the backlog),
+ * #1 dot-grows-to-fill as an upright hex (into the letter), #4 typewriter with knowledge items
+ * landing (as in the Pipelinq contact-centre film), #5 stepped hex wipe (into the standards).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, hex, panel, statusPill, idlePill, toggle, docPage, use } from '../../../_lib/ui.js'
+import { textBlock } from '../../../_lib/stage.js'
+import { rect, bar, circle, hex, panel, statusPill, docPage } from '../../../_lib/ui.js'
 
 const REFS = [
 	{ name: 'Claude mobile tools', url: 'https://whatships.com/videos/claude-mobile-tools-figma-canva-amplitude/', borrow: 'Loose shapes drift together into one container.' },
@@ -58,61 +59,77 @@ function backlogUI(w, geom) {
 	rect(w, x + (lw + 20) + 6, top + 60 + 118, lw - 12, 116, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 1: the letter, drafted from the case, open in the office editor inside Nextcloud, beside the case. */
+/** Proof 1: the letter open in Word inside Nextcloud, and related knowledge landing beside it as you work. */
 function letterUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	// The case, still there on the left: its fields, the ones that fill the letter.
-	panel(w, x, top, 300, 560, u)
-	hex(w, x + 50, top + 48, 18, C.lavender, 3)
-	bar(w, x + 80, top + 40, 170, 12, C.cobalt900)
-	for (let i = 0; i < 4; i++) {
-		bar(w, x + 30, top + 110 + i * 70, 70, 7, C.cobalt400)
-		bar(w, x + 30, top + 128 + i * 70, 180 - i * 24, 11, C.cobalt700)
-	}
-	// The editor: a Nextcloud-blue toolbar (Nextcloud's own office editing), the letter page in it.
-	const ex = x + 330, ew = width - 330
-	panel(w, ex, top, ew, 560, u)
-	rect(w, ex, top, ew, 56, C.nextcloud, 0)
-	for (let i = 0; i < 6; i++) rect(w, ex + 24 + i * 44, top + 16, 28, 24, C.white, 3, { opacity: 0.85 })
-	docPage(w, ex + 40, top + 80, ew - 80, 600, { k: (ew - 80) / 500, values: [118, 96, 72], lastOrange: true, shadow: null })
+	// The editor: a Nextcloud-blue toolbar (Nextcloud's own office editing), the drafted letter in it,
+	// a cursor in the line being edited.
+	const ew = 500
+	panel(w, x, top, ew, 580, u)
+	rect(w, x, top, ew, 56, C.nextcloud, 0)
+	for (let i = 0; i < 6; i++) rect(w, x + 24 + i * 44, top + 16, 28, 24, C.white, 3, { opacity: 0.85 })
+	docPage(w, x + 30, top + 80, ew - 60, 600, { k: (ew - 60) / 500, values: [118, 96, 72], lastOrange: false, shadow: null })
+	rect(w, x + 30 + 44 * ((ew - 60) / 500) + 330, top + 80 + 172 * ((ew - 60) / 500), 3 * u, 22, C.cobalt)
+	// The knowledge beside it: related items linked in a small graph, the best match ringed (the one orange).
+	const kx = x + ew + 30, kw = width - ew - 30
+	panel(w, kx, top, kw, 580, u)
+	bar(w, kx + 30, top + 40, 120, 10, C.cobalt400)
+	rect(w, kx + 70 - 1.5 * u, top + 130, 3 * u, 240, C.cobalt200)
+	;[[top + 130, C.cobalt], [top + 250, C.cobalt300], [top + 370, C.cobalt300]].forEach(([ny, f], i) => {
+		hex(w, kx + 70, ny, 22, f, 3)
+		bar(w, kx + 114, ny - 14, kw - 170 - i * 30, 11, C.cobalt900)
+		bar(w, kx + 114, ny + 8, (kw - 170) * 0.6, 7, C.cobalt300)
+	})
+	rect(w, kx + 14, top + 90, kw - 28, 82, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 2: access per case: the people on this case, their switches, and who may not see it. */
-function accessUI(w, geom) {
+/** Proof 2: one case, kept in two standards: the international case model and the Dutch case standard. */
+function standardsUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
+	// The case.
 	panel(w, x, top, width, 130, u)
 	hex(w, x + 64, top + 65, 28, C.lavender, 4)
-	use(w, 'icon-lock', x + 48, top + 49, 32, 32, C.white)
 	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
 	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
-	idlePill(w, x + width - 150, top + 65, u, { w: 44, bg: C.cobalt100, ink: C.cobalt700 })
-	const ly = top + 160
-	panel(w, x, ly, width, 12 + 5 * 80 + 12, u)
-	const people = [[190, true], [160, true], [210, true], [170, false], [150, false]]
-	people.forEach(([lw, on], i) => {
-		const cy = ly + 52 + i * 80
-		if (i > 0) rect(w, x + 24, cy - 40, width - 48, u, C.cobalt50)
-		circle(w, x + 64, cy, 20, on ? C.cobalt300 : C.cobalt100)
-		bar(w, x + 100, cy - 10, lw, 10, on ? C.cobalt900 : C.cobalt300)
-		bar(w, x + 100, cy + 8, lw * 0.5, 7, C.cobalt200)
-		toggle(w, x + width - 110, cy, u, on)
-	})
-	// The switch just turned off: the scene's one orange as its ring.
-	rect(w, x + width - 124, ly + 52 + 3 * 80 - 24, 22 * u + 28, 48, 'none', 24, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	statusPill(w, x + width - 160, top + 65, u)
+	// Square-cornered wires down to the two standards.
+	const bw = (width - 30) / 2, by = top + 220
+	rect(w, x + 64 - 1.5 * u, top + 130, 3 * u, 50, C.cobalt300)
+	rect(w, x + 64, top + 178, bw + 30 + bw / 2 - 64, 3 * u, C.cobalt300)
+	rect(w, x + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
+	rect(w, x + bw + 30 + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
+	// Where the one case splits into both standards: the scene's one orange.
+	hex(w, x + bw + 15, top + 178 + 1.5 * u, 16, C.orange, 2)
+	// Left: the international case model, a plan of stages and tasks.
+	const box = (bx, label) => {
+		panel(w, bx, by, bw, 360, u)
+		rect(w, bx, by, bw, 64, C.cobalt50, 0)
+		textBlock(w, label, { x: bx + 28, y: by + 44, size: 36, weight: 600, fill: C.cobalt, clip: false })
+	}
+	box(x, 'CMMN 1.1')
+	rect(w, x + 30, by + 100, bw - 60, 220, 'none', 12 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	;[[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([c, r]) => rect(w, x + 60 + c * ((bw - 120) / 2 + 20), by + 130 + r * 90, (bw - 140) / 2, 60, C.cobalt100, 6 * u))
+	// Right: the Dutch case standard, its fields filled.
+	box(x + bw + 30, 'ZGW')
+	for (let i = 0; i < 4; i++) {
+		const fy = by + 110 + i * 60
+		bar(w, x + bw + 60, fy, 90, 8, C.cobalt400)
+		bar(w, x + bw + 170, fy - 2, 140 - i * 16, 11, C.cobalt900)
+	}
 }
 
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'casework', name: 'Municipal casework', persona: 'Mireille Hendriks, case handler; Femke van Dijk, social-domain consultant; the manager of public services buys' },
 	promise: 'The whole team,\nevery case',
-	promiseLine: 'Your team works every case from one backlog, with its letters and its access rights inside the case, on the Nextcloud you already run',
+	promiseLine: 'Your team works every case from one backlog, with its letters and knowledge at hand, kept in international and Dutch case standards, on the Nextcloud you already run',
 	title: 'Dossiq for municipal casework',
 	record: { one: 'case', many: 'cases' },
-	logline: 'For municipal and social-domain casework: one backlog the whole team works from, a letter that drafts itself and opens in Word inside Nextcloud, access set per case, and flows you draw once and share through the store. No AI in this film.',
+	logline: 'For municipal and social-domain casework: one backlog the whole team works from, a letter drafted in Word inside Nextcloud with the related knowledge beside it, every case in CMMN and ZGW, and flows you draw once and share through the store. No AI in this film.',
 	references: REFS,
-	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#5 stepped hex wipe'],
+	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	neighbours: ['portaliq', 'filinq'],
 	builtOnApps: ['filinq'],
 	hook: {
@@ -126,21 +143,21 @@ const content = {
 	proofs: [
 		{
 			id: 'letter',
-			title: 'Drafted for you, edited in Word',
-			caption: 'Drafted for you,\nedited in Word',
-			source: 'Ruben, Round 8: "automatic document creation and editing documents (Word files) from inside the case through Nextcloud"; Dossiq specs beschikking-generatie, template-library, document-zaakdossier',
-			motion: 'Technique #1: the picked-up case\'s ring becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and lands as the letter page. The case\'s fields sit on the left; one by one their values fly into the letter\'s slots (a sixteenth apart, the last in orange), then the editor\'s Nextcloud-blue toolbar drops in above the page: the letter is open in Word, inside the case.',
-			sound: 'A whoosh through the hex, three plucks as the values land, a soft click as the editor opens.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Drafted for you,\nedited in Word', drawUI: letterUI, tagFill: 'cobalt' }),
+			title: 'Drafted in Word, the answers appear',
+			caption: 'Drafted in Word,\nthe answers appear',
+			source: 'Ruben, Round 8 ("automatic document creation and editing documents (Word files) from inside the case through Nextcloud") and Round 9 ("related knowledge appears while you work the case", the knowledge graph); Dossiq specs beschikking-generatie, template-library, document-zaakdossier',
+			motion: 'One take carrying two beats. Technique #1: the picked-up case\'s ring becomes an upright hex that grows past the frame (hexCut, ease.snap, one beat) and lands as the letter, open in Word under Nextcloud\'s blue toolbar; its values fill a sixteenth apart (the draft). Then technique #4, as in the Pipelinq contact-centre film: the edited line types on (greeked characters one pair per 0.1 s, hard on and off, a cursor), and the related knowledge items land in the panel on the right one per beat, linked by a thin line; the best match takes the orange ring.',
+			sound: 'A whoosh through the hex, three plucks as the draft fills, soft key ticks under the typing, a pluck as each knowledge item lands.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Drafted in Word,\nthe answers appear', drawUI: letterUI, tagFill: 'cobalt' }),
 		},
 		{
-			id: 'access',
-			title: 'You decide who sees this case',
-			caption: 'You decide who\nsees this case',
-			source: 'Ruben, Round 8: "case-specific access rights"; Dossiq specs people-on-the-case, role-routing-via-or-rbac, zgw-autorisaties-api',
-			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. On the case\'s people list, the fourth person\'s switch turns off on beat 3 (its row dims to cobalt-100), and the orange ring steps out round the switch once.',
-			sound: 'Four dry clicks on the wipe steps, a crisp switch click as access turns off.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'You decide who\nsees this case', drawUI: accessUI, tagFill: 'cobalt' }),
+			id: 'standards',
+			title: 'Every case speaks CMMN and ZGW',
+			caption: 'Every case speaks\nCMMN and ZGW',
+			source: 'Dossiq specs on development: case-management/spec.md:17 "Standards: CMMN 1.1 (CasePlanModel), Schema.org (Project), ZGW (Zaak)"; case-types/spec.md:27 "Standards: CMMN 1.1 (CaseDefinition), ZGW Catalogi API (ZaakType)"; positioning dossiq.md:96,104 ("speak the ZGW case standard"). A Danish standard is not named in any source: unresolved, not shown.',
+			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut at full cover. The case lands on top; on the next beat square-cornered wires run down to two boxes, splitting at one orange hex, and they fill one per beat: left the international case model (its plan of stages and tasks), right the Dutch case standard (its fields). The labels CMMN 1.1 and ZGW sit in the boxes\' heads as small labels.',
+			sound: 'Four dry clicks on the wipe, a line-draw hiss, a pluck as each box fills.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Every case speaks\nCMMN and ZGW', drawUI: standardsUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {

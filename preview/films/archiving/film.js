@@ -5,22 +5,23 @@
  *   0 to 5.63 s        the shared Conduction opening (_lib/scenes/opening.js), 3 bars, handing over on its field
  *   5.63 to 28.13 s    the body (./scenes/body.js), 12 bars: two worlds (a separate archive?), MDTO, selectielijst,
  *                      vernietiging, ZGW en ZDS, the promise: je werkplek is het archief (Round 16)
- *   28.13 to 31.88 s   "Gebouwd op Nextcloud", the shared closing piece with Dutch words, 2 bars
- *   31.88 to 37.5 s    the shared install board, Dutch slogans, 3 bars
+ *   28.13 to 33.75 s   "Gebouwd op Nextcloud", the shared Round 21 connection piece (lang nl), 3 bars
+ *   33.75 to 39.38 s   the shared Round 21 install board, "Installeer het / Gebruik het / Bezit het", 3 bars
  *
- * 1920 x 1080, 24 fps, 20 bars at 128 BPM (900 frames, 45 a bar). No loop; the install board holds
+ * 1920 x 1080, 24 fps, 21 bars at 128 BPM (945 frames, 45 a bar). The master rendered at 7689c5e used the round-6 closing (37.5 s). No loop; the install board holds
  * to the last frame and the bed resolves on D. No bell anywhere: clicks (Round 5).
  */
 import { Film, loadFonts } from '../_lib/stage.js'
 import { C, FONTS } from '../_lib/brand.js'
 import { loadBrandAssets } from '../_lib/assets.js'
 import { addOpening, OPENING } from '../_lib/scenes/opening.js'
-import { builtOnScene, installScene } from '../_lib/scenes/closing.js'
+import { builtOnScene, installScene, BUILT_ON_DUR, INSTALL_DUR } from '../_lib/scenes/closing.js'
 import { SCENES, BODY, BUILDERS, SPB, BAR, FPS, TYPE_AT_EXPORT } from './scenes/body.js'
 
-const BUILT = 2 * BAR
-const INSTALL = 3 * BAR
-const DURATION = OPENING.duration + BODY + BUILT + INSTALL // 37.5
+// Round 21: both closing pieces are 3 bars (the shared closing.js).
+const BUILT = BUILT_ON_DUR
+const INSTALL = INSTALL_DUR
+const DURATION = OPENING.duration + BODY + BUILT + INSTALL // 39.375
 const film = new Film({
 	mount: document.getElementById('film'),
 	format: '16x9',
@@ -38,8 +39,9 @@ const START = { body: O, builtOn: O + BODY, install: O + BODY + BUILT }
 if (Math.abs(START.install + INSTALL - DURATION) > 1e-6) console.error('duration mismatch')
 
 for (const sc of SCENES) film.scene(sc.id, O + sc.start, O + sc.end, BUILDERS[sc.id])
-film.scene('builtOn', START.builtOn, START.install, (ctx) => builtOnScene(ctx, { apps: ['dossiq', 'filinq'], caption: 'Gebouwd op', markText: 'Nextcloud' }))
-film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source' }), { post: 0.001 })
+const CLOSE = { lang: 'nl', lead: 'openregister', apps: ['dossiq', 'filinq'] }
+film.scene('builtOn', START.builtOn, START.install, (ctx) => builtOnScene(ctx, CLOSE))
+film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, CLOSE), { post: 0.001 })
 
 /* ---------- sound cues, next to the motion that causes them (film seconds) ---------- */
 const at = (id, b) => O + SCENES.find((s) => s.id === id).start + b * SPB
@@ -88,7 +90,7 @@ cue(START.builtOn - 0.02, 'click', { gain: 0.26, freq: 2600, seed: 75 })
  * pieces and resolves on D for the last bar.
  */
 film.music = {
-	bars: 20,
+	bars: 21,
 	chords: [
 		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62], // 0-2 the opening (no pad)
 		[47, 50, 54, 57], // 3 Gmaj9 (open): two worlds
@@ -105,12 +107,13 @@ film.music = {
 		[50, 52, 57, 59], // 14 A sus4 add9
 		[50, 54, 61, 64], // 15 Dmaj9: gebouwd op Nextcloud
 		[47, 54, 57, 61], // 16 Bm9
-		[47, 50, 54, 57], // 17 Gmaj9: installeer de app
-		[49, 52, 57, 59], // 18 A add9
-		[50, 54, 57, 62], // 19 D: altijd open source
+		[49, 52, 57, 59], // 17 A add9: the last component line holds
+		[47, 50, 54, 57], // 18 Gmaj9: installeer het
+		[49, 52, 57, 59], // 19 A add9: bezit het
+		[50, 54, 57, 62], // 20 D: de code blijft open source
 	],
-	bass: [38, 38, 38, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 43, 45, 38, 35, 43, 45, 38],
-	parts: { pad: [[3, 20]], bass: [[5, 19]], kick: [[7, 15]], hat: [[9, 15]], clap: [[11, 14]] },
+	bass: [38, 38, 38, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 43, 45, 38, 35, 45, 43, 45, 38],
+	parts: { pad: [[3, 21]], bass: [[5, 20]], kick: [[7, 15]], hat: [[9, 15]], clap: [[11, 14]] },
 	loop: false,
 }
 

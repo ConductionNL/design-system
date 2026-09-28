@@ -18,7 +18,7 @@
  *
  * The body runs 12 bars (48 beats): the question 12 beats, four proofs of 9 (Round 19). Modular
  * durations sit on bar boundaries (Round 4), so the body is longer than the template's 10 bars.
- * Opening 3 + body 12 + built on 2 + install 3 = 20 bars, 37.5 s.
+ * Opening 3 + body 12 + built on 3 + install 3 = 21 bars, 39.375 s (Round 21: both closing pieces 3 bars).
  *
  * The chapter mark above each caption names the standard or law the scene answers to (the slot
  * where an app film puts the app's name); the caption says what it does for you.
@@ -34,18 +34,20 @@ import { BAR, beatT, snap, RISE, CLEAR, holdFor, wordCount, SAFE } from '../../.
 import { LOOP_ANCHOR, WINDOW } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, statusPill, docPage, clipped, topbar, nav, appTag, ncTag, fitCaption, layout, TYPE, workspaceCluster, CORNERS } from '../../../_lib/ui.js'
 import { buildOpening, OPENING } from '../../../_lib/scenes/opening.js'
-import { builtOnFrame, installFrame } from '../../../_lib/scenes/closing.js'
+import { builtOnFrame, installFrame, BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from '../../../_lib/scenes/closing.js'
 
 const U = 2.5
 const OPEN = OPENING.duration
 const BODY = 12 * BAR
-const BUILT = 2 * BAR
-const INSTALL_DUR = 3 * BAR
+// Round 21: both closing pieces are 3 bars (the shared closing.js).
+const BUILT = BUILT_ON_DUR
+const INSTALL_DUR = INSTALL21_DUR
 const TOTAL = OPEN + BODY + BUILT + INSTALL_DUR
 
 /** The Dutch closing words (the shared pieces take them as options, closing.js). */
-const BUILT_ON = { caption: 'Gebouwd op', markText: 'Nextcloud' }
-const INSTALL_NL = { slogans: ['Installeer de app', 'Gebruik de app', 'Je data blijft van jou'], line: 'Altijd 100% open source' }
+/** The closing pieces in Dutch (Round 21: lang 'nl'), OpenRegister as the lead, Dossiq and Filinq beside it. */
+const CLOSE = { lang: 'nl', lead: 'openregister', apps: ['dossiq', 'filinq'] }
+const NL = closingWords('nl')
 
 /* ---------- the frame every body scene shares ---------- */
 
@@ -354,23 +356,24 @@ export const boards = [
 	},
 	...BODY_SCENES.map(bodyBoard),
 	{
-		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Built on Nextcloud (shared closing piece, Dutch words)',
-		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}-${barOf(OPEN + BODY + BUILT - 0.01)}`,
-		words: 'Gebouwd op\nNextcloud', gloss: 'Built on Nextcloud', apps: ['nextcloud', 'openregister', 'dossiq', 'filinq'],
-		motion: 'The shared piece (closing.js builtOnScene) with Dutch live words in place of the wordmark: Nextcloud lands low right, the data layer drops onto it, "Gebouwd op" rises with "Nextcloud" a sixteenth behind, the Nextcloud apps pop in round it, and on the second bar Dossiq and Filinq land on the top row in white. The other lane is reworking this piece to "Built on Nextcloud"; this board only passes the Dutch words.',
-		sound: 'Thuds as Nextcloud and the data layer land, a run of ticks as the apps pop in, a pluck on the top row.',
-		source: 'Shared module; Round 10 (Built on Nextcloud).',
-		draw: (ctx) => { builtOnFrame(ctx, { apps: ['dossiq', 'filinq'], ...BUILT_ON }) },
+		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Gebouwd op Nextcloud (shared closing piece, Round 21)',
+		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}.1-${barOf(OPEN + BODY) + 2}.4`,
+		words: NL.builtOn, gloss: 'Built on Nextcloud / Reply from Mail / Plan in Calendar / Save to Contacts / Share in Files / Chat in Talk / Follow up in Tasks / Manage from Deck',
+		apps: ['openregister', 'dossiq', 'filinq', 'nextcloud'],
+		motion: 'The shared Round 21 piece (closing.js builtOnScene, lang nl), 3 bars: the connection scene. OpenRegister is the lead cell, orange, top right, with Dossiq and Filinq beside it in white; "Gebouwd op" rises with "Nextcloud" a sixteenth behind. Then Nextcloud\'s own apps load one by one into the grid below the lead, each on its own square-cornered connector, the first holding two beats and then one a beat, while one line under the headline swaps verb and name ("Antwoord vanuit Mail", "Plan in Agenda", "Bewaar in Contacten", "Deel in Bestanden", "Chat in Talk", "Volg op in Taken", "Beheer vanuit Deck"), the name in Nextcloud cyan; the last line holds 1.5 s. Everything leaves in the last four frames into the install board.',
+		sound: 'A pluck and a low thud as the lead lands, a tick up the scale as each Nextcloud app connects.',
+		source: 'Shared module (closing.js at ds-connext-film aa33d0f, Round 21); the component lines are what the data layer links a record to (NC_LINKS, round4/facts.json fact a).',
+		draw: (ctx) => { builtOnFrame(ctx, CLOSE) },
 	},
 	{
-		id: 'install', layer: 'brand', module: 'install', title: 'Install board (shared, Dutch slogans)',
-		start: OPEN + BODY + BUILT, end: TOTAL, bars: `${barOf(OPEN + BODY + BUILT)}-${barOf(TOTAL - 0.01)}`,
-		words: [...INSTALL_NL.slogans, INSTALL_NL.line].join('\n'), gloss: 'Install the app / Use the app / Your data stays yours / Always 100% open source',
+		id: 'install', layer: 'brand', module: 'install', title: 'Installeer het, gebruik het, bezit het (shared install board, Round 21)',
+		start: OPEN + BODY + BUILT, end: TOTAL, bars: `${barOf(OPEN + BODY + BUILT)}.1-${barOf(OPEN + BODY + BUILT) + 2}.4`,
+		words: NL.install, gloss: 'Install it / Use it / Own it / The code stays open source, your data stays yours',
 		apps: ['conduction'],
-		motion: 'The shared install board as it is, with its slogans in Dutch: the Nextcloud cell travels to the corner and turns over into the Conduction avatar, the wordmark header, the three slogans ("Installeer de app" in orange), then the open-source line. Holds to the end, no fade.',
-		sound: 'A dry click as the cell turns, a click and a low impact on the call, ticks on the next two, the pad resolves.',
-		source: 'Shared module: INSTALL.sources in closing.js; Dutch wording by this lane.',
-		draw: (ctx) => { installFrame(ctx, INSTALL_NL) },
+		motion: 'The shared Round 21 install board (closing.js installScene, lang nl), 3 bars: the Nextcloud cell pops in top right and turns over, by a width scale, into the Conduction avatar; the Conduction wordmark heads the column; "Installeer het", "Gebruik het", "Bezit het" rise one after another and the orange moves to each line as it rises, landing on "Bezit het"; then "De code blijft open source, / je data blijft van jou" on two lines. Holds to the end, no fade.',
+		sound: 'A dry click as the cell turns over, a click on each slogan as the orange moves, a pluck on the last line; the bed resolves.',
+		source: 'Shared module (closing.js at ds-connext-film aa33d0f, Round 21): CLOSING_TEXT.nl.',
+		draw: (ctx) => { installFrame(ctx, CLOSE) },
 	},
 ]
 

@@ -7,16 +7,16 @@
  * Dutch on screen for this film only. Claims and sources: ds-connext-film-review/archiving/research.json.
  *
  *   opening  BRAND  the shared Conduction opening, 3 bars
- *   hook     two worlds: "Nog een apart archief nodig?"                     (mark: Archiefwet)
- *   proof 1  stored and described where you work                               (mark: MDTO, NEN-ISO 16175 label)
+ *   hook     the question (Round 19): "Wat als archiveren niet meer hoeft?", two worlds under it (mark: Soevereine werkplek)
+ *   proof 1  compliant where you work, not afterwards                         (mark: MDTO · ISO 16175 · Archiefwet)
  *   proof 2  the retention period follows the case type                       (mark: Selectielijst)
  *   proof 3  destroyed on time, with approval and a trail, from the workspace  (mark: Vernietiging)
- *   proof 4  every case system speaks the same language                       (mark: ZGW en ZDS)
- *   promise  "Je werkplek is het archief"                                      (mark: Nextcloud)
+ *   proof 4  your workspace is the DMS for every system                        (mark: ZGW · ZDS · StUF · OIO · CMMN)
+ *            no promise card (Round 19): the proofs answer the question
  *   builtOn  BRAND  "Built on Nextcloud", on screen in Dutch: "Gebouwd op Nextcloud"
  *   install  BRAND  the shared install board, its slogans in Dutch
  *
- * The body runs 12 bars (48 beats): the hook 7 beats, four proofs of 8, the promise 9. Modular
+ * The body runs 12 bars (48 beats): the question 12 beats, four proofs of 9 (Round 19). Modular
  * durations sit on bar boundaries (Round 4), so the body is longer than the template's 10 bars.
  * Opening 3 + body 12 + built on 2 + install 3 = 20 bars, 37.5 s.
  *
@@ -28,7 +28,7 @@
  * hex (into the destruction round), #9 text-swap on a held diagram (the standards swap on the wires).
  */
 import { C } from '../../../_lib/brand.js'
-import { el, textBlock } from '../../../_lib/stage.js'
+import { el, textBlock, measure } from '../../../_lib/stage.js'
 import { SQRT3 } from '../../../_lib/core.js'
 import { BAR, beatT, snap, RISE, CLEAR, holdFor, wordCount, SAFE } from '../../../_lib/appfilm.js'
 import { LOOP_ANCHOR, WINDOW } from '../../../_lib/scenes/general.js'
@@ -52,7 +52,11 @@ const INSTALL_NL = { slogans: ['Installeer de app', 'Gebruik de app', 'Je data b
 /** The chapter mark: live type where an app film puts the app's name (same place, size and weight as appMark). */
 function chapter(g, text) {
 	const h = TYPE.markH
-	return textBlock(g, text, { x: TYPE.x, y: TYPE.markY + h * 0.75, size: Math.round(h * 0.8), weight: 700, fill: C.white, tracking: -0.02, clip: false })
+	// Round 20: a mark may carry several labels (MDTO · ISO 16175 · Archiefwet); it shrinks to stay in the type column.
+	let size = Math.round(h * 0.8)
+	const w = measure(text, { size, weight: 700, tracking: -0.02 })
+	if (w > TYPE.col - TYPE.x) size = Math.floor((size * (TYPE.col - TYPE.x)) / w)
+	return textBlock(g, text, { x: TYPE.x, y: TYPE.markY + h * 0.75, size, weight: 700, fill: C.white, tracking: -0.02, clip: false })
 }
 
 /**
@@ -148,7 +152,7 @@ function hookUI(w, geom) {
 }
 
 /** Proof 1: the same document, the fields filling as it is made; the last one types on. */
-const mdtoUI = (w, geom) => docWithMeta(w, geom, { filled: 0.75, ringField: 4, standard: 'NEN-ISO 16175' })
+const mdtoUI = (w, geom) => docWithMeta(w, geom, { filled: 0.75, ringField: 4 })
 
 /** Proof 2: the case, its type, and the selectielijst with the matching row lit; the date follows. */
 function selectieUI(w, geom) {
@@ -231,29 +235,26 @@ function destroyUI(w, geom) {
 function standardsUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.top, width = geom.r - geom.x
+	// The workspace: the case with its documents, the one store.
 	panel(w, x, top, width, 130, u)
 	hex(w, x + 64, top + 65, 28, C.lavender, 4)
 	bar(w, x + 120, top + 44, 260, 16, C.cobalt900)
 	bar(w, x + 120, top + 76, 170, 9, C.cobalt300)
 	statusPill(w, x + width - 160, top + 65, u)
-	const bw = (width - 30) / 2, by = top + 220
-	rect(w, x + 64 - 1.5 * u, top + 130, 3 * u, 50, C.cobalt300)
-	rect(w, x + 64, top + 178, bw + 30 + bw / 2 - 64, 3 * u, C.cobalt300)
-	rect(w, x + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
-	rect(w, x + bw + 30 + bw / 2 - 1.5 * u, top + 178, 3 * u, by - top - 178, C.cobalt300)
-	hex(w, x + bw + 15, top + 178 + 1.5 * u, 16, C.orange, 2)
-	const box = (bx, label) => {
-		panel(w, bx, by, bw, 360, u)
-		rect(w, bx, by, bw, 64, C.cobalt50, 0)
-		textBlock(w, label, { x: bx + 28, y: by + 44, size: 36, weight: 600, fill: C.cobalt, clip: false })
-		for (let i = 0; i < 4; i++) {
-			const fy = by + 110 + i * 60
-			bar(w, bx + 30, fy, 90, 8, C.cobalt400)
-			bar(w, bx + 140, fy - 2, 150 - i * 16, 11, C.cobalt900)
-		}
-	}
-	box(x, 'ZGW')
-	box(x + bw + 30, 'StUF-ZDS')
+	// Square-cornered wires down to five outside systems, split at one orange hex.
+	const n = 5, gap = 14, bw = (width - gap * (n - 1)) / n, by = top + 240
+	const mid = x + width / 2
+	rect(w, mid - 1.5 * u, top + 130, 3 * u, 60, C.cobalt300)
+	rect(w, x + bw / 2, top + 188, width - bw, 3 * u, C.cobalt300)
+	hex(w, mid, top + 188 + 1.5 * u, 16, C.orange, 2)
+	;['ZGW', 'ZDS', 'StUF', 'OIO', 'CMMN'].forEach((label, i) => {
+		const bx = x + i * (bw + gap)
+		rect(w, bx + bw / 2 - 1.5 * u, top + 188, 3 * u, by - top - 188, C.cobalt300)
+		panel(w, bx, by, bw, 330, u)
+		rect(w, bx, by, bw, 60, C.cobalt50, 0)
+		textBlock(w, label, { x: bx + bw / 2, y: by + 42, size: 30, weight: 600, fill: C.cobalt, anchor: 'middle', clip: false })
+		for (let k = 0; k < 4; k++) bar(w, bx + 18, by + 100 + k * 56, bw - 36 - (k % 2) * 30, 10, k % 2 ? C.cobalt300 : C.cobalt900)
+	})
 }
 
 /** The promise: the three apps that do the archiving round the Nextcloud hex, OpenRegister orange. */
@@ -278,34 +279,34 @@ const REFS = [
 
 const BODY_SCENES = [
 	{
-		id: 'hook', from: 0, to: 7, mark: 'Archiefwet', caption: 'Nog een apart\narchief nodig?', tag: { nc: true }, ui: hookUI,
-		title: 'Two worlds: work in one place, file again in another',
-		gloss: 'Do you still need a separate archive?',
+		id: 'hook', from: 0, to: 12, mark: 'Soevereine werkplek', caption: 'Wat als archiveren\nniet meer hoeft?', tag: { nc: true }, ui: hookUI,
+		title: 'The question: what if you never had to archive again?',
+		gloss: 'What if archiving were no longer needed? (Ruben: "Wat als we nooit meer hoefden te archiveren?", shortened to fit two lines)',
 		apps: ['nextcloud'],
-		motion: 'The window slides in over the opening\'s fading handover field. Left the finished document in the workspace; a square-cornered arrow carries it into a second, grey system on the right, the separate archive, where the same fields wait to be typed again; a cursor blinks in the second one. On beat 3 the orange ring draws round the fields typed twice: the pain. On beat 6 the arrow and the grey system flick out one frame early: the cue for proof 1, where the metadata stays in the workspace.',
+		motion: 'Round 19: the question opens the film, over the two-worlds picture. The window slides in over the opening\'s fading handover field. Left the finished document in the workspace; a square-cornered arrow carries it into a second, grey system on the right, the separate archive, where the same fields are typed again. On beat 5 the orange ring draws round the fields typed twice: the work the question asks away. The question holds 12 beats (5.6 s), since the promise card is gone.',
 		sound: 'Gentle open, no stinger. Two dull ticks as the arrow re-files, a low tick as the orange ring draws.',
-		source: 'Ruben, Round 16: the pain of two worlds (work in the workspace, re-file into a separate archive or DMS, metadata typed twice). Nextcloud as the workspace: bible truth 10.',
+		source: 'Ruben, Rounds 16 and 19: the question up front, the two worlds under it. Chapter mark "Soevereine werkplek" (Round 20).',
 	},
 	{
-		id: 'mdto', from: 7, to: 15, mark: 'MDTO', caption: 'Bewaard\nwaar je werkt', tag: { app: 'filinq' }, ui: mdtoUI,
-		title: 'Kept where you work, described as it is made',
-		gloss: 'Kept where you work (the MDTO fields typing in say: described as you make it)',
+		id: 'mdto', from: 12, to: 21, mark: 'MDTO · ISO 16175 · Archiefwet', caption: 'Compliant waar je\nwerkt, niet achteraf', tag: { app: 'filinq' }, ui: mdtoUI,
+		title: 'Compliant where you work, not afterwards',
+		gloss: 'Compliant where you work, not afterwards',
 		apps: ['filinq', 'openregister'],
 		motion: 'Technique #4, typewriter. No cut: the push-in holds on the panel and the dashed slots fill top to bottom, one per beat, each value typing on at one greeked character pair per 0.1 s with a hard on and off, a cursor after it. The field names are MDTO\'s own (waardering, bewaartermijn, informatiecategorie, archiefvormer, dekkingInTijd) as small mono labels. The slot being typed takes the orange ring. The panel head carries one small label, NEN-ISO 16175 (Round 12): the records-management standard the metadata follows, a label only, never "certified" or "compliant". Filinq\'s hex on the anchor: the document is Filinq\'s.',
 		sound: 'Soft key ticks under the typing, a pluck as each field completes, a brighter pluck on the last.',
 		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test). NEN-ISO 16175 label: openregister archivering-vernietiging spec:665 (NEN-ISO 16175-1:2020, the successor to NEN 2082). Stored in the workspace: procest document-zaakdossier spec:14 (every document a Nextcloud file in the case\'s own folder); openregister object-interactions spec:154 (files stored in Nextcloud\'s filesystem via IRootFolder, linked to the record).',
 	},
 	{
-		id: 'selectielijst', from: 15, to: 23, mark: 'Selectielijst', caption: 'Het zaaktype kent\nzijn bewaartermijn', tag: { app: 'dossiq' }, ui: selectieUI,
-		title: 'The retention period follows the case type',
-		gloss: 'The case type knows its retention period',
+		id: 'selectielijst', from: 21, to: 30, mark: 'Selectielijst', caption: 'Elk dossier krijgt\nvanzelf zijn termijn', tag: { app: 'dossiq' }, ui: selectieUI,
+		title: 'Every file gets its retention period automatically',
+		gloss: 'Every file (documents and cases) gets its retention period automatically',
 		apps: ['dossiq', 'openregister'],
 		motion: 'Hard cut on the downbeat. Then technique #3, grid-cell ripple: the case lands on top with its zaaktype, and a wave runs through the selectielijst below, cells stepping full, 40%, 20% in 0.3 s waves outward from the case type\'s row, which stays lit (cobalt-100). A square-cornered wire drops from the case type to that row, and its result hex lands in orange: keep or destroy, and when.',
 		sound: 'A hard click on the cut, a rising run of ticks under the ripple, a pluck as the row locks.',
 		source: 'research.json c2: procest archief-edepot-handover spec:14 (per-zaaktype retention: bewaartermijn, selectielijst categorie/versie, e-Depot bestemming, MDTO version); case-types spec:81 (archiefnominatie per result type); openregister retention-management spec:49 and :79; Filinq archiefwet-retention-engine proposal.',
 	},
 	{
-		id: 'vernietiging', from: 23, to: 31, mark: 'Vernietiging', caption: 'Vernietigd met\nakkoord en spoor', tag: { app: 'openregister' }, ui: destroyUI,
+		id: 'vernietiging', from: 30, to: 39, mark: 'Vernietiging', caption: 'Vernietigd met\nakkoord en spoor', tag: { app: 'openregister' }, ui: destroyUI,
 		title: 'Destroyed on time, with approval and a trail, from the same workspace',
 		gloss: 'Destroyed with approval and a trail (on time: the date comes from the selectielijst beat before)',
 		apps: ['openregister'],
@@ -314,17 +315,17 @@ const BODY_SCENES = [
 		source: 'research.json c3: openregister retention-management spec:108 (destruction lists via a background job), :136 (multi-step approval), :174 (destruction certificates), :189 (legal hold); archivering-vernietiging spec:529 (the file deletion logged as archival.file_destroyed); audit-hash-chain spec:34 (SHA-256 chain); positioning openregister usp-archive-destroy (verified). The e-Depot is no longer a proof (Round 16).',
 	},
 	{
-		id: 'standards', from: 31, to: 39, mark: 'ZGW en ZDS', caption: 'Elk zaaksysteem\nspreekt dezelfde taal', tag: { app: 'dossiq' }, ui: standardsUI,
-		title: 'Every case system speaks the same language',
-		gloss: 'Every case system speaks the same language',
+		id: 'standards', from: 39, to: 48, mark: 'ZGW · ZDS · StUF · OIO · CMMN', caption: 'Je werkplek is het\nDMS voor elk systeem', tag: { app: 'dossiq' }, ui: standardsUI,
+		title: 'Your workspace is the DMS for every system',
+		gloss: 'Your workspace is the DMS for every system',
 		apps: ['dossiq', 'filinq'],
-		motion: 'Technique #9, text-swap on a held diagram. Whip in (4 frames, ease.snap). The case sits on top; square-cornered wires split at the orange hex to two boxes whose fields fill one per beat. The diagram then holds while only the box heads swap: ZGW stays, the second head steps from StUF-ZKN to StUF-ZDS on the next beat. Stillness after the busy destruction beat.',
+		motion: 'Technique #9, text-swap on a held diagram. Whip in (4 frames, ease.snap). The workspace case sits on top; square-cornered wires split at the orange hex to five outside systems, one per beat, each headed by the standard it speaks: ZGW, ZDS, StUF, OIO, CMMN. The diagram then holds while the mark above the caption steps through the same five names, one per beat, and settles on all five.',
 		sound: 'A whip whoosh, a line-draw hiss, a pluck per box, a dry click on the swap.',
-		source: 'research.json c4: procest zgw-api-mapping, zgw-brc, zgw-autorisaties-api, stuf-integration, stuf-zkn-outbound; docudesk generate-store-in-case-system (ZGW and StUF-ZDS sources). ZDS is named only in Filinq\'s change.',
+		source: 'Workspace as DMS: procest document-projection spec:4, :72 (a document is a normal file in the case folder, and the ZGW DRC (Documenten) API still lists it for other systems); document-zaakdossier spec:14. ZGW: procest zgw-api-mapping, zgw-brc, zgw-autorisaties-api. StUF: procest stuf-integration, stuf-zkn-outbound. ZDS: docudesk generate-store-in-case-system. CMMN: procest case-management spec:17. OIO: in the sources only as ZGW ObjectInformatieObject (procest zgw-documenten-api proposal:23); the Danish OIO Sag og Dokument is not in the specs yet (dossiq#3174).',
 	},
 ]
 
-const PROMISE = { from: 39, to: 48, mark: 'Nextcloud', text: 'Je werkplek\nis het archief' }
+// Round 19: no promise card; the proofs answer the question and Gebouwd op Nextcloud follows.
 
 const s2 = (t) => `${t.toFixed(2)} s`
 const barOf = (t) => Math.floor(t / BAR + 1e-6) + 1
@@ -342,9 +343,6 @@ function bodyBoard(sc) {
 	}
 }
 
-const pStart = OPEN + beatT(PROMISE.from)
-const pShows = snap(pStart + RISE)
-const pClears = snap(OPEN + BODY - CLEAR)
 
 export const boards = [
 	{
@@ -355,17 +353,6 @@ export const boards = [
 		draw(ctx) { const up = buildOpening(ctx.g, { defs: ctx.defs }); const k = OPENING.T.powerOn + 0.9; up(k); return () => up(k) },
 	},
 	...BODY_SCENES.map(bodyBoard),
-	{
-		id: 'promise', layer: 'brand', module: 'promise', title: 'The promise: your workspace is the archive',
-		start: pStart, end: OPEN + BODY, bars: `${barOf(pStart)}-${barOf(OPEN + BODY - 0.01)}`,
-		words: PROMISE.text, mark: PROMISE.mark, gloss: 'Your workspace is the archive',
-		shows: pShows, clears: pClears, hold: +(pClears - pShows).toFixed(2),
-		apps: ['openregister', 'dossiq', 'filinq', 'nextcloud'],
-		motion: `The answer to the hook's question: no separate archive, the workspace is it. The three apps that do the archiving land round the Nextcloud workspace hex, OpenRegister in orange up-left on the loop anchor (the app icon exception on cobalt), Dossiq and Filinq in white; the Nextcloud hex lands at 1.4x and settles. "Nextcloud" as the chapter mark, the promise rises under it by ${s2(pShows)} and holds to ${s2(pClears)}. Out on the bar line: the cells step toward the Nextcloud hex, which Built on picks up, no cut.`,
-		sound: 'A pluck as OpenRegister lands, a low thud under the Nextcloud hex, a soft pad swell under the promise. A crisp click on the bar line.',
-		source: 'Ruben, Round 16: store correctly in Nextcloud and you need no separate DMS or archiving tool. The three apps: research.json appsDoingArchivingWork.',
-		draw: (ctx) => promiseFrame(ctx, PROMISE),
-	},
 	{
 		id: 'builtOn', layer: 'brand', module: 'builtOn', title: 'Built on Nextcloud (shared closing piece, Dutch words)',
 		start: OPEN + BODY, end: OPEN + BODY + BUILT, bars: `${barOf(OPEN + BODY)}-${barOf(OPEN + BODY + BUILT - 0.01)}`,
@@ -411,7 +398,7 @@ export const meta = {
 	id: 'archiving-nl',
 	title: 'Je werkplek is het archief (nl)',
 	language: 'nl',
-	logline: 'A Dutch release film on one premise (Round 16): store correctly in Nextcloud, the workspace people already use, and you need no separate DMS or archive. A document is stored and described in MDTO terms where you work, keeps the retention period of its case type, is destroyed on time with approval and a trail from the same workspace, and every case system reads it over ZGW or StUF-ZDS.',
+	logline: 'A Dutch release film that opens on a question (Round 19): what if archiving were no longer needed? The proofs answer it: you work compliant with MDTO, ISO 16175 and the Archiefwet where you work, not afterwards; every file gets its retention period automatically; destruction runs with approval and a trail from the same workspace; and the workspace is the document store other systems use over ZGW, ZDS, StUF, OIO and CMMN.',
 	references: REFS,
 	techniques: ['#4 typewriter (the metadata types itself)', '#3 grid-cell ripple (the selectielijst)', '#1 dot-grows-to-fill as an upright hex (into the destruction round)', '#9 text-swap on a held diagram (the standards)'],
 	template: 'archiving (archFrame on the app-film grid)',

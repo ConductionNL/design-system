@@ -1,23 +1,31 @@
 /**
- * Learniq, audience film: schools (primary and secondary). Direction C on the app-film
- * template, wrapped by _lib/audiencefilm.js. Round 7: matrix features count as built.
- * Positioning: ds-connext-film-review/audiences/positioning.md.
+ * Learniq, audience film: schools and parents (primary and secondary). Direction C on the
+ * app-film template, wrapped by _lib/audiencefilm.js. Round 7: matrix features count as built.
+ * Reworked in Round 11 (Ruben, 2026-09-28): the body opens on the student file, then one
+ * integrated view for teachers, claimed honestly (the same work, easier to carry; never "less
+ * admin"). Positioning: ds-connext-film-review/audiences/positioning.md.
  *
- *   hook     the attendance register: every lesson, every absence (sp-statutory-attendance)
- *   proof 1  a parent sends an excuse, the register updates itself (sp-statutory-attendance)
- *   proof 2  a pupil crosses the 16-hour line and the report goes out on time
- *            (sp-statutory-attendance: the Leerplichtwet threshold)
- *   general  the data layer as the pupil dossier: one pupil, one dossier, the class's Talk
- *            and files linked (sp-learner-support-dossier)
- *   promise  "Absence reported on time"
+ *   hook     the student file: one pupil, everything about them in one place
+ *            (sp-learner-support-dossier)
+ *   proof 1  one integrated view for the teacher: the class, attendance, marks and notes
+ *            together (Round 11 note; sp-grade-your-way, sp-statutory-attendance)
+ *   proof 2  a parent excuses their child from the phone, the register updates itself
+ *            (sp-statutory-attendance)
+ *   general  notifications: a pupil crosses the 16-hour line and the report goes out on time,
+ *            the attendance officer hears (sp-statutory-attendance, Leerplichtwet)
+ *   promise  "The same work, easier to carry"
  *
- * Techniques (refs/techniques.md): #3 grid-cell ripple (the register fills in waves),
- * #4 typewriter (the parent's excuse), #5 stepped hex wipe (into the 16-hour scene).
+ * Both Round 11 keepers fit (29 words): the parent excuse is proof 2 and the 16-hour report
+ * moves into the notification slot, since the student file now carries the dossier.
+ *
+ * Techniques (refs/techniques.md): #2 zoom-out (from the student file out to the teacher's
+ * integrated view: the file shrinks into its row), #4 typewriter (the parent's excuse),
+ * #3 grid-cell ripple (the register cells in the teacher view step on in waves).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, hex, panel, statusPill, phone, bubble } from '../../../_lib/ui.js'
+import { rect, bar, circle, hex, panel, statusPill, idlePill, phone, bubble, use } from '../../../_lib/ui.js'
 
 const REFS = [
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells stepping in waves; a stepped wipe between chapters.' },
@@ -47,8 +55,54 @@ function register(w, geom, { excused = null, accent = null, rows = 7, cols = 10 
 	return { gx, cw, top }
 }
 
-/** Hook: the register, a lesson's column filling. */
-function registerUI(w, geom) { register(w, geom) }
+/** Hook: the student file: the pupil, and everything about them in one place. */
+function pupilFileUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
+	panel(w, x, top, width, 150, u)
+	circle(w, x + 80, top + 75, 44, C.cobalt300)
+	bar(w, x + 150, top + 50, 250, 18, C.cobalt900)
+	bar(w, x + 150, top + 86, 170, 9, C.cobalt300)
+	rect(w, x + width - 200, top + 58, 150, 34, C.lavender300, 17)
+	// Four tiles: attendance, marks, the support plan with its notes, the parents.
+	const tw = (width - 20) / 2, th = 200
+	const tiles = [
+		(tx, ty) => { for (let c = 0; c < 8; c++) rect(w, tx + 30 + c * ((tw - 60) / 8), ty + 90, (tw - 60) / 8 - 8, 36, c === 5 ? C.cobalt400 : C.cobalt100, 3 * u) },
+		(tx, ty) => { ;[0.7, 0.55, 0.85].forEach((v, k) => { bar(w, tx + 30, ty + 84 + k * 36, 90, 8, C.cobalt400); rect(w, tx + 140, ty + 80 + k * 36, (tw - 190) * v, 16, C.cobalt300, 8) }) },
+		(tx, ty) => { for (let k = 0; k < 3; k++) { hex(w, tx + 40, ty + 90 + k * 36, 8, k === 0 ? C.lavender : C.cobalt200, 1); bar(w, tx + 60, ty + 84 + k * 36, tw * 0.6 - k * 30, 10, C.cobalt900) } },
+		(tx, ty) => { for (let k = 0; k < 2; k++) { circle(w, tx + 50, ty + 96 + k * 50, 18, C.cobalt200); bar(w, tx + 84, ty + 88 + k * 50, 150, 10, C.cobalt900) } },
+	]
+	tiles.forEach((draw, i) => {
+		const tx = x + (i % 2) * (tw + 20), ty = top + 180 + Math.floor(i / 2) * (th + 20)
+		panel(w, tx, ty, tw, th, u)
+		bar(w, tx + 30, ty + 34, 120, 12, C.cobalt700)
+		draw(tx, ty)
+	})
+	// The newest note in the support plan: the scene's one orange, as a ring.
+	rect(w, x - 6, top + 180 + th + 20 - 6, tw + 12, th + 12, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
+
+/** Proof 1: the teacher's integrated view: the class with attendance, marks and notes side by side. */
+function teacherUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
+	panel(w, x, top, width, 600, u)
+	// Column heads: pupil, this week's attendance, marks, notes.
+	const cA = x + 250, cM = x + 560, cN = x + width - 110
+	;[x + 30, cA, cM, cN - 30].forEach((hx) => bar(w, hx, top + 30, 80, 8, C.cobalt400))
+	for (let r = 0; r < 7; r++) {
+		const cy = top + 90 + r * 70
+		if (r > 0) rect(w, x + 20, cy - 35, width - 40, u, C.cobalt50)
+		circle(w, x + 50, cy, 18, r % 2 ? C.cobalt200 : C.cobalt300)
+		bar(w, x + 80, cy - 6, 130 - (r % 3) * 20, 10, C.cobalt900)
+		for (let d = 0; d < 5; d++) rect(w, cA + d * 56, cy - 16, 46, 32, (r === 2 && d > 2) || (r === 5 && d === 1) ? C.cobalt400 : C.cobalt100, 3 * u)
+		rect(w, cM, cy - 8, 60 + ((r * 37) % 120), 16, C.cobalt300, 8)
+		if (r === 2 || r === 4) hex(w, cN, cy, 12, C.lavender, 2)
+		else idlePill(w, cN - 20, cy, u, { w: 26 })
+	}
+	// The pupil whose file the hook opened: their row, ringed (the one orange).
+	rect(w, x + 14, top + 90 + 2 * 70 - 32, width - 28, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
 
 /** Proof 1: the parent's excuse on the phone, and the register cell it turns to excused. */
 function excuseUI(w, geom) {
@@ -64,83 +118,58 @@ function excuseUI(w, geom) {
 	statusPill(p.screen, p.x + p.w - 150, p.y + 300, u)
 }
 
-/** Proof 2: a pupil's hours against the 16-hour line, and the report sent in time. */
-function thresholdUI(w, geom) {
-	const { u } = geom
-	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	panel(w, x, top, width, 330, u)
-	circle(w, x + 70, top + 70, 26, C.cobalt300)
-	bar(w, x + 116, top + 56, 220, 16, C.cobalt900)
-	bar(w, x + 116, top + 84, 140, 9, C.cobalt300)
-	// Hours missed: a track, the threshold mark at 16 of 20, the bar just past it (the one orange).
-	const tx = x + 40, tw = width - 80, ty = top + 190
-	rect(w, tx, ty, tw, 30, C.cobalt50, 15)
-	rect(w, tx, ty, tw * 0.84, 30, C.orange, 15)
-	rect(w, tx + tw * 0.8 - 3, ty - 30, 6, 90, C.cobalt900)
-	hex(w, tx + tw * 0.8, ty - 44, 12, C.cobalt900, 2)
-	for (let i = 0; i <= 4; i++) bar(w, tx + (tw * i) / 4 - 10, ty + 60, 20, 7, C.cobalt300)
-	// The report, filled in and sent: a document row with its sent pill.
-	const ry = top + 360
-	panel(w, x, ry, width, 170, u)
-	rect(w, x + 40, ry + 36, 70, 96, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	rect(w, x + 40, ry + 36, 70, 12, C.cobalt, 0)
-	for (let i = 0; i < 4; i++) bar(w, x + 52, ry + 64 + i * 14, 46 - i * 6, 5, C.cobalt200)
-	bar(w, x + 140, ry + 58, 260, 14, C.cobalt900)
-	bar(w, x + 140, ry + 88, 180, 9, C.cobalt300)
-	statusPill(w, x + width - 160, ry + 85, u)
-}
-
 const content = {
 	app: 'learniq',
 	audience: { slug: 'schools', name: 'Schools and parents', persona: 'Marloes ten Berge, learning support coordinator, and the parents who excuse their child from their phone; the school board\'s ICT coordinator buys' },
-	promise: 'Absence reported\non time',
-	promiseLine: 'Absence reported the way the law expects, on time, from the school\'s own server',
+	promise: 'The same work,\neasier to carry',
+	promiseLine: 'Everything about a pupil in one place, and one view for the teacher: the same work, easier to carry, on the school\'s own server',
 	title: 'Learniq for schools',
 	record: { one: 'pupil', many: 'pupils' },
-	logline: 'For schools, with the parent side in the film: the register counts every absence, a parent excuses their child from their phone and the register updates itself, a pupil who crosses the 16-hour line is reported in time, and each pupil has one dossier.',
+	logline: 'For schools, with the parent side in the film: the student file holds everything about one pupil, the teacher sees the class in one view, a parent excuses their child from their phone and the register updates, and the 16-hour report goes out on time. It does not remove the work; it makes it easier to carry.',
 	references: REFS,
-	techniques: ['#3 grid-cell ripple', '#4 typewriter', '#5 stepped hex wipe'],
+	techniques: ['#2 zoom-out (student file to teacher view)', '#4 typewriter', '#3 grid-cell ripple'],
 	neighbours: ['portaliq'],
 	builtOnApps: ['portaliq'],
 	hook: {
-		title: 'Every lesson, every absence',
-		caption: 'Every lesson,\nevery absence',
-		ui: { drawUI: registerUI },
-		source: 'positioning learniq sp-statutory-attendance: "Persistent absence reaches the authority without anyone chasing paperwork."',
-		motion: 'Technique #3, grid-cell ripple. Frame 1 reads: caption, the register in the window, the Learniq hex (orange) on the loop anchor. From beat 2 a wave runs across the register column by column (each cell steps 20% to 40% to full opacity in 0.3 s, staggered by distance from the first lesson), then a second, quicker wave settles it: a morning\'s lessons being marked. Absences stay the darker cells.',
-		sound: 'Gentle open: pad and offbeat bass only. A soft ripple of ticks that follows the wave.',
+		title: 'One pupil, one file',
+		caption: 'One pupil,\none file',
+		ui: { drawUI: pupilFileUI, tagFill: 'cobalt' },
+		source: 'Ruben, Round 11 (open on the student file, the leerlingdossier); positioning learniq sp-learner-support-dossier ("Start a support plan from a template and add the everyday note in the same place.")',
+		motion: 'Frame 1 reads: caption, the student file in the window (the pupil, attendance, marks, the support plan, the parents), the Learniq hex (cobalt: the one orange is the newest note\'s ring) on the loop anchor. The tiles land a sixteenth apart; on beat 4 a new note drops into the support plan and its tile takes the orange ring. Out: technique #2, the camera pulls back (ease.brand) and the whole file shrinks into one row of the teacher\'s class view.',
+		sound: 'Gentle open. Four soft ticks as the tiles land, a pluck as the note arrives, a long soft whoosh on the pull-back.',
 	},
 	proofs: [
+		{
+			id: 'teacher',
+			title: 'All you need, in one place',
+			caption: 'All you need,\nin one place',
+			source: 'Ruben, Round 11: "one integrated view of information for teachers"; claimed honestly (the work stays, it gets easier to carry); positioning learniq sp-grade-your-way, sp-statutory-attendance',
+			motion: 'Continuous from the hook (technique #2, zoom-out): the file has become the ringed row; the class view settles round it. Technique #3, grid-cell ripple: the week\'s attendance cells step 20% to 40% to full opacity in waves across the class, row by row, then the marks bars grow and the note hexes pop. The caption rises as the pull-back ends. Nothing on screen says less work: the same rows, one view.',
+			sound: 'A ripple of ticks with the attendance waves, a pluck as the marks land.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'All you need,\nin one place', drawUI: teacherUI, tagFill: 'cobalt' }),
+		},
 		{
 			id: 'excuse',
 			title: 'A parent excuses, the register updates',
 			caption: 'A parent excuses,\nthe register updates',
 			source: 'positioning learniq sp-statutory-attendance scene: "The register updates itself the moment a guardian sends an excuse."',
-			motion: 'Technique #4, typewriter. The parent\'s phone rises into the window\'s right side; the excuse types itself in the bubble (one greeked character pair per 0.1 s, hard on and off) with a cursor, then sends (the pill turns mint). On the send beat the absent cell in row 5 turns lavender (excused) and takes the orange edge. The caption rises as the typing starts.',
+			motion: 'Technique #4, typewriter. The parent\'s phone rises into the window; the excuse types itself in the bubble (one greeked character pair per 0.1 s, hard on and off) with a cursor, then sends (the pill turns mint). On the send beat the absent cell turns lavender (excused) and takes the orange edge. The caption rises as the typing starts.',
 			sound: 'Tiny key clicks under the typing, a soft send swoosh, a pluck as the cell changes.',
 			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'A parent excuses,\nthe register updates', drawUI: excuseUI, tagFill: 'cobalt' }),
 		},
-		{
-			id: 'threshold',
-			title: '16 hours missed, reported on time',
-			caption: '16 hours missed?\nReported on time',
-			source: 'positioning learniq sp-statutory-attendance: the Leerplichtwet 16-hour threshold, reported through the national absence desk within five working days',
-			motion: 'Technique #5, stepped hex wipe in: four upright cobalt hexes at rising scale step in from the right edge 70 ms apart and cut the moment they cover the frame. On the new scene the pupil\'s hours bar grows left to right and crosses the 16-hour mark (orange from the crossing), and on the next beat the report row drops in below with its mint pill: sent.',
-			sound: 'Four dry clicks on the wipe steps, a rising pluck as the bar grows, a low tick as it crosses the line, a soft thud as the report lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: '16 hours missed?\nReported on time', drawUI: thresholdUI, tagFill: 'cobalt' }),
-		},
 	],
 	general: {
-		module: 'dataLayer',
-		title: 'One pupil, one dossier',
-		caption: 'One pupil,\none dossier',
-		source: 'positioning learniq sp-learner-support-dossier ("Start a support plan from a template and add the everyday note in the same place."); story.json mechanics 0 and 1',
+		module: 'notify',
+		title: '16 hours missed, reported on time',
+		caption: '16 hours missed?\nReported on time',
+		source: 'positioning learniq sp-statutory-attendance: the Leerplichtwet 16-hour threshold, reported through the national absence desk within five working days; story.json mechanic 8 (the right person hears)',
 		params: {
-			record: { avatar: 'person', title: 220, sub: 150, status: 'mint', fields: [[56, 150], [56, 110], [64, 160], [48, 90]] },
-			history: [{ av: C.lavender300, w: 170 }, { av: C.cobalt200, w: 140 }, { av: C.cobalt300, w: 160 }, { av: C.cobalt200, w: 120 }],
-			links: ['nc-talk', 'nc-files'],
+			record: { avatar: 'person', title: 240, sub: 150, status: 'none' },
+			event: { stage: 2, stages: 3 },
+			notices: [{ app: 'learniq' }, { icon: 'nc-mail' }, { icon: 'nc-files' }],
+			recipients: [C.lavender300, C.cobalt300],
 		},
-		sound: 'A pluck as Talk and Files link in, a tick on the newest note.',
+		sound: 'A low tick as the pupil crosses the line, a dry click as the notice lands (no bell).',
 	},
 }
 

@@ -118,7 +118,7 @@ function patternUI(w, geom) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'organisations', name: 'Organisation cases (beyond positioning)', persona: 'The head of customer service, HR or legal at a company, who owns complaints, HR and legal cases; the operations or IT lead buys' },
-	promise: 'Every case handled\nyour way, every time',
+	promise: 'What if every case\nfollowed your process?',
 	promiseLine: 'Every case handled your way, every time: your own process, complaints numbered and owned, patterns spotted, on your own server',
 	title: 'Dossiq for organisations',
 	record: { one: 'case', many: 'cases' },
@@ -166,7 +166,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Dossiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Dossiq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Dossiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Dossiq" the promise, asked as a question (Round 19; the proofs answer it), builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

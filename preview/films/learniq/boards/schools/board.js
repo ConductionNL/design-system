@@ -124,7 +124,7 @@ function excuseUI(w, geom) {
 const content = {
 	app: 'learniq',
 	audience: { slug: 'schools', name: 'Schools and parents', persona: 'Marloes ten Berge, learning support coordinator, and the parents who excuse their child from their phone; the school board\'s ICT coordinator buys' },
-	promise: 'Every pupil\'s file,\nfor every teacher',
+	promise: 'What if teachers had\nevery pupil\'s file?',
 	promiseLine: 'Every pupil\'s file, for every teacher: one file per pupil and one class view, on the school\'s own server',
 	title: 'Learniq for schools',
 	record: { one: 'pupil', many: 'pupils' },

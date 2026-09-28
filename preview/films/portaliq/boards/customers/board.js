@@ -101,7 +101,7 @@ function detailsUI(w, geom) {
 const content = {
 	app: 'portaliq',
 	audience: { slug: 'customers', name: 'Customer portal', persona: 'Esther Kuipers, customer contact manager at a housing corporation; Anouk Terpstra, member services coordinator' },
-	promise: 'A written trail,\nnot a phone queue',
+	promise: 'What if repairs left\na written trail?',
 	promiseLine: 'Repairs and memberships on one page, with a written trail instead of a phone queue',
 	title: 'Portaliq for customers',
 	record: { one: 'request', many: 'requests' },
@@ -149,7 +149,7 @@ const content = {
 		},
 		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Portaliq cell lands on the loop anchor and turns orange. Under "Portaliq" the promise builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Portaliq cell lands on the loop anchor and turns orange. Under "Portaliq" the promise, asked as a question (Round 19; the proofs answer it), builds one word per eighth note, each word slamming in large while the type column\'s camera eases back (ease.brand) so the line always just fits; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

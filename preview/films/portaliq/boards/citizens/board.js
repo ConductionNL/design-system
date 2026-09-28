@@ -133,7 +133,7 @@ function receiptUI(w, geom) {
 const content = {
 	app: 'portaliq',
 	audience: { slug: 'citizens', name: 'Citizen portal', persona: 'Willem Postma, head of digital services at a municipality' },
-	promise: 'The portal answers,\nnot the phone',
+	promise: 'What if nobody\nhad to call?',
 	promiseLine: 'One portal in your house style that answers, so the phone does not have to',
 	title: 'Portaliq for citizens',
 	record: { one: 'case', many: 'cases' },

@@ -332,7 +332,7 @@ export function shareUI(w, geom, a = {}) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'casework', name: 'Municipal casework', persona: 'Mireille Hendriks, case handler; Femke van Dijk, social-domain consultant; the manager of public services buys' },
-	promise: 'Every case,\nevery deadline met',
+	promise: 'What if every case\nmet its deadline?',
 	promiseLine: 'Every case, every deadline met: one backlog with each case\'s deadline in view, documents and guidance at hand, international and local standards built in, on the Nextcloud you already run',
 	title: 'Dossiq for municipal casework',
 	record: { one: 'case', many: 'cases' },
@@ -341,7 +341,7 @@ const content = {
 	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#4 typewriter (as in the Pipelinq contact-centre film)', '#5 stepped hex wipe'],
 	maxWords: 40,
 	promiseFirst: true,
-	promiseMotion: 'Round 15: the body opens here, straight after the opening\'s handover. The Dossiq cell pops in on the opening\'s field, on the loop anchor, and turns orange; the neighbour cells lock in and the Nextcloud hex settles, while the field fades from the opening\'s shading. "Dossiq" sits as the chapter mark; the promise rises under it. Out on the bar line: a hard cut to the backlog.',
+	promiseMotion: 'Round 15: the body opens here, straight after the opening\'s handover. The Dossiq cell pops in on the opening\'s field, on the loop anchor, and turns orange; the neighbour cells lock in and the Nextcloud hex settles, while the field fades from the opening\'s shading. "Dossiq" sits as the chapter mark; the promise rises under it as a question, "What if every case met its deadline?" (Round 19: no answer card; the proofs answer it). Out on the bar line: a hard cut to the backlog.',
 	neighbours: ['portaliq', 'filinq'],
 	builtOnApps: ['filinq'],
 	hook: {

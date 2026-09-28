@@ -62,7 +62,7 @@ function tablesUI(w, geom) {
 const content = {
 	app: 'pipelinq',
 	audience: { slug: 'sales', name: 'Sales teams', persona: 'Tom Jansen, office manager and sales lead; Fatima Yildiz, practice owner' },
-	promise: 'Know which deals\nwill close',
+	promise: 'What if you knew\nwhich deals close?',
 	promiseLine: 'Know which deals will close: every deal on one board, a forecast that follows the drag, your data in Nextcloud Tables and flows that act on it',
 	title: 'Pipelinq for sales teams',
 	record: { one: 'client', many: 'clients' },
@@ -101,12 +101,12 @@ const content = {
 	],
 	general: {
 		module: 'flows',
-		title: 'Quote accepted? Your flow does the rest',
-		caption: 'Quote accepted?\nYour flow does the rest',
+		title: 'Quote accepted? Your flow does it',
+		caption: 'Quote accepted?\nYour flow does it',
 		source: 'Ruben, Round 8 (dashboards and flows on your own data); story.json mechanic 7 (the customer draws each flow, never pre-built)',
 		sound: 'A tick as each node is placed, a pluck as the last settles into its slot.',
 	},
-	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "Know", "which", "deals" then "will close" on the second line; at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
+	promiseMotion: 'Technique #2, zoom-out sentence build. The Pipelinq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Pipelinq" the promise builds one word per eighth note, each word slamming in large and the type column\'s camera easing back (ease.brand) so the line always just fits: "What", "if", "you", "knew" then "which deals close?" on the second line (Round 19: a question; the proofs answer it); at rest it is the key frame. Round 15: the body opens on this card, straight after the opening\'s handover; out on the bar line the cluster steps out and the app cell shrinks on the loop anchor to the hook\'s tag.',
 }
 
 export const { meta, boards } = audienceFilm(content)

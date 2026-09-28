@@ -82,7 +82,7 @@ function walletUI(w, geom) {
 const content = {
 	app: 'learniq',
 	audience: { slug: 'compliance', name: 'Compliance training', persona: 'Robert de Groot, compliance officer; the HR and L&D manager co-buys' },
-	promise: 'Training proof,\nready for inspectors',
+	promise: 'What if training proof\nwas always ready?',
 	promiseLine: 'Training proof, ready for inspectors: every rule\'s coverage on one page, signed records, certificates in staff phone wallets',
 	title: 'Learniq for compliance training',
 	record: { one: 'course', many: 'courses' },

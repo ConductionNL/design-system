@@ -127,7 +127,7 @@ function knowledgeUI(w, geom) {
 const content = {
 	app: 'pipelinq',
 	audience: { slug: 'kcc', name: 'Municipal contact centres', persona: 'Sanne de Wit, KCC officer; the head of the contact centre buys' },
-	promise: 'Answered on\nthe first call',
+	promise: 'What if one call\nwas enough?',
 	promiseLine: 'The citizen answered on the first call: every case, invoice, permit and contact on one view, the answer at hand while you talk, and nothing dropped when you pass it on',
 	title: 'Pipelinq for contact centres',
 	record: { one: 'citizen', many: 'citizens' },
@@ -166,8 +166,8 @@ const content = {
 	],
 	general: {
 		module: 'notify',
-		title: 'Pass it to a colleague, nothing dropped',
-		caption: 'Pass it to a colleague,\nnothing dropped',
+		title: 'Pass it on, nothing dropped',
+		caption: 'Pass it on,\nnothing dropped',
 		source: 'Ruben, Round 8 and 9: "refer to a colleague, callback note, notes on cases, tasks for colleagues"; story.json mechanic 8 (the right colleague hears in the Nextcloud notifications)',
 		motion: 'Technique #9, text-swap on a held card: the citizen\'s record card holds on the right; its action chip swaps one per beat (refer, note, call back, task: the old chip leaves upward as the new rises, 4 frames), and on the last the stage marker steps on, a pulse runs down the wire to the Nextcloud header and the colleague\'s notice drops in on top of the list. The caption holds whole. Out: the card steps down and the app tag travels to its cell in the promise cluster.',
 		params: {

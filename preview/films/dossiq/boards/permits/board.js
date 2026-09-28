@@ -105,7 +105,7 @@ function objectionUI(w, geom) {
 const content = {
 	app: 'dossiq',
 	audience: { slug: 'permits', name: 'Permits and enforcement', persona: 'Bram Kuijpers, permit officer; the VTH department manager buys' },
-	promise: 'Permit to objection,\none case',
+	promise: 'What if a permit\nwas one case?',
 	promiseLine: 'From permit to objection in one case, with nothing retyped into the national system',
 	title: 'Dossiq for permits and enforcement',
 	record: { one: 'case', many: 'cases' },
@@ -125,12 +125,12 @@ const content = {
 	proofs: [
 		{
 			id: 'redact',
-			title: 'Redact it without leaving the case',
-			caption: 'Redact it without\nleaving the case',
+			title: 'Redact inside the case',
+			caption: 'Redact inside\nthe case',
 			source: 'positioning dossiq usp-redact-objection: "Redact a document without leaving the case it belongs to." (verified)',
 			motion: 'Hex match cut from the reply pip into the document view. The redaction tool is on (its button cobalt); three lines are swept one after another into solid bars (each bar grows left to right in 6 frames), the orange ring following the cursor to the last. The case sidebar stays on screen: you never left it. Out: technique #1 as an upright hex, the last redaction bar grows to fill the frame (hexCut, ease.snap, one beat) and its cobalt-900 is the next ground for one frame before the objection scene lands.',
 			sound: 'Three dry swipes, one per bar, a whoosh through the hex fill.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Redact it without\nleaving the case', drawUI: redactUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Redact inside\nthe case', drawUI: redactUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'objection',

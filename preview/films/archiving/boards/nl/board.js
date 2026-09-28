@@ -89,13 +89,15 @@ const mono = (w, text, x, y, size = 30, fill = C.cobalt400) => textBlock(w, text
 /* ---------- the UIs, in the window's mock space (u = 2.5, main column geom.x to geom.r) ---------- */
 
 /** The document and its metadata panel. filled: 0 none, 1 all, 0.75 the last one typing. */
-function docWithMeta(w, geom, { filled, ringPanel = false, ringField = -1 }) {
+function docWithMeta(w, geom, { filled, ringPanel = false, ringField = -1, standard = null }) {
 	const { u } = geom
 	const x = geom.x, top = geom.top, dw = 470
 	docPage(w, x, top, dw, 600, { k: dw / 500, values: [118, 96, 72], lastOrange: false })
 	const px = x + dw + 30, pw = geom.r - px
 	panel(w, px, top, pw, 600, u)
-	bar(w, px + 28, top + 36, 150, 14, C.cobalt700)
+	// Round 12: the panel's head names the standard the metadata follows (a label, never 'certified').
+	if (standard) textBlock(w, standard, { x: px + 28, y: top + 50, size: 34, weight: 600, fill: C.cobalt, clip: false })
+	else bar(w, px + 28, top + 36, 150, 14, C.cobalt700)
 	const fields = ['waardering', 'bewaartermijn', 'informatiecategorie', 'archiefvormer', 'dekkingInTijd']
 	const vals = [150, 110, 170, 130, 120]
 	fields.forEach((f, i) => {
@@ -119,7 +121,7 @@ function docWithMeta(w, geom, { filled, ringPanel = false, ringField = -1 }) {
 const hookUI = (w, geom) => docWithMeta(w, geom, { filled: 0, ringPanel: true })
 
 /** Proof 1: the same document, the fields filling as it is made; the last one types on. */
-const mdtoUI = (w, geom) => docWithMeta(w, geom, { filled: 0.75, ringField: 4 })
+const mdtoUI = (w, geom) => docWithMeta(w, geom, { filled: 0.75, ringField: 4, standard: 'NEN-ISO 16175' })
 
 /** Proof 2: the case, its type, and the selectielijst with the matching row lit; the date follows. */
 function selectieUI(w, geom) {
@@ -249,9 +251,9 @@ const BODY_SCENES = [
 		title: 'The metadata is written as the document is made',
 		gloss: 'Described while you make it',
 		apps: ['filinq', 'openregister'],
-		motion: 'Technique #4, typewriter. No cut: the push-in holds on the panel and the dashed slots fill top to bottom, one per beat, each value typing on at one greeked character pair per 0.1 s with a hard on and off, a cursor after it. The field names are MDTO\'s own (waardering, bewaartermijn, informatiecategorie, archiefvormer, dekkingInTijd) as small mono labels. The slot being typed takes the orange ring. Filinq\'s hex on the anchor: the document is Filinq\'s.',
+		motion: 'Technique #4, typewriter. No cut: the push-in holds on the panel and the dashed slots fill top to bottom, one per beat, each value typing on at one greeked character pair per 0.1 s with a hard on and off, a cursor after it. The field names are MDTO\'s own (waardering, bewaartermijn, informatiecategorie, archiefvormer, dekkingInTijd) as small mono labels. The slot being typed takes the orange ring. The panel head carries one small label, NEN-ISO 16175 (Round 12): the records-management standard the metadata follows, a label only, never "certified" or "compliant". Filinq\'s hex on the anchor: the document is Filinq\'s.',
 		sound: 'Soft key ticks under the typing, a pluck as each field completes, a brighter pluck on the last.',
-		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test).',
+		source: 'research.json c1: openregister retention-management spec:12 (MDTO-compliant archival metadata, defaults on creation), tmlo-auto-populate spec:12, edepot-transfer spec:14 and :250 (dekkingInTijd emitted); archival-conformance proposal:255 (MDTO-XML 1.0.1 XSD test). NEN-ISO 16175 label: openregister archivering-vernietiging spec:665 (NEN-ISO 16175-1:2020, the successor to NEN 2082).',
 	},
 	{
 		id: 'selectielijst', from: 15, to: 23, mark: 'Selectielijst', caption: 'Het zaaktype kent\nzijn bewaartermijn', tag: { app: 'dossiq' }, ui: selectieUI,

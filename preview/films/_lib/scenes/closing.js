@@ -510,8 +510,11 @@ const FAMILY = ['openregister', 'pipelinq', 'opencatalogi', 'filinq', 'integriq'
  * ROUND 27 (Ruben, from the Keepiq render):
  *   - the Nextcloud cells form a C on the grid (the Conduction C: the ring two out from the lead, open to
  *     the right), with the orange lead at its heart; the connector lines run FROM the lead TO each cell;
- *   - after the zoom-out the white family cells form a hexagonal ring round it (the ring three out: 18
- *     cells, so with 19 apps besides the lead the last in FAMILY order, Larpinq, sits out);
+ *   - after the zoom-out the white family cells form a hexagonal ring round it (Round 27d: the ring FOUR
+ *     out, so exactly one ring of dark field cells lies between the C and the family; 24 cells, the apps
+ *     spread evenly round it and the few left over stay field);
+ *   - Round 27d: every app cell appears by its own field cell turning over into it (the dark face
+ *     squashes shut, the app face opens), so no hole opens where a cell appears: the C, the ring, the lead;
  *   - no app-name label beside the lead;
  *   - every hex FLIPS in (turns over by squashing, like the opening), never pops or scales in; lines are
  *     drawn on; every hex is one grid cell at the one grid radius (HEX_R, also the install avatar);
@@ -525,7 +528,7 @@ export const CONNECT = {
 	size: 92, gap: 14,
 	cells: Object.fromEntries(LOAD_ORDER.map((id, i) => [id, C_CELLS[i]])),
 	line: { width: 7 },
-	cam: { start: { at: [1482, 538], z: 1 }, out: { at: [1405, 522], z: 0.78 } },
+	cam: { start: { at: [1482, 538], z: 1 }, out: { at: [1362, 513], z: 0.55 } }, // Round 27d: ring four fits the safe box right of the type
 	type: { markY: 250, markH: 60, first: 420, size: 112, lh: 118, lineY: 668, lineSize: 72 },
 }
 const HEX_R = CONNECT.size
@@ -557,6 +560,18 @@ function camAt(t) {
 
 /** A flip in: the cell turns over by squashing (x scale 0 to 1), never a pop, never a rotation. */
 const flipIn = (t, t0, dur = F(4)) => (t < t0 ? 0 : ease.outCubic(inv(t0, t0 + dur, t)))
+/**
+ * Round 27d: an app cell appears by its field cell turning over into it at tApp. Returns the x scales of
+ * the dark field face and of the app face (one of them 0 at any frame).
+ */
+function turnInto(t, tField, tApp) {
+	const fm = tApp + F(2)
+	if (t < tApp) return { field: flipIn(t, tField), app: 0 }
+	if (t < fm) return { field: flipIn(t, tField) * (1 - ease.inCubic(inv(tApp, fm, t))), app: 0 }
+	return { field: 0, app: ease.outCubic(inv(fm, fm + F(2), t)) }
+}
+const fieldAt = (d) => F(1) + Math.min(d, 9) * F(1)
+const fieldShade = (d) => Math.max(0.18, 0.9 - d * 0.12)
 /**
  * The re-zoom's turn-over for a cell d steps from the lead: the front squashes shut, then the back
  * opens. Returns { front, back } x scales (one of them 0).
@@ -595,12 +610,13 @@ function avatarAt(g, x, y, sx = 1) {
 	el('use', { href: '#avatar-conduction', x: x - w / 2, y: y - h / 2, width: w, height: h, color: C.white }, fg)
 }
 
-/** The family ring: the ring three out, clockwise from the top left, in FAMILY order. */
+/** The family ring (Round 27d): the ring four out, clockwise from the top left, the apps spread evenly round it. */
 function familyCells(lead) {
 	const fam = FAMILY.filter((id) => id !== lead)
-	const ring = axialRing(3)
+	const all = axialRing(4)
+	const ring = fam.map((_, i) => all[Math.floor((i * all.length) / fam.length)])
 	const occupied = new Set([[0, 0], ...C_CELLS].map((c) => c.join(',')))
-	return ring.slice(0, fam.length).map((c, i) => {
+	return ring.map((c, i) => {
 		const near = [[0, 0], ...C_CELLS].filter((k) => occupied.has(k.join(','))).sort((a, b) => hexDist(c, a) - hexDist(c, b) || Math.hypot(...[0, 1].map((j) => cxy(a)[j] - cxy(c)[j])) - Math.hypot(...[0, 1].map((j) => cxy(b)[j] - cxy(c)[j])))[0]
 		return { id: fam[i], q: c[0], r: c[1], to: near }
 	})
@@ -626,17 +642,25 @@ function drawConnect(g, t, p, W = 1920) {
 	}
 
 	// The quiet field: unlit grid cells, the same hex as every app cell, shaded by distance from the lead.
-	for (let r = -7; r <= 7; r++) {
-		for (let q = -11; q <= 11; q++) {
-			if (taken.has(`${q},${r}`)) continue
+	// App cells get the field face here too (it turns over into them below, Round 27d).
+	const appAt = new Map([['0,0', K.lead], ...LOAD_ORDER.map((id, i) => [CONNECT.cells[id].join(','), K.loads[i]]), ...fam.map((f, i) => [`${f.q},${f.r}`, K.zoom[0] + 0.3 + i * (F(1) * 0.6)])])
+	for (let r = -10; r <= 10; r++) {
+		for (let q = -14; q <= 14; q++) {
+			if (taken.has(`${q},${r}`)) {
+				const [x, y] = cxy([q, r]), d = hexDist([q, r], [0, 0])
+				if (!visible(x, y)) continue
+				const sx = turnInto(t, fieldAt(d), appAt.get(`${q},${r}`)).field
+				if (sx > 0.001) unit(world, x, y, C.cobalt600, { sx, opacity: fieldShade(d) })
+				continue
+			}
 			const [x, y] = cxy([q, r])
 			const d = hexDist([q, r], [0, 0])
 			const inSoon = visible(x, y), fin = installShade(q, r, W) != null
 			if (!inSoon && !fin) continue
 			const o = turnOver(t, d)
 			// The ring round the lead stays clear ground, so its lines out to the C read on the cobalt.
-			const s = d === 1 ? 0 : flipIn(t, F(1) + Math.min(d, 7) * F(1)) * o.front
-			if (s > 0.001 && inSoon) unit(world, x, y, C.cobalt600, { sx: s, opacity: Math.max(0.18, 0.9 - d * 0.12) })
+			const s = d === 1 ? 0 : flipIn(t, fieldAt(d)) * o.front
+			if (s > 0.001 && inSoon) unit(world, x, y, C.cobalt600, { sx: s, opacity: fieldShade(d) })
 			back(q, r, x, y, o.back)
 		}
 	}
@@ -665,19 +689,19 @@ function drawConnect(g, t, p, W = 1920) {
 	LOAD_ORDER.forEach((id, i) => {
 		const [q, r] = CONNECT.cells[id], [x, y] = cxy([q, r])
 		const o = turnOver(t, 2)
-		unit(world, x, y, C.nextcloud, { icon: iconOf(id), color: C.white, sx: flipIn(t, K.loads[i]) * o.front })
+		unit(world, x, y, C.nextcloud, { icon: iconOf(id), color: C.white, sx: turnInto(t, 0, K.loads[i]).app * o.front })
 		back(q, r, x, y, o.back)
 	})
 	// The family: white cells with their glyphs, flipping in as their lines arrive.
 	fam.forEach((f, i) => {
 		const [x, y] = cxy([f.q, f.r])
-		const o = turnOver(t, 3)
-		unit(world, x, y, C.white, { glyph: f.id, color: C.cobalt, sx: flipIn(t, K.zoom[0] + 0.3 + i * (F(1) * 0.6)) * o.front })
+		const o = turnOver(t, 4)
+		unit(world, x, y, C.white, { glyph: f.id, color: C.cobalt, sx: turnInto(t, 0, K.zoom[0] + 0.3 + i * (F(1) * 0.6)).app * o.front })
 		back(f.q, f.r, x, y, o.back)
 	})
 	// The lead: the film's app (or OpenRegister), the frame's one orange; it turns over into the avatar.
 	const o = turnOver(t, 0)
-	unit(world, 0, 0, C.orange, { glyph: lead, color: C.white, sx: flipIn(t, K.lead) * o.front })
+	unit(world, 0, 0, C.orange, { glyph: lead, color: C.white, sx: turnInto(t, 0, K.lead).app * o.front })
 	back(0, 0, 0, 0, o.back)
 
 	// The type column: the Nextcloud mark, "Built on" / "Nextcloud", and the one swapping line that ends

@@ -1,207 +1,243 @@
 /**
- * Thematiq, ONE audience film (Round 20, Ruben 2026-09-28): the brands film merged into the
- * government film. Speaks to the house-style coordinator of a municipality (Sanne Willems), the
- * Rijkshuisstijl programme manager (Bram de Groot), shared-service platform admins and a company's
- * head of marketing (Iris Bakker). Positioning: ds-connext-film-review/audiences/positioning-tk.md.
- * Sources: ~/memcap-work/positioning/mi/positioning/thematiq.json (usp-government-house-styles,
- * sp-token-editor, usp-prove-the-contrast, sp-audit-trail) and Thematiq's repo on development
- * (docs/features/token-editor.md: "4 category tabs grouping the 53 editable tokens"; specs
- * token-sets, nl-design, custom-token-sets, token-editor-ui, token-set-contrast-audit,
- * theming-audit; change catalogue-theme-gallery: an opt-in catalogue of community and supplier
- * token sets, each with its contrast result, installed by an administrator).
+ * Thematiq, ONE audience film (Round 20: brands folded into government), reworked in Round 22
+ * (Ruben's page notes, 2026-09-28). Speaks to the house-style coordinator of a municipality, the
+ * Rijkshuisstijl programme manager, shared-service platform admins and a company's head of marketing.
+ * Positioning and the story research: ds-connext-film-review/audiences/positioning-tk.md (Round 22).
+ * Real screens: ds-connext-film-review/apps/thematiq/screens/ (screens.md), read from the Thematiq repo
+ * on development (templates/settings/admin.php, docs/img, img).
  *
- *   question "What if Nextcloud had your house style?" (Round 19, from "Nextcloud in your own
- *            house style")
- *   hook     HERO: pick your organisation from the NL Design System themes (labelled for Dutch
- *            government) and Nextcloud repaints into your house style (a stepped hex wipe)
- *   proof 1  your house-style templates (manage, upload, activate) and all 53 design tokens you
- *            can adjust, in four tabs
- *   proof 2  share house styles through the store (Round 21, drawn in the Nextcloud app store's
- *            look): sets from other organisations and
- *            suppliers, each with its contrast result (WCAG), one installed
- *   general  the data layer: every change shows who and when
+ *   story 1  word art: "Your car, your house, your colours" (the promise slot; Round 22 replaces the
+ *            question with a small story about ownership: control makes it feel yours)
+ *   story 2  word art: "Your workspace, not your style?" (the hook slot)
+ *   scene 3  THE CORE: Custom Token Overrides, the real token editor (four tabs, a row per token with
+ *            its CSS variable, swatch, hex field and reset): "Adjust 53 design tokens"
+ *   scene 4  share your templates through the store (Round 21), in the Nextcloud app store's look
+ *   scene 5  for Dutch organisations: the real "NL Design System Theme" section, its design token set
+ *            list and the custom token set upload: "Bring your NL Design tokens along" (replaces the
+ *            old organisation-picker hook; takes the general slot's time)
+ *   No data-layer scene (Round 22).
  *
- * Round 20 USPs Ruben missed, all in the picture: template management (proof 1, left), the
- * number of design tokens (proof 1, caption and label), sharing templates through the store
- * (proof 2, "through the store" per Round 21; the change behind it is catalogue-theme-gallery), NL Design System themes for Dutch government
- * (the hook's picker label).
- *
- * Techniques (refs/techniques.md): #5 stepped hex wipe (the repaint), #3 grid-cell ripple (the
- * token rows, the store cards), #2 zoom-out sentence build (the question).
+ * Techniques (refs/techniques.md): #2 sentence build as word art (the story), #3 grid-cell ripple
+ * (token rows, store cards), #9 text-swap on a held diagram (the list selection, the upload).
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { textBlock } from '../../../_lib/stage.js'
-import { rect, bar, circle, panel, statusPill, use, docPage, button, widgetTile } from '../../../_lib/ui.js'
-import { repaint } from '../../ui.js'
+import { el, textBlock } from '../../../_lib/stage.js'
+import { rect, bar, circle, hex, panel, use, button, appMark } from '../../../_lib/ui.js'
 
 const REFS = [
-	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'A stepped shape crosses the frame in flat steps; grid cells light in waves.' },
 	{ name: 'Replit Parallel Agents', url: 'https://whatships.com/videos/replit-parallel-agents/', borrow: 'The sentence builds as the camera pulls back.' },
+	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells light in waves.' },
 ]
 
-/** Hook: the organisation picker open over a workspace that is half repainted. */
-function styleUI(w, geom) {
-	const { u } = geom
-	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
-	const body = (g, fill, tint) => {
-		// the dashboard behind the picker: three widget tiles whose heads carry the style
-		const ty = top + 330
-		const tw = (width - 44) / 3
-		for (let i = 0; i < 3; i++) {
-			widgetTile(g, x + i * (tw + 22), ty, tw, 300, u, ['nc-files', 'nc-calendar', 'nc-mail'][i], (bx, by, bw) => {
-				for (let k = 0; k < 4; k++) bar(g, bx, by + k * 34, bw * [0.9, 0.7, 0.8, 0.5][k], 8, C.cobalt200)
-			})
-			rect(g, x + i * (tw + 22), ty, tw, 10, fill, 2)
-		}
-		rect(g, x, ty + 330, width, 200, tint, 4 * u)
-		button(g, x + 40, ty + 400, 180, 60, u)
-		rect(g, x + 40, ty + 400, 180, 60, fill, 4 * u)
-		bar(g, x + 80, ty + 426, 100, 9, C.white)
-	}
-	repaint(w, geom, { mode: 'wipe', at: 600, content: body })
-	// The picker: a field and its open list of organisations, each with its palette.
-	panel(w, x, top, width, 300, u)
-	rect(w, x + 30, top + 26, width - 60, 56, C.white, 4 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	// Round 20: the themes are NL Design System's, labelled for Dutch government
-	textBlock(w, 'NL Design System · Dutch government', { x: x + 110, y: top + 64, size: 26, weight: 600, fill: C.cobalt900, clip: false })
-	const pals = [[C.cobalt, C.cobalt300], [C.forest, C.forest300], [C.lavender, C.lavender300], [C.mint, C.mint300]]
-	pals.forEach(([a, b], i) => {
-		const cy = top + 122 + i * 44
-		if (i === 1) rect(w, x + 30, cy - 21, width - 60, 42, C.cobalt50, 3 * u)
-		bar(w, x + 56, cy - 5, [230, 280, 200, 250][i], 10, i === 1 ? C.cobalt900 : C.cobalt700)
-		rect(w, x + width - 150, cy - 12, 24, 24, a, 3)
-		rect(w, x + width - 118, cy - 12, 24, 24, b, 3)
-		rect(w, x + width - 86, cy - 12, 24, 24, C.white, 3, { stroke: C.cobalt200, 'stroke-width': u })
-	})
-	// the chosen organisation: the scene's one orange, a ring round its row
-	rect(w, x + 24, top + 122 + 44 - 26, width - 48, 52, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+const T = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weight: o.weight ?? 700, fill: o.fill ?? C.cobalt900, family: o.family ?? 'Figtree', clip: false, tracking: o.tracking ?? -0.01 })
+
+/* ---------- the story: word art ---------- */
+
+/** Story 1: three everyday things you style yourself; the last word is the scene's one orange. */
+function storyOne(ctx) {
+	const g = el('g', {}, ctx.g)
+	appMark(g, 'thematiq')
+	T(g, 'Your car,', 120, 560, 150, { fill: C.white, tracking: -0.03 })
+	T(g, 'your house,', 300, 720, 150, { fill: C.white, tracking: -0.03 })
+	T(g, 'your colours', 120, 910, 190, { fill: C.orange, tracking: -0.03 })
+	// three solid colour hexes, one per thing you pick yourself (three families)
+	;[[1560, 420, C.lavender], [1690, 590, C.mint], [1560, 760, C.forest]].forEach(([cx, cy, f]) => hex(g, cx, cy, 90, f, 12))
 }
 
-/** Proof 1: your templates on the left (one active, one uploading); the token editor on the right, 4 tabs, 53 tokens. */
+/** Story 2: the workspace in stock Nextcloud blue, the question with "your style" in orange. */
+function storyTwo(ctx) {
+	const g = el('g', {}, ctx.g)
+	appMark(g, 'thematiq')
+	T(g, 'Your workspace,', 120, 600, 150, { fill: C.white, tracking: -0.03 })
+	// the accent: textBlock sets *...* in the accent colour
+	textBlock(g, 'not *your* *style?*', { x: 120, y: 860, size: 180, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	// the stock workspace: one Nextcloud-blue hex with the Nextcloud mark, the same for everyone
+	hex(g, 1620, 300, 150, C.nextcloud, 18)
+	const w = 150 * 1.12
+	use(g, 'nextcloud-logo', 1620 - w / 2, 300 - w * 0.25, w, w * 0.5, C.white)
+}
+
+/* ---------- scene 3: the real token editor ---------- */
+
+/** Custom Token Overrides (token-editor-*.png): header with Download and Upload, four tabs, token rows. */
 function tokensUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
-	const lw = 300
-	// templates: your house styles, each with its swatches; the active one ticked
-	panel(w, x, top, lw, 600, u)
-	textBlock(w, 'Templates', { x: x + 110, y: top + 54, size: 26, weight: 600, fill: C.cobalt900, clip: false })
-	const sets = [[C.forest, C.forest300], [C.cobalt, C.cobalt300], [C.lavender, C.lavender300], [C.mint, C.mint300]]
-	sets.forEach(([a, b2], i) => {
-		const cy = top + 120 + i * 84
-		if (i === 0) rect(w, x + 14, cy - 34, lw - 28, 68, C.cobalt50, 3 * u)
-		rect(w, x + 30, cy - 16, 28, 28, a, 3)
-		rect(w, x + 62, cy - 16, 28, 28, b2, 3)
-		bar(w, x + 108, cy - 5, [120, 100, 130, 90][i], 9, C.cobalt700)
-		if (i === 0) { rect(w, x + lw - 64, cy - 16, 32, 32, C.mint, 4); use(w, 'icon-check', x + lw - 60, cy - 12, 24, 24, C.white) }
+	panel(w, x, top, width, 610, u)
+	// the grey header bar
+	rect(w, x, top, width, 76, C.cobalt50, 4 * u)
+	T(w, 'Custom Token Overrides', x + 110, top + 48, 24)
+	T(w, 'Download', x + width - 230, top + 48, 22, { fill: C.cobalt })
+	rect(w, x + width - 104, top + 20, 84, 38, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	T(w, 'Upload', x + width - 94, top + 46, 17, { weight: 500 })
+	// the four tabs, the first active
+	const tabs = [['Login page & Branding', 222], ['Content area', 136], ['Buttons & Status', 172], ['Typography', 124]]
+	let tx = x + 16
+	tabs.forEach(([t, tw], i) => {
+		rect(w, tx, top + 92, tw, 42, i === 0 ? C.cobalt100 : C.cobalt50, 3 * u)
+		T(w, t, tx + 12, top + 120, 17, { fill: i === 0 ? C.cobalt : C.cobalt900 })
+		tx += tw + 8
 	})
-	button(w, x + 30, top + 500, lw - 60, 56, u, { kind: 'ghost' })
-	// the token editor: 4 tabs, the count, one row per token with its colour
-	const ex = x + lw + 24, ew = width - lw - 24
-	panel(w, ex, top, ew, 600, u)
-	for (let i = 0; i < 4; i++) {
-		bar(w, ex + 30 + i * 78, top + 36, 54, 10, i === 1 ? C.cobalt900 : C.cobalt300)
-		if (i === 1) rect(w, ex + 24 + i * 78, top + 60, 66, 2 * u, C.cobalt)
-	}
-	textBlock(w, '53 tokens', { x: ex + ew - 140, y: top + 50, size: 26, weight: 600, fill: C.cobalt900, clip: false })
-	rect(w, ex + 20, top + 72, ew - 40, u, C.cobalt100)
-	const vals = [C.forest, C.forest300, C.cobalt900, C.white, C.mint, C.cobalt50]
-	vals.forEach((sw, i) => {
-		const cy = top + 124 + i * 72
-		if (i > 0) rect(w, ex + 20, cy - 36, ew - 40, u, C.cobalt50)
-		bar(w, ex + 30, cy - 5, [170, 140, 190, 120, 160, 130][i], 9, C.cobalt700)
-		rect(w, ex + ew - 150, cy - 20, 40, 40, sw, 4, { stroke: C.cobalt200, 'stroke-width': u })
-		bar(w, ex + ew - 96, cy - 4, 64, 8, C.cobalt300)
+	rect(w, x, top + 146, width, u / 2, C.cobalt100)
+	// one row per token: label, its CSS variable, swatch, hex field, reset
+	const rows = [['Primary color', C.forest, true], ['Primary text color', C.white, false], ['Primary hover color', C.forest300, false], ['Primary element color', C.forest, false], ['Primary element hover', C.cobalt900, false]]
+	rows.forEach(([label, sw, custom], i) => {
+		const cy = top + 196 + i * 82
+		if (i > 0) rect(w, x + 16, cy - 41, width - 32, u / 2, C.cobalt50)
+		T(w, label, x + 30, cy - 4, 19, { weight: 500 })
+		if (custom) circle(w, x + 30 + label.length * 9.6 + 12, cy - 10, 6, C.cobalt)
+		bar(w, x + 30, cy + 14, [130, 160, 170, 180, 210][i], 6, C.cobalt300)
+		rect(w, x + width - 300, cy - 22, 44, 44, C.white, 3 * u, { stroke: C.cobalt400, 'stroke-width': u })
+		rect(w, x + width - 290, cy - 14, 24, 28, sw, 2, sw === C.white ? { stroke: C.cobalt300, 'stroke-width': u / 2 } : {})
+		rect(w, x + width - 244, cy - 22, 120, 44, C.white, 3 * u, { stroke: C.cobalt400, 'stroke-width': u })
+		bar(w, x + width - 230, cy - 4, 80, 8, C.cobalt900)
+		rect(w, x + width - 100, cy - 20, 50, 40, C.cobalt50, 4 * u)
+		circle(w, x + width - 75, cy, 9, 'none', { stroke: C.cobalt, 'stroke-width': u })
 	})
-	// the token being adjusted: the scene's one orange
-	rect(w, ex + 14, top + 124 + 72 - 30, ew - 28, 60, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	// the token being adjusted, the scene's one orange: the swatch of the first row
+	rect(w, x + width - 308, top + 196 - 30, 60, 60, 'none', 4 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
-/** Proof 2 (Round 21): the store, in the Nextcloud app store's look: a search field, house-style cards other organisations and suppliers shared, each with its rating and contrast result; one being installed. */
+/* ---------- scene 4: the store ---------- */
+
+/** The store, in the Nextcloud app store's look (appstore-listing.png): blue bar, search, rail, template cards. */
 function storeUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
 	panel(w, x, top, width, 610, u)
-	textBlock(w, 'App store', { x: x + 110, y: top + 54, size: 26, weight: 600, fill: C.cobalt900, clip: false })
-	// the store's search field
-	rect(w, x + width - 330, top + 22, 300, 50, C.cobalt50, 25)
-	circle(w, x + width - 300, top + 47, 9, 'none', { stroke: C.cobalt400, 'stroke-width': u })
-	bar(w, x + width - 278, top + 43, 120, 8, C.cobalt300)
+	// the store's own blue top bar: the Nextcloud mark, "App store", the search field
+	rect(w, x, top, width, 70, C.nextcloud, 4 * u)
+	use(w, 'nextcloud-logo', x + 96, top + 20, 60, 30, C.white)
+	T(w, 'App store', x + 170, top + 45, 24, { fill: C.white })
+	rect(w, x + width - 300, top + 16, 270, 38, C.white, 3 * u)
+	circle(w, x + width - 278, top + 35, 7, 'none', { stroke: C.cobalt400, 'stroke-width': u })
+	bar(w, x + width - 260, top + 31, 120, 8, C.cobalt200)
+	// the category rail
+	for (let i = 0; i < 7; i++) {
+		rect(w, x + 24, top + 104 + i * 58, 22, 22, C.nextcloud, 3)
+		bar(w, x + 58, top + 110 + i * 58, [90, 110, 70, 100, 80, 96, 76][i], 9, i === 1 ? C.nextcloud : C.cobalt300)
+	}
+	// the templates: house-style cards with swatches, organisation, rating; yours is being shared
+	const gx = x + 200, cw = (width - 230 - 20) / 2, ch = 244
 	const pals = [[C.forest, C.forest300], [C.lavender, C.lavender300], [C.cobalt, C.cobalt300], [C.mint, C.mint300]]
-	const cw = (width - 90) / 2, ch = 240
-	pals.forEach(([a, b2], i) => {
-		const cx = x + 30 + (i % 2) * (cw + 30), cy = top + 96 + Math.floor(i / 2) * (ch + 20)
+	pals.forEach(([a, b], i) => {
+		const cx = gx + (i % 2) * (cw + 20), cy = top + 96 + Math.floor(i / 2) * (ch + 18)
 		panel(w, cx, cy, cw, ch, u)
-		rect(w, cx, cy, cw * 0.5, 56, a, 0)
-		rect(w, cx + cw * 0.5, cy, cw * 0.3, 56, b2, 0)
-		rect(w, cx + cw * 0.8, cy, cw * 0.2, 56, C.white, 0)
-		bar(w, cx + 24, cy + 84, [180, 150, 200, 140][i], 11, C.cobalt900)
-		bar(w, cx + 24, cy + 112, 120, 8, C.cobalt300)
-		// the store's rating: five dots, filled by score
-		for (let k = 0; k < 5; k++) circle(w, cx + cw - 150 + k * 24, cy + 116, 7, k < [5, 4, 4, 5][i] ? C.cobalt400 : C.cobalt100)
-		// the contrast result, the small WCAG label on a mint pill
-		rect(w, cx + 24, cy + 150, 110, 36, C.mint300, 18)
-		textBlock(w, 'WCAG', { x: cx + 44, y: cy + 176, size: 20, weight: 600, fill: C.cobalt900, clip: false })
-		button(w, cx + cw - 164, cy + ch - 70, 140, 48, u, { kind: i === 0 ? 'primary' : 'ghost' })
+		rect(w, cx, cy, cw * 0.55, 60, a)
+		rect(w, cx + cw * 0.55, cy, cw * 0.3, 60, b)
+		rect(w, cx + cw * 0.85, cy, cw * 0.15, 60, C.white)
+		bar(w, cx + 22, cy + 88, [170, 140, 190, 130][i], 11, C.cobalt900)
+		bar(w, cx + 22, cy + 114, 110, 8, C.cobalt300)
+		for (let k = 0; k < 5; k++) circle(w, cx + 30 + k * 22, cy + 150, 7, k < [5, 4, 4, 5][i] ? C.nextcloud : C.cobalt100)
+		button(w, cx + cw - 150, cy + ch - 66, 128, 46, u, { kind: i === 0 ? 'primary' : 'ghost' })
 	})
-	// installing the first: the scene's one orange
-	const cx0 = x + 30, cy0 = top + 96
-	rect(w, cx0 + cw - 172, cy0 + ch - 78, 156, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	// yours: the share button on the first card, the scene's one orange
+	rect(w, gx + cw - 158, top + 96 + ch - 74, 144, 62, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+}
+
+/* ---------- scene 5: the NL Design import ---------- */
+
+/** NL Design System Theme (admin-nl-design-panel.png, guide-dropdown-open.png) and the custom token set upload. */
+function nldesignUI(w, geom) {
+	const { u } = geom
+	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
+	panel(w, x, top, width, 620, u)
+	T(w, 'NL Design System Theme', x + 110, top + 52, 30)
+	// the small label for Dutch government, and the section's own description
+	rect(w, x + width - 232, top + 24, 206, 38, C.cobalt50, 19)
+	T(w, 'Dutch government', x + width - 216, top + 50, 18, { weight: 600, fill: C.cobalt })
+	bar(w, x + 30, top + 92, width - 200, 9, C.cobalt300)
+	bar(w, x + 30, top + 112, width - 420, 9, C.cobalt300)
+	// the design token set list, open
+	T(w, 'Design token set', x + 30, top + 162, 20)
+	rect(w, x + 30, top + 178, 400, 214, C.white, 3 * u, { stroke: C.cobalt900, 'stroke-width': u })
+	;['Rijkshuisstijl', 'Gemeente Amsterdam', 'Gemeente Den Haag', 'Gemeente Utrecht', 'Gemeente Rotterdam'].forEach((t, i) => {
+		const ly = top + 214 + i * 38
+		if (i === 0) rect(w, x + 34, ly - 26, 392, 36, C.cobalt50, 2)
+		T(w, t, x + 50, ly, 18, { weight: 500 })
+	})
+	// custom token sets: upload your own NL Design CSS or W3C Design Tokens file
+	T(w, 'Custom token sets', x + 470, top + 162, 20)
+	T(w, 'Token set name', x + 470, top + 204, 16, { weight: 500, fill: C.cobalt700 })
+	rect(w, x + 470, top + 216, width - 500, 44, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	bar(w, x + 486, top + 234, 150, 8, C.cobalt900)
+	rect(w, x + 470, top + 276, width - 500, 44, C.cobalt50, 3 * u)
+	bar(w, x + 486, top + 294, 180, 8, C.cobalt400)
+	rect(w, x + 470, top + 340, 250, 48, C.cobalt, 4 * u)
+	T(w, 'Choose file and upload', x + 486, top + 371, 16, { fill: C.white, weight: 600 })
+	// the upload, the scene's one orange
+	rect(w, x + 462, top + 332, 266, 64, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	// below: the imported set lands in the list of custom sets
+	panel(w, x + 30, top + 420, width - 60, 170, u)
+	;[[C.forest, C.forest300], [C.cobalt, C.cobalt300]].forEach(([a, b], i) => {
+		const ry = top + 470 + i * 64
+		rect(w, x + 56, ry - 16, 28, 28, a, 3)
+		rect(w, x + 88, ry - 16, 28, 28, b, 3)
+		bar(w, x + 136, ry - 4, [200, 150][i], 9, C.cobalt900)
+		if (i === 0) { rect(w, x + width - 150, ry - 16, 90, 32, C.mint300, 16); bar(w, x + width - 128, ry - 3, 46, 6, C.mint) }
+	})
 }
 
 const content = {
 	app: 'thematiq',
 	audience: { slug: 'government', name: 'Government and brands', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) and a company\'s head of marketing (Iris Bakker) folded in (Round 20: one Thematiq film)' },
-	promise: 'What if Nextcloud\nhad your\nhouse style?',
-	promiseLine: "Nextcloud in your government's own house style, checked for accessibility first",
+	promise: 'Your car,\nyour house,\nyour colours',
+	promiseLine: 'Do you really own it if you cannot style it your way? Thematiq makes Nextcloud yours: your tokens, your templates, your NL Design house style',
 	title: 'Thematiq',
 	record: { one: 'house style', many: 'house styles' },
-	logline: 'What if Nextcloud had your house style? Pick your organisation from the NL Design System themes and Nextcloud repaints, manage your own templates and adjust 53 design tokens, share house styles through the store with their contrast result, and every change is on record.',
+	logline: 'A small story about ownership: you pick your car\'s colour and your house\'s, so why not your workspace\'s? Then the answer on the real screens: adjust 53 design tokens, share your templates through the store, and bring the NL Design tokens your organisation already has.',
 	references: REFS,
-	techniques: ['#5 stepped hex wipe', '#3 grid-cell ripple (token rows, store cards)', '#2 zoom-out sentence build (the question)'],
-	neighbours: ['portaliq', 'launchpad'],
-	builtOnApps: ['portaliq'],
+	techniques: ['#2 sentence build as word art (the story)', '#3 grid-cell ripple (token rows, store cards)', '#9 text-swap on a held diagram (the token set list, the upload)'],
+	neighbours: ['launchpad'],
+	builtOnApps: [],
 	hook: {
-		title: 'Pick your organisation, the style loads',
-		caption: 'Pick your organisation,\nthe style loads',
-		ui: { drawUI: styleUI, tagFill: 'cobalt' },
-		source: 'thematiq.json usp-government-house-styles (verified): "Pick your organisation and the exact house style loads." Specs token-sets (shipped sets in token-sets.json: Rijkshuisstijl, VNG, provinces, municipalities; no count on screen).',
-		motion: 'In behind the app hex the question leaves on the loop anchor, the key frame reads: caption, the organisation picker open with its NL Design System label (for Dutch government), the workspace still in Nextcloud blue. On beat 2 the chosen row takes its orange ring with a tick. Technique #5, stepped hex wipe: a column of pointy-top hexes in three stepped sizes enters the window from the left edge and crosses it on ease.snap in four flat steps (one per eighth), and everything behind it repaints: the topbar, the nav head, the title bar, the tile heads and the primary button turn from Nextcloud blue into the house style. The still is the wipe at mid-window. Out: the hex match cut from the wipe column into the templates.',
-		sound: 'A tick as the row is picked, four dry clicks as the wipe steps, a soft whoosh behind it.',
+		title: 'Story 2: Your workspace, not your style?',
+		caption: 'Your workspace,\nnot your style?',
+		ui: { drawUI: () => {}, tagFill: 'cobalt' },
+		source: 'Round 22 (Ruben): "do you really own it if you can\'t style it your way?" Story research in positioning-tk.md (Round 22): psychological ownership, control makes it feel yours (Pierce, Kostova and Dirks 2001, 2003).',
+		motion: 'Word art, the story\'s turn. Straight out of story 1 the three colour hexes step off on 16ths; "Your workspace," slams in at 150 px one word per sixteenth while a single Nextcloud-blue hex with the Nextcloud mark lands top right on ease.brand: the stock workspace, the same for everyone. On beat 3 "not your style?" slams in at 180 px, "your style?" in orange (the scene\'s one orange). Holds; out: the hex shrinks into the token editor\'s swatch (match cut).',
+		sound: 'A low thud under the Nextcloud hex, a hard tick per word, a short silence before "not your style?".',
 	},
 	proofs: [
 		{
 			id: 'tokens',
 			title: 'Adjust 53 design tokens',
 			caption: 'Adjust 53\ndesign tokens',
-			source: 'Round 20 (template management, the number of tokens). Thematiq docs/features/token-editor.md on development: "4 category tabs grouping the 53 editable tokens by area"; specs token-editor-ui, custom-token-sets (upload, manage and activate your own house-style sets), token-sets; thematiq.json sp-token-editor.',
-			motion: 'The hex lands as the templates list on the left and the token editor on the right. The templates drop in a sixteenth apart, the active one ticking mint. Technique #3, grid-cell ripple: the token rows step 20% to 40% to full from the top; the "53 tokens" label sits by the tabs. On beat 3 the second row takes the orange ring and its colour swaps in place.',
-			sound: 'A soft pluck per template, a ripple of ticks with the rows, a click as the colour swaps.',
+			source: 'Real screen: Custom Token Overrides (docs/img/token-editor-*.png, import-export-buttons.png). docs/features/token-editor.md on development: "4 category tabs grouping the 53 editable tokens by area". Specs token-editor-ui, token-import-export.',
+			motion: 'The core, scene 3. The hex lands as the swatch of the first row and the real token editor builds round it: the grey header with Download and Upload, the four tabs ("Login page & Branding" active), then technique #3, grid-cell ripple: the token rows step 20% to 40% to full from the top, each with its CSS variable, swatch, hex field and reset. On beat 3 the first swatch takes the orange ring, turns from Nextcloud blue to the house colour and the blue custom dot pops after "Primary color".',
+			sound: 'A ripple of ticks with the rows, a click on the swatch, a pluck as the custom dot pops.',
 			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'store',
-			title: 'Share house styles through the store',
-			caption: 'Share house styles\nthrough the store',
-			source: 'Rounds 20 and 21 (sharing templates through the store, drawn as the Nextcloud app store). Thematiq change catalogue-theme-gallery on development: an opt-in gallery of community and supplier token sets with name, organisation, swatches, licence, source and the contrast result; a contribution guide for getting a set in; installing is an administrator\'s choice. Contrast: spec token-set-contrast-audit, thematiq.json usp-prove-the-contrast.',
-			motion: 'Hard cut on the beat to the store, in the Nextcloud app store\'s look (a search field, cards with a rating). Technique #3, grid-cell ripple: the four house-style cards step in from 20% to full in waves, swatches first, each settling its mint WCAG pill (the contrast result). On beat 3 the first card\'s install button takes the orange ring and fills.',
-			sound: 'A ripple of ticks per wave, a pluck per WCAG pill, a click on install.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share house styles\nthrough the store', drawUI: storeUI, tagFill: 'cobalt' }),
+			title: 'Share your templates in the store',
+			caption: 'Share your templates\nin the store',
+			source: 'Rounds 21 and 22 (Ruben: share your templates through the store). No real screen yet: change catalogue-theme-gallery (open) lists shared sets with name, organisation, swatches, licence, source and contrast result; drawn in the look of the Nextcloud app store (docs/img/appstore-listing.png).',
+			motion: 'Hard cut on the beat to the store, in the Nextcloud app store\'s look: its blue bar with the Nextcloud mark, "App store" and the search field, the category rail. Technique #3: the house-style cards step in in waves, swatches first, their rating dots filling. Your template is the first card; on beat 3 its share button takes the orange ring and fills.',
+			sound: 'A ripple of ticks per wave, a click on share.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your templates\nin the store', drawUI: storeUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
 		module: 'dataLayer',
-		caption: 'Every change shows\nwho and when',
-		source: 'thematiq.json sp-audit-trail ("See exactly who touched a theme setting last"); spec theming-audit; COPY.dataLayer',
-		params: {
-			record: { avatar: 'square', title: 240, sub: 150, status: 'mint', fields: [[56, 150], [56, 120], [64, 170], [48, 96]] },
-			history: [{ av: C.cobalt300, w: 180 }, { av: C.cobalt200, w: 150 }, { av: C.cobalt300, w: 170 }, { av: C.cobalt200, w: 130 }],
-			links: ['nc-files', 'nc-mail'],
-		},
-		sound: 'A pluck as each Nextcloud app links in, a tick on the newest history entry.',
+		title: 'Bring your NL Design tokens along',
+		caption: 'Bring your NL Design\ntokens along',
+		source: 'Real screen: NL Design System Theme (docs/img/admin-nl-design-panel.png, guide-dropdown-open.png; templates/settings/admin.php): "Select a Dutch government design token set as a base", the Design token set list, and Custom token sets: "Upload your own house style as a token set, either as an NL Design CSS file (--nldesign-* variables) or a W3C Design Tokens JSON file." Specs nl-design, token-sets, custom-token-sets.',
+		motion: 'For Dutch organisations (Round 22; replaces the old organisation-picker hook). Hard cut on the beat to the real "NL Design System Theme" section, its small "Dutch government" label top right. Technique #9, text-swap on a held diagram: the Design token set list opens and the selection steps down it; beside it the Custom token sets upload fills in its name and file, and on beat 3 "Choose file and upload" takes the orange ring; the imported set drops into the list below with a mint pill. BODY END: holds its caption to four frames before the bar line; its cards step down and the app tag travels into Built on Nextcloud.',
+		params: {},
+		sound: 'A tick per list step, a soft paper slide as the file goes in, a click on upload, a pluck as the set lands.',
 	},
-	promiseMotion: 'Round 19: the promise card is a question, and the proofs answer it (no answer card). Technique #2, zoom-out sentence build, the body\'s opening statement. Straight after the opening\'s handover, on its plain field, the Thematiq cell lands on the loop anchor and turns orange, the Nextcloud hex settles. Under "Thematiq" the question builds one word per sixteenth from two frames after the handover, each word slamming in large while the type column eases back (ease.brand) so the line always just fits. Holds to four frames before beat 9; then the field, the neighbours and the Nextcloud hex step out on 16ths and the Thematiq cell shrinks in place on the loop anchor to the hook\'s tag, turning cobalt, while the hook\'s window lays in behind it.',
+	promiseMotion: 'Round 22: the question becomes a small story in word art (story 1 of 2). Straight after the opening\'s handover, on its plain field, "Thematiq" sits small as the chapter mark and technique #2 builds the words large and expressive, one word per sixteenth: "Your car," at 150 px, "your house," stepped in to the right, and "your colours" at 190 px in orange (the scene\'s one orange), while three solid colour hexes (lavender, mint, forest) pop in on the right, one per line. Holds to four frames before beat 9, then the story turns.',
+	promiseSound: 'The body\'s bed enters gently under the story (pad and offbeat bass, no stinger): a soft tick per word, a pluck per colour hex.',
 }
 
-export const { meta, boards } = audienceFilm(content)
+const film = audienceFilm(content)
+// Round 22: the two story cards are word art, and the NL Design import takes the general slot's time
+// as an app scene (there is no data-layer scene in this film).
+const B = (id) => film.boards.find((b) => b.id === id)
+Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', draw: storyOne })
+Object.assign(B('hook'), { draw: storyTwo })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', draw: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }) })
+export const { meta, boards } = film

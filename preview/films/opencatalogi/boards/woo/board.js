@@ -4,7 +4,7 @@
  * Round 7: specs and positioning count as built. Positioning:
  * ds-connext-film-review/audiences/positioning-l3.md.
  *
- *   hook     the Woo decision deadline flags itself before it is due (usp-woo-deadline,
+ *   hook     the disclosure (Woo) decision deadline flags itself before it is due (usp-woo-deadline,
  *            verified; spec woo-transparency)
  *   proof 1  the national index picks the publication up by itself, its fields already right
  *            (sp-woo-index, usp-index-language verified; specs dcat-ap-harvest,
@@ -22,6 +22,7 @@ import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, hex, panel, idlePill } from '../../../_lib/ui.js'
+import { textBlock } from '../../../_lib/stage.js'
 
 const REFS = [
 	{ name: 'Firecrawl Free Keyless', url: 'https://whatships.com/videos/firecrawl-free-keyless/', borrow: 'Grid cells stepping on in waves.' },
@@ -58,7 +59,7 @@ function deadlineUI(w, geom) {
 function indexUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60, width = geom.r - geom.x
-	const pw = width * 0.56
+	const pw = width * 0.48
 	panel(w, x, top, pw, 600, u)
 	bar(w, x + 30, top + 34, 220, 16, C.cobalt900)
 	bar(w, x + 30, top + 64, 140, 8, C.cobalt300)
@@ -67,22 +68,25 @@ function indexUI(w, geom) {
 		const cy = top + 130 + i * 62
 		bar(w, x + 30, cy - 5, 90, 8, C.cobalt400)
 		rect(w, x + 140, cy - 16, pw - 230, 32, C.cobalt50, 3 * u)
-		bar(w, x + 156, cy - 4, 80 + ((i * 53) % 150), 8, C.cobalt700)
+		bar(w, x + 156, cy - 4, Math.min(80 + ((i * 53) % 150), pw - 280), 8, C.cobalt700)
 		circle(w, x + pw - 50, cy, 12, C.mint)
 	}
 	// The national index: outside the app, so a rectangle on the right, its newest row ringed.
 	const bx = x + pw + 70, bw = width - pw - 70
 	rect(w, bx, top + 60, bw, 470, C.cobalt50, 4 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	bar(w, bx + 24, top + 90, 120, 12, C.cobalt700)
+	// Round 17: a small two-part tag naming the Dutch law and its European counterpart the app
+	// supports (the Open Data Directive, in spec dcat-ap-harvest: HVD per Implementing Regulation
+	// (EU) 2023/138). A label, not the message: Figtree 600, about 28 px on stage.
+	textBlock(w, 'Woo ·\nEU Open Data Directive', { x: bx + 24, y: top + 104, size: 30, weight: 600, fill: C.cobalt700, lineHeight: 1.1, clip: false })
 	for (let i = 0; i < 5; i++) {
-		const cy = top + 160 + i * 70
+		const cy = top + 190 + i * 66
 		rect(w, bx + 18, cy - 24, bw - 36, 48, C.white, 3 * u)
 		bar(w, bx + 34, cy - 5, bw * 0.45 - (i % 2) * 30, 9, C.cobalt400)
 	}
 	// The line from the publication to the index: straight, one right angle.
-	const ly = top + 160
+	const ly = top + 190
 	rect(w, x + pw, ly - u, 70, 2 * u, C.cobalt300)
-	rect(w, bx + 12, top + 160 - 30, bw - 24, 60, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+	rect(w, bx + 12, top + 190 - 30, bw - 24, 60, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 }
 
 /** Proof 2: the public reading room: a search with no login, the results under it. */
@@ -116,16 +120,16 @@ const content = {
 	promiseLine: 'Everything you must disclose under the Woo, published on time and easy to find, on storage your organisation controls',
 	title: 'OpenCatalogi for Woo publishing',
 	record: { one: 'publication', many: 'publications' },
-	logline: 'For every body bound by the Wet open overheid: the decision deadline flags itself before it is due, the national index picks each publication up by itself with its fields right, and residents search what was published without an account. Every publish shows who and when.',
+	logline: 'For every public body that must disclose, under the Dutch Wet open overheid (Woo) and the EU Open Data Directive: the decision deadline flags itself before it is due, the national index picks each publication up by itself with its fields right, and residents search what was published without an account. Every publish shows who and when.',
 	references: REFS,
 	techniques: ['#3 grid-cell ripple (the fields tick before the index takes them)', '#1 dot-grows-to-fill as an upright hex (index row to reading room)', '#4 typewriter (the resident\'s search)'],
 	neighbours: ['filinq'],
 	builtOnApps: ['filinq'],
 	hook: {
-		title: 'Woo deadline? Flagged in time',
-		caption: 'Woo deadline?\nFlagged in time',
+		title: 'Disclosure deadline? Flagged in time',
+		caption: 'Disclosure deadline?\nFlagged in time',
 		ui: { drawUI: deadlineUI, tagFill: 'cobalt' },
-		source: 'positioning opencatalogi usp-woo-deadline (verified): "The statutory decision deadline warns you before it passes."; spec woo-transparency',
+		source: 'positioning opencatalogi usp-woo-deadline (verified): "The statutory decision deadline warns you before it passes."; spec woo-transparency. Round 17: "Woo" alone is not said on an English film; "disclosure deadline" covers the Dutch Woo and access-to-documents rules elsewhere',
 		motion: 'Out of the promise the app cell stays on the loop anchor and the window builds round it; the frame reads: caption, the Woo requests with their deadline bars, the OpenCatalogi hex (cobalt) on the loop anchor. The deadline bars run down a sixteenth apart; on beat 3 the third row\'s bar turns lavender, the flag hex pops beside it and the row takes the orange ring. Out: the ringed row slides up and becomes the publication header of the next scene (hex match cut).',
 		sound: 'Gentle open. Soft ticks as the bars run down, a pluck as the flag lands.',
 	},
@@ -135,7 +139,7 @@ const content = {
 			title: 'Picked up by the national index',
 			caption: 'Picked up by the\nnational index',
 			source: 'positioning opencatalogi sp-woo-index ("The national index finds your publications on its own.") and usp-index-language (verified: "Publications carry the exact fields the national index reads."); specs dcat-ap-harvest, structured-data-discoverability',
-			motion: 'Technique #3, grid-cell ripple: the publication\'s fields step from 20% to 40% to full opacity in a wave top to bottom and each mint tick pops as its field lands. On the bar line the straight line runs out to the index box on the right (an outside system: a rectangle, never a hex) and the newest index row slides in and takes the orange ring. Nobody presses send.',
+			motion: 'A small tag on the index box reads "Woo · EU Open Data Directive" (the two regimes the feed serves: spec dcat-ap-harvest, DCAT-AP-NL for the national index and High-Value Dataset classification under the EU Open Data Directive, Implementing Regulation (EU) 2023/138). Technique #3, grid-cell ripple: the publication\'s fields step from 20% to 40% to full opacity in a wave top to bottom and each mint tick pops as its field lands. On the bar line the straight line runs out to the index box on the right (an outside system: a rectangle, never a hex) and the newest index row slides in and takes the orange ring. Nobody presses send.',
 			sound: 'A ripple of ticks with the fields, a soft whoosh along the line, a pluck as the row lands in the index.',
 			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Picked up by the\nnational index', drawUI: indexUI, tagFill: 'cobalt' }),
 		},

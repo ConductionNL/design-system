@@ -10,7 +10,7 @@
  * Hand-over rules (director, 2026-09-27): a caption fully leaves (4 frames,
  * 3 where a hand-off is tight) before the next one enters, with at least 2
  * clear frames between; it rises only once the ground behind it is settled.
- * The times live in boards/A16/timing.js; the type specs in boards/A16/board.js.
+ * The times live in boards/A18/timing.js; the type specs in boards/A18/board.js (round 5).
  *
  * Engine addition for this film only; _lib is not edited.
  */
@@ -18,7 +18,7 @@ import { el, textBlock, nextId } from '../../_lib/stage.js'
 import { ease, inv } from '../../_lib/core.js'
 import { MARK_BOX } from '../../_lib/assets.js'
 import { glue, glueAttr } from './camera.js'
-import { RISE, EXIT } from '../boards/A16/timing.js'
+import { RISE, EXIT } from '../boards/A18/timing.js'
 
 export const TX = 120
 /** A masked exit accelerates out of its clip; squared, so each of its frames still shows the move. */

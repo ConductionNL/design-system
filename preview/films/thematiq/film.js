@@ -130,7 +130,7 @@ const T = {
 /* ============================================================ the camera */
 
 const S2 = camOn(...XY.nc, 1620, 300, 1.0)
-const END = camOn(...XY.app, 1330, 236, 118 / 150)
+const END = camOn(...XY.app, 1482, 538, 92 / 150) // Round 27: where Built on's lead flips in (closing.js CONNECT.cam.start, radius 92)
 const PUSH = bezier(0.62, 0, 0.12, 1)
 /** Mock px inside a screen to world. */
 const inScreen = (sc, mx, my) => [sc.at[0] + sc.s * mx, sc.at[1] + sc.s * my]
@@ -154,7 +154,7 @@ const takeB = take([
 	rest(Z_B, T.zout[0], { k: -0.2, pivot: [960, 540] }),
 	rest(SC.store.key, T.zout[1], { k: 0.006, pivot: [1300, 520] }),
 	rest(WHIP_TO, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
-	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1482, 538] }),
 ], [
 	{ from: T.zout[0], to: T.zout[1], ease: ease.outCubic, blend: 'pivot' },
 	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },

@@ -128,7 +128,7 @@ const T = {
 
 /* ============================================================ the camera */
 
-const END = camOn(...XY.house, 1330, 236, 118 / 150)
+const END = camOn(...XY.house, 1482, 538, 92 / 150) // Round 27: where Built on's lead flips in (closing.js CONNECT.cam.start, radius 92)
 const PUSH = bezier(0.62, 0, 0.12, 1)
 const MID = camOn(...XY.once.map((v, i) => (v + XY.usage[i]) / 2), 1300, 560, 1.15)
 const camera = take([
@@ -137,7 +137,7 @@ const camera = take([
 	rest(SC.once.key, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
 	rest(MID, T.out[1], { k: 0.02, pivot: [1300, 560] }),
 	rest(U_KEY, T.in[1], { k: 0.008, pivot: [1300, 560] }),
-	rest(END, T.pull[1], { k: -0.01, pivot: [1330, 400] }),
+	rest(END, T.pull[1], { k: -0.01, pivot: [1482, 538] }),
 ], [
 	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
 	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },

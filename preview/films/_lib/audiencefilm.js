@@ -36,10 +36,11 @@ import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
 import { appBoards, appMeta, wordBudget, wordCount, holdFor, BAR, SPB, SIXTEENTH, RISE, CLEAR, FPS, snap, beatT, barBeat, DURATION as BODY } from './appfilm.js'
 import { LOOP_ANCHOR, MOTION } from './scenes/general.js'
-import { chrome, workspaceCluster, CORNERS } from './ui.js'
+import { chrome, workspaceCluster, CORNERS, clearFieldUnder } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING, BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from './scenes/closing.js'
 import { CURRENT, keyElement, landing, boardCurrent } from './current.js'
+import { TRANSITIONS, describe } from './transitions.js'
 
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
 // Round 21: the new Built on piece is 3 bars, the install board 3 bars.
@@ -62,7 +63,7 @@ export const PROMISE_LEAD = 2 / FPS
  */
 export const BODY_END = 'Body end (Round 15, the same in every film): this last proof holds its caption to four frames before the bar line and no card follows. On the bar line its cards step down and the app tag lifts off and travels into Built on Nextcloud, where it becomes the lead cell of the connection scene (Round 21) and the app name returns beside it.'
 /** The Built on piece picks the tag up (Round 15). */
-export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles as the lead cell high on the right, orange, with the app name beside it (Round 21), so the name returns without a card of its own.'
+export const BUILT_IN = 'In (Round 15): the app tag from the body\'s last proof travels in over the step-down and settles as the lead cell, orange, the one orange (Round 27: no name label beside it; the section titles never name the app, the lead cell does).'
 
 /**
  * The promise card: the template's outro cluster (the app cell up-left of the
@@ -161,8 +162,8 @@ export function audienceBoards(content) {
 		bars: `${barOf(t0)}.1-${barOf(t0) + Math.round(BUILT / BAR) - 1}.4`,
 		words: closingWords('en').builtOn,
 		apps: ['nextcloud', 'openregister', app, ...builtOnApps],
-		motion: `${content.builtOnMotion || `Rounds 21 and 22 (_lib/scenes/closing.js builtOnScene, 4 bars): the ConNext film's component connection section with ${name} as the lead. ${name} pops in orange high on the right; "Built on" and "Nextcloud" rise under the white Nextcloud mark. The Nextcloud apps load one a beat into the grid below it, in Nextcloud blue, each on its own square-cornered connector, and the line under the headline swaps with each ("Reply from Mail" ... "Manage from Deck", the name in Nextcloud cyan). On bar 4 the camera pulls back over two beats and the rest of the Conduction family comes into view round them, one ring out, each linked to its nearest cell, ${name} still the one orange; the line becomes "Enhanced by Conduction". Every hex is the grid's own size. Everything leaves in the last four frames.`} ${BUILT_IN}`,
-		sound: 'A pluck and a low thud as the lead lands, a tick up the scale for each app that loads, a long whoosh and a scatter of ticks as the family comes into view, a pluck on Enhanced by Conduction.',
+		motion: `${content.builtOnMotion || `Round 27 (_lib/scenes/closing.js builtOnScene, 4 bars): ${name} flips in orange (every hex turns over by squashing; nothing pops or scales in); "Built on" and "Nextcloud" rise under the white Nextcloud mark, no name label by the cell. Nine Nextcloud apps flip in one a beat, in Nextcloud blue, round ${name} on the ring two out, open to the right: a C, the Conduction C, with ${name} at its heart; each gets a line drawn on FROM ${name} out to it, a Nextcloud-cyan head riding the line's front. The line under the headline names two of them, each held its reading time ("Reply from Mail", then "Share in Files", the name in Nextcloud cyan). A beat before bar 4 it becomes "Enhanced by Conduction"; on bar 4 the camera pulls back over two beats and the Conduction family flips in as a hexagonal ring round the C (the ring three out), each linked to its nearest cell, ${name} still the one orange. On the last beat the camera comes back in while every cell turns over, ring by ring from ${name}: they become the install board's quiet field and ${name} turns over into the Conduction avatar. The type leaves four frames before the bar line. Every hex is one grid cell at one radius.`} ${BUILT_IN}`,
+		sound: 'A dry click and a low thud as the lead flips in, a tick up the scale for each app that loads, a long whoosh and a scatter of ticks as the family comes into view, a pluck on Enhanced by Conduction, a whoosh and soft ticks as the cells turn over, a dry click as the lead becomes the avatar.',
 		source: 'Shared module: round4/facts.json fact a.',
 		// builtOnLit (Round 14, OpenRegister films): the data layer itself is the lit cell, so the app is not repeated on top.
 		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true } : { app, apps: builtOnApps, on: 'nextcloud' }) },
@@ -178,13 +179,65 @@ export function audienceBoards(content) {
 		bars: `${barOf(t1)}.1-${barOf(t1) + 2}.4`,
 		words: closingWords('en').install,
 		apps: ['conduction'],
-		motion: 'Transition in (Round 26, the round-21 hand-off restored): Built on leaves in its last four frames; on the bar line a Nextcloud cell pops in top right, in a quiet honeycomb that steps on round it, and turns over by scale (never a rotation) into the Conduction avatar, which waits dim. Round 22 (_lib/scenes/closing.js installScene, concept current, 3 bars): a current runs in from the left edge down a square-cornered wire, and "Install it", "Use it" and "Own it" each rise out of their line as it reaches them, one a beat, the orange moving to each and landing on "Own it"; it runs on under "Own it" to the avatar, which powers on. Then "The code stays open source, the data stays yours" rises on two lines and holds to the end. No header.',
-		sound: 'A tick as the Nextcloud cell pops in and a dry click as it turns over, a low charge, a crackle along the wire, an arc and a click as each word rises, a power-on click as the avatar lights, a pluck on the line, the pad resolves.',
+		motion: 'Transition in (Round 27b): Built on\'s cells have turned over into this board\'s quiet field, top right, and its lead into the Conduction avatar, one grid cell at the grid radius; nothing pops in. The type is clear for eight frames. Round 22/27b (_lib/scenes/closing.js installScene, concept current, no wire, 3 bars): "Install it", "Use it" and "Own it" rise out of their lines one a beat, the orange moving to each and landing on "Own it". Then "The code stays open source, the data stays yours" rises on two lines and holds to the end. No header.',
+		sound: 'A dry click as each word rises, a low thud under "Own it", a pluck on the line, the pad resolves.',
 		source: 'Shared module: INSTALL.sources in closing.js.',
 		draw: (ctx) => { installFrame(ctx, {}) },
 	}
+	withSections(boards, content)
+	withTransitions(boards, content)
 	withCurrent(boards, content)
 	return [opening, ...boards, built, install]
+}
+
+/**
+ * Round 27c: the small mark above each caption is the scene's SECTION TITLE, not the app name.
+ * content.sections = { <board id>: 'Standards' } (sentence case, one or two words). A board without one
+ * falls back to its shared module's section (SECTION_DEFAULTS), then to the audience's name; never the
+ * app name. The mark keeps its place, size and weight; only its words change.
+ */
+export const SECTION_DEFAULTS = { dataLayer: 'Audit trail', notify: 'Notifications', flows: 'Automation', ai: 'Assistant' }
+export function sectionOf(b, content) {
+	return content.sections?.[b.id] || SECTION_DEFAULTS[b.module] || content.audience?.name || 'Overview'
+}
+function withSections(boards, content) {
+	boards.forEach((b) => {
+		b.section = sectionOf(b, content)
+		const draw = b.draw
+		b.draw = (ctx) => {
+			const up = draw(ctx)
+			const m = ctx.g.querySelector('[data-role=mark]')
+			if (m) {
+				const nodes = [...m.querySelectorAll('text')]
+				if (nodes.length) { nodes[0].textContent = b.section; nodes.slice(1).forEach((n) => n.remove()) }
+			}
+			// Round 27c: no hex floats over the field; on the first visible frame, the field cells under a tag go.
+			let cleared = false
+			return (t) => {
+				if (typeof up === 'function') up(t)
+				if (cleared || ctx.g.getAttribute('display') === 'none') return
+				cleared = true
+				clearFieldUnder(ctx.g)
+			}
+		}
+	})
+}
+
+/**
+ * Round 26: a designed hand-off into a body board. content.transitions = { <board id>: { type, from, to,
+ * fromName, toName, note } } (type: one of transitions.js TRANSITIONS; from/to: optional stage-px anchors).
+ * A board that names one carries it as b.transition and gets "Transition in: ..." at the head of its
+ * director notes; its still carries no wire. A board that names none keeps the current (the fallback).
+ * The promise, the first body board, comes in from the opening's own handover.
+ */
+function withTransitions(boards, content) {
+	boards.forEach((b, i) => {
+		if (i === 0) return
+		const tr = content.transitions?.[b.id]
+		if (tr && !TRANSITIONS[tr.type]) console.error(`unknown transition '${tr.type}' into ${b.id}`)
+		b.transition = tr && TRANSITIONS[tr.type] ? tr : null
+		b.motion = `${describe(b.transition || { type: 'current' })} ${b.motion || ''}`.trim()
+	})
 }
 
 /**
@@ -203,7 +256,20 @@ function withCurrent(boards, content) {
 		b.currentAnchor = content.anchors?.[b.id] || null
 		// ds-tk-film: the wrapper calls b.drawBase, so a board that redraws a slot after audienceFilm() (Thematiq's
 		// word-art story, Keepiq's usage dashboard) replaces drawBase and keeps its wire.
-		b.draw = (ctx) => {
+		// Round 26: a board with a designed transition in carries no wire; the current is only the fallback.
+		// Its key element is still measured, so the next board's wire can start from it.
+		b.draw = b.transition ? (ctx) => {
+			const up = (b.drawBase || draw)(ctx)
+			let done = false
+			return (t) => {
+				if (typeof up === 'function') up(t)
+				if (done || ctx.g.getAttribute('display') === 'none') return
+				done = true
+				const named = content.anchors?.[b.id]
+				const key = named ? { x: named[0], y: named[1] } : keyElement(ctx.g, { exclude: [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
+				if (key) anchors[i] = [key.x, key.y]
+			}
+		} : (ctx) => {
 			const up = (b.drawBase || draw)(ctx)
 			let done = false
 			return (t) => {

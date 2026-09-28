@@ -31,7 +31,7 @@ import { C } from '../../../_lib/brand.js'
 import { el, textBlock } from '../../../_lib/stage.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
-import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, appMark, button, chrome, honeyField, layout } from '../../../_lib/ui.js'
+import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, appMark, button, chrome, honeyField, layout, clearFieldUnder } from '../../../_lib/ui.js'
 import { ease, hexPath } from '../../../_lib/core.js'
 import { current, drawField, CAM_HO } from '../../../tkfilm/lib.js'
 
@@ -186,7 +186,7 @@ export function onceLinkUI(w, geom, st = {}) {
  */
 const USAGE_CAPTION = 'Every use: who,\nwhen, where, why'
 function usageFrame(ctx) {
-	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq', mark: 'Usage' })
+	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq' })
 	honeyField(ctx.g, ctx.W * 0.62, ctx.H + 150, 80, 10, { top: ctx.H * 0.61, scale: 0.7, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
 	const { ui } = layout(ctx.W, ctx.H)
 	const g = el('g', { transform: `translate(${ui.x - 1.25 * 120} ${ui.y - 1.25 * 640}) scale(1.25)` }, ctx.g)
@@ -273,8 +273,31 @@ function storyTwo(ctx) {
 	outsideBox(g, 1440, 120, 320, 250)
 }
 
+/** Round 27c for a slot redrawn after audienceFilm(): its section title in the mark's place, and no field cell left under a tag. */
+const sectioned = (fn, title) => (ctx) => {
+	const up = fn(ctx)
+	const m = ctx.g.querySelector('[data-role=mark]')
+	if (m) { const n = [...m.querySelectorAll('text')]; if (n.length) { n[0].textContent = title; n.slice(1).forEach((x) => x.remove()) } }
+	let cleared = false
+	return (t) => {
+		if (typeof up === 'function') up(t)
+		if (cleared || ctx.g.getAttribute('display') === 'none') return
+		cleared = true
+		clearFieldUnder(ctx.g)
+	}
+}
+
 const content = {
 	app: 'keepiq',
+	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
+	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Requests', once: 'One-time links', 'general-dataLayer': 'Usage' },
+	// Round 26: every hand-off is designed; the film (keepiq/film.js) plays them in the one take
+	transitions: {
+		hook: { type: 'match', note: 'the lock, the story\'s key element, lifts out of its house cell and travels into the outside box, which takes it' },
+		request: { type: 'zoom', note: 'the lock flies home, the house cell turns over into Keepiq\'s own and the camera pushes into it, onto the request' },
+		once: { type: 'whip', note: 'a seven-frame whip-pan to the next cell, the one-time link' },
+		'general-dataLayer': { type: 'hexWipe', note: 'the camera pulls back and a wave of grid cells turns over from the link\'s cell to the dashboard\'s (cells on the grid, flipping, not screen-space hexes), then pushes in' },
+	},
 	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
 	anchors: { promise: [1512, 540], hook: [1476, 245] },
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
@@ -303,7 +326,7 @@ const content = {
 			source: 'Round 22b (Ruben: requesting passwords or certificates from other users or other organisations is critical to the process). Spec secret-requests on development: "A user or application can request that a secret be filled in by an external party"; requestable fields, a fill-in link, values encrypted on receipt with the requester\'s public certificate, optional expiry. keepiq.json usp-ask-once-fill-once (verified). Label: NIS2 / Cyberbeveiligingswet and BIO2 are named in Keepiq docs/FEATURES.md and spec compliance-reporting as the credential-hygiene drivers for Dutch government; the film names them as context only and claims no legal requirement.',
 			motion: 'Out of the hook the vault turns to a request. The request panel builds on the right, "Password" and "Certificate" ticking mint one a sixteenth, the small "NIS2 · BIO2" label settling top right. On beat 2 the fill-in link runs in block by block and takes the orange ring; a straight wire carries it left into the partner organisation\'s box, where the fill-in page opens and a masked value types itself in (technique #4), then the value runs back along the wire into the vault.',
 			sound: 'Ticks on the fields, a whoosh along the wire, key ticks under the dots, a soft lock click as it lands.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nfrom partners', drawUI: partnerRequestUI, tagFill: 'cobalt', mark: 'Requests' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Request passwords\nfrom partners', drawUI: partnerRequestUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'once',
@@ -312,7 +335,7 @@ const content = {
 			source: 'Round 22b (Ruben: offering a one-time download or view link). Specs ephemeral-send ("The send burns after a configurable number of views (default 1), optionally expires, and can be revoked. Anyone with the link can read it once without an account.") and link-sharing (usage limit, auto-deletion when the limit is reached).',
 			motion: 'Hard cut on the beat to "Send by link": the masked value, "Max views" set to 1 inside the orange ring, the expiry, the link. The recipient\'s card opens on the right, the value readable once with a mint pill; on beat 3 the card below fades to its burned state (technique #9, text-swap on a held diagram: only the recipient\'s card changes).',
 			sound: 'A click on "1", a pluck as the recipient opens it, a soft dry puff as the link burns.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt', mark: 'One-time links' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
@@ -330,7 +353,7 @@ const content = {
 
 const film = audienceFilm(content)
 // Round 20: the general slot draws the usage dashboard instead of the shared change log.
-film.boards.find((b) => b.id === 'general-dataLayer').drawBase = usageFrame
+film.boards.find((b) => b.id === 'general-dataLayer').drawBase = sectioned(usageFrame, 'Usage')
 Object.assign(film.boards.find((b) => b.id === 'promise'), { title: 'Story 1: The key to your own house?', drawBase: storyOne })
 film.boards.find((b) => b.id === 'hook').drawBase = storyTwo
 export const { meta, boards } = film

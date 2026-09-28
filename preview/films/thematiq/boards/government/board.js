@@ -24,7 +24,7 @@ import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { el, textBlock } from '../../../_lib/stage.js'
-import { rect, bar, circle, hex, panel, use, button, appMark } from '../../../_lib/ui.js'
+import { rect, bar, circle, hex, panel, use, button, appMark, clearFieldUnder } from '../../../_lib/ui.js'
 import { hexPath } from '../../../_lib/core.js'
 import { drawField, CAM_HO, camOn, cellXY } from '../../../tkfilm/lib.js'
 
@@ -206,8 +206,31 @@ export function nldesignUI(w, geom, st = {}) {
 	})
 }
 
+/** Round 27c for a slot redrawn after audienceFilm(): its section title in the mark's place, and no field cell left under a tag. */
+const sectioned = (fn, title) => (ctx) => {
+	const up = fn(ctx)
+	const m = ctx.g.querySelector('[data-role=mark]')
+	if (m) { const n = [...m.querySelectorAll('text')]; if (n.length) { n[0].textContent = title; n.slice(1).forEach((x) => x.remove()) } }
+	let cleared = false
+	return (t) => {
+		if (typeof up === 'function') up(t)
+		if (cleared || ctx.g.getAttribute('display') === 'none') return
+		cleared = true
+		clearFieldUnder(ctx.g)
+	}
+}
+
 const content = {
 	app: 'thematiq',
+	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
+	sections: { promise: 'Ownership', hook: 'Ownership', tokens: 'Design tokens', store: 'Store', 'general-dataLayer': 'NL Design System' },
+	// Round 26: every hand-off is designed; the film (thematiq/film.js) plays them in the one take
+	transitions: {
+		hook: { type: 'match', note: 'the colours cell stays on its grid cell while the camera slides right and turns over into the stock Nextcloud workspace: your colour becomes everyone\'s blue' },
+		tokens: { type: 'zoom', note: 'the push into the workspace cell: its blue drains into the ground and the token editor is inside it' },
+		store: { type: 'zoom', note: 'zoom-through the house-colour swatch until it fills the frame; out of the same green in the store\'s template card' },
+		'general-dataLayer': { type: 'whip', note: 'a seven-frame whip-pan to the next cell of the row, the NL Design System screen' },
+	},
 	// Round 24: the current's key elements where the orange is word art (the wire must not cross the words):
 	// story 1 lands on the forest colour cell's left point, story 2 on the stock Nextcloud hex's.
 	anchors: { promise: [1395, 743], hook: [1526, 300] },
@@ -237,7 +260,7 @@ const content = {
 			source: 'Real screen: Custom Token Overrides (docs/img/token-editor-*.png, import-export-buttons.png). docs/features/token-editor.md on development: "4 category tabs grouping the 53 editable tokens by area". Specs token-editor-ui, token-import-export.',
 			motion: 'The core, scene 3. The hex lands as the swatch of the first row and the real token editor builds round it: the grey header with Download and Upload, the four tabs ("Login page & Branding" active), then technique #3, grid-cell ripple: the token rows step 20% to 40% to full from the top, each with its CSS variable, swatch, hex field and reset. On beat 3 the first swatch takes the orange ring, turns from Nextcloud blue to the house colour and the blue custom dot pops after "Primary color".',
 			sound: 'A ripple of ticks with the rows, a click on the swatch, a pluck as the custom dot pops.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt', mark: 'Design tokens' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'store',
@@ -246,7 +269,7 @@ const content = {
 			source: 'Rounds 21 and 22 (Ruben: share your templates through the store). No real screen yet: change catalogue-theme-gallery (open) lists shared sets with name, organisation, swatches, licence, source and contrast result; drawn in the look of the Nextcloud app store (docs/img/appstore-listing.png).',
 			motion: 'Hard cut on the beat to the store, in the Nextcloud app store\'s look: its blue bar with the Nextcloud mark, "App store" and the search field, the category rail. Technique #3: the house-style cards step in in waves, swatches first, their rating dots filling. Your template is the first card; on beat 3 its share button takes the orange ring and fills.',
 			sound: 'A ripple of ticks per wave, a click on share.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your templates\nin the store', drawUI: storeUI, tagFill: 'cobalt', mark: 'Store' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share your templates\nin the store', drawUI: storeUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
@@ -268,5 +291,5 @@ const film = audienceFilm(content)
 const B = (id) => film.boards.find((b) => b.id === id)
 Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', drawBase: storyOne })
 Object.assign(B('hook'), { drawBase: storyTwo })
-Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: (ctx, api) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt', mark: 'NL Design System' }) })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: sectioned((ctx) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }), 'NL Design System') })
 export const { meta, boards } = film

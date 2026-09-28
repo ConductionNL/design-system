@@ -15,8 +15,9 @@
  * avatar; the backs of the three cells to its right carry the wordmark, so the
  * name is revealed tile by tile in reading order while the camera glides to
  * the canonical lockup (avatar flush left of the wordmark). On the bar 3
- * downbeat the name powers on, whole and white, and holds for a bar while the
- * hum settles, so a film's first scene can cut in on the next downbeat.
+ * downbeat the name powers on, whole and white, and holds while the hum
+ * settles; then it hands over to the film (below). Within each ring the
+ * apps charge and turn a few frames apart (seeded), as if turned by hand.
  *
  * The fronts are circles (Euclidean distance), not hex rings: rings of
  * pointy-top cells outline a flat-top hexagon, which the brand does not draw.
@@ -26,11 +27,42 @@
  * blur sub-samples of one frame agree; springs and flips are continuous.
  *
  *   import { addOpening } from '../_lib/scenes/opening.js'
- *   const bodyStart = addOpening(film, { at: 0 })   // returns the opening's end time
+ *   const bodyStart = addOpening(film, { at: 0 })   // 5.625: returns the opening's end time
+ *   addOpening(film, { at: 0, handover: false })     // no film follows: the lockup holds to the end
  *
- * Sound cues (crackle, arc, hum, powerOn, plus the house tick, kick, impact,
- * whoosh and click) are recorded with film.cue next to the motion that causes
- * them; scripts/films/score.mjs renders them.
+ * Sound cues (crackle, arc, hum, charge, powerOn, click, plus the house kick,
+ * impact and whoosh) are recorded with film.cue next to the motion that
+ * causes them; scripts/films/score.mjs renders them. No bell, no tonal ping.
+ *
+ * ------------------------------------------------------------------------
+ * THE HANDOVER CONTRACT (a film follows: addOpening's default, handover: true)
+ * ------------------------------------------------------------------------
+ * Timing (opening-local, never moves): the name is whole from 3.75 s (bar 3.1,
+ * frame 90) and stays whole to 5.25 s (frame 126), 1.5 s. From frame 126 the
+ * lockup's four tiles turn back in reading order, a frame apart, 5 frames each
+ * (a width to nothing and back, never a rotation): the avatar, then the three
+ * wordmark tiles, the last one done on frame 134, the opening's last frame.
+ * The few breathing cells settle to the plain ghost over the same frames.
+ * addOpening returns at + 5.625, where the film's first frame (frame 135) is.
+ *
+ * The last frame (and the frame the film starts from) is ground and field only:
+ *   - ground C.cobalt, no marks, no glyphs, no arcs, no lit or pale cells;
+ *   - a pointy-top honeycomb of solid C.cobalt600 cells, the house world's
+ *     proportions seen at house zoom 0.85: circumradius 127.5 px, gap 13.6 px,
+ *     rounding 8.5 px, pitch 234.4 px along a row and 203.0 px row to row;
+ *   - cell (0, 0), where the avatar was, centred at screen (648.5, 540); every
+ *     other cell at that point + (234.4 (q + r/2), 203.0 r);
+ *   - each cell's opacity by its screen distance from the frame centre: 1 near
+ *     the centre down to 0.44 in the corners (HANDOVER.opacity(x, y));
+ *   - the camera still pushing in slowly about the frame centre, 0.029 zoom
+ *     a second (HANDOVER.push), so continuing the push or holding both read;
+ *   - sound: only the hum, fading from 0.2 of its level at 5.625 s to silence
+ *     a second into the film; nothing tonal rings.
+ * A film's first frame should start from that ground: either draw the same
+ * field (align its honeycomb to HANDOVER, or put handoverGround() under its
+ * first scene) and build its first scene in on top, or build its own ground
+ * in over it; no hard cut is needed because nothing on screen but the field
+ * has to disappear. The exact numbers are exported as HANDOVER.
  */
 import { el, set, nextId } from '../stage.js'
 import { ease, spring, inv, clamp, lerp, bezier, mix, hexPath, axialToPixel, rand, SQRT3 } from '../core.js'
@@ -56,16 +88,22 @@ export const T = {
 	glide: [G(2, 3), G(3)], // 2.81 to 3.75: the camera glides to the lockup
 	turn: G(2, 3, 2), // 3.05: the second ripple leaves the heart
 	powerOn: G(3), // 3.75: the name powers on
+	exit: G(3) + 1.5, // 5.25 (frame 126): the name has been whole for 1.5 s; the handover turns it back
 	end: G(4), // 5.625
 }
 
 /* ------------------------------------------------------------ the world */
 
-/** Cell circumradius and gap, in world units; the avatar's outer hex is exactly one cell. */
+/**
+ * Cell circumradius and gap, in world units; the avatar's outer hex is exactly
+ * one cell. Gap and rounding keep the house world's proportions (the ConNext
+ * world: R 150, gap 16, rounding 10), so at zoom 1.275 this field is that
+ * world at zoom 0.85, cell for cell (see HANDOVER).
+ */
 const R = 100
-const GAP = 12
-const ROUND = 7
-const PITCH = SQRT3 * R + GAP // 185.2: centre to centre of two neighbours
+const GAP = (16 / 150) * R
+const ROUND = (10 / 150) * R
+const PITCH = SQRT3 * R + GAP // 183.9: centre to centre of two neighbours
 const GLYPH = R * 0.92
 const cellXY = (q, r) => axialToPixel(q, r, R, GAP)
 const hexDist = (q, r) => (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2
@@ -169,7 +207,7 @@ const Z0 = 0.62 // frame 1: the whole cluster small in a wide field
 const Z1 = 0.7 // the push arrives with the current
 const Z2 = 0.73 // the slow drift while the network is live
 const Z3 = 1.22 // the lockup: the avatar 244 px tall, the lockup 43% of the frame, centred
-const Z4 = 1.28 // the hold keeps pushing, slowly, so the held name stays alive
+const Z4 = 1.275 // the hold keeps pushing, slowly; at T.end the field is the house world at zoom 0.85 (HANDOVER)
 const GLIDE = bezier(0.42, 0, 0.1, 1)
 
 export function camera(t) {
@@ -198,6 +236,11 @@ const onScreen = (x, y, t, pad = 110) => { const c = camera(t); const sx = (x - 
 
 /* ------------------------------------------------------------ the cells */
 
+/** Flip timing: the width goes to nothing and back over 8 frames (7 to 9 for the apps, by hand), in-out, quick through edge-on. */
+const FLIP = F(8)
+/** The handover turns the lockup's four tiles back, a frame apart, each in 5 frames: frames 126 to 134, done on the last frame. */
+const EXIT = F(5)
+
 function buildCells() {
 	const cells = []
 	const byKey = {}
@@ -212,11 +255,19 @@ function buildCells() {
 			const jitIn = (hash(q, r, 1) - 0.5) * 0.07 * ss(250, 900, d)
 			const jitOut = (hash(q, r, 2) - 0.5) * 0.04 * ss(650, 1100, d)
 			const app = CLUSTER[k] || null
+			const ring = hexDist(q, r)
+			// The apps charge and turn ring by ring on the sixteenths, each a few frames apart within its ring
+			// (seeded, 0 to 2 frames: less than a sixteenth, so the ring order holds). The heart and the name
+			// tiles keep their exact times: the heart lands on the downbeat, the name turns in reading order.
+			const fixed = k === '0,0' || NAME_CELLS.includes(k)
+			const lagIn = app && k !== '0,0' ? F(Math.floor(hash(q, r, 8) * 3)) : 0
+			const lagOut = app && !fixed ? F(Math.floor(hash(q, r, 9) * 3)) : 0
 			const cell = {
-				k, q, r, x, y, d, app,
-				ring: hexDist(q, r),
-				tIn: T.connect - tauIn(de) + (app ? 0 : jitIn),
-				tOut: T.turn + d / V + (app ? 0 : jitOut),
+				k, q, r, x, y, d, app, ring,
+				tIn: app ? T.connect - ring * S16 - lagIn : T.connect - tauIn(de) + jitIn,
+				tOut: app ? T.turn + ring * S16 + lagOut : T.turn + d / V + jitOut,
+				flip: app && !fixed ? F(7 + Math.floor(hash(q, r, 10) * 3)) : FLIP,
+				exitAt: k === '0,0' ? T.exit : NAME_CELLS.includes(k) ? T.exit + F(1 + NAME_CELLS.indexOf(k)) : null,
 				arcIn: app ? true : hash(q, r, 3) < 0.42,
 				arcOut: !app && hash(q, r, 4) < 0.34,
 				breath: hash(q, r, 5) < 0.2 ? { p: 11 + hash(q, r, 6) * 7, ph: hash(q, r, 7) * Math.PI * 2 } : null,
@@ -306,7 +357,7 @@ function arcPath(a, b, from, to, frame, seed, amp = 9) {
  * Used by addOpening (the film) and by the storyboard frames, so an approved
  * still is the animation's own frame.
  */
-export function buildOpening(g, { defs } = {}) {
+export function buildOpening(g, { defs, handover = true } = {}) {
 	const { cells, leaks } = buildCells()
 	const world = el('g', { 'data-layer': 'opening-world' }, g)
 	const fieldLayer = el('g', {}, world)
@@ -343,13 +394,16 @@ export function buildOpening(g, { defs } = {}) {
 	const name = el('use', { href: '#wordmark-conduction-white', x: WM.x, y: WM.y, width: WM.w, height: WM.h, display: 'none' }, topLayer)
 	const spark = el('path', { fill: 'none', stroke: C.white, 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', display: 'none' }, topLayer)
 	const arcPool = Array.from({ length: 160 }, () => el('path', { display: 'none' }, arcLayer))
-	const heart = cells.find((c) => c.k === '0,0')
 
 	return function update(t) {
 		const cam = camera(t)
 		set(world, { transform: `translate(960 540) scale(${cam.z.toFixed(5)}) translate(${(-cam.x).toFixed(3)} ${(-cam.y).toFixed(3)})` })
 		const f = fi(t)
 		const powered = f >= fi(T.powerOn)
+		// The handover (a film follows): from frame 126 the lockup's tiles turn back to plain field, and the
+		// few lighter breathing cells settle, so the last frame is ground and ghost field only.
+		const leaving = handover && f >= fi(T.exit)
+		const calm = handover ? 1 - inv(T.exit, T.end - F(2), t) : 1
 		const halfW = 960 / cam.z + R * 1.3, halfH = 540 / cam.z + R * 1.3
 		const leakFlash = new Map()
 		for (const l of leaks) {
@@ -380,7 +434,7 @@ export function buildOpening(g, { defs } = {}) {
 				const since = fOut >= 0 ? fOut : fIn
 				const col = tailColour(tail, since)
 				let fill = col || GHOST
-				if (!col && c.breath) fill = mix(GHOST, C.cobalt, 0.18 + 0.14 * Math.sin((2 * Math.PI * t) / c.breath.p + c.breath.ph))
+				if (!col && c.breath) fill = mix(GHOST, C.cobalt, calm * (0.18 + 0.14 * Math.sin((2 * Math.PI * t) / c.breath.p + c.breath.ph)))
 				if (!col && leakFlash.has(c)) fill = leakFlash.get(c)
 				const level = tailLevel(tail, since)
 				set(c.hex, { fill, 'fill-opacity': (base + (1 - base) * level).toFixed(3) })
@@ -391,7 +445,7 @@ export function buildOpening(g, { defs } = {}) {
 				else if (e >= 0 && e < 0.8) s = 0.9 + 0.1 * spring(e, { freq: 4.2, zeta: 0.38 })
 				c.g.setAttribute('transform', s === 1 ? '' : scaleAbout(s, s, c.x, c.y))
 			} else {
-				updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base)
+				updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base, leaving)
 			}
 
 			// Arcs at the fronts: the jump into this cell, over the three frames up to its charge.
@@ -410,8 +464,9 @@ export function buildOpening(g, { defs } = {}) {
 		}
 		for (let i = arcs; i < arcPool.length; i++) arcPool[i].setAttribute('display', 'none')
 
-		// The name: tile pieces until the power-on, then the whole wordmark, drawn once, over the cells.
-		name.setAttribute('display', powered ? 'inline' : 'none')
+		// The name: tile pieces until the power-on, then the whole wordmark, drawn once, over the cells;
+		// in the handover the pieces come back so each tile can turn its piece away.
+		name.setAttribute('display', powered && !leaving ? 'inline' : 'none')
 		if (powered) {
 			const s = 1 + 0.03 * (1 - spring(t - T.powerOn, { freq: 3.4, zeta: 0.5 }))
 			name.setAttribute('transform', scaleAbout(s, s, WM.x + WM.w / 2, 0))
@@ -420,19 +475,11 @@ export function buildOpening(g, { defs } = {}) {
 		const sparkOn = f >= fi(T.powerOn) && f < fi(T.powerOn) + 2
 		if (sparkOn) set(spark, { display: 'inline', d: arcPath({ x: 31, y: -21 }, { x: 31, y: 21 }, 0, 1, f, 77, 5), 'stroke-width': (3 / cam.z).toFixed(2) })
 		else spark.setAttribute('display', 'none')
-		// After the power-on the heart settles with a small overshoot.
-		if (powered) {
-			const e = t - T.powerOn
-			const s = 1 + 0.045 * (1 - spring(e, { freq: 3.4, zeta: 0.5 }))
-			heart.g.setAttribute('transform', scaleAbout(s, s, 0, 0))
-		}
 	}
 }
 
-/** Flip timing: the width goes to nothing and back over 8 frames, in-out, so the turn is quick through edge-on. */
-const FLIP = F(8)
 
-function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
+function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base, leaving) {
 	const isHeart = c.k === '0,0'
 	const charged = fIn >= 0
 	const orange = isHeart && f >= fi(T.connect) // a stepped state: on the frame grid, so blur sub-samples agree
@@ -441,7 +488,7 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
 	let turn = 0 // 0 facing, 1 edge-on
 
 	if (fOut >= 0 || eOut >= 0) {
-		const p = clamp(eOut / FLIP)
+		const p = clamp(eOut / c.flip)
 		const th = Math.PI * ease.inOutCubic(p)
 		sx = Math.abs(Math.cos(th))
 		sy = 1 + 0.07 * Math.sin(th) // the edge-on tile reads a touch nearer
@@ -465,15 +512,31 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
 		const e = t - T.connect - F(c.ring)
 		if (e > 0 && e < 0.2) s *= 1 + 0.035 * Math.sin((Math.PI * e) / 0.2)
 	}
-	// A beat before the turn the heart gathers itself.
+	// A beat before the turn the heart gathers itself; after the power-on it settles with a small overshoot.
 	if (isHeart && t > T.turn - F(3) && t < T.turn) s *= 1 - 0.05 * inv(T.turn - F(3), T.turn, t)
+	if (isHeart && powered) s *= 1 + 0.045 * (1 - spring(t - T.powerOn, { freq: 3.4, zeta: 0.5 }))
+
+	// The handover: the lockup's tiles turn back the way they came, to plain field (no glyph, no mark).
+	let blank = false
+	if (leaving && c.exitAt !== null) {
+		const pe = clamp((t - c.exitAt) / EXIT)
+		const th = Math.PI * ease.inOutCubic(pe)
+		sx = Math.abs(Math.cos(th))
+		sy = 1 + 0.07 * Math.sin(th)
+		blank = th > Math.PI / 2
+		showBack = !blank
+	}
 
 	c.g.setAttribute('transform', sx === 1 && sy === 1 && s === 1 ? '' : scaleAbout(sx * s, sy * s, c.x, c.y))
 	c.face.setAttribute('display', showBack ? 'none' : 'inline')
 	c.back.setAttribute('display', showBack ? 'inline' : 'none')
 
-	if (!showBack) {
+	if (blank) {
+		set(c.faceHex, { fill: GHOST, 'fill-opacity': base.toFixed(3) })
+		c.glyph.setAttribute('display', 'none')
+	} else if (!showBack) {
 		let fill, glyph
+		c.glyph.setAttribute('display', 'inline')
 		if (!charged) {
 			fill = GHOST
 			glyph = DORMANT_GLYPH
@@ -489,13 +552,13 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
 		c.glyph.setAttribute('opacity', charged ? 1 : base.toFixed(3))
 	} else {
 		// The back comes up white (the front's edge) and decays to the ghost; the marks on it are pale until the power-on.
-		const since = f - fi(c.tOut + FLIP / 2)
+		const since = f - fi(c.tOut + c.flip / 2)
 		const col = tailColour(TAILS.back, Math.max(0, since)) || GHOST
 		set(c.backHex, { fill: col, 'fill-opacity': (base + (1 - base) * tailLevel(TAILS.back, Math.max(0, since))).toFixed(3) })
 		if (c.mark) {
 			const pale = powered ? 1 : 0.5
 			c.mark.setAttribute('opacity', pale)
-			if (c.name >= 0) c.mark.parentNode.setAttribute('display', powered ? 'none' : 'inline')
+			if (c.name >= 0) c.mark.parentNode.setAttribute('display', powered && !leaving ? 'none' : 'inline')
 		}
 	}
 }
@@ -505,18 +568,25 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base) {
 /**
  * The sound of conduction, as cues in opening-local time. A mains hum that
  * rises with the charge; a crackle along the front, every cell's arrival a
- * few impulses at that cell's place in the stereo field; arcs and ticks as
- * the apps light ring by ring (A5, B5, C#6), a big arc and a low thud on the
- * heart; a soft heartbeat while the network is live; four rising sparks as
- * the tiles turn over to the name (D6, E6, F#6, A6); and on the bar 3
- * downbeat a clean power-on with a crisp switch click on top (round 5: no
- * bell anywhere), the hum
- * settling underneath and fading into the film.
+ * few impulses at that cell's place in the stereo field; an arc and a dry
+ * click as the apps light ring by ring; a big arc and a low thud on the heart;
+ * two short dry heartbeats while the network is live; a flutter of dry clicks
+ * as the tiles turn over, like a split-flap board, the heart and the three
+ * name tiles a touch louder; and on the bar 3 downbeat a dry power-on with a
+ * crisp click, the hum settling underneath and fading into the film.
+ *
+ * Round 6 (Ruben): no bell and no tonal ping anywhere; the accent sound is a
+ * click. Every click is dry (no reverb send) and varied a little in pitch and
+ * level, never a rising figure, so nothing tonal rings after the name lands
+ * except the hum. With the handover, four soft clicks as the tiles turn back.
  */
-export function openingCues() {
+export function openingCues({ handover = true } = {}) {
 	const { cells, leaks } = buildCells()
 	const cues = []
 	const cue = (t, kind, o = {}) => cues.push({ t, kind, ...o })
+	const g = rand(9091)
+	/** A dry switch click, varied by seed: body 2.2 to 3.0 kHz, level within about 3 dB, never a melody. */
+	const click = (t, gain, pan = 0) => cue(t, 'click', { gain: +(gain * (0.8 + 0.4 * g())).toFixed(3), freq: Math.round(2200 + 800 * g()), decay: +(0.006 + 0.004 * g()).toFixed(4), pan: +pan.toFixed(3), seed: 60 + Math.floor(g() * 900), dry: true })
 
 	cue(0, 'hum', {
 		dur: OPENING_DURATION + 1.0, base: 49, gain: 0.16, seed: 41,
@@ -535,35 +605,37 @@ export function openingCues() {
 	inEvents.sort((a, b) => a[0] - b[0])
 	cue(0, 'crackle', { events: inEvents, gain: 0.3, seed: 21 })
 
-	// The apps light ring by ring on the sixteenths into the heart.
-	const ringTimes = {}
-	for (const c of cells) if (c.app && c.k !== '0,0') (ringTimes[c.ring] ||= []).push(c)
-	const notes = { 3: 880, 2: 987.77, 1: 1108.73 }
+	// The apps light ring by ring on the sixteenths into the heart: an arc and a dry click as each ring starts.
+	const byRing = {}
+	for (const c of cells) if (c.app && c.k !== '0,0') (byRing[c.ring] ||= []).push(c)
 	for (const ring of [3, 2, 1]) {
-		const group = ringTimes[ring]
-		const t = Math.min(...group.map((c) => c.tIn))
+		const group = byRing[ring]
+		const t = Math.min(...group.map((c) => fi(c.tIn) / FPS))
 		const pan = group.reduce((a, c) => a + panAt(c.x, t), 0) / group.length
-		cue(t, 'arc', { from: 5200, to: 900, dur: 0.07, gain: 0.16, pan, seed: 30 + ring })
-		cue(t, 'tick', { freq: notes[ring], gain: 0.13, decay: 0.06, pan })
+		cue(t, 'arc', { from: 5200, to: 900, dur: 0.07, gain: 0.16, pan, seed: 30 + ring, dry: true })
+		click(t, 0.2, pan)
 	}
 	// The heart: a big arc, a low thud; the camera recoils with it.
 	cue(T.connect, 'arc', { from: 7000, to: 180, dur: 0.2, gain: 0.34, index: 7, seed: 39 })
 	cue(T.connect, 'impact', { gain: 0.42, from: 105, to: 49, decay: 0.7, seed: 13 }) // lands on the hum's own G
 	// Current leaking across the cluster's edge while the network is live: a small crackle per spark.
 	cue(0, 'crackle', { events: leaks.map((l) => [+(F(l.f) + F(1)).toFixed(4), +panAt(l.b.x, F(l.f)).toFixed(3), 0.4]).sort((a, b) => a[0] - b[0]), gain: 0.2, seed: 23, burst: 2 })
-	// The live network beats twice.
-	T.pulse.forEach((t) => cue(t, 'kick', { gain: 0.22, pitch: 92, end: 49, decay: 0.22, click: 0.04 }))
+	// The live network beats twice: short, dry, non-tonal thuds (the drum bus has no reverb send).
+	T.pulse.forEach((t) => cue(t, 'kick', { gain: 0.2, pitch: 90, end: 52, decay: 0.12, click: 0.05 }))
 
-	// The turn: a soft whoosh under the glide, four rising sparks as the heart and the name tiles turn over.
+	// The turn: a soft whoosh under the glide; the tiles turn over like a split-flap board, a dry click per
+	// tile as it goes edge-on, the heart and the three name tiles a touch louder, each with a dry spark.
 	cue(T.glide[0], 'whoosh', { dur: T.powerOn - T.glide[0], from: 380, to: 2600, panFrom: -0.1, panTo: 0.25, gain: 0.1, seed: 6 })
-	const motif = [1174.66, 1318.51, 1479.98, 1760]
-	;['0,0', ...NAME_CELLS].forEach((k, i) => {
-		const c = cells.find((x) => x.k === k)
-		const t = fi(c.tOut) / FPS
-		const pan = panAt(c.x, t)
-		cue(t, 'arc', { from: 6000, to: 1400, dur: 0.06, gain: 0.12, pan, seed: 50 + i })
-		cue(t + F(4), 'tick', { freq: motif[i], gain: 0.14, decay: 0.08, pan })
-	})
+	const lead = new Set(['0,0', ...NAME_CELLS])
+	for (const c of cells.filter((x) => x.app).sort((a, b) => a.tOut - b.tOut)) {
+		const t0 = fi(c.tOut) / FPS
+		const edge = t0 + c.flip / 2
+		const pan = panAt(c.x, edge)
+		if (lead.has(c.k)) {
+			cue(t0, 'arc', { from: 6000, to: 1400, dur: 0.06, gain: 0.12, pan, seed: 50 + c.q, dry: true })
+			click(edge, 0.24, pan)
+		} else click(edge, 0.09, pan)
+	}
 	const outEvents = []
 	for (const c of cells) {
 		if (c.app || !onScreen(c.x, c.y, c.tOut) || c.tOut > T.powerOn + 0.3) continue
@@ -577,6 +649,9 @@ export function openingCues() {
 	// thump (a long 118 -> 37 Hz slide read as a 'boing').
 	cue(T.powerOn, 'powerOn', { gain: 0.45, from: 64, to: 48, decay: 0.16, bright: 0, seed: 51, dry: true })
 	cue(T.powerOn, 'click', { gain: 0.5, freq: 2600, seed: 61, dry: true }) // dry: no reverb 'ting' on the last sound
+
+	// The handover: four soft dry clicks as the lockup's tiles turn back, a frame apart.
+	if (handover) for (const c of cells.filter((x) => x.exitAt !== null)) click(c.exitAt + EXIT / 2, 0.08, panAt(c.x, c.exitAt))
 	return cues
 }
 
@@ -590,14 +665,58 @@ export function openingCues() {
  * The film must be 16:9 (1920 x 1080) and must have loaded the brand assets
  * (loadBrandAssets(film.defs)) before the opening renders.
  */
-export function addOpening(film, { at = 0, sound = true } = {}) {
+export function addOpening(film, { at = 0, sound = true, handover = true } = {}) {
 	film.scene('opening', at, at + OPENING_DURATION, (ctx) => {
-		const update = buildOpening(ctx.g, { defs: ctx.defs })
+		const update = buildOpening(ctx.g, { defs: ctx.defs, handover })
 		return (t) => update(t - at)
 	})
-	if (sound) for (const c of openingCues()) film.cue(at + c.t, c.kind, (({ t, kind, ...o }) => o)(c))
+	if (sound) for (const c of openingCues({ handover })) film.cue(at + c.t, c.kind, (({ t, kind, ...o }) => o)(c))
 	return at + OPENING_DURATION
 }
 
+/* ------------------------------------------------------------ the handover */
+
+/**
+ * The field the opening hands over, in screen pixels at T.end (see the
+ * contract at the top of this file). A film that wants to build in on the
+ * same ground aligns its honeycomb to these numbers, or draws handoverGround()
+ * under its first scene and builds on top of it.
+ */
+export const HANDOVER = (() => {
+	const z = Z4
+	const s = (R + GAP / SQRT3) * z
+	const origin = [960 - LOCK_CX * z, 540]
+	return {
+		t: OPENING_DURATION,
+		zoom: z,
+		houseZoom: (z * R) / 150, // 0.85: the ConNext world (R 150, gap 16, rounding 10) seen at this zoom is this field
+		R: R * z, // 127.5 px circumradius, pointy-top
+		gap: GAP * z, // 13.6 px between neighbours
+		round: ROUND * z, // 8.5 px corner rounding
+		pitchX: s * SQRT3, // 234.4 px, centre to centre along a row
+		pitchY: s * 1.5, // 203.0 px, row to row
+		origin, // screen centre of cell (0, 0), where the avatar was: cells sit at origin + (pitchX (q + r/2), pitchY r)
+		fill: GHOST, // C.cobalt600 on the C.cobalt ground
+		/** Opacity of the cell centred at screen (x, y): full near the frame centre, down to 0.44 at the corners. */
+		opacity: (x, y) => 1 - 0.56 * ss(360, 1060, Math.hypot(x - 960, (y - 540) * 1.25)),
+		push: (Z4 - Z3) / (OPENING_DURATION - T.powerOn), // zoom per second about the frame centre as the opening ends (0.029)
+	}
+})()
+
+/** Draws the handover field (the opening's last frame without anything on it) as static cells under parent. */
+export function handoverGround(parent) {
+	const H = HANDOVER
+	const g = el('g', { 'data-layer': 'opening-handover-ground' }, parent)
+	for (let r = -4; r <= 4; r++) {
+		for (let q = -10; q <= 10; q++) {
+			const x = H.origin[0] + H.pitchX * (q + r / 2)
+			const y = H.origin[1] + H.pitchY * r
+			if (x < -H.R || x > 1920 + H.R || y < -H.R || y > 1080 + H.R) continue
+			el('path', { d: hexPath(x, y, H.R, H.round), fill: H.fill, 'fill-opacity': H.opacity(x, y).toFixed(3) }, g)
+		}
+	}
+	return g
+}
+
 /** For the storyboard and the checks. */
-export const OPENING = { duration: OPENING_DURATION, bars: OPENING_BARS, bpm: BPM, fps: FPS, T, G, camera, lockup: { WM, LOCK_CX, AW, AH }, cluster: CLUSTER, nameCells: NAME_CELLS }
+export const OPENING = { duration: OPENING_DURATION, bars: OPENING_BARS, bpm: BPM, fps: FPS, T, G, camera, lockup: { WM, LOCK_CX, AW, AH }, cluster: CLUSTER, nameCells: NAME_CELLS, handover: HANDOVER }

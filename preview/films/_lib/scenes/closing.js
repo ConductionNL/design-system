@@ -468,7 +468,10 @@ CLOSING.connect = {
 }
 CLOSING.install21 = {
 	bars: 3, dur: G(4),
-	words: [F(2), G(1, 2), G(1, 3)], // each word powers on (or lands) one a beat; the orange moves to it
+	// Round 26: the round-21 hand-off is back. A Nextcloud cell pops in where the avatar sits and turns
+	// over into it (a scale flip, never a rotation), and each word rises as the current reaches it.
+	nc: F(2), flip: [0.3, 0.54],
+	words: [F(4), G(1, 2), G(1, 3)], // each word rises (or lands) one a beat as the current reaches it; the orange moves to it
 	line: G(1, 4) + F(2),
 	key: 4.6,
 }
@@ -730,10 +733,13 @@ function avatarCell(g, x, y, r, s = 1, power = 1) {
 }
 
 /**
- * Concept 'current' (the pick): the Conduction idea itself. The three words are laid in dim; a current
- * runs down a square-cornered wire left of them and powers each word on as it reaches it (the orange
- * moving to each and landing on "Own it"), then runs on from "Own it" to the Conduction avatar, which
- * powers on. Sound: a crackle along the wire, an arc and a click per word, a power-on click at the end.
+ * Concept 'current' (the pick): the Conduction idea itself. Round 26 restores the round-21 hand-off
+ * from Built on: a Nextcloud cell pops in top right and turns over, by scale, into the Conduction
+ * avatar (dim, waiting for power), and the words rise one a beat. A current runs down a square-cornered
+ * wire left of them and each word rises out of its line as the current reaches it (the orange moving to
+ * each and landing on "Own it"), then the current runs on from "Own it" to the avatar, which powers on.
+ * Sound: a tick as Nextcloud pops in, a dry click as it turns over, a crackle along the wire, an arc and
+ * a click per word, a power-on click at the end.
  */
 function drawInstallCurrent(g, t, p, W = 1920) {
 	const K = CLOSING.install21, I = INSTALL22, A = I.avatar
@@ -768,18 +774,32 @@ function drawInstallCurrent(g, t, p, W = 1920) {
 	})
 	// The spark: a small orange hex at the head of the current, never rotated.
 	for (const [hx, hy] of head) el('path', { d: hexPath(hx, hy, 11, 2), fill: C.orange }, g)
-	// The words: laid in dim, powered on as the current reaches them; the orange on the newest.
+	// The words (round 21): each rises out of its line as the current reaches it; the orange on the newest.
 	slogans.forEach((s, i) => {
 		const on = t >= K.words[i]
 		const pulse = on ? 1 + 0.04 * (1 - spring(t - K.words[i], { freq: 3.2, zeta: 0.5 })) : 1
-		const fill = orangeOn(t, i) ? C.orange : on ? C.white : C.cobalt400
+		const fill = orangeOn(t, i) ? C.orange : C.white
 		const y = I.first + i * I.lh
 		const sg = el('g', Math.abs(pulse - 1) > 1e-4 ? { transform: `translate(${TX} ${y}) scale(${pulse.toFixed(4)}) translate(${-TX} ${-y})` } : {}, g)
-		risingText(sg, s, { x: TX, y, size: I.size, weight: 700, fill, tracking: -0.02 }, inv(F(1), F(1) + RISE, t))
+		risingText(sg, s, { x: TX, y, size: I.size, weight: 700, fill, tracking: -0.02 }, inv(K.words[i], K.words[i] + RISE, t))
 	})
-	// The avatar powers on when the current arrives.
+	// The round-21 hand-off: a Nextcloud cell pops in where the avatar sits and turns over into it, by
+	// scale (never a rotation); the avatar waits dim and powers on when the current arrives.
+	const [f0, f1] = K.flip, fm = (f0 + f1) / 2
 	const arrive = K.words[2] + 0.62
-	avatarCell(g, A.x, A.y, A.r, 1, ease.outCubic(inv(arrive, arrive + 0.12, t)) * 0.9 + 0.1)
+	if (t < fm) {
+		const sx = (1 - ease.inCubic(inv(f0, fm, t))) * Math.min(1, pop(t, K.nc))
+		if (sx > 0.001) {
+			const fg = el('g', sx < 1 ? { transform: `translate(${A.x} ${A.y}) scale(${sx.toFixed(4)} 1) translate(${-A.x} ${-A.y})` } : {}, g)
+			nextcloudCell(fg, A.x, A.y, A.r)
+		}
+	} else {
+		const sx = ease.outCubic(inv(fm, f1, t))
+		if (sx > 0.001) {
+			const fg = el('g', sx < 1 ? { transform: `translate(${A.x} ${A.y}) scale(${sx.toFixed(4)} 1) translate(${-A.x} ${-A.y})` } : {}, g)
+			avatarCell(fg, A.x, A.y, A.r, 1, ease.outCubic(inv(arrive, arrive + 0.12, t)) * 0.75 + 0.25)
+		}
+	}
 	installLine(g, t, line)
 }
 
@@ -846,6 +866,8 @@ function install21Cues(cue, concept = INSTALL_DEFAULT) {
 	const K = CLOSING.install21
 	if (concept === 'current') {
 		cue(0.02, 'charge', { gain: 0.05, dur: K.words[0], from: 300, to: 1600 })
+		cue(K.nc, 'tick', { freq: 1760, gain: 0.1, pan: 0.5 })
+		cue((K.flip[0] + K.flip[1]) / 2, 'click', { gain: 0.2, freq: 3000, pan: 0.5, seed: 72, dry: true })
 		K.words.forEach((t, i) => {
 			cue(t - 0.12, 'crackle', { dur: 0.14, density: 70, gain: 0.08, pan: -0.5 })
 			cue(t, 'arc', { gain: 0.14, pan: -0.4 })

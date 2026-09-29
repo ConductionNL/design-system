@@ -43,8 +43,8 @@ export const leaveAt = (dur) => snap(dur - F(6))
 
 /** Section titles (Round 27c) and captions (Rounds 19 to 28f), as on the board. `*word*` is the one orange. */
 export const SCENES = [
-	{ id: 'hook', beats: 6, mark: 'Soevereine werkplek', text: 'Nooit meer\narchiveren?', rise: F(12) },
-	{ id: 'answer', beats: 9, mark: 'Soevereine werkplek', text: 'Als de werkplek ook\nDMS en archief is', rise: F(3) },
+	{ id: 'hook', beats: 6, mark: 'Soevereine werkplek', text: 'Nooit meer\narchiveren?', rise: F(12), markStays: true },
+	{ id: 'answer', beats: 9, mark: 'Soevereine werkplek', text: 'Als de werkplek ook\nDMS en archief is', rise: F(3), markHeld: true },
 	{ id: 'mdto', beats: 8, mark: 'Metadata', text: 'Compliant waar je\nwerkt, niet achteraf', rise: F(3) },
 	{ id: 'integratie', beats: 8, mark: 'Integratie', text: 'Bestaand archief\nbinnen via *Integriq*', rise: F(3) },
 	{ id: 'selectielijst', beats: 8, mark: 'Bewaartermijn', text: 'Alles krijgt vanzelf\neen bewaartermijn', rise: F(3) },
@@ -78,7 +78,8 @@ function risingBlock(g, text, opts, t, riseAt, outAt) {
 export function drawType(g, sc, t) {
 	const out = leaveAt(sc.dur)
 	const h = TYPE.markH
-	risingBlock(g, sc.mark, { x: TYPE.x, y: TYPE.markY + h * 0.75, size: Math.round(h * 0.8), weight: 700, fill: C.white, tracking: -0.02 }, t, sc.rise, out)
+	// The question and its answer share one section title: it stays up across the pair (Round 28f).
+	risingBlock(g, sc.mark, { x: TYPE.x, y: TYPE.markY + h * 0.75, size: Math.round(h * 0.8), weight: 700, fill: C.white, tracking: -0.02 }, t, sc.markHeld ? -1 : sc.rise, sc.markStays ? 1e9 : out)
 	const size = fitCaptionSize(sc.text)
 	risingBlock(g, sc.text, { x: TYPE.x, y: TYPE.y1, size, weight: 700, fill: C.white, accent: C.orange, tracking: -0.02, lineHeight: Math.round((size * TYPE.lh) / TYPE.size) / size }, t, sc.rise + F(1), out)
 }

@@ -183,6 +183,84 @@ export function onceLinkUI(w, geom, st = {}) {
  * the one orange ring.
  */
 const USAGE_CAPTION = 'Every use: who,\nwhen, where, why'
+/**
+ * Round 28k: use your passwords from browser and mobile. Specs (Keepiq on development, read-only):
+ * browser-extension-autofill (the extension offers the credentials that match the tab's origin, decrypts one only when
+ * it is chosen, and fills login forms) and mobile-pwa (Keepiq installed to the home screen as a standalone app, the
+ * vault list, reveal and copy with 44 px touch targets, copy inside the tap). The PWA spec rules out background
+ * autofill on the phone, so the phone copies the password with one tap; it does not fill another app's form.
+ * st: tag 0..1 (the Keepiq tag flips in at the field), cand 0..1 (the matching login offered), ring 0..1,
+ * fill 0..1 (username, then the masked password), signed 0..1, phone 0..1, tap 0..1 (copy), copied 0..1.
+ */
+export function useUI(w, geom, st = {}) {
+	const { u } = geom
+	const { tag = 1, cand = 1, ring = 1, fill = 1, signed = 1, phone = 1, tap = 1, copied = 1 } = st
+	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
+	// the browser: a tab bar with the address, and a login page
+	const bw = width * 0.54
+	panel(w, x, top, bw, 600, u)
+	rect(w, x + u, top + u, bw - 2 * u, 62, C.cobalt50, 3 * u)
+	;[0, 1, 2].forEach((i) => circle(w, x + 28 + i * 22, top + 32, 7, C.cobalt200))
+	rect(w, x + 110, top + 14, bw - 140, 36, C.white, 18, { stroke: C.cobalt100, 'stroke-width': u / 2 })
+	circle(w, x + 132, top + 32, 7, C.cobalt300)
+	bar(w, x + 150, top + 28, 170, 8, C.cobalt300)
+	TX(w, 'Sign in', x + 60, top + 140, 30, { weight: 700 })
+	const fx = x + 60, fw = bw - 120
+	const fy1 = top + 196, fy2 = top + 318
+	TX(w, 'Username', fx, fy1 - 12, 16, { weight: 500, fill: C.cobalt700 })
+	rect(w, fx, fy1, fw, 56, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	if (fill > 0) bar(w, fx + 20, fy1 + 24, 170 * Math.min(1, fill * 2), 9, C.cobalt900)
+	TX(w, 'Password', fx, fy2 - 12, 16, { weight: 500, fill: C.cobalt700 })
+	rect(w, fx, fy2, fw, 56, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
+	const dots = Math.round(12 * Math.max(0, fill * 2 - 1))
+	for (let i = 0; i < dots; i++) circle(w, fx + 28 + i * 22, fy2 + 28, 7, C.cobalt900)
+	// the Keepiq tag at the username field: it flips in (width), never scales
+	if (tag > 0) {
+		const cx = fx + fw - 34, cy = fy1 + 28
+		appTag(el('g', { transform: `translate(${cx} ${cy}) scale(${Math.max(tag, 0.001).toFixed(4)} 1) translate(${-cx} ${-cy})` }, w), cx, cy, 20, 'keepiq', { ringW: 3 })
+	}
+	button(w, fx, top + 460, 180, 54, u)
+	if (signed > 0) { const sg = el('g', { opacity: signed.toFixed(3) }, w); statusPill(sg, fx + 204, top + 474, u) }
+	// the login that matches this address, offered under the field until it is chosen
+	const open = cand * (fill > 0 ? 0 : 1)
+	if (open > 0) {
+		const cg = el('g', { opacity: open.toFixed(3) }, w)
+		const cx0 = fx + fw * 0.3, cw = fw * 0.7, cy0 = fy1 + 66
+		panel(cg, cx0, cy0, cw, 84, u)
+		appTag(cg, cx0 + 38, cy0 + 42, 18, 'keepiq', { ringW: 0 })
+		bar(cg, cx0 + 72, cy0 + 30, 150, 10, C.cobalt900)
+		bar(cg, cx0 + 72, cy0 + 52, 110, 8, C.cobalt300)
+		for (let i = 0; i < 6; i++) circle(cg, cx0 + cw - 150 + i * 18, cy0 + 42, 5, C.cobalt700)
+		if (ring > 0) rect(cg, cx0 - 8, cy0 - 8, cw + 16, 100, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
+	}
+	// the phone beside it: Keepiq installed to the home screen, the same login, copied with one tap
+	if (phone > 0) {
+		const pw = 220, ph = 500
+		const px = x + bw + 8, py = top + 40 + 40 * (1 - ease.brand(phone))
+		const pg = el('g', { opacity: Math.min(1, phone * 2).toFixed(3) }, w)
+		rect(pg, px, py, pw, ph, C.cobalt900, 34)
+		rect(pg, px + 10, py + 10, pw - 20, ph - 20, C.white, 26)
+		rect(pg, px + 10, py + 10, pw - 20, 74, C.cobalt, 26)
+		rect(pg, px + 10, py + 50, pw - 20, 34, C.cobalt)
+		use(pg, 'g-keepiq', px + 28, py + 34, 30, 30, C.white)
+		bar(pg, px + 70, py + 45, 90, 9, C.white)
+		// the matching login
+		appTag(pg, px + 44, py + 130, 16, 'keepiq', { ringW: 0 })
+		bar(pg, px + 72, py + 122, 110, 9, C.cobalt900)
+		bar(pg, px + 72, py + 140, 80, 7, C.cobalt300)
+		rect(pg, px + 26, py + 180, pw - 52, 50, C.cobalt50, 3 * u)
+		for (let i = 0; i < 8; i++) circle(pg, px + 46 + i * 16, py + 205, 5, C.cobalt900)
+		circle(pg, px + pw - 50, py + 205, 11, 'none', { stroke: C.cobalt700, 'stroke-width': u })
+		// copy: a 44 px touch target, pressed inside the tap
+		const by = py + 256
+		rect(pg, px + 26, by, pw - 52, 56, tap > 0.5 ? C.cobalt900 : C.cobalt, 4 * u)
+		bar(pg, px + pw / 2 - 30, by + 24, 60, 8, C.white)
+		if (tap > 0) rect(pg, px + 18, by - 8, pw - 36, 72, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': Math.min(1, tap).toFixed(3) })
+		if (copied > 0) { const og = el('g', { opacity: copied.toFixed(3) }, pg); statusPill(og, px + 26, by + 88, u) }
+		for (let i = 0; i < 3; i++) bar(pg, px + 26, py + 400 + i * 30, pw - 90 - i * 20, 8, C.cobalt100)
+	}
+}
+
 function usageFrame(ctx) {
 	chrome(ctx, { text: USAGE_CAPTION, app: 'keepiq' })
 	honeyField(ctx.g, ctx.W * 0.62, ctx.H + 150, 80, 10, { top: ctx.H * 0.61, scale: 0.7, W: ctx.W, H: ctx.H, alpha: { 0: 0.5, 1: 0.46, 2: 0.4, 3: 0.3, 4: 0.2, 5: 0.12, 6: 0.07 } })
@@ -298,13 +376,14 @@ const sectioned = (fn, title) => (ctx) => {
 const content = {
 	app: 'keepiq',
 	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
-	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Get passwords and certificates', once: 'Share passwords and certificates', 'general-dataLayer': 'Usage' },
+	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Get passwords and certificates', once: 'Share passwords and certificates', use: 'Use', 'general-dataLayer': 'Usage' },
 	// Round 26: every hand-off is designed; the film (keepiq/film.js) plays them in the one take
 	transitions: {
 		hook: { type: 'match', note: 'the lock, the story\'s key element, lifts out of its house cell and travels into the outside box, which takes it' },
 		request: { type: 'zoom', note: 'the lock flies home, the house cell turns over into Keepiq\'s own and the camera pushes into it, onto the request' },
 		once: { type: 'whip', note: 'a seven-frame whip-pan to the next cell, the share link' },
-		'general-dataLayer': { type: 'hexWipe', note: 'the camera pulls back and a wave of grid cells turns over from the link\'s cell to the dashboard\'s (cells on the grid, flipping, not screen-space hexes), then pushes in' },
+		use: { type: 'match', note: 'Round 28k: a match on the Keepiq tag: the camera slides from the share link\'s cell to the next cell on the grid while the tag holds its place on screen, and lands on it in the new window' },
+		'general-dataLayer': { type: 'hexWipe', note: 'the camera pulls back and a wave of grid cells turns over from the use cell to the dashboard\'s (cells on the grid, flipping, not screen-space hexes), then pushes in' },
 	},
 	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
@@ -312,7 +391,7 @@ const content = {
 	promiseLine: 'Human and machine passwords in one vault, on your own server',
 	title: 'Keepiq',
 	record: { one: 'password', many: 'passwords' },
-	logline: 'If somebody else owns and holds your key for you, is it still your house? Store your passwords where you keep your data: local, safe and yours. Then request passwords from partners, share links that vanish after one view, and see every use: who, when, where and why.',
+	logline: 'If somebody else owns and holds your key for you, is it still your house? Store your passwords where you keep your data: local, safe and yours. Then request passwords from partners, share links that vanish after one view, use your passwords from browser and mobile, and see every use: who, when, where and why.',
 	references: REFS,
 	techniques: ['#2 sentence build as word art (the story)', '#4 typewriter (the masked value)', '#9 text-swap on a held diagram (the burned link)', '#3 grid-cell ripple (the usage rows)'],
 	neighbours: ['integriq', 'openregister'],
@@ -363,4 +442,34 @@ const film = audienceFilm(content)
 film.boards.find((b) => b.id === 'general-dataLayer').drawBase = sectioned(usageFrame, 'Usage')
 Object.assign(film.boards.find((b) => b.id === 'promise'), { title: 'Story 1: If somebody else owns and holds your key for you, is it still your house?', drawBase: storyOne })
 film.boards.find((b) => b.id === 'hook').drawBase = storyTwo
+// Round 28k: a third proof, "Use", between the share link and the usage dashboard (audienceFilm plans at most two
+// proofs, so it is inserted here); the boards after it move one slot (3.75 s) later.
+{
+	const i = film.boards.findIndex((b) => b.id === 'once')
+	const once = film.boards[i]
+	const SLOT = once.end - once.start
+	const USE_CAP = 'Use your passwords\nfrom browser\nand mobile'
+	const useB = {
+		...once, id: 'use', section: 'Use', start: once.end, end: once.end + SLOT, shows: once.shows + SLOT, clears: once.clears + SLOT,
+		title: 'Use your passwords from browser and mobile', words: USE_CAP, maxWords: 7,
+		transition: { type: 'match', note: content.transitions.use.note },
+		source: 'Round 28k (Ruben). Keepiq specs on development (read-only; a future-release film, so specs count as built): browser-extension-autofill ("offer credentials matching the active tab\'s origin", decrypt only the one chosen, "Autofill into login forms including iframes") and mobile-pwa (installable standalone app on iOS Safari and Android Chrome; vault list, secret detail with reveal and copy, 44 by 44 touch targets; copy runs inside the tap). The PWA spec leaves background autofill out of reach, so the phone copies with a tap and does not fill another app.',
+		motion: 'Transition in, a match on the Keepiq tag: after the share link burns, the camera slides one cell along the grid while the tag holds its place on screen, and the next window lands under it. Left, a browser on a sign-in page: the small Keepiq tag flips in at the username field and the login that matches the address drops open under it, taking the orange ring; chosen, the username types in and the password fills as dots, and the sign-in shows the mint pill. Right, a phone beside it rises in: Keepiq installed on the home screen, the same login, and the copy button takes the orange ring as it is tapped, the mint pill under it.',
+		sound: 'A pluck as the tag flips in, a click on the ring, key ticks under the fill, a pluck on the sign-in, a tap click on the phone.',
+	}
+	useB.drawBase = sectioned((ctx) => FRAMES.hook(ctx, { app: 'keepiq', caption: USE_CAP, drawUI: useUI, tagFill: 'cobalt' }), 'Use')
+	useB.draw = (ctx) => useB.drawBase(ctx)
+	film.boards.slice(i + 1).forEach((b) => { for (const k of ['start', 'end', 'shows', 'clears']) if (typeof b[k] === 'number') b[k] += SLOT })
+	film.boards.splice(i + 1, 0, useB)
+	film.meta.duration += SLOT
+	// the word budget, with the new card (7 words on 3 lines: the caption column cannot hold "from browser and mobile" on one line)
+	const bud = film.meta.budget
+	if (bud) {
+		const n = USE_CAP.split(/\s+/).filter(Boolean).length
+		const at = bud.rows.findIndex((r) => r.id === 'general-dataLayer')
+		bud.rows.splice(at < 0 ? bud.rows.length : at, 0, { id: 'use', words: n, hold: +(useB.clears - useB.shows).toFixed(2), need: +(n * 0.4).toFixed(2), issues: ['3 lines (max 2)'] })
+		bud.total += n
+		bud.filmIssues = (bud.filmIssues || []).map((m) => m.replace(/^\d+ words in the body/, `${bud.total} words in the body`))
+	}
+}
 export const { meta, boards } = film

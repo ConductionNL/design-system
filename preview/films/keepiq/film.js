@@ -1,26 +1,24 @@
 /**
  * The Keepiq film (Round 23: the portfolio animation pass; storyboard keepiq/boards/dev-teams, Round 25b
- * ownership story). 1920 x 1080, 24 fps, 20 bars at 128 BPM, 37.5 s. The sister of the Thematiq film:
- * the same one-take honeycomb (one solid grid, Round 28c), the same word-art language.
+ * ownership story; Round 28e story cards; Round 28k "Use"). 1920 x 1080, 24 fps, 24 bars at 128 BPM, 45 s. The sister
+ * of the Thematiq film: the same one-take honeycomb (one solid grid, Round 28c), the same word-art language.
  *
  *   0 to 5.63 s       the shared Conduction opening, handing over on its field
- *   5.63 to 24.38 s   the body, ONE take (tkfilm/lib.js):
- *                     story 1, word art on the opening's field: "The key to" "your own house?", a white
- *                       house-cell with its lock popping into the field as "key" lands, "own" in orange;
- *                     story 2: the lock lifts out of the house (the cell left as a dashed outline) and
- *                       travels up and out of the honeycomb into a plain outside box that pops in to take
- *                       it: "Kept by someone else's app?";
- *                     the answer: the lock flies back down out of the box into its house, and the cell turns
- *                       over into Keepiq's own; the push INTO it: the request, the fill-in link typed in and
- *                       ringed, the partner's page filling in the masked value;
- *                     a whip-pan to the next cell: a link that vanishes after one view, the recipient's card
- *                       opening once and then turning away edge-on;
- *                     the pull back, a wave of grid cells turning over, and the push into the usage dashboard:
- *                       the day bars growing, the uses rippling in, the newest (by an app) ringed;
+ *   5.63 to 31.88 s   the body, ONE take (tkfilm/lib.js, 14 bars):
+ *                     story 1: "If somebody else owns and holds your key for you", the lock lifting out of its house
+ *                       into a plain outside box, then "is it still your house?" in orange;
+ *                     story 2: "Store your passwords where you keep your data" as the lock flies home and the cell turns
+ *                       over into Keepiq's own, then "Local, safe and yours" in orange; the push INTO it: the request,
+ *                       the fill-in link ringed, the partner's page filling in the masked value;
+ *                     a whip-pan to the next cell: a link that vanishes after one view;
+ *                     Round 28k: a slide one cell along the grid, matched on the Keepiq tag (it holds its place on
+ *                       screen): the browser offers the matching login at the field and fills it, the phone beside it
+ *                       copies it with a tap;
+ *                     the pull back, a wave of grid cells turning over, and the push into the usage dashboard;
  *                     the pull back: the house cell turns over into orange exactly where Built on's lead
  *                       flips in, a hard cut on the bar;
- *   24.38 to 31.88 s  the shared Built on Nextcloud piece (closing.js, 4 bars)
- *   31.88 to 37.5 s   the shared install board (closing.js, 3 bars)
+ *   31.88 to 39.38 s  the shared Built on Nextcloud piece (closing.js, 4 bars)
+ *   39.38 to 45 s     the shared install board (closing.js, 3 bars)
  *
  * No competitor is named: someone else's app is a plain outside box. Accents are clicks. Round 28: no current
  * anywhere, no wire, no electric sound. No bell.
@@ -34,11 +32,13 @@ import { TYPE, layout, fitCaptionSize, use } from '../_lib/ui.js'
 import { bezier } from '../_lib/core.js'
 import { rest, take, glue, glueAttr } from '../connext/lib/camera.js'
 import { caption } from '../connext/lib/type.js'
-import { partnerRequestUI, onceLinkUI, usageContent, outsideBox } from './boards/dev-teams/board.js'
+import { partnerRequestUI, onceLinkUI, useUI, usageContent, outsideBox } from './boards/dev-teams/board.js'
 import {
 	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen,
 	CAM_HO, HO_RATE, camOn, drawField, screenIn, drawScreen, windowTag, flip, flipIn, flipTf, FLIP,
 } from '../tkfilm/lib.js'
+import { appTag } from '../_lib/ui.js'
+import { WINDOW } from '../_lib/scenes/general.js'
 
 const APP = 'keepiq'
 const BPM = 128
@@ -46,7 +46,7 @@ const SPB = 60 / BPM
 const BAR = 4 * SPB
 const S16 = SPB / 4
 const OPEN = 3 * BAR
-const BODY = 12 * BAR // Round 28e: two more bars so Ruben's story cards get their full reading holds
+const BODY = 14 * BAR // Round 28e: two more bars for Ruben's story cards; Round 28k: two more for "Use"
 const T_BUILT = OPEN + BODY
 const BUILT = 4 * BAR
 const INSTALL = 3 * BAR
@@ -64,9 +64,9 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 
 /* ============================================================ the world */
 
-const CELL = { house: [4, 0], once: [5, 0], usage: [4, 1] }
+const CELL = { house: [4, 0], once: [5, 0], use: [5, 1], usage: [4, 1] }
 const XY = Object.fromEntries(Object.entries(CELL).map(([k, v]) => [k, cellXY(...v)]))
-const SC = { request: screenIn(...CELL.house), once: screenIn(...CELL.once) }
+const SC = { request: screenIn(...CELL.house), once: screenIn(...CELL.once), use: screenIn(...CELL.use) }
 /** The usage dashboard in its cell: general-scene local coordinates (x 120 to 780, y 640 to 1240) at 0.2 world units each. */
 const UI0 = layout(1920, 1080).ui
 const US = 0.2
@@ -114,34 +114,47 @@ const T = {
 	link4: [B(33.3), B(34)],
 	open: B(34.4),
 	burn: [B(36.2), B(37.2)],
-	// scene 5, every use
-	// Round 27c: the pull back from the link, a wave of cells turning over on the grid toward the dashboard, the push in
-	out: [B(38.7), B(39.4)],
-	wave: [B(38.9), B(39.9)],
-	in: [B(39.5), B(40.4)],
-	bars: [B(40.4), B(41.4)],
-	rows: B(41.5),
-	ring5: B(43.1),
-	pull: [B(46.3), B(47.9)], // after the last caption and the mark have left: nothing crosses the words
-	capOut: B(46.1),
-	appOn: B(46.9),
+	// Round 28k, scene 5: use them from browser and mobile (8 beats); everything after it moves 8 beats later.
+	// In: a match on the Keepiq tag: the camera slides one cell along the grid while the tag holds its place on screen.
+	slide: [B(38.9), B(38.9) + 0.5],
+	tagU: B(40.2), // the small Keepiq tag flips in at the username field
+	cand: B(40.5), // the login that matches the address drops open under it
+	ringU: B(41),
+	fillU: [B(41.4), B(42.3)], // chosen: the username, then the password as dots
+	signed: B(42.5),
+	phone: B(43), // the phone rises in beside the browser
+	tap: B(43.9), // copy, inside the tap
+	copied: B(44.1),
+	// scene 6, every use
+	// Round 27c: the pull back, a wave of cells turning over on the grid toward the dashboard, the push in
+	out: [B(46.7), B(47.4)],
+	wave: [B(46.9), B(47.9)],
+	in: [B(47.5), B(48.4)],
+	bars: [B(48.4), B(49.4)],
+	rows: B(49.5),
+	ring5: B(51.1),
+	pull: [B(54.3), B(55.9)], // after the last caption and the mark have left: nothing crosses the words
+	capOut: B(54.1),
+	appOn: B(54.9),
 }
 
 /* ============================================================ the camera */
 
 const END = camOn(...XY.house, 1482, 538, 92 / 150) // Round 27: where Built on's lead flips in (closing.js CONNECT.cam.start, radius 92)
 const PUSH = bezier(0.62, 0, 0.12, 1)
-const MID = camOn(...XY.once.map((v, i) => (v + XY.usage[i]) / 2), 1300, 560, 1.15)
+const MID = camOn(...XY.use.map((v, i) => (v + XY.usage[i]) / 2), 1300, 560, 1.15)
 const camera = take([
 	rest(CAM_HO, OPEN, { k: HO_RATE, pivot: [960, 540] }),
 	rest(SC.request.key, T.push[1], { k: 0.006, pivot: [1300, 520] }),
 	rest(SC.once.key, T.whip[1], { k: 0.006, pivot: [1300, 520] }),
+	rest(SC.use.key, T.slide[1], { k: 0.006, pivot: [1300, 520] }),
 	rest(MID, T.out[1], { k: 0.02, pivot: [1300, 560] }),
 	rest(U_KEY, T.in[1], { k: 0.008, pivot: [1300, 560] }),
 	rest(END, T.pull[1], { k: -0.01, pivot: [1482, 538] }),
 ], [
 	{ from: T.push[0], to: T.push[1], ease: PUSH, blend: 'pivot' },
 	{ from: T.whip[0], to: T.whip[1], ease: ease.snap, blend: 'pivot' },
+	{ from: T.slide[0], to: T.slide[1], ease: ease.inOutCubic, blend: 'pivot' },
 	{ from: T.out[0], to: T.out[1], ease: ease.brand, blend: 'pivot' },
 	{ from: T.in[0], to: T.in[1], ease: PUSH, blend: 'pivot' },
 	{ from: T.pull[0], to: T.pull[1], ease: ease.brand, blend: 'pivot' },
@@ -205,7 +218,8 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			if (k === CELL.house.join() && t >= T.house) return { draw: (g, x, y) => {
 				if (t >= T.appOn) return glyphApp(g, x, y, t)
 				houseCell(g, x, y, t)
-				if (t >= T.push[0] && t < T.appOn + 0.2) {
+				// Round 28k: off while the camera is on the use cell, so no sliver of it shows at the frame's edge
+				if (t >= T.push[0] && t < T.appOn + 0.2 && (t < T.slide[0] || t >= T.out[0])) {
 					const inner = drawScreen(g, SC.request, (w, geom) => partnerRequestUI(w, geom, {
 						ticks: (t >= T.ticks[0] ? 1 : 0) + (t >= T.ticks[1] ? 1 : 0),
 						link: ease.outCubic(inv(...T.link, t)),
@@ -226,16 +240,31 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 					const cardSx = burnt <= 0 ? 1 : Math.max(0, Math.cos(Math.PI / 2 * ease.inCubic(clamp(burnt * 1.6))))
 					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: ease.brand(inv(T.open, T.open + 0.35, t)), cardSx, burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
 				})
-				windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
+				if (t < T.slide[0]) windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
+			} }
+			// Round 28k: the use cell, a browser and a phone; its tag is the one that travelled with the camera
+			if (k === CELL.use.join() && t >= T.slide[0] - 0.1) return { draw: (g, x, y) => {
+				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
+				const inner = drawScreen(g, SC.use, (w, geom) => useUI(w, geom, {
+					tag: flipIn(t, T.tagU),
+					cand: ease.outCubic(inv(T.cand, T.cand + 0.3, t)),
+					ring: t < T.ringU ? 0 : 1,
+					fill: inv(...T.fillU, t),
+					signed: ease.outCubic(inv(T.signed, T.signed + 0.25, t)),
+					phone: inv(T.phone, T.phone + 0.4, t),
+					tap: t < T.tap ? 0 : 1,
+					copied: ease.outCubic(inv(T.copied, T.copied + 0.25, t)),
+				}))
+				if (t >= T.slide[1]) windowTag(inner, APP)
 			} }
 			if (k === CELL.usage.join() && t >= T.wave[1]) return { draw: (g, x, y) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
 				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: flipIn(t, T.bars[0]) })
 			} }
-			// Round 27c: once to usage is a wave of cells turning over on the grid itself, from the link's cell to the dashboard's
+			// Round 27c (Round 28k: from the use cell): a wave of cells turning over on the grid itself, from the link's cell to the dashboard's
 			if (t >= T.wave[0] && t < T.wave[1] + FLIP * 2) {
-				const [ox, oy] = XY.once, [ux, uy] = XY.usage
+				const [ox, oy] = XY.use, [ux, uy] = XY.usage
 				const [wx, wy] = cellXY(qq, rr)
 				const dx = ux - ox, dy = uy - oy, L = Math.hypot(dx, dy)
 				const along = ((wx - ox) * dx + (wy - oy) * dy) / (L * L) // 0 at the link's cell, 1 at the dashboard's
@@ -260,6 +289,27 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			outsideBox(bg, 0, 0, 320, 250, { s, lock: t >= T.lift[1] && t < T.ret[0] })
 		}
 		lockInFlight(wg, t)
+	}
+}, { post: 0.001 })
+
+/**
+ * Round 28k: the match on the Keepiq tag. During the slide the window tags hand over to one tag on the stage: it starts
+ * exactly where the share link's tag is on screen and ends exactly where the use window's tag will be, eased with the camera.
+ */
+const TAG_M = [(WINDOW.nav + 14) * 2.5, WINDOW.row1] // windowTag's mock-px anchor (tkfilm/lib.js, U 2.5), radius 55
+function tagOnScreen(sc, t) {
+	const cam = camera(t)
+	const wx = sc.at[0] + sc.s * TAG_M[0], wy = sc.at[1] + sc.s * TAG_M[1]
+	return [...toScreen(cam, wx, wy), cam.z * sc.s]
+}
+film.scene('t-tagmatch', T.slide[0], T.slide[1], (ctx) => {
+	const g = el('g', {}, ctx.g)
+	const a = tagOnScreen(SC.once, T.slide[0]), b = tagOnScreen(SC.use, T.slide[1])
+	return (t) => {
+		g.replaceChildren()
+		const u = ease.inOutCubic(inv(...T.slide, t))
+		const k = lerp(a[2], b[2], u)
+		appTag(g, lerp(a[0], b[0], u), lerp(a[1], b[1], u), 55 * k, APP, { fill: C.cobalt, ringW: 6 * k })
 	}
 }, { post: 0.001 })
 
@@ -295,7 +345,7 @@ const artOut = (g, t, t0) => {
 }
 
 // Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
-;[['Ownership', T.mark, T.s2Out], ['Get passwords and certificates', B(24.6), B(31.3)], ['Share passwords and certificates', B(32.5), B(38.6)], ['Usage', B(40.5), T.capOut]].forEach(([title, rise, leave], i) => {
+;[['Ownership', T.mark, T.s2Out], ['Get passwords and certificates', B(24.6), B(31.3)], ['Share passwords and certificates', B(32.5), B(38.6)], ['Use', B(39.9), B(46.6)], ['Usage', B(48.5), T.capOut]].forEach(([title, rise, leave], i) => {
 	// Round 28i: a long title shrinks until it ends by x 860 (column stretch, inside the safe box, clear of the window)
 	const size = Math.min(58, Math.floor((58 * 740) / measure(title, { size: 58, weight: 700, tracking: -0.02 })))
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -330,7 +380,8 @@ film.scene('t-story2', T.w3[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
 const CAPS = [
 	['request', 'Request passwords\nfrom partners', B(24.6), B(31.3)],
 	['once', 'Share links, gone\nafter one view', B(32.5), B(38.6)],
-	['usage', 'Every use: who,\nwhen, where, why', B(40.5), T.capOut],
+	['use', 'Use your passwords\nfrom browser\nand mobile', B(39.9), B(46.6)],
+	['usage', 'Every use: who,\nwhen, where, why', B(48.5), T.capOut],
 ]
 for (const [id, text, rise, leave] of CAPS) {
 	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -373,7 +424,18 @@ cue(T.views, 'click', { gain: 0.32, freq: 2600, seed: 129, dry: true, pan: 0.1 }
 cue(T.open, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.6 })
 cue(T.burn[0], 'whoosh', { dur: 0.4, from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
 cue(T.burn[0] + 0.3, 'click', { gain: 0.24, freq: 2000, seed: 51, dry: true, pan: 0.6 })
-// scene 5
+// scene 5 (Round 28k): the slide on the tag, the browser fill, the phone's tap
+cue(T.slide[0] - 0.04, 'whoosh', { dur: 0.55, from: 900, to: 3800, panFrom: 0.2, panTo: -0.2, gain: 0.18 })
+cue(T.slide[1], 'click', { gain: 0.26, freq: 2500, seed: 132, dry: true, pan: 0.2 })
+cue(T.tagU, 'pluck', { freq: 587.33, gain: 0.18, pan: 0.1 })
+cue(T.cand, 'tick', { freq: 1479.98, gain: 0.1, pan: 0.1 })
+cue(T.ringU, 'click', { gain: 0.3, freq: 2700, seed: 133, dry: true, pan: 0.1 })
+for (let i = 0; i < 10; i++) cue(lerp(...T.fillU, i / 10), 'tick', { freq: 2349.32, gain: 0.05, decay: 0.03, pan: 0 })
+cue(T.signed, 'pluck', { freq: 880, gain: 0.2, pan: 0 })
+cue(T.phone, 'whoosh', { dur: 0.35, from: 600, to: 2400, panFrom: 0.5, panTo: 0.6, gain: 0.08 })
+cue(T.tap, 'click', { gain: 0.3, freq: 2900, seed: 134, dry: true, pan: 0.6 })
+cue(T.copied, 'pluck', { freq: 1174.66, gain: 0.18, pan: 0.6 })
+// scene 6
 cue(T.out[0], 'whoosh', { dur: 0.7, from: 3000, to: 500, panFrom: 0.4, panTo: 0, gain: 0.16 })
 for (let i = 0; i < 8; i++) cue(lerp(T.wave[0], T.wave[1] - FLIP, i / 8), 'click', { gain: 0.1, freq: 2200 + i * 90, seed: 60 + i, dry: true, pan: 0.6 - i * 0.15 })
 cue(T.in[0], 'whoosh', { dur: 0.9, from: 400, to: 4600, panFrom: -0.2, panTo: 0.3, gain: 0.2 })
@@ -390,7 +452,7 @@ film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}),
 
 /** The bed, in B minor then D: silent under the opening, pad from the story, the kick from the request, resolving on D. */
 film.music = {
-	bars: 22, // Round 28e: 12-bar body
+	bars: 24, // Round 28e: 12-bar body; Round 28k: 14
 	chords: [
 		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62], // 0-2 the opening
 		[47, 54, 57, 61], // 3 Bm9: if somebody else holds your key
@@ -403,6 +465,8 @@ film.music = {
 		[47, 50, 54, 57], // 10 Gmaj9: the partner fills it in
 		[49, 52, 57, 59], // 11 A add9: share links
 		[47, 50, 54, 61], // 12 Bm add9: gone after one view
+		[50, 54, 61, 64], // 13 Dmaj9: use them from the browser (Round 28k)
+		[45, 52, 57, 61], // 14 A: and from the phone
 		[47, 50, 54, 59], // 13 Gmaj7: every use
 		[49, 52, 57, 59], // 14 A add9: the pull back
 		[50, 54, 61, 64], // 15 Dmaj9: built on
@@ -413,8 +477,8 @@ film.music = {
 		[49, 52, 57, 59], // 20 A add9
 		[50, 54, 57, 62], // 21 D: own it
 	],
-	bass: [38, 38, 38, 35, 43, 45, 42, 43, 45, 38, 43, 45, 35, 43, 45, 38, 35, 43, 45, 43, 45, 38],
-	parts: { pad: [[3, 22]], bass: [[4, 21]], kick: [[9, 15]], hat: [[9, 15]], clap: [[11, 14]] },
+	bass: [38, 38, 38, 35, 43, 45, 42, 43, 45, 38, 43, 45, 35, 38, 45, 43, 45, 38, 35, 43, 45, 43, 45, 38],
+	parts: { pad: [[3, 24]], bass: [[4, 23]], kick: [[9, 17]], hat: [[9, 17]], clap: [[11, 16]] },
 	loop: false,
 }
 

@@ -672,7 +672,10 @@ function drawConnect(g, t, p, W = 1920) {
 	// spark: Round 27c, no hex floats over the grid).
 	LOAD_ORDER.forEach((id, i) => {
 		const t0 = K.loads[i] - K.linkDur
-		const pr = inv(t0, K.loads[i], t) * unlink
+		// Round 28g: the lines draw off back into the lead as the white ring flips in, so the zoomed-out
+		// view has no lines, only the C, the field ring and the white ring.
+		const r0 = K.zoom[0] + 0.3, r1 = r0 + 24 * F(1) * 0.45
+		const pr = inv(t0, K.loads[i], t) * unlink * (1 - ease.inOutCubic(inv(r0, r1, t)))
 		if (pr <= 0.001) return
 		const [x, y] = cxy(CONNECT.cells[id])
 		const L = Math.hypot(x, y), ux = x / L, uy = y / L

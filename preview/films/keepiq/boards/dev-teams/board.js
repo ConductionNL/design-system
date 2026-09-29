@@ -33,7 +33,7 @@ import { audienceFilm } from '../../../_lib/audiencefilm.js'
 import { FRAMES } from '../../../_lib/scenes/general.js'
 import { rect, bar, circle, panel, statusPill, use, flowNode, appTag, appMark, button, chrome, honeyField, layout, clearFieldUnder } from '../../../_lib/ui.js'
 import { ease, hexPath } from '../../../_lib/core.js'
-import { current, drawField, CAM_HO } from '../../../tkfilm/lib.js'
+import { drawField, CAM_HO } from '../../../tkfilm/lib.js'
 
 const REFS = [
 	{ name: 'X Ticker', url: 'https://whatships.com/videos/x-ticker/', borrow: 'Text typed live under the UI.' },

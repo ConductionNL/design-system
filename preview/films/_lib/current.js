@@ -1,4 +1,9 @@
 /**
+ * ROUND 28 (Ruben): RETIRED. The travelling current wire is gone everywhere ("a bad transition and
+ * animation"). drawWire, boardCurrent, sceneCurrent and currentCues draw and cue nothing; keyElement and
+ * landing still measure, for pages that anchor on a scene's key element. The fallback hand-off is now
+ * transitions.js's hex flip wave.
+ *
  * The current: Conduction's recurring motif (Round 24, Ruben, 2026-09-28).
  *
  * One square-cornered wire with a travelling current, the look and sound of the install board's
@@ -30,6 +35,9 @@ import { el } from './stage.js'
 import { hexPath, ease, spring, inv, lerp } from './core.js'
 import { C } from './brand.js'
 
+/** Round 28: the wire is retired; every drawing and cue function returns at once. */
+export const RETIRED = true
+
 export const CURRENT = {
 	stroke: C.cobalt300, width: 5, head: 11,
 	run: 0.42, // seconds for a hand-off to run from one element to the next
@@ -57,6 +65,7 @@ export function route(from, to) {
 
 /** The polyline drawn to progress k; returns the head's position. */
 export function drawWire(g, pts, k, { stroke = CURRENT.stroke, width = CURRENT.width, head = true, headColor = C.white, headR = CURRENT.head } = {}) {
+	if (RETIRED) return null
 	if (k <= 0 || pts.length < 2) return null
 	const lens = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]))
 	const total = lens.reduce((a, v) => a + v, 0)
@@ -109,6 +118,7 @@ export function landing(el0, from) {
 
 /** The still: the wire has arrived at the element, its head resting on the element's edge, a thin ring round the element. */
 export function boardCurrent(g, { from, to, element = null, headColor = C.white } = {}) {
+	if (RETIRED) return []
 	const wg = el('g', { 'data-current': 'board' }, g)
 	const pts = route(from, to)
 	drawWire(wg, pts, 1, { headColor })
@@ -122,6 +132,7 @@ export function boardCurrent(g, { from, to, element = null, headColor = C.white 
 
 /** The scene (local time t): the wire runs in over CURRENT.run, then rests; the element pulses once on arrival. */
 export function sceneCurrent(g, t, { from, to, element = null, headColor = C.white, t0 = 0 } = {}) {
+	if (RETIRED) return []
 	const wg = el('g', { 'data-current': 'scene' }, g)
 	const pts = route(from, to)
 	const k = ease.inOutCubic(inv(t0, t0 + CURRENT.run, t))
@@ -136,6 +147,7 @@ export function sceneCurrent(g, t, { from, to, element = null, headColor = C.whi
 
 /** The sound of one run: a crackle along the wire, an arc and a dry click as it arrives. */
 export function currentCues(cue, t0, { pan = 0.3, gain = 1 } = {}) {
+	if (RETIRED) return
 	cue(t0, 'crackle', { dur: CURRENT.run, density: 60, gain: 0.06 * gain, pan })
 	cue(t0 + CURRENT.run, 'arc', { gain: 0.12 * gain, pan })
 	cue(t0 + CURRENT.run, 'click', { gain: 0.2 * gain, freq: 2800, seed: 91, dry: true, pan })

@@ -7,15 +7,12 @@
  *   world    the handover lattice of the Conduction opening (circumradius 150, gap 16 in world
  *            units; at zoom 0.85 it is the opening's last field cell for cell), so the body starts
  *            on the opening's frame without a cut;
- *   depth    two more layers of the same pointy-top hexes: a far field (larger cells, slower, dimmer)
- *            and a near veil (a few big cells, faster, very faint), both moving with the camera at
- *            their own parallax; depth comes from size and opacity only (no blur, no gradient);
+ *   one grid Round 28c: ONE solid honeycomb grid; no far field, no near veil, no second or translucent grid;
+ *            the camera moves the one grid
  *   screens  the product screens live INSIDE cells of the world, drawn in world space, so a push
  *            into a cell opens the real screen (the storyboard's key frame is the rest of that push)
  *            and a fly between two cells pulls back over the honeycomb and dives into the next;
- *   current  the Round 24 motif (_lib/current.js): a square-cornered wire along which a current runs,
- *            a small Nextcloud-cyan hex at its head; it carries the hand-offs and powers each key
- *            element on, with a crackle, an arc and a click.
+ *   no wire  Round 28: the current line is retired; nothing here draws a wire
  *
  * The camera is the ConNext film's (connext/lib/camera.js: rests and pivot/fly moves), the captions
  * its masked rise and glued exit (connext/lib/type.js).
@@ -24,7 +21,6 @@ import { el, textBlock, nextId } from '../_lib/stage.js'
 import { C } from '../_lib/brand.js'
 import { clamp, inv, lerp, ease, spring, hexPath, SQRT3, mix, rand } from '../_lib/core.js'
 import { HANDOVER } from '../_lib/scenes/opening.js'
-import { drawWire, CURRENT, currentCues } from '../_lib/current.js'
 import { WINDOW } from '../_lib/scenes/general.js'
 import { topbar, nav, rect, bar, appTag, clipped, layout } from '../_lib/ui.js'
 
@@ -84,37 +80,6 @@ export function drawField(parent, c, look, { reach = 0, fill = C.cobalt600, soli
 		}
 	}
 	for (const [lk, wx, wy] of specials) lk.draw(g, wx, wy)
-	return g
-}
-
-/**
- * The far field: the same hexes, twice the size, at half the camera's pan and a slower zoom,
- * dim. It gives the take its depth: when the camera moves, the far field slides behind.
- */
-export function drawFar(parent, c, { alpha = 0.55 } = {}) {
-	const k = 0.45
-	const fc = { x: c.x * k, y: c.y * k, z: Math.pow(c.z, 0.55) * 0.55, px: c.px, py: c.py }
-	const g = el('g', { transform: worldTf(fc) }, parent)
-	const x0 = fc.x + (0 - fc.px) / fc.z, x1 = fc.x + (1920 - fc.px) / fc.z
-	const y0 = fc.y + (0 - fc.py) / fc.z, y1 = fc.y + (1080 - fc.py) / fc.z
-	const Rf = 2 * R, Sf = Rf + (2 * GAP) / SQRT3, px = Sf * SQRT3, py = Sf * 1.5
-	for (let r = Math.floor(y0 / py) - 1; r <= Math.ceil(y1 / py) + 1; r++) {
-		for (let q = Math.floor(x0 / px - r / 2) - 1; q <= Math.ceil(x1 / px - r / 2) + 1; q++) {
-			const wx = px * (q + r / 2), wy = py * r
-			const n = rand(q * 7919 + r * 104729)()
-			if (n < 0.45) continue
-			el('path', { d: hexPath(wx, wy, Rf, 2 * ROUND), fill: C.cobalt700, 'fill-opacity': (alpha * (0.35 + 0.4 * n)).toFixed(3) }, g)
-		}
-	}
-	return g
-}
-
-/** The near veil: a handful of big faint hexes that pass in front, faster than the world (parallax 1.6). */
-export function drawNear(parent, c, cells, { alpha = 0.07 } = {}) {
-	const k = 1.6
-	const nc = { x: c.x * k, y: c.y * k, z: c.z * 1.25, px: c.px, py: c.py }
-	const g = el('g', { transform: worldTf(nc) }, parent)
-	for (const [wx, wy, rr] of cells) el('path', { d: hexPath(wx, wy, rr, rr * 0.07), fill: C.cobalt400, 'fill-opacity': alpha }, g)
 	return g
 }
 
@@ -186,30 +151,6 @@ export function windowTag(inner, app, { fill = C.cobalt, sx = 1 } = {}) {
 	appTag(t, a.x, a.y, 55, app, { fill })
 }
 
-/* ------------------------------------------------------------ the current (Round 24 motif) */
-
-/**
- * The current (Round 24, _lib/current.js drawWire): a square-cornered wire drawn from pts[0] as far as k (0..1 of
- * its length), its head a small pointy-top hex. In the body the head is Nextcloud cyan (the scene's key element
- * holds its one orange). Coordinates are those of the group it is drawn in; `w` and `spark` are in that space.
- */
-export function current(g, pts, k, { w = CURRENT.width, spark = CURRENT.head, stroke = CURRENT.stroke, headColor = C.nextcloudCyan } = {}) {
-	if (k <= 0) return null
-	return drawWire(g, pts, Math.min(1, k), { stroke, width: w, head: true, headColor, headR: spark })
-}
-
-/** A short burst of sparks where a current lands (a powered element): three small hexes stepping out and off. */
-export function powerBurst(g, x, y, s, { r = 10, reach = 40 } = {}) {
-	if (s <= 0 || s >= 1) return
-	for (let i = 0; i < 6; i++) {
-		const a = (Math.PI / 3) * i + Math.PI / 6
-		const d = reach * ease.outCubic(s)
-		const rr = r * (1 - s)
-		if (rr < 0.5) continue
-		el('path', { d: hexPath(x + Math.cos(a) * d, y + Math.sin(a) * d, rr, rr * 0.2), fill: i % 2 ? C.white : C.cobalt200 }, g)
-	}
-}
-
 /* ------------------------------------------------------------ type */
 
 /** A word-by-word build: each word rises out of its own clip box, one per `step`, from `at`; leaves upward from `leave`. */
@@ -245,4 +186,4 @@ export const flipTf = (x, y, sx) => (sx >= 0.9995 ? {} : { transform: `translate
 
 /** Spring helpers. */
 export const pop = (s, { freq = 2.8, zeta = 0.55 } = {}) => (s <= 0 ? 0 : spring(s, { freq, zeta }))
-export { ease, inv, clamp, lerp, mix, spring, hexPath, el, textBlock, C, nextId, CURRENT, currentCues }
+export { ease, inv, clamp, lerp, mix, spring, hexPath, el, textBlock, C, nextId }

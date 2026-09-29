@@ -1,8 +1,8 @@
 /**
  * Scene transitions: designed hand-offs between two body scenes (Round 26, Ruben, 2026-09-28).
  *
- * The current (current.js) is only the FALLBACK: a board that names no transition gets the wire. A
- * board that names one gets a designed hand-off in (from the board before it):
+ * A board that names a transition gets a designed hand-off in (from the board before it); a board that
+ * names none gets the FALLBACK, `flip` (Round 28: the current wire is retired everywhere):
  *
  *   match    match cut: the key element of scene A lifts off, travels, and lands as the key element
  *            of scene B (position, size and colour carry over); B cuts in round it on the beat
@@ -18,6 +18,8 @@
  *            moves, and B's content steps down into the held frame in three bands
  *   cluster  cluster-to-container (#10): A breaks into loose hexes that drift together into B's
  *            window, arriving together within the beat; the orange one lands on B's key element
+ *   flip     the fallback: a wave of dark field cells turns over across the frame from A's key element,
+ *            covering it, and turns over again from B's key element, uncovering B (the flip rule)
  *
  * A board sets it as `transition: { type, from, to, note }`: `from` and `to` are optional anchors
  * (stage px) overriding the measured key elements of A and B; `note` is the director's reason for the
@@ -30,12 +32,14 @@
  *     the type column; B's caption rises only after the transition leaves the column (capIn), so there
  *     are always at least 2 clear frames; while a caption is visible, the transition's moving layers
  *     are clipped away from the caption column (guard), so nothing crosses a visible caption;
+ *   - one grid (Round 28c): no second field or see-through grid layer over a scene; the fallback's cells
+ *     are the shared field's own lattice, solid; zooms move the one picture, never a ghosted copy;
  *   - flat: solid fills, pointy-top hexes, never rotated; one orange at a time; a hex that enters FLIPS in
  *     (turns over by squashing, Round 27), never pops or scales in (the grow and wipe hexes are shapes
  *     that open or step, not cells arriving);
  *   - sound: clicks, ticks, whooshes, arcs; never a bell.
  *
- * Self-contained: imports the engine (stage, core, brand) and current.js for the fallback.
+ * Self-contained: imports the engine (stage, core, brand) and ui.js (clearFieldUnder).
  *
  *   TRANSITIONS                         the registry: { lead, tail, capIn, label, technique, sound }
  *   describe(tr)                        "Transition in: ..." for a board's director notes
@@ -44,7 +48,6 @@
 import { el } from './stage.js'
 import { ease, inv, lerp, clamp, rand, hexPath, spring, SQRT3 } from './core.js'
 import { C } from './brand.js'
-import { CURRENT, keyElement, landing, sceneCurrent, currentCues } from './current.js'
 import { clearFieldUnder } from './ui.js'
 
 const FPS = 24
@@ -107,16 +110,16 @@ export const TRANSITIONS = {
 		say: (n) => `cluster to container (#10): the picture breaks into loose hexes that drift together into the next window, arriving together on the beat, the orange one landing on ${n.to}`,
 		sound: 'a scatter of ticks as the hexes drift, a soft whoosh, a dry click as they merge',
 	},
-	current: {
-		label: 'the current (fallback)', technique: 'the current (Round 24 fallback)', lead: 0, tail: CURRENT.run + 0.15, capIn: 0,
-		say: (n) => `the current (the fallback): a hard cut, then the wire runs from the last scene's key element to ${n.to} and powers it on`,
-		sound: 'a crackle along the wire, an arc and a dry click on arrival',
+	flip: {
+		label: 'hex flip wave (fallback)', technique: 'hex flip wave (the Round 28 fallback)', lead: F(6), tail: F(8), capIn: F(8),
+		say: (n) => `the fallback, a hex flip wave: dark field cells turn over across the frame from ${n.from}, covering it, then turn over again from ${n.to}, uncovering the next scene`,
+		sound: 'a ripple of soft ticks as the cells turn, a dry click on the cut',
 	},
 }
 
 /** "Transition in: ..." for a board's director notes. */
 export function describe(tr, { from = "the last scene's key element", to = "this scene's key element", edge = 'right' } = {}) {
-	const T = TRANSITIONS[tr?.type || 'current']
+	const T = TRANSITIONS[tr?.type || 'flip']
 	if (!T) return ''
 	const why = tr?.note ? ` Why: ${tr.note}` : ''
 	return `Transition in: ${T.say({ from: tr?.fromName || from, to: tr?.toName || to, edge: tr?.edge || edge })}. Sound: ${T.sound}.${why}`
@@ -420,13 +423,32 @@ const DRAW = {
 		const r = lerp(18, Math.max(22, Math.min(B.key.w, B.key.h) / 2), ka) * gone
 		el('path', { d: hexPath(lerp(ax, bk[0], ka), lerp(ay, bk[1], ka), r, r * 0.12), fill: C.orange, 'data-guard': 1 }, over)
 	},
-	current(u, A, B, over, o) {
-		if (u < 0) { B.pic.setAttribute('display', 'none'); return }
-		A.pic.setAttribute('display', 'none')
-		const from = o.from || (A.key ? [A.key.x, A.key.y] : CURRENT.origin)
-		const key = o.to ? { x: o.to[0], y: o.to[1], w: 60, h: 60 } : B.key
-		if (!key) return
-		sceneCurrent(over, u, { from, to: landing(key, from), element: key, headColor: C.nextcloudCyan, t0: 0.15 })
+	flip(u, A, B, over, o, W, H) {
+		const T = TRANSITIONS.flip
+		const a = o.from || [A.key.x, A.key.y], b = o.to || [B.key.x, B.key.y]
+		// Round 28c: one grid. The wave's cells are the shared field's own lattice (general.js sharedField: r 80,
+		// gap 10, anchored at (0.62 W, H + 150)), solid cobalt-600, so they sit exactly on the field's cells.
+		const r = 80, gap = 10, sp = r + gap / SQRT3, ox = W * 0.62, oy = H + 150
+		const reach = Math.hypot(W, H)
+		for (let rr = -10; rr <= 2; rr++) {
+			for (let q = -12; q <= 16; q++) {
+				const x = ox + sp * SQRT3 * (q + rr / 2), y = oy + sp * 1.5 * rr
+				if (x < -r || x > W + r || y < -r || y > H + r) continue
+				// In: from A's key element outward over four frames, each cell turning over in two.
+				const tIn = -T.lead + (Math.hypot(x - a[0], y - a[1]) / reach) * F(4)
+				const tOut = (Math.hypot(x - b[0], y - b[1]) / reach) * F(4) + F(2)
+				let sx
+				if (u < tIn) continue
+				if (u < tOut) sx = ease.outCubic(inv(tIn, tIn + F(2), u))
+				else sx = 1 - ease.inCubic(inv(tOut, tOut + F(2), u))
+				if (sx <= 0.001) continue
+				// Each cell carries its share of the cobalt ground (a touching hex under it), so nothing of the
+				// pictures shows through the gaps: the covered frame is plain field, solid (Round 28c).
+				const tf = `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sx.toFixed(4)} 1) translate(${(-x).toFixed(1)} ${(-y).toFixed(1)})`
+				el('path', { d: hexPath(x, y, sp + 0.5, 0), fill: C.cobalt, transform: tf, 'data-guard': 1 }, over)
+				el('path', { d: hexPath(x, y, r, r * 0.1), fill: C.cobalt600, transform: tf, 'data-guard': 1 }, over)
+			}
+		}
 	},
 }
 
@@ -468,8 +490,12 @@ export function transitionCues(type, cue, cut) {
 		cue(cut + F(5), 'click', { gain: 0.26, freq: 2800, seed: 107, dry: true })
 		break
 	}
-	default:
-		currentCues(cue, cut + 0.15)
+	default: {
+		const R = rand(313)
+		for (let i = 0; i < 8; i++) cue(cut - T.lead + i * F(1.5), 'tick', { freq: 1568 + R() * 600, gain: 0.045, decay: 0.03, pan: -0.4 + i * 0.1 })
+		cue(cut, 'click', { gain: 0.22, freq: 2700, seed: 108, dry: true })
+		for (let i = 0; i < 5; i++) cue(cut + F(2) + i * F(1.5), 'tick', { freq: 1760 + R() * 500, gain: 0.04, decay: 0.03, pan: 0.4 - i * 0.1 })
+	}
 	}
 }
 
@@ -481,7 +507,7 @@ export function transitionCues(type, cue, cut) {
  */
 export function handOffs(boards) {
 	return boards.slice(1).map((b, j) => {
-		const tr = b.transition && TRANSITIONS[b.transition.type] ? b.transition : { type: 'current' }
+		const tr = b.transition && TRANSITIONS[b.transition.type] ? b.transition : { type: 'flip' }
 		const T = TRANSITIONS[tr.type]
 		const cut = b.start
 		return { i: j + 1, from: boards[j].id, to: b.id, type: tr.type, tr, cut, start: cut - T.lead, end: cut + T.tail, capIn: cut + T.capIn }
@@ -567,16 +593,15 @@ export function playBody(film, boards, { t0 = 0, need, exclude = [], audit = nul
 				if (L.mark) L.mark.setAttribute('display', (!h || ft >= h.cut) && (!hn || ft < hn.cut) ? 'inline' : 'none')
 				if (drawCaption(L.cap, ft, caps[i].t0, caps[i].t1)) capUp = true
 			})
-			// The hand-off that is running, if any; after a fallback hand-off the wire stays, arrived.
+			// The hand-off that is running, if any.
 			const h = hands.find((x) => ft >= x.start && ft < x.end)
-			const rest = !h && hands.find((x) => x.type === 'current' && ft >= x.end && ft < boards[x.i].end)
-			const run = h || rest
+			const run = h
 			if (run) {
 				const A = layers[run.i - 1], B = layers[run.i]
 				const o = { i: run.i, from: run.tr.from, to: run.tr.to, edge: run.tr.edge }
 				DRAW[run.type](ft - run.cut, A, B, over, o, ctx.W, ctx.H)
 				// The guard: while a caption is up, the moving layers keep out of the type column.
-				if (capUp && h) {
+				if (capUp) {
 					over.setAttribute('clip-path', `url(#${gid})`)
 					for (const P of [A.pic, B.pic]) if (P.getAttribute('transform')) P.setAttribute('clip-path', `url(#${gid})`)
 				}

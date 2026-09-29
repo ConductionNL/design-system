@@ -215,6 +215,13 @@ function ripple(g, regions, t0, t) {
 const GX = 310, GTOP = 145, GW = 1297.5 - 310
 const STORE_CARDS = (() => { const gx = GX + 200, cw = (GW - 250) / 2, ch = 244; return [0, 1, 2, 3].map((i) => [gx + (i % 2) * (cw + 20) - 2, GTOP + 96 + Math.floor(i / 2) * (ch + 18) - 2, cw + 4, ch + 4]) })()
 
+/**
+ * Round 28l: a used screen fades out over six frames once its scene is done, and its cell is plain field again
+ * (look returns nothing), so no used screen is left for a later camera move, the pull back or the end to reveal.
+ */
+const DONE = { tokens: T.cut, store: T.whip[1], nld: T.capOut }
+const left = (t, t0) => 1 - inv(t0, t0 + F(6), t)
+
 /* ============================================================ the world scene */
 
 
@@ -231,7 +238,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			if (k === CELL.a.join() && t >= T.cells.a && t < T.s1Out + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.a, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.a, null, sx), T.s1Out) }
 			if (k === CELL.b.join() && t >= T.cells.b && t < T.s1Out + F(1) + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.b, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.b, null, sx), T.s1Out + F(1)) }
 			// the workspace cell: stock Nextcloud blue, drained into the ground on the push, the style variables inside
-			if (k === CELL.nc.join() && t >= T.nc) {
+			if (k === CELL.nc.join() && t >= T.nc && left(t, DONE.tokens) > 0) {
 				const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
 				return { draw: (g, x, y) => {
 					// the third cell turns over from the field into stock Nextcloud blue with the Nextcloud mark
@@ -247,21 +254,23 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 							ripple(w, SV_REGIONS, T.rows, t)
 						})
 						windowTag(inner, APP, { sx: flipIn(t, T.tag3) })
-						inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
+						inner.setAttribute('opacity', (ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)) * left(t, DONE.tokens)).toFixed(3))
 					}
 				} }
 			}
-			if (k === CELL.store.join() && t >= T.cut) return { draw: (g, x, y) => {
+			if (k === CELL.store.join() && t >= T.cut && left(t, DONE.store) > 0) return { draw: (g, x, y) => {
 				glyphCell(g, x, y, C.cobalt600, null, 1)
 				const inner = drawScreen(g, SC.store, (w, geom) => { storeUI(w, geom, storeState(t)); ripple(w, STORE_CARDS.slice(1), T.cards, t) /* your template card is there from the cut: its swatch is the match */ })
 				windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
+				inner.setAttribute('opacity', left(t, DONE.store).toFixed(3))
 			} }
-			if (k === CELL.nld.join() && t >= T.cut) return { draw: (g, x, y) => {
+			if (k === CELL.nld.join() && t >= T.cut && left(t, DONE.nld) > 0) return { draw: (g, x, y) => {
 				glyphCell(g, x, y, C.cobalt600, null, 1)
 				const inner = drawScreen(g, SC.nld, (w, geom) => {
 					nldesignUI(w, geom, nldState(t))
 				})
 				windowTag(inner, APP, { sx: flipIn(t, T.tag5) })
+				inner.setAttribute('opacity', left(t, DONE.nld).toFixed(3))
 			} }
 			return undefined
 		}

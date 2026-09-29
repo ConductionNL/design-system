@@ -205,6 +205,14 @@ function lockInFlight(g, t) {
 
 const MOCK = { x: 310, top: 145, width: 987.5 }
 
+/**
+ * Round 28l: a used screen fades out over six frames once its scene is done, and its cell is plain field again
+ * (the house cell keeps only its drained Keepiq cell, which is field-coloured), so no used screen is left for a
+ * later camera move, the pull back or the end to reveal.
+ */
+const DONE = { request: T.whip[1], once: T.slide[1], use: B(46.6), usage: T.capOut }
+const left = (t, t0) => 1 - inv(t0, t0 + F(6), t)
+
 /* ============================================================ the world scene */
 
 
@@ -218,8 +226,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			if (k === CELL.house.join() && t >= T.house) return { draw: (g, x, y) => {
 				if (t >= T.appOn) return glyphApp(g, x, y, t)
 				houseCell(g, x, y, t)
-				// Round 28k: off while the camera is on the use cell, so no sliver of it shows at the frame's edge
-				if (t >= T.push[0] && t < T.appOn + 0.2 && (t < T.slide[0] || t >= T.out[0])) {
+				if (t >= T.push[0] && left(t, DONE.request) > 0) {
 					const inner = drawScreen(g, SC.request, (w, geom) => partnerRequestUI(w, geom, {
 						ticks: (t >= T.ticks[0] ? 1 : 0) + (t >= T.ticks[1] ? 1 : 0),
 						link: ease.outCubic(inv(...T.link, t)),
@@ -229,10 +236,10 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 						back: t >= T.back[1] + 0.3 ? 0 : ease.inOutCubic(inv(...T.back, t)) || 0,
 					}))
 					windowTag(inner, APP, { sx: flipIn(t, T.tag3) })
-					inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
+					inner.setAttribute('opacity', (ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)) * left(t, DONE.request)).toFixed(3))
 				}
 			} }
-			if (k === CELL.once.join() && t >= T.whip[0] - 0.4) return { draw: (g, x, y) => {
+			if (k === CELL.once.join() && t >= T.whip[0] - 0.4 && left(t, DONE.once) > 0) return { draw: (g, x, y) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const inner = drawScreen(g, SC.once, (w, geom) => {
 					const burnt = inv(...T.burn, t)
@@ -241,9 +248,10 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 					onceLinkUI(w, geom, { views: t < T.views ? '' : '1', ring: t < T.views ? 0 : 1, link: ease.outCubic(inv(...T.link4, t)), open: ease.brand(inv(T.open, T.open + 0.35, t)), cardSx, burn: ease.outCubic(inv(T.burn[0] + 0.3, T.burn[1], t)) })
 				})
 				if (t < T.slide[0]) windowTag(inner, APP, { sx: flipIn(t, T.tag4) })
+				inner.setAttribute('opacity', left(t, DONE.once).toFixed(3))
 			} }
 			// Round 28k: the use cell, a browser and a phone; its tag is the one that travelled with the camera
-			if (k === CELL.use.join() && t >= T.slide[0] - 0.1) return { draw: (g, x, y) => {
+			if (k === CELL.use.join() && t >= T.slide[0] - 0.1 && left(t, DONE.use) > 0) return { draw: (g, x, y) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const inner = drawScreen(g, SC.use, (w, geom) => useUI(w, geom, {
 					tag: flipIn(t, T.tagU),
@@ -256,10 +264,11 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 					copied: ease.outCubic(inv(T.copied, T.copied + 0.25, t)),
 				}))
 				if (t >= T.slide[1]) windowTag(inner, APP)
+				inner.setAttribute('opacity', left(t, DONE.use).toFixed(3))
 			} }
-			if (k === CELL.usage.join() && t >= T.wave[1]) return { draw: (g, x, y) => {
+			if (k === CELL.usage.join() && t >= T.wave[1] && left(t, DONE.usage) > 0) return { draw: (g, x, y) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
-				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
+				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)`, opacity: left(t, DONE.usage).toFixed(3) }, g)
 				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: flipIn(t, T.bars[0]) })
 			} }
 			// Round 27c (Round 28k: from the use cell): a wave of cells turning over on the grid itself, from the link's cell to the dashboard's

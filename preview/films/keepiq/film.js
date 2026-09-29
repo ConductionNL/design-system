@@ -46,7 +46,7 @@ const SPB = 60 / BPM
 const BAR = 4 * SPB
 const S16 = SPB / 4
 const OPEN = 3 * BAR
-const BODY = 10 * BAR
+const BODY = 12 * BAR // Round 28e: two more bars so Ruben's story cards get their full reading holds
 const T_BUILT = OPEN + BODY
 const BUILT = 4 * BAR
 const INSTALL = 3 * BAR
@@ -82,47 +82,49 @@ const BOX = (() => {
 
 const T = {
 	mark: OPEN + F(3),
-	w1: [B(0.5), B(0.5) + S16, B(0.5) + 2 * S16], // "The key to"
-	house: B(0.5) + S16, // the house cell with its lock, as "key" lands
-	w2: [B(1.5), B(1.5) + S16, B(1.5) + 2 * S16], // "your own house?" (all up with its 2.4 s reading hold)
-	s1Out: B(8.6),
-	lift: [B(8.6), B(9.4)], // the lock leaves the house for the box
-	box: B(8.8),
-	w3: [B(9.3), B(9.3) + S16], // "Kept by"
-	w4: [B(10.2), B(10.2) + S16, B(10.2) + 2 * S16], // "someone else's app?" (all up with its 2 s hold)
-	ret: [B(14.4), B(15.2)], // Round 26: the lock flies back out of the box into its house (the story's own element carries the hand-off)
-	home: B(15.2), // the lock comes home; the cell turns into Keepiq's
-	s2Out: B(15.6),
-	push: [B(15.45), B(16.3)],
-	// scene 3, the request (13.125 to 16.875)
-	tag3: B(16.2),
-	ticks: [B(16.6), B(16.6) + S16],
-	link: [B(17), B(17.8)],
-	ring3: B(17.8),
-	out: [B(18.1), B(18.9)], // the link goes out to the partner (Round 28: no wire drawn)
-	fill: [B(19), B(20.2)], // the partner types the value
-	back: [B(20.4), B(21.3)], // the value back into the vault
-	stored: B(21.3),
+	// Round 28e card 1: "If somebody else owns and holds your key for you", a clear pause, "is it still your house?"
+	// in orange; one word every two frames, each line held its reading time (0.4 s a word) before the card leaves
+	w1: Array.from({ length: 10 }, (_, i) => OPEN + F(2) + i * F(2)),
+	house: OPEN + F(2), // the house cell with its lock turns over as the card starts
+	box: OPEN + F(4), // the outside box, as "somebody" lands
+	lift: [OPEN + F(12), OPEN + F(12) + 0.42], // the lock leaves the house for the box as "holds" lands
+	w2: Array.from({ length: 5 }, (_, i) => OPEN + F(20) + 0.6 + i * F(2)), // after the pause: "is it still your house?"
+	s1Out: 12.2,
+	// card 2: "Store your passwords where you keep your data", then "Local, safe and yours" in orange
+	w3: Array.from({ length: 8 }, (_, i) => 12.45 + i * F(2)),
+	ret: [12.75, 13.3], // the lock flies home out of the box as "where you keep your data" lands
+	home: 13.3, // it comes home; the cell turns over into Keepiq's own
+	w4: Array.from({ length: 4 }, (_, i) => 13.55 + i * F(2)),
+	s2Out: 16.7,
+	push: [B(23.65), B(24.5)],
+	// scene 3, the request (from 16.875; everything after the story moves two bars later)
+	tag3: B(24.2),
+	ticks: [B(24.6), B(24.6) + S16],
+	link: [B(25), B(25.8)],
+	ring3: B(25.8),
+	send: [B(26.1), B(26.9)], // the link goes out to the partner (Round 28: no wire drawn)
+	fill: [B(27), B(28.2)], // the partner types the value
+	back: [B(28.4), B(29.3)], // the value back into the vault
+	stored: B(29.3),
 	// scene 4, the one-time link
 	// Round 26 whip-pan: a seven-frame snap to the next cell (render --blur 4)
-	whip: [B(23.6), B(23.6) + F(7)],
-	tag4: B(24),
-	views: B(24.9),
-	link4: [B(25.3), B(26)],
-	open: B(26.4),
-	burn: [B(28.2), B(29.2)],
+	whip: [B(31.6), B(31.6) + F(7)],
+	tag4: B(32),
+	views: B(32.9),
+	link4: [B(33.3), B(34)],
+	open: B(34.4),
+	burn: [B(36.2), B(37.2)],
 	// scene 5, every use
 	// Round 27c: the pull back from the link, a wave of cells turning over on the grid toward the dashboard, the push in
-	out: [B(30.7), B(31.4)],
-	wave: [B(30.9), B(31.9)],
-	in: [B(31.5), B(32.4)],
-	bars: [B(32.4), B(33.4)],
-	rows: B(33.5),
-	cur5: [B(34.4), B(35.1)],
-	ring5: B(35.1),
-	pull: [B(38.3), B(39.9)], // after the last caption and the mark have left: nothing crosses the words
-	capOut: B(38.1),
-	appOn: B(38.9),
+	out: [B(38.7), B(39.4)],
+	wave: [B(38.9), B(39.9)],
+	in: [B(39.5), B(40.4)],
+	bars: [B(40.4), B(41.4)],
+	rows: B(41.5),
+	ring5: B(43.1),
+	pull: [B(46.3), B(47.9)], // after the last caption and the mark have left: nothing crosses the words
+	capOut: B(46.1),
+	appOn: B(46.9),
 }
 
 /* ============================================================ the camera */
@@ -208,7 +210,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 						ticks: (t >= T.ticks[0] ? 1 : 0) + (t >= T.ticks[1] ? 1 : 0),
 						link: ease.outCubic(inv(...T.link, t)),
 						ring: t < T.ring3 ? 0 : 1,
-						wire: ease.inOutCubic(inv(...T.out, t)),
+						wire: ease.inOutCubic(inv(...T.send, t)),
 						fill: 8 * inv(...T.fill, t),
 						back: t >= T.back[1] + 0.3 ? 0 : ease.inOutCubic(inv(...T.back, t)) || 0,
 					}))
@@ -293,38 +295,40 @@ const artOut = (g, t, t0) => {
 }
 
 // Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
-;[['Ownership', T.mark, T.s2Out], ['Requests', B(16) + F(6), B(23.3)], ['One-time links', B(24.5), B(30.6)], ['Usage', B(32.5), T.capOut]].forEach(([title, rise, leave], i) => {
+;[['Ownership', T.mark, T.s2Out], ['Requests', B(24.6), B(31.3)], ['Share links', B(32.5), B(38.6)], ['Usage', B(40.5), T.capOut]].forEach(([title, rise, leave], i) => {
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
 		const c = caption(ctx.g, { text: title, size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
 		return (t) => c.set(t)
 	})
 })
 
+// Round 28e: card 1, the line in white, a clear pause, then the question in orange
 film.scene('t-story1', OPEN, T.s1Out + EXIT + F(1), (ctx) => {
 	const g = el('g', {}, ctx.g)
-	const a = textBlock(g, 'The key to', { x: 120, y: 580, size: 140, weight: 700, fill: C.white, tracking: -0.03, clip: false })
-	const b = textBlock(g, 'your *own* house?', { x: 120, y: 820, size: 170, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	const a = textBlock(g, 'If somebody else owns and\nholds your key for you', { x: 120, y: 450, size: 96, weight: 700, fill: C.white, tracking: -0.03, clip: false, lineHeight: 1.12 })
+	const b = textBlock(g, 'is it still your house?', { x: 120, y: 740, size: 130, weight: 700, fill: C.orange, tracking: -0.03, clip: false })
 	return (t) => {
 		slamItems(a.items, T.w1, t)
-		slamItems(b.items, T.w2, t, { from: 1.7 })
+		slamItems(b.items, T.w2, t, { from: 1.6 })
 		artOut(g, t, T.s1Out)
 	}
 })
+// card 2: where the passwords belong, then the answer in orange
 film.scene('t-story2', T.w3[0] - F(1), T.s2Out + EXIT + F(1), (ctx) => {
 	const g = el('g', {}, ctx.g)
-	const a = textBlock(g, 'Kept by', { x: 120, y: 600, size: 150, weight: 700, fill: C.white, tracking: -0.03, clip: false })
-	const b = textBlock(g, '*someone* *else\'s* app?', { x: 120, y: 860, size: 160, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	const a = textBlock(g, 'Store your passwords where\nyou keep your data', { x: 120, y: 460, size: 96, weight: 700, fill: C.white, tracking: -0.03, clip: false, lineHeight: 1.12 })
+	const b = textBlock(g, 'Local, safe and yours', { x: 120, y: 760, size: 130, weight: 700, fill: C.orange, tracking: -0.03, clip: false })
 	return (t) => {
 		slamItems(a.items, T.w3, t)
-		slamItems(b.items, T.w4, t, { from: 1.7 })
+		slamItems(b.items, T.w4, t, { from: 1.6 })
 		artOut(g, t, T.s2Out)
 	}
 })
 
 const CAPS = [
-	['request', 'Request passwords\nfrom partners', B(16) + F(6), B(23.3)],
-	['once', 'Links that vanish\nafter one view', B(24.5), B(30.6)],
-	['usage', 'Every use: who,\nwhen, where, why', B(32.5), T.capOut],
+	['request', 'Request passwords\nfrom partners', B(24.6), B(31.3)],
+	['once', 'Share links, gone\nafter one view', B(32.5), B(38.6)],
+	['usage', 'Every use: who,\nwhen, where, why', B(40.5), T.capOut],
 ]
 for (const [id, text, rise, leave] of CAPS) {
 	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -335,24 +339,19 @@ for (const [id, text, rise, leave] of CAPS) {
 
 /* ============================================================ sound */
 
-// story 1
-T.w1.forEach((t, i) => cue(t, i === 1 ? 'kick' : 'tick', i === 1 ? { gain: 0.26, pitch: 110, end: 48, decay: 0.2, click: 0.08 } : { freq: [1318.51, 0, 1479.98][i], gain: 0.13 }))
-cue(T.house, 'pluck', { freq: 587.33, gain: 0.24, pan: 0.5 })
-cue(T.house + 0.02, 'impact', { gain: 0.3, from: 80, to: 36, decay: 0.7 })
-cue(T.w2[0], 'tick', { freq: 1567.98, gain: 0.13 })
-cue(T.w2[1], 'click', { gain: 0.3, freq: 2400, seed: 121, dry: true })
-cue(T.w2[2], 'tick', { freq: 1760, gain: 0.13 })
-// story 2
-cue(T.lift[0], 'whoosh', { dur: T.lift[1] - T.lift[0] + 0.1, from: 600, to: 3600, panFrom: 0.4, panTo: 0.7, gain: 0.16 })
-cue(T.box, 'kick', { gain: 0.2, pitch: 90, end: 44, decay: 0.24, click: 0.05 })
-cue(T.lift[1], 'click', { gain: 0.26, freq: 2000, seed: 122, dry: true, pan: 0.6 })
-cue(T.w3[0], 'tick', { freq: 1174.66, gain: 0.13 })
-cue(T.w3[1], 'tick', { freq: 1318.51, gain: 0.13 })
-cue(T.w4[0], 'impact', { gain: 0.36, from: 90, to: 34, decay: 0.9 })
-cue(T.w4[2], 'click', { gain: 0.24, freq: 2500, seed: 123, dry: true })
+// story (Round 28e)
+T.w1.forEach((t, i) => cue(t, 'tick', { freq: 1174.66 + i * 60, gain: 0.08, decay: 0.035 }))
+cue(T.house + FLIP / 2, 'click', { gain: 0.2, freq: 2400, seed: 121, dry: true, pan: 0.5 })
+cue(T.box, 'kick', { gain: 0.18, pitch: 90, end: 44, decay: 0.22, click: 0.05 })
+cue(T.lift[0], 'whoosh', { dur: 0.5, from: 600, to: 3600, panFrom: 0.4, panTo: 0.7, gain: 0.14 })
+cue(T.lift[1], 'click', { gain: 0.22, freq: 2000, seed: 122, dry: true, pan: 0.6 })
+T.w2.forEach((t, i) => cue(t, i === 4 ? 'impact' : 'tick', i === 4 ? { gain: 0.36, from: 90, to: 34, decay: 0.9 } : { freq: 1318.51 + i * 90, gain: 0.12 }))
+T.w3.forEach((t, i) => cue(t, 'tick', { freq: 1318.51 + i * 60, gain: 0.08, decay: 0.035 }))
+T.w4.forEach((t, i) => cue(t, i === 3 ? 'click' : 'tick', i === 3 ? { gain: 0.28, freq: 2600, seed: 123, dry: true } : { freq: 1760 + i * 110, gain: 0.12 }))
 // the lock comes home: a whoosh down out of the box, a thud and a click as it lands
 cue(T.ret[0], 'whoosh', { dur: T.ret[1] - T.ret[0] + 0.1, from: 3600, to: 600, panFrom: 0.7, panTo: 0.4, gain: 0.16 })
 cue(T.home, 'kick', { gain: 0.24, pitch: 100, end: 45, decay: 0.22, click: 0.06 })
+cue(T.home + FLIP / 2, 'click', { gain: 0.26, freq: 2800, seed: 124, dry: true, pan: 0.5 })
 cue(T.home, 'click', { gain: 0.32, freq: 2800, seed: 124, dry: true, pan: 0.5 })
 cue(T.push[0] - 0.05, 'whoosh', { dur: 0.9, from: 400, to: 4800, panFrom: 0.4, panTo: 0, gain: 0.24 })
 // scene 3
@@ -389,29 +388,31 @@ film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}),
 
 /** The bed, in B minor then D: silent under the opening, pad from the story, the kick from the request, resolving on D. */
 film.music = {
-	bars: 20,
+	bars: 22, // Round 28e: 12-bar body
 	chords: [
 		[50, 54, 57, 62], [50, 54, 57, 62], [50, 54, 57, 62], // 0-2 the opening
-		[47, 54, 57, 61], // 3 Bm9: the key to
-		[47, 50, 54, 57], // 4 Gmaj9: your own house?
-		[45, 52, 57, 59], // 5 A sus: kept by
-		[42, 49, 54, 57], // 6 F#m7: someone else's app?
-		[50, 54, 61, 64], // 7 Dmaj9: the key comes home, the request
-		[47, 50, 54, 57], // 8 Gmaj9: the partner fills it in
-		[49, 52, 57, 59], // 9 A add9: one view
-		[47, 50, 54, 61], // 10 Bm add9: gone
-		[47, 50, 54, 59], // 11 Gmaj7: every use
-		[49, 52, 57, 59], // 12 A add9: the pull back
-		[50, 54, 61, 64], // 13 Dmaj9: built on
-		[47, 54, 57, 61], // 14 Bm9
-		[47, 50, 54, 57], // 15 Gmaj9
-		[49, 52, 57, 59], // 16 A add9: enhanced by Conduction
-		[47, 50, 54, 57], // 17 Gmaj9: install it
-		[49, 52, 57, 59], // 18 A add9
-		[50, 54, 57, 62], // 19 D: own it
+		[47, 54, 57, 61], // 3 Bm9: if somebody else holds your key
+		[47, 50, 54, 57], // 4 Gmaj9: is it still your house?
+		[45, 52, 57, 59], // 5 A sus: (the pause)
+		[42, 49, 54, 57], // 6 F#m7: store your passwords where you keep your data
+		[47, 50, 54, 57], // 7 Gmaj9: local, safe and yours
+		[49, 52, 57, 59], // 8 A add9: the lock comes home, the push
+		[50, 54, 61, 64], // 9 Dmaj9: the request
+		[47, 50, 54, 57], // 10 Gmaj9: the partner fills it in
+		[49, 52, 57, 59], // 11 A add9: share links
+		[47, 50, 54, 61], // 12 Bm add9: gone after one view
+		[47, 50, 54, 59], // 13 Gmaj7: every use
+		[49, 52, 57, 59], // 14 A add9: the pull back
+		[50, 54, 61, 64], // 15 Dmaj9: built on
+		[47, 54, 57, 61], // 16 Bm9
+		[47, 50, 54, 57], // 17 Gmaj9
+		[49, 52, 57, 59], // 18 A add9: enhanced by Conduction
+		[47, 50, 54, 57], // 19 Gmaj9: install it
+		[49, 52, 57, 59], // 20 A add9
+		[50, 54, 57, 62], // 21 D: own it
 	],
-	bass: [38, 38, 38, 35, 43, 45, 42, 38, 43, 45, 35, 43, 45, 38, 35, 43, 45, 43, 45, 38],
-	parts: { pad: [[3, 20]], bass: [[4, 19]], kick: [[7, 13]], hat: [[7, 13]], clap: [[9, 12]] },
+	bass: [38, 38, 38, 35, 43, 45, 42, 43, 45, 38, 43, 45, 35, 43, 45, 38, 35, 43, 45, 43, 45, 38],
+	parts: { pad: [[3, 22]], bass: [[4, 21]], kick: [[9, 15]], hat: [[9, 15]], clap: [[11, 14]] },
 	loop: false,
 }
 

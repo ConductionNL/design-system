@@ -250,25 +250,35 @@ export function outsideBox(g, x, y, w = 300, h = 240, { s = 1, lock = true } = {
 	if (lock) use(t, 'icon-lock', cx - 45, cy - 18, 90, 90, C.cobalt300)
 }
 
-/** Story 1: "The key to your own house?", "own" the scene's one orange, the lock cell on the right. */
-/** Round 27c: the house is a cell of the opening's field, at the grid's size; the section title is "Ownership". */
+/**
+ * Round 28e: the story, Ruben's wording, in word art under the section title "Ownership". Card 1: "If somebody
+ * else owns and holds your key for you", a clear pause, then "is it still your house?" in orange; the lock has
+ * gone from its house (a dashed cell of the grid) into a plain outside box. Card 2: "Store your passwords where
+ * you keep your data", then "Local, safe and yours" in orange; the lock is home and the house cell is Keepiq's own.
+ * Both cards run over the eight-word card rule by Ruben's choice; the film gives each line its full reading hold.
+ */
 export const HOUSE = [4, 0]
+const dashedHouse = (gg, x, y) => el('path', { d: hexPath(x, y, 150, 10), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, gg)
 function storyOne(ctx) {
 	const g = el('g', {}, ctx.g)
-	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: (gg, x, y) => lockCell(gg, x, y, 150) } : undefined))
+	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: dashedHouse } : undefined))
+	outsideBox(g, 1440, 120, 320, 250)
 	appMark(g, 'Ownership')
-	WA(g, 'The key to', 120, 580, 140)
-	WA(g, 'your *own* house?', 120, 820, 170)
+	textBlock(g, 'If somebody else owns and\nholds your key for you', { x: 120, y: 450, size: 96, weight: 700, fill: C.white, tracking: -0.03, clip: false, lineHeight: 1.12 })
+	WA(g, 'is it still your house?', 120, 740, 130, { fill: C.orange })
 }
 
-/** Story 2: "Kept by someone else's app?", "someone else's" in orange; the lock gone from its cell into an outside box. */
 function storyTwo(ctx) {
 	const g = el('g', {}, ctx.g)
-	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: (gg, x, y) => el('path', { d: hexPath(x, y, 150, 10), fill: 'none', stroke: C.cobalt300, 'stroke-width': 4, 'stroke-dasharray': '14 12' }, gg) } : undefined))
+	drawField(g, CAM_HO, (q, r, info) => (info.k === HOUSE.join() ? { draw: (gg, x, y) => {
+		// Keepiq's own cell: cobalt with a white ring and the white lock
+		el('path', { d: hexPath(x, y, 158, 11), fill: C.white }, gg)
+		el('path', { d: hexPath(x, y, 150, 10), fill: C.cobalt }, gg)
+		use(gg, 'g-keepiq', x - 63, y - 63, 126, 126, C.white)
+	} } : undefined))
 	appMark(g, 'Ownership')
-	WA(g, 'Kept by', 120, 600, 150)
-	WA(g, '*someone* *else\'s* app?', 120, 860, 160)
-	outsideBox(g, 1440, 120, 320, 250)
+	textBlock(g, 'Store your passwords where\nyou keep your data', { x: 120, y: 460, size: 96, weight: 700, fill: C.white, tracking: -0.03, clip: false, lineHeight: 1.12 })
+	WA(g, 'Local, safe and yours', 120, 760, 130, { fill: C.orange })
 }
 
 /** Round 27c for a slot redrawn after audienceFilm(): its section title in the mark's place, and no field cell left under a tag. */
@@ -288,32 +298,32 @@ const sectioned = (fn, title) => (ctx) => {
 const content = {
 	app: 'keepiq',
 	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
-	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Requests', once: 'One-time links', 'general-dataLayer': 'Usage' },
+	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Requests', once: 'Share links', 'general-dataLayer': 'Usage' },
 	// Round 26: every hand-off is designed; the film (keepiq/film.js) plays them in the one take
 	transitions: {
 		hook: { type: 'match', note: 'the lock, the story\'s key element, lifts out of its house cell and travels into the outside box, which takes it' },
 		request: { type: 'zoom', note: 'the lock flies home, the house cell turns over into Keepiq\'s own and the camera pushes into it, onto the request' },
-		once: { type: 'whip', note: 'a seven-frame whip-pan to the next cell, the one-time link' },
+		once: { type: 'whip', note: 'a seven-frame whip-pan to the next cell, the share link' },
 		'general-dataLayer': { type: 'hexWipe', note: 'the camera pulls back and a wave of grid cells turns over from the link\'s cell to the dashboard\'s (cells on the grid, flipping, not screen-space hexes), then pushes in' },
 	},
 	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
-	promise: 'The key to\nyour own house?',
+	promise: 'If somebody else owns and\nholds your key for you\nis it still your house?',
 	promiseLine: 'Human and machine passwords in one vault, on your own server',
 	title: 'Keepiq',
 	record: { one: 'password', many: 'passwords' },
-	logline: 'An ownership story: the key to your own house, kept by someone else\'s app? Then the answer, on your own server: request passwords and certificates from partner organisations by link, share a value by a link that vanishes after one view, and every use shows who, when, where and why.',
+	logline: 'If somebody else owns and holds your key for you, is it still your house? Store your passwords where you keep your data: local, safe and yours. Then request passwords from partners, share links that vanish after one view, and see every use: who, when, where and why.',
 	references: REFS,
 	techniques: ['#2 sentence build as word art (the story)', '#4 typewriter (the masked value)', '#9 text-swap on a held diagram (the burned link)', '#3 grid-cell ripple (the usage rows)'],
 	neighbours: ['integriq', 'openregister'],
 	builtOnApps: ['integriq'],
 	hook: {
-		title: 'Story 2: Kept by someone else\'s app?',
-		caption: 'Kept by\nsomeone else\'s app?',
+		title: 'Story 2: Store your passwords where you keep your data, local, safe and yours',
+		caption: 'Store your passwords where\nyou keep your data\nLocal, safe and yours',
 		ui: { drawUI: () => {}, tagFill: 'cobalt' },
-		source: 'Round 25b (Ruben): "Who is content with an external password app or a browser plugin? Can we be sovereign if we don\'t own the key to our own house?" No competitor named: someone else\'s app is a plain outside box.',
-		motion: 'Word art, the story\'s turn. The lock glyph lifts out of its cell (the cell left as a dashed outline) and travels on ease.snap up and out of the honeycomb into a plain outside box top right, which pops in to take it; "Kept by" slams in at 150 px, then "someone else\'s app?" at 170 px, "someone else\'s" in orange (the scene\'s one orange). Holds; out: the camera turns back into the honeycomb, to the request.',
-		sound: 'A soft whoosh as the lock leaves, a dull thud as the box closes on it, a hard tick per word, a short silence before the question.',
+		source: 'Round 28e (Ruben): "Store your passwords where you keep your data", then "Local, safe and yours". No competitor named: the outside box names no one.',
+		motion: 'Word art, the answer (card 2 of 2). Card 1 leaves upward; "Store your passwords where you keep your data" builds one word every two frames at 96 px while the lock flies back out of the box into its house, and the dashed cell turns over into Keepiq\'s own. Then "Local, safe and yours" slams in at 130 px in orange (the scene\'s one orange). Holds; out: the push into the Keepiq cell.',
+		sound: 'A tick per word, a whoosh as the lock comes home, a dry click as the cell turns over, a click on "yours".',
 	},
 	proofs: [
 		{
@@ -327,12 +337,12 @@ const content = {
 		},
 		{
 			id: 'once',
-			title: 'Links that vanish after one view',
-			caption: 'Links that vanish\nafter one view',
+			title: 'Share links, gone after one view',
+			caption: 'Share links, gone\nafter one view',
 			source: 'Round 22b (Ruben: offering a one-time download or view link). Specs ephemeral-send ("The send burns after a configurable number of views (default 1), optionally expires, and can be revoked. Anyone with the link can read it once without an account.") and link-sharing (usage limit, auto-deletion when the limit is reached).',
 			motion: 'Hard cut on the beat to "Send by link": the masked value, "Max views" set to 1 inside the orange ring, the expiry, the link. The recipient\'s card opens on the right, the value readable once with a mint pill; on beat 3 the card below fades to its burned state (technique #9, text-swap on a held diagram: only the recipient\'s card changes).',
 			sound: 'A click on "1", a pluck as the recipient opens it, a soft dry puff as the link burns.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Links that vanish\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt' }),
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Share links, gone\nafter one view', drawUI: onceLinkUI, tagFill: 'cobalt' }),
 		},
 	],
 	general: {
@@ -344,13 +354,13 @@ const content = {
 		params: {},
 		sound: 'Rising ticks as the day bars grow, a soft ripple of ticks per row, a click on the ring.',
 	},
-	promiseMotion: 'Round 25b: the question becomes a small ownership story in word art (story 1 of 2), the sister of Thematiq\'s. Straight after the opening\'s handover, on its plain field, "Keepiq" sits small as the chapter mark and the words slam in large, one word per sixteenth: "The key to" at 150 px, then "your own house?" at 170 px, "own" in orange (the scene\'s one orange), while a white cell with the lock pops into the field on the right as "key" lands. Holds to four frames before beat 9, then the story turns.',
+	promiseMotion: 'Round 28e: the ownership story in word art (card 1 of 2). Straight after the opening\'s handover, on its field, the house cell with its lock turns over; "If somebody else owns and holds your key for you" builds one word every two frames at 96 px while a plain outside box flips in top right and the lock lifts out of the house into it (the house left as a dashed cell). A clear pause; then "is it still your house?" slams in at 130 px in orange (the scene\'s one orange). Each line holds its reading time (0.4 s a word); the body runs 12 bars to give it.',
 	promiseSound: 'The body\'s bed enters gently under the story: a soft tick per word, a pluck and a low thud as the lock cell lands.',
 }
 
 const film = audienceFilm(content)
 // Round 20: the general slot draws the usage dashboard instead of the shared change log.
 film.boards.find((b) => b.id === 'general-dataLayer').drawBase = sectioned(usageFrame, 'Usage')
-Object.assign(film.boards.find((b) => b.id === 'promise'), { title: 'Story 1: The key to your own house?', drawBase: storyOne })
+Object.assign(film.boards.find((b) => b.id === 'promise'), { title: 'Story 1: If somebody else owns and holds your key for you, is it still your house?', drawBase: storyOne })
 film.boards.find((b) => b.id === 'hook').drawBase = storyTwo
 export const { meta, boards } = film

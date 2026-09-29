@@ -36,13 +36,17 @@ export const APP_NAMES = {
 
 export const NC_APPS = ['files', 'mail', 'calendar', 'talk', 'decks', 'activity']
 
+/** Nextcloud apps from the app store with their real icons (brand/assets/integrations/nextcloud-apps/), loaded as nc-<name> (Round 29: Forms and Tables). */
+export const NC_STORE_APPS = ['forms', 'tables']
+
 /** UI icons in brand/assets/icons/ (Lucide line icons, the brand's UI iconography), loaded as icon-<name>. */
-export const UI_ICONS = ['bell', 'contacts', 'tasks', 'polls', 'photos', 'forms', 'lock']
+export const UI_ICONS = ['bell', 'contacts', 'tasks', 'polls', 'photos', 'forms', 'lock', 'document']
 
 export async function loadBrandAssets(defs) {
 	await Promise.all([
 		loadSymbols(defs, Object.fromEntries(APP_IDS.map((id) => [`g-${id}`, `${BRAND}/apps/glyphs/${id}.svg`]))),
 		loadSymbols(defs, Object.fromEntries(NC_APPS.map((id) => [`nc-${id}`, `${BRAND}/integrations/nextcloud-bundled/${id}.svg`]))),
+		loadSymbols(defs, Object.fromEntries(NC_STORE_APPS.map((id) => [`nc-${id}`, `${BRAND}/integrations/nextcloud-apps/${id}.svg`]))),
 		loadSymbols(defs, {
 			'wordmark-connext': `${BRAND}/wordmark-connext.svg`,
 			'wordmark-connext-white': `${BRAND}/wordmark-connext-white.svg`,

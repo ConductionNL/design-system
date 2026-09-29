@@ -9,7 +9,7 @@
  *                       "You choose your clothing", a cell turning over into a brand tone with each; the camera
  *                       slides right and a third cell turns over into stock Nextcloud blue as "Why not design your
  *                       workspace?" lands in orange (a match cut on the grid);
- *                     the push INTO that cell: its blue drains to the ground and the real token editor is inside it
+ *                     the push INTO that cell: its blue drains to the ground and the real style variables are inside it
  *                       (the core, scene 3): the rows ripple in, the first swatch turns to the house colour, and a
  *                       stepped hex wipe repaints the whole workspace from Nextcloud blue into the house style;
  *                     a zoom-through the swatch into the store's template card of the same green;
@@ -32,7 +32,7 @@ import { bezier } from '../_lib/core.js'
 import { rest, take, glue, glueAttr } from '../connext/lib/camera.js'
 import { caption } from '../connext/lib/type.js'
 import { repaint } from './ui.js'
-import { tokensUI, storeUI, nldesignUI } from './boards/government/board.js'
+import { styleVariablesUI, SV_SWATCH, SV_REGIONS, storeUI, nldesignUI } from './boards/government/board.js'
 import {
 	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen, worldTf,
 	CAM_HO, HO_RATE, camOn, drawField, screenIn, drawScreen, windowTag, flip, flipIn, flipTf, FLIP,
@@ -68,7 +68,7 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 // cell IS the workspace cell (it turns over into Nextcloud blue), the screens sit in the row under the Thematiq cell.
 const CELL = {
 	a: [5, -1], b: [4, 0], c: [4, 1], // story: car, clothing, the workspace (the board's STORY_CELLS)
-	nc: [4, 1], // story 2 and scene 3: the third cell turned stock Nextcloud blue, then the token editor inside it
+	nc: [4, 1], // story 2 and scene 3: the third cell turned stock Nextcloud blue, then the style variables inside it
 	store: [5, 1], // scene 4
 	nld: [6, 1], // scene 5
 	app: [5, 0], // the Thematiq cell, where Built on's lead lands
@@ -93,7 +93,7 @@ const T = {
 	w3: Array.from({ length: 5 }, (_, i) => OPEN + F(18) + 0.25 + 3.6 + F(6) + i * F(2)), // "Why not design your workspace?"
 	s2Out: OPEN + F(18) + 0.25 + 3.6 + F(6) + F(8) + 0.25 + 2.0, // 13.05 s
 	push: [B(15.7), B(16.55)], // into the workspace cell
-	// scene 3, tokens (13.125 to 16.875)
+	// scene 3, style variables (13.125 to 16.875)
 	tag3: B(16.5),
 	rows: B(16.75),
 	swatch: B(17.9),
@@ -128,8 +128,8 @@ const END = camOn(...XY.app, 1482, 538, 92 / 150) // Round 27: where Built on's 
 const PUSH = bezier(0.62, 0, 0.12, 1)
 /** Mock px inside a screen to world. */
 const inScreen = (sc, mx, my) => [sc.at[0] + sc.s * mx, sc.at[1] + sc.s * my]
-// the zoom-through: the token row's swatch (mock 1007.5 + 12, 327 + 14) and the store's first card swatch (mock 510 + 101, 241 + 30)
-const SW_A = inScreen(SC.tokens, 1019.5, 341)
+// the zoom-through: the first style variable's swatch (board SV_SWATCH) and the store's first card swatch (mock 510 + 101, 241 + 30)
+const SW_A = inScreen(SC.tokens, ...SV_SWATCH)
 const SW_B = inScreen(SC.store, 611, 271)
 const Z_A = camOn(...SW_A, 960, 540, 1700) // 1.7 x 2.0 world units of forest fill the frame
 const Z_B = camOn(...SW_B, 960, 540, 380) // the card's 14.2 x 4.2 world units of forest fill it too
@@ -184,10 +184,9 @@ function turnCell(g, x, y, t, t0, front, tBack = Infinity) {
 	return true
 }
 
-/** The token editor's state at film time t. */
-function tokensState(t) {
-	const sw = t < T.swatch ? C.nextcloud : C.forest
-	return { sw0: sw, ring: t < T.swatch ? 0 : 1, dot: pop(t - T.swatch - 0.06) }
+/** Round 28h: the style variables' state at film time t: after the swatch changes, the six components restyle one a sixteenth. */
+function styleState(t) {
+	return { k: t < T.swatch ? 0 : Math.min(6, 1 + Math.floor((t - T.swatch) / S16)), ring: t < T.swatch ? 0 : 1 }
 }
 function storeState(t) {
 	return { ring: t < T.share ? 0 : 1, pressed: t < T.share + 0.05 ? 0 : 1, stars: ease.outCubic(inv(T.cards + 0.3, T.cards + 1.0, t)) }
@@ -214,7 +213,6 @@ function ripple(g, regions, t0, t) {
 
 /* mock-space geometry of the window content (windowMock: contentX 310, anchor row 205, right 1297.5) */
 const GX = 310, GTOP = 145, GW = 1297.5 - 310
-const TOKEN_ROWS = [0, 1, 2, 3, 4].map((i) => [GX + 4, GTOP + 155 + i * 82, GW - 8, 82])
 const STORE_CARDS = (() => { const gx = GX + 200, cw = (GW - 250) / 2, ch = 244; return [0, 1, 2, 3].map((i) => [gx + (i % 2) * (cw + 20) - 2, GTOP + 96 + Math.floor(i / 2) * (ch + 18) - 2, cw + 4, ch + 4]) })()
 
 /* ============================================================ the world scene */
@@ -232,7 +230,7 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			// story 1: the three cells turn over into the brand's tones as their words land; a and b turn back on the way out
 			if (k === CELL.a.join() && t >= T.cells.a && t < T.s1Out + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.a, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.a, null, sx), T.s1Out) }
 			if (k === CELL.b.join() && t >= T.cells.b && t < T.s1Out + F(1) + FLIP) return { draw: (g, x, y) => turnCell(g, x, y, t, T.cells.b, (gg, xx, yy, sx) => glyphCell(gg, xx, yy, FILLS.b, null, sx), T.s1Out + F(1)) }
-			// the workspace cell: stock Nextcloud blue, drained into the ground on the push, the token editor inside
+			// the workspace cell: stock Nextcloud blue, drained into the ground on the push, the style variables inside
 			if (k === CELL.nc.join() && t >= T.nc) {
 				const drain = ease.inOutCubic(inv(T.push[0], T.push[0] + 0.55, t))
 				return { draw: (g, x, y) => {
@@ -245,8 +243,8 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 							// the stepped hex wipe: the whole workspace repaints from Nextcloud blue into the house style
 							const at = lerp(1900, -120, ease.inOutCubic(inv(...T.wipe, t)))
 							repaint(w, geom, { mode: 'wipe', at, from: [C.nextcloud, C.cobalt50], to: [C.forest, C.forest300] })
-							tokensUI(w, geom, tokensState(t))
-							ripple(w, TOKEN_ROWS, T.rows, t)
+							styleVariablesUI(w, geom, styleState(t))
+							ripple(w, SV_REGIONS, T.rows, t)
 						})
 						windowTag(inner, APP, { sx: flipIn(t, T.tag3) })
 						inner.setAttribute('opacity', ease.outCubic(inv(T.push[0], T.push[0] + 0.3, t)).toFixed(3))
@@ -298,7 +296,7 @@ const artOut = (g, t, t0) => {
 
 // the chapter mark, the whole body
 // Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
-;[['Ownership is a style', T.mark, T.s2Out], ['Design tokens', B(16.6), B(23)], ['Store', B(25), B(31.4)], ['NL Design System', B(32.5), T.capOut]].forEach(([title, rise, leave], i) => {
+;[['Ownership is a style', T.mark, T.s2Out], ['Style variables', B(16.6), B(23)], ['Store', B(25), B(31.4)], ['NL Design System', B(32.5), T.capOut]].forEach(([title, rise, leave], i) => {
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
 		const c = caption(ctx.g, { text: title, size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
 		return (t) => c.set(t)
@@ -347,9 +345,9 @@ cue(T.push[0] - 0.05, 'whoosh', { dur: 0.9, from: 400, to: 4800, panFrom: 0.4, p
 
 /* ---------- the three captions of the screens ---------- */
 const CAPS = [
-	['tokens', 'Adjust 53\ndesign tokens', B(16.6), B(23)],
+	['tokens', '179 variables,\n33 components', B(16.6), B(23)],
 	['store', 'Share your templates\nin the store', B(25), B(31.4)],
-	['nld', 'Bring your\nNL Design tokens', B(32.5), T.capOut],
+	['nld', 'Bring your\nNL Design styles', B(32.5), T.capOut],
 ]
 for (const [id, text, rise, leave] of CAPS) {
 	film.scene(`t-${id}`, rise - F(1), leave + EXIT, (ctx) => {
@@ -363,6 +361,8 @@ cue(T.tag3, 'pluck', { freq: 587.33, gain: 0.2, pan: 0.2 })
 for (let i = 0; i < 5; i++) cue(T.rows + i * S16, 'tick', { freq: [1174.66, 1318.51, 1479.98, 1567.98, 1760][i], gain: 0.1, pan: 0.3 })
 cue(T.swatch, 'click', { gain: 0.32, freq: 2700, seed: 106, dry: true, pan: 0.6 })
 cue(T.swatch + 0.1, 'pluck', { freq: 1174.66, gain: 0.18, pan: 0.6 })
+// Round 28h: a tick up the scale as each of the other five components restyles, one a sixteenth
+for (let i = 1; i < 6; i++) cue(T.swatch + i * S16, 'tick', { freq: [1318.51, 1479.98, 1567.98, 1760, 1975.53][i - 1], gain: 0.08, pan: 0.2 })
 cue(T.wipe[0], 'whoosh', { dur: T.wipe[1] - T.wipe[0], from: 300, to: 3600, panFrom: -0.5, panTo: 0.7, gain: 0.18 })
 for (let i = 0; i < 4; i++) cue(lerp(T.wipe[0], T.wipe[1], (i + 0.5) / 4), 'click', { gain: 0.14, freq: 2200 + i * 200, seed: 110 + i, dry: true, pan: -0.3 + i * 0.3 })
 // scene 4
@@ -391,7 +391,7 @@ cue(T.appOn, 'click', { gain: 0.26, freq: 2800, seed: 118, dry: true, pan: 0.4 }
 film.scene('builtOn', T_BUILT, T_BUILT + BUILT, (ctx) => builtOnScene(ctx, { app: APP, apps: [], on: 'nextcloud' }))
 film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}), { post: 0.001 })
 
-/** The bed, in D, 20 bars: silent under the opening, pad from the story, the kick from the token editor, resolving on D. */
+/** The bed, in D, 20 bars: silent under the opening, pad from the story, the kick from the style variables, resolving on D. */
 film.music = {
 	bars: 20,
 	chords: [
@@ -400,7 +400,7 @@ film.music = {
 		[47, 54, 57, 61], // 4 Bm9: your colours
 		[47, 50, 54, 57], // 5 Gmaj9: your workspace
 		[49, 52, 57, 59], // 6 A add9: not your style?
-		[47, 50, 54, 57], // 7 Gmaj9: the token editor
+		[47, 50, 54, 57], // 7 Gmaj9: the style variables
 		[49, 52, 54, 57], // 8 F#m7: the repaint
 		[47, 50, 54, 61], // 9 Bm add9: the store
 		[47, 50, 54, 59], // 10 Gmaj7: shared

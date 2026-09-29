@@ -77,50 +77,84 @@ function storyTwo(ctx) {
 	T(g, 'your workspace?', 120, 790, 150, { fill: C.orange, tracking: -0.03 })
 }
 
-/* ---------- scene 3: the real token editor ---------- */
+/* ---------- scene 3: style variables (Round 28h) ---------- */
 
-/** Custom Token Overrides (token-editor-*.png): header with Download and Upload, four tabs, token rows. */
 /**
- * st (the film's animation state; the defaults are the approved still): sw0 the first swatch's colour,
- * ring 0..1, dot 0..1 (the custom badge).
+ * Round 28h: STYLE VARIABLES, not tokens. Thematiq's repo on development (scripts/mapping/component-tokens.json,
+ * read-only) counts 33 visual components with 123 component-scoped variables, plus 56 brand variables: 179 in all.
+ * Left, the style variables (their real labels from that file), one being changed; right, real components restyling
+ * live as it changes: a primary button, a form (a text input and a select), a table, a modal dialog and the login page.
+ * st: k 0..6 (how many of button, input, select, table, dialog, login have taken the new style), ring 0..1, accent.
  */
-export function tokensUI(w, geom, st = {}) {
+export const SV_SWATCH = [602, 295] // mock px centre of the changing variable's swatch (the zoom-through starts here)
+/** Mock px regions of the variables panel and the five components (x 310, top 145 in every window), for the ripple in. */
+export const SV_REGIONS = (() => {
+	const x = 310, top = 145, lw = 340, px = x + lw + 24, pw = 1297.5 - x - lw - 24
+	return [[x, top, lw, 610], [px, top, pw * 0.42, 120], [px + pw * 0.42 + 16, top, pw * 0.58 - 16, 120], [px, top + 136, pw, 190], [px, top + 342, pw * 0.5 - 8, 268], [px + pw * 0.5 + 8, top + 342, pw * 0.5 - 8, 268]]
+})()
+export function styleVariablesUI(w, geom, st = {}) {
 	const { u } = geom
-	const { sw0 = C.forest, ring = 1, dot = 1 } = st
+	const { k = 6, ring = 1, accent = C.forest, stock = C.nextcloud } = st
 	const x = geom.x, width = geom.r - geom.x, top = geom.anchor.y - 60
-	panel(w, x, top, width, 610, u)
-	// the grey header bar
-	rect(w, x, top, width, 76, C.cobalt50, 4 * u)
-	T(w, 'Custom Token Overrides', x + 110, top + 48, 24)
-	T(w, 'Download', x + width - 230, top + 48, 22, { fill: C.cobalt })
-	rect(w, x + width - 104, top + 20, 84, 38, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
-	T(w, 'Upload', x + width - 94, top + 46, 17, { weight: 500 })
-	// the four tabs, the first active
-	const tabs = [['Login page & Branding', 222], ['Content area', 136], ['Buttons & Status', 172], ['Typography', 124]]
-	let tx = x + 16
-	tabs.forEach(([t, tw], i) => {
-		rect(w, tx, top + 92, tw, 42, i === 0 ? C.cobalt100 : C.cobalt50, 3 * u)
-		T(w, t, tx + 12, top + 120, 17, { fill: i === 0 ? C.cobalt : C.cobalt900 })
-		tx += tw + 8
+	const col = (i) => (k > i ? accent : stock)
+	// the variables
+	const lw = 340
+	panel(w, x, top, lw, 610, u)
+	T(w, 'Style variables', x + 110, top + 50, 22)
+	rect(w, x + 110, top + 68, 132, 30, C.cobalt50, 15)
+	T(w, '179 variables', x + 124, top + 89, 14, { weight: 600, fill: C.cobalt })
+	const vars = ['Primary button background', 'Text input border', 'Select border', 'Table header label', 'Dialog confirm button', 'Login button background']
+	vars.forEach((label, i) => {
+		const cy = top + 150 + i * 76
+		if (i === 0) rect(w, x + 10, cy - 30, lw - 20, 60, C.cobalt50, 3 * u)
+		T(w, label, x + 24, cy + 5, 15, { weight: 500 })
+		rect(w, x + lw - 64, cy - 16, 32, 32, col(i), 4, { stroke: C.cobalt200, 'stroke-width': u / 2 })
 	})
-	rect(w, x, top + 146, width, u / 2, C.cobalt100)
-	// one row per token: label, its CSS variable, swatch, hex field, reset
-	const rows = [['Primary color', sw0, true], ['Primary text color', C.white, false], ['Primary hover color', C.forest300, false], ['Primary element color', C.forest, false], ['Primary element hover', C.cobalt900, false]]
-	rows.forEach(([label, sw, custom], i) => {
-		const cy = top + 196 + i * 82
-		if (i > 0) rect(w, x + 16, cy - 41, width - 32, u / 2, C.cobalt50)
-		T(w, label, x + 30, cy - 4, 19, { weight: 500 })
-		if (custom && dot > 0) circle(w, x + 30 + label.length * 9.6 + 12, cy - 10, 6 * dot, C.cobalt)
-		bar(w, x + 30, cy + 14, [130, 160, 170, 180, 210][i], 6, C.cobalt300)
-		rect(w, x + width - 300, cy - 22, 44, 44, C.white, 3 * u, { stroke: C.cobalt400, 'stroke-width': u })
-		rect(w, x + width - 290, cy - 14, 24, 28, sw, 2, sw === C.white ? { stroke: C.cobalt300, 'stroke-width': u / 2 } : {})
-		rect(w, x + width - 244, cy - 22, 120, 44, C.white, 3 * u, { stroke: C.cobalt400, 'stroke-width': u })
-		bar(w, x + width - 230, cy - 4, 80, 8, C.cobalt900)
-		rect(w, x + width - 100, cy - 20, 50, 40, C.cobalt50, 4 * u)
-		circle(w, x + width - 75, cy, 9, 'none', { stroke: C.cobalt, 'stroke-width': u })
-	})
-	// the token being adjusted, the scene's one orange: the swatch of the first row
-	if (ring > 0) rect(w, x + width - 308, top + 196 - 30, 60, 60, 'none', 4 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
+	if (ring > 0) rect(w, x + lw - 72, top + 150 - 24, 48, 48, 'none', 4 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, 'stroke-opacity': ring })
+	// the components, restyling live
+	const px = x + lw + 24, pw = width - lw - 24
+	// 1 · primary button
+	panel(w, px, top, pw * 0.42, 120, u)
+	T(w, 'Button', px + 20, top + 30, 13, { weight: 600, fill: C.cobalt400 })
+	rect(w, px + 20, top + 50, 150, 46, col(0), 4 * u)
+	bar(w, px + 58, top + 69, 74, 8, C.white)
+	// 2 · form: a text input and a select
+	const fx = px + pw * 0.42 + 16, fw = pw * 0.58 - 16
+	panel(w, fx, top, fw, 120, u)
+	T(w, 'Form', fx + 20, top + 30, 13, { weight: 600, fill: C.cobalt400 })
+	rect(w, fx + 20, top + 48, fw * 0.5 - 30, 44, C.white, 3 * u, { stroke: col(1), 'stroke-width': 1.5 * u })
+	bar(w, fx + 36, top + 66, 60, 8, C.cobalt300)
+	rect(w, fx + fw * 0.5, top + 48, fw * 0.5 - 20, 44, C.white, 3 * u, { stroke: col(2), 'stroke-width': 1.5 * u })
+	bar(w, fx + fw * 0.5 + 16, top + 66, 50, 8, C.cobalt700)
+	rect(w, fx + fw - 50, top + 64, 14, 12, col(2), 2)
+	// 3 · table
+	panel(w, px, top + 136, pw, 190, u)
+	T(w, 'Table', px + 20, top + 166, 13, { weight: 600, fill: C.cobalt400 })
+	;[0, 1, 2, 3].forEach((c) => bar(w, px + 20 + c * (pw - 40) / 4, top + 190, 70, 9, col(3)))
+	rect(w, px + 16, top + 206, pw - 32, u, col(3))
+	for (let r = 0; r < 3; r++) {
+		const ry = top + 222 + r * 32
+		if (r === 1) rect(w, px + 16, ry - 8, pw - 32, 30, C.cobalt50, 2)
+		;[0, 1, 2, 3].forEach((c) => bar(w, px + 20 + c * (pw - 40) / 4, ry + 4, [80, 60, 70, 50][(c + r) % 4], 7, C.cobalt300))
+	}
+	// 4 · modal dialog
+	const dy = top + 342, dh = 268
+	panel(w, px, dy, pw * 0.5 - 8, dh, u)
+	T(w, 'Dialog', px + 20, dy + 30, 13, { weight: 600, fill: C.cobalt400 })
+	rect(w, px + 20, dy + 46, pw * 0.5 - 48, dh - 70, C.white, 4 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	bar(w, px + 38, dy + 70, 120, 10, C.cobalt900)
+	rect(w, px + 30, dy + 92, pw * 0.5 - 68, u, C.cobalt100)
+	bar(w, px + 38, dy + 112, 150, 7, C.cobalt300)
+	bar(w, px + 38, dy + 130, 110, 7, C.cobalt300)
+	rect(w, px + pw * 0.5 - 150, dy + dh - 70, 110, 38, col(4), 4 * u)
+	// 5 · login page
+	const lx = px + pw * 0.5 + 8, lw2 = pw * 0.5 - 8
+	rect(w, lx, dy, lw2, dh, col(5), 4 * u)
+	T(w, 'Login page', lx + 20, dy + 30, 13, { weight: 600, fill: C.white })
+	panel(w, lx + 40, dy + 50, lw2 - 80, dh - 80, u)
+	rect(w, lx + 60, dy + 80, lw2 - 120, 30, C.cobalt50, 3 * u)
+	rect(w, lx + 60, dy + 120, lw2 - 120, 30, C.cobalt50, 3 * u)
+	rect(w, lx + 60, dy + 164, lw2 - 120, 34, col(5), 4 * u)
 }
 
 /* ---------- scene 4: the store ---------- */
@@ -178,7 +212,7 @@ export function nldesignUI(w, geom, st = {}) {
 	bar(w, x + 30, top + 92, width - 200, 9, C.cobalt300)
 	bar(w, x + 30, top + 112, width - 420, 9, C.cobalt300)
 	// the design token set list, open
-	T(w, 'Design token set', x + 30, top + 162, 20)
+	T(w, 'Style set', x + 30, top + 162, 20)
 	rect(w, x + 30, top + 178, 400, 214, C.white, 3 * u, { stroke: C.cobalt900, 'stroke-width': u })
 	;['Rijkshuisstijl', 'Gemeente Amsterdam', 'Gemeente Den Haag', 'Gemeente Utrecht', 'Gemeente Rotterdam'].forEach((t, i) => {
 		const ly = top + 214 + i * 38
@@ -186,8 +220,8 @@ export function nldesignUI(w, geom, st = {}) {
 		T(w, t, x + 50, ly, 18, { weight: 500 })
 	})
 	// custom token sets: upload your own NL Design CSS or W3C Design Tokens file
-	T(w, 'Custom token sets', x + 470, top + 162, 20)
-	T(w, 'Token set name', x + 470, top + 204, 16, { weight: 500, fill: C.cobalt700 })
+	T(w, 'Your own styles', x + 470, top + 162, 20)
+	T(w, 'Style name', x + 470, top + 204, 16, { weight: 500, fill: C.cobalt700 })
 	rect(w, x + 470, top + 216, width - 500, 44, C.white, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
 	if (name > 0) bar(w, x + 486, top + 234, 150 * name, 8, C.cobalt900)
 	rect(w, x + 470, top + 276, width - 500, 44, C.cobalt50, 3 * u)
@@ -225,11 +259,11 @@ const sectioned = (fn, title) => (ctx) => {
 const content = {
 	app: 'thematiq',
 	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
-	sections: { promise: 'Ownership is a style', hook: 'Ownership is a style', tokens: 'Design tokens', store: 'Store', 'general-dataLayer': 'NL Design System' },
+	sections: { promise: 'Ownership is a style', hook: 'Ownership is a style', tokens: 'Style variables', store: 'Store', 'general-dataLayer': 'NL Design System' },
 	// Round 26: every hand-off is designed; the film (thematiq/film.js) plays them in the one take
 	transitions: {
 		hook: { type: 'match', note: 'the third story cell stays on its grid cell while the camera slides right and turns over into the stock Nextcloud workspace as the question lands' },
-		tokens: { type: 'zoom', note: 'the push into the workspace cell: its blue drains into the ground and the token editor is inside it' },
+		tokens: { type: 'zoom', note: 'the push into the workspace cell: its blue drains into the ground and the style variables are inside it' },
 		store: { type: 'zoom', note: 'zoom-through the house-colour swatch until it fills the frame; out of the same green in the store\'s template card' },
 		'general-dataLayer': { type: 'whip', note: 'a seven-frame whip-pan to the next cell of the row, the NL Design System screen' },
 	},
@@ -237,12 +271,12 @@ const content = {
 	// story 1 lands on the forest colour cell's left point, story 2 on the stock Nextcloud hex's.
 	audience: { slug: 'government', name: 'Government and brands', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) and a company\'s head of marketing (Iris Bakker) folded in (Round 20: one Thematiq film)' },
 	promise: 'You pick your car\'s colour\nYou choose your clothing',
-	promiseLine: 'Do you really own it if you cannot style it your way? Thematiq makes Nextcloud yours: your tokens, your templates, your NL Design house style',
+	promiseLine: 'Ownership is a style: Thematiq lets you design your own Nextcloud, 179 style variables across 33 components, your templates, your NL Design house style',
 	title: 'Thematiq',
 	record: { one: 'house style', many: 'house styles' },
-	logline: 'Ownership is a style: you pick your car\'s colour, you choose your clothing, so why not design your workspace? Then the answer on the real screens: adjust 53 design tokens, share your templates through the store, and bring the NL Design tokens your organisation already has.',
+	logline: 'Ownership is a style: you pick your car\'s colour, you choose your clothing, so why not design your workspace? Then the answer on the real screens: 179 style variables restyle 33 components live, share your templates in the store, and bring your NL Design styles.',
 	references: REFS,
-	techniques: ['#2 sentence build as word art (the story)', '#3 grid-cell ripple (token rows, store cards)', '#9 text-swap on a held diagram (the token set list, the upload)'],
+	techniques: ['#2 sentence build as word art (the story)', '#3 grid-cell ripple (the components restyling, store cards)', '#9 text-swap on a held diagram (the style set list, the upload)'],
 	neighbours: ['launchpad'],
 	builtOnApps: [],
 	hook: {
@@ -256,12 +290,12 @@ const content = {
 	proofs: [
 		{
 			id: 'tokens',
-			title: 'Adjust 53 design tokens',
-			caption: 'Adjust 53\ndesign tokens',
-			source: 'Real screen: Custom Token Overrides (docs/img/token-editor-*.png, import-export-buttons.png). docs/features/token-editor.md on development: "4 category tabs grouping the 53 editable tokens by area". Specs token-editor-ui, token-import-export.',
-			motion: 'The core, scene 3. The hex lands as the swatch of the first row and the real token editor builds round it: the grey header with Download and Upload, the four tabs ("Login page & Branding" active), then technique #3, grid-cell ripple: the token rows step 20% to 40% to full from the top, each with its CSS variable, swatch, hex field and reset. On beat 3 the first swatch takes the orange ring, turns from Nextcloud blue to the house colour and the blue custom dot pops after "Primary color".',
-			sound: 'A ripple of ticks with the rows, a click on the swatch, a pluck as the custom dot pops.',
-			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: 'Adjust 53\ndesign tokens', drawUI: tokensUI, tagFill: 'cobalt' }),
+			title: '179 variables, 33 components',
+			caption: '179 variables,\n33 components',
+			source: 'Round 28h (Ruben): style variables, not tokens. Thematiq repo on development, scripts/mapping/component-tokens.json: 33 components with 123 component-scoped variables, plus 56 brand variables, 179 in all (labels on screen are that file\'s own). Specs token-editor-ui, component-tokens.',
+			motion: 'The core, scene 3. Inside the workspace cell the style variables panel lands on the left ("179 · 33 components") and real components land on the right: a primary button, a form with a text input and a select, a table, a modal dialog and the login page, all in stock Nextcloud blue. The first variable\'s swatch takes the orange ring and changes to the house colour, and the components restyle live one a sixteenth: the button, the input, the select, the table header, the dialog\'s confirm button, the login page. Then a stepped hex wipe repaints the rest of the workspace.',
+			sound: 'A click on the swatch, a tick up the scale as each component restyles, a whoosh under the wipe.',
+			draw: (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption: '179 variables,\n33 components', drawUI: styleVariablesUI, tagFill: 'cobalt' }),
 		},
 		{
 			id: 'store',
@@ -275,8 +309,8 @@ const content = {
 	],
 	general: {
 		module: 'dataLayer',
-		title: 'Bring your NL Design tokens',
-		caption: 'Bring your\nNL Design tokens',
+		title: 'Bring your NL Design styles',
+		caption: 'Bring your\nNL Design styles',
 		source: 'Real screen: NL Design System Theme (docs/img/admin-nl-design-panel.png, guide-dropdown-open.png; templates/settings/admin.php): "Select a Dutch government design token set as a base", the Design token set list, and Custom token sets: "Upload your own house style as a token set, either as an NL Design CSS file (--nldesign-* variables) or a W3C Design Tokens JSON file." Specs nl-design, token-sets, custom-token-sets.',
 		motion: 'For Dutch organisations (Round 22; replaces the old organisation-picker hook). Hard cut on the beat to the real "NL Design System Theme" section, its small "Dutch government" label top right. Technique #9, text-swap on a held diagram: the Design token set list opens and the selection steps down it; beside it the Custom token sets upload fills in its name and file, and on beat 3 "Choose file and upload" takes the orange ring; the imported set drops into the list below with a mint pill. BODY END: holds its caption to four frames before the bar line; its cards step down and the app tag travels into Built on Nextcloud.',
 		params: {},
@@ -292,5 +326,5 @@ const film = audienceFilm(content)
 const B = (id) => film.boards.find((b) => b.id === id)
 Object.assign(B('promise'), { title: 'Story 1: You pick your car\'s colour, you choose your clothing', drawBase: storyOne })
 Object.assign(B('hook'), { drawBase: storyTwo })
-Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: sectioned((ctx) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your\nNL Design tokens', drawUI: nldesignUI, tagFill: 'cobalt' }), 'NL Design System') })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: sectioned((ctx) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your\nNL Design styles', drawUI: nldesignUI, tagFill: 'cobalt' }), 'NL Design System') })
 export const { meta, boards } = film

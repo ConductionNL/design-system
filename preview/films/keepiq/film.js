@@ -25,7 +25,7 @@
  * No competitor is named: someone else's app is a plain outside box. Accents are clicks. Round 28: no current
  * anywhere, no wire, no electric sound. No bell.
  */
-import { Film, loadFonts } from '../_lib/stage.js'
+import { Film, loadFonts, measure } from '../_lib/stage.js'
 import { FONTS } from '../_lib/brand.js'
 import { loadBrandAssets } from '../_lib/assets.js'
 import { addOpening } from '../_lib/scenes/opening.js'
@@ -295,9 +295,11 @@ const artOut = (g, t, t0) => {
 }
 
 // Round 27c: the mark is a SECTION TITLE, never the app name (it lives in the lead cell); off for each transition
-;[['Ownership', T.mark, T.s2Out], ['Requests', B(24.6), B(31.3)], ['Share links', B(32.5), B(38.6)], ['Usage', B(40.5), T.capOut]].forEach(([title, rise, leave], i) => {
+;[['Ownership', T.mark, T.s2Out], ['Get passwords and certificates', B(24.6), B(31.3)], ['Share passwords and certificates', B(32.5), B(38.6)], ['Usage', B(40.5), T.capOut]].forEach(([title, rise, leave], i) => {
+	// Round 28i: a long title shrinks until it ends by x 860 (column stretch, inside the safe box, clear of the window)
+	const size = Math.min(58, Math.floor((58 * 740) / measure(title, { size: 58, weight: 700, tracking: -0.02 })))
 	film.scene(`t-mark-${i}`, rise - F(1), leave + EXIT, (ctx) => {
-		const c = caption(ctx.g, { text: title, size: 58, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
+		const c = caption(ctx.g, { text: title, size, y: TYPE.markY + 54, lineHeight: 1, fill: C.white }, { rise, leave, camera })
 		return (t) => c.set(t)
 	})
 })

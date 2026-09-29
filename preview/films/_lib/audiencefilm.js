@@ -30,7 +30,7 @@
  *
  *   export const { meta, boards } = audienceFilm({ ...appFilmContent, audience, promise, techniques })
  */
-import { textBlock } from './stage.js'
+import { textBlock, measure } from './stage.js'
 import { SQRT3 } from './core.js'
 import { C } from './brand.js'
 import { APP_NAMES } from './assets.js'
@@ -209,6 +209,13 @@ function withSections(boards, content) {
 			if (m) {
 				const nodes = [...m.querySelectorAll('text')]
 				if (nodes.length) { nodes[0].textContent = b.section; nodes.slice(1).forEach((n) => n.remove()) }
+				// Round 28i (lane tk): a longer section title shrinks until it ends by x 860 (the column stretch,
+				// inside the safe box and 80 px clear of the app window at x 940); a short one keeps its size.
+				if (nodes.length) {
+					const size = +nodes[0].getAttribute('font-size') || 58
+					const w = measure(b.section, { size, weight: 700, tracking: -0.02 })
+					if (w > 740) nodes[0].setAttribute('font-size', Math.floor((size * 740) / w))
+				}
 			}
 			// Round 27c: no hex floats over the field; on the first visible frame, the field cells under a tag go.
 			let cleared = false

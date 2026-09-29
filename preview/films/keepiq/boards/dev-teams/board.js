@@ -298,7 +298,7 @@ const sectioned = (fn, title) => (ctx) => {
 const content = {
 	app: 'keepiq',
 	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
-	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Requests', once: 'Share links', 'general-dataLayer': 'Usage' },
+	sections: { promise: 'Ownership', hook: 'Ownership', request: 'Get passwords and certificates', once: 'Share passwords and certificates', 'general-dataLayer': 'Usage' },
 	// Round 26: every hand-off is designed; the film (keepiq/film.js) plays them in the one take
 	transitions: {
 		hook: { type: 'match', note: 'the lock, the story\'s key element, lifts out of its house cell and travels into the outside box, which takes it' },

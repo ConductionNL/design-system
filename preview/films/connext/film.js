@@ -43,7 +43,7 @@ await loadFonts(FONTS)
 await loadBrandAssets(film.defs)
 
 // The opening, then the body on the next downbeat.
-const bodyAt = addOpening(film, { at: 0 })
+const bodyAt = addOpening(film, { at: 0, legacy: true })
 if (Math.abs(bodyAt - START.body) > 1e-6) console.error(`opening ends at ${bodyAt}, the storyboard expects ${START.body}`)
 
 film.scene('world', START.body, START.body + LEN.body, buildWorld)

@@ -395,7 +395,8 @@ const cue = (t, kind, o = {}) => film.cue(t, kind, o)
 	const c = cap('promise', WORDS.promise, s.start + F(1), s.end - F(2))
 	bodyScene('promise', s, (g, u, t) => {
 		// The opening's field, fading out as the cluster lands on it: no cut from the opening.
-		if (u < 0.8) { const hg = handoverGround(g); hg.setAttribute('opacity', (1 - ease.inOutCubic(inv(0, 0.8, u))).toFixed(3)) }
+		// Round 28c: one grid at a time. No fading copy of the opening's field under the cluster: the promise
+		// field turns over in with the cluster.
 		const fg = el('g', {}, g)
 		promiseFrame({ g: fg, W: 1920, H: 1080 }, { app: APP, promise: '', neighbours: ['portaliq', 'filinq'] })
 		// The small mark is the section title (Round 27c).

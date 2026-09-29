@@ -590,7 +590,8 @@ function turnOver(t, d) {
 function unit(g, x, y, fill, { icon = null, glyph = null, color = C.cobalt, box = null, sx = 1, opacity = 1 } = {}) {
 	if (sx <= 0.001 || opacity <= 0.001) return
 	const attrs = {}
-	if (opacity < 1) attrs['fill-opacity'] = opacity.toFixed(3)
+	// Round 28c: a shaded cell is a solid mix with the cobalt ground, never a see-through layer.
+	if (opacity < 1) fill = mix(C.cobalt, fill, opacity)
 	if (Math.abs(sx - 1) > 1e-4) attrs.transform = `translate(${x} ${y}) scale(${sx.toFixed(4)} 1) translate(${-x} ${-y})`
 	const cg = el('g', attrs, g)
 	el('path', { d: hexPath(x, y, HEX_R, HEX_ROUND), fill, 'data-hex': 'unit' }, cg)

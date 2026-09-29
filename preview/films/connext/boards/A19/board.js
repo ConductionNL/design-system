@@ -160,7 +160,7 @@ export const boards = [
 		module: 'opening',
 		claim_source: 'No claim: the company name only.',
 		draw(ctx) {
-			const up = buildOpening(ctx.g, { defs: ctx.defs })
+			const up = buildOpening(ctx.g, { defs: ctx.defs, legacy: true })
 			const k = OPENING.T.powerOn + 0.9
 			up(k)
 			return () => up(k)

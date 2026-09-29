@@ -19,7 +19,7 @@
  *                      app and audience films); Rounds 21 and 22: the connection scene, 4 bars, this
  *                      app as the lead cell, the seven Nextcloud apps loading on their connectors,
  *                      then the zoom out to the Conduction family, "Enhanced by Conduction"
- *   install   BRAND    the shared install board, 3 bars; Round 22: the current powers on
+ *   install   BRAND    the shared install board, 3 bars; Round 27b: the words rise, no wire
  *                      Install it / Use it / Own it
  *
  * Opening 3 + body 10 + built on 4 + install 3 = 20 bars, 37.5 s at 128 BPM, 24 fps (Round 22).
@@ -38,7 +38,6 @@ import { chrome, workspaceCluster, CORNERS, clearFieldUnder } from './ui.js'
 import { buildOpening, OPENING } from './scenes/opening.js'
 import { builtOnFrame, installFrame, INSTALL, CLOSING } from './scenes/closing.js'
 import { BUILT_ON_DUR, INSTALL_DUR as INSTALL21_DUR, closingWords } from './scenes/closing.js'
-import { CURRENT, keyElement, landing, boardCurrent } from './current.js'
 import { TRANSITIONS, describe } from './transitions.js'
 
 export const OPEN = OPENING.duration // 5.625 s, 3 bars
@@ -226,7 +225,7 @@ function withSections(boards, content) {
  * Round 26: a designed hand-off into a body board. content.transitions = { <board id>: { type, from, to,
  * fromName, toName, note } } (type: one of transitions.js TRANSITIONS; from/to: optional stage-px anchors).
  * A board that names one carries it as b.transition and gets "Transition in: ..." at the head of its
- * director notes; its still carries no wire. A board that names none keeps the current (the fallback).
+ * director notes. A board that names none gets the fallback, the hex flip wave (Round 28: no wire).
  * The promise, the first body board, comes in from the opening's own handover.
  */
 function withTransitions(boards, content) {
@@ -235,45 +234,19 @@ function withTransitions(boards, content) {
 		const tr = content.transitions?.[b.id]
 		if (tr && !TRANSITIONS[tr.type]) console.error(`unknown transition '${tr.type}' into ${b.id}`)
 		b.transition = tr && TRANSITIONS[tr.type] ? tr : null
-		b.motion = `${describe(b.transition || { type: 'current' })} ${b.motion || ''}`.trim()
+		b.motion = `${describe(b.transition || { type: 'flip' })} ${b.motion || ''}`.trim()
 	})
 }
 
+/**
+ * Round 28 (Ruben): the current wire is retired, so no board draws a wire. Each board still gets
+ * drawBase (its frame as drawn, for pages that animate hand-offs themselves) and currentAnchor
+ * (content.anchors[id], an optional key-element override the transitions player honours).
+ */
 function withCurrent(boards, content) {
-	const anchors = []
-	boards.forEach((b, i) => {
-		const draw = b.draw
-		b.drawBase = draw // the frame without its wire, for pages that animate the current themselves
+	boards.forEach((b) => {
+		b.drawBase = b.draw
 		b.currentAnchor = content.anchors?.[b.id] || null
-		// Round 26: a board with a designed transition in carries no wire; the current is only the fallback.
-		// Its key element is still measured, so the next board's wire can start from it.
-		b.draw = b.transition ? (ctx) => {
-			const up = draw(ctx)
-			let done = false
-			return (t) => {
-				if (typeof up === 'function') up(t)
-				if (done || ctx.g.getAttribute('display') === 'none') return
-				done = true
-				const named = content.anchors?.[b.id]
-				const key = named ? { x: named[0], y: named[1] } : keyElement(ctx.g, { exclude: [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
-				if (key) anchors[i] = [key.x, key.y]
-			}
-		} : (ctx) => {
-			const up = draw(ctx)
-			let done = false
-			return (t) => {
-				if (typeof up === 'function') up(t)
-				if (done || ctx.g.getAttribute('display') === 'none') return
-				done = true
-				const named = content.anchors?.[b.id]
-				const key = named ? { x: named[0], y: named[1], w: 60, h: 60 } : keyElement(ctx.g, { exclude: b.id === 'promise' ? [] : [[LOOP_ANCHOR.x, LOOP_ANCHOR.y]] })
-				if (!key) return
-				anchors[i] = [key.x, key.y]
-				const from = i === 0 ? CURRENT.origin : (anchors[i - 1] || CURRENT.origin)
-				const to = landing(key, from)
-				boardCurrent(ctx.g, { from, to, element: key, headColor: C.nextcloudCyan })
-			}
-		}
 	})
 }
 

@@ -511,8 +511,8 @@ const FAMILY = ['openregister', 'pipelinq', 'opencatalogi', 'filinq', 'integriq'
  *   - the Nextcloud cells form a C on the grid (the Conduction C: the ring two out from the lead, open to
  *     the right), with the orange lead at its heart; the connector lines run FROM the lead TO each cell;
  *   - after the zoom-out the white family cells form a hexagonal ring round it (Round 27d: the ring FOUR
- *     out, so exactly one ring of dark field cells lies between the C and the family; 24 cells, the apps
- *     spread evenly round it and the few left over stay field);
+ *     out, so exactly one ring of dark field cells lies between the C and the family; 24 cells: the apps
+ *     spread evenly round it, blank white cells between them (27e), and no lines inward);
  *   - Round 27d: every app cell appears by its own field cell turning over into it (the dark face
  *     squashes shut, the app face opens), so no hole opens where a cell appears: the C, the ring, the lead;
  *   - no app-name label beside the lead;
@@ -590,7 +590,8 @@ function turnOver(t, d) {
 function unit(g, x, y, fill, { icon = null, glyph = null, color = C.cobalt, box = null, sx = 1, opacity = 1 } = {}) {
 	if (sx <= 0.001 || opacity <= 0.001) return
 	const attrs = {}
-	if (opacity < 1) attrs['fill-opacity'] = opacity.toFixed(3)
+	// Round 28c: a shaded cell is a solid mix with the cobalt ground, never a see-through layer.
+	if (opacity < 1) fill = mix(C.cobalt, fill, opacity)
 	if (Math.abs(sx - 1) > 1e-4) attrs.transform = `translate(${x} ${y}) scale(${sx.toFixed(4)} 1) translate(${-x} ${-y})`
 	const cg = el('g', attrs, g)
 	el('path', { d: hexPath(x, y, HEX_R, HEX_ROUND), fill, 'data-hex': 'unit' }, cg)
@@ -612,16 +613,15 @@ function avatarAt(g, x, y, sx = 1) {
 	el('use', { href: '#avatar-conduction', x: x - w / 2, y: y - h / 2, width: w, height: h, color: C.white }, fg)
 }
 
-/** The family ring (Round 27d): the ring four out, clockwise from the top left, the apps spread evenly round it. */
+/**
+ * The family ring (Round 27d/27e): the ring four out, one full hexagon of white cells, clockwise from the
+ * top left. The apps are spread evenly round it; the cells between them are blank white. No lines inward.
+ */
 function familyCells(lead) {
 	const fam = FAMILY.filter((id) => id !== lead)
 	const all = axialRing(4)
-	const ring = fam.map((_, i) => all[Math.floor((i * all.length) / fam.length)])
-	const occupied = new Set([[0, 0], ...C_CELLS].map((c) => c.join(',')))
-	return ring.map((c, i) => {
-		const near = [[0, 0], ...C_CELLS].filter((k) => occupied.has(k.join(','))).sort((a, b) => hexDist(c, a) - hexDist(c, b) || Math.hypot(...[0, 1].map((j) => cxy(a)[j] - cxy(c)[j])) - Math.hypot(...[0, 1].map((j) => cxy(b)[j] - cxy(c)[j])))[0]
-		return { id: fam[i], q: c[0], r: c[1], to: near }
-	})
+	const at = new Map(fam.map((id, i) => [Math.floor((i * all.length) / fam.length), id]))
+	return all.map((c, i) => ({ id: at.get(i) || null, q: c[0], r: c[1] }))
 }
 
 function drawConnect(g, t, p, W = 1920) {
@@ -634,7 +634,7 @@ function drawConnect(g, t, p, W = 1920) {
 	const fam = familyCells(lead)
 	const taken = new Set([[0, 0], ...C_CELLS, ...fam.map((f) => [f.q, f.r])].map((c) => c.join(',')))
 	const unlink = 1 - inv(K.rezoom[0], K.rezoom[0] + F(4), t) // the lines draw off as the cells turn over
-	const visible = (x, y) => { const [sx, sy] = cam.apply(x, y), rr = HEX_R * cam.z; return !(sx < 880 - rr || sx > W + rr || sy < -rr || sy > 1080 + rr) }
+	const visible = (x, y) => { const [sx, sy] = cam.apply(x, y), rr = HEX_R * cam.z; return !(sx < -rr || sx > W + rr || sy < -rr || sy > 1080 + rr) }
 	/** A cell's back face after the re-zoom: the install field, the avatar, or nothing. */
 	const back = (q, r, x, y, sx) => {
 		if (sx <= 0) return
@@ -645,9 +645,10 @@ function drawConnect(g, t, p, W = 1920) {
 
 	// The quiet field: unlit grid cells, the same hex as every app cell, shaded by distance from the lead.
 	// App cells get the field face here too (it turns over into them below, Round 27d).
-	const appAt = new Map([['0,0', K.lead], ...LOAD_ORDER.map((id, i) => [CONNECT.cells[id].join(','), K.loads[i]]), ...fam.map((f, i) => [`${f.q},${f.r}`, K.zoom[0] + 0.3 + i * (F(1) * 0.6)])])
-	for (let r = -10; r <= 10; r++) {
-		for (let q = -14; q <= 14; q++) {
+	const appAt = new Map([['0,0', K.lead], ...LOAD_ORDER.map((id, i) => [CONNECT.cells[id].join(','), K.loads[i]]), ...fam.map((f, i) => [`${f.q},${f.r}`, K.zoom[0] + 0.3 + i * (F(1) * 0.45)])])
+	// Round 27e: the field covers the whole frame at every camera position (no holes anywhere in view).
+	for (let r = -12; r <= 12; r++) {
+		for (let q = -20; q <= 14; q++) {
 			if (taken.has(`${q},${r}`)) {
 				const [x, y] = cxy([q, r]), d = hexDist([q, r], [0, 0])
 				if (!visible(x, y)) continue
@@ -661,20 +662,12 @@ function drawConnect(g, t, p, W = 1920) {
 			if (!inSoon && !fin) continue
 			const o = turnOver(t, d)
 			// The ring round the lead stays clear ground, so its lines out to the C read on the cobalt.
-			const s = d === 1 ? 0 : flipIn(t, fieldAt(d)) * o.front
+			const s = flipIn(t, fieldAt(d)) * o.front // Round 27e: the field is complete, the ring round the lead too
 			if (s > 0.001 && inSoon) unit(world, x, y, C.cobalt600, { sx: s, opacity: fieldShade(d) })
 			back(q, r, x, y, o.back)
 		}
 	}
-	// The family's lines, under every cell: each app to its nearest cell of the composition, drawn on.
 	const lineAttrs = { fill: 'none', stroke: C.cobalt200, 'stroke-width': CONNECT.line.width, 'stroke-linecap': 'butt' }
-	fam.forEach((f, i) => {
-		const t0 = K.zoom[0] + 0.05 + i * (F(1) * 0.6)
-		const pr = ease.brand(inv(t0, t0 + 0.3, t)) * unlink
-		if (pr <= 0.001) return
-		const [tx, ty] = cxy(f.to), [fx, fy] = cxy([f.q, f.r])
-		el('line', { x1: tx, y1: ty, x2: lerp(tx, fx, pr), y2: lerp(ty, fy, pr), ...lineAttrs }, world)
-	})
 	// The connectors: from the lead out to each Nextcloud cell, drawn on as the cell flips in (a line, no
 	// spark: Round 27c, no hex floats over the grid).
 	LOAD_ORDER.forEach((id, i) => {
@@ -694,11 +687,12 @@ function drawConnect(g, t, p, W = 1920) {
 		unit(world, x, y, C.nextcloud, { icon: iconOf(id), color: C.white, sx: turnInto(t, 0, K.loads[i]).app * o.front })
 		back(q, r, x, y, o.back)
 	})
-	// The family: white cells with their glyphs, flipping in as their lines arrive.
+	// The family: one full ring of white cells, apps with their glyphs and blank white between, each
+	// turning over out of its field cell as the camera pulls back (Round 27e: no lines inward).
 	fam.forEach((f, i) => {
 		const [x, y] = cxy([f.q, f.r])
 		const o = turnOver(t, 4)
-		unit(world, x, y, C.white, { glyph: f.id, color: C.cobalt, sx: turnInto(t, 0, K.zoom[0] + 0.3 + i * (F(1) * 0.6)).app * o.front })
+		unit(world, x, y, C.white, { glyph: f.id, color: C.cobalt, sx: turnInto(t, 0, K.zoom[0] + 0.3 + i * (F(1) * 0.45)).app * o.front })
 		back(f.q, f.r, x, y, o.back)
 	})
 	// The lead: the film's app (or OpenRegister), the frame's one orange; it turns over into the avatar.

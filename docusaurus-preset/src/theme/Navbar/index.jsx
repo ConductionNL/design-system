@@ -121,7 +121,7 @@ function NavItem({item, location, appVersion}) {
   if (typeIs(item, 'github')) {
     return (
       <a
-        href={item.href || 'https://codeberg.org/Conduction'}
+        href={item.href || 'https://github.com/ConductionNL'}
         className={styles.iconLink}
         target="_blank"
         rel="noopener noreferrer"
@@ -248,7 +248,7 @@ function DrawerItem({item, location, appVersion, onNavigate}) {
   if (typeIs(item, 'github')) {
     return (
       <a
-        href={item.href || 'https://codeberg.org/Conduction'}
+        href={item.href || 'https://github.com/ConductionNL'}
         className={styles.drawerMetaLink}
         target="_blank"
         rel="noopener noreferrer"

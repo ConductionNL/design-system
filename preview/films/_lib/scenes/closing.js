@@ -719,7 +719,8 @@ function drawConnect(g, t, p, W = 1920) {
 	const m0 = K.typeIn + SPB / 4
 	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), qType)
 	// Round 28j: "Works with" stays; the name rolls, slot-machine style, through the apps in load order.
-	const L0 = K.loads[K.names[0]], L1 = K.enhanced
+	// The line rises as the first cell lands, so Mail is fully up from its cell's frame (0.39 s still, like the rest).
+	const L0 = K.loads[K.names[0]] - RISE, L1 = K.enhanced
 	if (t >= L0 && t < L1 + EXIT) {
 		const q1 = inv(L1, L1 + EXIT, t)
 		const lead = `${T.worksWith} `
@@ -737,7 +738,7 @@ function drawConnect(g, t, p, W = 1920) {
 		const inner = el('g', { transform: `translate(0 ${(-(pos - K.names[0]) * step).toFixed(2)})` }, rg)
 		LOAD_ORDER.forEach((app, i) => {
 			const dy = (i - K.names[0]) * step
-			if (Math.abs(i - pos) > 1.2) return
+			if (Math.abs(i - pos) >= 1) return // at rest only the current name; in a roll the ones passing
 			risingText(inner, T.names[app], { x: nx, y: Y.lineY + dy, size: Y.lineSize, weight: 600, fill: C.nextcloudCyan, tracking: -0.01 }, inv(L0, L0 + RISE, t), q1)
 		})
 	}

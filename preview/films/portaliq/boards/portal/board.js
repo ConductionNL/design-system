@@ -1,22 +1,27 @@
 /**
- * Portaliq, the one Portaliq film (Round 29, Ruben, 2026-09-29): the citizen portal film and the
- * customer portal film folded into one, told to the functional admins of municipalities and
- * housing corporations. The film says what the admin lets residents and clients do, then shows the
- * admin designing the portal and collecting data with Nextcloud Forms and Tables.
+ * Portaliq, the one Portaliq film (Round 29 and 29b, Ruben, 2026-09-29): the citizen portal film and
+ * the customer portal film folded into one, told to the functional admins of municipalities and
+ * housing corporations. The admin designs the portal first; then the film shows what clients (or
+ * citizens) do on it, and how a form on it feeds a table in Nextcloud.
  *
- *   promise   "What if residents and clients did it themselves?" (the admin's question)
- *   hook      overview: tickets, cases, products and invoices in one view
- *   status    the status and progress of cases and tickets, step by step
- *   actions   open a ticket on a product, add a file to a case, pay an invoice
- *   inbox     every mail, letter and chat sent to you, in one inbox
- *   profile   update your own details (address, bank details)
+ *   promise   "What if clients (or citizens) did it themselves?" (the admin's question)
+ *   hook      the page builder, inside Nextcloud: blocks dragged onto a grid, a portal page assembling
+ *   overview  one view: every ticket (case), product and invoice
+ *   status    clients follow every ticket, step by step
+ *   actions   open a ticket on a product, add a file to a ticket, pay an invoice
+ *   inbox     every mail, letter and chat, in one inbox
+ *   profile   clients update their own address and bank details
  *   mobile    all of it on the phone (from the customer film)
- *   builder   a grid page builder: blocks dragged onto a grid, a portal page assembling
- *   forms     Nextcloud Forms asks, the answers land as rows in Nextcloud Tables
+ *   forms     a Nextcloud Forms form on the portal page; the answers land as rows in Nextcloud Tables
  *
- * 20-bar body (appfilm PLANS[7], promise first): promise 8 beats, overview 10, status 8, actions 10,
- * inbox 8, profile 8, mobile 8, builder 10, forms 10. The old citizens and customers boards stay
- * until this film is approved (bible, round 29).
+ * Round 29b: only the page builder and Tables run inside Nextcloud (ncWindow: the dark top bar and
+ * the app nav). The pages clients see stand on their own (pageFrame: a browser bar and the
+ * organisation's own head). Naming: "clients (or citizens)" and "ticket (case)" on first mention,
+ * then "clients" and "tickets"; no "residents".
+ *
+ * 20-bar body (appfilm PLANS[7], promise first): promise 8 beats, builder 10, overview 10, status 8,
+ * actions 10, inbox 8, profile 8, mobile 8, forms 10. The old citizens and customers boards stay in
+ * the repo; the storyboard page carries this one.
  *
  * Sources: the Portaliq boards citizens (round 25) and customers (round 7); Portaliq positioning
  * usp-fleet-data-in-your-portal, sp-case-status-tracking, sp-unified-inbox,
@@ -24,15 +29,14 @@
  * identity-profile-page; Ruben's round-29 brief (page builder, Forms and Tables). Round 7: features in
  * the specs count as built.
  *
- * Every UI function draws in the window's mock space (u = 2.5) and takes an animation state `a`
+ * Every UI function draws in a screen's mock space (u = 2.5) and takes an animation state `a`
  * whose defaults are the resting frame the storyboard shows.
  */
 import { C } from '../../../_lib/brand.js'
 import { audienceFilm } from '../../../_lib/audiencefilm.js'
-import { FRAMES } from '../../../_lib/scenes/general.js'
 import { el } from '../../../_lib/stage.js'
 import { ease } from '../../../_lib/core.js'
-import { chrome, rect, bar, circle, hex, panel, statusPill, idlePill, button, use, phone, docPage, clipped } from '../../../_lib/ui.js'
+import { chrome, rect, bar, circle, hex, panel, statusPill, idlePill, button, use, phone, docPage, clipped, topbar, nav, appTag } from '../../../_lib/ui.js'
 
 const clamp01 = (v) => Math.max(0, Math.min(1, v))
 const lerp = (a, b, p) => a + (b - a) * p
@@ -82,52 +86,52 @@ function stepper(w, x, cy, width, current, u, { n = 4, p = 1, ring = 1 } = {}) {
 }
 
 /**
- * Hook: one overview. Tickets, cases, products and invoices in four tiles under the portal's head.
- * a.tile(i) -> { dx, dy, o } moves a tile (the cluster merge), a.ring 0..1 rings the cases tile.
+ * One view: every ticket (case), product and invoice, in three tiles under the portal's head.
  */
 const TILES = [
-	{ id: 'pipelinq', rows: [['idle', 180], ['mint', 150], ['mint', 200]] }, // tickets
-	{ id: 'dossiq', rows: [['progress', 210], ['mint', 170], ['mint', 150]] }, // cases
+	{ id: 'dossiq', rows: [['progress', 230], ['idle', 180], ['mint', 200]] }, // tickets (cases), the full-width tile
 	{ id: null, rows: [['mint', 160], ['idle', 190], ['mint', 140]] }, // products
 	{ id: 'shillinq', rows: [['idle', 150], ['mint', 180], ['mint', 170]] }, // invoices
 ]
+/** Hook of the client pages: tickets across the top, products and invoices under it; a.tile(i) -> { dx, dy, o }, a.ring 0..1 rings the tickets tile. */
 export function overviewUI(w, geom, a = {}) {
 	const root = w
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x
 	const y = portalHead(w, geom)
 	const cw = (width - 20) / 2, ch = 300
+	const boxes = [[x, y, width, ch], [x, y + ch + 20, cw, ch], [x + cw + 20, y + ch + 20, cw, ch]]
 	TILES.forEach((tile, i) => {
 		const m = a.tile ? a.tile(i) : null
 		if (m && m.o <= 0.001) return
 		w = m ? el('g', { transform: `translate(${m.dx.toFixed(1)} ${m.dy.toFixed(1)})`, opacity: m.o.toFixed(3) }, root) : root
-		const tx = x + (i % 2) * (cw + 20), ty = y + Math.floor(i / 2) * (ch + 20)
-		panel(w, tx, ty, cw, ch, u)
-		// A step right, so the first tile's hex clears the app tag on the loop anchor.
-		glyphHex(w, tx + 96, ty + 48, 22, tile.id, tile.id ? C.cobalt : C.lavender)
-		bar(w, tx + 136, ty + 40, 140, 14, C.cobalt900)
-		rect(w, tx + cw - 80, ty + 32, 50, 30, C.cobalt50, 15)
-		bar(w, tx + cw - 66, ty + 43, 22, 8, C.cobalt700)
+		const [tx, ty, tw, th] = boxes[i]
+		panel(w, tx, ty, tw, th, u)
+		glyphHex(w, tx + 50, ty + 48, 22, tile.id, tile.id ? C.cobalt : C.lavender)
+		bar(w, tx + 90, ty + 40, 140, 14, C.cobalt900)
+		rect(w, tx + tw - 80, ty + 32, 50, 30, C.cobalt50, 15)
+		bar(w, tx + tw - 66, ty + 43, 22, 8, C.cobalt700)
 		tile.rows.forEach(([st, lw], k) => {
 			const cy = ty + 120 + k * 58
-			if (k > 0) rect(w, tx + 24, cy - 29, cw - 48, u, C.cobalt50)
+			if (k > 0) rect(w, tx + 24, cy - 29, tw - 48, u, C.cobalt50)
 			bar(w, tx + 34, cy - 10, lw, 10, C.cobalt900)
 			bar(w, tx + 34, cy + 8, lw * 0.55, 7, C.cobalt300)
-			if (st === 'mint') statusPill(w, tx + cw - 130, cy, u)
-			else if (st === 'idle') idlePill(w, tx + cw - 110, cy, u)
+			if (st === 'mint') statusPill(w, tx + tw - 130, cy, u)
+			else if (st === 'idle') idlePill(w, tx + tw - 110, cy, u)
 			else {
-				rect(w, tx + cw - 140, cy - 5, 100, 10, C.cobalt100, 5)
-				rect(w, tx + cw - 140, cy - 5, 60, 10, C.cobalt400, 5)
+				rect(w, tx + tw - 240, cy - 5, 200, 10, C.cobalt100, 5)
+				rect(w, tx + tw - 240, cy - 5, 120, 10, C.cobalt400, 5)
 			}
 		})
 		w = root
 	})
 	const ring = a.ring ?? 1
-	const rc = [x + cw + 20 + cw / 2, y + ch / 2]
+	const [bx, by, bw, bh] = boxes[0]
+	const rc = [bx + bw * 0.5, by + bh / 2]
 	if (ring > 0.001) {
-		const rs = 1 + 0.08 * (1 - ring)
+		const rs = 1 + 0.05 * (1 - ring)
 		const rg = el('g', { transform: `translate(${rc[0]} ${rc[1]}) scale(${rs.toFixed(3)}) translate(${-rc[0]} ${-rc[1]})`, opacity: Math.min(1, ring * 2).toFixed(3) }, w)
-		rect(rg, x + cw + 20 - 8, y - 8, cw + 16, ch + 16, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
+		rect(rg, bx - 8, by - 8, bw + 16, bh + 16, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u })
 	}
 	return { ringCentre: rc }
 }
@@ -173,7 +177,7 @@ export function statusUI(w, geom, a = {}) {
 }
 
 /**
- * Actions: three things a resident does themselves, one after the other.
+ * Actions: three things a client does themselves, one after the other.
  * a.focus 0..2 (which control holds the orange ring, fractional = moving), a.ticket, a.file, a.paid 0..1.
  */
 export function actionsUI(w, geom, a = {}) {
@@ -303,7 +307,7 @@ export function inboxUI(w, geom, a = {}) {
 }
 
 /**
- * Profile: the resident's own details, the address changed and then the bank account.
+ * Profile: the client's own details, the address changed and then the bank account.
  * a.e1, a.e2 0..1 type each new value on; a.s1, a.s2 0|1 saved; a.focus 1 or 2 (the field with the orange edge, 0 none).
  */
 export function profileUI(w, geom, a = {}) {
@@ -362,13 +366,13 @@ export function phoneUI(g, a = {}, box = PHONE) {
 	// The page scrolls under the fixed head.
 	const page = el('g', { transform: `translate(0 ${(-330 * k * ease.inOutCubic(A.scroll)).toFixed(1)})` }, s)
 	let y = p.y + 160 * k
-	// The overview tiles, stacked: tickets, cases, products, invoices.
+	// The overview tiles, stacked: tickets, products, invoices.
 	TILES.forEach((tile, i) => {
 		rect(page, x + 20 * k, y, width - 40 * k, 120 * k, C.cobalt50, 12 * k)
 		glyphHex(page, x + 62 * k, y + 60 * k, 22 * k, tile.id, tile.id ? C.cobalt : C.lavender)
 		bar(page, x + 100 * k, y + 42 * k, 150 * k, 13 * k, C.cobalt900)
 		bar(page, x + 100 * k, y + 68 * k, 100 * k, 9 * k, C.cobalt300)
-		if (i === 1) {
+		if (i === 0) {
 			rect(page, x + 100 * k, y + 92 * k, 230 * k, 8 * k, C.cobalt100, 4 * k)
 			rect(page, x + 100 * k, y + 92 * k, 140 * k, 8 * k, C.mint, 4 * k)
 		}
@@ -466,7 +470,7 @@ export function builderUI(w, geom, a = {}) {
 		const [sx, sy, sw, sh] = slot(BLOCKS[4])
 		rect(w, sx - 8, sy - 8, sw + 16, sh + 16, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: Math.min(1, A.ring * 2).toFixed(3) })
 	}
-	return { formCentre }
+	return { formCentre, canvas: [cx0, top, cwid, 820] }
 }
 
 /** A palette block's small mark: abstract, in the UI vocabulary (bars and hexes, no drawn icons). */
@@ -505,7 +509,7 @@ function drawBlock(w, kind, x, y, bw, bh, u, lifted) {
 		if (bh > 200) rect(g, x + bw - 170, y + bh - 70, 150, 50, C.cobalt, 3 * u)
 		return
 	}
-	// A list block (cases or invoices): its app's glyph and three rows.
+	// A list block (tickets or invoices): its app's glyph and three rows.
 	glyphHex(g, x + 40, y + 40, 18, kind === 'cases' ? 'dossiq' : 'shillinq')
 	bar(g, x + 72, y + 34, 110, 11, C.cobalt900)
 	const n = Math.max(0, Math.min(4, Math.floor((bh - 80) / 56)))
@@ -516,94 +520,184 @@ function drawBlock(w, kind, x, y, bw, bh, u, lifted) {
 	}
 }
 
+
+/* ---------- the two kinds of screen (Round 29b) ---------- */
+
 /**
- * Forms and Tables: a Nextcloud Forms form on the left is filled in and sent; the answer lands as a
- * new row in a Nextcloud Tables table on the right. a.type 0..1 the answers type on, a.send 0..1 the
- * submit press, a.fly 0..1 the answer travels, a.row 0..1 the row opens, a.cells 0..1, a.ring 0..1.
- * Returns { rowCentre } in mock space.
+ * Where a screen sits on the stage: the app window's place and scale (layout().win), so a point in
+ * mock space maps to the stage the same way for both kinds. U is the mock unit (stage px per CSS px).
  */
-export function formsUI(w, geom, a = {}) {
-	const A = { type: 1, send: 1, fly: 1, row: 1, cells: 1, ring: 1, ...a }
+export const U = 2.5
+export const WIN = { x: 940, y: 160, s: 0.8, nav: 110, row1: 205 }
+const LOOP = { x: WIN.x + WIN.s * (WIN.nav + 14) * U, y: WIN.y + WIN.s * WIN.row1, r: 44 }
+export const toStage = (mx, my, box = WIN) => [box.x + box.s * mx, box.y + box.s * my]
+const outerGroup = (g, { land = 1, dx = 0, dy = 0 }) => {
+	const y = 60 * (1 - ease.brand(land)) + dy
+	return { y, outer: el('g', { opacity: Math.min(1, Math.max(0, land * 2)).toFixed(3), transform: `translate(${dx.toFixed(1)} ${y.toFixed(1)})` }, g) }
+}
+const pushGroup = (win, push, about) => el('g', { transform: `translate(${about[0]} ${about[1]}) scale(${push.toFixed(4)}) translate(${-about[0]} ${-about[1]})` }, win)
+
+/**
+ * A Nextcloud window (the AppMock: the dark top bar with its app dots and the app nav on the left).
+ * Round 29b: only what runs inside Nextcloud uses it: the page builder and Tables. `tag` 0..1 flips
+ * the Portaliq tag in on the loop anchor (off for Tables, which is Nextcloud's own app).
+ */
+export function ncWindow(g, { drawUI, land = 1, push = 1, about = [900, 600], tag = 1, dx = 0, dy = 0, app = 'portaliq' }) {
+	const visR = (1920 - WIN.x) / WIN.s, visB = (1080 - WIN.y) / WIN.s
+	const { y, outer } = outerGroup(g, { land, dx, dy })
+	const view = el('g', { transform: `translate(${WIN.x} ${WIN.y}) scale(${WIN.s})` }, outer)
+	const FW = 720 * U, FH = visB + 60
+	const win = clipped(view, 0, 0, FW, FH, 10 * U)
+	rect(win, 0, 0, FW, FH, C.white)
+	topbar(win, 0, 0, FW, U, { fill: C.cobalt900 })
+	nav(win, 0, 24 * U, WIN.nav * U, FH - 24 * U, U, { items: 7, active: 1 })
+	rect(win, (720 - 187) * U, 24 * U, U, FH, C.cobalt100)
+	const geom = { x: (WIN.nav + 14) * U, r: Math.min((720 - 187 - 14) * U, visR - 60), top: 24 * U, Y0: 0, u: U, anchor: { x: (WIN.nav + 14) * U, y: WIN.row1 }, visB }
+	const out = drawUI(pushGroup(win, push, about), geom) || {}
+	const ts = Math.max(0, Math.min(1, tag))
+	if (ts > 0.001) {
+		const tg = el('g', { transform: `translate(${LOOP.x + dx} ${LOOP.y + y}) scale(${ts.toFixed(3)} 1) translate(${-LOOP.x} ${-LOOP.y})` }, g)
+		appTag(tg, LOOP.x, LOOP.y, LOOP.r, app, { fill: C.cobalt })
+	}
+	return { geom, out }
+}
+
+/**
+ * A standalone web page (Round 29b): what clients see is the organisation's own site, not Nextcloud.
+ * A browser-like frame (a light bar with three dots and an address pill), then the page: the portal's
+ * own head and its content. No Nextcloud top bar, no app nav, no Portaliq tag. `box` places and sizes
+ * it (stage x, y, scale; mock width W and height H; default: where the app window sits, bleeding off).
+ */
+export function pageFrame(g, { drawUI, land = 1, push = 1, about = [600, 600], dx = 0, dy = 0, box = WIN, W = null, H = null }) {
+	const visR = (1920 - box.x) / box.s, visB = (1080 - box.y) / box.s
+	const { outer } = outerGroup(g, { land, dx, dy })
+	const view = el('g', { transform: `translate(${box.x} ${box.y}) scale(${box.s})` }, outer)
+	const FW = W || 720 * U, FH = H || visB + 60
+	const bleeds = !W
+	if (!bleeds) rect(view, 0, 14, FW, FH, C.cobalt900, 10 * U, { opacity: 0.35 })
+	const win = clipped(view, 0, 0, FW, FH, 10 * U)
+	rect(win, 0, 0, FW, FH, C.white)
+	rect(win, 0, 0, FW, 60, C.cobalt50)
+	;[34, 62, 90].forEach((cx) => circle(win, cx, 30, 8, C.cobalt200))
+	rect(win, 130, 14, Math.min(560, FW - 180), 32, C.white, 16)
+	bar(win, 152, 26, 180, 8, C.cobalt200)
+	const r = bleeds ? Math.min(FW, visR) - 60 : FW - 40
+	const x = bleeds ? 60 : 40
+	const geom = { x, r, top: 60, Y0: 0, u: U, anchor: { x, y: WIN.row1 }, visB }
+	const out = drawUI(pushGroup(win, push, about), geom) || {}
+	return { geom, out }
+}
+
+/**
+ * Collect data, the portal side: a Nextcloud Forms form embedded on the organisation's page.
+ * a.type 0..1 the answers type on, a.send 0..1 the submit press. Returns { submit } in mock space.
+ */
+export function formPageUI(w, geom, a = {}) {
+	const A = { type: 1, send: 1, ...a }
 	const { u } = geom
 	const x = geom.x, width = geom.r - geom.x
-	const top = geom.anchor.y - 80
-	// Forms.
-	const fw = 380
-	panel(w, x, top, fw, 760, u)
-	rect(w, x, top, fw, 90, C.nextcloud, 4 * u)
-	rect(w, x, top + 70, fw, 20, C.nextcloud)
-	use(w, 'nc-forms', x + 96, top + 25, 40, 40, C.white)
-	bar(w, x + 152, top + 38, 150, 13, C.white)
+	const y = portalHead(w, geom)
+	panel(w, x, y, width, 720, u)
+	rect(w, x + 30, y + 30, 48, 48, C.nextcloud, 5)
+	use(w, 'nc-forms', x + 38, y + 38, 32, 32, C.white)
+	bar(w, x + 96, y + 46, 180, 13, C.cobalt900)
 	const ans = [200, 150, 230]
 	ans.forEach((lw, i) => {
-		const cy = top + 150 + i * 150
+		const cy = y + 130 + i * 150
 		bar(w, x + 30, cy, 170, 10, C.cobalt700)
-		rect(w, x + 30, cy + 26, fw - 60, 60, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+		rect(w, x + 30, cy + 26, width - 60, 60, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
 		const typed = clamp01(A.type * 3 - i)
 		const tw = lw * Math.floor(typed * 8) / 8
 		if (tw > 0) bar(w, x + 50, cy + 50, tw, 11, C.cobalt900)
 		if (typed > 0 && typed < 1) rect(w, x + 50 + tw + 6, cy + 42, 3 * u, 28, C.cobalt)
 	})
-	const sbx = x + fw - 200, sby = top + 610, sbw = 170, sbh = 60
+	const sbx = x + width - 210, sby = y + 590, sbw = 180, sbh = 64
 	const press = A.send > 0 && A.send < 1 ? 1 - 0.06 * Math.sin(Math.PI * A.send) : 1
 	const sb = el('g', { transform: `translate(${sbx + sbw / 2} ${sby + sbh / 2}) scale(${press.toFixed(3)}) translate(${-(sbx + sbw / 2)} ${-(sby + sbh / 2)})` }, w)
 	rect(sb, sbx, sby, sbw, sbh, A.send >= 1 ? C.cobalt600 : C.cobalt, 4 * u)
-	bar(sb, sbx + 45, sby + 25, 80, 10, C.white)
-	// Tables.
-	const tx = x + fw + 24, tw = width - fw - 24
-	panel(w, tx, top, tw, 760, u)
-	rect(w, tx, top, tw, 90, C.nextcloud, 4 * u)
-	rect(w, tx, top + 70, tw, 20, C.nextcloud)
-	use(w, 'nc-tables', tx + 28, top + 25, 40, 40, C.white)
-	bar(w, tx + 84, top + 38, 150, 13, C.white)
-	const cols = 4, colW = (tw - 40) / cols, rowH = 76
+	bar(sb, sbx + 50, sby + 27, 80, 10, C.white)
+	return { submit: [sbx + sbw / 2, sby + sbh / 2] }
+}
+
+/**
+ * Collect data, the Nextcloud side: the Tables table the answers land in. a.row 0..1 the new top row
+ * opens, a.cells 0..1 its cells fill, a.ring 0..1 rings it. Returns { rowCentre } in mock space.
+ */
+export function tablesUI(w, geom, a = {}) {
+	const A = { row: 1, cells: 1, ring: 1, ...a }
+	const { u } = geom
+	const x = geom.x, width = geom.r - geom.x
+	const top = geom.anchor.y - 80
+	panel(w, x, top, width, 900, u)
+	rect(w, x, top, width, 90, C.nextcloud, 4 * u)
+	rect(w, x, top + 70, width, 20, C.nextcloud)
+	// Right of the form page that stands in front of this window's left side.
+	use(w, 'nc-tables', x + 380, top + 25, 40, 40, C.white)
+	bar(w, x + 436, top + 38, 150, 13, C.white)
+	const cols = 5, colW = (width - 40) / cols, rowH = 76
 	const hy = top + 110
-	rect(w, tx + 20, hy, tw - 40, 50, C.cobalt50, 2 * u)
-	for (let c = 0; c < cols; c++) bar(w, tx + 36 + c * colW, hy + 20, colW * 0.5, 9, C.cobalt400)
+	rect(w, x + 20, hy, width - 40, 50, C.cobalt50, 2 * u)
+	for (let c = 0; c < cols; c++) bar(w, x + 36 + c * colW, hy + 20, colW * 0.5, 9, C.cobalt400)
 	const r0 = hy + 60
 	const open = ease.brand(A.row)
-	const rows = 6
-	const tb = clipped(w, tx + 20, r0, tw - 40, 760 - (r0 - top) - 20, 0)
-	for (let i = 0; i < rows; i++) {
+	const W5 = [0.6, 0.45, 0.7, 0.35, 0.5]
+	const tb = clipped(w, x + 20, r0, width - 40, 900 - (r0 - top) - 20, 0)
+	for (let i = 0; i < 8; i++) {
 		const ry = r0 + (i + open) * rowH
-		rect(tb, tx + 20, ry + rowH - u, tw - 40, u, C.cobalt50)
-		for (let c = 0; c < cols; c++) bar(tb, tx + 36 + c * colW, ry + rowH / 2 - 5, colW * [0.6, 0.45, 0.7, 0.35][(c + i) % 4], 9, c === 0 ? C.cobalt700 : C.cobalt300)
+		rect(tb, x + 20, ry + rowH - u, width - 40, u, C.cobalt50)
+		for (let c = 0; c < cols; c++) bar(tb, x + 36 + c * colW, ry + rowH / 2 - 5, colW * W5[(c + i) % 5], 9, c === 0 ? C.cobalt700 : C.cobalt300)
 	}
-	// The new row: its cells fill left to right.
 	if (open > 0) {
 		const g = el('g', { opacity: Math.min(1, open * 2).toFixed(3) }, w)
-		rect(g, tx + 20, r0, tw - 40, rowH * open, C.cobalt50)
+		rect(g, x + 20, r0, width - 40, rowH * open, C.cobalt50)
 		const cf = A.cells * cols
 		for (let c = 0; c < cols; c++) {
 			const p = clamp01(cf - c)
-			if (p > 0 && open >= 1) bar(g, tx + 36 + c * colW, r0 + rowH / 2 - 5, colW * [0.6, 0.45, 0.7, 0.35][c] * p, 9, C.cobalt900)
+			if (p > 0 && open >= 1) bar(g, x + 36 + c * colW, r0 + rowH / 2 - 5, colW * W5[c] * p, 9, C.cobalt900)
 		}
 	}
-	const rowCentre = [tx + tw / 2, r0 + rowH / 2]
-	if (A.ring > 0.001) rect(w, tx + 12, r0 - 8, tw - 24, rowH + 16, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: Math.min(1, A.ring * 2).toFixed(3) })
-	// The answer in flight: a row-shaped chip from the submit button to the table.
-	if (A.fly > 0 && A.fly < 1) {
-		const e = ease.inOutCubic(A.fly)
-		const fx = lerp(sbx + sbw / 2, rowCentre[0], e), fy = lerp(sby + sbh / 2, rowCentre[1], e) - 120 * Math.sin(Math.PI * e)
-		const cw = lerp(sbw, tw - 60, e), chh = lerp(sbh, rowH - 16, e)
-		rect(w, fx - cw / 2, fy - chh / 2, cw, chh, C.cobalt100, 3 * u, { stroke: C.cobalt300, 'stroke-width': u })
-		for (let c = 0; c < 3; c++) bar(w, fx - cw / 2 + 20 + c * cw / 3, fy - 4, cw / 3 * 0.5, 8, C.cobalt700)
-	}
-	return { rowCentre }
+	if (A.ring > 0.001) rect(w, x + 12, r0 - 8, width - 24, rowH + 16, 'none', 5 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: Math.min(1, A.ring * 2).toFixed(3) })
+	return { rowCentre: [x + width * 0.62, r0 + rowH / 2] }
+}
+
+/** Where the form's page stands in the collect-data scene (over the Tables window's left side, clear of the caption). */
+export const FORM_BOX = { x: 920, y: 290, s: 0.62 }
+export const FORM_SIZE = { W: 640, H: 1060 }
+
+/** The collect-data scene's picture: Tables in Nextcloud behind, the portal's form page in front. */
+export function collectScene(g, a = {}, { tablesDy = 0, formDy = 0 } = {}) {
+	const t = ncWindow(g, { tag: 0, dy: tablesDy, drawUI: (w, geom) => tablesUI(w, geom, a) })
+	const f = pageFrame(g, { box: FORM_BOX, ...FORM_SIZE, dy: formDy, drawUI: (w, geom) => formPageUI(w, geom, a) })
+	return { row: toStage(...t.out.rowCentre), submit: toStage(...f.out.submit, FORM_BOX), tablesDy, formDy }
+}
+
+/** The answer in flight, in stage px: a row-shaped chip from the form's submit button to the new table row. */
+export function answerChip(g, from, to, p) {
+	if (p <= 0 || p >= 1) return
+	const e = ease.inOutCubic(p)
+	const fx = lerp(from[0], to[0], e), fy = lerp(from[1], to[1], e) - 110 * Math.sin(Math.PI * e)
+	const cw = lerp(110, 420, e), ch = lerp(40, 46, e)
+	rect(g, fx - cw / 2, fy - ch / 2, cw, ch, C.cobalt100, 6, { stroke: C.cobalt300, 'stroke-width': 2 })
+	for (let c = 0; c < 3; c++) bar(g, fx - cw / 2 + 14 + (c * cw) / 3, fy - 3, (cw / 3) * 0.5, 6, C.cobalt700)
 }
 
 /* ---------- the storyboard's frames (the film draws the same UI in motion) ---------- */
 
-const win = (drawUI, caption, header = false) => (ctx, api) => FRAMES.hook(ctx, { app: api.app, caption, drawUI, tagFill: 'cobalt', header })
+const onPage = (drawUI, caption) => (ctx) => { chrome(ctx, { text: caption, app: 'portaliq' }); pageFrame(ctx.g, { drawUI }) }
+const inNextcloud = (drawUI, caption) => (ctx) => { chrome(ctx, { text: caption, app: 'portaliq' }); ncWindow(ctx.g, { drawUI }) }
 
+/**
+ * Round 29b naming: the first mention says "clients (or citizens)" and "ticket (case)", every later
+ * one "clients" and "tickets"; no "residents".
+ */
 const CAPTIONS = {
-	hook: 'Every case, ticket,\nproduct and invoice',
-	status: 'Residents follow every\ncase, step by step',
+	builder: 'Design your own portal\nblock by block',
+	overview: 'Every ticket (case),\nproduct and invoice',
+	status: 'Clients follow every\nticket, step by step',
 	actions: 'Open tickets, add\nfiles, pay invoices',
 	inbox: 'Mail, letters and chat\nin one inbox',
 	profile: 'Clients update their\naddress and bank info',
 	mobile: 'Everything works\non their phone',
-	builder: 'Design your own portal\nblock by block',
 	forms: 'Ask with _Forms_,\nanswers land in _Tables_',
 }
 export { CAPTIONS }
@@ -611,101 +705,101 @@ export { CAPTIONS }
 const content = {
 	app: 'portaliq',
 	audience: { slug: 'portal', name: 'Portal', persona: 'The functional admin of a municipality or a housing corporation: Willem Postma, head of digital services at a municipality; Esther Kuipers, customer contact manager at a housing corporation' },
-	promise: 'What if residents\nand clients did it\nthemselves?',
-	promiseLine: 'Residents and clients arrange it themselves in one portal you design: an overview, progress, actions, one inbox, their own details, on any phone, with Forms and Tables to collect what you need',
-	title: 'Portaliq, one portal for residents and clients',
-	record: { one: 'case', many: 'cases' },
-	logline: 'Round 29: one Portaliq film for the functional admins of municipalities and housing corporations. Residents and clients see their tickets, cases, products and invoices in one view, follow progress, act themselves, read every message in one inbox, keep their details up to date, on their phone; the admin designs the portal with a grid page builder and collects questions and data with Nextcloud Forms and Tables.',
+	promise: 'What if clients\n(or citizens)\ndid it themselves?',
+	promiseLine: 'Clients (or citizens) arrange it themselves in a portal you design: tickets, products and invoices in one view, progress, actions, one inbox, their own details, on any phone, and Forms and Tables to collect what you need',
+	title: 'Portaliq, one portal your clients run themselves',
+	record: { one: 'ticket', many: 'tickets' },
+	logline: 'Round 29b: one Portaliq film for the functional admins of municipalities and housing corporations. The admin designs the portal in a grid page builder inside Nextcloud; the portal pages clients (or citizens) see stand on their own, in the organisation\'s style: every ticket, product and invoice in one view, progress, their own actions, one inbox, their own details, on their phone; a Forms form on the portal feeds a Tables table in Nextcloud.',
 	references: REFS,
 	// Round 27c: the section title each scene's small mark shows (not the app name).
-	sections: { promise: 'Self-service', hook: 'One view', status: 'Progress', actions: 'Actions', inbox: 'Inbox', profile: 'Own details', mobile: 'Mobile', builder: 'Page builder', forms: 'Collect data' },
+	sections: { promise: 'Self-service', hook: 'Page builder', overview: 'One view', status: 'Progress', actions: 'Actions', inbox: 'Inbox', profile: 'Own details', mobile: 'Mobile', forms: 'Collect data' },
 	transitions: {
-		hook: { type: 'cluster', fromName: 'the orange Portaliq cell', toName: 'the overview', note: 'everything a resident has with you, gathering into one view, is the caption performed (#10): the four tiles drift in and merge under the portal\'s head' },
-		status: { type: 'grow', fromName: 'the ringed cases tile', toName: 'the case and its steps', note: 'the tile opens into the case it holds: a hex grows out of it past the frame and the case\'s progress is inside (#1)' },
-		actions: { type: 'swap', fromName: 'the progress', toName: 'the three actions', note: 'the portal\'s head holds and the page under it steps down in three bands: the same portal, the resident acting in it (#9)' },
-		inbox: { type: 'whip', fromName: 'the paid invoice', toName: 'the inbox', note: 'to the inbox on the beat: a whip reads as the resident moving to the next tab (#11)' },
-		profile: { type: 'hexWipe', fromName: 'the open letter', toName: 'the resident\'s details', note: 'from what you sent them to what they keep up to date: four hexes step in from the right and the details arrive behind them (#5)' },
-		mobile: { type: 'match', fromName: 'the portal window', toName: 'the phone\'s screen', note: 'the window\'s white page shrinks into the phone\'s screen: the same portal, now in a pocket' },
-		builder: { type: 'whip', fromName: 'the phone', toName: 'the page builder', note: 'a vertical whip: the phone lifts out and the builder rises in, from what residents see to where you make it' },
-		forms: { type: 'zoom', fromName: 'the form block', toName: 'the form and its table', note: 'we push into the form block just placed on the page and come out on the form itself, feeding its table' },
+		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the page builder', note: 'the app cell opens into its own page builder, inside Nextcloud: a hex grows out of the cell past the frame and the builder is inside it (#1)' },
+		overview: { type: 'match', fromName: 'the page just built', toName: 'the live portal page', note: 'the canvas the admin just filled leaves Nextcloud and grows into the standalone portal page, and the tiles gather into it (#10): what you built is what clients see' },
+		status: { type: 'grow', fromName: 'the ringed tickets tile', toName: 'the ticket and its steps', note: 'the tile opens into the ticket it holds: a hex grows out of it past the frame and its progress is inside (#1)' },
+		actions: { type: 'swap', fromName: 'the progress', toName: 'the three actions', note: 'the portal page holds and the page under its head steps down in three bands: the same portal, the client acting in it (#9)' },
+		inbox: { type: 'whip', fromName: 'the paid invoice', toName: 'the inbox', note: 'to the inbox on the beat: a whip reads as the client moving to the next page (#11)' },
+		profile: { type: 'hexWipe', fromName: 'the open letter', toName: 'the client\'s details', note: 'from what you sent them to what they keep up to date: four hexes step in from the right and the details arrive behind them (#5)' },
+		mobile: { type: 'match', fromName: 'the portal page', toName: 'the phone\'s screen', note: 'the page shrinks into the phone\'s screen: the same portal, now in a pocket' },
+		forms: { type: 'whip', fromName: 'the phone', toName: 'the form and its table', note: 'a vertical whip: the phone lifts away and the form rises in on the portal page, with Tables behind it in Nextcloud' },
 	},
-	techniques: ['#10 cluster-to-container merge', '#1 dot-grows-to-fill (as a hex)', '#9 text-swap on a held window', '#11 whip-pan', '#5 stepped hex wipe', 'zoom-through'],
+	techniques: ['#1 dot-grows-to-fill (as a hex)', 'match cut', '#10 cluster-to-container merge', '#9 text-swap on a held window', '#11 whip-pan', '#5 stepped hex wipe'],
 	maxWords: 64,
 	promiseFirst: true,
-	promiseMotion: 'Round 29: the body opens here, straight after the opening\'s handover. The Portaliq cluster flips in on the field (it turns over by squashing, never pops or scales in), Portaliq orange on the loop anchor with Dossiq and Shillinq beside it. The small mark reads the section, "Self-service"; the admin\'s question rises under it, "What if residents and clients did it themselves?" (7 words; no answer card, the scenes answer it).',
+	promiseMotion: 'Round 29b: the body opens here, straight after the opening\'s handover. The Portaliq cluster flips in on the field (it turns over by squashing, never pops or scales in), Portaliq orange on the loop anchor with Dossiq and Shillinq beside it. The small mark reads the section, "Self-service"; the admin\'s question rises under it, "What if clients (or citizens) did it themselves?" (8 words; no answer card, the scenes answer it). Out on the last beat: the orange Portaliq cell opens as a hex into the page builder.',
 	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'Every case, ticket, product and invoice, in one view',
-		caption: CAPTIONS.hook,
-		draw: win(overviewUI, CAPTIONS.hook),
-		source: 'Portaliq positioning usp-fleet-data-in-your-portal (records and actions of the sibling apps in one portal); the citizens board\'s invoices and products; Ruben, round 29 scene 1',
-		motion: 'Technique #10, cluster-to-container merge. The portal lays in under its own head in the organisation\'s house style; four tiles (tickets from Pipelinq, cases from Dossiq, products, invoices from Shillinq) start scattered over the window and each tweens to its place on ease.brand. On beat 6 the cases tile takes the orange ring; on the last beat it opens out as a hex (#1).',
-		sound: 'A whoosh as the portal lands, a run of soft ticks as the tiles merge, a pluck on the ring.',
+		title: 'Design your own portal block by block',
+		caption: CAPTIONS.builder,
+		draw: inNextcloud(builderUI, CAPTIONS.builder),
+		source: 'Ruben, round 29 scene 7 and round 29b (the builder comes first, and it is the one screen of the portal that runs inside Nextcloud): a grid page builder, design your own custom portal for citizens and clients',
+		motion: 'Inside the hex from the Portaliq cell: Portaliq\'s page builder in its Nextcloud window, the palette of blocks on the left, the dotted six-column grid on the right. Blocks are dragged across one a beat (the head, a tickets list, an invoices list, a text block, a form) and snap into their cells, each target lighting up as its block flies; a portal page assembles. The form block, last, takes the orange ring.',
+		sound: 'A whoosh through the hex, a soft whoosh per drag, a dry click as each block snaps in, a pluck on the ring.',
 	},
 	proofs: [
 		{
+			id: 'overview',
+			title: 'Every ticket (case), product and invoice, in one view',
+			caption: CAPTIONS.overview,
+			source: 'Portaliq positioning usp-fleet-data-in-your-portal (records and actions of the sibling apps in one portal); the citizens board\'s invoices and products; Ruben, round 29 scene 1 and round 29b (the portal pages stand on their own)',
+			motion: 'Match cut out of the builder: the canvas leaves the Nextcloud window and grows into a standalone web page (a browser bar, the organisation\'s own head, no Nextcloud chrome). Four tiles (tickets from Pipelinq, cases from Dossiq, products, invoices from Shillinq) drift in and merge on ease.brand (#10). On beat 6 the tickets tile takes the orange ring; on the last beat it opens out as a hex (#1).',
+			sound: 'A soft whoosh as the page grows, a run of soft ticks as the tiles merge, a pluck on the ring.',
+			draw: onPage(overviewUI, CAPTIONS.overview),
+		},
+		{
 			id: 'status',
-			title: 'Status and progress of cases and tickets',
+			title: 'Clients follow every ticket, step by step',
 			caption: CAPTIONS.status,
 			source: 'Portaliq positioning sp-case-status-tracking ("Your case\'s status and its documents sit on one page."); the customer board\'s booked status; Ruben, round 29 scene 2',
-			motion: 'Inside the hex from the cases tile: the case and a ticket, each with its steps. The mint track runs along both steppers, the steps turning done as it passes; the case\'s current step takes the orange ring; the timeline below fills a sixteenth apart, newest first.',
+			motion: 'Inside the hex from the tickets tile, on the portal page: a ticket and a second one, each with its steps. The mint track runs along both steppers, the steps turning done as it passes; the current step takes the orange ring; the timeline below fills a sixteenth apart, newest first.',
 			sound: 'A rising tick per step passed, a pluck on the ring, soft ticks as the timeline fills.',
-			draw: win(statusUI, CAPTIONS.status),
+			draw: onPage(statusUI, CAPTIONS.status),
 		},
 		{
 			id: 'actions',
 			title: 'Open tickets, add files, pay invoices',
 			caption: CAPTIONS.actions,
 			source: 'Portaliq openspec changes contribution-pay-screen (pay from the row), inbox-reply-with-attachments (add a file), positioning usp-self-service-corrections; Ruben, round 29 scene 3',
-			motion: 'Technique #9: the portal\'s head holds while the page steps down into three cards. The orange ring moves card to card, a beat apart: on the product it opens a ticket (the button turns into the ticket chip), on the case a file drops into its slot, on the invoice Pay presses and the row turns paid.',
+			motion: 'Technique #9: the portal page holds while the page under its head steps down into three cards. The orange ring moves card to card, a beat apart: on the product it opens a ticket (the button turns into the ticket chip), on a ticket a file drops into its slot, on the invoice Pay presses and the row turns paid.',
 			sound: 'A dry click per action, a soft thud as the file lands, a pluck as the invoice turns paid.',
-			draw: win(actionsUI, CAPTIONS.actions),
+			draw: onPage(actionsUI, CAPTIONS.actions),
 		},
 		{
 			id: 'inbox',
 			title: 'Every mail, letter and chat in one inbox',
 			caption: CAPTIONS.inbox,
 			source: 'Portaliq positioning sp-unified-inbox ("Every message about you lands in one inbox, with an alert."); Ruben, round 29 scene 4',
-			motion: 'The whip lands on the inbox: the channel filter on top, the messages landing one by one from the bottom up (a letter, mails, a chat, each with its channel mark; mail and chat in Nextcloud blue), the newest, a letter, ringed; it opens beside the list.',
+			motion: 'The whip lands on the inbox page: the channel filter on top, the messages landing one by one from the bottom up (a letter, mails, a chat, each with its channel mark; mail and chat in Nextcloud blue), the newest, a letter, ringed; it opens beside the list.',
 			sound: 'A tick per message, a pluck as the letter opens.',
-			draw: win(inboxUI, CAPTIONS.inbox),
+			draw: onPage(inboxUI, CAPTIONS.inbox),
 		},
 		{
 			id: 'profile',
-			title: 'Update your own details',
+			title: 'Clients update their address and bank info',
 			caption: CAPTIONS.profile,
 			source: 'Portaliq openspec change identity-profile-page (see and change your own details); positioning usp-self-service-corrections; Ruben, round 29 scene 5 (address, payment information)',
-			motion: 'The details arrive behind the stepped hexes. The address field opens (its edge turns orange), the old value leaves upward and the new one types on, and its pill turns mint; the orange moves to the bank account, which changes the same way.',
+			motion: 'The details page arrives behind the stepped hexes. The address field opens (its edge turns orange), the old value leaves upward and the new one types on, and its pill turns mint; the orange moves to the bank account, which changes the same way.',
 			sound: 'Key ticks under each new value, a pluck as each saves.',
-			draw: win(profileUI, CAPTIONS.profile),
+			draw: onPage(profileUI, CAPTIONS.profile),
 		},
 		{
 			id: 'mobile',
 			title: 'Everything works on their phone',
 			caption: CAPTIONS.mobile,
 			source: 'The customer board (round 7): the tenant\'s phone with the portal in house style; Portaliq positioning sp-case-status-tracking; Ruben, round 29 scene 6',
-			motion: 'Match cut: the portal window\'s white page shrinks into the phone\'s screen. The same portal on the phone: the head fixed, the page scrolls through the overview to the invoice that is due; a tap (the orange ring) on Pay and it turns paid. Out: the phone lifts away upward.',
-			sound: 'A soft whoosh as the window shrinks, a hiss under the scroll, a dry click on the tap.',
+			motion: 'Match cut: the portal page shrinks into the phone\'s screen. The same portal on the phone: the head fixed, the page scrolls through the overview to the invoice that is due; a tap (the orange ring) on Pay and it turns paid. Out: the phone lifts away upward.',
+			sound: 'A soft whoosh as the page shrinks, a hiss under the scroll, a dry click on the tap.',
 			draw: (ctx) => { chrome(ctx, { text: CAPTIONS.mobile, app: 'portaliq' }); phoneUI(ctx.g) },
-		},
-		{
-			id: 'builder',
-			title: 'Design your own portal block by block',
-			caption: CAPTIONS.builder,
-			source: 'Ruben, round 29 scene 7: a grid page builder, design your own custom portal for citizens and clients',
-			motion: 'The builder rises in: the palette of blocks on the left, the dotted six-column grid on the right. Blocks are dragged across one a beat (the head, a cases list, an invoices list, a text block, a form) and snap into their cells, each target lighting up as its block flies; a portal page assembles. The form block, last, takes the orange ring.',
-			sound: 'A soft whoosh per drag, a dry click as each block snaps in, a pluck on the ring.',
-			draw: win(builderUI, CAPTIONS.builder),
 		},
 		{
 			id: 'forms',
 			title: 'Ask with Forms, answers land in Tables',
 			caption: CAPTIONS.forms,
-			source: 'Ruben, round 29 scene 8: Nextcloud Forms and Nextcloud Tables collect questions and data from residents and clients. Glyphs: Forms img/forms.svg, Tables img/app.svg (both AGPL-3.0, Nextcloud)',
-			motion: 'Out of the zoom into the form block: the Forms form on the left under its blue head, the Tables table on the right. The answers type on, Submit presses, the answer travels as a row chip across to the table, the rows step down and it lands as the new top row, its cells filling left to right; the new row takes the orange ring. The body ends here on the bar line.',
-			sound: 'Key ticks under the answers, a dry click on Submit, a whoosh under the travel, ticks as the cells fill, a pluck on the ring.',
-			draw: win(formsUI, CAPTIONS.forms),
+			source: 'Ruben, round 29 scene 8 and round 29b: a Nextcloud Forms form on the portal page collects from clients; the answers land in Nextcloud Tables, inside Nextcloud. Glyphs: Forms img/forms.svg, Tables img/app.svg (both AGPL-3.0, Nextcloud)',
+			motion: 'A vertical whip brings in two screens: Tables in its Nextcloud window behind, and in front, on the organisation\'s own page, the Forms form. The answers type on, Submit presses, the answer travels as a row chip across to the table, the rows step down and it lands as the new top row, its cells filling left to right; the new row takes the orange ring. The body ends here on the bar line.',
+			sound: 'A whoosh as the screens rise, key ticks under the answers, a dry click on Submit, a whoosh under the travel, ticks as the cells fill, a pluck on the ring.',
+			draw: (ctx) => { chrome(ctx, { text: CAPTIONS.forms, app: 'portaliq', captionOpts: { accent2: C.nextcloudCyan } }); collectScene(ctx.g) },
 		},
 	],
 }

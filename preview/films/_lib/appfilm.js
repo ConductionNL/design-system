@@ -129,18 +129,18 @@ export const PLANS = {
 		{ slot: 'outro', layer: 'brand', from: 47, to: 56, maxWords: 7 },
 	],
 	/**
-	 * Eight moments on a 20-bar body (80 beats), Round 29 (the one Portaliq film): hook 10, seven app
+	 * Eight moments on a 20-bar body (80 beats), Round 29 (the one Portaliq film, round 29b order): hook 10, seven app
 	 * scenes of 8 or 10 beats and the outro (the promise, moved first by promiseFirst) 8 beats. The
 	 * scenes that carry three actions, a page being built or a form feeding a table get the longer slots.
 	 */
 	7: [
 		{ slot: 'hook', layer: 'app', from: 0, to: 10, maxWords: 8 },
-		{ slot: 'proof', index: 0, layer: 'app', from: 10, to: 18, maxWords: 8 },
-		{ slot: 'proof', index: 1, layer: 'app', from: 18, to: 28, maxWords: 8 },
-		{ slot: 'proof', index: 2, layer: 'app', from: 28, to: 36, maxWords: 8 },
-		{ slot: 'proof', index: 3, layer: 'app', from: 36, to: 44, maxWords: 8 },
-		{ slot: 'proof', index: 4, layer: 'app', from: 44, to: 52, maxWords: 8 },
-		{ slot: 'proof', index: 5, layer: 'app', from: 52, to: 62, maxWords: 8 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 10, to: 20, maxWords: 8 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 20, to: 28, maxWords: 8 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 28, to: 38, maxWords: 8 },
+		{ slot: 'proof', index: 3, layer: 'app', from: 38, to: 46, maxWords: 8 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 46, to: 54, maxWords: 8 },
+		{ slot: 'proof', index: 5, layer: 'app', from: 54, to: 62, maxWords: 8 },
 		{ slot: 'proof', index: 6, layer: 'app', from: 62, to: 72, maxWords: 8 },
 		{ slot: 'outro', layer: 'brand', from: 72, to: 80, maxWords: 8 },
 	],

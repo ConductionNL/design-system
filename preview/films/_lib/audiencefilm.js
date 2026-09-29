@@ -282,7 +282,7 @@ function withCurrent(boards, content) {
 				anchors[i] = [key.x, key.y]
 				const from = i === 0 ? CURRENT.origin : (anchors[i - 1] || CURRENT.origin)
 				const to = landing(key, from)
-				boardCurrent(ctx.g, { from, to, element: key, headColor: C.nextcloudCyan })
+				// Round 28 (ds-tk-film): the current is retired; the key element is still measured, no wire is drawn
 			}
 		}
 	})

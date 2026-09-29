@@ -13,7 +13,7 @@
  *            its CSS variable, swatch, hex field and reset): "Adjust 53 design tokens"
  *   scene 4  share your templates through the store (Round 21), in the Nextcloud app store's look
  *   scene 5  for Dutch organisations: the real "NL Design System Theme" section, its design token set
- *            list and the custom token set upload: "Bring your NL Design tokens along" (replaces the
+ *            list and the custom token set upload: "Bring your NL Design tokens" (replaces the
  *            old organisation-picker hook; takes the general slot's time)
  *   No data-layer scene (Round 22).
  *
@@ -38,29 +38,31 @@ const T = (g, text, x, y, size, o = {}) => textBlock(g, text, { x, y, size, weig
 /* ---------- the story: word art ---------- */
 
 /**
- * Round 27c: the story sits on the opening's own field and every hex is a cell of that grid, at its size.
- * The three things you pick yourself are three cells turned over into the brand's own tones (no off-palette
- * colours); the section title is "Ownership", never the app name.
+ * Round 28b: the story is three lines of word art under the section title "Ownership is a style":
+ * "You pick your car's colour", "You choose your clothing", then the question "Why not design your
+ * workspace?", landing in orange. It sits on the opening's own field; every hex is a cell of that one grid,
+ * at its size (Round 27c/28c). The car and the clothing each turn a cell over into a brand tone; the third
+ * cell turns over into stock Nextcloud blue with the question: the workspace nobody designed.
  */
-export const STORY_CELLS = { a: [4, -1], b: [4, 0], c: [3, 1] } // car, house, colours; c becomes the workspace
+export const STORY_CELLS = { a: [5, -1], b: [4, 0], c: [4, 1] } // car, clothing, the workspace
 export const STORY_FILLS = { a: C.cobalt300, b: C.cobalt200, c: C.white }
 const cellHex = (g, x, y, fill, R0) => el('path', { d: hexPath(x, y, R0, R0 * 0.068), fill }, g)
+const STORY_TITLE = 'Ownership is a style'
 
-/** Story 1: three everyday things you style yourself; the last word is the scene's one orange. */
+/** Story 1: the two things you already choose yourself, two lines of word art; a cell turns over with each. */
 function storyOne(ctx) {
 	const g = el('g', {}, ctx.g)
 	const look = (q, r, info) => {
-		for (const k of ['a', 'b', 'c']) if (info.k === STORY_CELLS[k].join()) return { draw: (gg, x, y) => cellHex(gg, x, y, STORY_FILLS[k], 150) }
+		for (const k of ['a', 'b']) if (info.k === STORY_CELLS[k].join()) return { draw: (gg, x, y) => cellHex(gg, x, y, STORY_FILLS[k], 150) }
 		return undefined
 	}
 	drawField(g, CAM_HO, look)
-	appMark(g, 'Ownership')
-	T(g, 'Your car,', 120, 540, 150, { fill: C.white, tracking: -0.03 })
-	T(g, 'your house,', 300, 700, 150, { fill: C.white, tracking: -0.03 })
-	T(g, 'your colours', 120, 885, 190, { fill: C.orange, tracking: -0.03 })
+	appMark(g, STORY_TITLE)
+	T(g, 'You pick your car\'s colour', 120, 500, 100, { fill: C.white, tracking: -0.03 })
+	T(g, 'You choose your clothing', 120, 640, 100, { fill: C.white, tracking: -0.03 })
 }
 
-/** Story 2: the camera has slid right; the colours cell has turned over into stock Nextcloud blue, the same for everyone. */
+/** Story 2: the camera has slid right; the third cell has turned over into stock Nextcloud blue; the question lands in orange. */
 export const S2_CAM = camOn(...cellXY(...STORY_CELLS.c), 1620, 300, 1.0)
 function storyTwo(ctx) {
 	const g = el('g', {}, ctx.g)
@@ -70,9 +72,9 @@ function storyTwo(ctx) {
 		use(gg, 'nextcloud-logo', x - w / 2, y - w * 0.25, w, w * 0.5, C.white)
 	} } : undefined)
 	drawField(g, S2_CAM, look)
-	appMark(g, 'Ownership')
-	T(g, 'Your workspace,', 120, 600, 150, { fill: C.white, tracking: -0.03 })
-	textBlock(g, 'not *your* *style?*', { x: 120, y: 860, size: 180, weight: 700, fill: C.white, accent: C.orange, tracking: -0.03, clip: false })
+	appMark(g, STORY_TITLE)
+	T(g, 'Why not design', 120, 620, 150, { fill: C.orange, tracking: -0.03 })
+	T(g, 'your workspace?', 120, 790, 150, { fill: C.orange, tracking: -0.03 })
 }
 
 /* ---------- scene 3: the real token editor ---------- */
@@ -223,34 +225,33 @@ const sectioned = (fn, title) => (ctx) => {
 const content = {
 	app: 'thematiq',
 	// Round 27c: section titles over the captions, never the app name (the story frames draw 'Ownership' themselves)
-	sections: { promise: 'Ownership', hook: 'Ownership', tokens: 'Design tokens', store: 'Store', 'general-dataLayer': 'NL Design System' },
+	sections: { promise: 'Ownership is a style', hook: 'Ownership is a style', tokens: 'Design tokens', store: 'Store', 'general-dataLayer': 'NL Design System' },
 	// Round 26: every hand-off is designed; the film (thematiq/film.js) plays them in the one take
 	transitions: {
-		hook: { type: 'match', note: 'the colours cell stays on its grid cell while the camera slides right and turns over into the stock Nextcloud workspace: your colour becomes everyone\'s blue' },
+		hook: { type: 'match', note: 'the third story cell stays on its grid cell while the camera slides right and turns over into the stock Nextcloud workspace as the question lands' },
 		tokens: { type: 'zoom', note: 'the push into the workspace cell: its blue drains into the ground and the token editor is inside it' },
 		store: { type: 'zoom', note: 'zoom-through the house-colour swatch until it fills the frame; out of the same green in the store\'s template card' },
 		'general-dataLayer': { type: 'whip', note: 'a seven-frame whip-pan to the next cell of the row, the NL Design System screen' },
 	},
 	// Round 24: the current's key elements where the orange is word art (the wire must not cross the words):
 	// story 1 lands on the forest colour cell's left point, story 2 on the stock Nextcloud hex's.
-	anchors: { promise: [1395, 743], hook: [1526, 300] },
 	audience: { slug: 'government', name: 'Government and brands', persona: 'The house-style coordinator of a municipality (Sanne Willems) and the Rijkshuisstijl programme manager (Bram de Groot); shared-service platform admins (Youssef El Idrissi) and a company\'s head of marketing (Iris Bakker) folded in (Round 20: one Thematiq film)' },
-	promise: 'Your car,\nyour house,\nyour colours',
+	promise: 'You pick your car\'s colour\nYou choose your clothing',
 	promiseLine: 'Do you really own it if you cannot style it your way? Thematiq makes Nextcloud yours: your tokens, your templates, your NL Design house style',
 	title: 'Thematiq',
 	record: { one: 'house style', many: 'house styles' },
-	logline: 'A small story about ownership: you pick your car\'s colour and your house\'s, so why not your workspace\'s? Then the answer on the real screens: adjust 53 design tokens, share your templates through the store, and bring the NL Design tokens your organisation already has.',
+	logline: 'Ownership is a style: you pick your car\'s colour, you choose your clothing, so why not design your workspace? Then the answer on the real screens: adjust 53 design tokens, share your templates through the store, and bring the NL Design tokens your organisation already has.',
 	references: REFS,
 	techniques: ['#2 sentence build as word art (the story)', '#3 grid-cell ripple (token rows, store cards)', '#9 text-swap on a held diagram (the token set list, the upload)'],
 	neighbours: ['launchpad'],
 	builtOnApps: [],
 	hook: {
-		title: 'Story 2: Your workspace, not your style?',
-		caption: 'Your workspace,\nnot your style?',
+		title: 'Story 2: Why not design your workspace?',
+		caption: 'Why not design\nyour workspace?',
 		ui: { drawUI: () => {}, tagFill: 'cobalt' },
-		source: 'Round 22 (Ruben): "do you really own it if you can\'t style it your way?" Story research in positioning-tk.md (Round 22): psychological ownership, control makes it feel yours (Pierce, Kostova and Dirks 2001, 2003).',
-		motion: 'Word art, the story\'s turn. Straight out of story 1 the three colour hexes step off on 16ths; "Your workspace," slams in at 150 px one word per sixteenth while a single Nextcloud-blue hex with the Nextcloud mark lands top right on ease.brand: the stock workspace, the same for everyone. On beat 3 "not your style?" slams in at 180 px, "your style?" in orange (the scene\'s one orange). Holds; out: the hex shrinks into the token editor\'s swatch (match cut).',
-		sound: 'A low thud under the Nextcloud hex, a hard tick per word, a short silence before "not your style?".',
+		source: 'Round 28b (Ruben): "Ownership is a style"; the question lands in orange. Research in positioning-tk.md (Round 22): psychological ownership, control makes it feel yours (Pierce, Kostova and Dirks 2001, 2003).',
+		motion: 'Word art, the story\'s turn. The two lines of story 1 have left; the camera has slid right and the third cell turns over into stock Nextcloud blue with the Nextcloud mark, the workspace nobody designed. "Why not design" and "your workspace?" slam in at 150 px one word at a time, in orange (the scene\'s one orange), and hold. Out: the push into the blue cell.',
+		sound: 'A dry click as the cell turns over, a hard tick per word, an impact under "workspace?".',
 	},
 	proofs: [
 		{
@@ -274,14 +275,14 @@ const content = {
 	],
 	general: {
 		module: 'dataLayer',
-		title: 'Bring your NL Design tokens along',
-		caption: 'Bring your NL Design\ntokens along',
+		title: 'Bring your NL Design tokens',
+		caption: 'Bring your\nNL Design tokens',
 		source: 'Real screen: NL Design System Theme (docs/img/admin-nl-design-panel.png, guide-dropdown-open.png; templates/settings/admin.php): "Select a Dutch government design token set as a base", the Design token set list, and Custom token sets: "Upload your own house style as a token set, either as an NL Design CSS file (--nldesign-* variables) or a W3C Design Tokens JSON file." Specs nl-design, token-sets, custom-token-sets.',
 		motion: 'For Dutch organisations (Round 22; replaces the old organisation-picker hook). Hard cut on the beat to the real "NL Design System Theme" section, its small "Dutch government" label top right. Technique #9, text-swap on a held diagram: the Design token set list opens and the selection steps down it; beside it the Custom token sets upload fills in its name and file, and on beat 3 "Choose file and upload" takes the orange ring; the imported set drops into the list below with a mint pill. BODY END: holds its caption to four frames before the bar line; its cards step down and the app tag travels into Built on Nextcloud.',
 		params: {},
 		sound: 'A tick per list step, a soft paper slide as the file goes in, a click on upload, a pluck as the set lands.',
 	},
-	promiseMotion: 'Round 22: the question becomes a small story in word art (story 1 of 2). Straight after the opening\'s handover, on its plain field, "Thematiq" sits small as the chapter mark and technique #2 builds the words large and expressive, one word per sixteenth: "Your car," at 150 px, "your house," stepped in to the right, and "your colours" at 190 px in orange (the scene\'s one orange), while three solid colour hexes (lavender, mint, forest) pop in on the right, one per line. Holds to four frames before beat 9, then the story turns.',
+	promiseMotion: 'Round 28b: the story in word art (story 1 of 2) under the section title "Ownership is a style". Straight after the opening\'s handover, on its field, "You pick your car\'s colour" builds one word every two frames at 100 px, and a cell up right turns over into cobalt-300 as "colour" lands; "You choose your clothing" follows and a second cell turns over into cobalt-200. The card holds its full reading time (nine words, 3.6 s), then leaves upward while the camera slides right.',
 	promiseSound: 'The body\'s bed enters gently under the story (pad and offbeat bass, no stinger): a soft tick per word, a pluck per colour hex.',
 }
 
@@ -289,7 +290,7 @@ const film = audienceFilm(content)
 // Round 22: the two story cards are word art, and the NL Design import takes the general slot's time
 // as an app scene (there is no data-layer scene in this film).
 const B = (id) => film.boards.find((b) => b.id === id)
-Object.assign(B('promise'), { title: 'Story 1: Your car, your house, your colours', drawBase: storyOne })
+Object.assign(B('promise'), { title: 'Story 1: You pick your car\'s colour, you choose your clothing', drawBase: storyOne })
 Object.assign(B('hook'), { drawBase: storyTwo })
-Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: sectioned((ctx) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your NL Design\ntokens along', drawUI: nldesignUI, tagFill: 'cobalt' }), 'NL Design System') })
+Object.assign(B('general-dataLayer'), { id: 'nldesign', layer: 'app', module: 'proof', drawBase: sectioned((ctx) => FRAMES.hook(ctx, { app: 'thematiq', caption: 'Bring your\nNL Design tokens', drawUI: nldesignUI, tagFill: 'cobalt' }), 'NL Design System') })
 export const { meta, boards } = film

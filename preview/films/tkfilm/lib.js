@@ -62,7 +62,7 @@ export function ghostOpacity(sx, sy) {
  * Draws every cell visible under camera c. look(q, r, info) returns null (skip), or
  * { fill, opacity, draw(g, wx, wy) } for a special cell. Empty cells are the ghost field.
  */
-export function drawField(parent, c, look, { reach = 0, fill = C.cobalt600 } = {}) {
+export function drawField(parent, c, look, { reach = 0, fill = C.cobalt600, solid = 0 } = {}) {
 	const g = el('g', { transform: worldTf(c) }, parent)
 	const x0 = c.x + (0 - c.px) / c.z, x1 = c.x + (1920 - c.px) / c.z
 	const y0 = c.y + (0 - c.py) / c.z, y1 = c.y + (1080 - c.py) / c.z
@@ -77,7 +77,8 @@ export function drawField(parent, c, look, { reach = 0, fill = C.cobalt600 } = {
 			const lk = look ? look(q, r, info) : undefined
 			if (lk === null) continue
 			if (lk && lk.draw) { specials.push([lk, wx, wy]); continue }
-			const o = lk?.opacity ?? ghostOpacity(sx, sy)
+			// Round 28c: ONE solid grid; `solid` blends the opening's shaded handover field into a clear, solid one
+			const o = lk?.opacity ?? lerp(ghostOpacity(sx, sy), 1, solid)
 			if (o <= 0.004) continue
 			el('path', { d: hexPath(wx, wy, R, ROUND), fill: lk?.fill ?? fill, 'fill-opacity': o.toFixed(3) }, g)
 		}

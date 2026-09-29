@@ -1,7 +1,7 @@
 /**
  * The Keepiq film (Round 23: the portfolio animation pass; storyboard keepiq/boards/dev-teams, Round 25b
  * ownership story). 1920 x 1080, 24 fps, 20 bars at 128 BPM, 37.5 s. The sister of the Thematiq film:
- * the same one-take honeycomb, the same word-art language, the same current.
+ * the same one-take honeycomb (one solid grid, Round 28c), the same word-art language.
  *
  *   0 to 5.63 s       the shared Conduction opening, handing over on its field
  *   5.63 to 24.38 s   the body, ONE take (tkfilm/lib.js):
@@ -10,21 +10,20 @@
  *                     story 2: the lock lifts out of the house (the cell left as a dashed outline) and
  *                       travels up and out of the honeycomb into a plain outside box that pops in to take
  *                       it: "Kept by someone else's app?";
- *                     the answer: a current runs from the box back down to the house, the lock comes home
- *                       and the cell turns into Keepiq's own; the push INTO it: the request, the fill-in
- *                       link powered on, the current carrying it out to the partner's box, the masked
- *                       value typing itself in there and running back into the vault;
- *                     a fly to the next cell: a link that vanishes after one view, the recipient's card
- *                       opening once and then breaking into small hexes that step off;
- *                     a fly to the usage dashboard: the day bars growing, the uses rippling in, the
- *                       newest (by an app) powered on;
- *                     the pull back: the house cell turns orange exactly where Built on's lead lands,
- *                       a hard cut on the bar;
+ *                     the answer: the lock flies back down out of the box into its house, and the cell turns
+ *                       over into Keepiq's own; the push INTO it: the request, the fill-in link typed in and
+ *                       ringed, the partner's page filling in the masked value;
+ *                     a whip-pan to the next cell: a link that vanishes after one view, the recipient's card
+ *                       opening once and then turning away edge-on;
+ *                     the pull back, a wave of grid cells turning over, and the push into the usage dashboard:
+ *                       the day bars growing, the uses rippling in, the newest (by an app) ringed;
+ *                     the pull back: the house cell turns over into orange exactly where Built on's lead
+ *                       flips in, a hard cut on the bar;
  *   24.38 to 31.88 s  the shared Built on Nextcloud piece (closing.js, 4 bars)
  *   31.88 to 37.5 s   the shared install board (closing.js, 3 bars)
  *
- * No competitor is named: someone else's app is a plain outside box. Accents are clicks; the current sounds
- * as charge, crackle, arc and click. No bell.
+ * No competitor is named: someone else's app is a plain outside box. Accents are clicks. Round 28: no current
+ * anywhere, no wire, no electric sound. No bell.
  */
 import { Film, loadFonts } from '../_lib/stage.js'
 import { FONTS } from '../_lib/brand.js'
@@ -38,7 +37,7 @@ import { caption } from '../connext/lib/type.js'
 import { partnerRequestUI, onceLinkUI, usageContent, outsideBox } from './boards/dev-teams/board.js'
 import {
 	C, el, textBlock, ease, inv, clamp, lerp, mix, spring, hexPath, pop, F, R, ROUND, cellXY, toScreen,
-	CAM_HO, HO_RATE, camOn, drawField, drawFar, drawNear, screenIn, drawScreen, windowTag, current, flip, flipIn, flipTf, FLIP,
+	CAM_HO, HO_RATE, camOn, drawField, screenIn, drawScreen, windowTag, flip, flipIn, flipTf, FLIP,
 } from '../tkfilm/lib.js'
 
 const APP = 'keepiq'
@@ -100,7 +99,7 @@ const T = {
 	ticks: [B(16.6), B(16.6) + S16],
 	link: [B(17), B(17.8)],
 	ring3: B(17.8),
-	out: [B(18.1), B(18.9)], // the current out to the partner with the link
+	out: [B(18.1), B(18.9)], // the link goes out to the partner (Round 28: no wire drawn)
 	fill: [B(19), B(20.2)], // the partner types the value
 	back: [B(20.4), B(21.3)], // the value back into the vault
 	stored: B(21.3),
@@ -193,14 +192,12 @@ const MOCK = { x: 310, top: 145, width: 987.5 }
 
 /* ============================================================ the world scene */
 
-const NEAR = [[1400, -800, 520], [2800, 200, 640], [500, 1000, 460], [3600, -800, 560]]
 
 film.scene('world', OPEN, T_BUILT, (ctx) => {
 	const layer = el('g', { 'data-layer': 'world' }, ctx.g)
 	return (t) => {
 		layer.replaceChildren()
 		const cam = camera(t)
-		drawFar(layer, cam, { alpha: 0.5 * clamp(1.4 - cam.z / 8, 0.25, 1) })
 		const look = (qq, rr, info) => {
 			const k = info.k
 			if (k === CELL.house.join() && t >= T.house) return { draw: (g, x, y) => {
@@ -233,8 +230,6 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 				el('path', { d: hexPath(x, y, R, ROUND), fill: C.cobalt600 }, g)
 				const ug = el('g', { transform: `translate(${U_AT[0]} ${U_AT[1]}) scale(${US}) translate(-120 -640)` }, g)
 				usageContent(ug, { bars: ease.outCubic(inv(...T.bars, t)), rows: clamp((t - T.rows) / S16 + 1, 0, 5), ring: t < T.ring5 ? 0 : 1, tag: flipIn(t, T.bars[0]) })
-				// the current into the newest use, from the day bars' today (local coords)
-				current(ug, [[800, 720], [800, 934], [794, 934]], ease.inOutCubic(inv(...T.cur5, t)), { w: 5, spark: 11 })
 			} }
 			// Round 27c: once to usage is a wave of cells turning over on the grid itself, from the link's cell to the dashboard's
 			if (t >= T.wave[0] && t < T.wave[1] + FLIP * 2) {
@@ -255,17 +250,14 @@ film.scene('world', OPEN, T_BUILT, (ctx) => {
 			}
 			return undefined
 		}
-		const wg = drawField(layer, cam, look)
-		// story 2: the box, the lock in flight, the current home
+		const wg = drawField(layer, cam, look, { solid: ease.inOutCubic(inv(OPEN, OPEN + 0.6, t)) }) // Round 28c: one clear, solid grid, no second layer
+		// story 2: the box, the lock in flight, and home again
 		if (t >= T.box && t < T.home + 0.4) {
 			const s = t < T.home + 0.1 ? pop(t - T.box, { freq: 2.8, zeta: 0.55 }) : 1 - ease.inCubic(inv(T.home + 0.1, T.home + 0.35, t))
 			const bg = el('g', { transform: `translate(${BOX.x} ${BOX.y}) scale(${(1 / CAM_HO.z).toFixed(4)})` }, wg)
 			outsideBox(bg, 0, 0, 320, 250, { s, lock: t >= T.lift[1] && t < T.ret[0] })
 		}
 		lockInFlight(wg, t)
-		const fade = (a) => 1 - inv(a, a + 0.3, t)
-		const wire = (pts, span, o) => { const f = fade(span[1] + 0.05); if (f <= 0) return; const cg = el('g', { opacity: f.toFixed(3) }, wg); current(cg, pts, ease.inOutCubic(inv(...span, t)), o) }
-		drawNear(layer, cam, NEAR, { alpha: 0.07 * clamp((2.2 - cam.z) / 1.2) })
 	}
 }, { post: 0.001 })
 
@@ -368,18 +360,14 @@ cue(T.tag3, 'pluck', { freq: 587.33, gain: 0.2, pan: 0.2 })
 T.ticks.forEach((t, i) => cue(t, 'tick', { freq: [1318.51, 1479.98][i], gain: 0.12, pan: 0.4 }))
 for (let i = 0; i < 6; i++) cue(lerp(...T.link, i / 6), 'tick', { freq: 2637, gain: 0.05, decay: 0.03, pan: 0.3 })
 cue(T.ring3, 'click', { gain: 0.3, freq: 2700, seed: 125, dry: true, pan: 0.3 })
-cue(T.out[0], 'crackle', { dur: T.out[1] - T.out[0], density: 60, gain: 0.06, pan: -0.1 })
-cue(T.out[1], 'arc', { gain: 0.1, pan: -0.2 })
 cue(T.out[1], 'click', { gain: 0.22, freq: 2900, seed: 126, dry: true, pan: -0.2 })
 for (let i = 0; i < 8; i++) cue(lerp(...T.fill, i / 8), 'tick', { freq: 2349.32, gain: 0.05, decay: 0.03, pan: -0.3 })
-cue(T.back[0], 'crackle', { dur: T.back[1] - T.back[0], density: 55, gain: 0.06, pan: 0.2 })
 cue(T.stored, 'click', { gain: 0.3, freq: 2600, seed: 127, dry: true, pan: 0.4 })
 cue(T.stored + 0.03, 'pluck', { freq: 880, gain: 0.2, pan: 0.4 })
 // scene 4
 cue(T.whip[0] - 0.04, 'whoosh', { dur: 0.36, from: 1200, to: 7000, panFrom: -0.8, panTo: 0.8, gain: 0.26 })
 cue(T.whip[1], 'click', { gain: 0.3, freq: 2400, seed: 128, dry: true, pan: 0.5 })
 cue(T.tag4, 'pluck', { freq: 659.26, gain: 0.18, pan: 0.2 })
-cue(T.views, 'arc', { gain: 0.1, pan: 0.1 })
 cue(T.views, 'click', { gain: 0.32, freq: 2600, seed: 129, dry: true, pan: 0.1 })
 cue(T.open, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.6 })
 cue(T.burn[0], 'whoosh', { dur: 0.4, from: 5200, to: 900, panFrom: 0.6, panTo: 0.4, gain: 0.1, q: 2.5 })
@@ -390,8 +378,6 @@ for (let i = 0; i < 8; i++) cue(lerp(T.wave[0], T.wave[1] - FLIP, i / 8), 'click
 cue(T.in[0], 'whoosh', { dur: 0.9, from: 400, to: 4600, panFrom: -0.2, panTo: 0.3, gain: 0.2 })
 for (let i = 0; i < 6; i++) cue(lerp(...T.bars, i / 6), 'tick', { freq: 1174.66 * Math.pow(2, i / 12 * 2), gain: 0.07, pan: 0.3 })
 for (let i = 0; i < 5; i++) cue(T.rows + i * S16, 'tick', { freq: [1318.51, 1479.98, 1567.98, 1760, 1975.53][i], gain: 0.09, pan: 0.2 })
-cue(T.cur5[0], 'crackle', { dur: T.cur5[1] - T.cur5[0], density: 55, gain: 0.06, pan: 0.4 })
-cue(T.ring5, 'arc', { gain: 0.1, pan: 0.3 })
 cue(T.ring5, 'click', { gain: 0.3, freq: 2800, seed: 130, dry: true, pan: 0.3 })
 cue(T.pull[0] - 0.05, 'whoosh', { dur: 1.1, from: 3200, to: 300, panFrom: 0.3, panTo: -0.2, gain: 0.2 })
 cue(T.appOn, 'pluck', { freq: 587.33, gain: 0.24, pan: 0.4 })

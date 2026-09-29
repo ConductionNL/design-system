@@ -95,11 +95,9 @@ export function partnerRequestUI(w, geom, st = {}) {
 	panel(w, x + 20, top + 400, bw - 40, 120, u)
 	for (let i = 0; i < Math.min(8, Math.floor(fill)); i++) circle(w, x + 50 + i * 20, top + 442, 6, C.cobalt900)
 	rect(w, x + 40, top + 470, 90, 28, C.cobalt, 3 * u)
-	// the wire: the fill-in link out, the value back into the vault (straight, square corners)
 	// the wire (Round 24 current): out to the partner with the link, back with the value
 	const rx0 = x + bw + 60
-	current(w, [[rx0 + 30, top + 528], [rx0 - 30, top + 528], [rx0 - 30, top + 370], [x + bw, top + 370]], wire, { w: 3 * u, spark: 10, stroke: C.cobalt300 })
-	if (back > 0 && back < 1) current(w, [[x + bw, top + 390], [rx0 - 14, top + 390], [rx0 - 14, top + 130], [rx0, top + 130]], back, { w: 3 * u, spark: 10, stroke: C.mint300 })
+	// Round 28: no wire; the link is sent and the partner's page opens (wire now only times that)
 	// the request
 	const rx = x + bw + 60, rw = width - bw - 60
 	panel(w, rx, top, rw, 600, u)
@@ -299,7 +297,6 @@ const content = {
 		'general-dataLayer': { type: 'hexWipe', note: 'the camera pulls back and a wave of grid cells turns over from the link\'s cell to the dashboard\'s (cells on the grid, flipping, not screen-space hexes), then pushes in' },
 	},
 	// Round 24: the current's key elements where the orange is word art: the lock cell, then the outside box.
-	anchors: { promise: [1512, 540], hook: [1476, 245] },
 	audience: { slug: 'dev-teams', name: 'IT and software teams', persona: 'The DevOps engineer at a 40-person software vendor (Sanne de Groot) and the municipal system administrator (Bas Kuiper); the head of engineering, the CISO or the information manager buys (Round 20: one Keepiq film)' },
 	promise: 'The key to\nyour own house?',
 	promiseLine: 'Human and machine passwords in one vault, on your own server',

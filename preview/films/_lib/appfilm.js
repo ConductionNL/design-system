@@ -144,6 +144,23 @@ export const PLANS = {
 		{ slot: 'proof', index: 6, layer: 'app', from: 62, to: 72, maxWords: 8 },
 		{ slot: 'outro', layer: 'brand', from: 72, to: 80, maxWords: 8 },
 	],
+	/**
+	 * Nine moments on a 22-bar body (88 beats), Round 29c (the Portaliq film with its login scene): the
+	 * builder (hook) 10, login 8, one view 10, progress 8, actions 10, inbox 8, own details 8, mobile 8,
+	 * collect data 10, and the outro (the promise, moved first by promiseFirst) 8 beats.
+	 */
+	8: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 10, maxWords: 8 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 10, to: 18, maxWords: 8 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 18, to: 28, maxWords: 8 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 28, to: 36, maxWords: 8 },
+		{ slot: 'proof', index: 3, layer: 'app', from: 36, to: 46, maxWords: 8 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 46, to: 54, maxWords: 8 },
+		{ slot: 'proof', index: 5, layer: 'app', from: 54, to: 62, maxWords: 8 },
+		{ slot: 'proof', index: 6, layer: 'app', from: 62, to: 70, maxWords: 8 },
+		{ slot: 'proof', index: 7, layer: 'app', from: 70, to: 80, maxWords: 8 },
+		{ slot: 'outro', layer: 'brand', from: 80, to: 88, maxWords: 8 },
+	],
 	1: [
 		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
 		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 19, maxWords: 8 },
@@ -155,7 +172,7 @@ export const PLANS = {
 /** The plan with times resolved: seconds (frame-snapped), bar.beat labels, and when the caption shows and clears. */
 export function plan(nProofs = 2) {
 	const p = PLANS[nProofs]
-	if (!p) throw new Error(`appfilm: a film has 1, 2, 3, 5 or 7 proof moments, not ${nProofs}`)
+	if (!p) throw new Error(`appfilm: a film has 1, 2, 3, 5, 7 or 8 proof moments, not ${nProofs}`)
 	return p.map((s) => {
 		const start = beatT(s.from)
 		const end = beatT(s.to)

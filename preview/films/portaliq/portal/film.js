@@ -4,21 +4,22 @@
  * preview/films/portaliq/boards/portal). Built on the Dossiq casework film's template.
  *
  *   0 to 5.63 s       the shared Conduction opening (_lib/scenes/opening.js), 3 bars
- *   5.63 to 43.13 s   the body, 20 bars, promise first (the storyboard's times, board.js promiseFirst):
+ *   5.63 to 46.88 s   the body, 22 bars, promise first (the storyboard's times, board.js promiseFirst):
  *                     promise "What if clients (or citizens) did it themselves?", then
  *                     builder, in Nextcloud (in: #1 the orange Portaliq cell opens as a hex),
- *                     overview, the first client page (in: the canvas grows into the live page, #10 tiles merge),
+ *                     login, Round 29c (in: the canvas grows into the portal's own login page; the client signs in),
+ *                     overview (in: signed in on the same page, the card lifts, #10 tiles merge),
  *                     status (in: #1 the tickets tile opens as a hex), actions (in: #9 bands on the held page),
  *                     inbox (in: #11 whip), profile (in: #5 stepped hexes), mobile (in: the page shrinks into
  *                     the phone), forms: the form on the portal page, Tables in Nextcloud (in: vertical whip)
- *   43.13 to 50.63 s  the shared closing piece, Built on Nextcloud (the C, the family ring, the re-zoom)
- *   50.63 to 56.25 s  the shared install board (no wire)
+ *   46.88 to 54.38 s  the shared closing piece, Built on Nextcloud (the C, the family ring, the re-zoom)
+ *   54.38 to 60 s     the shared install board (no wire)
  *
  * Round 29b: only the builder and Tables are Nextcloud windows (ncWindow); the pages clients see are
  * standalone web pages (pageFrame), with no Nextcloud chrome and no Portaliq tag.
  * Rules (rounds 26 to 28l): each small mark is the scene's section title; every hex flips in, never
- * pops or scales in; no wire; a used screen is gone when its scene ends. 1920 x 1080, 24 fps, 30 bars
- * at 128 BPM (1350 frames). Every frame is a pure function of time.
+ * pops or scales in; no wire; a used screen is gone when its scene ends. 1920 x 1080, 24 fps, 32 bars
+ * at 128 BPM (1440 frames). Every frame is a pure function of time.
  */
 import { Film, loadFonts, el, textBlock } from '../../_lib/stage.js'
 import { C, FONTS } from '../../_lib/brand.js'
@@ -31,7 +32,7 @@ import { LOOP_ANCHOR } from '../../_lib/scenes/general.js'
 import { promiseFrame } from '../../_lib/audiencefilm.js'
 import { TYPE, rect, appMark, fitCaptionSize } from '../../_lib/ui.js'
 import {
-	overviewUI, statusUI, actionsUI, inboxUI, profileUI, phoneUI, PHONE, builderUI, collectScene, answerChip,
+	loginUI, overviewUI, statusUI, actionsUI, inboxUI, profileUI, phoneUI, PHONE, builderUI, collectScene, answerChip,
 	ncWindow, pageFrame, toStage, WIN, boards as BOARDS,
 } from '../boards/portal/board.js'
 
@@ -39,10 +40,10 @@ const APP = 'portaliq'
 const F = (n) => n / FPS
 const S16 = SPB / 4
 const OPEN = 3 * BAR
-const BODY = 20 * BAR
+const BODY = 22 * BAR
 const BUILT = BUILT_ON_DUR // 4 bars
 const INSTALL = INSTALL_DUR // 3 bars
-const DURATION = OPEN + BODY + BUILT + INSTALL // 56.25 s
+const DURATION = OPEN + BODY + BUILT + INSTALL // 60 s
 const RISE = 0.24
 const EXIT = F(4)
 
@@ -57,10 +58,10 @@ if (Math.abs(bodyAt - OPEN) > 1e-6) console.error(`opening ends at ${bodyAt}, ex
 
 /* ---------- the slots, in film time (from the storyboard, so film and board keep one timing) ---------- */
 const B = Object.fromEntries(BOARDS.map((b) => [b.id, { slot: b.id, start: b.start, end: b.end }]))
-const IDS = ['promise', 'hook', 'overview', 'status', 'actions', 'inbox', 'profile', 'mobile', 'forms']
+const IDS = ['promise', 'hook', 'login', 'overview', 'status', 'actions', 'inbox', 'profile', 'mobile', 'forms']
 const P = IDS.map((k) => B[k])
 if (P.some((s) => !s)) console.error(`missing slots: ${IDS.filter((k) => !B[k]).join(', ')}`)
-const [S_PROMISE, S_BUILDER, S_OVERVIEW, S_STATUS, S_ACTIONS, S_INBOX, S_PROFILE, S_MOBILE, S_FORMS] = P
+const [S_PROMISE, S_BUILDER, S_LOGIN, S_OVERVIEW, S_STATUS, S_ACTIONS, S_INBOX, S_PROFILE, S_MOBILE, S_FORMS] = P
 const WORDS = Object.fromEntries(BOARDS.map((b) => [b.id, b.id === 'promise' ? (b.words || '').split('\n').slice(1).join('\n') : b.words]))
 const SECT = Object.fromEntries(BOARDS.map((b) => [b.id, b.section]))
 const sectionMark = (g, id) => appMark(g, SECT[id] || 'Portal')
@@ -178,62 +179,87 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	cue(t0 + RING, 'pluck', { freq: 1174.66, gain: 0.2, pan: 0.2 })
 }
 
-/* ---------- 2 · overview, the first client page (in: the canvas grows into the live page; #10; out: #1) ---------- */
+/* ---------- 2 · login, Round 29c: the turn to the client's side (in: the built canvas grows into the portal's login page) ---------- */
 {
-	const s = S_OVERVIEW, D = s.end - s.start
-	const cutAt = D - SPB
+	const s = S_LOGIN, D = s.end - s.start
 	const MORPH = F(8)
-	const c = cap('overview', WORDS.overview, s.start + RISE, s.end - F(3))
-	const R = rand(29)
-	const scatter = [0, 1, 2].map(() => ({ dx: (R() - 0.5) * 1000, dy: (R() - 0.3) * 800, d: R() * 0.2 }))
-	const RING_AT = 6 * SPB
-	const ABOUT = [600, 520]
-	let ringMock = null
-	bodyScene('overview', s, (g, u, t) => {
+	const c = cap('login', WORDS.login, s.start + RISE, s.end - F(3))
+	const USER = [0.55, 1.15], PASS = [1.25, 1.8], RING = 1.85, PRESS = 2.15, SIGNED = 2.4, CARD = [2.95, 3.3]
+	bodyScene('login', s, (g, u, t) => {
 		if (u < MORPH) {
-			// The page just built leaves Nextcloud: the canvas grows into the standalone page, its head band with it.
+			// The page just built leaves Nextcloud: the canvas grows into the standalone portal, its head band with it.
 			const [mx, my, mw, mh] = CANVAS || [564, 125, 601, 820]
 			const [sx0, sy0] = toStage(mx, my)
 			const p = ease.inOutCubic(inv(0, MORPH, u))
 			const L = (a, b) => lerp(a, b, p)
-			const px = L(sx0, PAGE_RECT.x), py = L(sy0, PAGE_RECT.y), pw = L(mw * WIN.s, PAGE_RECT.w), ph = L(mh * WIN.s, PAGE_RECT.h)
-			rect(g, px, py, pw, ph, C.white, L(10, PAGE_RECT.r))
-			// The head block (the canvas's first row) becomes the portal's head.
+			rect(g, L(sx0, PAGE_RECT.x), L(sy0, PAGE_RECT.y), L(mw * WIN.s, PAGE_RECT.w), L(mh * WIN.s, PAGE_RECT.h), C.white, L(10, PAGE_RECT.r))
 			const [hx0, hy0] = toStage(mx + 20, my + 24), [hx1, hy1] = toStage(60, 125)
 			rect(g, L(hx0, hx1), L(hy0, hy1), L((mw - 40) * WIN.s, (1165 - 60) * WIN.s), L(110 * WIN.s, 90 * WIN.s), C.cobalt700, 8)
 		} else {
-			const push = 1 + 0.04 * ease.inOutCubic(inv(1.0, cutAt, u))
-			const w = pageFrame(g, {
-				push,
-				about: ABOUT,
-				drawUI: (win, geom) => overviewUI(win, geom, {
-					tile: (i) => {
-						const sc = scatter[i]
-						const p = ease.brand(inv(MORPH + sc.d, MORPH + 0.7 + sc.d, u))
-						return { dx: sc.dx * (1 - p), dy: sc.dy * (1 - p), o: clamp(p * 3) }
-					},
-					ring: ease.brand(inv(RING_AT, RING_AT + 0.25, u)),
+			pageFrame(g, {
+				push: 1 + 0.03 * ease.inOutCubic(inv(MORPH, D, u)),
+				about: [600, 500],
+				drawUI: (win, geom) => loginUI(win, geom, {
+					user: inv(USER[0], USER[1], u),
+					pass: inv(PASS[0], PASS[1], u),
+					ring: u >= CARD[0] ? 0 : ease.brand(inv(RING, RING + 0.2, u)),
+					press: inv(PRESS, PRESS + 0.2, u),
+					signed: inv(SIGNED, SIGNED + 0.25, u),
+					card: 1 - ease.inCubic(inv(CARD[0], CARD[1], u)),
 				}),
 			})
-			if (!ringMock && w.out.ringCentre) ringMock = w.out.ringCentre
-			// Out on the last beat (#1): the ringed tickets tile opens as a hex, the ticket's progress inside.
-			if (u >= cutAt && ringMock) {
-				const [sx, sy] = toStage(ABOUT[0] + (ringMock[0] - ABOUT[0]) * push, ABOUT[1] + (ringMock[1] - ABOUT[1]) * push)
-				hexOpen(g, 'overview-cut', u, cutAt, [sx, sy, 24], C.orange, (inside) => pageFrame(inside, { drawUI: (win, geom) => statusUI(win, geom, { fill: 0, rows: 0, ring: 0 }) }))
-			}
+		}
+		sectionMark(g, 'login')
+		captionAt(g, c.text, t, c.up, c.out)
+	})
+	const t0 = s.start
+	cue(t0, 'whoosh', { dur: MORPH, from: 700, to: 2400, panFrom: 0.4, panTo: 0.1, gain: 0.1 })
+	for (const [a, b] of [USER, PASS]) for (let k = 0; k < 8; k++) cue(t0 + a + (k * (b - a)) / 8, 'tick', { freq: 3100 + (k % 3) * 200, gain: 0.05, decay: 0.02, pan: 0.2 })
+	cue(t0 + PRESS, 'click', { gain: 0.24, freq: 3000, pan: 0.2, seed: 271, dry: true })
+	cue(t0 + SIGNED, 'pluck', { freq: 1318.5, gain: 0.2, pan: 0.4 })
+}
+
+/* ---------- 3 · overview, signed in (in: the login card has lifted, #10 tiles merge; out: #1) ---------- */
+{
+	const s = S_OVERVIEW, D = s.end - s.start
+	const cutAt = D - SPB
+	const c = cap('overview', WORDS.overview, s.start + RISE, s.end - F(3))
+	const R = rand(29)
+	const scatter = [0, 1, 2].map(() => ({ dx: (R() - 0.5) * 1000, dy: (R() - 0.3) * 800, d: R() * 0.2 }))
+	const IN = 0.1
+	const RING_AT = 6 * SPB
+	const ABOUT = [600, 520]
+	let ringMock = null
+	bodyScene('overview', s, (g, u, t) => {
+		const push = 1 + 0.04 * ease.inOutCubic(inv(1.0, cutAt, u))
+		const w = pageFrame(g, {
+			push,
+			about: ABOUT,
+			drawUI: (win, geom) => overviewUI(win, geom, {
+				tile: (i) => {
+					const sc = scatter[i]
+					const p = ease.brand(inv(IN + sc.d, IN + 0.7 + sc.d, u))
+					return { dx: sc.dx * (1 - p), dy: sc.dy * (1 - p), o: clamp(p * 3) }
+				},
+				ring: ease.brand(inv(RING_AT, RING_AT + 0.25, u)),
+			}),
+		})
+		if (!ringMock && w.out.ringCentre) ringMock = w.out.ringCentre
+		// Out on the last beat (#1): the ringed tickets tile opens as a hex, the ticket's progress inside.
+		if (u >= cutAt && ringMock) {
+			const [sx, sy] = toStage(ABOUT[0] + (ringMock[0] - ABOUT[0]) * push, ABOUT[1] + (ringMock[1] - ABOUT[1]) * push)
+			hexOpen(g, 'overview-cut', u, cutAt, [sx, sy, 24], C.orange, (inside) => pageFrame(inside, { drawUI: (win, geom) => statusUI(win, geom, { fill: 0, rows: 0, ring: 0 }) }))
 		}
 		sectionMark(g, 'overview')
 		captionAt(g, c.text, t, c.up, c.out)
 	})
 	const t0 = s.start
-	cue(t0, 'whoosh', { dur: MORPH, from: 700, to: 2400, panFrom: 0.4, panTo: 0.1, gain: 0.1 })
-	cue(t0 + MORPH, 'click', { gain: 0.2, freq: 2800, pan: 0.2, seed: 201, dry: true })
-	scatter.forEach((sc, i) => cue(t0 + MORPH + 0.7 + sc.d, 'tick', { freq: [1318.5, 1480, 1661.2][i], gain: 0.11, pan: -0.3 + i * 0.3 }))
+	scatter.forEach((sc, i) => cue(t0 + IN + 0.7 + sc.d, 'tick', { freq: [1318.5, 1480, 1661.2][i], gain: 0.11, pan: -0.3 + i * 0.3 }))
 	cue(t0 + RING_AT, 'pluck', { freq: 1174.66, gain: 0.22, pan: 0.3 })
 	cue(t0 + cutAt, 'whoosh', { dur: 0.5, from: 400, to: 4200, panFrom: 0.2, panTo: -0.3, gain: 0.16 })
 }
 
-/* ---------- 3 · status: every ticket, step by step (it arrived inside the hex) ---------- */
+/* ---------- 4 · status: every ticket, step by step (it arrived inside the hex) ---------- */
 {
 	const s = S_STATUS, D = s.end - s.start
 	const c = cap('status', WORDS.status, s.start + RISE, s.end - F(3))
@@ -257,7 +283,7 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	ROWS.forEach((d, i) => cue(t0 + d, 'tick', { freq: 2349.3 - i * 110, gain: 0.07, pan: 0.3 }))
 }
 
-/* ---------- 4 · actions: open a ticket, add a file, pay (#9 bands step down on the held page) ---------- */
+/* ---------- 5 · actions: open a ticket, add a file, pay (#9 bands step down on the held page) ---------- */
 {
 	const s = S_ACTIONS, D = s.end - s.start
 	const c = cap('actions', WORDS.actions, s.start + F(1), s.end - F(5))
@@ -301,7 +327,7 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	cue(t0 + D - F(4), 'whoosh', { dur: 0.35, from: 3200, to: 700, panFrom: 0.6, panTo: -0.6, gain: 0.13 })
 }
 
-/* ---------- 5 · inbox: every mail, letter and chat (#11 whip in, #5 stepped hexes out) ---------- */
+/* ---------- 6 · inbox: every mail, letter and chat (#11 whip in, #5 stepped hexes out) ---------- */
 {
 	const s = S_INBOX, D = s.end - s.start
 	const cutAt = D - SPB
@@ -338,7 +364,7 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	;[0, 1, 2, 3].forEach((i) => cue(t0 + cutAt + i * 0.07, 'click', { gain: 0.14, freq: 2400 + i * 300, pan: 0.6 - i * 0.2, seed: 230 + i, dry: true }))
 }
 
-/* ---------- 6 · profile: their own address and bank details ---------- */
+/* ---------- 7 · profile: their own address and bank details ---------- */
 {
 	const s = S_PROFILE, D = s.end - s.start
 	const c = cap('profile', WORDS.profile, s.start + F(1), s.end - F(3))
@@ -365,7 +391,7 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	cue(t0 + SAVE2, 'pluck', { freq: 1567.98, gain: 0.2, pan: 0.3 })
 }
 
-/* ---------- 7 · mobile: the same portal on their phone (in: the page shrinks into the phone) ---------- */
+/* ---------- 8 · mobile: the same portal on their phone (in: the page shrinks into the phone) ---------- */
 {
 	const s = S_MOBILE, D = s.end - s.start
 	const c = cap('mobile', WORDS.mobile, s.start + RISE, s.end - F(5))
@@ -396,7 +422,7 @@ let CANVAS = null // the builder's canvas in mock space, for the match cut into 
 	cue(t0 + D - F(5), 'whoosh', { dur: 0.3, from: 800, to: 3600, panFrom: 0.3, panTo: 0.3, gain: 0.12 })
 }
 
-/* ---------- 8 · forms: the form on the portal page, the answers land in Tables in Nextcloud (in: vertical whip) ---------- */
+/* ---------- 9 · forms: the form on the portal page, the answers land in Tables in Nextcloud (in: vertical whip) ---------- */
 {
 	const s = S_FORMS, D = s.end - s.start
 	const c = cap('forms', WORDS.forms, s.start + RISE, s.end - F(3))
@@ -433,11 +459,12 @@ film.scene('install', T_BUILT + BUILT, DURATION, (ctx) => installScene(ctx, {}),
 /** The bed, in D: silent under the opening, pad from the body, kick and hats under the scenes, thinning for the closing, resolving on D. */
 const Dmaj9 = [50, 54, 61, 64], Bm9 = [47, 54, 57, 61], Gmaj9 = [47, 50, 54, 57], Aadd9 = [49, 52, 57, 59], Fsm7 = [49, 52, 54, 57], Em9 = [50, 54, 55, 59], Gmaj7 = [47, 50, 54, 59], Asus = [50, 52, 57, 59], Dtriad = [50, 54, 57, 62]
 film.music = {
-	bars: 30,
+	bars: 32,
 	chords: [
 		Dtriad, Dtriad, Dtriad, // opening
 		Dmaj9, Bm9, // promise
 		Gmaj9, Aadd9, Gmaj9, // builder
+		Em9, Asus, // login
 		Fsm7, Bm9, // overview
 		Gmaj7, Em9, Aadd9, // status, actions
 		Gmaj9, Aadd9, // actions, inbox
@@ -448,11 +475,11 @@ film.music = {
 		Dmaj9, Bm9, Gmaj9, Aadd9, // built on
 		Gmaj9, Aadd9, Dtriad, // install
 	],
-	bass: [38, 38, 38, 38, 35, 43, 45, 43, 42, 35, 43, 40, 45, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 45, 38, 35, 43, 45, 43, 38],
-	parts: { pad: [[3, 30]], bass: [[4, 29]], kick: [[4, 21]], hat: [[5, 21]], clap: [[6, 20]] },
+	bass: [38, 38, 38, 38, 35, 43, 45, 43, 40, 45, 42, 35, 43, 40, 45, 43, 45, 38, 35, 43, 45, 42, 35, 43, 40, 45, 38, 35, 43, 45, 43, 38],
+	parts: { pad: [[3, 32]], bass: [[4, 31]], kick: [[4, 23]], hat: [[5, 23]], clap: [[6, 22]] },
 	loop: false,
 }
-if (film.music.chords.length !== 30 || film.music.bass.length !== 30) console.error(`music: ${film.music.chords.length} chords, ${film.music.bass.length} bass notes, expected 30`)
+if (film.music.chords.length !== 32 || film.music.bass.length !== 32) console.error(`music: ${film.music.chords.length} chords, ${film.music.bass.length} bass notes, expected 32`)
 
 film.board = { film: 'portaliq-portal', meta: { title: 'Portaliq, one portal your clients run themselves' } }
 window.__portaliq = { captions: CAPTIONS, slots: P.map(({ slot, start, end }) => ({ slot, start, end })), sections: SECT, OPEN, BODY, BUILT, INSTALL, DURATION }

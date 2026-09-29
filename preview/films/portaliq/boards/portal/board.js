@@ -6,6 +6,7 @@
  *
  *   promise   "What if clients (or citizens) did it themselves?" (the admin's question)
  *   hook      the page builder, inside Nextcloud: blocks dragged onto a grid, a portal page assembling
+ *   login     the client logs in to the portal (Round 29c: the turn from the admin's side to the client's)
  *   overview  one view: every ticket (case), product and invoice
  *   status    clients follow every ticket, step by step
  *   actions   open a ticket on a product, add a file to a ticket, pay an invoice
@@ -19,8 +20,8 @@
  * organisation's own head). Naming: "clients (or citizens)" and "ticket (case)" on first mention,
  * then "clients" and "tickets"; no "residents".
  *
- * 20-bar body (appfilm PLANS[7], promise first): promise 8 beats, builder 10, overview 10, status 8,
- * actions 10, inbox 8, profile 8, mobile 8, forms 10. The old citizens and customers boards stay in
+ * 22-bar body (appfilm PLANS[8], promise first): promise 8 beats, builder 10, login 8, overview 10,
+ * status 8, actions 10, inbox 8, profile 8, mobile 8, forms 10. The old citizens and customers boards stay in
  * the repo; the storyboard page carries this one.
  *
  * Sources: the Portaliq boards citizens (round 25) and customers (round 7); Portaliq positioning
@@ -48,17 +49,58 @@ const REFS = [
 ]
 
 /** The portal's own header: the organisation's house style (a solid band, its crest hex, the signed-in person). */
-export function portalHead(w, geom, { signedIn = true } = {}) {
+export function portalHead(w, geom, { signedIn = 1 } = {}) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 80, width = geom.r - geom.x
 	rect(w, x, top, width, 90, C.cobalt700, 4 * u)
 	hex(w, x + 100, top + 45, 24, C.white, 3)
 	bar(w, x + 140, top + 38, 160, 14, C.white)
-	if (signedIn) {
-		circle(w, x + width - 50, top + 45, 22, C.cobalt300)
-		bar(w, x + width - 200, top + 40, 120, 10, C.cobalt200)
+	// The signed-in person (Round 29c: it appears when the client signs in).
+	const s = Math.max(0, Math.min(1, +signedIn))
+	if (s > 0.001) {
+		const g = el('g', { opacity: s.toFixed(3) }, w)
+		circle(g, x + width - 50, top + 45, 22 * (0.6 + 0.4 * ease.brand(s)), C.cobalt300)
+		bar(g, x + width - 200, top + 40, 120, 10, C.cobalt200)
 	}
 	return top + 110
+}
+
+/**
+ * Login (Round 29c): the portal's own login page, before the client is signed in. a.user 0..1 types
+ * the username, a.pass 0..1 the password (dots), a.ring 0..1 rings the sign-in button, a.press 0..1
+ * presses it, a.signed 0..1 the signed-in person appears in the head, a.card 1..0 the login card fades.
+ */
+export function loginUI(w, geom, a = {}) {
+	const A = { user: 1, pass: 1, ring: 1, press: 0, signed: 0, card: 1, ...a }
+	const { u } = geom
+	const x = geom.x, width = geom.r - geom.x
+	const y = portalHead(w, geom, { signedIn: A.signed })
+	if (A.card <= 0.001) return
+	const cw = 560, cx = x + (width - cw) / 2, cy = y + 50, ch = 560
+	const g = el('g', { opacity: A.card.toFixed(3), transform: `translate(0 ${(-30 * (1 - A.card)).toFixed(1)})` }, w)
+	panel(g, cx, cy, cw, ch, u)
+	hex(g, cx + cw / 2, cy + 64, 26, C.cobalt700, 3)
+	bar(g, cx + cw / 2 - 110, cy + 110, 220, 14, C.cobalt900)
+	// The username, typed in steps, and the password as dots.
+	const fx = cx + 50, fw = cw - 100
+	bar(g, fx, cy + 170, 120, 8, C.cobalt400)
+	rect(g, fx, cy + 188, fw, 60, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	const tw = 240 * Math.floor(clamp01(A.user) * 10) / 10
+	if (tw > 0) bar(g, fx + 20, cy + 212, tw, 11, C.cobalt900)
+	if (A.user > 0 && A.user < 1) rect(g, fx + 26 + tw, cy + 202, 3 * u, 28, C.cobalt)
+	bar(g, fx, cy + 280, 100, 8, C.cobalt400)
+	rect(g, fx, cy + 298, fw, 60, C.white, 3 * u, { stroke: C.cobalt200, 'stroke-width': u })
+	const dots = Math.floor(clamp01(A.pass) * 10)
+	for (let i = 0; i < dots; i++) circle(g, fx + 30 + i * 26, cy + 328, 7, C.cobalt900)
+	if (A.pass > 0 && A.pass < 1) rect(g, fx + 20 + dots * 26 + 4, cy + 312, 3 * u, 28, C.cobalt)
+	// Sign in: the one orange is its ring; the press sinks it a little.
+	const bx = fx, by = cy + 400, bw = fw, bh = 66
+	const k = A.press > 0 && A.press < 1 ? 1 - 0.05 * Math.sin(Math.PI * A.press) : 1
+	const bg = el('g', { transform: `translate(${bx + bw / 2} ${by + bh / 2}) scale(${k.toFixed(3)}) translate(${-(bx + bw / 2)} ${-(by + bh / 2)})` }, g)
+	rect(bg, bx, by, bw, bh, A.press >= 1 ? C.cobalt600 : C.cobalt, 4 * u)
+	bar(bg, bx + bw / 2 - 50, by + bh / 2 - 5, 100, 10, C.white)
+	if (A.ring > 0.001) rect(g, bx - 10, by - 10, bw + 20, bh + 20, 'none', 6 * u, { stroke: C.orange, 'stroke-width': 2.5 * u, opacity: Math.min(1, A.ring * 2).toFixed(3) })
+	bar(g, cx + cw / 2 - 70, cy + ch - 40, 140, 8, C.cobalt300)
 }
 
 /** A glyph on a small cobalt hex (an app's records in the portal), or a plain hex when id is null. */
@@ -691,7 +733,8 @@ const inNextcloud = (drawUI, caption) => (ctx) => { chrome(ctx, { text: caption,
  * one "clients" and "tickets"; no "residents".
  */
 const CAPTIONS = {
-	builder: 'Design your own portal\nblock by block',
+	builder: 'You design\nthe portal',
+	login: 'The client logs\nin to the portal',
 	overview: 'Every ticket (case),\nproduct and invoice',
 	status: 'Clients follow every\nticket, step by step',
 	actions: 'Open tickets, add\nfiles, pay invoices',
@@ -709,13 +752,14 @@ const content = {
 	promiseLine: 'Clients (or citizens) arrange it themselves in a portal you design: tickets, products and invoices in one view, progress, actions, one inbox, their own details, on any phone, and Forms and Tables to collect what you need',
 	title: 'Portaliq, one portal your clients run themselves',
 	record: { one: 'ticket', many: 'tickets' },
-	logline: 'Round 29b: one Portaliq film for the functional admins of municipalities and housing corporations. The admin designs the portal in a grid page builder inside Nextcloud; the portal pages clients (or citizens) see stand on their own, in the organisation\'s style: every ticket, product and invoice in one view, progress, their own actions, one inbox, their own details, on their phone; a Forms form on the portal feeds a Tables table in Nextcloud.',
+	logline: 'Round 29b: one Portaliq film for the functional admins of municipalities and housing corporations. Round 29c: the admin designs the portal in a grid page builder inside Nextcloud, then the client logs in to it; the portal pages clients (or citizens) see stand on their own, in the organisation\'s style: every ticket, product and invoice in one view, progress, their own actions, one inbox, their own details, on their phone; a Forms form on the portal feeds a Tables table in Nextcloud.',
 	references: REFS,
 	// Round 27c: the section title each scene's small mark shows (not the app name).
-	sections: { promise: 'Self-service', hook: 'Page builder', overview: 'One view', status: 'Progress', actions: 'Actions', inbox: 'Inbox', profile: 'Own details', mobile: 'Mobile', forms: 'Collect data' },
+	sections: { promise: 'Self-service', hook: 'Page builder', login: 'Login', overview: 'One view', status: 'Progress', actions: 'Actions', inbox: 'Inbox', profile: 'Own details', mobile: 'Mobile', forms: 'Collect data' },
 	transitions: {
 		hook: { type: 'grow', fromName: 'the orange Portaliq cell', toName: 'the page builder', note: 'the app cell opens into its own page builder, inside Nextcloud: a hex grows out of the cell past the frame and the builder is inside it (#1)' },
-		overview: { type: 'match', fromName: 'the page just built', toName: 'the live portal page', note: 'the canvas the admin just filled leaves Nextcloud and grows into the standalone portal page, and the tiles gather into it (#10): what you built is what clients see' },
+		login: { type: 'match', fromName: 'the page just built', toName: 'the portal\'s login page', note: 'the turn from the admin to the client: the canvas the admin just filled leaves Nextcloud and grows into the standalone portal, its head carried across, now as the client sees it at its login' },
+		overview: { type: 'cluster', fromName: 'the signed-in login', toName: 'one view', note: 'signed in: the person appears in the portal\'s head, the login card lifts away, and the tiles gather into the same page (#10)' },
 		status: { type: 'grow', fromName: 'the ringed tickets tile', toName: 'the ticket and its steps', note: 'the tile opens into the ticket it holds: a hex grows out of it past the frame and its progress is inside (#1)' },
 		actions: { type: 'swap', fromName: 'the progress', toName: 'the three actions', note: 'the portal page holds and the page under its head steps down in three bands: the same portal, the client acting in it (#9)' },
 		inbox: { type: 'whip', fromName: 'the paid invoice', toName: 'the inbox', note: 'to the inbox on the beat: a whip reads as the client moving to the next page (#11)' },
@@ -730,7 +774,7 @@ const content = {
 	neighbours: ['dossiq', 'shillinq'],
 	builtOnApps: ['dossiq'],
 	hook: {
-		title: 'Design your own portal block by block',
+		title: 'You design the portal',
 		caption: CAPTIONS.builder,
 		draw: inNextcloud(builderUI, CAPTIONS.builder),
 		source: 'Ruben, round 29 scene 7 and round 29b (the builder comes first, and it is the one screen of the portal that runs inside Nextcloud): a grid page builder, design your own custom portal for citizens and clients',
@@ -739,11 +783,20 @@ const content = {
 	},
 	proofs: [
 		{
+			id: 'login',
+			title: 'The client logs in to the portal',
+			caption: CAPTIONS.login,
+			source: 'Ruben, round 29c: a login in the animation makes the turn from the admin\'s side to the client\'s side clear; Portaliq openspec change identity-profile-page (the signed-in client and their details)',
+			motion: 'Match cut out of the builder: the canvas the admin just filled leaves the Nextcloud window and grows into the standalone portal, its head carried across: the portal\'s own login page, as the client sees it. The username types on, the password fills in as dots, the sign-in button takes the orange ring and presses on the beat; the signed-in person appears in the portal\'s head and the login card lifts away.',
+			sound: 'A soft whoosh as the page grows, key ticks under the username and the password, one dry click on Sign in, a pluck as the person appears.',
+			draw: onPage(loginUI, CAPTIONS.login),
+		},
+		{
 			id: 'overview',
 			title: 'Every ticket (case), product and invoice, in one view',
 			caption: CAPTIONS.overview,
 			source: 'Portaliq positioning usp-fleet-data-in-your-portal (records and actions of the sibling apps in one portal); the citizens board\'s invoices and products; Ruben, round 29 scene 1 and round 29b (the portal pages stand on their own)',
-			motion: 'Match cut out of the builder: the canvas leaves the Nextcloud window and grows into a standalone web page (a browser bar, the organisation\'s own head, no Nextcloud chrome). Four tiles (tickets from Pipelinq, cases from Dossiq, products, invoices from Shillinq) drift in and merge on ease.brand (#10). On beat 6 the tickets tile takes the orange ring; on the last beat it opens out as a hex (#1).',
+			motion: 'Signed in, on the same standalone page (a browser bar, the organisation\'s own head with the client in it, no Nextcloud chrome). Three tiles (tickets, products, invoices) drift in and merge on ease.brand (#10). On beat 6 the tickets tile takes the orange ring; on the last beat it opens out as a hex (#1).',
 			sound: 'A soft whoosh as the page grows, a run of soft ticks as the tiles merge, a pluck on the ring.',
 			draw: onPage(overviewUI, CAPTIONS.overview),
 		},

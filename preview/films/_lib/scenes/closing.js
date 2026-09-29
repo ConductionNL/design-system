@@ -460,12 +460,15 @@ CLOSING.connect = {
 	lead: F(2), // the lead cell flips in on the second frame
 	typeIn: F(2), // "Built on" rises, "Nextcloud" a sixteenth behind
 	// The nine Nextcloud cells flip in one a beat round the C, top arm first, each as its line arrives.
-	loads: [G(1, 2), G(1, 3), G(1, 4), G(2, 1), G(2, 2), G(2, 3), G(2, 4), G(3, 1), G(3, 2)],
-	linkDur: 0.22,
-	// Every line holds its reading time, max(1.5 s, 0.4 s a word), fully up (Round 26, the tk lane's audit):
-	// the swapping line names two apps, "Reply from Mail" (1.64 s up) and "Share in Files" (2.57 s), and
-	// "Enhanced by Conduction" lands a beat before the zoom (1.77 s up).
-	lines: ['mail', 'files'],
+	// Round 28j: the C builds quicker, two cells a beat (on the eighths), each line drawn on in 0.16 s.
+	loads: [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => G(1, 2) + i * (SPB / 2)),
+	linkDur: 0.16,
+	// Round 28j: ONE line, "Works with <app>" (NL "Werkt met <app>"). "Works with" stays up the whole time;
+	// the app name (Nextcloud cyan) rolls up to the next, a slot-roll (#7) of two frames, on each cell that
+	// lands on a beat: Mail, Contacts, Files, Deck, Polls (the eighth cells between roll past). Each name is
+	// still for 0.39 s (a beat less the roll); the last, Polls, holds 2.81 s, to "Enhanced by Conduction".
+	names: [0, 2, 4, 6, 8],
+	roll: F(2),
 	enhanced: G(3, 4),
 	zoom: [G(4, 1), G(4, 3)], // two beats: the camera pulls back and the family ring flips in round the C
 	// Round 27b: the re-zoom. The camera comes back in on the last beat while every cell turns over and
@@ -491,6 +494,8 @@ export const CLOSING_TEXT = {
 	en: {
 		builtOn: ['Built on', 'Nextcloud'],
 		enhanced: 'Enhanced by Conduction',
+		worksWith: 'Works with',
+		names: { mail: 'Mail', calendar: 'Calendar', contacts: 'Contacts', tasks: 'Tasks', files: 'Files', talk: 'Talk', deck: 'Deck', activity: 'Activity', polls: 'Polls' },
 		loads: { mail: ['Reply from', 'Mail'], calendar: ['Plan in', 'Calendar'], contacts: ['Save to', 'Contacts'], files: ['Share in', 'Files'], talk: ['Chat in', 'Talk'], tasks: ['Follow up in', 'Tasks'], deck: ['Manage from', 'Deck'] },
 		slogans: ['Install it', 'Use it', 'Own it'],
 		line: 'The code stays open source,\nthe data stays yours',
@@ -498,6 +503,8 @@ export const CLOSING_TEXT = {
 	nl: {
 		builtOn: ['Gebouwd op', 'Nextcloud'],
 		enhanced: 'Verrijkt door Conduction',
+		worksWith: 'Werkt met',
+		names: { mail: 'Mail', calendar: 'Agenda', contacts: 'Contacten', tasks: 'Taken', files: 'Bestanden', talk: 'Talk', deck: 'Deck', activity: 'Activiteit', polls: 'Peilingen' },
 		loads: { mail: ['Antwoord vanuit', 'Mail'], calendar: ['Plan in', 'Agenda'], contacts: ['Bewaar in', 'Contacten'], files: ['Deel in', 'Bestanden'], talk: ['Chat in', 'Talk'], tasks: ['Volg op in', 'Taken'], deck: ['Beheer vanuit', 'Deck'] },
 		slogans: ['Installeer het', 'Gebruik het', 'Bezit het'],
 		line: 'De code blijft open source,\nde data blijft van jou',
@@ -711,14 +718,29 @@ function drawConnect(g, t, p, W = 1920) {
 	risingText(g, c1, { x: TX, y: Y.first, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(K.typeIn, K.typeIn + RISE, t), qType)
 	const m0 = K.typeIn + SPB / 4
 	risingText(g, c2, { x: TX, y: Y.first + Y.lh, size: Y.size, weight: 700, fill: C.white, tracking: -0.02 }, inv(m0, m0 + RISE, t), qType)
-	const shown = K.lines.map((id) => LOAD_ORDER.indexOf(id))
-	shown.forEach((i, j) => {
-		const id = LOAD_ORDER[i]
-		const t0 = K.loads[i], t1 = j + 1 < shown.length ? K.loads[shown[j + 1]] : K.enhanced
-		if (t < t0 || t >= t1 + EXIT) return
-		const [verb, name] = T.loads[id]
-		risingText(g, `${verb} _${name}_`, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, accent2: C.nextcloudCyan, tracking: -0.01 }, inv(t0, t0 + RISE, t), inv(t1, t1 + EXIT, t))
-	})
+	// Round 28j: "Works with" stays; the name rolls, slot-machine style, through the apps in load order.
+	const L0 = K.loads[K.names[0]], L1 = K.enhanced
+	if (t >= L0 && t < L1 + EXIT) {
+		const q1 = inv(L1, L1 + EXIT, t)
+		const lead = `${T.worksWith} `
+		risingText(g, T.worksWith, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(L0, L0 + RISE, t), q1)
+		// The name column: every app in load order, one line apart; its position steps to each named cell's
+		// index over the roll, so the cells between pass by.
+		let pos = K.names[0]
+		K.names.forEach((i, j) => { if (j) pos = lerp(pos, i, ease.inOutCubic(inv(K.loads[i] - K.roll, K.loads[i], t))) })
+		const nx = TX + measure(lead, { size: Y.lineSize, weight: 600, tracking: -0.01 })
+		const step = Y.lineSize * 1.3
+		const id = nextId('roll')
+		const cp = el('clipPath', { id }, g)
+		el('rect', { x: nx - 10, y: Y.lineY - Y.lineSize * 1.0, width: 900, height: Y.lineSize * 1.32 }, cp)
+		const rg = el('g', { 'clip-path': `url(#${id})` }, g)
+		const inner = el('g', { transform: `translate(0 ${(-(pos - K.names[0]) * step).toFixed(2)})` }, rg)
+		LOAD_ORDER.forEach((app, i) => {
+			const dy = (i - K.names[0]) * step
+			if (Math.abs(i - pos) > 1.2) return
+			risingText(inner, T.names[app], { x: nx, y: Y.lineY + dy, size: Y.lineSize, weight: 600, fill: C.nextcloudCyan, tracking: -0.01 }, inv(L0, L0 + RISE, t), q1)
+		})
+	}
 	risingText(g, T.enhanced, { x: TX, y: Y.lineY, size: Y.lineSize, weight: 600, fill: C.white, tracking: -0.01 }, inv(K.enhanced, K.enhanced + RISE, t), qType)
 }
 
@@ -728,6 +750,8 @@ function connectCues(cue) {
 	cue(K.lead + 0.02, 'impact', { gain: 0.2, from: 110, to: 48, decay: 0.5 })
 	const notes = [1174.66, 1318.51, 1479.98, 1567.98, 1760, 1975.53, 2217.46, 2349.32, 2637.02]
 	K.loads.forEach((t, i) => cue(t, 'tick', { freq: notes[i], gain: 0.12, pan: -0.4 + i * 0.1 }))
+	// Round 28j: a soft dry click as the name rolls, like a slot reel stopping.
+	K.names.slice(1).forEach((i, j) => cue(K.loads[i], 'click', { gain: 0.1, freq: 2900, seed: 120 + j, dry: true, pan: -0.5 }))
 	cue(K.zoom[0] - 0.02, 'whoosh', { dur: 0.9, from: 500, to: 3200, panFrom: -0.2, panTo: 0.3, gain: 0.12 })
 	for (let i = 0; i < 8; i++) cue(K.zoom[0] + 0.3 + i * 0.05, 'tick', { freq: 2349.32 + i * 90, gain: 0.05, decay: 0.03, pan: -0.5 + i * 0.14 })
 	cue(K.enhanced, 'pluck', { freq: 880, gain: 0.18, decay: 0.6 })
@@ -917,5 +941,5 @@ export function installFrame(ctx, p = {}) {
 /** The on-screen words of the Round 21/22 pieces, for a board's word list. */
 export function closingWords(lang = 'en') {
 	const T = CLOSING_TEXT[lang === 'nl' ? 'nl' : 'en']
-	return { builtOn: `${T.builtOn.join('\n')}\n${CLOSING.connect.lines.map((id) => T.loads[id].join(' ')).join(' / ')}\n${T.enhanced}`, install: `${T.slogans.join('\n')}\n${T.line}` }
+	return { builtOn: `${T.builtOn.join('\n')}\n${T.worksWith} ${CLOSING.connect.names.map((i) => T.names[LOAD_ORDER[i]]).join(' / ')}\n${T.enhanced}`, install: `${T.slogans.join('\n')}\n${T.line}` }
 }

@@ -277,7 +277,8 @@ export function appBoards(content) {
 				motion: general.motion || MOTION[mod](s),
 				sound: general.sound,
 				source: general.source || COPY[mod].source,
-				draw: (ctx) => FRAMES[mod](ctx, { app, caption: general.caption, ...general.params }),
+				// A film may draw its own general picture (general.draw), so wrappers such as the Round 24 current still see it.
+				draw: general.draw ? (ctx) => general.draw(ctx) : (ctx) => FRAMES[mod](ctx, { app, caption: general.caption, ...general.params }),
 			}
 		}
 		return {

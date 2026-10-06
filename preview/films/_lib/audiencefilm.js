@@ -74,7 +74,7 @@ export function promiseFrame(ctx, { app, promise, neighbours = [] }) {
 
 /** Every board of an audience film, with film times, layers and modules. */
 export function audienceBoards(content) {
-	const { app, promise, neighbours = [], builtOnApps = [] } = content
+	const { app, promise, neighbours = [], builtOnApps = [], builtOnLit = false } = content
 	const name = content.name || APP_NAMES[app] || app
 	const BODY = bodyLength((content.proofs || []).length)
 	const body = appBoards({ ...content, outro: { neighbours } })
@@ -185,7 +185,9 @@ export function audienceBoards(content) {
 		motion: `${content.builtOnMotion || `Round 27 (_lib/scenes/closing.js builtOnScene, 4 bars): ${name} flips in orange (every hex turns over by squashing; nothing pops or scales in); "Built on" and "Nextcloud" rise under the white Nextcloud mark, no name label by the cell. Nine Nextcloud apps flip in one a beat, in Nextcloud blue, round ${name} on the ring two out, open to the right: a C, the Conduction C, with ${name} at its heart; each gets a line drawn on FROM ${name} out to it, a Nextcloud-cyan head riding the line's front. The line under the headline names two of them, each held its reading time ("Reply from Mail", then "Share in Files", the name in Nextcloud cyan). A beat before bar 4 it becomes "Enhanced by Conduction"; on bar 4 the camera pulls back over two beats and the Conduction family flips in as a hexagonal ring round the C (the ring three out), each linked to its nearest cell, ${name} still the one orange. On the last beat the camera comes back in while every cell turns over, ring by ring from ${name}: they become the install board's quiet field and ${name} turns over into the Conduction avatar. The type leaves four frames before the bar line. Every hex is one grid cell at one radius.`}${content.promiseFirst ? '' : ` ${BUILT_IN}`}`,
 		sound: 'A dry click and a low thud as the lead flips in, a tick up the scale for each app that loads, a long whoosh and a scatter of ticks as the family comes into view, a pluck on Enhanced by Conduction, a whoosh and soft ticks as the cells turn over, a dry click as the lead becomes the avatar.',
 		source: 'Shared module: round4/facts.json fact a.',
-		draw: (ctx) => { builtOnFrame(ctx, { app, apps: builtOnApps, on: 'nextcloud' }) },
+		// From lane L1 (Round 14): builtOnLit lights OpenRegister as the data layer (closing.js litLayer),
+		// for the OpenRegister films, instead of a Built on piece with this app as an ordinary lead.
+		draw: (ctx) => { builtOnFrame(ctx, builtOnLit ? { apps: builtOnApps, on: 'nextcloud', litLayer: true, lead: 'openregister' } : { app, apps: builtOnApps, on: 'nextcloud' }) },
 	}
 	const t1 = t0 + BUILT
 	const install = {

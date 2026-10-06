@@ -102,6 +102,65 @@ export const PLANS = {
 		{ slot: 'general', layer: 'general', from: 23, to: 31, maxWords: 7 },
 		{ slot: 'outro', layer: 'brand', from: 31, to: 40, maxWords: 7 },
 	],
+	/**
+	 * Three proofs on a 12-bar body (48 beats), for an audience film whose story needs a third
+	 * moment (Round 15, Dossiq casework): hook 7, three proofs of 8, general 8, outro 9 beats.
+	 */
+	3: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 15, maxWords: 6 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 15, to: 23, maxWords: 6 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 23, to: 31, maxWords: 6 },
+		{ slot: 'general', layer: 'general', from: 31, to: 39, maxWords: 7 },
+		{ slot: 'outro', layer: 'brand', from: 39, to: 48, maxWords: 7 },
+	],
+	/**
+	 * Five moments on a 14-bar body (56 beats), Round 15 (Dossiq casework): hook 7, five scenes of
+	 * 8 and the outro 9 beats. The fourth moment is the shared capability (layer general), told
+	 * with the app's own UI, and a fifth app moment follows it.
+	 */
+	5: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 15, maxWords: 6 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 15, to: 23, maxWords: 6 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 23, to: 31, maxWords: 6 },
+		{ slot: 'proof', index: 3, layer: 'general', from: 31, to: 39, maxWords: 7 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 39, to: 47, maxWords: 6 },
+		{ slot: 'outro', layer: 'brand', from: 47, to: 56, maxWords: 7 },
+	],
+	/**
+	 * Eight moments on a 20-bar body (80 beats), Round 29 (the one Portaliq film, round 29b order): hook 10, seven app
+	 * scenes of 8 or 10 beats and the outro (the promise, moved first by promiseFirst) 8 beats. The
+	 * scenes that carry three actions, a page being built or a form feeding a table get the longer slots.
+	 */
+	7: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 10, maxWords: 8 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 10, to: 20, maxWords: 8 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 20, to: 28, maxWords: 8 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 28, to: 38, maxWords: 8 },
+		{ slot: 'proof', index: 3, layer: 'app', from: 38, to: 46, maxWords: 8 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 46, to: 54, maxWords: 8 },
+		{ slot: 'proof', index: 5, layer: 'app', from: 54, to: 62, maxWords: 8 },
+		{ slot: 'proof', index: 6, layer: 'app', from: 62, to: 72, maxWords: 8 },
+		{ slot: 'outro', layer: 'brand', from: 72, to: 80, maxWords: 8 },
+	],
+	/**
+	 * Nine moments on a 22-bar body (88 beats), Round 29c (the Portaliq film with its login scene): the
+	 * builder (hook) 10, login 8, one view 10, progress 8, actions 10, inbox 8, own details 8, mobile 8,
+	 * collect data 10, and the outro (the promise, moved first by promiseFirst) 8 beats.
+	 */
+	8: [
+		{ slot: 'hook', layer: 'app', from: 0, to: 10, maxWords: 8 },
+		{ slot: 'proof', index: 0, layer: 'app', from: 10, to: 18, maxWords: 8 },
+		{ slot: 'proof', index: 1, layer: 'app', from: 18, to: 28, maxWords: 8 },
+		{ slot: 'proof', index: 2, layer: 'app', from: 28, to: 36, maxWords: 8 },
+		{ slot: 'proof', index: 3, layer: 'app', from: 36, to: 46, maxWords: 8 },
+		{ slot: 'proof', index: 4, layer: 'app', from: 46, to: 54, maxWords: 8 },
+		{ slot: 'proof', index: 5, layer: 'app', from: 54, to: 62, maxWords: 8 },
+		{ slot: 'proof', index: 6, layer: 'app', from: 62, to: 70, maxWords: 8 },
+		{ slot: 'proof', index: 7, layer: 'app', from: 70, to: 80, maxWords: 8 },
+		{ slot: 'outro', layer: 'brand', from: 80, to: 88, maxWords: 8 },
+	],
 	1: [
 		{ slot: 'hook', layer: 'app', from: 0, to: 7, maxWords: 6 },
 		{ slot: 'proof', index: 0, layer: 'app', from: 7, to: 19, maxWords: 8 },
@@ -113,14 +172,15 @@ export const PLANS = {
 /** The plan with times resolved: seconds (frame-snapped), bar.beat labels, and when the caption shows and clears. */
 export function plan(nProofs = 2) {
 	const p = PLANS[nProofs]
-	if (!p) throw new Error(`appfilm: a film has 1 or 2 proof moments, not ${nProofs}`)
+	if (!p) throw new Error(`appfilm: a film has 1, 2, 3, 5, 7 or 8 proof moments, not ${nProofs}`)
 	return p.map((s) => {
 		const start = beatT(s.from)
 		const end = beatT(s.to)
 		const shows = s.slot === 'hook' ? 0 : snap(start + RISE)
 		// The CTA builds two beats into the outro and holds to the loop: see MOTION.outro.
 		const ctaIn = snap(beatT(PLANS[nProofs].at(-1).from + 2) + RISE)
-		const clears = s.slot === 'outro' ? DURATION : snap(end - CLEAR)
+		// The outro holds to the end of the body (18.75 s on 10 bars, 22.5 s on 12).
+		const clears = s.slot === 'outro' ? beatT(p.at(-1).to) : snap(end - CLEAR)
 		const visible = s.slot === 'outro' ? ctaIn : shows
 		return { ...s, start, end, bars: `${barBeat(s.from)}-${barBeat(s.to - 1)}`, shows: visible, clears, hold: +(clears - visible).toFixed(2) }
 	})

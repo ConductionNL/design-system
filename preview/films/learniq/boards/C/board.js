@@ -36,7 +36,7 @@ const REFS = [
 ]
 
 /** A coverage bar: cobalt-100 track, forest fill (on track) or the scene's orange (short of the bar you set). */
-function coverage(w, x, cy, width, p, u, short = false) {
+export function coverage(w, x, cy, width, p, u, short = false) {
 	const h = 6 * u
 	rect(w, x, cy - h / 2, width, h, C.cobalt100, h / 2)
 	rect(w, x, cy - h / 2, width * p, h, short ? C.orange : C.forest, h / 2)
@@ -47,7 +47,7 @@ function coverage(w, x, cy, width, p, u, short = false) {
  * The 'expiring soon' status: the status pill's shape with orange ink on white
  * and an orange edge. Orange is never a box behind a label, greeked or not.
  */
-function soonPill(w, x, cy, u) {
+export function soonPill(w, x, cy, u) {
 	const pw = 43 * u, h = 11 * u
 	rect(w, x, cy - h / 2, pw, h, C.white, h / 2, { stroke: C.orange, 'stroke-width': 1.2 * u })
 	hex(w, x + 9 * u, cy, 3.5 * u, C.orange)
@@ -55,7 +55,7 @@ function soonPill(w, x, cy, u) {
 }
 
 /** Hook: the regulations list, each rule's coverage against the threshold you set. */
-function regulationsUI(w, geom) {
+export function regulationsUI(w, geom) {
 	const { u } = geom
 	const rows = [{ w: 150, p: 0.94 }, { w: 190, p: 0.88 }, { w: 170, p: 0.61, short: true }, { w: 210, p: 0.97 }, { w: 160, p: 0.83 }, { w: 180, p: 0.9 }]
 	const top = geom.anchor.y - 50
@@ -72,7 +72,7 @@ function regulationsUI(w, geom) {
 }
 
 /** Proof 1: a certificate with its expiry, and the list of certificates by status. */
-function certificateUI(w, geom) {
+export function certificateUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 60
 	// The certificate: a document with a seal and a valid-until line.
@@ -99,7 +99,7 @@ function certificateUI(w, geom) {
 }
 
 /** Proof 2: outside training with its evidence, and the officer's approval that makes it count. */
-function outsideTrainingUI(w, geom) {
+export function outsideTrainingUI(w, geom) {
 	const { u } = geom
 	const x = geom.x, top = geom.anchor.y - 50, width = geom.r - geom.x
 	panel(w, x, top, width, 560, u)

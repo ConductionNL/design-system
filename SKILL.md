@@ -170,6 +170,8 @@ Motion films (social reels, product explainers) are built in code, frame by fram
 
 Follow the [`brand-film`](./.claude/skills/brand-film/SKILL.md) skill for every film: context pack, three storyboard variants presented as an artifact with one still per scene, the user's pick, the build, director notes, review, score and render. Each film keeps a `sources.json` ledger of every asset, claim, reference and decision.
 
+The [`film`](./.claude/skills/film/SKILL.md) skill is the motion design method that goes with it: the five laws, the gated workflow, the 128 BPM / 24 fps grid, the named motion tokens in `_lib/motion.js`, one timeline per film (`_lib/timeline.js`), kinetic type timed to a voice (`_lib/scenes/kinetic.js`), the review rubric and `scripts/films/grid-check.mjs`. The public page is the Film section of the brand kit, [`preview/identity/film/`](./preview/identity/film/index.html).
+
 The brand rules apply to motion without exception: solid fills, pointy-top hexes that never rotate, one orange per scene, real app glyphs and marks only. The engine has no rotation and no gradient helper on purpose.
 
 ## When in doubt

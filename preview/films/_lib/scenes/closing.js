@@ -889,6 +889,8 @@ function drawInstallSplit(g, t, p, W = 1920) {
 
 const INSTALL_CONCEPTS = { current: drawInstallCurrent, lock: drawInstallLock, split: drawInstallSplit }
 export const INSTALL_DEFAULT = 'current'
+/** The install concept for a name, falling back to the default (the name can come from a page's query string). */
+const installConcept = (name) => (Object.hasOwn(INSTALL_CONCEPTS, name) ? INSTALL_CONCEPTS[name] : INSTALL_CONCEPTS[INSTALL_DEFAULT])
 
 function install21Cues(cue, concept = INSTALL_DEFAULT) {
 	const K = CLOSING.install21
@@ -924,18 +926,19 @@ export function builtOnFrame(ctx, p = {}) {
 
 export function installScene(ctx, p = {}) {
 	if (p.legacy) return legacyInstallScene(ctx, p)
-	const concept = p.concept || INSTALL_DEFAULT
+	const concept = Object.hasOwn(INSTALL_CONCEPTS, p.concept) ? p.concept : INSTALL_DEFAULT
+	const draw = installConcept(concept)
 	const layer = el('g', { 'data-layer': 'install' }, ctx.g)
 	if (ctx.cue && p.sound !== false) install21Cues((t, kind, o) => ctx.cue(ctx.start + t, kind, o), concept)
 	return (t) => {
 		layer.replaceChildren()
-		INSTALL_CONCEPTS[concept](layer, clamp(t - ctx.start, 0, CLOSING.install21.dur), p, ctx.W)
+		draw(layer, clamp(t - ctx.start, 0, CLOSING.install21.dur), p, ctx.W)
 	}
 }
 
 export function installFrame(ctx, p = {}) {
 	if (p.legacy) return legacyInstallFrame(ctx, p)
-	INSTALL_CONCEPTS[p.concept || INSTALL_DEFAULT](el('g', {}, ctx.g), p.at ?? CLOSING.install21.key, p, ctx.W)
+	installConcept(p.concept)(el('g', {}, ctx.g), p.at ?? CLOSING.install21.key, p, ctx.W)
 	return { type: INSTALL22 }
 }
 

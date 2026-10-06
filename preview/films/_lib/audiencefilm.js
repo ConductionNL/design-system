@@ -277,6 +277,10 @@ function withCurrent(boards, content) {
 	boards.forEach((b) => {
 		b.drawBase = b.draw
 		b.currentAnchor = content.anchors?.[b.id] || null
+		// From the tk lane: draw calls drawBase late, so a board that redraws a slot after audienceFilm()
+		// (the Thematiq and Keepiq word-art stories, the Keepiq usage dashboard) replaces drawBase and its
+		// still shows the redrawn frame. For every other board drawBase is the original draw.
+		b.draw = (ctx) => b.drawBase(ctx)
 	})
 }
 

@@ -5,6 +5,10 @@ description: "Make a short Conduction or ConNext motion film (social reel, produ
 
 # brand-film
 
+> The [film](../film/SKILL.md) skill holds the motion method (laws, gates, grid, motion tokens,
+> kinetic type, sound, review rubric). Use both. Where they differ, for example "land it harder"
+> below, which no longer means `outBack` (the no-pop rule), the film skill and the bible win.
+
 A film is a web page whose every frame is a pure function of time. The engine in
 [`preview/films/_lib/`](../../../preview/films/_lib/) draws it, the tools in
 [`scripts/films/`](../../../scripts/films/) capture, score and encode it, and each

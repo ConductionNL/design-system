@@ -94,8 +94,8 @@ export function appMark(g, app, { light = false, h = TYPE.markH, x = TYPE.x, y =
 }
 
 /** The scene caption: Figtree 700, sentence case, left-aligned at x 120. */
-export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYPE.lh } = {}) {
-	return textBlock(g, text, { x: TYPE.x, y, size, weight: 700, fill, lineHeight: lh / size, tracking: -0.02, clip: false })
+export function caption(g, text, fill, { y = TYPE.y1, size = TYPE.size, lh = TYPE.lh, accent, accent2 } = {}) {
+	return textBlock(g, text, { x: TYPE.x, y, size, weight: 700, fill, accent, accent2, lineHeight: lh / size, tracking: -0.02, clip: false })
 }
 
 /**
@@ -120,7 +120,8 @@ export function fitCaptionSize(text, { size = TYPE.size, box = TYPE.col - TYPE.x
 /** caption() at the size fitCaptionSize() picks, with the grid's line height. */
 export function fitCaption(g, text, fill, opts = {}) {
 	const size = fitCaptionSize(text, opts)
-	return caption(g, text, fill, { y: opts.y ?? TYPE.y1, size, lh: Math.round((size * TYPE.lh) / TYPE.size) })
+	// _word_ in a caption takes accent2: a Nextcloud app's name in Nextcloud cyan (round 6).
+	return caption(g, text, fill, { y: opts.y ?? TYPE.y1, size, lh: Math.round((size * TYPE.lh) / TYPE.size), accent: opts.accent, accent2: opts.accent2 })
 }
 
 /**
@@ -134,10 +135,12 @@ export function chrome(ctx, { ground: gr = 'cobalt', text, captionOpts, app } = 
 	if (gr === 'light') ground(ctx, C.cobalt50)
 	if (gr === 'white') ground(ctx, C.white)
 	// An app film names its app here; the ConNext film and the shared modules keep the ConNext mark.
-	if (app) appMark(ctx.g, app, { light })
-	else mark(ctx.g, { light })
+	// Round 26: the mark and the caption carry data-role, so a transition can hold them while the picture moves.
+	const m = app ? appMark(ctx.g, app, { light }) : mark(ctx.g, { light })
+	;(m.group || m).setAttribute('data-role', 'mark')
 	const ink = light ? C.cobalt : C.white
 	const cap = text ? fitCaption(ctx.g, text, ink, captionOpts) : null
+	if (cap) cap.group.setAttribute('data-role', 'caption')
 	return { light, ink, caption: cap }
 }
 
@@ -452,7 +455,7 @@ export function honeyAt(cx, cy, r, gap) {
  */
 export function honeyField(g, cx, cy, r, gap, { skip = () => false, top = Infinity, bottom = Infinity, alpha = FIELD_ALPHA, scale = 1, W = 1920, H = 1080, extent = 16, fill = C.cobalt400, floor = 0.05 } = {}) {
 	const at = honeyAt(cx, cy, r, gap)
-	const field = el('g', {}, g)
+	const field = el('g', { 'data-field': 'honey' }, g)
 	for (let q = -extent; q <= extent; q++) {
 		for (let rr = -extent; rr <= extent; rr++) {
 			const d = Math.max(Math.abs(q), Math.abs(rr), Math.abs(q + rr))
@@ -529,4 +532,31 @@ export function hexCover(cx, cy, W = 1920, H = 1080) {
 		need = Math.max(need, Math.abs(dx), Math.abs(dx / 2 + a * dy), Math.abs(dx / 2 - a * dy))
 	}
 	return need / a
+}
+
+/**
+ * Round 27c: no floating hexes over the grid. A tag or cell drawn over the honeycomb field off its cells
+ * (the app tag on a card, the Nextcloud tag on a header) takes out the field cells it would float over,
+ * so every hex left sits on its own grid cell. Needs the frame rendered (display on): call it on the
+ * first visible frame.
+ */
+export function clearFieldUnder(root) {
+	const fields = [...root.querySelectorAll('[data-field=honey]')]
+	if (!fields.length) return 0
+	const box = (e) => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.height / 2 } }
+	const others = []
+	for (const e of root.querySelectorAll('path')) {
+		if (e.closest('[data-field]') || e.closest('clipPath') || e.closest('[data-current]')) continue
+		const d = e.getAttribute('d') || ''
+		if ((d.match(/[LQ]/g) || []).length < 5) continue
+		const r = e.getBoundingClientRect()
+		if (r.width < 8 || Math.abs(r.width / r.height - SQRT3 / 2) > 0.06) continue
+		others.push(box(e))
+	}
+	let n = 0
+	for (const f of fields) for (const c of [...f.children]) {
+		const a = box(c)
+		if (others.some((o) => { const dd = Math.hypot(a.x - o.x, a.y - o.y); return dd > 2 && dd < (a.r + o.r) * 0.84 })) { c.remove(); n++ }
+	}
+	return n
 }

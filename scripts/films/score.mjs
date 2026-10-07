@@ -3,7 +3,8 @@
  * Scores a film: turns its cue list and music declaration into a mixed,
  * loudness-normalised WAV.
  *
- *   node score.mjs --cues cues.json --out mix.wav [--lufs -14] [--tp -1] [--spectrum mix.png]
+ *   node score.mjs --cues cues.json --out mix.wav [--lufs -14] [--tp -1.5] [--spectrum mix.png] [--root <repo>]
+ *   (--root resolves music.voice sources: [{ src, at, gain }], generated voice takes placed in film time)
  *
  * cues.json is what `film.mjs cues` exports from a film page:
  *   { duration, bpm, cues: [{ t, kind, ...params }], music: { ... } }
@@ -99,10 +100,44 @@ for (const c of cues) {
 }
 if (unknown.size) console.error('ignored cue kinds:', [...unknown].join(', '))
 
+/* ---- Voice (optional): music.voice = [{ src, at, gain }], src relative to --root (default cwd) ----
+   The voice wins: it goes in dry (no reverb send), and the music and sound effects duck under it
+   with a smooth envelope. A film without music.voice is not touched by this block. */
+const voiceBus = S.makeBus(duration + tail)
+const voiceEnv = new Float32Array(voiceBus.n)
+for (const v of music.voice || []) {
+	const src = resolve(args.root || '.', v.src)
+	const pcm = await new Promise((ok, fail) => {
+		const p = spawn(ffmpegPath, ['-hide_banner', '-loglevel', 'error', '-i', src, '-f', 'f32le', '-ac', '2', '-ar', String(S.SR), '-'], { stdio: ['ignore', 'pipe', 'pipe'] })
+		const chunks = []
+		let err = ''
+		p.stdout.on('data', (d) => chunks.push(d))
+		p.stderr.on('data', (d) => { err += d })
+		p.on('close', (c) => (c === 0 ? ok(Buffer.concat(chunks)) : fail(new Error(`voice ${src}: ${err}`))))
+	})
+	const f = new Float32Array(pcm.buffer, pcm.byteOffset, Math.floor(pcm.byteLength / 4))
+	const s0 = Math.round(v.at * S.SR), g = v.gain ?? 1
+	for (let i = 0; 2 * i + 1 < f.length; i++) {
+		const j = s0 + i
+		if (j < 0 || j >= voiceBus.n) continue
+		voiceBus.L[j] += f[2 * i] * g
+		voiceBus.R[j] += f[2 * i + 1] * g
+		voiceEnv[j] = 1
+	}
+}
+if ((music.voice || []).length) {
+	// Smooth the presence envelope (40 ms attack, 250 ms release) and duck the bed and effects by 9 dB under it.
+	const a = Math.exp(-1 / (0.04 * S.SR)), r = Math.exp(-1 / (0.25 * S.SR))
+	let e = 0
+	for (let i = 0; i < voiceBus.n; i++) { const x = voiceEnv[i]; e = x > e ? a * e + (1 - a) * x : r * e + (1 - r) * x; voiceEnv[i] = e }
+	for (const b of [musicBus, sfxWet, sfxDry, dry, drums]) for (let i = 0; i < b.n; i++) { const k = 1 - 0.645 * voiceEnv[i]; b.L[i] *= k; b.R[i] *= k }
+}
+
 /* ---- Mix ---- */
 S.duck(musicBus, kickTimes, { depth: 0.6, release: 0.18 })
 S.duck(dry, kickTimes, { depth: 0.6, release: 0.18 })
 const master = S.makeBus(duration + tail)
+S.mixInto(master, voiceBus, 1)
 S.mixInto(master, drums, 1)
 S.mixInto(master, musicBus, 1)
 S.mixInto(master, sfxWet, 1)

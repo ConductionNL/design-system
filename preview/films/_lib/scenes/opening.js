@@ -29,6 +29,11 @@
  *   import { addOpening } from '../_lib/scenes/opening.js'
  *   const bodyStart = addOpening(film, { at: 0 })   // 5.625: returns the opening's end time
  *   addOpening(film, { at: 0, handover: false })     // no film follows: the lockup holds to the end
+ *   addOpening(film, { at: 0, legacy: true })        // the finished ConNext master: the name on its tiles
+ *
+ * Round 28d (Ruben): by default the dark hexes behind the lockup flip out just before the name powers
+ * on, so "Conduction" stands on clean ground, and flip back in before the handover (the last frame is
+ * still the plain field of the contract). legacy: true keeps the name on its tiles.
  *
  * Sound cues (crackle, arc, hum, charge, powerOn, click, plus the house kick,
  * impact and whoosh) are recorded with film.cue next to the motion that
@@ -236,6 +241,24 @@ const onScreen = (x, y, t, pad = 110) => { const c = camera(t); const sx = (x - 
 
 /* ------------------------------------------------------------ the cells */
 
+/**
+ * Round 28d: the x scale of a lockup tile's dark hex (the ground behind the name). i: the tile's place in
+ * reading order (0 the avatar's cell, 1 to 3 the name tiles), from exitAt - T.exit in frames. The hexes flip
+ * out a frame apart from five frames before the power-on, three frames each; with a handover they flip back
+ * in a frame apart, done on the frame the tiles start to turn back (T.exit).
+ */
+function lockupGround(t, lag, handover) {
+	const i = Math.round(lag * FPS) > 0 ? Math.round(lag * FPS) : 0
+	const o0 = T.powerOn - F(5) + F(i)
+	let sx = 1 - ease.inCubic(inv(o0, o0 + F(3), t))
+	if (handover) {
+		const i0 = T.exit - F(6) + F(i)
+		if (t >= i0) sx = ease.outCubic(inv(i0, i0 + F(3), t))
+	}
+	return sx
+}
+export const LOCKUP_CLEAR = { out: T.powerOn - F(5), back: T.exit - F(6) }
+
 /** Flip timing: the width goes to nothing and back over 8 frames (7 to 9 for the apps, by hand), in-out, quick through edge-on. */
 const FLIP = F(8)
 /** The handover turns the lockup's four tiles back, a frame apart, each in 5 frames: frames 126 to 134, done on the last frame. */
@@ -357,7 +380,7 @@ function arcPath(a, b, from, to, frame, seed, amp = 9) {
  * Used by addOpening (the film) and by the storyboard frames, so an approved
  * still is the animation's own frame.
  */
-export function buildOpening(g, { defs, handover = true } = {}) {
+export function buildOpening(g, { defs, handover = true, legacy = false } = {}) {
 	const { cells, leaks } = buildCells()
 	const world = el('g', { 'data-layer': 'opening-world' }, g)
 	const fieldLayer = el('g', {}, world)
@@ -446,6 +469,14 @@ export function buildOpening(g, { defs, handover = true } = {}) {
 				c.g.setAttribute('transform', s === 1 ? '' : scaleAbout(s, s, c.x, c.y))
 			} else {
 				updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base, leaving)
+				// Round 28d: clean ground behind the name. Just before it powers on, the dark hexes behind the
+				// lockup flip out one after another (the avatar's cell, then the three name tiles); with a
+				// handover they flip back in before the tiles turn back, so the grid is whole again.
+				if (!legacy && c.exitAt !== null) {
+					const sx = lockupGround(t, c.exitAt - T.exit, handover)
+					c.backHex.setAttribute('transform', sx >= 1 ? '' : scaleAbout(Math.max(sx, 1e-4), 1, c.x, c.y))
+					c.backHex.setAttribute('display', sx <= 0.001 ? 'none' : 'inline')
+				}
 			}
 
 			// Arcs at the fronts: the jump into this cell, over the three frames up to its charge.
@@ -580,7 +611,7 @@ function updateApp(c, t, f, eIn, fIn, eOut, fOut, powered, base, leaving) {
  * level, never a rising figure, so nothing tonal rings after the name lands
  * except the hum. With the handover, four soft clicks as the tiles turn back.
  */
-export function openingCues({ handover = true } = {}) {
+export function openingCues({ handover = true, legacy = false } = {}) {
 	const { cells, leaks } = buildCells()
 	const cues = []
 	const cue = (t, kind, o = {}) => cues.push({ t, kind, ...o })
@@ -650,6 +681,11 @@ export function openingCues({ handover = true } = {}) {
 	cue(T.powerOn, 'powerOn', { gain: 0.45, from: 64, to: 48, decay: 0.16, bright: 0, seed: 51, dry: true })
 	cue(T.powerOn, 'click', { gain: 0.5, freq: 2600, seed: 61, dry: true }) // dry: no reverb 'ting' on the last sound
 
+	// Round 28d: four soft dry clicks as the hexes behind the lockup flip out, and four as they flip back in.
+	if (!legacy) {
+		for (let i = 0; i < 4; i++) click(T.powerOn - F(5) + F(i) + F(1.5), 0.07, 0.1 + i * 0.12)
+		if (handover) for (let i = 0; i < 4; i++) click(T.exit - F(6) + F(i) + F(1.5), 0.06, 0.1 + i * 0.12)
+	}
 	// The handover: four soft dry clicks as the lockup's tiles turn back, a frame apart.
 	if (handover) for (const c of cells.filter((x) => x.exitAt !== null)) click(c.exitAt + EXIT / 2, 0.08, panAt(c.x, c.exitAt))
 	return cues
@@ -665,12 +701,12 @@ export function openingCues({ handover = true } = {}) {
  * The film must be 16:9 (1920 x 1080) and must have loaded the brand assets
  * (loadBrandAssets(film.defs)) before the opening renders.
  */
-export function addOpening(film, { at = 0, sound = true, handover = true } = {}) {
+export function addOpening(film, { at = 0, sound = true, handover = true, legacy = false } = {}) {
 	film.scene('opening', at, at + OPENING_DURATION, (ctx) => {
-		const update = buildOpening(ctx.g, { defs: ctx.defs, handover })
+		const update = buildOpening(ctx.g, { defs: ctx.defs, handover, legacy })
 		return (t) => update(t - at)
 	})
-	if (sound) for (const c of openingCues({ handover })) film.cue(at + c.t, c.kind, (({ t, kind, ...o }) => o)(c))
+	if (sound) for (const c of openingCues({ handover, legacy })) film.cue(at + c.t, c.kind, (({ t, kind, ...o }) => o)(c))
 	return at + OPENING_DURATION
 }
 

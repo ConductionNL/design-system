@@ -165,7 +165,7 @@ export const CAPTIONS = [
 	{ id: 'slogan1', module: 'install', text: 'Install the app', up: ins(IN.slogans[0] + RISE), out: DURATION, exit: 0 },
 	{ id: 'slogan2', module: 'install', text: 'Use the app', up: ins(IN.slogans[1] + RISE), out: DURATION, exit: 0 },
 	{ id: 'slogan3', module: 'install', text: 'Own your data', up: ins(IN.slogans[2] + RISE), out: DURATION, exit: 0 },
-	{ id: 'line', module: 'install', text: 'Always 100% open source and free to use', up: ins(IN.line + RISE), out: DURATION, exit: 0 },
+	{ id: 'line', module: 'install', text: 'Always 100% open source', up: ins(IN.line + RISE), out: DURATION, exit: 0 },
 ]
 export const words = (text) => text.split(/\s+/).filter(Boolean).length
 export const budget = (text) => Math.max(1.5, 0.4 * words(text))

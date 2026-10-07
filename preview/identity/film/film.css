@@ -1,0 +1,170 @@
+/* ============================================================
+   Film section, brand kit
+   ------------------------------------------------------------
+   Shared by the four pages in preview/identity/film/. Builds on
+   preview.css (hero, section-label) and adds a light and a dark
+   palette from the token layer: the page follows the OS, and an
+   explicit data-theme on <html> wins.
+   ============================================================ */
+
+:root {
+  --fp-ground: var(--c-cobalt-50);
+  --fp-card: var(--c-white);
+  --fp-ink: var(--c-cobalt-900);
+  --fp-body: var(--c-cobalt-700);
+  --fp-muted: var(--c-cobalt-400);
+  --fp-line: var(--c-cobalt-100);
+  --fp-link: var(--c-blue-cobalt);
+  --fp-mark: var(--c-orange-knvb);
+  --fp-code: var(--c-cobalt-50);
+  --fp-plot: var(--c-blue-cobalt);
+  --fp-grid: var(--c-cobalt-100);
+  --fp-highlight: var(--c-cobalt-100);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fp-ground: var(--c-cobalt-900);
+    --fp-card: var(--c-cobalt-800);
+    --fp-ink: var(--c-white);
+    --fp-body: var(--c-cobalt-100);
+    --fp-muted: var(--c-cobalt-200);
+    --fp-line: var(--c-cobalt-700);
+    --fp-link: var(--c-cobalt-200);
+    --fp-code: var(--c-cobalt-900);
+    --fp-plot: var(--c-cobalt-200);
+    --fp-grid: var(--c-cobalt-700);
+    --fp-highlight: var(--c-cobalt-600);
+  }
+}
+:root[data-theme="dark"] {
+  --fp-ground: var(--c-cobalt-900);
+  --fp-card: var(--c-cobalt-800);
+  --fp-ink: var(--c-white);
+  --fp-body: var(--c-cobalt-100);
+  --fp-muted: var(--c-cobalt-200);
+  --fp-line: var(--c-cobalt-700);
+  --fp-link: var(--c-cobalt-200);
+  --fp-code: var(--c-cobalt-900);
+  --fp-plot: var(--c-cobalt-200);
+  --fp-grid: var(--c-cobalt-700);
+  --fp-highlight: var(--c-cobalt-600);
+}
+
+body { padding: 0; background: var(--fp-ground); color: var(--fp-body); }
+/* The hero stays cobalt in both modes: white on cobalt reads in either. */
+.hero { background: var(--c-blue-cobalt); }
+.hero a.on-hero { color: white; }
+
+.kit-body { max-width: 1280px; margin: 0 auto; padding: var(--space-10) var(--space-12) var(--space-12); }
+.kit-body > .section-label:first-child { margin-top: 0; }
+.section-label { color: var(--fp-muted); }
+.kit-body p, .kit-body li { font-size: 15px; line-height: 1.55; color: var(--fp-body); }
+.kit-body a { color: var(--fp-link); }
+.kit-body a:focus-visible, .kit-body button:focus-visible, .kit-body summary:focus-visible {
+  outline: 2px solid var(--conduction-color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--conduction-color-focus-halo);
+}
+.kit-body h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; color: var(--fp-ink); margin: 0 0 var(--space-3); }
+.kit-body h2.section-label {
+  font-family: var(--conduction-typography-font-family-code); font-size: var(--fs-xs); font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--fp-muted); margin: var(--space-12) 0 var(--space-4);
+}
+.kit-body h3 { font-size: 19px; font-weight: 600; color: var(--fp-ink); margin: 0 0 var(--space-2); }
+.kit-body code { font-family: var(--conduction-typography-font-family-code); font-size: 0.92em; background: var(--fp-code); padding: 1px 5px; border-radius: var(--radius-sm); }
+.lead-text { font-size: 18px; max-width: 70ch; color: var(--fp-body); }
+
+.card-x {
+  background: var(--fp-card);
+  border: 1px solid var(--fp-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+@media (max-width: 1000px) { .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+/* Section nav between the four pages */
+.film-nav { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-8); padding: 0; list-style: none; }
+.film-nav a {
+  display: inline-block; padding: 8px 14px; border-radius: 999px; text-decoration: none;
+  border: 1px solid var(--fp-line); background: var(--fp-card); color: var(--fp-ink); font-size: 14px; font-weight: 600;
+}
+.film-nav a[aria-current="page"] { border-color: var(--fp-mark); }
+
+/* The five laws */
+.laws { counter-reset: law; display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); padding: 0; list-style: none; }
+.laws li { counter-increment: law; background: var(--fp-card); border: 1px solid var(--fp-line); border-radius: var(--radius-lg); padding: var(--space-5); }
+.laws li::before { content: counter(law); display: block; font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--fp-muted); margin-bottom: var(--space-2); }
+.laws strong { display: block; color: var(--fp-ink); font-size: 17px; margin-bottom: 4px; }
+
+/* Demo frames: a film page in an iframe, driven by film-demo.js */
+.demo { margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.demo .frame { position: relative; aspect-ratio: 16 / 9; background: var(--c-cobalt-900); border-radius: var(--radius-md); overflow: hidden; }
+.demo iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.demo .controls { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.demo button, .btn {
+  font: inherit; font-size: 14px; font-weight: 600; min-height: 40px; min-width: 44px; padding: 6px 14px; cursor: pointer;
+  color: var(--fp-ink); background: transparent; border: 1px solid var(--fp-muted); border-radius: var(--radius-sm);
+}
+.demo figcaption, .note { font-size: 14px; line-height: 1.5; color: var(--fp-muted); }
+.demo figcaption strong { color: var(--fp-ink); }
+
+/* Gallery */
+.film-card { display: flex; flex-direction: column; gap: var(--space-2); }
+.film-card .meta { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--fp-muted); }
+.film-card .links { display: flex; gap: var(--space-4); flex-wrap: wrap; margin-top: auto; padding-top: var(--space-3); font-weight: 600; font-size: 14px; }
+.film-card .hexes { display: flex; gap: 6px; height: 34px; align-items: center; }
+.film-card .hexes span { width: 26px; height: 30px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+.film-card .hexes span.nc { background: var(--c-nextcloud-blue); }
+.film-card .hexes span.lit { background: var(--c-orange-knvb); }
+.tag { display: inline-block; font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fp-muted); border: 1px solid var(--fp-line); border-radius: 999px; padding: 2px 8px; }
+
+/* Tables */
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--fp-card); border-radius: var(--radius-lg); overflow: hidden; }
+.tbl th, .tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--fp-line); vertical-align: top; color: var(--fp-body); }
+.tbl th { color: var(--fp-ink); font-weight: 600; }
+.tbl-wrap { overflow-x: auto; }
+
+/* Curve plots */
+.curve { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: var(--space-5); align-items: center; }
+@media (max-width: 560px) { .curve { grid-template-columns: 1fr; } }
+.curve svg.plot { width: 160px; height: 160px; display: block; }
+.plot .axis { stroke: var(--fp-grid); stroke-width: 1; fill: none; }
+.plot .line { stroke: var(--fp-plot); stroke-width: 2.5; fill: none; }
+.plot .one { stroke: var(--fp-muted); stroke-dasharray: 3 4; stroke-width: 1; }
+.track { position: relative; height: 34px; border-bottom: 1px dashed var(--fp-line); margin-top: var(--space-3); }
+.track .puck { position: absolute; top: 2px; left: 0; width: 26px; height: 30px; clip-path: var(--hex-pointy-top); background: var(--c-blue-cobalt); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .track .puck { background: var(--c-cobalt-200); } }
+:root[data-theme="dark"] .track .puck { background: var(--c-cobalt-200); }
+
+/* Transcript with the spoken word highlighted */
+.transcript { font-size: 26px; font-weight: 700; line-height: 1.4; color: var(--fp-ink); margin: var(--space-2) 0; }
+.transcript span { border-radius: 4px; padding: 0 2px; transition: none; }
+.transcript span.now { background: var(--fp-highlight); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+audio { width: 100%; max-width: 520px; }
+
+/* Checklist */
+.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.check label { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--fp-body); cursor: pointer; }
+.check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--c-blue-cobalt); flex: none; }
+pre.brief {
+  background: var(--fp-code); color: var(--fp-body); border: 1px solid var(--fp-line); border-radius: var(--radius-lg);
+  padding: var(--space-5); overflow-x: auto; font-family: var(--conduction-typography-font-family-code); font-size: 13px; line-height: 1.6; white-space: pre;
+}
+
+.kit-footer {
+  max-width: 1280px; margin: 64px auto; padding: var(--space-8) var(--space-12);
+  color: var(--fp-muted); font-size: 13px; display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); flex-wrap: wrap;
+  border-top: 1px solid var(--fp-line);
+}
+.kit-footer a { color: var(--fp-muted); }
+
+@media (max-width: 700px) {
+  .hero { padding: 48px 16px 40px; }
+  .hero h1 { font-size: 38px; }
+  .kit-body { padding: var(--space-6) 16px var(--space-10); }
+  .kit-footer { padding: var(--space-6) 16px; }
+  .transcript { font-size: 21px; }
+}

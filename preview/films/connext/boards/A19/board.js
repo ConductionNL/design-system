@@ -160,7 +160,7 @@ export const boards = [
 		module: 'opening',
 		claim_source: 'No claim: the company name only.',
 		draw(ctx) {
-			const up = buildOpening(ctx.g, { defs: ctx.defs })
+			const up = buildOpening(ctx.g, { defs: ctx.defs, legacy: true })
 			const k = OPENING.T.powerOn + 0.9
 			up(k)
 			return () => up(k)
@@ -364,7 +364,7 @@ export const boards = [
 		module: 'builtOn',
 		claim_source: 'round4/facts.json fact a (OpenRegister 2.1.0 links a record to Files, Mail, Calendar, Contacts, Talk, Deck, Tasks and more). No Nextcloud Notes. story.json mechanics[0].',
 		draw(ctx) {
-			builtOnFrame(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'] })
+			builtOnFrame(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'], legacy: true })
 		},
 	},
 
@@ -377,7 +377,7 @@ export const boards = [
 		key: at('install', IN.key),
 		bars: span(START.install, DURATION),
 		words: `${INSTALL.slogans.join('\n')}\n${INSTALL.line}`,
-		motion: `Round 6: Conduction, not ConNext and Nextcloud, and no full stops. Its own scene (_lib/scenes/closing.js installScene). The Nextcloud cell travels from the closing piece to the top right (0 to 0.42 s local) and turns over into the Conduction avatar (a scale flip about its vertical axis, the opening's own device, never a rotation), a quiet honeycomb stepping on round it. The Conduction wordmark rises top left as the header; the slogans rise one under the other at headline size: "Install the app" in orange (the call, the one orange) at ${s(at('install', IN.slogans[0]))}, "Use the app" on ${bb(at('install', IN.slogans[1]))}, "Own your data" on ${bb(at('install', IN.slogans[2]))}; on ${bb(at('install', IN.line))} "Always 100% open source and free to use" rises under them in white at 72 px (was 64). All hold to the end, ${s(DURATION)}. No fade, no loop.`,
+		motion: `Round 6: Conduction, not ConNext and Nextcloud, and no full stops. Its own scene (_lib/scenes/closing.js installScene). The Nextcloud cell travels from the closing piece to the top right (0 to 0.42 s local) and turns over into the Conduction avatar (a scale flip about its vertical axis, the opening's own device, never a rotation), a quiet honeycomb stepping on round it. The Conduction wordmark rises top left as the header; the slogans rise one under the other at headline size: "Install the app" in orange (the call, the one orange) at ${s(at('install', IN.slogans[0]))}, "Use the app" on ${bb(at('install', IN.slogans[1]))}, "Own your data" on ${bb(at('install', IN.slogans[2]))}; on ${bb(at('install', IN.line))} "Always 100% open source" (round 15: no "free") rises under them in white at 72 px (was 64). All hold to the end, ${s(DURATION)}. No fade, no loop.`,
 		sound: 'A soft whoosh as Nextcloud travels, a dry click as it turns into the avatar; a crisp click and a low impact on "Install the app"; soft ticks on the next two; a pluck on the line; the pad resolves.',
 		apps: ['conduction'],
 		borrow: 'Claude mobile tools: hold on the end card.',
@@ -385,7 +385,7 @@ export const boards = [
 		module: 'install',
 		claim_source: Object.entries(INSTALL.sources).map(([k, v]) => `"${k}": ${v}`).join(' '),
 		draw(ctx) {
-			installFrame(ctx, {})
+			installFrame(ctx, { legacy: true })
 		},
 	},
 ]

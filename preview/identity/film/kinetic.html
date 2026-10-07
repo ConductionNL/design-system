@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Kinetic type, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How words move in Conduction films: whole words, one reveal per role, three recipes, and type timed to a voice, with the spoken word highlighted.">
+<link rel="stylesheet" href="../../preview.css">
+<link rel="stylesheet" href="film.css">
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../../index.html">Design system</a> &nbsp;/&nbsp; <a href="../index.html">Identity</a> &nbsp;/&nbsp; <a href="index.html">Film</a> &nbsp;/&nbsp; Kinetic type</div>
+  <div class="eyebrow">Film · kinetic type</div>
+  <h1>Words arrive when they are said.</h1>
+  <p>We move words, never letters. Each kind of word has one way in, nothing pops, and every line stays up long enough to read.</p>
+</div>
+
+<main class="kit-body">
+
+  <nav aria-label="Film section">
+    <ul class="film-nav">
+      <li><a href="index.html">Principles and gallery</a></li>
+      <li><a href="motion.html">Motion tokens and transitions</a></li>
+      <li><a href="kinetic.html" aria-current="page">Kinetic type and voice</a></li>
+      <li><a href="brief.html">Brief and review</a></li>
+    </ul>
+  </nav>
+
+  <h2 class="section-label">The rules</h2>
+  <div class="grid-3">
+    <div class="card-x">
+      <h3>Whole words</h3>
+      <p>A letter sweep spells other words on its way. "Conduct" is not "Conduction". So we have no letter reveal at all.</p>
+    </div>
+    <div class="card-x">
+      <h3>One way in per role</h3>
+      <p>Running words rise out of their line. The hero word turns over, like a hex. A slam word rises fast and stops dead.</p>
+    </div>
+    <div class="card-x">
+      <h3>Time to read</h3>
+      <p>A line holds 1.5 seconds after its last word, or 0.4 seconds a word if that is longer. Five words a line at most.</p>
+    </div>
+  </div>
+
+  <h2 class="section-label">Three recipes</h2>
+  <div class="grid-3">
+    <figure class="demo card-x" data-src="../../films/kinetic-voice/recipes.html?r=lock&amp;capture" data-still="2.5" data-label="the lock recipe">
+      <div class="frame"></div>
+      <div class="controls"><button type="button" data-play>Play</button><h3 style="margin:0">Lock</h3></div>
+      <figcaption>Every word rises into its final place on its beat, and the line locks together. No sound of its own.</figcaption>
+    </figure>
+    <figure class="demo card-x" data-src="../../films/kinetic-voice/recipes.html?r=slam&amp;capture" data-still="2.5" data-label="the slam recipe">
+      <div class="frame"></div>
+      <div class="controls"><button type="button" data-play>Play</button><h3 style="margin:0">Slam</h3></div>
+      <figcaption>One big word a line, three at most. Each stops dead on a beat, with a dry click on that frame.</figcaption>
+    </figure>
+    <figure class="demo card-x" data-src="../../films/kinetic-voice/recipes.html?r=hero&amp;capture" data-still="2.5" data-label="the hero recipe">
+      <div class="frame"></div>
+      <div class="controls"><button type="button" data-play>Play</button><h3 style="margin:0">Hero</h3></div>
+      <figcaption>The line locks, and one word turns over in orange: the scene's one orange. A click when it lands.</figcaption>
+    </figure>
+  </div>
+
+  <h2 class="section-label">On a voice</h2>
+  <p class="lead-text">The voice is the clock. We align the take word by word, place it so its first word lands on a beat, and start each word two frames before it is heard. That way each word can be read on the frame it is spoken.</p>
+
+  <div class="grid-2">
+    <figure class="demo card-x" data-src="../../films/kinetic-voice/index.html?capture" data-still="4" data-audio="#voice-mix" data-label="the voice demo" data-title="Film demo: kinetic type on a voice">
+      <div class="frame"></div>
+      <figcaption><strong>Play the sound to play the film.</strong> The picture follows the audio clock.</figcaption>
+      <audio id="voice-mix" controls preload="metadata" src="../../films/kinetic-voice/mix.mp3" aria-label="Kinetic voice demo, voice and music"></audio>
+    </figure>
+    <div class="card-x">
+      <h3>Spoken now</h3>
+      <p class="note">The word being spoken is underlined and shaded.</p>
+      <p class="transcript" lang="nl" id="line-nl" aria-label="Gebouwd op Nextcloud, verrijkt door Conduction."></p>
+      <p class="transcript" lang="en" id="line-en" aria-label="Built on Nextcloud, enhanced by Conduction."></p>
+      <p class="note">Voice only, without music:</p>
+      <p><audio controls preload="none" src="../../films/kinetic-voice/voice/nl-04.mp3" aria-label="Dutch take, voice only"></audio></p>
+      <p><audio controls preload="none" src="../../films/kinetic-voice/voice/en-04.mp3" aria-label="English take, voice only"></audio></p>
+    </div>
+  </div>
+
+  <div class="card-x" style="margin-top: var(--space-5);">
+    <h3>This voice is provisional</h3>
+    <p>The takes are generated with a clone of Ruben's voice, from the clean-reference run. Ruben has not yet chosen between this voice and the trained one. When he does, we swap the takes and the film retimes itself from the alignment.</p>
+    <p>Only generated takes are published. The voice model and the recordings are kept in a private repository, <a href="https://github.com/ConductionNL/voice-ruben">ConductionNL/voice-ruben</a>.</p>
+  </div>
+
+  <h2 class="section-label">The recipe, step by step</h2>
+  <ol>
+    <li>Write the line in our voice: one claim, under 16 words, sentence case.</li>
+    <li>Generate the take with the cloned voice. Keep only the generated take.</li>
+    <li>Align it with WhisperX, which gives each word a start and an end. Check the words against the text.</li>
+    <li>Place the take so its first word lands on a beat.</li>
+    <li>Pass the words to <code>kineticText</code> in <code>preview/films/_lib/scenes/kinetic.js</code>. Drop the full stop and the comma at the end of a line.</li>
+    <li>Put the take in the film's music. <code>score.mjs</code> lowers the music under the voice and mixes to -14 LUFS.</li>
+    <li>Check the sync frame by frame on a contact sheet of the finished render.</li>
+  </ol>
+
+</main>
+
+<div class="kit-footer">
+  <span>Conduction Design System &middot; scene type in <code>preview/films/_lib/scenes/kinetic.js</code></span>
+  <span><a href="index.html">&larr; Back to film</a> &middot; <a href="../index.html">&larr; Back to identity</a></span>
+</div>
+
+<script type="module">
+import './film-demo.js'
+
+/* The transcript: one span per word, highlighted while that word is heard. Times come from the film's own timeline. */
+const lines = { nl: document.getElementById('line-nl'), en: document.getElementById('line-en') }
+const words = []
+for (const lang of ['nl', 'en']) {
+	const res = await fetch(`../../films/kinetic-voice/voice/${lang}-04.words.json`)
+	const take = await res.json()
+	lines[lang].replaceChildren(...take.words.map((w, i) => {
+		const s = document.createElement('span')
+		s.textContent = w.word + (i < take.words.length - 1 ? ' ' : '')
+		s.setAttribute('aria-hidden', 'true')
+		words.push({ lang, i, el: s, rel: w })
+		return s
+	}))
+}
+const fig = document.querySelector('figure[data-audio]')
+const audio = document.getElementById('voice-mix')
+let at = null
+fig.addEventListener('demo:ready', (e) => { at = e.detail.__kineticVoice?.at || null })
+const show = (t) => {
+	for (const w of words) {
+		const off = at ? at[w.lang] : null
+		const on = off != null && t >= off + w.rel.start && t < off + w.rel.end
+		w.el.classList.toggle('now', on)
+	}
+}
+fig.addEventListener('demo:time', (e) => show(e.detail))
+audio.addEventListener('ended', () => show(-1))
+</script>
+
+</body>
+</html>

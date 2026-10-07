@@ -43,7 +43,7 @@ await loadFonts(FONTS)
 await loadBrandAssets(film.defs)
 
 // The opening, then the body on the next downbeat.
-const bodyAt = addOpening(film, { at: 0 })
+const bodyAt = addOpening(film, { at: 0, legacy: true })
 if (Math.abs(bodyAt - START.body) > 1e-6) console.error(`opening ends at ${bodyAt}, the storyboard expects ${START.body}`)
 
 film.scene('world', START.body, START.body + LEN.body, buildWorld)
@@ -51,8 +51,8 @@ film.scene('world', START.body, START.body + LEN.body, buildWorld)
 const captions = q.has('notype') ? [] : buildType(film, camera)
 
 // The closing pieces, each its own scene, the same in every film. The ConNext film puts the apps of its story on top.
-film.scene('builtOn', START.builtOn, START.install, (ctx) => builtOnScene(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'] }))
-film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, {}), { post: 0.001 })
+film.scene('builtOn', START.builtOn, START.install, (ctx) => builtOnScene(ctx, { apps: ['pipelinq', 'filinq', 'portaliq'], legacy: true }))
+film.scene('install', START.install, DURATION, (ctx) => installScene(ctx, { legacy: true }), { post: 0.001 })
 
 /**
  * The bed, in D, across all 22 bars (bars count from 0, ranges [from, to)). The opening has

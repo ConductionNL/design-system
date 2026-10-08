@@ -128,7 +128,7 @@ function netwerkschijf(g, t, S) {
 	const dx = 900 * (1 - arrive(inv(F(2), F(2) + slide, t)))
 	const wg = moving(g, { dx })
 	const rowsAt = S.onset(5) // "vol mappen": the rows flood in, one an 8th
-	const scroll = -300 * drift(inv(S.onset(7), S.onset(13), t)) // the list keeps going past the window
+	const scroll = -300 * drift(inv(S.onset(7), S.dur, t)) // the list keeps going past the window, to the cut
 	const { box, body } = explorer(wg, { path: t >= S.onset(4) - F(2) ? 'P: Projecten  ›  Algemeen  ›  oud  ›  oud (2)' : '', scroll })
 	MESS.forEach(([name, kind], i) => {
 		const at = rowsAt + i * (BEAT / 2) * 0.5
@@ -143,6 +143,10 @@ const netwerkschijfCues = (S) => [
 
 /* ------------------------------------------------------------------ 2 vraag */
 
+/** The rows step off one an eighth from beat 2; the device comes to rest after the last. */
+const STEP_OFF = BEAT / 2
+const REST_AT = BEAT + (MESS.length - 1) * STEP_OFF + F(4)
+
 function vraag(g, t, S) {
 	const sx = turnOut(t, S.dur)
 	const wg = moving(g, { sx })
@@ -152,19 +156,19 @@ function vraag(g, t, S) {
 	MESS.forEach(([name, kind], i) => {
 		if (i === KEEP) return
 		// The rows step off, one an eighth, from the second beat; each drops a little and clears.
-		const off = BEAT + (i < KEEP ? i : i - 1) * F(3)
+		const off = BEAT + (i < KEEP ? i : i - 1) * STEP_OFF
 		const q = leave(inv(off, off + F(5), t))
 		if (q >= 1) return
 		const rg = el('g', q > 0 ? { transform: `translate(0 ${(40 * q).toFixed(2)})`, opacity: (1 - q).toFixed(3) } : {}, body)
 		fileRow(rg, { x: box.x + 8, y: box.y + 64 + i * 64 - 300, w: box.w - 16, name, kind, marks: [{ type: 'pill', label: '?', tone: 'unknown' }] })
 	})
 	// The device stays and comes to rest at the top of the cleared window.
-	const k = rest(inv(BEAT * 4, BEAT * 4 + moveDur(keepY0 - keepY1, rest), t))
-	fileRow(body, { x: box.x + 8, y: keepY0 + (keepY1 - keepY0) * k + 300, w: box.w - 16, name: DOC, kind: 'doc', selected: k > 0.5, marks: [{ type: 'pill', label: '?', tone: 'unknown', off: BEAT * 4 }] })
+	const k = rest(inv(REST_AT, REST_AT + moveDur(keepY0 - keepY1, rest), t))
+	fileRow(body, { x: box.x + 8, y: keepY0 + (keepY1 - keepY0) * k + 300, w: box.w - 16, name: DOC, kind: 'doc', selected: k > 0.5, marks: [{ type: 'pill', label: '?', tone: 'unknown', off: REST_AT }] })
 }
 const vraagCues = (S) => [
-	...MESS.filter((_, i) => i !== KEEP).map((_, k) => ({ t: BEAT + k * F(3), kind: 'tick', freq: 1568 - (k % 4) * 110, gain: 0.03, pan: 0.35 })),
-	{ t: BEAT * 4, kind: 'whoosh', dur: 0.4, from: 1200, to: 600, panFrom: 0.3, panTo: 0.3, gain: 0.05 },
+	...MESS.filter((_, i) => i !== KEEP).map((_, k) => ({ t: BEAT + k * STEP_OFF, kind: 'tick', freq: 1568 - (k % 4) * 110, gain: 0.03, pan: 0.35 })),
+	{ t: REST_AT, kind: 'whoosh', dur: 0.4, from: 1200, to: 600, panFrom: 0.3, panTo: 0.3, gain: 0.05 },
 	{ t: S.dur - TURN, kind: 'click', gain: 0.16, freq: 2800, seed: 31, dry: true, pan: 0.4 },
 ]
 

@@ -23,7 +23,7 @@ Status: **animatic** (timed storyboard with voice, half-scale proof). Not a mast
 
 ## Voice
 - Calm, concrete, one handelingscasus per line. Sanne is fictional. A neutral "gemeente", never a real one.
-- Voice-over: twelve generated Dutch takes in ./voice (provisional voice), aligned with WhisperX. The voice is master: every caption word and every move in a scene starts on the word that says it.
+- Voice-over: eleven generated Dutch takes in ./voice (trained voice, warm style, sped up 8%), none over the shared opening and closing, aligned with WhisperX. The voice is master: every caption word and every move in a scene starts on the word that says it.
 - Banned here: real municipalities, real people other than Sanne, third-party logos (SharePoint, Teams and Word are plain labelled windows).
 
 ## Structure (beat sheet)
@@ -57,3 +57,6 @@ Caption words in the body: 53 (17.3 per 30 s; worst 30 s window 29).
 - The brief asked for the refusal to stop "red" at the storage. The palette has no red; the stop is the scene's one orange (the answer).
 - "Register" appears as a small layer label in the architecture scene because the brief asks for it; the bible lists "register" as a platform internal to keep off screen. Ruben to decide.
 - Take 04 transcribes as "Je probeert", take 07 as "Plaats je": check the audio before the master.
+
+## Round 30 deviation
+- Scene netwerkschijf carries a 13-word caption over four lines (Ruben asked for "als ze überhaupt al weten waar het staat"). It holds 2.5 s, not the 5.2 s the per-word rule gives: every word is revealed on its spoken onset over 4.4 s, so the viewer reads along. grid-check reports it as a short caption on purpose.

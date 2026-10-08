@@ -389,19 +389,19 @@ function versleuteld(g, t, S) {
 		const r = progress(t, keyAt + F(4), 8)
 		el('rect', { x: left.box.x + 4, y: left.box.y + 22, width: left.box.w - 8, height: 60, rx: 10, fill: 'none', stroke: C.orange, 'stroke-width': 4, pathLength: 1, 'stroke-dasharray': `${r.toFixed(4)} 1` }, left.body)
 	}
-	// The colleague's window lands on "Wie geen toegang heeft".
-	const rg = risen(wg, t, S.onset(6) - F(2), { dy: 40 })
+	// The colleague's window lands on "toegang" (round 30: mid-bar, so bar 32 is not still).
+	const rg = risen(wg, t, S.onset(8) - F(2), { dy: 40 })
 	if (!rg) return
 	const right = explorer(rg, { title: 'Collega', kind: 'plain', x: WIN.x + w2 + 30, w: w2, h: 520, nav: [] })
 	fileRow(right.body, { x: right.box.x + 6, y: right.box.y + 20, w: right.box.w - 12, name: 'Integriteit 0412', kind: 'folder', size: 21, marks: [{ type: 'crypt' }] })
-	CONF.forEach(([name, kind], i) => fileRow(right.body, { x: right.box.x + 6, y: right.box.y + 84 + i * 64, w: right.box.w - 12, name, kind, hidden: true, marks: [{ type: 'lock', at: S.onset(10) + i * F(2) }] }))
-	statusPill(right.body, { x: right.box.x + 16, cy: right.box.y + 330, label: 'je ziet dat het bestaat', tone: 'frozen', t, at: S.onset(14) - F(2), size: 19 })
+	CONF.forEach(([name, kind], i) => fileRow(right.body, { x: right.box.x + 6, y: right.box.y + 84 + i * 64, w: right.box.w - 12, name, kind, hidden: true, marks: [{ type: 'lock', at: S.onset(9) + i * F(2) }] }))
+	statusPill(right.body, { x: right.box.x + 16, cy: right.box.y + 330, label: 'je ziet dat het bestaat', tone: 'frozen', t, at: S.onset(10) - F(2), size: 19 })
 }
 const versleuteldCues = (S) => [
 	{ t: 0, kind: 'whoosh', dur: 0.3, from: 2400, to: 700, panFrom: 0.8, panTo: 0.2, gain: 0.08 },
 	{ t: S.onset(5), kind: 'click', gain: 0.2, freq: 2700, seed: 40, dry: true, pan: 0.2 },
-	{ t: S.onset(6) - F(2), kind: 'whoosh', dur: 0.3, from: 900, to: 2000, panFrom: 0.6, panTo: 0.5, gain: 0.05 },
-	...[0, 1, 2].map((i) => ({ t: S.onset(10) + i * F(2), kind: 'tick', freq: 1479.98 - i * 120, gain: 0.05, pan: 0.6 })),
+	{ t: S.onset(8) - F(2), kind: 'whoosh', dur: 0.3, from: 900, to: 2000, panFrom: 0.6, panTo: 0.5, gain: 0.05 },
+	...[0, 1, 2].map((i) => ({ t: S.onset(9) + i * F(2), kind: 'tick', freq: 1479.98 - i * 120, gain: 0.05, pan: 0.6 })),
 	{ t: S.dur - TURN, kind: 'click', gain: 0.14, freq: 2800, seed: 41, dry: true, pan: 0.4 },
 ]
 
@@ -442,7 +442,7 @@ const overalCues = (S) => FOUR.map((f, i) => ({ t: S.onset(f.word) - F(2) + F(4)
 const DIVE = 560
 const LAYERS = { nextcloud: 930, register: 1110, storage: 1290 }
 
-function stack(g, t, { ncAt, regAt, stAt, lockAt, lockOrange }) {
+function stack(g, t, { ncAt, regAt, stAt, lockAt, lockOrange, newVerAt }) {
 	const x = WIN.x, w = WIN.w
 	// Lines between the layers, drawn on as each lands.
 	const link = (y0, y1, at) => {
@@ -470,7 +470,9 @@ function stack(g, t, { ncAt, regAt, stAt, lockAt, lockOrange }) {
 		el('rect', { x, y: LAYERS.storage - 70, width: w, height: 160, rx: 12, fill: C.cobalt700 }, sg)
 		textBlock(sg, 'Objectopslag', { x: x + 30, y: LAYERS.storage - 10, size: 34, weight: 700, fill: C.white, clip: false })
 		textBlock(sg, 'Object Lock', { x: x + 30, y: LAYERS.storage + 32, size: 22, weight: 500, family: 'IBM Plex Mono', fill: C.cobalt200, clip: false })
-		versionStack(sg, { x: x + 470, y: LAYERS.storage - 30, w: 200, h: 92, at: [stAt, stAt + F(3), stAt + F(6)], t, step: 16 })
+		// A fourth version (the claim) lands in front; the first three keep their places.
+		const more = newVerAt != null ? [newVerAt] : []
+		versionStack(sg, { x: x + 470 - 16 * more.length, y: LAYERS.storage - 30 + 16 * more.length, w: 200, h: 92, at: [stAt, stAt + F(3), stAt + F(6), ...more], t, step: 16 })
 		lockMark(sg, { cx: x + w - 60, cy: LAYERS.storage + 10, r: 34, t, at: lockAt, ring: lockOrange })
 	}
 }
@@ -499,9 +501,12 @@ function claim(g, t, S) {
 	const k = 1 - camera(inv(up, up + back, t))
 	const world = el('g', { transform: `translate(0 ${(-DIVE * k).toFixed(2)})` }, g)
 	fourWindows(world, t, [-1, -1, -1, -1], { leaveFrom: S.dur - F(8) })
-	if (k > 0.001) stack(world, t, { ncAt: -1, regAt: -1, stAt: -1, lockAt: -1, lockOrange: false })
+	// On "DMS" a new version lands in the storage and locks: the storage enforces it (round 30, no dead bar).
+	if (k > 0.001) stack(world, t, { ncAt: -1, regAt: -1, stAt: -1, lockAt: -1, lockOrange: false, newVerAt: S.onset(5) - F(2) })
 }
 const claimCues = (S) => [
+	{ t: S.onset(5) - F(2), kind: 'tick', freq: 1174.66, gain: 0.07 },
+	{ t: S.onset(5) + F(1), kind: 'click', gain: 0.12, freq: 2800, seed: 212, dry: true },
 	{ t: S.onset(15) - F(4), kind: 'whoosh', dur: 0.8, from: 500, to: 1800, panFrom: 0, panTo: 0, gain: 0.06 },
 	{ t: S.dur - F(8), kind: 'whoosh', dur: 0.3, from: 2400, to: 900, panFrom: 0.4, panTo: 0.2, gain: 0.06 },
 ]

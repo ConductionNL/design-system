@@ -7,11 +7,10 @@
  * (Gemeente Haarlem), EUPL-1.2, https://github.com/EHa-1999/XENA
  * (Redrawn in Conduction's own tokens and type; no colours, logos or names from the demo appear on screen.)
  *
- *   bars 1 to 3        the shared Conduction opening (_lib/scenes/opening.js)
+ *   bars 1 to 3        the shared Conduction opening (_lib/scenes/opening.js), no voice
  *   body               eleven scenes (./scenes/body.js), each as long as its voice take and its caption's
  *                      reading hold need, in whole beats (./scenes/plan.js computes it from the alignments)
- *   4 bars             "Gebouwd op Nextcloud", verrijkt door Conduction (the shared Built on piece, lang nl),
- *                      with take 12 placed so "Verrijkt" is heard as "Verrijkt door Conduction" rises
+ *   4 bars             "Gebouwd op Nextcloud", verrijkt door Conduction (the shared Built on piece, lang nl), no voice
  *   3 bars             the shared install board, "Installeer het / Gebruik het / Bezit het"
  *
  * 1920 x 1080, 24 fps, 128 BPM. The voice is master: every caption word and every move in a scene is
@@ -26,7 +25,7 @@ import { addOpening, OPENING } from '../_lib/scenes/opening.js'
 import { builtOnScene, installScene, BUILT_ON_DUR, INSTALL_DUR, CLOSING } from '../_lib/scenes/closing.js'
 import { timeline } from '../_lib/timeline.js'
 import { planKinetic } from '../_lib/scenes/kinetic.js'
-import { SCENES, BODY, BODY_BARS, TAKES, CLOSING_TAKE, BAR } from './scenes/plan.js'
+import { SCENES, BODY, BODY_BARS, TAKES, BAR } from './scenes/plan.js'
 import { builder, cuesFor, captionSpec } from './scenes/body.js'
 
 const q = new URLSearchParams(location.search)
@@ -36,11 +35,7 @@ const TOTAL_BARS = OPEN_BARS + BODY_BARS + BUILT_BARS + INST_BARS
 const START = { body: O, builtOn: O + BODY, install: O + BODY + BUILT_ON_DUR }
 const VOICE = (n) => `preview/films/archiefwaardig/voice/nl-${n}.mp3`
 
-// Take 12 over Built on: "Verrijkt" (word 3) is heard on the frame "Verrijkt door Conduction" rises.
-const t12 = TAKES[CLOSING_TAKE].words
-const enrichedAt = t12.findIndex((w) => /^verrijkt/i.test(w.word))
-if (enrichedAt < 0) throw new Error('archiefwaardig: take 12 has no "Verrijkt"')
-const AT12 = START.builtOn + CLOSING.connect.enhanced - t12[enrichedAt].start
+// No voice over the shared opening and closing pieces (bible, round 30): the takes live in the body only.
 
 const TL = timeline({
 	bpm: 128, fps: 24, bars: TOTAL_BARS,
@@ -52,7 +47,6 @@ const TL = timeline({
 	],
 	voice: [
 		...SCENES.map((S) => ({ id: S.id, src: VOICE(S.take), at: +(O + S.start + S.vo).toFixed(4), words: TAKES[S.take].words })),
-		{ id: 'builtOn', src: VOICE(CLOSING_TAKE), at: +AT12.toFixed(4), words: t12 },
 	],
 })
 if (Math.abs(TL.duration - (START.install + INSTALL_DUR)) > 1e-6) console.error(`archiefwaardig: duration mismatch ${TL.duration} vs ${START.install + INSTALL_DUR}`)
@@ -88,7 +82,7 @@ TL.cuesInto(film)
 /**
  * The bed, in D, one chord a bar (bars from 0, ranges [from, to)). The opening has no bed; the pad
  * enters on the hook, the offbeat bass from the first proof, a soft kick under the middle proofs; it
- * thins to pad and bass for the closing pieces and resolves on D. Ducked 9 dB under the voice.
+ * thins to pad and bass for the closing pieces and resolves on D. Ducked 15 dB under the voice (Ruben, round 30: the voice must sit clearly on top).
  */
 const D = [50, 54, 57, 62], Dmaj9 = [50, 54, 61, 64], Bm9 = [47, 54, 57, 61], Gmaj9 = [47, 50, 54, 57], Aadd9 = [49, 52, 57, 59], Em9 = [50, 54, 55, 59], Fsm7 = [49, 52, 54, 57]
 const CYCLE = [Gmaj9, Aadd9, Dmaj9, Bm9, Gmaj9, Aadd9, Fsm7, Bm9, Em9, Gmaj9, Aadd9, Dmaj9]
@@ -103,6 +97,7 @@ film.music = {
 	bass: chords.map((c) => ROOTS.get(c)),
 	parts: { pad: [[OPEN_BARS, TOTAL_BARS]], bass: [[OPEN_BARS + 4, TOTAL_BARS - 1]], kick: [[OPEN_BARS + 10, BODY_END - 4]], hat: [[OPEN_BARS + 18, BODY_END - 6]] },
 	loop: false,
+	duckDb: 15,
 	voice: TL.voice.map(({ src, at, gain }) => ({ src, at, gain })),
 }
 

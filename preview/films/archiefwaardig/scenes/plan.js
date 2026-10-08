@@ -1,6 +1,6 @@
 /**
  * Archiefwaardig (nl): the plan. Every time in the body comes from here, and every time here comes from
- * the voice: the twelve WhisperX alignments in ../voice/nl-NN.words.json ({ word, start, end } per word).
+ * the voice: the eleven WhisperX alignments in ../voice/nl-NN.words.json ({ word, start, end } per word).
  *
  * How a scene gets its length (measured, never guessed):
  *   - its take is placed so the first spoken word lands on beat `lead` of the scene (beat 2 by default);
@@ -29,11 +29,12 @@ const EXIT_F = 4
 
 /**
  * The scenes, in order. `caption` lines list spoken words by index into the take; [display, index]
- * shows a different form of a spoken word at that word's onset. `hero` is the index (in caption order)
+ * shows a different form of a spoken word at that word's onset. `hold` overrides the reading hold for a
+ * long caption that is revealed word by word on the voice, so the viewer has read along (round 30). `hero` is the index (in caption order)
  * of the one orange word that flips in. `mark` is the section title above the caption (round 27c).
  */
 export const SCENE_DEFS = [
-	{ id: 'netwerkschijf', take: '01', mark: 'Netwerkschijven', caption: [[['Niemand', 8], 9, 10], [11, 12, 13]] },
+	{ id: 'netwerkschijf', take: '01', mark: 'Netwerkschijven', caption: [[7, 8, 9], [10, 11, 12], [13, 14, 16, 17], [18, 19, 20]], hold: 2.5 },
 	{ id: 'vraag', take: '02', mark: 'Archiefwaardig', caption: [[0, 1, 2, 3], [4, 5]], hero: 4 },
 	{ id: 'opslaan', take: '03', mark: 'Opslaan in Word', caption: [[['Metagegevens', 16], 17], [18, 19]] },
 	{ id: 'weigeren', take: '04', mark: 'Bewaartermijn', caption: [[9, 10, 11], [12]] },
@@ -46,11 +47,8 @@ export const SCENE_DEFS = [
 	{ id: 'claim', take: '11', mark: 'Het enige DMS', caption: [[['Opslag', 8], ['dwingt', 9], 10], [11, ['af', 12]]], hero: 3 },
 ]
 
-/** The take for line 12, over the shared Built on piece. */
-export const CLOSING_TAKE = '12'
-
 const takeUrl = (n) => new URL(`../voice/nl-${n}.words.json`, import.meta.url)
-export const TAKES = Object.fromEntries(await Promise.all([...SCENE_DEFS.map((s) => s.take), CLOSING_TAKE].map(async (n) => {
+export const TAKES = Object.fromEntries(await Promise.all(SCENE_DEFS.map((s) => s.take).map(async (n) => {
 	const res = await fetch(takeUrl(n))
 	if (!res.ok) throw new Error(`archiefwaardig: voice take nl-${n}.words.json returned ${res.status}`)
 	const j = await res.json()
@@ -81,7 +79,7 @@ function resolve(def) {
 	const lines = def.caption.map((l) => l.map(() => k++))
 	const lastOnset = Math.max(...capWords.map((w) => snapFrame(w.start)))
 	const n = wordCount(capWords.map((w) => w.word).join(' '))
-	const needCaption = lastOnset - F(LEAD) + F(6) + holdFor(n) + F(EXIT_F) + F(CLEAR)
+	const needCaption = lastOnset - F(LEAD) + F(6) + (def.hold ?? holdFor(n)) + F(EXIT_F) + F(CLEAR)
 	const needVoice = vo + take.words.at(-1).end + BREATH
 	return { ...def, lead, vo, words, onset, capWords, lines, beats: beatsFor(Math.max(needCaption, needVoice)), need: { caption: +needCaption.toFixed(3), voice: +needVoice.toFixed(3) }, text: take.text }
 }

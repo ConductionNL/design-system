@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>humaniq: reiskosten, leaseauto's en bedrijfsmiddelen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1780px">
+  <dc-import name="DqKop" app="Humaniq" placeholder="Zoek medewerkers, verlof of loonstroken" role="HR-adviseur" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="humaniq" primary="Declaratie indienen" active="Declaraties" groups="{{ nav }}" hint-size="264px,1780px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Reiskosten en bedrijfsmiddelen</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
+              <button type="button" aria-haspopup="menu" title="Leaseauto toevoegen, Woon-werkregeling vastleggen, WPM-rapportage opstellen" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Acties</button>
+              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Middel uitgeven</button>
+            </div>
+          </div>
+          <span style="font-size: 15px; color: #5e6168">8 van 486 bedrijfsmiddelen · 412 uitgegeven aan medewerkers</span>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <a href="#" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; color: #1b1c1d; text-decoration: none">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #5e6168"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="{{ k.icon }}"></path></svg>{{ k.label }}</span>
+              <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+            </a>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <div role="tablist" aria-label="Reiskosten en bedrijfsmiddelen" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #e4e6ea">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+              <button type="button" role="tab" aria-selected="{{ t.sel }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ false }}"><span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">{{ t.count }}</span></sc-if></button>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+            <sc-for list="{{ views }}" as="v" hint-placeholder-count="5">
+              <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+            </sc-for>
+            <span style="flex: 1"></span>
+            <button type="button" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 13C6.14 13 4.59 14.28 4.14 16H2V18H4.14C4.59 19.72 6.14 21 8 21S11.41 19.72 11.86 18H22V16H11.86C11.41 14.28 9.86 13 8 13M8 19C6.9 19 6 18.1 6 17C6 15.9 6.9 15 8 15S10 15.9 10 17C10 18.1 9.1 19 8 19M19.86 6C19.41 4.28 17.86 3 16 3S12.59 4.28 12.14 6H2V8H12.14C12.59 9.72 14.14 11 16 11S19.41 9.72 19.86 8H22V6H19.86M16 9C14.9 9 14 8.1 14 7C14 5.9 14.9 5 16 5S18 5.9 18 7C18 8.1 17.1 9 16 9Z"></path></svg>Filter<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #3669a5; color: #ffffff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">1</span></button>
+            <div role="group" aria-label="Weergave" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1">
+              <sc-for list="{{ modes }}" as="m" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ m.pressed }}" aria-label="{{ m.label }}" title="{{ m.label }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="{{ m.icon }}"></path></svg></button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px">
+            <form role="search" style="flex: 1 1 260px; max-width: 360px; position: relative">
+              <label for="hu-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoeken in deze lijst</label>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" style="position: absolute; left: 12px; top: 11px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+              <input id="hu-zoek" type="search" placeholder="Zoek op middel, serienummer of medewerker" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+            </form>
+            <span style="color: #5e6168; margin-left: 6px">Actief:</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 6px 0 12px; border-radius: 15px; background: #eaf0f7; color: #234a78; font-weight: 600">Afdeling: Bedrijfsvoering<button type="button" aria-label="Filter verwijderen: Afdeling: Bedrijfsvoering" style="width: 22px; height: 22px; border: 0; border-radius: 11px; background: transparent; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button></span>
+            <a href="#" style="font-weight: 600">Alles wissen</a>
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px">
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; width: 28px"><input type="checkbox" aria-label="Alle middelen selecteren" style="width: 18px; height: 18px; accent-color: #3669a5"></th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Middel</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Categorie</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Uitgegeven aan</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Sinds</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Uitgifte getekend</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Status</th>
+                  <th scope="col" style="padding: 12px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acties</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                  <tr style="border-top: 1px solid #eef0f3">
+                    <td style="padding: 14px 16px"><input type="checkbox" aria-label="{{ r.selectLabel }}" style="width: 18px; height: 18px; accent-color: #3669a5"></td>
+                    <td style="padding: 14px 12px"><span style="display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.name }}</a><span style="color: #5e6168">{{ r.serial }}</span></span></td>
+                    <td style="padding: 14px 12px">{{ r.cat }}</td>
+                    <td style="padding: 14px 12px">{{ r.who }}</td>
+                    <td style="padding: 14px 12px">{{ r.since }}</td>
+                    <td style="padding: 14px 12px"><span style="{{ r.signStyle }}">{{ r.sign }}</span></td>
+                    <td style="padding: 14px 12px"><span style="{{ r.statusStyle }}">{{ r.status }}</span></td>
+                    <td style="padding: 14px 16px; text-align: right"><button type="button" aria-label="{{ r.actionsLabel }}" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+            <span>8 van 61 in Bedrijfsvoering · 20 per pagina</span>
+            <nav aria-label="Paginering" style="display: flex; gap: 6px">
+              <a href="#" aria-current="page" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #3669a5; color: #ffffff; font-weight: 600; text-decoration: none">1</a>
+              <a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">2</a>
+              <a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">3</a>
+              <a href="#" style="height: 34px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">Volgende</a>
+            </nav>
+          </div>
+        </div>
+
+        <section aria-labelledby="bm-dlg-t" style="display: flex; flex-direction: column; gap: 12px">
+          <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Na een klik op Leaseauto toevoegen, onder Acties</h2>
+          <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #e4e6ea; background: #ffffff; height: 560px">
+            <div aria-hidden="true" style="padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <strong style="font-size: 22px">Reiskosten en bedrijfsmiddelen</strong>
+              <div style="height: 40px; border-radius: 8px; background: #f5f6f8"></div>
+              <div style="height: 260px; border-radius: 8px; background: #f5f6f8"></div>
+            </div>
+            <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27,28,29,0.45)"></div>
+            <div style="position: absolute; left: 0; right: 0; top: 28px; display: flex; justify-content: center; padding: 0 16px">
+              <section role="dialog" aria-modal="true" aria-labelledby="bm-dlg-t" style="background: #ffffff; border-radius: 12px; width: 100%; max-width: 640px; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 12px 40px rgba(27,28,29,0.25)">
+                <div style="display: flex; align-items: flex-start; gap: 16px">
+                  <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; font-weight: 600; color: #5e6168">Leaseauto voor Femke de Ruiter</span><h3 id="bm-dlg-t" style="margin: 0; font-size: 20px; font-weight: 700">Leaseauto toevoegen</h3></div>
+                  <button type="button" aria-label="Sluiten" style="width: 36px; height: 36px; border: 0; border-radius: 18px; background: #f0f1f3; color: #1b1c1d; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+                </div>
+                <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end">
+                  <div style="display: flex; flex-direction: column; gap: 6px"><label for="bm-k" style="font-size: 14px; font-weight: 600">Kenteken</label><input id="bm-k" type="text" value="X-317-ND" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; font: 600 15px 'Fira Sans', sans-serif"></div>
+                  <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>Opzoeken bij de RDW</button>
+                </div>
+                <dl style="margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 20px; font-size: 15px; padding: 12px 14px; border-radius: 10px; background: #f5f6f8">
+                  <div style="display: flex; flex-direction: column; gap: 3px"><dt style="font-size: 13px; color: #5e6168">Merk en model</dt><dd style="margin: 0; font-weight: 600">Kia EV6</dd></div>
+                  <div style="display: flex; flex-direction: column; gap: 3px"><dt style="font-size: 13px; color: #5e6168">Eerste toelating</dt><dd style="margin: 0; font-weight: 600">14 maart 2025</dd></div>
+                  <div style="display: flex; flex-direction: column; gap: 3px"><dt style="font-size: 13px; color: #5e6168">Cataloguswaarde</dt><dd style="margin: 0; font-weight: 600">€ 48.990,00</dd></div>
+                </dl>
+                <span style="font-size: 13px; color: #5e6168">Ingevuld uit het kentekenregister via integriq. Een veld dat u al had ingevuld, vraagt humaniq eerst na.</span>
+                <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #eef0f3">
+                  <strong style="font-size: 15px">Bijtelling privégebruik</strong>
+                  <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px">
+                    <dt style="color: #5e6168">17 procent over de eerste € 30.000</dt><dd style="margin: 0; text-align: right">€ 5.100,00</dd>
+                    <dt style="color: #5e6168">22 procent over € 18.990</dt><dd style="margin: 0; text-align: right">€ 4.177,80</dd>
+                    <dt style="font-weight: 700">Per maand op de loonstrook</dt><dd style="margin: 0; text-align: right; font-weight: 700">€ 773,15</dd>
+                  </dl>
+                  <span style="font-size: 13px; color: #5e6168">Elektrisch, toegelaten in 2025: dit percentage geldt 60 maanden, tot maart 2030.</span>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px"><button type="button" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Annuleren</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 8px; border: 0; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Leaseauto toevoegen</button></div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1780}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Mijn HR', 'inbox'], ['Mijn goedkeuringen', 'check', 7]] },
+      { title: 'Mensen', items: [['Medewerkers', 'people'], ['Organisatie', 'org'], ['Werving en selectie', 'pipeline', 3], ['In- en uitdienst', 'people']] },
+      { title: 'Tijd', items: [['Verlof', 'cal'], ['Verzuim', 'heart'], ['Uren', 'queue'], ['Roosters en agenda', 'cal']] },
+      { title: 'Salaris', items: [['Salarisrun', 'chart'], ['Declaraties', 'doc'], ['Aangiften', 'gavel']] },
+      { title: 'Ontwikkeling', items: [['Gesprekken en doelen', 'trend'], ['Opleidingen', 'book']] },
+      { title: 'Beheer', items: [['Rapportages', 'chart'], ['AVG-verzoeken', 'shield'], ['Instellingen', 'key']] }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      { label: 'Bedrijfsmiddelen uitgegeven', value: '412', note: '9 terug te halen bij uitdienst', noteStyle: note('#7a4f00', 600), icon: 'M4,6H20V16H4M20,18A2,2 0 0,0 22,16V6C22,4.89 21.1,4 20,4H4C2.89,4 2,4.89 2,6V16A2,2 0 0,0 4,18H0V20H24V18H20Z' },
+      { label: "Leaseauto's", value: '14', note: 'bijtelling oktober € 8.412,60', noteStyle: note('#5e6168'), icon: 'M18.92,6.01C18.72,5.42 18.16,5 17.5,5H6.5C5.84,5 5.29,5.42 5.08,6.01L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6.01M6.5,16A1.5,1.5 0 0,1 5,14.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 8,14.5A1.5,1.5 0 0,1 6.5,16M17.5,16A1.5,1.5 0 0,1 16,14.5A1.5,1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 19,14.5A1.5,1.5 0 0,1 17.5,16M5,11L6.5,6.5H17.5L19,11H5Z' },
+      { label: 'Woon-werkvergoeding', value: '€ 21.306', note: '212 regelingen, onbelast tot € 0,23 per km', noteStyle: note('#5e6168'), icon: 'M12,3L2,12H5V20H19V12H22L12,3M12,7.7C14.1,7.7 15.8,9.4 15.8,11.5C15.8,14.5 12,18 12,18C12,18 8.2,14.5 8.2,11.5C8.2,9.4 9.9,7.7 12,7.7M12,10A1.5,1.5 0 0,0 10.5,11.5A1.5,1.5 0 0,0 12,13A1.5,1.5 0 0,0 13.5,11.5A1.5,1.5 0 0,0 12,10Z' },
+      { label: 'WPM-rapportage 2025', value: '1.284 ton', note: 'CO2, ingediend op 26 juni', noteStyle: note('#1e6b2a', 600), icon: 'M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z' }
+    ];
+    const tabBase = "display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 8px 12px; margin-bottom: -1px; border: 1px solid #d6d9de; border-bottom: none; border-radius: 8px 8px 0 0; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; background: #eceef1; cursor: pointer; white-space: nowrap;";
+    const tab = (on) => on ? tabBase + ' background: #ffffff; border-bottom: 1px solid #f5f6f8; font-weight: 700;' : tabBase;
+    const tabs = [['Bedrijfsmiddelen', '486', true], ["Leaseauto's", '14', false], ['Woon-werk', '212', false], ['WPM-rapportage', '3', false]].map(([label, count, on]) => ({ label, count, hasCount: !!count, sel: on ? 'true' : 'false', style: tab(on) }));
+    const view = (on) => "display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; " + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const views = [['Alles', 61, true], ['Uitgegeven', 52, false], ['In voorraad', 6, false], ['Terughalen', 2, false], ['Niet getekend', 3, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const seg = (on) => 'display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 34px; border: 0; border-radius: 6px; cursor: pointer; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
+    const modes = [['Tabel', 'M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z', true], ['Kaarten', 'M3 11H11V3H3M5 5H9V9H5M13 21H21V13H13M15 15H19V19H15M3 21H11V13H3M5 15H9V19H5M13 3V11H21V3M19 9H15V5H19Z', false], ['Bord', 'M4 5V18H21V5H4M14 7V16H11V7H14M6 7H9V16H6V7M19 16H16V7H19V16Z', false], ['Kaart', 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z', false]].map(([label, icon, on]) => ({ label, icon, pressed: on ? 'true' : 'false', style: seg(on) }));
+    const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const plain = 'color: #1b1c1d';
+    const S = { 'Uitgegeven': pill('#e7f3ea', '#1e6b2a'), 'In voorraad': pill('#eaf0f7', '#234a78'), 'Terughalen': pill('#fff4de', '#7a4f00'), 'In reparatie': pill('#f0f1f3', '#3d4047') };
+    const data = [
+      ['Laptop Dell Latitude 7450', 'SN 7F3K2Q9 · IT-0412', 'Laptop', 'Femke de Ruiter', '3 feb 2026', 'Ja, 3 feb', 'Uitgegeven'],
+      ['iPhone 15, 128 GB', 'IMEI 35 391712 · TEL-0218', 'Telefoon', 'Femke de Ruiter', '3 feb 2026', 'Ja, 3 feb', 'Uitgegeven'],
+      ['Laptop HP EliteBook 840', 'SN 5CG3218Q · IT-0377', 'Laptop', 'Bas Hendriks', '12 jun 2024', 'Nee', 'Uitgegeven'],
+      ['Toegangspas stadskantoor', 'PAS-1182', 'Toegang', 'Kees Hoogendoorn', '1 sep 2019', 'Ja, 1 sep 2019', 'Terughalen'],
+      ['Laptop Dell Latitude 7450', 'SN 9JQ2M41 · IT-0431', 'Laptop', 'niemand', '', '', 'In voorraad'],
+      ['Monitor Dell 27 inch', 'SN CN-0P2 · IT-0289', 'Thuiswerkplek', 'Anouk Smit', '15 mrt 2023', 'Ja, 15 mrt 2023', 'Uitgegeven'],
+      ['Bureaustoel Ahrend 2020', 'MEU-0077', 'Thuiswerkplek', 'Anouk Smit', '15 mrt 2023', 'Nee', 'Uitgegeven'],
+      ['iPhone 13, 128 GB', 'IMEI 35 288104 · TEL-0141', 'Telefoon', 'niemand', '', '', 'In reparatie']
+    ];
+    const rows = data.map(([name, serial, cat, who, since, sign, status]) => ({ name, serial, cat, who, since: since || 'niet uitgegeven', sign: sign || 'niet van toepassing', signStyle: sign === 'Nee' ? pill('#fcedec', '#a30000') : 'color: #5e6168', status, statusStyle: S[status], selectLabel: 'Selecteer ' + name, actionsLabel: 'Acties voor ' + name + ': uitgeven, innemen, uitgifte laten tekenen' }));
+    return { nav, kpis, tabs, views, modes, rows };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>humaniq: uren op zaken en projecten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1500px">
+  <dc-import name="DqKop" app="Humaniq" placeholder="Zoek medewerkers, verlof of loonstroken" role="Leidinggevende" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="humaniq" primary="Uren schrijven" active="Uren" groups="{{ nav }}" hint-size="264px,1500px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Uren op zaken en projecten</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
+              <button type="button" aria-haspopup="menu" title="Tarieven beheren, Schatting vastleggen, Kostprijs herberekenen" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg>Acties</button>
+              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>Naar facturatie</button>
+            </div>
+          </div>
+          <span style="font-size: 15px; color: #5e6168">6 van 41 zaken en projecten met uren in oktober · alleen goedgekeurde uren tellen mee</span>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+              <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="font-size: 13px; color: #5e6168">{{ k.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+          <sc-for list="{{ views }}" as="v" hint-placeholder-count="5">
+            <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+          </sc-for>
+          <span style="flex: 1"></span>
+          <button type="button" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 13C6.14 13 4.59 14.28 4.14 16H2V18H4.14C4.59 19.72 6.14 21 8 21S11.41 19.72 11.86 18H22V16H11.86C11.41 14.28 9.86 13 8 13M8 19C6.9 19 6 18.1 6 17C6 15.9 6.9 15 8 15S10 15.9 10 17C10 18.1 9.1 19 8 19M19.86 6C19.41 4.28 17.86 3 16 3S12.59 4.28 12.14 6H2V8H12.14C12.59 9.72 14.14 11 16 11S19.41 9.72 19.86 8H22V6H19.86M16 9C14.9 9 14 8.1 14 7C14 5.9 14.9 5 16 5S18 5.9 18 7C18 8.1 17.1 9 16 9Z"></path></svg>Filter<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #3669a5; color: #ffffff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">1</span></button>
+          <div role="group" aria-label="Weergave" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1">
+            <sc-for list="{{ modes }}" as="m" hint-placeholder-count="4">
+              <button type="button" aria-pressed="{{ m.pressed }}" aria-label="{{ m.label }}" title="{{ m.label }}" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="{{ m.icon }}"></path></svg></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px">
+          <form role="search" style="flex: 1 1 260px; max-width: 360px; position: relative">
+            <label for="hu-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoeken in deze lijst</label>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" style="position: absolute; left: 12px; top: 11px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+            <input id="hu-zoek" type="search" placeholder="Zoek op zaak, project of nummer" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+          </form>
+          <span style="color: #5e6168; margin-left: 6px">Actief:</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 6px 0 12px; border-radius: 15px; background: #eaf0f7; color: #234a78; font-weight: 600">Periode: oktober 2026<button type="button" aria-label="Filter verwijderen: Periode: oktober 2026" style="width: 22px; height: 22px; border: 0; border-radius: 11px; background: transparent; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button></span>
+          <a href="#" style="font-weight: 600">Alles wissen</a>
+        </div>
+        <div role="region" aria-label="Acties voor de selectie" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; border-radius: 10px; background: #eaf0f7; color: #234a78; font-size: 14px"><strong style="margin-right: 6px">2 geselecteerd, 31,5 declarabele uren, € 3.071,25</strong><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>Naar facturatie in shillinq</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d">Tarief wijzigen</button><span style="font-size: 13px; color: #3d4047">Uren die al gefactureerd zijn gaan niet nog een keer mee.</span></div>
+
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div style="overflow-x: auto">
+            <table style="border-collapse: collapse; width: 100%; min-width: 980px; font-size: 14px">
+              <thead>
+                <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                  <th scope="col" style="padding: 12px 16px; width: 28px"><input type="checkbox" aria-label="Alles selecteren" style="width: 18px; height: 18px; accent-color: #3669a5"></th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Zaak of project</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600; min-width: 190px">Geschat, besteed en over</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600; text-align: right">Tarief</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600; text-align: right">Kostprijs</th>
+                  <th scope="col" style="padding: 12px 12px; font-weight: 600">Te factureren</th>
+                  <th scope="col" style="padding: 12px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acties</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                  <tr style="border-top: 1px solid #eef0f3">
+                    <td style="padding: 14px 16px"><sc-if value="{{ r.isChecked }}" hint-placeholder-val="{{ false }}"><input type="checkbox" checked aria-label="{{ r.selectLabel }}" style="width: 18px; height: 18px; accent-color: #3669a5"></sc-if><sc-if value="{{ r.notChecked }}" hint-placeholder-val="{{ true }}"><input type="checkbox" aria-label="{{ r.selectLabel }}" style="width: 18px; height: 18px; accent-color: #3669a5"></sc-if></td>
+                    <td style="padding: 14px 12px"><span style="display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.title }}</a><span style="color: #5e6168">{{ r.meta }}</span></span></td>
+                    <td style="padding: 14px 12px"><span style="display: flex; flex-direction: column; gap: 5px"><span style="display: flex; justify-content: space-between; gap: 8px"><span>{{ r.spent }} van {{ r.est }}</span><span style="{{ r.leftStyle }}">{{ r.left }}</span></span><span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ r.bar }}"></span></span></span></td>
+                    <td style="padding: 14px 12px; text-align: right">{{ r.rate }}</td>
+                    <td style="padding: 14px 12px; text-align: right">{{ r.cost }}</td>
+                    <td style="padding: 14px 12px"><span style="{{ r.invStyle }}">{{ r.inv }}</span></td>
+                    <td style="padding: 14px 16px; text-align: right"><button type="button" aria-label="{{ r.actionsLabel }}" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+            <span>6 van 41 · 20 per pagina</span>
+            <nav aria-label="Paginering" style="display: flex; gap: 6px">
+              <a href="#" aria-current="page" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #3669a5; color: #ffffff; font-weight: 600; text-decoration: none">1</a>
+              <a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">2</a>
+              <a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">3</a>
+              <a href="#" style="height: 34px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">Volgende</a>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; align-items: start">
+          <section aria-labelledby="pu-ratio" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><h2 id="pu-ratio" style="margin: 0; font-size: 17px; font-weight: 700">Declarabel aandeel per team</h2><span style="font-size: 14px; color: #5e6168">oktober, doel 70 procent</span></div>
+            <sc-for list="{{ teams }}" as="t" hint-placeholder-count="5">
+              <div style="display: flex; flex-direction: column; gap: 5px">
+                <span style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px"><span><strong style="font-weight: 600">{{ t.name }}</strong> <span style="color: #5e6168">{{ t.hours }}</span></span><strong style="{{ t.pctStyle }}">{{ t.pct }}</strong></span>
+                <span style="height: 8px; border-radius: 4px; background: #e4e6ea; overflow: hidden"><span style="{{ t.bar }}"></span></span>
+              </div>
+            </sc-for>
+            <section aria-labelledby="pu-kost" style="margin-top: 6px; padding-top: 14px; border-top: 1px solid #eef0f3; display: flex; flex-direction: column; gap: 8px">
+              <h3 id="pu-kost" style="margin: 0; font-size: 15px; font-weight: 700">Hoe de kostprijs per uur ontstaat</h3>
+              <dl style="margin: 0; display: grid; grid-template-columns: 1fr max-content; gap: 6px 16px; font-size: 14px">
+                <dt style="color: #5e6168">Jaarsalaris met IKB, Pieter Jansen, schaal 10</dt><dd style="margin: 0; text-align: right">€ 57.840,00</dd>
+                <dt style="color: #5e6168">Werkgeverslasten, 31 procent</dt><dd style="margin: 0; text-align: right">€ 17.930,00</dd>
+                <dt style="color: #5e6168">Productieve uren per jaar</dt><dd style="margin: 0; text-align: right">1.420</dd>
+                <dt style="font-weight: 700">Kostprijs per uur</dt><dd style="margin: 0; text-align: right; font-weight: 700">€ 53,36</dd>
+              </dl>
+            </section>
+          </section>
+
+          <section aria-labelledby="pu-leaf" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
+            <div style="padding: 12px 20px; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 14px; color: #5e6168"><strong id="pu-leaf" style="color: #1b1c1d">Zo ziet u het in een dossiq-zaak</strong> · het blok Uren op zaak 2026-0082</div>
+            <div style="padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px"><h3 style="margin: 0; font-size: 17px; font-weight: 700">Uren registreren</h3><span style="font-size: 14px; color: #5e6168">geschat 40 uur · <strong style="color: #1b1c1d">27,5 uur besteed</strong> · 12,5 over</span></div>
+              <span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="display: block; width: 69%; height: 6px; background: #3669a5"></span></span>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span><strong style="font-weight: 600">Pieter Jansen</strong> <span style="color: #5e6168">Woo en informatie</span></span><strong>18,5 u</strong></li>
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span><strong style="font-weight: 600">Lars de Koning</strong> <span style="color: #5e6168">Mobiliteit en verkeer</span></span><strong>6 u</strong></li>
+                <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span><strong style="font-weight: 600">Marloes Bakker</strong> <span style="color: #5e6168">Juridische zaken</span></span><strong>3 u</strong></li>
+              </ul>
+              <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 10px; align-items: end">
+                <div style="display: flex; flex-direction: column; gap: 6px"><label for="pu-d" style="font-size: 14px; font-weight: 600">Datum</label><input id="pu-d" type="text" value="08-10-2026" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; font: 400 15px 'Fira Sans', sans-serif"></div>
+                <div style="display: flex; flex-direction: column; gap: 6px"><label for="pu-u" style="font-size: 14px; font-weight: 600">Uren</label><input id="pu-u" type="text" value="1,5" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; font: 400 15px 'Fira Sans', sans-serif"></div>
+                <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Vastleggen</button>
+              </div>
+              <span style="font-size: 13px; color: #5e6168">Het blok komt uit humaniq. Elke app met objecten kan het plaatsen; zonder humaniq staat het uit.</span>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Mijn HR', 'inbox'], ['Mijn goedkeuringen', 'check', 7]] },
+      { title: 'Mensen', items: [['Medewerkers', 'people'], ['Organisatie', 'org'], ['Werving en selectie', 'pipeline', 3], ['In- en uitdienst', 'people']] },
+      { title: 'Tijd', items: [['Verlof', 'cal'], ['Verzuim', 'heart'], ['Uren', 'queue'], ['Roosters en agenda', 'cal']] },
+      { title: 'Salaris', items: [['Salarisrun', 'chart'], ['Declaraties', 'doc'], ['Aangiften', 'gavel']] },
+      { title: 'Ontwikkeling', items: [['Gesprekken en doelen', 'trend'], ['Opleidingen', 'book']] },
+      { title: 'Beheer', items: [['Rapportages', 'chart'], ['AVG-verzoeken', 'shield'], ['Instellingen', 'key']] }
+    ];
+    const kpis = [['Besteed in oktober', '412,5 uur', 'op 41 zaken en projecten'], ['Declarabel aandeel', '64 procent', 'doel 70 procent'], ['Klaar om te factureren', '€ 9.580,25', '101 goedgekeurde uren'], ['Gemiddelde kostprijs', '€ 58,10', 'per uur, met werkgeverslasten']].map(([label, value, note]) => ({ label, value, note }));
+    const view = (on) => "display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; " + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #e4e6ea; color: #3d4047;');
+    const views = [['Alles', 41, true], ['Te factureren', 9, false], ['Over de schatting', 3, false], ['Zaken', 28, false], ['Projecten', 13, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    const seg = (on) => 'display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 34px; border: 0; border-radius: 6px; cursor: pointer; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
+    const modes = [['Tabel', 'M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z', true], ['Kaarten', 'M3 11H11V3H3M5 5H9V9H5M13 21H21V13H13M15 15H19V19H15M3 21H11V13H3M5 15H9V19H5M13 3V11H21V3M19 9H15V5H19Z', false], ['Bord', 'M4 5V18H21V5H4M14 7V16H11V7H14M6 7H9V16H6V7M19 16H16V7H19V16Z', false], ['Kaart', 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z', false]].map(([label, icon, on]) => ({ label, icon, pressed: on ? 'true' : 'false', style: seg(on) }));
+    const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const data = [
+      ['Zaak 2026-0082, Verlichting fietspad Lindelaan', 'dossiq · Woo-verzoek', 27.5, 40, '€ 97,50', '€ 53,36', '€ 1.950,00, 20 uur', 'ready', true],
+      ['Project Invoering Omgevingswet', 'planninq · Ruimte en wonen', 212, 260, '€ 97,50', '€ 61,20', '€ 1.121,25, 11,5 uur', 'ready', true],
+      ['Zaak 2026-0074, Bezwaar parkeerboete Havenstraat', 'dossiq · Bezwaar', 14, 12, 'niet declarabel', '€ 53,36', 'Niet declarabel', 'grey', false],
+      ['Project Digitaal loket vergunningen', 'planninq · Publiekszaken', 96, 120, '€ 87,00', '€ 56,80', '€ 4.437,00, 51 uur', 'ready', false],
+      ['Detachering Drechtsteden, toezicht', 'pipelinq · contract', 48, 64, '€ 112,00', '€ 64,10', '€ 2.072,00, 18,5 uur', 'ready', false],
+      ['Zaak 2026-0058, Aanbesteding jeugdzorg 2026', 'dossiq · Woo-verzoek', 15, 40, '€ 97,50', '€ 58,90', 'Nog niet goedgekeurd', 'wait', false]
+    ];
+    const P = { ready: pill('#e7f3ea', '#1e6b2a'), grey: pill('#f0f1f3', '#3d4047'), wait: pill('#fff4de', '#7a4f00') };
+    const fmt = (n) => n.toString().replace('.', ',');
+    const rows = data.map(([title, meta, spent, est, rate, cost, inv, k, checked]) => {
+      const over = spent > est;
+      const pct = Math.min(100, Math.round(spent / est * 100));
+      return { title, meta, spent: fmt(spent) + ' u', est: fmt(est) + ' u', left: over ? fmt(spent - est) + ' u over de schatting' : fmt(est - spent) + ' u over', leftStyle: over ? 'color: #a30000; font-weight: 700' : 'color: #5e6168', bar: 'display: block; height: 6px; width: ' + pct + '%; background: ' + (over ? '#a30000' : '#3669a5'), rate, cost, inv, invStyle: P[k], isChecked: !!checked, notChecked: !checked, selectLabel: 'Selecteer ' + title, actionsLabel: 'Acties voor ' + title + ': openen, schatting wijzigen, tarief wijzigen' };
+    });
+    const teams = [['Juridische zaken', '96 uur', 81], ['Ruimte en wonen', '138 uur', 74], ['Woo en informatie', '64 uur', 66], ['Publiekszaken', '72 uur', 52], ['Bedrijfsvoering', '42,5 uur', 21]].map(([name, hours, p]) => ({ name, hours, pct: p + ' procent', pctStyle: p < 70 ? 'color: #7a4f00' : 'color: #1e6b2a', bar: 'display: block; height: 8px; width: ' + p + '%; background: #3669a5' }));
+    return { nav, kpis, views, modes, rows, teams };
+  }
+}
+</script>
+</body>
+</html>

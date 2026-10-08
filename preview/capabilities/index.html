@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Capabilities, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../screens/screens.css">
+<style>
+  /* Summary cards, one per app */
+  .cp-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: var(--space-4); margin: var(--space-10) 0 var(--space-8); }
+  .cp-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid transparent; }
+  .cp-card:hover { border-color: var(--c-cobalt-200); }
+  .cp-card h3 { font-size: 20px; font-weight: 600; margin: 0; }
+  .cp-card h3 a { color: var(--c-cobalt-900); text-decoration: none; }
+  .cp-card h3 a:hover { color: var(--c-coral-600); text-decoration: underline; }
+  .cp-card .repo { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-blue-cobalt); overflow-wrap: anywhere; }
+  .cp-card dl { display: grid; grid-template-columns: 1fr auto; gap: 4px var(--space-3); margin: 0; font-size: 13px; }
+  .cp-card dt { color: var(--c-cobalt-700); }
+  .cp-card dd { margin: 0; font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-900); text-align: right; }
+  .cp-card .states { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cp-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--c-cobalt-100); }
+  .cp-bar span { display: block; height: 100%; }
+  .cp-bar .b1 { background: var(--conduction-color-status-success); }
+  .cp-bar .b2 { background: var(--conduction-color-status-warning); }
+  .cp-bar .b3 { background: var(--c-cobalt-400); }
+  .cp-bar .b4 { background: var(--c-cobalt-200); }
+
+  /* Toolbar */
+  .sc-toolbar { position: sticky; top: 0; z-index: 10; background: white; border-bottom: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); }
+  .sc-toolbar .sc-wrap { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .sc-toolbar .line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-4); }
+  .sc-toolbar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
+  .sc-toolbar input[type="search"], .sc-toolbar select {
+    font: inherit; font-size: 15px; color: var(--c-cobalt-900); min-height: 40px; padding: 8px 12px;
+    border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-sm); background: white;
+  }
+  .sc-toolbar input[type="search"] { flex: 1 1 240px; min-width: 0; }
+  .sc-toolbar select { flex: 0 1 180px; min-width: 0; }
+  .sc-toolbar input:focus-visible, .sc-toolbar select:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+  .sc-toolbar .f { display: inline-flex; align-items: center; gap: 8px; }
+  .sc-toolbar .links { display: flex; gap: var(--space-4); font-size: 14px; }
+  .sc-toolbar .links button { font: inherit; background: none; border: 0; padding: 4px 0; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
+  .sc-toolbar .count { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); margin-left: auto; }
+
+  /* One section per app, collapsed like the gallery rows */
+  .cp-app { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); margin-bottom: var(--space-3); border: 1px solid transparent; scroll-margin-top: 140px; }
+  .cp-app[open] { border-color: var(--c-cobalt-100); }
+  .cp-app > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); padding: var(--space-4) var(--space-6); min-height: 56px; }
+  .cp-app > summary::-webkit-details-marker { display: none; }
+  .cp-app > summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; border-radius: var(--radius-lg); }
+  .cp-app > summary .chev { width: 18px; height: 18px; flex: none; color: var(--c-cobalt-400); transition: transform 160ms; }
+  .cp-app[open] > summary .chev { transform: rotate(90deg); }
+  .cp-app > summary .rt { font-size: 20px; font-weight: 600; color: var(--c-cobalt-900); flex: 1 1 200px; }
+  .cp-app > summary .n { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); }
+  .cp-body { padding: 0 var(--space-6) var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+
+  .cp-gaps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: var(--space-4); }
+  .cp-gap { background: var(--c-cobalt-50); border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+  .cp-gap h3 { font-size: 15px; font-weight: 600; margin: 0; }
+  .cp-gap p { font-size: 13px; color: var(--c-cobalt-700); margin: 0; }
+  .cp-gap ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  .cp-gap li a, .cp-gap li span { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-blue-cobalt); background: white; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-sm); padding: 1px 6px; display: inline-block; text-decoration: none; }
+  .cp-gap li a:hover { border-color: var(--c-blue-cobalt); }
+  .cp-gap button { align-self: flex-start; font: inherit; font-size: 13px; background: none; border: 0; padding: 2px 0; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
+
+  .cp-scroll { overflow-x: auto; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); }
+  table.cp { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px; }
+  table.cp th { text-align: left; font-family: var(--conduction-typography-font-family-code); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); padding: 10px 12px; border-bottom: 1px solid var(--c-cobalt-100); background: var(--c-cobalt-50); position: sticky; top: 0; }
+  table.cp td { padding: 10px 12px; border-bottom: 1px solid var(--c-cobalt-100); vertical-align: top; }
+  table.cp tr:last-child td { border-bottom: 0; }
+  table.cp tr.hit td { background: var(--c-coral-50); }
+  table.cp tr.hit td:first-child { box-shadow: inset 4px 0 0 var(--c-orange-knvb); }
+  table.cp .cap code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-900); overflow-wrap: anywhere; }
+  table.cp .cap .ti { display: block; color: var(--c-cobalt-700); margin-top: 2px; }
+  table.cp .cap .note { display: block; font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; }
+  table.cp .cap .dec { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  table.cp th:nth-child(1) { width: 30%; }
+  table.cp th:nth-child(2) { width: 9%; }
+  table.cp th:nth-child(3) { width: 19%; }
+  table.cp th:nth-child(4) { width: 15%; }
+  table.cp th:nth-child(5) { width: 19%; }
+  table.cp th:nth-child(6) { width: 8%; }
+  table.cp .cap a.self { color: inherit; text-decoration: none; }
+  table.cp .cap a.self:hover code { text-decoration: underline; }
+  table.cp .list { display: flex; flex-direction: column; gap: 2px; }
+  table.cp .list a { color: var(--c-blue-cobalt); overflow-wrap: anywhere; }
+  table.cp .list .more { font-size: 12px; color: var(--c-cobalt-400); }
+  table.cp .sys { display: flex; flex-wrap: wrap; gap: 3px; max-width: 280px; }
+  table.cp .src { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-700); }
+  .cp-none { color: var(--c-cobalt-400); }
+  .cp-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; color: var(--c-cobalt-700); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) { .sc-toolbar { position: static; } .cp-body { padding: 0 var(--space-4) var(--space-4); } .cp-app > summary { padding: var(--space-4); } }
+</style>
+</head>
+<body class="sc-chrome">
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html" data-keep-lang data-i18n="cap.crumb.system">Design system</a> &nbsp;/&nbsp; <a href="../screens/index.html" data-keep-lang data-i18n="cap.crumb.screens">Screens</a> &nbsp;/&nbsp; <span data-i18n="cap.crumb.caps">Capabilities</span></div>
+  <h1 data-i18n="cap.title">Capabilities.</h1>
+  <p data-i18n="cap.lede">Everything the Conduction apps can do, or are meant to do, in one list. Each capability shows its build status, the specs that define it, the screens that show it and which other systems have it.</p>
+  <div class="meta">
+    <span><span data-i18n="cap.meta.caps">Capabilities</span><strong id="m-caps">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.apps">Apps</span><strong id="m-apps">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.specs">Specs</span><strong id="m-specs">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.generated">Built from the specs on</span><strong id="m-gen">&nbsp;</strong></span>
+  </div>
+</div>
+
+<main class="sc-wrap">
+  <section class="cp-cards" id="cards" aria-label="Apps" data-i18n-attr="aria-label:cap.meta.apps"></section>
+</main>
+
+<div class="sc-toolbar">
+  <div class="sc-wrap">
+    <div class="line">
+      <span class="f"><label class="label" for="f-app" data-i18n="cap.f.app">App</label><select id="f-app"></select></span>
+      <span class="f"><label class="label" for="f-status" data-i18n="cap.f.status">Status</label><select id="f-status"></select></span>
+      <span class="f"><label class="label" for="f-kind" data-i18n="cap.f.kind">Kind</label><select id="f-kind"></select></span>
+      <span class="f"><label class="label" for="f-screen" data-i18n="cap.f.screen">Has screen</label><select id="f-screen"></select></span>
+      <input type="search" id="q" autocomplete="off" placeholder="Search by id, title or note" data-i18n-attr="placeholder:cap.f.search" aria-label="Search" >
+      <div class="links">
+        <button type="button" id="open-all" data-i18n="screens.rows.openAll">Open all</button>
+        <button type="button" id="close-all" data-i18n="screens.rows.closeAll">Close all</button>
+      </div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+  </div>
+</div>
+
+<main class="sc-wrap" style="margin-top: var(--space-8); margin-bottom: var(--space-12);">
+  <p class="cp-legend" id="legend"></p>
+  <div id="apps" style="margin-top: var(--space-4);"><p class="sc-empty" id="loading" data-i18n="cap.loading">Loading capabilities.</p></div>
+</main>
+
+<div class="hub-footer">
+  <span data-i18n="cap.footer">Capabilities · built by scripts/screens/capabilities.py from each app's openspec/ folder</span>
+  <span><a href="../screens/index.html" data-keep-lang data-i18n="screens.link.gallery">Screens</a> &middot; <a href="../index.html" data-keep-lang data-i18n="screens.link.back">&larr; Back to system</a></span>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- i18n: same contract as ../i18n.js, plus t() ---------- */
+  var params = new URLSearchParams(location.search);
+  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var DICT = null;
+  function lookup(key) {
+    if (!DICT) return null;
+    if (typeof DICT[key] === 'string') return DICT[key];
+    var cur = DICT; var segs = key.split('.');
+    for (var i = 0; i < segs.length; i++) { if (cur == null || typeof cur !== 'object') return null; cur = cur[segs[i]]; }
+    return typeof cur === 'string' ? cur : null;
+  }
+  function t(key, fb, vars) {
+    var s = lookup(key) || fb;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  }
+  function applyStatic() {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = lookup(el.getAttribute('data-i18n')); if (v == null) return;
+      if (v.indexOf('<') !== -1 || v.indexOf('&') !== -1) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
+      el.getAttribute('data-i18n-attr').split(',').forEach(function (pair) {
+        var p = pair.split(':').map(function (s) { return s.trim(); });
+        var v = lookup(p[1]); if (v != null) el.setAttribute(p[0], v);
+      });
+    });
+    document.documentElement.setAttribute('lang', LANG === 'en' ? 'en' : (DICT && DICT._lang) || LANG);
+  }
+  var dictReady = LANG === 'en' ? Promise.resolve() :
+    fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
+  function withLang(url) {
+    if (!params.get('lang')) return url;
+    var i = url.indexOf('#');
+    var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
+  }
+  document.querySelectorAll('a[data-keep-lang]').forEach(function (a) { a.href = withLang(a.getAttribute('href')); });
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+
+  var STATUSES = ['built', 'building', 'specified', 'decided-no', 'in-flight', 'designed', 'external'];
+  var STATUS = {
+    'built': ['cap.status.built', 'built'], 'building': ['cap.status.building', 'building'],
+    'specified': ['cap.status.specified', 'specified'], 'decided-no': ['cap.status.decidedNo', 'decided no'],
+    'in-flight': ['cap.status.inFlight', 'in flight'], 'designed': ['cap.status.designed', 'designed'],
+    'external': ['cap.status.external', 'external']
+  };
+  var KINDS = { spec: ['cap.kind.spec', 'spec'], matrix: ['cap.kind.matrix', 'matrix row'], change: ['cap.kind.change', 'open change'],
+    external: ['cap.kind.external', 'external reference'], free: ['cap.kind.free', 'free text'] };
+  var SYS = { yes: ['cap.sys.yes', 'has it'], partial: ['cap.sys.partial', 'partly'], no: ['cap.sys.no', 'lacks it'], unknown: ['cap.sys.unknown', 'unknown'] };
+  function statusLabel(s) { var m = STATUS[s]; return m ? t(m[0], m[1]) : (s || ''); }
+  function pill(s) { return el('span', { class: 'sc-pill', 'data-status': s || '', text: statusLabel(s) }); }
+
+  var C = null, S = null;
+  var byId = {};          /* screen id -> board */
+  var repoApp = {};       /* "ConductionNL/scholiq" -> "learniq" */
+  var appEntries = {};    /* app -> { el, rendered, keys } */
+  var ROWS_KEY = 'capabilities.apps';
+  function loadOpen() { try { return JSON.parse(localStorage.getItem(ROWS_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveOpen(m) { try { localStorage.setItem(ROWS_KEY, JSON.stringify(m)); } catch (e) { /* ignore */ } }
+  var openState = loadOpen();
+
+  function boardHref(id) { return withLang('../screens/board.html?id=' + encodeURIComponent(id).replace(/%2F/g, '/')); }
+  function screenTitle(id) { var b = byId[id]; return b ? (b.title || id) : id; }
+
+  /* ---------- summary cards ---------- */
+  function card(app, A) {
+    var p = A.parity || { rows: 0, states: {} };
+    var st = p.states || {};
+    var total = (st.built || 0) + (st.building || 0) + (st.specified || 0) + (st['decided-no'] || 0);
+    var bar = el('div', { class: 'cp-bar', role: 'img', 'aria-label': t('cap.card.barLabel', 'Matrix rows by status') });
+    ['built', 'building', 'specified', 'decided-no'].forEach(function (s, i) {
+      var v = st[s] || 0; if (!total || !v) return;
+      var sp = el('span', { class: 'b' + (i + 1), title: statusLabel(s) + ': ' + v }); sp.style.width = (100 * v / total) + '%'; bar.appendChild(sp);
+    });
+    function row(k, fb, v) { return [el('dt', { text: t(k, fb) }), el('dd', { text: String(v == null ? 0 : v) })]; }
+    var dl = el('dl');
+    [].concat(
+      row('cap.card.specs', 'Specs', A.specCount),
+      row('cap.card.changes', 'Open changes', A.changeCount),
+      row('cap.card.rows', 'Matrix rows', p.rows),
+      row('cap.status.built', 'built', st.built), row('cap.status.building', 'building', st.building),
+      row('cap.status.specified', 'specified', st.specified), row('cap.status.decidedNo', 'decided no', st['decided-no']),
+      row('cap.card.screens', 'Screens', A.screens),
+      row('cap.card.withScreen', 'Capabilities with a screen', A.capsWithScreen),
+      row('cap.card.withoutScreen', 'Capabilities without a screen', A.capsWithoutScreen)
+    ).forEach(function (n) { dl.appendChild(n); });
+    var h = el('a', { href: '#' + app, text: A.title || app });
+    return el('article', { class: 'cp-card' }, [
+      el('h3', null, [h]),
+      el('a', { class: 'repo', href: A.repoUrl || ('https://github.com/' + A.repo), target: '_blank', rel: 'noopener', text: A.repo || '' }),
+      total ? bar : null,
+      dl
+    ]);
+  }
+
+  /* ---------- one table row ---------- */
+  function listCell(items, max) {
+    var box = el('div', { class: 'list' });
+    if (!items.length) { box.appendChild(el('span', { class: 'cp-none', text: '·' })); return box; }
+    items.slice(0, max).forEach(function (n) { box.appendChild(n); });
+    if (items.length > max) {
+      var more = el('button', { type: 'button', class: 'more', text: t('cap.more', '+{n} more', { n: items.length - max }) });
+      more.style.cssText = 'font: inherit; font-size: 12px; background: none; border: 0; padding: 0; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; text-align: left;';
+      more.addEventListener('click', function () { items.slice(max).forEach(function (n) { box.insertBefore(n, more); }); more.remove(); });
+      box.appendChild(more);
+    }
+    return box;
+  }
+  function tr(key, c) {
+    var capTd = el('td', { class: 'cap' }, [
+      el('a', { class: 'self', href: '#' + key }, [el('code', { text: c.id })]),
+      c.title && c.title !== c.id ? el('span', { class: 'ti', text: c.title }) : null,
+      (c.notes || []).length ? el('span', { class: 'note', text: c.notes.join('; ') }) : null
+    ]);
+    if (c.decision && c.decision.decision) {
+      var dec = t('cap.decision', 'Decision') + ': ' + c.decision.decision + (c.decision.reason ? ', ' + c.decision.reason : '');
+      capTd.appendChild(el('span', { class: 'note dec', text: dec, title: dec }));
+    }
+    var screens = (c.screens || []).map(function (id) { return el('a', { href: boardHref(id), text: screenTitle(id), title: id }); });
+    var specs = (c.specs || []).map(function (s) {
+      return el('a', { href: s.url, target: '_blank', rel: 'noopener', text: s.name + (s.requirements != null ? ' (' + s.requirements + ')' : '') });
+    });
+    var sys = el('div', { class: 'sys' });
+    Object.keys(c.systems || {}).forEach(function (k) {
+      var v = c.systems[k];
+      sys.appendChild(el('span', { class: 'sc-sys', 'data-v': v, title: k + ': ' + (SYS[v] ? t(SYS[v][0], SYS[v][1]) : v), text: k }));
+    });
+    if (!sys.childNodes.length) sys.appendChild(el('span', { class: 'cp-none', text: '·' }));
+    var kind = KINDS[c.kind] ? t(KINDS[c.kind][0], KINDS[c.kind][1]) : (c.kind || '');
+    return el('tr', { id: key, 'data-key': key }, [
+      capTd,
+      el('td', null, [pill(c.status)]),
+      el('td', null, [listCell(screens, 4)]),
+      el('td', null, [listCell(specs, 4)]),
+      el('td', null, [sys]),
+      el('td', { class: 'src', text: (c.source || '') + (kind ? ' · ' + kind : '') })
+    ]);
+  }
+
+  /* ---------- open gaps ---------- */
+  function chipList(nodes, max) {
+    var ul = el('ul');
+    nodes.slice(0, max).forEach(function (n) { ul.appendChild(el('li', null, [n])); });
+    var wrapEl = el('div', null, [ul]);
+    if (nodes.length > max) {
+      var b = el('button', { type: 'button', text: t('cap.gaps.showAll', 'Show all {n}', { n: nodes.length }) });
+      b.addEventListener('click', function () { nodes.slice(max).forEach(function (n) { ul.appendChild(el('li', null, [n])); }); b.remove(); });
+      wrapEl.appendChild(b);
+    }
+    return wrapEl;
+  }
+  function gaps(app, keys) {
+    var noScreen = keys.filter(function (k) {
+      var c = C.capabilities[k]; return (c.status === 'built' || c.status === 'building') && !(c.screens || []).length;
+    });
+    var specless = [];
+    Object.keys(byId).forEach(function (id) {
+      var b = byId[id];
+      var ids = b.capIds || [];
+      var owner = ids.length ? ids[0].split('/')[0] : (C.apps[b.app] ? b.app : repoApp[b.repo] || b.app);
+      if (owner !== app) return;
+      var hasReal = ids.some(function (k) { var c = C.capabilities[k]; return c && c.kind !== 'external' && c.kind !== 'free'; });
+      if (!hasReal) specless.push(id);
+    });
+    var g1 = el('div', { class: 'cp-gap' }, [
+      el('h3', { text: t('cap.gaps.noScreen', 'Built or building, no screen') + ' (' + noScreen.length + ')' }),
+      el('p', { text: t('cap.gaps.noScreenBody', 'The app has these, but no screen shows them yet.') }),
+      noScreen.length ? chipList(noScreen.map(function (k) { return el('a', { href: '#' + k, text: C.capabilities[k].id }); }), 24) : el('p', { text: t('cap.gaps.none', 'None.') })
+    ]);
+    var g2 = el('div', { class: 'cp-gap' }, [
+      el('h3', { text: t('cap.gaps.noSpec', 'Screens without a spec') + ' (' + specless.length + ')' }),
+      el('p', { text: t('cap.gaps.noSpecBody', 'These screens only name an external reference or free text, or nothing at all.') }),
+      specless.length ? chipList(specless.map(function (id) { return el('a', { href: boardHref(id), text: id, title: screenTitle(id) }); }), 24) : el('p', { text: t('cap.gaps.none', 'None.') })
+    ]);
+    return el('div', { class: 'cp-gaps' }, [g1, g2]);
+  }
+
+  function renderApp(app) {
+    var e = appEntries[app];
+    if (e.rendered) return;
+    var body = e.el.querySelector('.cp-body');
+    body.appendChild(gaps(app, e.keys));
+    var tbody = el('tbody');
+    e.keys.forEach(function (k) { tbody.appendChild(tr(k, C.capabilities[k])); });
+    var head = el('thead', null, [el('tr', null, [
+      el('th', { scope: 'col', text: t('cap.col.cap', 'Capability') }), el('th', { scope: 'col', text: t('cap.col.status', 'Status') }),
+      el('th', { scope: 'col', text: t('cap.col.screens', 'Screens') }), el('th', { scope: 'col', text: t('cap.col.specs', 'Specs') }),
+      el('th', { scope: 'col', text: t('cap.col.systems', 'Systems') }), el('th', { scope: 'col', text: t('cap.col.source', 'Source') })
+    ])]);
+    body.appendChild(el('div', { class: 'cp-scroll' }, [el('table', { class: 'cp' }, [
+      el('caption', { class: 'sr-only', text: (C.apps[app] ? C.apps[app].title : app) + ', ' + t('cap.meta.caps', 'Capabilities') }), head, tbody])]));
+    e.rendered = true;
+    applyFilters(true);
+  }
+
+  var STATUS_ORDER = {}; STATUSES.forEach(function (s, i) { STATUS_ORDER[s] = i; });
+  function buildApps() {
+    var root = document.getElementById('apps'); root.innerHTML = '';
+    var groups = {};
+    Object.keys(C.capabilities).forEach(function (k) { var a = C.capabilities[k].app || k.split('/')[0]; (groups[a] = groups[a] || []).push(k); });
+    var apps = Object.keys(C.apps || {}).concat(Object.keys(groups).filter(function (a) { return !(C.apps || {})[a]; }));
+    apps.forEach(function (app) {
+      var keys = (groups[app] || []).sort(function (a, b) {
+        var ca = C.capabilities[a], cb = C.capabilities[b];
+        return (STATUS_ORDER[ca.status] - STATUS_ORDER[cb.status]) || String(ca.area || '').localeCompare(String(cb.area || '')) || ca.id.localeCompare(cb.id);
+      });
+      var chev = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      chev.setAttribute('viewBox', '0 0 24 24'); chev.setAttribute('class', 'chev'); chev.setAttribute('aria-hidden', 'true');
+      chev.innerHTML = '<path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+      var A = (C.apps || {})[app] || { title: app };
+      var summary = el('summary', null, [chev, el('span', { class: 'rt', text: A.title || app }),
+        A.repo ? el('span', { class: 'n', text: A.repo }) : null,
+        el('span', { class: 'n cnt', text: t('cap.app.count', '{n} capabilities', { n: keys.length }) })]);
+      var det = el('details', { class: 'cp-app', id: app, 'data-app': app }, [summary, el('div', { class: 'cp-body' })]);
+      summary.addEventListener('click', function () { openState[app] = !det.open; saveOpen(openState); });
+      det.addEventListener('toggle', function () { if (det.open) renderApp(app); });
+      appEntries[app] = { el: det, rendered: false, keys: keys };
+      root.appendChild(det);
+      if (openState[app]) det.open = true;
+    });
+  }
+
+  function buildFilters() {
+    function fill(id, opts) {
+      var s = document.getElementById(id); s.innerHTML = '';
+      opts.forEach(function (o) { s.appendChild(el('option', { value: o[0], text: o[1] })); });
+    }
+    fill('f-app', [['', t('cap.f.all', 'All')]].concat(Object.keys(appEntries).map(function (a) { return [a, (C.apps[a] || {}).title || a]; })));
+    fill('f-status', [['', t('cap.f.all', 'All')]].concat(STATUSES.map(function (s) { return [s, statusLabel(s)]; })));
+    fill('f-kind', [['', t('cap.f.all', 'All')]].concat(Object.keys(KINDS).map(function (k) { return [k, t(KINDS[k][0], KINDS[k][1])]; })));
+    fill('f-screen', [['', t('cap.f.all', 'All')], ['yes', t('cap.f.yes', 'Yes')], ['no', t('cap.f.no', 'No')]]);
+  }
+
+  function legend() {
+    var lg = document.getElementById('legend');
+    lg.appendChild(el('span', { text: t('cap.legend.status', 'Status') + ':' }));
+    STATUSES.forEach(function (s) { lg.appendChild(pill(s)); });
+    lg.appendChild(el('span', { text: t('cap.legend.systems', 'Systems') + ':' }));
+    Object.keys(SYS).forEach(function (v) { lg.appendChild(el('span', { class: 'sc-sys', 'data-v': v, text: t(SYS[v][0], SYS[v][1]) })); });
+  }
+
+  /* ---------- filters ---------- */
+  function val(id) { return document.getElementById(id).value; }
+  function active() { return !!(val('q').trim() || val('f-status') || val('f-kind') || val('f-screen')); }
+  function match(k) {
+    var c = C.capabilities[k];
+    var s = val('f-status'), kd = val('f-kind'), sc = val('f-screen'), q = val('q').trim().toLowerCase();
+    if (s && c.status !== s) return false;
+    if (kd && c.kind !== kd) return false;
+    if (sc === 'yes' && !(c.screens || []).length) return false;
+    if (sc === 'no' && (c.screens || []).length) return false;
+    if (q) {
+      var hay = [k, c.title, c.area, (c.notes || []).join(' '), (c.screens || []).join(' '), (c.specs || []).map(function (x) { return x.name; }).join(' ')].join(' ').toLowerCase();
+      if (!q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; })) return false;
+    }
+    return true;
+  }
+  function applyFilters(fromRender) {
+    var fa = val('f-app'), on = active(), total = 0;
+    Object.keys(appEntries).forEach(function (app) {
+      var e = appEntries[app];
+      var hits = (fa && fa !== app) ? [] : e.keys.filter(match);
+      var show = hits.length > 0 || (!on && !(fa && fa !== app));
+      e.el.hidden = !show;
+      total += hits.length;
+      if (!fromRender && show && (on || fa) && !e.el.open) e.el.open = true;
+      if (!fromRender && !on && !fa) e.el.open = !!openState[app];
+      if (e.rendered) {
+        var set = {}; hits.forEach(function (k) { set[k] = true; });
+        e.el.querySelectorAll('tbody tr').forEach(function (r) { r.hidden = !set[r.getAttribute('data-key')]; });
+      }
+      e.el.querySelector('.cnt').textContent = on
+        ? t('cap.app.countOf', '{n} of {m} capabilities', { n: hits.length, m: e.keys.length })
+        : t('cap.app.count', '{n} capabilities', { n: e.keys.length });
+    });
+    document.getElementById('count').textContent = t('cap.count', '{n} capabilities shown', { n: total });
+  }
+  var qT = null;
+  document.getElementById('q').addEventListener('input', function () { clearTimeout(qT); qT = setTimeout(function () { applyFilters(false); }, 140); });
+  ['f-app', 'f-status', 'f-kind', 'f-screen'].forEach(function (id) { document.getElementById(id).addEventListener('change', function () { applyFilters(false); }); });
+  document.getElementById('open-all').addEventListener('click', function () {
+    Object.keys(appEntries).forEach(function (a) { var e = appEntries[a]; if (!e.el.hidden) { e.el.open = true; openState[a] = true; } }); saveOpen(openState);
+  });
+  document.getElementById('close-all').addEventListener('click', function () {
+    Object.keys(appEntries).forEach(function (a) { appEntries[a].el.open = false; openState[a] = false; }); saveOpen(openState);
+  });
+
+  /* ---------- anchors: #<app> and #<app>/<id> ---------- */
+  function openHash() {
+    var h = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (!h) return;
+    var app = h.split('/')[0];
+    var e = appEntries[app];
+    if (!e) return;
+    e.el.hidden = false; e.el.open = true; renderApp(app);
+    if (h.indexOf('/') === -1) { e.el.scrollIntoView({ block: 'start' }); return; }
+    var row = document.getElementById(h);
+    if (!row) { e.el.scrollIntoView({ block: 'start' }); return; }
+    if (row.hidden) {
+      ['q'].forEach(function (id) { document.getElementById(id).value = ''; });
+      ['f-app', 'f-status', 'f-kind', 'f-screen'].forEach(function (id) { document.getElementById(id).value = ''; });
+      applyFilters(true);
+    }
+    document.querySelectorAll('tr.hit').forEach(function (r) { r.classList.remove('hit'); });
+    row.classList.add('hit');
+    row.scrollIntoView({ block: 'center' });
+  }
+  window.addEventListener('hashchange', openHash);
+
+  Promise.all([
+    fetch('../screens/capabilities.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    fetch('../screens/screens.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    dictReady
+  ]).then(function (res) {
+    C = res[0]; S = res[1];
+    C.apps = C.apps || {};
+    Object.keys(C.apps).forEach(function (a) { if (C.apps[a].repo && !repoApp[C.apps[a].repo]) repoApp[C.apps[a].repo] = a; });
+    if (S) Object.keys(S.boards).forEach(function (n) { var b = S.boards[n]; byId[b.id || n] = b; });
+    var nSpecs = 0; Object.keys(C.apps).forEach(function (a) { nSpecs += C.apps[a].specCount || 0; });
+    document.getElementById('m-caps').textContent = String(Object.keys(C.capabilities).length);
+    document.getElementById('m-apps').textContent = String(Object.keys(C.apps).length);
+    document.getElementById('m-specs').textContent = String(nSpecs);
+    document.getElementById('m-gen').textContent = C.generated || '';
+    var cards = document.getElementById('cards');
+    Object.keys(C.apps).forEach(function (a) { cards.appendChild(card(a, C.apps[a])); });
+    legend();
+    buildApps();
+    buildFilters();
+    applyFilters(true);
+    Object.keys(appEntries).forEach(function (a) { if (appEntries[a].el.open) renderApp(a); });
+    openHash();
+  }).catch(function (err) {
+    document.getElementById('loading').textContent = t('cap.error', 'Could not load the capabilities.') + ' (' + err.message + ')';
+  });
+})();
+</script>
+</body>
+</html>

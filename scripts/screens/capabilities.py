@@ -1,0 +1,457 @@
+#!/usr/bin/env python3
+"""Build preview/screens/capabilities.json and add repository and capability fields to screens.json.
+
+    python3 scripts/screens/capabilities.py             # git fetch each app checkout, then build
+    python3 scripts/screens/capabilities.py --no-fetch  # use what the checkouts already have
+
+Reads, per app, from the local checkout at origin/development (falls back to the checkout's HEAD
+when that ref is missing or the fetch failed, and says so):
+  openspec/specs/<name>/spec.md, openspec/changes/<name>/proposal.md,
+  openspec/parity/capabilities.json, openspec/parity/gap-decisions.json
+and from this repo preview/screens/screens.json (boards[*].caps).
+
+Run it after build.py: build.py rewrites screens.json without the fields this script adds.
+Idempotent: both outputs are rewritten from the sources on every run.
+"""
+import argparse
+import datetime
+import json
+import pathlib
+import re
+import subprocess
+import sys
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+APPS_EXTRA = REPO.parent
+SCREENS = REPO / 'preview' / 'screens'
+DS_REPO = 'ConductionNL/design-system'
+VUE_REPO = 'ConductionNL/nextcloud-vue'
+
+# app id, local dir, GitHub repo
+APPS = [
+    ('portaliq', 'portaliq', 'ConductionNL/portaliq'),
+    ('dossiq', 'procest', 'ConductionNL/dossiq'),
+    ('pipelinq', 'pipelinq', 'ConductionNL/pipelinq'),
+    ('opencatalogi', 'opencatalogi', 'ConductionNL/opencatalogi'),
+    ('learniq', 'scholiq', 'ConductionNL/scholiq'),
+    ('decidiq', 'decidesk', 'ConductionNL/decidiq'),
+    ('thematiq', 'nldesign', 'ConductionNL/nldesign'),
+    ('buildiq', 'openbuild', 'ConductionNL/buildiq'),
+    ('keepiq', 'doriath', 'ConductionNL/doriath'),
+    ('launchpad', 'launchpad', 'ConductionNL/launchpad'),
+    ('openregister', 'openregister', 'ConductionNL/openregister'),
+]
+APP_IDS = [a for a, _, _ in APPS]
+SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']
+# school boards that belong to the learning app rather than the school website
+SCHOOL_APP_BOARDS = re.compile(r'^(Lq|Nc|Lp|AppZijbalk|WerkKop)')
+STATE_ORDER = ['built', 'building', 'specified', 'decided-no']
+NONE_TOKENS = {'', 'geen spec genoemd', 'geen', 'geen spec'}
+
+
+def log(msg):
+    print(msg, file=sys.stderr)
+
+
+class Checkout:
+    """Reads files from one app checkout at a fixed ref with a single git cat-file process."""
+
+    def __init__(self, app, dirname, repo, fetch):
+        self.app, self.dir, self.repo = app, APPS_EXTRA / dirname, repo
+        self.warning = None
+        if fetch:
+            r = subprocess.run(['git', '-C', str(self.dir), 'fetch', '-q', 'origin', 'development'],
+                               capture_output=True, text=True, timeout=300)
+            if r.returncode != 0:
+                self.warning = f'fetch failed ({r.stderr.strip()[:120]})'
+        self.ref = 'origin/development'
+        if subprocess.run(['git', '-C', str(self.dir), 'rev-parse', '-q', '--verify', self.ref + '^{commit}'],
+                          capture_output=True).returncode != 0:
+            self.ref = 'HEAD'
+            self.warning = (self.warning + '; ' if self.warning else '') + 'origin/development missing'
+        if self.warning:
+            self.warning += f', read {self.ref} instead'
+            log(f'{app}: {self.warning}')
+        self.sha = subprocess.run(['git', '-C', str(self.dir), 'rev-parse', '--short', self.ref],
+                                  capture_output=True, text=True).stdout.strip()
+        self.files = subprocess.run(['git', '-C', str(self.dir), 'ls-tree', '-r', '--name-only', self.ref, 'openspec/'],
+                                    capture_output=True, text=True).stdout.splitlines()
+        self.proc = subprocess.Popen(['git', '-C', str(self.dir), 'cat-file', '--batch'],
+                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    def read(self, path):
+        self.proc.stdin.write(f'{self.ref}:{path}\n'.encode())
+        self.proc.stdin.flush()
+        header = self.proc.stdout.readline().decode().split()
+        if len(header) < 3 or header[1] == 'missing':
+            return None
+        size = int(header[2])
+        data = self.proc.stdout.read(size)
+        self.proc.stdout.read(1)
+        return data.decode('utf-8', 'replace')
+
+    def json(self, path):
+        text = self.read(path)
+        return json.loads(text) if text else None
+
+    def close(self):
+        self.proc.stdin.close()
+        self.proc.wait()
+
+
+def first_heading(text):
+    for line in text.splitlines():
+        m = re.match(r'#\s+(.+)', line)
+        if m:
+            return m.group(1).strip()
+    return ''
+
+
+def purpose_sentence(text):
+    m = re.search(r'^##\s+Purpose\s*\n+(.+?)(?:\n\s*\n|\n#)', text, re.S | re.M)
+    if not m:
+        return ''
+    para = ' '.join(m.group(1).split())
+    sentence = re.split(r'(?<=[.!?])\s', para, maxsplit=1)[0]
+    return sentence if len(sentence) <= 160 else sentence[:157].rstrip() + '...'
+
+
+def spec_title(name, text):
+    head = re.sub(r'\s*(Specification|Spec)\s*$', '', first_heading(text), flags=re.I).strip()
+    head = re.sub(r'^(Spec(ification)?|Capability)\s*:\s*', '', head, flags=re.I).strip()
+    if not head or head.lower() == name.lower():
+        return purpose_sentence(text) or name
+    return head
+
+
+def change_title(name, text):
+    head = re.sub(r'^(Proposal|Change)\s*:\s*', '', first_heading(text), flags=re.I).strip()
+    return head or name
+
+
+def load_app(co):
+    specs, changes = {}, {}
+    for f in co.files:
+        m = re.fullmatch(r'openspec/specs/([^/]+)/spec\.md', f)
+        if m:
+            text = co.read(f) or ''
+            pm = re.search(r'^##\s+Purpose\s*$(.*?)(?=^##\s)', text, re.S | re.M)
+            specs[m.group(1)] = {'title': spec_title(m.group(1), text),
+                                 'requirements': len(re.findall(r'^###\s+Requirement', text, re.M)),
+                                 'named': set(re.findall(r'`([A-Za-z0-9][\w.-]*)`', pm.group(1))) if pm else set()}
+        m = re.fullmatch(r'openspec/changes/([^/]+)/proposal\.md', f)
+        if m and m.group(1) != 'archive':
+            changes[m.group(1)] = change_title(m.group(1), co.read(f) or '')
+    parity = co.json('openspec/parity/capabilities.json') or {}
+    decisions = co.json('openspec/parity/gap-decisions.json') or []
+    if isinstance(decisions, dict):
+        decisions = decisions.get('decisions', [])
+    latest = {}
+    for d in decisions:
+        row = d.get('row')
+        if row and (row not in latest or str(d.get('decidedOn', '')) >= str(latest[row].get('decidedOn', ''))):
+            latest[row] = d
+    systems = [s['key'] if isinstance(s, dict) else s for s in parity.get('systems', [])]
+    return {'specs': specs, 'changes': changes, 'rows': parity.get('capabilities', []),
+            'systems': systems, 'areas': {a.get('key'): a for a in parity.get('areas', []) if isinstance(a, dict)},
+            'decisions': latest}
+
+
+def split_caps(caps, problems=None):
+    """'a, b (remark, with comma), c' -> [(raw, 'a', []), (raw, 'b', ['remark, with comma']), ...]
+
+    Some board notes were sorted after a naive comma split, which tore a remark apart:
+    'x) (y), a (b, c' stands for 'a (b, x; y), c'. A fragment that closes a parenthesis it never
+    opened is such a tail; its text joins the remark of the fragment that left one open.
+    """
+    if (caps or '').strip().lower().startswith('geen spec genoemd'):
+        return []
+    parsed, open_at, pending_tails = [], None, []
+    for raw in (caps or '').split(','):
+        raw = raw.strip().rstrip('.').strip()
+        m = re.match(r'^([^()]*)\)(.*)$', raw)
+        if m:  # closes a parenthesis it never opened: the tail of a remark
+            tail = [m.group(1).strip()] + [n.strip() for n in re.findall(r'\(([^()]*)\)', m.group(2)) if n.strip()]
+            if open_at is not None:  # well formed: 'b (x, y)' split into 'b (x' and 'y)'
+                parsed[open_at][2][-1] += ', ' + '; '.join(tail)
+                open_at = None
+            else:  # torn and sorted: the opening fragment comes later
+                pending_tails += tail
+            continue
+        head, unclosed = raw, None
+        if raw.count('(') > raw.count(')'):
+            i = raw.rfind('(')
+            head, unclosed = raw[:i], raw[i + 1:].strip()
+        notes = [n.strip() for n in re.findall(r'\(([^()]*)\)', head) if n.strip()]
+        bare = re.sub(r'\([^()]*\)', '', head).strip()
+        if bare.lower() in NONE_TOKENS or not bare:
+            continue
+        if unclosed is not None:
+            notes.append(unclosed)
+            if pending_tails:
+                notes[-1] = '; '.join([notes[-1]] + pending_tails)
+                pending_tails = []
+                if problems is not None:
+                    problems.append(caps)
+            else:
+                open_at = len(parsed)
+        parsed.append((raw, bare, notes))
+    if pending_tails and problems is not None:
+        problems.append(caps)
+    return parsed
+
+
+def slug(text):
+    return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
+
+
+def board_repos(b, key):
+    """(token app, primary repo, other repos) for one board."""
+    app, name = b['app'], b['id'].split('/', 1)[1]
+    repo_of = {a: r for a, _, r in APPS}
+    if app in repo_of:
+        return app, repo_of[app], []
+    if app in ('huisstijl', 'analyse'):
+        return None, DS_REPO, []
+    if app == 'werkplek':
+        if name.startswith('Lp'):
+            return 'launchpad', repo_of['launchpad'], []
+        if name.startswith('Nc'):
+            return 'thematiq', repo_of['thematiq'], []
+        return None, VUE_REPO, []
+    if app in SCHOOLS:
+        extra = [] if SCHOOL_APP_BOARDS.match(name) else [repo_of['portaliq']]
+        return 'learniq', repo_of['learniq'], extra
+    return None, DS_REPO, []
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--no-fetch', action='store_true', help='do not git fetch the app checkouts')
+    args = ap.parse_args()
+
+    data, meta, warnings = {}, {}, []
+    for app, dirname, repo in APPS:
+        co = Checkout(app, dirname, repo, not args.no_fetch)
+        data[app] = load_app(co)
+        meta[app] = {'dir': dirname, 'repo': repo, 'ref': co.ref, 'sha': co.sha}
+        if co.warning:
+            warnings.append(f'{app}: {co.warning}')
+        co.close()
+
+    index = json.loads((SCREENS / 'screens.json').read_text())
+    boards = index['boards']
+    by_name = {}
+    for key, b in boards.items():
+        if b['set'] == 'zuiddrecht':
+            by_name[key] = b['id']
+
+    caps = {}
+    spec_url = lambda app, name: f'https://github.com/{meta[app]["repo"]}/blob/development/openspec/specs/{name}/spec.md'
+
+    def spec_ref(app, name):
+        s = data[app]['specs'][name]
+        return {'name': name, 'app': app, 'url': spec_url(app, name), 'requirements': s['requirements']}
+
+    # 1. every spec and every matrix row of every app
+    for app in APP_IDS:
+        d = data[app]
+        rows_by_feature = {}
+        for r in d['rows']:
+            st = (r.get('built') or {}).get('state') if isinstance(r.get('built'), dict) else None
+            f = r.get('feature')
+            if isinstance(f, str) and f in d['specs']:
+                rows_by_feature.setdefault(f, []).append(st)
+        row_ids = {r['id'] for r in d['rows']}
+        named_by = {}  # row id -> specs whose Purpose names it in backticks
+        for name, s in d['specs'].items():
+            for rid in s['named'] & row_ids:
+                named_by.setdefault(rid, []).append(name)
+                st = next((r.get('built') or {}).get('state') for r in d['rows'] if r['id'] == rid)
+                rows_by_feature.setdefault(name, []).append(st)
+        for name, s in d['specs'].items():
+            linked = [st for st in rows_by_feature.get(name, []) if st in STATE_ORDER]
+            status = next((st for st in STATE_ORDER if st in linked), 'specified')
+            caps[f'{app}/{name}'] = {
+                'id': name, 'app': app, 'kind': 'spec', 'title': s['title'], 'area': None, 'status': status,
+                'specs': [spec_ref(app, name)], 'systems': {}, 'screens': [], 'decision': None, 'notes': [],
+                'source': 'openspec',
+                'matrixRows': sorted({r['id'] for r in d['rows'] if r.get('feature') == name} | (s['named'] & row_ids)),
+            }
+        for r in d['rows']:
+            built = r.get('built') if isinstance(r.get('built'), dict) else {}
+            state = built.get('state')
+            notes = []
+            if state not in STATE_ORDER:
+                notes.append(f'matrix built.state is {state!r}, shown as specified')
+                state = 'specified'
+            specs = []
+            for f in [r.get('feature'), built.get('spec')] + sorted(named_by.get(r['id'], [])):
+                if isinstance(f, str):
+                    f = f.strip()
+                    f = re.sub(r'^openspec/specs/|/spec\.md$', '', f)
+                    if f in d['specs'] and f not in [x['name'] for x in specs]:
+                        specs.append(spec_ref(app, f))
+            screens = []
+            scr = r.get('screen')
+            bnames = scr.get('board') if isinstance(scr, dict) else None
+            for bn in ([bnames] if isinstance(bnames, str) else bnames or []):
+                if bn in by_name:
+                    screens.append(by_name[bn])
+                else:
+                    notes.append(f'matrix screen board {bn} is not in the gallery')
+            dec = d['decisions'].get(r['id'])
+            area = r.get('area')
+            caps[f'{app}/{r["id"]}'] = {
+                'id': r['id'], 'app': app, 'kind': 'matrix', 'title': r.get('name') or r['id'],
+                'area': area, 'areaTitle': (d['areas'].get(area) or {}).get('name'), 'status': state,
+                'specs': specs,
+                'systems': {k: r[k] for k in d['systems'] if k in r},
+                'screens': screens,
+                'decision': {k: dec.get(k) for k in ('decision', 'reason', 'change', 'decidedOn')} if dec else None,
+                'notes': notes, 'source': 'parity', 'matrixScreens': list(screens),
+            }
+
+    # 2. board tokens
+    unresolved, cross, torn = [], [], []
+
+    def resolve(token, home, extra_apps):
+        order = ([home] if home else []) + [a for a in extra_apps if a != home]
+        for kind, test in (('spec', lambda a: token in data[a]['specs']),
+                           ('matrix', lambda a: f'{a}/{token}' in caps and caps[f'{a}/{token}']['kind'] == 'matrix'),
+                           ('change', lambda a: token in data[a]['changes'])):
+            for a in order:
+                if test(a):
+                    return kind, a, False
+        # elsewhere in the fleet, only when exactly one app has it
+        for kind, test in (('spec', lambda a: token in data[a]['specs']),
+                           ('matrix', lambda a: f'{a}/{token}' in caps and caps[f'{a}/{token}']['kind'] == 'matrix'),
+                           ('change', lambda a: token in data[a]['changes'])):
+            hits = [a for a in APP_IDS if test(a)]
+            if len(hits) == 1:
+                return kind, hits[0], True
+        return None, None, False
+
+    for key, b in boards.items():
+        home, repo, extra_repos = board_repos(b, key)
+        extra_apps = ['portaliq'] if extra_repos else []
+        cap_ids, board_specs = [], []
+        for raw, bare, notes in split_caps(b.get('caps', ''), torn_here := []):
+            first = re.split(r'[\s(]', bare, maxsplit=1)[0]
+            kind, app, far = resolve(first, home, extra_apps)
+            if kind:
+                ck = f'{app}/{first}'
+                if far:
+                    cross.append(f'{b["id"]}: {first} -> {app}')
+                if kind == 'change' and ck not in caps:
+                    caps[ck] = {'id': first, 'app': app, 'kind': 'change', 'title': data[app]['changes'][first],
+                                'area': None, 'status': 'in-flight', 'specs': [], 'systems': {}, 'screens': [],
+                                'decision': None, 'notes': [], 'source': 'openspec',
+                                'changeUrl': f'https://github.com/{meta[app]["repo"]}/tree/development/openspec/changes/{first}'}
+            else:
+                owner = home or {DS_REPO: 'design-system', VUE_REPO: 'nextcloud-vue'}[repo]
+                if re.match(r'^(of|oi)-', first):
+                    ext_id, title = first, bare
+                    source = 'openforms' if first.startswith('of-') else 'openinwoner'
+                    kind = 'external'
+                elif re.match(r'^(NLDS|Den Haag)\b', bare):
+                    ext_id, title = slug(bare), bare
+                    source = 'nlds' if bare.startswith('NLDS') else 'board'
+                    kind = 'external'
+                else:
+                    ext_id, title, source, kind = slug(bare) if ' ' in bare else first, bare, 'board', 'free'
+                    unresolved.append(f'{b["id"]}: {raw}')
+                ck = f'{owner}/{ext_id}'
+                if ck not in caps:
+                    caps[ck] = {'id': ext_id, 'app': owner, 'kind': kind, 'title': title, 'area': None,
+                                'status': 'external', 'specs': [], 'systems': {}, 'screens': [], 'decision': None,
+                                'notes': [], 'source': source}
+            c = caps[ck]
+            if b['id'] not in c['screens']:
+                c['screens'].append(b['id'])
+            for n in notes:
+                if n not in c['notes']:
+                    c['notes'].append(n)
+            if ck not in cap_ids:
+                cap_ids.append(ck)
+        # matrix rows that name this board in their screen field come after the board's own tokens
+        matrix_ids = sorted(k for k, c in caps.items() if c['kind'] == 'matrix' and b['id'] in c.get('matrixScreens', []))
+        for ck in cap_ids:
+            for s in caps[ck]['specs']:
+                if s['url'] not in [x['url'] for x in board_specs]:
+                    board_specs.append({'name': s['name'], 'url': s['url']})
+        if torn_here:
+            torn.append(b['id'])
+        b['repo'] = repo
+        b['repoUrl'] = f'https://github.com/{repo}'
+        b['repos'] = [repo] + extra_repos
+        b['src'] = b['src'] if b['src'].startswith('screens-src/') else 'screens-src/' + b['src']
+        b['capIds'] = cap_ids
+        b['matrixCapIds'] = [k for k in matrix_ids if k not in cap_ids]
+        b['specs'] = board_specs
+
+    # 3. statuses that depend on screens, sorting
+    for c in caps.values():
+        if c['kind'] in ('external', 'free'):
+            c['status'] = 'designed' if c['screens'] else 'external'
+        c['screens'] = sorted(set(c['screens']))
+        c.pop('matrixScreens', None)
+
+    # 4. apps block
+    screens_per_app = {}
+    for b in boards.values():
+        home, _, _ = board_repos(b, None)
+        screens_per_app[home or b['app']] = screens_per_app.get(home or b['app'], 0) + 1
+    apps = {}
+    for app, dirname, repo in APPS:
+        d = data[app]
+        mine = [c for c in caps.values() if c['app'] == app]
+        states = {s: 0 for s in STATE_ORDER}
+        for r in d['rows']:
+            st = (r.get('built') or {}).get('state') if isinstance(r.get('built'), dict) else None
+            states[st if st in STATE_ORDER else 'specified'] += 1
+        apps[app] = {
+            'title': app, 'repo': repo, 'repoUrl': f'https://github.com/{repo}', 'dir': dirname,
+            'ref': meta[app]['ref'], 'sha': meta[app]['sha'],
+            'specsUrl': f'https://github.com/{repo}/tree/development/openspec/specs',
+            'specCount': len(d['specs']), 'changeCount': len(d['changes']),
+            'parity': {'rows': len(d['rows']), 'systems': d['systems'], 'states': states},
+            'screens': screens_per_app.get(app, 0),
+            'capsWithScreen': sum(1 for c in mine if c['screens']),
+            'capsWithoutScreen': sum(1 for c in mine if not c['screens']),
+        }
+    for owner, repo in (('design-system', DS_REPO), ('nextcloud-vue', VUE_REPO)):
+        mine = [c for c in caps.values() if c['app'] == owner]
+        apps[owner] = {'title': owner, 'repo': repo, 'repoUrl': f'https://github.com/{repo}', 'dir': None,
+                       'specsUrl': None, 'specCount': 0, 'changeCount': 0, 'parity': None,
+                       'screens': sum(1 for b in boards.values() if board_repos(b, None)[1] == repo),
+                       'capsWithScreen': sum(1 for c in mine if c['screens']),
+                       'capsWithoutScreen': sum(1 for c in mine if not c['screens'])}
+
+    out = {'generated': datetime.date.today().isoformat(), 'apps': apps,
+           'capabilities': dict(sorted(caps.items())), 'warnings': warnings}
+    (SCREENS / 'capabilities.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')) + '\n')
+    (SCREENS / 'screens.json').write_text(json.dumps(index, ensure_ascii=False, indent=1) + '\n')
+
+    # report
+    print(f'capabilities.json: {len(caps)} capabilities; screens.json: {len(boards)} boards')
+    print(f'{"app":14} {"specs":>5} {"rows":>5} {"withScr":>7} {"noScr":>6} {"screens":>7} {"scrNoCap":>8}')
+    for app, a in apps.items():
+        no_cap = sum(1 for b in boards.values()
+                     if (board_repos(b, None)[0] or {DS_REPO: 'design-system', VUE_REPO: 'nextcloud-vue'}.get(board_repos(b, None)[1])) == app
+                     and not b['capIds'])
+        print(f'{app:14} {a["specCount"]:>5} {(a["parity"] or {}).get("rows", 0):>5} {a["capsWithScreen"]:>7} '
+              f'{a["capsWithoutScreen"]:>6} {a["screens"]:>7} {no_cap:>8}')
+    print(f'free tokens: {len(unresolved)}')
+    for u in unresolved[:10]:
+        print('  ' + u)
+    print(f'resolved in another app: {len(cross)}')
+    for u in cross[:20]:
+        print('  ' + u)
+    print(f'boards with a torn caps note (remark rejoined): {len(torn)} {torn}')
+    for w in warnings:
+        print('warning: ' + w)
+
+
+if __name__ == '__main__':
+    main()

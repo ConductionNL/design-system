@@ -58,6 +58,15 @@
   .side .mx summary { cursor: pointer; font-size: 13px; color: var(--c-blue-cobalt); }
   .side .mx summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
   .side .mx ul { margin-top: 8px; }
+  .side .iss .badge { display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--c-blue-cobalt); color: white; font-size: 11px; letter-spacing: 0; text-align: center; }
+  .side .iss li { flex-direction: column; align-items: stretch; gap: 3px; padding-bottom: 8px; border-bottom: 1px solid var(--c-cobalt-100); }
+  .side .iss li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .side .iss .it { font-size: 13px; font-weight: 600; }
+  .side .iss .meta { font-size: 12px; color: var(--c-cobalt-700); }
+  .side .iss .lbls { display: flex; flex-wrap: wrap; gap: 3px; }
+  .side .iss .lbl { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); }
+  .side .iss .all { font-size: 13px; color: var(--c-blue-cobalt); }
+  .side .iss .retry { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; margin-left: 4px; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
   .side .fb { justify-content: center; }
   .side .fb-note { font-size: 12px; color: var(--c-cobalt-700); margin: 0; line-height: 1.45; }
 
@@ -113,6 +122,12 @@
       <ul id="caps-list"></ul>
       <p class="empty" id="caps-empty" hidden data-i18n="screens.side.noCaps">No capability named for this screen yet.</p>
       <details class="mx" id="matrix" hidden></details>
+    </section>
+    <section class="box iss" aria-live="polite">
+      <h2><span data-i18n="screens.side.issues">Open issues</span> <span class="badge" id="iss-count" hidden></span></h2>
+      <ul id="iss-list"></ul>
+      <p class="empty" id="iss-state" data-i18n="screens.side.issuesLoading">Looking for open issues.</p>
+      <a class="all" id="iss-all" href="#" target="_blank" rel="noopener" data-i18n="screens.side.issuesAll">All issues on GitHub</a>
     </section>
     <section class="box">
       <h2 data-i18n="screens.side.specs">Specs</h2>
@@ -431,9 +446,92 @@
     sa.href = ghBlob(DS_REPO, 'main', sp); sa.textContent = sp;
 
     document.getElementById('feedback').href = feedbackUrl();
+    loadIssues(false);
     var about = document.getElementById('about');
     about.hidden = !board.note;
     document.getElementById('notetext').textContent = board.note || '';
+  }
+
+  /* ---------- open issues about this screen, live from GitHub search ----------
+     Unauthenticated search allows 10 calls a minute, so results are cached per
+     screen for 15 minutes and a fetch waits until the carousel rests on a screen. */
+  var ISS_TTL = 15 * 60 * 1000;
+  var issTimer = null, issSeq = 0;
+  function issQuery(b) {
+    var repos = [repoOf(b)], r2 = secondRepo(b);
+    if (r2) repos.push(r2);
+    return repos.map(function (r) { return 'repo:' + r; }).join(' ') + ' is:issue is:open "' + (b.id || name) + '" in:title,body';
+  }
+  function issCacheGet(id) {
+    try {
+      var v = JSON.parse(localStorage.getItem('screens.issues.' + id) || 'null');
+      return v && Date.now() - v.at < ISS_TTL ? v.items : null;
+    } catch (e) { return null; }
+  }
+  function issCacheSet(id, items) {
+    try { localStorage.setItem('screens.issues.' + id, JSON.stringify({ at: Date.now(), items: items })); } catch (e) { /* ignore */ }
+  }
+  function issState(text, retry) {
+    var p = document.getElementById('iss-state');
+    p.hidden = !text; p.textContent = text || '';
+    if (retry) {
+      var b = el('button', { type: 'button', class: 'retry', text: t('screens.side.issuesRetry', 'Try again') });
+      b.addEventListener('click', function () { loadIssues(true); });
+      p.appendChild(b);
+    }
+  }
+  function issRender(items) {
+    var id = board.id || name;
+    var ul = document.getElementById('iss-list'); ul.innerHTML = '';
+    var badge = document.getElementById('iss-count');
+    badge.hidden = false; badge.textContent = String(items.length);
+    var prefix = new RegExp('^\\s*\\[FEATURE\\]\\s*' + id.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&') + '\\s*:\\s*', 'i');
+    items.forEach(function (it) {
+      var title = (it.title || '').replace(prefix, '') || it.title;
+      var lbls = el('span', { class: 'lbls' });
+      (it.labels || []).forEach(function (l) { lbls.appendChild(el('span', { class: 'lbl', text: l })); });
+      var day = it.created ? new Date(it.created).toLocaleDateString(LANG === 'en' ? 'en-GB' : 'nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      ul.appendChild(el('li', null, [
+        el('a', { class: 'it', href: it.url, target: '_blank', rel: 'noopener', text: title }),
+        el('span', { class: 'meta', text: '#' + it.number + ' · ' + t('screens.side.issuesBy', 'opened by {login} on {date}', { login: it.login || '?', date: day }) }),
+        (it.labels || []).length ? lbls : null
+      ]));
+    });
+    issState(items.length ? '' : t('screens.side.issuesNone', 'No open issues about this screen'));
+  }
+  function loadIssues(force) {
+    var b = board, id = b.id || name, q = issQuery(b), seq = ++issSeq;
+    document.getElementById('iss-all').href = 'https://github.com/search?type=issues&q=' + encodeURIComponent(q);
+    clearTimeout(issTimer);
+    var cached = force ? null : issCacheGet(id);
+    if (cached) { issRender(cached); return; }
+    document.getElementById('iss-list').innerHTML = '';
+    document.getElementById('iss-count').hidden = true;
+    issState(t('screens.side.issuesLoading', 'Looking for open issues.'));
+    issTimer = setTimeout(function () {
+      fetch('https://api.github.com/search/issues?per_page=20&q=' + encodeURIComponent(q), {
+        headers: { Accept: 'application/vnd.github+json' }, credentials: 'omit'
+      }).then(function (r) {
+        if (r.status === 403 || r.status === 429) { var e = new Error('limit'); e.limit = true; throw e; }
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      }).then(function (d) {
+        /* GitHub's phrase search is loose: keep only issues that name the exact screen id */
+        var needle = String(id).toLowerCase();
+        var items = (d.items || []).filter(function (it) {
+          return ((it.title || '') + '\n' + (it.body || '')).toLowerCase().indexOf(needle) !== -1;
+        }).map(function (it) {
+          return { title: it.title, url: it.html_url, number: it.number, created: it.created_at,
+            login: it.user && it.user.login, labels: (it.labels || []).map(function (l) { return l.name; }) };
+        });
+        issCacheSet(id, items);
+        if (seq === issSeq) issRender(items);
+      }).catch(function (e) {
+        if (seq !== issSeq) return;
+        if (e.limit) issState(t('screens.side.issuesLimit', 'GitHub limit reached, try again in a minute.'), true);
+        else issState(t('screens.side.issuesError', 'Could not load the issues from GitHub.'));
+      });
+    }, force ? 0 : 450);
   }
 
   /* ---------- feedback: the repository's feature-request issue form ----------

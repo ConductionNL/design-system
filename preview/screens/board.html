@@ -331,9 +331,6 @@
     'external': ['cap.status.external', 'external']
   };
   function statusLabel(s) { var m = STATUS[s]; return m ? t(m[0], m[1]) : (s || ''); }
-  /* Dutch labels for the issue body: an issue is read on GitHub, not in this page's language */
-  var STATUS_NL = { 'built': 'gebouwd', 'building': 'in aanbouw', 'specified': 'gespecificeerd', 'decided-no': 'besloten: niet bouwen',
-    'in-flight': 'change open', 'designed': 'ontworpen, nog geen spec', 'external': 'extern' };
   function pill(s) { return el('span', { class: 'sc-pill', 'data-status': s || '', text: statusLabel(s) }); }
 
   function capsOf(b) {
@@ -439,59 +436,51 @@
     document.getElementById('notetext').textContent = board.note || '';
   }
 
-  /* ---------- feedback: a prefilled GitHub issue ---------- */
-  function feedbackBody(capLimit) {
+  /* ---------- feedback: the repository's feature-request issue form ----------
+     GitHub prefills a form field from a query parameter named after its id.
+     problem, proposed-solution, who-benefits and priority-to-you stay empty for
+     the reader; the form sets its own labels. */
+  function feedbackFields(limit) {
     var id = board.id || name;
     var repo = repoOf(board), r2 = secondRepo(board);
     var sp = srcPath(board);
-    var caps = capsOf(board);
-    var specs = board.specs || [];
-    var cutCaps = capLimit < caps.length;
-    var shownCaps = caps.slice(0, capLimit);
-    var shownSpecs = specs.slice(0, Math.max(capLimit, 0));
-    var L = [];
-    L.push('**Scherm:** ' + (board.title || name) + ' (`' + id + '`)');
-    L.push('**Live:** ' + LIVE + id);
-    L.push('**App:** ' + board.app);
-    L.push('**Repository:** ' + repo + (r2 ? ' (websitepagina\'s ook in ' + r2 + ')' : ''));
-    L.push('**Bronbestand:** [' + sp + '](' + ghBlob(DS_REPO, 'main', sp) + ')');
-    L.push('');
-    L.push('**Capabilities:**');
-    if (!caps.length) L.push('- nog geen capability genoemd');
-    shownCaps.forEach(function (x) { L.push('- `' + x.id + '`' + (x.status ? ', ' + (STATUS_NL[x.status] || x.status) : '')); });
-    if (cutCaps) L.push('- ...');
-    L.push('');
-    L.push('**Specs:**');
-    if (!specs.length) L.push('- nog geen spec');
-    shownSpecs.forEach(function (s) { L.push('- [' + s.name + '](' + s.url + ')'); });
-    if (shownSpecs.length < specs.length) L.push('- ...');
-    L.push('');
-    L.push('## Wat wil je anders?');
-    L.push('');
-    L.push('- ');
-    L.push('');
-    var specLine = shownSpecs.map(specPath).join('; ') + (shownSpecs.length < specs.length ? '; ...' : '');
-    var capLine = shownCaps.map(function (x) { return x.id; }).join('; ') + (cutCaps ? '; ...' : '');
-    L.push('<!-- screen-feedback v1');
-    L.push('screen: ' + id);
-    L.push('app: ' + board.app);
-    L.push('repo: ' + repo);
-    if (r2) L.push('repo2: ' + r2);
-    L.push('source: ' + DS_REPO + '@main:' + sp);
-    L.push('board: ' + DS_REPO + '@main:preview/screens/' + board.file);
-    L.push('specs: ' + specLine);
-    L.push('capabilities: ' + capLine);
-    L.push('-->');
-    return L.join('\n');
+    var caps = capsOf(board), specs = board.specs || [];
+    var shownCaps = caps.slice(0, limit), shownSpecs = specs.slice(0, limit);
+    var cutCaps = shownCaps.length < caps.length, cutSpecs = shownSpecs.length < specs.length;
+    var C2 = [];
+    C2.push('Specs van dit scherm:');
+    if (!specs.length) C2.push('- nog geen spec');
+    shownSpecs.forEach(function (s) { C2.push('- [' + s.name + '](' + s.url + ')'); });
+    if (cutSpecs) C2.push('- ...');
+    if (r2) { C2.push(''); C2.push('Tweede repository: ' + r2 + ' (websitepagina\'s)'); }
+    C2.push('');
+    C2.push('<!-- screen-feedback v1');
+    C2.push('screen: ' + id);
+    C2.push('app: ' + board.app);
+    C2.push('repo: ' + repo);
+    if (r2) C2.push('repo2: ' + r2);
+    C2.push('source: ' + DS_REPO + '@main:' + sp);
+    C2.push('board: ' + DS_REPO + '@main:preview/screens/' + board.file);
+    C2.push('specs: ' + shownSpecs.map(specPath).join('; ') + (cutSpecs ? '; ...' : ''));
+    C2.push('capabilities: ' + shownCaps.map(function (x) { return x.id; }).join('; ') + (cutCaps ? '; ...' : ''));
+    C2.push('-->');
+    return [
+      ['template', 'feature-request.yml'],
+      ['title', '[FEATURE] ' + id + ': '],
+      ['app', board.app],
+      ['page', 'scherm ' + id + ' (' + (board.title || name) + ')'],
+      ['surface', LIVE + id],
+      ['object', sp + ' (' + ghBlob(DS_REPO, 'main', sp) + ')'],
+      ['spec-ref', shownCaps.map(function (x) { return x.id; }).join(', ') + (cutCaps ? ', ...' : '')],
+      ['context', C2.join('\n')]
+    ];
   }
   function feedbackUrl() {
-    var id = board.id || name;
-    var repo = repoOf(board);
+    var base = 'https://github.com/' + repoOf(board) + '/issues/new?';
     var n = Math.max(capsOf(board).length, (board.specs || []).length);
     var url;
     do {
-      url = 'https://github.com/' + repo + '/issues/new?title=' + encodeURIComponent(id + ': ') +
-        '&body=' + encodeURIComponent(feedbackBody(n)) + '&labels=screen-feedback';
+      url = base + feedbackFields(n).map(function (f) { return f[0] + '=' + encodeURIComponent(f[1]); }).join('&');
       n -= 1;
     } while (url.length > MAX_URL && n >= 0);
     return url;

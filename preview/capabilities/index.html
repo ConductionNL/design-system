@@ -107,6 +107,7 @@
   table.cp th:nth-child(4) { width: 16%; }
   table.cp th:nth-child(5) { width: 18%; }
   table.cp th:nth-child(6) { width: 6%; }
+  table.cp .warn, .fr .num .warn { color: var(--c-coral-700); }
   table.cp .cap code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-900); overflow-wrap: anywhere; }
   table.cp .cap .ti { display: block; color: var(--c-cobalt-700); margin-top: 2px; }
   table.cp .cap .note { display: block; font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; }
@@ -347,6 +348,8 @@
       capTd.appendChild(el('span', { class: 'note dec', text: dec, title: dec }));
     }
     var screens = (c.screens || []).map(function (id) { return el('a', { href: boardHref(id), text: screenTitle(id), title: id }); });
+    if (!screens.length && c.screenReason) screens = [el('span', { class: 'note', text: t('cap.noScreen', 'No screen') + ': ' + c.screenReason })];
+    else if (!screens.length && screenState(c) === 'missing') screens = [el('span', { class: 'note warn', text: t('cap.screenMissing', 'Screen missing') })];
     var specs = (c.specs || []).map(function (s) {
       return el('a', { href: s.url, target: '_blank', rel: 'noopener', text: s.name + (s.requirements != null ? ' (' + s.requirements + ')' : '') });
     });
@@ -460,12 +463,18 @@
 
   /* ---------- filters ---------- */
   function val(id) { var n = document.getElementById(id); return n.type === 'checkbox' ? (n.checked && !n.disabled) : n.value; }
+  /* yes: on a screen; reason: no screen, with the reason why; missing: should be on a screen and is not */
+  function screenState(c) {
+    if ((c.screens || []).length) return 'yes';
+    if (c.screenReason) return 'reason';
+    if ((c.kind === 'matrix' || c.kind === 'spec') && c.status !== 'decided-no') return 'missing';
+    return 'none';
+  }
   function capMatch(k, c, f) {
     var s = val('f-status'), kd = val('f-kind'), sc = val('f-screen'), comp = val('f-comp'), gap = val('f-gap');
     if (s && c.status !== s) return false;
     if (kd && c.kind !== kd) return false;
-    if (sc === 'yes' && !(c.screens || []).length) return false;
-    if (sc === 'no' && (c.screens || []).length) return false;
+    if (sc && screenState(c) !== sc) return false;
     if (comp) {
       var theirs = (c.systems || {})[comp];
       if (!theirs) return false;
@@ -504,7 +513,10 @@
       var cells = r.tr.children;
       cells[2].innerHTML = ''; cells[2].appendChild(on ? el('span', null, [String(hits.length), el('small', { text: ' / ' + f.caps.length })]) : document.createTextNode(String(f.caps.length)));
       cells[3].innerHTML = ''; cells[3].appendChild(statusCell(hits));
-      cells[4].textContent = String(screensOf(hits).length || '·');
+      var miss = hits.filter(function (k) { return screenState(C.capabilities[k]) === 'missing'; }).length;
+      cells[4].innerHTML = '';
+      cells[4].appendChild(document.createTextNode(String(screensOf(hits).length || '·')));
+      if (miss) cells[4].appendChild(el('small', { class: 'warn', title: t('cap.screenMissingN', '{n} capabilities without a screen', { n: miss }), text: ' (' + miss + ' ' + t('cap.missingShort', 'missing') + ')' }));
       cells[5].innerHTML = ''; cells[5].appendChild(compCell(hits, comp));
       if (!r.detail.hidden || openState[fk]) setOpen(fk, true);
     });
@@ -527,7 +539,7 @@
     fill('f-app', [['', t('cap.f.all', 'All')]].concat(apps.map(function (a) { return [a, appTitle(a)]; })));
     fill('f-status', [['', t('cap.f.all', 'All')]].concat(STATUSES.map(function (s) { return [s, statusLabel(s)]; })));
     fill('f-kind', [['', t('cap.f.all', 'All')]].concat(Object.keys(KINDS).map(function (k) { return [k, t(KINDS[k][0], KINDS[k][1])]; })));
-    fill('f-screen', [['', t('cap.f.all', 'All')], ['yes', t('cap.f.yes', 'Yes')], ['no', t('cap.f.no', 'No')]]);
+    fill('f-screen', [['', t('cap.f.all', 'All')], ['yes', t('cap.f.yes', 'Yes')], ['reason', t('cap.f.reason', 'No screen, with a reason')], ['missing', t('cap.f.missing', 'Missing')]]);
     var groups = [];
     Object.keys(C.apps).forEach(function (a) {
       var P = C.apps[a].parity; if (!P) return;

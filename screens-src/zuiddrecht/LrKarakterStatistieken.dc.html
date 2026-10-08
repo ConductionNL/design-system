@@ -68,7 +68,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                             <li style="display: flex; gap: 12px; align-items: center; padding: 8px 12px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea"><span style="width: 22px; height: 22px; flex: none; border-radius: 11px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ m.n }}</span><span style="flex: 1 1 auto"><span style="color: #5e6168">{{ m.kind }}</span> <strong style="font-weight: 600">{{ m.src }}</strong> <span style="color: #5e6168">{{ m.note }}</span></span><strong style="{{ m.valStyle }}">{{ m.val }}</strong></li>
                           </sc-for>
                         </ol>
-                        <p style="margin: 10px 0 0; font-size: 13px; color: #5e6168">Toegepast in vaste volgorde: vaardigheden, dan voorwerpen, dan toestanden. Berekend op 8 okt 10.42 · zelfde invoer geeft altijd dezelfde uitkomst.</p>
+                        <p style="margin: 10px 0 0; font-size: 13px; color: #5e6168">Toegepast in vaste volgorde: vaardigheden, dan voorwerpen en evenementen, dan toestanden. Berekend op 8 okt 10.42 · zelfde invoer geeft altijd dezelfde uitkomst.</p>
                       </td>
                     </tr>
                     <sc-for list="{{ abil }}" as="a" hint-placeholder-count="3">
@@ -211,10 +211,10 @@ class Component extends DCLogic {
     ].map(([what, who]) => ({ what, who }));
     const mods = [
       ['1', 'Vaardigheid', 'Zwaardvechten', 'effect Strijdervaring', '+2', 'color: #1e6b2a'],
-      ['2', 'Voorwerp', 'Zilveren amulet', '(stapelt niet)', '+1', 'color: #1e6b2a'],
+      ['2', 'Evenement', 'Zomertreffen Zuiderlanden', 'effect Gezegend (stapelt niet)', '+1', 'color: #1e6b2a'],
       ['3', 'Toestand', 'Gebroken arm', '', '\u22122', 'color: #a30000']
     ].map(([n, kind, src, note, val, c]) => ({ n, kind, src, note, val, valStyle: 'font-size: 15px; ' + c }));
-    const abil = [['Behendigheid', '3', 'geen', '3'], ['Mana', '2', 'geen', '2'], ['Levenspunten', '10', 'Zwaardvechten +1', '11']].map(([name, base, mods, end]) => ({ name, base, mods, end }));
+    const abil = [['Behendigheid', '3', 'geen', '3'], ['Mana', '2', 'Zilveren amulet +1', '3'], ['Levenspunten', '10', 'Zwaardvechten +1', '11']].map(([name, base, mods, end]) => ({ name, base, mods, end }));
     const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
     const builds = [['Hoofdbuild', '2 vaardigheden · 35 XP besteed', 'Actief', pill('#e7f3ea', '#1e6b2a')], ['Testbuild heler 2', 'met Spreuk: Genezing · 45 XP nodig', 'Test', pill('#f0f1f3', '#3d4047')]].map(([name, meta, p, pillStyle]) => ({ name, meta, pill: p, pillStyle }));
     const btn = (on) => 'width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; ' + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047');

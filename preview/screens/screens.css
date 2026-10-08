@@ -1,0 +1,83 @@
+/* ============================================================
+   Screens: shared styles
+   ------------------------------------------------------------
+   Linked by every board document (boards/<Name>.html) and by
+   the three gallery pages. Everything for the gallery chrome
+   is scoped under body.sc-chrome, so a board document only
+   gets the two logo rules at the top. The chrome itself runs
+   on preview.css tokens; the --sc-* variables are the screen's
+   design system, set by theme.js.
+   ============================================================ */
+
+/* Board documents: a swapped logo keeps its own proportions. */
+img[data-sc-logo] { object-fit: contain; object-position: left center; }
+
+/* ---------- Gallery chrome ---------- */
+body.sc-chrome { padding: 0; background: var(--c-cobalt-50); }
+.sc-chrome [hidden] { display: none !important; }
+
+.sc-chrome .sc-wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-12); }
+
+/* Hero, same shape as the home page hero */
+.sc-chrome .hero {
+  background: var(--conduction-color-background-inverse);
+  color: white;
+  padding: 80px 64px 64px;
+  border-radius: 0;
+}
+.sc-chrome .hero .crumb a { color: var(--c-cobalt-200); }
+.sc-chrome .hero .crumb { color: rgba(255,255,255,0.7); }
+.sc-chrome .hero h1 { color: white; font-size: 64px; font-weight: 700; line-height: 1.05; letter-spacing: -0.025em; max-width: 18ch; }
+.sc-chrome .hero p { color: rgba(255,255,255,0.82); font-size: 19px; margin-top: var(--space-6); max-width: 62ch; line-height: 1.5; }
+.sc-chrome .hero p a, .sc-chrome .hero .meta a { color: white; }
+.sc-chrome .hero .meta { display: flex; flex-wrap: wrap; gap: var(--space-8); margin-top: var(--space-8); font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: rgba(255,255,255,0.7); }
+.sc-chrome .hero .meta strong { display: block; color: white; font-family: var(--conduction-typography-font-family-body); font-size: 16px; font-weight: 600; margin-top: 4px; }
+
+/* Segmented control for the design system */
+.sc-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: white; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); }
+.sc-seg button {
+  font: inherit; font-size: 14px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 12px; min-height: 36px;
+  border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--c-cobalt-700); cursor: pointer;
+}
+.sc-seg button:hover { background: var(--c-cobalt-50); }
+.sc-seg button[aria-pressed="true"] { background: var(--c-cobalt-50); color: var(--c-cobalt-900); font-weight: 600; box-shadow: inset 0 0 0 2px var(--c-blue-cobalt); }
+.sc-seg button:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+.sc-seg .dot { width: 12px; height: 14px; clip-path: var(--hex-pointy-top); flex: none; }
+
+/* The stable screen id, copyable */
+.sc-id {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--conduction-typography-font-family-code); font-size: 12px;
+  color: var(--c-cobalt-700); background: var(--c-cobalt-50);
+  border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-sm);
+  padding: 2px 4px 2px 8px; max-width: 100%;
+}
+.sc-id code { font: inherit; background: none; padding: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sc-id button {
+  font: inherit; font-size: 11px; border: 0; cursor: pointer;
+  background: white; color: var(--c-cobalt-700);
+  border-radius: 3px; padding: 2px 6px; min-height: 22px;
+}
+.sc-id button:hover { color: var(--c-coral-600); }
+.sc-id button:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+
+/* Badge for sets drawn in their own house style */
+.sc-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--conduction-typography-font-family-code); font-size: 11px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--c-cobalt-700); background: white;
+  border: 1px solid var(--c-cobalt-200); border-radius: 999px; padding: 3px 10px;
+}
+
+.sc-swatch { display: inline-flex; height: 10px; border-radius: 2px; overflow: hidden; width: 72px; }
+.sc-swatch span { flex: 1; }
+
+@media (max-width: 720px) {
+  .sc-chrome .sc-wrap { padding: 0 var(--space-4); }
+  .sc-chrome .hero { padding: 56px 16px 40px; }
+  .sc-chrome .hero h1 { font-size: 44px; }
+}

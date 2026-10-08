@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Telefoon: rooster van vandaag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="width: 390px; box-sizing: border-box; font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <header>
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px">
+      <img src="/_blob/f2cff361f850ead499eb5fb1e43664b8" alt="Vaartveld College" style="height: 38px; width: auto">
+      <a href="MijnOverzicht.dc.html" aria-label="Mijn gegevens van Noor Bakker" style="width: 44px; height: 44px; border-radius: 22px; background: #e8eefc; color: #14338f; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; text-decoration: none">NB</a>
+    </div>
+    <button type="button" aria-expanded="false" style="width: 100%; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border: 0; border-top: 1px solid #e6e9ee; background: #ffffff; color: #1a1a1a; font: 600 18px 'Red Hat Text', sans-serif">
+      <span style="display: flex; align-items: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Mijn Vaartveld</span>
+      <span style="padding: 2px 10px; border-radius: 12px; background: #1fb5a8; color: #1a1a1a; font-size: 14px; font-weight: 700">2 nieuw</span>
+    </button>
+    <div aria-hidden="true" style="display: flex; flex-direction: column">
+      <span style="height: 4px; background: #1f4fd8"></span>
+      <span style="height: 3px; background: #ffffff"></span>
+      <span style="height: 2px; background: #1fb5a8"></span>
+    </div>
+  </header>
+  <main style="padding: 12px 16px 40px; display: flex; flex-direction: column; gap: 18px">
+    <a href="MobielHome.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 17px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Overzicht</a>
+    <div style="margin-top: -10px; display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em">Rooster van vandaag</h1>
+      <span style="font-size: 16px; color: #4a4a4a">7 lesuren · 2 wijzigingen · uit om 14.20 uur</span>
+    </div>
+
+    <nav aria-label="Dag kiezen" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+      <sc-for list="{{ days }}" as="d" hint-placeholder-count="5">
+        <a href="#" aria-current="{{ d.current }}" style="{{ d.style }}"><span style="font-size: 14px">{{ d.name }}</span><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; line-height: 1">{{ d.num }}</strong></a>
+      </sc-for>
+    </nav>
+
+    <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="9">
+        <li>
+          <sc-if value="{{ l.isLesson }}" hint-placeholder-val="{{ true }}">
+            <div style="display: grid; grid-template-columns: 52px 1fr; column-gap: 10px; align-items: stretch">
+              <span style="display: flex; flex-direction: column; gap: 2px; padding-top: 14px; font-variant-numeric: tabular-nums"><strong style="font-size: 17px; font-weight: 700">{{ l.start }}</strong><span style="font-size: 14px; color: #4a4a4a">{{ l.end }}</span></span>
+              <div style="{{ l.box }}">
+                <sc-if value="{{ l.next }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #0b6259">Je eerste les</span></sc-if>
+                <span style="display: flex; gap: 8px; align-items: flex-start; justify-content: space-between">
+                  <strong style="{{ l.titleStyle }}">{{ l.title }}</strong>
+                  <sc-if value="{{ l.hasPill }}" hint-placeholder-val="{{ false }}"><span style="{{ l.pill }}">{{ l.state }}</span></sc-if>
+                </span>
+                <span style="font-size: 16px; color: #1a1a1a">{{ l.where }}</span>
+                <sc-if value="{{ l.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 15px; line-height: 1.4; color: #4a4a4a">{{ l.note }}</span></sc-if>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ l.isBreak }}" hint-placeholder-val="{{ false }}">
+            <div style="display: grid; grid-template-columns: 52px 1fr; column-gap: 10px; align-items: center; min-height: 30px">
+              <span style="font-size: 14px; color: #4a4a4a; font-variant-numeric: tabular-nums">{{ l.start }}</span>
+              <span style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #4a4a4a"><span style="flex: 1; height: 1px; background: #d3d8df"></span>{{ l.title }}<span style="flex: 1; height: 1px; background: #d3d8df"></span></span>
+            </div>
+          </sc-if>
+        </li>
+      </sc-for>
+    </ol>
+
+    <div role="status" style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 6px; background: #e8eefc; border: 1px solid #bccbf5">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14338f" stroke-width="2.2" stroke-linecap="round" style="flex: none; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.500v.500"></path></svg>
+      <span style="font-size: 16px; line-height: 1.5">Morgen begin je om 08.30 uur met economie in lokaal 1.08.</span>
+    </div>
+    <a href="#" style="display: flex; align-items: center; justify-content: center; height: 52px; box-sizing: border-box; border-radius: 6px; border: 2px solid #1f4fd8; font-weight: 600; font-size: 17px; text-decoration: none">Rooster in je agenda zetten</a>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1365}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const day = (on) => 'display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 56px; border-radius: 6px; text-decoration: none; ' + (on ? 'background: #ddf5f2; color: #0b6259; box-shadow: inset 0 -4px 0 #1fb5a8;' : 'background: #f4f6f9; color: #1a1a1a;');
+    const days = [['ma', '5', true], ['di', '6', false], ['wo', '7', false], ['do', '8', false], ['vr', '9', false]].map(([name, num, on]) => ({ name, num, current: on ? 'date' : 'false', style: day(on) }));
+    const pill = (bg, fg) => 'flex: none; padding: 3px 10px; border-radius: 14px; font-size: 14px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { change: pill('#fff4de', '#7a4f00'), test: pill('#e8e6f6', '#4a3f8f'), off: pill('#f0f1f3', '#3d4047') };
+    const raw = [
+      ['08.30', '09.20', 'Nederlands', 'Lokaal 1.12 · mevrouw Kramer', 'Leesverslag inleveren', '', 'next'],
+      ['09.20', '10.10', 'Wiskunde A', 'Lokaal 2.14 · meneer Demir', 'Huiswerk: paragraaf 3.2, opgave 14 tot en met 22', '', ''],
+      ['10.10', '', 'Pauze, 20 minuten', '', '', '', 'break'],
+      ['10.30', '11.20', 'Economie', 'Lokaal 0.21 · meneer De Boer', 'Niet in lokaal 1.08', 'Ander lokaal', 'change'],
+      ['11.20', '12.10', 'Engels', 'Lokaal 1.05 · mevrouw Jansen', 'SO woordjes unit 2', 'Toets', 'test'],
+      ['12.10', '', 'Pauze, 30 minuten', '', '', '', 'break'],
+      ['12.40', '13.30', 'Geschiedenis', 'Lokaal 2.03 · meneer Willems', '', '', ''],
+      ['13.30', '14.20', 'Mentoruur', 'Lokaal 1.12 · mevrouw Kramer', '', '', ''],
+      ['14.30', '15.20', 'Lichamelijke opvoeding', 'De docent is afwezig', '', 'Vervalt', 'off']
+    ];
+    const lessons = raw.map(([start, end, title, where, note, state, kind]) => {
+      const isBreak = kind === 'break', next = kind === 'next', off = kind === 'off';
+      return { start, end, title, where, note, state, next, isBreak, isLesson: !isBreak, hasNote: !!note, hasPill: !!state, pill: P[kind] || '',
+        box: 'display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; ' + (next ? 'background: #ddf5f2; border: 1px solid #ddf5f2;' : off ? 'background: #ffffff; border: 1px dashed #5c6470;' : 'background: #ffffff; border: 1px solid #d3d8df;'),
+        titleStyle: 'font-family: \'Red Hat Display\', system-ui, sans-serif; font-size: 19px; font-weight: 700; line-height: 1.25; ' + (off ? 'color: #4a4a4a; text-decoration: line-through' : '') };
+    });
+    return { days, lessons };
+  }
+}
+</script>
+</body>
+</html>

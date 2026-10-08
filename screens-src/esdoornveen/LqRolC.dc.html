@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: examencommissie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Examencommissie" primary="Besluit vastleggen" active="Overzicht" groups="{{ nav }}" hint-size="264px,1200px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Karin de Boer" rol="Secretaris examencommissie" hint-size="100%,68px"></dc-import>
+    <main style="padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; color: #5e6168">Examencommissie · maandag 5 oktober 2026 · week 41</span>
+        <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Examens en besluiten</h1>
+      </div>
+
+      <section aria-labelledby="rc-eerst" style="background: #fbe9f0; border-radius: 12px; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+        <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="rc-eerst" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9c1c49">Vandaag eerst</h2>
+          <strong style="font-size: 18px; font-weight: 700">Bezwaar tegen de uitslag van Engels spreken: beslissen voor vrijdag 9 oktober</strong>
+          <span style="font-size: 15px; line-height: 1.5">Ingediend op 25 september door een student van MT3A. Het examenreglement geeft de commissie tien werkdagen. De reactie van de beoordelaar is binnen.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'IBM Plex Sans', sans-serif">Dossier lezen</button>
+          <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #5b2e91; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Besluit voorbereiden</a>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; color: #5e6168">{{ k.label }}</span>
+            <strong style="font-size: 32px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+            <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section aria-labelledby="rc-vast" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 id="rc-vast" style="margin: 0; font-size: 18px; font-weight: 700">Resultaten vaststellen</h2><span style="font-size: 13px; color: #5e6168">14 resultaten uit 3 afnames</span></div>
+            <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: 1px solid #eef0f3">
+                <span style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 4px"><span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px"><span style="padding: 2px 8px; border-radius: 4px; background: #f0f1f3; font: 500 13px 'IBM Plex Mono', ui-monospace, monospace; white-space: nowrap">{{ r.code }}</span><strong style="font-size: 15px">{{ r.title }}</strong></span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></span>
+                <span style="{{ r.pill }}">{{ r.state }}</span>
+                <sc-if value="{{ r.ready }}" hint-placeholder-val="{{ true }}"><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 20px; background: #f0eaf7; color: #43206e; font-size: 14px; font-weight: 600; text-decoration: none">Controleren</a></sc-if>
+              </div>
+            </sc-for>
+          </section>
+
+          <section aria-labelledby="rc-afname" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px"><h2 id="rc-afname" style="margin: 0; font-size: 18px; font-weight: 700">Komende afnames</h2><a href="#" style="font-size: 14px; font-weight: 600">Examenrooster</a></div>
+            <sc-for list="{{ exams }}" as="e" hint-placeholder-count="3">
+              <a href="#" style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; background: #f5f6f8; padding: 6px 0"><strong style="font-size: 18px; line-height: 1.1">{{ e.day }}</strong><span style="font-size: 12px; color: #5e6168">{{ e.month }}</span></span>
+                <span style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px"><span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px"><span style="padding: 2px 8px; border-radius: 4px; background: #f0f1f3; font: 500 13px 'IBM Plex Mono', ui-monospace, monospace; white-space: nowrap">{{ e.code }}</span><span style="font-size: 15px; font-weight: 600">{{ e.title }}</span></span><span style="font-size: 13px; color: #5e6168">{{ e.meta }}</span></span>
+                <span style="{{ e.pill }}">{{ e.state }}</span>
+              </a>
+            </sc-for>
+          </section>
+        </div>
+
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section aria-labelledby="rc-verg" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px; display: flex; flex-direction: column; gap: 12px">
+            <h2 id="rc-verg" style="margin: 0; font-size: 18px; font-weight: 700">Volgende vergadering</h2>
+            <div style="display: flex; gap: 14px; align-items: center">
+              <span style="flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; background: #f0eaf7; color: #43206e; padding: 6px 0"><strong style="font-size: 18px; line-height: 1.1">8</strong><span style="font-size: 12px">okt</span></span>
+              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Donderdag, 15.30 tot 17.00 uur</span><span style="font-size: 13px; color: #5e6168">Lokaal A2.04 · 6 agendapunten</span></span>
+            </div>
+            <ul style="margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; color: #3d4047">
+              <li>1. Bezwaar uitslag Engels spreken</li>
+              <li>2. Resultaten vaststellen (14)</li>
+              <li>3. Examenplannen cohort 2027 (2)</li>
+              <li>4. Vrijstellingen (3)</li>
+            </ul>
+            <a href="#" style="font-size: 14px; font-weight: 600">Agenda en stukken openen</a>
+          </section>
+          <section aria-labelledby="rc-plan" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="rc-plan" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Wacht op de commissie</h2>
+            <sc-for list="{{ queue }}" as="q" hint-placeholder-count="5">
+              <a href="#" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="{{ q.pill }}">{{ q.kind }}</span>
+                <span style="font-size: 15px; font-weight: 600; line-height: 1.4">{{ q.title }}</span>
+                <span style="font-size: 13px; color: #5e6168">{{ q.meta }}</span>
+              </a>
+            </sc-for>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1408}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Overzicht', 'home', 0, 'LqRolC.dc.html'], ['Berichten', 'chat', 1, '#']] },
+      { title: 'Examens', items: [['Examenplannen', 'doc', 2, '#'], ['Afnames', 'cal', 0, '#'], ['Resultaten vaststellen', 'seal', 14, '#'], ['Diplomabesluiten', 'check', 0, '#']] },
+      { title: 'Commissie', items: [['Bezwaren en klachten', 'scale', 1, '#'], ['Vrijstellingen', 'inbox', 3, '#'], ['Vergaderingen', 'people', 0, '#']] }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      { label: 'Resultaten vast te stellen', value: '14', note: '11 compleet, 3 wachten op een beoordelaar', noteStyle: note('#5e6168') },
+      { label: 'Bezwaren en klachten', value: '1', note: 'beslissen voor vrijdag 9 oktober', noteStyle: note('#a30000', 600) },
+      { label: 'Examenplannen te keuren', value: '2', note: 'cohort 2027', noteStyle: note('#5e6168') },
+      { label: 'Vrijstellingen', value: '3', note: 'oudste aanvraag van 22 september', noteStyle: note('#5e6168') }
+    ];
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const results = [
+      { code: 'B1-K1', title: 'Proeve van bekwaamheid Mechatronica', meta: 'MT4A · afgenomen op 29 en 30 september · 6 kandidaten · 2 beoordelaars per kandidaat', state: 'Compleet', pill: pill('#e7f3ea', '#1e6b2a'), ready: true },
+      { code: 'EN-B1-SP', title: 'Engels spreken en gesprekken voeren', meta: 'MT3A · afgenomen op 1 oktober · 5 kandidaten', state: 'Compleet', pill: pill('#e7f3ea', '#1e6b2a'), ready: true },
+      { code: 'NE-3F-SC', title: 'Nederlands schrijven', meta: 'MT2A · afgenomen op 24 september · 3 kandidaten', state: 'Tweede beoordeling ontbreekt', pill: pill('#fff4de', '#7a4f00'), ready: false }
+    ];
+    const exams = [
+      { day: '3', month: 'nov', code: 'NE-3F-CE', title: 'Nederlands lezen en luisteren', meta: 'Centraal examen · MT2A · 24 kandidaten · lokaal B1.08 · 09.00 uur', state: 'Klaar voor afname', pill: pill('#e7f3ea', '#1e6b2a') },
+      { day: '5', month: 'nov', code: 'RE-N4', title: 'Rekenen niveau 4', meta: 'MT3A · 18 kandidaten · lokaal B1.08 · 13.00 uur', state: 'Surveillant zoeken', pill: pill('#fff4de', '#7a4f00') },
+      { day: '10', month: 'nov', code: 'B1-K2', title: 'Proeve van bekwaamheid onderhoud', meta: 'MT4A · 6 kandidaten · bij het leerbedrijf · 10 en 11 november', state: 'Beoordelaar bevestigen', pill: pill('#fff4de', '#7a4f00') }
+    ];
+    const queue = [
+      { title: 'Mechatronica niveau 4, cohort 2027', meta: 'Team Mechatronica · 30 september', kind: 'Examenplan', pill: pill('#e3f1f3', '#1d5e66') },
+      { title: 'Eerste monteur mechatronica, cohort 2027', meta: 'Team Mechatronica · 30 september', kind: 'Examenplan', pill: pill('#e3f1f3', '#1d5e66') },
+      { title: 'Rekenen, student MT1A', meta: 'Eerder mbo-diploma · 22 september', kind: 'Vrijstelling', pill: pill('#f0f1f3', '#3d4047') },
+      { title: 'Engels, student MT1B', meta: 'Havo-cijferlijst · 29 september', kind: 'Vrijstelling', pill: pill('#f0f1f3', '#3d4047') },
+      { title: 'Keuzedeel, student MT3A', meta: 'Certificaat vorige opleiding · 1 oktober', kind: 'Vrijstelling', pill: pill('#f0f1f3', '#3d4047') }
+    ];
+    return { nav, kpis, results, exams, queue };
+  }
+}
+</script>
+</body>
+</html>

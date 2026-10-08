@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Esdoornveen: overzicht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Overzicht" hint-size="100%,680px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 16px; color: #4a4a4a">maandag 5 oktober 2026 · week 41</span>
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Goedemiddag, Milan</h1>
+      </div>
+
+      <section aria-labelledby="vandaag" style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; padding: 22px 24px; border-radius: 8px; background: #fbe9f0">
+        <div style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="vandaag" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9c1c49">Vandaag</h2>
+          <strong style="font-size: 22px; font-weight: 700">BPV bij Bakker Techniek BV</strong>
+          <span style="font-size: 16px; line-height: 1.5">08.00 tot 16.30 uur, met Petra Bakker. Je uren van vandaag zijn nog niet geschreven.</span>
+        </div>
+        <a href="MobielDetail.dc.html" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 4px; background: #5b2e91; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">Uren van vandaag schrijven</a>
+      </section>
+
+      <section aria-labelledby="tedoen" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="tedoen" style="margin: 0; font-size: 26px; font-weight: 600">Wat je nog moet doen</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; border: 1px solid #d3d8df; border-radius: 8px">
+          <sc-for list="{{ todos }}" as="t" hint-placeholder-count="3">
+            <li style="{{ t.row }}">
+              <div style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 4px">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px"><strong style="font-size: 18px">{{ t.title }}</strong><sc-if value="{{ t.hasPill }}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 11px; border-radius: 14px; background: #fcedec; color: #a30000; font-size: 14px; font-weight: 600">{{ t.pill }}</span></sc-if></span>
+                <span style="font-size: 16px; color: #4a4a4a">{{ t.sub }}</span>
+              </div>
+              <a href="{{ t.href }}" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 16px; border: 2px solid #5b2e91; border-radius: 4px; font-weight: 600; text-decoration: none">{{ t.action }}</a>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 24px; align-items: start">
+        <section aria-labelledby="week" style="border: 1px solid #d3d8df; border-radius: 8px; padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px">
+            <h2 id="week" style="margin: 0; font-size: 22px; font-weight: 600">Deze week</h2>
+            <a href="#" style="font-size: 16px; font-weight: 600">Hele rooster</a>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none">
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="5">
+              <li style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-top: 1px solid #e6e9ee">
+                <span style="{{ d.dayStyle }}">{{ d.day }}</span>
+                <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 17px; font-weight: 600">{{ d.what }}</span>
+                  <span style="font-size: 15px; color: #4a4a4a">{{ d.meta }}</span>
+                  <sc-if value="{{ d.hasChange }}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; margin-top: 4px; padding: 3px 11px; border-radius: 14px; background: #fff4de; color: #7a4f00; font-size: 14px; font-weight: 600">{{ d.change }}</span></sc-if>
+                </span>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+
+        <div style="display: flex; flex-direction: column; gap: 24px">
+          <section aria-labelledby="bpv" style="border: 1px solid #d3d8df; border-radius: 8px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+              <h2 id="bpv" style="margin: 0; font-size: 22px; font-weight: 600">Mijn BPV-uren</h2>
+              <a href="Detail.dc.html" style="font-size: 16px; font-weight: 600">Naar mijn BPV</a>
+            </div>
+            <p style="margin: 0; font-size: 17px"><strong style="font-size: 30px; font-weight: 700; letter-spacing: -0.01em">96</strong> van 480 uur goedgekeurd</p>
+            <div role="img" aria-label="96 uur goedgekeurd, 16 uur wacht op goedkeuring, 8 uur teruggestuurd, van 480 uur" style="display: flex; height: 10px; border-radius: 5px; background: #e6e9ee; overflow: hidden">
+              <span style="width: 20%; background: #5b2e91"></span><span style="width: 3.4%; background: #e8c77d"></span><span style="width: 1.6%; background: #a30000"></span>
+            </div>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 15px; color: #4a4a4a">
+              <li style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #e8c77d"></span>16 uur wacht op Petra Bakker</li>
+              <li style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #a30000"></span>8 uur teruggestuurd</li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="straks" style="border: 1px solid #d3d8df; border-radius: 8px; padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 6px">
+            <h2 id="straks" style="margin: 0 0 4px; font-size: 22px; font-weight: 600">Binnenkort</h2>
+            <ul style="margin: 0; padding: 0; list-style: none">
+              <sc-for list="{{ soon }}" as="s" hint-placeholder-count="3">
+                <li style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-top: 1px solid #e6e9ee">
+                  <span style="flex: 0 0 84px; font-size: 15px; font-weight: 600; line-height: 1.4">{{ s.date }}<br>{{ s.time }}</span>
+                  <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px; font-weight: 600">{{ s.what }}</span><span style="font-size: 15px; color: #4a4a4a">{{ s.meta }}</span></span>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,348px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1743}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const row = (first) => 'display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; padding: 16px 24px;' + (first ? '' : ' border-top: 1px solid #d3d8df;');
+    const todos = [
+      { title: 'Pas je uren van dinsdag 29 september aan', hasPill: true, pill: 'Teruggestuurd', sub: 'Petra Bakker stuurde ze terug met een vraag.', action: 'Uren aanpassen', href: 'MijnLijst.dc.html' },
+      { title: 'Vul je zelfbeoordeling in', hasPill: false, pill: '', sub: '4 van 6 werkprocessen klaar. Nodig voor de tussenbeoordeling van dinsdag 13 oktober.', action: 'Verder invullen', href: 'Detail.dc.html' },
+      { title: 'Kies je keuzedeel voor periode 3', hasPill: false, pill: '', sub: 'Kiezen kan tot en met vrijdag 16 oktober.', action: 'Keuzedeel kiezen', href: '#' }
+    ].map((t, i) => ({ ...t, row: row(i === 0) }));
+    const dayStyle = (today) => 'flex: 0 0 84px; font-size: 15px; font-weight: 600; line-height: 1.6; ' + (today ? 'color: #9c1c49;' : 'color: #1a1a1a;');
+    const days = [
+      { day: 'ma 5 okt', today: true, what: 'BPV · Bakker Techniek BV', meta: '08.00 tot 16.30 uur · vandaag', hasChange: false, change: '' },
+      { day: 'di 6 okt', today: false, what: 'BPV · Bakker Techniek BV', meta: '08.00 tot 16.30 uur', hasChange: false, change: '' },
+      { day: 'wo 7 okt', today: false, what: 'BPV · Bakker Techniek BV', meta: '08.00 tot 16.30 uur', hasChange: false, change: '' },
+      { day: 'do 8 okt', today: false, what: 'School · 4 lessen', meta: '08.30 tot 15.00 uur · eerste les PLC-programmeren, lokaal T0.14', hasChange: false, change: '' },
+      { day: 'vr 9 okt', today: false, what: 'School · 3 lessen', meta: '08.30 tot 12.15 uur · eerste les Nederlands, lokaal B1.08', hasChange: true, change: 'Gewijzigd: Engels vervalt' }
+    ].map((d) => ({ ...d, dayStyle: dayStyle(d.today) }));
+    const soon = [
+      { date: 'di 13 okt', time: '10.00 uur', what: 'Tussenbeoordeling bij Bakker Techniek', meta: 'Met Petra Bakker en Ruud Hermans' },
+      { date: 'do 15 okt', time: '15.15 uur', what: 'Voortgangsgesprek met Fenna Yilmaz', meta: 'Lokaal B2.11' },
+      { date: 'di 3 nov', time: '09.00 uur', what: 'Examen Nederlands lezen en luisteren', meta: 'Lokaal B1.08 · neem je ID-bewijs mee' }
+    ];
+    return { todos, days, soon, crumbs: [{ label: 'Home' }, { label: 'Mijn Esdoornveen' }] };
+  }
+}
+</script>
+</body>
+</html>

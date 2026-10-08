@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Wilgenboom: afwezigheid</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,200px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Afwezigheid" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 8px; max-width: 620px">
+          <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Afwezigheid</h1>
+          <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #4a4a4a">Uw meldingen en wat de leerkracht ermee deed. De nieuwste staat bovenaan.</p>
+        </div>
+        <a href="MobielDetail.dc.html" style="display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 10px; background: #2f6b4a; color: #ffffff; font-weight: 600; font-size: 18px; text-decoration: none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Afwezig melden</a>
+      </div>
+
+      <section aria-labelledby="jaar" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+          <h2 id="jaar" style="margin: 0; font-size: 26px; font-weight: 700">Dit schooljaar</h2>
+          <span style="font-size: 16px; color: #4a4a4a">Schooljaar 2026-2027, vanaf 1 augustus</span>
+        </div>
+        <div style="overflow-x: auto; border: 1px solid #d3d8df; border-radius: 14px">
+          <table style="border-collapse: collapse; width: 100%; font-size: 17px; min-width: 560px">
+            <thead><tr style="background: #f4f6f9; text-align: left"><th style="padding: 14px 18px">Kind</th><th style="padding: 14px 18px">Afwezig</th><th style="padding: 14px 18px">Te laat</th><th style="padding: 14px 18px">Zonder toestemming</th></tr></thead>
+            <tbody>
+              <tr style="border-top: 1px solid #d3d8df"><th scope="row" style="padding: 14px 18px; text-align: left; font-weight: 600"><a href="Detail.dc.html">Vera</a> <span style="font-weight: 400; color: #4a4a4a">· groep 7</span></th><td style="padding: 14px 18px"><strong>1</strong> dag en 1 uur</td><td style="padding: 14px 18px"><strong>1</strong> keer, 10 minuten</td><td style="padding: 14px 18px"><strong>0</strong> dagen</td></tr>
+              <tr style="border-top: 1px solid #d3d8df"><th scope="row" style="padding: 14px 18px; text-align: left; font-weight: 600"><a href="Detail.dc.html">Sami</a> <span style="font-weight: 400; color: #4a4a4a">· groep 4</span></th><td style="padding: 14px 18px"><strong>2</strong> dagen</td><td style="padding: 14px 18px"><strong>0</strong> keer</td><td style="padding: 14px 18px"><strong>0</strong> dagen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="meldingen" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="meldingen" style="margin: 0; font-size: 26px; font-weight: 700">Uw meldingen</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ reports }}" as="r" hint-placeholder-count="4">
+            <li style="display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; padding: 20px 24px; border: 1px solid #d3d8df; border-radius: 14px">
+              <span style="flex: none; width: 64px; height: 64px; border-radius: 10px; background: #e8f1eb; color: #1f4a33; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05"><strong style="font-size: 24px; font-weight: 700">{{ r.day }}</strong><span style="font-size: 14px">{{ r.month }}</span></span>
+              <span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 4px">
+                <strong style="font-size: 19px; font-weight: 600">{{ r.child }} · {{ r.reason }}</strong>
+                <span style="font-size: 16px; color: #4a4a4a">{{ r.when }}</span>
+                <sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 16px">"{{ r.note }}"</span></sc-if>
+              </span>
+              <span style="flex: 0 1 240px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+                <span style="{{ r.pill }}">{{ r.status }}</span>
+                <span style="font-size: 15px; color: #4a4a4a">{{ r.by }}</span>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+        <nav aria-label="Paginering" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+          <span style="font-size: 16px; color: #4a4a4a; margin-right: 8px">4 meldingen dit schooljaar</span>
+          <a href="#" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: 10px; border: 1px solid #d3d8df; font-weight: 600">Vorig schooljaar bekijken</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1621}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const seen = pill('#e8f1eb', '#1f4a33');
+    const ok = pill('#e7f3ea', '#1e6b2a');
+    const reports = [
+      { day: '5', month: 'okt', child: 'Sami', reason: 'Ziek', when: 'Maandag 5 oktober, de hele dag', hasNote: true, note: 'Sami heeft buikgriep', status: 'Gezien door de leerkracht', pill: seen, by: 'Juf Esra, vandaag 8.12 uur' },
+      { day: '1', month: 'okt', child: 'Vera', reason: 'Ziek', when: 'Donderdag 1 oktober, de hele dag', hasNote: true, note: 'Vera heeft koorts', status: 'Goedgekeurd', pill: ok, by: 'Meester Daan, 1 oktober 8.20 uur' },
+      { day: '24', month: 'sep', child: 'Vera', reason: 'Tandarts', when: 'Donderdag 24 september, 10.30 tot 11.30 uur', hasNote: false, note: '', status: 'Goedgekeurd', pill: ok, by: 'Meester Daan, 23 september 15.45 uur' },
+      { day: '11', month: 'sep', child: 'Sami', reason: 'Ziek', when: 'Vrijdag 11 september, de hele dag', hasNote: false, note: '', status: 'Goedgekeurd', pill: ok, by: 'Juf Esra, 11 september 8.25 uur' }
+    ];
+    return { reports, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Afwezigheid' }] };
+  }
+}
+</script>
+</body>
+</html>

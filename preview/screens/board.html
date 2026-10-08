@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Screen, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="screens.css">
+<style>
+  .bar { position: sticky; top: 0; z-index: 10; background: white; border-bottom: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); }
+  .bar .sc-wrap { max-width: none; padding-top: var(--space-3); padding-bottom: var(--space-3); display: flex; flex-direction: column; gap: var(--space-3); }
+  .bar .line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); }
+  .bar .back { font-size: 14px; color: var(--c-blue-cobalt); text-decoration: none; white-space: nowrap; }
+  .bar .back:hover { color: var(--c-coral-600); text-decoration: underline; }
+  .bar h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--c-cobalt-900); flex: 1 1 280px; min-width: 0; }
+  .bar .where { font-size: 13px; color: var(--c-cobalt-700); }
+  .bar .where a { color: inherit; }
+  .bar .nav { display: flex; gap: var(--space-2); margin-left: auto; flex-wrap: wrap; }
+  .bar .btn {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 12px;
+    font: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer;
+    color: var(--c-blue-cobalt); background: white; border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-sm);
+  }
+  .bar .btn:hover { border-color: var(--c-blue-cobalt); }
+  .bar .btn.primary { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
+  .bar .btn[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+  .bar .btn:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .bar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
+
+  .note { max-width: 1440px; margin: var(--space-6) auto 0; padding: 0 var(--space-6); }
+  .note .card-in { background: white; border-radius: var(--radius-md); border: 1px solid var(--c-cobalt-100); padding: var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: 6px; }
+  .note .caps { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); }
+  .note .txt { font-size: 15px; line-height: 1.55; color: var(--c-cobalt-900); margin: 0; }
+
+  .stage-wrap { padding: var(--space-6); }
+  .stage { position: relative; margin: 0 auto; background: white; box-shadow: var(--shadow-2); overflow: hidden; }
+  .stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: top left; background: white; }
+
+  .missing { max-width: 640px; margin: 96px auto; text-align: center; color: var(--c-cobalt-700); }
+  @media (max-width: 720px) { .stage-wrap { padding: var(--space-4) 0; } .note { padding: 0 var(--space-4); } }
+</style>
+</head>
+<body class="sc-chrome">
+
+<header class="bar">
+  <div class="sc-wrap">
+    <div class="line">
+      <a class="back" id="back" href="index.html" data-i18n="screens.board.back">&larr; All screens</a>
+      <h1 id="title">&nbsp;</h1>
+      <span id="idchip"></span>
+      <nav class="nav" aria-label="Screens in this row" data-i18n-attr="aria-label:screens.board.navLabel">
+        <a class="btn" id="prev" href="#" rel="prev"><span aria-hidden="true">&larr;</span> <span data-i18n="screens.board.prev">Previous</span></a>
+        <a class="btn" id="next" href="#" rel="next"><span data-i18n="screens.board.next">Next</span> <span aria-hidden="true">&rarr;</span></a>
+        <a class="btn primary" id="full" href="#" target="_blank" rel="noopener" data-i18n="screens.board.full">Open full size</a>
+      </nav>
+    </div>
+    <div class="line">
+      <span class="where" id="where"></span>
+      <span class="label" id="ds-label" data-i18n="screens.ds.label">Design system</span>
+      <div class="sc-seg" id="ds-seg" role="group" aria-labelledby="ds-label"></div>
+      <span class="sc-badge" id="own" hidden data-i18n="screens.badge.own">Own house style</span>
+    </div>
+  </div>
+</header>
+
+<section class="note" id="note" hidden>
+  <div class="card-in">
+    <span class="caps" id="caps"></span>
+    <p class="txt" id="notetext"></p>
+  </div>
+</section>
+
+<div class="stage-wrap" id="stage-wrap">
+  <div class="stage" id="stage"><iframe id="frame" title="Screen" scrolling="no"></iframe></div>
+</div>
+
+<div class="missing" id="missing" hidden>
+  <h2 data-i18n="screens.board.missing">This screen does not exist.</h2>
+  <p><a href="index.html" data-i18n="screens.board.back">&larr; All screens</a></p>
+</div>
+
+<script src="theme.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- i18n (same contract as ../i18n.js) ---------- */
+  var params = new URLSearchParams(location.search);
+  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var DICT = null;
+  function lookup(key) {
+    if (!DICT) return null;
+    if (typeof DICT[key] === 'string') return DICT[key];
+    var cur = DICT; var segs = key.split('.');
+    for (var i = 0; i < segs.length; i++) { if (cur == null || typeof cur !== 'object') return null; cur = cur[segs[i]]; }
+    return typeof cur === 'string' ? cur : null;
+  }
+  function t(key, fb, vars) {
+    var s = lookup(key) || fb;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  }
+  function applyStatic() {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = lookup(el.getAttribute('data-i18n')); if (v == null) return;
+      if (v.indexOf('<') !== -1 || v.indexOf('&') !== -1) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
+      el.getAttribute('data-i18n-attr').split(',').forEach(function (pair) {
+        var p = pair.split(':').map(function (s) { return s.trim(); });
+        var v = lookup(p[1]); if (v != null) el.setAttribute(p[0], v);
+      });
+    });
+    document.documentElement.setAttribute('lang', LANG === 'en' ? 'en' : (DICT && DICT._lang) || LANG);
+  }
+  var dictReady = LANG === 'en' ? Promise.resolve() :
+    fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
+  function withLang(url) {
+    if (!params.get('lang')) return url;
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG);
+  }
+
+  var S, DS, name, board, set, row, dsId;
+  var frame = document.getElementById('frame');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('stage-wrap');
+  var realH = null;
+
+  function findBoard() {
+    var id = params.get('id');
+    var nm = params.get('name');
+    if (nm && S.boards[nm]) return nm;
+    if (id) {
+      var keys = Object.keys(S.boards);
+      for (var i = 0; i < keys.length; i++) if (S.boards[keys[i]].id === id) return keys[i];
+      var tail = id.split('/').pop();
+      if (S.boards[tail]) return tail;
+    }
+    return null;
+  }
+  function anchorOf(b, n) { return (b.id || n).replace(/\//g, '-'); }
+  function hrefFor(n) {
+    var b = S.boards[n];
+    var u = 'board.html?id=' + encodeURIComponent(b.id || n).replace(/%2F/g, '/');
+    if (set.themable) u += '&ds=' + encodeURIComponent(dsId);
+    return withLang(u);
+  }
+  function fileHref() {
+    return board.file + (set.themable ? '?ds=' + encodeURIComponent(dsId) : '');
+  }
+
+  function fit() {
+    if (!board) return;
+    var w = board.w || 1440;
+    var h = realH || board.h || 900;
+    var avail = wrap.clientWidth - parseFloat(getComputedStyle(wrap).paddingLeft) - parseFloat(getComputedStyle(wrap).paddingRight);
+    var scale = Math.min(1, avail / w);
+    stage.style.width = Math.floor(w * scale) + 'px';
+    stage.style.height = Math.ceil(h * scale) + 'px';
+    frame.style.width = w + 'px';
+    frame.style.height = h + 'px';
+    frame.style.transform = 'scale(' + scale + ')';
+  }
+
+  frame.addEventListener('load', function () {
+    try {
+      var doc = frame.contentDocument;
+      var measure = function () {
+        var hh = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+        if (hh && Math.abs(hh - (realH || 0)) > 2) {
+          /* grow the frame so the whole board shows, then measure again */
+          realH = hh; fit();
+        }
+      };
+      measure();
+      setTimeout(measure, 600);
+      if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(measure);
+    } catch (e) { /* cross-origin: keep the json height */ }
+  });
+  window.addEventListener('resize', fit);
+
+  function buildSeg() {
+    var seg = document.getElementById('ds-seg');
+    seg.innerHTML = '';
+    (DS.order || Object.keys(DS.systems)).forEach(function (id) {
+      var sys = DS.systems[id];
+      var dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = sys.vars['--sc-primary'];
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-ds', id); b.setAttribute('aria-pressed', String(id === dsId));
+      b.appendChild(dot); b.appendChild(document.createTextNode(sys.short));
+      b.addEventListener('click', function () { setDs(id); });
+      seg.appendChild(b);
+    });
+  }
+
+  function setDs(id) {
+    dsId = id;
+    window.screensTheme.set(id);
+    document.querySelectorAll('#ds-seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-ds') === id)); });
+    var u = new URL(location.href); u.searchParams.set('ds', id); history.replaceState(null, '', u);
+    try {
+      if (frame.contentWindow && frame.contentWindow.screensTheme) frame.contentWindow.screensTheme.set(id);
+      else frame.src = fileHref();
+    } catch (e) { frame.src = fileHref(); }
+    links();
+  }
+
+  function links() {
+    var list = row.boards.filter(function (n) { return S.boards[n]; });
+    var i = list.indexOf(name);
+    var prev = document.getElementById('prev'), next = document.getElementById('next');
+    if (i > 0) { prev.href = hrefFor(list[i - 1]); prev.removeAttribute('aria-disabled'); prev.title = S.boards[list[i - 1]].title; }
+    else { prev.removeAttribute('href'); prev.setAttribute('aria-disabled', 'true'); }
+    if (i >= 0 && i < list.length - 1) { next.href = hrefFor(list[i + 1]); next.removeAttribute('aria-disabled'); next.title = S.boards[list[i + 1]].title; }
+    else { next.removeAttribute('href'); next.setAttribute('aria-disabled', 'true'); }
+    document.getElementById('full').href = fileHref();
+    var back = 'index.html' + (set.themable ? '?ds=' + encodeURIComponent(dsId) : '');
+    document.getElementById('back').href = withLang(back) + '#' + anchorOf(board, name);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target && /input|select|textarea/i.test(e.target.tagName)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var a = e.key === 'ArrowLeft' ? document.getElementById('prev') : e.key === 'ArrowRight' ? document.getElementById('next') : null;
+    if (a && a.getAttribute('href')) location.href = a.href;
+  });
+
+  Promise.all([
+    fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    window.screensTheme.ready,
+    dictReady
+  ]).then(function (res) {
+    S = res[0]; DS = res[1];
+    name = findBoard();
+    if (!name) {
+      document.querySelector('.bar').hidden = true;
+      wrap.hidden = true;
+      document.getElementById('missing').hidden = false;
+      return;
+    }
+    board = S.boards[name];
+    set = S.sets.filter(function (s) { return s.id === board.set; })[0];
+    row = set.rows.filter(function (r) { return r.id === board.row; })[0] || { boards: [name], title: '' };
+    dsId = window.screensTheme.get() || DS.default;
+
+    var id = board.id || name;
+    document.title = (board.title || name) + ', Screens';
+    document.getElementById('title').textContent = board.title || name;
+    frame.title = board.title || name;
+    var chip = document.createElement('span'); chip.className = 'sc-id';
+    var code = document.createElement('code'); code.textContent = id;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = t('screens.copy', 'Copy');
+    btn.setAttribute('aria-label', t('screens.copyId', 'Copy screen id') + ' ' + id);
+    btn.addEventListener('click', function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(id).then(function () {
+        btn.textContent = t('screens.copied', 'Copied'); setTimeout(function () { btn.textContent = t('screens.copy', 'Copy'); }, 1200);
+      }, function () {});
+    });
+    chip.appendChild(code); chip.appendChild(btn);
+    document.getElementById('idchip').appendChild(chip);
+
+    var where = document.getElementById('where');
+    where.textContent = row.title === set.title ? '' : set.title + ' · ';
+    var ra = document.createElement('a'); ra.href = withLang('index.html') + '#row-' + set.id + '-' + row.id; ra.textContent = row.title;
+    where.appendChild(ra);
+
+    if (set.themable && DS) { buildSeg(); }
+    else {
+      document.getElementById('ds-seg').hidden = true;
+      document.getElementById('ds-label').hidden = true;
+      document.getElementById('own').hidden = false;
+    }
+
+    if (board.caps || board.note) {
+      document.getElementById('note').hidden = false;
+      document.getElementById('caps').textContent = board.caps || '';
+      document.getElementById('notetext').textContent = board.note || '';
+    }
+
+    links();
+    fit();
+    frame.src = fileHref();
+  }).catch(function (err) {
+    wrap.hidden = true;
+    var m = document.getElementById('missing'); m.hidden = false;
+    m.querySelector('h2').textContent = t('screens.error', 'Could not load the screens index.') + ' (' + err.message + ')';
+  });
+})();
+</script>
+</body>
+</html>

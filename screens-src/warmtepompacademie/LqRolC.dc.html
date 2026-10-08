@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: vandaag voor de administratie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 800px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Administratie" primary="Certificaat uitgeven" active="Vandaag" groups="{{ nav }}" hint-size="264px,1160px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Rob Maas" role="Examens en administratie" initials="RM" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 22px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 14px; color: #5e6168">Administratie · maandag 5 oktober 2026</span>
+        <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 32px; font-weight: 700">Certificaten en facturen</h1>
+      </div>
+
+      <section aria-labelledby="rc-eerst" style="border-radius: 12px; background: #fcebdd; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="rc-eerst" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9a3412">Vandaag eerst</h2>
+          <strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2">De aanmelding voor het examen van donderdag sluit woensdag om 12.00 uur</strong>
+          <span style="font-size: 15px; line-height: 1.45; color: #3d4047">10 van de 11 deelnemers zijn compleet. Van Youssef El Amrani (Jansen Installatietechniek) ontbreekt de geboortedatum. De werkgever kreeg vanochtend bericht.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Barlow', sans-serif">Linda Jansen bellen</button>
+          <a href="LqLijst.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #0b6e7a; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Aanmeldlijst openen</a>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+            <strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 34px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{ k.value }}</strong>
+            <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+          <section aria-labelledby="rc-uit" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px"><h2 id="rc-uit" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Uit te geven</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle afgeronde cursusdagen</a></div>
+            <sc-for list="{{ issue }}" as="i" hint-placeholder-count="3">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 12px 0; border-top: 1px solid #eef0f3">
+                <span style="flex: none; width: 46px; height: 46px; border-radius: 8px; background: #e3f1f3; color: #084f58; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1"><strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 20px; font-weight: 700">{{ i.day }}</strong><span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em">{{ i.month }}</span></span>
+                <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ i.title }}</span><span style="font-size: 13px; color: #5e6168">{{ i.meta }}</span></span>
+                <span style="{{ i.pill }}">{{ i.state }}</span>
+                <button type="button" aria-label="{{ i.label }}" disabled="{{ i.blocked }}" style="{{ i.btn }}">{{ i.action }}</button>
+              </div>
+            </sc-for>
+          </section>
+
+          <section aria-labelledby="rc-verloop" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); overflow: hidden">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding: 18px 24px 14px"><h2 id="rc-verloop" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Certificaten die verlopen voor 1 januari</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle 41</a></div>
+            <div style="overflow-x: auto">
+              <table style="border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 24px; font-weight: 600">Deelnemer</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Certificaat</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Verloopt</th><th scope="col" style="padding: 10px 24px 10px 12px; font-weight: 600">Herhaling</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ expiring }}" as="e" hint-placeholder-count="5">
+                    <tr style="border-top: 1px solid #eef0f3">
+                      <th scope="row" style="padding: 9px 24px; text-align: left; font-weight: 400"><span style="display: flex; flex-direction: column; gap: 1px"><a href="LqDetail.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ e.who }}</a><span style="font-size: 13px; color: #5e6168">{{ e.employer }}</span></span></th>
+                      <td style="padding: 9px 12px">{{ e.cert }}</td>
+                      <td style="padding: 9px 12px; white-space: nowrap"><span style="{{ e.dueStyle }}">{{ e.due }}</span></td>
+                      <td style="padding: 9px 24px 9px 12px"><span style="{{ e.pill }}">{{ e.plan }}</span></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+          <section aria-labelledby="rc-fact" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px"><h2 id="rc-fact" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Facturen die aandacht vragen</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle</a></div>
+            <sc-for list="{{ invoices }}" as="f" hint-placeholder-count="4">
+              <a href="#" style="display: flex; gap: 12px; align-items: baseline; padding: 11px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ f.who }}</span><span style="font-size: 13px; color: #5e6168">{{ f.meta }}</span></span>
+                <span style="{{ f.dueStyle }}">{{ f.due }}</span>
+              </a>
+            </sc-for>
+          </section>
+          <section aria-labelledby="rc-examen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="rc-examen" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Komende examens</h2>
+            <sc-for list="{{ exams }}" as="x" hint-placeholder-count="3">
+              <div style="display: flex; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3">
+                <span style="flex: none; width: 46px; height: 46px; border-radius: 8px; background: #f5f6f8; color: #1b1c1d; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1"><strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 20px; font-weight: 700">{{ x.day }}</strong><span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #5e6168">{{ x.month }}</span></span>
+                <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ x.title }}</span><span style="font-size: 13px; color: #5e6168">{{ x.meta }}</span></span>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1189}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn werk', 'inbox', 9]] },
+      { title: 'Certificaten', items: [['Uit te geven', 'award', 17], ['Verlopende certificaten', 'clock'], ['Examens', 'check']] },
+      { title: 'Financieel', items: [['Facturen', 'doc', 3], ['Werkgevers', 'org']] }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      { label: 'Uit te geven', value: '17', note: '10 bewijzen, 7 certificaten', noteStyle: note('#5e6168') },
+      { label: 'Verloopt voor 1 januari', value: '41', note: '14 zonder herhaling gepland', noteStyle: note('#7a4f00', 600) },
+      { label: 'Facturen open', value: '14', note: '3 over de betaaltermijn', noteStyle: note('#a30000', 600) },
+      { label: 'Examens deze maand', value: '2', note: '8 en 22 oktober', noteStyle: note('#5e6168') }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const btn = (blocked) => 'height: 40px; padding: 0 14px; border: 0; border-radius: 20px; font: 600 14px \'Barlow\', sans-serif; ' + (blocked ? 'background: #f0f1f3; color: #5e6168;' : 'background: #e3f1f3; color: #084f58;');
+    const issue = [
+      { day: '1', month: 'okt', title: 'Waterzijdig inregelen', meta: '10 deelnemers aanwezig · bewijs van deelname', state: 'Klaar om te maken', pill: pill('#e7f3ea', '#1e6b2a'), action: 'Bewijzen maken', blocked: false },
+      { day: '2', month: 'okt', title: 'Hybride warmtepomp, incompany bij Bakker Techniek', meta: '7 deelnemers · certificaat van de academie', state: 'Wacht op trainer', pill: pill('#fff4de', '#7a4f00'), action: 'Certificaten maken', blocked: true },
+      { day: '8', month: 'okt', title: 'F-gassen: herhaling en examen', meta: '11 deelnemers · uitslag verwacht uiterlijk 22 oktober', state: 'Nog niet geweest', pill: pill('#f0f1f3', '#3d4047'), action: 'Certificaten maken', blocked: true }
+    ].map((i) => ({ ...i, btn: btn(i.blocked), label: i.action + ': ' + i.title }));
+    const due = (lvl) => 'font-variant-numeric: tabular-nums; ' + (lvl === 'late' ? 'font-weight: 700; color: #a30000' : lvl === 'soon' ? 'font-weight: 600; color: #7a4f00' : 'color: #1b1c1d');
+    const planned = pill('#e7f3ea', '#1e6b2a'), open = pill('#fff4de', '#7a4f00'), received = pill('#e3f1f3', '#084f58');
+    const expiring = [
+      { who: 'Ruben Hoekstra', employer: 'Zelfstandig', cert: 'F-gassen categorie 1', due: 'Verlopen op 3 okt', dueStyle: due('late'), plan: 'Aangevraagd: 22 okt', pill: received },
+      { who: 'Ilse Vermeulen', employer: 'Koelhuis Service', cert: 'F-gassen categorie 1', due: '28 okt 2026', dueStyle: due('soon'), plan: 'Nog niet gepland', pill: open },
+      { who: 'Tom Verbeek', employer: 'Jansen Installatietechniek BV', cert: 'F-gassen categorie 1', due: '30 nov 2026', dueStyle: due('ok'), plan: 'Gepland: 8 okt', pill: planned },
+      { who: 'Youssef El Amrani', employer: 'Jansen Installatietechniek BV', cert: 'F-gassen categorie 1', due: '30 nov 2026', dueStyle: due('ok'), plan: 'Gepland: 8 okt', pill: planned },
+      { who: 'Peter de Boer', employer: 'De Groot Klimaat', cert: 'BRL 6000-21', due: '15 dec 2026', dueStyle: due('ok'), plan: 'Nog niet gepland', pill: open }
+    ];
+    const fd = (late) => 'flex: none; font-size: 13px; font-weight: ' + (late ? '700; color: #a30000' : '600; color: #3d4047');
+    const invoices = [
+      { who: 'Koelhuis Service', meta: 'F-2026-1071 · [BEDRAG] · 2 herinneringen', due: '19 dagen te laat', dueStyle: fd(true) },
+      { who: 'Yilmaz Installaties', meta: 'F-2026-1098 · [BEDRAG] · 1 herinnering', due: '8 dagen te laat', dueStyle: fd(true) },
+      { who: 'Bakker Techniek BV', meta: 'F-2026-1120 · [BEDRAG]', due: '2 dagen te laat', dueStyle: fd(true) },
+      { who: 'Jansen Installatietechniek BV', meta: 'F-2026-1184 · [BEDRAG] · inkoopnummer ontbreekt', due: 'voor 22 okt', dueStyle: fd(false) }
+    ];
+    const exams = [
+      { day: '8', month: 'okt', title: 'F-gassen: herhaling en examen', meta: '11 aangemeld, 1 niet compleet · examinator bevestigd' },
+      { day: '22', month: 'okt', title: 'F-gassen: herhaling en examen', meta: '5 aangemeld · examinator nog bevestigen' },
+      { day: '5', month: 'nov', title: 'F-gassen: herhaling en examen', meta: 'Nog geen aanmeldingen' }
+    ];
+    return { nav, kpis, issue, expiring, invoices, exams };
+  }
+}
+</script>
+</body>
+</html>

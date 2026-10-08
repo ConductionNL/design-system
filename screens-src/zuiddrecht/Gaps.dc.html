@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What it takes to render this</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 100%">
+  <div style="max-width: 1360px; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 900px">
+      <h1 style="margin: 0; font-size: 36px; font-weight: 700">What it takes to render this</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #3d4047">Checked against nextcloud-vue (279 exports), thematiq and launchpad on development. Most of the look is theming. The dashboards need five new widgets. The apps mostly need to declare what already exists.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px">
+      <sc-for list="{{ totals }}" as="t" hint-placeholder-count="4">
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; color: #5e6168">{{ t.label }}</span><strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ t.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.note }}</span></div>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; align-items: start">
+      <sc-for list="{{ cols }}" as="c" hint-placeholder-count="3">
+        <section style="{{ c.box }}">
+          <div style="display: flex; flex-direction: column; gap: 4px"><h2 style="margin: 0; font-size: 22px; font-weight: 700">{{ c.title }}</h2><span style="font-size: 14px; color: #5e6168">{{ c.sub }}</span></div>
+          <sc-for list="{{ c.groups }}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <span style="{{ g.tag }}">{{ g.title }}</span>
+              <ul style="margin: 6px 0 0; padding: 0; list-style: none">
+                <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="4">
+                  <li style="display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-top: 1px solid #eef0f3"><strong style="font-size: 15px">{{ i.what }}</strong><span style="font-size: 14px; line-height: 1.45; color: #3d4047">{{ i.how }}</span></li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1890}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const totals = [
+      { label: 'Works today with tokens', value: '6', note: 'no code, only a token set' },
+      { label: 'New thematiq tokens', value: '6', note: 'small CSS, no components' },
+      { label: 'New or extended components', value: '15', note: 'in nextcloud-vue' },
+      { label: 'App changes', value: '4 apps', note: 'mostly manifest, some widgets' }
+    ];
+    const box = (edge) => 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: inset 0 4px 0 ' + edge;
+    const tag = (bg, fg) => 'align-self: flex-start; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: ' + bg + '; color: ' + fg;
+    const it = (what, how) => ({ what, how });
+    const cols = [
+      { title: 'Style: thematiq', sub: 'A token set or a new token solves it', box: box('#1e6b2a'), groups: [
+        { title: 'Works today', tag: tag('#e7f3ea', '#1e6b2a'), items: [
+          it('Light top bar', 'header-background-color and header-color tokens. conduction-new already does this.'),
+          it('White app menu with tinted active item', 'nav-background and navigation-active-background-color.'),
+          it('Grey workspace', 'background_color / --color-background-plain.'),
+          it('Cards: radius 12, 1px border', 'content-card-border-radius and -border-color.'),
+          it('Fira Sans', 'Bundled, weights 400 and 700. The design also uses 500 and 600: add those files.'),
+          it('Soft status pills', 'Cn badges already use the *-light colours.')
+        ] },
+        { title: 'Needs a new token or option', tag: tag('#fff4de', '#7a4f00'), items: [
+          it('Text colour of the active menu item', 'Today it takes the primary text colour, which fails on a tint.'),
+          it('Badge colour in the menu only', 'The badge token is global; the red badge should be menu-scoped.'),
+          it('Card shadow', 'Cn cards read --color-box-shadow; thematiq has no token for it.'),
+          it('Light tints per status', 'thematiq does not set --color-*-light yet.'),
+          it('Content surface', 'Whether #app-content is white or transparent needs its own token.'),
+          it('Brand stripe', 'A CSS option like the environment marker: three colours and their ratio.')
+        ] },
+        { title: 'More theme options worth adding', tag: tag('#eaf0f7', '#234a78'), items: [
+          it('A "workplace layout" switch', 'Light or coloured header, white or tinted menu, as one option per theme. Today only hide_slogan, show_menu_labels and icon_pack exist.'),
+          it('Density', 'Comfortable or compact rows and cards.')
+        ] }
+      ] },
+      { title: 'Components: nextcloud-vue', sub: 'Missing or partial in the shared library', box: box('#3669a5'), groups: [
+        { title: 'Missing', tag: tag('#fcedec', '#a30000'), items: [
+          it('Week strip widget', 'Five day columns with items. CnTimelineView is vertical, the calendar widget is an agenda.'),
+          it('Stacked bar with legend', 'One segmented bar ("zaken per stap"). The chart widget can stack only through raw options.'),
+          it('Conversation thread with reply box', 'CnChatPage is a Talk iframe; CnNotesCard is a list.'),
+          it('Document review list', 'Rows with a status per document. CnStructuredDocReview handles one document.'),
+          it('Segmented control', 'For "Mijn werk / Mijn team" and as a tab variant.'),
+          it('Avatar and name cell', 'A built-in cell type for tables.'),
+          it('Logo slot in CnAppNav', 'The app menu has no place for the shield and app name.'),
+          it('Brand stripe component', 'For login cards and portal headers.')
+        ] },
+        { title: 'Partial: extend', tag: tag('#fff4de', '#7a4f00'), items: [
+          it('Attention card', 'CnBannerWidget: add the coloured edge, a reason line and two actions.'),
+          it('Greeting header', 'CnHeaderWidget: add the user name and date.'),
+          it('Counts on views', 'Quick filters and saved views show no counts.'),
+          it('Due-date colour', 'A variantWhen-style rule for date cells and board cards (late, soon).'),
+          it('Late marking on boards', 'CnBoardView and CnObjectKanban have no overdue state.'),
+          it('Side column on detail pages', 'A named right column instead of hand-placed grid cells.'),
+          it('Header pills and "Wat nu?"', 'Type and status pills in the detail header; a step checklist tied to the primary action.')
+        ] },
+        { title: 'Already there, underused', tag: tag('#e7f3ea', '#1e6b2a'), items: [
+          it('primaryAction on CnDetailPage', 'Exists. dossiq declares 25 header actions and no primary one.'),
+          it('Stages widget, stat widget, tasks widget, board view', 'All exist and match the design.'),
+          it('Menu counters and a primary "new" button in CnAppNav', 'Exist: counter and nav.primaryAction.')
+        ] }
+      ] },
+      { title: 'The apps themselves', sub: 'Manifest and structure, per app', box: box('#cc0000'), groups: [
+        { title: 'All four', tag: tag('#f0f1f3', '#3d4047'), items: [
+          it('Cut the menu to the role', 'See "Four apps, one shape". Move set-up to settings, lists to saved views.'),
+          it('Declare a primary action per step', 'And cap header actions; group the rest under "Meer".'),
+          it('One dashboard per role', 'Built from stat, tasks, object-list and the new widgets.')
+        ] },
+        { title: 'dossiq', tag: tag('#f0f1f3', '#3d4047'), items: [
+          it('Case page: 13 + 6 tabs to 5 + Meer', 'The page config is 108 KB today.'),
+          it('Case list: 19 quick filters to 5 views', 'And 16 columns to 6 by default.'),
+          it('Fix the archived condition', 'Eight daily actions are probably hidden by it.')
+        ] },
+        { title: 'pipelinq, learniq, decidiq', tag: tag('#f0f1f3', '#3d4047'), items: [
+          it('pipelinq: modules', 'Sales, marketing and point of sale as switchable modules; 44 custom pages reviewed against shared page types.'),
+          it('learniq: role workspaces', '163 menu entries over five roles; 350 pages stay, the menu shrinks.'),
+          it('decidiq: steps on the decision', 'Move the transition buttons out of the Lifecycle block into the header; group 15 blocks into tabs.')
+        ] },
+        { title: 'launchpad', tag: tag('#f0f1f3', '#3d4047'), items: [
+          it('A default "Mijn werkdag" template', 'Admin template per group, with compulsory widgets.'),
+          it('A cross-app attention feed', 'Each app offers its "vandaag eerst" items; launchpad merges and ranks them. This contract does not exist yet.'),
+          it('"My tickets" and "to initial" widgets', 'pipelinq and decidiq need the widgets dossiq already ships.')
+        ] }
+      ] }
+    ];
+    return { totals, cols };
+  }
+}
+</script>
+</body>
+</html>

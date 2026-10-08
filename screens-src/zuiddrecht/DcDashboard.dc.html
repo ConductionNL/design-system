@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>decidiq: dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2260px">
+  <dc-import name="DqKop" app="Decidiq" placeholder="Zoek voorstellen, vergaderingen of besluiten" role="Bestuursadviseur" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="decidiq" primary="Nieuw voorstel" active="Dashboard" groups="{{ nav }}" hint-size="264px,2260px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Dashboard</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button><button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; white-space: nowrap; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Besluitvormingsproces starten</button></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span style="font-size: 15px; color: #5e6168">Mijn besluitvorming · maandag 5 oktober 2026</span>
+          </div>
+        </section>
+
+        <section aria-labelledby="dc-eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: inset 4px 0 0 #3669a5; padding: 20px 24px 20px 28px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px">
+            <h2 id="dc-eerst" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #234a78">Vandaag eerst</h2>
+            <strong style="font-size: 20px; font-weight: 700">Collegevoorstel Havenpark wacht op uw paraaf</strong>
+            <span style="font-size: 15px; color: #5e6168">Het college vergadert dinsdag 6 oktober. De stukken sluiten vandaag om 17.00 uur.</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Lezen</button>
+            <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Paraferen</a>
+          </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+              <strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+            <section aria-labelledby="dc-route" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: center"><h2 id="dc-route" style="margin: 0; font-size: 18px; font-weight: 700">7 voorstellen onderweg</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle voorstellen</a></div>
+              <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px">
+                <sc-for list="{{ route }}" as="r" hint-placeholder-count="4">
+                  <li style="{{ r.box }}">
+                    <span style="font-size: 13px; font-weight: 700; color: #3d4047">{{ r.step }}</span>
+                    <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ r.count }}</strong>
+                    <span style="font-size: 13px; color: #5e6168">{{ r.note }}</span>
+                  </li>
+                </sc-for>
+              </ol>
+            </section>
+
+            <section aria-labelledby="dc-wacht" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+              <h2 id="dc-wacht" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Wacht op u</h2>
+              <sc-for list="{{ mine }}" as="m" hint-placeholder-count="3">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: 1px solid #eef0f3">
+                  <span style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ m.title }}</a><span style="font-size: 13px; color: #5e6168">{{ m.meta }}</span></span>
+                  <span style="{{ m.pill }}">{{ m.step }}</span>
+                  <a href="#" style="display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 17px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 600; text-decoration: none">{{ m.action }}</a>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+            <section aria-labelledby="dc-verg" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+              <h2 id="dc-verg" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Komende vergaderingen</h2>
+              <sc-for list="{{ meetings }}" as="v" hint-placeholder-count="3">
+                <a href="#" style="display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                  <span style="flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; background: #f5f6f8; padding: 6px 0"><strong style="font-size: 18px; line-height: 1">{{ v.day }}</strong><span style="font-size: 12px; color: #5e6168">{{ v.month }}</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ v.title }}</span><span style="font-size: 13px; color: #5e6168">{{ v.meta }}</span></span>
+                </a>
+              </sc-for>
+            </section>
+            <section aria-labelledby="dc-toez" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+              <h2 id="dc-toez" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Toezeggingen met termijn</h2>
+              <sc-for list="{{ promises }}" as="p" hint-placeholder-count="3">
+                <div style="display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; align-items: baseline">
+                  <span style="flex: 1; font-size: 15px; line-height: 1.4">{{ p.text }}</span>
+                  <span style="{{ p.dueStyle }}">{{ p.due }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+      
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; align-items: start"><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Openstaande stemmen</h2></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Amendement A1 op verlichting fietspaden</a><span style="font-size: 13px; color: #5e6168">Commissie Ruimte · schriftelijke stemronde</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fcedec; color: #a30000">sluit vandaag</span></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Motie zaterdagopening stadskantoor</a><span style="font-size: 13px; color: #5e6168">Commissie Bestuur · 7 oktober</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff4de; color: #7a4f00">7 okt</span></div></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Mijn actiepunten</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle 5</a></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Kostenraming Havenpark aanvullen</a><span style="font-size: 13px; color: #5e6168">Uit besluit college 29 september</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fcedec; color: #a30000">te laat</span></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Raadsinformatiebrief geluid A16 opstellen</a><span style="font-size: 13px; color: #5e6168">Commissie Ruimte 24 september</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff4de; color: #7a4f00">9 okt</span></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Reactie op inspraak fietspaden verwerken</a><span style="font-size: 13px; color: #5e6168">Raadsvoorstel verlichting fietspaden</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #f0f1f3; color: #3d4047">12 okt</span></div></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Notulen die wachten op vaststelling</h2></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Notulen raadsvergadering 17 september</a><span style="font-size: 13px; color: #5e6168">Versie 2 · getekend door de griffier</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #eaf0f7; color: #234a78">Ter vaststelling</span></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Notulen commissie Ruimte 24 september</a><span style="font-size: 13px; color: #5e6168">Versie 1 · in review</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #f0f1f3; color: #3d4047">In review</span></div></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Bestuurlijke gezondheid</h2></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>Toezeggingen op tijd afgedaan</span><strong>78%</strong></span><span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="display: block; width: 78%; height: 6px; background: #1e6b2a"></span></span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>Actiepunten op tijd</span><strong>64%</strong></span><span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="display: block; width: 64%; height: 6px; background: #7a4f00"></span></span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>Notulen binnen 4 weken vastgesteld</span><strong>90%</strong></span><span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="display: block; width: 90%; height: 6px; background: #1e6b2a"></span></span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; justify-content: space-between; font-size: 14px"><span>Opkomst bij stemmingen</span><strong>93%</strong></span><span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="display: block; width: 93%; height: 6px; background: #1e6b2a"></span></span></div></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Lopende processen</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle processen</a></div><div style="display: flex; flex-wrap: wrap; gap: 10px"><div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; background: #f5f6f8"><span style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700">Ingediend<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">3</span></span><a href="#" style="display: block; padding: 8px 10px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; color: #1b1c1d; text-decoration: none">Collegevoorstel Havenpark</a><a href="#" style="display: block; padding: 8px 10px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; color: #1b1c1d; text-decoration: none">Subsidieregeling buurtinitiatieven</a></div><div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; background: #f5f6f8"><span style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700">In bespreking<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">3</span></span><a href="#" style="display: block; padding: 8px 10px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; color: #1b1c1d; text-decoration: none">Verlichting fietspaden 2027</a><a href="#" style="display: block; padding: 8px 10px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; color: #1b1c1d; text-decoration: none">Parkeren binnenstad 2027</a></div><div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; background: #f5f6f8"><span style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700">In stemming<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">1</span></span><a href="#" style="display: block; padding: 8px 10px; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; color: #1b1c1d; text-decoration: none">Motie zaterdagopening</a></div></div><span style="align-self: flex-start; margin-top: 8px"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; white-space: nowrap; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Proces starten</button></span></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Recente besluiten</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle besluiten</a></div><div style="overflow-x: auto"><table style="border-collapse: collapse; width: 100%; min-width: 460px; font-size: 14px"><thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 8px 8px 8px 0; font-weight: 600">Soort</th><th scope="col" style="padding: 8px; font-weight: 600">Titel</th><th scope="col" style="padding: 8px; font-weight: 600">Status</th><th scope="col" style="padding: 8px; font-weight: 600"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acties</span></th></tr></thead><tbody><tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 8px 10px 0">Raadsbesluit</td><td style="padding: 10px 8px"><a href="#" style="font-weight: 600; color: #1b1c1d">Subsidieregeling sportverenigingen 2026</a></td><td style="padding: 10px 8px"><span style="display: flex; gap: 6px; flex-wrap: wrap"><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #e7f3ea; color: #1e6b2a">Aangenomen</span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #f0f1f3; color: #3d4047">Intern</span></span></td><td style="padding: 6px 8px; text-align: right"><button type="button" aria-label="Rijacties" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr><tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 8px 10px 0">Motie</td><td style="padding: 10px 8px"><a href="#" style="font-weight: 600; color: #1b1c1d">Motie geluidsschermen A16</a></td><td style="padding: 10px 8px"><span style="display: flex; gap: 6px; flex-wrap: wrap"><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #e7f3ea; color: #1e6b2a">Aangenomen</span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #eaf0f7; color: #234a78">Openbaar</span></span></td><td style="padding: 6px 8px; text-align: right"><button type="button" aria-label="Rijacties" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr><tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 8px 10px 0">Amendement</td><td style="padding: 10px 8px"><a href="#" style="font-weight: 600; color: #1b1c1d">Amendement A3 op de voorjaarsnota</a></td><td style="padding: 10px 8px"><span style="display: flex; gap: 6px; flex-wrap: wrap"><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fcedec; color: #a30000">Verworpen</span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #eaf0f7; color: #234a78">Openbaar</span></span></td><td style="padding: 6px 8px; text-align: right"><button type="button" aria-label="Rijacties" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr></tbody></table></div></section><section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 12px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Ingekomen documenten</h2></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Brief Fietsersbond over de Molenvliet</a><span style="font-size: 13px; color: #5e6168">Ontvangen 2 oktober · naar raad 15 oktober</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #eaf0f7; color: #234a78">Doorgestuurd</span></div><div style="display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d">Petitie parkeren Molenstraat</a><span style="font-size: 13px; color: #5e6168">Ontvangen 30 september · nog te routeren</span></span><span style="flex: none; white-space: nowrap; padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #fff4de; color: #7a4f00">Nieuw</span></div></section></div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Mijn acties', 'inbox', 2]] },
+      { title: 'Besluitvorming', items: [['Voorstellen', 'doc'], ['Vergaderingen', 'cal'], ['Besluiten', 'gavel'], ['Toezeggingen', 'check']] },
+      { title: 'Organisatie', items: [['Organen en leden', 'people'], ['Registers', 'book']] }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      { label: 'Actieve besluiten', value: '12', note: '7 voorstellen onderweg', noteStyle: note('#5e6168') },
+      { label: 'Komende vergaderingen', value: '5', note: '2 deze week', noteStyle: note('#5e6168') },
+      { label: 'Openstaande stemmen', value: '2', note: '1 sluit vandaag', noteStyle: note('#a30000', 600) },
+      { label: 'Achterstallige acties', value: '1', note: 'Kostenraming Havenpark', noteStyle: note('#a30000', 600) }
+    ];
+    const box = (on) => 'display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 10px; background: ' + (on ? '#eaf0f7' : '#f5f6f8');
+    const route = [
+      { step: '1 Concept', count: '2', note: 'bij de steller', box: box(false) },
+      { step: '2 Advies en paraaf', count: '3', note: '2 wachten op u', box: box(true) },
+      { step: '3 College', count: '1', note: 'dinsdag 6 oktober', box: box(false) },
+      { step: '4 Raad', count: '1', note: 'donderdag 15 oktober', box: box(false) }
+    ];
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const mine = [
+      { title: 'Collegevoorstel Havenpark', meta: 'Steller: Anouk Bakker · college 6 oktober', step: 'Paraaf', pill: pill('#fcedec', '#a30000'), action: 'Paraferen' },
+      { title: 'Raadsvoorstel verlichting fietspaden 2027', meta: 'Steller: Lars de Koning · raad 15 oktober', step: 'Advies', pill: pill('#e8e6f6', '#4a3f8f'), action: 'Advies geven' },
+      { title: 'Besluitenlijst college 29 september', meta: 'Ter vaststelling', step: 'Vaststellen', pill: pill('#e3f1f3', '#1d5e66'), action: 'Bekijken' }
+    ];
+    const meetings = [
+      { day: '6', month: 'okt', title: 'College van B en W', meta: '09.30 uur · 8 agendapunten · 1 voorstel van u' },
+      { day: '8', month: 'okt', title: 'Commissie Ruimte', meta: '19.30 uur · 5 agendapunten' },
+      { day: '15', month: 'okt', title: 'Gemeenteraad', meta: '20.00 uur · agenda volgt' }
+    ];
+    const due = (late) => 'flex: none; font-size: 13px; font-weight: ' + (late ? '700; color: #a30000' : '600; color: #3d4047');
+    const promises = [
+      { text: 'Raad informeren over de kosten van het Havenpark', due: 'te laat', dueStyle: due(true) },
+      { text: 'Evaluatie zaterdagopening stadskantoor delen', due: '12 okt', dueStyle: due(false) },
+      { text: 'Antwoord op vragen over geluid A16', due: '20 okt', dueStyle: due(false) }
+    ];
+    return { nav, kpis, route, mine, meetings, promises };
+  }
+}
+</script>
+</body>
+</html>

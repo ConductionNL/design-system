@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: directeur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 1160px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="De Wilgenboom" primary="Bericht aan alle ouders" active="Vandaag" groups="{{ nav }}" hint-size="264px,1160px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" person="Hanneke Postma" role="Directeur" initials="HP" hint-size="100%,68px"></dc-import>
+    <main style="padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 14px; color: #5e6168">maandag 5 oktober 2026 · week 41</span>
+          <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">De school vandaag</h1>
+        </div>
+        <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Lexend', sans-serif">Weekoverzicht downloaden</button>
+      </div>
+
+      <section aria-labelledby="dir-eerst" style="background: #fdf3d7; border-radius: 12px; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+        <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="dir-eerst" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #6b4a00">Vandaag eerst</h2>
+          <strong style="font-size: 20px; font-weight: 700">Twee verlofaanvragen wachten op uw besluit</strong>
+          <span style="font-size: 15px; color: #3d4047">De oudste is van woensdag. U beslist binnen vijf schooldagen, dus uiterlijk woensdag.</span>
+        </div>
+        <a href="#dir-verlof" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #2f6b4a; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Aanvragen bekijken</a>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; color: #5e6168">{{ k.label }}</span><strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ k.value }}</strong><span style="{{ k.noteStyle }}">{{ k.note }}</span></div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <section aria-labelledby="dir-groepen" style="flex: 999 1 520px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin-bottom: 8px"><h2 id="dir-groepen" style="margin: 0; font-size: 18px; font-weight: 700">Aanwezigheid per groep</h2><span style="font-size: 13px; color: #5e6168">Vandaag om 9.05 uur · 7 van 8 registers ingevuld</span></div>
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="8">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #eef0f3">
+              <span style="flex: 0 0 150px; display: flex; flex-direction: column; gap: 1px"><strong style="font-size: 15px; font-weight: 600">{{ g.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ g.teacher }}</span></span>
+              <span aria-hidden="true" style="flex: 1 1 160px; height: 8px; border-radius: 4px; background: #e4e6ea; overflow: hidden"><span style="{{ g.bar }}"></span></span>
+              <span style="flex: 0 0 110px; font-size: 14px; font-variant-numeric: tabular-nums">{{ g.count }}</span>
+              <span style="flex: 0 0 150px; display: flex; justify-content: flex-end"><span style="{{ g.pill }}">{{ g.state }}</span></span>
+            </div>
+          </sc-for>
+        </section>
+
+        <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section id="dir-verlof" aria-labelledby="dir-verlof-kop" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="dir-verlof-kop" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Verlof te beslissen</h2>
+            <sc-for list="{{ leave }}" as="l" hint-placeholder-count="2">
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid #eef0f3">
+                <span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px; font-weight: 600">{{ l.who }}</strong><span style="font-size: 14px">{{ l.what }}</span><span style="{{ l.dueStyle }}">{{ l.due }}</span></span>
+                <span style="display: flex; gap: 8px"><button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 20px; background: #e8f1eb; color: #1f4a33; font: 600 14px 'Lexend', sans-serif">Toestaan</button><button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Lexend', sans-serif">Afwijzen</button><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 8px; font-size: 14px; font-weight: 600">Aanvraag lezen</a></span>
+              </div>
+            </sc-for>
+          </section>
+          <section aria-labelledby="dir-signaal" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="dir-signaal" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Afwezig zonder toestemming</h2>
+            <sc-for list="{{ truancy }}" as="t" hint-placeholder-count="2">
+              <a href="LqDetail.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ t.who }}</span><span style="font-size: 13px; color: #5e6168">{{ t.what }}</span></span>
+                <span style="{{ t.pill }}">{{ t.state }}</span>
+              </a>
+            </sc-for>
+            <p style="margin: 0; padding: 12px 0; border-top: 1px solid #eef0f3; font-size: 13px; line-height: 1.5; color: #5e6168">Bij 16 uur in vier weken moet de school dit melden bij de leerplichtambtenaar. learniq waarschuwt u voordat die grens is bereikt.</p>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1302}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home', 0, 'LqRolC.dc.html'], ['Berichten', 'chat', 0, 'LqRolC.dc.html']] },
+      { title: 'School', items: [['Aanwezigheid', 'queue', 0, 'LqRolC.dc.html'], ['Verlof', 'doc', 2, 'LqRolC.dc.html'], ['Ouderavonden', 'cal', 0, 'LqRolC.dc.html'], ['Resultaten', 'trend', 0, 'LqRolC.dc.html']] },
+      { title: 'Organisatie', items: [['Groepen en team', 'people', 0, 'LqLijst.dc.html'], ['Schoolkalender', 'cal', 0, 'LqRolC.dc.html'], ['Rapportages', 'chart', 0, 'LqRolC.dc.html']] }
+    ];
+    const muted = 'font-size: 13px; color: #5e6168';
+    const kpis = [
+      { label: 'Aanwezig vandaag', value: '96%', note: '8 van 214 leerlingen afwezig', noteStyle: muted },
+      { label: 'Afwezig zonder melding', value: '1', note: 'Vrijdag: Finn Weidewijk, groep 7', noteStyle: 'font-size: 13px; color: #a30000; font-weight: 600' },
+      { label: 'Ouderavond 29 oktober', value: '71%', note: 'van de ouders koos een tijd', noteStyle: muted },
+      { label: 'Vervanging vandaag', value: '1', note: 'Groep 3: juf Sanne voor juf Roos', noteStyle: muted }
+    ];
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const done = pill('#e7f3ea', '#1e6b2a');
+    const bar = (p) => 'display: block; height: 8px; width: ' + p + '%; background: #2f6b4a';
+    const groups = [
+      ['Groep 1', 'Juf Annelies', 24, 23, 'Ingevuld', done], ['Groep 2', 'Juf Petra', 25, 25, 'Ingevuld', done],
+      ['Groep 3', 'Juf Sanne (vervangt)', 27, 26, 'Ingevuld', done], ['Groep 4', 'Juf Esra', 26, 25, 'Ingevuld', done],
+      ['Groep 5', 'Meester Tim', 28, 27, 'Ingevuld', done], ['Groep 6', 'Juf Marloes', 27, 26, 'Ingevuld', done],
+      ['Groep 7', 'Meester Daan', 28, 26, 'Ingevuld', done], ['Groep 8', 'Juf Ilse', 29, 0, 'Nog niet ingevuld', pill('#fff4de', '#7a4f00')]
+    ].map(([name, teacher, total, here, state, style]) => ({ name, teacher, state, pill: style, bar: bar(here ? Math.round(here / total * 100) : 0), count: here ? here + ' van ' + total : total + ' leerlingen' }));
+    const leave = [
+      { who: 'Familie El Idrissi · Hamza, groep 7', what: 'Bruiloft in de familie, donderdag 29 en vrijdag 30 oktober', due: 'Aangevraagd op woensdag. Beslis uiterlijk woensdag 7 oktober', dueStyle: 'font-size: 13px; color: #7a4f00; font-weight: 600' },
+      { who: 'Familie Jansen · Fleur, groep 7', what: 'Jubileum van opa en oma, vrijdag 6 november', due: 'Aangevraagd op vrijdag. Beslis uiterlijk 9 oktober', dueStyle: muted }
+    ];
+    const truancy = [
+      { who: 'Finn Weidewijk · groep 7', what: '6 uur in de laatste vier weken. Meester Daan belt vandaag', state: '6 van 16 uur', pill: pill('#fff4de', '#7a4f00') },
+      { who: 'Ryan Maas · groep 8', what: '12 uur in de laatste vier weken. Gesprek met ouders op woensdag', state: '12 van 16 uur', pill: pill('#fcedec', '#a30000') }
+    ];
+    return { nav, kpis, groups, leave, truancy };
+  }
+}
+</script>
+</body>
+</html>

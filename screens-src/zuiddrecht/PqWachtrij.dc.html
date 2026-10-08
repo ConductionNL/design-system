@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pipelinq: queue</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1010px">
+  <dc-import name="DqKop" app="Pipelinq" placeholder="Search tickets, contacts or appointments" role="Contact centre agent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="New request" active="Queue" settings="Advanced" help="Help and explanation" groups="{{ nav }}" hint-size="264px,942px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+          <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Queue</h1>
+          <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Download</button>
+            <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 18H21V16H17V14L14 17L17 20V18M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 6C12.1 6 13 6.9 13 8S12.1 10 11 10 9 9.1 9 8 9.9 6 11 6M11 13C8.3 13 3 14.3 3 17V20H12.5C12.2 19.4 12.1 18.8 12 18.1H4.9V17C4.9 16.4 8 14.9 11 14.9C11.5 14.9 12 15 12.5 15C12.8 14.4 13.1 13.8 13.6 13.3C12.6 13.1 11.7 13 11 13"></path></svg>Take the oldest</button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-size: 15px; color: #5e6168">Showing 7 of 12 unassigned tickets · contact centre · oldest first</span>
+        </div>
+      </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+              <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section style="flex: 999 1 520px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; display: flex; flex-direction: column">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 18px 0"><div role="tablist" aria-label="Type" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1"><button type="button" role="tab" aria-selected="true" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);">All<span style="font-weight: 400; color: #5e6168">12</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Requests<span style="font-weight: 400; color: #5e6168">6</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Complaints<span style="font-weight: 400; color: #5e6168">1</span></button><button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; font: 600 14px 'Fira Sans', sans-serif; cursor: pointer; background: transparent; color: #3d4047;">Contact moments<span style="font-weight: 400; color: #5e6168">5</span></button></div><span style="font-size: 13px; color: #5e6168">Type, then channel</span></div>
+            <div role="tablist" aria-label="Channel" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; border-bottom: 1px solid #eef0f3">
+              <sc-for list="{{ channels }}" as="c" hint-placeholder-count="5">
+                <button type="button" role="tab" aria-selected="{{ c.sel }}" style="{{ c.style }}">{{ c.label }}<span style="{{ c.countStyle }}">{{ c.count }}</span></button>
+              </sc-for>
+            </div>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border-bottom: 1px solid #eef0f3">
+                <span style="{{ r.waitStyle }}">{{ r.wait }}</span>
+                <a href="PqTicket.dc.html" style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px; color: #1b1c1d; text-decoration: none"><strong style="font-size: 15px">{{ r.subject }}</strong><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></a>
+                <span style="{{ r.pill }}">{{ r.kind }}</span>
+                <span style="{{ r.prioStyle }}">{{ r.prio }}</span>
+                <button type="button" style="height: 34px; padding: 0 14px; border: 0; border-radius: 17px; background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif">Take on</button>
+                <a href="PqTicket.dc.html" aria-label="View the ticket" style="width: 34px; height: 34px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center; color: #3669a5"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z"></path></svg></a>
+              </div>
+            </sc-for>
+            <div style="padding: 12px 18px; font-size: 14px; color: #5e6168">Oldest first. A ticket leaves the queue the moment someone takes it on.</div>
+          </section>
+
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Team today</h2><span style="font-size: 13px; color: #5e6168">4 of 5 in</span></div>
+              <sc-for list="{{ team }}" as="t" hint-placeholder-count="5">
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 16px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ t.initials }}</span><span style="flex: 1; display: flex; flex-direction: column"><strong style="font-size: 14px">{{ t.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.state }}</span></span><span style="font-size: 13px; font-weight: 600; white-space: nowrap">{{ t.load }}</span></div>
+                  <span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ t.bar }}"></span></span>
+                </div>
+              </sc-for>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Agreements</h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5">Requests and reports: an answer within 2 working days. Complaints: a first reaction the same day. Phone: picked up within 30 seconds.</p>
+              <a href="#" style="font-size: 14px; font-weight: 600">Service levels in Reports</a>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1010}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['My work', 'inbox', 5], ['Queue', 'queue', 12]] },
+      { title: 'Contact centre', items: [['Questions and reports', 'chat'], ['Contact moments', 'phone'], ['Appointments', 'cal']] },
+      { title: 'Relations', items: [['Residents and businesses', 'people'], ['Organisations', 'org']] },
+      { title: 'Sales', items: [['Leads', 'trend'], ['Pipeline', 'pipeline'], ['Products', 'products']] },
+      { title: 'Marketing', items: [['Campaigns', 'bullhorn'], ['Newsletters', 'mail']] },
+    ];
+    const kpis = [
+      { label: 'Unassigned', value: '12', note: '3 came in this morning', noteStyle: 'font-size: 13px; color: #5e6168' },
+      { label: 'Oldest waiting', value: '3 days', note: 'past the 2 working day agreement', noteStyle: 'font-size: 13px; color: #a30000; font-weight: 600' },
+      { label: 'Within the deadline', value: '9 of 12', note: 'take the red ones first', noteStyle: 'font-size: 13px; color: #5e6168' }
+    ];
+    const chip = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 17px; font: 600 14px \'Fira Sans\', sans-serif; cursor: pointer; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const channels = [['All', 12, true], ['Phone', 4, false], ['Mijn Zuiddrecht', 5, false], ['Email', 2, false], ['Desk', 1, false]]
+      .map(([label, count, on]) => ({ label, count, sel: on ? 'true' : 'false', style: chip(on), countStyle: 'font-weight: 400; ' + (on ? 'color: #d6d9de;' : 'color: #5e6168;') }));
+    const st = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const T = { Request: st('#eaf0f7', '#234a78'), Report: st('#fff4de', '#7a4f00'), Complaint: st('#fcedec', '#a30000') };
+    const waitStyle = (late) => 'flex: none; width: 72px; font-size: 14px; font-weight: 700; ' + (late ? 'color: #a30000;' : 'color: #1b1c1d;');
+    const rows = [
+      ['3 days', 'Waste pass does not work at the container', 'M. de Graaf · Mijn Zuiddrecht', 'Request', true],
+      ['2 days', 'Tree branch over the pavement, Beukenlaan', 'H. Visser · Mijn Zuiddrecht', 'Report', true],
+      ['2 days', 'Moving to Zuiddrecht: what to arrange?', 'L. Hoekstra · email', 'Request', true],
+      ['1 day', 'Loose paving stones on Kerkplein', 'R. Yilmaz · phone', 'Report', false],
+      ['1 day', 'Street party subsidy: which documents?', 'Buurtvereniging Oost · email', 'Request', false],
+      ['5 hours', 'Rubbish not collected on Dorpsstraat', 'P. van Dijk · phone', 'Report', false],
+      ['40 min', 'Rude treatment at the desk this morning', 'anonymous · desk', 'Complaint', false]
+    ].map(([w, subject, meta, kind, late]) => ({ wait: w, subject, meta, kind, pill: T[kind], waitStyle: waitStyle(late), prio: (late || kind === 'Complaint') ? 'High' : 'Normal', prioStyle: 'width: 56px; font-size: 13px; ' + ((late || kind === 'Complaint') ? 'color: #a30000; font-weight: 700;' : 'color: #5e6168;') }));
+    const bar = (pct, hot) => 'display: block; height: 6px; width: ' + pct + '%; background: ' + (hot ? '#cc0000' : '#3669a5');
+    const team = [
+      { initials: 'PJ', name: 'Pieter Jansen (you)', state: 'Available', load: '5 open', bar: bar(50, false) },
+      { initials: 'FY', name: 'Fatma Yildiz', state: 'Available', load: '4 open', bar: bar(40, false) },
+      { initials: 'JB', name: 'Joris Bakker', state: 'In a meeting until 14:00', load: '7 open', bar: bar(70, false) },
+      { initials: 'LM', name: 'Lotte Mulder', state: 'On the phone', load: '9 open', bar: bar(90, true) },
+      { initials: 'TK', name: 'Tim de Koning', state: 'Off today', load: '0 open', bar: bar(0, false) }
+    ];
+    return { nav, kpis, channels, rows, team };
+  }
+}
+</script>
+</body>
+</html>

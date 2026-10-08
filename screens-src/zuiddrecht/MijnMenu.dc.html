@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Menu Mijn Zuiddrecht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<nav aria-label="Mijn Zuiddrecht" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; width: 100%; display: flex; flex-direction: column; gap: 24px">
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+    <div>
+      <h2 style="margin: 0 0 6px; padding: 0 12px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #4a4a4a">{{ g.title }}</h2>
+      <ul style="margin: 0; padding: 0; list-style: none">
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <li><a href="{{ it.href }}" style="{{ it.style }}" aria-current="{{ it.current }}"><span>{{ it.label }}</span><sc-if value="{{ it.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 12px; background: #cc0000; color: #ffffff; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="{{ it.badgeLabel }}">{{ it.badge }}</span></sc-if></a></li>
+        </sc-for>
+      </ul>
+    </div>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Overzicht"},"$preview":{"width":320,"height":1112}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'Overzicht';
+    const raw = [
+      { title: 'Mijn Zuiddrecht', items: [['Overzicht', 'MijnOverzicht.dc.html'], ['Berichten', 'Berichten.dc.html', 3]] },
+      { title: 'Thema’s', items: [['Parkeren', 'ThemaOverzicht.dc.html']] },
+      { title: 'Zaken en taken', items: [['Mijn zaken', 'MijnZaken.dc.html'], ['Mijn taken', 'MijnTaken.dc.html', 3], ['Toegang tot zaken', 'Machtigingen.dc.html']] },
+      { title: 'Samenwerken', items: [['Mijn plannen', 'Plannen.dc.html', 1], ['Mijn contacten', 'Contacten.dc.html', 1]] },
+      { title: 'Vragen en meldingen', items: [['Melding indienen', 'MeldingIndienen.dc.html']] },
+      { title: 'Uw gegevens', items: [['Mijn gegevens', 'MijnGegevens.dc.html'], ['Mijn uitkering', 'Uitkeringen.dc.html'], ['Mijn adres', 'MijnAdres.dc.html'], ['Mijn afspraken', 'MijnAfspraken.dc.html'], ['Mijn account', 'MijnAccount.dc.html']] }
+    ];
+    const base = 'display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 8px 12px; font-size: 17px; text-decoration: none; ';
+    const groups = raw.map((g) => ({
+      title: g.title,
+      items: g.items.map(([label, href, badge]) => {
+        const on = label === active;
+        return {
+          label, href, badge: badge ?? '', hasBadge: !!badge,
+          badgeLabel: badge ? badge + ' nieuw' : '',
+          current: on ? 'page' : 'false',
+          style: base + (on ? 'color: #1a1a1a; font-weight: 700; background: #fcedec; box-shadow: inset 4px 0 0 #cc0000;' : 'color: #3669a5; font-weight: 500;')
+        };
+      })
+    }));
+    return { groups };
+  }
+}
+</script>
+</body>
+</html>

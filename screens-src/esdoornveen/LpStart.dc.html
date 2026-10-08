@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: mijn werkdag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column">
+  <dc-import name="WerkKop" user="Ruud Hermans" rol="Docent en BPV-begeleider" hint-size="100%,68px"></dc-import>
+  <main style="width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 32px 32px 48px; display: flex; flex-direction: column; gap: 24px">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <img src="/_blob/f0783c5e87f09c76b33eaf611359f202" alt="" style="height: 52px; width: auto">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 13px; color: #5e6168">maandag 5 oktober 2026 · week 41</span>
+          <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Goedemiddag, Ruud</h1>
+        </div>
+      </div>
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'IBM Plex Sans', sans-serif">Startpagina aanpassen</button>
+    </div>
+
+    <section aria-labelledby="lp-eerst" style="background: #fbe9f0; border-radius: 12px; padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px">
+        <h2 id="lp-eerst" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9c1c49">Vandaag eerst</h2>
+        <span style="font-size: 13px; color: #3d4047">3 dingen uit al uw apps die vandaag aandacht vragen</span>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{ first }}" as="f" hint-placeholder-count="3">
+          <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px; border-radius: 8px; background: #ffffff">
+            <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ f.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ f.why }}</span></span>
+            <span style="{{ f.pill }}">{{ f.kind }}</span>
+            <span style="padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">{{ f.app }}</span>
+            <a href="{{ f.href }}" style="{{ f.btn }}">{{ f.action }}</a>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <section aria-labelledby="lp-werk" style="display: flex; flex-direction: column; gap: 12px">
+      <h2 id="lp-werk" style="margin: 0; font-size: 18px; font-weight: 700">Mijn werk</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <a href="{{ a.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px; display: flex; flex-direction: column; gap: 14px; color: #1b1c1d; text-decoration: none">
+            <span style="display: flex; align-items: center; gap: 10px">
+              <span style="width: 36px; height: 36px; flex: none; border-radius: 8px; background: #f0eaf7; color: #43206e; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; line-height: 1.25"><strong style="font-size: 15px">{{ a.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ a.what }}</span></span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 32px; font-weight: 700; line-height: 1">{{ a.count }}</strong><span style="font-size: 14px; color: #5e6168">{{ a.unit }}</span></span>
+            <span style="{{ a.noteStyle }}">{{ a.note }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; align-items: start">
+      <section aria-labelledby="lp-agenda" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lp-agenda" style="margin: 0; font-size: 18px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 14px; font-weight: 600">Open agenda</a></div>
+        <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="5">
+          <div style="{{ e.row }}">
+            <span style="flex: 0 0 100px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums">{{ e.time }}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">{{ e.title }}</span><span style="font-size: 13px; color: #5e6168">{{ e.where }}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-recent" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-recent" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Verder waar u was</h2>
+        <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+          <a href="{{ r.href }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b2e91" stroke-width="2.6" stroke-linecap="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+          </a>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-org" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-org" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Van de school</h2>
+        <sc-for list="{{ org }}" as="o" hint-placeholder-count="3">
+          <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600; line-height: 1.4">{{ o.title }}</span><span style="font-size: 13px; color: #5e6168">{{ o.meta }}</span></a>
+        </sc-for>
+      </section>
+    </div>
+
+    <section aria-labelledby="lp-apps" style="display: flex; flex-direction: column; gap: 12px">
+      <h2 id="lp-apps" style="margin: 0; font-size: 18px; font-weight: 700">Alle apps</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="8">
+          <li><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 20px; background: #ffffff; border: 1px solid #e4e6ea; color: #1b1c1d; font-size: 15px; font-weight: 500; text-decoration: none">{{ t }}</a></li>
+        </sc-for>
+      </ul>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1261}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const btn = (primary) => 'display: inline-flex; align-items: center; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; ' + (primary ? 'background: #5b2e91; color: #ffffff;' : 'background: #ffffff; color: #1b1c1d; border: 1px solid #c4c7cb;');
+    const first = [
+      { title: 'Sem Visser (MT1B) is 14 uur afwezig zonder reden', why: 'Bij 16 uur in vier weken volgt een melding bij leerplicht', kind: 'Urgent', pill: pill('#fcedec', '#a30000'), app: 'learniq', action: 'Dossier openen', href: 'LqVandaag.dc.html', btn: btn(true) },
+      { title: 'Aanwezigheid van Elektrotechniek MT1A invullen', why: 'De les is nu bezig, tot 14.00 uur', kind: 'Nu', pill: pill('#fff4de', '#7a4f00'), app: 'learniq', action: 'Invullen', href: 'LqVandaag.dc.html', btn: btn(false) },
+      { title: 'Daan Smits (MT2A) heeft nog geen BPV-plek', why: 'De BPV-periode loopt al vijf weken', kind: 'Urgent', pill: pill('#fcedec', '#a30000'), app: 'learniq', action: 'Naar BPV-overzicht', href: 'LqRolB.dc.html', btn: btn(false) }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const apps = [
+      { name: 'Lessen', what: 'learniq', count: '4', unit: 'lessen vandaag', note: '1 presentielijst nog open', noteStyle: note('#7a4f00', 600), href: 'LqVandaag.dc.html', icon: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' },
+      { name: 'BPV', what: 'learniq', count: '24', unit: 'studenten op BPV', note: '5 vragen aandacht', noteStyle: note('#a30000', 600), href: 'LqRolB.dc.html', icon: 'M12 21s-6-6.5-6-11a6 6 0 0 1 12 0c0 4.5-6 11-6 11zM12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z' },
+      { name: 'Beoordelen', what: 'learniq', count: '28', unit: 'inleveringen', note: 'in 3 opdrachten', noteStyle: note('#5e6168'), href: 'LqVandaag.dc.html', icon: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2' },
+      { name: 'Berichten', what: 'Van studenten en leerbedrijven', count: '3', unit: 'ongelezen', note: '1 van een leerbedrijf', noteStyle: note('#5e6168'), href: '#', icon: 'M4 5h16v11H8l-4 4z' }
+    ];
+    const row = (now) => 'display: flex; gap: 14px; padding: 12px ' + (now ? '12px; margin: 0 -12px; border-radius: 8px; background: #f0eaf7' : '0; border-top: 1px solid #eef0f3');
+    const agenda = [
+      { time: '08.30 - 10.00', title: 'PLC-programmeren · MT3A', where: 'Lokaal T0.14', now: false },
+      { time: '10.15 - 11.45', title: 'Practicum pneumatiek · MT1B', where: 'Werkplaats W1', now: false },
+      { time: '12.30 - 14.00', title: 'Elektrotechniek · MT1A', where: 'Lokaal T0.12 · nu bezig', now: true },
+      { time: '14.15 - 15.45', title: 'Projecturen · MT3A', where: 'Werkplaats W2', now: false },
+      { time: '16.00 - 16.45', title: 'Teamoverleg Mechatronica', where: 'Lokaal T1.02', now: false }
+    ].map((e) => ({ ...e, row: row(e.now) }));
+    const recent = [
+      { title: 'Milan de Groot', meta: 'learniq · studentdossier · vanochtend', href: 'LqDetail.dc.html' },
+      { title: 'Praktijkopdracht transportband', meta: 'learniq · beoordelen · 11 van 18 klaar', href: 'LqVandaag.dc.html' },
+      { title: 'Bezoekverslag Kooiman Aandrijftechniek.docx', meta: 'Bestanden · donderdag', href: '#' },
+      { title: 'BPV-plekken MT2A', meta: 'learniq · bord · donderdag', href: 'LqBord.dc.html' }
+    ];
+    const org = [
+      { title: 'Herfstvakantie van 17 tot en met 25 oktober: de BPV loopt door', meta: 'BPV-bureau · vandaag' },
+      { title: 'Open dag 7 november: wie staat er in de werkplaats?', meta: 'Team Mechatronica · vrijdag' },
+      { title: 'Het examenrooster van november staat vast', meta: 'Examenbureau · vrijdag' }
+    ];
+    const tiles = ['learniq', 'Bestanden', 'Agenda', 'Mail', 'Talk', 'Contacten', 'Taken', 'portaliq'];
+    return { first, apps, agenda, recent, org, tiles };
+  }
+}
+</script>
+</body>
+</html>

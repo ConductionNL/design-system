@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: mijn werkdag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 800px; display: flex; flex-direction: column">
+  <dc-import name="WerkKop" user="Sophie van Dam" role="Planner" initials="SD" hint-size="100%,68px"></dc-import>
+  <main style="width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 28px">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <img src="/_blob/448916784927093747a54ecce06bbe58" alt="" style="height: 52px; width: auto">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 14px; color: #5e6168">maandag 5 oktober 2026 · week 41</span>
+          <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 32px; font-weight: 700">Goedemiddag, Sophie</h1>
+        </div>
+      </div>
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Barlow', sans-serif">Startpagina aanpassen</button>
+    </div>
+
+    <section aria-labelledby="lp-eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin-bottom: 8px">
+        <h2 id="lp-eerst" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9a3412">Vandaag eerst</h2>
+        <span style="font-size: 14px; color: #5e6168">3 dingen uit al uw apps die vandaag aandacht vragen</span>
+      </div>
+      <sc-for list="{{ first }}" as="f" hint-placeholder-count="3">
+        <div style="{{ f.row }}">
+          <span style="{{ f.pill }}">{{ f.kind }}</span>
+          <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px; font-weight: 600">{{ f.title }}</strong><span style="font-size: 14px; color: #3d4047">{{ f.why }}</span></span>
+          <span style="padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">{{ f.app }}</span>
+          <a href="{{ f.href }}" style="{{ f.btn }}">{{ f.action }}</a>
+        </div>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="lp-werk" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="lp-werk" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Mijn werk</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <a href="{{ a.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px; display: flex; flex-direction: column; gap: 14px; color: #1b1c1d; text-decoration: none">
+            <span style="display: flex; align-items: center; gap: 10px">
+              <span style="width: 36px; height: 36px; flex: none; border-radius: 8px; background: #e3f1f3; color: #084f58; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; line-height: 1.2"><strong style="font-size: 16px; font-weight: 600">{{ a.label }}</strong><span style="font-size: 13px; color: #5e6168">{{ a.what }}</span></span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 8px"><strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 34px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{ a.count }}</strong><span style="font-size: 14px; color: #5e6168">{{ a.unit }}</span></span>
+            <span style="{{ a.noteStyle }}">{{ a.note }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; align-items: start">
+      <section aria-labelledby="lp-agenda" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lp-agenda" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 14px; font-weight: 600">Open agenda</a></div>
+        <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="3">
+          <div style="display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid #eef0f3">
+            <span style="flex: 0 0 96px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums">{{ e.time }}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">{{ e.title }}</span><span style="font-size: 13px; color: #5e6168">{{ e.where }}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-recent" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-recent" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Verder waar u was</h2>
+        <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+          <a href="{{ r.href }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0b6e7a" stroke-width="2.6" stroke-linecap="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+          </a>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-org" style="min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-org" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Van de academie</h2>
+        <sc-for list="{{ org }}" as="o" hint-placeholder-count="3">
+          <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600">{{ o.title }}</span><span style="font-size: 13px; color: #5e6168">{{ o.meta }}</span></a>
+        </sc-for>
+      </section>
+    </div>
+
+    <section aria-labelledby="lp-apps" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="lp-apps" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Alle apps</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="8">
+          <li><a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 22px; background: #ffffff; border: 1px solid #e4e6ea; color: #1b1c1d; font-size: 15px; font-weight: 500; text-decoration: none">{{ t }}</a></li>
+        </sc-for>
+      </ul>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1202}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'flex: 0 0 auto; min-width: 74px; text-align: center; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const row = 'display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 0; border-top: 1px solid #eef0f3';
+    const btn = (primary) => 'display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; ' + (primary ? 'background: #0b6e7a; color: #ffffff;' : 'background: #ffffff; color: #1b1c1d; border: 1px solid #c4c7cb;');
+    const first = [
+      { kind: 'Te laat', pill: pill('#fcedec', '#a30000'), title: 'Inschrijving van Bakker Techniek BV wacht 3 werkdagen', why: 'De afspraak is bevestigen binnen 2 werkdagen', app: 'learniq', action: 'Bevestigen', href: 'LqVandaag.dc.html', btn: btn(true), row },
+      { kind: 'Donderdag', pill: pill('#fff4de', '#7a4f00'), title: 'Hybride warmtepomp op 22 oktober: 4 van de 6 deelnemers die nodig zijn', why: 'Beslis uiterlijk 8 oktober of de dag doorgaat', app: 'learniq', action: 'Cursusdag openen', href: 'LqBord.dc.html', btn: btn(false), row },
+      { kind: 'Vandaag', pill: pill('#fff4de', '#7a4f00'), title: 'Henk Dekker vraagt een tweede stikstoffles voor donderdag', why: 'Bericht van 11.40 uur, voor het F-gassen examen', app: 'Talk', action: 'Antwoorden', href: '#', btn: btn(false), row }
+    ];
+    const note = (c, w) => 'font-size: 14px; color: ' + c + '; font-weight: ' + (w || 500);
+    const apps = [
+      { label: 'Cursusdagen', what: 'learniq', count: '4', unit: 'deze week', note: '1 onder het minimum', noteStyle: note('#a30000', 600), href: 'LqBord.dc.html', icon: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' },
+      { label: 'Inschrijvingen', what: 'learniq', count: '5', unit: 'te bevestigen', note: '9 deelnemers', noteStyle: note('#5e6168'), href: 'LqVandaag.dc.html', icon: 'M4 13h4l2 3h4l2-3h4M4 13l2-8h12l2 8v6H4z' },
+      { label: 'Deelnemers', what: 'learniq', count: '2', unit: 'gegevens ontbreken', note: '1 voor het examen van donderdag', noteStyle: note('#5e6168'), href: 'LqLijst.dc.html', icon: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c1-4 4-6 7-6s6 2 7 6' },
+      { label: 'Taken', what: 'Uit alle apps', count: '3', unit: 'taken', note: '1 voor vandaag', noteStyle: note('#5e6168'), href: '#', icon: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2' }
+    ];
+    const agenda = [
+      { time: '09.00 - 09.30', title: 'Weekstart planning en administratie', where: 'Kantoor, met Rob Maas' },
+      { time: '13.30 - 14.00', title: 'Bellen met De Groot Klimaat over 4 plekken', where: 'Telefonisch' },
+      { time: '15.30 - 16.00', title: 'Rooster november doornemen met de trainers', where: 'Lokaal 1, na de les van Henk' }
+    ];
+    const recent = [
+      { title: 'F-gassen: herhaling en examen, do 8 okt', meta: 'learniq · cursusdag · 20 minuten geleden', href: 'LqBord.dc.html' },
+      { title: 'Tom Verbeek', meta: 'learniq · deelnemer · vanochtend', href: 'LqDetail.dc.html' },
+      { title: 'Rooster november, concept.xlsx', meta: 'Bestanden · vanochtend', href: '#' },
+      { title: 'Jansen Installatietechniek BV', meta: 'learniq · werkgever · vrijdag', href: '#' }
+    ];
+    const org = [
+      { title: 'Nieuwe opstelling met propaan staat vanaf 12 oktober in de hal', meta: 'Trainers · vandaag' },
+      { title: 'Lokaal 2: de beamer is woensdag terug', meta: 'Facilitair · vandaag' },
+      { title: 'Cursusaanbod voorjaar 2027: voorstellen tot 30 oktober', meta: 'Directie · vrijdag' }
+    ];
+    const tiles = ['learniq', 'Bestanden', 'Agenda', 'Mail', 'Talk', 'Contacten', 'Taken', 'portaliq'];
+    return { first, apps, agenda, recent, org, tiles };
+  }
+}
+</script>
+</body>
+</html>

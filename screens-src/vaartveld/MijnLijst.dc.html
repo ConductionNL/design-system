@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Vaartveld: cijfers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto">
+  <div style="max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Cijfers" hint-size="100%,700px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 48px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em">Cijfers</h1>
+        <p style="margin: 0; font-size: 18px; color: #4a4a4a">4 havo · profiel economie en maatschappij · laatste cijfer op vrijdag 2 oktober</p>
+      </div>
+
+      <section aria-label="Hoe sta je ervoor" style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; padding: 22px 28px; border-radius: 10px; background: #f4f6f9">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 48px; font-weight: 800; line-height: 1; letter-spacing: -0.02em">6,7</strong>
+          <span style="font-size: 17px; color: #4a4a4a">gemiddeld over<br>8 vakken</span>
+        </div>
+        <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 19px; line-height: 1.4">Je staat 7 vakken voldoende en 1 vak onvoldoende.</strong>
+          <span style="font-size: 17px; line-height: 1.5">Wiskunde A staat op een 5,2. Met een 6,0 voor de toets in de toetsweek sta je weer voldoende. <a href="Detail.dc.html" style="font-weight: 600; color: #14338f">Bekijk wiskunde A</a></span>
+        </div>
+      </section>
+
+      <div role="tablist" aria-label="Periode" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid #d3d8df">
+        <button type="button" role="tab" aria-selected="true" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 700 17px 'Red Hat Text', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #1fb5a8">Periode 1</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 600 17px 'Red Hat Text', sans-serif; color: #1f4fd8">Heel het schooljaar</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 600 17px 'Red Hat Text', sans-serif; color: #1f4fd8">Schoolexamen</button>
+      </div>
+
+      <ul style="margin: -8px 0 0; padding: 0; list-style: none">
+        <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="10">
+          <li style="border-bottom: 1px solid #d3d8df">
+            <a href="Detail.dc.html" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; padding: 14px 4px; color: #1a1a1a; text-decoration: none">
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                <span style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; color: #1f4fd8; text-decoration: underline">{{ s.name }}</span>
+                <span style="font-size: 15px; color: #4a4a4a">{{ s.teacher }}</span>
+              </span>
+              <span style="flex: 1 1 200px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+                <sc-for list="{{ s.marks }}" as="m" hint-placeholder-count="2"><span style="{{ m.style }}">{{ m.value }}</span></sc-for>
+                <sc-if value="{{ s.isNew }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 9px; border-radius: 12px; background: #1fb5a8; color: #1a1a1a; font-size: 13px; font-weight: 700">Nieuw</span></sc-if>
+              </span>
+              <span style="flex: 0 0 170px; display: flex; align-items: center; justify-content: flex-end; gap: 12px">
+                <sc-if value="{{ s.low }}" hint-placeholder-val="{{ false }}"><span style="padding: 4px 12px; border-radius: 14px; background: #fff4de; color: #7a4f00; font-size: 15px; font-weight: 600">Onder 5,5</span></sc-if>
+                <strong style="{{ s.avgStyle }}">{{ s.avg }}</strong>
+              </span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1f4fd8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+            </a>
+          </li>
+        </sc-for>
+      </ul>
+      <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4a4a4a">Het getal rechts is je gemiddelde. Een toets telt zwaarder mee dan een SO. Hoe zwaar, zie je bij het vak.</p>
+    </main>
+  </div>
+  </div>
+  <dc-import name="Voet" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1783}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mark = (v) => {
+      const n = parseFloat(String(v).replace(',', '.'));
+      const low = !isNaN(n) && n < 5.5;
+      return { value: v, style: 'min-width: 46px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; ' + (low ? 'background: #fff4de; color: #7a4f00' : 'background: #f4f6f9; color: #1a1a1a') };
+    };
+    const raw = [
+      ['Nederlands', 'Mevrouw Kramer', ['7,1', '6,8'], '7,0', false],
+      ['Engels', 'Mevrouw Jansen', ['7,4', '6,9'], '7,1', true],
+      ['Wiskunde A', 'Meneer Demir', ['6,1', '4,7', '5,8'], '5,2', false],
+      ['Economie', 'Meneer De Boer', ['6,3', '6,6'], '6,4', false],
+      ['Geschiedenis', 'Meneer Willems', ['7,8'], '7,8', false],
+      ['Bedrijfseconomie', 'Mevrouw Hendriks', ['6,0', '6,5'], '6,3', false],
+      ['Aardrijkskunde', 'Meneer Mulder', ['6,9'], '6,9', false],
+      ['Maatschappijleer', 'Mevrouw Vos', ['7,2'], '7,2', false],
+      ['Culturele en kunstzinnige vorming', 'Meneer Dijkstra', ['voldoende'], 'V', false],
+      ['Lichamelijke opvoeding', 'Meneer El Idrissi', ['goed'], 'G', false]
+    ];
+    const subjects = raw.map(([name, teacher, marks, avg, isNew]) => {
+      const n = parseFloat(avg.replace(',', '.'));
+      return { name, teacher, marks: marks.map(mark), avg, isNew, low: !isNaN(n) && n < 5.5,
+        avgStyle: 'min-width: 52px; text-align: right; font-family: \'Red Hat Display\', system-ui, sans-serif; font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums' };
+    });
+    return { subjects, crumbs: [{ label: 'Home' }, { label: 'Mijn Vaartveld', href: 'MijnOverzicht.dc.html' }, { label: 'Cijfers' }] };
+  }
+}
+</script>
+</body>
+</html>

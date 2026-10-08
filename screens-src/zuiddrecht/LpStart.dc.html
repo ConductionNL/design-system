@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: mijn werkdag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 1478px; display: flex; flex-direction: column">
+  <dc-import name="DqKop" hint-size="100%,68px"></dc-import>
+  <main style="width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 28px">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <img src="/_blob/ca3780498365dca18f9882aca801f345" alt="" style="height: 52px; width: auto">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Vandaag</h1>
+          <span style="font-size: 15px; color: #5e6168">Goedemiddag, Pieter · maandag 5 oktober 2026</span>
+        </div>
+      </div>
+      <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Startpagina aanpassen</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button></div>
+    </div>
+
+    <section aria-labelledby="lp-eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px">
+        <h2 id="lp-eerst" style="margin: 0; font-size: 18px; font-weight: 700">Vandaag eerst</h2>
+        <span style="font-size: 14px; color: #5e6168">3 dingen uit al uw apps die vandaag aandacht vragen</span>
+      </div>
+      <sc-for list="{{ first }}" as="f" hint-placeholder-count="3">
+        <a href="{{ f.href }}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+          <span style="{{ f.mark }}"></span>
+          <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px">{{ f.title }}</strong><span style="font-size: 14px; color: #5e6168">{{ f.why }}</span></span>
+          <span style="padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">{{ f.app }}</span>
+          <span style="display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 14px; font-weight: 600">{{ f.action }}</span>
+        </a>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="lp-werk" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="lp-werk" style="margin: 0; font-size: 18px; font-weight: 700">Mijn werk</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <a href="{{ a.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; color: #1b1c1d; text-decoration: none">
+            <span style="display: flex; align-items: center; gap: 10px">
+              <span style="width: 36px; height: 36px; border-radius: 8px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="{{ a.icon }}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; line-height: 1.2"><strong style="font-size: 16px">{{ a.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ a.what }}</span></span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ a.count }}</strong><span style="font-size: 14px; color: #5e6168">{{ a.unit }}</span></span>
+            <span style="{{ a.noteStyle }}">{{ a.note }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+      <section aria-labelledby="lp-agenda" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lp-agenda" style="margin: 0; font-size: 18px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 14px; font-weight: 600">Open agenda</a></div>
+        <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="3">
+          <div style="display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid #eef0f3">
+            <span style="flex: 0 0 92px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums">{{ e.time }}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">{{ e.title }}</span><span style="font-size: 13px; color: #5e6168">{{ e.where }}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-recent" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-recent" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Verder waar u was</h2>
+        <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+          <a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3669a5" style="flex: none"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg>
+          </a>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-org" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-org" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Van de organisatie</h2>
+        <sc-for list="{{ org }}" as="o" hint-placeholder-count="3">
+          <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600">{{ o.title }}</span><span style="font-size: 13px; color: #5e6168">{{ o.meta }}</span></a>
+        </sc-for>
+      </section>
+    </div>
+
+    <section aria-labelledby="lp-apps" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="lp-apps" style="margin: 0; font-size: 18px; font-weight: 700">Alle apps</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="8">
+          <li><a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 22px; background: #ffffff; border: 1px solid #e4e6ea; color: #1b1c1d; font-size: 15px; font-weight: 500; text-decoration: none">{{ t }}</a></li>
+        </sc-for>
+      </ul>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1478}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mark = (c) => 'width: 4px; align-self: stretch; min-height: 40px; border-radius: 2px; background: ' + c;
+    const first = [
+      { title: 'Parkeervergunningen binnenstad', why: 'De beslistermijn loopt vandaag af', app: 'dossiq', action: 'Zaak openen', href: 'DqZaak.dc.html', mark: mark('#cc0000') },
+      { title: 'Vraag van M. de Graaf over afvalpas', why: 'Wacht 3 dagen op een antwoord', app: 'pipelinq', action: 'Beantwoorden', href: 'PqDashboard.dc.html', mark: mark('#e0a030') },
+      { title: 'Collegevoorstel Havenpark', why: 'Uw paraaf is nodig voor de vergadering van dinsdag', app: 'decidiq', action: 'Paraferen', href: 'DcDashboard.dc.html', mark: mark('#e0a030') }
+    ];
+    const note = (c, w) => 'font-size: 14px; color: ' + c + '; font-weight: ' + (w || 500);
+    const apps = [
+      { name: 'dossiq', what: 'Zaken', count: '14', unit: 'open zaken', note: '3 termijnen deze week', noteStyle: note('#a30000', 600), href: 'DqDashboard.dc.html', icon: 'M3 7h18v13H3zM8 7V4h8v3M3 12h18' },
+      { name: 'pipelinq', what: 'Klantcontact', count: '5', unit: 'open vragen', note: '2 wachten op u', noteStyle: note('#5e6168'), href: 'PqDashboard.dc.html', icon: 'M4 5h16v11H8l-4 4z' },
+      { name: 'decidiq', what: 'Besluitvorming', count: '2', unit: 'te paraferen', note: 'college op dinsdag 6 oktober', noteStyle: note('#5e6168'), href: 'DcDashboard.dc.html', icon: 'M14 4l6 6M11 7l6 6M4 20l8-8M3 21h8' },
+      { name: 'Taken', what: 'Uit alle apps', count: '4', unit: 'taken', note: '1 voor vandaag', noteStyle: note('#5e6168'), href: 'DqDashboard.dc.html', icon: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2' }
+    ];
+    const agenda = [
+      { time: '09.30 - 10.00', title: 'Weekstart team Woo en informatie', where: 'Stadskantoor, kamer 2.14' },
+      { time: '13.00 - 13.30', title: 'Bellen met M. de Graaf over ID-bewijs', where: 'Telefonisch' },
+      { time: '15.00 - 16.00', title: 'Voorbereiding collegevergadering', where: 'Online' }
+    ];
+    const recent = [
+      { title: 'Verlichting fietspad Lindelaan', meta: 'dossiq · zaak 2026-0082 · 10 minuten geleden' },
+      { title: 'Besluit Woo-verzoek jeugdzorg.docx', meta: 'Bestanden · vanochtend' },
+      { title: 'Collegevoorstel Havenpark', meta: 'decidiq · vrijdag' },
+      { title: 'Sanne de Vries', meta: 'pipelinq · contact · vrijdag' }
+    ];
+    const org = [
+      { title: 'Nieuwe werkwijze Woo-verzoeken vanaf 1 november', meta: 'Team informatie · vandaag' },
+      { title: 'Stadskantoor zaterdag open: rooster staat klaar', meta: 'Publiekszaken · vrijdag' },
+      { title: 'Training toegankelijk schrijven, nog 4 plekken', meta: 'learniq · donderdag' }
+    ];
+    const tiles = ['dossiq', 'pipelinq', 'decidiq', 'learniq', 'Bestanden', 'Agenda', 'Mail', 'Talk', 'Contacten'];
+    return { first, apps, agenda, recent, org, tiles };
+  }
+}
+</script>
+</body>
+</html>

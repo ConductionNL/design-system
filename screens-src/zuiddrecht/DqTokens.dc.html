@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Werkplek-tokens Zuiddrecht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 100%">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 64px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 860px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700">Werkplek-laag: Zuiddrecht op Cunningham</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #3d4047">Voor medewerkers gebruikt thematiq de Cunningham-componenten (La Suite) met Zuiddrecht-tokens. Licht en rustig: kleur betekent iets. Blauw is een actie, rood is urgentie of uw plek in het menu.</p>
+    </div>
+
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+      <sc-for list="{{ surfaces }}" as="s" hint-placeholder-count="4">
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div style="{{ s.chip }}"></div>
+          <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 3px">
+            <strong style="font-size: 15px">{{ s.name }}</strong>
+            <span style="font-size: 13px; font-family: ui-monospace, Menlo, monospace">{{ s.value }}</span>
+            <span style="font-size: 13px; color: #5e6168">{{ s.token }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px">
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 700">Statuskleuren</h2>
+        <p style="margin: 0; font-size: 14px; color: #5e6168">Zachte vlakken met donkere tekst. Elke tekst haalt minstens 4,5 : 1.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{ statuses }}" as="p" hint-placeholder-count="6">
+            <span style="{{ p.style }}">{{ p.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 700">Vorm</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end">
+          <span style="width: 72px; height: 44px; border-radius: 4px; background: #eaf0f7; display: flex; align-items: center; justify-content: center; font-size: 12px">4 klein</span>
+          <span style="width: 72px; height: 44px; border-radius: 8px; background: #eaf0f7; display: flex; align-items: center; justify-content: center; font-size: 12px">8 knop</span>
+          <span style="width: 72px; height: 56px; border-radius: 12px; background: #eaf0f7; display: flex; align-items: center; justify-content: center; font-size: 12px">12 kaart</span>
+          <span style="width: 72px; height: 44px; border-radius: 22px; background: #eaf0f7; display: flex; align-items: center; justify-content: center; font-size: 12px">rond</span>
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #5e6168">Knoppen 8, kaarten 12: de schaal van Nextcloud, zodat ingebouwde apps meekleuren. Schaduw alleen op kaarten: 0 1px 2px, 4% inkt.</p>
+      </div>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px">
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 700">Knoppen en velden</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Primair</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Secundair</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 20px; background: #eaf0f7; color: #234a78; font: 600 14px 'Fira Sans', sans-serif">Zacht</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #ebb3b0; border-radius: 8px; background: #ffffff; color: #a30000; font: 600 14px 'Fira Sans', sans-serif">Verwijderen</button>
+        </div>
+        <label for="tk-v" style="font-size: 14px; font-weight: 600">Veld</label>
+        <input id="tk-v" value="Verlichting fietspad Lindelaan" style="height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; font: 400 15px 'Fira Sans', sans-serif; outline: 2px solid #3669a5; outline-offset: 1px">
+        <span style="font-size: 13px; color: #5e6168">Focus: 2 px blauwe rand, altijd zichtbaar.</span>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 700">Menu-item</h2>
+        <span style="display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: 8px; background: #fcedec; color: #a30000; font-weight: 600; font-size: 15px">Actief: rood op zachtrood</span>
+        <span style="display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: 8px; background: #f5f6f8; color: #1b1c1d; font-size: 15px">Bij aanwijzen: grijs vlak</span>
+        <span style="display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: 8px; color: #1b1c1d; font-size: 15px">Rust: geen vlak</span>
+        <h2 style="margin: 10px 0 0; font-size: 20px; font-weight: 700">Typografie</h2>
+        <span style="font-size: 28px; font-weight: 700">Paginatitel 28</span>
+        <span style="font-size: 17px; font-weight: 700">Kaarttitel 17</span>
+        <span style="font-size: 15px">Tekst 15, de standaard van Nextcloud</span>
+        <span style="font-size: 13px; color: #5e6168">Meta 13 in grijs #5E6168</span>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1261}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const chip = (bg, extra) => 'height: 72px; background: ' + bg + ';' + (extra || '');
+    const surfaces = [
+      { name: 'Werkvlak', value: '#F5F6F8', token: '--nldesign-color-background-subtle', chip: chip('#f5f6f8', ' border-bottom: 1px solid #e4e6ea;') },
+      { name: 'Kaart en zijbalk', value: '#FFFFFF', token: '--nldesign-color-background', chip: chip('#ffffff', ' border-bottom: 1px solid #e4e6ea;') },
+      { name: 'Lijn', value: '#E4E6EA', token: '--nldesign-color-border-subtle', chip: chip('#e4e6ea') },
+      { name: 'Inkt', value: '#1B1C1D (Cunningham)', token: '--nldesign-color-text', chip: chip('#1b1c1d') },
+      { name: 'Grijs tekst', value: '#5E6168 (donkerder dan Cunningham)', token: '--nldesign-color-text-muted', chip: chip('#5e6168') },
+      { name: 'Actie', value: '#3669A5', token: '--nldesign-color-primary', chip: chip('#3669a5') },
+      { name: 'Accent', value: '#CC0000', token: '--nldesign-color-accent', chip: chip('#cc0000') },
+      { name: 'Accent zacht', value: '#FCEDEC', token: '--nldesign-color-accent-light', chip: chip('#fcedec', ' border-bottom: 1px solid #e4e6ea;') }
+    ];
+    const pill = (bg, fg) => 'padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const statuses = [
+      { label: 'Ontvangen', style: pill('#eaf0f7', '#234a78') }, { label: 'In behandeling', style: pill('#e8e6f6', '#4a3f8f') },
+      { label: 'Wacht op inwoner', style: pill('#fff4de', '#7a4f00') }, { label: 'Besluit', style: pill('#e3f1f3', '#1d5e66') },
+      { label: 'Afgehandeld', style: pill('#e7f3ea', '#1e6b2a') }, { label: 'Termijn verlopen', style: pill('#fcedec', '#a30000') }
+    ];
+    return { surfaces, statuses };
+  }
+}
+</script>
+</body>
+</html>

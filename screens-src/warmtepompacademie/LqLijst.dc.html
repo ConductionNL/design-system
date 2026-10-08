@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: deelnemers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 800px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Planning" primary="Nieuwe cursusdag" active="Deelnemers" groups="{{ nav }}" hint-size="264px,1060px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Sophie van Dam" role="Planner" initials="SD" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 30px; font-weight: 700">Deelnemers</h1><span style="font-size: 15px; color: #5e6168">86 deelnemers met een cursusdag in oktober of november</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Barlow', sans-serif; color: #1b1c1d">Exporteren</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #0b6e7a; color: #ffffff; font: 600 14px 'Barlow', sans-serif">Deelnemer inschrijven</button>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="5">
+          <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+        </sc-for>
+        <span style="flex: 1"></span>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 500 14px 'Barlow', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filters: cursus, werkgever</button>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); overflow: hidden">
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <th scope="col" style="padding: 12px 16px; width: 28px"><input type="checkbox" aria-label="Alle deelnemers selecteren" style="width: 18px; height: 18px; accent-color: #0b6e7a"></th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Deelnemer</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Cursus</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600"><button type="button" style="border: 0; background: transparent; padding: 0; min-height: 24px; font: 600 14px 'Barlow', sans-serif; color: #1b1c1d; display: flex; gap: 4px; align-items: center">Cursusdag <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 15l6-6 6 6"></path></svg></button></th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Status</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Certificaat geldig tot</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                <tr style="border-top: 1px solid #eef0f3">
+                  <td style="padding: 12px 16px"><input type="checkbox" aria-label="{{ r.selectLabel }}" style="width: 18px; height: 18px; accent-color: #0b6e7a"></td>
+                  <td style="padding: 12px 16px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #e3f1f3; color: #084f58; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ r.initials }}</span><span style="display: flex; flex-direction: column; gap: 1px"><a href="LqDetail.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.who }}</a><span style="font-size: 13px; color: #5e6168">{{ r.employer }}</span></span></span></td>
+                  <td style="padding: 12px 16px">{{ r.course }}</td>
+                  <td style="padding: 12px 16px; white-space: nowrap; font-variant-numeric: tabular-nums">{{ r.day }}</td>
+                  <td style="padding: 12px 16px"><span style="{{ r.statusStyle }}">{{ r.status }}</span></td>
+                  <td style="padding: 12px 16px"><span style="{{ r.certStyle }}">{{ r.cert }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+          <span>1 tot 8 van 86</span>
+          <nav aria-label="Paginering" style="display: flex; gap: 6px">
+            <a href="#" aria-current="page" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #0b6e7a; color: #ffffff; font-weight: 600; text-decoration: none">1</a>
+            <a href="#" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">2</a>
+            <a href="#" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">3</a>
+            <a href="#" style="height: 40px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">Volgende</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":855}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Inschrijvingen', 'inbox', 5], ['Berichten', 'chat', 2]] },
+      { title: 'Planning', items: [['Cursusdagen', 'board'], ['Weekrooster', 'cal'], ['Trainers en lokalen', 'room']] },
+      { title: 'Mensen', items: [['Deelnemers', 'people'], ['Werkgevers', 'org']] },
+      { title: 'Afronden', items: [['Certificaten', 'award'], ['Facturen', 'doc']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const S = {
+      'Ontvangen': pill('#e3f1f3', '#084f58'), 'Loopt nu': pill('#e8e6f6', '#4a3f8f'), 'Wacht op werkgever': pill('#fff4de', '#7a4f00'),
+      'Bevestigd': pill('#e7f3ea', '#1e6b2a'), 'Certificaat verlopen': pill('#fcedec', '#a30000')
+    };
+    const certS = (lvl) => 'white-space: nowrap; font-variant-numeric: tabular-nums; ' + (lvl === 'late' ? 'font-weight: 700; color: #a30000' : lvl === 'soon' ? 'font-weight: 600; color: #7a4f00' : lvl === 'none' ? 'color: #5e6168' : 'color: #1b1c1d');
+    const data = [
+      ['MK', 'Mehmet Kaya', 'Bakker Techniek BV', 'Storingen zoeken, dag 1 van 2', 'vandaag', 'Loopt nu', '14 feb 2029', 'ok'],
+      ['LB', 'Lisa van den Berg', 'De Groot Klimaat', 'Propaan (R290): veilig werken', 'wo 7 okt', 'Bevestigd', '2 jun 2028', 'ok'],
+      ['YA', 'Youssef El Amrani', 'Jansen Installatietechniek BV', 'F-gassen: herhaling en examen', 'do 8 okt', 'Wacht op werkgever', '30 nov 2026', 'soon'],
+      ['TV', 'Tom Verbeek', 'Jansen Installatietechniek BV', 'F-gassen: herhaling en examen', 'do 8 okt', 'Bevestigd', '30 nov 2026', 'soon'],
+      ['SK', 'Sanne Kok', 'Jansen Installatietechniek BV', 'F-gassen: herhaling en examen', 'do 8 okt', 'Bevestigd', '30 nov 2026', 'soon'],
+      ['DV', 'Daan Visser', 'Jansen Installatietechniek BV', 'Warmtepompen installeren: basis', 'di 20 okt', 'Bevestigd', 'Nog geen certificaat', 'none'],
+      ['RH', 'Ruben Hoekstra', 'Zelfstandig', 'F-gassen: herhaling en examen', 'do 22 okt', 'Certificaat verlopen', 'Verlopen op 3 okt 2026', 'late'],
+      ['PR', 'Priya Ramdin', 'Yilmaz Installaties', 'Hybride warmtepomp', 'do 22 okt', 'Ontvangen', 'Nog geen certificaat', 'none']
+    ];
+    const rows = data.map(([initials, who, employer, course, day, status, cert, lvl]) => ({ initials, who, employer, course, day, status, statusStyle: S[status], cert, certStyle: certS(lvl), selectLabel: 'Selecteer ' + who }));
+    const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 20px; font: 600 14px \'Barlow\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #f0f1f3; color: #3d4047;');
+    const views = [['Alles', 86, true], ['Deze week', 28, false], ['Te bevestigen', 9, false], ['Gegevens ontbreken', 2, false], ['Certificaat verloopt', 14, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    return { nav, rows, views };
+  }
+}
+</script>
+</body>
+</html>

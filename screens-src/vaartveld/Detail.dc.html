@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Vaartveld: wiskunde A</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto">
+  <div style="max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Cijfers" hint-size="100%,700px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 17px; color: #4a4a4a">Cijfers · periode 1 · meneer Demir</span>
+          <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 48px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em">Wiskunde A</h1>
+        </div>
+        <a href="MijnLijst.dc.html" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 16px; border: 2px solid #1f4fd8; border-radius: 6px; font-weight: 600; font-size: 17px; text-decoration: none">Terug naar alle cijfers</a>
+      </div>
+
+      <section aria-labelledby="d-stand" style="display: flex; flex-wrap: wrap; border: 1px solid #d3d8df; border-radius: 10px; overflow: hidden">
+        <div style="flex: 1 1 220px; padding: 24px 28px; background: #f4f6f9; display: flex; flex-direction: column; gap: 8px; justify-content: center">
+          <h2 id="d-stand" style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #4a4a4a">Je gemiddelde</h2>
+          <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -0.02em">5,2</strong>
+          <span style="align-self: flex-start; padding: 4px 12px; border-radius: 14px; background: #fff4de; color: #7a4f00; font-size: 15px; font-weight: 600">Onder 5,5</span>
+        </div>
+        <div style="flex: 3 1 380px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px">
+          <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 22px; font-weight: 700; line-height: 1.3">Met een 6,0 voor de volgende toets sta je weer voldoende</strong>
+          <p style="margin: 0; font-size: 17px; line-height: 1.5">De toets over hoofdstuk 3 en 4 is op dinsdag 10 november en telt 3 keer mee.</p>
+          <ul aria-label="Wat je gemiddelde wordt" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)); gap: 10px">
+            <sc-for list="{{ scenarios }}" as="s" hint-placeholder-count="3">
+              <li style="{{ s.box }}"><span style="font-size: 15px">Haal je een <strong>{{ s.test }}</strong></span><span style="font-size: 17px">dan sta je een <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700">{{ s.avg }}</strong></span></li>
+            </sc-for>
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="d-cijfers" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="d-cijfers" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Je cijfers</h2>
+        <div style="overflow-x: auto; border: 1px solid #d3d8df; border-radius: 10px">
+          <table style="border-collapse: collapse; width: 100%; font-size: 17px; min-width: 520px">
+            <thead><tr style="background: #f4f6f9; text-align: left"><th scope="col" style="padding: 12px 20px">Wat</th><th scope="col" style="padding: 12px 20px">Datum</th><th scope="col" style="padding: 12px 20px">Telt mee</th><th scope="col" style="padding: 12px 20px; text-align: right">Cijfer</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ marks }}" as="m" hint-placeholder-count="3">
+                <tr style="border-top: 1px solid #d3d8df"><th scope="row" style="padding: 13px 20px; text-align: left; font-weight: 600">{{ m.what }}</th><td style="padding: 13px 20px">{{ m.date }}</td><td style="padding: 13px 20px">{{ m.weight }}</td><td style="padding: 13px 20px; text-align: right"><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">{{ m.grade }}</strong></td></tr>
+              </sc-for>
+              <tr style="border-top: 2px solid #1a1a1a"><th scope="row" colspan="3" style="padding: 13px 20px; text-align: left; font-weight: 700">Gemiddelde</th><td style="padding: 13px 20px; text-align: right"><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums">5,2</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4a4a4a">Zo rekenen we: 6,1 plus 3 keer 4,7 plus 5,8 is samen 26,0. Gedeeld door 5 is dat 5,2.</p>
+      </section>
+
+      <section aria-labelledby="d-straks" style="display: flex; flex-direction: column; gap: 6px">
+        <h2 id="d-straks" style="margin: 0 0 8px; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Wat komt eraan</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ coming }}" as="c" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: center; padding: 14px 0; border-bottom: 1px solid #d3d8df">
+              <span style="flex: 0 0 190px; font-size: 17px; font-weight: 600">{{ c.when }}</span>
+              <span style="flex: 1 1 260px; font-size: 17px; line-height: 1.45">{{ c.what }}</span>
+              <span style="{{ c.pill }}">{{ c.kind }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="d-hulp" style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding: 24px 28px; border-radius: 10px; background: #e8eefc">
+        <div style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="d-hulp" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 24px; font-weight: 700; color: #14338f">Steunles wiskunde</h2>
+          <span style="font-size: 17px; line-height: 1.5">Elke dinsdag het 8e uur, van 15.20 tot 16.10 uur in lokaal 2.14. Meneer Demir legt uit wat je lastig vindt. Voor morgen zijn er nog 6 plekken.</span>
+        </div>
+        <a href="#" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 6px; background: #1f4fd8; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">Inschrijven voor dinsdag 6 oktober</a>
+      </section>
+
+      <p style="margin: 0; font-size: 18px; line-height: 1.5">Een vraag over een cijfer of over de stof? <a href="Berichten.dc.html" style="font-weight: 600">Stuur meneer Demir een bericht</a></p>
+    </main>
+  </div>
+  </div>
+  <dc-import name="Voet" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1895}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const box = (on) => 'display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 6px; ' + (on ? 'background: #e8eefc; color: #14338f' : 'background: #f4f6f9; color: #1a1a1a');
+    const scenarios = [
+      { test: '5,0', avg: '5,1', box: box(false) },
+      { test: '6,0', avg: '5,5', box: box(true) },
+      { test: '7,0', avg: '5,9', box: box(false) }
+    ];
+    const marks = [
+      { what: 'SO hoofdstuk 1', date: 'donderdag 10 september', weight: '1 keer', grade: '6,1' },
+      { what: 'Toets hoofdstuk 1 en 2', date: 'donderdag 24 september', weight: '3 keer', grade: '4,7' },
+      { what: 'SO hoofdstuk 3', date: 'donderdag 1 oktober', weight: '1 keer', grade: '5,8' }
+    ];
+    const pill = (bg, fg) => 'flex: none; padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const coming = [
+      { when: 'Vandaag, 2e uur', what: 'Paragraaf 3.2, opgave 14 tot en met 22', kind: 'Huiswerk', pill: pill('#e8eefc', '#14338f') },
+      { when: 'Donderdag 8 oktober', what: 'Paragraaf 3.3, opgave 23 tot en met 31', kind: 'Huiswerk', pill: pill('#e8eefc', '#14338f') },
+      { when: 'Dinsdag 10 november', what: 'Toets hoofdstuk 3 en 4, in de toetsweek. Telt 3 keer mee.', kind: 'Toets', pill: pill('#e8e6f6', '#4a3f8f') }
+    ];
+    return { scenarios, marks, coming, crumbs: [{ label: 'Home' }, { label: 'Mijn Vaartveld', href: 'MijnOverzicht.dc.html' }, { label: 'Cijfers', href: 'MijnLijst.dc.html' }, { label: 'Wiskunde A' }] };
+  }
+}
+</script>
+</body>
+</html>

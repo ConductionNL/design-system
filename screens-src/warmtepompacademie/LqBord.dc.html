@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: cursusdagen per status</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 800px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Planning" primary="Nieuwe cursusdag" active="Cursusdagen" groups="{{ nav }}" hint-size="264px,1000px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Sophie van Dam" role="Planner" initials="SD" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px; max-width: 720px"><h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 30px; font-weight: 700">Cursusdagen</h1><span style="font-size: 15px; line-height: 1.45; color: #5e6168">Een dag schuift vanzelf door als het minimum is gehaald of de dag voorbij is. Slepen kan ook. Met het toetsenbord: spatie om op te pakken, pijltjes om te verplaatsen.</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px">Periode
+            <select style="height: 40px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 500 14px 'Barlow', sans-serif"><option>Oktober en november</option><option>Deze week</option></select>
+          </label>
+          <div role="group" aria-label="Weergave" style="display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: #eceef1">
+            <button type="button" aria-pressed="true" style="height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Barlow', sans-serif; box-shadow: 0 1px 2px rgba(27,28,29,0.12)">Bord</button>
+            <button type="button" aria-pressed="false" style="height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent; color: #3d4047; font: 600 14px 'Barlow', sans-serif">Kalender</button>
+          </div>
+        </div>
+      </div>
+      <div style="overflow-x: auto">
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(250px, 1fr)); gap: 16px; min-width: 1060px">
+          <sc-for list="{{ cols }}" as="c" hint-placeholder-count="4">
+            <section style="background: #eceef1; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <h2 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><span style="{{ c.dot }}"></span>{{ c.title }}<span style="margin-left: auto; padding: 1px 8px; border-radius: 10px; background: #ffffff; font-size: 12px; color: #3d4047">{{ c.count }}</span></h2>
+                <span style="font-size: 13px; color: #3d4047">{{ c.sub }}</span>
+              </div>
+              <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="3">
+                <a href="LqLijst.dc.html" style="{{ k.box }}">
+                  <span style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><span style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 17px; font-weight: 700; color: #1b1c1d">{{ k.date }}</span><span style="font-size: 12px; color: #5e6168">{{ k.room }}</span></span>
+                  <strong style="font-size: 15px; font-weight: 600; color: #1b1c1d; line-height: 1.3">{{ k.title }}</strong>
+                  <span aria-hidden="true" style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ k.bar }}"></span></span>
+                  <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="{{ k.noteStyle }}">{{ k.note }}</span><span title="{{ k.trainer }}" style="width: 28px; height: 28px; flex: none; border-radius: 14px; background: #e3f1f3; color: #084f58; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ k.owner }}</span></span>
+                </a>
+              </sc-for>
+            </section>
+          </sc-for>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":821}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Inschrijvingen', 'inbox', 5], ['Berichten', 'chat', 2]] },
+      { title: 'Planning', items: [['Cursusdagen', 'board'], ['Weekrooster', 'cal'], ['Trainers en lokalen', 'room']] },
+      { title: 'Mensen', items: [['Deelnemers', 'people'], ['Werkgevers', 'org']] },
+      { title: 'Afronden', items: [['Certificaten', 'award'], ['Facturen', 'doc']] }
+    ];
+    const dot = (c) => 'width: 10px; height: 10px; border-radius: 5px; background: ' + c;
+    const box = (late) => 'display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 10px; background: #ffffff; text-decoration: none; box-shadow: 0 1px 2px rgba(27,28,29,0.04); border: 1px solid ' + (late ? '#a30000' : '#e4e6ea');
+    const noteS = (lvl) => 'font-size: 13px; line-height: 1.35; ' + (lvl === 'late' ? 'font-weight: 700; color: #a30000' : lvl === 'full' ? 'font-weight: 600; color: #1e6b2a' : 'color: #5e6168');
+    const card = (date, room, title, n, max, note, lvl, owner, trainer) => ({ date, room, title, note, owner, trainer,
+      noteStyle: noteS(lvl), box: box(lvl === 'late'),
+      bar: 'display: block; height: 6px; width: ' + Math.round(n / max * 100) + '%; background: ' + (lvl === 'late' ? '#a30000' : '#0b6e7a') });
+    const cols = [
+      { title: 'Open voor inschrijving', sub: 'Minimum nog niet gehaald', dot: dot('#084f58'), cards: [
+        card('do 22 okt', 'praktijkhal', 'Hybride warmtepomp installeren en inregelen', 4, 12, '4 van 12 · te weinig, beslis voor 8 okt', 'late', 'FO', 'Fatima Ouali'),
+        card('do 22 okt', 'lokaal 2 en hal', 'F-gassen: herhaling en examen', 5, 12, '5 van 12 · nog 1 nodig', 'ok', 'HD', 'Henk Dekker'),
+        card('di 3 nov', 'praktijkhal', 'Lucht-water warmtepomp: ontwerp en inbedrijfstelling', 5, 12, '5 van 12 · 2 te bevestigen', 'ok', 'HD', 'Henk Dekker')
+      ] },
+      { title: 'Gaat door', sub: 'Minimum gehaald, plekken vrij', dot: dot('#1e6b2a'), cards: [
+        card('do 15 okt', 'praktijkhal', 'Waterzijdig inregelen', 6, 12, '6 van 12', 'ok', 'FO', 'Fatima Ouali'),
+        card('di 20 okt', 'lokaal 1 en hal', 'Warmtepompen installeren: basis', 9, 12, '9 van 12 · aanvraag voor 4', 'ok', 'FO', 'Fatima Ouali'),
+        card('di 27 okt', 'praktijkhal', 'Storingen zoeken aan warmtepompen', 7, 12, '7 van 12', 'ok', 'HD', 'Henk Dekker')
+      ] },
+      { title: 'Deze week', sub: 'Namen en gegevens sluiten', dot: dot('#4a3f8f'), cards: [
+        card('ma 5 okt', 'praktijkhal', 'Storingen zoeken aan warmtepompen', 9, 12, '9 van 12 · loopt nu', 'ok', 'HD', 'Henk Dekker'),
+        card('wo 7 okt', 'praktijkhal', 'Propaan (R290): veilig werken', 8, 8, '8 van 8 · vol', 'full', 'FO', 'Fatima Ouali'),
+        card('do 8 okt', 'lokaal 2 en hal', 'F-gassen: herhaling en examen', 11, 12, '11 van 12 · 1 geboortedatum mist', 'ok', 'HD', 'Henk Dekker')
+      ] },
+      { title: 'Afronden', sub: 'Uitslag, certificaat en factuur', dot: dot('#7a4f00'), cards: [
+        card('do 1 okt', 'praktijkhal', 'Waterzijdig inregelen', 10, 10, '10 bewijzen van deelname verstuurd', 'full', 'FO', 'Fatima Ouali'),
+        card('vr 2 okt', 'bij Bakker Techniek', 'Hybride warmtepomp, incompany', 7, 7, '7 beoordelingen wachten op de trainer', 'ok', 'HD', 'Henk Dekker')
+      ] }
+    ].map((c) => ({ ...c, count: c.cards.length }));
+    return { nav, cols };
+  }
+}
+</script>
+</body>
+</html>

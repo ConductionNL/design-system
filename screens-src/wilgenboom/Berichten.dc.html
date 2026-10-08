@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Wilgenboom: berichten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,200px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Berichten" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Berichten</h1>
+        <a href="#nieuw" style="display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 20px; border-radius: 10px; background: #2f6b4a; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nieuw bericht</a>
+      </div>
+      <div role="group" aria-label="Toon berichten over" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #d3d8df">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <button type="button" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+        <sc-for list="{{ items }}" as="m" hint-placeholder-count="4">
+          <li style="{{ m.box }}">
+            <div style="display: flex; gap: 14px; align-items: flex-start">
+              <span style="{{ m.avatar }}">{{ m.initials }}</span>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+                <div style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center">
+                  <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ true }}"><span style="padding: 2px 10px; border-radius: 12px; background: #f5b82e; color: #1a1a1a; font-size: 14px; font-weight: 700">Nieuw</span></sc-if>
+                  <span style="font-size: 16px; font-weight: 600">{{ m.from }}</span>
+                  <span style="font-size: 15px; color: #4a4a4a">{{ m.date }} · over {{ m.child }}</span>
+                </div>
+                <h2 style="margin: 0; font-size: 20px; font-weight: 700">{{ m.title }}</h2>
+                <p style="margin: 0; font-size: 17px; line-height: 1.6">{{ m.text }}</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 2px">
+                  <a href="{{ m.open }}" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border: 2px solid #2f6b4a; border-radius: 10px; background: #ffffff; font-weight: 600; font-size: 16px; text-decoration: none">{{ m.action }}</a>
+                  <sc-if value="{{ m.canReply }}" hint-placeholder-val="{{ true }}"><a href="#nieuw" style="display: inline-flex; align-items: center; height: 44px; padding: 0 8px; font-weight: 600; font-size: 16px">Antwoorden</a></sc-if>
+                </div>
+              </div>
+            </div>
+          </li>
+        </sc-for>
+      </ul>
+      <section id="nieuw" aria-labelledby="nieuw-kop" style="display: flex; flex-direction: column; gap: 14px; padding: 26px; background: #f4f6f9; border-radius: 14px">
+        <h2 id="nieuw-kop" style="margin: 0; font-size: 22px; font-weight: 700">Een bericht aan de leerkracht</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="aan" style="font-size: 17px; font-weight: 600">Aan</label>
+          <select id="aan" style="height: 48px; max-width: 420px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px 'Lexend', sans-serif; background: #ffffff"><option>Meester Daan, over Vera (groep 7)</option><option>Juf Esra, over Sami (groep 4)</option></select>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="tekst" style="font-size: 17px; font-weight: 600">Uw bericht</label>
+          <span id="tekst-hint" style="font-size: 15px; color: #4a4a4a">De leerkracht antwoordt meestal binnen twee schooldagen. Is het dringend? Bel de school.</span>
+          <textarea id="tekst" rows="3" aria-describedby="tekst-hint" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px 'Lexend', sans-serif; resize: vertical"></textarea>
+        </div>
+        <button type="button" style="align-self: flex-start; height: 48px; padding: 0 22px; border: 0; border-radius: 10px; background: #2f6b4a; color: #ffffff; font: 600 17px 'Lexend', sans-serif">Bericht sturen</button>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2058}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tab = (on) => 'height: 48px; padding: 0 18px; border: 0; background: transparent; font: ' + (on ? '700' : '500') + " 17px 'Lexend', sans-serif; color: #1a1a1a; " + (on ? 'box-shadow: inset 0 -5px 0 #f5b82e;' : '');
+    const tabs = [['Alle berichten', true], ['Over Vera', false], ['Over Sami', false]].map(([label, on]) => ({ label, pressed: on ? 'true' : 'false', style: tab(on) }));
+    const box = (unread) => 'padding: 22px 24px; border-radius: 14px; border: 1px solid ' + (unread ? '#ecd391; background: #fdf3d7' : '#d3d8df; background: #ffffff');
+    const avatar = (school) => 'flex: none; width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; ' + (school ? 'background: #1f4a33; color: #ffffff' : 'background: #e8f1eb; color: #1f4a33');
+    const items = [
+      { unread: true, from: 'Meester Daan', initials: 'MD', avatar: avatar(false), date: 'vandaag 8.40 uur', child: 'Vera', title: 'De gesprekstijd is bevestigd', text: 'Het oudergesprek over Vera is op donderdag 29 oktober om 18.00 uur, in het lokaal van groep 7. Tot dan!', open: 'Detail.dc.html', action: 'Bekijk de afspraak', canReply: true, box: box(true) },
+      { unread: true, from: 'Juf Esra', initials: 'JE', avatar: avatar(false), date: 'vandaag 8.12 uur', child: 'Sami', title: 'Beterschap voor Sami', text: 'Ik heb uw melding gezien. Sami mist vandaag de rekentoets. Die haalt hij in als hij weer beter is, daar hoeft u niets voor te doen.', open: 'MijnLijst.dc.html', action: 'Bekijk de melding', canReply: true, box: box(true) },
+      { unread: false, from: 'De Wilgenboom', initials: 'W', avatar: avatar(true), date: '1 oktober', child: 'Vera', title: 'Uw afwezigheidsmelding is goedgekeurd', text: 'Meester Daan heeft de melding voor donderdag 1 oktober goedgekeurd. Reden: ziek.', open: 'MijnLijst.dc.html', action: 'Bekijk de melding', canReply: false, box: box(false) },
+      { unread: false, from: 'Meester Daan', initials: 'MD', avatar: avatar(false), date: '28 september', child: 'Vera', title: 'Antwoord op uw vraag over het huiswerk', text: 'Vera hoeft de topografie niet uit het hoofd te kennen voor donderdag. Oefenen met de kaart is genoeg.', open: 'Detail.dc.html', action: 'Lees het hele gesprek', canReply: true, box: box(false) }
+    ];
+    return { tabs, items, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn academie: inschrijvingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,190px"></dc-import>
+  <div style="flex: 1; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 36px 24px 56px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Inschrijvingen" hint-size="100%,640px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 16px">
+        <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 48px; font-weight: 700; line-height: 1.1">Inschrijvingen</h1>
+        <a href="Zoeken.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 3px; background: #0b6e7a; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nieuwe inschrijving</a>
+      </div>
+      <div role="tablist" aria-label="Inschrijvingen filteren" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid #d3d8df">
+        <button type="button" role="tab" aria-selected="true" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 700 17px 'Barlow', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #d9480f">Komend (3)</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 600 17px 'Barlow', sans-serif; color: #0b6e7a">Afgerond (1)</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 18px; border: 0; background: transparent; font: 600 17px 'Barlow', sans-serif; color: #0b6e7a">Geannuleerd (0)</button>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="3">
+          <li>
+            <a href="Detail.dc.html" style="display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; padding: 20px 24px; border: 1px solid #d3d8df; border-radius: 6px; color: #1a1a1a; text-decoration: none">
+              <span style="flex: none; width: 64px; height: 64px; border-radius: 3px; background: #e3f1f3; color: #084f58; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1"><strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 30px; font-weight: 700">{{ r.day }}</strong><span style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em">{{ r.month }}</span></span>
+              <span style="flex: 999 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 15px; color: #4a4a4a">{{ r.number }} · {{ r.when }}</span>
+                <span style="font-size: 21px; font-weight: 600; line-height: 1.25; color: #0b6e7a; text-decoration: underline">{{ r.title }}</span>
+                <span style="font-size: 17px">{{ r.who }}</span>
+              </span>
+              <span style="flex: 1 1 210px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+                <span style="{{ r.tag }}">{{ r.status }}</span>
+                <span style="font-size: 15px; line-height: 1.4; color: #4a4a4a">{{ r.note }}</span>
+              </span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0b6e7a" stroke-width="2.4" stroke-linecap="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+            </a>
+          </li>
+        </sc-for>
+      </ul>
+      <div role="note" style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 3px; background: #e3f1f3; border: 1px solid #a9d0d5">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#084f58" stroke-width="2.2" stroke-linecap="round" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>
+        <span style="font-size: 17px; line-height: 1.5">Kan een monteur niet? Open de inschrijving en stuur een collega in zijn plaats. Dat kan tot 12.00 uur op de werkdag voor de cursus.</span>
+      </div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1273}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tag = (bg, fg) => 'padding: 3px 10px; border-radius: 3px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const rows = [
+      { day: '8', month: 'okt', number: 'I-2026-0412', when: 'donderdag 8 oktober', title: 'F-gassen: herhaling en examen', who: 'Tom Verbeek, Youssef El Amrani, Sanne Kok', status: 'Wacht op u', tag: tag('#fff4de', '#7a4f00'), note: 'Geboortedatum van 1 deelnemer ontbreekt' },
+      { day: '20', month: 'okt', number: 'I-2026-0425', when: 'dinsdag 20 en woensdag 21 oktober', title: 'Warmtepompen installeren: basis', who: 'Daan Visser', status: 'Bevestigd', tag: tag('#e7f3ea', '#1e6b2a'), note: 'De plek staat vast' },
+      { day: '3', month: 'nov', number: 'I-2026-0431', when: '3, 4 en 10 november', title: 'Lucht-water warmtepomp: ontwerp en inbedrijfstelling', who: 'Tom Verbeek, Sanne Kok', status: 'Ontvangen', tag: tag('#e3f1f3', '#084f58'), note: 'Bevestiging uiterlijk dinsdag 6 oktober' }
+    ];
+    return { rows, crumbs: [{ label: 'Home' }, { label: 'Mijn academie', href: 'MijnOverzicht.dc.html' }, { label: 'Inschrijvingen' }] };
+  }
+}
+</script>
+</body>
+</html>

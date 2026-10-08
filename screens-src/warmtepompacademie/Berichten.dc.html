@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn academie: berichten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,190px"></dc-import>
+  <div style="flex: 1; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 32px 24px 44px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Berichten" hint-size="100%,640px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px">
+        <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 48px; font-weight: 700; line-height: 1.1">Berichten</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: center">
+          <button type="button" style="height: 44px; padding: 0; border: 0; background: transparent; color: #0b6e7a; font: 600 17px 'Barlow', sans-serif; text-decoration: underline">Alles als gelezen markeren</button>
+          <a href="#" style="display: inline-flex; align-items: center; height: 44px; font-size: 17px; font-weight: 600">Meldingen instellen</a>
+        </div>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+        <sc-for list="{{ items }}" as="m" hint-placeholder-count="4">
+          <li style="display: flex; flex-direction: column; gap: 8px; padding: 18px 24px; border-radius: 6px; border: 1px solid #d3d8df">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center">
+              <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ true }}"><span style="padding: 2px 9px; border-radius: 3px; background: #c2410c; color: #ffffff; font-size: 14px; font-weight: 700">Nieuw</span></sc-if>
+              <h2 style="margin: 0; font-size: 20px; line-height: 1.3; flex: 999 1 320px"><a href="{{ m.open }}" style="{{ m.titleStyle }}">{{ m.title }}</a></h2>
+              <span style="font-size: 15px; color: #4a4a4a">{{ m.date }}</span>
+            </div>
+            <p style="margin: 0; font-size: 17px; line-height: 1.5">{{ m.text }}</p>
+            <span style="font-size: 15px; color: #4a4a4a">{{ m.from }} · bij <a href="{{ m.open }}">{{ m.about }}</a></span>
+          </li>
+        </sc-for>
+      </ul>
+      <p style="margin: 0; font-size: 17px"><a href="#" style="font-weight: 600">Oudere berichten tonen</a></p>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1322}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = (unread) => 'color: #0b6e7a; font-weight: ' + (unread ? '700' : '600');
+    const items = [
+      { unread: true, title: 'Nog één gegeven nodig voor het examen van donderdag', date: 'vandaag, 08.12 uur', text: 'Wij missen de geboortedatum van Youssef El Amrani. Vul hem in voor woensdag 7 oktober, 12.00 uur. Daarna sluit de aanmelding voor het examen.', from: 'Rob Maas, administratie', about: 'inschrijving I-2026-0412', open: 'Detail.dc.html' },
+      { unread: true, title: 'Wij hebben uw inschrijving ontvangen', date: 'vrijdag 2 oktober, 15.40 uur', text: 'Tom Verbeek en Sanne Kok staan genoteerd voor Lucht-water warmtepomp op 3, 4 en 10 november. U krijgt uiterlijk dinsdag 6 oktober een bevestiging.', from: 'Sophie van Dam, planning', about: 'inschrijving I-2026-0431', open: 'MijnLijst.dc.html' },
+      { unread: false, title: 'Het bewijs van deelname van Sanne Kok staat klaar', date: 'donderdag 1 oktober, 16.52 uur', text: 'Sanne Kok heeft de cursus Waterzijdig inregelen afgerond. U vindt het bewijs van deelname bij de certificaten.', from: 'Rob Maas, administratie', about: 'inschrijving I-2026-0377', open: 'Documenten.dc.html' },
+      { unread: false, title: 'Uw inschrijving is bevestigd: drie plekken op 8 oktober', date: 'woensdag 16 september, 10.05 uur', text: 'Tom Verbeek, Youssef El Amrani en Sanne Kok doen op donderdag 8 oktober de herhaling F-gassen met examen. Zij hebben zelf de praktische informatie gekregen.', from: 'Sophie van Dam, planning', about: 'inschrijving I-2026-0412', open: 'Detail.dc.html' }
+    ].map((m) => ({ ...m, titleStyle: t(m.unread) }));
+    return { items, crumbs: [{ label: 'Home' }, { label: 'Mijn academie', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
+  }
+}
+</script>
+</body>
+</html>

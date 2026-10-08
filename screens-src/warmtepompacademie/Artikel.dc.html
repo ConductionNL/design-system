@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Cursus: F-gassen, herhaling en examen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="Cursusaanbod" signed-in="{{ false }}" crumbs="{{ crumbs }}" hint-size="100%,190px"></dc-import>
+  <main id="inhoud" style="flex: 1; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 32px 24px 48px; display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: flex-start">
+    <article style="flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 26px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span style="align-self: flex-start; padding: 3px 10px; border-radius: 3px; background: #f4f6f9; font-size: 15px; font-weight: 600">Certificaat · 1 dag</span>
+        <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 48px; font-weight: 700; line-height: 1.1">F-gassen: herhaling en examen</h1>
+        <p style="margin: 0; font-size: 20px; line-height: 1.5; max-width: 720px">Verloopt uw F-gassencertificaat? In één dag frist u de theorie op en doet u het examen. Slaagt u, dan is uw certificaat weer geldig.</p>
+      </div>
+
+      <dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); border: 1px solid #d3d8df; border-radius: 6px; overflow: hidden; background: #d3d8df; gap: 1px">
+        <sc-for list="{{ specs }}" as="s" hint-placeholder-count="5">
+          <div style="background: #ffffff; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+            <dt style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #4a4a4a">{{ s.k }}</dt>
+            <dd style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 22px; font-weight: 600; line-height: 1.2">{{ s.v }}</dd>
+            <dd style="margin: 0; font-size: 15px; color: #4a4a4a">{{ s.note }}</dd>
+          </div>
+        </sc-for>
+      </dl>
+
+      <section aria-labelledby="data" style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+          <h2 id="data" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 32px; font-weight: 700">Kies een datum</h2>
+          <span style="font-size: 15px; color: #4a4a4a">Om de week op donderdag, van 08.30 tot 16.30 uur</span>
+        </div>
+        <div role="radiogroup" aria-labelledby="data" style="display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{ dates }}" as="d" hint-placeholder-count="4">
+            <label style="{{ d.box }}">
+              <input type="radio" name="datum" checked="{{ d.on }}" style="flex: none; width: 22px; height: 22px; accent-color: #0b6e7a">
+              <span style="flex: none; width: 52px; height: 52px; border-radius: 3px; background: #e3f1f3; color: #084f58; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1"><strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 24px; font-weight: 700">{{ d.day }}</strong><span style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em">{{ d.month }}</span></span>
+              <span style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 18px; font-weight: 600">{{ d.label }}</strong><span style="font-size: 15px; color: #4a4a4a">{{ d.meta }}</span></span>
+              <span style="{{ d.seatStyle }}">{{ d.seats }}</span>
+            </label>
+          </sc-for>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 32px 48px">
+        <section aria-labelledby="prog" style="display: flex; flex-direction: column; gap: 10px">
+          <h2 id="prog" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 24px; font-weight: 600">Programma</h2>
+          <ol style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df; font-size: 17px">
+            <sc-for list="{{ programme }}" as="p" hint-placeholder-count="5">
+              <li style="display: flex; gap: 16px; padding: 7px 0; border-bottom: 1px solid #d3d8df"><span style="flex: 0 0 56px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums">{{ p.t }}</span><span>{{ p.what }}</span></li>
+            </sc-for>
+          </ol>
+        </section>
+        <section aria-labelledby="mee" style="display: flex; flex-direction: column; gap: 10px">
+          <h2 id="mee" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 24px; font-weight: 600">Meenemen</h2>
+          <ul style="margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 17px; line-height: 1.5">
+            <li>Een geldig legitimatiebewijs. Zonder mag u geen examen doen.</li>
+            <li>Uw huidige F-gassencertificaat</li>
+            <li>Werkschoenen en werkkleding</li>
+          </ul>
+          <p style="margin: 0; font-size: 17px; line-height: 1.5">Gereedschap, meetapparatuur en lunch staan klaar.</p>
+          <p style="margin: 0; font-size: 17px"><a href="Contentpagina.dc.html" style="font-weight: 600">Alles over het F-gassencertificaat</a></p>
+        </section>
+      </div>
+    </article>
+
+    <aside style="flex: 1 1 320px; max-width: 400px; display: flex; flex-direction: column; gap: 20px">
+      <form style="padding: 24px; border: 1px solid #d3d8df; border-radius: 6px; display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 28px; font-weight: 700">Inschrijven</h2>
+        <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 17px">
+          <dt style="color: #4a4a4a">Datum</dt><dd style="margin: 0; font-weight: 600">donderdag 22 oktober 2026</dd>
+          <dt style="color: #4a4a4a">Plaats</dt><dd style="margin: 0">Praktijkhal Zuiddrecht</dd>
+        </dl>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="aantal" style="font-size: 17px; font-weight: 600">Aantal deelnemers</label>
+          <span id="aantal-hint" style="font-size: 15px; color: #4a4a4a">Op deze dag zijn 7 plekken vrij</span>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button type="button" aria-label="Een deelnemer minder" style="width: 48px; height: 48px; border: 2px solid #0b6e7a; border-radius: 3px; background: #ffffff; color: #0b6e7a; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+            <input id="aantal" aria-describedby="aantal-hint" inputmode="numeric" value="3" style="width: 72px; height: 48px; box-sizing: border-box; text-align: center; border: 2px solid #5c6470; border-radius: 3px; font: 600 20px 'Barlow Semi Condensed', 'Barlow', sans-serif">
+            <button type="button" aria-label="Een deelnemer meer" style="width: 48px; height: 48px; border: 2px solid #0b6e7a; border-radius: 3px; background: #ffffff; color: #0b6e7a; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 14px; border-top: 1px solid #d3d8df">
+          <span style="font-size: 17px">3 deelnemers × [PRIJS]</span>
+          <strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 26px; font-weight: 700">[TOTAAL]</strong>
+        </div>
+        <a href="Inloggen.dc.html" style="display: inline-flex; align-items: center; justify-content: center; height: 52px; border-radius: 3px; background: #0b6e7a; color: #ffffff; font-weight: 600; font-size: 18px; text-decoration: none">3 deelnemers inschrijven</a>
+        <span style="font-size: 15px; line-height: 1.5; color: #4a4a4a">Prijs zonder btw, met examen en lunch. U betaalt op factuur. De namen vult u in de volgende stap in.</span>
+      </form>
+      <div style="padding: 22px 24px; background: #e3f1f3; border-radius: 6px; display: flex; flex-direction: column; gap: 8px">
+        <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 22px; font-weight: 700">Zes deelnemers of meer?</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5">Dan plannen wij een eigen dag voor uw bedrijf, bij ons of bij u op de zaak.</p>
+        <a href="Contentpagina.dc.html" style="font-size: 17px; font-weight: 600; color: #084f58">Incompany aanvragen</a>
+      </div>
+    </aside>
+  </main>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1576}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const specs = [
+      { k: 'Duur', v: '1 dag', note: '08.30 tot 16.30 uur' },
+      { k: 'Groep', v: 'Maximaal 12', note: 'trainer: Henk Dekker' },
+      { k: 'Plaats', v: 'Zuiddrecht', note: 'Praktijkhal, Energieweg 8' },
+      { k: 'Examen', v: 'Dezelfde dag', note: 'extern afgenomen' },
+      { k: 'Prijs', v: '[PRIJS]', note: 'per deelnemer, zonder btw' }
+    ];
+    const box = (on) => 'display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; min-height: 52px; padding: 10px 16px; border-radius: 6px; ' + (on ? 'border: 2px solid #0b6e7a; background: #e3f1f3;' : 'border: 2px solid #d3d8df; background: #ffffff;');
+    const seat = (lvl) => 'font-size: 15px; font-weight: 600; color: ' + (lvl === 'low' ? '#7a4f00' : '#1e6b2a');
+    const dates = [
+      { day: '8', month: 'okt', label: 'Donderdag 8 oktober', meta: 'Deze week', seats: 'Nog 1 plek', seatStyle: seat('low'), on: false, box: box(false) },
+      { day: '22', month: 'okt', label: 'Donderdag 22 oktober', meta: 'Over ruim twee weken', seats: '7 plekken vrij', seatStyle: seat('ok'), on: true, box: box(true) },
+      { day: '5', month: 'nov', label: 'Donderdag 5 november', meta: 'Over vier weken', seats: '12 plekken vrij', seatStyle: seat('ok'), on: false, box: box(false) },
+      { day: '19', month: 'nov', label: 'Donderdag 19 november', meta: 'Over zes weken', seats: '12 plekken vrij', seatStyle: seat('ok'), on: false, box: box(false) }
+    ];
+    const programme = [
+      { t: '08.30', what: 'Ontvangst en controle van uw legitimatie' },
+      { t: '09.00', what: 'Theorie: regels, koudemiddelen en lekcontrole' },
+      { t: '12.00', what: 'Lunch' },
+      { t: '12.45', what: 'Examen: theorie en praktijk in de hal' },
+      { t: '16.30', what: 'Einde. De uitslag volgt binnen 10 werkdagen' }
+    ];
+    return { specs, dates, programme, crumbs: [{ label: 'Home' }, { label: 'Cursusaanbod', href: 'Zoeken.dc.html' }, { label: 'F-gassen: herhaling en examen' }] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Parkeren en verkeer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 1738px">
+  <dc-import name="Kop" active="Parkeren" signed-in="{{ false }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <main style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 64px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: flex-start">
+      <div style="flex: 999 1 560px; min-width: 0; max-width: 820px; display: flex; flex-direction: column; gap: 16px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Parkeren en verkeer</h1>
+        <p style="margin: 0; font-size: 21px; line-height: 1.55">Alles over parkeren bij uw woning, parkeren voor uw bezoek en verkeer in de stad. Hier vraagt u een vergunning aan, ziet u waar u mag parkeren en leest u welke wegen worden aangepakt.</p>
+        <p style="margin: 0; display: flex; gap: 10px; align-items: flex-start; font-size: 16px; line-height: 1.5; color: #4a4a4a"><svg width="20" height="20" viewBox="0 0 24 24" fill="#234a78" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg><span>Bent u ingelogd en heeft u een lopende zaak over parkeren? Dan zetten wij dit onderwerp bovenaan op uw startpagina.</span></p>
+      </div>
+      <div style="flex: 1 1 300px; max-width: 380px; padding: 24px; border-radius: 6px; background: #eaf0f7; border: 1px solid #b9cbe2; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 700">Zelf uitzoeken wat bij u past</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5">Beantwoord een paar vragen met ja of nee. Dan ziet u welke vergunningen voor u gelden.</p>
+        <a href="Productzoeker.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 4px; background: #3669a5; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">Start de productzoeker<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a>
+        <a href="Zelfdiagnose.dc.html" style="font-size: 17px; font-weight: 600">Of doe de zelftest parkeren bij uw woning</a>
+      </div>
+    </div>
+
+    <section aria-labelledby="h-veel" style="display: flex; flex-direction: column; gap: 18px">
+      <h2 id="h-veel" style="margin: 0; font-size: 30px; font-weight: 700">Veel gevraagd</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px">
+        <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+          <li><a href="ProductPagina.dc.html" style="height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid #d3d8df; border-top: 4px solid #cc0000; border-radius: 6px; color: #1a1a1a; text-decoration: none">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#cc0000" aria-hidden="true"><path d="{{ p.icon }}"></path></svg>
+            <span style="font-size: 21px; font-weight: 600; color: #3669a5; text-decoration: underline; overflow-wrap: anywhere">{{ p.title }}</span>
+            <span style="font-size: 17px; line-height: 1.5">{{ p.text }}</span>
+            <span style="margin-top: auto; font-size: 15px; color: #4a4a4a">{{ p.meta }}</span>
+          </a></li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: flex-start">
+      <section aria-labelledby="h-sub" style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 14px">
+        <h2 id="h-sub" style="margin: 0; font-size: 30px; font-weight: 700">Meer over parkeren en verkeer</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ subs }}" as="s" hint-placeholder-count="5">
+            <li style="border-bottom: 1px solid #d3d8df"><a href="Onderwerp.dc.html" style="display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 10px 0; color: #1a1a1a; text-decoration: none">
+              <span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 19px; font-weight: 600; color: #3669a5">{{ s.title }}</span><span style="font-size: 16px; color: #4a4a4a">{{ s.text }}</span></span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true" style="flex: none"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg>
+            </a></li>
+          </sc-for>
+        </ul>
+      </section>
+      <section aria-labelledby="h-faq" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 14px">
+        <h2 id="h-faq" style="margin: 0; font-size: 30px; font-weight: 700">Veelgestelde vragen</h2>
+        <div style="border-top: 1px solid #d3d8df">
+          <sc-for list="{{ faq }}" as="q" hint-placeholder-count="4">
+            <div style="border-bottom: 1px solid #d3d8df">
+              <h3 style="margin: 0"><button type="button" aria-expanded="{{ q.expanded }}" style="width: 100%; min-height: 60px; padding: 12px 0; border: 0; background: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; font: 600 19px 'Fira Sans', sans-serif; color: #3669a5; cursor: pointer">{{ q.q }}<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ q.icon }}"></path></svg></button></h3>
+              <sc-if value="{{ q.open }}" hint-placeholder-val="{{ true }}">
+                <p style="margin: 0 0 18px; font-size: 18px; line-height: 1.6">{{ q.a }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <a href="Begrippen.dc.html" style="font-size: 17px; font-weight: 600">Alle veelgestelde vragen</a>
+      </section>
+    </div>
+  </main>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1738}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const products = [
+      { title: 'Parkeervergunning bewoners', text: 'Parkeren in uw eigen zone zonder parkeergeld.', meta: '38,50 euro per jaar', icon: 'M5,11L6.5,6.5H17.5L19,11M17.5,16A1.5,1.5 0 0,1 16,14.5A1.5,1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 19,14.5A1.5,1.5 0 0,1 17.5,16M6.5,16A1.5,1.5 0 0,1 5,14.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 8,14.5A1.5,1.5 0 0,1 6.5,16M18.92,6C18.72,5.42 18.16,5 17.5,5H6.5C5.84,5 5.28,5.42 5.08,6L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6Z' },
+      { title: 'Bezoekersvergunning', text: 'Laat uw bezoek parkeren tegen het bewonerstarief.', meta: 'Per uur, met DigiD', icon: 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M12,13C14.67,13 20,14.33 20,17V20H4V17C4,14.33 9.33,13 12,13M12,14.9C9.03,14.9 5.9,16.36 5.9,17V18.1H18.1V17C18.1,16.36 14.97,14.9 12,14.9Z' },
+      { title: 'Gehandicapten\u00ADparkeerkaart', text: 'Dicht bij uw bestemming parkeren als u slecht ter been bent.', meta: 'Met een medische keuring', icon: 'M13.2,11H10V7H13.2A2,2 0 0,1 15.2,9A2,2 0 0,1 13.2,11M13,3H6V21H10V15H13A6,6 0 0,0 19,9C19,5.68 16.31,3 13,3Z' },
+      { title: 'Melding verkeerssituatie', text: 'Een kapot verkeerslicht of een gevaarlijk kruispunt doorgeven.', meta: 'Zonder in te loggen', icon: 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z' }
+    ];
+    const subs = [
+      { title: 'Parkeerzones en tarieven', text: 'Waar u betaalt en hoeveel' },
+      { title: 'Fietsen en fietsparkeren', text: 'Fietsenstallingen, weesfietsen en fietspaden' },
+      { title: 'Wegwerkzaamheden', text: 'Welke straten nu of binnenkort dicht zijn' },
+      { title: 'Verkeersbesluiten', text: 'Nieuwe borden, eenrichtingsverkeer en parkeerverboden' },
+      { title: 'Laadpalen', text: 'Een openbare laadpaal aanvragen bij uw woning' }
+    ];
+    const faq = [
+      { q: 'Waar mag ik parkeren met mijn vergunning?', a: 'Alleen in de zone die op uw vergunning staat. Op de kaart van de parkeerzones ziet u de grenzen.', open: true },
+      { q: 'Hoe meld ik een fout geparkeerde auto?', a: '', open: false },
+      { q: 'Wanneer is de binnenstad autovrij?', a: '', open: false },
+      { q: 'Kan ik bezwaar maken tegen een parkeerboete?', a: '', open: false }
+    ].map(f => ({ ...f, expanded: f.open ? 'true' : 'false', icon: f.open ? 'M19,13H5V11H19V13Z' : 'M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z' }));
+    return { products, subs, faq, crumbs: [{ label: 'Home' }, { label: 'Parkeren en verkeer' }] };
+  }
+}
+</script>
+</body>
+</html>

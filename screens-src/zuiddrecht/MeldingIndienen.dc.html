@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Melding indienen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2128px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Melding indienen" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Melding indienen</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Ziet u een losse stoeptegel, een kapotte lantaarnpaal of zwerfafval? Meld het hier. Wij laten u weten wat wij ermee doen.</p>
+      </div>
+      <div role="note" style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #fcedec; border: 1px solid #e8a5a1; align-items: flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="#a30000" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg><div style="font-size: 17px; line-height: 1.5"><strong>Is er direct gevaar?</strong> Bel dan [telefoonnummer]. Meld het niet via dit formulier.</div></div>
+      <form style="display: flex; flex-direction: column; gap: 24px">
+        <h2 style="margin: 0; font-size: 28px; font-weight: 700">Melding openbare ruimte</h2>
+        <p style="margin: 0; font-size: 17px; color: #4a4a4a">Een veld zonder "niet verplicht" moet u invullen.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="soort" style="font-size: 19px; font-weight: 600">Wat wilt u melden?</label>
+          <select id="soort" style="box-sizing: border-box; height: 48px; padding: 0 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; width: 100%; max-width: 480px; background: #ffffff"><option value="" disabled>Maak een keuze</option><option>Losse stoeptegel</option><option>Kapotte lantaarnpaal</option><option>Zwerfafval</option><option selected>Iets anders</option></select>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: -8px; padding: 4px 0 4px 20px; border-left: 4px solid #8a929e">
+          <label for="anders" style="font-size: 19px; font-weight: 600">Wat is het dan?</label><span id="anders-h" style="font-size: 16px; color: #4a4a4a; line-height: 1.5">Deze vraag ziet u omdat u "Iets anders" koos. In een paar woorden is genoeg.</span>
+          <input id="anders" type="text" aria-describedby="anders-h" value="Scheve paal van een verkeersbord" style="box-sizing: border-box; height: 48px; padding: 0 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; width: 100%; max-width: 480px; background: #ffffff">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="waar" style="font-size: 19px; font-weight: 600">Waar is het?</label><span id="waar-h" style="font-size: 16px; color: #4a4a4a; line-height: 1.5">Een adres, of een plek die wij kunnen vinden.</span>
+          <input id="waar" type="text" aria-describedby="waar-h" value="Bushalte Lindelaan, kant van het fietspad" style="box-sizing: border-box; height: 48px; padding: 0 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; width: 100%; max-width: 480px; background: #ffffff">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="wat" style="font-size: 19px; font-weight: 600">Wat is er aan de hand?</label><span id="wat-h" style="font-size: 16px; color: #4a4a4a; line-height: 1.5">Vertel wat u ziet en sinds wanneer, als u dat weet.</span>
+          <textarea id="wat" aria-describedby="wat-h" rows="5" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; line-height: 1.5; resize: vertical">Bij de bushalte staat de paal van een verkeersbord scheef. Hij leunt over het fietspad.</textarea>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span id="fotos-l" style="font-size: 19px; font-weight: 600">Foto's <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></span><span id="fotos-h" style="font-size: 16px; color: #4a4a4a; line-height: 1.5">U kunt maximaal 3 foto's toevoegen. Een foto mag maximaal 10 MB zijn. Gebruik JPG of PNG.</span>
+          <label id="fotos-k" for="fotos" style="align-self: flex-start; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; box-sizing: border-box; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,12L16,16H13.5V19H10.5V16H8L12,12Z"></path></svg>Foto's kiezen</label><input id="fotos" type="file" multiple accept="image/jpeg,image/png" aria-labelledby="fotos-l fotos-k" aria-describedby="fotos-h" style="position: absolute; width: 1px; height: 1px; opacity: 0">
+          <ul aria-label="Toegevoegde foto's" style="margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 480px">
+            <li style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid #d3d8df; border-radius: 4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true" style="flex: none"><path d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z"></path></svg><span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto"><span style="font-size: 17px; font-weight: 600; overflow-wrap: anywhere">paal-lindelaan.jpg</span><span style="font-size: 15px; color: #4a4a4a">JPG, 2,4 MB</span></span><button type="button" aria-label="Verwijder paal-lindelaan.jpg" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: 0; border-radius: 4px; background: transparent; color: #a30000; font: 600 16px 'Fira Sans', sans-serif; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z"></path></svg>Verwijderen</button></li>
+          </ul>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="mail" style="font-size: 19px; font-weight: 600">E-mailadres</label><span id="mail-h" style="font-size: 16px; color: #4a4a4a; line-height: 1.5">Hier sturen wij bericht over uw melding. Ingevuld vanuit Mijn account.</span>
+          <input id="mail" type="email" autocomplete="email" aria-describedby="mail-h" value="sanne.devries@example.nl" style="box-sizing: border-box; height: 48px; padding: 0 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; width: 100%; max-width: 480px; background: #ffffff">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="tel" style="font-size: 19px; font-weight: 600">Telefoonnummer <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></label>
+          <input id="tel" type="tel" autocomplete="tel" value="" style="box-sizing: border-box; height: 48px; padding: 0 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; width: 100%; max-width: 480px; background: #ffffff">
+        </div>
+      </form>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 24px; border-top: 1px solid #d3d8df">
+        <a href="MijnOverzicht.dc.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box">Annuleren</a>
+        <button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>Versturen</button>
+      </div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2128}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { crumbs: [{"label": "Home"}, {"label": "Mijn Zuiddrecht", "href": "MijnOverzicht.dc.html"}, {"label": "Melding indienen"}] };
+  }
+}
+</script>
+</body>
+</html>

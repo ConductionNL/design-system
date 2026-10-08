@@ -486,3 +486,9 @@ hats, claps) plus cues: tick (hex lands), pluck (musical UI note), whoosh (move)
 ## Round 29c (2026-09-29, Ruben): Portaliq, a clear hand-off from admin to client
 - The page builder caption says who acts: "You design the portal".
 - A new login scene follows it: "The client logs in to the portal". It shows the standalone portal's login page, the client signing in, then the portal opening onto One view. That login is the turn from the admin's side to the client's side.
+
+## Round 30 (2026-10-08, Ruben): voice-over rules, from the archiefwaardig animatic
+- **No voice over the shared pieces.** The Conduction opening at the start, and Built on plus the install board at the end, are never voiced. A voice-over lives in the body only. The music carries the opening and the closing.
+- **The voice sits on top.** Under a voice the bed and the effects duck 15 dB (`film.music.duckDb`; `score.mjs` defaults to 9 dB for older films).
+- **The voice sounds warm and lively, never sleepy.** The trained voice is generated in `--mode ref` with the style "warm, cheerful, upbeat, slightly faster", then sped up 8% with pitch kept (`atempo=1.08`), with the word timings scaled to match. A style prompt in the default `--mode both` is read aloud: never use it there.
+- **Check every take by ear and by Whisper.** Words Whisper hears wrongly get a respelling in `~/voice-lab/pronounce.tsv` (so far: "metagegevens", "gedeelde", "DMS").

@@ -113,8 +113,16 @@ take on the grid, and pass the words to `kineticText` with `wordsAt(words, offse
 two frames before its spoken onset, so it is readable on the frame it is heard. Drop the full stop and
 the comma that ends a line. The demo is [`preview/films/kinetic-voice/`](../../../preview/films/kinetic-voice/).
 
-**The voice is provisional.** The demo uses Ruben's cloned voice from the clean-reference run. Ruben
-has not yet picked between that voice and the trained one. Only generated takes go into this public
+**Where the voice goes.** Only in the body. The shared opening and the closing pieces (Built on and
+the install board) are never voiced (BIBLE round 30). The bed and effects duck 15 dB under the voice
+(`film.music.duckDb: 15`).
+
+**How the voice sounds.** Ruben picked the trained voice (LoRA). Generate it in `--mode ref` with
+`--style "warm, cheerful, upbeat, slightly faster"`, then speed it up 8% with `atempo=1.08` and scale the
+word timings by the same factor. In `--mode both` the style prompt is spoken aloud. Retake any line
+Whisper hears wrongly, and add a respelling to `pronounce.tsv` for a word it keeps getting wrong.
+
+**The voice stays private.** The kinetic-voice demo still uses the earlier clean-reference take. Only generated takes go into this public
 repo. The voice model and the recordings stay in a private repository (ConductionNL/voice-ruben);
 never copy a reference recording, training data or a checkpoint here.
 

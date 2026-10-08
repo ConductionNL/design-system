@@ -48,3 +48,35 @@ For every board:
 5. **Thumbnail.** A headless Chrome screenshot at the board's size, scaled to 480 px wide, saved as `preview/screens/thumbs/<Key>.webp` (quality 80, lower when needed to stay under about 60 KB).
 
 Options: `--only Key` (repeatable), `--index-only`, `--no-thumbs`, `--no-measure`, `--jobs N` (default 3). Every run rewrites its outputs, so running it twice gives the same result. It exits 1 and names the board when one fails.
+
+## Capabilities, specs and repositories
+
+`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. Run it after `build.py`, because `build.py` rewrites `screens.json` without these fields.
+
+```
+python3 scripts/screens/capabilities.py             # git fetch each app checkout first
+python3 scripts/screens/capabilities.py --no-fetch  # use what the checkouts already have
+```
+
+It reads the app checkouts next to this repo (`../portaliq`, `../procest` for dossiq, `../scholiq` for learniq and so on) at `origin/development`: `openspec/specs/`, `openspec/changes/`, `openspec/parity/capabilities.json` and `openspec/parity/gap-decisions.json`. When a fetch fails or `origin/development` is missing it reads the checkout's `HEAD` and lists that under `warnings` in the output. It needs no network beyond `git fetch`, and running it twice gives the same result.
+
+It writes:
+
+- `preview/screens/capabilities.json`: one entry per capability under the key `<app>/<id>`, plus an `apps` block with counts per app. Every spec and every parity matrix row of every app is in it, with or without a screen.
+- `preview/screens/screens.json`: every board gets `repo`, `repoUrl`, `repos` (the school website boards also name portaliq), `src` (path in this repo), `capIds` (from the board's capability note), `matrixCapIds` (matrix rows whose `screen` field names the board) and `specs`.
+
+How a token in a board's capability note is read: the part before the first space or bracket is the token, and anything in brackets is kept as a note. The token is looked up as a spec, then a matrix row, then an open change, first in the board's own app and then in the only other app that has it. Tokens starting with `of-` (Open Formulieren) or `oi-` (Open Inwoner), or starting with `NLDS` or `Den Haag`, are external references. Anything else is free text.
+
+What each status means:
+
+| status | meaning |
+|---|---|
+| built | the matrix row says it ships (`built.state`) |
+| building | the matrix row says work is under way |
+| specified | specified but not built: a matrix row in that state, or a spec that no matrix row points at |
+| decided-no | the matrix row was decided against (see `decision`) |
+| in-flight | an open OpenSpec change under `openspec/changes/` |
+| designed | only an external reference or free text, carried by at least one screen: drawn, not specified |
+| external | an external reference that no screen carries |
+
+A spec takes the most advanced state of the matrix rows that point at it (through the row's `feature`, or through a row id named in the spec's Purpose).

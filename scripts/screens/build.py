@@ -2,7 +2,7 @@
 """Build the screens gallery data from screens-src/ into preview/screens/.
 
     python3 scripts/screens/build.py                 # index, every board, every thumbnail
-    python3 scripts/screens/build.py --index-only    # only preview/screens/screens.json
+    python3 scripts/screens/build.py --index-only    # only preview/screens/screens.json (reads screens-src/<set>/capability-rows*.json)
     python3 scripts/screens/build.py --only Home --only wilgenboom-Home
     python3 scripts/screens/build.py --no-thumbs     # flatten only
     python3 scripts/screens/build.py --jobs 4        # parallel thumbnails (default 3)
@@ -110,6 +110,8 @@ def build_index():
     school_names = {s: [b[:-8] for b in load(SRC / s / 'canvas.json')['order']] for s, _ in SCHOOLS}
     for s, title in SCHOOLS:
         canvas = load(SRC / s / 'canvas.json')
+        rows_file = SRC / s / 'capability-rows.json'
+        school_caprows = load(rows_file) if rows_file.exists() else {}
         others = set().union(*(set(v) for k, v in school_names.items() if k != s))
         keys = []
         for name in school_names[s]:
@@ -117,6 +119,10 @@ def build_index():
             keys.append(key)
             meta = canvas['boards'].get(name + '.dc.html', {})
             caps, note = note_parts(canvas.get('notes', {}).get('cap_' + name, {}).get('text', ''))
+            if school_caprows.get(name):  # same shape and precedence as the Zuiddrecht rows files
+                _, c2, n2 = (school_caprows[name][0] + ['', '', ''])[:3]
+                caps = caps or c2
+                note = note or (f'Wat je ziet: {n2}' if n2 else '')
             index['boards'][key] = {
                 'id': f'{s}/{name}', 'app': s, 'title': meta.get('title', name),
                 'w': meta.get('w', 1440), 'h': meta.get('h', 1200), 'set': s, 'row': s,

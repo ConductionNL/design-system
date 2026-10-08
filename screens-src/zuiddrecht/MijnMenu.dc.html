@@ -27,7 +27,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </nav>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Overzicht"},"$preview":{"width":320,"height":1112}}'>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Overzicht"},"extra":{"editor":null,"default":[]},"$preview":{"width":320,"height":1112}}'>
 class Component extends DCLogic {
   renderVals() {
     const active = this.props.active ?? 'Overzicht';
@@ -39,6 +39,14 @@ class Component extends DCLogic {
       { title: 'Vragen en meldingen', items: [['Melding indienen', 'MeldingIndienen.dc.html']] },
       { title: 'Uw gegevens', items: [['Mijn gegevens', 'MijnGegevens.dc.html'], ['Mijn uitkering', 'Uitkeringen.dc.html'], ['Mijn adres', 'MijnAdres.dc.html'], ['Mijn afspraken', 'MijnAfspraken.dc.html'], ['Mijn account', 'MijnAccount.dc.html']] }
     ];
+    // extra: a list (or its JSON text) of { title, items: [[label, href, badge]] }. A group whose title is
+    // already in the menu gets the items appended; a new group goes before "Uw gegevens".
+    let extra = this.props.extra;
+    if (typeof extra === 'string') { try { extra = JSON.parse(extra); } catch (e) { extra = []; } }
+    for (const g of (Array.isArray(extra) ? extra : [])) {
+      const same = raw.find((r) => r.title === g.title);
+      if (same) { same.items = same.items.concat(g.items || []); } else { raw.splice(raw.length - 1, 0, { title: g.title, items: g.items || [] }); }
+    }
     const base = 'display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 8px 12px; font-size: 17px; text-decoration: none; ';
     const groups = raw.map((g) => ({
       title: g.title,

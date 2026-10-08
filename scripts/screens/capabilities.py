@@ -40,12 +40,23 @@ APPS = [
     ('keepiq', 'doriath', 'ConductionNL/doriath'),
     ('launchpad', 'launchpad', 'ConductionNL/launchpad'),
     ('openregister', 'openregister', 'ConductionNL/openregister'),
+    # apps without boards on the design canvas: their capabilities are listed, without screens
+    ('integriq', 'openconnector', 'ConductionNL/integriq'),
+    ('filinq', 'docudesk', 'ConductionNL/filinq'),
+    ('stackiq', 'softwarecatalog', 'ConductionNL/stackiq'),
+    ('humaniq', 'hrmq', 'ConductionNL/humaniq'),
+    ('shillinq', 'shillinq', 'ConductionNL/shillinq'),
+    ('planninq', 'planix', 'ConductionNL/planninq'),
+    ('larpinq', 'larpingapp', 'ConductionNL/larpinq'),
+    ('hermiq', 'hermiq', 'ConductionNL/hermiq'),
+    ('versioniq', 'app-versions', 'ConductionNL/versioniq'),
 ]
 APP_IDS = [a for a, _, _ in APPS]
 SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']
 # school boards that belong to the learning app rather than the school website
 SCHOOL_APP_BOARDS = re.compile(r'^(Lq|Nc|Lp|AppZijbalk|WerkKop)')
 STATE_ORDER = ['built', 'building', 'specified', 'decided-no']
+NO_FEATURE = '_none'  # the group per app for capabilities no feature claims
 NONE_TOKENS = {'', 'geen spec genoemd', 'geen', 'geen spec'}
 
 
@@ -56,8 +67,8 @@ def log(msg):
 class Checkout:
     """Reads files from one app checkout at a fixed ref with a single git cat-file process."""
 
-    def __init__(self, app, dirname, repo, fetch):
-        self.app, self.dir, self.repo = app, APPS_EXTRA / dirname, repo
+    def __init__(self, app, dirname, repo, fetch, base=APPS_EXTRA):
+        self.app, self.dir, self.repo = app, base / dirname, repo
         self.warning = None
         if fetch:
             r = subprocess.run(['git', '-C', str(self.dir), 'fetch', '-q', 'origin', 'development'],
@@ -152,9 +163,94 @@ def load_app(co):
         if row and (row not in latest or str(d.get('decidedOn', '')) >= str(latest[row].get('decidedOn', ''))):
             latest[row] = d
     systems = [s['key'] if isinstance(s, dict) else s for s in parity.get('systems', [])]
+    names = {s['key']: s.get('name') or s['key'] for s in parity.get('systems', []) if isinstance(s, dict)}
+    overlay = co.json('openspec/features.overlay.json') or []
     return {'specs': specs, 'changes': changes, 'rows': parity.get('capabilities', []),
-            'systems': systems, 'areas': {a.get('key'): a for a in parity.get('areas', []) if isinstance(a, dict)},
+            'systems': systems, 'systemNames': names,
+            'areas': {a.get('key'): a for a in parity.get('areas', []) if isinstance(a, dict)},
+            'features': [f for f in parity.get('features', []) if isinstance(f, dict) and f.get('slug')],
+            'overlay': {o['slug']: o for o in overlay if isinstance(o, dict) and o.get('slug')} if isinstance(overlay, list) else {},
             'decisions': latest}
+
+
+def humanise(text):
+    text = re.sub(r'[-_]+', ' ', str(text)).strip()
+    return text[:1].upper() + text[1:]
+
+
+def build_features(app, d, caps):
+    """Group every capability of one app under one feature.
+
+    The matrix's own `features` list is the authority. Until an app has one, a row's `feature`
+    value is the group (titled from the overlay or the spec it names), and a row without one
+    falls under its area. Specs go to the feature that lists them, else to the feature most of
+    their matrix rows are in. What is left goes to NO_FEATURE.
+    """
+    declared = {f['slug']: f for f in d['features']}
+    out = {}
+
+    def ensure(slug, title, title_nl=None, area=None, overlay=None, specs=None, derived=True):
+        key = f'{app}/{slug}'
+        if key not in out:
+            out[key] = {'app': app, 'slug': slug, 'title': title, 'titleNl': title_nl or title, 'area': area,
+                        'areaTitle': (d['areas'].get(area) or {}).get('name') if area else None,
+                        'areaTitleNl': (d['areas'].get(area) or {}).get('name_nl') if area else None,
+                        'overlay': overlay, 'specs': list(specs or []), 'derived': derived, 'caps': []}
+        return key
+
+    for f in d['features']:
+        ensure(f['slug'], f.get('title') or humanise(f['slug']), f.get('title_nl'), f.get('area'),
+               f.get('overlay'), [s for s in f.get('specs') or [] if isinstance(s, str)], derived=False)
+
+    spec_owner = {}
+    for key, f in out.items():
+        for s in f['specs']:
+            spec_owner.setdefault(s, key)
+
+    row_feature = {}
+    for r in d['rows']:
+        fv = r.get('feature') if isinstance(r.get('feature'), str) and r.get('feature').strip() else None
+        if fv and fv in declared:
+            key = f'{app}/{fv}'
+        elif fv and not declared:
+            ov = d['overlay'].get(fv)
+            if ov:
+                key = ensure(fv, ov.get('title') or humanise(fv), ov.get('title_nl'), r.get('area'), fv)
+            elif fv in d['specs']:
+                key = ensure(fv, d['specs'][fv]['title'], None, r.get('area'), None, [fv])
+            else:
+                key = ensure(slug(fv), humanise(fv), None, r.get('area'))
+        elif not declared and r.get('area'):
+            a = d['areas'].get(r['area']) or {}
+            key = ensure('area-' + r['area'], a.get('name') or humanise(r['area']), a.get('name_nl'), r['area'])
+        else:
+            key = ensure(NO_FEATURE, 'Not tied to a feature', 'Niet aan een feature gekoppeld')
+        row_feature[r['id']] = key
+
+    for ck, c in caps.items():
+        if c['app'] != app:
+            continue
+        if c['kind'] == 'matrix':
+            key = row_feature.get(c['id'])
+        elif c['kind'] == 'spec':
+            key = spec_owner.get(c['id'])
+            if not key:
+                votes = [row_feature[r] for r in c.get('matrixRows', []) if r in row_feature]
+                key = max(set(votes), key=votes.count) if votes else None
+        else:
+            key = None
+        if not key:
+            key = ensure(NO_FEATURE, 'Not tied to a feature', 'Niet aan een feature gekoppeld')
+        c['feature'] = key
+        out[key]['caps'].append(ck)
+    for f in out.values():
+        if f['area'] is None:  # the area most of its rows are in
+            areas = [caps[k]['area'] for k in f['caps'] if caps[k].get('area')]
+            if areas:
+                f['area'] = max(set(areas), key=areas.count)
+                a = d['areas'].get(f['area']) or {}
+                f['areaTitle'], f['areaTitleNl'] = a.get('name'), a.get('name_nl')
+    return {k: v for k, v in out.items() if v['caps']}
 
 
 def split_caps(caps, problems=None):
@@ -228,11 +324,13 @@ def board_repos(b, key):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--no-fetch', action='store_true', help='do not git fetch the app checkouts')
+    ap.add_argument('--apps-dir', type=pathlib.Path, default=APPS_EXTRA,
+                    help='directory that holds the app checkouts (default: the parent of this repo)')
     args = ap.parse_args()
 
     data, meta, warnings = {}, {}, []
     for app, dirname, repo in APPS:
-        co = Checkout(app, dirname, repo, not args.no_fetch)
+        co = Checkout(app, dirname, repo, not args.no_fetch, args.apps_dir.resolve())
         data[app] = load_app(co)
         meta[app] = {'dir': dirname, 'repo': repo, 'ref': co.ref, 'sha': co.sha}
         if co.warning:
@@ -397,7 +495,24 @@ def main():
         c['screens'] = sorted(set(c['screens']))
         c.pop('matrixScreens', None)
 
-    # 4. apps block
+    # 4. features: every capability of an app sits under exactly one
+    features = {}
+    for app in APP_IDS:
+        features.update(build_features(app, data[app], caps))
+    for owner in ('design-system', 'nextcloud-vue'):
+        mine = sorted(k for k, c in caps.items() if c['app'] == owner)
+        if mine:
+            key = f'{owner}/{NO_FEATURE}'
+            features[key] = {'app': owner, 'slug': NO_FEATURE, 'title': 'Not tied to a feature',
+                             'titleNl': 'Niet aan een feature gekoppeld', 'area': None, 'areaTitle': None,
+                             'areaTitleNl': None, 'overlay': None, 'specs': [], 'derived': True, 'caps': mine}
+            for k in mine:
+                caps[k]['feature'] = key
+    missing = [k for k, c in caps.items() if not c.get('feature')]
+    if missing:
+        sys.exit(f'capabilities without a feature: {missing[:10]}')
+
+    # 5. apps block
     screens_per_app = {}
     for b in boards.values():
         home, _, _ = board_repos(b, None)
@@ -415,7 +530,10 @@ def main():
             'ref': meta[app]['ref'], 'sha': meta[app]['sha'],
             'specsUrl': f'https://github.com/{repo}/tree/development/openspec/specs',
             'specCount': len(d['specs']), 'changeCount': len(d['changes']),
-            'parity': {'rows': len(d['rows']), 'systems': d['systems'], 'states': states},
+            'parity': {'rows': len(d['rows']), 'systems': d['systems'], 'systemNames': d['systemNames'],
+                       'states': states},
+            'features': sum(1 for f in features.values() if f['app'] == app and f['slug'] != NO_FEATURE),
+            'featuresDeclared': bool(d['features']),
             'screens': screens_per_app.get(app, 0),
             'capsWithScreen': sum(1 for c in mine if c['screens']),
             'capsWithoutScreen': sum(1 for c in mine if not c['screens']),
@@ -424,17 +542,26 @@ def main():
         mine = [c for c in caps.values() if c['app'] == owner]
         apps[owner] = {'title': owner, 'repo': repo, 'repoUrl': f'https://github.com/{repo}', 'dir': None,
                        'specsUrl': None, 'specCount': 0, 'changeCount': 0, 'parity': None,
+                       'features': 0, 'featuresDeclared': False,
                        'screens': sum(1 for b in boards.values() if board_repos(b, None)[1] == repo),
                        'capsWithScreen': sum(1 for c in mine if c['screens']),
                        'capsWithoutScreen': sum(1 for c in mine if not c['screens'])}
 
     out = {'generated': datetime.date.today().isoformat(), 'apps': apps,
+           'features': dict(sorted(features.items())),
            'capabilities': dict(sorted(caps.items())), 'warnings': warnings}
     (SCREENS / 'capabilities.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')) + '\n')
     (SCREENS / 'screens.json').write_text(json.dumps(index, ensure_ascii=False, indent=1) + '\n')
 
     # report
-    print(f'capabilities.json: {len(caps)} capabilities; screens.json: {len(boards)} boards')
+    print(f'capabilities.json: {len(caps)} capabilities in {len(features)} features; screens.json: {len(boards)} boards')
+    rows_total = sum(len(data[a]['rows']) for a in APP_IDS)
+    rows_out = sum(1 for c in caps.values() if c['kind'] == 'matrix')
+    print(f'matrix rows: {rows_out} written of {rows_total} in the matrices')
+    if rows_out != rows_total:
+        sys.exit('matrix row count differs: a row id is duplicated or lost')
+    undeclared = [a for a in APP_IDS if not data[a]['features']]
+    print(f'apps without a features list in their matrix (grouped by feature value or area): {undeclared}')
     print(f'{"app":14} {"specs":>5} {"rows":>5} {"withScr":>7} {"noScr":>6} {"screens":>7} {"scrNoCap":>8}')
     for app, a in apps.items():
         no_cap = sum(1 for b in boards.values()

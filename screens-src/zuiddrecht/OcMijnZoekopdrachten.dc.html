@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn zoekopdrachten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2000px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Mijn zoekopdrachten" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 16px; color: #4a4a4a">Openbare informatie</span>
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Mijn zoekopdrachten</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Komt er een nieuwe publicatie bij die past bij een bewaarde zoekopdracht, dan krijgt u een bericht in <a href="Berichten.dc.html">Berichten</a>. U kiest zelf hoe vaak.</p>
+      </div>
+
+      <section aria-labelledby="bewaard" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 id="bewaard" style="margin: 0; font-size: 28px; font-weight: 700">Bewaarde zoekopdrachten</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ searches }}" as="s" hint-placeholder-count="3">
+            <li style="border-bottom: 1px solid #d3d8df; padding: 20px 0; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+              <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px"><a href="#" style="font-size: 19px; font-weight: 600">{{ s.title }}</a><span style="{{ s.pillStyle }}">{{ s.state }}</span></span>
+                <span style="font-size: 16px; color: #4a4a4a">{{ s.query }}</span>
+                <span style="font-size: 16px; color: #1a1a1a"><strong>{{ s.freq }}</strong> · {{ s.last }}</span>
+              </div>
+              <div style="flex: none; display: flex; flex-wrap: wrap; gap: 8px">
+                <button type="button" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 15px 'Fira Sans', sans-serif">Wijzigen</button>
+                <button type="button" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid #d3d8df; border-radius: 4px; background: #ffffff; color: #1a1a1a; font: 500 15px 'Fira Sans', sans-serif">{{ s.toggle }}</button>
+                <button type="button" aria-label="{{ s.del }}" style="display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid #a30000; border-radius: 4px; background: #ffffff; color: #a30000; font: 500 15px 'Fira Sans', sans-serif">Verwijderen</button>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="wijzig" style="display: flex; flex-direction: column; gap: 20px; padding: 28px; border: 1px solid #d3d8df; border-radius: 4px; max-width: 760px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h2 id="wijzig" style="margin: 0; font-size: 26px; font-weight: 700">Zoekopdracht wijzigen</h2>
+          <p style="margin: 0; font-size: 17px; color: #4a4a4a">Een veld zonder niet verplicht moet u invullen.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="zo-naam" style="font-size: 18px; font-weight: 600">Naam</label>
+          <input id="zo-naam" type="text" value="Windpark" style="max-width: 480px; height: 48px; box-sizing: border-box; padding: 0 14px; border: 2px solid #4a4a4a; border-radius: 4px; font: 400 18px 'Fira Sans', sans-serif; color: #1a1a1a">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 18px; font-weight: 600">Zoekt naar</span>
+          <span style="font-size: 17px; color: #1a1a1a">"windpark" in alle catalogi, soort Besluit of Bekendmaking</span>
+          <a href="Zoeken.dc.html" style="font-size: 16px">Zoekopdracht aanpassen op de zoekpagina</a>
+        </div>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 18px; font-weight: 600; margin-bottom: 8px">Hoe vaak wilt u een bericht?</legend>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 18px"><input type="radio" name="freq" style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5">Direct, bij elke nieuwe publicatie</label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 18px"><input type="radio" name="freq" checked style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5">Dagelijks, één bericht met alles van die dag</label>
+          <label style="display: flex; align-items: center; gap: 12px; font-size: 18px"><input type="radio" name="freq" style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5">Wekelijks, op maandag</label>
+        </fieldset>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 16px; border-top: 1px solid #d3d8df">
+          <button type="button" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif">Annuleren</button>
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Wijzigingen bewaren</button>
+        </div>
+      </section>
+
+      <div style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #eaf0f7; border: 1px solid #b9cbe2; align-items: flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="#234a78" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg><span style="font-size: 17px; line-height: 1.5">U krijgt alleen bericht over publicaties die u zelf ook had kunnen vinden, en alleen over wat nieuw is sinds het vorige bericht. Een nieuwe zoekopdracht bewaart u op de <a href="Zoeken.dc.html" style="color: #234a78; font-weight: 600">zoekpagina</a>.</span></div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (on) => 'display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 14px; font-weight: 600; ' + (on ? 'background: #e7f3ea; color: #1e6b2a; border: 1px solid #9fcca8' : 'background: #f4f6f9; color: #4a4a4a; border: 1px solid #d3d8df');
+    const searches = [
+      ['Windpark', '"windpark" in alle catalogi, soort Besluit of Bekendmaking', 'Dagelijks', 'Laatste bericht op 6 oktober 2026, 2 nieuwe publicaties', true],
+      ['Kerkplein', '"kerkplein" in Raadsstukken', 'Wekelijks', 'Laatste bericht op 5 oktober 2026, 1 nieuwe publicatie', true],
+      ['Subsidies sport', 'Catalogus Subsidiebesluiten, thema Sport en bewegen', 'Direct', 'Gepauzeerd sinds 20 september 2026', false]
+    ].map(([title, query, freq, last, on]) => ({ title, query, freq, last, state: on ? 'Actief' : 'Gepauzeerd', pillStyle: pill(on), toggle: on ? 'Pauzeren' : 'Hervatten', del: 'Zoekopdracht ' + title + ' verwijderen' }));
+    return { searches, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Mijn zoekopdrachten' }] };
+  }
+}
+</script>
+</body>
+</html>

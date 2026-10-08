@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Components, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="screens.css">
+<style>
+  /* Toolbar */
+  .sc-toolbar { position: sticky; top: 0; z-index: 10; background: white; border-bottom: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); }
+  .sc-toolbar .sc-wrap { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .sc-toolbar .line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-4); }
+  .sc-toolbar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
+  .sc-toolbar input[type="search"], .sc-toolbar select {
+    font: inherit; font-size: 15px; color: var(--c-cobalt-900); min-height: 40px; padding: 8px 12px;
+    border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-sm); background: white;
+  }
+  .sc-toolbar input[type="search"] { flex: 1 1 260px; min-width: 0; }
+  .sc-toolbar select { flex: 0 1 200px; min-width: 0; }
+  .sc-toolbar input:focus-visible, .sc-toolbar select:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+  .sc-toolbar .f { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+  .sc-toolbar .count { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); margin-left: auto; }
+
+  /* How the mapping is made */
+  .km-note { margin: var(--space-8) 0 0; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: var(--space-5) var(--space-6); }
+  .km-note > summary { cursor: pointer; font-size: 15px; font-weight: 600; color: var(--c-cobalt-900); }
+  .km-note > summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .km-note p, .km-note li { font-size: 14px; line-height: 1.55; color: var(--c-cobalt-900); max-width: 78ch; }
+  .km-note p { margin: var(--space-3) 0 0; }
+  .km-note ul { margin: var(--space-2) 0 0; padding-left: 20px; }
+  .km-note code { font-family: var(--conduction-typography-font-family-code); font-size: 12.5px; }
+  .km-note a { color: var(--c-blue-cobalt); }
+  .km-note .none { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: var(--space-2); font-size: 13px; }
+
+  /* Families bar */
+  .km-fams { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--space-6) 0 0; }
+  .km-fams button { font: inherit; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--c-cobalt-200); background: white; color: var(--c-cobalt-900); cursor: pointer; }
+  .km-fams button:hover { border-color: var(--c-blue-cobalt); }
+  .km-fams button[aria-pressed="true"] { background: var(--c-blue-cobalt); border-color: var(--c-blue-cobalt); color: white; }
+  .km-fams button:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .km-fams .n { font-family: var(--conduction-typography-font-family-code); font-size: 11px; opacity: 0.75; }
+
+  /* Cards */
+  .km-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: var(--space-4); margin: var(--space-6) 0 var(--space-12); }
+  .km-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid transparent; scroll-margin-top: 140px; min-width: 0; }
+  .km-card:hover { border-color: var(--c-cobalt-200); }
+  .km-card.hit { outline: 3px solid var(--c-orange-knvb); outline-offset: 2px; }
+  .km-card .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 8px; }
+  .km-card h3 { font-family: var(--conduction-typography-font-family-code); font-size: 16px; font-weight: 600; margin: 0; overflow-wrap: anywhere; min-width: 0; }
+  .km-card h3 a { color: var(--c-cobalt-900); text-decoration: none; }
+  .km-card h3 a:hover { color: var(--c-coral-600); text-decoration: underline; }
+  .km-card .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .km-card .tag { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); white-space: nowrap; }
+  .km-card .tag.lib-pq { background: white; border-style: dashed; }
+  .km-card .purpose { font-size: 14px; line-height: 1.5; color: var(--c-cobalt-900); margin: 0; }
+  .km-card .purpose.none { color: var(--c-cobalt-400); }
+  .km-card .links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+  .km-card .links a { color: var(--c-blue-cobalt); }
+  .km-card .scr h4 { font-family: var(--conduction-typography-font-family-code); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin: 0 0 6px; }
+  .km-card .scr ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+  .km-card .scr li { font-size: 13px; line-height: 1.35; display: flex; flex-wrap: wrap; gap: 0 8px; min-width: 0; }
+  .km-card .scr li a { color: var(--c-blue-cobalt); overflow-wrap: anywhere; min-width: 0; }
+  .km-card .scr li code { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); overflow-wrap: anywhere; }
+  .km-card .scr details > summary { cursor: pointer; font-size: 13px; color: var(--c-blue-cobalt); margin-top: 4px; }
+  .km-card .scr details > summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .km-card .scr details ul { margin-top: 4px; }
+  .km-card .scr .zero { font-size: 13px; color: var(--c-cobalt-400); margin: 0; }
+
+  .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) { .sc-toolbar { position: static; } .sc-toolbar .count { margin-left: 0; } }
+</style>
+</head>
+<body class="sc-chrome">
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html" data-keep-lang data-i18n="comp.crumb.system">Design system</a> &nbsp;/&nbsp; <a href="index.html" data-keep-lang data-i18n="comp.crumb.screens">Screens</a> &nbsp;/&nbsp; <span data-i18n="comp.crumb.comp">Components</span></div>
+  <h1 data-i18n="comp.title">Components.</h1>
+  <p data-i18n="comp.lede">Which building blocks every screen is made of. The apps use the Cn components of nextcloud-vue, the websites use the site widgets of portaliq. Open a component to see its source and every screen that uses it.</p>
+  <div class="meta">
+    <span><span data-i18n="comp.meta.comp">Components</span><strong id="m-comp">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.nc">nextcloud-vue</span><strong id="m-nc">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.pq">portaliq site widgets</span><strong id="m-pq">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.screens">Screens with components</span><strong id="m-screens">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.generated">Mapped on</span><strong id="m-gen">&nbsp;</strong></span>
+    <span><span data-i18n="screens.meta.caps">What the screens deliver</span><strong><a href="../capabilities/index.html" data-keep-lang data-i18n="screens.link.caps">Capabilities</a></strong></span>
+  </div>
+</div>
+
+<main class="sc-wrap">
+  <details class="km-note" id="how">
+    <summary data-i18n="comp.how.title">How this mapping is made, and how to correct it</summary>
+    <p data-i18n="comp.how.p1">A script reads every drawn screen and recognises the canon patterns in it. A table with toolbar and pagination becomes CnDataTable with CnActionsBar. Folder tabs under a header become CnDetailPage. KPI tiles become CnDashTileWidget on CnDashboardGrid. Citizen and school pages map to the portaliq site widgets.</p>
+    <p data-i18n="comp.how.p2">Some things a pattern rule cannot see. Those are set per screen in an override file. Wrong or missing a component on a screen? Correct it there and run the script again.</p>
+    <ul>
+      <li><span data-i18n="comp.how.overrides">Corrections per screen</span>: <a href="https://github.com/ConductionNL/design-system/blob/main/screens-src/components-overrides.json" target="_blank" rel="noopener"><code>screens-src/components-overrides.json</code></a></li>
+      <li><span data-i18n="comp.how.script">Catalogue and pattern rules</span>: <a href="https://github.com/ConductionNL/design-system/blob/main/scripts/screens/components.py" target="_blank" rel="noopener"><code>scripts/screens/components.py</code></a></li>
+      <li><span data-i18n="comp.how.output">Output</span>: <code>preview/screens/components.json</code></li>
+    </ul>
+    <p id="none-wrap" hidden><span id="none-label"></span></p>
+    <div class="none" id="none-list" hidden></div>
+  </details>
+
+  <div class="km-fams" id="fams" role="group" aria-label="Family" data-i18n-attr="aria-label:comp.f.family"></div>
+</main>
+
+<div class="sc-toolbar" style="margin-top: var(--space-6);">
+  <div class="sc-wrap">
+    <div class="line">
+      <span class="f"><label class="label" for="f-family" data-i18n="comp.f.family">Family</label><select id="f-family"></select></span>
+      <span class="f"><label class="label" for="f-lib" data-i18n="comp.f.lib">Library</label><select id="f-lib"></select></span>
+      <span class="f"><label class="label" for="f-use" data-i18n="comp.f.use">Used</label><select id="f-use"></select></span>
+      <input type="search" id="q" autocomplete="off" placeholder="Search by name, purpose or screen id" data-i18n-attr="placeholder:comp.f.search,aria-label:screens.search.label" aria-label="Search">
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+  </div>
+</div>
+
+<main class="sc-wrap">
+  <section class="km-grid" id="grid" aria-label="Components" data-i18n-attr="aria-label:comp.meta.comp">
+    <p class="sc-empty" id="loading" data-i18n="comp.loading">Loading components.</p>
+  </section>
+  <p class="sc-empty" id="empty" hidden data-i18n="comp.empty">No component matches these filters.</p>
+</main>
+
+<div class="hub-footer">
+  <span data-i18n="comp.footer">Components · mapped by scripts/screens/components.py, corrections in screens-src/components-overrides.json</span>
+  <span><a href="index.html" data-keep-lang data-i18n="screens.link.gallery">Screens</a> &middot; <a href="../index.html" data-keep-lang data-i18n="screens.link.back">&larr; Back to system</a></span>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- i18n: same contract as ../i18n.js, plus t() ---------- */
+  var params = new URLSearchParams(location.search);
+  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var DICT = null;
+  function lookup(key) {
+    if (!DICT) return null;
+    if (typeof DICT[key] === 'string') return DICT[key];
+    var cur = DICT; var segs = key.split('.');
+    for (var i = 0; i < segs.length; i++) { if (cur == null || typeof cur !== 'object') return null; cur = cur[segs[i]]; }
+    return typeof cur === 'string' ? cur : null;
+  }
+  function t(key, fb, vars) {
+    var s = lookup(key) || fb;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  }
+  function applyStatic() {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = lookup(el.getAttribute('data-i18n')); if (v == null) return;
+      if (v.indexOf('<') !== -1 || v.indexOf('&') !== -1) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
+      el.getAttribute('data-i18n-attr').split(',').forEach(function (pair) {
+        var p = pair.split(':').map(function (s) { return s.trim(); });
+        var v = lookup(p[1]); if (v != null) el.setAttribute(p[0], v);
+      });
+    });
+    document.documentElement.setAttribute('lang', LANG === 'en' ? 'en' : (DICT && DICT._lang) || LANG);
+  }
+  var dictReady = LANG === 'en' ? Promise.resolve() :
+    fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
+  function withLang(url) {
+    if (!params.get('lang')) return url;
+    var i = url.indexOf('#');
+    var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
+  }
+  document.querySelectorAll('a[data-keep-lang]').forEach(function (a) { a.href = withLang(a.getAttribute('href')); });
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function boardHref(id) { return withLang('board.html?id=' + encodeURIComponent(id).replace(/%2F/g, '/')); }
+
+  var FAMILY = {
+    list: ['comp.fam.list', 'list'], detail: ['comp.fam.detail', 'detail'], dialog: ['comp.fam.dialog', 'dialog'],
+    dashboard: ['comp.fam.dashboard', 'dashboard'], nav: ['comp.fam.nav', 'navigation'], form: ['comp.fam.form', 'form'],
+    kanban: ['comp.fam.kanban', 'kanban'], chrome: ['comp.fam.chrome', 'chrome'], widget: ['comp.fam.widget', 'widget'],
+    'site-widget': ['comp.fam.siteWidget', 'site widget'], other: ['comp.fam.other', 'other']
+  };
+  function famLabel(f) { var m = FAMILY[f]; return m ? t(m[0], m[1]) : (f || t('comp.fam.other', 'other')); }
+  var SHOWN = 8;
+
+  var K, S, LIST = [], TITLES = {};
+  var fFamily = document.getElementById('f-family');
+  var fLib = document.getElementById('f-lib');
+  var fUse = document.getElementById('f-use');
+  var q = document.getElementById('q');
+  var grid = document.getElementById('grid');
+
+  function isPq(key) { return key.indexOf('portaliq:') === 0; }
+
+  function opts(sel, list) {
+    sel.innerHTML = '';
+    list.forEach(function (o) { sel.appendChild(el('option', { value: o[0], text: o[1] })); });
+  }
+
+  function famCounts() {
+    var n = {};
+    LIST.forEach(function (c) { n[c.family] = (n[c.family] || 0) + 1; });
+    return n;
+  }
+  function famOrder(n) {
+    var order = Object.keys(FAMILY).filter(function (f) { return n[f]; });
+    Object.keys(n).forEach(function (f) { if (order.indexOf(f) === -1) order.push(f); });
+    return order;
+  }
+
+  function buildFilters() {
+    var n = famCounts(), order = famOrder(n);
+    opts(fFamily, [['', t('comp.f.all', 'All')]].concat(order.map(function (f) { return [f, famLabel(f) + ' (' + n[f] + ')']; })));
+    opts(fLib, [['', t('comp.f.all', 'All')], ['nc', 'nextcloud-vue'], ['pq', t('comp.meta.pq', 'portaliq site widgets')]]);
+    opts(fUse, [['', t('comp.f.all', 'All')], ['yes', t('comp.f.used', 'On at least one screen')], ['no', t('comp.f.unused', 'On no screen')]]);
+
+    var bar = document.getElementById('fams'); bar.innerHTML = '';
+    [''].concat(order).forEach(function (f) {
+      var b = el('button', { type: 'button', 'data-f': f, 'aria-pressed': 'false' }, [
+        f ? famLabel(f) : t('comp.f.allFamilies', 'All families'),
+        el('span', { class: 'n', text: String(f ? n[f] : LIST.length) })
+      ]);
+      b.addEventListener('click', function () { fFamily.value = f; apply(); });
+      bar.appendChild(b);
+    });
+  }
+
+  function screenList(ids) {
+    var ul = el('ul');
+    ids.forEach(function (id) {
+      var tt = TITLES[id];
+      ul.appendChild(el('li', null, [
+        el('a', { href: boardHref(id), text: tt || id }),
+        tt ? el('code', { text: id }) : null
+      ]));
+    });
+    return ul;
+  }
+
+  function card(c) {
+    var top = el('div', { class: 'top' }, [
+      el('h3', null, [c.source ? el('a', { href: c.source, target: '_blank', rel: 'noopener', text: c.name }) : c.name]),
+      el('span', { class: 'tags' }, [
+        el('span', { class: 'tag', text: famLabel(c.family) }),
+        el('span', { class: 'tag' + (c.pq ? ' lib-pq' : ''), text: c.pq ? 'portaliq' : 'nextcloud-vue' })
+      ])
+    ]);
+    var purpose = el('p', { class: 'purpose' + (c.purpose ? '' : ' none'), text: c.purpose || t('comp.noPurpose', 'No purpose written yet.') });
+    var links = el('div', { class: 'links' }, [
+      c.source ? el('a', { href: c.source, target: '_blank', rel: 'noopener', text: t('comp.source', 'Source on GitHub') }) : null,
+      c.docs ? el('a', { href: c.docs, target: '_blank', rel: 'noopener', text: t('comp.docs', 'Documentation') }) : null
+    ]);
+    var scr = el('div', { class: 'scr' }, [el('h4', { text: t('comp.screens', 'Screens ({n})', { n: c.screens.length }) })]);
+    if (!c.screens.length) scr.appendChild(el('p', { class: 'zero', text: t('comp.noScreens', 'No screen uses this component yet.') }));
+    else {
+      scr.appendChild(screenList(c.screens.slice(0, SHOWN)));
+      if (c.screens.length > SHOWN) {
+        var d = el('details', null, [el('summary', { text: t('comp.more', '+{n} more', { n: c.screens.length - SHOWN }) }), screenList(c.screens.slice(SHOWN))]);
+        scr.appendChild(d);
+      }
+    }
+    var art = el('article', { class: 'km-card', id: 'c-' + c.key.replace(/[^A-Za-z0-9_-]/g, '-') }, [top, purpose, links, scr]);
+    c.node = art;
+    return art;
+  }
+
+  function hay(c) {
+    return [c.key, c.name, c.purpose, c.family, famLabel(c.family)].concat(c.screens).concat(c.screens.map(function (id) { return TITLES[id] || ''; })).join('\n').toLowerCase();
+  }
+
+  function apply() {
+    var fam = fFamily.value, lib = fLib.value, use = fUse.value;
+    var terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    var shown = 0, scr = {};
+    LIST.forEach(function (c) {
+      var ok = (!fam || c.family === fam) && (!lib || (lib === 'pq') === c.pq) &&
+        (!use || (use === 'yes') === (c.screens.length > 0)) &&
+        terms.every(function (w) { return c.hay.indexOf(w) !== -1; });
+      c.node.hidden = !ok;
+      if (ok) { shown++; c.screens.forEach(function (id) { scr[id] = 1; }); }
+    });
+    document.querySelectorAll('#fams button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-f') === fam)); });
+    document.getElementById('count').textContent = t('comp.count', '{n} of {m} components, on {s} screens', { n: shown, m: LIST.length, s: Object.keys(scr).length });
+    document.getElementById('empty').hidden = shown > 0;
+    var h = [];
+    if (fam) h.push('family=' + encodeURIComponent(fam));
+    if (lib) h.push('lib=' + lib);
+    if (use) h.push('use=' + use);
+    if (q.value) h.push('q=' + encodeURIComponent(q.value));
+    history.replaceState(null, '', location.pathname + location.search + (h.length ? '#' + h.join('&') : ''));
+  }
+
+  function readHash() {
+    var h = location.hash.slice(1);
+    if (!h) return null;
+    if (h.indexOf('=') === -1) return { focus: decodeURIComponent(h) };
+    var o = {};
+    h.split('&').forEach(function (p) { var i = p.indexOf('='); if (i > 0) o[p.slice(0, i)] = decodeURIComponent(p.slice(i + 1)); });
+    return o;
+  }
+
+  function render() {
+    var comps = K.components || {};
+    LIST = Object.keys(comps).map(function (k) {
+      var c = comps[k] || {};
+      return { key: k, name: c.name || k.replace(/^portaliq:/, ''), purpose: c.purpose || '', source: c.source || '',
+        docs: c.docs || '', family: c.family || 'other', pq: isPq(k), screens: (c.screens || []).slice() };
+    });
+    LIST.sort(function (a, b) { return b.screens.length - a.screens.length || a.name.localeCompare(b.name); });
+    LIST.forEach(function (c) { c.hay = hay(c); });
+
+    var screens = K.screens || {};
+    var withC = Object.keys(screens).filter(function (id) { return (screens[id].components || []).length; });
+    var without = Object.keys(screens).filter(function (id) { return !(screens[id].components || []).length; });
+    document.getElementById('m-comp').textContent = String(LIST.length);
+    document.getElementById('m-nc').textContent = String(LIST.filter(function (c) { return !c.pq; }).length);
+    document.getElementById('m-pq').textContent = String(LIST.filter(function (c) { return c.pq; }).length);
+    document.getElementById('m-screens').textContent = t('comp.meta.ofScreens', '{n} of {m}', { n: withC.length, m: Object.keys(screens).length });
+    document.getElementById('m-gen').textContent = K.generated || '';
+
+    if (without.length) {
+      document.getElementById('none-wrap').hidden = false;
+      document.getElementById('none-label').textContent = t('comp.how.none', 'Screens without a component ({n}):', { n: without.length });
+      var nl = document.getElementById('none-list'); nl.hidden = false; nl.innerHTML = '';
+      without.forEach(function (id) {
+        var note = screens[id].note;
+        var a = el('a', { href: boardHref(id), text: id });
+        if (note) a.setAttribute('title', note);
+        nl.appendChild(a);
+      });
+    }
+
+    buildFilters();
+    grid.innerHTML = '';
+    LIST.forEach(function (c) { grid.appendChild(card(c)); });
+
+    var h = readHash();
+    if (h && !h.focus) {
+      if (h.family) fFamily.value = h.family;
+      if (h.lib) fLib.value = h.lib;
+      if (h.use) fUse.value = h.use;
+      if (h.q) q.value = h.q;
+    }
+    apply();
+    if (h && h.focus) {
+      var hit = document.getElementById(h.focus) || document.getElementById('c-' + h.focus.replace(/[^A-Za-z0-9_-]/g, '-'));
+      if (hit) { hit.classList.add('hit'); hit.scrollIntoView({ block: 'center' }); }
+    }
+  }
+
+  [fFamily, fLib, fUse].forEach(function (s) { s.addEventListener('change', apply); });
+  var tm = null;
+  q.addEventListener('input', function () { clearTimeout(tm); tm = setTimeout(apply, 120); });
+
+  Promise.all([
+    fetch('components.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    fetch('screens.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    dictReady
+  ]).then(function (res) {
+    K = res[0]; S = res[1];
+    if (S && S.boards) Object.keys(S.boards).forEach(function (n) { var b = S.boards[n]; TITLES[b.id || n] = b.title || ''; });
+    render();
+  }).catch(function (err) {
+    grid.innerHTML = '';
+    grid.appendChild(el('p', { class: 'sc-empty', text: t('comp.error', 'Could not load the components.') + ' (' + err.message + ')' }));
+  });
+})();
+</script>
+</body>
+</html>

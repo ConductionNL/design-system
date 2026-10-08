@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: openbare startpagina</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 880px">
+  <header style="display: flex; align-items: center; gap: 16px; height: 72px; padding: 0 32px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+    <img src="/_blob/ca3780498365dca18f9882aca801f345" alt="Gemeente Zuiddrecht" style="height: 44px; width: auto">
+    <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: 13px; color: #5e6168">Gemeente Zuiddrecht</span><strong style="font-size: 18px; font-weight: 700">Openbare startpagina</strong></span>
+    <span style="flex: 1"></span>
+    <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10,17V14H3V10H10V7L15,12L10,17M10,2H19A2,2 0 0,1 21,4V20A2,2 0 0,1 19,22H10A2,2 0 0,1 8,20V18H10V20H19V4H10V6H8V4A2,2 0 0,1 10,2Z"></path></svg>Inloggen voor medewerkers</a>
+  </header>
+  <main style="width: 100%; max-width: 1200px; box-sizing: border-box; margin: 0 auto; padding: 32px 32px 40px; display: flex; flex-direction: column; gap: 20px; flex: 1 1 auto">
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Openbare startpagina</h1>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 15px; color: #5e6168">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"></path></svg>Alleen-lezen weergave</span>
+        <span>Voor inwoners, ondernemers en bezoekers · bijgewerkt vandaag 08.30</span>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start">
+      <section aria-labelledby="p-news" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px 8px; display: flex; flex-direction: column">
+        <h2 id="p-news" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Nieuws</h2>
+        <sc-for list="{{ news }}" as="n" hint-placeholder-count="4">
+          <a href="#" style="display: flex; flex-direction: column; gap: 3px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 16px; font-weight: 600">{{ n.title }}</span><span style="font-size: 14px; color: #3d4047; line-height: 1.45">{{ n.lead }}</span><span style="font-size: 13px; color: #5e6168">{{ n.when }}</span></a>
+        </sc-for>
+      </section>
+
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <section aria-labelledby="p-open" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+          <h2 id="p-open" style="margin: 0; font-size: 18px; font-weight: 700">Openingstijden stadskantoor</h2>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #1e6b2a"><span style="width: 8px; height: 8px; border-radius: 4px; background: #1e6b2a"></span>Nu open, tot 17.00</span>
+          <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 14px">
+            <sc-for list="{{ hours }}" as="h" hint-placeholder-count="4"><dt style="color: #5e6168">{{ h.d }}</dt><dd style="margin: 0">{{ h.t }}</dd></sc-for>
+          </dl>
+          <span style="font-size: 13px; color: #5e6168">Paspoort of rijbewijs? Maak eerst een afspraak.</span>
+        </section>
+
+        <section aria-labelledby="p-down" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px 8px; display: flex; flex-direction: column">
+          <h2 id="p-down" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Storingen en onderhoud</h2>
+          <sc-for list="{{ outages }}" as="o" hint-placeholder-count="2">
+            <div style="display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid #eef0f3">
+              <span style="{{ o.dot }}"></span>
+              <span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px; font-weight: 600">{{ o.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ o.meta }}</span></span>
+            </div>
+          </sc-for>
+        </section>
+
+        <section aria-labelledby="p-contact" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+          <h2 id="p-contact" style="margin: 0; font-size: 18px; font-weight: 700">Contact</h2>
+          <span style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3669a5"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"></path></svg>14 0180, werkdagen 08.00 tot 17.00</span>
+          <span style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3669a5"><path d="M15,4V11H5.17L4,12.17V4H15M16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12V3A1,1 0 0,0 16,2M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z"></path></svg><a href="#">Stel uw vraag via het contactformulier</a></span>
+          <span style="color: #3d4047">Stadskantoor, Raadhuisplein 1, Zuiddrecht</span>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer style="background: #234a78; color: #ffffff; padding: 22px 32px; display: flex; flex-wrap: wrap; gap: 10px 28px; font-size: 14px">
+    <strong style="font-weight: 600">Gemeente Zuiddrecht</strong>
+    <a href="#" style="color: #ffffff">Privacyverklaring</a><a href="#" style="color: #ffffff">Toegankelijkheid</a><a href="#" style="color: #ffffff">zuiddrecht.nl</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":880}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const news = [
+      ['Gemeente start proef met deelauto’s in Oosthaven', 'Vanaf november staan er tien deelauto’s in de wijk. Inwoners rijden de eerste maand gratis.', 'Vandaag'],
+      ['Nieuw parkeerbeleid binnenstad', 'De raad stemde in met betaald parkeren op zaterdag. Bewoners houden hun vergunning.', 'Vrijdag 2 oktober'],
+      ['Inloopavond Havenpark op 14 oktober', 'Bekijk de plannen voor 600 woningen en praat met het projectteam in het stadskantoor.', 'Donderdag 1 oktober'],
+      ['Afvalkalender 2027 staat online', 'Download de kalender of zet de ophaaldagen in uw eigen agenda.', 'Woensdag 30 september']
+    ].map(([title, lead, when]) => ({ title, lead, when }));
+    const hours = [['Maandag tot vrijdag', '08.30 tot 17.00'], ['Donderdagavond', '18.00 tot 20.00, op afspraak'], ['Zaterdag 10 oktober', '09.00 tot 12.00, alleen reisdocumenten'], ['Zondag', 'Gesloten']].map(([d, t]) => ({ d, t }));
+    const dot = (c) => 'width: 10px; height: 10px; flex: none; margin-top: 6px; border-radius: 5px; background: ' + c;
+    const outages = [
+      ['Zaaksysteem in onderhoud', 'Zaterdag 10 oktober 08.00 tot 12.00. Online aanvragen kunnen dan niet.', '#e0a030'],
+      ['Storing ophaaldienst Oosthaven verholpen', 'Het restafval wordt dinsdag alsnog opgehaald.', '#1e6b2a']
+    ].map(([title, meta, c]) => ({ title, meta, dot: dot(c) }));
+    return { news, hours, outages };
+  }
+}
+</script>
+</body>
+</html>

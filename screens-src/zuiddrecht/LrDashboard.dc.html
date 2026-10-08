@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>larpinq: dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: relative; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1400px">
+  <dc-import name="DqKop" app="Larpinq" placeholder="Zoek karakters, spelers of evenementen" role="Spelleider" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="larpinq" primary="Nieuw karakter" active="Dashboard" groups="{{ nav }}" hint-size="264px,1400px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 260px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Dashboard</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuw voorwerp</button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuwe toestand</button>
+              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuw karakter</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168">
+            <span>Campagne De Zuiderlanden · vandaag 8 oktober</span>
+            <span aria-hidden="true">·</span>
+            <label for="lr-wereld" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Wereld</label>
+            <select id="lr-wereld" style="height: 34px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Wereld: De Zuiderlanden</option><option>Wereld: Nevelkust (gearchiveerd)</option></select>
+            <span style="font-size: 13px">uw keuze wordt onthouden</span>
+          </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <a href="{{ k.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; color: #1b1c1d; text-decoration: none">
+              <span style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5e6168"><span style="width: 30px; height: 30px; flex: none; border-radius: 8px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ k.icon }}"></path></svg></span>{{ k.label }}</span>
+              <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="font-size: 13px; color: #5e6168">{{ k.note }}</span>
+            </a>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="lr-recent" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px 12px; display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+                <h2 id="lr-recent" style="margin: 0; font-size: 18px; font-weight: 700">Recente karakters</h2>
+                <a href="LrKarakters.dc.html" style="font-size: 14px; font-weight: 600">Alle karakters</a>
+              </div>
+              <div style="overflow-x: auto">
+                <table style="border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px">
+                  <thead><tr style="text-align: left; color: #5e6168"><th scope="col" style="padding: 10px 8px 10px 0; font-weight: 600">Karakter</th><th scope="col" style="padding: 10px 8px; font-weight: 600">Speler</th><th scope="col" style="padding: 10px 8px; font-weight: 600">Type</th><th scope="col" style="padding: 10px 8px; font-weight: 600">Goedkeuring</th><th scope="col" style="padding: 10px 0 10px 8px; font-weight: 600; text-align: right">Gewijzigd</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ recent }}" as="r" hint-placeholder-count="5">
+                      <tr style="border-top: 1px solid #eef0f3">
+                        <td style="padding: 12px 8px 12px 0"><span style="display: flex; flex-direction: column; gap: 2px"><a href="LrKarakter.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.name }}</a><span style="color: #5e6168; font-size: 13px">{{ r.role }}</span></span></td>
+                        <td style="padding: 12px 8px">{{ r.player }}</td>
+                        <td style="padding: 12px 8px"><span style="{{ r.typeStyle }}">{{ r.type }}</span></td>
+                        <td style="padding: 12px 8px"><span style="{{ r.apprStyle }}">{{ r.appr }}</span></td>
+                        <td style="padding: 12px 0 12px 8px; text-align: right; color: #5e6168; white-space: nowrap">{{ r.when }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="lr-vaardig" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+                <h2 id="lr-vaardig" style="margin: 0; font-size: 18px; font-weight: 700">Vaardigheden in gebruik</h2>
+                <span style="font-size: 14px; color: #5e6168">aantal karakters met deze vaardigheid, De Zuiderlanden</span>
+              </div>
+              <sc-for list="{{ skills }}" as="s" hint-placeholder-count="5">
+                <div style="display: grid; grid-template-columns: 170px 1fr 36px; gap: 14px; align-items: center; font-size: 14px">
+                  <span style="font-weight: 600">{{ s.name }}</span>
+                  <span style="height: 12px; border-radius: 6px; background: #eef0f3; overflow: hidden"><span style="{{ s.bar }}"></span></span>
+                  <span style="text-align: right; font-weight: 600">{{ s.count }}</span>
+                </div>
+              </sc-for>
+              <a href="#" style="font-size: 14px; font-weight: 600; align-self: flex-start">Rapport wereldinhoud openen</a>
+            </section>
+          </div>
+
+          <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="lr-komend" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px 10px; display: flex; flex-direction: column; gap: 4px">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lr-komend" style="margin: 0; font-size: 18px; font-weight: 700">Komende evenementen</h2><a href="#" style="font-size: 14px; font-weight: 600">Alle</a></div>
+              <sc-for list="{{ events }}" as="e" hint-placeholder-count="2">
+                <a href="#" style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                  <span style="flex: none; width: 48px; padding: 6px 0; border-radius: 8px; background: #eaf0f7; color: #234a78; display: flex; flex-direction: column; align-items: center; line-height: 1.1"><strong style="font-size: 18px">{{ e.day }}</strong><span style="font-size: 12px; font-weight: 600">{{ e.month }}</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0"><strong style="font-size: 15px">{{ e.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ e.meta }}</span><span style="{{ e.noteStyle }}">{{ e.note }}</span></span>
+                </a>
+              </sc-for>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #5e6168">Wacht op goedkeuring</h2>
+              <div style="display: flex; gap: 12px; align-items: center"><span style="width: 40px; height: 40px; flex: none; border-radius: 20px; background: #fff4de; color: #7a4f00; display: flex; align-items: center; justify-content: center; font-weight: 700">3</span><span style="display: flex; flex-direction: column"><strong style="font-size: 15px">karakters ingediend</strong><span style="font-size: 13px; color: #5e6168">oudste: Mira Valk, sinds 6 okt</span></span></div>
+              <a href="LrKarakters.dc.html" style="font-size: 14px; font-weight: 600">Beoordelen</a>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div role="dialog" aria-label="Meldingen" style="position: absolute; top: 62px; right: 210px; width: 400px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 12px 36px rgba(27,28,29,0.22); display: flex; flex-direction: column">
+    <span aria-hidden="true" style="position: absolute; top: -7px; right: 78px; width: 12px; height: 12px; background: #ffffff; border-left: 1px solid #e4e6ea; border-top: 1px solid #e4e6ea; transform: rotate(45deg)"></span>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #eef0f3"><strong style="font-size: 16px">Meldingen</strong><a href="#" style="font-size: 13px; font-weight: 600">Alles gelezen</a></div>
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+      <a href="{{ n.href }}" style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 18px; border-bottom: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+        <span style="{{ n.chip }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ n.icon }}"></path></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><strong style="font-size: 14px; font-weight: 600; line-height: 1.4">{{ n.text }}</strong><span style="font-size: 13px; color: #5e6168">Larpinq · {{ n.when }}</span></span>
+      </a>
+    </sc-for>
+    <a href="#" style="padding: 12px 18px; font-size: 14px; font-weight: 600; text-align: center">Alle meldingen</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Werelden', 'book']] },
+      { title: 'Karakters', items: [['Karakters', 'people'], ['Spelers', 'people'], ['Nieuwe spelers', 'inbox', 3], ['Facties', 'shield'], ['Plots', 'doc'], ['Cast', 'people']] },
+      { title: 'Spelregels', items: [['Eigenschappen', 'chart'], ['Vaardigheden', 'check'], ['Vaardighedenboom', 'pipeline'], ['Toestanden', 'heart'], ['Effecten', 'trend']] },
+      { title: 'Wereld', items: [['Voorwerpen', 'products'], ['Evenementen', 'cal'], ['XP-toekenningen', 'trend'], ['Lore', 'book'], ['Karaktervelden', 'doc'], ['Aanmeldingen', 'inbox'], ['Mijn aanmeldingen', 'inbox']] }
+    ];
+    const I = {
+      people: 'M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z',
+      cal: 'M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z',
+      item: 'M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z',
+      player: 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z',
+      check: 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z',
+      send: 'M2,21L23,12L2,3V10L17,12L2,14V21Z',
+      clock: 'M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z',
+      cash: 'M3,6H21V18H3V6M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M7,8A2,2 0 0,1 5,10V14A2,2 0 0,1 7,16H17A2,2 0 0,1 19,14V10A2,2 0 0,1 17,8H7Z'
+    };
+    const kpis = [
+      ['Karakters', '24', '19 spelers, 5 NPC’s', I.people, 'LrKarakters.dc.html'],
+      ['Evenementen', '3', 'volgende over 2 dagen', I.cal, '#'],
+      ['Voorwerpen', '41', 'waarvan 6 uniek', I.item, '#'],
+      ['Spelers', '31', '3 nieuwe aanmeldingen', I.player, '#']
+    ].map(([label, value, note, icon, href]) => ({ label, value, note, icon, href }));
+    const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const TY = { 'Speler': pill('#eaf0f7', '#234a78'), 'NPC': pill('#e8e6f6', '#4a3f8f') };
+    const AP = { 'Goedgekeurd': pill('#e7f3ea', '#1e6b2a'), 'Ingediend': pill('#fff4de', '#7a4f00'), 'Concept': pill('#f0f1f3', '#3d4047') };
+    const recent = [
+      ['Mira Valk', 'verkenner · Gilde van de Wilgen', 'Anouk Bakker', 'Speler', 'Ingediend', 'vandaag 09.12'],
+      ['Elandra van de Wilgen', 'heler · Gilde van de Wilgen', 'Sanne Yilmaz', 'Speler', 'Goedgekeurd', 'gisteren'],
+      ['Isolde Raaf', 'magiër · Raad van Zuiddrecht', 'Daan de Vries', 'Speler', 'Concept', '6 okt'],
+      ['Thorvald de Grijze', 'NPC · Raad van Zuiddrecht', 'Lars de Koning (crew)', 'NPC', 'Goedgekeurd', '5 okt'],
+      ['Brom IJzerhand', 'smid · Raad van Zuiddrecht', 'Pieter Jansen', 'Speler', 'Goedgekeurd', '2 okt']
+    ].map(([name, role, player, type, appr, when]) => ({ name, role, player, type, typeStyle: TY[type], appr, apprStyle: AP[appr], when }));
+    const max = 14;
+    const skills = [['Eerste hulp', 14], ['Zwaardvechten', 11], ['Kruidenkunde', 8], ['Smeden', 5], ['Spreuk: Genezing', 3]]
+      .map(([name, count]) => ({ name, count, bar: 'display: block; height: 100%; border-radius: 6px; background: #3669a5; width: ' + Math.round(count / max * 100) + '%' }));
+    const events = [
+      ['10', 'okt', 'Herfstbijeenkomst', '10 tot 12 oktober 2026 · Landgoed Wilgenrode', '38 aanmeldingen, 4 wachten op betaling', 'font-size: 13px; color: #7a4f00; font-weight: 600'],
+      ['jan', '2027', 'Wintertocht', 'januari 2027 · datum volgt', 'aanmelden opent 1 november', 'font-size: 13px; color: #5e6168']
+    ].map(([day, month, name, meta, note, noteStyle]) => ({ day, month, name, meta, note, noteStyle }));
+    const chip = (bg, fg) => 'width: 34px; height: 34px; flex: none; border-radius: 17px; display: flex; align-items: center; justify-content: center; background: ' + bg + '; color: ' + fg;
+    const notes = [
+      ['Mira Valk is ingediend ter goedkeuring', '09.12', I.send, chip('#fff4de', '#7a4f00'), 'LrKarakter.dc.html'],
+      ['Elandra van de Wilgen is goedgekeurd', 'gisteren 16.40', I.check, chip('#e7f3ea', '#1e6b2a'), 'LrKarakter.dc.html'],
+      ['Zomertreffen begint over 3 dagen', '10 jun 09.00', I.clock, chip('#eaf0f7', '#234a78'), '#'],
+      ['Aanmelding Daan de Vries: betaling verloopt over 3 dagen', '08.00', I.cash, chip('#fcedec', '#a30000'), '#']
+    ].map(([text, when, icon, chipS, href]) => ({ text, when, icon, chip: chipS, href }));
+    return { nav, kpis, recent, skills, events, notes };
+  }
+}
+</script>
+</body>
+</html>

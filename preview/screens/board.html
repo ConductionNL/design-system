@@ -67,6 +67,14 @@
   .side .iss .lbl { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); }
   .side .iss .all { font-size: 13px; color: var(--c-blue-cobalt); }
   .side .iss .retry { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; margin-left: 4px; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
+  .side .comp .grp { display: flex; flex-direction: column; gap: 6px; }
+  .side .comp .grp + .grp { margin-top: var(--space-3); }
+  .side .comp h3 { font-size: 12px; font-weight: 600; color: var(--c-cobalt-700); margin: 0; }
+  .side .comp .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .side .comp .chip { font-family: var(--conduction-typography-font-family-code); font-size: 11.5px; line-height: 1.4; padding: 2px 8px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-blue-cobalt); text-decoration: none; overflow-wrap: anywhere; }
+  .side .comp .chip:hover { border-color: var(--c-blue-cobalt); color: var(--c-coral-600); }
+  .side .comp .chip:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+  .side .comp .all { font-size: 13px; color: var(--c-blue-cobalt); }
   .side .fb { justify-content: center; }
   .side .fb-note { font-size: 12px; color: var(--c-cobalt-700); margin: 0; line-height: 1.45; }
 
@@ -133,6 +141,12 @@
       <h2 data-i18n="screens.side.specs">Specs</h2>
       <ul id="specs-list"></ul>
       <p class="empty" id="specs-empty" hidden data-i18n="screens.side.noSpecs">No spec yet.</p>
+    </section>
+    <section class="box comp" id="comp" hidden>
+      <h2 data-i18n="screens.side.comp">Components</h2>
+      <div id="comp-groups"></div>
+      <p class="empty" id="comp-empty" hidden></p>
+      <a class="all" id="comp-all" href="components.html" data-i18n="screens.side.compAll">All components</a>
     </section>
     <section class="box repo">
       <h2 data-i18n="screens.side.repo">Repository</h2>
@@ -202,7 +216,7 @@
   var SCHOOLS = { wilgenboom: 1, vaartveld: 1, esdoornveen: 1, warmtepompacademie: 1 };
   var MAX_URL = 6000;
 
-  var S, DS, C, name, board, set, dsId;
+  var S, DS, C, K, name, board, set, dsId;
   var ORDER = [];           /* every board once, in gallery order */
   var frame = document.getElementById('frame');
   var stage = document.getElementById('stage');
@@ -432,6 +446,8 @@
     });
     document.getElementById('specs-empty').hidden = specs.length > 0;
 
+    renderComp();
+
     var repo = repoOf(board);
     var rl = document.getElementById('repo-link');
     rl.href = board.repoUrl || 'https://github.com/' + repo; rl.textContent = repo;
@@ -450,6 +466,43 @@
     var about = document.getElementById('about');
     about.hidden = !board.note;
     document.getElementById('notetext').textContent = board.note || '';
+  }
+
+  /* ---------- components of this screen, from components.json (scripts/screens/components.py) ----------
+     Chips link to the component's source on GitHub; the hover title is its purpose.
+     Grouped by library: nextcloud-vue (Cn*) and the portaliq site widgets (key prefix "portaliq:").
+     A screen without an entry shows no section at all. */
+  function renderComp() {
+    var box = document.getElementById('comp');
+    var groups = document.getElementById('comp-groups'); groups.innerHTML = '';
+    var entry = K && K.screens ? K.screens[board.id || name] : null;
+    box.hidden = !entry;
+    if (!entry) return;
+    var keys = entry.components || [];
+    var lib = { nc: [], pq: [] };
+    keys.forEach(function (k) { (k.indexOf('portaliq:') === 0 ? lib.pq : lib.nc).push(k); });
+    [['nc', 'screens.side.compNc', 'nextcloud-vue'], ['pq', 'screens.side.compPq', 'portaliq site widgets']].forEach(function (g) {
+      var list = lib[g[0]];
+      if (!list.length) return;
+      var chips = el('div', { class: 'chips' });
+      list.forEach(function (k) {
+        var c = (K.components || {})[k] || {};
+        var label = c.name || k.replace(/^portaliq:/, '');
+        var tip = [c.purpose, c.family].filter(Boolean).join(' · ');
+        var a = c.source
+          ? el('a', { class: 'chip', href: c.source, target: '_blank', rel: 'noopener', text: label })
+          : el('span', { class: 'chip', text: label });
+        if (tip) a.setAttribute('title', tip);
+        chips.appendChild(a);
+      });
+      groups.appendChild(el('div', { class: 'grp' }, [
+        el('h3', { text: t(g[1], g[2]) + ' (' + list.length + ')' }), chips
+      ]));
+    });
+    var empty = document.getElementById('comp-empty');
+    empty.hidden = keys.length > 0;
+    empty.textContent = keys.length ? '' : (entry.note || t('screens.side.compNone', 'No component assigned to this screen.'));
+    document.getElementById('comp-all').href = withLang('components.html') + '#q=' + encodeURIComponent(board.id || name);
   }
 
   /* ---------- open issues about this screen, live from GitHub search ----------
@@ -651,9 +704,10 @@
     fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
     window.screensTheme.ready,
     dictReady,
-    fetch('capabilities.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    fetch('capabilities.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    fetch('components.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
   ]).then(function (res) {
-    S = res[0]; DS = res[1]; C = res[3];
+    S = res[0]; DS = res[1]; C = res[3]; K = res[4];
     buildOrder();
     var n = findBoard();
     if (!n && params.get('start') === 'first') n = ORDER[0];

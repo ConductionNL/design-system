@@ -20,7 +20,7 @@ No npm packages.
 ## Add a screen
 
 1. Add `screens-src/<set>/<Name>.dc.html`.
-2. Register it. Zuiddrecht: add `"<Name>.dc.html"` to a column in `rows1.json` or `rows2.json`, and an entry under `boards` in `canvas1.json` or `canvas2.json` with `title`, `w` and `h`. Add the capability note as `notes.cap_<Name>.text` ("Capabilities: a, b.\nWat je ziet: ..."). School: add it to `order` and `boards` in that school's `canvas.json`.
+2. Register it. A Zuiddrecht board of one app: add it to that app's own file `screens-src/zuiddrecht/apps/<app>.json` (`{"rows": [["row<App>", "<row title>", [["<Name>.dc.html"]]]], "boards": {"<Name>.dc.html": {"title": ..., "w": 1440, "h": 1200}}, "notes": {"cap_<Name>": {"text": "Capabilities: a, b.\nWat je ziet: ..."}}}`), so work on different apps never edits the same file. The older boards are registered the other way: add `"<Name>.dc.html"` to a column in `rows1.json` or `rows2.json`, and an entry under `boards` in `canvas1.json` or `canvas2.json` with `title`, `w` and `h`. Add the capability note as `notes.cap_<Name>.text` ("Capabilities: a, b.\nWat je ziet: ..."). School: add it to `order` and `boards` in that school's `canvas.json`.
 3. Rebuild that board with `--only`.
 
 ## What the build does
@@ -67,6 +67,8 @@ It writes:
 - `preview/screens/screens.json`: every board gets `repo`, `repoUrl`, `repos` (the school website boards also name portaliq), `src` (path in this repo), `capIds` (from the board's capability note), `matrixCapIds` (matrix rows whose `screen` field names the board) and `specs`.
 
 How a token in a board's capability note is read: the part before the first space or bracket is the token, and anything in brackets is kept as a note. The token is looked up as a spec, then a matrix row, then an open change, first in the board's own app and then in the only other app that has it. Tokens starting with `of-` (Open Formulieren) or `oi-` (Open Inwoner), or starting with `NLDS` or `Den Haag`, are external references. Anything else is free text.
+
+A capability is on a screen when a matrix row's `screen.board` (or `built.screen.board`) names a board, or a board's capability note names it. A row with `screen: {"board": null, "reason": "..."}` has no screen by nature (an API, a background job) and says why. A spec is on the screens of the rows that link it; a spec no row links can be placed with the matrix's top-level `specScreens`: `{"<spec>": {"board": ["<Board>"]}}` or `{"<spec>": {"board": null, "reason": "..."}}`. The run prints per app how many are on a screen, have a reason, or are missing one (decided-no left out); the page filters on the same three states.
 
 What each status means:
 

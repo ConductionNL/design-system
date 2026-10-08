@@ -57,6 +57,7 @@ SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']
 SCHOOL_APP_BOARDS = re.compile(r'^(Lq|Nc|Lp|AppZijbalk|WerkKop)')
 STATE_ORDER = ['built', 'building', 'specified', 'decided-no']
 NO_FEATURE = '_none'  # the group per app for capabilities no feature claims
+INTERNAL = '_internal'  # the group per app for specs the matrix lists as internalSpecs (no user-facing capability)
 NONE_TOKENS = {'', 'geen spec genoemd', 'geen', 'geen spec'}
 
 
@@ -169,8 +170,36 @@ def load_app(co):
             'systems': systems, 'systemNames': names,
             'areas': {a.get('key'): a for a in parity.get('areas', []) if isinstance(a, dict)},
             'features': [f for f in parity.get('features', []) if isinstance(f, dict) and f.get('slug')],
+            'specScreens': parity.get('specScreens') if isinstance(parity.get('specScreens'), dict) else {},
+            'internalSpecs': {x for x in parity.get('internalSpecs', []) if isinstance(x, str)},
             'overlay': {o['slug']: o for o in overlay if isinstance(o, dict) and o.get('slug')} if isinstance(overlay, list) else {},
             'decisions': latest}
+
+
+def spec_rows_of(app, d, caps):
+    """spec name -> ids of the matrix rows that link it (spec list, built.spec, built.change, Purpose)."""
+    out = {}
+    for r in d['rows']:
+        built = r.get('built') if isinstance(r.get('built'), dict) else {}
+        names = {x['name'] for x in (caps.get(f'{app}/{r["id"]}') or {}).get('specs', [])}
+        for v in (built.get('spec'), built.get('change')):
+            if isinstance(v, str) and '/' not in v.strip().replace('openspec/specs/', ''):
+                v = re.sub(r'^openspec/specs/|/spec\.md$', '', v.strip())
+                names.add(v)
+                names.add(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', v))
+        for n in names:
+            if n in d['specs']:
+                out.setdefault(n, set()).add(r['id'])
+    for name, s in d['specs'].items():
+        if (caps.get(f'{app}/{name}') or {}).get('matrixRows'):
+            out.setdefault(name, set()).update(caps[f'{app}/{name}']['matrixRows'])
+    return out
+
+
+def screen_missing(c):
+    """A capability of an app that should be on a screen and is not: no board, no reason, not decided against."""
+    return (c['kind'] in ('matrix', 'spec') and not c['screens'] and not c.get('screenReason')
+            and c['status'] != 'decided-no')
 
 
 def humanise(text):
@@ -207,19 +236,7 @@ def build_features(app, d, caps):
         for s in f['specs']:
             spec_owner.setdefault(s, key)
 
-    # rows that link a spec: through the spec list the generator gave them, or their built change or spec
-    spec_rows = {}
-    for r in d['rows']:
-        built = r.get('built') if isinstance(r.get('built'), dict) else {}
-        names = {x['name'] for x in (caps.get(f'{app}/{r["id"]}') or {}).get('specs', [])}
-        for v in (built.get('spec'), built.get('change')):
-            if isinstance(v, str) and '/' not in v.strip().replace('openspec/specs/', ''):
-                v = re.sub(r'^openspec/specs/|/spec\.md$', '', v.strip())
-                names.add(v)
-                names.add(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', v))
-        for n in names:
-            if n in d['specs']:
-                spec_rows.setdefault(n, set()).add(r['id'])
+    spec_rows = spec_rows_of(app, d, caps)
 
     row_feature = {}
     for r in d['rows']:
@@ -246,6 +263,8 @@ def build_features(app, d, caps):
             continue
         if c['kind'] == 'matrix':
             key = row_feature.get(c['id'])
+        elif c['kind'] == 'spec' and c['id'] in d['internalSpecs'] and not spec_owner.get(c['id']):
+            key = ensure(INTERNAL, 'Internal, no user-facing capability', 'Intern, geen gebruikersfunctie')
         elif c['kind'] == 'spec':
             key = spec_owner.get(c['id'])
             if not key:
@@ -405,14 +424,16 @@ def main():
                     f = re.sub(r'^openspec/specs/|/spec\.md$', '', f)
                     if f in d['specs'] and f not in [x['name'] for x in specs]:
                         specs.append(spec_ref(app, f))
-            screens = []
-            scr = r.get('screen')
+            screens, reason = [], None
+            scr = r.get('screen') if isinstance(r.get('screen'), dict) else built.get('screen')  # dossiq keeps it in built
             bnames = scr.get('board') if isinstance(scr, dict) else None
             for bn in ([bnames] if isinstance(bnames, str) else bnames or []):
                 if bn in by_name:
                     screens.append(by_name[bn])
                 else:
                     notes.append(f'matrix screen board {bn} is not in the gallery')
+            if not bnames and isinstance(scr, dict) and isinstance(scr.get('reason'), str) and scr['reason'].strip():
+                reason = scr['reason'].strip()
             dec = d['decisions'].get(r['id'])
             area = r.get('area')
             caps[f'{app}/{r["id"]}'] = {
@@ -423,6 +444,7 @@ def main():
                 'screens': screens,
                 'decision': {k: dec.get(k) for k in ('decision', 'reason', 'change', 'decidedOn')} if dec else None,
                 'notes': notes, 'source': 'parity', 'matrixScreens': list(screens),
+                'screenReason': reason,
             }
 
     # 2. board tokens
@@ -503,6 +525,33 @@ def main():
         b['matrixCapIds'] = [k for k in matrix_ids if k not in cap_ids]
         b['specs'] = board_specs
 
+    # 3a. a spec is on the screens of the rows that link it, or on what the matrix's specScreens says
+    for app in APP_IDS:
+        d = data[app]
+        linked = spec_rows_of(app, d, caps)
+        for name in d['specs']:
+            c = caps[f'{app}/{name}']
+            rows = [caps[f'{app}/{rid}'] for rid in sorted(linked.get(name, ())) if f'{app}/{rid}' in caps]
+            for rc in rows:
+                for sid in rc.get('matrixScreens', []):
+                    if sid not in c['screens']:
+                        c['screens'].append(sid)
+            own = d['specScreens'].get(name) if isinstance(d['specScreens'].get(name), dict) else {}
+            bn = own.get('board')
+            for b in ([bn] if isinstance(bn, str) else bn or []):
+                if b in by_name and by_name[b] not in c['screens']:
+                    c['screens'].append(by_name[b])
+                elif b not in by_name:
+                    c['notes'].append(f'specScreens board {b} is not in the gallery')
+            c['screenReason'] = None
+            if not c['screens'] and name in d['internalSpecs']:
+                c['screenReason'] = 'internal: no user-facing capability'
+            elif not c['screens']:
+                if isinstance(own.get('reason'), str) and own['reason'].strip():
+                    c['screenReason'] = own['reason'].strip()
+                elif rows and all(rc.get('screenReason') for rc in rows):
+                    c['screenReason'] = rows[0]['screenReason']
+
     # 3. statuses that depend on screens, sorting
     for c in caps.values():
         if c['kind'] in ('external', 'free'):
@@ -552,6 +601,8 @@ def main():
             'screens': screens_per_app.get(app, 0),
             'capsWithScreen': sum(1 for c in mine if c['screens']),
             'capsWithoutScreen': sum(1 for c in mine if not c['screens']),
+            'capsNoScreenReason': sum(1 for c in mine if not c['screens'] and c.get('screenReason')),
+            'capsScreenMissing': sum(1 for c in mine if screen_missing(c)),
         }
     for owner, repo in (('design-system', DS_REPO), ('nextcloud-vue', VUE_REPO)):
         mine = [c for c in caps.values() if c['app'] == owner]
@@ -584,6 +635,11 @@ def main():
                      and not b['capIds'])
         print(f'{app:14} {a["specCount"]:>5} {(a["parity"] or {}).get("rows", 0):>5} {a["capsWithScreen"]:>7} '
               f'{a["capsWithoutScreen"]:>6} {a["screens"]:>7} {no_cap:>8}')
+    print(f'{"app":14} {"onScreen":>8} {"reason":>6} {"missing":>7}   (matrix rows and specs, decided-no left out)')
+    for app in APP_IDS:
+        mine = [c for c in caps.values() if c['app'] == app and c['kind'] in ('matrix', 'spec')]
+        print(f'{app:14} {sum(1 for c in mine if c["screens"]):>8} {sum(1 for c in mine if not c["screens"] and c.get("screenReason")):>6} '
+              f'{sum(1 for c in mine if screen_missing(c)):>7}')
     print(f'free tokens: {len(unresolved)}')
     for u in unresolved[:10]:
         print('  ' + u)

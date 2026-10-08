@@ -36,7 +36,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       </form>
       <sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
         <a href="MijnOverzicht.dc.html" style="display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 6px; border: 1px solid #d3d8df; border-radius: 22px; color: #1a1a1a; font-weight: 600; text-decoration: none">
-          <span style="width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">SV</span>Sanne de Vries
+          <span style="width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{ initials }}</span>{{ user }}
         </a>
         <a href="Home.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 4px; font-weight: 600">Uitloggen</a>
         <sc-if value="{{ beheer }}" hint-placeholder-val="{{ false }}">
@@ -70,7 +70,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"signedIn":{"editor":"boolean","default":false},"beheer":{"editor":"boolean","default":false},"active":{"editor":"text","default":"Home"},"crumbs":{"editor":null,"default":[]},"$preview":{"width":1440,"height":196}}'>
+<script type="text/x-dc" data-dc-script data-props='{"signedIn":{"editor":"boolean","default":false},"beheer":{"editor":"boolean","default":false},"active":{"editor":"text","default":"Home"},"crumbs":{"editor":null,"default":[]},"user":{"editor":"text","default":"Sanne de Vries"},"$preview":{"width":1440,"height":196}}'>
 class Component extends DCLogic {
   renderVals() {
     const active = this.props.active ?? 'Home';
@@ -88,7 +88,10 @@ class Component extends DCLogic {
     const raw = this.props.crumbs && this.props.crumbs.length ? this.props.crumbs : [];
     const crumbs = raw.map((c, i) => ({ ...c, link: i < raw.length - 1, last: i === raw.length - 1, href: c.href ?? 'Home.dc.html' }));
     const signedIn = this.props.signedIn === true;
-    return { items, crumbs, hasCrumbs: crumbs.length > 1, signedIn, signedOut: !signedIn, beheer: !!this.props.beheer };
+    const user = this.props.user || 'Sanne de Vries';
+    const words = user.split(' ').filter((w) => w);
+    const initials = (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
+    return { items, user, initials, crumbs, hasCrumbs: crumbs.length > 1, signedIn, signedOut: !signedIn, beheer: !!this.props.beheer };
   }
 }
 </script>

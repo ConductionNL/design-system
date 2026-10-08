@@ -290,6 +290,7 @@
   function screenTitle(id) { var b = byId[id]; return b ? (b.title || id) : id; }
   function appTitle(a) { return ((C.apps || {})[a] || {}).title || a; }
   function featTitle(f) { return f.slug === NO_FEATURE ? t('cap.noFeature', 'Not tied to a feature') : (NL ? (f.titleNl || f.title) : f.title); }
+  function isGroup(f) { return f.slug === NO_FEATURE || f.slug === '_internal'; }
   function areaTitle(f) { return NL ? (f.areaTitleNl || f.areaTitle) : f.areaTitle; }
   function compName(k) { var a = compOwner[k]; var n = (((C.apps[a] || {}).parity || {}).systemNames || {})[k]; return n || k; }
 
@@ -410,7 +411,7 @@
         el('span', null, [
           el('span', { class: 'tt', text: featTitle(f) }),
           el('span', { class: 'sub' }, [
-            f.slug !== NO_FEATURE ? el('code', { text: f.slug }) : null,
+            !isGroup(f) ? el('code', { text: f.slug }) : null,
             areaTitle(f) ? ' · ' + areaTitle(f) : null,
             f.derived && f.slug !== NO_FEATURE ? el('span', { class: 'warn', text: ' · ' + t('cap.derived', 'not yet in the feature list'), title: t('cap.derivedBody', 'Grouped from the old feature value or the area, because this app has no feature list in its matrix yet.') }) : null
           ])
@@ -603,12 +604,12 @@
     FEATS = Object.keys(C.features).sort(function (a, b) {
       var fa = C.features[a], fb = C.features[b];
       return (appOrder.indexOf(fa.app) - appOrder.indexOf(fb.app))
-        || ((fa.slug === NO_FEATURE) - (fb.slug === NO_FEATURE))
+        || (isGroup(fa) - isGroup(fb))
         || String(areaTitle(fa) || '~').localeCompare(String(areaTitle(fb) || '~'))
         || featTitle(fa).localeCompare(featTitle(fb));
     });
     var nSpecs = 0; appOrder.forEach(function (a) { nSpecs += C.apps[a].specCount || 0; });
-    document.getElementById('m-features').textContent = String(FEATS.filter(function (k) { return C.features[k].slug !== NO_FEATURE; }).length);
+    document.getElementById('m-features').textContent = String(FEATS.filter(function (k) { return !isGroup(C.features[k]); }).length);
     document.getElementById('m-caps').textContent = String(Object.keys(C.capabilities).length);
     document.getElementById('m-apps').textContent = String(appOrder.filter(function (a) { return C.apps[a].parity; }).length);
     document.getElementById('m-specs').textContent = String(nSpecs);

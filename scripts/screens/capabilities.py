@@ -207,6 +207,20 @@ def build_features(app, d, caps):
         for s in f['specs']:
             spec_owner.setdefault(s, key)
 
+    # rows that link a spec: through the spec list the generator gave them, or their built change or spec
+    spec_rows = {}
+    for r in d['rows']:
+        built = r.get('built') if isinstance(r.get('built'), dict) else {}
+        names = {x['name'] for x in (caps.get(f'{app}/{r["id"]}') or {}).get('specs', [])}
+        for v in (built.get('spec'), built.get('change')):
+            if isinstance(v, str) and '/' not in v.strip().replace('openspec/specs/', ''):
+                v = re.sub(r'^openspec/specs/|/spec\.md$', '', v.strip())
+                names.add(v)
+                names.add(re.sub(r'^\d{4}-\d{2}-\d{2}-', '', v))
+        for n in names:
+            if n in d['specs']:
+                spec_rows.setdefault(n, set()).add(r['id'])
+
     row_feature = {}
     for r in d['rows']:
         fv = r.get('feature') if isinstance(r.get('feature'), str) and r.get('feature').strip() else None
@@ -235,7 +249,8 @@ def build_features(app, d, caps):
         elif c['kind'] == 'spec':
             key = spec_owner.get(c['id'])
             if not key:
-                votes = [row_feature[r] for r in c.get('matrixRows', []) if r in row_feature]
+                linked = set(c.get('matrixRows', [])) | spec_rows.get(c['id'], set())
+                votes = [row_feature[r] for r in sorted(linked) if r in row_feature]
                 key = max(set(votes), key=votes.count) if votes else None
         else:
             key = None

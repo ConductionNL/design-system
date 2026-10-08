@@ -72,11 +72,21 @@ def build_index():
     notes = {**canvases[0].get('notes', {}), **canvases[1].get('notes', {})}
     caprows = {**load(z / 'capability-rows.json'), **load(z / 'capability-rows-extra.json')}
     rows = load(z / 'rows1.json')['rows'] + load(z / 'rows2.json')['rows']
+    # One registration file per app (screens-src/zuiddrecht/apps/<app>.json) so parallel work on
+    # different apps never edits the same file: {"rows": [[key, title, columns]], "boards": {...}, "notes": {...}}
+    row_app = dict(ROW_APP)
+    for frag in sorted((z / 'apps').glob('*.json')):
+        f = load(frag)
+        boards_meta.update(f.get('boards', {}))
+        notes.update(f.get('notes', {}))
+        for row in f.get('rows', []):
+            row_app[row[0]] = frag.stem
+            rows.append(row)
 
     index = {'generated': datetime.date.today().isoformat(), 'designSystems': DESIGN_SYSTEMS, 'sets': [], 'boards': {}}
     zset = {'id': 'zuiddrecht', 'title': 'Zuiddrecht', 'themable': True, 'rows': []}
     for key, title, columns in rows:
-        app = ROW_APP.get(key, key.removeprefix('row').lower())
+        app = row_app.get(key, key.removeprefix('row').lower())
         names = [b[:-8] for col in columns for b in col]
         zset['rows'].append({'id': key, 'app': app, 'title': title, 'boards': names})
         for name in names:

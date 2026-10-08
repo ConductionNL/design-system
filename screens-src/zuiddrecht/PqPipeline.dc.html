@@ -116,7 +116,7 @@ class Component extends DCLogic {
     const cols = stages.map(([title, prob, colour]) => {
       const cards = leads[title].map(([org, value, owner, days]) => {
         const stale = days > 14 && prob > 0 && prob < 100;
-        return { title: org, sub: eur(value), pill: prob + '% kans', pillStyle: PP[prob], due: days + (days === 1 ? ' day' : ' days') + ' in fase', dueStyle: dueS(stale ? 'late' : 'ok'), owner: owner.split(' ').map((p) => p[0]).join(''), ownerName: owner, box: box(stale) };
+        return { title: org, sub: eur(value), pill: prob + '% kans', pillStyle: PP[prob], due: days + (days === 1 ? ' dag' : ' dagen') + ' in fase', dueStyle: dueS(stale ? 'late' : 'ok'), owner: owner.split(' ').map((p) => p[0]).join(''), ownerName: owner, box: box(stale) };
       });
       const total = leads[title].reduce((sum, l) => sum + l[1], 0);
       return { title, dot: dot(colour), count: cards.length, total: eur(total), prob: prob + '%', cards };

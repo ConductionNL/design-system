@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn dossiers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2400px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Mijn dossiers" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 16px; color: #4a4a4a">Openbare informatie</span>
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Mijn dossiers</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Bewaar openbare publicaties en documenten in een dossier, met uw eigen notities. Alleen u ziet uw dossiers, tot u er een deelt.</p>
+      </div>
+
+      <section aria-labelledby="lijst" style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+          <h2 id="lijst" style="margin: 0; font-size: 28px; font-weight: 700">Uw dossiers</h2>
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Nieuw dossier</button>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ dossiers }}" as="d" hint-placeholder-count="3">
+            <li style="border-bottom: 1px solid #d3d8df; {{ d.rowStyle }}"><a href="#" aria-current="{{ d.current }}" style="display: flex; align-items: center; gap: 16px; padding: 18px 12px; text-decoration: none; color: inherit"><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 19px; font-weight: 600; color: #3669a5; text-decoration: underline">{{ d.title }}</span><span style="font-size: 16px; color: #4a4a4a">{{ d.meta }}</span></span><sc-if value="{{ d.shared }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: #eaf0f7; color: #234a78; border: 1px solid #b9cbe2; white-space: nowrap">Gedeeld</span></sc-if><svg width="24" height="24" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a></li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="dossier" style="display: flex; flex-direction: column; gap: 20px; padding: 28px; border: 1px solid #d3d8df; border-radius: 4px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <h2 id="dossier" style="margin: 0; font-size: 32px; font-weight: 700">Windpark Oostpolder</h2>
+            <span style="font-size: 16px; color: #4a4a4a">5 stukken · aangemaakt op 14 september 2026</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 16px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z"></path></svg>Notitie bewerken</button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 2px solid #a30000; border-radius: 4px; background: #ffffff; color: #a30000; font: 600 16px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"></path></svg>Dossier verwijderen</button>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 18px; line-height: 1.5; padding: 16px 20px; border-left: 4px solid #3669a5; background: #f4f6f9">Voor de inspraakavond op 21 oktober. Vooral de geluidsnormen en de afstand tot de Molenweg.</p>
+
+        <h3 style="margin: 0; font-size: 22px; font-weight: 700">Stukken in dit dossier</h3>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+            <li style="border-bottom: 1px solid #d3d8df; padding: 16px 0; display: flex; gap: 16px; align-items: flex-start">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#4a4a4a" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="{{ it.icon }}"></path></svg>
+              <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px"><a href="{{ it.href }}" style="font-size: 18px; font-weight: 600">{{ it.title }}</a><sc-if value="{{ it.gone }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 14px; font-weight: 600; background: #fff4de; color: #7a4f00; border: 1px solid #e8c77d">Niet meer openbaar</span></sc-if></span>
+                <span style="font-size: 15px; color: #4a4a4a">{{ it.meta }}</span>
+                <sc-if value="{{ it.hasNote }}" hint-placeholder-val="{{ true }}"><span style="font-size: 16px; font-style: italic; color: #1a1a1a">Notitie: {{ it.note }}</span></sc-if>
+              </div>
+              <button type="button" aria-label="{{ it.remove }}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: 1px solid #d3d8df; border-radius: 4px; background: #ffffff; color: #1a1a1a; font: 500 15px 'Fira Sans', sans-serif">Uit dossier halen</button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 4px; background: #eaf0f7; border: 1px solid #b9cbe2">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Dossier delen</h3>
+          <p style="margin: 0; font-size: 17px; line-height: 1.5">Iedereen met deze link kan het dossier lezen, zonder in te loggen. Hij ziet alleen wat nu openbaar is, met uw notities. Uw naam ziet hij niet.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+            <label for="deellink" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Deellink</label>
+            <input id="deellink" type="text" readonly value="https://www.zuiddrecht.nl/gedeeld-dossier/7f3c9a2e41b8d6" style="flex: 1 1 320px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8a8d93; border-radius: 4px; background: #ffffff; font: 400 16px 'Fira Sans', sans-serif; color: #1a1a1a">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 16px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg>Link kopiëren</button>
+            <a href="GedeeldDossier.dc.html" style="font-size: 16px; font-weight: 600">Bekijk als lezer</a>
+          </div>
+          <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid #a30000; border-radius: 4px; background: #ffffff; color: #a30000; font: 600 15px 'Fira Sans', sans-serif">Stop met delen</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Verder met dit dossier</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 2px solid #3669a5; border-radius: 4px; color: #3669a5; font-size: 16px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M20,16H5.17L4,17.17V4H20V16Z"></path></svg>Vraag stellen over dit dossier</a>
+            <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 2px solid #3669a5; border-radius: 4px; color: #3669a5; font-size: 16px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg>Woo-verzoek starten</a>
+          </div>
+        </div>
+      </section>
+
+      <div style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #f4f6f9; border: 1px solid #d3d8df; align-items: flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4a4a4a" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg><span style="font-size: 17px; line-height: 1.5">Een stuk toevoegen doet u bij de publicatie zelf, met de knop "Bewaren in dossier". Als u uw account opheft, verwijderen we uw dossiers en bewaarde zoekopdrachten.</span></div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dossiers = [
+      ['Windpark Oostpolder', '5 stukken · bijgewerkt op 6 oktober 2026', true, true],
+      ['Fietspad Lindelaan', '3 stukken · bijgewerkt op 30 september 2026', true, false],
+      ['Herinrichting Kerkplein', '2 stukken · bijgewerkt op 12 september 2026', false, false]
+    ].map(([title, meta, shared, on]) => ({ title, meta, shared, current: on ? 'page' : 'false', rowStyle: on ? 'background: #f4f6f9' : '' }));
+    const DOC = 'M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z';
+    const PUB = 'M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M17,17H7V15H17V17M17,13H7V11H17V13M17,9H7V7H17V9Z';
+    const items = [
+      ['Besluit op het Woo-verzoek over windpark Oostpolder', 'Publicatie · Woo-verzoeken · 5 oktober 2026', 'Hier staat wat er openbaar is gemaakt.', PUB, false],
+      ['Akoestisch onderzoek windpark Oostpolder.pdf', 'Document bij de publicatie Milieueffectrapport · 2,4 MB', 'Bladzijde 14 gaat over de Molenweg.', DOC, false],
+      ['Raadsvoorstel windpark Oostpolder', 'Publicatie · Raadsstukken · 22 september 2026', '', PUB, false],
+      ['Concept-omgevingsvergunning windpark', 'Publicatie · Bekendmakingen · 3 september 2026', 'Vervangen door de definitieve versie?', PUB, true],
+      ['Kaart van de turbineposities.pdf', 'Document bij het raadsvoorstel · 820 kB', '', DOC, false]
+    ].map(([title, meta, note, icon, gone]) => ({ title, meta, note, icon, gone, hasNote: note !== '', href: gone ? '#' : '#', remove: title + ' uit dit dossier halen' }));
+    return { dossiers, items, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Mijn dossiers' }] };
+  }
+}
+</script>
+</body>
+</html>

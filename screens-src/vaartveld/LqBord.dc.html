@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: weekrooster</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Vaartveld College" primary="Huiswerk opgeven" active="Weekrooster" hint-size="264px,940px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Weekrooster</h1><span style="font-size: 15px; color: #3d4047">Week 41 · maandag 5 tot en met vrijdag 9 oktober · 20 lessen en 1 overleg</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+          <div role="group" aria-label="Welk rooster" style="display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: #f0f1f3">
+            <button type="button" aria-pressed="true" style="height: 40px; padding: 0 16px; border: 1px solid #e4e6ea; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Red Hat Text', sans-serif">Mijn rooster</button>
+            <button type="button" aria-pressed="false" style="height: 40px; padding: 0 16px; border: 1px solid #f0f1f3; border-radius: 8px; background: transparent; color: #3d4047; font: 600 14px 'Red Hat Text', sans-serif">Mentorklas H4b</button>
+          </div>
+          <button type="button" aria-label="Vorige week" style="width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Red Hat Text', sans-serif">Deze week</button>
+          <button type="button" aria-label="Volgende week" style="width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 16px">
+        <div style="overflow-x: auto">
+          <div style="display: grid; grid-template-columns: 96px repeat(5, minmax(164px, 1fr)); gap: 6px; min-width: 950px">
+            <sc-for list="{{ cells }}" as="c" hint-placeholder-count="60">
+              <div style="{{ c.style }}">
+                <sc-if value="{{ c.isHead }}" hint-placeholder-val="{{ false }}"><span>{{ c.title }}</span><sc-if value="{{ c.today }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 8px; border-radius: 10px; background: #1fb5a8; color: #1b1c1d; font-size: 11px; font-weight: 700">vandaag</span></sc-if></sc-if>
+                <sc-if value="{{ c.isTime }}" hint-placeholder-val="{{ false }}"><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 15px; font-weight: 700; color: #1b1c1d">{{ c.title }}</strong><span style="font-size: 12px; font-variant-numeric: tabular-nums">{{ c.meta }}</span></sc-if>
+                <sc-if value="{{ c.isBreak }}" hint-placeholder-val="{{ false }}"><span>{{ c.title }}</span></sc-if>
+                <sc-if value="{{ c.isLesson }}" hint-placeholder-val="{{ true }}">
+                  <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px"><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 16px; font-weight: 700">{{ c.title }}</strong><sc-if value="{{ c.hasPill }}" hint-placeholder-val="{{ false }}"><span style="{{ c.pill }}">{{ c.state }}</span></sc-if></span>
+                  <span style="font-size: 13px; color: #3d4047">{{ c.meta }}</span>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #5e6168">Klik op een les voor de aanwezigheid, het huiswerk en de leerlingen. Wijzigingen komen van de roosterkamer en staan hier meteen.</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":852}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'flex: none; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const P = { done: pill('#e7f3ea', '#1e6b2a'), wait: pill('#fff4de', '#7a4f00'), test: pill('#e8e6f6', '#4a3f8f'), change: pill('#fff4de', '#7a4f00') };
+    const cellBase = 'min-height: 62px; box-sizing: border-box; border-radius: 8px; padding: 9px 10px; display: flex; flex-direction: column; justify-content: center; gap: 3px; ';
+    const head = (title, today) => ({ isHead: true, title, today, style: 'display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 40px; padding: 0 10px; border-radius: 8px; font-size: 14px; font-weight: 700; ' + (today ? 'background: #ddf5f2; color: #0b6259' : 'background: #f5f6f8; color: #3d4047') });
+    const time = (title, meta) => ({ isTime: true, title, meta, style: cellBase + 'padding-left: 4px; color: #5e6168' });
+    const empty = (today) => ({ style: cellBase + (today ? 'background: #f5f6f8' : 'background: transparent') });
+    const lesson = (title, meta, kind, state) => ({ isLesson: true, title, meta, hasPill: !!state, state: state || '', pill: P[kind] || '',
+      style: cellBase + (kind === 'meet' ? 'background: #f0f1f3; border: 1px solid #f0f1f3' : kind === 'next' ? 'background: #e8eefc; border: 1px solid #1f4fd8' : 'background: #ffffff; border: 1px solid #c4c7cb') });
+    const brk = (title) => ({ isBreak: true, title, style: 'grid-column: 1 / -1; display: flex; align-items: center; min-height: 24px; padding: 0 4px; border-radius: 6px; background: #f5f6f8; font-size: 12px; color: #5e6168' });
+    const N = 'Nederlands · 1.12';
+    const L = (k, s, m) => lesson(k, m || N, s === 'Ingevuld' ? 'done' : s === 'Nog invullen' ? 'wait' : s === 'SO' ? 'test' : s === 'Lokaal 0.14' ? 'change' : s === 'next' ? 'next' : '', s === 'next' ? '' : s);
+    const rows = [
+      ['1', '08.30 - 09.20', [L('H4b', 'Ingevuld'), null, L('H5a'), null, L('V4c')]],
+      ['2', '09.20 - 10.10', [L('H5a', 'Nog invullen'), L('V4c'), L('H4b'), L('H4a'), null]],
+      'Pauze · 10.10 - 10.30',
+      ['3', '10.30 - 11.20', [null, L('H4a'), L('V4c', 'Lokaal 0.14', 'Nederlands · niet in 1.12'), L('H4b'), L('H5a', '', 'Betoog terug · 1.12')]],
+      ['4', '11.20 - 12.10', [L('V4c', 'next', 'Nederlands · 1.12 · straks'), null, null, L('H5a'), L('H4a')]],
+      'Pauze · 12.10 - 12.40',
+      ['5', '12.40 - 13.30', [L('H4a', 'SO'), L('H5a'), null, null, L('H4b')]],
+      ['6', '13.30 - 14.20', [L('H4b', '', 'Mentoruur · 1.12'), L('H4b'), null, L('V4c', 'SO'), null]],
+      ['7', '14.30 - 15.20', [null, lesson('Sectie Nederlands', 'Overleg · lokaal 1.10', 'meet'), null, null, null]]
+    ];
+    const cells = [{ style: 'min-height: 40px' }, head('ma 5 okt', true), head('di 6 okt', false), head('wo 7 okt', false), head('do 8 okt', false), head('vr 9 okt', false)];
+    rows.forEach((r) => {
+      if (typeof r === 'string') { cells.push(brk(r)); return; }
+      cells.push(time(r[0] + 'e uur', r[1]));
+      r[2].forEach((c, i) => cells.push(c || empty(i === 0)));
+    });
+    return { cells };
+  }
+}
+</script>
+</body>
+</html>

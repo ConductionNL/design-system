@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Nieuws en documenten zoeken</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="Nieuws" signed-in="{{ false }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto">
+  <main id="inhoud" style="max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 64px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 48px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em">Nieuws en documenten</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Zoek in het nieuws van de school, de toetsroosters, brieven aan ouders, de schoolgids en de regels voor het examen.</p>
+    </div>
+    <form role="search" style="display: flex; flex-wrap: wrap; max-width: 760px">
+      <label for="z-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoekterm</label>
+      <input id="z-zoek" type="search" value="toetsweek" style="flex: 1 1 320px; height: 52px; box-sizing: border-box; padding: 0 16px; border: 2px solid #1a1a1a; border-right: 0; border-radius: 6px 0 0 6px; font: 400 18px 'Red Hat Text', sans-serif; min-width: 0">
+      <button type="submit" style="height: 52px; padding: 0 26px; border: 0; border-radius: 0 6px 6px 0; background: #1f4fd8; color: #ffffff; font: 600 18px 'Red Hat Text', sans-serif">Zoeken</button>
+    </form>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+      <aside aria-label="Filters" style="flex: 1 1 260px; max-width: 300px; display: flex; flex-direction: column; gap: 24px">
+        <h2 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 24px; font-weight: 700">Filters</h2>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 18px; font-weight: 600; margin-bottom: 8px">Soort</legend>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #1f4fd8"> Nieuws (7)</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #1f4fd8"> Toetsroosters en PTA (6)</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #1f4fd8"> Brieven aan ouders (3)</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #1f4fd8"> Schoolgids en regels (2)</label>
+        </fieldset>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 18px; font-weight: 600; margin-bottom: 8px">Afdeling</legend>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #1f4fd8"> Vmbo-t</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #1f4fd8"> Havo</label>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #1f4fd8"> Vwo</label>
+        </fieldset>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="z-jaar" style="font-size: 18px; font-weight: 600">Leerjaar</label>
+          <select id="z-jaar" style="height: 48px; padding: 0 10px; border: 2px solid #5c6470; border-radius: 6px; font: 400 17px 'Red Hat Text', sans-serif; background: #ffffff; color: #1a1a1a"><option>Klas 4</option><option>Alle leerjaren</option><option>Klas 1</option><option>Klas 2</option><option>Klas 3</option><option>Klas 5</option><option>Klas 6</option></select>
+        </div>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="font-size: 18px; font-weight: 600; margin-bottom: 8px">Periode</legend>
+          <label for="z-van" style="font-size: 16px">Vanaf</label>
+          <input id="z-van" type="date" value="2026-08-31" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 6px; font: 400 17px 'Red Hat Text', sans-serif">
+          <label for="z-tot" style="font-size: 16px">Tot en met</label>
+          <input id="z-tot" type="date" style="height: 48px; box-sizing: border-box; padding: 0 12px; border: 2px solid #5c6470; border-radius: 6px; font: 400 17px 'Red Hat Text', sans-serif">
+        </fieldset>
+      </aside>
+      <section aria-labelledby="res" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+          <h2 id="res" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 26px; font-weight: 700" aria-live="polite">18 resultaten voor "toetsweek"</h2>
+          <label style="display: flex; gap: 10px; align-items: center; font-size: 17px">Sorteren
+            <select style="height: 44px; padding: 0 10px; border: 2px solid #5c6470; border-radius: 6px; font: 400 17px 'Red Hat Text', sans-serif; background: #ffffff; color: #1a1a1a"><option>Nieuwste eerst</option><option>Beste match</option></select>
+          </label>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="5">
+            <li>
+              <a href="Artikel.dc.html" style="display: flex; gap: 16px; justify-content: space-between; align-items: center; padding: 18px 24px; border: 1px solid #d3d8df; border-radius: 10px; color: #1a1a1a; text-decoration: none">
+                <span style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+                  <span style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 15px; color: #4a4a4a"><span style="padding: 3px 11px; border-radius: 14px; background: #e8eefc; color: #14338f; font-weight: 600">{{ r.kind }}</span><span>{{ r.date }}</span><span>{{ r.who }}</span></span>
+                  <span style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 22px; font-weight: 700; color: #1f4fd8; text-decoration: underline">{{ r.title }}</span>
+                  <span style="font-size: 17px; line-height: 1.5">{{ r.summary }}</span>
+                </span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1f4fd8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+        <nav aria-label="Paginering" style="display: flex; gap: 8px; flex-wrap: wrap">
+          <a href="#" aria-current="page" style="min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: #1f4fd8; color: #ffffff; font-weight: 600; text-decoration: none">1</a>
+          <a href="#" style="min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #d3d8df; font-weight: 600">2</a>
+          <a href="#" style="min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #d3d8df; font-weight: 600">3</a>
+          <a href="#" style="min-width: 44px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #d3d8df; font-weight: 600">Volgende</a>
+        </nav>
+      </section>
+    </div>
+  </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1684}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const results = [
+      { kind: 'Nieuws', date: '30 september 2026', who: 'Klas 4, 5 en 6', title: 'Toetsweek 1: het rooster staat online', summary: 'De eerste toetsweek is van 9 tot en met 13 november. Je vindt je eigen rooster in Mijn Vaartveld.' },
+      { kind: 'Toetsrooster', date: '30 september 2026', who: '4 havo', title: 'Toetsrooster toetsweek 1, 4 havo', summary: 'Alle toetsen per dag, met tijd, lokaal en wat je mee moet nemen. PDF, 112 kB.' },
+      { kind: 'Brief aan ouders', date: '28 september 2026', who: 'Klas 4, 5 en 6', title: 'Toetsweek 1 en de herkansingen', summary: 'Wat de toetsweek voor uw kind betekent en hoe herkansen werkt.' },
+      { kind: 'PTA', date: '14 september 2026', who: '4 havo', title: 'Programma van toetsing en afsluiting 4 havo', summary: 'Welke toetsen meetellen voor het schoolexamen en hoe zwaar. PDF, 640 kB.' },
+      { kind: 'Regels', date: '1 september 2026', who: 'Alle leerjaren', title: 'Regels tijdens een toetsweek', summary: 'Op tijd komen, ziek zijn op een toetsdag en wat er gebeurt bij te laat komen.' }
+    ];
+    return { results, crumbs: [{ label: 'Home' }, { label: 'Nieuws en documenten' }] };
+  }
+}
+</script>
+</body>
+</html>

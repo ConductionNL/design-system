@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn adres</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2043px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Mijn adres" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 36px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Mijn adres</h1>
+        <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 19px; font-weight: 600"><svg width="22" height="22" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true" style="flex: none"><path d="M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z"></path></svg>Lindelaan 12, 2611 AB Zuiddrecht</p>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Wat bij uw adres hoort: wanneer uw afval wordt opgehaald, uw containers, de parkeerzone en wat u in uw straat kunt melden.</p>
+      </div>
+      <section aria-labelledby="kalender" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+          <h2 id="kalender" style="margin: 0; font-size: 28px; font-weight: 700">Afvalkalender</h2>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font-size: 17px; font-weight: 600; text-decoration: none; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12H17V17H12V12M19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 5V7H5V5H19M5 19V9H19V19H5Z"></path></svg>Zet in uw agenda</a>
+        </div>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #4a4a4a">De volgende drie ophaaldagen per soort afval. Zet uw container voor 7.30 uur aan de straat.</p>
+        <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px">
+          <sc-for list="{{ waste }}" as="w" hint-placeholder-count="4">
+            <li style="display: flex; flex-direction: column; border: 1px solid #d3d8df; border-radius: 6px; overflow: hidden">
+              <span style="{{ w.bar }}"></span>
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px 18px">
+                <h3 style="margin: 0; font-size: 19px; font-weight: 700; line-height: 1.3">{{ w.name }}</h3>
+                <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+                  <sc-for list="{{ w.dates }}" as="d" hint-placeholder-count="3">
+                    <li style="{{ d.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M19 19H5V9H19V19M19 7H5V5H19V7Z"></path></svg>{{ d.label }}</li>
+                  </sc-for>
+                </ol>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+      <section aria-labelledby="containers" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+          <h2 id="containers" style="margin: 0; font-size: 28px; font-weight: 700">Uw containers</h2>
+          <div style="display: flex; align-items: center; gap: 10px"><label for="periode" style="font-size: 17px; font-weight: 600">Periode</label><select id="periode" style="box-sizing: border-box; height: 44px; min-width: 180px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; background: #ffffff"><option>2026 tot nu toe</option><option>2025</option><option>2024</option></select></div>
+        </div>
+        <div style="border: 1px solid #d3d8df; border-radius: 6px; overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; font-size: 17px">
+            <thead><tr style="background: #f4f6f9"><th scope="col" style="padding: 12px 16px; text-align: left">Container</th><th scope="col" style="padding: 12px 16px; text-align: left">Nummer</th><th scope="col" style="padding: 12px 16px; text-align: left">Laatst geleegd</th><th scope="col" style="padding: 12px 16px; text-align: right">Keer geleegd</th><th scope="col" style="padding: 12px 16px; text-align: right">Kosten</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ containers }}" as="c" hint-placeholder-count="2">
+                <tr style="border-top: 1px solid #d3d8df"><th scope="row" style="padding: 12px 16px; text-align: left; font-weight: 600">{{ c.name }}</th><td style="padding: 12px 16px; color: #4a4a4a">{{ c.id }}</td><td style="padding: 12px 16px">{{ c.last }}</td><td style="padding: 12px 16px; text-align: right">{{ c.count }}</td><td style="padding: 12px 16px; text-align: right">{{ c.cost }}</td></tr>
+              </sc-for>
+              <tr style="border-top: 2px solid #5c6470; background: #f4f6f9"><th scope="row" colspan="4" style="padding: 12px 16px; text-align: left">Totaal 2026 tot nu toe</th><td style="padding: 12px 16px; text-align: right; font-weight: 700">10,80 euro</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #4a4a4a">Voor restafval betaalt u 1,20 euro per keer dat de container wordt geleegd. De kosten staan op uw aanslag gemeentelijke belastingen van volgend jaar. Container kapot of kwijt? <a href="MeldingIndienen.dc.html">Doe een melding</a>.</p>
+      </section>
+      <section aria-labelledby="parkeren" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="parkeren" style="margin: 0; font-size: 28px; font-weight: 700">Parkeren</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; padding: 20px 24px; border: 1px solid #d3d8df; border-radius: 6px">
+          <span style="flex: none; width: 48px; height: 48px; border-radius: 6px; background: #234a78; color: #ffffff; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.2,11H10V7H13.2A2,2 0 0,1 15.2,9A2,2 0 0,1 13.2,11M13,3H6V21H10V15H13A6,6 0 0,0 19,9C19,5.68 16.31,3 13,3Z"></path></svg></span>
+          <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 4px">
+            <strong style="font-size: 19px">Vergunninggebied B, binnenstad-zuid</strong>
+            <span style="font-size: 17px; line-height: 1.5">Betaald parkeren van maandag tot en met zaterdag, 9.00 tot 21.00 uur. Met een bewonersvergunning parkeert u in dit gebied.</span>
+            <span style="font-size: 17px; line-height: 1.5">U heeft een aanvraag lopen: <a href="Zaak.dc.html" style="font-weight: 600">parkeervergunning binnenstad, zaak 2026-0061</a>.</span>
+          </div>
+        </div>
+        <p style="margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 16px; line-height: 1.5; color: #4a4a4a"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg>Omdat u een lopende zaak over parkeren heeft, staat parkeren ook bovenaan op uw overzicht en op de onderwerpen van de website.</p>
+      </section>
+      <section aria-labelledby="diensten" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="diensten" style="margin: 0; font-size: 28px; font-weight: 700">Meer voor uw adres</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px 16px">
+          <sc-for list="{{ services }}" as="a" hint-placeholder-count="3">
+            <li><a href="{{ a.href }}" style="display: flex; align-items: center; gap: 14px; min-height: 64px; box-sizing: border-box; padding: 14px 18px; border: 1px solid #d3d8df; border-radius: 6px; color: #1a1a1a; text-decoration: none"><span style="flex: none; width: 40px; height: 40px; border-radius: 20px; background: #eaf0f7; color: #234a78; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ a.icon }}"></path></svg></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 600; color: #3669a5; text-decoration: underline">{{ a.label }}</span><span style="font-size: 15px; color: #4a4a4a">{{ a.text }}</span></span><svg width="24" height="24" viewBox="0 0 24 24" fill="#3669a5" aria-hidden="true" style="flex: none"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a></li>
+          </sc-for>
+        </ul>
+      </section>
+      <p style="margin: 0; padding-top: 20px; border-top: 1px solid #d3d8df; font-size: 16px; line-height: 1.5; color: #4a4a4a">De afvalgegevens komen uit de afvaladministratie en de parkeerzone uit de parkeeradministratie van de gemeente. Mijn Zuiddrecht laat ze zien voor het adres waar u staat ingeschreven. Verhuist u? Dan ziet u hier vanzelf uw nieuwe adres.</p>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2043}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const day = (label, first) => ({ label, style: 'display: flex; align-items: center; gap: 8px; font-size: 17px; ' + (first ? 'font-weight: 700; color: #1a1a1a' : 'color: #4a4a4a') });
+    const bar = (c) => 'display: block; height: 8px; background: ' + c;
+    const waste = [
+      { name: 'Restafval', bar: bar('#5c6470'), dates: [day('di 13 oktober', true), day('di 27 oktober'), day('di 10 november')] },
+      { name: 'Groente, fruit en tuinafval', bar: bar('#1e6b2a'), dates: [day('di 20 oktober', true), day('di 3 november'), day('di 17 november')] },
+      { name: 'Papier en karton', bar: bar('#234a78'), dates: [day('vr 16 oktober', true), day('vr 13 november'), day('vr 11 december')] },
+      { name: 'Plastic, metaal en drankpakken', bar: bar('#b06d00'), dates: [day('wo 14 oktober', true), day('wo 28 oktober'), day('wo 11 november')] }
+    ];
+    const containers = [
+      { name: 'Restafval, 140 liter', id: 'ZD-140-08812', last: '22 september 2026', count: '9', cost: '10,80 euro' },
+      { name: 'Groente, fruit en tuinafval, 140 liter', id: 'ZD-GFT-11203', last: '6 oktober 2026', count: '18', cost: 'geen kosten' }
+    ];
+    const services = [
+      { label: 'Melding openbare ruimte', text: 'Kapotte lamp, losse tegel of afval op straat', href: 'MeldingIndienen.dc.html', icon: 'M12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5M12,2A7,7 0 0,1 19,9C19,14.25 12,22 12,22C12,22 5,14.25 5,9A7,7 0 0,1 12,2M12,4A5,5 0 0,0 7,9C7,10 7,12 12,18.71C17,12 17,10 17,9A5,5 0 0,0 12,4Z' },
+      { label: 'Grofvuil laten ophalen', text: 'Maak een afspraak voor ophalen aan huis', href: '#', icon: 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z' },
+      { label: 'Milieustraat', text: 'Openingstijden en route', href: '#', icon: 'M21.82,15.42L19.32,19.75C18.83,20.61 17.92,21.06 17,21H15V23L12.5,18.5L15,14V16H17.82L15.6,12.15L19.93,9.65L21.73,12.77C22.25,13.54 22.32,14.57 21.82,15.42M9.21,3.06H14.21C15.19,3.06 16.04,3.63 16.45,4.45L17.45,6.19L19.18,5.19L16.54,9.6L11.39,9.69L13.12,8.69L11.71,6.24L9.5,10.09L5.16,7.59L6.96,4.47C7.37,3.64 8.22,3.06 9.21,3.06M5.05,19.76L2.55,15.43C2.06,14.58 2.13,13.56 2.64,12.79L3.64,11.06L1.91,10.06L7.05,10.14L9.7,14.56L7.97,13.56L6.56,16H11V21H7.4C6.47,21.07 5.55,20.61 5.05,19.76Z' }
+    ];
+    return { waste, containers, services, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Mijn adres' }] };
+  }
+}
+</script>
+</body>
+</html>

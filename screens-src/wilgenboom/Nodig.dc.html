@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Analyse: wat is er nodig</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 100%">
+  <div style="max-width: 1360px; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 920px">
+      <h1 style="margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -0.015em">Wat er nodig is om dit te bouwen</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #3d4047">Vergeleken met wat op 5 oktober 2026 op development staat van portaliq, learniq en thematiq. Het meeste van wat ouders zien bestaat al en moet vooral gekleurd worden. Het nieuwe werk zit in het thema zelf en in de dashboards voor het team.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+      <sc-for list="{{ totals }}" as="t" hint-placeholder-count="4">
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px"><span style="align-self: flex-start; {{ t.pill }}">{{ t.label }}</span><strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ t.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.note }}</span></div>
+      </sc-for>
+    </div>
+
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+      <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+        <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #e4e6ea"><h2 style="margin: 0; font-size: 22px; font-weight: 700">{{ s.title }}</h2><span style="font-size: 14px; color: #5e6168">{{ s.sub }}</span></div>
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 920px; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <th scope="col" style="padding: 12px 24px; font-weight: 600; width: 22%">Scherm of onderdeel</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600; width: 32%">Wat er vandaag is</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600; width: 32%">Wat er nog moet komen</th>
+                <th scope="col" style="padding: 12px 24px 12px 16px; font-weight: 600">Stand</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="6">
+                <tr style="border-top: 1px solid #eef0f3; vertical-align: top">
+                  <th scope="row" style="padding: 14px 24px; text-align: left; font-size: 15px; font-weight: 600">{{ r.what }}</th>
+                  <td style="padding: 14px 16px; line-height: 1.5; color: #3d4047">{{ r.now }}</td>
+                  <td style="padding: 14px 16px; line-height: 1.5">{{ r.todo }}</td>
+                  <td style="padding: 14px 24px 14px 16px"><span style="white-space: nowrap; {{ r.pill }}">{{ r.state }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-for>
+
+    <section style="background: #e8f1eb; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #1f4a33">Voorstel voor de volgorde</h2>
+      <ol style="margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 15px; line-height: 1.55">
+        <li><strong style="font-weight: 600">Het thema.</strong> De token-set wilgenboom met logo's, Lexend en de donkere variant. Daarmee kleuren de bestaande schermen meteen mee.</li>
+        <li><strong style="font-weight: 600">De twijgen.</strong> Een vast onderdeel in de kop en de voet van portaliq, dat een thema aan of uit kan zetten.</li>
+        <li><strong style="font-weight: 600">Het overzicht voor ouders.</strong> De kaart "Wat u nog moet doen" en een kaart per kind.</li>
+        <li><strong style="font-weight: 600">Vandaag voor de leerkracht.</strong> De kaart "Vandaag eerst" en de afwezigheidsmeldingen op het dashboard.</li>
+        <li><strong style="font-weight: 600">De dashboards voor intern begeleider en directeur.</strong> Eerst uitzoeken welke gegevens learniq daarvoor al heeft.</li>
+      </ol>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2774}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { has: pill('#e7f3ea', '#1e6b2a'), part: pill('#fff4de', '#7a4f00'), neu: pill('#e8f1eb', '#1f4a33'), ask: pill('#f0f1f3', '#3d4047') };
+    const L = { has: 'Bestaat', part: 'Deels', neu: 'Nieuw', ask: 'Nog uitzoeken' };
+    const row = (what, now, todo, k) => ({ what, now, todo, state: L[k], pill: P[k], k });
+    const sections = [
+      { title: 'Website en Mijn Wilgenboom', sub: 'portaliq, met de pagina\'s en gegevens die learniq levert', rows: [
+        row('Kop, hoofdmenu en voettekst', 'De kop en de voet van de portaliq-site, gekleurd door het thema.', 'De twijgen als vast onderdeel onder de kop en boven de voet.', 'part'),
+        row('Home', 'Tekst-, nieuws- en kalenderblokken bestaan.', 'De taakkaart "Direct regelen" en de kalenderkaart als blok. Mogelijk is het bestaande menu-raster genoeg.', 'ask'),
+        row('Nieuws en documenten zoeken', 'Een nieuwspagina met "Gepubliceerd op". Zoeken met filters is er voor Woo-publicaties.', 'Hetzelfde zoekscherm voor schoolnieuws en documenten.', 'ask'),
+        row('Inloggen', 'Inloggen met DigiD werkt. De school nodigt een ouder uit via een API, zonder e-mail.', 'Een uitnodiging per e-mail met een eenmalige link. Zie het voorstel voor de koppeling na het inloggen.', 'part'),
+        row('Overzicht', 'Het zijmenu als rasterblok, de kindpagina en het nieuws bestaan.', 'De kaart "Wat u nog moet doen" en een kaart per kind met de stand van vandaag.', 'neu'),
+        row('Mijn kind', 'Drie aanwezigheidskaarten, rapporten met een cijfer per regel, huiswerk, kalender en nieuws.', 'De opmaak van dit ontwerp: de kop met acties en de balkjes bij de cijfers.', 'has'),
+        row('Afwezig melden', 'Het formulier met keuzekaarten, en de goedkeuring door de leerkracht met naam en tijd.', 'De stand "gezien door de leerkracht" voordat er is goedgekeurd. Nieuwste melding bovenaan: daar wordt aan gewerkt.', 'part'),
+        row('Oudergesprek', 'Een ouder boekt een vrije tijd en de leerkracht bevestigt die.', 'Niets nieuws, alleen de opmaak.', 'has'),
+        row('Berichten', 'Een postvak met berichten van school, die een ouder kan verwijderen.', 'Een bericht schrijven aan de leerkracht, en antwoorden.', 'ask'),
+        row('Rapporten en documenten', 'Rapporten staan op de kindpagina.', 'Een eigen pagina met downloads per kind en de papieren van school.', 'ask')
+      ] },
+      { title: 'Werkplek: learniq en launchpad', sub: 'Nextcloud, met de Cunningham-laag', rows: [
+        row('Zijbalk en bovenbalk', 'Het menu van learniq en de bovenbalk van Nextcloud.', 'De lichte zijbalk met groepen en de zoekbalk bovenin, zoals bij dossiq voor Zuiddrecht is getekend.', 'part'),
+        row('Vandaag (leerkracht)', 'Een dashboard dat alleen de eigen groepen toont.', 'De kaart "Vandaag eerst", de afwezigheidsmeldingen met een knop, en de stand van de ouderavond.', 'part'),
+        row('Register van vandaag', 'Het register in één scherm, met ouder-meldingen vooraf ingevuld, te laat en zonder toestemming.', 'De vier standen als knoppen per leerling en de tellers bovenaan.', 'has'),
+        row('Leerlingen', 'Lijsten tonen de naam van de leerling. Drie beheerlijsten tonen nog een code; daar wordt aan gewerkt.', 'De kolommen "vandaag" en "oudergesprek" in de groepslijst.', 'part'),
+        row('Leerling', 'Het leerlingdossier met tabbladen.', 'De kop met kerncijfers, de kaart "Wat nu?" en het gesprek met ouders op één pagina.', 'part'),
+        row('Intern begeleider', 'Zorgsignalen en plannen bestaan als gegevens.', 'Een eigen dashboard. Welke signalen learniq zelf kan afleiden, is nog niet bekend.', 'ask'),
+        row('Directeur', 'Aanwezigheid per leerling, en een signaal bij 16 uur afwezigheid zonder toestemming.', 'Een overzicht per groep, verlof beslissen en de stand van de registers.', 'ask'),
+        row('launchpad: mijn werkdag', 'De startpagina van launchpad met widgets.', 'De rij "Vandaag eerst" met taken uit alle apps.', 'ask')
+      ] },
+      { title: 'Het thema in thematiq', sub: 'Eén keuze in de beheerinstellingen kleurt alles', rows: [
+        row('Token-set wilgenboom', 'De voorbeeldset "basisschool" in terracotta, en de Cunningham-set die Zuiddrecht gebruikt.', 'Een nieuwe set met wilgengroen en zonnegeel, afgeleid van de Zuiddrecht-set. De oude voorbeeldset vervalt.', 'neu'),
+        row('Logo en beeldmerk', 'Het voorbeeldlogo met huis en zon.', 'Het wilg-logo in kleur en in wit, en het beeldmerk. De bestanden zijn klaar.', 'neu'),
+        row('Lettertype Lexend', 'thematiq levert lettertypen mee per set.', 'Lexend toevoegen aan de meegeleverde lettertypen.', 'neu'),
+        row('Donkere variant', 'Zuiddrecht heeft er een.', 'Dezelfde afleiding voor De Wilgenboom, met contrast opnieuw gemeten.', 'neu'),
+        row('Rondere hoeken op de website', 'De hoekmaat komt uit de tokens.', 'Per set een eigen maat voor knoppen en kaarten op de website: 10 en 14.', 'ask')
+      ] }
+    ];
+    const all = sections.flatMap((s) => s.rows);
+    const n = (k) => all.filter((r) => r.k === k).length;
+    const totals = [
+      { label: 'Bestaat', value: n('has'), note: 'alleen nog kleuren en opmaken', pill: P.has },
+      { label: 'Deels', value: n('part'), note: 'de basis is er, een deel ontbreekt', pill: P.part },
+      { label: 'Nieuw', value: n('neu'), note: 'moet gebouwd worden', pill: P.neu },
+      { label: 'Nog uitzoeken', value: n('ask'), note: 'eerst nakijken in de code', pill: P.ask }
+    ];
+    return { sections, totals };
+  }
+}
+</script>
+</body>
+</html>

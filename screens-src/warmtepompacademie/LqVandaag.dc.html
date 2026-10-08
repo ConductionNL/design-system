@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: vandaag voor de planner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0b6e7a}a:hover{color:#084f58}
+</style>
+</helmet>
+<div style="font-family: 'Barlow', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 800px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Planning" primary="Nieuwe cursusdag" active="Vandaag" groups="{{ nav }}" hint-size="264px,1280px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Sophie van Dam" role="Planner" initials="SD" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 22px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 14px; color: #5e6168">maandag 5 oktober 2026 · week 41</span>
+          <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; font-size: 32px; font-weight: 700">Goedemiddag, Sophie</h1>
+        </div>
+        <a href="LqBord.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font-size: 14px; font-weight: 600; text-decoration: none">Alle cursusdagen</a>
+      </div>
+
+      <section aria-labelledby="lv-eerst" style="border-radius: 12px; background: #fcebdd; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="lv-eerst" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9a3412">Vandaag eerst</h2>
+          <strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2">Hybride warmtepomp op 22 oktober heeft 4 deelnemers. Het minimum is 6.</strong>
+          <span style="font-size: 15px; line-height: 1.45; color: #3d4047">Beslis uiterlijk donderdag 8 oktober of de dag doorgaat. Op 26 november zijn nog 9 plekken vrij.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Barlow', sans-serif">Deelnemers verplaatsen</button>
+          <a href="LqBord.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #0b6e7a; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Cursusdag openen</a>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+            <strong style="font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 34px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{ k.value }}</strong>
+            <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+          <section aria-labelledby="lv-week" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 id="lv-week" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Cursusdagen deze week</h2><a href="#" style="font-size: 14px; font-weight: 600">Weekrooster</a></div>
+            <div style="overflow-x: auto">
+              <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, minmax(128px, 1fr)); gap: 10px; min-width: 690px">
+                <sc-for list="{{ days }}" as="d" hint-placeholder-count="5">
+                  <li style="{{ d.box }}">
+                    <span style="{{ d.head }}">{{ d.label }}<sc-if value="{{ d.today }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 8px; border-radius: 10px; background: #0b6e7a; color: #ffffff; font-size: 11px; font-weight: 700">vandaag</span></sc-if></span>
+                    <sc-for list="{{ d.items }}" as="i" hint-placeholder-count="1">
+                      <a href="LqBord.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 8px; text-decoration: none; background: #ffffff; border: 1px solid #e4e6ea">
+                        <strong style="font-size: 14px; font-weight: 600; line-height: 1.3; color: #1b1c1d">{{ i.title }}</strong>
+                        <span style="font-size: 12px; color: #5e6168">{{ i.who }}</span>
+                        <span aria-hidden="true" style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ i.bar }}"></span></span>
+                        <span style="{{ i.countStyle }}">{{ i.count }}</span>
+                      </a>
+                    </sc-for>
+                    <sc-if value="{{ d.empty }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">Geen cursusdag. De hal is vrij.</span></sc-if>
+                  </li>
+                </sc-for>
+              </ol>
+            </div>
+          </section>
+
+          <section aria-labelledby="lv-inschr" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px"><h2 id="lv-inschr" style="margin: 0; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">5 inschrijvingen om te bevestigen</h2><a href="LqLijst.dc.html" style="font-size: 14px; font-weight: 600">Alle inschrijvingen</a></div>
+            <sc-for list="{{ queue }}" as="q" hint-placeholder-count="5">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 11px 0; border-top: 1px solid #eef0f3">
+                <span style="width: 36px; height: 36px; flex: none; border-radius: 8px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ q.initials }}</span>
+                <span style="flex: 1 1 250px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><a href="LqDetail.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ q.who }}</a><span style="font-size: 13px; color: #5e6168">{{ q.what }}</span></span>
+                <span style="{{ q.pill }}">{{ q.state }}</span>
+                <span style="{{ q.waitStyle }}">{{ q.wait }}</span>
+                <button type="button" aria-label="{{ q.label }}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 20px; background: #e3f1f3; color: #084f58; font: 600 14px 'Barlow', sans-serif">{{ q.action }}</button>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+          <section aria-labelledby="lv-bez" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="lv-bez" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Bezetting tot 23 oktober</h2>
+            <sc-for list="{{ fill }}" as="f" hint-placeholder-count="4">
+              <a href="LqBord.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><span style="font-size: 15px; font-weight: 600">{{ f.title }}</span><span style="{{ f.countStyle }}">{{ f.count }}</span></span>
+                <span aria-hidden="true" style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ f.bar }}"></span></span>
+                <span style="font-size: 13px; color: #5e6168">{{ f.meta }}</span>
+              </a>
+            </sc-for>
+          </section>
+          <section aria-labelledby="lv-let" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 20px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="lv-let" style="margin: 0 0 8px; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif; font-size: 18px; font-weight: 700">Trainers en lokalen</h2>
+            <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid #eef0f3">
+                <span style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><span style="font-size: 15px; font-weight: 600">{{ n.title }}</span><span style="{{ n.pill }}">{{ n.kind }}</span></span>
+                <span style="font-size: 13px; line-height: 1.45; color: #5e6168">{{ n.text }}</span>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1244}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Inschrijvingen', 'inbox', 5], ['Berichten', 'chat', 2]] },
+      { title: 'Planning', items: [['Cursusdagen', 'board'], ['Weekrooster', 'cal'], ['Trainers en lokalen', 'room']] },
+      { title: 'Mensen', items: [['Deelnemers', 'people'], ['Werkgevers', 'org']] },
+      { title: 'Afronden', items: [['Certificaten', 'award'], ['Facturen', 'doc']] }
+    ];
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      { label: 'Cursusdagen deze week', value: '4', note: '1 loopt nu, in de praktijkhal', noteStyle: note('#5e6168') },
+      { label: 'Te bevestigen', value: '5', note: '1 wacht langer dan 2 werkdagen', noteStyle: note('#a30000', 600) },
+      { label: 'Vrije plekken tot 23 oktober', value: '24', note: 'op 4 cursusdagen', noteStyle: note('#5e6168') },
+      { label: 'Onder het minimum', value: '1', note: 'beslissen voor 8 oktober', noteStyle: note('#a30000', 600) }
+    ];
+    const bar = (n, max, c) => 'display: block; height: 6px; width: ' + Math.round(n / max * 100) + '%; background: ' + (c || '#0b6e7a');
+    const cnt = (full) => 'font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + (full ? '#1e6b2a' : '#3d4047');
+    const item = (title, who, n, max) => ({ title, who, bar: bar(n, max), count: n + ' van ' + max + (n === max ? ' · vol' : ''), countStyle: cnt(n === max) });
+    const rawDays = [
+      ['ma 5', true, [item('Storingen zoeken, dag 1', 'Henk Dekker · praktijkhal', 9, 12)]],
+      ['di 6', false, [item('Storingen zoeken, dag 2', 'Henk Dekker · praktijkhal', 9, 12)]],
+      ['wo 7', false, [item('Propaan (R290): veilig werken', 'Fatima Ouali · praktijkhal', 8, 8)]],
+      ['do 8', false, [item('F-gassen: herhaling en examen', 'Henk Dekker · lokaal 2 en hal', 11, 12)]],
+      ['vr 9', false, []]
+    ];
+    const days = rawDays.map(([label, today, items]) => ({
+      label, today, items, empty: items.length === 0,
+      box: 'display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; min-height: 150px; background: ' + (today ? '#e3f1f3' : '#f5f6f8'),
+      head: 'display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 13px; font-weight: 700; color: ' + (today ? '#084f58' : '#3d4047')
+    }));
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const wait = (late) => 'flex: 0 0 76px; text-align: right; font-size: 13px; font-weight: ' + (late ? '700; color: #a30000' : '500; color: #5e6168');
+    const queue = [
+      { initials: 'BT', who: 'Bakker Techniek BV', what: '1 deelnemer · F-gassen: herhaling en examen · do 22 okt', state: 'Past', pill: pill('#e7f3ea', '#1e6b2a'), wait: '3 werkdagen', waitStyle: wait(true), action: 'Bevestigen' },
+      { initials: 'JI', who: 'Jansen Installatietechniek BV', what: '2 deelnemers · Lucht-water warmtepomp · 3, 4 en 10 nov', state: 'Past', pill: pill('#e7f3ea', '#1e6b2a'), wait: 'sinds vrijdag', waitStyle: wait(false), action: 'Bevestigen' },
+      { initials: 'GK', who: 'De Groot Klimaat', what: '4 deelnemers · Warmtepompen installeren: basis · 20 en 21 okt', state: '1 plek te weinig', pill: pill('#fff4de', '#7a4f00'), wait: 'sinds vrijdag', waitStyle: wait(false), action: 'Bekijken' },
+      { initials: 'YI', who: 'Yilmaz Installaties', what: '1 deelnemer · Hybride warmtepomp · do 22 okt', state: 'Past', pill: pill('#e7f3ea', '#1e6b2a'), wait: 'vanochtend', waitStyle: wait(false), action: 'Bevestigen' },
+      { initials: 'RH', who: 'Ruben Hoekstra, zelfstandig', what: '1 deelnemer · F-gassen: herhaling en examen · do 22 okt', state: 'Past', pill: pill('#e7f3ea', '#1e6b2a'), wait: 'vanochtend', waitStyle: wait(false), action: 'Bevestigen' }
+    ].map((q) => ({ ...q, label: q.action + ': ' + q.who }));
+    const fc = (low) => 'flex: none; font-size: 13px; font-weight: ' + (low ? '700; color: #a30000' : '600; color: #3d4047') + '; font-variant-numeric: tabular-nums';
+    const f = (title, meta, n, max, low) => ({ title, meta, count: n + ' van ' + max, countStyle: fc(low), bar: bar(n, max, low ? '#a30000' : '#0b6e7a') });
+    const fill = [
+      f('Waterzijdig inregelen', 'do 15 okt · Fatima Ouali', 6, 12, false),
+      f('Warmtepompen installeren: basis', 'di 20 en wo 21 okt · Fatima Ouali', 9, 12, false),
+      f('F-gassen: herhaling en examen', 'do 22 okt · Henk Dekker', 5, 12, false),
+      f('Hybride warmtepomp', 'do 22 okt · onder het minimum van 6', 4, 12, true)
+    ];
+    const notes = [
+      { title: 'Do 22 okt: de hal is twee keer geboekt', kind: 'Dubbel', pill: pill('#fcedec', '#a30000'), text: 'F-gassen en Hybride hebben allebei de praktijkhal nodig in de middag.' },
+      { title: 'Fatima Ouali is vrij op 12 en 13 november', kind: 'Afwezig', pill: pill('#f0f1f3', '#3d4047'), text: 'Waterzijdig inregelen van 12 november heeft nog geen trainer.' },
+      { title: 'Lokaal 2: beamer in reparatie', kind: 'Lokaal', pill: pill('#f0f1f3', '#3d4047'), text: 'Terug op woensdag 7 oktober. Dinsdag staat er een scherm op wielen.' }
+    ];
+    return { nav, kpis, days, queue, fill, notes };
+  }
+}
+</script>
+</body>
+</html>

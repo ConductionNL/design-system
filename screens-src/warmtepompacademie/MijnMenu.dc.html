@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Menu Mijn academie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav aria-label="Mijn academie" style="font-family: 'Barlow', system-ui, sans-serif; color: #1a1a1a; width: 100%; display: flex; flex-direction: column; gap: 24px">
+  <div style="padding: 14px 16px; border-radius: 6px; background: #f4f6f9; display: flex; flex-direction: column; gap: 2px">
+    <span style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #4a4a4a">U regelt het voor</span>
+    <strong style="font-size: 17px; font-weight: 600">Jansen Installatietechniek BV</strong>
+    <span style="font-size: 15px; color: #4a4a4a">4 medewerkers · via eHerkenning</span>
+  </div>
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+    <div>
+      <h2 style="margin: 0 0 6px; padding: 0 12px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #4a4a4a">{{ g.title }}</h2>
+      <ul style="margin: 0; padding: 0; list-style: none">
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+          <li><a href="{{ it.href }}" style="{{ it.style }}" aria-current="{{ it.current }}"><span>{{ it.label }}</span><sc-if value="{{ it.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 3px; background: #c2410c; color: #ffffff; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="{{ it.badgeLabel }}">{{ it.badge }}</span></sc-if></a></li>
+        </sc-for>
+      </ul>
+    </div>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Overzicht"},"$preview":{"width":320,"height":659}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'Overzicht';
+    const raw = [
+      { title: 'Mijn academie', items: [['Overzicht', 'MijnOverzicht.dc.html'], ['Berichten', 'Berichten.dc.html', 2]] },
+      { title: 'Cursussen', items: [['Inschrijvingen', 'MijnLijst.dc.html'], ['Medewerkers', 'MijnOverzicht.dc.html'], ['Certificaten', 'Documenten.dc.html']] },
+      { title: 'Administratie', items: [['Facturen', 'Documenten.dc.html', 1], ['Bedrijfsgegevens', 'MijnOverzicht.dc.html']] },
+      { title: 'Account', items: [['Mijn gegevens', 'MijnOverzicht.dc.html']] }
+    ];
+    const base = 'display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; box-sizing: border-box; padding: 8px 12px; border-radius: 3px; font-size: 17px; text-decoration: none; ';
+    const groups = raw.map((g) => ({
+      title: g.title,
+      items: g.items.map(([label, href, badge]) => {
+        const on = label === active;
+        return {
+          label, href, badge: badge ?? '', hasBadge: !!badge,
+          badgeLabel: badge ? badge + ' nieuw' : '',
+          current: on ? 'page' : 'false',
+          style: base + (on ? 'color: #9a3412; font-weight: 700; background: #fcebdd;' : 'color: #0b6e7a; font-weight: 500;')
+        };
+      })
+    }));
+    return { groups };
+  }
+}
+</script>
+</body>
+</html>

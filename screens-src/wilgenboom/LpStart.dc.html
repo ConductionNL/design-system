@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: mijn werkdag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 1240px; display: flex; flex-direction: column">
+  <dc-import name="WerkKop" person="Daan Vermeer" role="Leerkracht groep 7" initials="DV" hint-size="100%,68px"></dc-import>
+  <main style="width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 28px">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 16px">
+        <img src="/_blob/ff5189f395484ae4c853aeb2b83e6513" alt="" style="height: 54px; width: auto">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 14px; color: #5e6168">maandag 5 oktober 2026 · 8.20 uur</span>
+          <h1 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.01em">Goedemorgen, Daan</h1>
+        </div>
+      </div>
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Lexend', sans-serif">Startpagina aanpassen</button>
+    </div>
+
+    <section aria-labelledby="lp-eerst" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 8px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin-bottom: 8px">
+        <h2 id="lp-eerst" style="margin: 0; font-size: 18px; font-weight: 700">Vandaag eerst</h2>
+        <span style="font-size: 14px; color: #5e6168">3 dingen uit al uw apps die voor de eerste bel aandacht vragen</span>
+      </div>
+      <sc-for list="{{ first }}" as="f" hint-placeholder-count="3">
+        <a href="{{ f.href }}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+          <span style="flex: none; width: 28px; height: 28px; border-radius: 14px; background: #fdf3d7; color: #6b4a00; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{ f.n }}</span>
+          <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px; font-weight: 600">{{ f.title }}</strong><span style="font-size: 14px; color: #5e6168">{{ f.why }}</span></span>
+          <span style="padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">{{ f.app }}</span>
+          <span style="{{ f.button }}">{{ f.action }}</span>
+        </a>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="lp-werk" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="lp-werk" style="margin: 0; font-size: 18px; font-weight: 700">Mijn werk</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 16px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+          <a href="{{ a.href }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; color: #1b1c1d; text-decoration: none">
+            <span style="display: flex; align-items: center; gap: 10px">
+              <span style="width: 36px; height: 36px; border-radius: 8px; background: #e8f1eb; color: #1f4a33; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span>
+              <span style="display: flex; flex-direction: column; line-height: 1.2"><strong style="font-size: 16px; font-weight: 600">{{ a.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ a.what }}</span></span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 34px; font-weight: 700; line-height: 1">{{ a.count }}</strong><span style="font-size: 14px; color: #5e6168">{{ a.unit }}</span></span>
+            <span style="font-size: 14px; color: #3d4047">{{ a.note }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+      <section aria-labelledby="lp-agenda" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lp-agenda" style="margin: 0; font-size: 18px; font-weight: 700">Agenda vandaag</h2><a href="#" style="font-size: 14px; font-weight: 600">Open agenda</a></div>
+        <sc-for list="{{ agenda }}" as="e" hint-placeholder-count="3">
+          <div style="display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid #eef0f3">
+            <span style="flex: 0 0 104px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums">{{ e.time }}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">{{ e.title }}</span><span style="font-size: 13px; color: #5e6168">{{ e.where }}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-recent" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-recent" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Verder waar u was</h2>
+        <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+          <a href="{{ r.href }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2f6b4a" stroke-width="2.6" stroke-linecap="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+          </a>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="lp-org" style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="lp-org" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Uit de teamkamer</h2>
+        <sc-for list="{{ org }}" as="o" hint-placeholder-count="3">
+          <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600">{{ o.title }}</span><span style="font-size: 13px; color: #5e6168">{{ o.meta }}</span></a>
+        </sc-for>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1412}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const solid = 'display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 8px; background: #2f6b4a; color: #ffffff; font-size: 14px; font-weight: 600';
+    const soft = 'display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 18px; background: #e8f1eb; color: #1f4a33; font-size: 14px; font-weight: 600';
+    const first = [
+      { n: '1', title: 'Vul het register van groep 7 in', why: 'Voor 9.00 uur. Twee leerlingen zijn al afgemeld door hun ouders', app: 'learniq', action: 'Register invullen', button: solid, href: 'LqBord.dc.html' },
+      { n: '2', title: 'Finn Weidewijk was vrijdag afwezig zonder melding', why: 'Bel de ouders vandaag. Het is de eerste keer zonder melding', app: 'learniq', action: 'Naar Finn', button: soft, href: 'LqDetail.dc.html' },
+      { n: '3', title: 'Twee ouders wachten op uw bevestiging van hun gesprekstijd', why: 'Ouderavond van donderdag 29 oktober', app: 'learniq', action: 'Bevestigen', button: soft, href: 'LqLijst.dc.html' }
+    ];
+    const apps = [
+      { name: 'learniq', what: 'Groep 7', count: '3', unit: 'wachten op u', note: '2 afwezigheidsmeldingen, 1 bericht van een ouder', href: 'LqVandaag.dc.html', icon: 'M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2zM4 21V5M9 7h7' },
+      { name: 'Nieuws voor ouders', what: 'portaliq', count: '1', unit: 'concept', note: 'Het weekbericht van groep 7 staat klaar om te plaatsen', href: 'Editor.dc.html', icon: 'M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5' },
+      { name: 'Bestanden', what: 'Nextcloud', count: '4', unit: 'nieuw gedeeld', note: 'Lesplan Kinderboekenweek, door juf Esra', href: '#', icon: 'M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' },
+      { name: 'Talk', what: 'Nextcloud', count: '2', unit: 'ongelezen', note: 'Team bovenbouw: wie neemt de pleinwacht van vrijdag over?', href: '#', icon: 'M4 5h16v11H8l-4 4z' }
+    ];
+    const agenda = [
+      { time: '08.30 - 14.30', title: 'Les aan groep 7', where: 'Lokaal 7' },
+      { time: '12.00 - 12.30', title: 'Pleinwacht', where: 'Grote plein' },
+      { time: '15.00 - 16.00', title: 'Bouwoverleg bovenbouw', where: 'Teamkamer · met Marieke de Wit' }
+    ];
+    const recent = [
+      { title: 'Vera Hulstkamp', meta: 'Leerling · gisteren bekeken', href: 'LqDetail.dc.html' },
+      { title: 'Woensdag naar de kinderboerderij', meta: 'Nieuws voor groep 7 · vandaag geplaatst', href: 'LqVandaag.dc.html' },
+      { title: 'Rekenen blok 3, toetsresultaten', meta: 'Bestand · vrijdag bewerkt', href: '#' },
+      { title: 'Oudergesprekken groep 7', meta: '19 van 28 ouders kozen een tijd', href: 'LqLijst.dc.html' }
+    ];
+    const org = [
+      { title: 'Vrijdag 9 oktober: studiedag over rekenonderwijs', meta: 'Hanneke Postma · programma in Bestanden' },
+      { title: 'De schoolfotograaf komt woensdag: het rooster per groep', meta: 'Administratie · 2 oktober' },
+      { title: 'Nieuwe afspraken over de EpiPen', meta: 'Marieke de Wit · 30 september' }
+    ];
+    return { first, apps, agenda, recent, org };
+  }
+}
+</script>
+</body>
+</html>

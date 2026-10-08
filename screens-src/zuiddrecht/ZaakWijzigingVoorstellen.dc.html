@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Uw zaak: wijziging voorstellen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 2213px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Mijn zaken" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 16px; color: #4a4a4a">Uw zaak · 2026-0082</span><h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Verlichting fietspad Lindelaan</h1></div>
+        <a href="Zaak.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 2px solid #3669a5; border-radius: 4px; font-weight: 600; text-decoration: none">Terug naar de zaak</a>
+      </div>
+      <section aria-labelledby="gegevens" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="gegevens" style="margin: 0; font-size: 28px; font-weight: 700">Gegevens</h2>
+        <dl style="margin: 0; display: grid; grid-template-columns: minmax(180px, max-content) 1fr; gap: 0; font-size: 17px; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
+            <dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">{{ f.k }}</dt>
+            <dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">{{ f.v }}</dd>
+          </sc-for>
+        </dl>
+      </section>
+      <section aria-labelledby="voorstel" style="display: flex; flex-direction: column; gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="voorstel" style="margin: 0; font-size: 28px; font-weight: 700">Wijziging voorstellen</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #4a4a4a; max-width: 760px">Klopt er iets niet? Stel een wijziging voor. U past de zaak niet zelf aan: een medewerker bekijkt uw voorstel en neemt het over of wijst het af.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <h3 style="margin: 0; font-size: 22px; font-weight: 700">Uw voorstellen</h3>
+          <ul aria-label="Uw voorstellen" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{ proposals }}" as="p" hint-placeholder-count="3">
+              <li style="display: flex; flex-direction: column; gap: 8px; padding: 16px 20px; border: 1px solid #d3d8df; border-radius: 6px">
+                <span style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px">
+                  <span style="font-size: 18px; font-weight: 600">{{ p.summary }}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap">
+                    <span style="{{ p.tag }}">{{ p.state }}</span>
+                    <sc-if value="{{ p.queued }}" hint-placeholder-val="{{ false }}"><button type="button" style="height: 40px; padding: 0 16px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 16px 'Fira Sans', sans-serif">Intrekken</button></sc-if>
+                  </span>
+                </span>
+                <span style="font-size: 15px; color: #4a4a4a">{{ p.meta }}</span>
+                <sc-if value="{{ p.hasReason }}" hint-placeholder-val="{{ false }}"><span style="font-size: 16px; line-height: 1.5; padding: 10px 14px; border-left: 4px solid #a30000; background: #fcedec; color: #1a1a1a"><strong>Reden: </strong>{{ p.reason }}</span></sc-if>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+        <form aria-label="Wijziging voorstellen" style="display: flex; flex-direction: column; gap: 20px; max-width: 640px; padding: 24px; border: 2px solid #3669a5; border-radius: 6px">
+          <h3 style="margin: 0; font-size: 22px; font-weight: 700">Nieuw voorstel</h3>
+          <p style="margin: 0; font-size: 16px; color: #4a4a4a; line-height: 1.5">U ziet alleen de gegevens die u bij deze soort zaak mag voorstellen. Wij sturen alleen wat u verandert.</p>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="vp-tel" style="font-size: 17px; font-weight: 600">Telefoonnummer</label><input id="vp-tel" type="text" value="06 1234 5678" style="box-sizing: border-box; height: 48px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; background: #ffffff"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="vp-mail" style="font-size: 17px; font-weight: 600">E-mailadres</label><input id="vp-mail" type="email" value="sanne.devries@example.nl" style="box-sizing: border-box; height: 48px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; color: #1a1a1a; background: #ffffff"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="vp-note" style="font-size: 17px; font-weight: 600">Toelichting <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></label><textarea id="vp-note" rows="4" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px/1.5 'Fira Sans', sans-serif; resize: vertical">Mijn nieuwe mailadres, het oude gebruik ik niet meer.</textarea></div>
+          <p role="alert" style="margin: 0; display: flex; gap: 10px; align-items: flex-start; font-size: 16px; color: #a30000"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path></svg>Wijzig minstens één veld voordat u een voorstel indient.</p>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 24px; border-top: 1px solid #d3d8df">
+          <button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box">Annuleren</button>
+          <button type="submit" style="height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif">Voorstel indienen</button>
+        </div>
+          <span style="font-size: 14px; color: #4a4a4a">De foutregel verschijnt alleen als u op Voorstel indienen drukt zonder iets te wijzigen.</span>
+        </form>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2213}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tag = (bg, fg) => 'display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 14px; font-size: 15px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const proposals = [
+      { summary: 'Telefoonnummer: 06 2345 6789', state: 'Wacht op beoordeling', tag: tag('#fff4de', '#7a4f00'), meta: 'Voorgesteld op 6 oktober 2026', queued: true },
+      { summary: 'E-mailadres: s.devries@example.nl', state: 'Overgenomen', tag: tag('#e7f3ea', '#1e6b2a'), meta: 'Voorgesteld op 4 oktober 2026 · overgenomen op 5 oktober 2026' },
+      { summary: 'Telefoonnummer: 0180 123 456', state: 'Afgewezen', tag: tag('#fcedec', '#a30000'), meta: 'Voorgesteld op 3 oktober 2026 · afgewezen op 4 oktober 2026', hasReason: true, reason: 'Dit is het nummer van Bakkerij Lindelaan. Geef een nummer waarop wij u zelf bereiken.' }
+    ].map((p) => Object.assign({ queued: false, hasReason: false, reason: '' }, p));
+    const facts = [
+      { k: 'Zaaknummer', v: '2026-0082' }, { k: 'Status', v: 'In behandeling' },
+      { k: 'Telefoonnummer', v: '06 1234 5678' }, { k: 'E-mailadres', v: 's.devries@example.nl' }
+    ];
+    return { proposals, facts, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Mijn zaken', href: 'MijnZaken.dc.html' }, { label: 'Uw zaak', href: 'Zaak.dc.html' }, { label: 'Wijziging voorstellen' }] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: vandaag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Team Mechatronica" primary="Aanwezigheid invullen" active="Vandaag" groups="{{ nav }}" hint-size="264px,1280px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Ruud Hermans" rol="Docent en BPV-begeleider" hint-size="100%,68px"></dc-import>
+    <main style="padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: #5e6168">maandag 5 oktober 2026 · week 41</span>
+          <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Vandaag</h1>
+        </div>
+        <div role="group" aria-label="Rol" style="display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: #eef0f3">
+          <a href="LqVandaag.dc.html" aria-current="page" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; background: #ffffff; color: #1b1c1d; font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 1px 2px rgba(27,28,29,0.04)">Docent</a>
+          <a href="LqRolB.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; color: #3d4047; font-size: 14px; font-weight: 600; text-decoration: none">BPV-begeleider</a>
+        </div>
+      </div>
+
+      <section aria-labelledby="lq-eerst" style="background: #fbe9f0; border-radius: 12px; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center">
+        <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="lq-eerst" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9c1c49">Vandaag eerst</h2>
+          <strong style="font-size: 18px; font-weight: 700">Sem Visser (MT1B) is 14 uur afwezig zonder reden</strong>
+          <span style="font-size: 15px; line-height: 1.5; color: #1b1c1d">Geteld over vier weken. Bij 16 uur moet de school een melding doen bij leerplicht. Hij is 17 jaar.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'IBM Plex Sans', sans-serif">Gesprek plannen</button>
+          <a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; background: #5b2e91; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Dossier openen</a>
+        </div>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section aria-labelledby="lq-lessen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lq-lessen" style="margin: 0; font-size: 18px; font-weight: 700">Mijn lessen vandaag</h2><a href="#" style="font-size: 14px; font-weight: 600">Weekrooster</a></div>
+            <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="4">
+              <div style="{{ l.row }}">
+                <span style="flex: 0 0 104px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums">{{ l.time }}</span>
+                <span style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ l.title }}</strong><span style="{{ l.metaStyle }}">{{ l.meta }}</span></span>
+                <span style="{{ l.pill }}">{{ l.state }}</span>
+                <sc-if value="{{ l.canFill }}" hint-placeholder-val="{{ false }}"><a href="#" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 20px; background: #ffffff; border: 1px solid #c4c7cb; color: #1b1c1d; font-size: 14px; font-weight: 600; text-decoration: none">Aanwezigheid invullen</a></sc-if>
+              </div>
+            </sc-for>
+          </section>
+
+          <section aria-labelledby="lq-signalen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><h2 id="lq-signalen" style="margin: 0; font-size: 18px; font-weight: 700">Signalen in mijn klassen</h2><a href="LqLijst.dc.html" style="font-size: 14px; font-weight: 600">Alle studenten</a></div>
+            <sc-for list="{{ signals }}" as="s" hint-placeholder-count="4">
+              <a href="LqDetail.dc.html" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span aria-hidden="true" style="width: 36px; height: 36px; flex: none; border-radius: 18px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ s.initials }}</span>
+                <span style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ s.name }}</strong><span style="font-size: 13px; color: #5e6168">{{ s.what }}</span></span>
+                <span style="{{ s.pill }}">{{ s.kind }}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b2e91" stroke-width="2.6" stroke-linecap="round" style="flex: none"><path d="M9 5l7 7-7 7"></path></svg>
+              </a>
+            </sc-for>
+          </section>
+        </div>
+
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #5e6168">Aanwezig vandaag</span><strong style="font-size: 32px; font-weight: 700; line-height: 1">37</strong><span style="font-size: 13px; color: #5e6168">van 40 studenten · 1 zonder melding</span></div>
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #5e6168">Te beoordelen</span><strong style="font-size: 32px; font-weight: 700; line-height: 1">28</strong><span style="font-size: 13px; color: #5e6168">in 3 opdrachten</span></div>
+          </div>
+          <section aria-labelledby="lq-nakijk" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="lq-nakijk" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Beoordelen</h2>
+            <sc-for list="{{ review }}" as="r" hint-placeholder-count="3">
+              <a href="#" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none">
+                <span style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 15px; font-weight: 600">{{ r.title }}</span><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ r.done }}</span></span>
+                <span style="height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ r.bar }}"></span></span>
+                <span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span>
+              </a>
+            </sc-for>
+          </section>
+          <section aria-labelledby="lq-stud" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 22px 24px 10px; display: flex; flex-direction: column; gap: 4px">
+            <h2 id="lq-stud" style="margin: 0 0 8px; font-size: 18px; font-weight: 700">Berichten van studenten</h2>
+            <sc-for list="{{ msgs }}" as="p" hint-placeholder-count="3">
+              <a href="#" style="display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-top: 1px solid #eef0f3; color: #1b1c1d; text-decoration: none"><span style="font-size: 15px; font-weight: 600">{{ p.who }}</span><span style="font-size: 14px; line-height: 1.45; color: #3d4047">{{ p.text }}</span></a>
+            </sc-for>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1167}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home', 0, 'LqVandaag.dc.html'], ['Berichten', 'chat', 3, '#']] },
+      { title: 'Onderwijs', items: [['Rooster', 'cal', 0, '#'], ['Aanwezigheid', 'queue', 1, '#'], ['Beoordelen', 'check', 3, '#']] },
+      { title: 'Studenten', items: [['Studenten', 'people', 0, 'LqLijst.dc.html'], ['Voortgang', 'trend', 0, '#']] },
+      { title: 'BPV', items: [['BPV-overzicht', 'pin', 0, 'LqRolB.dc.html'], ['BPV-plekken', 'board', 0, 'LqBord.dc.html'], ['Leerbedrijven', 'org', 0, '#']] }
+    ];
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const row = (now) => 'display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px ' + (now ? '12px; margin: 0 -12px; border-radius: 8px; background: #f0eaf7' : '0; border-top: 1px solid #eef0f3');
+    const lessons = [
+      { time: '08.30 - 10.00', title: 'PLC-programmeren · MT3A', meta: 'Lokaal T0.14 · 18 studenten', state: 'Ingevuld', pill: pill('#e7f3ea', '#1e6b2a'), canFill: false, now: false },
+      { time: '10.15 - 11.45', title: 'Practicum pneumatiek · MT1B', meta: 'Werkplaats W1 · 22 studenten', state: 'Ingevuld', pill: pill('#e7f3ea', '#1e6b2a'), canFill: false, now: false },
+      { time: '12.30 - 14.00', title: 'Elektrotechniek · MT1A', meta: 'Lokaal T0.12 · 24 studenten · nu bezig', state: 'Nog invullen', pill: pill('#fff4de', '#7a4f00'), canFill: true, now: true },
+      { time: '14.15 - 15.45', title: 'Projecturen · MT3A', meta: 'Werkplaats W2 · 18 studenten', state: 'Straks', pill: pill('#f0f1f3', '#3d4047'), canFill: false, now: false }
+    ].map((l) => ({ ...l, row: row(l.now), metaStyle: 'font-size: 13px; color: ' + (l.now ? '#3d4047' : '#5e6168') }));
+    const signals = [
+      { initials: 'SV', name: 'Sem Visser · MT1B', what: '14 uur afwezig zonder reden in vier weken', kind: 'Afwezigheid', pill: pill('#fcedec', '#a30000') },
+      { initials: 'NJ', name: 'Noa Jansen · MT1A', what: 'Twee onvoldoendes voor elektrotechniek sinds september', kind: 'Voortgang', pill: pill('#fff4de', '#7a4f00') },
+      { initials: 'MG', name: 'Milan de Groot · MT2A', what: 'Leerbedrijf stuurde 8 uur terug met een vraag', kind: 'BPV', pill: pill('#e8e6f6', '#4a3f8f') },
+      { initials: 'DS', name: 'Daan Smits · MT2A', what: 'Nog geen BPV-plek, vijf weken na de start', kind: 'BPV', pill: pill('#fcedec', '#a30000') }
+    ];
+    const bar = (p) => 'display: block; height: 6px; width: ' + p + '%; background: #5b2e91';
+    const review = [
+      { title: 'Praktijkopdracht transportband', done: '11 van 18', bar: bar(61), meta: 'MT3A · PLC-programmeren · inleveren was 2 oktober' },
+      { title: 'Meetrapport pneumatiek', done: '4 van 22', bar: bar(18), meta: 'MT1B · inleveren was 1 oktober' },
+      { title: 'Practicumtoets draaien en frezen', done: '0 van 3', bar: bar(0), meta: 'MT2A · herkansing van 1 oktober' }
+    ];
+    const msgs = [
+      { who: 'Lotte Vermeulen · MT2A', text: 'Mijn praktijkopleider is twee weken weg. Wie keurt nu mijn uren goed?' },
+      { who: 'Noa Jansen · MT1A', text: 'Mag ik de toets elektrotechniek herkansen na de herfstvakantie?' }
+    ];
+    return { nav, lessons, signals, review, msgs };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: leerlingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 1060px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="De Wilgenboom" primary="Register invullen" active="Leerlingen" hint-size="264px,1060px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" person="Daan Vermeer" role="Leerkracht groep 7" initials="DV" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Leerlingen</h1><span style="font-size: 15px; color: #5e6168">Groep 7 · 28 leerlingen · schooljaar 2026-2027</span></div>
+        <div style="display: flex; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Lexend', sans-serif; color: #1b1c1d">Groepslijst afdrukken</button>
+          <a href="LqBord.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; background: #2f6b4a; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Register invullen</a>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="4">
+          <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+        </sc-for>
+        <span style="flex: 1"></span>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px">Groep
+          <select style="height: 40px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 500 14px 'Lexend', sans-serif"><option>Groep 7</option></select>
+        </label>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(27,28,29,0.04)">
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <th scope="col" style="padding: 12px 16px; font-weight: 600"><button type="button" style="border: 0; background: transparent; padding: 0; font: 600 14px 'Lexend', sans-serif; color: #1b1c1d; display: flex; gap: 4px; align-items: center">Leerling <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg></button></th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Vandaag</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Afwezig dit jaar</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Te laat</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Oudergesprek 29 okt</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Zorg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+                <tr style="border-top: 1px solid #eef0f3">
+                  <td style="padding: 12px 16px"><span style="display: flex; align-items: center; gap: 12px"><span style="width: 34px; height: 34px; flex: none; border-radius: 17px; background: #e8f1eb; color: #1f4a33; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ r.initials }}</span><a href="LqDetail.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d">{{ r.name }}</a></span></td>
+                  <td style="padding: 12px 16px"><span style="{{ r.todayStyle }}">{{ r.today }}</span></td>
+                  <td style="padding: 12px 16px; font-variant-numeric: tabular-nums">{{ r.absent }}</td>
+                  <td style="padding: 12px 16px; font-variant-numeric: tabular-nums">{{ r.late }}</td>
+                  <td style="padding: 12px 16px"><span style="{{ r.talkStyle }}">{{ r.talk }}</span></td>
+                  <td style="padding: 12px 16px"><sc-if value="{{ r.hasCare }}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 12px; background: #e8e6f6; color: #4a3f8f; font-size: 13px; font-weight: 600">{{ r.care }}</span></sc-if></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+          <span>1 tot 10 van 28</span>
+          <nav aria-label="Paginering" style="display: flex; gap: 6px">
+            <a href="#" aria-current="page" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #2f6b4a; color: #ffffff; font-weight: 600; text-decoration: none">1</a>
+            <a href="#" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">2</a>
+            <a href="#" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">3</a>
+            <a href="#" style="height: 40px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">Volgende</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const view = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 20px; font: 600 14px Lexend, sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #e4e6ea; background: #ffffff; color: #1b1c1d;');
+    const count = (on) => 'padding: 1px 8px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff' : 'background: #f0f1f3; color: #3d4047');
+    const views = [['Alle leerlingen', 28, true], ['Afwezig vandaag', 2, false], ['Nog geen gesprekstijd', 9, false], ['Met zorg', 4, false]]
+      .map(([label, n, on]) => ({ label, count: n, pressed: on ? 'true' : 'false', style: view(on), countStyle: count(on) }));
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const here = pill('#e7f3ea', '#1e6b2a');
+    const away = pill('#e8f1eb', '#1f4a33');
+    const open = 'color: #7a4f00; font-weight: 600';
+    const set = 'color: #1b1c1d';
+    const initials = (name) => name.split(' ').filter((w) => w[0] === w[0].toUpperCase()).map((w) => w[0]).slice(0, 2).join('');
+    const rows = [
+      ['Amira Benali', 'In de klas', here, '0 dagen', '0 keer', '18.30 uur, bevestigd', set, ''],
+      ['Bram van Dijk', 'In de klas', here, '1 dag', '2 keer', 'Nog niet gekozen', open, ''],
+      ['Daan Walnootmeer', 'In de klas', here, '0 dagen', '1 keer', '19.10 uur, bevestigd', set, 'Plan loopt'],
+      ['Finn Weidewijk', 'In de klas', here, '3 dagen, 1 niet gemeld', '0 keer', 'Nog niet gekozen', open, 'In gesprek met IB'],
+      ['Lina Öztürk', 'Tandarts tot 11.30', away, '0 dagen', '0 keer', '18.10 uur, wacht op u', set, ''],
+      ['Noah de Jong', 'Ziek gemeld', away, '2 dagen', '0 keer', '19.00 uur, bevestigd', set, ''],
+      ['Sara Idrissi', 'In de klas', here, '0 dagen', '0 keer', '18.40 uur, wacht op u', set, ''],
+      ['Tess Bakker', 'In de klas', here, '1 dag', '0 keer', 'Nog niet gekozen', open, 'Plan loopt'],
+      ['Vera Hulstkamp', 'In de klas', here, '1 dag', '1 keer', '18.00 uur, bevestigd', set, ''],
+      ['Yusuf Kaya', 'In de klas', here, '0 dagen', '3 keer', '18.20 uur, bevestigd', set, '']
+    ].map(([name, today, todayStyle, absent, late, talk, talkStyle, care]) => ({ name, initials: initials(name), today, todayStyle, absent, late, talk, talkStyle, care, hasCare: !!care }));
+    return { views, rows };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Esdoornveen: berichten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Berichten" hint-size="100%,680px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Berichten</h1>
+        <a href="#" style="font-size: 17px; font-weight: 600">Meldingen instellen</a>
+      </div>
+      <div role="tablist" aria-label="Berichten filteren" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid #d3d8df">
+        <button type="button" role="tab" aria-selected="true" style="height: 48px; padding: 0 16px; border: 0; background: transparent; font: 700 17px 'IBM Plex Sans', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #c2255c">Alles</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 16px; border: 0; background: transparent; font: 600 17px 'IBM Plex Sans', sans-serif; color: #5b2e91">Ongelezen (2)</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 16px; border: 0; background: transparent; font: 600 17px 'IBM Plex Sans', sans-serif; color: #5b2e91">BPV</button>
+        <button type="button" role="tab" aria-selected="false" style="height: 48px; padding: 0 16px; border: 0; background: transparent; font: 600 17px 'IBM Plex Sans', sans-serif; color: #5b2e91">Examens</button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <ul aria-label="Berichten" style="flex: 1 1 300px; max-width: 360px; margin: 0; padding: 0; list-style: none; border: 1px solid #d3d8df; border-radius: 8px; overflow: hidden">
+          <sc-for list="{{ items }}" as="m" hint-placeholder-count="5">
+            <li>
+              <a href="#bericht" aria-current="{{ m.current }}" style="{{ m.row }}">
+                <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+                  <span style="{{ m.fromStyle }}">{{ m.from }}</span>
+                  <span style="font-size: 14px; color: #4a4a4a; white-space: nowrap">{{ m.date }}</span>
+                </span>
+                <span style="{{ m.titleStyle }}">{{ m.title }}</span>
+                <sc-if value="{{ m.unread }}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 2px 10px; border-radius: 12px; background: #c2255c; color: #ffffff; font-size: 13px; font-weight: 700">Nieuw</span></sc-if>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+
+        <article id="bericht" style="flex: 999 1 400px; min-width: 0; border: 1px solid #d3d8df; border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+            <span aria-hidden="true" style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #f0eaf7; color: #43206e; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px">PB</span>
+            <span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 17px">Petra Bakker</strong><span style="font-size: 15px; color: #4a4a4a">Praktijkopleider · Bakker Techniek BV</span></span>
+            <span style="font-size: 15px; color: #4a4a4a">vrijdag 2 oktober, 16.42 uur</span>
+          </div>
+          <h2 style="margin: 0; font-size: 26px; font-weight: 700; line-height: 1.25">Vraag over je uren van dinsdag 29 september</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 18px; line-height: 1.6">
+            <p style="margin: 0">Hoi Milan,</p>
+            <p style="margin: 0">Je schreef 8 uur op dinsdag 29 september. Volgens mij ging je om 14.00 uur naar de tandarts. Wil je de uren aanpassen? Dan keur ik de hele week goed.</p>
+            <p style="margin: 0">Groet, Petra</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; padding: 16px 20px; border-radius: 8px; background: #f4f6f9">
+            <div style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px">
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px"><strong style="font-size: 17px">Dinsdag 29 september</strong><span style="padding: 3px 11px; border-radius: 14px; background: #fcedec; color: #a30000; font-size: 14px; font-weight: 600">Teruggestuurd</span></span>
+              <span style="font-size: 15px; color: #4a4a4a">08.00 tot 16.30 uur · 8 uur geschreven</span>
+            </div>
+            <a href="MobielDetail.dc.html" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 4px; background: #5b2e91; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">Uren aanpassen</a>
+          </div>
+          <form style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #d3d8df; padding-top: 20px">
+            <label for="antw" style="font-size: 17px; font-weight: 600">Je antwoord aan Petra</label>
+            <textarea id="antw" rows="2" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px/1.5 'IBM Plex Sans', sans-serif; resize: vertical"></textarea>
+            <button type="button" style="align-self: flex-start; margin-top: 4px; height: 44px; padding: 0 18px; border: 2px solid #5b2e91; border-radius: 4px; background: #ffffff; color: #5b2e91; font: 600 17px 'IBM Plex Sans', sans-serif">Antwoord sturen</button>
+          </form>
+        </article>
+      </div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,348px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1465}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const row = (open, first) => 'display: flex; flex-direction: column; gap: 6px; padding: 14px 18px; color: #1a1a1a; text-decoration: none;' + (first ? '' : ' border-top: 1px solid #d3d8df;') + (open ? ' background: #f0eaf7;' : '');
+    const items = [
+      { from: 'Ruud Hermans', date: 'vandaag, 09.12', title: 'Tussenbeoordeling op dinsdag 13 oktober', unread: true, open: false },
+      { from: 'Petra Bakker', date: 'vr 2 okt', title: 'Vraag over je uren van dinsdag 29 september', unread: false, open: true },
+      { from: 'Examenbureau', date: 'vr 2 okt', title: 'Je examenrooster voor november staat klaar', unread: true, open: false },
+      { from: 'Fenna Yilmaz', date: 'do 1 okt', title: 'Voortgangsgesprek: donderdag 15 oktober, 15.15 uur', unread: false, open: false },
+      { from: 'Roosterbureau', date: 'wo 30 sept', title: 'Vrijdag 9 oktober: Engels vervalt', unread: false, open: false },
+      { from: 'Servicedesk', date: '27 aug', title: 'Je praktijkovereenkomst is door iedereen getekend', unread: false, open: false }
+    ].map((m, i) => ({ ...m,
+      current: m.open ? 'true' : 'false',
+      row: row(m.open, i === 0),
+      fromStyle: 'font-size: 15px; ' + (m.unread ? 'font-weight: 700; color: #1a1a1a;' : 'font-weight: 500; color: #4a4a4a;'),
+      titleStyle: 'font-size: 17px; line-height: 1.35; ' + (m.unread || m.open ? 'font-weight: 700;' : 'font-weight: 500;')
+    }));
+    return { items, crumbs: [{ label: 'Home' }, { label: 'Mijn Esdoornveen', href: 'MijnOverzicht.dc.html' }, { label: 'Berichten' }] };
+  }
+}
+</script>
+</body>
+</html>

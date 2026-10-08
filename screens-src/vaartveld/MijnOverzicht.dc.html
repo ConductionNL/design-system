@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Vaartveld: overzicht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto">
+  <div style="max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Overzicht" hint-size="100%,700px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 17px; color: #4a4a4a">Maandag 5 oktober 2026 · week 41</span>
+        <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 48px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em">Goedemorgen, Noor</h1>
+      </div>
+
+      <section aria-labelledby="ov-eerst" style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding: 24px 28px; border-radius: 10px; background: #ddf5f2">
+        <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px">
+          <h2 id="ov-eerst" style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #0b6259">Je eerste les · 08.30 uur</h2>
+          <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em">Nederlands in lokaal 1.12</strong>
+          <span style="font-size: 17px; line-height: 1.5">Vandaag lever je je leesverslag in bij mevrouw Kramer. Neem ook je leesboek mee.</span>
+        </div>
+        <a href="#" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 6px; background: #1f4fd8; color: #ffffff; font-weight: 600; font-size: 17px; text-decoration: none">Leesverslag inleveren</a>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <section aria-labelledby="ov-rooster" style="flex: 3 1 420px; min-width: 0; border: 1px solid #d3d8df; border-radius: 10px; padding: 24px 24px 18px; display: flex; flex-direction: column">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px">
+            <h2 id="ov-rooster" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 24px; font-weight: 700">Je rooster vandaag</h2>
+            <a href="#" style="font-size: 17px; font-weight: 600">Hele week</a>
+          </div>
+          <p style="margin: 0 0 10px; font-size: 16px; color: #4a4a4a">2 wijzigingen: economie zit in een ander lokaal en het 7e uur vervalt.</p>
+          <ol style="margin: 0; padding: 0; list-style: none">
+            <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="9">
+              <li style="{{ l.row }}">
+                <sc-if value="{{ l.isLesson }}" hint-placeholder-val="{{ true }}">
+                  <span style="{{ l.num }}">{{ l.hour }}</span>
+                  <span style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <strong style="{{ l.titleStyle }}">{{ l.title }}</strong>
+                    <span style="font-size: 15px; color: #4a4a4a">{{ l.meta }}</span>
+                  </span>
+                  <sc-if value="{{ l.hasPill }}" hint-placeholder-val="{{ false }}"><span style="{{ l.pill }}">{{ l.state }}</span></sc-if>
+                </sc-if>
+                <sc-if value="{{ l.isBreak }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 15px; color: #4a4a4a">{{ l.title }}</span>
+                </sc-if>
+              </li>
+            </sc-for>
+          </ol>
+          <p style="margin: 14px 0 0; font-size: 17px; font-weight: 600">Je bent vandaag om 14.20 uur uit.</p>
+        </section>
+
+        <div style="flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section aria-labelledby="ov-week" style="border: 1px solid #d3d8df; border-radius: 10px; padding: 24px 24px 18px; display: flex; flex-direction: column">
+            <h2 id="ov-week" style="margin: 0 0 8px; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 24px; font-weight: 700">Huiswerk en toetsen</h2>
+            <ul style="margin: 0; padding: 0; list-style: none">
+              <sc-for list="{{ week }}" as="w" hint-placeholder-count="4">
+                <li style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid #e6e9ee">
+                  <span style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 15px; color: #4a4a4a">{{ w.when }} · {{ w.subject }}</span>
+                    <strong style="font-size: 17px; font-weight: 600; line-height: 1.35">{{ w.what }}</strong>
+                  </span>
+                  <sc-if value="{{ w.hasPill }}" hint-placeholder-val="{{ true }}"><span style="{{ w.pill }}">{{ w.state }}</span></sc-if>
+                </li>
+              </sc-for>
+            </ul>
+            <a href="#" style="margin-top: 10px; font-size: 17px; font-weight: 600">Alles van deze week</a>
+          </section>
+
+          <section aria-labelledby="ov-cijfers" style="border: 1px solid #d3d8df; border-radius: 10px; padding: 24px 24px 18px; display: flex; flex-direction: column">
+            <h2 id="ov-cijfers" style="margin: 0 0 8px; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 24px; font-weight: 700">Laatste cijfers</h2>
+            <ul style="margin: 0; padding: 0; list-style: none">
+              <sc-for list="{{ grades }}" as="g" hint-placeholder-count="3">
+                <li style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-top: 1px solid #e6e9ee">
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><strong style="font-size: 17px; font-weight: 600">{{ g.subject }}</strong><sc-if value="{{ g.isNew }}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 9px; border-radius: 12px; background: #1fb5a8; color: #1a1a1a; font-size: 13px; font-weight: 700">Nieuw</span></sc-if></span>
+                    <span style="font-size: 15px; color: #4a4a4a">{{ g.what }}</span>
+                  </span>
+                  <strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums">{{ g.grade }}</strong>
+                </li>
+              </sc-for>
+            </ul>
+            <a href="MijnLijst.dc.html" style="margin-top: 10px; font-size: 17px; font-weight: 600">Alle cijfers</a>
+          </section>
+        </div>
+      </div>
+
+      <section aria-labelledby="ov-afw" style="display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; padding: 18px 24px; border-radius: 10px; background: #f4f6f9">
+        <h2 id="ov-afw" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700">Afwezigheid dit schooljaar</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 17px; flex: 1 1 320px">
+          <li><strong>1 dag</strong> ziek</li>
+          <li><strong>2 keer</strong> te laat</li>
+          <li><strong>0 uur</strong> zonder melding</li>
+        </ul>
+        <a href="#" style="font-size: 17px; font-weight: 600">Bekijken</a>
+      </section>
+    </main>
+  </div>
+  </div>
+  <dc-import name="Voet" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'flex: none; padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { change: pill('#fff4de', '#7a4f00'), test: pill('#e8e6f6', '#4a3f8f'), off: pill('#f0f1f3', '#3d4047'), todo: pill('#fff4de', '#7a4f00') };
+    const raw = [
+      ['1', 'Nederlands', '08.30 - 09.20 · lokaal 1.12 · mevrouw Kramer', '', ''],
+      ['2', 'Wiskunde A', '09.20 - 10.10 · lokaal 2.14 · meneer Demir', '', ''],
+      ['', 'Pauze · 10.10 - 10.30', '', '', 'break'],
+      ['3', 'Economie', '10.30 - 11.20 · lokaal 0.21, niet 1.08 · meneer De Boer', 'Ander lokaal', 'change'],
+      ['4', 'Engels', '11.20 - 12.10 · lokaal 1.05 · mevrouw Jansen', 'SO woordjes', 'test'],
+      ['', 'Pauze · 12.10 - 12.40', '', '', 'break'],
+      ['5', 'Geschiedenis', '12.40 - 13.30 · lokaal 2.03 · meneer Willems', '', ''],
+      ['6', 'Mentoruur', '13.30 - 14.20 · lokaal 1.12 · mevrouw Kramer', '', ''],
+      ['7', 'Lichamelijke opvoeding', '14.30 - 15.20 · de docent is afwezig', 'Vervalt', 'off']
+    ];
+    const lessons = raw.map(([hour, title, meta, state, kind]) => {
+      const isBreak = kind === 'break', off = kind === 'off';
+      return {
+        hour, title, meta, state, isBreak, isLesson: !isBreak, hasPill: !!state, pill: P[kind] || '',
+        row: isBreak
+          ? 'display: flex; align-items: center; padding: 7px 0 7px 44px; border-top: 1px solid #e6e9ee; background: #f4f6f9; margin: 0 -24px; padding-left: 68px'
+          : 'display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #e6e9ee',
+        num: 'width: 28px; height: 28px; flex: none; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-family: \'Red Hat Display\', system-ui, sans-serif; font-size: 15px; font-weight: 700; ' + (off ? 'background: #f0f1f3; color: #3d4047' : 'background: #e8eefc; color: #14338f'),
+        titleStyle: 'font-size: 18px; font-weight: 600; ' + (off ? 'color: #4a4a4a; text-decoration: line-through' : '')
+      };
+    });
+    const week = [
+      { when: 'Vandaag', subject: 'Nederlands', what: 'Leesverslag inleveren', state: 'Nog inleveren', pill: P.todo, hasPill: true },
+      { when: 'Vandaag', subject: 'Wiskunde A', what: 'Paragraaf 3.2, opgave 14 tot en met 22', state: '', pill: '', hasPill: false },
+      { when: 'Dinsdag 6 okt', subject: 'Economie', what: 'Hoofdstuk 2, opgave 8 tot en met 15', state: '', pill: '', hasPill: false },
+      { when: 'Donderdag 8 okt', subject: 'Geschiedenis', what: 'Toets tijdvak 3 en 4', state: 'Toets', pill: P.test, hasPill: true }
+    ];
+    const grades = [
+      { subject: 'Engels', what: 'Leestoets · vrijdag 2 oktober', grade: '6,9', isNew: true },
+      { subject: 'Wiskunde A', what: 'SO hoofdstuk 3 · donderdag 1 oktober', grade: '5,8', isNew: false },
+      { subject: 'Economie', what: 'SO hoofdstuk 1 · woensdag 30 september', grade: '6,6', isNew: false }
+    ];
+    return { lessons, week, grades, crumbs: [{ label: 'Home' }, { label: 'Mijn Vaartveld' }] };
+  }
+}
+</script>
+</body>
+</html>

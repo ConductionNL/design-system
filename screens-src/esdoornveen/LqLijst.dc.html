@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: studenten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="Team Mechatronica" primary="Aanwezigheid invullen" active="Studenten" groups="{{ nav }}" hint-size="264px,1060px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" user="Ruud Hermans" rol="Docent en BPV-begeleider" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Studenten</h1><span style="font-size: 15px; color: #5e6168">Klas MT2A · Mechatronica niveau 4, leerjaar 2 · 24 studenten</span></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600">Klas
+            <select style="height: 40px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'IBM Plex Sans', sans-serif; color: #1b1c1d"><option>MT2A</option><option>MT1A</option><option>MT1B</option><option>MT3A</option></select>
+          </label>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'IBM Plex Sans', sans-serif; color: #1b1c1d">Exporteren</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #5b2e91; color: #ffffff; font: 600 14px 'IBM Plex Sans', sans-serif">Bericht aan klas</button>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="5">
+          <button type="button" aria-pressed="{{ v.pressed }}" style="{{ v.style }}">{{ v.label }}<span style="{{ v.countStyle }}">{{ v.count }}</span></button>
+        </sc-for>
+        <span style="flex: 1"></span>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'IBM Plex Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filters</button>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); overflow: hidden">
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 900px; font-size: 15px">
+            <thead>
+              <tr style="text-align: left; color: #5e6168; font-size: 13px">
+                <th scope="col" style="padding: 12px 8px 12px 16px; width: 28px"><input type="checkbox" aria-label="Alle studenten selecteren" style="width: 18px; height: 18px; accent-color: #5b2e91"></th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600"><button type="button" style="border: 0; background: transparent; padding: 0; font: 600 13px 'IBM Plex Sans', sans-serif; color: #1b1c1d; display: flex; gap: 4px; align-items: center">Student <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg></button></th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Leerbedrijf</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">BPV-uren goedgekeurd</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600; text-align: right">Aanwezig</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                <tr style="border-top: 1px solid #eef0f3">
+                  <td style="padding: 12px 8px 12px 16px"><input type="checkbox" aria-label="{{ r.selectLabel }}" style="width: 18px; height: 18px; accent-color: #5b2e91"></td>
+                  <td style="padding: 12px 16px"><span style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ r.initials }}</span><span style="display: flex; flex-direction: column; gap: 1px"><a href="LqDetail.dc.html" style="font-weight: 600; color: #1b1c1d">{{ r.name }}</a><span style="font: 400 13px 'IBM Plex Mono', ui-monospace, monospace; color: #5e6168">{{ r.number }}</span></span></span></td>
+                  <td style="padding: 12px 16px"><span style="{{ r.companyStyle }}">{{ r.company }}</span></td>
+                  <td style="padding: 12px 16px"><span style="display: flex; align-items: center; gap: 10px"><span style="flex: 0 0 88px; height: 6px; border-radius: 3px; background: #e4e6ea; overflow: hidden"><span style="{{ r.bar }}"></span></span><span style="font-variant-numeric: tabular-nums; white-space: nowrap">{{ r.hours }} van 480</span></span></td>
+                  <td style="padding: 12px 16px; text-align: right"><span style="{{ r.presStyle }}">{{ r.present }}</span></td>
+                  <td style="padding: 12px 16px"><span style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px"><span style="{{ r.statusStyle }}">{{ r.status }}</span><span style="font-size: 13px; color: #5e6168">{{ r.note }}</span></span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; border-top: 1px solid #eef0f3; font-size: 13px; color: #5e6168">
+          <span>1 tot 8 van 24</span>
+          <nav aria-label="Paginering" style="display: flex; gap: 6px">
+            <a href="#" aria-current="page" style="min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #5b2e91; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">1</a>
+            <a href="#" style="min-width: 40px; height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #c4c7cb; color: #1b1c1d; font-size: 14px; text-decoration: none">2</a>
+            <a href="#" style="min-width: 40px; height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #c4c7cb; color: #1b1c1d; font-size: 14px; text-decoration: none">3</a>
+            <a href="#" style="height: 40px; box-sizing: border-box; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #c4c7cb; color: #1b1c1d; font-size: 14px; text-decoration: none">Volgende</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":931}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home', 0, 'LqVandaag.dc.html'], ['Berichten', 'chat', 3, '#']] },
+      { title: 'Onderwijs', items: [['Rooster', 'cal', 0, '#'], ['Aanwezigheid', 'queue', 1, '#'], ['Beoordelen', 'check', 3, '#']] },
+      { title: 'Studenten', items: [['Studenten', 'people', 0, 'LqLijst.dc.html'], ['Voortgang', 'trend', 0, '#']] },
+      { title: 'BPV', items: [['BPV-overzicht', 'pin', 0, 'LqRolB.dc.html'], ['BPV-plekken', 'board', 0, 'LqBord.dc.html'], ['Leerbedrijven', 'org', 0, '#']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const S = { ok: pill('#e7f3ea', '#1e6b2a'), run: pill('#e8e6f6', '#4a3f8f'), wait: pill('#fff4de', '#7a4f00'), bad: pill('#fcedec', '#a30000') };
+    const data = [
+      ['Daan Smits', '2031502', '', 0, '89%', 'bad', 'Geen BPV-plek', 'Sinds 31 augustus zonder leerbedrijf'],
+      ['Fleur de Wit', '2031377', 'Technisch Bureau Noord', 64, '81%', 'bad', 'Achter met uren', '32 uur minder dan gepland'],
+      ['Lotte Vermeulen', '2031498', 'Havenkranen Zuiddrecht BV', 72, '93%', 'wait', 'Wacht op leerbedrijf', '48 uur wacht 12 dagen op goedkeuring'],
+      ['Jesse Kok', '2031420', 'Van Dijk Machinebouw', 96, '95%', 'wait', 'Bezoek plannen', 'Nog geen datum voor de tussenbeoordeling'],
+      ['Milan de Groot', '2031456', 'Bakker Techniek BV', 96, '96%', 'run', 'Tussenbeoordeling', 'Dinsdag 13 oktober, 10.00 uur'],
+      ['Mohamed El Idrissi', '2031389', 'Kooiman Aandrijftechniek', 120, '97%', 'ok', 'Op schema', 'Tussenbeoordeling gedaan op 1 oktober'],
+      ['Sanne Mulder', '2031467', 'Polderpomp BV', 120, '99%', 'ok', 'Op schema', 'Tussenbeoordeling gedaan op 29 september'],
+      ['Yusuf Aksoy', '2031344', 'Van Dijk Machinebouw', 96, '98%', 'ok', 'Op schema', 'Tussenbeoordeling op 14 oktober']
+    ];
+    const rows = data.map(([name, number, company, hours, present, st, status, note]) => {
+      const parts = name.split(' ');
+      const low = parseInt(present, 10) < 85;
+      return { name, number, hours, present, status, note,
+        initials: (parts[0][0] + parts[parts.length - 1][0]).toUpperCase(),
+        company: company || 'Nog geen leerbedrijf', companyStyle: company ? '' : 'color: #5e6168',
+        bar: 'display: block; height: 6px; width: ' + Math.round(hours / 4.8) + '%; background: #5b2e91',
+        presStyle: 'font-variant-numeric: tabular-nums; ' + (low ? 'font-weight: 700; color: #a30000' : ''),
+        statusStyle: S[st], selectLabel: 'Selecteer ' + name };
+    });
+    const view = (on) => 'display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 20px; font: 600 14px \'IBM Plex Sans\', sans-serif; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const cnt = (on) => 'padding: 1px 7px; border-radius: 10px; font-size: 12px; ' + (on ? 'background: #3d4047; color: #ffffff;' : 'background: #f0f1f3; color: #3d4047;');
+    const views = [['Aandacht eerst', 24, true], ['Geen BPV-plek', 1, false], ['Uren wachten', 3, false], ['Bezoek plannen', 1, false], ['Aanwezig onder 85%', 2, false]].map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: view(on), countStyle: cnt(on) }));
+    return { nav, rows, views };
+  }
+}
+</script>
+</body>
+</html>

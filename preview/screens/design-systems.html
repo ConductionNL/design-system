@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Example design systems, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="screens.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&family=Lexend:wght@400;600;700&family=Red+Hat+Display:wght@700;800&family=Red+Hat+Text:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Barlow:wght@400;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-8) 0 0; }
+  .jump a { font-size: 14px; color: var(--c-blue-cobalt); background: white; border: 1px solid var(--c-cobalt-100); border-radius: 999px; padding: 6px 14px; text-decoration: none; }
+  .jump a:hover { border-color: var(--c-blue-cobalt); }
+
+  .ds { background: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-1); padding: var(--space-10); margin: var(--space-8) 0; scroll-margin-top: var(--space-6); }
+  .ds > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); border-bottom: 1px solid var(--c-cobalt-100); padding-bottom: var(--space-6); }
+  .ds > header img { height: 56px; width: auto; max-width: 100%; }
+  .ds > header .kind { font-family: var(--conduction-typography-font-family-code); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); }
+  .ds h2 { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin-top: var(--space-6); }
+  .ds .story { font-size: 17px; line-height: 1.55; color: var(--c-cobalt-700); max-width: 70ch; margin-top: var(--space-3); }
+  .ds h3 { font-family: var(--conduction-typography-font-family-code); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin: var(--space-8) 0 var(--space-3); }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: var(--space-3); }
+  .sw { border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); overflow: hidden; }
+  .sw .chip { height: 72px; display: flex; align-items: flex-end; padding: 8px 10px; font-size: 14px; font-weight: 600; }
+  .sw .info { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .sw .nm { font-size: 13px; font-weight: 600; color: var(--c-cobalt-900); }
+  .sw .hx { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); }
+  .sw .cr { font-size: 12px; color: var(--c-cobalt-700); }
+
+  .specimen-ds { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-6); align-items: end; }
+  .specimen-ds .big { font-size: 44px; line-height: 1.1; color: var(--c-cobalt-900); }
+  .specimen-ds .body { font-size: 18px; line-height: 1.55; color: var(--c-cobalt-900); }
+  .specimen-ds .fam { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); margin-top: 6px; }
+
+  .logos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: var(--space-3); }
+  .logos figure { margin: 0; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); overflow: hidden; }
+  .logos .plate { height: 120px; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .logos .plate img { max-height: 64px; max-width: 100%; }
+  .logos figcaption { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-700); padding: 6px 10px; border-top: 1px solid var(--c-cobalt-100); }
+
+  .motif { font-size: 15px; line-height: 1.55; color: var(--c-cobalt-700); max-width: 70ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
+  .actions a { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 16px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; text-decoration: none; border: 1px solid var(--c-blue-cobalt); color: var(--c-blue-cobalt); background: white; }
+  .actions a.primary { background: var(--c-blue-cobalt); color: white; }
+  .actions a:hover { border-color: var(--c-coral-600); }
+  .actions a:focus-visible, .jump a:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+
+  @media (max-width: 720px) {
+    .ds { padding: var(--space-6) var(--space-4); }
+    .specimen-ds { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="sc-chrome">
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html" data-i18n="screens.crumb.system">Design system</a> &nbsp;/&nbsp; <a href="index.html" data-i18n="screens.crumb.screens">Screens</a> &nbsp;/&nbsp; <span data-i18n="ds.crumb">Example design systems</span></div>
+  <h1 data-i18n="ds.title">Example design systems.</h1>
+  <p data-i18n="ds.lede">Five fictional organisations, one canon. The demo municipality Zuiddrecht and four schools in the same town each get a full house style: colours with checked contrast, a typeface, a logo set and a motif. On the screens gallery any of them can restyle every Zuiddrecht screen.</p>
+  <p data-i18n="ds.ids">Screens are referenced by a stable id, the app and the board name: <code>portaliq/MijnZaken</code>, <code>wilgenboom/Home</code>. Use that id in conversation and in issues.</p>
+  <nav class="jump" aria-label="Design systems">
+    <a href="#conduction">Conduction</a>
+    <a href="#zuiddrecht">Zuiddrecht</a>
+    <a href="#wilgenboom">De Wilgenboom</a>
+    <a href="#vaartveld">Vaartveld College</a>
+    <a href="#esdoornveen">Esdoornveen</a>
+    <a href="#warmtepompacademie">Warmtepompacademie</a>
+  </nav>
+</div>
+
+<main class="sc-wrap">
+
+  <!-- ===================== Conduction ===================== -->
+  <section class="ds" id="conduction">
+    <header>
+      <img src="../../brand/assets/wordmark-conduction.svg" alt="Conduction">
+      <span class="kind" data-i18n="ds.kind.own">Our own system</span>
+    </header>
+    <h2>Conduction</h2>
+    <p class="story" data-i18n="ds.conduction.story">The default for every screen. Cobalt is what you can do, the text-safe orange marks where you are, and Figtree carries all text. The full system lives on its own pages.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: var(--c-cobalt-500); color: white;">Aa</div><div class="info"><span class="nm">Primary</span><span class="hx">#21468B</span><span class="cr">white 9,1 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: var(--c-cobalt-700); color: white;">Aa</div><div class="info"><span class="nm">Primary deep</span><span class="hx">#152D5C</span><span class="cr">white 13,4 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: var(--c-cobalt-50); color: var(--c-cobalt-700);">Aa</div><div class="info"><span class="nm">Primary light</span><span class="hx">#EEF2F8</span><span class="cr">deep on it 12,0 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: var(--c-coral-600); color: white;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#C64E0B</span><span class="cr">white 4,7 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: var(--c-coral-50); color: var(--c-coral-700);">Aa</div><div class="info"><span class="nm">Accent text</span><span class="hx">#833307</span><span class="cr">on coral-50 7,9 : 1</span></div></div>
+    </div>
+    <div class="actions">
+      <a class="primary" href="index.html?ds=conduction" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+      <a href="../colors.html" data-keep-lang data-i18n="ds.conduction.colors">Colors</a>
+      <a href="../type.html" data-keep-lang data-i18n="ds.conduction.type">Type</a>
+      <a href="../brand.html" data-keep-lang data-i18n="ds.conduction.brand">Brand</a>
+    </div>
+  </section>
+
+  <!-- ===================== Zuiddrecht ===================== -->
+  <section class="ds" id="zuiddrecht">
+    <header>
+      <img src="assets/zuiddrecht/logo.svg" alt="Gemeente Zuiddrecht">
+      <span class="kind" data-i18n="ds.kind.municipality">Demo municipality</span>
+    </header>
+    <h2>Gemeente Zuiddrecht</h2>
+    <p class="story" data-i18n="ds.zuiddrecht.story">The municipality we use to show every Conduction app. Residents find information, apply and follow their cases on the website and in Mijn Zuiddrecht. Staff work in Nextcloud. Blue is what you can do, the red of the coat of arms says where you are, and Fira Sans keeps it plain and readable.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: #3669a5; color: white;">Aa</div><div class="info"><span class="nm">Primary</span><span class="hx">#3669A5</span><span class="cr">white 5,6 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #234a78; color: white;">Aa</div><div class="info"><span class="nm">Primary deep</span><span class="hx">#234A78</span><span class="cr">white 9,0 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #eaf0f7; color: #234a78;">Aa</div><div class="info"><span class="nm">Primary light</span><span class="hx">#EAF0F7</span><span class="cr">deep on it 7,9 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #cc0000; color: white;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#CC0000</span><span class="cr">white 5,9 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #fcedec; color: #a30000;">Aa</div><div class="info"><span class="nm">Accent deep</span><span class="hx">#A30000</span><span class="cr">on #FCEDEC 7,2 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #1a1a1a; color: white;">Aa</div><div class="info"><span class="nm">Ink</span><span class="hx">#1A1A1A</span><span class="cr">on white 17,4 : 1</span></div></div>
+    </div>
+    <h3 data-i18n="ds.h.type">Type</h3>
+    <div class="specimen-ds">
+      <div><div class="big" style="font-family: 'Fira Sans', sans-serif; font-weight: 700;">Vraag een parkeervergunning aan</div><div class="fam">Fira Sans 700</div></div>
+      <div><div class="body" style="font-family: 'Fira Sans', sans-serif;">U ziet hier wat u nog moet doen en hoe ver uw aanvraag is.</div><div class="fam">Fira Sans 400 · 18 px</div></div>
+    </div>
+    <h3 data-i18n="ds.h.logos">Logo set</h3>
+    <div class="logos">
+      <figure><div class="plate" style="background: white;"><img src="assets/zuiddrecht/logo.svg" alt="Logo"></div><figcaption>logo.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #234a78;"><img src="assets/zuiddrecht/logo-wit.svg" alt="Logo on dark"></div><figcaption>logo-wit.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/zuiddrecht/emblem.svg" alt="Emblem"></div><figcaption>emblem.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/zuiddrecht/emblem-grijs.svg" alt="Emblem in grey"></div><figcaption>emblem-grijs.svg</figcaption></figure>
+    </div>
+    <h3 data-i18n="ds.h.motif">Motif</h3>
+    <p class="motif" data-i18n="ds.zuiddrecht.motif">The red line. A short red bar under the active menu item and the page title tells residents where they are. Everything else stays white and blue.</p>
+    <div class="actions">
+      <a class="primary" href="index.html?ds=zuiddrecht" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+    </div>
+  </section>
+
+  <!-- ===================== De Wilgenboom ===================== -->
+  <section class="ds" id="wilgenboom">
+    <header>
+      <img src="assets/wilgenboom/logo.svg" alt="Basisschool De Wilgenboom">
+      <span class="kind" data-i18n="ds.kind.primary">Primary school, ages 4 to 12</span>
+    </header>
+    <h2>Basisschool De Wilgenboom</h2>
+    <p class="story" data-i18n="ds.wilgenboom.story">The tree you shelter under. Warm, calm and clear for busy parents, friendly without being childish. Parents report a child absent, read news from the group, book a parent evening and see report cards in Mijn Wilgenboom. Lexend was designed for reading ease, which is the school's subject.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: #2f6b4a; color: white;">Aa</div><div class="info"><span class="nm">Main</span><span class="hx">#2F6B4A</span><span class="cr">white 6,3 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #1f4a33; color: white;">Aa</div><div class="info"><span class="nm">Main deep</span><span class="hx">#1F4A33</span><span class="cr">white 10,1 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #e8f1eb; color: #1f4a33;">Aa</div><div class="info"><span class="nm">Main light</span><span class="hx">#E8F1EB</span><span class="cr">deep on it 8,7 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #f5b82e; color: #1a1a1a;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#F5B82E</span><span class="cr">ink on it 9,6 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #fdf3d7; color: #6b4a00;">Aa</div><div class="info"><span class="nm">Accent light</span><span class="hx">#FDF3D7</span><span class="cr">ground for accent text</span></div></div>
+      <div class="sw"><div class="chip" style="background: #6b4a00; color: white;">Aa</div><div class="info"><span class="nm">Accent text</span><span class="hx">#6B4A00</span><span class="cr">on accent light 7,3 : 1</span></div></div>
+    </div>
+    <h3 data-i18n="ds.h.type">Type</h3>
+    <div class="specimen-ds">
+      <div><div class="big" style="font-family: 'Lexend', sans-serif; font-weight: 700;">Meld Vera ziek</div><div class="fam">Lexend 700</div></div>
+      <div><div class="body" style="font-family: 'Lexend', sans-serif;">Meester Daan heeft nieuws uit groep 7 gezet.</div><div class="fam">Lexend 400 · 18 px</div></div>
+    </div>
+    <h3 data-i18n="ds.h.logos">Logo set</h3>
+    <div class="logos">
+      <figure><div class="plate" style="background: white;"><img src="assets/wilgenboom/logo.svg" alt="Logo"></div><figcaption>logo.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #1f4a33;"><img src="assets/wilgenboom/logo-wit.svg" alt="Logo on dark"></div><figcaption>logo-wit.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/wilgenboom/emblem.svg" alt="Emblem"></div><figcaption>emblem.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #2f6b4a;"><img src="assets/wilgenboom/emblem-wit.svg" alt="Emblem on dark"></div><figcaption>emblem-wit.svg</figcaption></figure>
+    </div>
+    <h3 data-i18n="ds.h.motif">Motif</h3>
+    <p class="motif" data-i18n="ds.wilgenboom.motif">De twijgen: the willow's hanging twigs. A row of short bars with round ends hangs from a line in uneven lengths, green with now and then a yellow one. It closes the header, opens the footer and marks the sign-in screen.</p>
+    <div class="actions">
+      <a class="primary" href="index.html#wilgenboom" data-keep-lang data-i18n="ds.own">See its own screens</a>
+      <a href="index.html?ds=wilgenboom" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+    </div>
+  </section>
+
+  <!-- ===================== Vaartveld College ===================== -->
+  <section class="ds" id="vaartveld">
+    <header>
+      <img src="assets/vaartveld/logo.svg" alt="Vaartveld College">
+      <span class="kind" data-i18n="ds.kind.secondary">Secondary school, vmbo-t, havo and vwo</span>
+    </header>
+    <h2>Vaartveld College</h2>
+    <p class="story" data-i18n="ds.vaartveld.story">The long view down the canal. Clear, confident and a little bold: a school for 12 to 18 year olds that takes them seriously. Pupils see today's timetable, homework and grades; parents report sick and book a mentor talk. Red Hat Display sets the headings, Red Hat Text the reading.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: #1f4fd8; color: white;">Aa</div><div class="info"><span class="nm">Main</span><span class="hx">#1F4FD8</span><span class="cr">white 6,6 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #14338f; color: white;">Aa</div><div class="info"><span class="nm">Main deep</span><span class="hx">#14338F</span><span class="cr">white 11,1 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #e8eefc; color: #14338f;">Aa</div><div class="info"><span class="nm">Main light</span><span class="hx">#E8EEFC</span><span class="cr">deep on it 9,5 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #1fb5a8; color: #1a1a1a;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#1FB5A8</span><span class="cr">ink on it 6,7 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #ddf5f2; color: #0b6259;">Aa</div><div class="info"><span class="nm">Accent light</span><span class="hx">#DDF5F2</span><span class="cr">ground for accent text</span></div></div>
+      <div class="sw"><div class="chip" style="background: #0b6259; color: white;">Aa</div><div class="info"><span class="nm">Accent text</span><span class="hx">#0B6259</span><span class="cr">on accent light 6,3 : 1, on white 7,2 : 1</span></div></div>
+    </div>
+    <h3 data-i18n="ds.h.type">Type</h3>
+    <div class="specimen-ds">
+      <div><div class="big" style="font-family: 'Red Hat Display', sans-serif; font-weight: 800;">Je rooster vandaag</div><div class="fam">Red Hat Display 800</div></div>
+      <div><div class="body" style="font-family: 'Red Hat Text', sans-serif;">Het derde uur Nederlands valt uit. Je hebt om 11.30 een toets.</div><div class="fam">Red Hat Text 400 · 18 px</div></div>
+    </div>
+    <h3 data-i18n="ds.h.logos">Logo set</h3>
+    <div class="logos">
+      <figure><div class="plate" style="background: white;"><img src="assets/vaartveld/logo.svg" alt="Logo"></div><figcaption>logo.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #14338f;"><img src="assets/vaartveld/logo-wit.svg" alt="Logo on dark"></div><figcaption>logo-wit.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/vaartveld/emblem.svg" alt="Emblem"></div><figcaption>emblem.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #1f4fd8;"><img src="assets/vaartveld/emblem-wit.svg" alt="Emblem on dark"></div><figcaption>emblem-wit.svg</figcaption></figure>
+    </div>
+    <h3 data-i18n="ds.h.motif">Motif</h3>
+    <p class="motif" data-i18n="ds.vaartveld.motif">De vaart: two parallel lines, the canal and its bank. A 4 px cobalt line, 3 px of white, a 2 px aqua line. It closes the header and opens the footer. On the sign-in screen and in the home hero the emblem's folded V stands large and pale.</p>
+    <div class="actions">
+      <a class="primary" href="index.html#vaartveld" data-keep-lang data-i18n="ds.own">See its own screens</a>
+      <a href="index.html?ds=vaartveld" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+    </div>
+  </section>
+
+  <!-- ===================== Esdoornveen ===================== -->
+  <section class="ds" id="esdoornveen">
+    <header>
+      <img src="assets/esdoornveen/logo.svg" alt="Esdoornveen, mbo college">
+      <span class="kind" data-i18n="ds.kind.mbo">Vocational college</span>
+    </header>
+    <h2>Esdoornveen, mbo college</h2>
+    <p class="story" data-i18n="ds.esdoornveen.story">Learning that leads to a trade. Practical and grown-up: students are 16 and older and half their learning happens in a company. Students log work-placement hours and see assessments; the company approves hours. It feels closer to a professional tool than to a school. IBM Plex Sans for text, Plex Mono for codes.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: #5b2e91; color: white;">Aa</div><div class="info"><span class="nm">Main</span><span class="hx">#5B2E91</span><span class="cr">white 9,4 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #43206e; color: white;">Aa</div><div class="info"><span class="nm">Main deep</span><span class="hx">#43206E</span><span class="cr">white 12,6 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #f0eaf7; color: #43206e;">Aa</div><div class="info"><span class="nm">Main light</span><span class="hx">#F0EAF7</span><span class="cr">deep on it 10,7 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #c2255c; color: white;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#C2255C</span><span class="cr">white 5,7 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #fbe9f0; color: #9c1c49;">Aa</div><div class="info"><span class="nm">Accent light</span><span class="hx">#FBE9F0</span><span class="cr">ground for accent text</span></div></div>
+      <div class="sw"><div class="chip" style="background: #9c1c49; color: white;">Aa</div><div class="info"><span class="nm">Accent text</span><span class="hx">#9C1C49</span><span class="cr">on accent light 6,7 : 1</span></div></div>
+    </div>
+    <h3 data-i18n="ds.h.type">Type</h3>
+    <div class="specimen-ds">
+      <div><div class="big" style="font-family: 'IBM Plex Sans', sans-serif; font-weight: 700;">BPV-uren deze week</div><div class="fam">IBM Plex Sans 700</div></div>
+      <div><div class="body" style="font-family: 'IBM Plex Sans', sans-serif;">Mechatronica niveau 4, crebo <span style="font-family: 'IBM Plex Mono', monospace;">25743</span>. Petra Bakker keurt je uren goed.</div><div class="fam">IBM Plex Sans 400 · IBM Plex Mono 500</div></div>
+    </div>
+    <h3 data-i18n="ds.h.logos">Logo set</h3>
+    <div class="logos">
+      <figure><div class="plate" style="background: white;"><img src="assets/esdoornveen/logo.svg" alt="Logo"></div><figcaption>logo.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #43206e;"><img src="assets/esdoornveen/logo-wit.svg" alt="Logo on dark"></div><figcaption>logo-wit.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/esdoornveen/emblem.svg" alt="Emblem"></div><figcaption>emblem.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #5b2e91;"><img src="assets/esdoornveen/emblem-wit.svg" alt="Emblem on dark"></div><figcaption>emblem-wit.svg</figcaption></figure>
+    </div>
+    <h3 data-i18n="ds.h.motif">Motif</h3>
+    <p class="motif" data-i18n="ds.esdoornveen.motif">De snede: a slanted cut, like the edge of a maple leaf. A 6 px plum band holds one rose segment whose ends are cut at an angle. It closes the header and opens the footer, and returns at most once per page.</p>
+    <div class="actions">
+      <a class="primary" href="index.html#esdoornveen" data-keep-lang data-i18n="ds.own">See its own screens</a>
+      <a href="index.html?ds=esdoornveen" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+    </div>
+  </section>
+
+  <!-- ===================== Warmtepompacademie ===================== -->
+  <section class="ds" id="warmtepompacademie">
+    <header>
+      <img src="assets/warmtepompacademie/logo.svg" alt="Warmtepompacademie">
+      <span class="kind" data-i18n="ds.kind.academy">Training for heat-pump installers</span>
+    </header>
+    <h2>Warmtepompacademie</h2>
+    <p class="story" data-i18n="ds.warmtepompacademie.story">Heat moves from cold to warm. A trade academy for installers: exact, technical, no fuss. Participants and their employers want a date, a place, a price and a certificate. They find a course, enrol employees and download certificates. Barlow Semi Condensed sets headings and numbers, Barlow the text.</p>
+    <h3 data-i18n="ds.h.palette">Palette</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background: #0b6e7a; color: white;">Aa</div><div class="info"><span class="nm">Main</span><span class="hx">#0B6E7A</span><span class="cr">white 6,0 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #084f58; color: white;">Aa</div><div class="info"><span class="nm">Main deep</span><span class="hx">#084F58</span><span class="cr">white 9,3 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #e3f1f3; color: #084f58;">Aa</div><div class="info"><span class="nm">Main light</span><span class="hx">#E3F1F3</span><span class="cr">deep on it 8,0 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #c2410c; color: white;">Aa</div><div class="info"><span class="nm">Accent</span><span class="hx">#C2410C</span><span class="cr">white 5,2 : 1</span></div></div>
+      <div class="sw"><div class="chip" style="background: #fcebdd; color: #9a3412;">Aa</div><div class="info"><span class="nm">Accent light</span><span class="hx">#FCEBDD</span><span class="cr">ground for accent text</span></div></div>
+      <div class="sw"><div class="chip" style="background: #9a3412; color: white;">Aa</div><div class="info"><span class="nm">Accent text</span><span class="hx">#9A3412</span><span class="cr">on accent light 6,3 : 1</span></div></div>
+    </div>
+    <h3 data-i18n="ds.h.type">Type</h3>
+    <div class="specimen-ds">
+      <div><div class="big" style="font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700;">F-gassen, cursusdag 3</div><div class="fam">Barlow Semi Condensed 700</div></div>
+      <div><div class="body" style="font-family: 'Barlow', sans-serif;">Dinsdag 3 november, 08.30 tot 16.30 in Zuiddrecht. Prijs: [PRIJS].</div><div class="fam">Barlow 400 · 18 px</div></div>
+    </div>
+    <h3 data-i18n="ds.h.logos">Logo set</h3>
+    <div class="logos">
+      <figure><div class="plate" style="background: white;"><img src="assets/warmtepompacademie/logo.svg" alt="Logo"></div><figcaption>logo.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #084f58;"><img src="assets/warmtepompacademie/logo-wit.svg" alt="Logo on dark"></div><figcaption>logo-wit.svg</figcaption></figure>
+      <figure><div class="plate" style="background: white;"><img src="assets/warmtepompacademie/emblem.svg" alt="Emblem"></div><figcaption>emblem.svg</figcaption></figure>
+      <figure><div class="plate" style="background: #0b6e7a;"><img src="assets/warmtepompacademie/emblem-wit.svg" alt="Emblem on dark"></div><figcaption>emblem-wit.svg</figcaption></figure>
+    </div>
+    <h3 data-i18n="ds.h.motif">Motif</h3>
+    <p class="motif" data-i18n="ds.warmtepompacademie.motif">De temperatuurlijn: a 5 px line in five hard steps from cold to warm, no gradient, petrol through grey to ember. It closes the header and opens the footer.</p>
+    <div class="actions">
+      <a class="primary" href="index.html#warmtepompacademie" data-keep-lang data-i18n="ds.own">See its own screens</a>
+      <a href="index.html?ds=warmtepompacademie" data-keep-lang data-i18n="ds.open">Open the gallery in this system</a>
+    </div>
+  </section>
+
+</main>
+
+<div class="hub-footer">
+  <span data-i18n="ds.footer">Example design systems · values in screens/design-systems.json</span>
+  <span><a href="index.html" data-keep-lang data-i18n="screens.link.gallery">Screens</a> &middot; <a href="../index.html" data-keep-lang data-i18n="screens.link.back">&larr; Back to system</a></span>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* i18n: same contract as ../i18n.js, path relative so it works at any site root */
+  var params = new URLSearchParams(location.search);
+  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  if (params.get('lang')) {
+    document.querySelectorAll('a[data-keep-lang]').forEach(function (a) {
+      var h = a.getAttribute('href'); var i = h.indexOf('#');
+      var path = i === -1 ? h : h.slice(0, i), frag = i === -1 ? '' : h.slice(i);
+      a.href = path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
+    });
+  }
+  if (LANG === 'en') { document.documentElement.setAttribute('lang', 'en'); return; }
+  fetch('../i18n.' + LANG + '.json', { credentials: 'omit' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .catch(function () { return null; })
+    .then(function (dict) {
+      if (!dict) return;
+      function get(key) { if (typeof dict[key] === 'string') return dict[key]; var cur = dict; key.split('.').forEach(function (s) { cur = cur && typeof cur === 'object' ? cur[s] : null; }); return typeof cur === 'string' ? cur : null; }
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var v = get(el.getAttribute('data-i18n')); if (v == null) return;
+        if (v.indexOf('<') !== -1 || v.indexOf('&') !== -1) el.innerHTML = v; else el.textContent = v;
+      });
+      document.documentElement.setAttribute('lang', dict._lang || LANG);
+    });
+})();
+</script>
+</body>
+</html>

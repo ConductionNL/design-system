@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Analyse: wat is er nodig</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8">
+  <div style="max-width: 1360px; box-sizing: border-box; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 940px">
+      <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Wat er nodig is om dit te bouwen</h1>
+      <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3d4047">Per scherm: wat er volgens de analyses van het Zuiddrecht-canvas en het Wilgenboom-canvas al is in portaliq, learniq en thematiq, en wat het mbo erbij vraagt. De code is voor dit canvas niet opnieuw bekeken. Waar die analyses niets zeggen, staat "nog uitzoeken". Het mbo-eigen werk zit in de BPV: uren, leerbedrijven en beoordelingen per werkproces.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+      <sc-for list="{{ totals }}" as="t" hint-placeholder-count="4">
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px"><span style="align-self: flex-start; {{ t.pill }}">{{ t.label }}</span><strong style="font-size: 32px; font-weight: 700; line-height: 1">{{ t.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.note }}</span></div>
+      </sc-for>
+    </div>
+
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+      <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); overflow: hidden">
+        <div style="padding: 18px 24px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #e4e6ea"><h2 style="margin: 0; font-size: 18px; font-weight: 700">{{ s.title }}</h2><span style="font-size: 13px; color: #5e6168">{{ s.sub }}</span></div>
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 920px; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #5e6168; font-size: 13px">
+                <th scope="col" style="padding: 10px 24px; font-weight: 600; width: 20%">Scherm of onderdeel</th>
+                <th scope="col" style="padding: 10px 16px; font-weight: 600; width: 32%">Wat er vandaag is</th>
+                <th scope="col" style="padding: 10px 16px; font-weight: 600; width: 34%">Wat er nog moet komen</th>
+                <th scope="col" style="padding: 10px 24px 10px 16px; font-weight: 600">Stand</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="6">
+                <tr style="border-top: 1px solid #eef0f3; vertical-align: top">
+                  <th scope="row" style="padding: 12px 24px; text-align: left; font-size: 15px; font-weight: 600">{{ r.what }}</th>
+                  <td style="padding: 12px 16px; line-height: 1.5; color: #3d4047">{{ r.now }}</td>
+                  <td style="padding: 12px 16px; line-height: 1.5">{{ r.todo }}</td>
+                  <td style="padding: 12px 24px 12px 16px"><span style="white-space: nowrap; {{ r.pill }}">{{ r.state }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-for>
+
+    <section style="background: #f0eaf7; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #43206e">Voorstel voor de volgorde</h2>
+      <ol style="margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 15px; line-height: 1.55">
+        <li><strong style="font-weight: 600">Het thema.</strong> De token-set esdoornveen met de logo's, IBM Plex en de donkere variant. Bestaande schermen kleuren dan meteen mee.</li>
+        <li><strong style="font-weight: 600">Uitzoeken wat learniq van de BPV al kent.</strong> Leerbedrijf, praktijkovereenkomst, uren en werkprocessen: daar hangt de helft van dit canvas aan.</li>
+        <li><strong style="font-weight: 600">Uren schrijven en goedkeuren.</strong> Het formulier op de telefoon voor de student en het goedkeurscherm voor het leerbedrijf, met eHerkenning.</li>
+        <li><strong style="font-weight: 600">De tussenbeoordeling.</strong> Student en praktijkopleider vullen elk in, de BPV-begeleider ziet beide naast elkaar.</li>
+        <li><strong style="font-weight: 600">De dashboards.</strong> BPV-begeleider eerst, daarna de examencommissie.</li>
+      </ol>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2756}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { has: pill('#e7f3ea', '#1e6b2a'), part: pill('#fff4de', '#7a4f00'), neu: pill('#f0eaf7', '#43206e'), ask: pill('#f0f1f3', '#3d4047') };
+    const L = { has: 'Bestaat', part: 'Deels', neu: 'Nieuw', ask: 'Nog uitzoeken' };
+    const row = (what, now, todo, k) => ({ what, now, todo, state: L[k], pill: P[k], k });
+    const sections = [
+      { title: 'Website en Mijn Esdoornveen', sub: 'portaliq, met de gegevens die learniq levert', rows: [
+        row('Kop, hoofdmenu en voettekst', 'De kop en de voet van de portaliq-site, gekleurd door het thema.', 'De snede als vast onderdeel onder de kop en boven de voet. Een merkstreep per thema is ook voor Zuiddrecht en De Wilgenboom gevraagd.', 'part'),
+        row('Home en informatiepagina', 'Tekst- en nieuwsblokken en de redacteur met een raster bestaan.', 'De kaart "Direct regelen" en een stappenblok. Mogelijk volstaan bestaande blokken.', 'ask'),
+        row('Opleidingen zoeken en opleiding', 'Zoeken met filters is er voor Woo-publicaties.', 'Hetzelfde zoekscherm op opleidingen, met richting, niveau en leerweg. Waar het opleidingsaanbod vandaan komt, is niet bekend.', 'ask'),
+        row('Inloggen', 'Inloggen met DigiD werkt. In het Zuiddrecht-ontwerp staat eHerkenning ernaast.', 'Inloggen met het schoolaccount voor studenten. Of eHerkenning al werkt en hoe een praktijkopleider aan een leerbedrijf wordt gekoppeld: nog uitzoeken.', 'ask'),
+        row('Overzicht', 'Het zijmenu en een overzichtspagina met blokken bestaan.', 'De kaart "Vandaag", de lijst "Wat je nog moet doen" en de week met BPV-dagen en lesdagen door elkaar.', 'neu'),
+        row('Berichten', 'Een postvak met berichten van school.', 'Antwoorden, en een bericht waar een taak aan hangt, zoals teruggestuurde uren.', 'ask'),
+        row('BPV-uren en uren schrijven', 'Niet genoemd in de eerdere analyses.', 'Uren per dag met begin, eind, pauze, omschrijving en werkproces. Standen: verstuurd, goedgekeurd, teruggestuurd.', 'ask'),
+        row('Mijn BPV', 'Niet genoemd in de eerdere analyses.', 'De stappen van de BPV, de urenstand, de zelfbeoordeling per werkproces en de begeleiders.', 'ask'),
+        row('Leerbedrijf keurt uren goed', 'Niet genoemd in de eerdere analyses.', 'Een eigen omgeving voor het leerbedrijf: alleen de eigen studenten, goedkeuren of terugsturen met een vraag, beoordeling invullen.', 'neu'),
+        row('Documenten', 'In Mijn Zuiddrecht is er een dossier met documenten.', 'Overeenkomsten met ondertekenstand, resultaten en certificaten met een geldigheidsdatum.', 'ask')
+      ] },
+      { title: 'Werkplek: learniq en launchpad', sub: 'Nextcloud, met de Cunningham-laag', rows: [
+        row('Zijbalk en bovenbalk', 'Het menu van learniq en de bovenbalk van Nextcloud. Het app-menu heeft tellers en een hoofdknop.', 'Een plek voor beeldmerk en app-naam in het menu, en de roze tekst op het actieve item. Beide ontbreken volgens de Zuiddrecht-analyse.', 'part'),
+        row('Vandaag (docent)', 'Een dashboard dat de eigen groepen toont, en het register per les.', 'De kaart "Vandaag eerst" zonder gekleurde rand, en de schakelaar tussen docent en BPV-begeleider.', 'part'),
+        row('Signaal 16 uur afwezig', 'learniq heeft een signaal bij 16 uur afwezigheid zonder toestemming.', 'De teller vooraf tonen ("14 van 16 uur"), zodat een docent kan ingrijpen voor de melding.', 'part'),
+        row('Studenten en studentdossier', 'Lijsten en een dossier met tabbladen.', 'De kolommen leerbedrijf en BPV-uren, de BPV-stappen in de kop en de kaart "Wat nu?".', 'part'),
+        row('BPV-plekken per fase', 'De gedeelde bibliotheek heeft een bordweergave. Een te-laat-markering ontbreekt daar.', 'Het bord op BPV-fase, met "te laat" in woorden op de kaart.', 'part'),
+        row('BPV-begeleider', 'Niet genoemd in de eerdere analyses.', 'Bezoeken per week, uren die wachten per leerbedrijf, studenten per fase. De weekstrook is een nieuw onderdeel.', 'ask'),
+        row('Examencommissie', 'Niet genoemd in de eerdere analyses.', 'Resultaten vaststellen per afname, bezwaren met een termijn, examenplannen en vrijstellingen. Mogelijk hoort de besluitvorming bij decidiq.', 'ask'),
+        row('launchpad: mijn werkdag', 'De startpagina van launchpad met widgets.', 'De rij "Vandaag eerst" met taken uit alle apps. Die afspraak tussen apps bestaat nog niet.', 'neu')
+      ] },
+      { title: 'Het thema in thematiq', sub: 'Eén keuze in de beheerinstellingen kleurt alles', rows: [
+        row('Token-set esdoornveen', 'De Cunningham-set die Zuiddrecht gebruikt.', 'Een nieuwe set met pruim en esdoornroze, afgeleid van de Zuiddrecht-set.', 'neu'),
+        row('Logo en beeldmerk', 'thematiq levert logo\'s per set.', 'Het esdoornblad in kleur en in wit, en het beeldmerk. De bestanden zijn klaar.', 'neu'),
+        row('IBM Plex Sans en Mono', 'thematiq levert lettertypen mee per set.', 'Beide families toevoegen, en een token voor het lettertype van codes. Zo\'n token is in de eerdere analyses niet genoemd.', 'ask'),
+        row('Donkere variant', 'Zuiddrecht heeft er een.', 'Dezelfde afleiding voor Esdoornveen, met het contrast opnieuw gemeten.', 'neu'),
+        row('Hoeken per laag', 'De hoekmaat komt uit de tokens.', 'Website 4 en 8, werkplek 8 en 12. Of een set twee maten kan dragen, is niet bekend.', 'ask')
+      ] }
+    ];
+    const all = sections.flatMap((s) => s.rows);
+    const n = (k) => all.filter((r) => r.k === k).length;
+    const totals = [
+      { label: 'Bestaat', value: n('has'), note: 'alleen nog kleuren en opmaken', pill: P.has },
+      { label: 'Deels', value: n('part'), note: 'de basis is er, een deel ontbreekt', pill: P.part },
+      { label: 'Nieuw', value: n('neu'), note: 'moet gebouwd worden', pill: P.neu },
+      { label: 'Nog uitzoeken', value: n('ask'), note: 'eerst nakijken in de code', pill: P.ask }
+    ];
+    return { sections, totals };
+  }
+}
+</script>
+</body>
+</html>

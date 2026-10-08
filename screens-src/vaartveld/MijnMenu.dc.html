@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Menu Mijn Vaartveld</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav aria-label="Mijn Vaartveld" style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; width: 100%; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 0 12px 4px">
+    <span style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #e8eefc; color: #14338f; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">NB</span>
+    <span style="display: flex; flex-direction: column; line-height: 1.25"><strong style="font-size: 17px">Noor Bakker</strong><span style="font-size: 15px; color: #4a4a4a">4 havo · klas H4b</span></span>
+  </div>
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+    <div>
+      <h2 style="margin: 0 0 6px; padding: 0 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #4a4a4a">{{ g.title }}</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <li><a href="{{ it.href }}" style="{{ it.style }}" aria-current="{{ it.current }}"><span>{{ it.label }}</span><sc-if value="{{ it.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 12px; background: #1fb5a8; color: #1a1a1a; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="{{ it.badgeLabel }}">{{ it.badge }}</span></sc-if></a></li>
+        </sc-for>
+      </ul>
+    </div>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Overzicht"},"$preview":{"width":320,"height":680}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'Overzicht';
+    const raw = [
+      { title: 'Mijn Vaartveld', items: [['Overzicht', 'MijnOverzicht.dc.html'], ['Berichten', 'Berichten.dc.html', 2]] },
+      { title: 'School', items: [['Rooster', 'MijnOverzicht.dc.html'], ['Huiswerk en toetsen', 'MijnOverzicht.dc.html'], ['Cijfers', 'MijnLijst.dc.html', 1], ['Afwezigheid', 'MijnOverzicht.dc.html']] },
+      { title: 'Regelen', items: [['Mentorgesprek', 'Berichten.dc.html'], ['Vakken en profiel', 'Detail.dc.html'], ['Documenten', 'Documenten.dc.html']] },
+      { title: 'Account', items: [['Mijn gegevens', 'MijnOverzicht.dc.html']] }
+    ];
+    const base = 'display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 6px 12px; box-sizing: border-box; border-radius: 6px; font-size: 17px; text-decoration: none; ';
+    const groups = raw.map((g) => ({
+      title: g.title,
+      items: g.items.map(([label, href, badge]) => {
+        const on = label === active;
+        return {
+          label, href, badge: badge ?? '', hasBadge: !!badge,
+          badgeLabel: badge ? badge + ' nieuw' : '',
+          current: on ? 'page' : 'false',
+          style: base + (on ? 'color: #0b6259; font-weight: 700; background: #ddf5f2;' : 'color: #1f4fd8; font-weight: 500;')
+        };
+      })
+    }));
+    return { groups };
+  }
+}
+</script>
+</body>
+</html>

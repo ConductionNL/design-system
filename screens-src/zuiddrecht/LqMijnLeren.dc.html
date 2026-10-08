@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: mijn leren</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 900px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Mijn leren" groups="{{ nav }}" hint-size="264px,878px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+          <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Mijn leren</h1>
+          <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-size: 15px; color: #5e6168">Uw eigen verplichte trainingen en opleidingen als medewerker · 3 trainingen, 1 opleiding</span>
+        </div>
+      </section>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; align-items: start">
+          <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px 8px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Mijn verplichte trainingen</h2><span style="font-size: 13px; color: #5e6168">3 open</span></div>
+          <sc-for list="{{ trainings }}" as="t" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid #eef0f3">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 16px">
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Cursus</span><strong style="font-size: 16px">{{ t.name }}</strong><span style="{{ t.dueStyle }}">{{ t.due }}</span></span>
+                <a href="#" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 17px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 600; text-decoration: none">{{ t.action }}<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px"><span role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ t.pct }}" aria-label="Voortgang {{ t.name }}" style="flex: 1 1 auto; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden; display: block"><span style="{{ t.bar }}"></span></span><span style="flex: none; font-size: 13px; color: #3d4047">Voortgang {{ t.pct }}%</span></div>
+            </div>
+          </sc-for></section>
+          <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px 8px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Mijn opleidingen</h2></div>
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0 4px; border-top: 1px solid #eef0f3">
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Opleiding</span><strong style="font-size: 16px">Basiskwalificatie didactische bekwaamheid</strong></span>
+            <div style="display: flex; align-items: center; gap: 12px"><span role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" aria-label="Verplichte cursussen afgerond" style="flex: 1 1 auto; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden; display: block"><span style="display: block; height: 8px; width: 60%; background: #1e6b2a"></span></span><span style="flex: none; font-size: 13px; color: #3d4047">3 van 5 verplichte cursussen klaar</span></div>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+            <sc-for list="{{ parts }}" as="p" hint-placeholder-count="5">
+              <li style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span>{{ p.name }}</span><span style="{{ p.style }}">{{ p.state }}</span></li>
+            </sc-for>
+          </ul>
+          <h3 style="margin: 6px 0 0; font-size: 14px; font-weight: 600; color: #5e6168">Keuzecursussen</h3>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+            <li style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span>Formatief evalueren in de les</span><span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #f0f1f3; color: #3d4047">Niet gestart</span></li>
+          </ul></section>
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #5e6168">Mijn leren laat uw eigen leren zien, niet dat van uw leerlingen. Die vindt u onder Leerlingen en Voortgang.</p>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const dueS = (soon) => 'font-size: 13px; ' + (soon ? 'font-weight: 600; color: #a30000' : 'color: #5e6168');
+    const trainings = [
+      ['AVG en privacy op school, opfrissing 2026', 'Uiterlijk vrijdag 16 oktober', true, 40, 'Verder gaan'],
+      ['Informatiebeveiliging, bewustwording', 'Uiterlijk maandag 30 november', false, 0, 'Starten'],
+      ['Meldcode huiselijk geweld en kindermishandeling', 'Uiterlijk vrijdag 18 december', false, 75, 'Verder gaan']
+    ].map(([name, due, soon, pct, action]) => ({ name, due, pct, action, dueStyle: dueS(soon), bar: 'display: block; height: 8px; width: ' + pct + '%; background: #3669a5' }));
+    const done = pill('#e7f3ea', '#1e6b2a');
+    const parts = [
+      ['Pedagogisch handelen in de klas', 'Afgerond', done],
+      ['Didactiek van het eigen vak', 'Afgerond', done],
+      ['Omgaan met verschillen', 'Afgerond', done],
+      ['Toetsen en beoordelen', 'Bezig', pill('#eaf0f7', '#234a78')],
+      ['Reflectie en portfolio', 'Niet gestart', pill('#f0f1f3', '#3d4047')]
+    ].map(([name, state, style]) => ({ name, state, style }));
+    return { nav, trainings, parts };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: register van vandaag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-wrap: wrap; min-height: 1080px">
+  <div style="flex: 0 0 264px; display: flex"><dc-import name="AppZijbalk" app="learniq" sub="De Wilgenboom" primary="Register invullen" active="Register" hint-size="264px,1080px"></dc-import></div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="WerkKop" person="Daan Vermeer" role="Leerkracht groep 7" initials="DV" hint-size="100%,68px"></dc-import>
+    <main style="padding: 28px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -0.01em">Register van groep 7</h1><span style="font-size: 15px; color: #5e6168">Iedereen staat op aanwezig. Tik alleen aan wie er niet is of te laat kwam.</span></div>
+        <div style="display: flex; align-items: center; gap: 6px">
+          <button type="button" aria-label="Vorige schooldag" style="width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <span style="height: 40px; padding: 0 16px; display: inline-flex; align-items: center; border-radius: 8px; background: #ffffff; border: 1px solid #e4e6ea; font-size: 14px; font-weight: 600">Vandaag, maandag 5 oktober</span>
+          <button type="button" aria-label="Volgende schooldag" disabled style="width: 40px; height: 40px; border: 1px solid #e4e6ea; border-radius: 8px; background: #f5f6f8; color: #8a929e; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <sc-for list="{{ totals }}" as="t" hint-placeholder-count="4">
+          <span style="{{ t.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{ t.icon }}"></path></svg><strong style="font-size: 16px; font-weight: 700">{{ t.count }}</strong>{{ t.label }}</span>
+        </sc-for>
+      </div>
+
+      <ul aria-label="Leerlingen van groep 7" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 8px">
+        <sc-for list="{{ pupils }}" as="p" hint-placeholder-count="28">
+          <li style="{{ p.box }}">
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span><sc-if value="{{ p.hasNote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #3d4047">{{ p.note }}</span></sc-if></span>
+            <span role="group" aria-label="{{ p.groupLabel }}" style="flex: none; display: flex; gap: 4px">
+              <sc-for list="{{ p.marks }}" as="m" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ m.pressed }}" aria-label="{{ m.label }}" style="{{ m.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.icon }}"></path></svg></button>
+              </sc-for>
+            </span>
+          </li>
+        </sc-for>
+      </ul>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between; padding: 14px 18px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04)">
+        <span style="display: flex; align-items: center; gap: 10px; font-size: 14px"><span style="padding: 3px 10px; border-radius: 12px; background: #fff4de; color: #7a4f00; font-size: 13px; font-weight: 600">Nog niet opgeslagen</span><span style="color: #5e6168">Na het opslaan zien de ouders van Yusuf dat hij te laat was.</span></span>
+        <span style="display: flex; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Lexend', sans-serif; color: #1b1c1d">Opnieuw beginnen</button>
+          <button type="button" style="height: 40px; padding: 0 20px; border: 0; border-radius: 8px; background: #2f6b4a; color: #ffffff; font: 600 14px 'Lexend', sans-serif">Register opslaan</button>
+        </span>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const KINDS = [
+      { key: 'here', label: 'Aanwezig', icon: 'M5 12.500l4.500 4.500L19 7', bg: '#e7f3ea', fg: '#1e6b2a' },
+      { key: 'late', label: 'Te laat', icon: 'M12 7v5l3 2M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18z', bg: '#fff4de', fg: '#7a4f00' },
+      { key: 'excused', label: 'Afwezig met toestemming', icon: 'M6 12h12', bg: '#e8f1eb', fg: '#1f4a33' },
+      { key: 'unexcused', label: 'Afwezig zonder toestemming', icon: 'M7 7l10 10M17 7L7 17', bg: '#fcedec', fg: '#a30000' }
+    ];
+    const names = ['Amira Benali', 'Bram van Dijk', 'Daan Walnootmeer', 'Elif Demir', 'Finn Weidewijk', 'Fleur Jansen', 'Hamza El Idrissi', 'Isa de Boer', 'Jesse Mulder', 'Julia Smit', 'Kai Peters', 'Lars Visser', 'Lina Öztürk', 'Lotte Hendriks', 'Luuk Meijer', 'Maud de Graaf', 'Mees Dekker', 'Mila Bos', 'Noah de Jong', 'Noor Vos', 'Olivia Kok', 'Sara Idrissi', 'Sem Jacobs', 'Sofie van Leeuwen', 'Tess Bakker', 'Thijs Brouwer', 'Vera Hulstkamp', 'Yusuf Kaya'];
+    const state = { 'Noah de Jong': ['excused', 'Ziek gemeld door ouder'], 'Lina Öztürk': ['excused', 'Tandarts, 10.30 tot 11.30 uur'], 'Yusuf Kaya': ['late', '10 minuten, door u aangetikt'] };
+    const btn = (kind, on) => 'width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; ' + (on ? 'border: 2px solid ' + kind.fg + '; background: ' + kind.bg + '; color: ' + kind.fg + ';' : 'border: 1px solid #e4e6ea; background: #ffffff; color: #8a929e;');
+    const pupils = names.map((name) => {
+      const [key, note] = state[name] || ['here', ''];
+      const changed = key !== 'here';
+      return {
+        name, note, hasNote: !!note, groupLabel: 'Aanwezigheid van ' + name,
+        box: 'display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 10px 8px 14px; box-sizing: border-box; border-radius: 12px; border: 1px solid ' + (changed ? '#c4c7cb' : '#e4e6ea') + '; background: #ffffff',
+        marks: KINDS.map((k) => ({ label: k.label, icon: k.icon, pressed: k.key === key ? 'true' : 'false', style: btn(k, k.key === key) }))
+      };
+    });
+    const count = (key) => pupils.filter((p) => p.marks.find((m) => m.pressed === 'true').label === KINDS.find((k) => k.key === key).label).length;
+    const total = (k) => 'display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 500; background: ' + k.bg + '; color: ' + k.fg;
+    const quiet = { bg: '#f0f1f3', fg: '#3d4047' };
+    const totals = KINDS.map((k) => ({ label: k.label.toLowerCase(), icon: k.icon, count: count(k.key), style: total(k.key === 'unexcused' && count(k.key) === 0 ? quiet : k) }));
+    return { pupils, totals };
+  }
+}
+</script>
+</body>
+</html>

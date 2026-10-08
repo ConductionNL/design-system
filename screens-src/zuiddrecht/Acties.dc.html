@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case page: action model</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 100%">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 900px">
+      <h1 style="margin: 0; font-size: 36px; font-weight: 700">Case page: from 40 actions in one menu to four levels</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #3d4047">Today the dossiq case page declares 25 header actions, the library adds 4, and "Lifecycle" opens 11 more. All sit in one "Actions" menu, with no primary button. The page has 13 tabs and a sidebar with 6 more.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+      <sc-for list="{{ levels }}" as="l" hint-placeholder-count="4">
+        <section style="{{ l.box }}">
+          <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ l.kicker }}</span>
+          <h2 style="margin: 0; font-size: 22px; font-weight: 700">{{ l.title }}</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #3d4047">{{ l.rule }}</p>
+          <ul style="margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px">
+            <sc-for list="{{ l.items }}" as="i" hint-placeholder-count="4"><li style="{{ l.chip }}">{{ i }}</li></sc-for>
+          </ul>
+        </section>
+      </sc-for>
+    </div>
+
+    <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 700">The next step follows the status</h2>
+      <p style="margin: 0; font-size: 15px; color: #3d4047; max-width: 860px">One blue button, and its label changes with the step. The "Wat nu?" card above the tabs lists what the step still needs, so the button is never a guess.</p>
+      <div style="overflow-x: auto">
+        <table style="border-collapse: collapse; width: 100%; min-width: 760px; font-size: 15px">
+          <thead><tr style="text-align: left; color: #5e6168"><th style="padding: 10px 14px; font-weight: 600">Step</th><th style="padding: 10px 14px; font-weight: 600">Next-step button</th><th style="padding: 10px 14px; font-weight: 600">Checklist in "Wat nu?"</th><th style="padding: 10px 14px; font-weight: 600">Today</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+              <tr style="border-top: 1px solid #eef0f3"><td style="padding: 12px 14px; font-weight: 600">{{ s.step }}</td><td style="padding: 12px 14px"><span style="display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 14px; font-weight: 600">{{ s.button }}</span></td><td style="padding: 12px 14px">{{ s.list }}</td><td style="padding: 12px 14px; color: #5e6168">{{ s.today }}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px">
+      <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 700">Tabs: 13 + 6 become 5 + Meer</h2>
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 380px; font-size: 15px">
+            <thead><tr style="text-align: left; color: #5e6168"><th style="padding: 8px 12px; font-weight: 600">New tab</th><th style="padding: 8px 12px; font-weight: 600">Holds today's</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+                <tr style="border-top: 1px solid #eef0f3"><td style="padding: 10px 12px; font-weight: 600; white-space: nowrap">{{ t.name }}</td><td style="padding: 10px 12px; color: #3d4047">{{ t.from }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 700">Rules that keep it simple</h2>
+        <ol style="margin: 0; padding-left: 22px; display: grid; gap: 10px; font-size: 16px; line-height: 1.5">
+          <li>One primary button per page. If two actions compete, the step decides.</li>
+          <li>At most three quick actions, the same three on every case: message, document, log contact.</li>
+          <li>"Meer" is grouped and worded by what it does to the case. No more than 12 entries.</li>
+          <li>Admin and debug actions are shown to admins only, in their own group at the bottom.</li>
+          <li>Help links live in the app's help menu, not on every record. "Refresh" goes: the page refreshes itself.</li>
+          <li>A tab shows its count. An empty tab moves under "Meer".</li>
+          <li>The side column holds facts, never actions, except one small action per fact card.</li>
+        </ol>
+        <p style="margin: 6px 0 0; padding: 12px 14px; border-radius: 8px; background: #fff4de; font-size: 14px; line-height: 1.5"><strong>Probable bug, not verified:</strong> eight daily actions (Add party, Link object, Log contact, Generate document, Record receipt confirmed, Plan follow-up, Remind) are gated on <code>@self.archived eq null</code> and did not show in the live menu. The field looks undefined, not null.</p>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1703}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const box = (edge) => 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 8px; box-shadow: inset 0 4px 0 ' + edge;
+    const chip = (bg, fg) => 'padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const levels = [
+      { kicker: 'Level 1 · always visible', title: 'The next step', rule: 'One blue button. Its label comes from the case step.', items: ['In behandeling nemen', 'Verder met beoordelen', 'Naar besluit', 'Publiceren', 'Afhandelen'], box: box('#3669a5'), chip: chip('#3669a5', '#ffffff') },
+      { kicker: 'Level 2 · always visible', title: 'Quick actions', rule: 'Three outlined buttons, the same on every case.', items: ['Bericht aan inwoner', 'Document maken', 'Contact vastleggen'], box: box('#8fb0d9'), chip: chip('#eaf0f7', '#234a78') },
+      { kicker: 'Level 3 · one click away', title: 'Meer', rule: 'A grouped menu: Zaak, Publicatie, Dossier.', items: ['Doorgeven aan team', 'Loslaten', 'Termijn verlengen', 'Opschorten of hervatten', 'Partij toevoegen', 'Object koppelen', 'Splitsen', 'Samenvoegen', 'Kopiëren', 'Publicatie intrekken', 'Dossier exporteren', 'Herinnering sturen'], box: box('#c4c7cb'), chip: chip('#f0f1f3', '#3d4047') },
+      { kicker: 'Level 4 · admins only', title: 'Beheer', rule: 'Hidden for case handlers. Last group in "Meer" for admins.', items: ['Type of versie wijzigen', 'Naar andere versie', 'Bekend in ander domein', 'Ruwe gegevens', 'Flow-runs'], box: box('#1b1c1d'), chip: chip('#1b1c1d', '#ffffff') }
+    ];
+    const steps = [
+      { step: 'Ontvangen', button: 'In behandeling nemen', list: 'Ontvangst bevestigen, behandelaar kiezen', today: 'Claim + Record receipt confirmed' },
+      { step: 'In behandeling', button: 'Verder met beoordelen', list: 'Documenten beoordelen, contact met de inwoner', today: 'Lifecycle dialog, Files tab' },
+      { step: 'Besluit', button: 'Besluit vastleggen', list: 'Besluit opstellen, laten tekenen', today: 'Generate document + Decisions tab' },
+      { step: 'Publiceren', button: 'Publiceren', list: 'Controle openbaarheid, publicatie maken', today: 'Publish (Woo)' },
+      { step: 'Afgehandeld', button: 'Zaak afsluiten', list: 'Inwoner informeren, archiveren', today: 'Lifecycle: Finish, Archive' }
+    ];
+    const tabs = [
+      { name: 'Overzicht', from: 'Data, Priority, Locations, What happens next' },
+      { name: 'Documenten', from: 'Files, Merge into one PDF, Woo publication' },
+      { name: 'Contact', from: 'Communication, Email, Notes, Live conversation, Receipt confirmation' },
+      { name: 'Taken', from: 'Work: Tasks, Appointments, Incidents, Cards; Case plan' },
+      { name: 'Historie', from: 'Timeline, History (sidebar), Flow runs' },
+      { name: 'Meer', from: 'People, Decisions, Related, Custody, Archiving, Knowledge, Terms, Access, Sharing, AVG, Tags, Fees, Contract' }
+    ];
+    return { levels, steps, tabs };
+  }
+}
+</script>
+</body>
+</html>

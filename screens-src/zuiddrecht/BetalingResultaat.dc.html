@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Uw betaling</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; position: relative; min-height: 1830px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <main id="inhoud" style="max-width: 880px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-direction: column; gap: 40px">
+    <section aria-labelledby="gelukt" style="display: flex; flex-direction: column; gap: 24px; padding: 28px; border: 2px dashed #b9cbe2; border-radius: 8px">
+      <span style="align-self: flex-start; padding: 3px 12px; border-radius: 12px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 700">Situatie 1 van 2: de betaling is gelukt</span>
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="flex: none; width: 48px; height: 48px; border-radius: 24px; background: #e7f3ea; color: #1e6b2a; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h1 id="gelukt" style="margin: 0; font-size: 40px; font-weight: 700; line-height: 1.15">Gelukt, u heeft betaald</h1>
+          <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a">Bedankt. Wij hebben de leges voor uw parkeervergunning ontvangen en gaan verder met uw aanvraag.</p>
+        </div>
+      </div>
+      <dl style="margin: 0; display: grid; grid-template-columns: minmax(160px, max-content) 1fr; font-size: 17px; border-top: 1px solid #d3d8df">
+        <sc-for list="{{ paid }}" as="f" hint-placeholder-count="4">
+          <dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">{{ f.k }}</dt>
+          <dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">{{ f.v }}</dd>
+        </sc-for>
+      </dl>
+      <p style="margin: 0; font-size: 17px; line-height: 1.5">U ziet de betaling ook terug bij uw zaak. De taak "Betaal de leges" staat niet meer in Mijn taken.</p>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px">
+        <a href="MijnZaken.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border-radius: 4px; background: #3669a5; color: #ffffff; font-size: 17px; font-weight: 600; text-decoration: none">Naar uw zaak<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></a>
+        <a href="MijnOverzicht.dc.html" style="font-size: 17px; font-weight: 600">Naar Mijn Zuiddrecht</a>
+      </div>
+    </section>
+    <section aria-labelledby="mislukt" style="display: flex; flex-direction: column; gap: 24px; padding: 28px; border: 2px dashed #b9cbe2; border-radius: 8px">
+      <span style="align-self: flex-start; padding: 3px 12px; border-radius: 12px; background: #eaf0f7; color: #234a78; font-size: 14px; font-weight: 700">Situatie 2 van 2: de betaling is niet gelukt</span>
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="flex: none; width: 48px; height: 48px; border-radius: 24px; background: #fcedec; color: #a30000; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path></svg></span>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h1 id="mislukt" style="margin: 0; font-size: 40px; font-weight: 700; line-height: 1.15">De betaling is niet gelukt</h1>
+          <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a">De betaling is afgebroken of geweigerd.</p>
+        </div>
+      </div>
+      <div role="alert" style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #fcedec; border: 1px solid #e8b4b0; align-items: flex-start">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#a30000" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg>
+        <span style="font-size: 17px; line-height: 1.5">Er is niets van uw rekening afgeschreven. Uw aanvraag is wel bewaard onder kenmerk <strong style="white-space: nowrap">2026-0061</strong>.</span>
+      </div>
+      <dl style="margin: 0; display: grid; grid-template-columns: minmax(160px, max-content) 1fr; font-size: 17px; border-top: 1px solid #d3d8df">
+        <sc-for list="{{ failed }}" as="f" hint-placeholder-count="3">
+          <dt style="padding: 12px 24px 12px 0; border-bottom: 1px solid #d3d8df; font-weight: 600">{{ f.k }}</dt>
+          <dd style="margin: 0; padding: 12px 0; border-bottom: 1px solid #d3d8df">{{ f.v }}</dd>
+        </sc-for>
+      </dl>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px">
+        <a href="Betalen.dc.html" style="display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 4px; background: #3669a5; color: #ffffff; font-size: 17px; font-weight: 600; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.5,1L2,6V8H21V6M16,10V17H19V10M2,22H21V19H2M10,10V17H13V10M4,10V17H7V10H4Z"></path></svg>Opnieuw betalen</a>
+        <a href="MijnTaken.dc.html" style="font-size: 17px; font-weight: 600">Later betalen</a>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #4a4a4a">Betaalt u later? Dan staat "Betaal de leges" in Mijn taken. Lukt het steeds niet? Bel ons, dan zoeken wij het samen met u uit.</p>
+    </section>
+  </main>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1830}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const paid = [
+      { k: 'Bedrag', v: '€ 38,50' },
+      { k: 'Betaald op', v: '8 oktober 2026 om 10:24' },
+      { k: 'Kenmerk', v: '2026-0061' },
+      { k: 'Waarvoor', v: 'Leges parkeervergunning binnenstad' }
+    ];
+    const failed = [
+      { k: 'Bedrag', v: '€ 38,50, nog niet betaald' },
+      { k: 'Kenmerk', v: '2026-0061' },
+      { k: 'Waarvoor', v: 'Leges parkeervergunning binnenstad' }
+    ];
+    return { paid, failed, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Mijn zaken', href: 'MijnZaken.dc.html' }, { label: 'Uw betaling' }] };
+  }
+}
+</script>
+</body>
+</html>

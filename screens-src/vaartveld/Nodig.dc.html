@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Analyse: wat er nodig is</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="font-family: 'Red Hat Text', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8">
+  <div style="max-width: 1360px; margin: 0 auto; padding: 48px 32px 64px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 920px">
+      <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -0.01em">Wat er nodig is om dit te bouwen</h1>
+      <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3d4047">Per scherm: wat er vandaag is in portaliq, learniq en thematiq, en wat er nog moet komen. De stand van portaliq en learniq komt uit de analyse voor Basisschool De Wilgenboom van 5 oktober 2026. Wat een middelbare school extra vraagt, zoals het rooster, cijfers met weging en inloggen door leerlingen, is voor dit ontwerp niet in de code nagekeken. Daar staat "nog uitzoeken".</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 16px">
+      <sc-for list="{{ totals }}" as="t" hint-placeholder-count="4">
+        <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px"><span style="{{ t.pill }}">{{ t.label }}</span><strong style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 34px; font-weight: 700; line-height: 1">{{ t.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.note }}</span></div>
+      </sc-for>
+    </div>
+
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+      <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: 0 1px 2px rgba(27,28,29,0.04); overflow: hidden">
+        <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #e4e6ea"><h2 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700">{{ s.title }}</h2><span style="font-size: 14px; color: #5e6168">{{ s.sub }}</span></div>
+        <div style="overflow-x: auto">
+          <table style="border-collapse: collapse; width: 100%; min-width: 920px; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #3d4047; background: #f5f6f8">
+                <th scope="col" style="padding: 12px 24px; font-weight: 600; width: 21%">Scherm of onderdeel</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600; width: 31%">Wat er vandaag is</th>
+                <th scope="col" style="padding: 12px 16px; font-weight: 600; width: 34%">Wat er nog moet komen</th>
+                <th scope="col" style="padding: 12px 24px 12px 16px; font-weight: 600">Stand</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="6">
+                <tr style="border-top: 1px solid #eef0f3; vertical-align: top">
+                  <th scope="row" style="padding: 14px 24px; text-align: left; font-size: 15px; font-weight: 600">{{ r.what }}</th>
+                  <td style="padding: 14px 16px; line-height: 1.5; color: #3d4047">{{ r.now }}</td>
+                  <td style="padding: 14px 16px; line-height: 1.5">{{ r.todo }}</td>
+                  <td style="padding: 14px 24px 14px 16px"><span style="{{ r.pill }}">{{ r.state }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-for>
+
+    <section style="background: #e8eefc; border-radius: 12px; padding: 22px 24px; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #14338f">Voorstel voor de volgorde</h2>
+      <ol style="margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 15px; line-height: 1.55">
+        <li><strong style="font-weight: 600">Het thema.</strong> De token-set vaartveld met de logo's, de twee Red Hat-lettertypen en de donkere variant. De schermen die er al zijn kleuren dan meteen mee.</li>
+        <li><strong style="font-weight: 600">De vaart.</strong> Hetzelfde vaste onderdeel in kop en voet als de twijgen van De Wilgenboom, met een andere vorm per thema.</li>
+        <li><strong style="font-weight: 600">Uitzoeken wat learniq van een middelbare school weet.</strong> Rooster per lesuur, roosterwijzigingen, cijfers met weging en huiswerk. Dit bepaalt of het overzicht voor de leerling een week of een kwartaal werk is.</li>
+        <li><strong style="font-weight: 600">Inloggen voor leerlingen.</strong> Een schoolaccount naast DigiD, en de koppeling tussen ouder en kind.</li>
+        <li><strong style="font-weight: 600">Het overzicht en het rooster van vandaag,</strong> eerst op de telefoon. Daar kijkt een leerling om kwart over acht.</li>
+        <li><strong style="font-weight: 600">Vandaag voor de docent,</strong> daarna de mentor en de teamleider.</li>
+      </ol>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2977}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'align-self: flex-start; white-space: nowrap; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const P = { has: pill('#e7f3ea', '#1e6b2a'), part: pill('#fff4de', '#7a4f00'), neu: pill('#e8eefc', '#14338f'), ask: pill('#f0f1f3', '#3d4047') };
+    const L = { has: 'Bestaat', part: 'Deels', neu: 'Nieuw', ask: 'Nog uitzoeken' };
+    const row = (what, now, todo, k) => ({ what, now, todo, state: L[k], pill: P[k], k });
+    const sections = [
+      { title: 'Website en Mijn Vaartveld', sub: 'portaliq, met de gegevens die learniq levert', rows: [
+        row('Kop, hoofdmenu en voettekst', 'De kop en de voet van de portaliq-site, gekleurd door het thema.', 'De vaart als vast onderdeel onder de kop en boven de voet.', 'part'),
+        row('Home', 'Tekst-, nieuws- en kalenderblokken bestaan.', 'De kaart "Direct regelen" en de agenda als blok. De grote V achter de held is een optie van het thema.', 'ask'),
+        row('Nieuws en documenten zoeken', 'Een nieuwspagina met "Gepubliceerd op". Zoeken met filters is er voor Woo-publicaties.', 'Hetzelfde zoekscherm voor schoolnieuws en documenten, met filters op afdeling en leerjaar.', 'ask'),
+        row('Nieuwsbericht en informatiepagina', 'Pagina\'s met blokken in een raster van twaalf kolommen, te bewerken door een redacteur.', 'Het feitenblok (wanneer, waar, voor wie) en de tabel "Wat meldt u hoe".', 'part'),
+        row('Inloggen', 'Ouders loggen in met DigiD. De school nodigt een ouder uit via een API, zonder e-mail.', 'Inloggen voor leerlingen met hun schoolaccount. Een uitnodiging voor ouders met een eenmalige link. Hoe ouder en kind aan elkaar gekoppeld worden.', 'ask'),
+        row('Overzicht van de leerling', 'Voor ouders van een basisschool: de kindpagina, aanwezigheid, huiswerk en nieuws.', 'Het rooster van vandaag per lesuur met wijzigingen, de kaart "Je eerste les" en huiswerk en toetsen per week.', 'ask'),
+        row('Cijfers en cijfers van een vak', 'Rapporten met een cijfer per regel.', 'Losse cijfers met weging, het gemiddelde per vak en de rekenhulp "wat heb je nodig".', 'ask'),
+        row('Berichten en mentorgesprek', 'Een postvak met berichten van school. Een ouder boekt een vrije tijd voor een oudergesprek en de leerkracht bevestigt.', 'De tijdkeuze in het bericht zelf, door de leerling, met een melding aan de ouder.', 'part'),
+        row('Ziek melden door ouders', 'Het formulier met keuzekaarten en de goedkeuring door de leerkracht.', 'Melden per dag of per lesuur, en beter melden. Wat er anders is voor een leerling van 18 jaar.', 'part'),
+        row('Rapporten en documenten', 'Rapporten staan op de kindpagina.', 'Een eigen pagina met downloads, het PTA en verklaringen.', 'ask'),
+        row('Steunles en informatieavond', 'Nog niet bekend.', 'Inschrijven op een activiteit met een aantal plekken.', 'ask'),
+        row('Redacteur', 'Blokken plaatsen, verschuiven, concept opslaan en publiceren.', 'Een blok "toetsrooster" dat zijn gegevens uit learniq haalt.', 'neu')
+      ] },
+      { title: 'Werkplek: learniq en launchpad', sub: 'Nextcloud, met de Cunningham-laag', rows: [
+        row('Zijbalk en bovenbalk', 'Het menu van learniq en de bovenbalk van Nextcloud.', 'De lichte zijbalk met groepen, een menu per rol en de zoekbalk bovenin.', 'part'),
+        row('Vandaag voor de docent', 'Een dashboard dat alleen de eigen groepen toont. Het register in één scherm.', 'Lessen per lesuur met de stand van de aanwezigheid, de kaart "Vandaag eerst" en de stapel nakijkwerk.', 'part'),
+        row('Weekrooster', 'Nog niet bekend. Er is geen bouwsteen voor een week in dagkolommen.', 'Het rooster als raster van dagen en lesuren, gevoed door de roosterkamer.', 'ask'),
+        row('Leerlingen', 'Lijsten met de naam van de leerling, filters en kolommen.', 'De kolommen signaal en mentorgesprek, en opgeslagen weergaven met een teller.', 'part'),
+        row('Leerling', 'Het leerlingdossier met tabbladen.', 'De kop met kerncijfers, de kaart "Wat nu?", balkjes per vak en het weekraster van de aanwezigheid.', 'part'),
+        row('Mentor', 'Zorgsignalen en notities bestaan als gegevens.', 'Signalen die learniq zelf afleidt uit afwezigheid en cijfers, en het overzicht van de mentorgesprekken.', 'ask'),
+        row('Teamleider', 'Aanwezigheid per leerling, en een signaal bij 16 uur afwezigheid zonder toestemming.', 'Het overzicht per leerjaar, lesuitval en verlof beslissen.', 'ask'),
+        row('launchpad: mijn werkdag', 'De startpagina van launchpad met widgets.', 'De rij "Vandaag eerst" met taken uit alle apps. Daar is nog geen afspraak tussen de apps voor.', 'ask')
+      ] },
+      { title: 'Het thema in thematiq', sub: 'Eén keuze in de beheerinstellingen kleurt alles', rows: [
+        row('Token-set vaartveld', 'De Cunningham-set die Zuiddrecht gebruikt.', 'Een nieuwe set met kobalt en aqua, afgeleid van de Zuiddrecht-set.', 'neu'),
+        row('Logo en beeldmerk', 'De vier bestanden zijn klaar.', 'Opnemen in thematiq: kleur, wit, beeldmerk en beeldmerk in wit.', 'neu'),
+        row('Twee lettertypen', 'thematiq levert lettertypen mee per set.', 'Red Hat Display en Red Hat Text toevoegen. Of een set een apart lettertype voor koppen kan kiezen.', 'ask'),
+        row('Aqua als accent', 'Het accent kleurt het actieve menu-item en de badges.', 'Een eigen token voor tekst op het accent. Aqua draagt inkt, geen wit.', 'part'),
+        row('Donkere variant', 'Zuiddrecht heeft er een.', 'Dezelfde afleiding voor Vaartveld, met het contrast opnieuw gemeten.', 'neu'),
+        row('Hoeken op de website', 'De hoekmaat komt uit de tokens.', 'Per set een eigen maat voor knoppen en kaarten op de website: 6 en 10.', 'ask')
+      ] }
+    ];
+    const all = sections.flatMap((s) => s.rows);
+    const n = (k) => all.filter((r) => r.k === k).length;
+    const totals = [
+      { label: 'Bestaat', value: n('has'), note: 'alleen nog kleuren en opmaken', pill: P.has },
+      { label: 'Deels', value: n('part'), note: 'de basis is er, een deel ontbreekt', pill: P.part },
+      { label: 'Nieuw', value: n('neu'), note: 'moet gebouwd worden', pill: P.neu },
+      { label: 'Nog uitzoeken', value: n('ask'), note: 'eerst nakijken in de code', pill: P.ask }
+    ];
+    return { sections, totals };
+  }
+}
+</script>
+</body>
+</html>

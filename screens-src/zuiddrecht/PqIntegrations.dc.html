@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pipelinq: integrations, advanced</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2020px">
+  <dc-import name="DqKop" app="Pipelinq" placeholder="Search tickets, contacts or appointments" role="Contact centre agent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="New request" active="Integrations" fold="open" settings="Advanced" help="Help and explanation" groups="{{ nav }}" hint-size="264px,1952px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+          <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Integrations</h1>
+          <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 7V3H14V7H10V3H8V7C7 7 6 8 6 9V14.5L9.5 18V21H14.5V18L18 14.5V9C18 8 17 7 16 7M16 13.67L13.09 16.59L12.67 17H11.33L10.92 16.59L8 13.67V9.09C8 9.06 8.06 9 8.09 9H15.92C15.95 9 16 9.06 16 9.09V13.67Z"></path></svg>Add integration</button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-size: 15px; color: #5e6168">A page every app has · showing 10 of 10 connections Pipelinq declares, checked by integriq</span>
+        </div>
+      </section>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px">
+          <div role="group" aria-label="Status" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 auto">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+              <button type="button" aria-pressed="{{ c.pressed }}" style="{{ c.style }}">{{ c.label }}<span style="{{ c.countStyle }}">{{ c.count }}</span></button>
+            </sc-for>
+          </div>
+          <form role="search" style="flex: 0 1 300px; position: relative">
+            <label for="pq-integ-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter connections</label>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" style="position: absolute; left: 12px; top: 11px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+            <input id="pq-integ-search" type="search" placeholder="Filter connections" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+          </form>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <div style="flex: 999 1 560px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; align-items: stretch">
+            <sc-for list="{{ cards }}" as="c" hint-placeholder-count="10">
+              <article style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+                <div style="display: flex; align-items: flex-start; gap: 12px">
+                  <span style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ c.icon }}"></path></svg></span>
+                  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px"><h3 style="margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3">{{ c.title }}</h3><span style="font-size: 13px; color: #5e6168">{{ c.kind }}</span><sc-if value="{{ c.hasPill }}" hint-placeholder-val="{{ true }}"><span style="{{ c.pill }}">{{ c.status }}</span></sc-if></div>
+                </div>
+                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #3d4047">{{ c.desc }}</p>
+                <sc-if value="{{ c.hasMsg }}" hint-placeholder-val="{{ false }}"><p style="{{ c.msgStyle }}">{{ c.msg }}</p></sc-if>
+                <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #eef0f3; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px">
+                  <span style="flex: 1 1 auto; font-size: 13px; color: #5e6168">{{ c.meta }}</span>
+                  <sc-if value="{{ c.hasBtn }}" hint-placeholder-val="{{ true }}"><a href="#" aria-label="{{ c.btnLabel }}" style="{{ c.btnStyle }}">{{ c.btn }}</a></sc-if>
+                  <sc-if value="{{ c.noBtn }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #5e6168">{{ c.noBtnText }}</span></sc-if>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+          <aside aria-label="About these connections" style="flex: 1 1 260px; min-width: 0; max-width: 320px; display: flex; flex-direction: column; gap: 16px">
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Needs attention</h2>
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                <sc-for list="{{ attention }}" as="n" hint-placeholder-count="2">
+                  <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px solid #eef0f3"><span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600"><span style="flex: 1">{{ n.title }}</span><span style="{{ n.pill }}">{{ n.status }}</span></span><span style="font-size: 13px; line-height: 1.4; color: #5e6168">{{ n.msg }}</span></li>
+                </sc-for>
+              </ul>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Checked by integriq</h2>
+              <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #3d4047"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex: none" aria-hidden="true"><path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"></path></svg>Last check today at 08:12</p>
+              <p style="margin: 0; font-size: 14px; line-height: 1.45; color: #3d4047">integriq tests each connection and sets its status. Pipelinq only declares which connections it uses.</p>
+              <a href="#" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; text-decoration: none; font: 600 14px 'Fira Sans', sans-serif">Open integriq</a>
+            </section>
+            <section style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+              <h2 style="margin: 0; font-size: 17px; font-weight: 700">Adding a connection</h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.45; color: #3d4047">A connection the app does not declare cannot be checked, so new connections are added in integriq. Add integration takes you there.</p>
+            </section>
+          </aside>
+        </div>
+        <p style="margin: 4px 0 0; padding-top: 16px; border-top: 1px solid #e4e6ea; display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.45; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex: none; margin-top: 1px" aria-hidden="true"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg>This page comes from the library (nextcloud-vue) and looks the same in every app; only the content is the app's own.</p>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2020}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const NI = {"home": "M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22", "inbox": "M19 3H5A2 2 0 0 0 3 5V19A2 2 0 0 0 5 21H19A2 2 0 0 0 21 19V5A2 2 0 0 0 19 3M5 19V17H8.13A4.13 4.13 0 0 0 9.4 19M19 19H14.6A4.13 4.13 0 0 0 15.87 17H19M19 15H14V16A2 2 0 0 1 10 16V15H5V5H19Z", "queue": "M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z", "chat": "M15,4V11H5.17L4,12.17V4H15M16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12V3A1,1 0 0,0 16,2M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z", "phone": "M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z", "cal": "M6 1V3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11.1C12.36 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.36 21 11.1V5C21 3.9 20.11 3 19 3H18V1H16V3H8V1M5 5H19V7H5M5 9H19V9.67C18.09 9.24 17.07 9 16 9C12.13 9 9 12.13 9 16C9 17.07 9.24 18.09 9.67 19H5M16 11.15C18.68 11.15 20.85 13.32 20.85 16C20.85 18.68 18.68 20.85 16 20.85C13.32 20.85 11.15 18.68 11.15 16C11.15 13.32 13.32 11.15 16 11.15M15 13V16.69L18.19 18.53L18.94 17.23L16.5 15.82V13Z", "people": "M13.07 10.41A5 5 0 0 0 13.07 4.59A3.39 3.39 0 0 1 15 4A3.5 3.5 0 0 1 15 11A3.39 3.39 0 0 1 13.07 10.41M5.5 7.5A3.5 3.5 0 1 1 9 11A3.5 3.5 0 0 1 5.5 7.5M7.5 7.5A1.5 1.5 0 1 0 9 6A1.5 1.5 0 0 0 7.5 7.5M16 17V19H2V17S2 13 9 13 16 17 16 17M14 17C13.86 16.22 12.67 15 9 15S4.07 16.31 4 17M15.95 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13Z", "org": "M18,15H16V17H18M18,11H16V13H18M20,19H12V17H14V15H12V13H14V11H12V9H20M10,7H8V5H10M10,11H8V9H10M10,15H8V13H10M10,19H8V17H10M6,7H4V5H6M6,11H4V9H6M6,15H4V13H6M6,19H4V17H6M12,7V3H2V21H22V7H12Z", "chart": "M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z", "doc": "M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z", "gavel": "M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28M20,19A2,2 0 0,1 22,21V22H12V21A2,2 0 0,1 14,19H20Z", "check": "M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z", "book": "M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z", "trend": "M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z", "heart": "M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z", "more": "M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z", "pipeline": "M3,14L3.5,14.07L8.07,9.5C7.89,8.85 8.06,8.11 8.59,7.59C9.37,6.8 10.63,6.8 11.41,7.59C11.94,8.11 12.11,8.85 11.93,9.5L14.5,12.07L15,12C15.18,12 15.35,12 15.5,12.07L19.07,8.5C19,8.35 19,8.18 19,8A2,2 0 0,1 21,6A2,2 0 0,1 23,8A2,2 0 0,1 21,10C20.82,10 20.65,10 20.5,9.93L16.93,13.5C17,13.65 17,13.82 17,14A2,2 0 0,1 15,16A2,2 0 0,1 13,14L13.07,13.5L10.5,10.93C10.18,11 9.82,11 9.5,10.93L4.93,15.5L5,16A2,2 0 0,1 3,18A2,2 0 0,1 1,16A2,2 0 0,1 3,14Z", "products": "M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L10.11,5.22L16,8.61L17.96,7.5L12,4.15M6.04,7.5L12,10.85L13.96,9.75L8.08,6.35L6.04,7.5M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z", "bullhorn": "M12,8H4A2,2 0 0,0 2,10V14A2,2 0 0,0 4,16H5V20A1,1 0 0,0 6,21H8A1,1 0 0,0 9,20V16H12L17,20V4L12,8M15,15.6L13,14H4V10H13L15,8.4V15.6M21.5,12C21.5,13.71 20.54,15.26 19,16V8C20.53,8.75 21.5,10.3 21.5,12Z", "mail": "M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z"};
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['My work', 'inbox', 5], ['Queue', 'queue', 12]] },
+      { title: 'Contact centre', items: [['Questions and reports', 'chat'], ['Contact moments', 'phone'], ['Appointments', 'cal']] },
+      { title: 'Relations', items: [['Residents and businesses', 'people'], ['Organisations', 'org']] },
+      { title: 'Sales', items: [['Leads', 'trend'], ['Pipeline', 'pipeline'], ['Products', 'products']] },
+      { title: 'Marketing', items: [['Campaigns', 'bullhorn'], ['Newsletters', 'mail']] },
+    ];
+    const ACTIVE = 'Integrations';
+    const chip = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 18px; font: 600 14px \'Fira Sans\', sans-serif; cursor: pointer; ' + (on ? 'border: 0; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;');
+    const chips = (rows) => rows.map(([label, count, on]) => ({ label, count, pressed: on ? 'true' : 'false', style: chip(on), countStyle: 'font-weight: 400; ' + (on ? 'color: #d6d9de;' : 'color: #5e6168;') }));
+    const PILL = { green: ['#e7f3ea', '#1e6b2a'], amber: ['#fff4de', '#7a4f00'], grey: ['#f0f1f3', '#3d4047'], red: ['#fcedec', '#a30000'], blue: ['#eaf0f7', '#234a78'], purple: ['#e8e6f6', '#4a3f8f'] };
+    const pill = (tone) => 'flex: none; align-self: flex-start; display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; white-space: nowrap; background: ' + PILL[tone][0] + '; color: ' + PILL[tone][1];
+    const BTN = {
+      outline: 'display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; text-decoration: none; font: 600 14px \'Fira Sans\', sans-serif',
+      soft: 'display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 17px; background: #eaf0f7; color: #234a78; text-decoration: none; font: 600 14px \'Fira Sans\', sans-serif'
+    };
+    const card = (o) => Object.assign({ kind: '', status: '', pill: '', hasPill: false, msg: '', hasMsg: false, msgStyle: '', meta: '', btn: '', btnLabel: '', btnStyle: '', hasBtn: false, noBtn: false, noBtnText: '' }, o);
+    const T = { Configured: 'green', Limited: 'amber', 'Not configured': 'grey', Error: 'red' };
+    const raw = [
+      ['Telephony (CTI)', 'M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z', 'Telephony', 'Screen pop and click to dial through Asterisk, RingCentral or CallVoip. You pick one platform.', 'Configured', 'Asterisk answers. Click to dial and screen pop work.', 'Last checked 7 Oct, 08:12', 'open'],
+      ['Mastodon', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to Mastodon, sent through the credential broker in OpenRegister.', 'Configured', 'Account @zuiddrecht@social.overheid.nl is linked.', 'Last checked 6 Oct, 17:40', 'open'],
+      ['Bluesky', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to Bluesky, sent through the credential broker in OpenRegister.', 'Not configured', 'Not checked yet. Open Social accounts to check this network.', 'Never checked', 'setup'],
+      ['LinkedIn', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to a LinkedIn member or company page, sent through the credential broker in OpenRegister.', 'Limited', 'Posts to the member page work. The company page needs admin rights.', 'Last checked 5 Oct, 11:02', 'open'],
+      ['X', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to X, sent through the credential broker in OpenRegister.', 'Not configured', 'Not checked yet. Open Social accounts to check this network.', 'Never checked', 'setup'],
+      ['Facebook page', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to a Facebook page, sent through the credential broker in OpenRegister.', 'Error', 'The page token expired on 2 Oct. Sign in again in Social accounts.', 'Last checked 7 Oct, 06:00', 'open'],
+      ['Instagram business account', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to an Instagram business account, sent through the credential broker in OpenRegister.', 'Not configured', 'Not checked yet. Open Social accounts to check this network.', 'Never checked', 'setup'],
+      ['Threads', 'M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.91 18 21.91S20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08M18 4C18.55 4 19 4.45 19 5S18.55 6 18 6 17 5.55 17 5 17.45 4 18 4M6 13C5.45 13 5 12.55 5 12S5.45 11 6 11 7 11.45 7 12 6.55 13 6 13M18 20C17.45 20 17 19.55 17 19S17.45 18 18 18 19 18.45 19 19 18.55 20 18 20Z', 'Social network', 'Posts to Threads, sent through the credential broker in OpenRegister.', 'Not configured', 'Not checked yet. Open Social accounts to check this network.', 'Never checked', 'setup'],
+      ['Berichtenbox', 'M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z', 'Messages', 'Messages to a citizen\'s Mijn Overheid Berichtenbox, sent to Logius.', 'Not configured', 'Set logius_client_id, logius_client_secret, pki_cert and pki_key with occ config:app:set.', 'Never checked', 'none'],
+      ['Bulk mail provider', 'M22 5.5H9C7.9 5.5 7 6.4 7 7.5V16.5C7 17.61 7.9 18.5 9 18.5H22C23.11 18.5 24 17.61 24 16.5V7.5C24 6.4 23.11 5.5 22 5.5M22 16.5H9V9.17L15.5 12.5L22 9.17V16.5M15.5 10.81L9 7.5H22L15.5 10.81M5 16.5C5 16.67 5.03 16.83 5.05 17H1C.448 17 0 16.55 0 16S.448 15 1 15H5V16.5M3 7H5.05C5.03 7.17 5 7.33 5 7.5V9H3C2.45 9 2 8.55 2 8S2.45 7 3 7M1 12C1 11.45 1.45 11 2 11H5V13H2C1.45 13 1 12.55 1 12Z', 'Mail', 'Mailings sent through Amazon SES, Brevo, Mailjet, SendGrid, Mailgun or Postmark, over an integriq source.', 'Configured', 'Brevo source linked in integriq.', 'Last checked 7 Oct, 07:30', 'open']
+    ];
+    const cards = raw.map(([title, icon, kind, desc, status, msg, meta, act]) => card({
+      title, icon, kind: kind + ' · ' + meta.replace('Last checked', 'checked').replace('Never checked', 'never checked'), desc, status, msg, meta: '', pill: pill(T[status]), hasPill: true, hasMsg: true,
+      msgStyle: 'margin: 0; font-size: 13px; line-height: 1.45; ' + (status === 'Error' ? 'color: #a30000; font-weight: 600;' : 'color: #5e6168;'),
+      btn: act === 'open' ? 'Open settings' : 'Set up', btnLabel: (act === 'open' ? 'Open settings for ' : 'Set up ') + title, btnStyle: act === 'open' ? BTN.outline : BTN.soft,
+      hasBtn: act !== 'none', noBtn: act === 'none', noBtnText: 'No settings screen yet'
+    }));
+    const attention = raw.filter((r) => r[4] === 'Error' || r[4] === 'Limited').map((r) => ({ title: r[0], status: r[4], msg: r[5], pill: pill(T[r[4]]) }));
+    const n = (s) => raw.filter((r) => r[4] === s).length;
+    const ch = chips([['All connections', raw.length, true], ['Configured', n('Configured'), false], ['Limited', n('Limited'), false], ['Not configured', n('Not configured'), false], ['Error', n('Error'), false]]);
+    return { chips: ch, cards, attention, nav };
+  }
+}
+</script>
+</body>
+</html>

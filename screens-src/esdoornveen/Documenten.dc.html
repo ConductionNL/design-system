@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Esdoornveen: documenten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5b2e91}a:hover{color:#43206e}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; display: flex; flex-direction: column">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,194px"></dc-import>
+  <div style="flex: 1 0 auto; width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Documenten" hint-size="100%,680px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-end">
+        <div style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 8px">
+          <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Documenten</h1>
+          <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #4a4a4a; max-width: 620px">Wat je met school en je leerbedrijf hebt afgesproken, en wat je hebt behaald. Handig bij een sollicitatie.</p>
+        </div>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #5b2e91; color: #ffffff; font: 600 17px 'IBM Plex Sans', sans-serif">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Document toevoegen</button>
+      </div>
+
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+        <section style="display: flex; flex-direction: column; gap: 12px">
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600">{{ g.title }}</h2>
+          <ul style="margin: 0; padding: 0; list-style: none; border: 1px solid #d3d8df; border-radius: 8px">
+            <sc-for list="{{ g.docs }}" as="d" hint-placeholder-count="2">
+              <li style="{{ d.row }}">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#43206e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"></path></svg>
+                <span style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                  <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px"><strong style="font-size: 18px; font-weight: 600">{{ d.name }}</strong><sc-if value="{{ d.hasCode }}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 8px; border: 1px solid #d3d8df; border-radius: 4px; background: #f4f6f9; font: 500 14px 'IBM Plex Mono', ui-monospace, monospace">{{ d.code }}</span></sc-if></span>
+                  <span style="font-size: 15px; color: #4a4a4a">{{ d.meta }}</span>
+                </span>
+                <sc-if value="{{ d.hasPill }}" hint-placeholder-val="{{ true }}"><span style="{{ d.pill }}">{{ d.status }}</span></sc-if>
+                <a href="#" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; box-sizing: border-box; padding: 0 14px; border: 2px solid #5b2e91; border-radius: 4px; font-weight: 600; text-decoration: none">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Downloaden<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"> {{ d.name }}</span>
+                </a>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-for>
+
+      <div style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #f0eaf7; border: 1px solid #d2c2e6">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#43206e" stroke-width="2.2" stroke-linecap="round" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5">Je diploma staat na je diplomering ook in het diplomaregister van DUO. Deze pagina blijft na je opleiding nog [TERMIJN] open.</p>
+      </div>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,348px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1556}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = (bg, fg) => 'padding: 3px 11px; border-radius: 14px; font-size: 14px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const ok = pill('#e7f3ea', '#1e6b2a');
+    const row = (first) => 'display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; padding: 16px 20px;' + (first ? '' : ' border-top: 1px solid #d3d8df;');
+    const mk = (docs) => docs.map((d, i) => ({ code: '', status: '', pill: '', ...d, hasCode: !!d.code, hasPill: !!d.status, row: row(i === 0) }));
+    const groups = [
+      { title: 'Overeenkomsten', docs: mk([
+        { name: 'Praktijkovereenkomst BPV, Bakker Techniek BV', meta: 'PDF · getekend door jou, Petra Bakker en Ruud Hermans op 27 augustus 2026', status: 'Getekend', pill: ok },
+        { name: 'Onderwijsovereenkomst Mechatronica niveau 4', meta: 'PDF · 28 augustus 2025', status: 'Getekend', pill: ok }
+      ]) },
+      { title: 'Resultaten', docs: mk([
+        { name: 'Resultatenoverzicht examens', meta: 'PDF · bijgewerkt op 2 oktober 2026 · 3 van 11 examenonderdelen behaald' },
+        { name: 'Cijferlijst leerjaar 1', meta: 'PDF · 10 juli 2026' }
+      ]) },
+      { title: 'Certificaten', docs: mk([
+        { name: 'VCA Basisveiligheid', meta: 'PDF · behaald op 12 maart 2026', status: 'Geldig tot 12 maart 2036', pill: ok },
+        { name: 'Keuzedeel Digitale vaardigheden gevorderd', code: 'K0023', meta: 'PDF · behaald op 3 juli 2026' }
+      ]) }
+    ];
+    return { groups, crumbs: [{ label: 'Home' }, { label: 'Mijn Esdoornveen', href: 'MijnOverzicht.dc.html' }, { label: 'Documenten' }] };
+  }
+}
+</script>
+</body>
+</html>

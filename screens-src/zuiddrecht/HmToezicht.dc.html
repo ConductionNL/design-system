@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>hermiq: ai-toezicht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1490px">
+  <dc-import name="DqKop" app="Hermiq" placeholder="Zoek agents, chats of runs" role="Functioneel beheerder AI" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="hermiq" primary="Nieuwe chat" active="AI-toezicht" groups="{{ nav }}" hint-size="264px,1422px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+          <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">AI-toezicht</h1>
+          <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+            <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
+            <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+          <span style="padding: 3px 10px; border-radius: 12px; background: #eaf0f7; color: #234a78; font-size: 13px; font-weight: 600">Rapport</span>
+          <nav aria-label="Kruimelpad" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="#">Rapporten</a><span aria-hidden="true">/</span><span aria-current="page">AI-toezicht</span></nav><span aria-hidden="true" style="color: #5e6168">·</span><span style="font-size: 14px; color: #5e6168">wat de agents voorstelden en wat een mens ermee deed, AI-verordening artikel 14</span>
+        </div>
+      </section>
+
+        <section aria-label="Rapporten" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+          <sc-for list="{{ reports }}" as="r" hint-placeholder-count="3">
+            <a href="#" aria-current="{{ r.current }}" style="{{ r.style }}">
+              <span style="display: flex; align-items: center; gap: 10px"><span style="width: 36px; height: 36px; flex: none; border-radius: 8px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="{{ r.icon }}"></path></svg></span><strong style="font-size: 16px">{{ r.title }}</strong></span>
+              <span style="font-size: 14px; line-height: 1.45; color: #3d4047">{{ r.desc }}</span>
+              <span style="font-size: 13px; color: #5e6168">{{ r.meta }}</span>
+            </a>
+          </sc-for>
+        </section>
+
+        <section aria-label="Filter" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: flex-end">
+          <div style="display: flex; flex-direction: column; gap: 5px"><label for="to-per" style="font-size: 13px; font-weight: 600">Periode</label><select id="to-per" style="height: 38px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>September 2026</option></select></div>
+          <div style="display: flex; flex-direction: column; gap: 5px"><label for="to-app" style="font-size: 13px; font-weight: 600">App</label><select id="to-app" style="height: 38px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Alle apps</option></select></div>
+          <div style="display: flex; flex-direction: column; gap: 5px"><label for="to-bes" style="font-size: 13px; font-weight: 600">Besluit van de mens</label><select id="to-bes" style="height: 38px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Alle besluiten</option></select></div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 14px; color: #5e6168">{{ k.label }}</span>
+              <strong style="font-size: 28px; font-weight: 700; line-height: 1">{{ k.value }}</strong>
+              <span style="{{ k.noteStyle }}">{{ k.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="to-log" style="flex: 999 1 480px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <div style="padding: 18px 20px 12px; display: flex; flex-direction: column; gap: 4px"><h2 id="to-log" style="margin: 0; font-size: 17px; font-weight: 700">Toezichtlog</h2><span style="font-size: 14px; color: #5e6168">Vastgelegd en niet te wijzigen · kies een regel om hem te openen</span></div>
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 12px 10px 20px; font-weight: 600">Besloten</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Voorstel</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Besluit</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Door</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ log }}" as="l" hint-placeholder-count="8">
+                  <tr aria-selected="{{ l.sel }}" style="{{ l.rowStyle }}">
+                    <td style="padding: 12px 12px 12px 20px; white-space: nowrap; color: #3d4047">{{ l.when }}</td>
+                    <td style="padding: 12px"><span style="display: flex; flex-direction: column; gap: 2px"><a href="#" style="font-weight: 600; color: #1b1c1d">{{ l.what }}</a><span style="font-size: 12px; color: #5e6168">{{ l.app }} · {{ l.model }}</span></span></td>
+                    <td style="padding: 12px; white-space: nowrap"><span style="{{ l.pill }}">{{ l.status }}</span></td>
+                    <td style="padding: 12px; white-space: nowrap">{{ l.who }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168">
+              <span>8 van 412</span>
+              <nav aria-label="Paginering" style="display: flex; gap: 6px"><a href="#" aria-current="page" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: #3669a5; color: #ffffff; font-weight: 600; text-decoration: none">1</a><a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">2</a><a href="#" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">3</a><a href="#" style="height: 34px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 8px; border: 1px solid #e4e6ea; color: #1b1c1d; text-decoration: none">Volgende</a></nav>
+            </div>
+          </section>
+
+          <aside aria-labelledby="to-det" style="flex: 1 1 400px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; box-shadow: inset 4px 0 0 #3669a5; padding: 20px 22px 20px 26px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+              <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #234a78">Besluit AIT-2026-0388</span><h2 id="to-det" style="margin: 0; font-size: 18px; font-weight: 700">Factuur Groenbeheer Drechtsteden afkeuren</h2></div>
+              <button type="button" aria-label="Detail sluiten" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: 17px; background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+            </div>
+            <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 12px; background: #fff4de; color: #7a4f00; font-size: 13px; font-weight: 600">Overschreven door een mens</span>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 8px; background: #f5f6f8">
+              <span style="font-size: 13px; font-weight: 600; color: #5e6168">Voorstel van Factuurcontrole</span>
+              <span style="font-size: 14px; line-height: 1.5">Afkeuren: het bedrag is € 4.180 hoger dan de inkooporder 2026-118. Geen meerwerk gevonden in het contract.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 8px; border: 1px solid #e4e6ea">
+              <span style="font-size: 13px; font-weight: 600; color: #5e6168">Wat Lars de Koning besloot</span>
+              <span style="font-size: 14px; line-height: 1.5">Goedgekeurd. Het meerwerk voor de bomenkap aan de Molenweg is per mail toegezegd op 2 september, dat staat niet in het contract.</span>
+            </div>
+            <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 14px; font-size: 14px">
+              <dt style="color: #5e6168">Besloten</dt><dd style="margin: 0">29 september, 14.12 uur</dd>
+              <dt style="color: #5e6168">App</dt><dd style="margin: 0">shillinq, inkomende facturen</dd>
+              <dt style="color: #5e6168">Model</dt><dd style="margin: 0">llama3.1:8b, eigen server</dd>
+              <dt style="color: #5e6168">Zekerheid</dt><dd style="margin: 0">hoog, 0,91</dd>
+              <dt style="color: #5e6168">Bronnen</dt><dd style="margin: 0"><a href="#">Factuur F-88213</a>, <a href="#">Inkooporder 2026-118</a></dd>
+            </dl>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #eef0f3">
+              <h3 style="margin: 0; font-size: 14px; font-weight: 700">Wat de agent maakte, met AI-label</h3>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3d4047" style="flex: none"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg><span style="flex: 1">Controlenotitie F-88213.md</span><span style="padding: 2px 8px; border-radius: 10px; background: #e8e6f6; color: #4a3f8f; font-size: 12px; font-weight: 600">Gemaakt met AI</span></div>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3d4047" style="flex: none"><path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1"></path></svg><span style="flex: 1">Agenda: terugbellen leverancier, 30 sep</span><span style="padding: 2px 8px; border-radius: 10px; background: #e8e6f6; color: #4a3f8f; font-size: 12px; font-weight: 600">Gemaakt met AI</span></div>
+            </div>
+            <span style="font-size: 12px; color: #5e6168">Dit besluit is vastgelegd en kan niet worden gewijzigd of verwijderd. Historie staat in het register.</span>
+          </aside>
+        </div>
+
+        <section aria-labelledby="to-label" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+            <div style="display: flex; flex-direction: column; gap: 4px"><h2 id="to-label" style="margin: 0; font-size: 17px; font-weight: 700">AI-label op gemaakte bestanden en tekst</h2><span style="font-size: 14px; color: #5e6168">Alles wat een agent schrijft, krijgt het label Gemaakt met AI. Zo ziet iedereen wat een mens nog moet nalezen.</span></div>
+            <a href="#" style="font-size: 14px; font-weight: 600">Labels in Bestanden bekijken</a>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
+            <sc-for list="{{ labels }}" as="b" hint-placeholder-count="4">
+              <div style="padding: 14px 16px; border-radius: 8px; background: #f5f6f8; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #5e6168">{{ b.label }}</span><strong style="font-size: 22px">{{ b.value }}</strong><span style="font-size: 13px; color: #5e6168">{{ b.note }}</span></div>
+            </sc-for>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1490}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Chat', 'chat'], ['Goedkeuringen', 'check', 3]] },
+      { title: 'Agents', items: [['Agents', 'people'], ['Runs', 'trend'], ['Geheugen', 'book'], ['Contexten', 'doc'], ['Skills', 'cert'], ['Evaluaties', 'chart'], ['Winkel', 'products']] },
+      { title: 'Beheer', items: [['Flows', 'pipeline'], ['Instellingen', 'shield'], ['Tenantbeheer', 'org'], ['Koppelingen', 'key'], ['AI-toezicht', 'gavel'], ['Werken met AI', 'heart']] }
+    ];
+    const rc = (on) => 'background: #ffffff; border: ' + (on ? '2px solid #3669a5' : '1px solid #e4e6ea') + '; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; color: #1b1c1d; text-decoration: none';
+    const reports = [
+      ['AI-toezicht', 'Wat de agents voorstelden en wat een mens daarvan overnam.', 'Maandelijks · u bekijkt september', true, 'M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z'],
+      ['Gebruik en kosten per afdeling', 'Runs, tokens en kosten per team en per agent.', 'Maandelijks · verstuurd op 1 oktober', false, 'M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z'],
+      ['Biastesten', 'Uitslagen van de periodieke biastesten per agent.', 'Na elke test · laatst 5 oktober', false, 'M12,3C10.73,3 9.6,3.8 9.18,5H3V7H4.95L2,14C1.53,16 3,17 5.5,17C8,17 9.56,16 9,14L6.05,7H9.17C9.5,7.85 10.15,8.5 11,8.83V20H2V22H22V20H13V8.82C13.85,8.5 14.5,7.85 14.82,7H17.95L15,14C14.53,16 16,17 18.5,17C21,17 22.56,16 22,14L19.05,7H21V5H14.83C14.4,3.8 13.27,3 12,3Z']
+    ].map(([title, desc, meta, on, icon]) => ({ title, desc, meta, icon, current: on ? 'page' : 'false', style: rc(on) }));
+    const note = (c, w) => 'font-size: 13px; color: ' + c + '; font-weight: ' + (w || 500);
+    const kpis = [
+      ['Besluiten', '412', 'in september', '#5e6168'],
+      ['Overgenomen', '371', '90% van de voorstellen', '#1e6b2a', 600],
+      ['Overschreven', '9', 'een mens koos anders', '#7a4f00', 600],
+      ['Afgewezen', '32', 'voorstel niet gevolgd', '#a30000', 600]
+    ].map(([label, value, n, c, w]) => ({ label, value, note: n, noteStyle: note(c, w) }));
+    const P = { 'Overgenomen': ['#e7f3ea', '#1e6b2a'], 'Overschreven': ['#fff4de', '#7a4f00'], 'Afgewezen': ['#fcedec', '#a30000'] };
+    const pill = (s) => 'display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: ' + P[s][0] + '; color: ' + P[s][1];
+    const log = [
+      ['30 sep 16.40', 'Woo-verzoek 2026-0082 toewijzen', 'dossiq', 'llama3.1:8b', 'Overgenomen', 'Anouk Bakker'],
+      ['30 sep 11.05', 'Naam wethouder lakken', 'dossiq', 'llama3.1:8b', 'Afgewezen', 'Sanne Yilmaz'],
+      ['29 sep 14.12', 'Factuur Groenbeheer afkeuren', 'shillinq', 'llama3.1:8b', 'Overschreven', 'Lars de Koning'],
+      ['29 sep 09.30', 'Actiepunt commissie Ruimte', 'decidiq', 'mistral-small', 'Overgenomen', 'Fatima el Amrani'],
+      ['28 sep 15.22', 'Melding stoeptegels naar wijkteam', 'pipelinq', 'llama3.1:8b', 'Overgenomen', 'Pieter Jansen'],
+      ['27 sep 10.48', 'Bezwaar ongegrond verklaren', 'dossiq', 'llama3.1:8b', 'Afgewezen', 'Sanne Yilmaz'],
+      ['26 sep 13.02', 'Subsidie buurtfeest toekennen', 'dossiq', 'mistral-small', 'Overgenomen', 'Lars de Koning'],
+      ['26 sep 08.44', 'Factuur drukwerk goedkeuren', 'shillinq', 'llama3.1:8b', 'Overgenomen', 'Lars de Koning']
+    ].map(([when, what, app, model, status, who], i) => ({ when, what, app, model, status, who, pill: pill(status), sel: i === 2 ? 'true' : 'false', rowStyle: 'border-top: 1px solid #eef0f3; ' + (i === 2 ? 'background: #eaf0f7;' : '') }));
+    const labels = [
+      ['Notities in Bestanden', '1.204', 'met het label Gemaakt met AI'],
+      ['Contactpersonen', '86', 'aangemaakt of aangevuld'],
+      ['Agenda-items', '143', 'afspraken en herinneringen'],
+      ['Nagelezen door een mens', '71%', 'label daarna aangevuld met nagelezen']
+    ].map(([label, value, n]) => ({ label, value, note: n }));
+    return { nav, reports, kpis, log, labels };
+  }
+}
+</script>
+</body>
+</html>

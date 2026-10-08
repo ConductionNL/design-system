@@ -57,6 +57,7 @@ SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']
 SCHOOL_APP_BOARDS = re.compile(r'^(Lq|Nc|Lp|AppZijbalk|WerkKop)')
 STATE_ORDER = ['built', 'building', 'specified', 'decided-no']
 NO_FEATURE = '_none'  # the group per app for capabilities no feature claims
+INTERNAL = '_internal'  # the group per app for specs the matrix lists as internalSpecs (no user-facing capability)
 NONE_TOKENS = {'', 'geen spec genoemd', 'geen', 'geen spec'}
 
 
@@ -170,6 +171,7 @@ def load_app(co):
             'areas': {a.get('key'): a for a in parity.get('areas', []) if isinstance(a, dict)},
             'features': [f for f in parity.get('features', []) if isinstance(f, dict) and f.get('slug')],
             'specScreens': parity.get('specScreens') if isinstance(parity.get('specScreens'), dict) else {},
+            'internalSpecs': {x for x in parity.get('internalSpecs', []) if isinstance(x, str)},
             'overlay': {o['slug']: o for o in overlay if isinstance(o, dict) and o.get('slug')} if isinstance(overlay, list) else {},
             'decisions': latest}
 
@@ -261,6 +263,8 @@ def build_features(app, d, caps):
             continue
         if c['kind'] == 'matrix':
             key = row_feature.get(c['id'])
+        elif c['kind'] == 'spec' and c['id'] in d['internalSpecs'] and not spec_owner.get(c['id']):
+            key = ensure(INTERNAL, 'Internal, no user-facing capability', 'Intern, geen gebruikersfunctie')
         elif c['kind'] == 'spec':
             key = spec_owner.get(c['id'])
             if not key:
@@ -540,7 +544,9 @@ def main():
                 elif b not in by_name:
                     c['notes'].append(f'specScreens board {b} is not in the gallery')
             c['screenReason'] = None
-            if not c['screens']:
+            if not c['screens'] and name in d['internalSpecs']:
+                c['screenReason'] = 'internal: no user-facing capability'
+            elif not c['screens']:
                 if isinstance(own.get('reason'), str) and own['reason'].strip():
                     c['screenReason'] = own['reason'].strip()
                 elif rows and all(rc.get('screenReason') for rc in rows):

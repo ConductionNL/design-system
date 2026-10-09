@@ -143,7 +143,11 @@ class Component extends DCLogic {
     if (typeof custom === 'string') { try { custom = JSON.parse(custom); } catch (e) { custom = []; } }
     const hasCustom = Array.isArray(custom) && custom.length > 0;
     const FACTIVE = this.props.foldActive || ACTIVE;
-    const fold = (hasCustom ? custom : foldRaw).map((f) => ({ title: f.title || '', hasTitle: !!f.title, more: f.more || '', hasMore: !!f.more, items: f.items.map(([label, icon, ext, href]) => ({ label, icon: FI[icon] || I[icon] || icon, ext: !!ext, href: href || (hasCustom ? '#' : (HREF[label] || '#')), current: label === FACTIVE ? 'page' : 'false', style: FOLD(label === FACTIVE) })) }));
+    // "Persoonlijke instellingen" opens Nextcloud's personal settings dialog on the app's own section: the board that draws it.
+    // Apps without such a board keep '#'.
+    const PERSONAL = { decidiq: 'DcMijnInstellingen.dc.html', hermiq: 'HmMijnInstellingen.dc.html', keepiq: 'KqInstellingen.dc.html', launchpad: 'LpPersoonlijk.dc.html', learniq: 'LqMeldingen.dc.html', openregister: 'OrMijnAccount.dc.html', pipelinq: 'PqPersoonlijk.dc.html', planninq: 'PlMijnInstellingen.dc.html', thematiq: 'TqPersoonlijk.dc.html' };
+    const personal = PERSONAL[String(this.props.app || '').toLowerCase()];
+    const fold = (hasCustom ? custom : foldRaw).map((f) => ({ title: f.title || '', hasTitle: !!f.title, more: f.more || '', hasMore: !!f.more, items: f.items.map(([label, icon, ext, href]) => ({ label, icon: FI[icon] || I[icon] || icon, ext: !!ext, href: href || (label === 'Persoonlijke instellingen' && personal) || (hasCustom ? '#' : (HREF[label] || '#')), current: label === FACTIVE ? 'page' : 'false', style: FOLD(label === FACTIVE) })) }));
     const showFull = hasCustom ? !!this.props.fullMenu : true;
     const raw = this.props.groups && this.props.groups.length ? this.props.groups : fallback;
     const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: 8px; text-decoration: none; font-size: 15px; ';

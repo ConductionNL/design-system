@@ -131,6 +131,15 @@ def build_index():
             }
         index['sets'].append({'id': s, 'title': title, 'themable': False,
                               'rows': [{'id': s, 'app': s, 'title': title, 'boards': keys}]})
+    # One Dutch line per app or set, read from screens-src/app-blurbs.json (key = app id as used in board ids)
+    blurbs = load(SRC / 'app-blurbs.json')
+    for st in index['sets']:
+        for row in st['rows']:
+            if blurbs.get(row['app']):
+                row['blurb'] = blurbs[row['app']]
+    for b in index['boards'].values():
+        if blurbs.get(b['app']):
+            b['blurb'] = blurbs[b['app']]
     return index
 
 

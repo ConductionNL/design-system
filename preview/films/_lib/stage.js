@@ -278,11 +278,19 @@ function mountPlayer(film, t0, q) {
 	let startWall = 0
 	let startT = t0
 	let audio = null
-	const audioUrl = q.get('audio') || film.audioUrl
-	if (audioUrl) {
-		audio = new Audio(audioUrl)
+	const attach = (url) => {
+		audio = new Audio(url)
 		audio.preload = 'auto'
 		soundBtn.hidden = false
+		soundBtn.setAttribute('aria-pressed', 'true') // on by default; the play click is the gesture browsers ask for
+	}
+	// The score is made offline (scripts/films/score.mjs); a page plays the mix that sits beside it,
+	// mix.mp3, or mix-novoice.mp3 for ?voice=0 (scripts/films/browser-mix.mjs writes both).
+	const audioUrl = q.get('audio') || film.audioUrl
+	if (audioUrl) attach(audioUrl)
+	else {
+		const mix = new URL(variant().voice ? 'mix.mp3' : 'mix-novoice.mp3', location.href).href
+		fetch(mix, { method: 'HEAD' }).then((r) => { if (r.ok && !audio) attach(mix) }, () => {})
 	}
 	const show = (t) => {
 		film.render(t)

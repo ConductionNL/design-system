@@ -248,6 +248,9 @@ before it is rendered, so Ruben can judge the slides.
    `en-voice`, `en-novoice`, `animatic`, `1080p`. Keep each file under 25 MiB (the site host refuses
    larger ones); about 3.5 Mbps at 1080p does it.
 3. Index: `node scripts/films/movies-index.mjs` from the repo root rewrites `preview/movies/movies.json`.
+4. Sound in the browser: `node scripts/films/browser-mix.mjs --root <repo> --only <path>` writes `mix.mp3`
+   (and `mix-novoice.mp3` for a voiced film) beside the film page; the player plays it, sound on.
+   Without it the page plays silent, because the score is only made offline.
 
 The site build packs the kit (this skill, the bible, the engine, the template and these scripts) as
 `/movies/conduction-film-kit.zip`. Ruben's voice model, recordings and training data are never in

@@ -213,7 +213,7 @@ async function cues() {
 	const { server, browser, meta } = await setup()
 	await browser.close()
 	server.close()
-	await writeFile(resolve(args.out), JSON.stringify({ duration: meta.duration, bpm: meta.bpm, fps: meta.fps, width: meta.width, height: meta.height, safe: meta.safe, scenes: meta.scenes, cues: meta.cues, music: meta.music, board: meta.board }, null, 2))
+	await writeFile(resolve(args.out), JSON.stringify({ variant: meta.variant, langs: meta.langs, duration: meta.duration, bpm: meta.bpm, fps: meta.fps, width: meta.width, height: meta.height, safe: meta.safe, scenes: meta.scenes, cues: meta.cues, music: meta.music, board: meta.board }, null, 2))
 	console.log(JSON.stringify({ out: resolve(args.out), cues: meta.cues.length }))
 }
 

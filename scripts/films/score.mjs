@@ -126,11 +126,12 @@ for (const v of music.voice || []) {
 	}
 }
 if ((music.voice || []).length) {
-	// Smooth the presence envelope (40 ms attack, 250 ms release) and duck the bed and effects by 9 dB under it.
+	const DUCK = 1 - 10 ** (-(music.duckDb ?? 9) / 20) // 9 dB = 0.645
+	// Smooth the presence envelope (40 ms attack, 250 ms release) and duck the bed and effects under it: music.duckDb, 9 dB by default.
 	const a = Math.exp(-1 / (0.04 * S.SR)), r = Math.exp(-1 / (0.25 * S.SR))
 	let e = 0
 	for (let i = 0; i < voiceBus.n; i++) { const x = voiceEnv[i]; e = x > e ? a * e + (1 - a) * x : r * e + (1 - r) * x; voiceEnv[i] = e }
-	for (const b of [musicBus, sfxWet, sfxDry, dry, drums]) for (let i = 0; i < b.n; i++) { const k = 1 - 0.645 * voiceEnv[i]; b.L[i] *= k; b.R[i] *= k }
+	for (const b of [musicBus, sfxWet, sfxDry, dry, drums]) for (let i = 0; i < b.n; i++) { const k = 1 - DUCK * voiceEnv[i]; b.L[i] *= k; b.R[i] *= k }
 }
 
 /* ---- Mix ---- */

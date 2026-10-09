@@ -29,6 +29,8 @@ on:
       # needing a manual preview/ edit.
       - 'docusaurus-preset/src/components/AppMock/**'
       - 'scripts/build-kit.mjs'
+      - 'scripts/films/**'
+      - '.claude/skills/film/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/pages.yml'
@@ -91,6 +93,8 @@ jobs:
           for f in tokens.css typography.css; do
             [ -f "$f" ] && cp "$f" _site/ || true
           done
+          # The film kit (skill, bible, engine, scripts) under /movies
+          node scripts/films/kit-zip.mjs _site
           # Custom domain claim
           echo "identity.conduction.nl" > _site/CNAME
           # Disable Jekyll so files starting with _ are served as-is

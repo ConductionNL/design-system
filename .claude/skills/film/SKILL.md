@@ -1,6 +1,6 @@
 ---
 name: film
-description: "Conduction's motion design method: how a film is planned, timed, built, scored, reviewed and delivered on the engine in preview/films/_lib. Covers the five laws, the gated workflow (brief, treatment with logline and beat sheet, three style frames, timeline, build, sound, render, review, deliver), the 128 BPM / 24 fps grid and how we snap to it, the named motion tokens, kinetic type including type timed to a voice, transitions, the house bans from BIBLE.md, sound, and the review loop with its rubric. Use it with the brand-film skill for every film, sting, kinetic type piece or voice-over. Trigger on 'make a film', 'motion design', 'kinetic type', 'animate this line', 'voice-over film', 'time it to the voice', 'review this film', 'film brief', 'maak een film', 'animatie op de stem'."
+description: "Conduction's motion design method: how a film is planned, timed, built, scored, reviewed and delivered on the engine in preview/films/_lib. Covers what the app can do and its screens (capabilities.json, screens.json via app-facts.mjs), the five laws, the gated workflow (brief, treatment with logline and beat sheet, three style frames, timeline, build, sound, render, review, deliver), the 128 BPM / 24 fps grid and how we snap to it, the named motion tokens, kinetic type including type timed to a voice, transitions, the house bans from BIBLE.md, sound, and the review loop with its rubric, the four variants (Dutch or English, with or without voice-over) and publishing on identity.conduction.nl/movies. Use it with the brand-film skill for every film, sting, kinetic type piece or voice-over. Trigger on 'make a film', 'motion design', 'kinetic type', 'animate this line', 'voice-over film', 'time it to the voice', 'review this film', 'film brief', 'maak een film', 'animatie op de stem', 'render in English and Dutch', 'with or without voice-over', 'film slides', 'put it on /movies'."
 ---
 
 # film
@@ -8,7 +8,7 @@ description: "Conduction's motion design method: how a film is planned, timed, b
 A Conduction film is a web page whose every frame is a pure function of time. This skill is the
 method: what to decide, in which order, and how to check it. The [brand-film](../brand-film/SKILL.md)
 skill holds the storyboard and artifact mechanics; [BIBLE.md](../../../preview/films/BIBLE.md) holds
-every decision Ruben has made about our films, rounds 1 to 29c. Where this skill and the bible
+every decision Ruben has made about our films, rounds 1 to 30. Where this skill and the bible
 disagree, the bible wins and the drift is a finding.
 
 ## When to use it
@@ -37,15 +37,43 @@ Each step writes something down. Do not start a step before the gate above it is
 
 | Step | Writes | Gate |
 |---|---|---|
-| 1 Brief | the brief ([template](references/brief-template.md)): audience, the one idea, the claim and its source, the call to action, length in bars | Ruben or the requester confirms the idea and the claim |
+| 1 Brief | the brief ([template](references/brief-template.md)): audience, the one idea, the claim and its source, the call to action, length in bars; the claims come from the app's capabilities and its screens (see [Know the app](#know-the-app-before-the-brief)) | Ruben or the requester confirms the idea and the claim |
 | 2 Treatment | logline, story device, beat sheet on bars, words per scene (35 per 30 s at most) | the beat sheet adds up to whole bars and the word budget holds |
 | 3 Style frames | three key frames, drawn with the engine (`boards/<v>/board.js`), shown as one artifact | the user picks; nothing animates before this |
 | 4 Timeline | the film's timeline: scenes, captions, cues and voice takes in one place ([`_lib/timeline.js`](../../../preview/films/_lib/timeline.js)) | `grid-check.mjs` reports no cut off the grid |
 | 5 Build | `preview/films/<slug>/film.js`, scenes around the approved frames | a contact sheet (`film.mjs sheet`) shows the frames you approved |
 | 6 Sound | cues next to the motion that causes them, `film.music` for the bed and the voice | every cue has a visible cause; mix at -14 LUFS, true peak -1.5 dBTP |
-| 7 Render | a proof at `--scale 0.5`, then the master | the review loop has passed on the proof |
+| 7 Render | ask for language and voice first ([Variants](#variants-language-and-voice)); a proof at `--scale 0.5`, then the master, with `variants.mjs` | the review loop has passed on the proof |
 | 8 Review | the scored rubric, P0/P1/P2 findings ([review loop](references/review-loop.md)) | no P0, no P1, mean at least 4.2 |
-| 9 Deliver | the master under `brand/assets/films/`, `sources.json`, the PR | Ruben has watched it |
+| 9 Deliver | the videos and slides on [identity.conduction.nl/movies](https://identity.conduction.nl/movies/) ([Publish](#publish-on-identityconductionnlmovies)), `sources.json`, the PR | Ruben has watched it |
+
+## Know the app before the brief
+
+A film shows only what the app really does, in the screens it really has. Two sources on
+identity.conduction.nl hold both, and both are generated from the app repositories:
+
+- **What the app can do**: [/capabilities](https://identity.conduction.nl/capabilities/), whose data is
+  `preview/screens/capabilities.json` (features, capabilities with their build status, specs and the
+  screens that show them).
+- **What it looks like**: [/screens](https://identity.conduction.nl/screens/), whose data is
+  `preview/screens/screens.json` (every screen by id, such as `pipelinq/PqKlant`, with its page and
+  thumbnail).
+
+The two files are 5.5 MB and 1.9 MB, so never read them whole. Ask the digest:
+
+```bash
+node scripts/films/app-facts.mjs pipelinq --root <repo>                 # built capabilities per feature, with screen ids
+node scripts/films/app-facts.mjs pipelinq --root <repo> --screens 1     # plus every screen's page and thumbnail
+node scripts/films/app-facts.mjs pipelinq --status all --json 1         # live copy, every status, as JSON
+```
+
+- Claims come from capabilities with status `built`. A `building` or `specified` capability is not in
+  a film, unless the brief says "coming" and Ruben agrees.
+- Each proof scene names the screen it redraws (`pipelinq/PqKlant`) in the beat sheet. Look at
+  the thumbnail for the layout, and open the page (`/screens/board.html?id=<id>`) for the exact labels.
+  The film redraws that screen in the engine's UI atoms; it never pastes a screenshot.
+- A direction is one audience and one use of the app (pipelinq for contact centres, pipelinq for
+  sales teams). Each has its own storyboard under `preview/films/<app>/boards/<direction>/`.
 
 ## The grid: 128 BPM at 24 fps
 
@@ -113,8 +141,16 @@ take on the grid, and pass the words to `kineticText` with `wordsAt(words, offse
 two frames before its spoken onset, so it is readable on the frame it is heard. Drop the full stop and
 the comma that ends a line. The demo is [`preview/films/kinetic-voice/`](../../../preview/films/kinetic-voice/).
 
-**The voice is provisional.** The demo uses Ruben's cloned voice from the clean-reference run. Ruben
-has not yet picked between that voice and the trained one. Only generated takes go into this public
+**Where the voice goes.** Only in the body. The shared opening and the closing pieces (Built on and
+the install board) are never voiced (BIBLE round 30). The bed and effects duck 15 dB under the voice
+(`film.music.duckDb: 15`).
+
+**How the voice sounds.** Ruben picked the trained voice (LoRA). Generate it in `--mode ref` with
+`--style "warm, cheerful, upbeat, slightly faster"`, then speed it up 8% with `atempo=1.08` and scale the
+word timings by the same factor. In `--mode both` the style prompt is spoken aloud. Retake any line
+Whisper hears wrongly, and add a respelling to `pronounce.tsv` for a word it keeps getting wrong.
+
+**The voice stays private.** The kinetic-voice demo still uses the earlier clean-reference take. Only generated takes go into this public
 repo. The voice model and the recordings stay in a private repository (ConductionNL/voice-ruben);
 never copy a reference recording, training data or a checkpoint here.
 
@@ -169,6 +205,54 @@ letter-by-letter reveals.
 - **Delivery.** `score.mjs` normalises to -14 LUFS integrated with the true peak at -1.5 dBTP. The
   payoff is the loudest moment. Mute first: the film must read with the sound off.
 
+## Variants: language and voice
+
+Every film can render in Dutch and English, each with or without the voice-over. Without the
+voice-over all written text stays on screen, because the films work on their text; only the spoken
+track leaves, and the music no longer ducks.
+
+**Ask before you render.** Unless the request already says, ask in one AskUserQuestion with two
+questions, recommended option first:
+
+1. Language: "Both, Dutch and English (Recommended)", "Dutch", "English".
+2. Voice-over: "Both, with and without (Recommended)", "With voice-over", "Without voice-over".
+
+Both on both is all four, rendered in one go:
+
+```bash
+node scripts/films/variants.mjs --root <repo> --page preview/films/<slug>/index.html --outdir <dir> \
+     [--lang nl,en] [--voice on,off] [--scale 0.5] [--check 1]
+```
+
+It writes `<slug>-<lang>-voice.mp4` and `<slug>-<lang>-novoice.mp4`, each with its own cue list and mix,
+one render after the other. `--check 1` only lists which variants the film has.
+
+**How a film supports it.** The page reads `?lang=nl|en` and `?voice=0` through `variant()` in
+[`_lib/stage.js`](../../../preview/films/_lib/stage.js), and lists its languages in `film.langs`. Keep
+every on-screen string and every UI label in a `{ nl, en }` table, and the voice takes per language
+(`voice/nl-01.mp3`, `voice/en-01.mp3`), so the language is a lookup, never a second film. A
+language the film does not list is skipped and reported, never rendered with the wrong text. With a
+voice, scene lengths come from that language's takes, so the Dutch and English cuts may differ in
+length; without a voice the film keeps the timing of the voiced cut in the same language.
+
+## Publish on identity.conduction.nl/movies
+
+[/movies](https://identity.conduction.nl/movies/) is the overview: every film, per direction its
+slides, and the videos to watch and download. A film shows there from its first storyboard, long
+before it is rendered, so Ruben can judge the slides.
+
+1. Slides: `node scripts/films/board-stills.mjs --root <repo> --only <slug>` draws each board as a JPEG
+   in `preview/movies/boards/`.
+2. Videos: put a web copy of each cut in `preview/movies/media/<key>-<cut>.mp4`, with `<key>` the film
+   page's path and "/" as "-" (`dossiq-casework`) and `<cut>` one of `nl-voice`, `nl-novoice`,
+   `en-voice`, `en-novoice`, `animatic`, `1080p`. Keep each file under 25 MiB (the site host refuses
+   larger ones); about 3.5 Mbps at 1080p does it.
+3. Index: `node scripts/films/movies-index.mjs` from the repo root rewrites `preview/movies/movies.json`.
+
+The site build packs the kit (this skill, the bible, the engine, the template and these scripts) as
+`/movies/conduction-film-kit.zip`. Ruben's voice model, recordings and training data are never in
+this repository, so they never reach the site; only generated voice lines are published.
+
 ## Review
 
 Run the [review loop](references/review-loop.md) on a contact sheet before any full render: the
@@ -184,11 +268,14 @@ P0, P1 or P2. Then `grid-check.mjs`, then the proof render, then the master.
 
 ```bash
 cd scripts/films
+node app-facts.mjs   <app> --root <repo> --screens 1
 node film.mjs sheet  --root <repo> --page preview/films/<slug>/index.html --every 0.25 --out sheet.png
 node grid-check.mjs  --root <repo> --page preview/films/<slug>/index.html --pixels
 node film.mjs cues   --root <repo> --page preview/films/<slug>/index.html --out cues.json
 node score.mjs       --cues cues.json --out mix.wav --root <repo>
 node film.mjs render --root <repo> --page preview/films/<slug>/index.html --out <slug>.mp4 --audio mix.wav
+node variants.mjs    --root <repo> --page preview/films/<slug>/index.html --outdir out   # all four variants
+node board-stills.mjs --root <repo> --only <slug>    # slides for /movies
 ```
 
 Run heavy renders inside `systemd-run --user --scope -p MemoryMax=4G` and keep frames and masters

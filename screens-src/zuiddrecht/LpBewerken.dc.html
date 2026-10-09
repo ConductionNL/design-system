@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>launchpad: dashboard bewerken</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1240px">
+  <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="launchpad" primary="Nieuw dashboard" active="Mijn werkplek" groups="{{ nav }}" hint-size="264px,1172px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <div role="toolbar" aria-label="Dashboard bewerken" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 12px 28px; background: #234a78; color: #ffffff">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"></path></svg>
+        <strong style="font-size: 16px; font-weight: 600">U bewerkt Mijn werkplek</strong>
+        <span style="font-size: 14px; color: #eaf0f7">Wijzigingen worden direct bewaard</span>
+        <span style="flex: 1"></span>
+        <span id="lp-cols" style="font-size: 14px; font-weight: 600">Kolommen</span>
+        <div role="group" aria-labelledby="lp-cols" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: rgba(255,255,255,0.16)">
+          <sc-for list="{{ colsOpt }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border: 1px solid #ffffff; border-radius: 8px; background: transparent; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Widget toevoegen</button>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #ffffff; color: #234a78; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg>Klaar</button>
+      </div>
+      <main style="padding: 20px 28px 28px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; width: 100%">
+        <div role="status" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; background: #fff4de; border: 1px solid #e0a030; color: #1b1c1d; font-size: 14px">
+          <span style="width: 30px; height: 30px; flex: none; border-radius: 15px; background: #ffffff; color: #7a4f00; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">MJ</span>
+          <span style="flex: 1"><strong style="font-weight: 600">Marieke Jansen bewerkt dit dashboard ook sinds 10.42.</strong> Uw wijzigingen worden niet overschreven.</span>
+          <a href="#" style="font-weight: 600">Wie werkt er mee?</a>
+        </div>
+
+        <div style="position: relative">
+          <div aria-hidden="true" style="position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px">
+            <sc-for list="{{ guides }}" as="g" hint-placeholder-count="12"><span style="background: rgba(54,105,165,0.07); border-radius: 6px"></span></sc-for>
+          </div>
+          <div style="position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 122px; gap: 16px">
+            <sc-for list="{{ widgets }}" as="w" hint-placeholder-count="12">
+              <section aria-label="{{ w.title }}" style="{{ w.box }}">
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <span title="Slepen om te verplaatsen" style="flex: none; width: 24px; height: 24px; border-radius: 6px; background: #f0f1f3; color: #5e6168; display: flex; align-items: center; justify-content: center; cursor: grab"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7,19V17H9V19H7M11,19V17H13V19H11M15,19V17H17V19H15M7,15V13H9V15H7M11,15V13H13V15H11M15,15V13H17V15H15M7,11V9H9V11H7M11,11V9H13V11H11M15,11V9H17V11H15M7,7V5H9V7H7M11,7V5H13V7H11M15,7V5H17V7H15Z"></path></svg></span>
+                  <h2 style="flex: 1; min-width: 0; margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.title }}</h2>
+                  <button type="button" aria-label="{{ w.menuLabel }}" style="{{ w.menuBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z"></path></svg></button>
+                </div>
+                <sc-for list="{{ w.lines }}" as="l" hint-placeholder-count="2"><span style="font-size: 13px; color: #3d4047; line-height: 1.45">{{ l }}</span></sc-for>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6168" aria-label="Grootte aanpassen" style="position: absolute; right: 6px; bottom: 6px"><path d="M22,22H20V20H22V22M22,18H20V16H22V18M18,22H16V20H18V22M18,18H16V16H18V18M14,22H12V20H14V22M22,14H20V12H22V14Z"></path></svg>
+              </section>
+            </sc-for>
+
+            <div style="grid-column: 7 / span 3; grid-row: 4; border: 2px dashed #3669a5; border-radius: 12px; background: rgba(234,240,247,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #234a78; text-align: center; padding: 10px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>
+              <strong style="font-size: 14px">Nieuwe widget komt hier</strong>
+              <span style="font-size: 12px; color: #3d4047">Eerste vrije plek, nooit over een andere widget heen</span>
+            </div>
+
+            <div role="dialog" aria-label="Verplaatsen met het toetsenbord" style="grid-column: 1 / span 5; grid-row: 6; align-self: end; margin: 0 0 14px 14px; z-index: 3; background: #1b1c1d; color: #ffffff; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 8px 24px rgba(27,28,29,0.25)">
+              <span style="display: grid; grid-template-columns: repeat(3, 22px); grid-template-rows: repeat(2, 22px); gap: 3px; flex: none">
+                <span></span><span style="border: 1px solid #c4c7cb; border-radius: 4px; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"></path></svg></span><span></span>
+                <span style="border: 1px solid #c4c7cb; border-radius: 4px; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path></svg></span><span style="border: 1px solid #c4c7cb; border-radius: 4px; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></span><span style="border: 1px solid #c4c7cb; border-radius: 4px; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></span>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.4"><strong style="font-size: 14px">Assistent geselecteerd · kolom 1, rij 5, 8 breed</strong><span style="color: #e4e6ea">Verplaatsen met pijltjestoetsen, Shift + pijl om te vergroten. Enter zet neer, Esc annuleert.</span></span>
+            </div>
+
+            <div role="menu" aria-label="Acties voor Bestanden" style="grid-column: 10 / span 3; grid-row: 5 / span 2; align-self: start; justify-self: end; margin: 44px 8px 0 0; z-index: 3; width: 230px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 12px 32px rgba(27,28,29,0.18); padding: 6px; display: flex; flex-direction: column">
+              <sc-for list="{{ wmenu }}" as="m" hint-placeholder-count="4">
+                <a href="#" role="menuitem" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex: none"><path d="{{ m.icon }}"></path></svg>{{ m.label }}</a>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn werkplek', 'queue']] },
+      { title: 'Mijn dashboards', items: [['Project Havenpark', 'chart'], ['Havenpark: planning', 'cal']] },
+      { title: 'Gedeeld met mij', items: [['Team Vergunningen', 'people', 1]] },
+      { title: 'Groepsdashboards', items: [['Intranet Zuiddrecht', 'bullhorn'], ['Managementinformatie', 'trend']] }
+    ];
+    const seg = (on) => 'height: 32px; min-width: 40px; padding: 0 10px; border: 0; border-radius: 6px; font: 600 14px \'Fira Sans\', sans-serif; ' + (on ? 'background: #ffffff; color: #234a78;' : 'background: transparent; color: #ffffff;');
+    const colsOpt = [['6', false], ['8', false], ['12', true]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: seg(on) }));
+    const guides = Array.from({ length: 12 }, (_, i) => i + 1);
+    const box = (col, row, sel) => 'position: relative; grid-column: ' + col + '; grid-row: ' + row + '; box-sizing: border-box; overflow: hidden; background: #ffffff; border-radius: 12px; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; ' + (sel ? 'border: 2px solid #3669a5; box-shadow: 0 0 0 4px rgba(54,105,165,0.2);' : 'border: 1px solid #c4c7cb; box-shadow: 0 1px 2px rgba(27,28,29,0.06);');
+    const mbtn = (open) => 'flex: none; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; ' + (open ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 0; background: transparent; color: #3d4047;');
+    const widgets = [
+      ['Apps', '1 / span 8', '1 / span 2', ['12 tegels in 2 rijen · Meest gebruikt bovenaan', 'Zaaksysteem, Outlook web, TOPdesk, Raadsinformatie, Kadasterviewer, Talk, Agenda, Word en meer']],
+      ['Klok', '9 / span 4', '1', ['10.47 · maandag 5 oktober 2026']],
+      ['Weer Zuiddrecht', '9 / span 4', '2', ['Plaats: Zuiddrecht · 13°, bewolkt', 'Eigen instelling: 3 dagen vooruit, graden Celsius']],
+      ['Mail', '1 / span 6', '3 / span 2', ['3 ongelezen berichten', 'Marieke Jansen · Welstandsadvies Havenpark', 'M. de Graaf · aanvullende stukken Molenweg 4']],
+      ['Weer Utrecht', '7 / span 3', '3', ['Plaats: Utrecht · 12°, buien', 'Eigen instelling: alleen vandaag']],
+      ['Agenda', '10 / span 3', '3 / span 2', ['11.00 Overleg Havenpark · Deelnemen', '13.30 Spreekuur bouwen en wonen', '15.30 Bellen met M. de Graaf']],
+      ['Assistent', '1 / span 8', '5 / span 2', ['Wat is de beslistermijn voor een kapvergunning?', 'Antwoord uit Werkinstructie kapvergunningen.docx']],
+      ['Bestanden', '9 / span 4', '5 / span 2', ['Map Vergunningen · Uploaden', 'Besluit kapvergunning Molenweg 4.docx', 'Advies welstand Havenpark.pdf']],
+      ['Notities', '1 / span 6', '7', ['Molenweg 4: aanvrager terugbellen over boomrapport.']],
+      ['Snelkoppelingen', '7 / span 6', '7', ['Verlof aanvragen, Declaratie, IT-melding, Telefoonlijst, Lunch bestellen, Smoelenboek']]
+    ].map(([title, col, row, lines]) => ({ title, lines, box: box(col, row, title === 'Assistent'), menuLabel: 'Acties voor ' + title + ': instellen, zichtbaarheid, verbergen voor mij, verwijderen', menuBtn: mbtn(title === 'Bestanden') }));
+    const mi = 'display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: 6px; font-size: 14px; text-decoration: none; ';
+    const wmenu = [
+      ['Instellen', 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z', false],
+      ['Zichtbaarheid', 'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z', false],
+      ['Verbergen voor mij', 'M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z', false],
+      ['Verwijderen', 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z', true]
+    ].map(([label, icon, red]) => ({ label, icon, style: mi + (red ? 'color: #a30000; border-top: 1px solid #eef0f3; border-radius: 0 0 6px 6px; margin-top: 4px;' : 'color: #1b1c1d;') }));
+    return { nav, colsOpt, guides, widgets, wmenu };
+  }
+}
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 """Build the screens gallery data from screens-src/ into preview/screens/.
 
     python3 scripts/screens/build.py                 # index, every board, every thumbnail
-    python3 scripts/screens/build.py --index-only    # only preview/screens/screens.json
+    python3 scripts/screens/build.py --index-only    # only preview/screens/screens.json (reads screens-src/<set>/capability-rows*.json)
     python3 scripts/screens/build.py --only Home --only wilgenboom-Home
     python3 scripts/screens/build.py --no-thumbs     # flatten only
     python3 scripts/screens/build.py --jobs 4        # parallel thumbnails (default 3)
@@ -72,11 +72,21 @@ def build_index():
     notes = {**canvases[0].get('notes', {}), **canvases[1].get('notes', {})}
     caprows = {**load(z / 'capability-rows.json'), **load(z / 'capability-rows-extra.json')}
     rows = load(z / 'rows1.json')['rows'] + load(z / 'rows2.json')['rows']
+    # One registration file per app (screens-src/zuiddrecht/apps/<app>.json) so parallel work on
+    # different apps never edits the same file: {"rows": [[key, title, columns]], "boards": {...}, "notes": {...}}
+    row_app = dict(ROW_APP)
+    for frag in sorted((z / 'apps').glob('*.json')):
+        f = load(frag)
+        boards_meta.update(f.get('boards', {}))
+        notes.update(f.get('notes', {}))
+        for row in f.get('rows', []):
+            row_app[row[0]] = frag.stem
+            rows.append(row)
 
     index = {'generated': datetime.date.today().isoformat(), 'designSystems': DESIGN_SYSTEMS, 'sets': [], 'boards': {}}
     zset = {'id': 'zuiddrecht', 'title': 'Zuiddrecht', 'themable': True, 'rows': []}
     for key, title, columns in rows:
-        app = ROW_APP.get(key, key.removeprefix('row').lower())
+        app = row_app.get(key, key.removeprefix('row').lower())
         names = [b[:-8] for col in columns for b in col]
         zset['rows'].append({'id': key, 'app': app, 'title': title, 'boards': names})
         for name in names:
@@ -100,6 +110,8 @@ def build_index():
     school_names = {s: [b[:-8] for b in load(SRC / s / 'canvas.json')['order']] for s, _ in SCHOOLS}
     for s, title in SCHOOLS:
         canvas = load(SRC / s / 'canvas.json')
+        rows_file = SRC / s / 'capability-rows.json'
+        school_caprows = load(rows_file) if rows_file.exists() else {}
         others = set().union(*(set(v) for k, v in school_names.items() if k != s))
         keys = []
         for name in school_names[s]:
@@ -107,6 +119,10 @@ def build_index():
             keys.append(key)
             meta = canvas['boards'].get(name + '.dc.html', {})
             caps, note = note_parts(canvas.get('notes', {}).get('cap_' + name, {}).get('text', ''))
+            if school_caprows.get(name):  # same shape and precedence as the Zuiddrecht rows files
+                _, c2, n2 = (school_caprows[name][0] + ['', '', ''])[:3]
+                caps = caps or c2
+                note = note or (f'Wat je ziet: {n2}' if n2 else '')
             index['boards'][key] = {
                 'id': f'{s}/{name}', 'app': s, 'title': meta.get('title', name),
                 'w': meta.get('w', 1440), 'h': meta.get('h', 1200), 'set': s, 'row': s,
@@ -115,6 +131,15 @@ def build_index():
             }
         index['sets'].append({'id': s, 'title': title, 'themable': False,
                               'rows': [{'id': s, 'app': s, 'title': title, 'boards': keys}]})
+    # One Dutch line per app or set, read from screens-src/app-blurbs.json (key = app id as used in board ids)
+    blurbs = load(SRC / 'app-blurbs.json')
+    for st in index['sets']:
+        for row in st['rows']:
+            if blurbs.get(row['app']):
+                row['blurb'] = blurbs[row['app']]
+    for b in index['boards'].values():
+        if blurbs.get(b['app']):
+            b['blurb'] = blurbs[b['app']]
     return index
 
 

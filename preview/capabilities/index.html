@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Capabilities, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../screens/screens.css">
+<style>
+  /* Summary cards, one per app */
+  .cp-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: var(--space-4); margin: var(--space-10) 0 var(--space-8); }
+  .cp-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid transparent; }
+  .cp-card:hover { border-color: var(--c-cobalt-200); }
+  .cp-card h3 { font-size: 20px; font-weight: 600; margin: 0; }
+  .cp-card h3 a { color: var(--c-cobalt-900); text-decoration: none; }
+  .cp-card h3 a:hover { color: var(--c-coral-600); text-decoration: underline; }
+  .cp-card .repo { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-blue-cobalt); overflow-wrap: anywhere; }
+  .cp-card dl { display: grid; grid-template-columns: 1fr auto; gap: 4px var(--space-3); margin: 0; font-size: 13px; }
+  .cp-card dt { color: var(--c-cobalt-700); }
+  .cp-card dd { margin: 0; font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-900); text-align: right; }
+  .cp-card .states { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cp-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--c-cobalt-100); }
+  .cp-bar span { display: block; height: 100%; }
+  .cp-bar .b1 { background: var(--conduction-color-status-success); }
+  .cp-bar .b2 { background: var(--conduction-color-status-warning); }
+  .cp-bar .b3 { background: var(--c-cobalt-400); }
+  .cp-bar .b4 { background: var(--c-cobalt-200); }
+
+  /* Toolbar */
+  .sc-toolbar { position: sticky; top: 0; z-index: 10; background: white; border-bottom: 1px solid var(--c-cobalt-100); box-shadow: var(--shadow-1); }
+  .sc-toolbar .sc-wrap { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  .sc-toolbar .line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-4); }
+  .sc-toolbar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
+  .sc-toolbar input[type="search"], .sc-toolbar select {
+    font: inherit; font-size: 15px; color: var(--c-cobalt-900); min-height: 40px; padding: 8px 12px;
+    border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-sm); background: white;
+  }
+  .sc-toolbar input[type="search"] { flex: 1 1 240px; min-width: 0; }
+  .sc-toolbar select { flex: 0 1 180px; min-width: 0; }
+  .sc-toolbar input:focus-visible, .sc-toolbar select:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+  .sc-toolbar .f { display: inline-flex; align-items: center; gap: 8px; }
+  .sc-toolbar .links { display: flex; gap: var(--space-4); font-size: 14px; }
+  .sc-toolbar .links button { font: inherit; background: none; border: 0; padding: 4px 0; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
+  .sc-toolbar .count { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); margin-left: auto; }
+
+  .sc-toolbar .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--c-cobalt-900); }
+  .sc-toolbar .chk input { width: 18px; height: 18px; margin: 0; }
+  .sc-toolbar .chk input:disabled + span { color: var(--c-cobalt-400); }
+
+  /* Per-app overview, folded away by default */
+  .cp-overview { margin: var(--space-8) 0 0; }
+  .cp-overview > summary { cursor: pointer; font-size: 15px; font-weight: 600; color: var(--c-cobalt-900); padding: var(--space-2) 0; }
+  .cp-overview > summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .cp-overview .cp-cards { margin: var(--space-4) 0 0; }
+  .cp-card button.pick { font: inherit; font-size: 20px; font-weight: 600; color: var(--c-cobalt-900); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+  .cp-card button.pick:hover { color: var(--c-coral-600); text-decoration: underline; }
+
+  /* The feature table */
+  .cp-scroll { overflow-x: auto; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
+  table.ft { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 860px; }
+  table.ft > thead th { text-align: left; font-family: var(--conduction-typography-font-family-code); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); padding: 12px; border-bottom: 1px solid var(--c-cobalt-100); background: var(--c-cobalt-50); }
+  table.ft > thead th:nth-child(1) { width: 38%; }
+  table.ft > thead th:nth-child(2) { width: 11%; }
+  table.ft > thead th:nth-child(3) { width: 8%; }
+  table.ft > thead th:nth-child(4) { width: 19%; }
+  table.ft > thead th:nth-child(5) { width: 8%; }
+  table.ft > thead th:nth-child(6) { width: 16%; }
+  table.ft > tbody > tr.fr > td { padding: 10px 12px; border-bottom: 1px solid var(--c-cobalt-100); vertical-align: top; }
+  table.ft > tbody > tr.fr:hover > td { background: var(--c-cobalt-50); }
+  table.ft > tbody > tr.fr.open > td { background: var(--c-cobalt-50); border-bottom-color: transparent; }
+  table.ft > tbody > tr.fr.hit > td:first-child { box-shadow: inset 4px 0 0 var(--c-orange-knvb); }
+  .fr .tog { display: flex; align-items: flex-start; gap: 8px; width: 100%; font: inherit; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; color: var(--c-cobalt-900); }
+  .fr .tog:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+  .fr .tog .chev { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--c-cobalt-400); transition: transform 160ms; }
+  .fr.open .tog .chev { transform: rotate(90deg); }
+  .fr .tog .tt { font-weight: 600; display: block; }
+  .fr .tog .sub { display: block; font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; }
+  .fr .tog .sub code { font-family: var(--conduction-typography-font-family-code); font-size: 11.5px; }
+  .fr .tog .warn { color: var(--c-coral-700); }
+  .fr .app { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); }
+  .fr .num { font-family: var(--conduction-typography-font-family-code); font-size: 13px; color: var(--c-cobalt-900); white-space: nowrap; }
+  .fr .num small { color: var(--c-cobalt-400); font-size: 11px; }
+  .fr .stat { display: flex; flex-direction: column; gap: 4px; }
+  .fr .stat .lbl { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-700); }
+  .cp-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--c-cobalt-100); }
+  .cp-bar span { display: block; height: 100%; }
+  .cp-bar .s-built { background: var(--conduction-color-status-success); }
+  .cp-bar .s-building { background: var(--conduction-color-status-warning); }
+  .cp-bar .s-specified { background: var(--c-cobalt-400); }
+  .cp-bar .s-decided-no { background: var(--c-cobalt-200); }
+  .cp-bar .s-other { background: var(--c-coral-200, #f6c7bd); }
+  .fr .sys { display: flex; flex-wrap: wrap; gap: 3px; }
+  table.ft > tbody > tr.fd > td { padding: 0 12px 16px 38px; border-bottom: 1px solid var(--c-cobalt-100); background: var(--c-cobalt-50); }
+
+  /* The capability table inside a feature */
+  .cp-inner { overflow-x: auto; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); background: white; }
+  table.cp { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+  table.cp th { text-align: left; font-family: var(--conduction-typography-font-family-code); font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-cobalt-400); padding: 8px 12px; border-bottom: 1px solid var(--c-cobalt-100); }
+  table.cp td { padding: 8px 12px; border-bottom: 1px solid var(--c-cobalt-100); vertical-align: top; }
+  table.cp tr:last-child td { border-bottom: 0; }
+  table.cp tr.hit td { background: var(--c-coral-50); }
+  table.cp tr.hit td:first-child { box-shadow: inset 4px 0 0 var(--c-orange-knvb); }
+  table.cp th:nth-child(1) { width: 32%; }
+  table.cp th:nth-child(2) { width: 10%; }
+  table.cp th:nth-child(3) { width: 18%; }
+  table.cp th:nth-child(4) { width: 16%; }
+  table.cp th:nth-child(5) { width: 18%; }
+  table.cp th:nth-child(6) { width: 6%; }
+  table.cp .warn, .fr .num .warn { color: var(--c-coral-700); }
+  table.cp .cap code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-900); overflow-wrap: anywhere; }
+  table.cp .cap .ti { display: block; color: var(--c-cobalt-700); margin-top: 2px; }
+  table.cp .cap .note { display: block; font-size: 12px; color: var(--c-cobalt-400); margin-top: 2px; }
+  table.cp .cap .dec { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  table.cp .cap a.self { color: inherit; text-decoration: none; }
+  table.cp .cap a.self:hover code { text-decoration: underline; }
+  table.cp .list { display: flex; flex-direction: column; gap: 2px; }
+  table.cp .list a { color: var(--c-blue-cobalt); overflow-wrap: anywhere; }
+  table.cp .sys { display: flex; flex-wrap: wrap; gap: 3px; max-width: 300px; }
+  table.cp .sys .sc-sys.sel { outline: 2px solid var(--c-blue-cobalt); outline-offset: 1px; }
+  table.cp .src { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-700); }
+  .fd .fmeta { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--c-cobalt-700); padding: 4px 0 10px; }
+  .fd .fmeta a { color: var(--c-blue-cobalt); }
+  .cp-none { color: var(--c-cobalt-400); }
+  .cp-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; color: var(--c-cobalt-700); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) { .sc-toolbar { position: static; } table.ft > tbody > tr.fd > td { padding-left: 12px; } }
+</style>
+</head>
+<body class="sc-chrome">
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html" data-keep-lang data-i18n="cap.crumb.system">Design system</a> &nbsp;/&nbsp; <a href="../screens/index.html" data-keep-lang data-i18n="cap.crumb.screens">Screens</a> &nbsp;/&nbsp; <span data-i18n="cap.crumb.caps">Capabilities</span></div>
+  <h1 data-i18n="cap.title">Capabilities.</h1>
+  <p data-i18n="cap.lede2">Everything the Conduction apps can do, or are meant to do, grouped by feature. Open a feature to see its capabilities, their build status, specs, screens and how competitors compare.</p>
+  <div class="meta">
+    <span><span data-i18n="cap.meta.features">Features</span><strong id="m-features">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.caps">Capabilities</span><strong id="m-caps">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.apps">Apps</span><strong id="m-apps">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.specs">Specs</span><strong id="m-specs">&nbsp;</strong></span>
+    <span><span data-i18n="cap.meta.generated">Built from the specs on</span><strong id="m-gen">&nbsp;</strong></span>
+    <span><span data-i18n="screens.meta.comp">What the screens are built from</span><strong><a href="../screens/components.html" data-keep-lang data-i18n="screens.link.comp">Components</a></strong></span>
+  </div>
+</div>
+
+<main class="sc-wrap">
+  <details class="cp-overview" id="overview">
+    <summary data-i18n="cap.overview">Overview per app</summary>
+    <section class="cp-cards" id="cards" aria-label="Apps" data-i18n-attr="aria-label:cap.meta.apps"></section>
+  </details>
+</main>
+
+<div class="sc-toolbar">
+  <div class="sc-wrap">
+    <div class="line">
+      <span class="f"><label class="label" for="f-app" data-i18n="cap.f.app">App</label><select id="f-app"></select></span>
+      <span class="f"><label class="label" for="f-status" data-i18n="cap.f.status">Status</label><select id="f-status"></select></span>
+      <span class="f"><label class="label" for="f-kind" data-i18n="cap.f.kind">Kind</label><select id="f-kind"></select></span>
+      <span class="f"><label class="label" for="f-screen" data-i18n="cap.f.screen">Has screen</label><select id="f-screen"></select></span>
+      <span class="f"><label class="label" for="f-comp" data-i18n="cap.f.comp">Competitor</label><select id="f-comp"></select></span>
+      <label class="chk"><input type="checkbox" id="f-gap" disabled><span data-i18n="cap.f.gap">Only where they have it and we don't</span></label>
+    </div>
+    <div class="line" style="margin-top: var(--space-3);">
+      <input type="search" id="q" autocomplete="off" placeholder="Search by feature, id, title or note" data-i18n-attr="placeholder:cap.f.search2" aria-label="Search">
+      <div class="links">
+        <button type="button" id="open-all" data-i18n="screens.rows.openAll">Open all</button>
+        <button type="button" id="close-all" data-i18n="screens.rows.closeAll">Close all</button>
+      </div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+  </div>
+</div>
+
+<main class="sc-wrap" style="margin-top: var(--space-8); margin-bottom: var(--space-12);">
+  <p class="cp-legend" id="legend"></p>
+  <div class="cp-scroll" style="margin-top: var(--space-4);">
+    <table class="ft" id="ft">
+      <caption class="sr-only" data-i18n="cap.caption">Features with their capabilities</caption>
+      <thead><tr>
+        <th scope="col" data-i18n="cap.col.feature">Feature</th>
+        <th scope="col" data-i18n="cap.col.app">App</th>
+        <th scope="col" data-i18n="cap.col.caps">Capabilities</th>
+        <th scope="col" data-i18n="cap.col.status">Status</th>
+        <th scope="col" data-i18n="cap.col.screens">Screens</th>
+        <th scope="col" id="th-comp" data-i18n="cap.col.comp">Competitor</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="6"><p class="sc-empty" id="loading" data-i18n="cap.loading">Loading capabilities.</p></td></tr></tbody>
+    </table>
+  </div>
+  <p class="sc-empty" id="empty" hidden data-i18n="cap.empty">No feature matches these filters.</p>
+</main>
+
+<div class="hub-footer">
+  <span data-i18n="cap.footer">Capabilities · built by scripts/screens/capabilities.py from each app's openspec/ folder</span>
+  <span><a href="../screens/index.html" data-keep-lang data-i18n="screens.link.gallery">Screens</a> &middot; <a href="../index.html" data-keep-lang data-i18n="screens.link.back">&larr; Back to system</a></span>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- i18n: same contract as ../i18n.js, plus t() ---------- */
+  var params = new URLSearchParams(location.search);
+  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var NL = LANG !== 'en';
+  var DICT = null;
+  function lookup(key) {
+    if (!DICT) return null;
+    if (typeof DICT[key] === 'string') return DICT[key];
+    var cur = DICT; var segs = key.split('.');
+    for (var i = 0; i < segs.length; i++) { if (cur == null || typeof cur !== 'object') return null; cur = cur[segs[i]]; }
+    return typeof cur === 'string' ? cur : null;
+  }
+  function t(key, fb, vars) {
+    var s = lookup(key) || fb;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  }
+  function applyStatic() {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = lookup(el.getAttribute('data-i18n')); if (v == null) return;
+      if (v.indexOf('<') !== -1 || v.indexOf('&') !== -1) el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
+      el.getAttribute('data-i18n-attr').split(',').forEach(function (pair) {
+        var p = pair.split(':').map(function (s) { return s.trim(); });
+        var v = lookup(p[1]); if (v != null) el.setAttribute(p[0], v);
+      });
+    });
+    document.documentElement.setAttribute('lang', LANG === 'en' ? 'en' : (DICT && DICT._lang) || LANG);
+  }
+  var dictReady = LANG === 'en' ? Promise.resolve() :
+    fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
+  function withLang(url) {
+    if (!params.get('lang')) return url;
+    var i = url.indexOf('#');
+    var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
+  }
+  document.querySelectorAll('a[data-keep-lang]').forEach(function (a) { a.href = withLang(a.getAttribute('href')); });
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function chevron() {
+    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'chev'); s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = '<path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    return s;
+  }
+
+  var STATUSES = ['built', 'building', 'specified', 'decided-no', 'in-flight', 'designed', 'external'];
+  var BAR = ['built', 'building', 'specified', 'decided-no'];
+  var STATUS = {
+    'built': ['cap.status.built', 'built'], 'building': ['cap.status.building', 'building'],
+    'specified': ['cap.status.specified', 'specified'], 'decided-no': ['cap.status.decidedNo', 'decided no'],
+    'in-flight': ['cap.status.inFlight', 'in flight'], 'designed': ['cap.status.designed', 'designed'],
+    'external': ['cap.status.external', 'external']
+  };
+  var KINDS = { spec: ['cap.kind.spec', 'spec'], matrix: ['cap.kind.matrix', 'matrix row'], change: ['cap.kind.change', 'open change'],
+    external: ['cap.kind.external', 'external reference'], free: ['cap.kind.free', 'free text'] };
+  var SYS = { yes: ['cap.sys.yes', 'has it'], partial: ['cap.sys.partial', 'partly'], no: ['cap.sys.no', 'lacks it'], unknown: ['cap.sys.unknown', 'unknown'] };
+  var RANK = { yes: 2, partial: 1, no: 0 };
+  var NO_FEATURE = '_none';
+  function statusLabel(s) { var m = STATUS[s]; return m ? t(m[0], m[1]) : (s || ''); }
+  function sysLabel(v) { return SYS[v] ? t(SYS[v][0], SYS[v][1]) : v; }
+  function pill(s) { return el('span', { class: 'sc-pill', 'data-status': s || '', text: statusLabel(s) }); }
+
+  var C = null, S = null;
+  var byId = {};          /* screen id -> board */
+  var FEATS = [];         /* ordered feature keys */
+  var rowsOf = {};        /* feature key -> { tr, detail, rendered, hits } */
+  var compOwner = {};     /* competitor key -> app */
+  var ROWS_KEY = 'capabilities.features.open';
+  function loadOpen() { try { return JSON.parse(localStorage.getItem(ROWS_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveOpen(m) { try { localStorage.setItem(ROWS_KEY, JSON.stringify(m)); } catch (e) { /* ignore */ } }
+  var openState = loadOpen();
+
+  function boardHref(id) { return withLang('../screens/board.html?id=' + encodeURIComponent(id).replace(/%2F/g, '/')); }
+  function screenTitle(id) { var b = byId[id]; return b ? (b.title || id) : id; }
+  function appTitle(a) { return ((C.apps || {})[a] || {}).title || a; }
+  function featTitle(f) { return f.slug === NO_FEATURE ? t('cap.noFeature', 'Not tied to a feature') : (NL ? (f.titleNl || f.title) : f.title); }
+  function isGroup(f) { return f.slug === NO_FEATURE || f.slug === '_internal'; }
+  function areaTitle(f) { return NL ? (f.areaTitleNl || f.areaTitle) : f.areaTitle; }
+  function compName(k) { var a = compOwner[k]; var n = (((C.apps[a] || {}).parity || {}).systemNames || {})[k]; return n || k; }
+
+  /* ---------- per-app overview cards ---------- */
+  function card(app, A) {
+    var p = A.parity || { rows: 0, states: {} };
+    var st = p.states || {};
+    var total = BAR.reduce(function (n, s) { return n + (st[s] || 0); }, 0);
+    var bar = el('div', { class: 'cp-bar', role: 'img', 'aria-label': t('cap.card.barLabel', 'Matrix rows by status') });
+    BAR.forEach(function (s) {
+      var v = st[s] || 0; if (!total || !v) return;
+      var sp = el('span', { class: 's-' + s, title: statusLabel(s) + ': ' + v }); sp.style.width = (100 * v / total) + '%'; bar.appendChild(sp);
+    });
+    function row(k, fb, v) { return [el('dt', { text: t(k, fb) }), el('dd', { text: String(v == null ? 0 : v) })]; }
+    var dl = el('dl');
+    [].concat(
+      row('cap.meta.features', 'Features', A.features),
+      row('cap.card.rows', 'Matrix rows', p.rows),
+      row('cap.status.built', 'built', st.built), row('cap.status.building', 'building', st.building),
+      row('cap.status.specified', 'specified', st.specified), row('cap.status.decidedNo', 'decided no', st['decided-no']),
+      row('cap.card.specs', 'Specs', A.specCount),
+      row('cap.card.changes', 'Open changes', A.changeCount),
+      row('cap.card.screens', 'Screens', A.screens)
+    ).forEach(function (n) { dl.appendChild(n); });
+    var pick = el('button', { type: 'button', class: 'pick', text: A.title || app });
+    pick.addEventListener('click', function () { document.getElementById('f-app').value = app; applyFilters(); document.getElementById('ft').scrollIntoView({ block: 'start' }); });
+    return el('article', { class: 'cp-card' }, [
+      el('h3', null, [pick]),
+      el('a', { class: 'repo', href: A.repoUrl || ('https://github.com/' + A.repo), target: '_blank', rel: 'noopener', text: A.repo || '' }),
+      total ? bar : null,
+      dl
+    ]);
+  }
+
+  /* ---------- one capability row ---------- */
+  function listCell(items, max) {
+    var box = el('div', { class: 'list' });
+    if (!items.length) { box.appendChild(el('span', { class: 'cp-none', text: '·' })); return box; }
+    items.slice(0, max).forEach(function (n) { box.appendChild(n); });
+    if (items.length > max) {
+      var more = el('button', { type: 'button', text: t('cap.more', '+{n} more', { n: items.length - max }) });
+      more.style.cssText = 'font: inherit; font-size: 12px; background: none; border: 0; padding: 0; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; text-align: left;';
+      more.addEventListener('click', function () { items.slice(max).forEach(function (n) { box.insertBefore(n, more); }); more.remove(); });
+      box.appendChild(more);
+    }
+    return box;
+  }
+  function capRow(key, c, comp) {
+    var capTd = el('td', { class: 'cap' }, [
+      el('a', { class: 'self', href: '#' + key }, [el('code', { text: c.id })]),
+      c.title && c.title !== c.id ? el('span', { class: 'ti', text: c.title }) : null,
+      (c.notes || []).length ? el('span', { class: 'note', text: c.notes.join('; ') }) : null
+    ]);
+    if (c.decision && c.decision.decision) {
+      var dec = t('cap.decision', 'Decision') + ': ' + c.decision.decision + (c.decision.reason ? ', ' + c.decision.reason : '');
+      capTd.appendChild(el('span', { class: 'note dec', text: dec, title: dec }));
+    }
+    var screens = (c.screens || []).map(function (id) { return el('a', { href: boardHref(id), text: screenTitle(id), title: id }); });
+    if (!screens.length && c.screenReason) screens = [el('span', { class: 'note', text: t('cap.noScreen', 'No screen') + ': ' + c.screenReason })];
+    else if (!screens.length && screenState(c) === 'missing') screens = [el('span', { class: 'note warn', text: t('cap.screenMissing', 'Screen missing') })];
+    var specs = (c.specs || []).map(function (s) {
+      return el('a', { href: s.url, target: '_blank', rel: 'noopener', text: s.name + (s.requirements != null ? ' (' + s.requirements + ')' : '') });
+    });
+    var sys = el('div', { class: 'sys' });
+    Object.keys(c.systems || {}).forEach(function (k) {
+      var v = c.systems[k];
+      sys.appendChild(el('span', { class: 'sc-sys' + (k === comp ? ' sel' : ''), 'data-v': v, title: compName(k) + ': ' + sysLabel(v), text: k }));
+    });
+    if (!sys.childNodes.length) sys.appendChild(el('span', { class: 'cp-none', text: '·' }));
+    var kind = KINDS[c.kind] ? t(KINDS[c.kind][0], KINDS[c.kind][1]) : (c.kind || '');
+    return el('tr', { id: key, 'data-key': key }, [
+      capTd,
+      el('td', null, [pill(c.status)]),
+      el('td', null, [listCell(screens, 4)]),
+      el('td', null, [listCell(specs, 4)]),
+      el('td', null, [sys]),
+      el('td', { class: 'src', text: kind })
+    ]);
+  }
+
+  /* ---------- one feature: summary row plus a detail row rendered on first open ---------- */
+  function statusCell(keys) {
+    var n = {}; var other = 0;
+    keys.forEach(function (k) { var s = C.capabilities[k].status; if (BAR.indexOf(s) !== -1) n[s] = (n[s] || 0) + 1; else other++; });
+    var total = keys.length;
+    var bar = el('div', { class: 'cp-bar', role: 'img' });
+    var parts = [];
+    BAR.forEach(function (s) {
+      if (!n[s]) return;
+      var sp = el('span', { class: 's-' + s, title: statusLabel(s) + ': ' + n[s] }); sp.style.width = (100 * n[s] / total) + '%'; bar.appendChild(sp);
+      parts.push(statusLabel(s) + ' ' + n[s]);
+    });
+    if (other) { var o = el('span', { class: 's-other', title: t('cap.status.other', 'other') + ': ' + other }); o.style.width = (100 * other / total) + '%'; bar.appendChild(o); parts.push(t('cap.status.other', 'other') + ' ' + other); }
+    bar.setAttribute('aria-label', parts.join(', '));
+    return el('div', { class: 'stat' }, [total ? bar : null, el('span', { class: 'lbl', text: parts.join(' · ') })]);
+  }
+  function compCell(keys, comp) {
+    if (!comp) return el('span', { class: 'cp-none', text: '·' });
+    var n = {};
+    keys.forEach(function (k) { var v = (C.capabilities[k].systems || {})[comp]; if (v) n[v] = (n[v] || 0) + 1; });
+    var box = el('div', { class: 'sys' });
+    ['yes', 'partial', 'no', 'unknown'].forEach(function (v) {
+      if (n[v]) box.appendChild(el('span', { class: 'sc-sys', 'data-v': v, title: compName(comp) + ': ' + sysLabel(v), text: sysLabel(v) + ' ' + n[v] }));
+    });
+    if (!box.childNodes.length) box.appendChild(el('span', { class: 'cp-none', text: '·' }));
+    return box;
+  }
+  function screensOf(keys) {
+    var s = {}; keys.forEach(function (k) { (C.capabilities[k].screens || []).forEach(function (id) { s[id] = true; }); });
+    return Object.keys(s);
+  }
+
+  function buildRows() {
+    var tbody = document.getElementById('rows'); tbody.innerHTML = '';
+    FEATS.forEach(function (fk) {
+      var f = C.features[fk];
+      var tog = el('button', { type: 'button', class: 'tog', 'aria-expanded': 'false', 'aria-controls': 'd-' + fk }, [chevron(),
+        el('span', null, [
+          el('span', { class: 'tt', text: featTitle(f) }),
+          el('span', { class: 'sub' }, [
+            !isGroup(f) ? el('code', { text: f.slug }) : null,
+            areaTitle(f) ? ' · ' + areaTitle(f) : null,
+            f.derived && f.slug !== NO_FEATURE ? el('span', { class: 'warn', text: ' · ' + t('cap.derived', 'not yet in the feature list'), title: t('cap.derivedBody', 'Grouped from the old feature value or the area, because this app has no feature list in its matrix yet.') }) : null
+          ])
+        ])]);
+      var tr = el('tr', { class: 'fr', id: fk, 'data-key': fk }, [
+        el('td', null, [tog]),
+        el('td', { class: 'app', text: appTitle(f.app) }),
+        el('td', { class: 'num' }), el('td', { class: 'st' }), el('td', { class: 'num scr' }), el('td', { class: 'cmp' })
+      ]);
+      var detail = el('tr', { class: 'fd', id: 'd-' + fk, hidden: '' }, [el('td', { colspan: '6' })]);
+      tog.addEventListener('click', function () { setOpen(fk, detail.hidden); openState[fk] = !detail.hidden; if (!openState[fk]) delete openState[fk]; saveOpen(openState); });
+      rowsOf[fk] = { tr: tr, detail: detail, tog: tog, rendered: null, hits: f.caps };
+      tbody.appendChild(tr); tbody.appendChild(detail);
+    });
+  }
+
+  function renderDetail(fk) {
+    var r = rowsOf[fk], f = C.features[fk], comp = val('f-comp');
+    var sig = comp + '|' + r.hits.join(',');
+    if (r.rendered === sig) return;
+    var td = r.detail.firstChild; td.innerHTML = '';
+    var meta = el('div', { class: 'fmeta' });
+    if ((f.specs || []).length) {
+      var A = C.apps[f.app] || {};
+      meta.appendChild(el('span', null, [t('cap.fspecs', 'Specs of this feature') + ': '].concat(f.specs.map(function (s, i) {
+        var a = el('a', { href: 'https://github.com/' + A.repo + '/blob/development/openspec/specs/' + s + '/spec.md', target: '_blank', rel: 'noopener', text: s });
+        return i ? [', ', a] : [a];
+      }).reduce(function (x, y) { return x.concat(y); }, []))));
+    }
+    if (f.overlay) meta.appendChild(el('span', { text: t('cap.foverlay', 'On the features page as') + ': ' + f.overlay }));
+    if (meta.childNodes.length) td.appendChild(meta);
+    var tbody = el('tbody');
+    r.hits.forEach(function (k) { tbody.appendChild(capRow(k, C.capabilities[k], comp)); });
+    td.appendChild(el('div', { class: 'cp-inner' }, [el('table', { class: 'cp' }, [
+      el('caption', { class: 'sr-only', text: featTitle(f) }),
+      el('thead', null, [el('tr', null, [
+        el('th', { scope: 'col', text: t('cap.col.cap', 'Capability') }), el('th', { scope: 'col', text: t('cap.col.status', 'Status') }),
+        el('th', { scope: 'col', text: t('cap.col.screens', 'Screens') }), el('th', { scope: 'col', text: t('cap.col.specs', 'Specs') }),
+        el('th', { scope: 'col', text: t('cap.col.systems', 'Systems') }), el('th', { scope: 'col', text: t('cap.col.kind', 'Kind') })
+      ])]), tbody])]));
+    r.rendered = sig;
+  }
+  function setOpen(fk, open) {
+    var r = rowsOf[fk]; if (!r) return;
+    if (open) renderDetail(fk);
+    r.detail.hidden = !open;
+    r.tr.classList.toggle('open', open);
+    r.tog.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  /* ---------- filters ---------- */
+  function val(id) { var n = document.getElementById(id); return n.type === 'checkbox' ? (n.checked && !n.disabled) : n.value; }
+  /* yes: on a screen; reason: no screen, with the reason why; missing: should be on a screen and is not */
+  function screenState(c) {
+    if ((c.screens || []).length) return 'yes';
+    if (c.screenReason) return 'reason';
+    if ((c.kind === 'matrix' || c.kind === 'spec') && c.status !== 'decided-no') return 'missing';
+    return 'none';
+  }
+  function capMatch(k, c, f) {
+    var s = val('f-status'), kd = val('f-kind'), sc = val('f-screen'), comp = val('f-comp'), gap = val('f-gap');
+    if (s && c.status !== s) return false;
+    if (kd && c.kind !== kd) return false;
+    if (sc && screenState(c) !== sc) return false;
+    if (comp) {
+      var theirs = (c.systems || {})[comp];
+      if (!theirs) return false;
+      if (gap) {
+        var ours = (c.systems || {})[f.app];
+        if (!(RANK[theirs] > (RANK[ours] == null ? 0 : RANK[ours]))) return false;
+      }
+    }
+    return true;
+  }
+  function textMatch(k, c, f, words, featHay) {
+    if (!words.length) return true;
+    var hay = featHay + ' ' + [k, c.title, c.area, (c.notes || []).join(' '), (c.screens || []).join(' '), (c.specs || []).map(function (x) { return x.name; }).join(' ')].join(' ').toLowerCase();
+    return words.every(function (w) { return hay.indexOf(w) !== -1; });
+  }
+  function filtering() { return !!(val('f-status') || val('f-kind') || val('f-screen') || val('f-comp') || val('q').trim()); }
+  function applyFilters() {
+    var fa = val('f-app'), comp = val('f-comp'), on = filtering();
+    var words = val('q').trim().toLowerCase().split(/\s+/).filter(Boolean);
+    var gapBox = document.getElementById('f-gap'); gapBox.disabled = !comp;
+    document.getElementById('th-comp').textContent = comp ? compName(comp) : t('cap.col.comp', 'Competitor');
+    var nf = 0, nc = 0;
+    FEATS.forEach(function (fk) {
+      var f = C.features[fk], r = rowsOf[fk];
+      var show = !(fa && f.app !== fa) && !(comp && compOwner[comp] !== f.app);
+      var hits = [];
+      if (show) {
+        var featHay = [fk, f.title, f.titleNl, f.areaTitle, f.areaTitleNl].join(' ').toLowerCase();
+        hits = f.caps.filter(function (k) { var c = C.capabilities[k]; return capMatch(k, c, f) && textMatch(k, c, f, words, featHay); });
+        show = hits.length > 0;
+      }
+      r.tr.hidden = !show;
+      r.hits = hits;
+      if (!show) { r.detail.hidden = true; r.tr.classList.remove('open'); r.tog.setAttribute('aria-expanded', 'false'); return; }
+      nf++; nc += hits.length;
+      var cells = r.tr.children;
+      cells[2].innerHTML = ''; cells[2].appendChild(on ? el('span', null, [String(hits.length), el('small', { text: ' / ' + f.caps.length })]) : document.createTextNode(String(f.caps.length)));
+      cells[3].innerHTML = ''; cells[3].appendChild(statusCell(hits));
+      var miss = hits.filter(function (k) { return screenState(C.capabilities[k]) === 'missing'; }).length;
+      cells[4].innerHTML = '';
+      cells[4].appendChild(document.createTextNode(String(screensOf(hits).length || '·')));
+      if (miss) cells[4].appendChild(el('small', { class: 'warn', title: t('cap.screenMissingN', '{n} capabilities without a screen', { n: miss }), text: ' (' + miss + ' ' + t('cap.missingShort', 'missing') + ')' }));
+      cells[5].innerHTML = ''; cells[5].appendChild(compCell(hits, comp));
+      if (!r.detail.hidden || openState[fk]) setOpen(fk, true);
+    });
+    document.getElementById('empty').hidden = nf > 0;
+    document.getElementById('count').textContent = t('cap.count2', '{f} features, {n} capabilities shown', { f: nf, n: nc });
+  }
+
+  function buildFilters() {
+    function fill(id, opts) {
+      var s = document.getElementById(id); s.innerHTML = '';
+      opts.forEach(function (o) {
+        if (o.group) {
+          var g = el('optgroup', { label: o.group });
+          o.items.forEach(function (it) { g.appendChild(el('option', { value: it[0], text: it[1] })); });
+          s.appendChild(g);
+        } else s.appendChild(el('option', { value: o[0], text: o[1] }));
+      });
+    }
+    var apps = []; FEATS.forEach(function (fk) { var a = C.features[fk].app; if (apps.indexOf(a) === -1) apps.push(a); });
+    fill('f-app', [['', t('cap.f.all', 'All')]].concat(apps.map(function (a) { return [a, appTitle(a)]; })));
+    fill('f-status', [['', t('cap.f.all', 'All')]].concat(STATUSES.map(function (s) { return [s, statusLabel(s)]; })));
+    fill('f-kind', [['', t('cap.f.all', 'All')]].concat(Object.keys(KINDS).map(function (k) { return [k, t(KINDS[k][0], KINDS[k][1])]; })));
+    fill('f-screen', [['', t('cap.f.all', 'All')], ['yes', t('cap.f.yes', 'Yes')], ['reason', t('cap.f.reason', 'No screen, with a reason')], ['missing', t('cap.f.missing', 'Missing')]]);
+    var groups = [];
+    Object.keys(C.apps).forEach(function (a) {
+      var P = C.apps[a].parity; if (!P) return;
+      var items = (P.systems || []).filter(function (k) { return k !== a; }).map(function (k) { compOwner[k] = compOwner[k] || a; return [k, (P.systemNames || {})[k] || k]; });
+      if (items.length) groups.push({ group: appTitle(a), items: items });
+    });
+    fill('f-comp', [['', t('cap.f.none', 'None')]].concat(groups));
+  }
+
+  function legend() {
+    var lg = document.getElementById('legend');
+    lg.appendChild(el('span', { text: t('cap.legend.status', 'Status') + ':' }));
+    STATUSES.forEach(function (s) { lg.appendChild(pill(s)); });
+    lg.appendChild(el('span', { text: t('cap.legend.systems', 'Systems') + ':' }));
+    Object.keys(SYS).forEach(function (v) { lg.appendChild(el('span', { class: 'sc-sys', 'data-v': v, text: sysLabel(v) })); });
+  }
+
+  var qT = null;
+  document.getElementById('q').addEventListener('input', function () { clearTimeout(qT); qT = setTimeout(applyFilters, 160); });
+  ['f-app', 'f-status', 'f-kind', 'f-screen', 'f-comp', 'f-gap'].forEach(function (id) { document.getElementById(id).addEventListener('change', applyFilters); });
+  document.getElementById('open-all').addEventListener('click', function () {
+    FEATS.forEach(function (fk) { if (!rowsOf[fk].tr.hidden) setOpen(fk, true); });
+  });
+  document.getElementById('close-all').addEventListener('click', function () {
+    FEATS.forEach(function (fk) { setOpen(fk, false); }); openState = {}; saveOpen(openState);
+  });
+
+  /* ---------- anchors: #<app>, #<app>/<feature>, #<app>/<capability> ---------- */
+  function clearFilters() {
+    document.getElementById('q').value = '';
+    ['f-status', 'f-kind', 'f-screen', 'f-comp'].forEach(function (id) { document.getElementById(id).value = ''; });
+    document.getElementById('f-gap').checked = false;
+  }
+  function openHash() {
+    var h = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (!h) return;
+    if (h.indexOf('/') === -1) {
+      if (!(C.apps || {})[h]) return;
+      document.getElementById('f-app').value = h; applyFilters();
+      document.getElementById('ft').scrollIntoView({ block: 'start' }); return;
+    }
+    var fk = C.features[h] ? h : (C.capabilities[h] || {}).feature;
+    if (!fk || !rowsOf[fk]) return;
+    if (rowsOf[fk].tr.hidden || (C.capabilities[h] && rowsOf[fk].hits.indexOf(h) === -1)) { clearFilters(); document.getElementById('f-app').value = ''; applyFilters(); }
+    setOpen(fk, true);
+    document.querySelectorAll('.hit').forEach(function (r) { r.classList.remove('hit'); });
+    var target = C.capabilities[h] ? document.getElementById(h) : rowsOf[fk].tr;
+    if (target) { target.classList.add('hit'); target.scrollIntoView({ block: 'center' }); }
+  }
+  window.addEventListener('hashchange', openHash);
+
+  Promise.all([
+    fetch('../screens/capabilities.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    fetch('../screens/screens.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    dictReady
+  ]).then(function (res) {
+    C = res[0]; S = res[1];
+    C.apps = C.apps || {}; C.features = C.features || {};
+    if (S) Object.keys(S.boards).forEach(function (n) { var b = S.boards[n]; byId[b.id || n] = b; });
+    var appOrder = Object.keys(C.apps);
+    FEATS = Object.keys(C.features).sort(function (a, b) {
+      var fa = C.features[a], fb = C.features[b];
+      return (appOrder.indexOf(fa.app) - appOrder.indexOf(fb.app))
+        || (isGroup(fa) - isGroup(fb))
+        || String(areaTitle(fa) || '~').localeCompare(String(areaTitle(fb) || '~'))
+        || featTitle(fa).localeCompare(featTitle(fb));
+    });
+    var nSpecs = 0; appOrder.forEach(function (a) { nSpecs += C.apps[a].specCount || 0; });
+    document.getElementById('m-features').textContent = String(FEATS.filter(function (k) { return !isGroup(C.features[k]); }).length);
+    document.getElementById('m-caps').textContent = String(Object.keys(C.capabilities).length);
+    document.getElementById('m-apps').textContent = String(appOrder.filter(function (a) { return C.apps[a].parity; }).length);
+    document.getElementById('m-specs').textContent = String(nSpecs);
+    document.getElementById('m-gen').textContent = C.generated || '';
+    var cards = document.getElementById('cards');
+    appOrder.forEach(function (a) { if (C.apps[a].parity) cards.appendChild(card(a, C.apps[a])); });
+    legend();
+    buildFilters();
+    buildRows();
+    applyFilters();
+    openHash();
+  }).catch(function (err) {
+    var l = document.getElementById('loading');
+    if (l) l.textContent = t('cap.error', 'Could not load the capabilities.') + ' (' + err.message + ')';
+  });
+})();
+</script>
+</body>
+</html>

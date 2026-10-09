@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>larpinq: spelinstellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1600px">
+  <dc-import name="DqKop" app="Larpinq" placeholder="Zoek karakters, spelers of evenementen" role="Spelleider" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="larpinq" primary="Nieuw karakter" active="" fold="open" fold-groups='[{"title":"Rapportages en automatisering","items":[["Rapporten","reports",false,"LrRapportages.dc.html"],["Flows","flows",false,"LrFlows.dc.html"]]},{"title":"De app inrichten","items":[["Spelinstellingen","cog",false,"LrSpelinstellingen.dc.html"]]},{"title":"Over de app","items":[["Store","store",false,"LrStore.dc.html"],["Functies en roadmap","roadmap",false,"LrRoadmap.dc.html"]]},{"title":"Instellingen","items":[["Persoonlijke instellingen","cog"],["Beheerinstellingen","admin",true]]}]' fold-active="Spelinstellingen" groups="{{ nav }}" hint-size="264px,1400px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Spelinstellingen</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <a href="#" style="display: flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 2L14 6.5V17.5L19 13V2M6.5 5C4.55 5 2.45 5.4 1 6.5V21.16C1 21.41 1.25 21.66 1.5 21.66C1.6 21.66 1.65 21.59 1.75 21.59C3.1 20.94 5.05 20.5 6.5 20.5C8.45 20.5 10.55 20.9 12 22C13.35 21.15 15.8 20.5 17.5 20.5C19.15 20.5 20.85 20.81 22.25 21.56C22.35 21.61 22.4 21.59 22.5 21.59C22.75 21.59 23 21.34 23 21.09V6.5C22.4 6.05 21.75 5.75 21 5.5V19C19.9 18.65 18.7 18.5 17.5 18.5C15.8 18.5 13.35 19.15 12 20V6.5C10.55 5.4 8.45 5 6.5 5Z"></path></svg>Documentatie</a>
+              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 15px; color: #5e6168"><nav aria-label="Kruimelpad" style="font-size: 14px; display: flex; gap: 8px"><a href="#">Beheer</a><span aria-hidden="true">/</span><span>Spelinstellingen</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">alleen voor beheerders · elke sectie heeft een eigen opslaanknop</span></div>
+        </section>
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <div style="display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #e4e6ea; margin-bottom: -20px">
+            <div role="tablist" aria-label="Secties van de spelinstellingen" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto; min-width: 0">
+              <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" role="tab" aria-selected="{{ t.sel }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ false }}"><span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">{{ t.count }}</span></sc-if></button>
+              </sc-for>
+            </div>
+          </div>
+          <section aria-labelledby="lr-s-bron" style="background: #ffffff; border: 1px solid #e4e6ea; border-top: none; border-radius: 0 12px 12px 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 4px"><h2 id="lr-s-bron" style="margin: 0; font-size: 17px; font-weight: 700">Gegevensbron</h2><p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">In welk OpenRegister-register en met welke schema's Larpinq zijn gegevens bewaart.</p></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; max-width: 360px"><label for="lr-s-reg" style="font-size: 14px; font-weight: 600">Register</label><select id="lr-s-reg" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option>larpinq</option></select></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px 16px">
+              <sc-for list="{{ schemas }}" as="s" hint-placeholder-count="9">
+                <div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 14px; font-weight: 600">{{ s.label }}</label><select aria-label="{{ s.aria }}" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option>{{ s.schema }}</option></select></div>
+              </sc-for>
+            </div>
+            <div style="display: flex; justify-content: flex-end; padding-top: 14px; border-top: 1px solid #eef0f3"><button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z"></path></svg>Gegevensbron opslaan</button></div>
+          </section>
+          <section aria-labelledby="lr-s-rol" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 4px; flex: 1 1 360px"><h2 id="lr-s-rol" style="margin: 0; font-size: 17px; font-weight: 700">Rollen en toegang</h2><p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Wie meer mag dan een gewone speler. Spelers zien alleen hun eigen karakterblad.</p></div>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z"></path></svg>Uitnodigen met een link</button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-start; padding: 14px 16px; border-radius: 10px; background: #f5f6f8">
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 0 1 300px"><label for="lr-s-gm" style="font-size: 14px; font-weight: 600">Spelleiders</label><select id="lr-s-gm" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Groep: gamemasters (3 leden)</option></select></div>
+              <p style="flex: 1 1 300px; margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Spelleiders keuren karakters goed, kennen XP toe, zetten aanwezigheid, overrulen regelcontroles en downloaden karakterbladen als PDF. Gewone spelers kunnen dat niet.</p>
+            </div>
+            <div style="overflow-x: auto; border: 1px solid #eef0f3; border-radius: 10px">
+              <table style="border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 10px 12px; font-weight: 600">Rol</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Mag</th><th scope="col" style="padding: 10px 12px; font-weight: 600">Leden</th><th scope="col" style="padding: 10px 12px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acties</span></th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+                    <tr style="border-top: 1px solid #eef0f3"><td style="padding: 12px; font-weight: 600">{{ r.role }}</td><td style="padding: 12px; color: #3d4047">{{ r.may }}</td><td style="padding: 12px">{{ r.members }}</td><td style="padding: 12px; text-align: right"><button type="button" aria-label="{{ r.aria }}" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h3 style="margin: 0; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px">Openstaande uitnodigingen<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">1</span></h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: 10px">
+                <span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #fff4de; color: #7a4f00">In afwachting</span>
+                <span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Penningmeester, uitnodiging voor j.smit@voorbeeld.nl</strong><span style="font-size: 13px; color: #5e6168">link verstuurd 6 oktober door Lars de Koning · verloopt 13 oktober</span></span>
+                <a href="#" style="font-weight: 600; font-size: 14px">Link kopiëren</a>
+                <a href="#" style="font-weight: 600; font-size: 14px; color: #a30000">Intrekken</a>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; padding-top: 14px; border-top: 1px solid #eef0f3"><button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z"></path></svg>Rollen opslaan</button></div>
+          </section>
+          <section aria-labelledby="lr-s-imp" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-direction: column; gap: 4px"><h2 id="lr-s-imp" style="margin: 0; font-size: 17px; font-weight: 700">Configuratie opnieuw importeren</h2><p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Na een update van Larpinq laadt u hier de meegeleverde schema's en standaardinstellingen opnieuw. Uw karakters, spelers en evenementen blijven staan.</p></div>
+            <dl style="margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 24px; font-size: 14px">
+              <dt style="color: #5e6168">Laatst geïmporteerd</dt><dd style="margin: 0">2 oktober 2026, 09.14 door Lars de Koning</dd>
+              <dt style="color: #5e6168">Versie</dt><dd style="margin: 0">0.9.3, nu geïnstalleerd 0.9.4</dd>
+              <dt style="color: #5e6168">Resultaat</dt><dd style="margin: 0"><span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; background: #e7f3ea; color: #1e6b2a">31 schema's, 0 mislukt</span></dd>
+            </dl>
+            <div style="display: flex; justify-content: flex-end; padding-top: 14px; border-top: 1px solid #eef0f3"><button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>Opnieuw importeren</button></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Werelden', 'book']] },
+      { title: 'Karakters', items: [['Karakters', 'people'], ['Spelers', 'people'], ['Nieuwe spelers', 'inbox', 3], ['Facties', 'shield'], ['Plots', 'doc'], ['Cast', 'people']] },
+      { title: 'Spelregels', items: [['Eigenschappen', 'chart'], ['Vaardigheden', 'check'], ['Vaardighedenboom', 'pipeline'], ['Toestanden', 'heart'], ['Effecten', 'trend']] },
+      { title: 'Wereld', items: [['Voorwerpen', 'products'], ['Evenementen', 'cal'], ['XP-toekenningen', 'trend'], ['Lore', 'book'], ['Karaktervelden', 'doc'], ['Aanmeldingen', 'inbox'], ['Mijn aanmeldingen', 'inbox']] }
+    ];
+    const withCounts = (arr) => arr.map((t) => { const m = /^(.*?)\s+(\d[\d.,]*)(\s+.*)?$/.exec(t.label || ''); return m ? Object.assign({}, t, { label: m[1] + (m[3] || ''), count: m[2], hasCount: true }) : Object.assign({}, t, { hasCount: false }); });
+    const tabBase = "display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 8px 12px; margin-bottom: -1px; border: 1px solid #d6d9de; border-bottom: none; border-radius: 8px 8px 0 0; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; background: #eceef1; cursor: pointer; white-space: nowrap;";
+    const tab = (on) => on ? tabBase + " background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700;" : tabBase;
+    const tabs = withCounts([['Gegevensbron 9', true], ['Rollen en toegang 4', false], ['Opnieuw importeren', false]].map(([label, on]) => ({ label, sel: on ? 'true' : 'false', style: tab(on) })));
+    const schemas = [['Karakter', 'character'], ['Speler', 'player'], ['Evenement', 'event'], ['Wereld', 'setting'], ['Vaardigheid', 'skill'], ['Eigenschap', 'ability'], ['Voorwerp', 'item'], ['Toestand', 'condition'], ['Effect', 'effect']].map(([label, schema]) => ({ label: 'Schema voor ' + label.toLowerCase(), schema, aria: 'Schema voor ' + label.toLowerCase() }));
+    const roles = [
+      ['Spelleider', 'alles, via de groep gamemasters', 'Lars de Koning, Pieter Jansen, Anouk Bakker'],
+      ['Schrijver', 'karakters, plots en lore schrijven en ter review zetten', 'Lars de Koning, Anouk Bakker'],
+      ['Regelmeester', 'vaardigheden, effecten, toestanden en eigenschappen beheren', 'Pieter Jansen'],
+      ['Penningmeester', 'aanmeldingen, betalingen en terugbetalingen', 'Femke Bos']
+    ].map(([role, may, members]) => ({ role, may, members, aria: 'Acties voor rol ' + role + ': leden wijzigen, rol verwijderen' }));
+    return { nav, tabs, schemas, roles };
+  }
+}
+</script>
+</body>
+</html>

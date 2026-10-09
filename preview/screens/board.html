@@ -16,40 +16,90 @@
   .bar h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; color: var(--c-cobalt-900); flex: 1 1 280px; min-width: 0; }
   .bar .where { font-size: 13px; color: var(--c-cobalt-700); }
   .bar .where a { color: inherit; }
+  .bar .pos { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); white-space: nowrap; }
+  .bar .hint { font-size: 12px; color: var(--c-cobalt-400); }
+  .bar .hint kbd { font-family: var(--conduction-typography-font-family-code); font-size: 11px; border: 1px solid var(--c-cobalt-200); border-radius: 3px; padding: 0 4px; background: var(--c-cobalt-50); color: var(--c-cobalt-700); }
   .bar .nav { display: flex; gap: var(--space-2); margin-left: auto; flex-wrap: wrap; }
-  .bar .btn {
+  .sc-chrome .btn {
     display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 12px;
     font: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer;
     color: var(--c-blue-cobalt); background: white; border: 1px solid var(--c-cobalt-200); border-radius: var(--radius-sm);
   }
-  .bar .btn:hover { border-color: var(--c-blue-cobalt); }
-  .bar .btn.primary { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
-  .bar .btn[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
-  .bar .btn:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .sc-chrome .btn:hover { border-color: var(--c-blue-cobalt); }
+  .sc-chrome .btn.primary { background: var(--c-blue-cobalt); color: white; border-color: var(--c-blue-cobalt); }
+  .sc-chrome .btn[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+  .sc-chrome .btn:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
   .bar .label { font-family: var(--conduction-typography-font-family-code); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); }
 
-  .note { max-width: 1440px; margin: var(--space-6) auto 0; padding: 0 var(--space-6); }
-  .note .card-in { background: white; border-radius: var(--radius-md); border: 1px solid var(--c-cobalt-100); padding: var(--space-4) var(--space-6); display: flex; flex-direction: column; gap: 6px; }
-  .note .caps { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); }
-  .note .txt { font-size: 15px; line-height: 1.55; color: var(--c-cobalt-900); margin: 0; }
-
-  .stage-wrap { padding: var(--space-6); }
+  /* Board and sidebar: side by side on wide screens, stacked below 1100 px */
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+  .stage-wrap { padding: var(--space-6); min-width: 0; }
   .stage { position: relative; margin: 0 auto; background: white; box-shadow: var(--shadow-2); overflow: hidden; }
   .stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: top left; background: white; }
 
+  .side { position: sticky; top: var(--side-top, 120px); max-height: calc(100vh - var(--side-top, 120px)); overflow: auto; padding: var(--space-6) var(--space-6) var(--space-6) 0; display: flex; flex-direction: column; gap: var(--space-4); }
+  .side .box { background: white; border: 1px solid var(--c-cobalt-100); border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .side h2 { font-family: var(--conduction-typography-font-family-code); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-cobalt-400); margin: 0; }
+  .side .txt { font-size: 14px; line-height: 1.5; color: var(--c-cobalt-900); margin: 0; }
+  .side ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .side li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 8px; font-size: 13px; line-height: 1.4; min-width: 0; }
+  .side li a { color: var(--c-blue-cobalt); overflow-wrap: anywhere; min-width: 0; }
+  .side li a:hover { color: var(--c-coral-600); }
+  .side li .cap { display: flex; flex-direction: column; min-width: 0; flex: 1 1 160px; }
+  .side li .cap code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; overflow-wrap: anywhere; }
+  .side li .cap small { font-size: 12px; color: var(--c-cobalt-700); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .side li a:has(.cap) { text-decoration: none; }
+  .side li a:has(.cap) code { text-decoration: underline; }
+  .side .n { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); white-space: nowrap; }
+  .side .empty { font-size: 13px; color: var(--c-cobalt-700); margin: 0; }
+  .side .repo a { font-size: 14px; font-weight: 600; color: var(--c-blue-cobalt); overflow-wrap: anywhere; }
+  .side .repo .path { font-family: var(--conduction-typography-font-family-code); font-size: 12px; overflow-wrap: anywhere; }
+  .side .repo .path a { font-weight: 400; font-size: 12px; }
+  .side .mx summary { cursor: pointer; font-size: 13px; color: var(--c-blue-cobalt); }
+  .side .mx summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .side .mx ul { margin-top: 8px; }
+  .side .iss .badge { display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--c-blue-cobalt); color: white; font-size: 11px; letter-spacing: 0; text-align: center; }
+  .side .iss li { flex-direction: column; align-items: stretch; gap: 3px; padding-bottom: 8px; border-bottom: 1px solid var(--c-cobalt-100); }
+  .side .iss li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .side .iss .it { font-size: 13px; font-weight: 600; }
+  .side .iss .meta { font-size: 12px; color: var(--c-cobalt-700); }
+  .side .iss .lbls { display: flex; flex-wrap: wrap; gap: 3px; }
+  .side .iss .lbl { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); }
+  .side .iss .all { font-size: 13px; color: var(--c-blue-cobalt); }
+  .side .iss .retry { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; margin-left: 4px; color: var(--c-blue-cobalt); text-decoration: underline; cursor: pointer; }
+  .side .comp .grp { display: flex; flex-direction: column; gap: 6px; }
+  .side .comp .grp + .grp { margin-top: var(--space-3); }
+  .side .comp h3 { font-size: 12px; font-weight: 600; color: var(--c-cobalt-700); margin: 0; }
+  .side .comp .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .side .comp .chip { font-family: var(--conduction-typography-font-family-code); font-size: 11.5px; line-height: 1.4; padding: 2px 8px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-blue-cobalt); text-decoration: none; overflow-wrap: anywhere; }
+  .side .comp .chip:hover { border-color: var(--c-blue-cobalt); color: var(--c-coral-600); }
+  .side .comp .chip:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 1px; }
+  .side .comp .all { font-size: 13px; color: var(--c-blue-cobalt); }
+  .side .fb { justify-content: center; }
+  .side .fb-note { font-size: 12px; color: var(--c-cobalt-700); margin: 0; line-height: 1.45; }
+
   .missing { max-width: 640px; margin: 96px auto; text-align: center; color: var(--c-cobalt-700); }
-  @media (max-width: 720px) { .stage-wrap { padding: var(--space-4) 0; } .note { padding: 0 var(--space-4); } }
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .side { position: static; max-height: none; overflow: visible; padding: 0 var(--space-6) var(--space-8); }
+  }
+  @media (max-width: 720px) {
+    .stage-wrap { padding: var(--space-4) 0; }
+    .side { padding: 0 var(--space-4) var(--space-8); }
+    .bar .hint { display: none; }
+  }
 </style>
 </head>
 <body class="sc-chrome">
 
-<header class="bar">
+<header class="bar" id="bar">
   <div class="sc-wrap">
     <div class="line">
       <a class="back" id="back" href="index.html" data-i18n="screens.board.back">&larr; All screens</a>
       <h1 id="title">&nbsp;</h1>
       <span id="idchip"></span>
-      <nav class="nav" aria-label="Screens in this row" data-i18n-attr="aria-label:screens.board.navLabel">
+      <span class="pos" id="pos" aria-live="polite"></span>
+      <nav class="nav" aria-label="All screens" data-i18n-attr="aria-label:screens.board.navLabel">
         <a class="btn" id="prev" href="#" rel="prev"><span aria-hidden="true">&larr;</span> <span data-i18n="screens.board.prev">Previous</span></a>
         <a class="btn" id="next" href="#" rel="next"><span data-i18n="screens.board.next">Next</span> <span aria-hidden="true">&rarr;</span></a>
         <a class="btn primary" id="full" href="#" target="_blank" rel="noopener" data-i18n="screens.board.full">Open full size</a>
@@ -60,19 +110,57 @@
       <span class="label" id="ds-label" data-i18n="screens.ds.label">Design system</span>
       <div class="sc-seg" id="ds-seg" role="group" aria-labelledby="ds-label"></div>
       <span class="sc-badge" id="own" hidden data-i18n="screens.badge.own">Own house style</span>
+      <span class="hint" data-i18n="screens.board.keys"><kbd>&larr;</kbd> and <kbd>&rarr;</kbd> step through all screens, <kbd>Home</kbd> and <kbd>End</kbd> jump to the first and last</span>
     </div>
   </div>
 </header>
 
-<section class="note" id="note" hidden>
-  <div class="card-in">
-    <span class="caps" id="caps"></span>
-    <p class="txt" id="notetext"></p>
+<div class="layout" id="layout">
+  <div class="stage-wrap" id="stage-wrap">
+    <div class="stage" id="stage"><iframe id="frame" title="Screen" scrolling="no"></iframe></div>
   </div>
-</section>
 
-<div class="stage-wrap" id="stage-wrap">
-  <div class="stage" id="stage"><iframe id="frame" title="Screen" scrolling="no"></iframe></div>
+  <aside class="side" id="side" aria-label="About this screen" data-i18n-attr="aria-label:screens.side.label">
+    <section class="box" id="about" hidden>
+      <h2 data-i18n="screens.side.about">About this screen</h2>
+      <p class="txt" id="blurbtext" style="color:var(--c-cobalt-700)" hidden></p>
+      <p class="txt" id="notetext"></p>
+    </section>
+    <section class="box">
+      <h2 data-i18n="screens.side.caps">Capabilities</h2>
+      <ul id="caps-list"></ul>
+      <p class="empty" id="caps-empty" hidden data-i18n="screens.side.noCaps">No capability named for this screen yet.</p>
+      <details class="mx" id="matrix" hidden></details>
+    </section>
+    <section class="box iss" aria-live="polite">
+      <h2><span data-i18n="screens.side.issues">Open issues</span> <span class="badge" id="iss-count" hidden></span></h2>
+      <ul id="iss-list"></ul>
+      <p class="empty" id="iss-state" data-i18n="screens.side.issuesLoading">Looking for open issues.</p>
+      <a class="all" id="iss-all" href="#" target="_blank" rel="noopener" data-i18n="screens.side.issuesAll">All issues on GitHub</a>
+    </section>
+    <section class="box">
+      <h2 data-i18n="screens.side.specs">Specs</h2>
+      <ul id="specs-list"></ul>
+      <p class="empty" id="specs-empty" hidden data-i18n="screens.side.noSpecs">No spec yet.</p>
+    </section>
+    <section class="box comp" id="comp" hidden>
+      <h2 data-i18n="screens.side.comp">Components</h2>
+      <div id="comp-groups"></div>
+      <p class="empty" id="comp-empty" hidden></p>
+      <a class="all" id="comp-all" href="components.html" data-i18n="screens.side.compAll">All components</a>
+    </section>
+    <section class="box repo">
+      <h2 data-i18n="screens.side.repo">Repository</h2>
+      <a id="repo-link" href="#" target="_blank" rel="noopener"></a>
+      <span id="repo2" hidden></span>
+      <span class="path"><span data-i18n="screens.side.source">Source</span>: <a id="src-link" href="#" target="_blank" rel="noopener"></a></span>
+    </section>
+    <section class="box">
+      <h2 data-i18n="screens.side.feedback">Feedback</h2>
+      <a class="btn primary fb" id="feedback" href="#" target="_blank" rel="noopener" data-i18n="screens.side.feedbackBtn">Feedback on this screen</a>
+      <p class="fb-note" data-i18n="screens.side.feedbackNote">Opens a prefilled GitHub issue in the repository of this screen. Describe what you want changed; the screen, its source and its specs are filled in for you.</p>
+    </section>
+  </aside>
 </div>
 
 <div class="missing" id="missing" hidden>
@@ -119,14 +207,44 @@
       .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
   function withLang(url) {
     if (!params.get('lang')) return url;
-    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG);
+    var i = url.indexOf('#');
+    var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
   }
 
-  var S, DS, name, board, set, row, dsId;
+  var DS_REPO = 'ConductionNL/design-system';
+  var LIVE = 'https://identity.conduction.nl/screens/board?id=';
+  var SCHOOLS = { wilgenboom: 1, vaartveld: 1, esdoornveen: 1, warmtepompacademie: 1 };
+  var MAX_URL = 6000;
+
+  var S, DS, C, K, name, board, set, dsId;
+  var ORDER = [];           /* every board once, in gallery order */
   var frame = document.getElementById('frame');
   var stage = document.getElementById('stage');
   var wrap = document.getElementById('stage-wrap');
   var realH = null;
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+
+  function buildOrder() {
+    var seen = {};
+    S.sets.forEach(function (st) {
+      st.rows.forEach(function (r) {
+        r.boards.forEach(function (n) { if (S.boards[n] && !seen[n]) { seen[n] = true; ORDER.push(n); } });
+      });
+    });
+    /* boards that no row lists still belong in the carousel */
+    Object.keys(S.boards).forEach(function (n) { if (!seen[n]) ORDER.push(n); });
+  }
 
   function findBoard() {
     var id = params.get('id');
@@ -140,11 +258,12 @@
     }
     return null;
   }
+  function setOf(b) { return S.sets.filter(function (s) { return s.id === b.set; })[0] || { id: b.set, title: b.set, rows: [] }; }
   function anchorOf(b, n) { return (b.id || n).replace(/\//g, '-'); }
   function hrefFor(n) {
     var b = S.boards[n];
     var u = 'board.html?id=' + encodeURIComponent(b.id || n).replace(/%2F/g, '/');
-    if (set.themable) u += '&ds=' + encodeURIComponent(dsId);
+    if (dsId) u += '&ds=' + encodeURIComponent(dsId);
     return withLang(u);
   }
   function fileHref() {
@@ -155,7 +274,8 @@
     if (!board) return;
     var w = board.w || 1440;
     var h = realH || board.h || 900;
-    var avail = wrap.clientWidth - parseFloat(getComputedStyle(wrap).paddingLeft) - parseFloat(getComputedStyle(wrap).paddingRight);
+    var cs = getComputedStyle(wrap);
+    var avail = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     var scale = Math.min(1, avail / w);
     stage.style.width = Math.floor(w * scale) + 'px';
     stage.style.height = Math.ceil(h * scale) + 'px';
@@ -163,127 +283,448 @@
     frame.style.height = h + 'px';
     frame.style.transform = 'scale(' + scale + ')';
   }
+  function sideTop() {
+    document.documentElement.style.setProperty('--side-top', document.getElementById('bar').offsetHeight + 'px');
+  }
 
   frame.addEventListener('load', function () {
     try {
       var doc = frame.contentDocument;
       var measure = function () {
         var hh = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
-        if (hh && Math.abs(hh - (realH || 0)) > 2) {
-          /* grow the frame so the whole board shows, then measure again */
-          realH = hh; fit();
-        }
+        if (hh && Math.abs(hh - (realH || 0)) > 2) { realH = hh; fit(); }
       };
       measure();
       setTimeout(measure, 600);
       if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(measure);
     } catch (e) { /* cross-origin: keep the json height */ }
   });
-  window.addEventListener('resize', fit);
+  window.addEventListener('resize', function () { fit(); sideTop(); });
 
   function buildSeg() {
     var seg = document.getElementById('ds-seg');
     seg.innerHTML = '';
     (DS.order || Object.keys(DS.systems)).forEach(function (id) {
       var sys = DS.systems[id];
-      var dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = sys.vars['--sc-primary'];
-      var b = document.createElement('button');
-      b.type = 'button'; b.setAttribute('data-ds', id); b.setAttribute('aria-pressed', String(id === dsId));
-      b.appendChild(dot); b.appendChild(document.createTextNode(sys.short));
+      var dot = el('span', { class: 'dot' }); dot.style.background = sys.vars['--sc-primary'];
+      var b = el('button', { type: 'button', 'data-ds': id, 'aria-pressed': String(id === dsId) }, [dot, sys.short]);
       b.addEventListener('click', function () { setDs(id); });
       seg.appendChild(b);
     });
+  }
+
+  function syncUrl() {
+    var u = new URL(location.href);
+    u.searchParams.delete('name');
+    u.searchParams.delete('start');
+    u.searchParams.set('id', board.id || name);
+    if (dsId) u.searchParams.set('ds', dsId);
+    history.replaceState(null, '', u.pathname + u.search.replace(/%2F/g, '/') + u.hash);
   }
 
   function setDs(id) {
     dsId = id;
     window.screensTheme.set(id);
     document.querySelectorAll('#ds-seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-ds') === id)); });
-    var u = new URL(location.href); u.searchParams.set('ds', id); history.replaceState(null, '', u);
+    syncUrl();
     try {
       if (frame.contentWindow && frame.contentWindow.screensTheme) frame.contentWindow.screensTheme.set(id);
-      else frame.src = fileHref();
-    } catch (e) { frame.src = fileHref(); }
+      else loadFrame();
+    } catch (e) { loadFrame(); }
     links();
   }
 
+  function step(delta) {
+    var i = ORDER.indexOf(name);
+    var n = ORDER.length;
+    show(ORDER[((i + delta) % n + n) % n]);
+  }
+  function jump(n) { show(n); }
+
   function links() {
-    var list = row.boards.filter(function (n) { return S.boards[n]; });
-    var i = list.indexOf(name);
+    var i = ORDER.indexOf(name), n = ORDER.length;
+    var p = ORDER[(i - 1 + n) % n], q = ORDER[(i + 1) % n];
     var prev = document.getElementById('prev'), next = document.getElementById('next');
-    if (i > 0) { prev.href = hrefFor(list[i - 1]); prev.removeAttribute('aria-disabled'); prev.title = S.boards[list[i - 1]].title; }
-    else { prev.removeAttribute('href'); prev.setAttribute('aria-disabled', 'true'); }
-    if (i >= 0 && i < list.length - 1) { next.href = hrefFor(list[i + 1]); next.removeAttribute('aria-disabled'); next.title = S.boards[list[i + 1]].title; }
-    else { next.removeAttribute('href'); next.setAttribute('aria-disabled', 'true'); }
+    prev.href = hrefFor(p); prev.title = S.boards[p].title || p;
+    next.href = hrefFor(q); next.title = S.boards[q].title || q;
     document.getElementById('full').href = fileHref();
-    var back = 'index.html' + (set.themable ? '?ds=' + encodeURIComponent(dsId) : '');
+    var back = 'index.html' + (set.themable && dsId ? '?ds=' + encodeURIComponent(dsId) : '');
     document.getElementById('back').href = withLang(back) + '#' + anchorOf(board, name);
+    document.getElementById('pos').textContent = t('screens.board.pos', '{i} of {n}', { i: i + 1, n: n });
   }
 
-  document.addEventListener('keydown', function (e) {
-    if (e.target && /input|select|textarea/i.test(e.target.tagName)) return;
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
-    var a = e.key === 'ArrowLeft' ? document.getElementById('prev') : e.key === 'ArrowRight' ? document.getElementById('next') : null;
-    if (a && a.getAttribute('href')) location.href = a.href;
-  });
+  /* ---------- capabilities, specs, repository ---------- */
+  var STATUS = {
+    'built': ['cap.status.built', 'built'], 'building': ['cap.status.building', 'building'],
+    'specified': ['cap.status.specified', 'specified'], 'decided-no': ['cap.status.decidedNo', 'decided no'],
+    'in-flight': ['cap.status.inFlight', 'in flight'], 'designed': ['cap.status.designed', 'designed'],
+    'external': ['cap.status.external', 'external']
+  };
+  function statusLabel(s) { var m = STATUS[s]; return m ? t(m[0], m[1]) : (s || ''); }
+  function pill(s) { return el('span', { class: 'sc-pill', 'data-status': s || '', text: statusLabel(s) }); }
 
-  Promise.all([
-    fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
-    window.screensTheme.ready,
-    dictReady
-  ]).then(function (res) {
-    S = res[0]; DS = res[1];
-    name = findBoard();
-    if (!name) {
-      document.querySelector('.bar').hidden = true;
-      wrap.hidden = true;
-      document.getElementById('missing').hidden = false;
-      return;
+  function capsOf(b) {
+    var list = [];
+    var ids = b.capIds || [];
+    ids.forEach(function (k) {
+      var c = C && C.capabilities ? C.capabilities[k] : null;
+      list.push({ key: k, c: c, id: c ? c.id : k.split('/').slice(1).join('/'), status: c ? c.status : '', title: c ? c.title : '' });
+    });
+    if (!ids.length && b.caps) {
+      /* no capIds yet: show the raw tokens so the sidebar is never silently empty */
+      String(b.caps).split(',').map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (tok) {
+        var id = tok.split(/[\s(]/)[0];
+        list.push({ key: null, c: null, id: id, status: '', title: tok === id ? '' : tok });
+      });
     }
-    board = S.boards[name];
-    set = S.sets.filter(function (s) { return s.id === board.set; })[0];
-    row = set.rows.filter(function (r) { return r.id === board.row; })[0] || { boards: [name], title: '' };
-    dsId = window.screensTheme.get() || DS.default;
+    return list;
+  }
+  function reqCount(spec) {
+    if (!C || !C.capabilities) return null;
+    var hit = null;
+    capsOf(board).some(function (x) {
+      return (x.c && x.c.specs || []).some(function (s) { if (s.name === spec.name && s.url === spec.url) { hit = s.requirements; return true; } return false; });
+    });
+    return hit;
+  }
+  function specPath(s) {
+    var m = /\/blob\/[^/]+\/(.+)$/.exec(s.url || '');
+    return m ? m[1] : 'openspec/specs/' + s.name + '/spec.md';
+  }
+  function srcPath(b) {
+    var s = b.src || '';
+    return s.indexOf('screens-src/') === 0 ? s : 'screens-src/' + s;
+  }
+  function repoOf(b) {
+    if (b.repo) return b.repo;
+    if (SCHOOLS[b.app]) return 'ConductionNL/scholiq';
+    return DS_REPO;
+  }
+  function secondRepo(b) {
+    if (b.repos && b.repos.length > 1) return b.repos[1];
+    return SCHOOLS[b.app] ? 'ConductionNL/portaliq' : null;
+  }
+  function ghBlob(repo, branch, path) { return 'https://github.com/' + repo + '/blob/' + branch + '/' + path; }
 
+  function renderSide() {
+    var caps = capsOf(board);
+    var ul = document.getElementById('caps-list'); ul.innerHTML = '';
+    caps.forEach(function (x) {
+      var label = el('span', { class: 'cap' }, [el('code', { text: x.id })]);
+      if (x.title && x.title !== x.id) label.appendChild(el('small', { text: x.title }));
+      var node = x.key ? el('a', { href: withLang('../capabilities/') + '#' + x.key }, [label]) : label;
+      if (x.key) { node.style.display = 'flex'; node.style.flex = '1 1 160px'; node.style.minWidth = '0'; }
+      ul.appendChild(el('li', null, [node, x.status ? pill(x.status) : null]));
+    });
+    document.getElementById('caps-empty').hidden = caps.length > 0;
+
+    /* matrix rows reached through this screen's specs, folded away */
+    var mx = document.getElementById('matrix'); mx.innerHTML = '';
+    var mids = (board.matrixCapIds || []).filter(function (k) { return C && C.capabilities && C.capabilities[k]; });
+    mx.hidden = !mids.length;
+    if (mids.length) {
+      var mul = el('ul');
+      mids.forEach(function (k) {
+        var c = C.capabilities[k];
+        var label = el('span', { class: 'cap' }, [el('code', { text: c.id })]);
+        if (c.title) label.appendChild(el('small', { text: c.title }));
+        var a = el('a', { href: withLang('../capabilities/') + '#' + k }, [label]);
+        a.style.display = 'flex'; a.style.flex = '1 1 160px'; a.style.minWidth = '0';
+        mul.appendChild(el('li', null, [a, pill(c.status)]));
+      });
+      mx.appendChild(el('summary', { text: t('screens.side.matrix', 'Matrix rows through these specs ({n})', { n: mids.length }) }));
+      mx.appendChild(mul);
+    }
+
+    var sl = document.getElementById('specs-list'); sl.innerHTML = '';
+    var specs = board.specs || [];
+    specs.forEach(function (s) {
+      var r = reqCount(s);
+      sl.appendChild(el('li', null, [
+        el('a', { href: s.url, target: '_blank', rel: 'noopener', text: s.name }),
+        r != null ? el('span', { class: 'n', text: t('screens.side.reqs', '{n} requirements', { n: r }) }) : null
+      ]));
+    });
+    document.getElementById('specs-empty').hidden = specs.length > 0;
+
+    renderComp();
+
+    var repo = repoOf(board);
+    var rl = document.getElementById('repo-link');
+    rl.href = board.repoUrl || 'https://github.com/' + repo; rl.textContent = repo;
+    var r2 = secondRepo(board), r2el = document.getElementById('repo2');
+    r2el.hidden = !r2; r2el.innerHTML = '';
+    if (r2) {
+      r2el.appendChild(document.createTextNode(t('screens.side.repo2', 'Website pages also in') + ' '));
+      r2el.appendChild(el('a', { href: 'https://github.com/' + r2, target: '_blank', rel: 'noopener', text: r2 }));
+      r2el.style.fontSize = '13px';
+    }
+    var sp = srcPath(board), sa = document.getElementById('src-link');
+    sa.href = ghBlob(DS_REPO, 'main', sp); sa.textContent = sp;
+
+    document.getElementById('feedback').href = feedbackUrl();
+    loadIssues(false);
+    var about = document.getElementById('about');
+    about.hidden = !board.note && !board.blurb;
+    document.getElementById('blurbtext').textContent = board.blurb ? board.app + ': ' + board.blurb : '';
+    document.getElementById('blurbtext').hidden = !board.blurb;
+    document.getElementById('notetext').textContent = board.note || '';
+  }
+
+  /* ---------- components of this screen, from components.json (scripts/screens/components.py) ----------
+     Chips link to the component's source on GitHub; the hover title is its purpose.
+     Grouped by library: nextcloud-vue (Cn*) and the portaliq site widgets (key prefix "portaliq:").
+     A screen without an entry shows no section at all. */
+  function renderComp() {
+    var box = document.getElementById('comp');
+    var groups = document.getElementById('comp-groups'); groups.innerHTML = '';
+    var entry = K && K.screens ? K.screens[board.id || name] : null;
+    box.hidden = !entry;
+    if (!entry) return;
+    var keys = entry.components || [];
+    var lib = { nc: [], pq: [] };
+    keys.forEach(function (k) { (k.indexOf('portaliq:') === 0 ? lib.pq : lib.nc).push(k); });
+    [['nc', 'screens.side.compNc', 'nextcloud-vue'], ['pq', 'screens.side.compPq', 'portaliq site widgets']].forEach(function (g) {
+      var list = lib[g[0]];
+      if (!list.length) return;
+      var chips = el('div', { class: 'chips' });
+      list.forEach(function (k) {
+        var c = (K.components || {})[k] || {};
+        var label = c.name || k.replace(/^portaliq:/, '');
+        var tip = [c.purpose, c.family].filter(Boolean).join(' · ');
+        var a = c.source
+          ? el('a', { class: 'chip', href: c.source, target: '_blank', rel: 'noopener', text: label })
+          : el('span', { class: 'chip', text: label });
+        if (tip) a.setAttribute('title', tip);
+        chips.appendChild(a);
+      });
+      groups.appendChild(el('div', { class: 'grp' }, [
+        el('h3', { text: t(g[1], g[2]) + ' (' + list.length + ')' }), chips
+      ]));
+    });
+    var empty = document.getElementById('comp-empty');
+    empty.hidden = keys.length > 0;
+    empty.textContent = keys.length ? '' : (entry.note || t('screens.side.compNone', 'No component assigned to this screen.'));
+    document.getElementById('comp-all').href = withLang('components.html') + '#q=' + encodeURIComponent(board.id || name);
+  }
+
+  /* ---------- open issues about this screen, live from GitHub search ----------
+     Unauthenticated search allows 10 calls a minute, so results are cached per
+     screen for 15 minutes and a fetch waits until the carousel rests on a screen. */
+  var ISS_TTL = 15 * 60 * 1000;
+  var issTimer = null, issSeq = 0;
+  function issQuery(b) {
+    var repos = [repoOf(b)], r2 = secondRepo(b);
+    if (r2) repos.push(r2);
+    return repos.map(function (r) { return 'repo:' + r; }).join(' ') + ' is:issue is:open "' + (b.id || name) + '" in:title,body';
+  }
+  function issCacheGet(id) {
+    try {
+      var v = JSON.parse(localStorage.getItem('screens.issues.' + id) || 'null');
+      return v && Date.now() - v.at < ISS_TTL ? v.items : null;
+    } catch (e) { return null; }
+  }
+  function issCacheSet(id, items) {
+    try { localStorage.setItem('screens.issues.' + id, JSON.stringify({ at: Date.now(), items: items })); } catch (e) { /* ignore */ }
+  }
+  function issState(text, retry) {
+    var p = document.getElementById('iss-state');
+    p.hidden = !text; p.textContent = text || '';
+    if (retry) {
+      var b = el('button', { type: 'button', class: 'retry', text: t('screens.side.issuesRetry', 'Try again') });
+      b.addEventListener('click', function () { loadIssues(true); });
+      p.appendChild(b);
+    }
+  }
+  function issRender(items) {
     var id = board.id || name;
-    document.title = (board.title || name) + ', Screens';
-    document.getElementById('title').textContent = board.title || name;
-    frame.title = board.title || name;
-    var chip = document.createElement('span'); chip.className = 'sc-id';
-    var code = document.createElement('code'); code.textContent = id;
-    var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = t('screens.copy', 'Copy');
-    btn.setAttribute('aria-label', t('screens.copyId', 'Copy screen id') + ' ' + id);
+    var ul = document.getElementById('iss-list'); ul.innerHTML = '';
+    var badge = document.getElementById('iss-count');
+    badge.hidden = false; badge.textContent = String(items.length);
+    var prefix = new RegExp('^\\s*\\[FEATURE\\]\\s*' + id.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&') + '\\s*:\\s*', 'i');
+    items.forEach(function (it) {
+      var title = (it.title || '').replace(prefix, '') || it.title;
+      var lbls = el('span', { class: 'lbls' });
+      (it.labels || []).forEach(function (l) { lbls.appendChild(el('span', { class: 'lbl', text: l })); });
+      var day = it.created ? new Date(it.created).toLocaleDateString(LANG === 'en' ? 'en-GB' : 'nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      ul.appendChild(el('li', null, [
+        el('a', { class: 'it', href: it.url, target: '_blank', rel: 'noopener', text: title }),
+        el('span', { class: 'meta', text: '#' + it.number + ' · ' + t('screens.side.issuesBy', 'opened by {login} on {date}', { login: it.login || '?', date: day }) }),
+        (it.labels || []).length ? lbls : null
+      ]));
+    });
+    issState(items.length ? '' : t('screens.side.issuesNone', 'No open issues about this screen'));
+  }
+  function loadIssues(force) {
+    var b = board, id = b.id || name, q = issQuery(b), seq = ++issSeq;
+    document.getElementById('iss-all').href = 'https://github.com/search?type=issues&q=' + encodeURIComponent(q);
+    clearTimeout(issTimer);
+    var cached = force ? null : issCacheGet(id);
+    if (cached) { issRender(cached); return; }
+    document.getElementById('iss-list').innerHTML = '';
+    document.getElementById('iss-count').hidden = true;
+    issState(t('screens.side.issuesLoading', 'Looking for open issues.'));
+    issTimer = setTimeout(function () {
+      fetch('https://api.github.com/search/issues?per_page=20&q=' + encodeURIComponent(q), {
+        headers: { Accept: 'application/vnd.github+json' }, credentials: 'omit'
+      }).then(function (r) {
+        if (r.status === 403 || r.status === 429) { var e = new Error('limit'); e.limit = true; throw e; }
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      }).then(function (d) {
+        /* GitHub's phrase search is loose: keep only issues that name the exact screen id */
+        var needle = String(id).toLowerCase();
+        var items = (d.items || []).filter(function (it) {
+          return ((it.title || '') + '\n' + (it.body || '')).toLowerCase().indexOf(needle) !== -1;
+        }).map(function (it) {
+          return { title: it.title, url: it.html_url, number: it.number, created: it.created_at,
+            login: it.user && it.user.login, labels: (it.labels || []).map(function (l) { return l.name; }) };
+        });
+        issCacheSet(id, items);
+        if (seq === issSeq) issRender(items);
+      }).catch(function (e) {
+        if (seq !== issSeq) return;
+        if (e.limit) issState(t('screens.side.issuesLimit', 'GitHub limit reached, try again in a minute.'), true);
+        else issState(t('screens.side.issuesError', 'Could not load the issues from GitHub.'));
+      });
+    }, force ? 0 : 450);
+  }
+
+  /* ---------- feedback: the repository's feature-request issue form ----------
+     GitHub prefills a form field from a query parameter named after its id.
+     problem, proposed-solution, who-benefits and priority-to-you stay empty for
+     the reader; the form sets its own labels. */
+  function feedbackFields(limit) {
+    var id = board.id || name;
+    var repo = repoOf(board), r2 = secondRepo(board);
+    var sp = srcPath(board);
+    var caps = capsOf(board), specs = board.specs || [];
+    var shownCaps = caps.slice(0, limit), shownSpecs = specs.slice(0, limit);
+    var cutCaps = shownCaps.length < caps.length, cutSpecs = shownSpecs.length < specs.length;
+    var C2 = [];
+    C2.push('Specs van dit scherm:');
+    if (!specs.length) C2.push('- nog geen spec');
+    shownSpecs.forEach(function (s) { C2.push('- [' + s.name + '](' + s.url + ')'); });
+    if (cutSpecs) C2.push('- ...');
+    if (r2) { C2.push(''); C2.push('Tweede repository: ' + r2 + ' (websitepagina\'s)'); }
+    C2.push('');
+    C2.push('<!-- screen-feedback v1');
+    C2.push('screen: ' + id);
+    C2.push('app: ' + board.app);
+    C2.push('repo: ' + repo);
+    if (r2) C2.push('repo2: ' + r2);
+    C2.push('source: ' + DS_REPO + '@main:' + sp);
+    C2.push('board: ' + DS_REPO + '@main:preview/screens/' + board.file);
+    C2.push('specs: ' + shownSpecs.map(specPath).join('; ') + (cutSpecs ? '; ...' : ''));
+    C2.push('capabilities: ' + shownCaps.map(function (x) { return x.id; }).join('; ') + (cutCaps ? '; ...' : ''));
+    C2.push('-->');
+    return [
+      ['template', 'feature-request.yml'],
+      ['title', '[FEATURE] ' + id + ': '],
+      ['app', board.app],
+      ['page', 'scherm ' + id + ' (' + (board.title || name) + ')'],
+      ['surface', LIVE + id],
+      ['object', sp + ' (' + ghBlob(DS_REPO, 'main', sp) + ')'],
+      ['spec-ref', shownCaps.map(function (x) { return x.id; }).join(', ') + (cutCaps ? ', ...' : '')],
+      ['context', C2.join('\n')]
+    ];
+  }
+  function feedbackUrl() {
+    var base = 'https://github.com/' + repoOf(board) + '/issues/new?';
+    var n = Math.max(capsOf(board).length, (board.specs || []).length);
+    var url;
+    do {
+      url = base + feedbackFields(n).map(function (f) { return f[0] + '=' + encodeURIComponent(f[1]); }).join('&');
+      n -= 1;
+    } while (url.length > MAX_URL && n >= 0);
+    return url;
+  }
+  window.screenFeedbackUrl = function () { return board ? feedbackUrl() : null; };
+
+  /* ---------- show one board (first load and every carousel step) ---------- */
+  function show(n) {
+    name = n;
+    board = S.boards[n];
+    set = setOf(board);
+    realH = null;
+    var row = set.rows.filter(function (r) { return r.id === board.row; })[0] || { id: board.row, title: '' };
+    var id = board.id || n;
+
+    document.title = (board.title || n) + ', Screens';
+    document.getElementById('title').textContent = board.title || n;
+    frame.title = board.title || n;
+
+    var holder = document.getElementById('idchip'); holder.innerHTML = '';
+    var btn = el('button', { type: 'button', text: t('screens.copy', 'Copy'), 'aria-label': t('screens.copyId', 'Copy screen id') + ' ' + id });
     btn.addEventListener('click', function () {
       if (navigator.clipboard) navigator.clipboard.writeText(id).then(function () {
         btn.textContent = t('screens.copied', 'Copied'); setTimeout(function () { btn.textContent = t('screens.copy', 'Copy'); }, 1200);
       }, function () {});
     });
-    chip.appendChild(code); chip.appendChild(btn);
-    document.getElementById('idchip').appendChild(chip);
+    holder.appendChild(el('span', { class: 'sc-id' }, [el('code', { text: id }), btn]));
 
     var where = document.getElementById('where');
     where.textContent = row.title === set.title ? '' : set.title + ' · ';
-    var ra = document.createElement('a'); ra.href = withLang('index.html') + '#row-' + set.id + '-' + row.id; ra.textContent = row.title;
-    where.appendChild(ra);
+    where.appendChild(el('a', { href: withLang('index.html') + '#row-' + set.id + '-' + row.id, text: row.title }));
 
-    if (set.themable && DS) { buildSeg(); }
-    else {
-      document.getElementById('ds-seg').hidden = true;
-      document.getElementById('ds-label').hidden = true;
-      document.getElementById('own').hidden = false;
-    }
+    var themable = !!(set.themable && DS);
+    document.getElementById('ds-seg').hidden = !themable;
+    document.getElementById('ds-label').hidden = !themable;
+    document.getElementById('own').hidden = themable;
 
-    if (board.caps || board.note) {
-      document.getElementById('note').hidden = false;
-      document.getElementById('caps').textContent = board.caps || '';
-      document.getElementById('notetext').textContent = board.note || '';
-    }
-
+    renderSide();
     links();
+    syncUrl();
+    sideTop();
     fit();
-    frame.src = fileHref();
+    loadFrame();
+  }
+
+  /* Navigating the frame with location.replace keeps the carousel out of the
+     back-button history; setting src on a loaded frame would add an entry per step. */
+  function loadFrame() {
+    var url = new URL(fileHref(), location.href).href;
+    try {
+      if (frame.contentWindow && frame.getAttribute('src')) { frame.contentWindow.location.replace(url); return; }
+    } catch (e) { /* fall through */ }
+    frame.src = url;
+  }
+
+  document.getElementById('prev').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(-1); } });
+  document.getElementById('next').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(1); } });
+
+  document.addEventListener('keydown', function (e) {
+    if (!board) return;
+    if (e.target && /input|select|textarea/i.test(e.target.tagName)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    else if (e.key === 'Home') { e.preventDefault(); jump(ORDER[0]); }
+    else if (e.key === 'End') { e.preventDefault(); jump(ORDER[ORDER.length - 1]); }
+  });
+
+  Promise.all([
+    fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    window.screensTheme.ready,
+    dictReady,
+    fetch('capabilities.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    fetch('components.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+  ]).then(function (res) {
+    S = res[0]; DS = res[1]; C = res[3]; K = res[4];
+    buildOrder();
+    var n = findBoard();
+    if (!n && params.get('start') === 'first') n = ORDER[0];
+    if (!n) {
+      document.getElementById('bar').hidden = true;
+      document.getElementById('layout').hidden = true;
+      document.getElementById('missing').hidden = false;
+      return;
+    }
+    dsId = window.screensTheme.get() || (DS && DS.default) || null;
+    if (DS) buildSeg();
+    show(n);
   }).catch(function (err) {
-    wrap.hidden = true;
+    document.getElementById('layout').hidden = true;
     var m = document.getElementById('missing'); m.hidden = false;
     m.querySelector('h2').textContent = t('screens.error', 'Could not load the screens index.') + ' (' + err.message + ')';
   });

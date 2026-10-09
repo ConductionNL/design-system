@@ -20,7 +20,7 @@ No npm packages.
 ## Add a screen
 
 1. Add `screens-src/<set>/<Name>.dc.html`.
-2. Register it. Zuiddrecht: add `"<Name>.dc.html"` to a column in `rows1.json` or `rows2.json`, and an entry under `boards` in `canvas1.json` or `canvas2.json` with `title`, `w` and `h`. Add the capability note as `notes.cap_<Name>.text` ("Capabilities: a, b.\nWat je ziet: ..."). School: add it to `order` and `boards` in that school's `canvas.json`.
+2. Register it. A Zuiddrecht board of one app: add it to that app's own file `screens-src/zuiddrecht/apps/<app>.json` (`{"rows": [["row<App>", "<row title>", [["<Name>.dc.html"]]]], "boards": {"<Name>.dc.html": {"title": ..., "w": 1440, "h": 1200}}, "notes": {"cap_<Name>": {"text": "Capabilities: a, b.\nWat je ziet: ..."}}}`), so work on different apps never edits the same file. The older boards are registered the other way: add `"<Name>.dc.html"` to a column in `rows1.json` or `rows2.json`, and an entry under `boards` in `canvas1.json` or `canvas2.json` with `title`, `w` and `h`. Add the capability note as `notes.cap_<Name>.text` ("Capabilities: a, b.\nWat je ziet: ..."). School: add it to `order` and `boards` in that school's `canvas.json`.
 3. Rebuild that board with `--only`.
 
 ## What the build does
@@ -48,3 +48,38 @@ For every board:
 5. **Thumbnail.** A headless Chrome screenshot at the board's size, scaled to 480 px wide, saved as `preview/screens/thumbs/<Key>.webp` (quality 80, lower when needed to stay under about 60 KB).
 
 Options: `--only Key` (repeatable), `--index-only`, `--no-thumbs`, `--no-measure`, `--jobs N` (default 3). Every run rewrites its outputs, so running it twice gives the same result. It exits 1 and names the board when one fails.
+
+## Capabilities, specs and repositories
+
+`capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. Run it after `build.py`, because `build.py` rewrites `screens.json` without these fields.
+
+```
+python3 scripts/screens/capabilities.py             # git fetch each app checkout first
+python3 scripts/screens/capabilities.py --no-fetch  # use what the checkouts already have
+```
+
+It reads all 20 app checkouts next to this repo (`../portaliq`, `../procest` for dossiq, `../scholiq` for learniq and so on; `--apps-dir` points elsewhere). It reads them at `origin/development`: `openspec/specs/`, `openspec/changes/`, `openspec/parity/capabilities.json` and `openspec/parity/gap-decisions.json`. When a fetch fails or `origin/development` is missing it reads the checkout's `HEAD` and lists that under `warnings` in the output. It needs no network beyond `git fetch`, and running it twice gives the same result. Apps without boards on the design canvas are listed too, without screens.
+
+It writes:
+
+- `preview/screens/capabilities.json`: one entry per capability under the key `<app>/<id>`, plus an `apps` block with counts per app. Every spec and every parity matrix row of every app is in it, with or without a screen.
+- In the same file, a `features` block under the key `<app>/<feature>`: every capability sits under exactly one feature, and `/capabilities` shows one table row per feature. The matrix's own `features` list is the authority, and a row's `feature` field names its slug. A spec goes to the feature that lists it, else to the feature most of its rows are in. An app without a `features` list is grouped by its rows' old `feature` values or their area, and those groups are marked as not yet in the feature list. Whatever is left goes under `<app>/_none`, shown as not tied to a feature.
+- `preview/screens/screens.json`: every board gets `repo`, `repoUrl`, `repos` (the school website boards also name portaliq), `src` (path in this repo), `capIds` (from the board's capability note), `matrixCapIds` (matrix rows whose `screen` field names the board) and `specs`.
+
+How a token in a board's capability note is read: the part before the first space or bracket is the token, and anything in brackets is kept as a note. The token is looked up as a spec, then a matrix row, then an open change, first in the board's own app and then in the only other app that has it. Tokens starting with `of-` (Open Formulieren) or `oi-` (Open Inwoner), or starting with `NLDS` or `Den Haag`, are external references. Anything else is free text.
+
+A capability is on a screen when a matrix row's `screen.board` (or `built.screen.board`) names a board, or a board's capability note names it. A row with `screen: {"board": null, "reason": "..."}` has no screen by nature (an API, a background job) and says why. A spec is on the screens of the rows that link it; a spec no row links can be placed with the matrix's top-level `specScreens`: `{"<spec>": {"board": ["<Board>"]}}` or `{"<spec>": {"board": null, "reason": "..."}}`. The run prints per app how many are on a screen, have a reason, or are missing one (decided-no left out); the page filters on the same three states.
+
+What each status means:
+
+| status | meaning |
+|---|---|
+| built | the matrix row says it ships (`built.state`) |
+| building | the matrix row says work is under way |
+| specified | specified but not built: a matrix row in that state, or a spec that no matrix row points at |
+| decided-no | the matrix row was decided against (see `decision`) |
+| in-flight | an open OpenSpec change under `openspec/changes/` |
+| designed | only an external reference or free text, carried by at least one screen: drawn, not specified |
+| external | an external reference that no screen carries |
+
+A spec takes the most advanced state of the matrix rows that point at it (through the row's `feature`, or through a row id named in the spec's Purpose).

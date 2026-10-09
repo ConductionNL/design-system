@@ -4,7 +4,8 @@ Source: `audit/laneA.md` to `audit/laneF.md` (659 boards). Decisions by Ruben on
 
 ## 1. Chrome
 - App boards: `DqKop` import plus `AppZijbalk` (or the app's own sidebar import), never a hand copy of the top bar. One nav array per app, identical on every board of that app; module pages open from the Geavanceerd foldout, not as extra simple-menu entries. `active` is never empty.
-- Admin settings: the Nextcloud admin settings chrome (settings nav, breadcrumb "Beheerinstellingen / App / Sectie"), never the app sidebar. Personal settings: the same chrome with the personal nav.
+- Admin settings: the Nextcloud admin settings chrome (settings nav, breadcrumb "Beheerinstellingen / App / Sectie"), never the app sidebar.
+- Personal settings always live in Nextcloud's personal settings dialog (Ruben, 9 Oct), never on an app page and never in the settings chrome. One frame for every app, taken from `DqPersoonlijkeInstellingen`: a 720 dialog over a dimmed copy of a real board of that app, eyebrow "Uw account", title "Persoonlijke instellingen", the `NcPersoonlijkNav` import on the left (Nextcloud's personal sections plus the app's own section, which is open), the app's sections stacked on the right (h3 17 bold with an icon, hairline between sections), and a footer "Wijzigingen worden meteen bewaard · App" with one secondary "Sluiten". An app that only extends a Nextcloud section (thematiq on Uiterlijk en toegankelijkheid) opens that section and adds no entry of its own.
 - Citizen boards: `Kop`, `MijnMenu` (import, never an inline copy), `Voet`. No buildiq square in the citizen header (drop `beheer=true` on MijnOverzicht and SessieVerloopt).
 - Content padding 24px 28px. Sidebar footer: Help then Geavanceerd. No "Meer" group in any nav.
 
@@ -48,7 +49,7 @@ Source: `audit/laneA.md` to `audit/laneF.md` (659 boards). Decisions by Ruben on
 - Toolbar as the index list on top. Columns minmax(240px, 1fr), gap 16, padding 12, ground #eceef1, horizontal scroll. Column header: dot, title, white count badge, optional sum line. Card: title, sub line, status pill, footer with due date and avatar. Dashed "Nog N tonen" when a column is cut. Primary in the header. Mini boards (DcOverleg, DcDashboard) keep their anatomy.
 
 ## 9. Settings pages
-- Admin settings in the settings chrome; folder tabs with grey count badges where sections are many; one save per section as a primary at the bottom right of its card, or one header Opslaan plus the "Wijzigingen" side card when the page is one form. Never both. Documentatie is a secondary left of buildiq. Personal settings say "wordt direct opgeslagen" in the subtitle, or end with Annuleren plus Opslaan when they are a dialog.
+- Admin settings in the settings chrome; folder tabs with grey count badges where sections are many; one save per section as a primary at the bottom right of its card, or one header Opslaan plus the "Wijzigingen" side card when the page is one form. Never both. Documentatie is a secondary left of buildiq. Personal settings are the Nextcloud personal settings dialog of section 1: they save at once, say so in the footer and end with "Sluiten", never Annuleren plus Opslaan.
 
 ## 10. Smaller patterns
 - Empty state: inside the card, icon, one bold line, one grey sentence, optional button; dashed boxes only for drop zones.

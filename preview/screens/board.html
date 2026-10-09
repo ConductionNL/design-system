@@ -33,7 +33,15 @@
 
   /* Board and sidebar: side by side on wide screens, stacked below 1100 px */
   .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
-  .stage-wrap { padding: var(--space-6); min-width: 0; }
+  .stage-wrap { position: relative; padding: var(--space-6) 72px; min-width: 0; }
+  /* Previous and next beside the screen, for mouse and touch; the arrow keys and the bar buttons do the same. */
+  .edge { position: absolute; top: 0; bottom: 0; width: 72px; display: flex; flex-direction: column; align-items: center; }
+  .edge.l { left: 0; } .edge.r { right: 0; }
+  .edge a { position: sticky; top: calc(50vh - 22px); margin-top: var(--space-6); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: white; color: var(--c-blue-cobalt); border: 1px solid var(--c-cobalt-200); box-shadow: var(--shadow-1); text-decoration: none; }
+  .edge a:hover { border-color: var(--c-blue-cobalt); color: var(--c-coral-600); }
+  .edge a:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .edge svg { width: 22px; height: 22px; }
   .stage { position: relative; margin: 0 auto; background: white; box-shadow: var(--shadow-2); overflow: hidden; }
   .stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: top left; background: white; }
 
@@ -84,6 +92,9 @@
     .side { position: static; max-height: none; overflow: visible; padding: 0 var(--space-6) var(--space-8); }
   }
   @media (max-width: 720px) {
+    .stage-wrap { padding-left: 52px; padding-right: 52px; }
+    .edge { width: 52px; }
+    .edge a { width: 40px; height: 40px; }
     .stage-wrap { padding: var(--space-4) 0; }
     .side { padding: 0 var(--space-4) var(--space-8); }
     .bar .hint { display: none; }
@@ -117,7 +128,9 @@
 
 <div class="layout" id="layout">
   <div class="stage-wrap" id="stage-wrap">
+    <div class="edge l"><a id="side-prev" href="#" rel="prev" aria-label="Previous" data-i18n-attr="aria-label:screens.board.prev"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></a></div>
     <div class="stage" id="stage"><iframe id="frame" title="Screen" scrolling="no"></iframe></div>
+    <div class="edge r"><a id="side-next" href="#" rel="next" aria-label="Next" data-i18n-attr="aria-label:screens.board.next"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></a></div>
   </div>
 
   <aside class="side" id="side" aria-label="About this screen" data-i18n-attr="aria-label:screens.side.label">
@@ -347,6 +360,9 @@
     var prev = document.getElementById('prev'), next = document.getElementById('next');
     prev.href = hrefFor(p); prev.title = S.boards[p].title || p;
     next.href = hrefFor(q); next.title = S.boards[q].title || q;
+    var sp = document.getElementById('side-prev'), sn = document.getElementById('side-next');
+    sp.href = prev.href; sp.title = prev.title;
+    sn.href = next.href; sn.title = next.title;
     document.getElementById('full').href = fileHref();
     var back = 'index.html' + (set.themable && dsId ? '?ds=' + encodeURIComponent(dsId) : '');
     document.getElementById('back').href = withLang(back) + '#' + anchorOf(board, name);
@@ -692,6 +708,8 @@
 
   document.getElementById('prev').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(-1); } });
   document.getElementById('next').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(1); } });
+  document.getElementById('side-prev').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(-1); } });
+  document.getElementById('side-next').addEventListener('click', function (e) { if (S && board) { e.preventDefault(); step(1); } });
 
   document.addEventListener('keydown', function (e) {
     if (!board) return;

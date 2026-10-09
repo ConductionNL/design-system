@@ -123,6 +123,7 @@
   <aside class="side" id="side" aria-label="About this screen" data-i18n-attr="aria-label:screens.side.label">
     <section class="box" id="about" hidden>
       <h2 data-i18n="screens.side.about">About this screen</h2>
+      <p class="txt" id="blurbtext" style="color:var(--c-cobalt-700)" hidden></p>
       <p class="txt" id="notetext"></p>
     </section>
     <section class="box">
@@ -464,7 +465,9 @@
     document.getElementById('feedback').href = feedbackUrl();
     loadIssues(false);
     var about = document.getElementById('about');
-    about.hidden = !board.note;
+    about.hidden = !board.note && !board.blurb;
+    document.getElementById('blurbtext').textContent = board.blurb ? board.app + ': ' + board.blurb : '';
+    document.getElementById('blurbtext').hidden = !board.blurb;
     document.getElementById('notetext').textContent = board.note || '';
   }
 

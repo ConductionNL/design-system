@@ -51,6 +51,7 @@
   .sc-row > summary .chev { width: 18px; height: 18px; flex: none; color: var(--c-cobalt-400); transition: transform 160ms; }
   .sc-row[open] > summary .chev { transform: rotate(90deg); }
   .sc-row > summary .rt { font-size: 17px; font-weight: 600; color: var(--c-cobalt-900); flex: 1 1 320px; min-width: 0; }
+  .sc-row > summary .rt .blurb { display: block; font-size: 13px; font-weight: 400; color: var(--c-cobalt-700); margin-top: 2px; line-height: 1.4; }
   .sc-row > summary .app { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-700); background: var(--c-cobalt-50); border-radius: var(--radius-sm); padding: 2px 8px; }
   .sc-row > summary .n { font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--c-cobalt-400); min-width: 9ch; text-align: right; }
   .sc-row .tiles {
@@ -302,7 +303,7 @@
         var chev = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         chev.setAttribute('viewBox', '0 0 24 24'); chev.setAttribute('class', 'chev'); chev.setAttribute('aria-hidden', 'true');
         chev.innerHTML = '<path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
-        var summary = el('summary', null, [chev, el('span', { class: 'rt', text: row.title }),
+        var summary = el('summary', null, [chev, el('span', { class: 'rt' }, [document.createTextNode(row.title), row.blurb ? el('span', { class: 'blurb', text: row.blurb }) : null]),
           el('span', { class: 'app', text: row.app || set.id }),
           el('span', { class: 'n', text: t('screens.row.count', '{n} screens', { n: count }) })]);
         var det = el('details', { class: 'sc-row', id: 'row-' + set.id + '-' + row.id, 'data-key': key, 'data-app': row.app || set.id }, [summary, el('div', { class: 'tiles' })]);

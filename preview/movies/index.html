@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Films, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Every Conduction film with its slides per direction, the rendered videos to download, and the film kit: the skill, the bible, the engine and the scripts.">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="../identity/film/film.css">
+<style>
+  /* The overview: one card per film, then per film its directions, each with its slides. */
+  .mv-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin: 0 0 var(--space-6); }
+  .mv-toolbar input[type="search"] { flex: 1 1 260px; min-width: 0; min-height: 40px; font: inherit; font-size: 15px; padding: 8px 12px; color: var(--fp-ink); background: var(--fp-card); border: 1px solid var(--fp-line); border-radius: var(--radius-sm); }
+  .mv-toolbar label { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; color: var(--fp-body); }
+  .mv-toolbar input[type="checkbox"] { width: 18px; height: 18px; margin: 0; }
+  .mv-toolbar .count { margin-left: auto; font-family: var(--conduction-typography-font-family-code); font-size: 12px; color: var(--fp-muted); }
+  .mv-toolbar input:focus-visible { outline: 2px solid var(--conduction-color-focus-ring, var(--fp-mark)); outline-offset: 1px; }
+
+  .mv-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: var(--space-4); margin: 0 0 var(--space-10); }
+  .mv-card { display: flex; flex-direction: column; background: var(--fp-card); border: 1px solid var(--fp-line); border-radius: var(--radius-lg); overflow: hidden; text-decoration: none; color: inherit; }
+  .mv-card:hover { border-color: var(--fp-link); }
+  .mv-card img, .mv-card .ph { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--c-blue-cobalt); }
+  .mv-card .body { padding: var(--space-3) var(--space-4) var(--space-4); display: grid; gap: 4px; }
+  .mv-card strong { color: var(--fp-ink); font-size: 16px; }
+  .mv-card span { font-size: 13px; color: var(--fp-muted); }
+
+  .mv-film { border-top: 1px solid var(--fp-line); padding-top: var(--space-8); margin-top: var(--space-8); scroll-margin-top: var(--space-6); }
+  .mv-film > header { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); align-items: baseline; margin-bottom: var(--space-4); }
+  .mv-film > header h2 { margin: 0; }
+  .mv-film > header a { font-size: 14px; }
+  .mv-dir { background: var(--fp-card); border: 1px solid var(--fp-line); border-radius: var(--radius-lg); padding: var(--space-5); margin: 0 0 var(--space-5); display: grid; gap: var(--space-4); min-width: 0; }
+  .mv-dir h3 { margin: 0; }
+  .mv-dir .who { margin: 4px 0 0; font-size: 14px; color: var(--fp-muted); }
+  .mv-dir .links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: 14px; }
+  .chip { display: inline-block; font-family: var(--conduction-typography-font-family-code); font-size: 11px; padding: 2px 8px; border-radius: 999px; margin-left: var(--space-2); vertical-align: 2px; color: var(--fp-ink); background: var(--fp-highlight); }
+  .chip.ok { color: var(--conduction-color-status-success-ink); background: var(--conduction-color-status-success-tint); }
+  .chip.wait { color: var(--conduction-color-status-warning-ink); background: var(--conduction-color-status-warning-tint); }
+
+  .slides { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+  .slides.tall { grid-template-columns: repeat(auto-fill, minmax(min(120px, 100%), 1fr)); }
+  .slides li { margin: 0; min-width: 0; }
+  .slides a { display: block; text-decoration: none; }
+  .slides img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); background: var(--c-blue-cobalt); }
+  .slides span { display: block; margin-top: 6px; font-size: 13px; line-height: 1.35; color: var(--fp-body); }
+  .slides b { font-family: var(--conduction-typography-font-family-code); font-weight: 500; font-size: 11px; color: var(--fp-muted); margin-right: 6px; }
+
+  .videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: var(--space-4); }
+  .videos figure { margin: 0; display: grid; gap: var(--space-2); }
+  .videos video { width: 100%; aspect-ratio: 16 / 9; background: var(--c-cobalt-900); border-radius: var(--radius-sm); }
+  .videos figcaption { display: flex; justify-content: space-between; gap: var(--space-3); font-size: 14px; }
+  .videos figcaption span { color: var(--fp-muted); font-family: var(--conduction-typography-font-family-code); font-size: 12px; }
+
+  .kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: var(--space-4); }
+  .kit .card-x { display: grid; gap: var(--space-2); align-content: start; }
+  .kit .card-x p { margin: 0; }
+  .note-private { border-left: 3px solid var(--fp-mark); padding: var(--space-2) var(--space-4); margin: var(--space-6) 0 0; }
+  @media (max-width: 700px) { .kit-body { padding: var(--space-8) 16px; } .mv-dir { padding: var(--space-4); } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="crumb"><a href="../index.html">Design system</a> &nbsp;/&nbsp; Films</div>
+  <div class="eyebrow">Films</div>
+  <h1>Every film, with its slides.</h1>
+  <p>Each Conduction film, per direction: the audience it speaks to and the slides it is built from, so you can judge a film before it is rendered. Where a film is rendered, you can watch it here and download it, in Dutch or English, with or without the voice-over.</p>
+  <div class="meta">
+    <span>Films<strong id="m-films">&nbsp;</strong></span>
+    <span>Directions<strong id="m-dirs">&nbsp;</strong></span>
+    <span>Slides<strong id="m-slides">&nbsp;</strong></span>
+    <span>Videos<strong id="m-videos">&nbsp;</strong></span>
+    <span>Method<strong><a class="on-hero" href="../identity/film/index.html">Film principles</a></strong></span>
+  </div>
+</div>
+
+<main class="kit-body">
+
+  <h2 class="section-label">Overview</h2>
+  <div class="mv-toolbar">
+    <input type="search" id="q" placeholder="Search by app, audience or slide" aria-label="Search films">
+    <label><input type="checkbox" id="only-video"> Only films with a video</label>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+  <nav class="mv-cards" id="cards" aria-label="Films"></nav>
+
+  <div id="films"></div>
+
+  <h2 class="section-label" id="kit">Download the film kit</h2>
+  <div class="kit">
+    <div class="card-x">
+      <h3>The whole kit</h3>
+      <p>The film skill, the film bible, the engine, the template and the scripts that render, score and check a film, in one zip.</p>
+      <p><a href="conduction-film-kit.zip" download>conduction-film-kit.zip</a></p>
+    </div>
+    <div class="card-x">
+      <h3>The skill</h3>
+      <p>How a film is planned, timed, built, scored, reviewed and delivered, with its references.</p>
+      <p><a href="kit/.claude/skills/film/SKILL.md">SKILL.md</a> &middot; <a href="kit/.claude/skills/film/references/brief-template.md">Brief template</a> &middot; <a href="kit/.claude/skills/film/references/review-loop.md">Review loop</a></p>
+    </div>
+    <div class="card-x">
+      <h3>The bible</h3>
+      <p>Every decision made about our films, round by round. Where the skill and the bible disagree, the bible wins.</p>
+      <p><a href="../films/BIBLE.md">BIBLE.md</a></p>
+    </div>
+    <div class="card-x">
+      <h3>The tools</h3>
+      <p>Render all four variants of a film in one go, or look up what an app can do before you write its brief.</p>
+      <p><a href="kit/scripts/films/variants.mjs">variants.mjs</a> &middot; <a href="kit/scripts/films/app-facts.mjs">app-facts.mjs</a> &middot; <a href="kit/scripts/films/film.mjs">film.mjs</a></p>
+    </div>
+  </div>
+  <p class="note-private">The voice-over is Ruben's voice, generated by a model trained on his recordings. Only the generated lines are published, inside each film. The model, the recordings and the training data stay in a private repository, so no one can make him say something he did not say.</p>
+
+  <h2 class="section-label">Make one</h2>
+  <p>Look up what the app does with <code>node scripts/films/app-facts.mjs &lt;app&gt;</code>, open its <a href="../screens/index.html">screens</a>, then fill in the <a href="../identity/film/brief.html">brief</a>.</p>
+
+</main>
+
+<div class="kit-footer">
+  <span>Conduction Design System &middot; films in <code>preview/films/</code>, method in <code>.claude/skills/film/</code></span>
+  <span><a href="../identity/film/index.html">Film principles</a> &middot; <a href="../index.html">&larr; Back to system</a></span>
+</div>
+
+<script>
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const LANG = { nl: 'Dutch', en: 'English' }
+  function cutLabel(cut) {
+    const m = cut.match(/^(nl|en)-(voice|novoice)$/)
+    if (m) return `${LANG[m[1]]}, ${m[2] === 'voice' ? 'with voice-over' : 'without voice-over'}`
+    return { animatic: 'Animatic', '1080p': 'Master, 1080p' }[cut] || cut
+  }
+  const mb = (b) => `${(b / 1048576).toFixed(1)} MB`
+
+  function slides(d) {
+    if (!d.frames.length) return '<p class="who">No slides drawn yet.</p>'
+    const tall = /9x16|4x5/.test(d.format || '') ? ' tall' : ''
+    const [w, h] = { '9x16': [324, 576], '4x5': [324, 405], '1x1': [324, 324] }[d.format] || [576, 324]
+    return `<ol class="slides${tall}">${d.frames.map((f, i) => `
+      <li><a href="${esc(f.file)}" target="_blank" rel="noopener"><img src="${esc(f.file)}" alt="Slide ${i + 1}: ${esc(f.title)}" loading="lazy" width="${w}" height="${h}"></a>
+      <span><b>${i + 1}</b>${esc(f.title)}</span></li>`).join('')}</ol>`
+  }
+  function videos(p) {
+    if (!p || !p.videos.length) return ''
+    return `<div class="videos">${p.videos.map((v) => `
+      <figure><video controls preload="none" ${p.poster ? `poster="${esc(p.poster)}"` : ''} src="${esc(v.file)}" aria-label="${esc(p.title)}, ${esc(cutLabel(v.cut))}"></video>
+      <figcaption><a href="${esc(v.file)}" download>${esc(cutLabel(v.cut))}</a><span>${mb(v.bytes)}</span></figcaption></figure>`).join('')}</div>`
+  }
+  function status(p, d) {
+    if (p && p.videos.length) return '<span class="chip ok">rendered</span>'
+    if (p) return '<span class="chip">plays in the browser</span>'
+    return d && d.frames.length ? '<span class="chip wait">slides only</span>' : ''
+  }
+  function links(p, d) {
+    const a = []
+    if (p) a.push(`<a href="${esc(p.play)}">Play the film</a>`)
+    if (d) a.push(`<a href="${esc(d.storyboard)}">Storyboard, live</a>`)
+    if (p && p.brief) a.push(`<a href="${esc(p.brief)}">Brief</a>`)
+    if (p && p.sources) a.push(`<a href="${esc(p.sources)}">Sources</a>`)
+    return a.length ? `<div class="links">${a.join('')}</div>` : ''
+  }
+  function direction(d) {
+    const who = [d.audience, d.persona].filter(Boolean).join('. ')
+    return `<section class="mv-dir" aria-labelledby="d-${esc(d.key)}">
+      <div><h3 id="d-${esc(d.key)}">${esc(d.title)}${status(d.film, d)}</h3>${who ? `<p class="who">${esc(who)}</p>` : ''}</div>
+      ${links(d.film, d)}${videos(d.film)}${slides(d)}</section>`
+  }
+  function page(p) {
+    return `<section class="mv-dir" aria-labelledby="d-${esc(p.key)}">
+      <div><h3 id="d-${esc(p.key)}">${esc(p.title)}${status(p)}</h3>${p.description ? `<p class="who">${esc(p.description)}</p>` : ''}</div>
+      ${links(p)}${videos(p)}</section>`
+  }
+
+  fetch('movies.json').then((r) => r.json()).then(({ films }) => {
+    for (const f of films) for (const d of f.directions) d.key = `${f.slug}-${d.direction}`
+    const all = (f) => [...f.directions.map((d) => d.film).filter(Boolean), ...f.films]
+    const vids = (f) => all(f).reduce((n, p) => n + p.videos.length, 0)
+    const poster = (f) => all(f).find((p) => p.poster)?.poster || f.directions.find((d) => d.frames.length)?.frames[1]?.file || f.directions.find((d) => d.frames.length)?.frames[0]?.file
+    document.getElementById('m-films').textContent = films.length
+    document.getElementById('m-dirs').textContent = films.reduce((n, f) => n + f.directions.length, 0)
+    document.getElementById('m-slides').textContent = films.reduce((n, f) => n + f.directions.reduce((s, d) => s + d.frames.length, 0), 0)
+    document.getElementById('m-videos').textContent = films.reduce((n, f) => n + vids(f), 0)
+
+    const cards = document.getElementById('cards'), list = document.getElementById('films')
+    cards.innerHTML = films.map((f) => {
+      const img = poster(f)
+      const bits = [f.directions.length ? `${f.directions.length} direction${f.directions.length > 1 ? 's' : ''}` : '', vids(f) ? `${vids(f)} video${vids(f) > 1 ? 's' : ''}` : all(f).length ? 'plays in the browser' : 'slides only'].filter(Boolean)
+      return `<a class="mv-card" href="#${esc(f.slug)}" data-film="${esc(f.slug)}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="ph"></span>'}
+        <span class="body"><strong>${esc(f.title)}</strong><span>${esc(f.slug)} &middot; ${esc(bits.join(', '))}</span></span></a>`
+    }).join('')
+    list.innerHTML = films.map((f) => `
+      <article class="mv-film" id="${esc(f.slug)}" data-film="${esc(f.slug)}">
+        <header><h2>${esc(f.title)}</h2>${f.brief ? `<a href="${esc(f.brief)}">Brief</a>` : ''}<a href="#cards">Back to the overview</a></header>
+        ${f.directions.map(direction).join('')}${f.films.map(page).join('')}
+      </article>`).join('')
+
+    const text = Object.fromEntries(films.map((f) => [f.slug, [f.slug, f.title, ...f.directions.flatMap((d) => [d.title, d.audience, d.persona, ...d.frames.map((x) => x.title)]), ...all(f).flatMap((p) => [p.title, p.description])].join(' ').toLowerCase()]))
+    const hasVideo = Object.fromEntries(films.map((f) => [f.slug, vids(f) > 0]))
+    const q = document.getElementById('q'), only = document.getElementById('only-video'), count = document.getElementById('count')
+    function filter() {
+      const words = q.value.toLowerCase().split(/\s+/).filter(Boolean)
+      let n = 0
+      for (const el of document.querySelectorAll('[data-film]')) {
+        const s = el.dataset.film
+        const show = words.every((w) => text[s].includes(w)) && (!only.checked || hasVideo[s])
+        el.hidden = !show
+        if (show && el.tagName === 'ARTICLE') n++
+      }
+      count.textContent = `${n} of ${films.length} films`
+    }
+    q.addEventListener('input', filter)
+    only.addEventListener('change', filter)
+    filter()
+    if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView()
+  })
+</script>
+</body>
+</html>

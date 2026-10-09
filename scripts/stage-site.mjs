@@ -7,6 +7,7 @@
 // `node scripts/stage-site.mjs`.
 import { cpSync, mkdirSync, writeFileSync, existsSync, rmSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 rmSync('_site', { recursive: true, force: true });
 mkdirSync('_site', { recursive: true });
@@ -26,6 +27,9 @@ for (const [src, dest] of layers) {
 for (const f of ['tokens.css', 'typography.css']) {
   if (existsSync(f)) cpSync(f, `_site/${f}`);
 }
+
+// The film kit (skill, bible, engine, scripts) as files and a zip under /movies.
+execFileSync(process.execPath, ['scripts/films/kit-zip.mjs', '_site'], { stdio: 'inherit' });
 
 // Custom-domain claim (harmless under Workers) + disable Jekyll processing.
 writeFileSync('_site/CNAME', 'identity.conduction.nl\n');

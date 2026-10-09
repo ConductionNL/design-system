@@ -31,6 +31,7 @@ Source: `audit/laneA.md` to `audit/laneF.md` (659 boards). Decisions by Ruben on
 ## 4. Detail pages
 - Folder tabs with grey count badges, no icons, Overzicht first, Historie as the last tab (not a section), Acties button right of the strip, one strip per page, no overflow tab named "Meer".
 - Tab and panel join (Ruben, 9 Oct): the panel card under the strip has its own full border with the radius `0 12px 12px 12px`; the strip has no underline and is `position: relative`, so the open tab (white, `margin-bottom: -1px`) paints over the card's top border and flows into it. No line under the open tab, no stray line above the top right corner. Copy it from `Tabs.dc.html`.
+- Subpages (Ruben, 9 Oct): a page reached through "Ga naar" in the Acties menu is not a tab of its own, so the strip stays on one row. It opens its parent tab (usually Overzicht) with the same join, and names itself in a small subheading at the top of the panel: "Overzicht / Actiepunten", parent as a link, subpage in bold with `aria-current="page"`. Example: DcBesluitActiepunten, DcVergaderingZaaksysteem (parent Stukken).
 - Side column 300px of small cards (wie, deadline, gekoppeld), Historie card with the kenmerk line at the end.
 - Stepper and "Wat nu?" card only where the manifest has nextStep. The "Wat nu?" card holds the one primary next-step button.
 - No avatar in the title row; the last breadcrumb is the object's kenmerk (zaaknummer, ticketnummer) where the object has one, otherwise the title; the h1 carries the title (Ruben, 8 Oct); the aria-label of the tablist names the object.

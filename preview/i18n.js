@@ -39,14 +39,28 @@
     } catch (e) { return DEFAULT_LANG; }
   }
 
+  /* The dictionary sits next to this script. Resolve it from the script's
+     own URL so it loads from any page depth and from any site root
+     (identity.conduction.nl serves preview/ as the root, so a hard-coded
+     /preview/ path 404s there). */
+  const SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
+
+  function dictUrl(lang) {
+    const file = 'i18n.' + lang + '.json';
+    return SCRIPT_SRC ? new URL(file, SCRIPT_SRC).href : file;
+  }
+
   function fetchDict(lang) {
-    return fetch('/preview/i18n.' + lang + '.json', {credentials: 'omit'})
+    return fetch(dictUrl(lang), {credentials: 'omit'})
       .then(r => r.ok ? r.json() : null)
       .catch(() => null);
   }
 
   function get(dict, key) {
     if (!dict || !key) return null;
+    /* The dictionary uses flat dotted keys ("kit.title"); try that first,
+       then fall back to nested objects. */
+    if (typeof dict[key] === 'string') return dict[key];
     let cur = dict;
     for (const seg of key.split('.')) {
       if (cur == null || typeof cur !== 'object') return null;

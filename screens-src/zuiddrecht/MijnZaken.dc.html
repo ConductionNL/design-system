@@ -41,7 +41,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <span style="font-size: 16px; color: #4a4a4a; line-height: 1.5">Kiest u een vestiging, dan ziet u alleen de zaken van die vestiging. Logt u in voor één vestiging, dan ziet u alleen die vestiging en kunt u niet kiezen.</span>
       </div>
       <div role="tablist" aria-label="Zaken filteren" style="display: flex; gap: 4px; border-bottom: 2px solid #d3d8df">
-        <button type="button" role="tab" aria-selected="true" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px; border: 0; background: transparent; font: 700 17px 'Fira Sans', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #cc0000">Lopend<span style="min-width: 22px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 11px; background: #e4e6ea; color: #3d4047; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">3</span></button>
+        <button type="button" role="tab" aria-selected="true" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px; border: 0; background: transparent; font: 700 17px 'Fira Sans', sans-serif; color: #1a1a1a; box-shadow: inset 0 -4px 0 #cc0000">Lopend<span style="min-width: 22px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 11px; background: #e4e6ea; color: #3d4047; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">4</span></button>
         <button type="button" role="tab" aria-selected="false" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px; border: 0; background: transparent; font: 600 17px 'Fira Sans', sans-serif; color: #3669a5">Afgerond<span style="min-width: 22px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 11px; background: #e4e6ea; color: #3d4047; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">5</span></button>
       </div>
       <div role="status" style="display: flex; gap: 12px; padding: 16px 20px; border-radius: 4px; background: #fff4de; border: 1px solid #e8c77d; align-items: center">
@@ -50,13 +50,13 @@ a{color:#3669a5}a:hover{color:#234a78}
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#7a4f00" aria-hidden="true" style="flex: none"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>
       </div>
       <ul aria-label="Lopende zaken" class="zd-cases" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 20px">
-        <sc-for list="{{ cases }}" as="c" hint-placeholder-count="3">
+        <sc-for list="{{ cases }}" as="c" hint-placeholder-count="4">
           <li style="margin-top: 20px"><div class="zd-case" style="position: relative; isolation: isolate; box-sizing: border-box; height: 100%; min-height: 240px; perspective: 1800px">
               <span class="zd-case-bg" aria-hidden="true" style="position: absolute; z-index: -1; inset: 0; transform-origin: 50% 100%; border-radius: 0 12px 12px 12px; background: #e4ecf6"><span style="position: absolute; top: -20px; left: 0; width: 60%; height: 25px; border-top-left-radius: 12px; background: #e4ecf6"></span><span style="position: absolute; top: -20px; left: 55%; width: 10%; height: 22px; transform: skewX(30deg); background: #e4ecf6"></span></span>
               <span class="zd-case-paper" aria-hidden="true" style="position: absolute; top: 8px; right: 8px; width: 50%; height: 20px; border-radius: 0 12px 0 0; background: #ffffff"></span>
               <div class="zd-case-body" style="position: relative; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; gap: 12px; padding: 40px 20px 20px">
                 <span style="font-size: 15px; color: #4a4a4a">Zaaknummer {{ c.number }}</span>
-                <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 20px; font-weight: 700; line-height: 1.35"><a class="zd-case-link" href="Zaak.dc.html" style="color: #3669a5; text-decoration: underline">{{ c.title }}</a></span><sc-if value="{{ c.hasVia }}" hint-placeholder-val="{{ false }}"><span style="font-size: 15px; line-height: 1.45; color: #4a4a4a">{{ c.via }}</span></sc-if></span>
+                <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 20px; font-weight: 700; line-height: 1.35"><a class="zd-case-link" href="{{ c.href }}" style="color: #3669a5; text-decoration: underline">{{ c.title }}</a></span><sc-if value="{{ c.hasVia }}" hint-placeholder-val="{{ false }}"><span style="font-size: 15px; line-height: 1.45; color: #4a4a4a">{{ c.via }}</span></sc-if></span>
                 <span style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 12px; padding-top: 14px; border-top: 1px solid #c5d3e6"><span style="{{ c.tag }}">{{ c.status }}</span><span style="display: flex; flex-direction: column; gap: 2px; font-size: 15px"><span style="color: #4a4a4a">Uiterlijk klaar op</span><strong style="font-size: 16px">{{ c.deadline }}</strong></span></span>
               </div>
             </div></li>
@@ -97,9 +97,10 @@ class Component extends DCLogic {
     const tag = (bg, fg) => 'padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
     const cases = [
       { number: '2026-0082', title: 'Verlichting fietspad Lindelaan', status: 'Ontvangen', tag: tag('#ffffff', '#234a78'), deadline: '1 november 2026' },
+      { number: '2026-0087', title: 'Onderhoud speeltuinen Oosthaven', status: 'Wacht op u', tag: tag('#fff4de', '#7a4f00'), deadline: 'termijn staat stil', href: 'ZaakWooVerzoek.dc.html' },
       { number: '2026-0061', title: 'Parkeervergunning binnenstad', status: 'Wacht op u', tag: tag('#fff4de', '#7a4f00'), deadline: '25 oktober 2026' },
       { number: '2026-0074', title: 'Terrasvergunning Lindelaan 4', status: 'In behandeling', tag: tag('#ffffff', '#234a78'), deadline: '12 november 2026', hasVia: true, via: 'Zaak van Bakkerij Lindelaan B.V., u ziet hem via uw machtiging' }
-    ].map((c) => Object.assign({ hasVia: false, via: '' }, c));
+    ].map((c) => Object.assign({ hasVia: false, via: '', href: 'Zaak.dc.html' }, c));
     const closed = [
       { number: '2026-0047', title: 'Woo-verzoek bestemmingsplan Lindelaan', via: 'Woo-verzoek', status: 'Besluit genomen', done: '8 oktober 2026' },
       { number: '2026-0033', title: 'Melding losse stoeptegel Kerkplein', via: 'Melding openbare ruimte', status: 'Afgehandeld', done: '12 september 2026' }

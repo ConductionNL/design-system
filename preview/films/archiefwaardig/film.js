@@ -101,6 +101,7 @@ film.music = {
 	voice: TL.voice.map(({ src, at, gain }) => ({ src, at, gain })),
 }
 
+film.langs = ['nl'] // Dutch only for now; ?voice=0 gives the same film without the voice-over
 film.board = { film: 'archiefwaardig', variant: 'nl', meta: { title: 'Archiefwaardig', words: TL.captions.map((c) => c.text).join(' '), animatic: true } }
 window.__archiefwaardig = {
 	scenes: SCENES.map((S) => ({ id: S.id, take: S.take, beats: S.beats, bars: S.beats / 4, start: +(O + S.start).toFixed(4), end: +(O + S.end).toFixed(4), need: S.need, caption: PLANS[S.id].items.map((it) => it.display).join(' ') })),

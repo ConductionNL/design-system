@@ -158,6 +158,16 @@ export const FORMATS = {
 	'16x9': { width: 1920, height: 1080 },
 }
 
+/**
+ * The variant a page is asked to play: ?lang=nl|en picks the language of the written text and the
+ * voice takes, ?voice=0 leaves the voice-over out while every written word stays. A film lists the
+ * languages it has in film.langs; scripts/films/variants.mjs refuses a language the film lacks.
+ */
+export function variant(fallbackLang = document.documentElement.lang || 'en') {
+	const q = new URLSearchParams(location.search)
+	return { lang: q.get('lang') || fallbackLang, voice: q.get('voice') !== '0' }
+}
+
 export class Film {
 	constructor({ mount, format = '9x16', fps = 60, duration = 15, bpm = 128, background = '#21468B', safe = {} }) {
 		this.format = format
@@ -172,6 +182,8 @@ export class Film {
 		/** Optional data the tools read back: music (see scripts/films/score.mjs) and board (storyboard metadata). */
 		this.music = null
 		this.board = null
+		/** The languages this film has (variant().lang must be one of them); null when it has one. */
+		this.langs = null
 		this.svg = el('svg', { xmlns: NS, width: this.width, height: this.height, viewBox: `0 0 ${this.width} ${this.height}`, id: 'stage' }, mount)
 		this.defs = el('defs', {}, this.svg)
 		this.bg = el('rect', { width: this.width, height: this.height, fill: background }, this.svg)
@@ -231,7 +243,10 @@ export class Film {
 	/** Exposes the capture hooks, then mounts the player unless ?capture is set. */
 	start() {
 		const q = new URLSearchParams(location.search)
-		window.__film = { duration: this.duration, fps: this.fps, width: this.width, height: this.height, bpm: this.bpm, format: this.format, cues: this.cues, music: this.music, board: this.board, safe: this.safe, scenes: this.scenes.map(({ name, start, end }) => ({ name, start, end })) }
+		const v = variant()
+		// Without a voice-over the voice takes leave the mix, and with them the ducking under the voice.
+		const music = this.music && !v.voice ? { ...this.music, voice: [] } : this.music
+		window.__film = { variant: v, langs: this.langs || [v.lang], duration: this.duration, fps: this.fps, width: this.width, height: this.height, bpm: this.bpm, format: this.format, cues: this.cues, music, board: this.board, safe: this.safe, scenes: this.scenes.map(({ name, start, end }) => ({ name, start, end })) }
 		window.__render = (t) => this.render(t)
 		this.drawOverlay()
 		const t0 = q.has('t') ? parseFloat(q.get('t')) : 0

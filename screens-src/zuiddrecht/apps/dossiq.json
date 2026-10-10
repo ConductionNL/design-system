@@ -39,6 +39,19 @@
           "DqKlachten.dc.html"
         ]
       ]
+    ],
+    [
+      "rowDossiqBacklog2",
+      "dossiq: ontwerpen uit de backlog, tweede ronde, ter beoordeling (besluit 160)",
+      [
+        [
+          "DqAanvullingVragen.dc.html",
+          "DqMeldingenGegroepeerd.dc.html",
+          "DqGeleverdeSet.dc.html",
+          "DqZaakBesluitenReeks.dc.html",
+          "DqBeoordelingAfgeschermd.dc.html"
+        ]
+      ]
     ]
   ],
   "boards": {
@@ -206,6 +219,31 @@
       "title": "dossiq: zaak, bestanden op de documenten slepen",
       "w": 1440,
       "h": 1550
+    },
+    "DqAanvullingVragen.dc.html": {
+      "title": "dossiq: zaak, aanvulling vragen aan de aanvrager",
+      "w": 1440,
+      "h": 1180
+    },
+    "DqMeldingenGegroepeerd.dc.html": {
+      "title": "dossiq: wachtrij, gelijke meldingen als één regel",
+      "w": 1440,
+      "h": 1240
+    },
+    "DqGeleverdeSet.dc.html": {
+      "title": "dossiq: geleverde set, vastgelegd en te vergelijken",
+      "w": 1440,
+      "h": 1290
+    },
+    "DqZaakBesluitenReeks.dc.html": {
+      "title": "dossiq: zaak, besluiten met de reeks beschikkingen",
+      "w": 1440,
+      "h": 1036
+    },
+    "DqBeoordelingAfgeschermd.dc.html": {
+      "title": "dossiq: zaak, beoordelen zonder de oordelen van anderen",
+      "w": 1440,
+      "h": 1208
     }
   },
   "notes": {
@@ -307,6 +345,21 @@
     },
     "cap_DqZaakDocumentenSlepen": {
       "text": "Capabilities: document-zaakdossier, woo-case-type.\nWat je ziet: een behandelaar sleept drie bestanden op de documentenlijst van de zaak; de lijst krijgt een gestippelde rand en zegt \"Laat los om toe te voegen\"."
+    },
+    "cap_DqAanvullingVragen": {
+      "text": "Capabilities: handler-asks-the-applicant-for-missing-information (REQ-AVR-05), termijn-pause-extension.\nWat je ziet: de actie Aanvulling vragen in de kop van de zaak, alleen zolang de termijn loopt en er geen verzoek openstaat; het formulier met wat ontbreekt (één punt per regel), aan wie, de termijn voor de aanvrager binnen de grens van het zaaktype, de reden van opschorten uit de beheerde lijst en de toelichting; de zin dat de toelichting en de lijst naar de aanvrager gaan en dat de termijn stilstaat zodra de brief weg is; en een weigering met de zin van dossiq letterlijk. Het formulier meldt zelf geen succes."
+    },
+    "cap_DqMeldingenGegroepeerd": {
+      "text": "Capabilities: ai-features-on-the-case-consume-hermiq (REQ-AIC-04, taak 4.3), ai-features-on-the-case.\nWat je ziet: de wachtrij van team Openbare ruimte waarin 200 meldingen die hermiq als één groep ziet één regel zijn met de telling (200 meldingen, 2 bekijken). Opengeklapt: elke melding blijft een eigen zaak, 200 ontvangstbevestigingen verschuldigd (één per melding, 196 verstuurd, 4 nog te versturen), de twee onzekere meldingen bovenaan gemarkeerd Bekijken met waarom, en de leden met hun bevestiging. Generiek (besluit 182): elk zaaktype dat groeperen aanzet krijgt dezelfde regel; meldingen openbare ruimte zijn het voorbeeld."
+    },
+    "cap_DqGeleverdeSet": {
+      "text": "Capabilities: woo-delivered-set-is-a-record (REQ-WDS-001 tot en met 004), document-compare (REQ-DCP-001), woo-delivered-set.\nWat je ziet: de pagina van een vastgelegde set (status Vastgelegd, met de zin dat bestanden, oordelen en set niet meer te wijzigen zijn en een nieuwe levering een nieuwe set wordt): per bestand het geleverde bestand naast het origineel, het oordeel, de SHA-256 en de uitkomst van de controle (Klopt, Gewijzigd, Ontbreekt), Opnieuw controleren, de hash van de set, de set die hij vervangt en de koppeling naar besluit en publicatie. Vergelijken staat alleen bij een gelakt stuk en opent het origineel en het geleverde bestand naast elkaar in de weergave van Filinq; zonder Filinq zegt de dialoog dat en biedt hij beide bestanden apart. Generiek (besluit 182): elk zaaktype dat stukken levert kan dit instellen; de Woo-zaak is het voorbeeld. Het blok op de zaak zelf staat op DqPubliceren (PR #183)."
+    },
+    "cap_DqZaakBesluitenReeks": {
+      "text": "Capabilities: beschikking-chain-on-the-case (REQ-BES-013), beschikking-generatie, numbered-document-series.\nWat je ziet: het tabblad Besluiten van een afgehandelde zaak met een beschikking en twee correcties: alle drie in volgorde van uitgifte met hun nummer (B-2026-000123, -000124, -000131), per beschikking Geldt of Vervangen door, en wat elke correctie vervangt. Op de geldende, ondertekende beschikking de acties Wijzigingsbeschikking maken en Intrekkingsbeschikking maken, met de zin dat er een concept met een eigen nummer komt. Rechts de geldende beschikking en de nummerreeks. Zelfde tabblad als DqZaakBesluiten, in een latere stand; de nummering is generiek (besluit 182), de beschikking is het voorbeeld."
+    },
+    "cap_DqBeoordelingAfgeschermd": {
+      "text": "Capabilities: woo-request-scoped-access (REQ-WSA-003, REQ-WSA-004, taak 4.2), case-reviewer-access (hideOthers).\nWat je ziet: een beoordelaar op een Woo-zaak met blind beoordelen aan: alle tien documenten van zijn batch, waarvan vier als Beoordeeld door een andere beoordelaar zonder oordeel, gronden of beoordelaar; de telling Nog te beoordelen 6, omdat een document dat een ander beoordeelde niet openstaat; de melding dat blind beoordelen aanstaat en dat behandelaar en coördinatoren alles zien; en een weigering om andermans oordeel of lakvoorstel te wijzigen met de zin van dossiq, zonder wie of welk oordeel. Generiek (besluit 182): staat standaard uit en geldt voor elk zaaktype met beoordelaars; de Woo-zaak is het voorbeeld."
     }
   }
 }

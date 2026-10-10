@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Zaken regelen voor uw bedrijf en voor anderen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 2250px">
+  <dc-import name="Kop" user="Jan-Willem van der Berg" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <div style="background: #eaf0f7; border-bottom: 1px solid #c9d6e6">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; font-size: 17px">
+      <span style="display: flex; gap: 10px; align-items: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="#234a78" aria-hidden="true"><path d="M12,7V3H2V21H22V7H12M6,19H4V17H6V19M6,15H4V13H6V15M6,11H4V9H6V11M6,7H4V5H6V7M10,19H8V17H10V19M10,15H8V13H10V15M10,11H8V9H10V11M10,7H8V5H10V7M20,19H12V17H14V15H12V13H14V11H12V9H20V19M18,11H16V13H18V11M18,15H16V17H18V15Z"></path></svg><span>U regelt nu zaken voor <strong>Slagerij Van der Berg</strong>, KVK 12345678, alle vestigingen</span></span>
+      <a href="#wie" style="font-weight: 600">Voor iemand anders regelen</a>
+    </div>
+  </div>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Mijn zaken" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 36px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 style="margin: 0; font-size: 40px; font-weight: 700; line-height: 1.15">Welkom, Jan-Willem</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5">Uw evenementenvergunning wacht op één document van u. Uw subsidieaanvraag is in behandeling.</p>
+      </div>
+
+      <section id="wie" aria-labelledby="voorwie" style="display: flex; flex-direction: column; gap: 14px; padding: 22px 24px; border: 1px solid #d3d8df; border-radius: 6px">
+        <h2 id="voorwie" style="margin: 0; font-size: 24px; font-weight: 700">Voor wie regelt u nu zaken?</h2>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Kies voor wie u zaken regelt</legend>
+          <sc-for list="{{ parties }}" as="p" hint-placeholder-count="3">
+            <label style="{{ p.style }}"><input type="radio" name="voorwie" checked="{{ p.on }}" style="width: 22px; height: 22px; margin: 0; accent-color: #3669a5; flex: none"><span style="width: 40px; height: 40px; flex: none; border-radius: 20px; background: #eaf0f7; color: #234a78; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ p.ini }}</span><span style="display: flex; flex-direction: column; gap: 2px; flex: 1"><strong style="font-size: 18px">{{ p.name }}</strong><span style="font-size: 16px; color: #4a4a4a">{{ p.how }}</span></span></label>
+          </sc-for>
+        </fieldset>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 17px"><label for="vestiging" style="font-weight: 600">Vestiging</label><select id="vestiging" style="height: 44px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; background: #ffffff; font: 400 17px 'Fira Sans', sans-serif"><option selected>Alle vestigingen</option><option>Marktstraat 4 (000012345678)</option><option>Havenweg 18 (000012345679)</option></select><span style="font-size: 15px; color: #4a4a4a">Logt u in voor één vestiging, dan ziet u alleen die vestiging.</span></div>
+      </section>
+
+      <section aria-labelledby="zaken" style="display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px"><h2 id="zaken" style="margin: 0; font-size: 28px; font-weight: 700">Lopende zaken van uw bedrijf</h2><a href="MijnZaken.dc.html" style="font-size: 17px; font-weight: 600">Alle zaken</a></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px">
+          <sc-for list="{{ cases }}" as="c" hint-placeholder-count="3">
+            <a href="DqPortaalMijnZaken.dc.html" style="display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 8px; background: #e7eef7; color: #1a1a1a; text-decoration: none">
+              <span style="font-size: 15px; color: #4a4a4a">Zaaknummer {{ c.nr }}</span>
+              <span style="font-size: 20px; font-weight: 700; color: #234a78; text-decoration: underline">{{ c.title }}</span>
+              <span style="font-size: 15px; color: #1a1a1a">{{ c.step }}</span>
+              <span style="font-size: 15px; color: #4a4a4a">{{ c.party }}</span>
+              <span style="{{ c.turnStyle }}">{{ c.turn }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+
+      <section aria-labelledby="gebeurd" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 id="gebeurd" style="margin: 0; font-size: 28px; font-weight: 700">Wie wat deed</h2>
+        <p style="margin: 0; font-size: 17px; color: #4a4a4a">Wat iemand namens uw bedrijf doet, ziet u bij de zaak. Zij zien het ook.</p>
+        <ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid #d3d8df">
+          <sc-for list="{{ acts }}" as="a" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; padding: 14px 0; border-bottom: 1px solid #d3d8df; font-size: 17px"><span><strong>{{ a.who }}</strong>, namens {{ a.party }}, {{ a.what }}</span><span style="font-size: 15px; color: #4a4a4a">{{ a.when }}</span></li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="machtig" style="display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px"><h2 id="machtig" style="margin: 0; font-size: 28px; font-weight: 700">Wie mag zaken regelen voor uw bedrijf?</h2><a href="Machtigen.dc.html" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 18px; border-radius: 4px; background: #3669a5; color: #ffffff; font-size: 17px; font-weight: 600; text-decoration: none">Iemand machtigen</a></div>
+        <div style="display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; padding: 18px 20px; border-radius: 6px; background: #fdf3dc; border: 1px solid #e0b95a">
+          <span style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px">Boekhoudbureau De Wit vraagt toegang tot uw zaken</strong><span style="font-size: 16px">KVK 55501234. Wil uw subsidieaanvragen volgen. Gevraagd op 7 oktober 2026.</span></span>
+          <span style="display: flex; gap: 10px"><button type="button" style="height: 44px; padding: 0 18px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif">Toegang geven</button><button type="button" style="height: 44px; padding: 0 18px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif">Weigeren</button></span>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ mandates }}" as="m" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 18px; border: 1px solid #d3d8df; border-radius: 6px">
+              <span style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #eaf0f7; color: #234a78; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{ m.ini }}</span>
+              <span style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 18px">{{ m.name }}</strong><span style="font-size: 16px; color: #4a4a4a">{{ m.scope }}</span></span>
+              <span style="{{ m.stateStyle }}">{{ m.state }}</span>
+              <button type="button" style="height: 44px; padding: 0 16px; border: 2px solid #a30000; border-radius: 4px; background: #ffffff; color: #a30000; font: 600 16px 'Fira Sans', sans-serif">{{ m.action }}</button>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const row = (on) => 'display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 6px; cursor: pointer; ' + (on ? 'border: 2px solid #3669a5; background: #f4f8fc;' : 'border: 1px solid #d3d8df;');
+    const parties = [
+      ['JB', 'Uzelf', 'Jan-Willem van der Berg, met DigiD', false],
+      ['SB', 'Slagerij Van der Berg', 'Uw bedrijf, via eHerkenning', true],
+      ['HB', 'H. Bakker', 'U bent gemachtigd voor zijn bezwaren', false]
+    ].map(([ini, name, how, on]) => ({ ini, name, how, on, style: row(on) }));
+    const pill = (bg, bd, fg) => 'align-self: flex-start; padding: 3px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; border: 1px solid ' + bd + '; color: ' + fg;
+    const cases = [
+      ['2026-0412', 'Evenementenvergunning Marktstraat 4', 'Stap 2 van 3 · besluit uiterlijk 13 november', 'Vestiging Marktstraat 4', 'U bent aan zet', pill('#fff4de', '#e0b95a', '#6b4400')],
+      ['2026-0388', 'Subsidie gevelverbetering 2026', 'Stap 3 van 4 · besluit uiterlijk 6 november', 'Ingediend door Administratiekantoor Kramer, namens uw bedrijf', 'De gemeente is aan zet', pill('#ffffff', '#c9d6e6', '#234a78')],
+      ['2026-0431', 'Bezwaar aanslag reclamebelasting', 'Stap 1 van 4 · beslissing uiterlijk 4 december', 'Via machtiging Administratiekantoor Kramer (alleen bezwaren)', 'Wij wachten op informatie van een ander', pill('#ffffff', '#c9d6e6', '#234a78')]
+    ].map(([nr, title, step, party, turn, turnStyle]) => ({ nr, title, step, party, turn, turnStyle }));
+    const acts = [
+      ['Petra van der Berg', 'Slagerij Van der Berg', 'voegde de plattegrond van het terras toe aan 2026-0412', 'vandaag 10.12 uur'],
+      ['M. Kramer van Administratiekantoor Kramer', 'Slagerij Van der Berg', 'diende bezwaar 2026-0431 in', '8 oktober 2026'],
+      ['Jan-Willem van der Berg', 'Slagerij Van der Berg', 'beantwoordde een vraag over 2026-0388', '5 oktober 2026']
+    ].map(([who, party, what, when]) => ({ who, party, what, when }));
+    const st = (bg, fg) => 'padding: 3px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const mandates = [
+      ['PB', 'Petra van der Berg', 'Mag alles regelen. Geldig tot en met 31 december 2026.', 'Actief', st('#e7f3ea', '#1e6b2a'), 'Intrekken'],
+      ['AK', 'Administratiekantoor Kramer, KVK 87654321', 'Mag alleen bezwaren indienen en volgen. Geldig tot en met 30 juni 2027.', 'Actief', st('#e7f3ea', '#1e6b2a'), 'Intrekken'],
+      ['TV', 'Tom Visser', 'Uitgenodigd op 30 september. Tom heeft nog niet ingelogd.', 'Wacht op antwoord', st('#fff4de', '#6b4400'), 'Uitnodiging intrekken']
+    ].map(([ini, name, scope, state, stateStyle, action]) => ({ ini, name, scope, state, stateStyle, action }));
+    return { parties, cases, acts, mandates, crumbs: [{ label: 'Home' }, { label: 'Mijn Zuiddrecht', href: 'MijnOverzicht.dc.html' }, { label: 'Zaken van uw bedrijf' }] };
+  }
+}
+</script>
+</body>
+</html>

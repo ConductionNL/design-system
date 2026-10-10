@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: programma met verplichte onderdelen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 960px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Teamleider" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor teamleiders" primary="Register van vandaag" active="Lessen en opdrachten" groups="{{ nav }}" hint-size="264px,960px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Inwerkprogramma nieuwe docenten</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Voorbeeld als deelnemer</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Onderdeel toevoegen</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 14px; color: #5e6168"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="#">Programma's</a><span aria-hidden="true">/</span><span aria-current="page">Inwerkprogramma nieuwe docenten</span></nav><span aria-hidden="true">·</span><span>6 onderdelen, 4 verplicht · 18 deelnemers</span></div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="po-delen" style="flex: 999 1 560px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <div style="padding: 18px 22px 10px; display: flex; flex-direction: column; gap: 4px"><h2 id="po-delen" style="margin: 0; font-size: 18px; font-weight: 700">Onderdelen</h2><span style="font-size: 13px; color: #5e6168">Een deelnemer rondt het programma af als alle verplichte onderdelen klaar zijn. Keuzeonderdelen tellen niet mee voor afronden.</span></div>
+            <ol style="margin: 0; padding: 0; list-style: none">
+              <sc-for list="{{ parts }}" as="p" hint-placeholder-count="6">
+                <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 22px; border-top: 1px solid #eef0f3">
+                  <span aria-hidden="true" style="flex: none; width: 18px; color: #c4c7cb; font-size: 18px; line-height: 1">⋮⋮</span>
+                  <span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ p.n }}. {{ p.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ p.meta }}</span><sc-if value="{{ p.hasOverride }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #234a78; font-weight: 600">{{ p.override }}</span></sc-if></span>
+                  <span role="radiogroup" aria-label="{{ p.aria }}" style="flex: none; display: inline-flex; padding: 3px; border-radius: 8px; background: #eef0f3"><span style="{{ p.mand }}">Verplicht</span><span style="{{ p.opt }}">Keuze</span></span>
+                </li>
+              </sc-for>
+            </ol>
+          </section>
+
+          <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="po-uitz" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><h2 id="po-uitz" style="margin: 0; font-size: 18px; font-weight: 700">Uitzonderingen per persoon</h2><a href="#" style="font-size: 14px; font-weight: 600">Toevoegen</a></div>
+              <span style="font-size: 13px; color: #5e6168; line-height: 1.45">Een leidinggevende kan een keuzeonderdeel verplicht maken voor één persoon. Het programma blijft voor de rest hetzelfde.</span>
+              <sc-for list="{{ overrides }}" as="o" hint-placeholder-count="2">
+                <div style="display: flex; flex-direction: column; gap: 3px; padding: 12px 0; border-top: 1px solid #eef0f3"><span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-size: 14px">{{ o.who }}</strong><span style="{{ o.pill }}">Verplicht voor deze persoon</span></span><span style="font-size: 14px">{{ o.part }}</span><span style="font-size: 12px; color: #5e6168">{{ o.by }}</span></div>
+              </sc-for>
+            </section>
+
+            <section aria-labelledby="po-voort" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 10px">
+              <h2 id="po-voort" style="margin: 0; font-size: 18px; font-weight: 700">Voortgang telt de verplichte onderdelen</h2>
+              <sc-for list="{{ people }}" as="p" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid #eef0f3">
+                  <span style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><strong style="font-size: 14px">{{ p.who }}</strong><span style="{{ p.pill }}">{{ p.state }}</span></span>
+                  <span role="progressbar" aria-valuenow="{{ p.pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ p.who }}" style="display: block; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden"><span style="{{ p.bar }}"></span></span>
+                  <span style="font-size: 12px; color: #5e6168">{{ p.meta }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.35; background: ' + bg + '; color: ' + fg;
+    const seg = (on) => 'display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 6px; font-size: 13px; font-weight: 600; ' + (on ? 'background: #ffffff; color: #234a78; box-shadow: 0 1px 2px rgba(27,28,29,0.15)' : 'color: #3d4047');
+    const parts = [
+      ['Welkom en rondleiding', 'Bijeenkomst · 2 uur · week 1', true, ''],
+      ['Veilig online en privacy', 'E-learning · 45 minuten', true, ''],
+      ['Werken met learniq', 'E-learning · 1 uur', true, ''],
+      ['Klassenmanagement', 'Workshop · 3 uur', true, ''],
+      ['Mentorschap in de bovenbouw', 'Workshop · 2 uur', false, 'Verplicht voor 2 personen'],
+      ['Toetsen maken die meten wat je wilt', 'E-learning · 2 uur', false, '']
+    ].map(([title, meta, m, ov], i) => ({ n: i + 1, title, meta, override: ov, hasOverride: !!ov, aria: 'Verplicht of keuze: ' + title, mand: seg(m), opt: seg(!m) }));
+    const overrides = [
+      { who: 'Tim Bakker', part: 'Mentorschap in de bovenbouw', by: 'Door Pieter Jansen, teamleider, 28 september: wordt mentor van 4H', pill: pill('#eaf0f7', '#234a78') },
+      { who: 'Sanne Kramer', part: 'Mentorschap in de bovenbouw', by: 'Door Pieter Jansen, teamleider, 1 oktober', pill: pill('#eaf0f7', '#234a78') }
+    ];
+    const bar = (p) => 'display: block; height: 8px; width: ' + p + '%; background: #3669a5';
+    const people = [
+      { who: 'Julia de Wit', state: 'Afgerond', pill: pill('#e7f3ea', '#1e6b2a'), pct: 100, bar: bar(100), meta: '4 van 4 verplicht klaar · geen keuzeonderdelen gedaan' },
+      { who: 'Tim Bakker', state: 'Bezig', pill: pill('#fff4de', '#7a4f00'), pct: 60, bar: bar(60), meta: '3 van 5 verplicht klaar, mentorschap telt voor hem mee' },
+      { who: 'Daan Mulder', state: 'Bezig', pill: pill('#fff4de', '#7a4f00'), pct: 25, bar: bar(25), meta: '1 van 4 verplicht klaar · 1 keuzeonderdeel gedaan' }
+    ];
+    return { nav, parts, overrides, people };
+  }
+}
+</script>
+</body>
+</html>

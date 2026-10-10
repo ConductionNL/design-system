@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Telefoon: jezelf afwezig melden</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&amp;family=Red+Hat+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1f4fd8}a:hover{color:#14338f}
+</style>
+</helmet>
+<div style="width: 390px; box-sizing: border-box; font-family: 'Red Hat Text', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <header>
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px">
+      <img src="/_blob/f2cff361f850ead499eb5fb1e43664b8" alt="Vaartveld College" style="height: 38px; width: auto">
+      <a href="MijnOverzicht.dc.html" aria-label="Mijn gegevens van Sanne de Wit" style="width: 44px; height: 44px; border-radius: 22px; background: #e8eefc; color: #14338f; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; text-decoration: none">SW</a>
+    </div>
+    <button type="button" aria-expanded="false" style="width: 100%; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border: 0; border-top: 1px solid #e6e9ee; background: #ffffff; color: #1a1a1a; font: 600 18px 'Red Hat Text', sans-serif">
+      <span style="display: flex; align-items: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Mijn Vaartveld</span>
+      <span style="padding: 2px 10px; border-radius: 12px; background: #1fb5a8; color: #1a1a1a; font-size: 14px; font-weight: 700">2 nieuw</span>
+    </button>
+    <div aria-hidden="true" style="display: flex; flex-direction: column">
+      <span style="height: 4px; background: #1f4fd8"></span>
+      <span style="height: 3px; background: #ffffff"></span>
+      <span style="height: 2px; background: #1fb5a8"></span>
+    </div>
+  </header>
+  <main style="padding: 12px 16px 40px; display: flex; flex-direction: column; gap: 24px">
+    <a href="MobielHome.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 17px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Overzicht</a>
+    <div style="margin-top: -10px; display: flex; flex-direction: column; gap: 6px">
+      <h1 style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em">Afwezig melden</h1>
+      <span style="font-size: 16px; line-height: 1.5; color: #4a4a4a">Je bent 18, dus je meldt jezelf af. Je ouders zien je melding, behalve als je dat hebt uitgezet bij Mijn gegevens.</span>
+    </div>
+
+    <section aria-labelledby="am-open" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 10px; background: #fff4de; border: 1px solid #f0d9a8">
+      <h2 id="am-open" style="margin: 0; font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 19px; font-weight: 700">Weer beter? Meld het even</h2>
+      <span style="font-size: 16px; line-height: 1.5">Je ziekmelding van vrijdag 2 oktober heeft nog geen laatste dag. Tot je je beter meldt, sta je elke schooldag als ziek in het register.</span>
+      <a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; height: 48px; padding: 0 18px; border-radius: 8px; background: #1f4fd8; color: #ffffff; font-weight: 700; font-size: 17px; text-decoration: none">Beter melden</a>
+    </section>
+
+    <form style="display: flex; flex-direction: column; gap: 26px">
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+        <legend style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 10px">Wanneer?</legend>
+        <sc-for list="{{ when }}" as="o" hint-placeholder-count="3">
+          <label style="{{ o.card }}"><input type="radio" name="wanneer" checked="{{ o.on }}" style="flex: none; width: 24px; height: 24px; accent-color: #1f4fd8"><span style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 600">{{ o.label }}</span><span style="font-size: 15px; color: #4a4a4a">{{ o.sub }}</span></span></label>
+        </sc-for>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+        <legend style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 10px">De hele dag of een paar lesuren?</legend>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+          <sc-for list="{{ span }}" as="o" hint-placeholder-count="2">
+            <label style="{{ o.card }}"><input type="radio" name="duur" checked="{{ o.on }}" style="flex: none; width: 22px; height: 22px; accent-color: #1f4fd8"><span style="font-size: 17px; font-weight: 600">{{ o.label }}</span></label>
+          </sc-for>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px">Welke lesuren?</legend>
+        <span style="font-size: 15px; color: #4a4a4a; margin-bottom: 4px">Van het eerste tot het laatste uur dat je weg bent.</span>
+        <sc-for list="{{ hours }}" as="h" hint-placeholder-count="8">
+          <label style="{{ h.row }}"><input type="checkbox" checked="{{ h.on }}" style="flex: none; width: 22px; height: 22px; accent-color: #1f4fd8"><strong style="flex: none; width: 52px; font-size: 16px; font-variant-numeric: tabular-nums">{{ h.n }}e uur</strong><span style="display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">{{ h.what }}</span><span style="font-size: 14px; color: #4a4a4a">{{ h.time }}</span></span></label>
+        </sc-for>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+        <legend style="font-family: 'Red Hat Display', system-ui, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 10px">Waarom?</legend>
+        <sc-for list="{{ why }}" as="o" hint-placeholder-count="3">
+          <label style="{{ o.card }}"><input type="radio" name="waarom" checked="{{ o.on }}" style="flex: none; width: 24px; height: 24px; accent-color: #1f4fd8"><span style="font-size: 18px; font-weight: 600">{{ o.label }}</span></label>
+        </sc-for>
+      </fieldset>
+
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="padding: 14px 16px; border-radius: 10px; background: #ddf5f2; display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #0b6259">Je meldt</span>
+          <span style="font-size: 17px; line-height: 1.5">Vandaag het 5e tot en met het 7e uur, naar de tandarts. Alleen die lessen tellen als afwezig met melding.</span>
+        </div>
+        <button type="submit" style="height: 56px; border: 0; border-radius: 8px; background: #1f4fd8; color: #ffffff; font: 700 18px 'Red Hat Text', sans-serif">Melding versturen</button>
+        <a href="MobielHome.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; font-size: 17px; font-weight: 600">Annuleren</a>
+      </div>
+    </form>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2090}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const card = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 8px 14px; box-sizing: border-box; border-radius: 8px; border: 2px solid ' + (on ? '#1f4fd8; background: #e8eefc' : '#5c6470; background: #ffffff');
+    const opt = (label, sub, on) => ({ label, sub, on, card: card(on) });
+    const when = [opt('Vandaag', 'Maandag 5 oktober', true), opt('Morgen', 'Dinsdag 6 oktober', false), opt('Een andere dag', 'Kies zelf de datum', false)];
+    const span = [opt('De hele dag', '', false), opt('Een paar lesuren', '', true)];
+    const row = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 12px; box-sizing: border-box; border-radius: 8px; ' + (on ? 'background: #e8eefc; border: 2px solid #1f4fd8' : 'background: #ffffff; border: 1px solid #d3d8df');
+    const hours = [
+      ['1', 'Nederlands', '08.30 tot 09.20 uur', false], ['2', 'Wiskunde B', '09.20 tot 10.10 uur', false], ['3', 'Scheikunde', '10.30 tot 11.20 uur', false], ['4', 'Engels', '11.20 tot 12.10 uur', false],
+      ['5', 'Geschiedenis', '12.40 tot 13.30 uur', true], ['6', 'Biologie', '13.30 tot 14.20 uur', true], ['7', 'Natuurkunde', '14.30 tot 15.20 uur', true], ['8', 'Geen les', '15.20 tot 16.10 uur', false]
+    ].map(([n, what, time, on]) => ({ n, what, time, on, row: row(on) }));
+    const why = [opt('Ziek', '', false), opt('Dokter of tandarts', '', true), opt('Iets anders', '', false)];
+    return { when, span, hours, why };
+  }
+}
+</script>
+</body>
+</html>

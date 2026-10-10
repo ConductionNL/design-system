@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: competenties</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1060px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Voortgang" groups="{{ nav }}" hint-size="264px,1060px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Competenties</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Kader importeren</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Nieuw kader</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 14px; color: #5e6168"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="LqVoortgang.dc.html">Voortgang</a><span aria-hidden="true">/</span><span aria-current="page">Competenties</span></nav><span aria-hidden="true">·</span><span>3 kaders · bijgewerkt bij elk gepubliceerd cijfer en elke bevestigde beoordeling</span></div>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <nav aria-label="Kaders" style="flex: 1 1 100%; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 10px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px">
+            <span style="padding: 4px 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5e6168">Kaders</span>
+            <sc-for list="{{ frames }}" as="f" hint-placeholder-count="3"><a href="#" aria-current="{{ f.cur }}" style="{{ f.style }}"><strong style="font-size: 14px">{{ f.name }}</strong><span style="font-size: 12px; color: #5e6168">{{ f.meta }}</span></a></sc-for>
+          </nav>
+
+          <div style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="cp-kader" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline"><h2 id="cp-kader" style="margin: 0; font-size: 20px; font-weight: 700">Mechatronica niveau 4</h2><span style="font-size: 13px; color: #5e6168">Kwalificatiedossier 25743 · bron: SBB, versie 2026</span></div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="font-size: 14px; font-weight: 600">Beheersingsniveaus:</span><sc-for list="{{ scale }}" as="s" hint-placeholder-count="2"><span style="{{ s.style }}">{{ s.label }}</span></sc-for><a href="#" style="font-size: 13px; font-weight: 600">Niveaus wijzigen</a></div>
+              <span style="font-size: 13px; color: #5e6168">Een kader heeft minstens één niveau. Kerntaken zijn takken, werkprocessen zijn de leerdoelen die leerlingen behalen.</span>
+            </section>
+
+            <section aria-label="Boom van kerntaken en werkprocessen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px; table-layout: fixed">
+                <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th style="padding: 12px 16px; font-weight: 600">Kerntaak en werkproces</th><th style="padding: 12px 8px; font-weight: 600; width: 70px">Leerjaar</th><th style="padding: 12px 8px; font-weight: 600; width: 90px">Gepland</th><th style="padding: 12px 8px; font-weight: 600; width: 110px">Getoetst</th><th style="padding: 12px 16px 12px 8px; font-weight: 600; width: 190px">Competent in MT2A</th></tr></thead>
+                <tbody><sc-for list="{{ tree }}" as="t" hint-placeholder-count="8">
+                  <tr style="{{ t.row }}"><th scope="row" style="{{ t.cell }}"><span style="display: block; font-family: 'Fira Mono', monospace; font-size: 12px; font-weight: 400; color: #5e6168">{{ t.code }}</span>{{ t.name }}</th><td style="padding: 10px 8px">{{ t.year }}</td><td style="padding: 10px 8px">{{ t.planned }}</td><td style="padding: 10px 8px">{{ t.tested }}</td><td style="padding: 10px 16px 10px 8px"><sc-if value="{{ t.leaf }}" hint-placeholder-val="{{ true }}"><span style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="flex: 1; height: 8px; border-radius: 4px; background: #e4e6ea; overflow: hidden"><span style="{{ t.bar }}"></span></span><span style="font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums">{{ t.count }}</span></span></sc-if></td></tr>
+                </sc-for></tbody>
+              </table>
+            </section>
+          </div>
+
+          <section aria-labelledby="cp-leerling" style="flex: 1 1 300px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+            <h2 id="cp-leerling" style="margin: 0; font-size: 18px; font-weight: 700">Tekorten van een leerling</h2>
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600">Leerling<select style="height: 40px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: 8px; font: 400 14px 'Fira Sans', sans-serif; background: #ffffff"><option>Milan de Groot, MT2A</option></select></label>
+            <span style="font-size: 13px; color: #5e6168">Vergelijkt wat zijn opleiding en zijn rol vragen met wat hij behaalde.</span>
+            <sc-for list="{{ gaps }}" as="g" hint-placeholder-count="5">
+              <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px">{{ g.name }}</strong><span style="font-size: 12px; color: #5e6168">{{ g.why }}</span></span><span style="{{ g.pill }}">{{ g.state }}</span></div>
+            </sc-for>
+            <span style="font-size: 12px; color: #5e6168; line-height: 1.45">Een leerling ziet alleen zijn eigen tekorten. Een leidinggevende ziet die van zijn team.</span>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.35; background: ' + bg + '; color: ' + fg;
+    const frow = (on) => 'flex: 0 1 260px; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #1b1c1d; ' + (on ? 'background: #eaf0f7; box-shadow: inset 0 -3px 0 #3669a5' : '');
+    const frames = [['Mechatronica niveau 4', 'SBB · 2 niveaus · 14 werkprocessen', true], ['Kerndoelen rekenen-wiskunde', 'SLO · 4 niveaus · 23 kerndoelen', false], ['Digitale geletterdheid', 'SLO · 3 niveaus · 9 doelen', false]].map(([name, meta, on]) => ({ name, meta, cur: on ? 'page' : 'false', style: frow(on) }));
+    const scale = [['1. Nog niet competent', '#f0f1f3', '#3d4047'], ['2. Competent', '#e7f3ea', '#1e6b2a']].map(([label, bg, fg]) => ({ label, style: pill(bg, fg) }));
+    const bar = (n) => 'display: block; height: 8px; width: ' + Math.round(n / 24 * 100) + '%; background: #3669a5';
+    const tree = [
+      ['B1-K1', 'Realiseert mechatronische systemen', '1 en 2', '', '', false, 0],
+      ['B1-K1-W1', 'Bereidt de werkzaamheden voor', '1', '6 lessen', '2 toetsen', true, 21],
+      ['B1-K1-W2', 'Bouwt mechatronische systemen op', '1 en 2', '9 lessen', '1 proeve', true, 15],
+      ['B1-K1-W3', 'Test en stelt systemen af', '2', '4 lessen', 'nog niet', true, 6],
+      ['B1-K2', 'Onderhoudt en verhelpt storingen', '2', '', '', false, 0],
+      ['B1-K2-W1', 'Lokaliseert storingen', '2', '3 lessen', '1 BPV-beoordeling', true, 9],
+      ['B1-K2-W2', 'Voert onderhoud uit', '2', 'nog niet', 'nog niet', true, 0],
+      ['B1-K2-W3', 'Levert het systeem op', '2', '2 lessen', 'nog niet', true, 0]
+    ].map(([code, name, year, planned, tested, leaf, n]) => ({ code, name, year, planned: planned || '', tested: tested || '', leaf, count: leaf ? n + ' van 24' : '', bar: bar(n),
+      row: 'border-top: 1px solid #eef0f3; ' + (leaf ? '' : 'background: #fafbfc'),
+      cell: 'padding: 10px 16px; text-align: left; ' + (leaf ? 'padding-left: 32px; font-weight: 400' : 'font-weight: 700') }));
+    const gaps = [
+      { name: 'Bouwt mechatronische systemen op', why: 'Vereist door de opleiding', state: 'Competent', pill: pill('#e7f3ea', '#1e6b2a') },
+      { name: 'Test en stelt systemen af', why: 'Vereist door de opleiding · tussenbeoordeling op 13 oktober', state: 'Tekort', pill: pill('#fff4de', '#7a4f00') },
+      { name: 'Lokaliseert storingen', why: 'Vereist door de opleiding', state: 'Tekort', pill: pill('#fff4de', '#7a4f00') },
+      { name: 'Veilig werken met NEN 3140', why: 'Vereist voor de rol monteur, ook zonder opleiding', state: 'Tekort', pill: pill('#fcedec', '#a30000') },
+      { name: 'Bereidt de werkzaamheden voor', why: 'Vereist door de opleiding', state: 'Competent', pill: pill('#e7f3ea', '#1e6b2a') }
+    ];
+    return { nav, frames, scale, tree, gaps };
+  }
+}
+</script>
+</body>
+</html>

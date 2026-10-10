@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>pipelinq: klanttevredenheid</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 2200px">
+  <dc-import name="DqKop" app="Pipelinq" placeholder="Zoek tickets, contacten of afspraken" role="Teamleider klantcontact" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="pipelinq" primary="Nieuw verzoek" active="" settings="Geavanceerd" help="Hulp en uitleg" fold="open" fold-groups='[{"title":"Rapportages en automatisering","items":[["Rapportages","reports",false,"PqReports.dc.html"],["Flows","flows",false,"PqFlows.dc.html"]]},{"title":"De app inrichten","items":[["Pipelines","columns",false,"PqPipelines.dc.html"],["Diensten","grid",false,"PqServices.dc.html"],["Resources","source",false,"PqServices.dc.html"],["Koppelingen","plug",false,"PqIntegrations.dc.html"],["BI-export","export",false,"PqBiExport.dc.html"]]},{"title":"Over de app","items":[["Modules en meer","grid",false,"PqModules.dc.html"],["Store","store",false,"PqStore.dc.html"],["Functies en roadmap","roadmap",false,"PqRoadmap.dc.html"]]},{"title":"Instellingen","items":[["Persoonlijke instellingen","cog"],["Beheerinstellingen","admin",true,"PqBeheer.dc.html"]]}]' fold-active="Modules en meer" groups="{{ nav }}" hint-size="264px,2130px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Klanttevredenheid</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13,5V11H14.17L12,13.17L9.83,11H11V5H13M15,3H9V9H5L12,16L19,9H15V3M19,18H5V20H19V18Z"></path></svg>Downloaden</button>
+              <button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button>
+              <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Regel toevoegen</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between">
+            <span style="font-size: 15px; color: #5e6168">Wie na een contact een vragenlijst kreeg, wie antwoordde en wie ontevreden was · oktober 2026</span>
+            <div role="group" aria-label="Periode" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1">
+              <sc-for list="{{ periods }}" as="p" hint-placeholder-count="3"><button type="button" aria-pressed="{{ p.pressed }}" style="{{ p.style }}">{{ p.label }}</button></sc-for>
+            </div>
+          </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px"><span style="font-size: 14px; color: #5e6168">{{ k.label }}</span><span style="font-size: 28px; font-weight: 700">{{ k.value }}</span><span style="{{ k.noteStyle }}">{{ k.note }}</span></div>
+          </sc-for>
+        </div>
+
+        <section aria-labelledby="tv-per" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="tv-per" style="margin: 0; font-size: 18px; font-weight: 700">Respons per vragenlijst en kanaal</h2><span style="font-size: 14px; color: #5e6168">Respons is beantwoord gedeeld door bezorgd. Overgeslagen en mislukt tellen daar niet in mee.</span></div>
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <sc-for list="{{ rCols }}" as="c" hint-placeholder-count="7"><th scope="col" style="padding: 12px 14px; font-weight: 600; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 4px"><button type="button" style="border: 0; background: transparent; padding: 0; font: inherit; color: inherit; display: inline-flex; gap: 4px; align-items: center">{{ c.label }} <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ c.chev }}" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button><button type="button" aria-haspopup="dialog" aria-label="{{ c.aria }}" style="width: 22px; height: 22px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,19.88C15.04,20.18 14.94,20.5 14.71,20.71C14.32,21.1 13.69,21.1 13.3,20.71L9.29,16.7C9.06,16.47 8.96,16.16 9,15.87V10.75L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L15,10.75V19.88M7.04,5L11,10.06V15.58L13,17.58V10.05L16.96,5H7.04Z"></path></svg></button></span></th></sc-for>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ rates }}" as="r" hint-placeholder-count="3">
+                  <tr style="border-top: 1px solid #eef0f3"><td style="padding: 12px 14px; font-weight: 600">{{ r.survey }}</td><td style="padding: 12px 14px">{{ r.channel }}</td><td style="padding: 12px 14px">{{ r.sent }}</td><td style="padding: 12px 14px">{{ r.answered }}</td><td style="padding: 12px 14px"><span style="display: flex; gap: 10px; align-items: center"><span style="width: 90px; height: 8px; border-radius: 4px; background: #eef0f3; overflow: hidden"><span style="{{ r.bar }}"></span></span><strong>{{ r.rate }}</strong></span></td><td style="padding: 12px 14px; color: #3d4047">{{ r.skipped }}</td><td style="padding: 12px 14px; color: #3d4047">{{ r.failed }}</td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="tv-ontevreden" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="tv-ontevreden" style="margin: 0; font-size: 18px; font-weight: 700">Ontevreden, en wie het opvolgt</h2><span style="font-size: 14px; color: #5e6168">Een score van 6 of lager, of 2 van 5 of lager, maakt een taak in Mijn werk van de eigenaar van de klant. Zonder eigenaar gaat de taak naar Jan Bos.</span></div>
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <ul style="margin: 0; padding: 0; list-style: none">
+              <sc-for list="{{ detractors }}" as="d" hint-placeholder-count="3">
+                <li style="display: grid; grid-template-columns: 64px minmax(0, 1.6fr) minmax(0, 1fr) 40px; gap: 14px; align-items: center; padding: 14px 16px; border-top: 1px solid #eef0f3">
+                  <span style="width: 52px; height: 52px; border-radius: 10px; background: #fcedec; color: #a30000; display: flex; flex-direction: column; align-items: center; justify-content: center"><strong style="font-size: 20px; line-height: 1">{{ d.score }}</strong><span style="font-size: 11px">{{ d.scale }}</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><strong style="font-size: 15px; font-weight: 600">{{ d.who }}</strong><span style="font-size: 14px; color: #3d4047">"{{ d.quote }}"</span><span style="font-size: 13px; color: #5e6168">{{ d.after }}</span></span>
+                  <span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="{{ d.taskStyle }}">{{ d.task }}</span><span style="font-size: 13px; color: #5e6168">{{ d.owner }}</span></span>
+                  <button type="button" aria-haspopup="menu" aria-label="{{ d.menuLabel }}" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </section>
+
+        <section aria-labelledby="tv-regels" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="tv-regels" style="margin: 0; font-size: 18px; font-weight: 700">Wanneer een vragenlijst gaat</h2><span style="font-size: 14px; color: #5e6168">Een uitnodiging gaat niet als iemand zich afmeldde of binnen de rustperiode al een vragenlijst kreeg. Lukt versturen niet, dan blijft het contact gewoon bewaard.</span></div>
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 12px 14px; font-weight: 600">Na</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Vragenlijst</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Via</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Wacht</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Rust</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Link geldig</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Aan</th><th scope="col" style="padding: 12px 14px; font-weight: 600">Acties</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+                  <tr style="border-top: 1px solid #eef0f3"><td style="padding: 12px 14px"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-weight: 600">{{ r.when }}</strong><span style="font-size: 13px; color: #5e6168">{{ r.filter }}</span></span></td><td style="padding: 12px 14px">{{ r.survey }}</td><td style="padding: 12px 14px">{{ r.channel }}</td><td style="padding: 12px 14px">{{ r.delay }}</td><td style="padding: 12px 14px">{{ r.cool }}</td><td style="padding: 12px 14px">{{ r.expiry }}</td><td style="padding: 12px 14px"><span role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.aria }}" style="{{ r.sw }}"><span style="{{ r.knob }}"></span></span></td><td style="padding: 8px 14px"><button type="button" aria-haspopup="menu" aria-label="{{ r.menuLabel }}" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button></td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="tv-uitn" style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="tv-uitn" style="margin: 0; font-size: 18px; font-weight: 700">Laatste uitnodigingen</h2><span style="font-size: 14px; color: #5e6168">Elke link werkt één keer. Na het antwoord of na de geldigheid sluit hij.</span></div>
+          <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+            <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+              <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                <sc-for list="{{ iCols }}" as="c" hint-placeholder-count="5"><th scope="col" style="padding: 12px 14px; font-weight: 600; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 4px"><button type="button" style="border: 0; background: transparent; padding: 0; font: inherit; color: inherit; display: inline-flex; gap: 4px; align-items: center">{{ c.label }} <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ c.chev }}" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button><button type="button" aria-haspopup="dialog" aria-label="{{ c.aria }}" style="width: 22px; height: 22px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,19.88C15.04,20.18 14.94,20.5 14.71,20.71C14.32,21.1 13.69,21.1 13.3,20.71L9.29,16.7C9.06,16.47 8.96,16.16 9,15.87V10.75L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L15,10.75V19.88M7.04,5L11,10.06V15.58L13,17.58V10.05L16.96,5H7.04Z"></path></svg></button></span></th></sc-for>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ invites }}" as="v" hint-placeholder-count="6">
+                  <tr style="border-top: 1px solid #eef0f3"><td style="padding: 11px 14px; white-space: nowrap; color: #3d4047">{{ v.when }}</td><td style="padding: 11px 14px; font-weight: 600">{{ v.who }}</td><td style="padding: 11px 14px">{{ v.after }}</td><td style="padding: 11px 14px">{{ v.channel }}</td><td style="padding: 11px 14px"><span style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><span style="{{ v.stStyle }}">{{ v.status }}</span><span style="font-size: 13px; color: #5e6168">{{ v.why }}</span></span></td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Dashboard', 'home'], ['Mijn werk', 'inbox', 5], ['Wachtrij', 'queue', 12]] },
+      { title: 'Klantcontact', items: [['Vragen en meldingen', 'chat'], ['Contactmomenten', 'phone'], ['Afspraken', 'cal']] },
+      { title: 'Relaties', items: [['Inwoners en bedrijven', 'people'], ['Organisaties', 'org']] },
+      { title: 'Verkoop', items: [['Leads', 'trend'], ['Pijplijn', 'pipeline'], ['Producten', 'products']] },
+      { title: 'Marketing', items: [['Campagnes', 'bullhorn'], ['Nieuwsbrieven', 'mail']] },
+    ];
+    const seg = (on) => "height: 32px; padding: 0 12px; border: 0; border-radius: 6px; font: 600 13px 'Fira Sans', sans-serif; " + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
+    const periods = [['Deze week', false], ['Deze maand', true], ['Dit kwartaal', false]].map(([label, on]) => ({ label, pressed: on ? 'true' : 'false', style: seg(on) }));
+    const kpis = [
+      { label: 'Bezorgd', value: '50', note: '56 uitnodigingen gemaakt', noteStyle: 'font-size: 13px; color: #3d4047' },
+      { label: 'Beantwoord', value: '10', note: '20% van 50 bezorgd', noteStyle: 'font-size: 13px; color: #3d4047' },
+      { label: 'Ontevreden', value: '3', note: '3 taken in Mijn werk, 1 nog open', noteStyle: 'font-size: 13px; font-weight: 600; color: #a30000' },
+      { label: 'Niet verstuurd', value: '6', note: '5 overgeslagen, 1 mislukt, buiten de respons', noteStyle: 'font-size: 13px; color: #3d4047' }
+    ];
+    const col = (label, sorted) => ({ label, chev: sorted ? '#1b1c1d' : '#c4c7cb', aria: 'Filteren op ' + label });
+    const rCols = [col('Vragenlijst'), col('Kanaal'), col('Bezorgd'), col('Beantwoord'), col('Respons', true), col('Overgeslagen'), col('Mislukt')];
+    const bar = (p) => 'display: block; height: 8px; background: #3669a5; width: ' + p + '%';
+    const rates = [
+      ['Na een contactmoment', 'E-mail', '28', '8', '29%', 29, '3', '1'],
+      ['Na een afgehandelde vraag', 'E-mail', '14', '2', '14%', 14, '1', '0'],
+      ['Na een afgehandelde vraag', 'Sms', '8', '0', '0%', 0, '1', '0']
+    ].map(([survey, channel, sent, answered, rate, p, skipped, failed]) => ({ survey, channel, sent, answered, rate, bar: bar(p), skipped, failed }));
+    const pill = (bg, fg) => 'display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; background: ' + bg + '; color: ' + fg;
+    const detractors = [
+      ['3', 'van 10', 'M. de Graaf, Bakkerij De Graaf', 'Ik ben drie keer doorverbonden voor één vraag over mijn afvalpas.', 'Na het telefoongesprek van 8 oktober · beantwoord 9 oktober', 'Taak open', pill('#fff4de', '#7a4f00'), 'Maria de Boer, eigenaar van de klant'],
+      ['1', 'van 5', 'R. Yilmaz', 'Mijn vraag is gesloten zonder antwoord.', 'Na vraag over de parkeervergunning · 7 oktober', 'Taak afgerond', pill('#e7f3ea', '#1e6b2a'), 'Jan Bos, de klant heeft geen eigenaar'],
+      ['5', 'van 10', 'Stichting Kindzorg', 'Snel geholpen, maar de terugbelafspraak kwam niet.', 'Na het contactmoment van 6 oktober · 6 oktober', 'Taak afgerond', pill('#e7f3ea', '#1e6b2a'), 'Pieter Jansen, eigenaar van de klant']
+    ].map(([score, scale, who, quote, after, task, taskStyle, owner]) => ({ score, scale, who, quote, after, task, taskStyle, owner, menuLabel: 'Acties voor het antwoord van ' + who + ': antwoord bekijken, taak openen' }));
+    const sw = (on) => 'display: inline-flex; align-items: center; width: 40px; height: 22px; padding: 2px; box-sizing: border-box; border-radius: 11px; background: ' + (on ? '#3669a5' : '#c4c7cb') + '; justify-content: ' + (on ? 'flex-end' : 'flex-start');
+    const knob = 'width: 18px; height: 18px; border-radius: 9px; background: #ffffff';
+    const rules = [
+      ['Contactmoment afgerond', 'alle kanalen behalve balie', 'Na een contactmoment', 'E-mail', '2 uur', '30 dagen', '14 dagen', true],
+      ['Vraag afgehandeld', 'alleen website en telefoon', 'Na een afgehandelde vraag', 'E-mail, anders sms', '1 dag', '30 dagen', '14 dagen', true],
+      ['Klacht gesloten', 'alle kanalen', 'Na een klacht', 'E-mail', '3 dagen', '60 dagen', '21 dagen', false]
+    ].map(([when, filter, survey, channel, delay, cool, expiry, on]) => ({ when, filter, survey, channel, delay, cool, expiry, on: on ? 'true' : 'false', sw: sw(on), knob, aria: 'Regel ' + when + ' aan', menuLabel: 'Acties voor regel ' + when + ': bewerken, verwijderen' }));
+    const iCols = [col('Gemaakt', true), col('Aan'), col('Na'), col('Via'), col('Status')];
+    const S = { Beantwoord: pill('#e7f3ea', '#1e6b2a'), Verstuurd: pill('#eaf0f7', '#234a78'), Gepland: pill('#f0f1f3', '#3d4047'), Overgeslagen: pill('#fff4de', '#7a4f00'), Mislukt: pill('#fcedec', '#a30000'), Verlopen: pill('#f0f1f3', '#3d4047') };
+    const invites = [
+      ['vandaag 11:40', 'S. de Vries', 'Contactmoment, telefoon', 'E-mail', 'Gepland', 'gaat om 13:40'],
+      ['vandaag 09:15', 'J. Peters', 'Vraag afgehandeld', 'E-mail', 'Overgeslagen', 'kreeg 12 dagen geleden al een vragenlijst'],
+      ['gisteren 16:02', 'P. Kuiper', 'Contactmoment, e-mail', 'E-mail', 'Overgeslagen', 'heeft zich afgemeld'],
+      ['gisteren 14:30', 'M. de Graaf', 'Contactmoment, telefoon', 'E-mail', 'Beantwoord', '9 oktober, score 3 van 10'],
+      ['8 okt 10:05', 'A. de Vries', 'Vraag afgehandeld', 'Sms', 'Mislukt', 'nummer onbereikbaar; de vraag zelf is gewoon bewaard'],
+      ['24 sep 09:00', 'L. Verhoef', 'Contactmoment, balie', 'E-mail', 'Verlopen', 'niet beantwoord binnen 14 dagen']
+    ].map(([when, who, after, channel, status, why]) => ({ when, who, after, channel, status, why, stStyle: S[status] }));
+    return { nav, periods, kpis, rCols, rates, detractors, rules, iCols, invites };
+  }
+}
+</script>
+</body>
+</html>

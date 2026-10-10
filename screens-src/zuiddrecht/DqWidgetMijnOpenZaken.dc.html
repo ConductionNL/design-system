@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>dossiq: widget mijn open werk op de startpagina</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; min-height: 820px; display: flex; flex-direction: column">
+  <dc-import name="DqKop" app="Launchpad" placeholder="Zoek dashboards, widgets en apps" role="Medewerker" hint-size="100%,68px"></dc-import>
+  <main style="width: 100%; max-width: 1280px; box-sizing: border-box; margin: 0 auto; padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Vandaag</h1>
+        <span style="font-size: 15px; color: #5e6168">Goedemorgen, Pieter · maandag 12 oktober 2026</span>
+      </div>
+      <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Startpagina aanpassen</button><button type="button" aria-label="buildiq" title="buildiq" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: #e2611a; color: #ffffff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"></path></svg></button></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) 300px; gap: 24px; align-items: start">
+      <section aria-labelledby="w-open" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px">
+          <span style="display: flex; gap: 10px; align-items: center"><span style="width: 32px; height: 32px; border-radius: 8px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z"></path></svg></span><span style="display: flex; flex-direction: column"><h2 id="w-open" style="margin: 0; font-size: 18px; font-weight: 700">Mijn open werk</h2><span style="font-size: 13px; color: #5e6168">dossiq · zaken en taken, wat het eerst moet bovenaan</span></span></span>
+          <button type="button" aria-haspopup="menu" aria-label="Acties voor de widget Mijn open werk" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button>
+        </div>
+        <ul style="margin: 0; padding: 0; list-style: none">
+          <sc-for list="{{ items }}" as="i" hint-placeholder-count="6">
+            <li style="border-top: 1px solid #eef0f3"><a href="{{ i.href }}" style="display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 0; color: #1b1c1d; text-decoration: none"><span style="width: 34px; height: 34px; border-radius: 17px; background: #f0f1f3; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ i.icon }}"></path></svg></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><strong style="font-size: 15px; font-weight: 600">{{ i.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ i.sub }}</span></span><span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px"><span style="{{ i.dueStyle }}">{{ i.due }}</span><span style="{{ i.statusStyle }}">{{ i.status }}</span></span></a></li>
+          </sc-for>
+          <li style="border-top: 1px solid #eef0f3"><a href="DqMijnWerk.dc.html" style="display: flex; gap: 12px; align-items: center; padding: 12px 0; font-size: 15px; font-weight: 600"><span style="width: 34px; height: 34px; border-radius: 17px; border: 1px dashed #c4c7cb; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></span>Nog 6 in Mijn werk</a></li>
+        </ul>
+        <a href="DqMijnWerk.dc.html" style="align-self: flex-start; margin-top: 10px; display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none">Mijn werk openen</a>
+      </section>
+
+      <section aria-labelledby="w-taken" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px"><span style="width: 32px; height: 32px; border-radius: 8px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z"></path></svg></span><span style="display: flex; flex-direction: column"><h2 id="w-taken" style="margin: 0; font-size: 18px; font-weight: 700">Mijn taken</h2><span style="font-size: 13px; color: #5e6168">dossiq</span></span></div>
+        <ul style="margin: 0; padding: 0; list-style: none">
+          <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="2">
+            <li style="border-top: 1px solid #eef0f3"><a href="DqTaak.dc.html" style="display: flex; flex-direction: column; gap: 2px; padding: 11px 0; color: #1b1c1d; text-decoration: none"><strong style="font-size: 15px; font-weight: 600">{{ t.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ t.sub }}</span></a></li>
+          </sc-for>
+        </ul>
+        <p style="margin: 8px 0 0; font-size: 13px; color: #5e6168">Dezelfde taken staan ook in Mijn open werk. Deze widget blijft voor wie hem al op zijn dashboard had.</p>
+      </section>
+
+      <aside aria-labelledby="w-tel" style="display: flex; flex-direction: column; gap: 10px">
+        <h2 id="w-tel" style="margin: 0; font-size: 15px; font-weight: 700">Zelfde widget in de Nextcloud-app</h2>
+        <span style="font-size: 13px; color: #5e6168; line-height: 1.5">De app leest de items zonder dossiq. Ze vraagt er 7 en krijgt er 6 plus een regel naar Mijn werk.</span>
+        <div style="width: 280px; box-sizing: border-box; border: 8px solid #1b1c1d; border-radius: 28px; background: #ffffff; overflow: hidden">
+          <div style="padding: 10px 14px; background: #0082c9; color: #ffffff; font-size: 14px; font-weight: 600">Dashboard</div>
+          <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px">
+            <strong style="font-size: 14px">Mijn open werk</strong>
+            <sc-for list="{{ phone }}" as="p" hint-placeholder-count="6">
+              <span style="display: flex; flex-direction: column; padding: 7px 0; border-top: 1px solid #eef0f3"><span style="font-size: 13px; font-weight: 600">{{ p.title }}</span><span style="font-size: 12px; color: #5e6168">{{ p.sub }}</span></span>
+            </sc-for>
+            <span style="padding: 7px 0; border-top: 1px solid #eef0f3; font-size: 13px; color: #0082c9; font-weight: 600">Nog 6 in Mijn werk</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const CASE = 'M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z';
+    const TASK = 'M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z';
+    const pill = (bg, fg) => 'padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const due = (lvl) => 'font-size: 13px; ' + (lvl === 'late' ? 'font-weight: 700; color: #a30000' : lvl === 'soon' ? 'font-weight: 600; color: #7a4f00' : 'color: #3d4047');
+    const raw = [
+      ['case', 'Parkeervergunningen binnenstad', 'Zaak 2026-0061 · Woo-verzoek', 'Termijn vandaag', 'late', 'Wacht op inwoner', pill('#fff4de', '#7a4f00'), 'DqZaak.dc.html'],
+      ['task', 'Advies Mobiliteit verwerken', 'Taak bij 2026-0082 · Verlichting fietspad', 'Morgen', 'soon', 'Taak', pill('#f0f1f3', '#3d4047'), 'DqTaak.dc.html'],
+      ['case', 'Bezwaar parkeerboete Havenstraat', 'Zaak 2026-0074 · Bezwaar', '14 okt', 'soon', 'In behandeling', pill('#e8e6f6', '#4a3f8f'), 'DqZaak.dc.html'],
+      ['case', 'Woo-verzoek vergunningen evenementen', 'Zaak 2026-0076 · Woo-verzoek', '20 okt', 'ok', 'In behandeling', pill('#e8e6f6', '#4a3f8f'), 'DqZaak.dc.html'],
+      ['task', 'Documenten beoordelen, batch Mail 2025', 'Taak bij 2026-0058 · 12 van 25 klaar', '23 okt', 'ok', 'Taak', pill('#f0f1f3', '#3d4047'), 'DqTaak.dc.html'],
+      ['case', 'Verlichting fietspad Lindelaan', 'Zaak 2026-0082 · Woo-verzoek', '1 nov', 'ok', 'In behandeling', pill('#e8e6f6', '#4a3f8f'), 'DqZaak.dc.html']
+    ];
+    const items = raw.map(([k, title, sub, d, lvl, status, statusStyle, href]) => ({ icon: k === 'case' ? CASE : TASK, title, sub, due: d, dueStyle: due(lvl), status, statusStyle, href }));
+    const tasks = [
+      { title: 'Advies Mobiliteit verwerken', sub: '2026-0082 · morgen' },
+      { title: 'Documenten beoordelen, batch Mail 2025', sub: '2026-0058 · 23 oktober' }
+    ];
+    const phone = raw.map(([k, title, sub, d]) => ({ title, sub: d + ' · ' + sub.split(' · ')[0] }));
+    return { items, tasks, phone };
+  }
+}
+</script>
+</body>
+</html>

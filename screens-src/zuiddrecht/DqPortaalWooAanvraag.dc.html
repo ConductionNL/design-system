@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Woo-verzoek indienen, stap 2 van 4</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; min-height: 1760px">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,232px"></dc-import>
+  <main id="inhoud" style="max-width: 1120px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h1 style="margin: 0; font-size: 44px; font-weight: 700; line-height: 1.15">Informatie opvragen bij de gemeente</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #4a4a4a">Met een Woo-verzoek vraagt u documenten van de gemeente op. Woo staat voor Wet open overheid.</p>
+    </div>
+    <nav aria-label="Voortgang" style="display: flex; flex-direction: column; gap: 12px">
+      <p style="margin: 0; font-size: 17px; font-weight: 600; color: #4a4a4a">Stap 2 van 4: Periode en documenten</p>
+      <ol style="margin: 0; padding: 16px 20px; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 14px; align-items: center; background: #f4f6f9; border-radius: 6px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <li aria-current="{{ s.aria }}" style="{{ s.li }}"><span style="{{ s.dot }}"><sc-if value="{{ s.done }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></sc-if><sc-if value="{{ s.notDone }}" hint-placeholder-val="{{ true }}">{{ s.n }}</sc-if></span><span style="display: flex; flex-direction: column; gap: 0; flex: none"><span style="{{ s.titleStyle }}">{{ s.title }}</span><span style="font-size: 14px; color: #4a4a4a">{{ s.state }}</span></span><sc-if value="{{ s.notLast }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ s.line }}"></span></sc-if></li>
+        </sc-for>
+      </ol>
+    </nav>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+      <form style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 26px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><h2 style="margin: 0; font-size: 28px; font-weight: 700">Periode en documenten</h2><p style="margin: 0; font-size: 17px; color: #4a4a4a; line-height: 1.5">Hoe preciezer uw vraag, hoe sneller u antwoord krijgt. Een veld zonder "niet verplicht" moet u invullen.</p></div>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="padding: 0 0 6px; font-size: 19px; font-weight: 600">Vanaf welke datum zoekt u informatie?</legend>
+          <span id="van-h" style="font-size: 16px; color: #4a4a4a">Bijvoorbeeld 1 3 2026</span>
+          <div style="display: flex; gap: 12px">
+            <sc-for list="{{ van }}" as="d" hint-placeholder-count="3"><span style="display: flex; flex-direction: column; gap: 4px"><label for="{{ d.id }}" style="font-size: 16px">{{ d.label }}</label><input id="{{ d.id }}" type="text" inputmode="numeric" aria-describedby="van-h" value="{{ d.v }}" style="{{ d.style }}"></span></sc-for>
+          </div>
+        </fieldset>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="padding: 0 0 6px; font-size: 19px; font-weight: 600">Tot en met welke datum? <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></legend>
+          <span id="tot-h" style="font-size: 16px; color: #4a4a4a">Laat dit leeg als u alles tot vandaag wilt ontvangen.</span>
+          <div style="display: flex; gap: 12px">
+            <sc-for list="{{ tot }}" as="d" hint-placeholder-count="3"><span style="display: flex; flex-direction: column; gap: 4px"><label for="{{ d.id }}" style="font-size: 16px">{{ d.label }}</label><input id="{{ d.id }}" type="text" inputmode="numeric" aria-describedby="tot-h" value="{{ d.v }}" style="{{ d.style }}"></span></sc-for>
+          </div>
+        </fieldset>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="padding: 0 0 6px; font-size: 19px; font-weight: 600">Welke documenten zoekt u?</legend>
+          <span style="font-size: 16px; color: #4a4a4a">U mag meer dan één antwoord kiezen.</span>
+          <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="4">
+            <label style="display: flex; gap: 12px; align-items: center; font-size: 17px; cursor: pointer"><input type="checkbox" checked="{{ k.on }}" style="width: 24px; height: 24px; margin: 0; accent-color: #3669a5">{{ k.label }}</label>
+          </sc-for>
+        </fieldset>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="toel" style="font-size: 19px; font-weight: 600">Wilt u nog iets toelichten? <span style="font-weight: 400; color: #4a4a4a">(niet verplicht)</span></label>
+          <textarea id="toel" rows="4" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px 'Fira Sans', sans-serif; line-height: 1.5; resize: vertical">Vooral de mails tussen de gemeente en de aannemer over het moment van kappen.</textarea>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 24px; border-top: 1px solid #d3d8df">
+          <a href="WooVerzoek.dc.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 2px solid #3669a5; border-radius: 4px; background: #ffffff; color: #3669a5; font: 600 17px 'Fira Sans', sans-serif; text-decoration: none; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path></svg>Vorige stap</a>
+          <span style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center"><a href="FormulierOpslaan.dc.html" style="font-size: 17px; font-weight: 600">Opslaan en later verdergaan</a><button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 17px 'Fira Sans', sans-serif">Volgende stap<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg></button></span>
+        </div>
+      </form>
+      <aside style="flex: 1 1 280px; max-width: 360px; display: flex; flex-direction: column; gap: 20px">
+        <section aria-labelledby="tot-nu" style="display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border: 1px solid #d3d8df; border-radius: 6px">
+          <h2 id="tot-nu" style="margin: 0; font-size: 20px; font-weight: 700">Uw antwoorden tot nu toe</h2>
+          <dl style="margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 16px">
+            <div><dt style="color: #4a4a4a">Onderwerp</dt><dd style="margin: 0; font-weight: 600">Bomenkap Lindelaan</dd></div>
+            <div><dt style="color: #4a4a4a">Uw vraag</dt><dd style="margin: 0; font-weight: 600">Waarom zijn de bomen aan de Lindelaan gekapt en wie besloot dat?</dd></div>
+          </dl>
+          <a href="WooVerzoek.dc.html" style="font-size: 16px; font-weight: 600">Stap 1 wijzigen</a>
+        </section>
+        <section aria-labelledby="hulp" style="display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; background: #f4f6f9; border-radius: 6px">
+          <h2 id="hulp" style="margin: 0; font-size: 20px; font-weight: 700">Hulp bij dit formulier</h2>
+          <p style="margin: 0; font-size: 16px; line-height: 1.5">Bel [telefoonnummer] en vraag naar team Open overheid. Een medewerker vult het formulier samen met u in.</p>
+        </section>
+        <p style="margin: 0; display: flex; gap: 10px; font-size: 16px; color: #4a4a4a; line-height: 1.5"><svg width="20" height="20" viewBox="0 0 24 24" fill="#4a4a4a" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Wij bewaren uw antwoorden 30 dagen. U kunt later verdergaan. De gemeente ziet niets tot u verstuurt.</p>
+      </aside>
+    </div>
+  </main>
+  <dc-import name="Voet" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = [['Uw vraag', 'done'], ['Periode en documenten', 'current'], ['Uw gegevens', 'todo'], ['Controleren en versturen', 'todo']];
+    const steps = raw.map(([title, st], i) => {
+      const done = st === 'done', cur = st === 'current', last = i === raw.length - 1;
+      return {
+        title, n: String(i + 1), done, notDone: !done, notLast: !last, aria: cur ? 'step' : 'false',
+        state: done ? 'Klaar' : cur ? 'Huidige stap' : 'Nog te doen',
+        li: 'display: flex; align-items: center; gap: 10px; min-width: 0; ' + (last ? 'flex: none;' : 'flex: 1 1 0;'),
+        dot: 'width: 36px; height: 36px; border-radius: 18px; flex: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; ' + (done ? 'background: #3669a5; color: #ffffff;' : cur ? 'background: #ffffff; color: #cc0000; border: 3px solid #cc0000;' : 'background: #ffffff; color: #4a4a4a; border: 2px solid #8a929e;'),
+        titleStyle: 'font-size: 17px; ' + (cur ? 'font-weight: 700; color: #1a1a1a' : done ? 'font-weight: 600; color: #1a1a1a' : 'font-weight: 500; color: #4a4a4a'),
+        line: 'flex: 1 1 24px; height: 3px; min-width: 24px; background: ' + (done ? '#3669a5' : '#d3d8df')
+      };
+    });
+    const f = (w) => 'box-sizing: border-box; width: ' + w + 'px; height: 48px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 4px; font: 400 17px \'Fira Sans\', sans-serif';
+    const van = [['van-d', 'Dag', '1', 64], ['van-m', 'Maand', '3', 64], ['van-j', 'Jaar', '2026', 96]].map(([id, label, v, w]) => ({ id, label, v, style: f(w) }));
+    const tot = [['tot-d', 'Dag', '', 64], ['tot-m', 'Maand', '', 64], ['tot-j', 'Jaar', '', 96]].map(([id, label, v, w]) => ({ id, label, v, style: f(w) }));
+    const kinds = [['Besluiten en vergunningen', true], ['Rapporten en adviezen', false], ['E-mails en brieven', true], ['Alles wat de gemeente hierover heeft', false]].map(([label, on]) => ({ label, on }));
+    return { steps, van, tot, kinds, crumbs: [{ label: 'Home' }, { label: 'Woo-publicaties', href: 'Zoeken.dc.html' }, { label: 'Woo-verzoek indienen' }] };
+  }
+}
+</script>
+</body>
+</html>

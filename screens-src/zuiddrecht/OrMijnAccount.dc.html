@@ -58,9 +58,9 @@ a{color:#3669a5}a:hover{color:#234a78}
           <section aria-labelledby="or-meldingen" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0; border-top: 1px solid #eef0f3">
             <h3 id="or-meldingen" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 700"><span style="color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"></path></svg></span>Meldingen</h3>
             <div role="table" aria-label="Meldingen van Open Register" style="border: 1px solid #e4e6ea; border-radius: 8px; display: flex; flex-direction: column">
-              <div role="row" style="display: grid; grid-template-columns: minmax(0, 1fr) 76px 56px 84px; gap: 8px; align-items: end; padding: 8px 12px; border-bottom: 1px solid #eef0f3; font-size: 13px; font-weight: 600; color: #5e6168"><span role="columnheader">Gebeurtenis</span><span role="columnheader">In Nextcloud</span><span role="columnheader">E-mail</span><span role="columnheader">Pushmelding</span></div>
+              <div role="row" style="display: grid; grid-template-columns: minmax(0, 1fr) 76px 72px 84px; gap: 8px; align-items: end; padding: 8px 12px; border-bottom: 1px solid #eef0f3; font-size: 13px; font-weight: 600; color: #5e6168"><span role="columnheader">Gebeurtenis</span><span role="columnheader">In Nextcloud</span><span role="columnheader">E-mail</span><span role="columnheader">Pushmelding</span></div>
               <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
-                <div role="row" style="{{ n.style }}"><span role="cell" style="font-size: 14px">{{ n.label }}</span><sc-for list="{{ n.cells }}" as="c" hint-placeholder-count="3"><span role="cell"><span style="{{ c.style }}">{{ c.text }}</span></span></sc-for></div>
+                <div role="row" style="{{ n.style }}"><span role="cell" style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">{{ n.label }}</span><span style="font-size: 12px; color: #5e6168">{{ n.sub }}</span></span><sc-for list="{{ n.cells }}" as="c" hint-placeholder-count="3"><span role="cell"><span style="{{ c.style }}">{{ c.text }}</span></span></sc-for></div>
               </sc-for>
             </div>
             <div style="display: flex; flex-direction: column; gap: 6px"><span id="or-taal" style="font-size: 14px; font-weight: 600">Taal van e-mails</span><button type="button" aria-haspopup="listbox" aria-labelledby="or-taal" style="{{ select }}">Nederlands<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button></div>
@@ -85,7 +85,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
 class Component extends DCLogic {
   renderVals() {
     // Open Register's own section inside Nextcloud's personal settings dialog, over a dimmed copy of the dashboard (OrDashboard).
@@ -96,10 +96,10 @@ class Component extends DCLogic {
     const row = (i) => 'display: flex; align-items: center; gap: 12px; padding: 10px 12px' + (i ? '; border-top: 1px solid #eef0f3' : '');
     const tokens = [['Excel-koppeling', 'Meldingen: lezen', '31 dec 2026'], ['Script import', 'Meldingen: schrijven', '15 okt 2026']]
       .map(([name, may, exp], i) => ({ name, meta: 'Mag ' + may + ' · verloopt ' + exp, menu: 'Acties voor ' + name, style: row(i) }));
-    const pill = (on) => ({ text: on ? 'Aan' : 'Uit', style: 'display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 12px; font-weight: 600; ' + (on ? 'background: #e7f3ea; color: #1e6b2a' : 'background: #f0f1f3; color: #3d4047') });
-    const notes = [['Record dat ik volg is gewijzigd', true, false, true], ['Taak toegewezen', true, true, true], ['Zoekweergave over drempel', true, true, false]]
-      .map(([label, a, b, c], i) => ({ label, cells: [pill(a), pill(b), pill(c)],
-        style: 'display: grid; grid-template-columns: minmax(0, 1fr) 76px 56px 84px; gap: 8px; align-items: center; padding: 10px 12px' + (i ? '; border-top: 1px solid #eef0f3' : '') }));
+    const pill = (on) => on === 'forced' ? { text: 'Verplicht', style: 'display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 12px; font-weight: 600; background: #eaf0f7; color: #234a78' } : ({ text: on ? 'Aan' : 'Uit', style: 'display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 12px; font-weight: 600; ' + (on ? 'background: #e7f3ea; color: #1e6b2a' : 'background: #f0f1f3; color: #3d4047') });
+    const notes = [['Record dat ik volg is gewijzigd', true, false, true, 'uw eigen keuze'], ['Taak toegewezen', true, false, true, 'e-mail uit door groep Team Openbare ruimte'], ['Besluit verzonden', true, 'forced', false, 'e-mail is verplicht: wettelijke kennisgeving'], ['Melding zonder behandelaar', true, true, false, 'alleen voor schema Melding, gaat voor uw algemene keuze'], ['Zoekweergave over drempel', true, true, false, 'standaard van het schema']]
+      .map(([label, a, b, c, sub], i) => ({ label, sub, cells: [pill(a), pill(b), pill(c)],
+        style: 'display: grid; grid-template-columns: minmax(0, 1fr) 76px 72px 84px; gap: 8px; align-items: center; padding: 10px 12px' + (i ? '; border-top: 1px solid #eef0f3' : '') }));
     const recent = [['U wijzigde schema Melding', 'vandaag 09.02'], ['U maakte token Script import', 'gisteren 16.40'], ['Aangemeld met passkey', 'gisteren 08.31']]
       .map(([what, when], i) => ({ what, when, style: 'display: flex; flex-direction: column; gap: 2px; padding: 10px 0' + (i ? '; border-top: 1px solid #eef0f3' : '') }));
     return { appIcon, select, input, secondary, tokens, notes, recent };

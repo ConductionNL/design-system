@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>dossiq: beheerinstellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<dc-import name="NcBeheerInstellingen" app="Dossiq" app-icon="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z" apps="{{ apps }}" scope="wat Dossiq nodig heeft voor de hele organisatie; zaaktypen en werkinstellingen staan in de app" sections="{{ sections }}" hint-size="100%,2400px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // /settings/admin/dossiq: lib/Settings/AdminSettings.php mounts src/views/settings/AdminRoot.vue (CnAdminSettingsShell).
+    // Drawn: the version card and the sections an administrator sets once. Case types, map layers, Woo refusal grounds
+    // and the other work settings stay in the app (DqInstellingen and friends under Instellingen). The page goes on
+    // below with ZGW API mapping, VTH checklists, AWB terms, mandate matrix, DMN tables, StUF-ZKN and tenant onboarding.
+    const apps = ['Decidiq', 'Openregister', 'Pipelinq', 'Portaliq'];
+    const sections = [
+      { name: 'Versie-informatie', desc: 'Over deze Dossiq-installatie.', rows: [
+        { facts: [['Versie', '0.4.47'], ['Ingestelde versie', '0.4.47, bijgewerkt'], ['Ondersteuning', 'support@conduction.nl, voor een SLA sales@conduction.nl']] },
+        { buttons: [['Configuratie opnieuw importeren', ''], ['Installatiewizard starten', '']] }
+      ] },
+      { name: 'Configuratie', desc: 'In welk register Dossiq zaken bewaart, en met welke schema\'s.', rows: [
+        { select: 'Register', value: 'dossiq (12 schema\'s, alle aanwezig)' },
+        { pair: [{ label: 'Zaakschema', value: 'Zaak', select: true }, { label: 'Zaaktypeschema', value: 'Zaaktype', select: true }, { label: 'Statusschema', value: 'Status', select: true }] },
+        { pair: [{ label: 'Rolschema', value: 'Rol', select: true }, { label: 'Resultaatschema', value: 'Resultaat', select: true }, { label: 'Besluitschema', value: 'Besluit', select: true }] },
+        { buttons: [['Opslaan', 'primary']] }
+      ] },
+      { name: 'Menustructuur', desc: 'Hoeveel het menu laat zien. Eenvoudig is de standaard.', rows: [
+        { radios: 'Menu', options: [['Eenvoudig', 'Dashboard, Mijn werk, zaken en relaties', true], ['Uitgebreid', 'Ook rapportages, beheer en elke module']] }
+      ] },
+      { name: 'Serviceaccount voor achtergrondtaken', desc: 'Het account waarmee Dossiq werkt als er niemand is ingelogd, zoals bij termijnbewaking en mail ophalen.', rows: [
+        { text: 'Nextcloud-gebruikersnaam', value: 'svc-dossiq', action: 'Dit account gebruiken', hint: 'Het account moet schrijfrecht hebben op het register dossiq.' }
+      ] },
+      { name: 'Zaak-e-mail: gedeelde mailbox', desc: 'Mail aan zaken@zuiddrecht.nl komt binnen als zaak of bij een bestaande zaak.', rows: [
+        { pair: [{ label: 'Mailaccount voor intake', value: 'zaken@zuiddrecht.nl', select: true }, { label: 'Map', value: 'INBOX' }] },
+        { pair: [{ label: 'Ophalen elke', value: '300 seconden' }, { label: 'Berichten per keer', value: '50' }] },
+        { select: 'Zaaktype voor mail die niemand oppakt', value: 'In de mailbox laten staan' },
+        { switch: 'Mail op zaaknummer aan zaken koppelen', hint: 'Patroon ZD-\\d{4}-\\d{4} in het onderwerp.', on: true },
+        { buttons: [['Opslaan', 'primary']] }
+      ] },
+      { name: 'AI-ondersteunde verwerking', desc: 'Samenvatten, classificeren en anonimiseren met een taalmodel dat jij kiest.', rows: [
+        { switch: 'AI-ondersteunde verwerking aanzetten', on: true },
+        { radios: 'Soort model', options: [['Lokaal (Ollama)', 'Gegevens blijven op je eigen servers', true], ['Cloud', 'Een aanbieder buiten je organisatie']] },
+        { pair: [{ label: 'Adres van het model', value: 'http://ollama.intern:11434' }, { label: 'Modelnaam', value: 'llama3.1:8b' }] },
+        { buttons: [['Opslaan', 'primary'], ['Verbinding testen', '']] }
+      ] },
+      { name: 'Adviseringsbeheer', desc: 'Standaarden voor adviesvragen aan andere afdelingen en organisaties.', rows: [
+        { pair: [{ label: 'Standaardtermijn in dagen', value: '28' }, { label: 'Waarschuwen, dagen vooraf', value: '5' }] },
+        { text: 'Adres voor externe reacties', value: 'https://loket.zuiddrecht.nl/advies' },
+        { buttons: [['Opslaan', 'primary']] }
+      ] },
+      { name: 'Zoekindex', desc: 'Zaken, documenten en contacten in de zoekbalk van Dossiq.', rows: [
+        { facts: [['Zaken', '18.402'], ['Documenten', '96.115'], ['Laatst bijgewerkt', 'vandaag om 06.00']] },
+        { buttons: [['Opnieuw opbouwen zonder vergrendelen', '']] }
+      ] }
+    ];
+    return { apps, sections };
+  }
+}
+</script>
+</body>
+</html>

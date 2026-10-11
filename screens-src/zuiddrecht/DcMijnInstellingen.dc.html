@@ -12,93 +12,55 @@
 <style>
 body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
-.pi-achter>div{flex:1 1 auto}
+.nai-achter>div{flex:1 1 auto}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; min-height: 1080px">
-  <div class="pi-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="DcDashboard" hint-size="100%,2260px"></dc-import></div>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
+  <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="DcDashboard" hint-size="100%,2260px"></dc-import></div>
   <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
-    <div role="dialog" aria-modal="true" aria-labelledby="pi-titel" style="width: 100%; max-width: 720px; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 4px">
-        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 600; color: #5e6168">Uw account</span><h2 id="pi-titel" style="margin: 0; font-size: 20px; font-weight: 700">Persoonlijke instellingen</h2><span style="font-size: 15px; color: #3d4047; line-height: 1.5">Alleen voor jou. Collega's houden hun eigen instellingen.</span></div>
-        <button type="button" aria-label="Sluiten" style="flex: none; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 18px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 0 24px; padding: 8px 24px 4px">
-        <dc-import name="NcPersoonlijkNav" app="Decidiq" app-icon="{{ appIcon }}" hint-size="200px,420px"></dc-import>
-        <form style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column">
-          <section aria-labelledby="dc-meldingen" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0; border-top: 1px solid #eef0f3">
-            <h3 id="dc-meldingen" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 700"><span style="color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"></path></svg></span>Meldingen</h3>
-            <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Waarover en hoe decidiq u laat weten dat er iets is. Uw organisatie bepaalt welke meldingen verplicht zijn.</p>
-            <div role="table" aria-label="Meldingen van decidiq" style="border: 1px solid #e4e6ea; border-radius: 8px; display: flex; flex-direction: column">
-              <div role="row" style="display: grid; grid-template-columns: minmax(0, 1fr) 84px 72px; gap: 8px; align-items: end; padding: 8px 12px; border-bottom: 1px solid #eef0f3; font-size: 13px; font-weight: 600; color: #5e6168"><span role="columnheader">Over</span><span role="columnheader">In Nextcloud</span><span role="columnheader">Per e-mail</span></div>
-              <sc-for list="{{ notes }}" as="n" hint-placeholder-count="5">
-                <div role="row" style="{{ n.rowStyle }}"><span role="cell" style="font-size: 14px">{{ n.label }}</span><span role="cell"><input type="checkbox" aria-label="{{ n.ncLabel }}" checked="{{ n.nc }}" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></span><span role="cell"><input type="checkbox" aria-label="{{ n.mailLabel }}" checked="{{ n.mail }}" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></span></div>
-              </sc-for>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px">
-              <span id="dc-bundel" style="font-size: 14px; font-weight: 600">Bundel wijzigingen in de agenda</span>
-              <button type="button" aria-haspopup="listbox" aria-labelledby="dc-bundel" style="{{ select }}">Hooguit één melding per uur<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button>
-              <span style="font-size: 13px; color: #5e6168">Veel kleine wijzigingen na elkaar geven dan één melding.</span>
-            </div>
-          </section>
-          <section aria-labelledby="dc-afwezig" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0; border-top: 1px solid #eef0f3">
-            <h3 id="dc-afwezig" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 700"><span style="color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,17V19H2V17S2,13 9,13 16,17 16,17M12.5,7.5A3.5,3.5 0 1,0 9,11A3.5,3.5 0 0,0 12.5,7.5M15.94,13A5.32,5.32 0 0,1 18,17V19H22V17S22,13.37 15.94,13M15,4A3.39,3.39 0 0,0 13.07,4.59A5,5 0 0,1 13.07,10.41A3.39,3.39 0 0,0 15,11A3.5,3.5 0 0,0 15,4Z"></path></svg></span>Afwezigheid en vervanging</h3>
-            <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Wie uw stappen in besluitroutes zet terwijl u weg bent.</p>
-            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-              <div style="display: flex; flex-direction: column; gap: 6px"><label for="dc-van" style="font-size: 14px; font-weight: 600">Afwezig van</label><input id="dc-van" type="text" value="19 oktober 2026" style="{{ input }}"></div>
-              <div style="display: flex; flex-direction: column; gap: 6px"><label for="dc-tot" style="font-size: 14px; font-weight: 600">Tot en met</label><input id="dc-tot" type="text" value="30 oktober 2026" style="{{ input }}"></div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px"><span id="dc-vervanger" style="font-size: 14px; font-weight: 600">Vervanger</span><button type="button" aria-haspopup="listbox" aria-labelledby="dc-vervanger" style="{{ select }}">Anouk Bakker<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button></div>
-            <label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"><input type="checkbox" checked style="width: 18px; height: 18px; margin: 1px 0 0; accent-color: #3669a5; flex: none"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Mijn open actiepunten tijdelijk aan de vervanger geven</span><span style="font-size: 13px; color: #5e6168">Na uw terugkeer neemt u ze terug met één klik.</span></span></label>
-          </section>
-          <section aria-labelledby="dc-weergave" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0; border-top: 1px solid #eef0f3">
-            <h3 id="dc-weergave" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 700"><span style="color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path></svg></span>Weergave</h3>
-            <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Hoe lijsten en data er voor u uitzien.</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px">
-              <sc-for list="{{ view }}" as="v" hint-placeholder-count="3">
-                <div style="display: flex; flex-direction: column; gap: 6px"><span id="{{ v.id }}" style="font-size: 14px; font-weight: 600">{{ v.label }}</span><button type="button" aria-haspopup="listbox" aria-labelledby="{{ v.id }}" style="{{ select }}">{{ v.value }}<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></button></div>
-              </sc-for>
-            </div>
-          </section>
-          <section aria-labelledby="dc-abonnementen" style="display: flex; flex-direction: column; gap: 12px; padding: 18px 0; border-top: 1px solid #eef0f3">
-            <h3 id="dc-abonnementen" style="margin: 0; display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 700"><span style="color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M7.5,15A1.5,1.5 0 0,0 6,16.5A1.5,1.5 0 0,0 7.5,18A1.5,1.5 0 0,0 9,16.5A1.5,1.5 0 0,0 7.5,15M6,10V12A6,6 0 0,1 12,18H14A8,8 0 0,0 6,10M6,6V8A10,10 0 0,1 16,18H18A12,12 0 0,0 6,6Z"></path></svg></span>Abonnementen</h3>
-            <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 1.5">Volg organen en soorten stukken, ook als u er geen lid van bent.</p>
-            <div role="table" aria-label="Abonnementen" style="border: 1px solid #e4e6ea; border-radius: 8px; display: flex; flex-direction: column">
-              <div role="row" style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr); gap: 8px; padding: 8px 12px; border-bottom: 1px solid #eef0f3; font-size: 13px; font-weight: 600; color: #5e6168"><span role="columnheader">Orgaan</span><span role="columnheader">Wat</span><span role="columnheader">Hoe vaak</span></div>
-              <sc-for list="{{ subs }}" as="s" hint-placeholder-count="3">
-                <div role="row" style="{{ s.style }}"><span role="cell">{{ s.body }}</span><span role="cell">{{ s.what }}</span><span role="cell">{{ s.often }}</span></div>
-              </sc-for>
-            </div>
-            <div><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>Abonnement toevoegen</button></div>
-          </section>
-        </form>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; padding: 14px 24px 20px; border-top: 1px solid #eef0f3"><span style="flex: 1; font-size: 13px; color: #5e6168">Wijzigingen worden meteen bewaard · Decidiq</span><button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d; text-decoration: none; white-space: nowrap">Sluiten</button></div>
-    </div>
+    <dc-import name="NcAppInstellingen" app="Decidiq" version="1.2.6" active="Meldingen" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
-    // Decidiq's own section inside Nextcloud's personal settings dialog, over a dimmed copy of the dashboard (DcDashboard).
-    const appIcon = 'M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28M20,19A2,2 0 0,1 22,21V22H12V21A2,2 0 0,1 14,19H20Z';
-    const select = "display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: left";
-    const input = "box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d";
-    const notes = [
-      ['Een stemming opent voor u', true, true],
-      ['Agenda gepubliceerd of gewijzigd', true, false],
-      ['Stukken sluiten over 2 dagen', true, true],
-      ['Een actiepunt is aan u toegewezen', true, false],
-      ['Een besluit is genomen in uw orgaan', false, false]
-    ].map(([label, nc, mail], i) => ({ label, nc, mail, ncLabel: label + ', in Nextcloud', mailLabel: label + ', per e-mail',
-      rowStyle: 'display: grid; grid-template-columns: minmax(0, 1fr) 84px 72px; gap: 8px; align-items: center; padding: 10px 12px' + (i ? '; border-top: 1px solid #eef0f3' : '') }));
-    const view = [['dc-start', 'Startpagina', 'Dashboard'], ['dc-rijen', 'Rijen per pagina', '20'], ['dc-datum', 'Datumnotatie', '7 oktober 2026']]
-      .map(([id, label, value]) => ({ id, label, value }));
-    const subs = [['Gemeenteraad', 'Agenda, stukken, besluiten', 'Direct'], ['Commissie Ruimte', 'Agenda en besluiten', 'Dagelijks overzicht'], ['College van B en W', 'Besluitenlijsten', 'Wekelijks overzicht']]
-      .map(([body, what, often], i) => ({ body, what, often,
-        style: 'display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr); gap: 8px; padding: 10px 12px; font-size: 14px' + (i ? '; border-top: 1px solid #eef0f3' : '') }));
-    return { appIcon, select, input, notes, view, subs };
+    // Decidiq's own settings dialog (NcAppSettingsDialog), opened from Persoonlijke instellingen in the navigation.
+    // Replaces both /settings/user/decidiq (PersonalRoot.vue) and the in-app page /user-settings (Voorkeuren):
+    // the five sections of src/components/userSettings/ live here now (decision 11 Oct 2026).
+    const sections = [
+      { name: 'Meldingen', desc: 'Waarover en hoe Decidiq je laat weten dat er iets is. Je organisatie bepaalt welke verplicht zijn.', rows: [
+        { matrix: 'Over', cols: ['In Nextcloud', 'Per e-mail'], lines: [
+          ['Een stemming opent voor jou', [true, true]],
+          ['Agenda gepubliceerd of gewijzigd', [true, false]],
+          ['Stukken sluiten over 2 dagen', [true, true]],
+          ['Een actiepunt is aan jou toegewezen', [true, false]],
+          ['Een besluit is genomen in je orgaan', [false, false]]
+        ] },
+        { select: 'Herinnering voor een vergadering', value: '24 uur en 1 uur vooraf' }
+      ] },
+      { name: 'Afwezigheid', desc: 'Wie je stappen in besluitroutes zet terwijl je weg bent.', rows: [
+        { pair: [{ label: 'Afwezig van', value: '19 oktober 2026' }, { label: 'Tot en met', value: '30 oktober 2026' }] },
+        { select: 'Vervanger', value: 'Anouk Bakker' },
+        { buttons: [['Vervanging opslaan', 'primary'], ['Vervanging wissen', '']] }
+      ] },
+      { name: 'Weergave', desc: 'Hoe lijsten en data er voor jou uitzien.', rows: [
+        { pair: [{ label: 'Startpagina', value: 'Dashboard', select: true }, { label: 'Rijen per pagina', value: '20', select: true }, { label: 'Datumnotatie', value: '7 oktober 2026', select: true }] }
+      ] },
+      { name: 'Contact', desc: 'Hoe de griffie je bereikt over bestuurlijke zaken.', rows: [
+        { pair: [{ label: 'E-mail voor bestuurszaken', value: 'p.jansen@zuiddrecht.nl' }, { label: 'Telefoon voor spoed', value: '06 12 34 56 78' }] },
+        { select: 'Taal van berichten', value: 'Nederlands' }
+      ] },
+      { name: 'Abonnementen', desc: 'Volg organen, ook als je er geen lid van bent.', rows: [
+        { items: [
+          ['Gemeenteraad', 'Agenda, stukken, besluiten · direct', 'Verwijderen'],
+          ['Commissie Ruimte', 'Agenda en besluiten · dagelijks overzicht', 'Verwijderen'],
+          ['College van B en W', 'Besluitenlijsten · wekelijks overzicht', 'Verwijderen']
+        ] },
+        { buttons: [['Abonnement toevoegen', '']] }
+      ] }
+    ];
+    return { sections };
   }
 }
 </script>

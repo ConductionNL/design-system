@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>larpinq: beheerinstellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<dc-import name="NcBeheerInstellingen" app="Larpinq" app-icon="M12,2L4,5V11.09C4,16.14 7.41,20.85 12,22C16.59,20.85 20,16.14 20,11.09V5L12,2M12,4.15L18,6.4V11.09C18,15.09 15.45,18.79 12,19.92C8.55,18.79 6,15.1 6,11.09V6.4L12,4.15Z" apps="{{ apps }}" scope="alleen voor beheerders; de spelregels en werelden stel je in de app zelf in" user="Lars de Koning" initials="LK" role="Beheerder" sections="{{ sections }}" hint-size="100%,1500px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // /settings/admin/larpinq: lib/Settings/LarpinqAdmin.php mounts src/views/settings/Settings.vue
+    // (CnAdminSettingsShell with version card and re-import). One section, Gegevensopslag: per object type a source,
+    // and with Open Register a register and a schema, saved with Alles opslaan. Today the same form also shows in the
+    // app as Spelinstellingen (LrSpelinstellingen); this board is where it belongs.
+    const apps = ['Decidiq', 'Dossiq', 'Openregister'];
+    const ow = (label, schema) => ({ pair: [{ label, value: 'Open Register', select: true }, { label: 'Register', value: 'larpinq', select: true }, { label: 'Schema', value: schema, select: true }] });
+    const sections = [
+      { name: 'Versie-informatie', desc: 'Over deze Larpinq-installatie.', rows: [
+        { facts: [['Versie', '0.3.4'], ['Ingestelde versie', '0.3.4, bijgewerkt'], ['Ondersteuning', 'support@conduction.nl, voor een SLA sales@conduction.nl']] },
+        { buttons: [['Configuratie opnieuw importeren', '']] }
+      ] },
+      { name: 'Gegevensopslag', desc: 'Waar Larpinq de gegevens van je spel bewaart. Kies per soort een bron, en bij Open Register het register en schema.', rows: [
+        ow('Karakters', 'character'), ow('Spelers', 'player'), ow('Evenementen', 'event'), ow('Vaardigheden', 'skill'),
+        ow('Eigenschappen', 'ability'), ow('Voorwerpen', 'item'), ow('Toestanden', 'condition'), ow('Effecten', 'effect'),
+        ow('Werelden', 'setting'),
+        { buttons: [['Alles opslaan', 'primary']] }
+      ] }
+    ];
+    return { apps, sections };
+  }
+}
+</script>
+</body>
+</html>

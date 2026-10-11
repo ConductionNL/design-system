@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>integriq: persoonlijke instellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+.nai-achter>div{flex:1 1 auto}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
+  <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="IqDashboard" hint-size="100%,1220px"></dc-import></div>
+  <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
+    <dc-import name="NcAppInstellingen" app="Integriq" version="0.4.10" active="Meldingen" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // Integriq's own settings dialog (NcAppSettingsDialog), opened from Persoonlijke instellingen under Instellingen.
+    // CnAppRoot's default sections: Meldingen (lib/Notification: approval requests and connection alerts) and
+    // Inloggegevens. Gekoppelde accounts holds the per-user OAuth accounts that design PR #200 drew as a section in
+    // Nextcloud's personal settings (IqPersoonlijkeKoppeling); by the 11 Oct decision they belong here.
+    const sections = [
+      { name: 'Meldingen', desc: 'Kies welke meldingen van Integriq je krijgt.', rows: [
+        { switch: 'Er wacht een goedkeuring op je groep', hint: 'Een actie heeft akkoord nodig van een groep waar je in zit.', on: true },
+        { switch: 'Een koppeling heeft aandacht nodig', hint: 'Alleen als je groep is ingesteld voor koppelingsmeldingen.', on: true }
+      ] },
+      { name: 'Gekoppelde accounts', desc: 'Accounts bij andere diensten waarmee Integriq namens jou werkt.', rows: [
+        { items: [
+          ['Microsoft 365', 'p.jansen@zuiddrecht.nl · laatst gebruikt vandaag 08.55', 'Ontkoppelen', 'Verbonden'],
+          ['Google Workspace', 'Nog niet gekoppeld · nodig voor de bron Gedeelde agenda', 'Koppelen']
+        ] },
+        { note: 'Ontkoppelen trekt de toegang ook in bij de dienst zelf.', tone: 'plain' }
+      ] },
+      { name: 'Inloggegevens', desc: 'Je eigen wachtwoorden en sleutels voor bronnen. Ze staan versleuteld opgeslagen.', rows: [
+        { items: [['KvK API, testsleutel', 'Bron KvK Handelsregister test · toegevoegd 2 oktober', 'Verwijderen']] },
+        { buttons: [['Inloggegevens toevoegen', '']] }
+      ] }
+    ];
+    return { sections };
+  }
+}
+</script>
+</body>
+</html>

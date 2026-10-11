@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>opencatalogi: persoonlijke instellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+.nai-achter>div{flex:1 1 auto}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
+  <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="OcDashboard" hint-size="100%,1220px"></dc-import></div>
+  <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
+    <dc-import name="NcAppInstellingen" app="OpenCatalogi" version="2.1.16" active="Meldingen" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // OpenCatalogi's own settings dialog (NcAppSettingsDialog), opened from Instellingen under Beheer (manifest
+    // SettingsMenu, action user-settings). OpenCatalogi fills no #user-settings slot, so this is CnAppRoot's default:
+    // Meldingen, Inloggegevens, the walkthrough opencatalogi:getting-started and Integraties.
+    // src/views/settings/UserSettings.vue is dead code (opencatalogi#849) and is not drawn.
+    const sections = [
+      { name: 'Meldingen', desc: 'Kies welke meldingen van OpenCatalogi je krijgt.', rows: [
+        { note: 'OpenCatalogi stuurt nog geen eigen meldingen. Meldingen over publicaties krijg je via Open Register.', tone: 'plain' }
+      ] },
+      { name: 'Inloggegevens', desc: 'Je eigen accounts bij andere diensten. Ze staan versleuteld opgeslagen.', rows: [
+        { items: [['GitHub, persoonlijk token', 'GitHub-harvest testen · toegevoegd 6 oktober', 'Verwijderen']] },
+        { buttons: [['Inloggegevens toevoegen', '']] }
+      ] },
+      { name: 'Rondleiding', desc: 'Aan de slag met OpenCatalogi: 7 stappen, van catalogus tot eerste publicatie.', rows: [
+        { buttons: [['Rondleiding starten', 'primary']] }
+      ] },
+      { name: 'Integraties', desc: 'Apps waar OpenCatalogi mee samenwerkt. Een klik opent de app.', rows: [
+        { items: [['Open Register', 'Waar je publicaties zijn opgeslagen', 'Openen'], ['Integriq', 'Landelijke afleverkanalen en de GitHub-harvest', 'Openen']] }
+      ] }
+    ];
+    return { sections };
+  }
+}
+</script>
+</body>
+</html>

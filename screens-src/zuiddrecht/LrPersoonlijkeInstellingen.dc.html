@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>larpinq: persoonlijke instellingen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+.nai-achter>div{flex:1 1 auto}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
+  <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="LrKarakters" hint-size="100%,1220px"></dc-import></div>
+  <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
+    <dc-import name="NcAppInstellingen" app="Larpinq" version="0.3.4" active="Algemeen" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // Larpinq's own settings dialog (NcAppSettingsDialog), opened from Persoonlijke instellingen under Instellingen.
+    // App.vue fills it with one section Algemeen that only says "Configure your Larpinq settings here.". Drawn with
+    // the one per-user value Larpinq keeps (pref_active-world, read by the dashboard), plus Inloggegevens.
+    const sections = [
+      { name: 'Algemeen', desc: 'Je eigen keuzes in Larpinq.', rows: [
+        { select: 'Wereld waar je mee begint', value: 'De Zuiderlanden', hint: 'Je dashboard en de lijsten openen in deze wereld.' }
+      ] },
+      { name: 'Inloggegevens', desc: 'Je eigen accounts bij andere diensten. Ze staan versleuteld opgeslagen.', rows: [
+        { note: 'Je hebt nog geen inloggegevens toegevoegd.', tone: 'plain' },
+        { buttons: [['Inloggegevens toevoegen', '']] }
+      ] }
+    ];
+    return { sections };
+  }
+}
+</script>
+</body>
+</html>

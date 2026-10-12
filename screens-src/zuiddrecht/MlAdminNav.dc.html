@@ -14,13 +14,13 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<nav aria-label="Administration" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 12px 16px; display: flex; flex-direction: column; gap: 1px; background: #ffffff; border-right: 1px solid #e4e6ea">
+<nav aria-label="Administration" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 15px; line-height: 21px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 14px; display: flex; flex-direction: column; gap: 2px; background: #ffffff; border-right: 1px solid #e4e6ea">
   <h2 style="margin: 0; padding: 0 10px; font-size: 16px; font-weight: 600; line-height: 1.3">Administration</h2>
   <div style="margin: 2px 0 10px; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Mail</div>
   <sc-for list="{{ items }}" as="it" hint-placeholder-count="10">
-    <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span></a>
+    <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span></a>
   </sc-for>
-  <a href="MlInbox.dc.html" style="margin-top: auto; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-link, #3669a5); text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>Back to Mail</a>
+  <a href="MlInbox.dc.html" style="margin-top: auto; display: inline-flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 15px; font-weight: 500; color: var(--sc-link, #3669a5); text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>Back to Mail</a>
 </nav>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Domains"},"$preview":{"width":264,"height":945}}'>
@@ -52,10 +52,10 @@ class Component extends DCLogic {
       ['Assistant', I.spark, '#'],
       ['Settings', I.sliders, '#']
     ];
-    const base = 'display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; ';
+    const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; line-height: 21px; ';
     const items = raw.map(([label, icon, href]) => {
       const on = label === active;
-      return { label, icon, href, current: on ? 'page' : 'false', style: base + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 400;') };
+      return { label, icon, href, current: on ? 'page' : 'false', style: base + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') };
     });
     return { items };
   }

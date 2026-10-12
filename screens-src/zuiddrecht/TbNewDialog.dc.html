@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: new or existing work package from another app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1000px; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;From a chat message: New work package, title and description prefilled from the message of Marc Dubois</figcaption>
+    <div style="position: relative; height: 920px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" app="Talk" placeholder="Search conversations and messages" hint-size="100%,55px"></dc-import>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex">
+        <div aria-hidden="true" style="flex: 0 0 64px; background: #ffffff; border-right: 1px solid #e4e6ea"></div>
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; background: #ffffff">
+          <div style="display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; border-bottom: 1px solid #e4e6ea"><span style="flex: none; width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">LR</span><span style="font-size: 16px; font-weight: 600">Lyon rollout</span><span style="font-size: 12px; color: #5e6168">Marc Dubois, Tom Achterberg, you</span></div>
+          <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; padding: 16px">
+            <sc-for list="{{ chat }}" as="m" hint-placeholder-count="3">
+              <div style="display: flex; align-items: flex-start; gap: 10px">
+                <span style="{{ m.avatar }}">{{ m.initials }}</span>
+                <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <div style="display: flex; align-items: baseline; gap: 8px; font-size: 12px; color: #5e6168"><strong style="font-size: 13px; color: #1b1c1d">{{ m.from }}</strong><span>{{ m.time }}</span></div>
+                  <div style="{{ m.bubble }}">{{ m.text }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; align-items: flex-start; justify-content: center; padding-top: 80px">
+        <div role="dialog" aria-modal="true" aria-labelledby="tb-nd-a" style="width: 560px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 20px 0">
+            <h2 id="tb-nd-a" style="margin: 0; font-size: 18px; font-weight: 600; line-height: 24px">Work package</h2>
+            <button type="button" aria-label="Close" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div role="tablist" style="display: flex; gap: 20px; padding: 4px 20px 0; border-bottom: 1px solid #e4e6ea">
+            <sc-for list="{{ tabsA }}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+          </div>
+          <div role="tabpanel" aria-label="New work package" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 20px">
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; line-height: 18px; color: #3d4047">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #5e6168"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span><strong style="font-weight: 600; color: #1b1c1d">From the chat message of Marc Dubois, 09:12 in Lyon rollout.</strong> The message is linked to the work package and gets a reply with its number.</span>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5e6168">Title
+              <input type="text" value="Move kick-off to the afternoon" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+            </label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px">
+              <sc-for list="{{ selects }}" as="s" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5e6168; min-width: 0">{{ s.label }}
+                  <button type="button" aria-haspopup="listbox" aria-label="{{ s.label }}: {{ s.value }}" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 34px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis"><sc-if value="{{ s.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ s.dot }}"></span></sc-if><sc-if value="{{ s.hasType }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df; font-size: 11px">TASK</span></sc-if><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ s.value }}</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                </div>
+              </sc-for>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5e6168">Description
+              <textarea rows="4" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; line-height: 19px; color: #1b1c1d; resize: vertical">Marc Dubois in Lyon rollout, 12 Oct 09:12:
+> Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?</textarea>
+            </label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+              <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5e6168">Assignee
+                <span style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d"><span style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">OB</span>Olivia Brandt (you)</span>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5e6168">Due date
+                <input type="text" value="Thu 15 Oct 2026" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+              </label>
+            </div>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1b1c1d"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">Post a reply in the chat with the work package link</label>
+            <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px; border-top: 1px solid #e4e6ea">
+              <span style="font-size: 12px; color: #5e6168">Created in OpenProject, shown on the board in the column new.</span>
+              <span style="flex: 1 1 auto"></span>
+              <button type="button" style="display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Cancel</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Create and link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;From the smart picker in Text: find a work package to insert, or make a new one. Above the dialog, pasted links already show as previews</figcaption>
+    <div style="position: relative; height: 920px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" app="Text" placeholder="Search files" hint-size="100%,55px"></dc-import>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; background: #ffffff; overflow: hidden">
+        <article aria-label="Document Rollout Lyon, phase 2 notes" style="width: 560px; display: flex; flex-direction: column; gap: 10px; padding: 28px 0">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 30px">Rollout Lyon, phase 2 notes</h1>
+          <p style="margin: 0; color: #3d4047">Go-live is 2 November. The folder link and the kick-off are tracked here:</p>
+          <sc-for list="{{ previews }}" as="p" hint-placeholder-count="3">
+            <a href="#" aria-label="{{ p.aria }}" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; text-decoration: none; color: #1b1c1d">
+              <span style="{{ p.badge }}">{{ p.badgeText }}</span>
+              <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 18px">
+                <span style="font-size: 11px; color: #5e6168">{{ p.kind }}</span>
+                <span style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.title }}</span>
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #3d4047"><sc-if value="{{ p.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ p.dot }}"></span></sc-if><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.meta }}</span></span>
+              </span>
+            </a>
+          </sc-for>
+          <p style="margin: 0; color: #3d4047">Open point: the training for the project leads, see /<span style="display: inline-block; width: 1px; height: 16px; vertical-align: text-bottom; background: #1b1c1d"></span></p>
+        </article>
+      </div>
+      <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 24px">
+        <div role="dialog" aria-modal="true" aria-labelledby="tb-nd-b" style="width: 560px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 20px 0">
+            <h2 id="tb-nd-b" style="margin: 0; font-size: 18px; font-weight: 600; line-height: 24px">Work package</h2>
+            <button type="button" aria-label="Close" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div role="tablist" style="display: flex; gap: 20px; padding: 4px 20px 0; border-bottom: 1px solid #e4e6ea">
+            <sc-for list="{{ tabsB }}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+          </div>
+          <div role="tabpanel" aria-label="Find a work package" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 16px">
+            <span style="font-size: 12px; color: #5e6168">Opened from the smart picker in Text. The link you insert shows as a preview in the document.</span>
+            <label style="position: relative; display: flex; align-items: center"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search work packages by number or words</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg><input type="search" value="training" placeholder="Number or words" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"></label>
+            <div role="group" aria-label="Scope" style="display: flex; gap: 6px; flex-wrap: wrap">
+              <sc-for list="{{ scope }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+            </div>
+            <div role="listbox" aria-label="Results" style="display: flex; flex-direction: column">
+              <span style="display: block; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 24px">In Northwind rollout Lyon</span>
+              <sc-for list="{{ results }}" as="r" hint-placeholder-count="2">
+                <button type="button" role="option" aria-selected="{{ r.selected }}" style="{{ r.style }}">
+                  <span style="flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: 11px; line-height: 1"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ r.typeColor }}">{{ r.type }}</span><span style="color: #3d4047">{{ r.number }}</span></span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 17px; text-align: left"><span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.pre }}<span style="background: #eaf0f7">{{ r.hit }}</span>{{ r.post }}</span><span style="font-size: 11px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.hint }}</span></span>
+                  <span style="flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #3d4047; white-space: nowrap"><span style="{{ r.dot }}"></span>{{ r.status }}</span>
+                </button>
+              </sc-for>
+              <button type="button" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; margin-top: 4px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New work package: training<span style="flex: 1 1 auto"></span><span style="font-size: 12px; font-weight: 400; color: #5e6168">opens the New tab with this title</span></button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid #e4e6ea">
+              <span style="font-size: 12px; color: #5e6168">Arrow keys move, Enter inserts.</span>
+              <span style="flex: 1 1 auto"></span>
+              <button type="button" style="display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Cancel</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Insert the link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const dot = (st) => 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + STATUS[st][0] + '; border: 1.5px solid ' + STATUS[st][1];
+    const av = 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ';
+    const bubble = 'display: inline-block; max-width: 440px; padding: 8px 12px; border-radius: var(--sc-radius, 8px); font-size: 14px; line-height: 20px; ';
+    const chat = [
+      ['Marc Dubois', 'MD', '09:05', 'Bonjour. The department head signed the plan this morning.', false],
+      ['Marc Dubois', 'MD', '09:12', 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', true],
+      ['Tom Achterberg', 'TA', '09:14', 'Afternoon works for me. Olivia, can you make it a work package so it lands on the board?', false]
+    ].map(([from, initials, time, text, hot]) => ({ from, initials, time, text, avatar: av + 'background: #eaf0f7; color: #234a78', bubble: bubble + (hot ? 'background: #eaf0f7; border: 1px solid #3669a5; color: #1b1c1d' : 'background: #f5f6f8; color: #1b1c1d') }));
+    const tabBase = 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 2px; border: 0; border-bottom: 2px solid transparent; background: transparent; font: 600 12px \'Fira Sans\', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; ';
+    const tab = (label, on) => ({ label, selected: on ? 'true' : 'false', style: tabBase + (on ? 'color: #1b1c1d; font-weight: 700; border-bottom-color: #3669a5;' : 'color: #5e6168;') });
+    const tabsA = [tab('New work package', true), tab('Find a work package', false)];
+    const tabsB = [tab('New work package', false), tab('Find a work package', true)];
+    const selects = [
+      { label: 'Project', value: 'Northwind rollout Lyon', hasDot: false, hasType: false, dot: '' },
+      { label: 'Status column', value: 'new', hasDot: true, hasType: false, dot: dot('new') },
+      { label: 'Type', value: 'Task', hasDot: false, hasType: true, dot: '' }
+    ];
+    const badge = (bg, fg) => 'flex: none; width: 34px; height: 24px; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; color: ' + fg + '; background: ' + bg;
+    const previews = [
+      { kind: 'Work package in Northwind rollout Lyon', badgeText: 'FEA', badge: badge('#f0f7ea', '#538b28'), title: 'FEATURE #58412 Link Nextcloud project folders on rollout', hasDot: true, dot: dot('in development'), meta: 'in development, Tom Achterberg, due 30 Oct', aria: 'Preview of FEATURE #58412' },
+      { kind: 'Project', badgeText: 'NRL', badge: badge('#1b1c1d', '#ffffff'), title: 'Northwind rollout Lyon', hasDot: false, dot: '', meta: '9 open work packages, go-live 2 November, 5 members', aria: 'Preview of the project Northwind rollout Lyon' },
+      { kind: 'Comment on TASK #58441 Move kick-off to the afternoon', badgeText: 'TA', badge: badge('#eaf0f7', '#234a78'), title: 'Tom Achterberg: afternoon works, I will tell the Lyon team', hasDot: false, dot: '', meta: 'Comment by Tom Achterberg, today 09:40', aria: 'Preview of a comment by Tom Achterberg' }
+    ];
+    const chipBase = 'height: 26px; padding: 0 9px; border-radius: var(--sc-radius, 8px); font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const scope = [['Northwind rollout Lyon', true], ['Open only', true], ['Assigned to me', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: chipBase + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const item = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 44px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); font-family: \'Fira Sans\', system-ui, sans-serif; color: #1b1c1d; ';
+    const results = [
+      ['TASK', '#58301', 'Quote for project lead ', 'training', ' Kassel', 'needs clarification', 'Olivia Brandt, created from the mail of Jana Köhler', true],
+      ['TASK', '#58470', 'Plan the ', 'training', ' day for the Lyon project leads', 'new', 'Tom Achterberg, due 29 Oct', false]
+    ].map(([type, number, pre, hit, post, status, hint, selected]) => ({ type, number, pre, hit, post, status, hint, typeColor: TYPE[type], dot: dot(status), selected: selected ? 'true' : 'false', style: item + (selected ? 'background: #eaf0f7;' : 'background: transparent;') }));
+    return { chat, tabsA, tabsB, selects, previews, scope, results };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar: people of an event, inviting and answering</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1830px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;As organiser: the people of the scope review, the count of answers, the forwarding switch, and the row menu of Marc Dubois open</figcaption>
+    <div style="position: relative; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Week" folded="true" hint-size="64px,945px"></dc-import></div>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+            <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">October <span style="font-weight: 400; color: #5e6168">2026</span></h1>
+            <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Week 42</span>
+            <span style="flex: 1 1 auto"></span>
+            <div style="display: flex; align-items: center; gap: 4px; align-self: center">
+              <button type="button" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Week<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
+              <button type="button" aria-label="Previous week" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+              <button type="button" aria-label="Next week" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+            </div>
+          </div>
+          <div style="flex: none; display: flex; height: 34px">
+            <div style="flex: none; width: 84px; display: flex; align-items: flex-end; padding-bottom: 6px; box-sizing: border-box; font-size: 10px; line-height: 12px; letter-spacing: 0.04em; color: #5e6168"><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right">CEST</span><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right; opacity: 0.6">UTC</span></div>
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+              <div style="{{ d.headStyle }}"><span>{{ d.name }}</span><span style="{{ d.numStyle }}">{{ d.n }}</span></div>
+            </sc-for>
+          </div>
+          <div style="flex: none; display: flex; border-top: 1px solid #eef0f3; border-bottom: 1px solid #e4e6ea">
+            <div style="flex: none; width: 84px; box-sizing: border-box; padding: 6px 8px 0 0; font-size: 10px; letter-spacing: 0.04em; color: #5e6168; text-align: right; line-height: 1.2">All day</div>
+            <div style="flex: 1 1 auto; min-width: 0; position: relative; height: 80px; overflow: hidden">
+              <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
+                <a href="#" aria-label="{{ b.aria }}" style="{{ b.style }}">
+                  <sc-if value="{{ b.leftOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"></path></svg></sc-if>
+                  <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+                  <span style="flex: none; font-weight: 700; letter-spacing: 0.04em; color: {{ b.color }}">{{ b.type }}</span>
+                  <span style="flex: none; color: #3d4047">{{ b.number }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d">{{ b.subject }}</span>
+                  <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+                  <sc-if value="{{ b.rightOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"></path></svg></sc-if>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden">
+            <sc-for list="{{ hours }}" as="h" hint-placeholder-count="11">
+              <div style="{{ h.lineStyle }}"></div>
+              <div style="{{ h.localStyle }}">{{ h.local }}</div>
+              <div style="{{ h.utcStyle }}">{{ h.utc }}</div>
+            </sc-for>
+            <div style="position: absolute; top: 0; bottom: 0; left: 84px; right: 0; display: flex">
+              <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+                <div style="{{ d.colStyle }}">
+                  <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
+                    <a href="{{ e.href }}" aria-label="{{ e.aria }}" aria-current="{{ e.current }}" style="{{ e.style }}">
+                      <span style="display: flex; align-items: center; gap: 4px; min-width: 0">
+                        <sc-if value="{{ e.flag }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 22V4a1 1 0 0 1 1-1h12l-2 4 2 4H5"></path></svg></sc-if>
+                        <sc-if value="{{ e.video }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m22 8-6 4 6 4V8zM2 6h14v12H2z"></path></svg></sc-if>
+                        <span style="{{ e.titleStyle }}">{{ e.title }}</span>
+                        <sc-if value="{{ e.inlineTime }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 11px; font-weight: 400; color: #5e6168">{{ e.time }}</span></sc-if>
+                      </span>
+                      <sc-if value="{{ e.blockTime }}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; color: #5e6168; white-space: nowrap">{{ e.time }}</span></sc-if>
+                      <sc-if value="{{ e.hasChip }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; height: 16px; margin-top: 3px; padding: 0 5px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 10px; line-height: 1; white-space: nowrap; align-self: flex-start"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ e.wpColor }}">{{ e.wpType }}</span><span style="color: #3d4047">{{ e.wpNumber }}</span></span></sc-if>
+                    </a>
+                  </sc-for>
+                  <sc-if value="{{ d.today }}" hint-placeholder-val="{{ false }}"><div aria-label="Now, 09:00" role="img" style="position: absolute; left: 0; right: 0; top: {{ nowTop }}px; height: 1px; background: #1b1c1d; z-index: 2"></div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div aria-hidden="true" style="position: absolute; left: 0; width: 42px; box-sizing: border-box; padding-right: 8px; top: {{ nowLabelTop }}px; font-size: 11px; line-height: 16px; font-weight: 600; color: #1b1c1d; background: #ffffff; text-align: right; z-index: 3">09:00</div>
+          </div>
+        </main>
+        <aside aria-label="Event" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #538b28"></span>Team</span>
+            <div style="display: flex; gap: 2px">
+              <button type="button" aria-label="Edit this event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button>
+              <a href="ClWeek.dc.html" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 16px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Release 16.5 scope review</h2>
+            <div style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 20px">
+              <span>Wednesday 14 October 2026</span>
+              <span style="color: #5e6168">09:30 to 11:00, 1 h 30 min · you organise this event</span>
+            </div>
+            <div style="position: relative; display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">People</span><span style="font-size: 12px; color: #5e6168">7</span>
+                <span style="flex: 1 1 auto"></span>
+                <button type="button" title="Names, addresses, status and role, as text" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px; margin-right: -8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Copy the list</button>
+              </div>
+              <span style="font-size: 12px; color: #5e6168; line-height: 18px">3 accepted, 1 declined, 1 not answered, 1 delegated</span>
+              <label style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Add people</span><input type="text" placeholder="Add people by name or email address" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 2px 0">
+                <label for="att-noforward" style="display: flex; flex-direction: column; gap: 0; min-width: 0; font-size: 13px; line-height: 18px"><span style="font-weight: 500">Only invited people can answer</span><span style="font-size: 12px; color: #5e6168">Stops forwarding of the invitation</span></label>
+                <button id="att-noforward" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+              </div>
+              <div style="display: flex; flex-direction: column">
+                <sc-for list="{{ people }}" as="p" hint-placeholder-count="7">
+                  <div style="{{ p.rowStyle }}">
+                    <span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ p.initials }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden"><span style="overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span><sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 11px; color: #5e6168">{{ p.tag }}</span></sc-if></span>
+                    <sc-if value="{{ p.self }}" hint-placeholder-val="{{ false }}"><button type="button" aria-haspopup="listbox" aria-label="Your own answer as organiser" style="display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 12px 'Fira Sans', sans-serif; white-space: nowrap"><span style="{{ p.dot }}"></span>Accepted<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></sc-if>
+                    <sc-if value="{{ p.other }}" hint-placeholder-val="{{ true }}"><span style="{{ p.dot }}"></span><span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ p.answer }}</span><button type="button" aria-label="Actions for {{ p.name }}" aria-haspopup="menu" aria-expanded="{{ p.open }}" style="{{ p.moreStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <div role="menu" aria-label="Actions for Marc Dubois" style="position: absolute; top: 302px; right: 0; margin-top: 4px; min-width: 300px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column">
+                <div role="group" aria-label="Role of Marc Dubois" style="display: flex; flex-direction: column">
+                  <span style="height: 28px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Role</span>
+                  <sc-for list="{{ roles }}" as="r" hint-placeholder-count="4"><button type="button" role="menuitemradio" aria-checked="{{ r.checked }}" style="{{ r.style }}"><span style="flex: none; width: 16px; display: inline-flex; justify-content: center"><sc-if value="{{ r.on }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex: 1 1 auto">{{ r.label }}</span><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.hint }}</span></button></sc-for>
+                </div>
+                <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
+                <div role="menuitemcheckbox" aria-checked="true" style="{{ item }}#1b1c1d"><span style="flex: none; width: 16px"></span><span style="flex: 1 1 auto">Reply requested</span><span aria-hidden="true" style="{{ switchOnSm }}"><span style="{{ knobOnSm }}"></span></span></div>
+                <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
+                <button type="button" role="menuitem" style="{{ item }}#1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="flex: 1 1 auto">Send an email</span><span style="flex: none; font-size: 12px; color: #5e6168">opens Mail</span></button>
+                <button type="button" role="menuitem" style="{{ item }}#1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span style="flex: 1 1 auto">Copy name and address</span></button>
+                <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
+                <button type="button" role="menuitem" style="{{ item }}#1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path></svg><span style="flex: 1 1 auto">Make organiser</span><span style="flex: none; font-size: 12px; color: #5e6168">stay on as attendee, or leave</span></button>
+                <button type="button" role="menuitem" style="{{ item }}#cc0000"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #cc0000"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 11h-6"></path></svg><span style="flex: 1 1 auto">Remove from the event</span><span style="flex: none; font-size: 12px; color: #5e6168">a group goes as a whole</span></button>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin: 0 16px; padding: 14px 0 16px; border-top: 1px solid #e4e6ea">
+            <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Linked work package</span>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #005b77">EPIC</span><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 600">#57990</a><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Release 16.5 scope</span><span style="flex: 1 1 auto"></span><span style="font-size: 12px; color: #5e6168; white-space: nowrap">in review</span></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </figure>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Adding people: one field finds users, contacts, contact groups and teams, or takes a typed address</figcaption>
+      <div style="height: 700px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div aria-hidden="true" style="flex: 1 1 auto; position: relative; background: #ffffff; overflow: hidden"><sc-for list="{{ sliver }}" as="s" hint-placeholder-count="9"><div style="{{ s }}"></div></sc-for></div>
+        <aside aria-label="Event" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #538b28"></span>Team</span>
+            <a href="ClWeek.dc.html" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 16px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Release 16.5 scope review</h2>
+            <span style="font-size: 13px; color: #5e6168; line-height: 20px">Wednesday 14 October, 09:30 to 11:00</span>
+            <div style="position: relative; display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
+              <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">People</span><span style="font-size: 12px; color: #5e6168">7</span></div>
+              <label style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px; box-shadow: 0 0 0 2px #eaf0f7"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Add people</span><input type="text" value="lyon" aria-expanded="true" aria-controls="att-results" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
+              <div id="att-results" role="listbox" aria-label="Matches for lyon" style="display: flex; flex-direction: column; margin-top: -4px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+                <sc-for list="{{ results }}" as="r" hint-placeholder-count="6">
+                  <sc-if value="{{ r.isGroup }}" hint-placeholder-val="{{ false }}"><span style="height: 28px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ r.label }}</span></sc-if>
+                  <sc-if value="{{ r.isRow }}" hint-placeholder-val="{{ true }}"><div role="option" aria-selected="{{ r.selected }}" style="{{ r.style }}"><span style="{{ r.avatar }}"><sc-if value="{{ r.hasIcon }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.icon }}"></path></svg></sc-if>{{ r.initials }}</span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 16px"><span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.name }}</span><span style="font-size: 11px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.meta }}</span></span></div></sc-if>
+                </sc-for>
+                <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
+                <span style="padding: 4px 10px 2px; font-size: 12px; color: #5e6168; line-height: 17px">Or type a full email address to invite someone outside the organisation.</span>
+              </div>
+              <div style="display: flex; flex-direction: column">
+                <sc-for list="{{ peopleShort }}" as="p" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 8px; height: 30px; font-size: 13px">
+                    <span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ p.initials }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span>
+                    <span style="{{ p.dot }}"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ p.answer }}</span>
+                  </div>
+                </sc-for>
+                <span style="font-size: 12px; color: #5e6168; line-height: 26px">and 4 more</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;As attendee: answering Tom's invitation with a note, the notes of others, and which calendar answers</figcaption>
+      <div style="height: 700px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div aria-hidden="true" style="flex: 1 1 auto; position: relative; background: #ffffff; overflow: hidden"><sc-for list="{{ sliver }}" as="s" hint-placeholder-count="9"><div style="{{ s }}"></div></sc-for></div>
+        <aside aria-label="Event" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #ff9d2e"></span>Customers</span>
+            <a href="ClWeek.dc.html" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 16px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Rollout review Lyon, phase 2</h2>
+            <div style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 20px">
+              <span>Thursday 15 October 2026, 14:00 to 15:00</span>
+              <span style="color: #5e6168">Organiser Tom Achterberg · 5 people</span>
+            </div>
+            <a href="MlThread.dc.html" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--sc-link, #3669a5); text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>From the mail of Tom Achterberg, 9 Oct</a>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 2px">
+              <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Your answer</span>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Accept</button>
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Maybe</button>
+                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Decline</button>
+              </div>
+              <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 0">
+                <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Answer for</legend>
+                <label style="display: flex; align-items: center; gap: 10px; height: 26px; font-size: 13px"><input type="radio" name="att-scope" checked style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">This event <span style="color: #5e6168">Thursday 15 October</span></label>
+                <label style="display: flex; align-items: center; gap: 10px; height: 26px; font-size: 13px"><input type="radio" name="att-scope" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">The whole series <span style="color: #5e6168">only for a repeating invitation</span></label>
+              </fieldset>
+              <label for="att-note" style="font-size: 13px; font-weight: 500">Note with your answer</label>
+              <textarea id="att-note" rows="2" style="margin-top: -4px; padding: 8px 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 13px/18px 'Fira Sans', sans-serif; color: #1b1c1d; resize: none; outline: none">I can join from 14:15, the Kassel call runs late.</textarea>
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 18px; margin-top: -2px"><span style="flex: none; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 3px; background: var(--sc-action, #3669a5); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>Also send the note to the other participants</label>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px"><span style="font-size: 13px; white-space: nowrap">Answer from calendar</span><button type="button" aria-haspopup="listbox" aria-label="Answer from calendar: Customers" style="{{ chooser }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #ff9d2e"></span>Customers</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+              <span style="font-size: 12px; color: #5e6168; line-height: 17px; margin-top: -4px">This event sits on Customers and on Personal.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #e4e6ea">
+              <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Notes from others</span>
+              <sc-for list="{{ notes }}" as="n" hint-placeholder-count="2">
+                <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 18px"><span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ n.initials }}</span><span style="min-width: 0"><span style="font-weight: 600">{{ n.name }}</span> <span style="color: #5e6168">{{ n.answer }}</span><br>{{ n.text }}</span></div>
+              </sc-for>
+            </div>
+            <div role="status" style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>
+              <span>You are not the organiser: edits you make here stay in your calendar and do not reach Tom Achterberg.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </figure>
+    <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Every attendee declined: the panel says so at the top</figcaption>
+        <div style="height: 356px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+          <div aria-hidden="true" style="flex: 1 1 auto; position: relative; background: #ffffff; overflow: hidden"><sc-for list="{{ sliverShort }}" as="s" hint-placeholder-count="4"><div style="{{ s }}"></div></sc-for></div>
+          <aside aria-label="Event" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #ff9d2e"></span>Customers</span>
+              <a href="ClWeek.dc.html" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 16px">
+              <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Demo preparation Malmo Energi</h2>
+              <span style="font-size: 13px; color: #5e6168; line-height: 20px">Tuesday 13 October, 11:00 to 12:00 · you organise this event</span>
+              <div role="status" style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; border-left: 3px solid #ff9d2e; font-size: 12px; color: #3d4047; line-height: 18px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 1px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 11h-6"></path></svg>
+                <span>Everyone declined this event. Nobody of the 2 people you invited can make it.</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">People</span><span style="font-size: 12px; color: #5e6168">3</span></div>
+                <span style="font-size: 12px; color: #5e6168; line-height: 18px">0 accepted, 2 declined, 0 not answered</span>
+                <sc-for list="{{ declined }}" as="p" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 8px; height: 28px; font-size: 13px">
+                    <span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ p.initials }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span>
+                    <span style="{{ p.dot }}"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ p.answer }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">e</span> &nbsp;Before the account has an email address: no field, one line that says what to do</figcaption>
+        <div style="height: 296px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+          <div aria-hidden="true" style="flex: 1 1 auto; position: relative; background: #ffffff; overflow: hidden"><sc-for list="{{ sliverShort }}" as="s" hint-placeholder-count="4"><div style="{{ s }}"></div></sc-for></div>
+          <aside aria-label="Event" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #3669a5"></span>Personal</span>
+              <a href="ClWeek.dc.html" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 16px">
+              <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Week planning</h2>
+              <span style="font-size: 13px; color: #5e6168; line-height: 20px">Monday 12 October, 08:00 to 08:45</span>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">People</span><span style="font-size: 12px; color: #5e6168">only you</span></div>
+                <div role="status" style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>
+                  <span>Add your email address in your profile before you invite people. Invitations are sent from that address, and answers come back to it. <a href="#" style="color: var(--sc-link, #3669a5)">Open your profile</a></span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </figure>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1830}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const H = 72; // one hour in px, 08:00 to 18:00
+    const OFF = 14; // top offset so the 08:00 label is not clipped
+    const NOW = 9; // Monday 12 October, 09:00
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const CAL = { personal: '#3669a5', team: '#538b28', customers: '#ff9d2e' };
+    const pale = (c) => 'color-mix(in srgb, ' + c + ' 14%, #ffffff)';
+    const dark = (c) => 'color-mix(in srgb, ' + c + ' 60%, #1b1c1d)';
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmt = (t) => pad(Math.floor(t)) + ':' + pad(Math.round((t % 1) * 60));
+    const hours = [];
+    for (let i = 0; i <= 10; i++) {
+      const top = i * H + OFF;
+      hours.push({
+        local: fmt(8 + i), utc: fmt(6 + i),
+        lineStyle: 'position: absolute; left: 84px; right: 0; top: ' + top + 'px; border-top: 1px solid #eef0f3',
+        localStyle: 'position: absolute; left: 0; width: 42px; box-sizing: border-box; padding-right: 8px; top: ' + (top - 8) + 'px; font-size: 11px; line-height: 16px; color: #5e6168; text-align: right',
+        utcStyle: 'position: absolute; left: 42px; width: 42px; box-sizing: border-box; padding-right: 8px; top: ' + (top - 8) + 'px; font-size: 11px; line-height: 16px; color: #5e6168; opacity: 0.6; text-align: right'
+      });
+    }
+    const nowTop = (NOW - 8) * H + OFF;
+    const nowLabelTop = nowTop - 8;
+    const ev = (title, start, dur, o = {}) => {
+      const c = CAL[o.cal ?? 'personal'];
+      const short = dur <= 0.5;
+      const end = start + dur;
+      const pending = !!o.pending;
+      return {
+        title, href: '#',
+        aria: title + ', ' + fmt(start) + ' to ' + fmt(end) + (pending ? ', not answered yet' : '') + (o.past ? ', over' : ''), current: o.selected ? 'true' : 'false',
+        titleStyle: 'flex: 1 1 auto; min-width: 0; font-weight: 600; overflow: hidden; ' + (short ? 'white-space: nowrap; text-overflow: ellipsis;' : 'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;'),
+        time: short ? fmt(start) : fmt(start) + ' to ' + fmt(end), inlineTime: short, blockTime: !short,
+        flag: !!o.flag, video: !!o.video,
+        hasChip: !!o.chip, wpType: o.chip ? o.chip[0] : '', wpNumber: o.chip ? o.chip[1] : '', wpColor: o.chip ? TYPE[o.chip[0]] : '',
+        style: 'position: absolute; left: 2px; right: 4px; top: ' + ((start - 8) * H + OFF + 1) + 'px; height: ' + (dur * H - 2) + 'px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0; justify-content: ' + (short ? 'center' : 'flex-start') + '; padding: ' + (short ? '0 6px' : '4px 7px') + '; border-radius: 4px; overflow: hidden; font-size: 12px; line-height: 15px; text-decoration: none; z-index: 1; color: ' + dark(c) + '; ' +
+          (pending ? 'background: #ffffff; border: 1px dashed ' + c + '; border-left: 3px solid ' + c + ';' : 'background: ' + pale(c) + '; border-left: 3px solid ' + c + ';') +
+          (o.past ? ' opacity: 0.55;' : '') + (o.selected ? ' box-shadow: 0 0 0 2px #3669a5;' : '')
+      };
+    };
+    const standup = () => ev('Stand-up', 10, 0.25, { cal: 'personal' });
+    const perDay = [
+      [ev('Week planning', 8, 0.75, { cal: 'personal', past: true }), standup()],
+      [standup(), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers' })],
+      [standup(), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team', chip: ['EPIC', '#57990', 'in review'], selected: true })],
+      [standup(), ev('Rollout review Lyon, phase 2', 14, 1, { cal: 'customers', chip: ['FEATURE', '#58412', 'in development'], video: true, pending: true })],
+      [standup(), ev('Submit October hours', 17, 0.5, { cal: 'personal', flag: true })],
+      [], []
+    ];
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((name, i) => {
+      const today = i === 0;
+      const weekend = i >= 5;
+      return {
+        name, n: 12 + i, today, events: perDay[i],
+        headStyle: 'flex: 1 1 0; min-width: 0; display: flex; align-items: flex-end; gap: 5px; padding: 0 0 6px 8px; box-sizing: border-box; font-size: 13px; line-height: 20px; color: #5e6168; ' + (weekend ? 'background: #f5f6f8;' : ''),
+        numStyle: today ? 'display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 4px; background: #3669a5; color: #ffffff; font-weight: 600' : 'color: #1b1c1d; font-weight: 500',
+        colStyle: 'flex: 1 1 0; min-width: 0; position: relative; border-left: 1px solid #eef0f3; ' + (weekend ? 'background: #f5f6f8;' : '')
+      };
+    });
+    const bars = [
+      ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 0, 0, 2, false, false, true],
+      ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout, 5 to 30 Oct', 1, 0, 6, true, true, false],
+      ['EPIC', '#57990', 'Release 16.5 scope, 28 Sep to 23 Oct', 2, 0, 6, true, true, false]
+    ].map(([type, number, subject, lane, s, e, leftOpen, rightOpen, handles]) => {
+      const c = TYPE[type];
+      const left = leftOpen ? '0px' : 'calc(100% * ' + s + ' / 7 + 2px)';
+      const width = 'calc(100% * ' + (e - s + 1) + ' / 7' + (leftOpen ? '' : ' - 2px') + (rightOpen ? '' : ' - 4px') + ')';
+      return {
+        type, number, subject, color: c, leftOpen, rightOpen, handles,
+        aria: type + ' ' + number + ', ' + subject,
+        style: 'position: absolute; top: ' + (6 + lane * 24) + 'px; left: ' + left + '; width: ' + width + '; height: 20px; box-sizing: border-box; display: flex; align-items: center; gap: 6px; padding: 0 6px; border-left: 3px solid ' + c + '; border-radius: 4px; background: ' + pale(c) + '; font-size: 11px; line-height: 1; white-space: nowrap; text-decoration: none; color: #1b1c1d; overflow: hidden'
+      };
+    });
+    // answer dots: accepted, maybe, declined, none
+    const ST = { accepted: ['#d3f9d8', '#8ff09c'], maybe: ['#ffc078', '#ff9d2e'], declined: ['#fcc2d7', '#f977a6'], none: ['#dee2e6', '#adb5bd'], delegated: ['#eaf0f7', '#3669a5'] };
+    const adot = (st) => 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + st[0] + '; border: 1.5px solid ' + st[1];
+    const more = 'flex: none; width: 24px; height: 24px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; ';
+    const people = [
+      ['Olivia Brandt (you)', 'OB', 'organiser', 'accepted', '', true, false],
+      ['Tom Achterberg', 'TA', 'accepted', 'accepted', 'chair', false, false],
+      ['Priya Raman', 'PR', 'accepted', 'accepted', 'optional', false, false],
+      ['Marc Dubois', 'MD', 'delegated to Lea Fontaine', 'delegated', '', false, true],
+      ['Lea Fontaine', 'LF', 'accepted', 'accepted', '', false, false],
+      ['Jana Köhler', 'JK', 'declined', 'declined', '', false, false],
+      ['Sven Lindqvist', 'SL', 'not answered yet', 'none', '', false, false]
+    ].map(([name, initials, answer, st, tag, self, open]) => ({
+      name, initials, answer, tag, hasTag: tag !== '', self, other: !self, open: open ? 'true' : 'false', dot: adot(ST[st]),
+      rowStyle: 'display: flex; align-items: center; gap: 8px; height: 30px; margin: 0 -6px; padding: 0 6px; border-radius: var(--sc-radius, 8px); font-size: 13px; ' + (open ? 'background: #f5f6f8;' : ''),
+      moreStyle: more + (open ? 'background: #eaf0f7; color: #234a78' : 'background: transparent; color: #5e6168')
+    }));
+    const peopleShort = people.slice(0, 3);
+    const declined = [
+      ['Olivia Brandt (you)', 'OB', 'organiser', 'accepted'],
+      ['Sven Lindqvist', 'SL', 'declined', 'declined'],
+      ['Tom Achterberg', 'TA', 'declined', 'declined']
+    ].map(([name, initials, answer, st]) => ({ name, initials, answer, dot: adot(ST[st]) }));
+    const item = 'display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; width: 100%; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; text-align: left; font: 400 14px \'Fira Sans\', sans-serif; white-space: nowrap; color: ';
+    const roles = [
+      ['Chair', 'leads the meeting', false], ['Required', '', true], ['Optional', 'may skip it', false], ['Non-participant', 'is informed only', false]
+    ].map(([label, hint, on]) => ({ label, hint, on, checked: on ? 'true' : 'false', style: item + '#1b1c1d' }));
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOnSm = 'flex: none; position: relative; width: 30px; height: 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 8px; background: var(--sc-action, #3669a5); box-sizing: border-box';
+    const knobOnSm = 'position: absolute; top: 1px; left: 15px; width: 12px; height: 12px; border-radius: 6px; background: #ffffff';
+    const chooser = 'display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 150px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    // search results
+    const row = 'display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); ';
+    const av = 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ';
+    const results = [
+      { isGroup: true, isRow: false, label: 'People' },
+      { isGroup: false, isRow: true, selected: 'true', name: 'Marc Dubois', meta: 'Contact, marc.dubois@mairie-lyon.fr', initials: 'MD', hasIcon: false, icon: '', style: row + 'background: #eaf0f7;', avatar: av + 'background: #ffffff; color: #234a78; border: 1px solid #c4c7cb' },
+      { isGroup: false, isRow: true, selected: 'false', name: 'Lea Fontaine', meta: 'Contact, lea.fontaine@mairie-lyon.fr', initials: 'LF', hasIcon: false, icon: '', style: row, avatar: av + 'background: #eaf0f7; color: #234a78' },
+      { isGroup: true, isRow: false, label: 'Groups and teams' },
+      { isGroup: false, isRow: true, selected: 'false', name: 'Project leads Lyon', meta: 'Contact group, 4 people', initials: '', hasIcon: true, icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75', style: row, avatar: av + 'background: #eaf0f7; color: #234a78' },
+      { isGroup: false, isRow: true, selected: 'false', name: 'Northwind rollout Lyon', meta: 'Team, 6 people', initials: '', hasIcon: true, icon: 'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5', style: row, avatar: av + 'background: #eaf0f7; color: #234a78' }
+    ];
+    const notes = [
+      ['Marc Dubois', 'MD', 'accepted', 'Joining from the Lyon office, 10 minutes late.'],
+      ['Priya Raman', 'PR', 'maybe', 'Depends on the Kassel call, I will confirm on Wednesday.']
+    ].map(([name, initials, answer, text]) => ({ name, initials, answer, text }));
+    // grid sliver beside a panel fragment: hour lines only
+    const sliver = Array.from({ length: 9 }, (_, i) => 'position: absolute; left: 0; right: 0; top: ' + (46 + i * 72) + 'px; border-top: 1px solid #eef0f3');
+    const sliverShort = sliver.slice(0, 4);
+    return { hours, days, bars, nowTop, nowLabelTop, people, peopleShort, declined, roles, item, switchOn, knobOn, switchOnSm, knobOnSm, chooser, results, notes, sliver, sliverShort };
+  }
+}
+</script>
+</body>
+</html>

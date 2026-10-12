@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: project details with the members tab</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#tb-filter::placeholder,#tb-prj-add::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" folded="true" hint-size="64px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="flex: 0 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 8px"><h1 style="margin: 0; min-width: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout Lyon</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">9 open work packages</span></div>
+        <div role="group" aria-label="Group by" style="flex: none; display: flex; align-items: center; gap: 6px">
+          <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <div style="flex: none; position: relative; display: flex; align-items: center; width: 150px">
+          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+          <input id="tb-filter" type="search" placeholder="Filter" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+        </div>
+        <div role="group" aria-label="Team" style="display: flex; align-items: center">
+          <sc-for list="{{ team }}" as="t" hint-placeholder-count="4"><span title="{{ t.name }}" aria-label="{{ t.name }}" role="img" style="{{ t.style }}">{{ t.initials }}</span></sc-for>
+        </div>
+        <button type="button" aria-pressed="true" aria-label="Project details" title="Project details" style="flex: none; width: 34px; height: 34px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg></button>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; position: relative; display: flex; gap: 10px; padding: 12px; overflow: hidden">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+          <section aria-label="{{ col.name }}" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="{{ col.dot }}"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ col.name }}</h2>
+              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span>
+              <button type="button" aria-label="New work package with status {{ col.name }}" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+              <a href="{{ c.href }}" aria-label="{{ c.aria }}" style="{{ c.style }}">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="{{ c.typeStyle }}">{{ c.type }}</span><span style="color: #3d4047">{{ c.number }}</span><span style="flex: 1 1 auto"></span><sc-if value="{{ c.high }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9d2e" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Priority high"><path d="m6 13 6-6 6 6M6 19l6-6 6 6"></path></svg></sc-if><sc-if value="{{ c.normal }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal"><path d="M6 10h12M6 14h12"></path></svg></sc-if></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d">{{ c.subject }}</span>
+                <sc-if value="{{ c.hasMail }}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">From mail: {{ c.mailFrom }}</span></span></sc-if>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <sc-if value="{{ c.hasAssignee }}" hint-placeholder-val="{{ true }}"><span title="{{ c.assignee }}" role="img" aria-label="Assignee {{ c.assignee }}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ c.initials }}</span></sc-if>
+                  <sc-if value="{{ c.hasDue }}" hint-placeholder-val="{{ true }}"><span style="{{ c.dueStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>{{ c.due }}</span></sc-if>
+                </span>
+              </a>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+    </main>
+    <aside aria-label="Project details" style="flex: 0 0 480px; width: 480px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Project details</span>
+        <button type="button" aria-label="Close the project details" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 12px">
+        <div style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="flex: none; width: 14px; height: 14px; border-radius: 4px; background: #3669a5"></span><h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Northwind rollout Lyon</h2></div>
+        <span style="font-size: 12px; color: #5e6168; line-height: 18px">6 members, owner Olivia Brandt. Project in OpenProject since 14 March.</span>
+      </div>
+      <div role="tablist" aria-label="Project details" style="flex: none; display: flex; gap: 20px; padding: 0 16px; border-bottom: 1px solid #e4e6ea">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ true }}"><span style="{{ t.countStyle }}">{{ t.count }}</span></sc-if></button></sc-for>
+      </div>
+      <div role="tabpanel" aria-label="Members" style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; overflow: hidden">
+        <div role="status" style="display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; line-height: 18px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #3669a5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span>Members and their rights come from OpenProject. A change here is saved there, and a change there shows here within a minute.</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <label for="tb-prj-add" style="font-size: 12px; font-weight: 600; color: #5e6168">Add a member</label>
+          <div style="position: relative; display: flex; align-items: center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16M21 21l-4.35-4.35"></path></svg>
+            <input id="tb-prj-add" type="text" placeholder="Name, group, team, e-mail address or name@other-server" style="width: 100%; height: 34px; padding: 0 10px 0 34px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+          </div>
+          <span style="font-size: 12px; color: #5e6168; line-height: 18px">People, groups and teams of this workspace, a person by e-mail address, or a person on another server. New members start with edit.</span>
+        </div>
+        <table style="width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px">
+          <colgroup><col style="width: 250px"><col style="width: 54px"><col style="width: 54px"><col style="width: 62px"><col style="width: 28px"></colgroup>
+          <thead><tr style="height: 30px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Member</th><th scope="col" style="{{ th }} text-align: center">Edit</th><th scope="col" style="{{ th }} text-align: center">Share</th><th scope="col" style="{{ th }} text-align: center">Manage</th><th scope="col"><span style="{{ srOnly }}">Remove</span></th></tr></thead>
+          <tbody>
+            <sc-for list="{{ members }}" as="m" hint-placeholder-count="6">
+              <tr style="height: 48px; border-bottom: 1px solid #e4e6ea">
+                <td style="padding: 4px 6px 4px 4px; overflow: hidden"><span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="{{ m.avatarStyle }}"><sc-if value="{{ m.isIcon }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ m.icon }}"></path></svg></sc-if><sc-if value="{{ m.isText }}" hint-placeholder-val="{{ true }}">{{ m.initials }}</sc-if></span><span style="display: flex; flex-direction: column; line-height: 1.2; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap">{{ m.name }}<sc-if value="{{ m.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ m.tagStyle }}">{{ m.tag }}</span></sc-if></span><span style="font-size: 11px; color: #5e6168; line-height: 14px">{{ m.sub }}</span></span></span></td>
+                <sc-if value="{{ m.isOwner }}" hint-placeholder-val="{{ false }}">
+                  <td colspan="3" style="padding: 0 6px; text-align: center"><span style="display: inline-flex; align-items: center; gap: 10px; font-size: 12px; color: #5e6168; white-space: nowrap">All rights<button type="button" style="{{ btnSmall }}">Transfer ownership</button></span></td>
+                  <td></td>
+                </sc-if>
+                <sc-if value="{{ m.isMember }}" hint-placeholder-val="{{ true }}">
+                  <td style="padding: 0 6px; text-align: center"><button type="button" role="switch" aria-checked="{{ m.edit.checked }}" aria-label="{{ m.name }} may edit" style="{{ m.edit.switch }}"><span style="{{ m.edit.knob }}"></span></button></td>
+                  <td style="padding: 0 6px; text-align: center"><button type="button" role="switch" aria-checked="{{ m.share.checked }}" aria-label="{{ m.name }} may share" style="{{ m.share.switch }}"><span style="{{ m.share.knob }}"></span></button></td>
+                  <td style="padding: 0 6px; text-align: center"><button type="button" role="switch" aria-checked="{{ m.manage.checked }}" aria-label="{{ m.name }} may manage" style="{{ m.manage.switch }}"><span style="{{ m.manage.knob }}"></span></button></td>
+                  <td style="padding: 0; text-align: right"><button type="button" aria-label="Remove {{ m.name }} from this project" title="Remove {{ m.name }} from this project" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></td>
+                </sc-if>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Edit off means read only. Share lets a member add others. Manage also renames, archives and deletes the project.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #e4e6ea">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><h3 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Linked resources</h3><button type="button" style="{{ btnSmall }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link a Nextcloud project</button></div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
+            <span style="flex: none; width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span>
+            <span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; line-height: 1.25"><span style="font-weight: 500">Rollout Lyon</span><span style="font-size: 11px; color: #5e6168">Nextcloud project: 3 folders in Files, 1 chat in Talk, this board</span></span>
+            <a href="#" style="font-size: 13px; color: var(--sc-link, #3669a5); white-space: nowrap">Open</a>
+          </div>
+          <span style="font-size: 12px; color: #5e6168; line-height: 18px">Files and chats of the linked project sit one click away on every card of this board.</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const PEOPLE = { 'Tom Achterberg': 'TA', 'Olivia Brandt': 'OB', 'Priya Raman': 'PR', 'Marc Dubois': 'MD', 'Jana Köhler': 'JK' };
+    const data = [
+      ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'Olivia Brandt', '15 Oct', { from: 'Marc Dubois', week: true }],
+      ['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', 'Olivia Brandt', '13 Oct', { from: 'Sven Lindqvist', week: true }],
+      ['TASK', '#58440', 'Send OIDC client settings to Lyon', 'new', 'Tom Achterberg', '16 Oct', { week: true }],
+      ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', 'Tom Achterberg', '30 Oct', {}],
+      ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', 'Priya Raman', '14 Oct', { high: true, week: true }],
+      ['FEATURE', '#58390', 'Single sign-on through Keycloak', 'in review', 'Tom Achterberg', '23 Oct', {}],
+      ['EPIC', '#57990', 'Release 16.5 scope', 'in review', 'Olivia Brandt', '23 Oct', {}],
+      ['BUG', '#58102', 'Folder link breaks on rename', 'on hold', 'Priya Raman', '9 Oct', { overdue: true }],
+      ['FEATURE', '#58215', 'Export work package list to Excel', 'closed', 'Tom Achterberg', '', {}]
+    ];
+    const cardBase = 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; text-decoration: none; ';
+    const cards = data.map(([type, number, subject, status, assignee, due, o]) => ({
+      type, number, subject, status, assignee, due, typeStyle: 'font-weight: 700; letter-spacing: 0.04em; color: ' + TYPE[type],
+      href: 'TbCard.dc.html', aria: type + ' ' + number + ', ' + subject + ', ' + status, style: cardBase,
+      high: !!o.high, normal: !o.high, hasMail: !!o.from, mailFrom: o.from ?? '',
+      hasAssignee: !!assignee, initials: PEOPLE[assignee] ?? '', hasDue: !!due,
+      dueStyle: 'display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; ' + (o.overdue ? 'color: #ab0000; font-weight: 600' : o.week ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168')
+    }));
+    const cols = [['new', 3, ''], ['in development', 2, 'of 4'], ['in review', 2, ''], ['on hold', 1, ''], ['closed', 1, '']];
+    const columns = cols.map(([name, count, limit]) => {
+      const st = STATUS[name];
+      return {
+        name, count: limit ? count + ' ' + limit : String(count),
+        countLabel: limit ? count + ' of ' + limit.slice(3) + ' work packages, work in progress limit' : count + ' work packages',
+        countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; ' + (limit ? 'background: #ffffff; color: #234a78; border: 1px solid #3669a5' : 'background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea'),
+        dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
+        cards: cards.filter((c) => c.status === name)
+      };
+    });
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const groupBy = ['Status', 'Assignee', 'Version'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+      style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const av = 'width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; ';
+    const team = [['Olivia Brandt', 'OB'], ['Tom Achterberg', 'TA'], ['Priya Raman', 'PR'], ['3 more team members', '+3']].map(([name, initials], i) => ({
+      name, initials, style: av + (i ? 'margin-left: -8px; ' : '') + (initials.startsWith('+') ? 'background: #eef0f3; color: #3d4047' : 'background: #eaf0f7; color: #234a78')
+    }));
+    const tabBase = 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 2px; border: 0; border-bottom: 2px solid transparent; background: transparent; font: 600 12px \'Fira Sans\', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; ';
+    const tabs = [['Members', 6, true], ['Tags', 3, false], ['Deleted items', 4, false], ['Activity', '', false]].map(([label, count, on]) => ({
+      label, count, hasCount: count !== '', selected: on ? 'true' : 'false',
+      style: tabBase + (on ? 'color: #1b1c1d; font-weight: 700; border-bottom-color: #3669a5;' : 'color: #5e6168;'),
+      countStyle: 'font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); letter-spacing: 0; ' + (on ? 'background: #eaf0f7; color: #234a78' : 'background: #eef0f3; color: #5e6168')
+    }));
+    const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
+    const th = 'text-align: left; padding: 0 6px 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap;';
+    const btnSmall = 'display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer; vertical-align: middle';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer; vertical-align: middle';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    const sw = (on) => ({ checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff });
+    const I = {
+      users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+      team: 'M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9h.01M9 12h.01M9 15h.01M9 18h.01'
+    };
+    const avatarText = 'flex: none; width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700';
+    const avatarIcon = 'flex: none; width: 26px; height: 26px; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
+    const tagStyle = 'display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #3d4047; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase';
+    // [name, initials or icon, sub line, tag, edit, share, manage, owner]
+    const members = [
+      ['Olivia Brandt (you)', 'OB', 'Person of this workspace', 'Owner', true, true, true, true],
+      ['Tom Achterberg', 'TA', 'Person of this workspace', '', true, true, false, false],
+      ['Delivery team', I.users, 'Group, 6 people', '', true, false, false, false],
+      ['Rollout squad', I.team, 'Team, 4 people', '', true, false, false, false],
+      ['Jana Köhler', 'JK', 'Found by e-mail address, jana.koehler@stadtwerke-kassel.test', '', false, false, false, false],
+      ['Marc Dubois', 'MD', 'On another server, ville-de-lyon.test. Edits cards and columns from there', 'Remote', true, false, false, false]
+    ].map(([name, who, sub, tag, edit, share, manage, owner]) => {
+      const isIcon = who.length > 2;
+      return {
+        name, sub, tag, hasTag: !!tag, tagStyle,
+        isIcon, isText: !isIcon, icon: isIcon ? who : '', initials: isIcon ? '' : who,
+        avatarStyle: isIcon ? avatarIcon : avatarText,
+        isOwner: owner, isMember: !owner,
+        edit: sw(edit), share: sw(share), manage: sw(manage)
+      };
+    });
+    return { groupBy, team, columns, tabs, srOnly, th, btnSmall, members };
+  }
+}
+</script>
+</body>
+</html>

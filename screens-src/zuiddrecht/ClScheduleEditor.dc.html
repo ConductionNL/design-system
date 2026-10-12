@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar: create or edit an appointment schedule</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1060px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Scheduling" hint-size="245px,1005px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+        <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">Scheduling</h1>
+        <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Booking links, proposals and what came in</span>
+        <span style="flex: 1 1 auto"></span>
+        <button type="button" style="align-self: center; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New appointment schedule</button>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 6px; padding: 6px 20px 20px; overflow: hidden">
+        <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Appointment schedules</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+          <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Schedule</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Length</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Booked</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ schedules }}" as="r" hint-placeholder-count="2"><tr style="height: 40px; border-bottom: 1px solid #e4e6ea"><td style="padding: 0 8px; font-weight: 600">{{ r.name }}</td><td style="padding: 0 8px">{{ r.length }}</td><td style="padding: 0 8px; color: #3d4047">{{ r.booked }}</td></tr></sc-for>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  <div style="position: absolute; inset: 0; z-index: 20; background: rgba(27,28,29,0.45); display: flex; align-items: center; justify-content: center">
+    <div role="dialog" aria-modal="true" aria-labelledby="se-title" style="width: 1080px; min-height: 680px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+        <h3 id="se-title" style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Edit appointment schedule</h3>
+        <span style="font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Rollout check-in. A new schedule starts from the same form</span>
+        <span style="flex: 1 1 auto"></span>
+        <button type="button" aria-label="Close the schedule" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <form style="flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; padding: 18px 24px 8px">
+        <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">What people book</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Shown on the booking page and in the invitation the booker gets.</p></div>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 500">Name</span><input type="text" value="Rollout check-in" style="{{ input }}"></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 500">Description</span><textarea rows="2" style="{{ input }} height: 56px; padding: 6px 10px; resize: none; line-height: 18px">A 30 minute check-in on the rollout. Bring your questions and the latest status from your side.</textarea></label>
+            <label style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 500">Location or video link</span><input type="text" value="Northwind office, room Lyon, or the video room below" style="{{ input }}"></label>
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 4px">
+              <label for="se-video" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500; font-size: 13px">Create a video room for every booking</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">The booker gets the link in the invitation. The room closes an hour after the appointment.</span></label>
+              <button id="se-video" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Length and start times</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">With a 30 minute length and a 15 minute step, people see starts at 09:00, 09:15, 09:30 and so on.</p></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px 24px">
+              <div style="display: flex; align-items: center; gap: 10px"><label for="se-length" style="font-size: 13px; white-space: nowrap">Appointment length</label><button id="se-length" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>30 min</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+              <div style="display: flex; align-items: center; gap: 10px"><label for="se-step" style="font-size: 13px; white-space: nowrap">Step between start times</label><button id="se-step" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>15 min</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Bookable hours per weekday</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A day can have several ranges, for example a morning and an afternoon.</p></div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+              <thead><tr style="height: 28px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Day</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Hours</th><th scope="col" style="text-align: right; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168"></th></tr></thead>
+              <tbody>
+                <sc-for list="{{ weekdays }}" as="d" hint-placeholder-count="7">
+                  <tr style="height: 36px; border-bottom: 1px solid #e4e6ea">
+                    <td style="padding: 0 8px; width: 90px"><span style="display: inline-flex; align-items: center; gap: 8px"><button type="button" role="switch" aria-checked="{{ d.checked }}" aria-label="{{ d.aria }}" style="{{ d.switch }}"><span style="{{ d.knob }}"></span></button>{{ d.name }}</span></td>
+                    <td style="padding: 0 8px; color: {{ d.color }}"><span style="display: inline-flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{ d.ranges }}" as="r" hint-placeholder-count="2"><span style="display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; white-space: nowrap; font-size: 12px">{{ r }}</span></sc-for></span></td>
+                    <td style="padding: 0 8px; text-align: right; white-space: nowrap"><sc-if value="{{ d.on }}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="{{ d.addAria }}" style="height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 12px 'Fira Sans', sans-serif; white-space: nowrap">Add a range</button></sc-if></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Around each appointment</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Time kept free before and after, so bookings do not touch.</p></div>
+            <div style="display: flex; gap: 24px">
+              <div style="display: flex; align-items: center; gap: 10px"><label for="se-prep" style="font-size: 13px; white-space: nowrap">Preparation time</label><button id="se-prep" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>10 min</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+              <div style="display: flex; align-items: center; gap: 10px"><label for="se-follow" style="font-size: 13px; white-space: nowrap">Follow-up time</label><button id="se-follow" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>5 min</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Booking window</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">How soon and how far ahead a time can be booked, and how many a day you take.</p></div>
+            <dl style="margin: 0; display: grid; grid-template-columns: 200px 1fr; gap: 8px 12px; align-items: center; font-size: 13px">
+              <dt style="color: #3d4047">Earliest a time can be booked</dt><dd style="margin: 0"><button type="button" aria-haspopup="listbox" aria-label="Earliest a time can be booked" style="{{ chooser }}"><span>4 hours ahead</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></dd>
+              <dt style="color: #3d4047">Furthest ahead</dt><dd style="margin: 0"><button type="button" aria-haspopup="listbox" aria-label="Furthest ahead a time can be booked" style="{{ chooser }}"><span>6 weeks ahead</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></dd>
+              <dt style="color: #3d4047">Bookings per day at most</dt><dd style="margin: 0; display: flex; align-items: center; gap: 10px"><input type="number" value="3" aria-label="Bookings per day at most" style="{{ input }} width: 64px"><span style="font-size: 12px; color: #5e6168">After the third booking the day shows no more free times</span></dd>
+            </dl>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Calendars</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Bookings become events in one calendar. Events in the calendars you tick hide the times they take.</p></div>
+            <div style="display: flex; align-items: center; gap: 10px"><label for="se-cal" style="font-size: 13px; white-space: nowrap">Write bookings to</label><button id="se-cal" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: #ff9d2e"></span>Customers</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 2px">
+              <legend style="padding: 0; margin: 0 0 4px; float: left; width: 100%; font-size: 13px; line-height: 20px">Hide times that clash with events in</legend>
+              <sc-for list="{{ conflict }}" as="c" hint-placeholder-count="4">
+                <label style="display: flex; align-items: center; gap: 10px; height: 28px; clear: both; font-size: 13px"><span style="{{ c.box }}"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: {{ c.color }}"></span>{{ c.label }}<span style="font-size: 12px; color: #5e6168">{{ c.hint }}</span></label>
+              </sc-for>
+            </fieldset>
+          </div>
+
+          <fieldset style="margin: 0; padding: 14px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+            <legend style="padding: 0; margin: 0; float: left; width: 100%; font-weight: 600; font-size: 14px; line-height: 21px">Where people find it</legend>
+            <sc-for list="{{ visibility }}" as="v" hint-placeholder-count="2">
+              <label style="display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; cursor: pointer; clear: both">
+                <span style="{{ v.radio }}"><span style="{{ v.inner }}"></span></span>
+                <span style="display: flex; flex-direction: column; line-height: 17px"><span style="font-size: 13px">{{ v.label }}</span><span style="font-size: 12px; color: #5e6168">{{ v.hint }}</span></span>
+              </label>
+            </sc-for>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 8px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px"><span style="flex: none; width: 28px; height: 28px; border-radius: 14px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">OB</span><span style="flex: 1 1 auto">On your profile this shows as the action <strong style="font-weight: 600; color: #1b1c1d">Schedule an appointment</strong>, next to Send a mail.</span><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>Schedule an appointment</span></div>
+          </fieldset>
+        </div>
+      </form>
+      <div style="flex: none; display: flex; align-items: center; gap: 8px; padding: 12px 24px 18px; border-top: 1px solid #e4e6ea">
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Save schedule</button>
+        <button type="button" style="height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif">Cancel</button>
+        <span style="font-size: 12px; color: #5e6168">Booking page: northwind-projects.test/book/olivia/rollout</span>
+        <span style="flex: 1 1 auto"></span>
+        <button type="button" style="height: 34px; padding: 0 12px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Delete schedule</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const input = 'height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 13px \'Fira Sans\', sans-serif; color: #1b1c1d; outline: none;';
+    const chooser = 'display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 130px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    const schedules = [['Rollout check-in', '30 min', '4 this month'], ['Customer intro', '45 min', '2 this month']].map(([name, length, booked]) => ({ name, length, booked }));
+    const weekdays = [
+      ['Monday', ['09:00 to 12:00', '13:00 to 17:00']], ['Tuesday', ['09:00 to 17:00']], ['Wednesday', ['09:00 to 12:00']],
+      ['Thursday', ['13:00 to 17:00']], ['Friday', ['09:00 to 12:00']], ['Saturday', []], ['Sunday', []]
+    ].map(([name, ranges]) => { const on = ranges.length > 0; return { name, on, ranges: on ? ranges : ['Not bookable'], checked: on ? 'true' : 'false', aria: name + ' bookable', addAria: 'Add a range on ' + name, color: on ? '#1b1c1d' : '#5e6168', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }; });
+    const boxOn = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 3px; background: var(--sc-action, #3669a5); color: #ffffff; display: inline-flex; align-items: center; justify-content: center';
+    const boxOff = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: 3px; background: #ffffff';
+    const conflict = [
+      ['Personal', '#3669a5', true, ''], ['Northwind team', '#538b28', true, ''], ['Customers', '#ff9d2e', true, 'bookings land here too'], ['Work package dates', '#5e6168', false, 'all-day bars do not block times']
+    ].map(([label, color, on, hint]) => ({ label, color, on, hint, box: on ? boxOn : boxOff }));
+    const radioOn = 'flex: none; margin-top: 1px; width: 16px; height: 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid var(--sc-action-deep, #234a78); background: #ffffff; display: inline-flex; align-items: center; justify-content: center';
+    const radioOff = 'flex: none; margin-top: 1px; width: 16px; height: 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid #c4c7cb; background: #ffffff; display: inline-flex; align-items: center; justify-content: center';
+    const visibility = [
+      { label: 'On your profile page', hint: 'Anyone who opens your profile can book. The booking page is linked from there.', radio: radioOn, inner: 'width: 8px; height: 8px; border-radius: 4px; background: var(--sc-action, #3669a5)' },
+      { label: 'By link only', hint: 'Not shown on your profile. Only people you send the link to can book.', radio: radioOff, inner: '' }
+    ];
+    return { input, chooser, switchOn, knobOn, schedules, weekdays, conflict, visibility };
+  }
+}
+</script>
+</body>
+</html>

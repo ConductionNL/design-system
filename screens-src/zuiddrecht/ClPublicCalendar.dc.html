@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar: published calendar, public page and embed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1500px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The public page of two published calendars of Northwind Projects, as someone without an account sees it: a text filter, the view menu, Subscribe and Download, and an event open read only</figcaption>
+    <div style="position: relative; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <header style="flex: none; display: flex; align-items: center; gap: 16px; height: 55px; padding: 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea; background: #ffffff">
+        <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600"><span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 6px; background: #3669a5; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">NP</span>Northwind Projects</span>
+        <span style="width: 1px; height: 22px; background: #e4e6ea"></span>
+        <span style="font-size: 14px; color: #3d4047">Published calendars</span>
+        <span style="flex: 1 1 auto"></span>
+        <span style="font-size: 12px; color: #5e6168">No account needed. You can read, not change.</span>
+      </header>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+            <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">October <span style="font-weight: 400; color: #5e6168">2026</span></h1>
+                        <div role="group" aria-label="Published calendars on this page" style="display: flex; align-items: center; gap: 6px; margin-left: 4px">
+              <sc-for list="{{ legend }}" as="l" hint-placeholder-count="2"><label style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; color: #1b1c1d; white-space: nowrap; cursor: pointer"><input type="checkbox" checked aria-label="Show {{ l.name }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"><span aria-hidden="true" style="{{ l.box }}"></span>{{ l.name }}</label></sc-for>
+            </div>
+            <span style="flex: 1 1 auto"></span>
+            <label style="display: flex; align-items: center; gap: 8px; height: 30px; width: 176px; padding: 0 10px; box-sizing: border-box; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter events by text</span><input type="search" value="review" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"><span style="flex: none; font-size: 11px; white-space: nowrap">2 of 24</span></label>
+            <div style="display: flex; align-items: center; gap: 4px; position: relative">
+              <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Month<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <div role="menu" aria-label="View" style="position: absolute; top: 34px; left: 0; min-width: 150px; padding: 6px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+                <sc-for list="{{ views }}" as="v" hint-placeholder-count="4"><button type="button" role="menuitemradio" aria-checked="{{ v.on }}" style="{{ v.style }}">{{ v.label }}<kbd style="margin-left: auto; font: 600 11px 'Fira Sans', sans-serif; color: #5e6168">{{ v.key }}</kbd></button></sc-for>
+              </div>
+              <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
+              <button type="button" aria-label="Previous month" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+              <button type="button" aria-label="Next month" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+              <span style="width: 1px; height: 22px; margin: 0 4px; background: #e4e6ea"></span>
+              <button type="button" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16M5 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg>Subscribe<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Download .ics</button>
+            </div>
+          </div>
+          <div style="flex: none; display: flex; height: 28px; border-bottom: 1px solid #eef0f3">
+            <sc-for list="{{ dow }}" as="d" hint-placeholder-count="7"><div style="{{ d.style }}">{{ d.label }}</div></sc-for>
+          </div>
+          <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column">
+            <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="6">
+              <div style="flex: 1 1 0; min-height: 0; display: flex; border-bottom: 1px solid #eef0f3">
+                <sc-for list="{{ w.days }}" as="d" hint-placeholder-count="7">
+                  <div style="{{ d.style }}">
+                    <div style="display: flex; align-items: center; height: 26px; padding: 2px 4px 0 6px; box-sizing: border-box"><span style="{{ d.numStyle }}">{{ d.n }}</span></div>
+                    <div style="display: flex; flex-direction: column; gap: 1px; padding: 0 3px">
+                      <sc-for list="{{ d.entries }}" as="e" hint-placeholder-count="2">
+                        <a href="#" aria-current="{{ e.current }}" style="{{ e.style }}"><span style="flex: none; font-size: 10px; color: #5e6168">{{ e.time }}</span><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 600">{{ e.title }}</span></a>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </main>
+        <aside aria-label="Event" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; color: #3d4047"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg>Read only</span>
+            <button type="button" aria-label="Close the event" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 24px">Rollout review Lyon, phase 2</h2>
+            <span style="font-size: 13px; color: #3d4047">Thursday 15 October, 14:00 to 15:00</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 2px; background: #ff9d2e"></span>Customers, published by Northwind Projects</span>
+          </div>
+          <dl style="margin: 0; display: grid; grid-template-columns: 76px 1fr; gap: 6px 10px; font-size: 13px; line-height: 18px">
+            <dt style="color: #5e6168">Organiser</dt><dd style="margin: 0">Tom Achterberg</dd>
+            <dt style="color: #5e6168">Where</dt><dd style="margin: 0">Video call, link after you are invited</dd>
+            <dt style="color: #5e6168">Repeats</dt><dd style="margin: 0">Once</dd>
+          </dl>
+          <p style="margin: 0; font-size: 13px; line-height: 19px; color: #3d4047">Review of the phase 2 rollout plan with Ville de Lyon: folder links, single sign-on and the kick-off date of 2 November.</p>
+          <div role="note" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 18px; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px; color: #3669a5"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg><span>You can read this event but not change it. Participants and attachments are not shown on a published calendar. Signed in but not allowed to edit? You get this same panel.</span></div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto">
+            <button type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Download this event</button>
+            <span style="font-size: 11px; color: #5e6168; line-height: 16px; text-align: center">Times are shown in your time zone, CEST.</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 760px">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The same calendar embedded live on the website of Northwind Projects, through the embed code of its public link</figcaption>
+    <div style="height: 380px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; box-sizing: border-box; background: #eef0f3; border-bottom: 1px solid #e4e6ea">
+        <span aria-hidden="true" style="display: inline-flex; gap: 5px"><span style="width: 9px; height: 9px; border-radius: 5px; background: #c4c7cb"></span><span style="width: 9px; height: 9px; border-radius: 5px; background: #c4c7cb"></span><span style="width: 9px; height: 9px; border-radius: 5px; background: #c4c7cb"></span></span>
+        <span style="flex: 1 1 auto; height: 22px; display: flex; align-items: center; padding: 0 10px; border-radius: 6px; background: #ffffff; font-size: 11px; color: #5e6168">www.northwind-projects.test/events</span>
+      </div>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 16px 24px">
+        <div style="display: flex; align-items: center; gap: 18px; font-size: 12px; color: #5e6168"><strong style="font-size: 14px; color: #1b1c1d">Northwind Projects</strong><span>Services</span><span>Customers</span><span style="color: #1b1c1d; font-weight: 600">Events</span><span>Contact</span></div>
+        <h3 style="margin: 4px 0 0; font-size: 18px; font-weight: 600; line-height: 24px">Upcoming events</h3>
+        <div style="display: flex; flex-direction: column; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 10px; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 12px; color: #5e6168"><span><strong style="color: #1b1c1d; font-weight: 600">Embedded live from the calendar</strong>, updates on its own</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-flex; align-items: center; gap: 4px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; background: #538b28"></span>Northwind team</span><span style="display: inline-flex; align-items: center; gap: 4px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; background: #ff9d2e"></span>Customers</span></span></div>
+          <sc-for list="{{ embedRows }}" as="r" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px; height: 38px; padding: 0 10px; border-bottom: 1px solid #eef0f3; font-size: 12px"><span style="flex: none; width: 72px; color: #5e6168">{{ r.day }}</span><span style="flex: none; width: 90px; color: #5e6168">{{ r.time }}</span><span aria-hidden="true" style="flex: none; width: 3px; height: 16px; border-radius: 2px; background: {{ r.color }}"></span><span style="flex: 1 1 auto; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.title }}</span></div>
+          </sc-for>
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 10px; font-size: 11px; color: #5e6168"><span>Click an event to read it; nothing here can be changed.</span><a href="#" style="color: var(--sc-link, #3669a5)">Open the full calendar</a></div>
+        </div>
+      </div>
+    </div>
+  </figure>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const CAL = { team: '#538b28', customers: '#ff9d2e' };
+    const pale = (c) => 'color-mix(in srgb, ' + c + ' 14%, #ffffff)';
+    const dark = (c) => 'color-mix(in srgb, ' + c + ' 60%, #1b1c1d)';
+    const box = (c) => 'flex: none; width: 10px; height: 10px; border-radius: 2px; background: ' + c;
+    const legend = [{ name: 'Northwind team', box: box(CAL.team) }, { name: 'Customers', box: box(CAL.customers) }];
+    const views = [['Day', 'D', false], ['Week', 'W', false], ['Month', 'M', true], ['List', 'L', false]].map(([label, key, on]) => ({ label, key, on: on ? 'true' : 'false', style: 'display: flex; align-items: center; gap: 10px; width: 100%; height: 32px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); font: 500 13px \'Fira Sans\', sans-serif; text-align: left; ' + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;') }));
+    const dow = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, i) => ({ label, style: 'flex: 1 1 0; display: flex; align-items: center; padding: 0 8px; font-size: 13px; color: #5e6168; ' + (i >= 5 ? 'background: #f5f6f8;' : '') }));
+    const rows = [
+      [[28, 0], [29, 0], [30, 0], [1, 1], [2, 1], [3, 1], [4, 1]],
+      [[5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1]],
+      [[12, 1], [13, 1], [14, 1], [15, 1], [16, 1], [17, 1], [18, 1]],
+      [[19, 1], [20, 1], [21, 1], [22, 1], [23, 1], [24, 1], [25, 1]],
+      [[26, 1], [27, 1], [28, 1], [29, 1], [30, 1], [31, 1], [1, 2]],
+      [[2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]]
+    ];
+    // the two published calendars: Northwind team and Customers; key "month-day" -> [time, title, calendar]
+    const specific = {
+      '1-1': [['09:00', 'Office day, Utrecht', 'team']],
+      '1-6': [['13:00', 'Town hall Q4', 'team']],
+      '1-8': [['10:00', 'Workshop Ville de Lyon', 'customers']],
+      '1-13': [['11:00', 'Demo preparation Malmo Energi', 'customers']],
+      '1-14': [['09:30', 'Release 16.5 scope review', 'team']],
+      '1-15': [['14:00', 'Rollout review Lyon, phase 2', 'customers']],
+      '1-20': [['09:00', 'Office day, Utrecht', 'team']],
+      '1-22': [['15:00', 'Training Stadtwerke Kassel', 'customers']],
+      '1-27': [['13:00', 'Sprint review 16.5', 'team']],
+      '1-29': [['10:00', 'Site visit Malmo Energi', 'customers']],
+      '2-2': [['09:00', 'Go-live Lyon phase 2', 'customers']],
+      '2-3': [['09:00', 'Office day, Utrecht', 'team']],
+      '2-5': [['14:00', 'Release 16.5 review', 'team']]
+    };
+    const filter = 'review';
+    const entryBase = 'display: flex; align-items: center; gap: 4px; height: 18px; padding: 0 5px; border-radius: 4px; font-size: 11px; line-height: 18px; text-decoration: none; white-space: nowrap; overflow: hidden; ';
+    const weeks = rows.map((days) => ({
+      days: days.map(([n, m], ci) => {
+        const key = m + '-' + n;
+        const today = m === 1 && n === 12;
+        const weekend = ci >= 5;
+        const other = m !== 1;
+        return {
+          n,
+          style: 'flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; border-left: 1px solid #eef0f3; ' + (ci === 0 ? 'border-left: 0; ' : '') + (weekend ? 'background: #f5f6f8;' : ''),
+          numStyle: today ? 'display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 4px; background: #3669a5; color: #ffffff; font-size: 13px; font-weight: 600' : 'font-size: 13px; ' + (other ? 'color: #5e6168; opacity: 0.55;' : 'color: #1b1c1d;'),
+          entries: (specific[key] ?? []).map(([time, title, cal]) => {
+            const c = CAL[cal];
+            const hit = title.toLowerCase().includes(filter);
+            const selected = title === 'Rollout review Lyon, phase 2';
+            return { time, title, current: selected ? 'true' : 'false', style: entryBase + 'color: ' + dark(c) + '; background: ' + pale(c) + '; border-left: 3px solid ' + c + ';' + (hit ? '' : ' opacity: 0.3;') + (selected ? ' box-shadow: 0 0 0 2px #3669a5;' : '') };
+          })
+        };
+      })
+    }));
+    const embedRows = [
+      ['Tue 13 Oct', '11:00 to 12:00', 'Demo preparation Malmo Energi', CAL.customers],
+      ['Wed 14 Oct', '09:30 to 11:00', 'Release 16.5 scope review', CAL.team],
+      ['Thu 15 Oct', '14:00 to 15:00', 'Rollout review Lyon, phase 2', CAL.customers],
+      ['Tue 20 Oct', '09:00 to 17:00', 'Office day, Utrecht', CAL.team]
+    ].map(([day, time, title, color]) => ({ day, time, title, color }));
+    return { legend, views, dow, weeks, embedRows };
+  }
+}
+</script>
+</body>
+</html>

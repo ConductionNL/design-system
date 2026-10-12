@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasks: search in a board and beyond</title>
+<style>html,body{margin:0;padding:0}body{background:#ffffff}.sc-board{width:1440px;position:relative}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+mark{background:var(--sc-primary-light, #eaf0f7);color:inherit;border-radius:2px;padding:0 1px}
+#tb-filter::placeholder{color:var(--sc-work-muted, #5e6168)}
+</style>
+<style>
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+#ml-search::placeholder{color:#ffffff;opacity:0.85}
+</style>
+<style>
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+</style>
+<link rel="stylesheet" href="../screens.css">
+<script src="../theme.js" defer></script>
+</head>
+<body>
+<div class="sc-board" data-board="TbSearch">
+
+<div style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: var(--sc-work-ink, #1b1c1d); font-size: 14px; line-height: 21px; background: var(--sc-work-ground, #f5f6f8); position: relative; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  
+
+<header style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: #ffffff; width: 100%; box-sizing: border-box; height: 55px; padding: 0 16px 0 16px; display: flex; align-items: center; gap: 16px; background: var(--sc-primary, #3669a5)">
+  <a href="MlInbox.html" style="flex: 0 0 auto; min-width: 245px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; height: 55px; color: #ffffff; text-decoration: none; min-width: 0">
+    <img src="../assets/zuiddrecht/logo-wit.svg" alt="" style="height: 26px; width: auto; max-width: 130px; flex: none" data-sc-logo="logo-wit">
+    <span style="width: 1px; height: 22px; background: rgba(255,255,255,0.35); flex: none"></span>
+    <strong style="font-size: 17px; font-weight: 600; white-space: nowrap">Tasks</strong>
+  </a>
+  <form role="search" style="flex: 1 1 560px; max-width: 640px; min-width: 240px; position: relative; display: flex; align-items: center">
+    <label for="ml-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+    <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px; color: #ffffff"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+    <input id="ml-search" type="search" placeholder="Search tasks, people or #work package" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 44px 0 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: rgba(255,255,255,0.12); font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; color: #ffffff">
+    <button type="button" aria-label="Search filters" aria-haspopup="menu" style="position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
+    </button>
+  </form>
+  <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: max-content">
+    <button type="button" aria-label="Help" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"></path></svg>
+    </button>
+    <button type="button" aria-label="Settings" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>
+    </button>
+    <button type="button" aria-label="Account menu of Olivia Brandt" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; margin-left: 6px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff">
+      <span style="width: 30px; height: 30px; border-radius: 15px; background: #ffffff; color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font: 700 12px var(--sc-font, 'Fira Sans'), sans-serif">OB</span>
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  </div>
+</header>
+
+  <div style="position: absolute; left: 221px; top: 9px; width: 654px; height: 36px; box-sizing: border-box; display: flex; align-items: center; gap: 0; padding: 0 44px 0 36px; border: 2px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35)">
+    <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 11px; top: 8px; color: var(--sc-work-muted, #5e6168)"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+    <span role="textbox" aria-label="Search this board and beyond, typed: lyon" aria-describedby="tb-search-hint" style="display: inline-flex; align-items: center; gap: 4px; white-space: nowrap">lyon<span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; background: var(--sc-work-ink, #1b1c1d)"></span></span>
+    <span style="position: absolute; right: 10px; top: 8px; display: inline-flex; gap: 4px"><kbd style="display: inline-block; padding: 0 5px; border: 1px solid var(--sc-work-field, #c4c7cb); border-bottom-width: 2px; border-radius: 4px; font: 600 11px var(--sc-font, 'Fira Sans'), sans-serif; line-height: 16px; color: var(--sc-work-text, #3d4047)">Ctrl</kbd><kbd style="display: inline-block; padding: 0 5px; border: 1px solid var(--sc-work-field, #c4c7cb); border-bottom-width: 2px; border-radius: 4px; font: 600 11px var(--sc-font, 'Fira Sans'), sans-serif; line-height: 16px; color: var(--sc-work-text, #3d4047)">F</kbd></span>
+  </div>
+  <div role="dialog" aria-label="Search results" style="position: absolute; left: 221px; top: 50px; width: 640px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 4px">
+    <div id="tb-search-hint" style="display: flex; flex-direction: column; gap: 2px; padding: 4px 10px 8px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168); line-height: 18px">
+      <span>Narrow with <code style="font: 500 12px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">title:, description:, status:, tag:, date:, assignee:</code> or a due word: <code style="font: 500 12px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">overdue, today, week</code>. Searches titles, descriptions and tags. Type a number such as #58231 to jump to it.</span>
+      <span style="display: flex; align-items: center; gap: 6px"><kbd style="display: inline-block; padding: 0 5px; border: 1px solid var(--sc-work-field, #c4c7cb); border-bottom-width: 2px; border-radius: 4px; font: 600 11px var(--sc-font, 'Fira Sans'), sans-serif; line-height: 16px; color: var(--sc-work-text, #3d4047)">Ctrl+F</kbd>jumps to this field from anywhere on the board. Screen readers hear this hint as the description of the field.</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">In Northwind rollout Lyon</span><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168)">4 matches</span></div>
+    <ul role="listbox" aria-label="Matches in this project" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+      
+        <li role="option" aria-selected="true" aria-label="TASK #58440, Send OIDC client settings to Lyon, Title" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7); ">
+          <span aria-hidden="true" style="flex: none; width: 0px; "></span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58440</span></span>
+          <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-ink, #1b1c1d); font-weight: 500;">Send OIDC client settings to <mark>Lyon</mark></span>
+          <span style="flex: none; max-width: 190px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-muted, #5e6168);">Title</span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 120px; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap"><span style="flex: none; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #c3fae8; border: 1.5px solid #7bf4cc"></span>new</span>
+        </li>
+      
+        <li role="option" aria-selected="false" aria-label="TASK #58441, Move kick-off to the afternoon, Tag Lyon" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--sc-radius, 8px); ">
+          <span aria-hidden="true" style="flex: none; width: 0px; "></span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58441</span></span>
+          <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-ink, #1b1c1d); font-weight: 500;">Move kick-off to the afternoon</span>
+          <span style="flex: none; max-width: 190px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center;">Tag Lyon</span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 120px; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap"><span style="flex: none; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #c3fae8; border: 1.5px solid #7bf4cc"></span>new</span>
+        </li>
+      
+        <li role="option" aria-selected="false" aria-label="BUG #58102, Folder link breaks on rename, Description: reported by Ville de Lyon" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--sc-radius, 8px); ">
+          <span aria-hidden="true" style="flex: none; width: 0px; "></span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span style="color: var(--sc-work-text, #3d4047)">#58102</span></span>
+          <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-ink, #1b1c1d); font-weight: 500;">Folder link breaks on rename</span>
+          <span style="flex: none; max-width: 190px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-muted, #5e6168);">Description: reported by Ville de Lyon</span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 120px; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap"><span style="flex: none; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #ffc078; border: 1.5px solid #ff9d2e"></span>on hold</span>
+        </li>
+      
+        <li role="option" aria-selected="false" aria-label="FEATURE #58412, Link Nextcloud project folders on rollout, Parent, kept in view for its child" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--sc-radius, 8px); color: var(--sc-work-muted, #5e6168); ">
+          <span aria-hidden="true" style="flex: none; width: 0px; "></span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span style="color: var(--sc-work-text, #3d4047)">#58412</span></span>
+          <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-muted, #5e6168); font-weight: 400;">Link Nextcloud project folders on rollout</span>
+          <span style="flex: none; max-width: 190px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-muted, #5e6168);">Parent, kept in view for its child</span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 120px; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap"><span style="flex: none; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span>in development</span>
+        </li>
+      
+        <li role="option" aria-selected="false" aria-label="TASK #58460, Configure the Keycloak realm for Lyon, Title, child of FEATURE #58412" style="display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: var(--sc-radius, 8px); ">
+          <span aria-hidden="true" style="flex: none; width: 24px; height: 38px; border-left: 1px solid var(--sc-work-line, #e4e6ea);"></span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58460</span></span>
+          <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-ink, #1b1c1d); font-weight: 500;">Configure the Keycloak realm for <mark>Lyon</mark></span>
+          <span style="flex: none; max-width: 190px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sc-work-muted, #5e6168);">Title, child of FEATURE #58412</span>
+          <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; width: 120px; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap"><span style="flex: none; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span>in development</span>
+        </li>
+      
+    </ul>
+    <button type="button" style="display: flex; align-items: center; gap: 10px; height: 38px; margin: 2px 0; padding: 0 10px; border: 1px dashed var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius, 8px); background: var(--sc-work-ground, #f5f6f8); color: var(--sc-work-ink, #1b1c1d); font: 500 13px var(--sc-font, 'Fira Sans'), sans-serif; text-align: left">
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--sc-primary, #3669a5)"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <span style="flex: 1 1 auto">Continue in all other projects</span>
+      <span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); font-weight: 400">3 more matches in Netzausbau Nord and OpenProject core</span>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px; border-top: 1px solid var(--sc-work-line, #e4e6ea)"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Everywhere</span><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168)">from the global search</span></div>
+    
+      <div style="display: flex; align-items: center; gap: 8px; padding: 4px 10px 0"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--sc-work-muted, #5e6168)"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg><span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047)">Projects</span></div>
+      <ul role="listbox" aria-label="Projects" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-work-ink, #1b1c1d)">
+            
+            
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout <mark>Lyon</mark></span>
+            <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">9 open work packages</span>
+          </li>
+        
+      </ul>
+    
+      <div style="display: flex; align-items: center; gap: 8px; padding: 4px 10px 0"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--sc-work-muted, #5e6168)"><path d="M5 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM15 3h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path></svg><span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047)">Work packages in other projects</span></div>
+      <ul role="listbox" aria-label="Work packages in other projects" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-work-ink, #1b1c1d)">
+            <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #35c53f">MILESTONE</span><span style="color: var(--sc-work-text, #3d4047)">#58500</span></span>
+            
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Go-live <mark>Lyon</mark> phase 2</span>
+            <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Northwind rollout Lyon, 2 Nov</span>
+          </li>
+        
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-work-ink, #1b1c1d)">
+            <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#57811</span></span>
+            
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Reuse the <mark>Lyon</mark> folder rule for Kiel</span>
+            <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Netzausbau Nord</span>
+          </li>
+        
+      </ul>
+    
+      <div style="display: flex; align-items: center; gap: 8px; padding: 4px 10px 0"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--sc-work-muted, #5e6168)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047)">Comments</span></div>
+      <ul role="listbox" aria-label="Comments" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-work-ink, #1b1c1d)">
+            
+            <span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">TA</span>
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Tom Achterberg on FEATURE #58412: Marc confirmed 2 November for the <mark>Lyon</mark> go-live</span>
+            <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Today 08:40</span>
+          </li>
+        
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 13px; color: var(--sc-work-ink, #1b1c1d)">
+            
+            <span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">OB</span>
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Olivia Brandt on EPIC #57990: <mark>Lyon</mark> phase 2 stays in 16.5</span>
+            <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">9 Oct</span>
+          </li>
+        
+      </ul>
+    
+    <div style="display: flex; align-items: center; gap: 12px; padding: 8px 10px 4px; border-top: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168)">Enter opens the selected result, Esc closes the search.<span style="flex: 1 1 auto"></span><a href="#" style="color: var(--sc-link, var(--sc-primary, #3669a5)); text-decoration: none; font-weight: 500">Open all results in a list</a></div>
+  </div>
+
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden">
+
+
+
+<nav aria-label="Tasks" style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: var(--sc-work-ink, #1b1c1d); font-size: 14px; line-height: 21px; width: 245px; box-sizing: border-box; min-height: 100%; padding: 16px 12px; display: flex; flex-direction: column; gap: 18px; background: #ffffff; border-right: 1px solid var(--sc-work-line, #e4e6ea)">
+  <div style="display: flex; align-items: center; gap: 6px">
+    <button type="button" style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, var(--sc-primary-deep, #234a78)); border-radius: var(--sc-radius, 8px); background: var(--sc-action, var(--sc-primary, #3669a5)); color: #ffffff; font: 600 14px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New work package
+    </button>
+    <button type="button" aria-label="Fold views" aria-expanded="true" title="Fold views" style="flex: none; width: 34px; height: 34px; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
+  </div>
+  <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 8px; border: 0; border-radius: var(--sc-radius, 8px); background: var(--sc-work-ground, #f5f6f8); color: var(--sc-work-ink, #1b1c1d); text-align: left; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif">
+    <span style="width: 28px; height: 28px; border-radius: 14px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">OB</span>
+    <span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; line-height: 1.25"><strong style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Olivia Brandt</strong><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">olivia@northwind-projects.test</span></span>
+    <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+  </button>
+  
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 4px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Views</span></div>
+      
+        <a href="TbMyDay.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">My day</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; font-weight: 700; color: var(--sc-work-ink, #1b1c1d)">3</span>
+        </a>
+      
+        <a href="TbBoard.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font-weight: 600;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM15 3h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Board</span>
+          
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">List</span>
+          
+        </a>
+      
+    </div>
+  
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 4px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Projects</span></div>
+      
+        <a href="TbBoard.html" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout Lyon</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">9</span>
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Netzausbau Nord</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">4</span>
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">OpenProject core</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">12</span>
+        </a>
+      
+    </div>
+  
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 4px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Filters</span></div>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Assigned to me</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">4</span>
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Created from mail</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">2</span>
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Due this week</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">3</span>
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">High priority</span>
+          <span style="flex: none; font-size: 12px; line-height: 1; min-width: 18px; text-align: right; color: var(--sc-work-muted, #5e6168)">1</span>
+        </a>
+      
+    </div>
+  
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 4px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Versions</span></div>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">16.5</span>
+          
+        </a>
+      
+        <a href="#" aria-current="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; color: var(--sc-work-ink, #1b1c1d); font-weight: 400;">
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01"></path></svg>
+          
+          <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">16.6</span>
+          
+        </a>
+      
+    </div>
+  
+  <div style="margin-top: auto; padding: 0 10px; font-size: 12px; color: var(--sc-work-muted, #5e6168); line-height: 1.4">Synced with OpenProject 2 minutes ago</div>
+</nav>
+
+</div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: var(--sc-work-ground, #f5f6f8); overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid var(--sc-work-line, #e4e6ea)">
+        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Northwind rollout Lyon</h1><span style="font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">9 open work packages</span></div>
+        <div role="group" aria-label="Group by" style="display: flex; align-items: center; gap: 6px; margin-left: 8px">
+          <span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Group by</span>
+          <button type="button" aria-pressed="true" style="height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-primary, #3669a5); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78);">Status</button><button type="button" aria-pressed="false" style="height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);">Assignee</button><button type="button" aria-pressed="false" style="height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);">Version</button>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <div style="position: relative; display: flex; align-items: center; width: 260px">
+          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
+          <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: var(--sc-work-muted, #5e6168)"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+          <input id="tb-filter" type="search" placeholder="Filter cards" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; color: var(--sc-work-ink, #1b1c1d)">
+        </div>
+        <div role="group" aria-label="Team" style="display: flex; align-items: center">
+          <span title="Olivia Brandt" aria-label="Olivia Brandt" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">OB</span><span title="Tom Achterberg" aria-label="Tom Achterberg" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">TA</span><span title="Priya Raman" aria-label="Priya Raman" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">PR</span><span title="2 more team members" aria-label="2 more team members" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: var(--sc-work-soft, #eef0f3); color: var(--sc-work-text, #3d4047)">+2</span>
+        </div>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; padding: 12px; overflow: hidden">
+        
+          <section aria-label="new" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-soft, #eef0f3); align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: #c3fae8; border: 1.5px solid #7bf4cc"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">new</h2>
+              <span aria-label="3 work packages" style="flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: var(--sc-work-muted, #5e6168); border: 1px solid var(--sc-work-line, #e4e6ea)">3</span>
+              <button type="button" aria-label="New work package with status new" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            
+              <a href="TbCard.html" aria-label="TASK #58441, Move kick-off to the afternoon, new" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58441</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Move kick-off to the afternoon</span>
+                
+                <span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">From mail: Marc Dubois</span></span>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Olivia Brandt" role="img" aria-label="Assignee Olivia Brandt" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">OB</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-ink, #1b1c1d); font-weight: 600"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>15 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 linked mails" title="1 linked mails" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>1</span>
+                </span>
+              </a>
+            
+              <a href="TbCard.html" aria-label="TASK #58455, Prepare demo for Malmo Energi, new" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58455</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Prepare demo for Malmo Energi</span>
+                
+                <span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">From mail: Sven Lindqvist</span></span>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Olivia Brandt" role="img" aria-label="Assignee Olivia Brandt" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">OB</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-ink, #1b1c1d); font-weight: 600"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>13 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 linked mails" title="1 linked mails" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>1</span>
+                </span>
+              </a>
+            
+              <a href="TbCard.html" aria-label="TASK #58440, Send OIDC client settings to Lyon, new" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df">TASK</span><span style="color: var(--sc-work-text, #3d4047)">#58440</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Send OIDC client settings to Lyon</span>
+                
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Tom Achterberg" role="img" aria-label="Assignee Tom Achterberg" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">TA</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-ink, #1b1c1d); font-weight: 600"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>16 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 attachments" title="1 attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>1</span>
+                </span>
+              </a>
+            
+          </section>
+        
+          <section aria-label="in development" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-soft, #eef0f3); align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: #66d9e8; border: 1.5px solid #21c8de"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">in development</h2>
+              <span aria-label="2 of 4 work packages, work in progress limit" style="flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: var(--sc-primary-deep, #234a78); border: 1px solid var(--sc-primary, #3669a5)">2 of 4</span>
+              <button type="button" aria-label="New work package with status in development" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            
+              <a href="TbCard.html" aria-label="FEATURE #58412, Link Nextcloud project folders on rollout, in development" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span style="color: var(--sc-work-text, #3d4047)">#58412</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Link Nextcloud project folders on rollout</span>
+                
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Tom Achterberg" role="img" aria-label="Assignee Tom Achterberg" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">TA</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>30 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 linked mails" title="1 linked mails" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>1</span><span aria-label="1 linked meetings" title="1 linked meetings" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>1</span><span aria-label="2 attachments" title="2 attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>2</span>
+                </span>
+              </a>
+            
+              <a href="TbCard.html" aria-label="BUG #58231, Gantt PDF export drops trailing columns, in development" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span style="color: var(--sc-work-text, #3d4047)">#58231</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#ff9d2e" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Priority high"><path d="m6 13 6-6 6 6M6 19l6-6 6 6"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Gantt PDF export drops trailing columns</span>
+                <span style="font-size: 12px; line-height: 16px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">OpenProject core</span>
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Priya Raman" role="img" aria-label="Assignee Priya Raman" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">PR</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-ink, #1b1c1d); font-weight: 600"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>14 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 linked mails" title="1 linked mails" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>1</span><span aria-label="2 attachments" title="2 attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>2</span>
+                </span>
+              </a>
+            
+          </section>
+        
+          <section aria-label="in review" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-soft, #eef0f3); align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: #d3f9d8; border: 1.5px solid #8ff09c"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">in review</h2>
+              <span aria-label="2 work packages" style="flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: var(--sc-work-muted, #5e6168); border: 1px solid var(--sc-work-line, #e4e6ea)">2</span>
+              <button type="button" aria-label="New work package with status in review" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            
+              <a href="TbCard.html" aria-label="FEATURE #58390, Single sign-on through Keycloak, in review" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span style="color: var(--sc-work-text, #3d4047)">#58390</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Single sign-on through Keycloak</span>
+                
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Tom Achterberg" role="img" aria-label="Assignee Tom Achterberg" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">TA</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>23 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 attachments" title="1 attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>1</span>
+                </span>
+              </a>
+            
+              <a href="TbCard.html" aria-label="EPIC #57990, Release 16.5 scope, in review" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #005b77">EPIC</span><span style="color: var(--sc-work-text, #3d4047)">#57990</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Release 16.5 scope</span>
+                <span style="font-size: 12px; line-height: 16px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">OpenProject core</span>
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Olivia Brandt" role="img" aria-label="Assignee Olivia Brandt" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">OB</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>23 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  <span aria-label="1 linked mails" title="1 linked mails" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>1</span><span aria-label="1 linked meetings" title="1 linked meetings" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--sc-work-muted, #5e6168)"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>1</span>
+                </span>
+              </a>
+            
+          </section>
+        
+          <section aria-label="on hold" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-soft, #eef0f3); align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: #ffc078; border: 1.5px solid #ff9d2e"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">on hold</h2>
+              <span aria-label="1 work packages" style="flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: var(--sc-work-muted, #5e6168); border: 1px solid var(--sc-work-line, #e4e6ea)">1</span>
+              <button type="button" aria-label="New work package with status on hold" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            
+              <a href="TbCard.html" aria-label="BUG #58102, Folder link breaks on rename, on hold" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span style="color: var(--sc-work-text, #3d4047)">#58102</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Folder link breaks on rename</span>
+                
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Priya Raman" role="img" aria-label="Assignee Priya Raman" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">PR</span>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; color: #ab0000; font-weight: 600"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>9 Oct</span>
+                  <span style="flex: 1 1 auto"></span>
+                  
+                </span>
+              </a>
+            
+          </section>
+        
+          <section aria-label="closed" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-soft, #eef0f3); align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: #dee2e6; border: 1.5px solid #adb5bd"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">closed</h2>
+              <span aria-label="1 work packages" style="flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: var(--sc-work-muted, #5e6168); border: 1px solid var(--sc-work-line, #e4e6ea)">1</span>
+              <button type="button" aria-label="New work package with status closed" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            
+              <a href="TbCard.html" aria-label="FEATURE #58215, Export work package list to Excel, closed" style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid var(--sc-work-line, #e4e6ea); border-radius: var(--sc-radius, 8px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span style="color: var(--sc-work-text, #3d4047)">#58215</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M6 10h12M6 14h12"></path></svg></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--sc-work-ink, #1b1c1d)">Export work package list to Excel</span>
+                
+                
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <span title="Tom Achterberg" role="img" aria-label="Assignee Tom Achterberg" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">TA</span>
+                  
+                  <span style="flex: 1 1 auto"></span>
+                  
+                </span>
+              </a>
+            
+          </section>
+        
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+</body>
+</html>

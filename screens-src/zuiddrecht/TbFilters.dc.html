@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: board with the filter panel open</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#tb-filter::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" hint-size="245px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Northwind rollout Lyon</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">5 of 9 work packages match the filters</span></div>
+        <div role="group" aria-label="Group by" style="display: flex; align-items: center; gap: 6px; margin-left: 8px">
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Group by</span>
+          <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <div style="position: relative; display: flex; align-items: center; width: 260px">
+          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #234a78"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+          <input id="tb-filter" type="search" placeholder="Filter cards" aria-expanded="true" aria-controls="tb-filter-panel" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; box-shadow: 0 0 0 3px #eaf0f7">
+        </div>
+        <div role="group" aria-label="Team" style="display: flex; align-items: center">
+          <sc-for list="{{ team }}" as="t" hint-placeholder-count="4"><span title="{{ t.name }}" aria-label="{{ t.name }}" role="img" style="{{ t.style }}">{{ t.initials }}</span></sc-for>
+        </div>
+      </div>
+      <div role="group" aria-label="Active filters" style="flex: none; display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <span style="font-size: 12px; color: #5e6168; white-space: nowrap; margin-right: 4px">Filtered on</span>
+        <sc-for list="{{ active }}" as="a" hint-placeholder-count="3"><span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 4px 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 600; white-space: nowrap"><sc-if value="{{ a.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ a.dot }}"></span></sc-if>{{ a.label }}<button type="button" aria-label="{{ a.remove }}" style="width: 20px; height: 20px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #234a78; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></sc-for>
+        <button type="button" style="height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Clear all</button>
+        <span style="margin-left: 8px; font-size: 12px; color: #5e6168; white-space: nowrap">Click a tag on a card to filter on it</span>
+      </div>
+
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; padding: 12px; overflow: hidden">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+          <section aria-label="{{ col.name }}" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="{{ col.dot }}"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ col.name }}</h2>
+              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span>
+              <button type="button" aria-label="New work package with status {{ col.name }}" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
+              <div aria-label="{{ c.aria }}" style="{{ c.style }}">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="{{ c.typeStyle }}">{{ c.type }}</span><span style="color: #3d4047">{{ c.number }}</span><span style="flex: 1 1 auto"></span><sc-if value="{{ c.high }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9d2e" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Priority high"><path d="m6 13 6-6 6 6M6 19l6-6 6 6"></path></svg></sc-if><sc-if value="{{ c.normal }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal"><path d="M6 10h12M6 14h12"></path></svg></sc-if></span>
+                <a href="TbCard.dc.html" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d; text-decoration: none">{{ c.subject }}</a>
+                <span role="group" aria-label="Tags" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px"><sc-for list="{{ c.tags }}" as="t" hint-placeholder-count="2"><button type="button" aria-label="{{ t.aria }}" aria-pressed="{{ t.on }}" style="{{ t.style }}"><span style="{{ t.dot }}"></span>{{ t.name }}</button></sc-for></span>
+                <sc-if value="{{ c.hasMail }}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">From mail: {{ c.mailFrom }}</span></span></sc-if>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <sc-if value="{{ c.hasAssignee }}" hint-placeholder-val="{{ true }}"><span title="{{ c.assignee }}" role="img" aria-label="Assignee {{ c.assignee }}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ c.initials }}</span></sc-if>
+                  <sc-if value="{{ c.unassigned }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Unassigned" title="Unassigned" style="flex: none; width: 22px; height: 22px; box-sizing: border-box; border-radius: 11px; border: 1.5px dashed #c4c7cb; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"></path></svg></span></sc-if>
+                  <span style="{{ c.dueStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>{{ c.due }}</span>
+                </span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ col.isEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding: 10px 8px; font-size: 12px; color: #5e6168; line-height: 18px">{{ col.emptyText }}</div></sc-if>
+          </section>
+        </sc-for>
+      </div>
+
+      <div id="tb-filter-panel" role="dialog" aria-label="Filters" style="position: absolute; right: 150px; top: 60px; margin-top: 4px; width: 440px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 4px 10px 8px; border-bottom: 1px solid #e4e6ea">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Filters</h2>
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Press <kbd style="display: inline-block; min-width: 14px; padding: 0 5px; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; font: 600 11px 'Fira Sans', sans-serif; text-align: center; color: #3d4047">M</kbd> to show only your cards</span>
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Clear all filters</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Tags</span><span style="font-size: 12px; color: #5e6168">tick one or more</span><span style="flex: 1 1 auto"></span><button type="button" style="height: 24px; padding: 0 6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Reset tags</button></div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ tags }}" as="t" hint-placeholder-count="6">
+            <li style="display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: var(--sc-radius, 8px)">
+              <button type="button" role="checkbox" aria-checked="{{ t.checked }}" aria-label="{{ t.filterLabel }}" style="{{ t.checkStyle }}"><sc-if value="{{ t.isOn }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button>
+              <span style="{{ t.dot }}"></span>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; color: #1b1c1d">{{ t.name }}</span>
+              <span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ t.count }}</span>
+              <button type="button" aria-label="Edit tag {{ t.name }}" style="flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
+              <button type="button" aria-label="Delete tag {{ t.name }}" style="flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></button>
+            </li>
+            <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}"><li aria-label="Edit tag {{ t.name }}" style="display: flex; flex-direction: column; gap: 8px; margin: 2px 10px 6px 38px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #f5f6f8">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <label for="tb-tag-name" style="flex: none; font-size: 12px; color: #5e6168">Name</label>
+                <input id="tb-tag-name" type="text" value="Customer" style="flex: 1 1 auto; min-width: 0; height: 30px; box-sizing: border-box; padding: 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="flex: none; font-size: 12px; color: #5e6168">Colour</span>
+                <span role="radiogroup" aria-label="Tag colour" style="display: inline-flex; gap: 6px"><sc-for list="{{ swatches }}" as="s" hint-placeholder-count="8"><button type="button" role="radio" aria-checked="{{ s.on }}" aria-label="{{ s.name }}" style="{{ s.style }}"></button></sc-for></span>
+                <span style="flex: 1 1 auto"></span>
+                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif">Cancel</button>
+                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Save tag</button>
+              </div>
+            </li></sc-if>
+          </sc-for>
+        </ul>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 2px 10px 8px; border-bottom: 1px solid #e4e6ea">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New tag</button>
+          <span style="font-size: 12px; color: #5e6168; line-height: 16px">Every new project starts with these 6 default tags. Edit or delete them per project.</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Assignee</span></div>
+        <div role="radiogroup" aria-label="Assignee" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; padding: 0 10px">
+          <sc-for list="{{ assignees }}" as="a" hint-placeholder-count="6"><label style="display: flex; align-items: center; gap: 8px; height: 30px; font-size: 14px; color: #1b1c1d; white-space: nowrap"><span role="radio" aria-checked="{{ a.on }}" aria-label="{{ a.label }}" style="{{ a.style }}"></span><sc-if value="{{ a.hasAvatar }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">{{ a.initials }}</span></sc-if><sc-if value="{{ a.isUnassigned }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border-radius: 10px; border: 1.5px dashed #c4c7cb"></span></sc-if>{{ a.label }}</label></sc-for>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea; margin-top: 4px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">State</span></div>
+        <div role="radiogroup" aria-label="State" style="display: flex; gap: 6px; padding: 2px 10px 6px">
+          <sc-for list="{{ states }}" as="s" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ s.on }}" style="{{ s.style }}">{{ s.label }}</button></sc-for>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Due date</span><span style="font-size: 12px; color: #5e6168">from and to, either can stay empty</span></div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 2px 10px 8px">
+          <label for="tb-due-from" style="font-size: 12px; color: #5e6168">From</label>
+          <input id="tb-due-from" type="text" placeholder="12 Oct 2026" style="width: 120px; height: 30px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+          <label for="tb-due-to" style="font-size: 12px; color: #5e6168">to</label>
+          <input id="tb-due-to" type="text" placeholder="16 Oct 2026" style="width: 120px; height: 30px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="height: 26px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">This week</button>
+          <button type="button" style="height: 26px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Overdue</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const TAG = { Lyon: '#1c7ed6', Kassel: '#2f9e44', Customer: '#e67700', Internal: '#5e6168', Demo: '#862e9c', Training: '#0b7285' };
+    const PEOPLE = { 'Tom Achterberg': 'TA', 'Olivia Brandt': 'OB', 'Priya Raman': 'PR' };
+    const dotOf = (name, size) => 'flex: none; width: ' + size + 'px; height: ' + size + 'px; border-radius: ' + (size / 2) + 'px; background: ' + TAG[name];
+    const tagBtn = 'display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); font: 400 11px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    // [type, number, subject, status, assignee, due, tags, {from, high, overdue, week}]
+    const data = [
+      ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'Olivia Brandt', '15 Oct', ['Lyon', 'Customer'], { from: 'Marc Dubois', week: true }],
+      ['TASK', '#58440', 'Send OIDC client settings to Lyon', 'new', '', '16 Oct', ['Lyon'], { week: true }],
+      ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', 'Tom Achterberg', '30 Oct', ['Lyon', 'Customer'], {}],
+      ['FEATURE', '#58390', 'Single sign-on through Keycloak', 'in review', 'Tom Achterberg', '23 Oct', ['Lyon'], {}],
+      ['BUG', '#58102', 'Folder link breaks on rename', 'on hold', 'Priya Raman', '9 Oct', ['Lyon', 'Customer'], { overdue: true }]
+    ];
+    const cardBase = 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; ';
+    const cards = data.map(([type, number, subject, status, assignee, due, tags, o]) => ({
+      type, number, subject, status, assignee, due, typeStyle: 'font-weight: 700; letter-spacing: 0.04em; color: ' + TYPE[type],
+      aria: type + ' ' + number + ', ' + subject + ', ' + status, style: cardBase,
+      high: !!o.high, normal: !o.high,
+      hasMail: !!o.from, mailFrom: o.from ?? '',
+      hasAssignee: !!assignee, unassigned: !assignee, initials: PEOPLE[assignee] ?? '',
+      tags: tags.map((name) => ({ name, dot: dotOf(name, 8), on: name === 'Lyon' ? 'true' : 'false', aria: 'Filter by tag ' + name,
+        style: tagBtn + (name === 'Lyon' ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #f0f1f3; background: #f0f1f3; color: #3d4047;') })),
+      dueStyle: 'display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; ' + (o.overdue ? 'color: #ab0000; font-weight: 600' : o.week ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168')
+    }));
+    const cols = [['new', 2, 3], ['in development', 1, 3], ['in review', 1, 2], ['on hold', 1, 1], ['closed', 0, 1]];
+    const columns = cols.map(([name, count, total]) => {
+      const st = STATUS[name];
+      return {
+        name, count: count + ' of ' + total, countLabel: count + ' of ' + total + ' work packages match',
+        countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea',
+        dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
+        cards: cards.filter((c) => c.status === name),
+        isEmpty: count === 0, emptyText: name === 'closed' ? 'Closed work packages are hidden by the state filter Open.' : 'Nothing matches here.'
+      };
+    });
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const groupBy = ['Status', 'Assignee', 'Version'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+      style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const av = 'width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; ';
+    const team = [['Olivia Brandt', 'OB'], ['Tom Achterberg', 'TA'], ['Priya Raman', 'PR'], ['2 more team members', '+2']].map(([name, initials], i) => ({
+      name, initials, style: av + (i ? 'margin-left: -8px; ' : '') + (initials.startsWith('+') ? 'background: #eef0f3; color: #3d4047' : 'background: #eaf0f7; color: #234a78')
+    }));
+    const active = [
+      { label: 'Tag: Lyon', remove: 'Remove the filter on tag Lyon', hasDot: true, dot: dotOf('Lyon', 8) },
+      { label: 'Open', remove: 'Remove the filter on state Open', hasDot: false, dot: '' }
+    ];
+    const checkBase = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; padding: 0; ';
+    const tags = [['Lyon', 5, true], ['Kassel', 2], ['Customer', 3, false, true], ['Internal', 2], ['Demo', 1], ['Training', 1]].map(([name, count, on, editing]) => ({
+      name, count: count + ' cards', dot: dotOf(name, 10), checked: on ? 'true' : 'false', isOn: !!on, editing: !!editing,
+      filterLabel: 'Filter on tag ' + name,
+      checkStyle: checkBase + (on ? 'border: 1.5px solid #3669a5; background: #3669a5;' : 'border: 1.5px solid #c4c7cb; background: #ffffff;')
+    }));
+    const swatches = [['Orange', '#e67700', true], ['Blue', '#1c7ed6'], ['Green', '#2f9e44'], ['Teal', '#0b7285'], ['Purple', '#862e9c'], ['Pink', '#c2255c'], ['Brown', '#8f5f2a'], ['Grey', '#5e6168']].map(([name, hex, on]) => ({
+      name, on: on ? 'true' : 'false',
+      style: 'width: 22px; height: 22px; box-sizing: border-box; border-radius: 11px; background: ' + hex + '; border: 2px solid #ffffff; padding: 0; ' + (on ? 'box-shadow: 0 0 0 2px #3669a5;' : 'box-shadow: 0 0 0 1px #c4c7cb;')
+    }));
+    const radio = (on) => 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; ' + (on ? 'border: 5px solid #3669a5; background: #ffffff;' : 'border: 1.5px solid #c4c7cb; background: #ffffff;');
+    const assignees = [['Anyone', '', true], ['Olivia Brandt, me', 'OB'], ['Tom Achterberg', 'TA'], ['Priya Raman', 'PR'], ['Unassigned', '']].map(([label, initials, on]) => ({
+      label, initials, on: on ? 'true' : 'false', style: radio(!!on), hasAvatar: !!initials, isUnassigned: label === 'Unassigned'
+    }));
+    const states = [['Open', true], ['Closed'], ['Both']].map(([label, on]) => ({ label, on: on ? 'true' : 'false',
+      style: chipBase + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    return { groupBy, team, active, columns, tags, swatches, assignees, states };
+  }
+}
+</script>
+</body>
+</html>

@@ -30,7 +30,10 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
             <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
           </div>
-          <button type="button" aria-haspopup="menu" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link another</button>
+          <div style="flex: none; display: flex; align-items: center; gap: 6px">
+            <button type="button" aria-label="Expand all messages" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 13 5 5 5-5M7 6l5 5 5-5"></path></svg>Expand all</button>
+            <button type="button" aria-haspopup="menu" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link another</button>
+          </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
           <span style="white-space: nowrap">1 work package</span>
@@ -40,7 +43,8 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
       <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px">
         <sc-for list="{{ collapsed }}" as="m" hint-placeholder-count="5">
-          <button type="button" aria-expanded="false" style="{{ m.style }}">
+          <button type="button" aria-expanded="false" aria-label="Show the whole message from {{ m.from }}, {{ m.date }}" title="Show the whole message" style="{{ m.style }}">
+            <span aria-hidden="true" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-left: -6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
             <span style="{{ m.avatar }}">{{ m.initials }}</span>
             <span style="flex: none; font-weight: 600; white-space: nowrap">{{ m.from }}</span>
             <span style="flex: 1 1 auto; min-width: 0; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ m.snippet }}</span>
@@ -49,7 +53,8 @@ a{color:#3669a5}a:hover{color:#234a78}
           </button>
         </sc-for>
         <article aria-label="Message from Marc Dubois, today 06:00" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
-          <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+          <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0 8px">
+            <button type="button" aria-expanded="true" aria-label="Collapse the message" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
             <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">MD</span>
             <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
               <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">Marc Dubois</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">marc.dubois@mairie-lyon.fr</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">Today 06:00</span></div>
@@ -58,13 +63,13 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <button type="button" aria-label="More actions for this message" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
           </div>
-          <div style="padding: 12px 14px 0 56px; display: flex; flex-direction: column; gap: 10px; color: #3d4047">
+          <div style="padding: 12px 14px 0 88px; display: flex; flex-direction: column; gap: 10px; color: #3d4047">
             <p style="margin: 0">Hi Olivia,</p>
             <p style="margin: 0">Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?</p>
             <p style="margin: 0">Best regards,<br>Marc</p>
-            <button type="button" aria-label="Show quoted text" aria-expanded="false" style="align-self: flex-start; height: 20px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #5e6168; font: 700 12px 'Fira Sans', sans-serif; letter-spacing: 0.1em">···</button>
+            <button type="button" aria-expanded="false" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; height: 24px; margin-left: -6px; padding: 0 8px 0 6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>Show quoted text</button>
           </div>
-          <div style="margin: 12px 14px 0 56px; padding-top: 10px; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 4px">
+          <div style="margin: 12px 14px 0 88px; padding-top: 10px; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 4px">
             <span style="font-size: 12px; font-weight: 600; color: #5e6168">2 attachments in this conversation</span>
             <sc-for list="{{ files }}" as="f" hint-placeholder-count="2">
               <div style="display: flex; align-items: center; gap: 8px; height: 30px; font-size: 13px">

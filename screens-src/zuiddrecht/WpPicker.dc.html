@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Work package picker</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+  <label for="{{ fieldId }}" style="font-size: 13px; font-weight: 600; line-height: 20px">Work package</label>
+  <sc-if value="{{ isPicked }}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
+      <div style="display: flex; align-items: center; gap: 8px; min-width: 0">
+        <span style="{{ picked.typeStyle }}">{{ picked.type }}</span>
+        <span style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5)">{{ picked.number }}</span>
+        <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600">{{ picked.subjectHtml }}</span>
+        <button type="button" aria-label="Change the work package" style="flex: none; height: 26px; margin: -3px -6px -3px 0; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Change</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 18px; color: #5e6168; white-space: nowrap; overflow: hidden">
+        <span style="{{ picked.dot }}"></span><span>{{ picked.status }}</span><span aria-hidden="true">·</span><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ picked.project }}</span><span aria-hidden="true">·</span><span>{{ picked.assignee }}</span>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
+    <div style="position: relative; display: flex; align-items: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+      <input id="{{ fieldId }}" type="search" value="{{ typed }}" placeholder="Number or words" aria-describedby="{{ fieldId }}-hint" style="{{ fieldStyle }}">
+      <sc-if value="{{ hasTyped }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Clear the search" style="position: absolute; right: 4px; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></sc-if>
+    </div>
+    <button type="button" role="switch" aria-checked="{{ deepAria }}" style="display: flex; align-items: center; gap: 8px; height: 24px; margin: -2px 0 0; padding: 0; border: 0; background: transparent; color: {{ deepColor }}; font: 400 13px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap">
+      <span aria-hidden="true" style="{{ switchStyle }}"><span style="{{ knobStyle }}"></span></span>
+      <span>Also search in descriptions and comments</span>
+      <sc-if value="{{ deepOn }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #5e6168">slower</span></sc-if>
+    </button>
+    <div role="group" aria-label="Search scope" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap">
+      <button type="button" aria-haspopup="menu" aria-label="Project: {{ project }}, change" style="{{ chipOn }}; max-width: 160px"><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ project }}</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button>
+      <button type="button" aria-pressed="true" style="{{ chipOn }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 6 9 17l-5-5"></path></svg>Open only</button>
+      <button type="button" aria-haspopup="menu" style="{{ chipOff }}">Type<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button>
+      <button type="button" aria-pressed="false" style="{{ chipOff }}">Assigned to me</button>
+    </div>
+    <sc-if value="{{ hasGroups }}" hint-placeholder-val="{{ true }}">
+      <div role="listbox" aria-label="{{ listLabel }}" style="display: flex; flex-direction: column; gap: 2px; margin: 2px 0 0">
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+          <div role="presentation" style="height: 28px; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ g.title }}</div>
+          <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+            <button type="button" role="option" aria-selected="{{ r.selected }}" style="{{ r.style }}">
+              <span style="display: flex; align-items: center; gap: 8px; min-width: 0; line-height: 20px">
+                <span style="{{ r.typeStyle }}">{{ r.type }}</span>
+                <span style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5)">{{ r.number }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.subjectHtml }}</span>
+              </span>
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 18px; color: #5e6168; white-space: nowrap">
+                <span style="{{ r.dot }}"></span><span style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ r.status }} · {{ r.project }} · {{ r.assignee }}</span>
+                <sc-if value="{{ r.hasReason }}" hint-placeholder-val="{{ true }}"><span style="flex: none; color: #5e6168">{{ r.reason }}</span></sc-if>
+              </span>
+              <sc-if value="{{ r.hasMatch }}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 12px; line-height: 18px; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="color: #5e6168">{{ r.matchWhere }}</span> {{ r.matchHtml }}</span></sc-if>
+            </button>
+          </sc-for>
+        </sc-for>
+        <div id="{{ fieldId }}-hint" style="display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; font-size: 12px; color: #5e6168; white-space: nowrap">
+          <kbd style="{{ kbd }}">&#8593;</kbd><kbd style="{{ kbd }}">&#8595;</kbd><span>to move</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Enter</kbd><span>to pick</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Esc</kbd><span>to close</span>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isNone }}" hint-placeholder-val="{{ false }}">
+      <div role="status" style="display: flex; flex-direction: column; gap: 2px; margin: 2px 0 0">
+        <p style="margin: 0; padding: 6px 10px 8px; font-size: 13px; line-height: 19px; color: #3d4047">No work package matches &#8220;{{ typed }}&#8221; in {{ project }}.</p>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 13px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>Search all projects</button>
+        <button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 13px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">New work package: {{ typed }}</span></button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display: flex; flex-direction: column; gap: 10px; margin: 2px 0 0; padding: 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
+        <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 19px; color: #3d4047">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 2px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>
+          <span><strong style="font-weight: 600; color: #1b1c1d">OpenProject is not reachable.</strong> Nothing was searched and nothing is guessed. Your mail and calendar keep working.</span>
+        </div>
+        <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg>Try again</button>
+      </div>
+    </sc-if>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"text","default":"suggest"},"context":{"editor":"text","default":"mail"},"$preview":{"width":408,"height":560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const state = this.props.state || 'suggest';
+    const ctx = this.props.context === 'event' ? 'event' : 'mail';
+    const fieldId = 'wp-picker-' + state + '-' + ctx;
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const LYON = 'Northwind rollout Lyon';
+    const project = LYON;
+    const dot = (status) => 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + STATUS[status][0] + '; border: 1.5px solid ' + STATUS[status][1];
+    const typeStyle = (type) => 'flex: none; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: ' + TYPE[type];
+    const rowBase = 'display: flex; flex-direction: column; gap: 0; width: 100%; padding: 5px 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d; text-align: left; ';
+    const mark = (text, word) => word ? text.replace(new RegExp('(' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark style="background: #eaf0f7; color: inherit; border-radius: 2px; padding: 0 1px">$1</mark>') : text;
+    // a result: [type, number, subject, status, project, assignee, reason, selected, matchWhere, matchText]
+    const row = (word) => ([type, number, subject, status, proj, assignee, reason, selected, matchWhere, matchText]) => ({
+      type, number, status, project: proj, assignee, reason: reason || '', hasReason: !!reason,
+      subjectHtml: mark(subject, word), selected: selected ? 'true' : 'false',
+      style: rowBase + (selected ? 'background: #eaf0f7;' : 'background: transparent;'),
+      typeStyle: typeStyle(type), dot: dot(status),
+      hasMatch: !!matchText, matchWhere: matchWhere || '', matchHtml: matchText ? mark(matchText, word) : ''
+    });
+    const kick = ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', LYON, 'Olivia Brandt'];
+    const agenda = ['TASK', '#58446', 'Kick-off agenda for Lyon phase 2', 'new', LYON, 'Tom Achterberg'];
+    const nord = ['TASK', '#57710', 'Kick-off meeting Netzausbau Nord', 'in development', 'Netzausbau Nord', 'Tom Achterberg'];
+    const core = ['FEATURE', '#56120', 'Kick-off checklist for new projects', 'in review', 'OpenProject core', 'Priya Raman'];
+    const gantt = ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', LYON, 'Priya Raman'];
+    const folders = ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', LYON, 'Tom Achterberg'];
+    let typed = '';
+    let groups = [];
+    let listLabel = 'Work packages';
+    let deepOn = false;
+    let picked = null;
+    if (state === 'suggest') {
+      listLabel = 'Suggested work packages';
+      const r = row('');
+      groups = ctx === 'event' ? [
+        { title: 'In this event', rows: [
+          r(['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', LYON, 'Olivia Brandt', '#58455 in the description', true])
+        ] },
+        { title: 'Same people', rows: [
+          r(['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', LYON, 'Tom Achterberg', 'event with Tom Achterberg', false]),
+          r(['EPIC', '#57990', 'Release 16.5 scope', 'in review', LYON, 'Olivia Brandt', 'event with Tom Achterberg', false])
+        ] },
+        { title: 'Recent', rows: [
+          r(['TASK', '#58441', 'Move kick-off to the afternoon', 'new', LYON, 'Olivia Brandt', 'created today', false])
+        ] }
+      ] : [
+        { title: 'In this conversation', rows: [
+          r(['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', LYON, 'Priya Raman', '#58231 in Jana’s message', true])
+        ] },
+        { title: 'Same people', rows: [
+          r(['TASK', '#58301', 'Quote for project lead training Kassel', 'needs clarification', LYON, 'Olivia Brandt', 'mail from Jana Köhler', false]),
+          r(['BUG', '#58102', 'Folder link breaks on rename', 'on hold', LYON, 'Priya Raman', 'mail from Jana Köhler', false])
+        ] },
+        { title: 'Recent', rows: [
+          r(['TASK', '#58441', 'Move kick-off to the afternoon', 'new', LYON, 'Olivia Brandt', 'created today', false]),
+          r(['EPIC', '#57990', 'Release 16.5 scope', 'in review', LYON, 'Olivia Brandt', 'opened 9 Oct', false])
+        ] }
+      ];
+    } else if (state === 'number') {
+      typed = '58231';
+      const r = row('');
+      groups = [
+        { title: 'In ' + LYON, rows: [r([...gantt, 'exact number', true])] }
+      ];
+    } else if (state === 'words') {
+      typed = 'kick-off';
+      const r = row(typed);
+      groups = [
+        { title: 'In ' + LYON, rows: [r([...kick, '', true]), r([...agenda, '', false])] },
+        { title: 'In other projects', rows: [r([...nord, '', false]), r([...core, '', false])] }
+      ];
+    } else if (state === 'deep') {
+      typed = 'kick-off';
+      deepOn = true;
+      const r = row(typed);
+      groups = [
+        { title: 'In ' + LYON, rows: [
+          r([...kick, '', true, 'Description:', 'From the mail of Marc Dubois: can the kick-off move to the afternoon?']),
+          r([...folders, '', false, 'Comment, 10 Oct:', 'the kick-off with the Lyon team is planned for 2 November']),
+          r([...agenda, '', false, 'Subject', ''])
+        ] },
+        { title: 'In other projects', rows: [
+          r([...nord, '', false, 'Comment, 2 Oct:', 'kick-off slides are in the project folder'])
+        ] }
+      ];
+      groups[0].rows[2].hasMatch = false;
+    } else if (state === 'none') {
+      typed = 'kick-off afternoon';
+    } else if (state === 'offline') {
+      typed = '58231';
+    } else if (state === 'picked') {
+      const r = row('');
+      picked = r([...gantt, '', true]);
+    }
+    const isPicked = state === 'picked';
+    const isOpen = !isPicked;
+    const hasTyped = typed !== '';
+    const focused = ['number', 'words', 'deep', 'none'].includes(state);
+    const fieldStyle = 'width: 100%; height: 34px; box-sizing: border-box; padding: 0 ' + (hasTyped ? '34px' : '10px') + ' 0 34px; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d; ' +
+      (focused ? 'border: 1px solid #3669a5; outline: 2px solid #eaf0f7' : 'border: 1px solid #c4c7cb; outline: 0');
+    const switchStyle = 'flex: none; position: relative; width: 28px; height: 16px; box-sizing: border-box; border-radius: 8px; ' + (deepOn ? 'background: var(--sc-action, #3669a5); border: 1px solid var(--sc-action-deep, #234a78)' : 'background: #ffffff; border: 1px solid #c4c7cb');
+    const knobStyle = 'position: absolute; top: 2px; width: 10px; height: 10px; border-radius: 5px; ' + (deepOn ? 'left: 14px; background: #ffffff' : 'left: 2px; background: #5e6168');
+    const chipBase = 'display: inline-flex; align-items: center; gap: 4px; height: 26px; max-width: 100%; padding: 0 6px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); font: 500 12px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const chipOn = chipBase + 'border: 1px solid var(--sc-action-deep, #234a78); background: #eaf0f7; color: #234a78';
+    const chipOff = chipBase + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const kbd = 'display: inline-block; min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 3px; background: #f5f6f8; font: 500 11px \'Fira Sans\', sans-serif; line-height: 14px; text-align: center; color: #3d4047';
+    return {
+      fieldId, typed, hasTyped, fieldStyle, project,
+      isPicked, isOpen, picked,
+      deepOn, deepAria: deepOn ? 'true' : 'false', deepColor: deepOn ? '#1b1c1d' : '#5e6168', switchStyle, knobStyle,
+      chipOn, chipOff, kbd,
+      hasGroups: groups.length > 0, groups, listLabel,
+      isNone: state === 'none', isOffline: state === 'offline'
+    };
+  }
+}
+</script>
+</body>
+</html>

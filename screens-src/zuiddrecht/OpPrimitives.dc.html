@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenProject twin: primitives</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; align-items: center; min-height: 1000px; padding: 28px 40px 32px; box-sizing: border-box">
+  <div style="width: 1240px; display: flex; flex-direction: column; gap: 20px">
+    <section style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; padding-bottom: 4px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Primitives</span>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">The same primitives in both products</h1>
+      </div>
+      <p style="margin: 0; max-width: 520px; color: #3d4047">Every control below is drawn twice from one token set. The left one is what Nextcloud renders through thematiq, the right one is what OpenProject renders through the proposed plugin. The sizes are the canon, not a measurement of a result.</p>
+    </section>
+
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr; gap: 0 20px; align-items: center; padding: 0 20px">
+      <span></span>
+      <span style="display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px">NC</span>Nextcloud</span>
+      <span style="display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px">OP</span>OpenProject</span>
+    </div>
+
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+      <section aria-label="{{ r.name }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: grid; grid-template-columns: 200px 1fr 1fr; gap: 0 20px; align-items: center">
+        <span style="display: flex; flex-direction: column; gap: 2px; line-height: 1.3"><span style="font-size: 16px; font-weight: 700">{{ r.name }}</span><span style="font-size: 13px; color: #5e6168">{{ r.size }}</span></span>
+        <sc-for list="{{ r.twins }}" as="t" hint-placeholder-count="2">
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 10px">
+            <sc-if value="{{ r.isButtons }}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><button type="button" style="{{ btnPrimary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Create</button><button type="button" style="{{ btnSecondary }}">Export</button><button type="button" style="{{ btnCompact }}">Edit</button><button type="button" aria-label="More" style="width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button></div></sc-if>
+            <sc-if value="{{ r.isInput }}" hint-placeholder-val="{{ false }}"><label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600; max-width: 360px"><span>Subject</span><input type="text" value="Link Nextcloud project folders on rollout" style="{{ input }}"></label></sc-if>
+            <sc-if value="{{ r.isSelect }}" hint-placeholder-val="{{ false }}"><label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600; max-width: 360px"><span>Assignee</span><span style="position: relative; display: flex; align-items: center"><select style="{{ select }}"><option>Tom Achterberg</option><option>Olivia Brandt</option><option>Priya Raman</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span></label></sc-if>
+            <sc-if value="{{ r.isCheckbox }}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><label style="display: flex; align-items: center; gap: 10px; font-weight: 500"><input type="checkbox" checked style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Add the attachments to the work package</label><label style="display: flex; align-items: center; gap: 10px; font-weight: 500"><input type="checkbox" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Post a comment in the activity</label><label style="display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 360px; font-weight: 500">Notify watchers<span role="switch" aria-checked="true" aria-label="Notify watchers" style="position: relative; display: inline-block; flex: none; width: 42px; height: 24px; border-radius: 12px; background: #3669a5"><span style="position: absolute; top: 3px; left: 21px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff"></span></span></label></div></sc-if>
+            <sc-if value="{{ r.isTabs }}" hint-placeholder-val="{{ false }}"><div style="max-width: 420px"><div role="tablist" style="display: flex; gap: 4px; border-bottom: 1px solid #c4c7cb"><button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Overview</button><button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Activity</button><button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Files</button><button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Relations</button></div><div style="padding: 12px 0 0; color: #3d4047">Panel on white below the strip.</div></div></sc-if>
+            <sc-if value="{{ r.isBadge }}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span style="padding: 3px 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; font-weight: 600; background: #eaf0f7; color: #234a78">Project admin</span><span style="padding: 3px 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; font-weight: 600; background: #f0f1f3; color: #3d4047">Version 16.5</span><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">10</span><span style="min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; background: #cc0000; color: #ffffff; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">1</span><span style="display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; background: #1b1c1d; color: #ffffff">All open<span style="padding: 1px 7px; border-radius: 10px; font-size: 12px; background: #3d4047; color: #ffffff">9</span></span></div></sc-if>
+            <sc-if value="{{ r.isStatus }}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap"><sc-for list="{{ statuses }}" as="s" hint-placeholder-count="6"><span style="display: inline-flex; align-items: center; gap: 8px; white-space: nowrap"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 5px; background: {{ s.fill }}; box-shadow: 0 0 0 2px {{ s.ring }}"></span>{{ s.name }}</span></sc-for></div><div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap"><button type="button" aria-haspopup="listbox" style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: #66d9e8; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">in development<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><span style="display: inline-flex; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase"><span style="color: #005b77">Epic</span><span style="color: #538b28">Feature</span><span style="color: #ab0000">Bug</span><span style="color: #08a5df">Task</span><span style="color: #35c53f">Milestone</span></span></div></sc-if>
+            <sc-if value="{{ r.isTable }}" hint-placeholder-val="{{ false }}"><div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden"><table style="border-collapse: collapse; width: 100%; font-size: 14px; line-height: 20px"><thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th scope="col" style="padding: 12px 16px; width: 18px"><input type="checkbox" aria-label="Select all" style="width: 18px; height: 18px; margin: 0; display: block; accent-color: #3669a5"></th><th scope="col" style="padding: 12px 16px; font-weight: 600; white-space: nowrap"><span style="display: inline-flex; gap: 4px; align-items: center">ID<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6168" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></th><th scope="col" style="padding: 12px 16px; font-weight: 600">Subject</th><th scope="col" style="padding: 12px 16px; font-weight: 600; white-space: nowrap">Status</th></tr></thead><tbody><tr style="border-top: 1px solid #eef0f3"><td style="padding: 14px 16px"><input type="checkbox" aria-label="Select #58412" style="width: 18px; height: 18px; margin: 0; display: block; accent-color: #3669a5"></td><td style="padding: 14px 16px; white-space: nowrap"><span style="font-weight: 600; color: var(--sc-link, #3669a5)">#58412</span></td><td style="padding: 14px 16px"><span style="font-size: 15px; font-weight: 600">Link Nextcloud project folders on rollout</span></td><td style="padding: 14px 16px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 5px; background: #66d9e8; box-shadow: 0 0 0 2px #21c8de"></span>in development</span></td></tr></tbody></table></div></sc-if>
+            <sc-if value="{{ r.isDialog }}" hint-placeholder-val="{{ false }}"><div style="padding: 20px; background: rgba(27,28,29,0.45); border-radius: var(--sc-radius-lg, 10px)"><div role="dialog" aria-labelledby="{{ t.dialogId }}" style="max-width: 640px; background: #ffffff; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column"><div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #234a78">Feature #58412</span><h2 id="{{ t.dialogId }}" style="margin: 0; font-size: 20px; font-weight: 700">Link to work package</h2></div><div style="padding: 0 24px 8px; display: flex; flex-direction: column; gap: 16px"><label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600"><span>Work package</span><input type="text" value="#58412 Link Nextcloud project folders on rollout" style="{{ input }}"></label><label style="display: flex; align-items: center; gap: 10px; font-weight: 500"><input type="checkbox" checked style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Post a comment in the work package activity</label></div><div style="padding: 16px 24px; border-top: 1px solid #eef0f3; display: flex; justify-content: flex-end; gap: 10px"><button type="button" style="{{ btnSecondary }}">Cancel</button><button type="button" style="{{ btnPrimary }}">Link</button></div></div></div></sc-if>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+
+    <section style="background: #eaf0f7; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 4px">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 700; color: #234a78">Why this sheet matters</h2>
+      <span>The proposed pixel-diff check renders this sheet in both products on every release and compares them. Both columns coming from one token set is what makes the two products one workplace.</span>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const btn = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; box-sizing: border-box; ";
+    const btnPrimary = btn + 'border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff';
+    const btnSecondary = btn + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const btnCompact = btn.replace('height: 40px', 'height: 34px') + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const input = "width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const select = "appearance: none; width: 100%; height: 40px; box-sizing: border-box; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const tab = "min-height: 34px; padding: 8px 12px; font: 400 14px 'Fira Sans', sans-serif; border: 1px solid #c4c7cb; border-bottom: none; border-radius: var(--sc-radius, 8px) var(--sc-radius, 8px) 0 0; margin-bottom: -1px; color: #1b1c1d; ";
+    const tabOn = tab + 'background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700;';
+    const tabOff = tab + 'background: #eef0f3;';
+    const statuses = [['new', '#c3fae8', '#7bf4cc'], ['in development', '#66d9e8', '#21c8de'], ['in review', '#d3f9d8', '#8ff09c'], ['on hold', '#ffc078', '#ff9d2e'], ['needs clarification', '#fcc2d7', '#f977a6'], ['closed', '#dee2e6', '#adb5bd']].map(([name, fill, ring]) => ({ name, fill, ring }));
+    const kinds = ['Buttons', 'Input', 'Select', 'Checkbox', 'Tabs', 'Badge', 'Status', 'Table', 'Dialog'];
+    const defs = [
+      ['Buttons', 'Button', 'Primary and secondary 40 px, compact 34 px, icon only 40 x 40'],
+      ['Input', 'Input', '40 px high, 1 px field line, 10 px radius, 15 px text'],
+      ['Select', 'Select', 'Same as input, chevron 16 px at right 12 px'],
+      ['Checkbox', 'Checkbox and switch', 'Checkbox 18 px, switch 42 x 24 with an 18 px knob'],
+      ['Tabs', 'Tabs', 'Tab 34 px, 14 px text, active on white and bold'],
+      ['Badge', 'Badge and chip', 'Badge 13 px weight 600, count pill 22 px, filter chip 38 px'],
+      ['Status', 'Status and type', 'Dot 10 px with a 2 px ring, status button 32 px, type uppercase 12 px'],
+      ['Table', 'Table', 'Header 44 px on #fafbfc, row 48 px, 1 px line, no zebra'],
+      ['Dialog', 'Dialog', 'Max 640 px, header 20 px title, footer with cancel then primary']
+    ];
+    const rows = defs.map(([kind, name, size], i) => {
+      const flags = {};
+      kinds.forEach((k) => { flags['is' + k] = k === kind; });
+      return { name, size, ...flags, twins: [{ dialogId: 'dlg-nc-' + i }, { dialogId: 'dlg-op-' + i }] };
+    });
+    return { btnPrimary, btnSecondary, btnCompact, input, select, tabOn, tabOff, statuses, rows };
+  }
+}
+</script>
+</body>
+</html>

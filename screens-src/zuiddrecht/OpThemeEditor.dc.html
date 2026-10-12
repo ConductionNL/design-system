@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenProject twin: token editor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="OpHeader" placeholder="Search settings, users or projects" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <nav aria-label="Administration menu" style="flex: 0 0 264px; width: 264px; box-sizing: border-box; background: #ffffff; border-right: 1px solid #e4e6ea; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; font-size: 15px">
+      <a href="OpHome.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 10px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m15 18-6-6 6-6"></path></svg>
+        <span style="display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 12px; color: #5e6168">Back to</span><strong style="font-size: 14px; font-weight: 600">Projects</strong></span>
+      </a>
+      <sc-for list="{{ menu }}" as="g" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <span style="padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+            <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg><span style="flex: 1">{{ it.label }}</span></a>
+          </sc-for>
+        </div>
+      </sc-for>
+    </nav>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Northwind house style</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="{{ btnSecondary }}">Discard changes</button>
+              <button type="button" style="{{ btnPrimary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Save and apply to both products</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #5e6168"><nav aria-label="Breadcrumb" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="OpAdmin.dc.html" style="color: #5e6168; text-decoration: none">Administration</a><span aria-hidden="true">/</span><a href="OpThemePicker.dc.html" style="color: #5e6168; text-decoration: none">Design</a><span aria-hidden="true">/</span><span aria-current="page">Edit tokens</span></nav><span aria-hidden="true">·</span><span style="font-size: 14px">Based on Cunningham · 2 unsaved changes</span></div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 20px; align-items: start">
+          <form style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 16px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700">Tokens</h2>
+            <sc-for list="{{ colours }}" as="c" hint-placeholder-count="4">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <label for="t-{{ c.id }}" style="font-weight: 600; display: flex; justify-content: space-between; gap: 8px"><span>{{ c.label }}</span><span style="font-weight: 400; color: #5e6168">{{ c.use }}</span></label>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <button type="button" aria-label="Pick {{ c.label }}" style="flex: none; width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: {{ c.value }}; padding: 0"></button>
+                  <input id="t-{{ c.id }}" type="text" value="{{ c.text }}" style="{{ input }}">
+                </div>
+              </div>
+            </sc-for>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+              <label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600"><span>Type family</span><span style="position: relative; display: flex; align-items: center"><select style="{{ select }}"><option>Fira Sans</option><option>Marianne</option><option>Inter</option><option>System</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span></label>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600"><span>Radius</span><span style="position: relative; display: flex; align-items: center"><select style="{{ select }}"><option>8 px, inputs 10 px</option><option>3 px, inputs 6 px</option><option>0, square</option><option>16 px, inputs 20 px</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span></label>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-weight: 600">Logo</span>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px)">
+                <span style="flex: none; width: 56px; height: 36px; border-radius: var(--sc-radius, 8px); background: #3669a5; display: inline-flex; align-items: center; justify-content: center"><img src="/_blob/cab4a02b950055c6dcc934664d210976" alt="Current logo on the primary colour" style="height: 18px; width: auto"></span>
+                <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.25"><strong style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">northwind-logo-white.svg</strong><span style="font-size: 13px; color: #5e6168">SVG, 26 px high in the top bar</span></span>
+                <button type="button" style="{{ btnCompact }}">Replace</button>
+              </div>
+            </div>
+            <p style="margin: 0; padding-top: 12px; border-top: 1px solid #eef0f3; color: #5e6168">Saving writes the token set once. thematiq applies it to Nextcloud, the OpenProject plugin applies it here. Nothing else to configure.</p>
+          </form>
+
+          <section aria-labelledby="h-preview" style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+              <h2 id="h-preview" style="margin: 0; font-size: 16px; font-weight: 700">Live preview of the shared shell</h2>
+              <div role="group" aria-label="Preview product" style="display: flex; gap: 2px; padding: 3px; border-radius: var(--sc-radius, 8px); background: #eef0f3">
+                <button type="button" aria-pressed="true" style="height: 34px; padding: 0 12px; border: 0; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; box-shadow: 0 1px 2px rgba(27,28,29,0.12)">OpenProject</button>
+                <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif">Nextcloud</button>
+              </div>
+            </div>
+            <div aria-label="Preview, not interactive" style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; background: #f5f6f8; display: flex; flex-direction: column; height: 620px">
+              <div style="height: 68px; flex: none; padding: 0 20px 0 14px; display: flex; align-items: center; gap: 16px; background: #3669a5; color: #ffffff">
+                <span style="flex: none; display: flex; align-items: center; gap: 12px"><img src="/_blob/cab4a02b950055c6dcc934664d210976" alt="" style="height: 26px; width: auto"><span style="width: 1px; height: 28px; background: rgba(255,255,255,0.35)"></span><strong style="font-size: 18px; white-space: nowrap">OpenProject</strong></span>
+                <span style="flex: 1 1 120px; min-width: 0; max-width: 240px; height: 44px; box-sizing: border-box; margin: 0 auto; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: rgba(255,255,255,0.12); display: flex; align-items: center; padding: 0 14px; font-size: 15px; opacity: 0.9">Search</span>
+                <span style="flex: none; display: flex; align-items: center; gap: 10px"><span style="width: 38px; height: 38px; border-radius: 19px; background: #ffffff; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">OB</span><strong style="font-size: 15px; white-space: nowrap">Olivia Brandt</strong></span>
+              </div>
+              <div style="display: flex; flex: 1 1 auto; min-height: 0">
+                <div style="width: 184px; flex: none; box-sizing: border-box; background: #ffffff; border-right: 1px solid #e4e6ea; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; font-size: 15px">
+                  <span style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 42px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font-weight: 600">Create</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px">
+                    <span style="display: flex; align-items: center; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-weight: 500">Overview</span>
+                    <span aria-current="page" style="display: flex; align-items: center; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-weight: 600">Work packages</span>
+                    <span style="display: flex; align-items: center; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-weight: 500">Gantt</span>
+                    <span style="display: flex; align-items: center; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-weight: 500">Meetings</span>
+                  </span>
+                </div>
+                <div style="flex: 1 1 auto; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-size: 28px; font-weight: 700; line-height: 1.2">Work packages</span><span style="display: flex; gap: 10px"><span style="{{ btnSecondary }}">Export</span><span style="{{ btnPrimary }}">Create</span></span></div>
+                  <div style="display: flex; gap: 8px; align-items: center"><span style="{{ chipOn }}">All open</span><span style="{{ chipOff }}">Mine</span><span style="flex: 1 1 auto"></span><span style="width: 220px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; display: flex; align-items: center; color: #5e6168">Search subject or #id</span></div>
+                  <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+                    <table style="border-collapse: collapse; width: 100%; font-size: 14px; line-height: 20px">
+                      <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th style="padding: 12px 16px; font-weight: 600">ID</th><th style="padding: 12px 16px; font-weight: 600">Subject</th><th style="padding: 12px 16px; font-weight: 600">Status</th></tr></thead>
+                      <tbody>
+                        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="3">
+                          <tr style="border-top: 1px solid #eef0f3"><td style="padding: 14px 16px; white-space: nowrap"><span style="font-weight: 600; color: var(--sc-link, #3669a5)">#{{ r.id }}</span></td><td style="padding: 14px 16px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ r.typeColor }}">{{ r.type }}</span><span style="font-size: 15px; font-weight: 600">{{ r.subject }}</span></span></td><td style="padding: 14px 16px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 5px; background: {{ r.fill }}; box-shadow: 0 0 0 2px {{ r.ring }}"></span>{{ r.status }}</span></td></tr>
+                        </sc-for>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span style="font-size: 13px; color: #5e6168">The preview renders the shared shell from the tokens above. Switch to Nextcloud to see Files in the same shell: only the app name and the content differ.</span>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const btn = "display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; box-sizing: border-box; ";
+    const btnPrimary = btn + 'border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff';
+    const btnSecondary = btn + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const btnCompact = btn.replace('height: 40px', 'height: 34px') + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const chip = "display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px 'Fira Sans', sans-serif; box-sizing: border-box; ";
+    const chipOn = chip + 'border: 0; background: #1b1c1d; color: #ffffff';
+    const chipOff = chip + 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d';
+    const input = "flex: 1 1 auto; min-width: 0; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const select = "appearance: none; width: 100%; height: 40px; box-sizing: border-box; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d";
+    const I = {
+      overview: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
+      users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+      groups: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87',
+      roles: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10',
+      types: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+      statuses: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9 12l2 2 4-4',
+      workflows: 'M4 6h6v6H4zM14 12h6v6h-6zM10 9h4M14 15h-2a2 2 0 0 1-2-2V9',
+      auth: 'M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2M7 11V7a5 5 0 0 1 10 0v4',
+      storages: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z',
+      design: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 2a4 4 0 0 1 0 8 2 2 0 0 0 0 4 4 4 0 0 1 0 8M8 8h.01M7 13h.01M16 7h.01',
+      plugins: 'M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83'
+    };
+    const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; ';
+    const active = 'Design';
+    const HREF = { Overview: 'OpAdmin.dc.html', Design: 'OpThemePicker.dc.html' };
+    const item = ([label, icon]) => ({ label, icon: I[icon], href: HREF[label] || '#', current: label === active ? 'page' : 'false', style: base + (label === active ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') });
+    const menu = [
+      { title: 'Administration', items: [['Overview', 'overview']] },
+      { title: 'People', items: [['Users', 'users'], ['Groups', 'groups'], ['Roles and permissions', 'roles']] },
+      { title: 'Work packages', items: [['Types', 'types'], ['Statuses', 'statuses'], ['Workflows', 'workflows']] },
+      { title: 'System', items: [['Authentication', 'auth'], ['File storages', 'storages'], ['Design', 'design'], ['Plugins', 'plugins']] }
+    ].map((g) => ({ title: g.title, items: g.items.map(item) }));
+    const colours = [
+      { id: 'primary', label: 'Primary', use: 'top bar, links', value: '#3669a5', text: '#3669a5' },
+      { id: 'action', label: 'Action', use: 'the one main button', value: 'var(--sc-action, #3669a5)', text: 'action-500 from Cunningham' },
+      { id: 'ink', label: 'Ink', use: 'text', value: '#1b1c1d', text: '#1b1c1d' },
+      { id: 'lines', label: 'Lines', use: 'borders, ground', value: '#e4e6ea', text: '#e4e6ea' }
+    ];
+    const TYPE = { FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'] };
+    const rows = [[58412, 'FEATURE', 'Link Nextcloud project folders on rollout', 'in development'], [58231, 'BUG', 'Gantt PDF export drops trailing columns', 'in development'], [58440, 'TASK', 'Send OIDC client settings to Lyon', 'new']].map(([id, type, subject, status]) => ({ id, type, subject, status, typeColor: TYPE[type], fill: STATUS[status][0], ring: STATUS[status][1] }));
+    return { btnPrimary, btnSecondary, btnCompact, chipOn, chipOff, input, select, menu, colours, rows };
+  }
+}
+</script>
+</body>
+</html>

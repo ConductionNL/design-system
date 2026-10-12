@@ -53,7 +53,7 @@ APPS = [
 ]
 # apps that have boards but no repository of their own yet: their matrix lives in this repo,
 # at screens-src/parity/<app>/capabilities.json (same format as openspec/parity/capabilities.json)
-LOCAL_APPS = ['mail', 'calendar', 'tasks']
+LOCAL_APPS = ['mail', 'calendar', 'tasks', 'openproject']
 APPS += [(a, None, DS_REPO) for a in LOCAL_APPS]
 APP_IDS = [a for a, _, _ in APPS]
 SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']

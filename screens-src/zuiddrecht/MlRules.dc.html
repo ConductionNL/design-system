@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Mail: rules, away reply and forwarding in the settings dialog</title>
+<title>Mail: rules and forwarding in the settings dialog</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1449px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1040px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="264px,945px"></dc-import></div>
@@ -47,36 +47,16 @@ a{color:#3669a5}a:hover{color:#234a78}
 
           <div style="display: flex; align-items: center; gap: 12px">
             <label for="ml-rl-mailbox" style="font-weight: 500; white-space: nowrap">Settings for mailbox</label>
-            <button id="ml-rl-mailbox" type="button" aria-haspopup="listbox" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
-            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Rules run on the mail server, also when the app is closed.</span>
+            <button id="ml-rl-mailbox" type="button" aria-haspopup="listbox" style="flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Each mailbox has its own. Rules run on the mail server, also when the app is closed.</span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-top: 16px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 13px; line-height: 19px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #234a78"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>
+            <span><strong style="font-weight: 600">Automatic reply is on until Friday 16 October.</strong> It is set under <a href="MlSettingsAutoReply.dc.html">Automatic reply</a>; nothing about it is changed here.</span>
+          </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
-              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
-                <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Away reply</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Sent once to everyone who writes to you between the two dates.</p></div>
-                <button type="button" role="switch" aria-checked="true" aria-label="Away reply on or off" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; font-size: 13px">
-                <label for="ml-rl-away-start" style="display: flex; flex-direction: column; gap: 3px; color: #3d4047">Start date<input id="ml-rl-away-start" type="text" value="Mon 19 Oct 2026" style="{{ input }}"></label>
-                <label for="ml-rl-away-end" style="display: flex; flex-direction: column; gap: 3px; color: #3d4047">End date<input id="ml-rl-away-end" type="text" value="Fri 23 Oct 2026" style="{{ input }}"></label>
-              </div>
-              <label for="ml-rl-away-subject" style="display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: #3d4047">Subject<input id="ml-rl-away-subject" type="text" value="Away until Monday 26 October" style="{{ input }}"></label>
-              <div style="display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: #3d4047">
-                <span style="display: flex; align-items: center; justify-content: space-between"><span>Formatted text</span><span style="font-size: 11px; color: #5e6168">Sent to readers that show HTML</span></span>
-                <div role="textbox" aria-multiline="true" aria-label="Formatted away reply" style="min-height: 64px; padding: 8px 10px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); line-height: 19px; color: #1b1c1d">I am away until Monday 26 October. For the <strong>Lyon rollout</strong>, write to <a href="#">tom@northwind-projects.test</a>.</div>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: #3d4047">
-                <span style="display: flex; align-items: center; justify-content: space-between"><span>Plain text</span><span style="font-size: 11px; color: #5e6168">Sent to readers that show text only</span></span>
-                <div role="textbox" aria-multiline="true" aria-label="Plain text away reply" style="min-height: 64px; padding: 8px 10px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); line-height: 19px; color: #1b1c1d; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px">I am away until Monday 26 October. For the Lyon rollout, write to tom@northwind-projects.test.</div>
-              </div>
-              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px solid #e4e6ea">
-                <label for="ml-rl-away-profile" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Follow the absence in my profile</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">The dates come from the absence set in your user profile; the reply starts and stops with it.</span></label>
-                <button id="ml-rl-away-profile" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
-              </div>
-            </div>
-
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
             <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; align-self: start">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
                 <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Forward all mail</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Every new message goes on to another address as it arrives.</p></div>
@@ -89,13 +69,13 @@ a{color:#3669a5}a:hover{color:#234a78}
               </div>
               <p style="margin: 0; padding-top: 10px; border-top: 1px solid #e4e6ea; font-size: 12px; color: #5e6168; line-height: 18px">Forwarding runs before the rules below, so a forwarded copy still gets sorted here.</p>
             </div>
+            <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px; align-self: start">Every change in this dialog is saved at once. Quick actions, the steps you start by hand from the toolbar, have their own section: <a href="MlSettingsQuickActions.dc.html">Quick actions</a>.</p>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
               <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Rules for incoming mail</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Run from top to bottom on every new message. Drag a rule to change its priority; switch one off to keep it without running it.</p></div>
               <div style="flex: none; display: flex; align-items: center; gap: 8px">
-                <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 3 14 9-14 9z"></path></svg>Run on a folder now</button>
                 <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New rule</button>
               </div>
             </div>
@@ -113,30 +93,9 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <tr style="height: 44px; border-bottom: 1px solid #e4e6ea; color: {{ r.color }}">
                     <td style="padding: 0 4px"><button type="button" aria-label="Drag to change the priority of {{ r.name }}" style="width: 20px; height: 28px; padding: 0; border: 0; background: transparent; color: #5e6168; cursor: grab; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"></path></svg></button></td>
                     <td style="padding: 0 8px; white-space: nowrap"><a href="#" style="color: var(--sc-link, #3669a5); font-weight: 500; text-decoration: none">{{ r.name }}</a></td>
-                    <td style="padding: 0 8px">{{ r.when }}</td>
+                    <td style="padding: 0 8px"><span title="{{ r.whenHint }}">{{ r.when }}</span></td>
                     <td style="padding: 0 8px">{{ r.then }}</td>
                     <td style="padding: 0 8px; text-align: right"><button type="button" role="switch" aria-checked="{{ r.checked }}" aria-label="Switch rule {{ r.name }} on or off" style="{{ r.switch }}"><span style="{{ r.knob }}"></span></button></td>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
-              <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Quick actions</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Several steps that run in one click from the message menu or the toolbar.</p></div>
-              <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New quick action</button>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Quick action</th><th scope="col" style="{{ th }}">Steps, in order</th><th scope="col" style="{{ th }} text-align: right">Actions</th></tr></thead>
-              <tbody>
-                <sc-for list="{{ quick }}" as="q" hint-placeholder-count="3">
-                  <tr style="height: 44px; border-bottom: 1px solid #e4e6ea">
-                    <td style="padding: 0 8px; white-space: nowrap; font-weight: 500"><span style="display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>{{ q.name }}</span></td>
-                    <td style="padding: 0 8px"><span style="display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px">
-                      <sc-for list="{{ q.steps }}" as="s" hint-placeholder-count="4"><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f0f1f3; font-size: 12px; color: #3d4047; white-space: nowrap">{{ s }}</span></sc-for>
-                    </span></td>
-                    <td style="padding: 0 8px; text-align: right; white-space: nowrap"><button type="button" aria-label="Edit quick action {{ q.name }}" style="{{ linkBtn }}">Edit</button><button type="button" aria-label="Delete quick action {{ q.name }}" style="{{ linkBtn }} color: #cc0000">Delete</button></td>
                   </tr>
                 </sc-for>
               </tbody>
@@ -149,7 +108,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1449}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
@@ -163,14 +122,9 @@ class Component extends DCLogic {
       ['Lyon to its folder', 'From ends with @lyon.fr', 'Move to Customers / Lyon, add label Waiting for customer', true],
       ['Kassel to its folder', 'From ends with @stadtwerke-kassel.de', 'Move to Customers / Kassel', true],
       ['OpenProject notifications', 'From is notifications@openproject.northwind-projects.test', 'Mark as read, keep in Inbox', true],
-      ['Newsletters', 'Header List-Unsubscribe is present', 'Move to Archive, add label Internal', false]
-    ].map(([name, when, then, on]) => ({ name, when, then, checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff, color: on ? '#1b1c1d' : '#5e6168' }));
-    const quick = [
-      ['Hand to Tom', ['Mark as read', 'Add label Internal', 'Forward to tom@northwind-projects.test', 'Archive']],
-      ['Customer answered', ['Remove label Waiting for customer', 'Star', 'Move to Customers / Lyon']],
-      ['Done with this', ['Mark as read', 'Remove all labels', 'Archive']]
-    ].map(([name, steps]) => ({ name, steps }));
-    return { switchOn, knobOn, input, th, linkBtn, rules, quick };
+      ['Newsletters', 'Is a newsletter or mailing list', 'Move to Archive, add label Internal', false]
+    ].map(([name, when, then, on]) => ({ name, when, then, whenHint: name === 'Newsletters' ? 'Checked on the mail server as: header List-Unsubscribe is present' : '', checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff, color: on ? '#1b1c1d' : '#5e6168' }));
+    return { switchOn, knobOn, input, th, linkBtn, rules };
   }
 }
 </script>

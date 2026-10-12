@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1047px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 960px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="264px,945px"></dc-import></div>
@@ -45,12 +45,12 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 24px">
 
-          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">What search looks through, and what the app cleans up for you without asking.</p>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">What search looks through, and what the app cleans up for you without asking. Every change in this dialog is saved at once.</p>
 
           <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
             <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Search</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Subject, sender and recipients are always searched. Message bodies and attachments take more space on the server, so you choose where they count.</p></div>
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
-              <label for="ml-org-priority" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Include message bodies when searching the priority inbox</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">The priority inbox gathers mail from every mailbox, so this covers all of them at once.</span></label>
+              <label for="ml-org-priority" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Include message bodies when searching the inbox sorted by importance</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">Sort by importance is the inbox view that puts the mail the assistant rates important first. It gathers mail from every mailbox, so this covers all of them at once.</span></label>
               <button id="ml-org-priority" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
             </div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px">
@@ -86,7 +86,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Spam</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Mail from these senders and domains goes straight to Spam. Marking a message as spam adds its sender here.</p></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Spam and blocked senders</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Mail from these senders and domains goes straight to Spam. Marking a message as spam adds its sender here. The senders you trust are listed under <a href="MlPrivacySettings.dc.html">Privacy and security</a>.</p></div>
             <div style="display: flex; align-items: center; gap: 8px">
               <input type="text" aria-label="Sender or domain to block" placeholder="name@example.test or @example.test" style="flex: 1 1 auto; max-width: 360px; height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif">
               <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Block sender or domain</button>
@@ -106,21 +106,13 @@ a{color:#3669a5}a:hover{color:#234a78}
             </table>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Invitations</h4>
-            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
-              <label for="ml-org-inv" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Add incoming invitations to the calendar as tentative</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">The event shows in your calendar before you answer. Accepting or declining from the message updates it.</span></label>
-              <button id="ml-org-inv" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
-            </div>
-          </div>
-
         </div>
       </section>
     </div>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1047}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
@@ -131,7 +123,7 @@ class Component extends DCLogic {
     const linkBtn = 'height: 28px; padding: 0 6px; border: 0; background: transparent; color: var(--sc-link, #3669a5); font: 500 13px \'Fira Sans\', sans-serif; cursor: pointer;';
     const accounts = [
       ['Olivia Brandt', 'olivia@northwind-projects.test', 'Up to date, 3,418 messages', true],
-      ['Shared: projects', 'projects@northwind-projects.test', 'Subject and sender only', false]
+      ['Northwind support', 'support@northwind-projects.test', 'Subject and sender only', false]
     ].map(([name, address, indexed, on]) => ({ name, address, indexed, checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }));
     const blocked = [
       ['deals@cheap-hosting-offers.test', 'Sender', '6 October'],

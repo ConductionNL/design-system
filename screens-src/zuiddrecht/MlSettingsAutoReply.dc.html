@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1110px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
   <div aria-live="polite" style="position: absolute; top: 76px; right: 20px; z-index: 25; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #234a78; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 12px rgba(27,28,29,0.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Automatic reply is on until Friday 16 October</div>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
@@ -48,8 +48,8 @@ a{color:#3669a5}a:hover{color:#234a78}
 
           <div style="display: flex; align-items: center; gap: 12px">
             <label for="ml-ar-mailbox" style="font-weight: 500; white-space: nowrap">Settings for mailbox</label>
-            <button id="ml-ar-mailbox" type="button" aria-haspopup="listbox" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
-            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Each mailbox has its own automatic reply.</span>
+            <button id="ml-ar-mailbox" type="button" aria-haspopup="listbox" style="flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Each mailbox has its own. This is the one place to set it; Rules only shows whether it is on.</span>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
@@ -60,12 +60,18 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; align-items: center; font-size: 13px">
               <label for="ml-ar-subject" style="color: #3d4047">Subject</label>
               <input id="ml-ar-subject" type="text" value="Out of office until Friday 16 October" style="{{ input }}">
-              <label for="ml-ar-text" style="color: #3d4047; align-self: flex-start; padding-top: 6px">Reply text</label>
-              <div id="ml-ar-text" role="textbox" aria-multiline="true" aria-label="Reply text" style="min-height: 88px; padding: 8px 10px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); font-size: 13px; line-height: 20px; color: #1b1c1d">
-                <div>Thank you for your message. I am away until Friday 16 October and read mail again on Monday 19 October.</div>
-                <div>For the Lyon rollout, Tom Achterberg can help you at tom@northwind-projects.test.</div>
+              <label for="ml-ar-text" style="color: #3d4047; align-self: flex-start; padding-top: 6px; display: flex; flex-direction: column; gap: 2px"><span>Formatted text</span><span style="font-size: 11px; color: #5e6168; line-height: 15px">Sent to readers that show formatting</span></label>
+              <div id="ml-ar-text" role="textbox" aria-multiline="true" aria-label="Formatted text of the reply" style="min-height: 88px; padding: 8px 10px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); font-size: 13px; line-height: 20px; color: #1b1c1d">
+                <div>Thank you for your message. I am away until <strong>Friday 16 October</strong> and read mail again on Monday 19 October.</div>
+                <div>For the Lyon rollout, Tom Achterberg can help you at <a href="#">tom@northwind-projects.test</a>.</div>
                 <div>Kind regards, Olivia Brandt</div>
               </div>
+              <label for="ml-ar-plain" style="color: #3d4047; align-self: flex-start; padding-top: 6px; display: flex; flex-direction: column; gap: 2px"><span>Plain text</span><span style="font-size: 11px; color: #5e6168; line-height: 15px">Sent to readers that show text only</span></label>
+              <div id="ml-ar-plain" role="textbox" aria-multiline="true" aria-label="Plain text of the reply" style="min-height: 64px; padding: 8px 10px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 19px; color: #1b1c1d">Thank you for your message. I am away until Friday 16 October and read mail again on Monday 19 October. For the Lyon rollout, Tom Achterberg can help you at tom@northwind-projects.test. Kind regards, Olivia Brandt</div>
+            </div>
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 10px; border-top: 1px dashed #e4e6ea">
+              <label for="ml-ar-profile" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Follow the absence in my profile</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">The dates come from the absence set in your user profile; the reply starts and stops with it, and the schedule below is filled in from it.</span></label>
+              <button id="ml-ar-profile" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
             </div>
           </div>
 
@@ -74,6 +80,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <p style="margin: 0 0 2px; font-size: 12px; color: #5e6168; line-height: 18px">When the reply is sent. Pick a period, or a weekly pattern for the hours you are never at your desk.</p>
 
             <label style="display: flex; align-items: center; gap: 10px; height: 26px"><input type="radio" name="ml-ar-when" checked style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">Between two dates</label>
+            <p style="margin: -4px 0 0 26px; font-size: 12px; color: #5e6168; line-height: 18px">Sent once to everyone who writes to you between the two dates.</p>
             <div style="display: grid; grid-template-columns: 110px 190px 110px 190px; gap: 8px 12px; align-items: center; margin-left: 26px; font-size: 13px">
               <label for="ml-ar-start" style="color: #3d4047">Starts</label>
               <input id="ml-ar-start" type="text" value="Mon 12 Oct 2026, 17:00" style="{{ input }}">
@@ -82,18 +89,19 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
 
             <label style="display: flex; align-items: center; gap: 10px; height: 26px; margin-top: 4px"><input type="radio" name="ml-ar-when" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">Weekly, on chosen days and hours</label>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 26px">
+            <p style="margin: -4px 0 0 26px; font-size: 12px; color: #5e6168; line-height: 18px">Not chosen. Choose it to set the days and hours; the values below are kept until then.</p>
+            <div aria-disabled="true" style="display: flex; flex-direction: column; gap: 8px; margin-left: 26px; opacity: 0.45">
               <div role="group" aria-label="Days of the week" style="display: flex; align-items: center; gap: 6px">
                 <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
-                  <button type="button" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">{{ d.label }}</button>
+                  <button type="button" aria-pressed="{{ d.pressed }}" disabled style="{{ d.style }}">{{ d.label }}</button>
                 </sc-for>
-                <span style="margin-left: 6px; font-size: 12px; color: #5e6168">Saturday and Sunday are chosen</span>
+                
               </div>
               <div style="display: grid; grid-template-columns: 110px 120px 110px 120px; gap: 8px 12px; align-items: center; font-size: 13px">
                 <label for="ml-ar-from" style="color: #3d4047">From</label>
-                <input id="ml-ar-from" type="text" value="00:00" style="{{ input }}">
+                <input id="ml-ar-from" type="text" value="00:00" disabled style="{{ input }}">
                 <label for="ml-ar-to" style="color: #3d4047">Until</label>
-                <input id="ml-ar-to" type="text" value="23:59" style="{{ input }}">
+                <input id="ml-ar-to" type="text" value="23:59" disabled style="{{ input }}">
               </div>
             </div>
 
@@ -117,7 +125,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1110}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';

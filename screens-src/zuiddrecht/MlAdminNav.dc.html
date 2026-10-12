@@ -17,7 +17,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <nav aria-label="Administration" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 15px; line-height: 21px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 14px; display: flex; flex-direction: column; gap: 2px; background: #ffffff; border-right: 1px solid #e4e6ea">
   <h2 style="margin: 0; padding: 0 10px; font-size: 16px; font-weight: 600; line-height: 1.3">Administration</h2>
   <div style="margin: 2px 0 10px; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Mail</div>
-  <sc-for list="{{ items }}" as="it" hint-placeholder-count="10">
+  <sc-for list="{{ items }}" as="it" hint-placeholder-count="12">
     <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span></a>
   </sc-for>
   <a href="MlInbox.dc.html" style="margin-top: auto; display: inline-flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 15px; font-weight: 500; color: var(--sc-link, #3669a5); text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>Back to Mail</a>
@@ -37,20 +37,28 @@ class Component extends DCLogic {
       funnel: 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z',
       code: 'm16 18 6-6-6-6M8 6l-6 6 6 6',
       spark: 'M12 3l1.9 5.6 5.6 1.9-5.6 1.9L12 18l-1.9-5.6-5.6-1.9 5.6-1.9zM19 3v4M21 5h-4M5 17v4M7 19H3',
-      sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6'
+      sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
+      people: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+      template: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8'
     };
-    // [label, icon, board that shows this page]
+    // [label, icon, board that shows this page]. Round 5: everything has one home.
+    // Message size lives on Protection; storage is one chain (default on Domains, then the domain, then the person);
+    // sign-in, directory and administrators are on People and sign-in; account templates are their own page;
+    // access to a person's mailbox and restore are on the mailbox page, export of deleted mail on Queues and recovery;
+    // Assistant holds only the assistant; Settings holds defaults, product features, custom fields, language and look, connected services.
     const raw = [
-      ['Mail server', I.server, '#'],
+      ['Mail server', I.server, 'MlAdminMailServer.dc.html'],
       ['Domains', I.globe, 'MlAdminDomains.dc.html'],
-      ['Mailboxes', I.inbox, '#'],
-      ['Queues and recovery', I.queue, '#'],
-      ['Health', I.pulse, '#'],
-      ['Protection', I.shield, '#'],
-      ['Processing rules', I.funnel, '#'],
-      ['Webhooks and API', I.code, '#'],
-      ['Assistant', I.spark, '#'],
-      ['Settings', I.sliders, '#']
+      ['Mailboxes', I.inbox, 'MlAdminMailboxes.dc.html'],
+      ['People and sign-in', I.people, 'MlAdminSettings.dc.html'],
+      ['Account templates', I.template, 'MlAdminSettings.dc.html'],
+      ['Queues and recovery', I.queue, 'MlAdminQueuesRecovery.dc.html'],
+      ['Health', I.pulse, 'MlAdminHealth.dc.html'],
+      ['Protection', I.shield, 'MlAdminProtection.dc.html'],
+      ['Processing rules', I.funnel, 'MlServerProcessingRules.dc.html'],
+      ['Integrations', I.code, 'MlIntegrationWebhooks.dc.html'],
+      ['Assistant', I.spark, 'MlAssistAdministration.dc.html'],
+      ['Settings', I.sliders, 'MlAdminSettings.dc.html']
     ];
     const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; line-height: 21px; ';
     const items = raw.map(([label, icon, href]) => {

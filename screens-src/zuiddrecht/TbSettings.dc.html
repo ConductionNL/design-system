@@ -14,25 +14,33 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2336px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3164px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
-  <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="3">
+  <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="4">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ fr.letter }}</span> &nbsp;{{ fr.caption }}</figcaption>
-      <div style="position: relative; height: 720px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="{{ fr.frameStyle }}">
         <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,68px"></dc-import>
         <div style="display: flex; flex: 1 1 auto; min-height: 0">
           <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" hint-size="264px,665px"></dc-import></div>
           <main aria-hidden="true" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
-            <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
-              <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Northwind rollout Lyon</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">9 open work packages</span></div>
-              <div style="display: flex; align-items: center; gap: 6px; margin-left: 8px">
-                <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+            <div style="flex: none; display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+              <div style="display: flex; flex-direction: column; min-width: 0; line-height: 1.2"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout Lyon</h1><span style="font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">9 open work packages</span></div>
+              <div role="group" aria-label="View: Board, List or Gantt" style="flex: none; display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; overflow: hidden">
+                <button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #eaf0f7; color: #234a78"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM15 3h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path></svg>Board</button>
+                <button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>List</button>
+                <button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h8M7 12h10M11 18h10"></path></svg>Gantt</button>
               </div>
+              <button type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Group by: Status. Choose assignee or version" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><span style="font-weight: 400; color: #5e6168">Group by</span>Status<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
               <div style="flex: 1 1 auto"></div>
-              <div style="display: flex; align-items: center">
-                <sc-for list="{{ team }}" as="t" hint-placeholder-count="4"><span style="{{ t.style }}">{{ t.initials }}</span></sc-for>
+              <button type="button" aria-pressed="false" aria-haspopup="dialog" aria-keyshortcuts="F" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>Filter</button>
+              <div role="group" aria-label="Members" style="flex: none; display: flex; align-items: center">
+                <span title="Olivia Brandt" aria-label="Olivia Brandt" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #eaf0f7; color: #234a78">OB</span>
+                <span title="Tom Achterberg" aria-label="Tom Achterberg" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eaf0f7; color: #234a78">TA</span>
+                <span title="Priya Raman" aria-label="Priya Raman" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eaf0f7; color: #234a78">PR</span>
+                <span title="2 more members" aria-label="2 more members" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eef0f3; color: #3d4047">+2</span>
               </div>
+              <button type="button" aria-pressed="false" aria-haspopup="dialog" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg>Project details</button>
             </div>
             <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; padding: 12px; overflow: hidden">
               <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
@@ -63,11 +71,13 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="flex: 0 0 236px; width: 236px; display: flex; align-items: stretch; overflow: hidden">
               <sc-if value="{{ fr.isGeneral }}" hint-placeholder-val="{{ true }}"><dc-import name="TbSettingsNav" active="General" hint-size="236px,680px"></dc-import></sc-if>
               <sc-if value="{{ fr.isNotify }}" hint-placeholder-val="{{ false }}"><dc-import name="TbSettingsNav" active="Notifications" hint-size="236px,680px"></dc-import></sc-if>
+              <sc-if value="{{ fr.isOp }}" hint-placeholder-val="{{ false }}"><dc-import name="TbSettingsNav" active="OpenProject" hint-size="236px,680px"></dc-import></sc-if>
               <sc-if value="{{ fr.isKeys }}" hint-placeholder-val="{{ false }}"><dc-import name="TbSettingsNav" active="Shortcuts" hint-size="236px,680px"></dc-import></sc-if>
             </div>
             <section aria-label="{{ fr.title }}" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
               <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
                 <h3 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">{{ fr.title }}</h3>
+                <span style="flex: 1 1 auto; margin-left: 14px; font-size: 12px; color: #5e6168">{{ fr.saved }}</span>
                 <button type="button" aria-label="Close settings" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
               </div>
               <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 24px">
@@ -110,14 +120,14 @@ a{color:#3669a5}a:hover{color:#234a78}
 
                 <sc-if value="{{ fr.isNotify }}" hint-placeholder-val="{{ false }}">
                   <div style="display: flex; flex-direction: column; gap: 8px">
-                    <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="{{ h4 }}">Project activity</h4><p style="{{ hint }}">Which kinds of activity reach your stream, the bell in the header, and your mail at olivia@northwind-projects.test.</p></div>
+                    <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="{{ h4 }}">Project activity</h4><p style="{{ hint }}">Which kinds of activity reach the bell in the header, and your mail at olivia@northwind-projects.test.</p></div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-                      <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Kind of activity</th><th scope="col" style="{{ th }} text-align: center; width: 120px">In your stream</th><th scope="col" style="{{ th }} text-align: center; width: 120px">By mail</th></tr></thead>
+                      <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Kind of activity</th><th scope="col" style="{{ th }} text-align: center; width: 120px">In the bell</th><th scope="col" style="{{ th }} text-align: center; width: 120px">By mail</th></tr></thead>
                       <tbody>
                         <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="6">
                           <tr style="height: 38px; border-bottom: 1px solid #e4e6ea">
                             <td style="padding: 0 8px">{{ k.name }}<span style="font-size: 12px; color: #5e6168"> {{ k.hint }}</span></td>
-                            <td style="padding: 0 8px; text-align: center"><button type="button" role="switch" aria-checked="{{ k.stream.checked }}" aria-label="{{ k.name }} in your stream" style="{{ k.stream.switch }}"><span style="{{ k.stream.knob }}"></span></button></td>
+                            <td style="padding: 0 8px; text-align: center"><button type="button" role="switch" aria-checked="{{ k.stream.checked }}" aria-label="{{ k.name }} in the bell" style="{{ k.stream.switch }}"><span style="{{ k.stream.knob }}"></span></button></td>
                             <td style="padding: 0 8px; text-align: center"><button type="button" role="switch" aria-checked="{{ k.mail.checked }}" aria-label="{{ k.name }} by mail" style="{{ k.mail.switch }}"><span style="{{ k.mail.knob }}"></span></button></td>
                           </tr>
                         </sc-for>
@@ -137,13 +147,49 @@ a{color:#3669a5}a:hover{color:#234a78}
                         </sc-for>
                       </tbody>
                     </table>
-                    <p style="{{ hint }}">A reminder goes to your stream, and to your mail when Due date moved is on by mail above.</p>
+                    <div style="{{ switchRow }}; padding-top: 4px">
+                      <label for="tb-set-due-mail" style="{{ switchLabel }}"><span style="font-weight: 500">Also send due reminders by mail</span><span style="{{ hint }}">Off keeps them in the bell only.</span></label>
+                      <button id="tb-set-due-mail" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+                    </div>
+                    <p style="{{ hint }}">Reminders you set on a work package itself always arrive.</p>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ fr.isOp }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin: 0; font-size: 13px; color: #3d4047; line-height: 19px">These settings apply to every project. The connection of this workspace to OpenProject is set up by an administrator.</p>
+                  <div style="display: flex; flex-direction: column; gap: 8px">
+                    <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="{{ h4 }}">Your OpenProject account</h4><p style="{{ hint }}">Work packages, projects and members you see here are the ones this account may see in OpenProject.</p></div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
+                      <span style="{{ dotOk }}"></span>
+                      <span style="display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; line-height: 1.25"><span style="font-weight: 500">Signed in as olivia.brandt on openproject.northwind-projects.test</span><span style="font-size: 12px; color: #5e6168">Since 14 March 2026. Synced 2 minutes ago.</span></span>
+                      <button type="button" style="{{ btnSmall }}">Sign out of OpenProject</button>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+                    <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="{{ h4 }}">Working with OpenProject</h4></div>
+                    <div style="{{ switchRow }}">
+                      <label for="tb-set-op-open" style="{{ switchLabel }}"><span style="font-weight: 500">Open a work package here, not in OpenProject</span><span style="{{ hint }}">Off opens every work package in OpenProject in a new tab; this app then only shows the board.</span></label>
+                      <button id="tb-set-op-open" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+                    </div>
+                    <div style="{{ switchRow }}">
+                      <label for="tb-set-op-comment" style="{{ switchLabel }}"><span style="font-weight: 500">Post a comment in the work package when you link a mail or a meeting</span><span style="{{ hint }}">The comment names the mail or meeting and who linked it, so members in OpenProject see it too.</span></label>
+                      <span style="display: inline-flex; align-items: center; gap: 10px"><span style="font-size: 12px; color: #538b28; font-weight: 600">Saved</span><button id="tb-set-op-comment" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button></span>
+                    </div>
+                    <div style="{{ switchRow }}">
+                      <label for="tb-set-op-time" style="{{ switchLabel }}"><span style="font-weight: 500">Offer to log time after a linked meeting</span><span style="{{ hint }}">After a meeting linked to a work package, the app offers to log its length as spent time.</span></label>
+                      <button id="tb-set-op-time" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <label for="tb-set-op-project" style="font-weight: 500; white-space: nowrap">Project for work packages made from a mail</label>
+                      <button id="tb-set-op-project" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ swatchLyon }}"></span>Northwind rollout Lyon</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                    </div>
+                    <p style="{{ hint }}">A folder rule in Mail can pick another project per sender.</p>
                   </div>
                 </sc-if>
 
                 <sc-if value="{{ fr.isKeys }}" hint-placeholder-val="{{ false }}">
                   <div role="status" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 13px; line-height: 19px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #ff9d2e"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg><span>Keyboard shortcuts are switched off for your account. The keys below do nothing until you switch them on under Accessibility in your account settings. <a href="#" style="color: var(--sc-link, #3669a5)">Open account settings</a></span></div>
-                  <p style="margin: 0; font-size: 13px; color: #3d4047; line-height: 19px">Every shortcut in the app on one page. Single keys, without a modifier, when no field has the focus.</p>
+                  <p style="margin: 0; font-size: 13px; color: #3d4047; line-height: 19px">Every shortcut in the app on one page. Single keys, without a modifier, when no field has the focus. The filter panel and the search field show the same keys.</p>
                   <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 24px; align-items: start">
                     <sc-for list="{{ keyGroups }}" as="g" hint-placeholder-count="3">
                       <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
@@ -168,7 +214,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2336}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3164}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
@@ -195,7 +241,7 @@ class Component extends DCLogic {
     const columns = cols.map(([name, count, limit]) => {
       const st = STATUS[name];
       return {
-        name, count: limit ? count + ' ' + limit : String(count),
+        name, count: limit ? count + ', limit ' + limit.slice(3) : String(count),
         countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; ' + (limit ? 'background: #ffffff; color: #234a78; border: 1px solid #3669a5' : 'background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea'),
         dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
         cards: cards.filter((c) => c.status === name)
@@ -248,7 +294,7 @@ class Component extends DCLogic {
       ['The status of your work package changes', '', true, false],
       ['Someone comments or mentions you', '', true, true],
       ['A due date moves', 'on a work package of yours', true, false],
-      ['A card moves to another column', 'on a board you are a member of', false, false],
+      ['A work package moves to another status', 'in a project you are a member of', false, false],
       ['A member joins or leaves a project', '', true, false]
     ].map(([name, hint, stream, mail]) => ({ name, hint, stream: sw(stream), mail: sw(mail) }));
     const SCOPE = ['All work packages', 'Only mine', 'None'];
@@ -261,10 +307,10 @@ class Component extends DCLogic {
 
     const keyGroups = [
       { title: 'On the board', hint: 'With the board or a column in focus.', keys: [
-        [['N'], 'New work package'], [['F'], 'Filter cards'], [['G'], 'Group by'], [['/'], 'Search'], [['1'], 'Jump to a column, 1 to 5'], [['P'], 'Project details']
+        [['N'], 'New work package'], [['F'], 'Filter'], [['M'], 'Show only my work packages'], [['G'], 'Group by'], [['/'], 'Search'], [['1'], 'Jump to a column, 1 to 5'], [['P'], 'Project details']
       ] },
-      { title: 'On a card', hint: 'With a card in focus.', keys: [
-        [['Enter'], 'Open the card'], [['E'], 'Edit the subject'], [['A'], 'Assign to me'], [['S'], 'Set the status'], [['X'], 'Archive the card'], [['D'], 'Mark done']
+      { title: 'On a card', hint: 'With a work package card in focus.', keys: [
+        [['Enter'], 'Open the card'], [['E'], 'Edit the subject'], [['A'], 'Assign to me'], [['S'], 'Set the status'], [['X'], 'Archive, can be undone'], [['D'], 'Mark closed, can be undone']
       ] },
       { title: 'Arrow keys', hint: 'Move the focus, or the card itself.', keys: [
         [['←', '→'], 'Move between columns'], [['↑', '↓'], 'Move between cards'], [['Shift', '←'], 'Card one column left'], [['Shift', '→'], 'Card one column right'], [['Esc'], 'Close the card'], [['?'], 'Show this list']
@@ -273,10 +319,14 @@ class Component extends DCLogic {
 
     const frames = [
       { letter: 'a', title: 'General', caption: 'General: the default column for new work packages, reopen where you left, the number on every card, the navigation filters, and the language line', isGeneral: true, isNotify: false, isKeys: false },
-      { letter: 'b', title: 'Notifications', caption: 'Notifications: which kinds of project activity reach your stream and your mail, and per project which work packages send a due reminder', isGeneral: false, isNotify: true, isKeys: false },
-      { letter: 'c', title: 'Keyboard shortcuts', caption: 'Shortcuts: the keys on the board, on a card and the arrow keys, with the notice that shortcuts are switched off for this account', isGeneral: false, isNotify: false, isKeys: true }
-    ];
-    return { groupBy, team, columns, h4, hint, th, switchRow, switchLabel, switchOn, knobOn, chooser, dotNew, seg, kbd, filters, kinds, projects, keyGroups, frames };
+      { letter: 'b', title: 'Notifications', caption: 'Notifications: which kinds of project activity reach the bell and your mail, and per project which work packages send a due reminder, by mail too or not', isGeneral: false, isNotify: true, isKeys: false },
+      { letter: 'c', title: 'OpenProject', caption: 'OpenProject: the signed-in account, whether work packages open here or there, the comment on linking, time logging and the project for work packages made from a mail', isGeneral: false, isNotify: false, isKeys: false, isOp: true },
+      { letter: 'd', title: 'Keyboard shortcuts', caption: 'Shortcuts: the keys on the board, on a card and the arrow keys, with the notice that shortcuts are switched off for this account', isGeneral: false, isNotify: false, isKeys: true }
+    ].map((f) => ({ ...f, isOp: !!f.isOp, saved: f.isKeys ? '' : 'Changes are saved at once', frameStyle: 'position: relative; height: ' + ({ a: 720, b: 780, c: 720, d: 720 }[f.letter]) + 'px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden' }));
+    const dotOk = 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #d3f9d8; border: 1.5px solid #8ff09c';
+    const btnSmall = 'display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const swatchLyon = 'display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #3669a5';
+    return { groupBy, team, columns, h4, hint, th, switchRow, switchLabel, switchOn, knobOn, switchOff, knobOff, chooser, dotNew, seg, kbd, filters, kinds, projects, keyGroups, frames, dotOk, btnSmall, swatchLyon };
   }
 }
 </script>

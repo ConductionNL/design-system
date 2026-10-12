@@ -56,7 +56,7 @@ a{color:#3669a5}a:hover{color:#234a78}
               <button type="button" aria-label="Close" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
             </div>
             <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 14px; padding: 16px 24px 0">
-              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Drop one or more files here, or choose them. iCalendar (.ics), jCal (.json) and xCal (.xml) files work. Each file goes to a calendar of your choice.</p>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Drop one or more files here, or choose them. Calendar files (.ics, .json, .xml) are accepted. Each file goes to a calendar of your choice.</p>
               <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 56px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg>Drop more files here, or <button type="button" style="height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif">choose files</button></div>
               <table style="width: 100%; border-collapse: collapse; font-size: 13px">
                 <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">File</th><th scope="col" style="{{ th }}">Into calendar</th><th scope="col" style="{{ th }}">Result</th></tr></thead>
@@ -85,7 +85,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </figure>
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The other seven ways, each as it appears on the right of the same dialog</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The other seven ways, each as it appears on the right of the same dialog, and Import as it looks before any file is dropped</figcaption>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px">
 
       <section aria-label="New calendar" style="{{ pane }}">
@@ -128,9 +128,9 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
       </section>
 
-      <section aria-label="In your connected account" style="{{ pane }}">
-        <h3 style="{{ paneTitle }}">In your connected account</h3>
-        <span style="{{ hint }}">Calendars you already subscribed to in olivia@northwind-projects.test on the mail server. Show them here too.</span>
+      <section aria-label="From your mail account" style="{{ pane }}">
+        <h3 style="{{ paneTitle }}">From your mail account</h3>
+        <span style="{{ hint }}">Calendars you follow in olivia@northwind-projects.test. Show them here too.</span>
         <div style="display: flex; flex-direction: column">
           <sc-for list="{{ seen }}" as="s" hint-placeholder-count="3">
             <div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #e4e6ea"><span aria-hidden="true" style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 13px">{{ s.name }}</span><span style="font-size: 11px; color: #5e6168">{{ s.sub }}</span></span><button type="button" role="switch" aria-checked="{{ s.on }}" aria-label="Show {{ s.name }}" style="{{ s.switch }}"><span style="{{ s.knob }}"></span></button></div>
@@ -143,7 +143,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <span style="{{ hint }}">Look at a colleague's calendar by their email address. You see free and busy, and what they let you see.</span>
         <div style="display: flex; flex-direction: column; gap: 4px"><label for="cl-mate" style="{{ fieldLabel }}">Email address</label><input id="cl-mate" type="email" value="tom@northwind-projects.test" style="{{ input }}"></div>
         <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--sc-radius, 8px); background: #f5f6f8"><span style="flex: none; width: 28px; height: 28px; border-radius: 14px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">TA</span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 13px; font-weight: 600">Tom Achterberg</span><span style="font-size: 11px; color: #5e6168">Found. Busy until 11:00, then free.</span></span></div>
-        <div style="{{ paneFoot }}"><button type="button" style="{{ secondary }}">Look once</button><button type="button" style="{{ primary }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg>Pin to my calendar list</button></div>
+        <div style="{{ paneFoot }}"><button type="button" style="{{ secondary }}">Show until I close it</button><button type="button" style="{{ primary }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg>Add to my list</button></div>
       </section>
 
       <section aria-label="Delegated to you" style="{{ pane }}">
@@ -164,8 +164,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 
       <section aria-label="Import, before files are dropped" style="{{ pane }}">
         <h3 style="{{ paneTitle }}">Import</h3>
-        <span style="{{ hint }}">The same way before any file is dropped.</span>
-        <div style="flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8; text-align: center; font-size: 13px; color: #5e6168"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg><span>Drop .ics, .json or .xml files here</span><button type="button" style="{{ secondary }}">Choose files</button></div>
+                <div style="flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8; text-align: center; font-size: 13px; color: #5e6168"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg><span>Drop .ics, .json or .xml files here</span><button type="button" style="{{ secondary }}">Choose files</button></div>
       </section>
     </div>
   </figure>
@@ -199,15 +198,15 @@ class Component extends DCLogic {
       ['Holidays', 'Public holidays of a region', 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'],
       ['From a link', 'An outside calendar, read only', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'],
       ['Suggested by your administrator', '3 public calendars', 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'],
-      ['In your connected account', '3 subscriptions on the mail server', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'],
+      ['From your mail account', '3 calendars you follow there', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'],
       ["A colleague's calendar", 'Find by email address', 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8'],
       ['Delegated to you', 'Grouped per person, 2 people', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'],
       ['Import', 'From .ics, .json or .xml files', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12']
     ].map(([label, h, icon]) => ({ label, hint: h, icon, current: label === 'Import' ? 'page' : 'false', style: wayBase + (label === 'Import' ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') }));
     const files = [
-      ['northwind-team-2025.ics', 'iCalendar, 48 events', 'Northwind team', '#538b28', '48 imported', '#3d4047'],
-      ['lyon-rollout.json', 'jCal, 16 events', 'Customers', '#ff9d2e', '13 imported, 3 failed: no end time', '#cc0000'],
-      ['malmo-visits.xml', 'xCal, 7 events', 'New calendar: Malmo visits', '#08a5df', 'Waiting', '#5e6168']
+      ['northwind-team-2025.ics', '48 events', 'Northwind team', '#538b28', '48 imported', '#3d4047'],
+      ['lyon-rollout.json', '16 events', 'Customers', '#ff9d2e', '13 imported, 3 failed: no end time', '#cc0000'],
+      ['malmo-visits.xml', '7 events', 'New calendar: Malmo visits', '#08a5df', 'Waiting', '#5e6168']
     ].map(([name, kind, target, c, result, resultColor]) => ({ name, kind, target, box: box(c), result, resultColor }));
     const suggested = [
       ['Northwind company events', 'Office days, town halls', '#3669a5', false],
@@ -215,9 +214,9 @@ class Component extends DCLogic {
       ['OpenProject release dates', 'Every planned release', '#005b77', false]
     ].map(([name, sub, c, done]) => ({ name, sub, box: box(c), done, todo: !done }));
     const seen = [
-      ['Hetzner maintenance windows', 'Subscribed on the mail server', '#5e6168', true],
-      ['Stadtwerke Kassel events', 'Subscribed on the mail server', '#ab0000', true],
-      ['Sovereign Tech conferences', 'Subscribed on the mail server', '#7048e8', false]
+      ['Hetzner maintenance windows', 'Followed in your mail account', '#5e6168', true],
+      ['Stadtwerke Kassel events', 'Followed in your mail account', '#ab0000', true],
+      ['Sovereign Tech conferences', 'Followed in your mail account', '#7048e8', false]
     ].map(([name, sub, c, on]) => ({ name, sub, box: box(c), on: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }));
     const delegated = [
       { initials: 'TA', name: 'Tom Achterberg', sub: 'since 3 October', cals: [{ name: 'Tom, work', box: box('#005b77') }, { name: 'Lyon site visits', box: box('#ff9d2e') }] },

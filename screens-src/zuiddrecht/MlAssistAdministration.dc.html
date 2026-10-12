@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Mail: administration page for the assistant, language, look and people's mailboxes</title>
+<title>Mail: administration page for the assistant</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -14,15 +14,15 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
-  <dc-import name="MlHeader" app="Administration" placeholder="Search people, settings or domains" hint-size="100%,68px"></dc-import>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 760px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Administration" placeholder="Search people, settings or domains" user="Ines Okafor" initials="IO" role="Workspace administrator" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
-    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Assistant" hint-size="264px,945px"></dc-import></div>
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Assistant" hint-size="264px,705px"></dc-import></div>
     <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden">
       <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
-        <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Assistant, language and look</h1>
-        <p style="margin: 0; color: #3d4047">The assistant that reads and writes with people, the language and look of the installation, and what an administrator can do in someone's mailbox.</p>
-        <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Workspace of Northwind Projects, 61 people in three domains.</p>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Assistant</h1>
+        <p style="margin: 0; color: #3d4047">The assistant that reads and writes with people: whether it is on for this server, and which service it runs on. What it writes is marked Generated.</p>
+        <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Language and look are under Settings; access to a person's mailbox is on their page under Mailboxes; deleted mail under Queues and recovery.</p>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; align-items: start">
         <div style="{{ col }}">
@@ -38,87 +38,31 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
           </section>
 
-          <section style="{{ card }}">
-            <h3 style="{{ h3 }}">Language and look</h3>
-            <div style="{{ fieldRow }}"><label for="ml-lang" style="font-size: 13px">Default language</label><button id="ml-lang" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>English</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
-            <div style="{{ switchRow }}">
-              <label for="ml-lang-force" style="{{ switchLabel }}"><span style="font-weight: 500">Force this language for everyone</span><span style="{{ hint }}">People cannot pick another language in their own settings. Off lets each person choose.</span></label>
-              <button id="ml-lang-force" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #e4e6ea">
-              <span style="{{ label }}">Colours and logo of the operator</span>
-              <span style="{{ hint }}">Shown in the top bar, on the sign-in page and in mail the server sends itself.</span>
-              <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
-                <div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 24px; height: 24px; border-radius: var(--sc-radius, 8px); background: #3669a5; border: 1px solid #234a78"></span><label for="ml-col-main" style="font-size: 13px">Main colour</label><input id="ml-col-main" type="text" value="#3669a5" style="{{ inputTiny }}"></div>
-                <div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 24px; height: 24px; border-radius: var(--sc-radius, 8px); background: #234a78; border: 1px solid #1b1c1d"></span><label for="ml-col-deep" style="font-size: 13px">Dark colour</label><input id="ml-col-deep" type="text" value="#234a78" style="{{ inputTiny }}"></div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 120px; height: 40px; border-radius: var(--sc-radius, 8px); background: #3669a5; color: #ffffff; font-weight: 600; font-size: 13px">Northwind</span>
-                <span style="font-size: 13px; color: #3d4047">northwind-logo.svg, 18 KB</span>
-                <button type="button" style="{{ btnSmall }}">Upload logo</button>
-                <button type="button" style="{{ btnSmall }}">Remove</button>
-              </div>
-            </div>
-          </section>
         </div>
-
         <div style="{{ col }}">
           <section style="{{ card }}">
-            <h3 style="{{ h3 }}">People's mailboxes</h3>
-            <p style="{{ hint }}">Pick a person. What you do here is written to the administration log with your name.</p>
-            <div style="{{ fieldRow }}"><label for="ml-person" style="font-size: 13px">Person</label><button id="ml-person" type="button" aria-haspopup="listbox" style="{{ chooserWide }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ avatar }}">OB</span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></div>
-
-            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid #e4e6ea">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><h4 style="{{ h4 }}">Who may open this account</h4><button type="button" style="{{ btnSmall }}">Grant access</button></div>
-              <span style="{{ hint }}">Access you grant here works like access the person grants in their own settings, and shows there too.</span>
-              <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-                <thead><tr style="height: 28px"><th scope="col" style="{{ thSmall }}">Person</th><th scope="col" style="{{ thSmall }}">May</th><th scope="col" style="{{ thSmall }}">Granted</th><th scope="col" style="width: 90px"></th></tr></thead>
-                <tbody>
-                  <sc-for list="{{ access }}" as="a" hint-placeholder-count="2">
-                    <tr style="height: 40px; border-top: 1px solid #e4e6ea"><td style="padding: 0 4px; font-weight: 500; white-space: nowrap">{{ a.name }}</td><td style="padding: 0 4px; color: #3d4047">{{ a.may }}</td><td style="padding: 0 4px; color: #3d4047; white-space: nowrap">{{ a.granted }}</td><td style="padding: 0 4px; text-align: right"><button type="button" aria-label="Withdraw access of {{ a.name }}" style="{{ btnSmall }}">Withdraw</button></td></tr>
-                  </sc-for>
-                </tbody>
-              </table>
+            <h3 style="{{ h3 }}">Status</h3>
+            <div style="{{ switchRow }}">
+              <label for="ml-set-ai" style="{{ switchLabel }}"><span style="font-weight: 500">Language model features for the whole server</span><span style="{{ hint }}">Summaries, suggested replies and the assistant conversation. Off hides them for everyone; a person can still switch them off for themselves.</span></label>
+              <button id="ml-set-ai" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
             </div>
-
-            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid #e4e6ea">
-              <h4 style="{{ h4 }}">Deleted mail in the recovery store</h4>
-              <span style="{{ hint }}">Mail this person deleted in the past 30 days, 212 messages, 48 MB. Older mail is gone.</span>
-              <div style="display: flex; align-items: center; gap: 10px">
-                <button type="button" style="{{ btnSecondary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Export deleted mail</button>
-                <button type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>As one archive file (.mbox)</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid #e4e6ea">
-              <h4 style="{{ h4 }}">Restore mail from an archive file</h4>
-              <span style="{{ hint }}">An archive file (.mbox or .eml in a .zip) from an export or from another mail system. Messages go into the folder you choose; nothing already there is touched.</span>
-              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-                <button type="button" style="{{ btnSecondary }}">Choose file</button>
-                <span style="font-size: 13px; color: #3d4047">olivia-2025-archive.mbox, 1.2 GB</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 10px">
-                <label for="ml-restore-folder" style="font-size: 13px">Into folder</label>
-                <button id="ml-restore-folder" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>Archive / Restored 2025</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
-              </div>
-              <div style="display: flex; align-items: center; gap: 10px">
-                <button type="button" style="{{ btnPrimary }}">Restore mail</button>
-                <span style="{{ hint }}">Olivia gets a message when it is done.</span>
-              </div>
-            </div>
+            <dl style="margin: 0; display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px; padding-top: 10px; border-top: 1px solid #e4e6ea">
+              <dt style="color: #5e6168">Used today</dt><dd style="margin: 0">214 summaries, 38 suggested replies, 12 conversations</dd>
+              <dt style="color: #5e6168">Data</dt><dd style="margin: 0">Only the mail of the person who asks is sent to the service, never anyone else's.</dd>
+            </dl>
           </section>
         </div>
       </div>
       <div style="margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #e4e6ea">
-        <button type="button" style="{{ btnPrimary }}">Save</button>
-        <button type="button" style="{{ btnSecondary }}">Cancel</button>
-        <span style="font-size: 12px; color: #5e6168; margin-left: 8px">Saving applies the assistant, language and look to everyone at their next sign-in.</span>
+        <button type="button" style="{{ btnPrimary }}">Save changes</button>
+        <button type="button" style="{{ btnSecondary }}">Discard</button>
+        <span style="font-size: 12px; color: #5e6168; margin-left: 8px">Saving applies the service and the switch to everyone at once.</span>
       </div>
     </main>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":760}}'>
 class Component extends DCLogic {
   renderVals() {
     const dot = (bg, ring) => 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + ring;

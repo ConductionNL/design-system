@@ -19,7 +19,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   <button type="button" aria-label="Open calendars" aria-expanded="false" title="Open calendars" style="flex: none; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
   <button type="button" aria-label="New event" title="New event" style="flex: none; width: 56px; height: 60px; margin: 6px 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 400 10px/12px 'Fira Sans', sans-serif"><span style="width: 42px; height: 42px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>New</button>
   <a href="ClWeek.dc.html" aria-label="Today, Monday 12 October" title="Today, Monday 12 October" aria-current="date" style="flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; background: #eaf0f7; color: #234a78; font-weight: 600; font-size: 10px; line-height: 12px"><span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; background: #3669a5; color: #ffffff; font-size: 12px; font-weight: 700">12</span>Today</a>
-  <a href="ClPlan.dc.html" aria-label="Work packages" title="Work packages" style="flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: #3d4047; font-size: 10px; line-height: 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Packages</a>
+  <a href="ClPlan.dc.html" aria-label="Work packages" title="Work packages" style="flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: #3d4047; font-size: 10px; line-height: 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Work</a>
 </nav>
 </sc-if>
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
@@ -57,6 +57,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
     <div style="display: flex; flex-direction: column; gap: 2px">
       <div style="{{ g.titleStyle }}">{{ g.title }}</div>
+      <sc-if value="{{ g.hasProject }}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; gap: 12px; min-height: 32px; padding: 0 10px; font-size: 14px; font-weight: 600; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ g.project }}</div></sc-if>
       <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
         <label style="display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 15px; font-weight: 500; line-height: 21px; color: #1b1c1d; cursor: pointer">
           <span style="{{ it.box }}"></span>
@@ -102,12 +103,13 @@ class Component extends DCLogic {
     // the canon group title; an address is not shouted in capitals
     const titleStyle = (upper) => 'padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ' + (upper ? 'text-transform: uppercase;' : 'letter-spacing: 0;');
     const groups = [
-      { title: 'olivia@northwind-projects.test', titleStyle: titleStyle(false), items: [
+      { title: 'olivia@northwind-projects.test', titleStyle: titleStyle(false), project: '', hasProject: false, items: [
         { label: 'Personal', box: box('#3669a5') },
         { label: 'Northwind team', box: box('#538b28') },
         { label: 'Customers', box: box('#ff9d2e') }
       ] },
-      { title: 'OpenProject, Northwind rollout Lyon', titleStyle: titleStyle(true), items: [
+      // one row per linked project, its kinds under it; the same model as the OpenProject calendars panel
+      { title: 'OpenProject', titleStyle: titleStyle(true), project: 'Northwind rollout Lyon', hasProject: true, items: [
         { label: 'Work package dates', box: box('#5e6168') },
         { label: 'Milestones', box: box('#35c53f') }
       ] }

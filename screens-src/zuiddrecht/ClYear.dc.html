@@ -14,7 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1688px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The year 2026 as twelve small months with week numbers and a dot on each day with events, and the panel Coming up at the right with Earlier and Later (hovered) and the calendar chooser</figcaption>
+    <div style="position: relative; height: 1000px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
   <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Year" hint-size="264px,945px"></dc-import></div>
@@ -24,43 +28,16 @@ a{color:#3669a5}a:hover{color:#234a78}
         <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Today, Monday 12 October</span>
         <span style="flex: 1 1 auto"></span>
         <div style="display: flex; align-items: center; gap: 4px; align-self: center; position: relative">
-          <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Year<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button type="button" aria-haspopup="menu" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Year<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
           <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
           <button type="button" aria-label="Previous year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
           <button type="button" aria-label="Next year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
-          <div role="menu" aria-label="View" style="position: absolute; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; top: 30px; right: 0; width: 336px">
-            <div style="padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">View</div>
-            <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
-              <button type="button" role="menuitemradio" aria-checked="{{ v.checked }}" style="{{ v.style }}">
-                <span style="flex: none; width: 16px; display: inline-flex; justify-content: center"><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg></sc-if></span>
-                <span style="flex: none; font-weight: 500">{{ v.label }}</span>
-                <span style="flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ v.hint }}</span>
-                <kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 11px 'Fira Sans', sans-serif; color: #1b1c1d">{{ v.key }}</kbd>
-              </button>
-            </sc-for>
-            <div style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 36px; font-size: 13px; color: #3d4047">
-              <label for="cl-days-shown" style="flex: 1 1 auto">Days shown</label>
-              <button type="button" aria-label="One day fewer" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
-              <input id="cl-days-shown" type="text" value="4" inputmode="numeric" style="width: 34px; height: 24px; padding: 0; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 500 13px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: center; outline: none">
-              <button type="button" aria-label="One day more" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-            </div>
-            <div style="margin: 6px 0; border-top: 1px solid #e4e6ea"></div>
-            <div style="padding: 0 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Grid</div>
-            <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; font-size: 13px; color: #1b1c1d">
-              <span id="cl-allday-label" style="flex: 1 1 auto">Collapse the all day section</span>
-              <button type="button" role="switch" aria-checked="false" aria-labelledby="cl-allday-label" style="flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168"></span></button>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; font-size: 13px; color: #1b1c1d">
-              <span id="cl-weekend-label" style="flex: 1 1 auto">Show weekends</span>
-              <button type="button" role="switch" aria-checked="true" aria-labelledby="cl-weekend-label" style="flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff"></span></button>
-            </div>
-          </div>
         </div>
       </div>
       <div style="flex: none; display: flex; align-items: center; gap: 10px; height: 24px; padding: 0 20px; font-size: 12px; color: #5e6168">
         <span>Click a day number to open that day, or a week number to open that week</span>
         <span style="flex: 1 1 auto"></span>
-        <span style="display: inline-flex; align-items: center; gap: 5px"><span aria-hidden="true" style="width: 5px; height: 5px; border-radius: 3px; background: #3669a5"></span>Has events</span>
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span aria-hidden="true" style="width: 5px; height: 5px; border-radius: 3px; background: #3669a5"></span>A dot means events on that day</span>
         <span style="display: inline-flex; align-items: center; gap: 5px"><span aria-hidden="true" style="width: 7px; height: 7px; background: #35c53f; transform: rotate(45deg)"></span>Milestone</span>
       </div>
       <div role="group" aria-label="Year 2026, twelve months" style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px 16px; padding: 4px 20px 16px; box-sizing: border-box">
@@ -87,17 +64,16 @@ a{color:#3669a5}a:hover{color:#234a78}
         </sc-for>
       </div>
     </main>
-    <aside aria-label="Agenda" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
-      <label style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search this calendar</span><input type="search" placeholder="Search" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
+    <aside aria-label="Coming up" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
+      <label style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search this year</span><input type="search" placeholder="Search this year" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
       <section aria-labelledby="ctx-agenda" style="display: flex; flex-direction: column; gap: 8px; min-height: 0">
         <div style="display: flex; align-items: center; gap: 4px">
-          <h2 id="ctx-agenda" style="margin: 0; flex: 1 1 auto; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Agenda</h2>
-          <button type="button" aria-label="Jump to the previous event" title="Previous event" style="width: 28px; height: 28px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
-          <button type="button" aria-label="Jump to the next event" title="Next event" style="width: 28px; height: 28px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <h2 id="ctx-agenda" style="margin: 0; flex: 1 1 auto; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Coming up</h2>
+          <button type="button" aria-label="Earlier" title="Earlier" style="width: 28px; height: 28px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button type="button" aria-label="Later" title="Later" style="position: relative; width: 28px; height: 28px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #eef0f3; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><span role="tooltip" style="position: absolute; top: 32px; right: 0; padding: 3px 8px; border-radius: 4px; background: #1b1c1d; color: #ffffff; font-size: 11px; line-height: 15px; white-space: nowrap; z-index: 5">Later, jump to the next event</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
         </div>
         <div style="display: flex; align-items: center; gap: 8px">
-          <button type="button" aria-haspopup="menu" aria-label="Calendar shown in the agenda, All calendars" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">All calendars<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
-          <span style="font-size: 12px; color: #5e6168; line-height: 15px">or the upcoming events of one calendar</span>
+          <button type="button" aria-haspopup="menu" aria-label="Calendar shown in Coming up, All calendars" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">All calendars<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
         </div>
         <div style="display: flex; flex-direction: column; gap: 2px; margin: 0 -6px">
           <sc-for list="{{ agenda }}" as="g" hint-placeholder-count="5">
@@ -119,8 +95,59 @@ a{color:#3669a5}a:hover{color:#234a78}
     </aside>
   </div>
 </div>
+    </div>
+  </figure>
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The view menu open on the same screen: day, a chosen number of days with its stepper on the same row, week, month, year and the agenda list that replaces the panel; the grid switch that does not apply to the year view is greyed</figcaption>
+    <div style="position: relative; height: 560px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
+  <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Year" hint-size="264px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden; position: relative">
+      <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+        <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">2026</h1>
+        <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Today, Monday 12 October</span>
+        <span style="flex: 1 1 auto"></span>
+        <div style="display: flex; align-items: center; gap: 4px; align-self: center; position: relative">
+          <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Year<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
+          <button type="button" aria-label="Previous year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <button type="button" aria-label="Next year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+          <div role="menu" aria-label="View" style="position: absolute; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; top: 30px; right: 0; width: 420px">
+            <div style="padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">View</div>
+            <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
+              <div role="menuitemradio" tabindex="0" aria-checked="{{ v.checked }}" style="{{ v.style }}">
+                <span style="flex: none; width: 16px; display: inline-flex; justify-content: center"><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg></sc-if></span>
+                <span style="flex: none; font-weight: 500">{{ v.label }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ v.hint }}</span>
+                <sc-if value="{{ v.hasStepper }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px"><button type="button" aria-label="One day fewer" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><input type="text" value="4" inputmode="numeric" aria-label="Days shown" style="width: 30px; height: 24px; padding: 0; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 500 13px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: center; outline: none"><button type="button" aria-label="One day more" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></span></sc-if>
+                <kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 11px 'Fira Sans', sans-serif; color: #1b1c1d">{{ v.key }}</kbd>
+              </div>
+            </sc-for>
+            
+            <div style="margin: 6px 0; border-top: 1px solid #e4e6ea"></div>
+            <div style="padding: 0 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Grid</div>
+            <div style="display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px; font-size: 13px; color: #5e6168">
+              <span id="cl-allday-label" style="flex: 1 1 auto; display: flex; flex-direction: column; line-height: 15px"><span>Collapse the all day section</span><span style="font-size: 11px; color: #5e6168">Not in the year view</span></span>
+              <button type="button" role="switch" aria-checked="false" aria-disabled="true" aria-labelledby="cl-allday-label" style="opacity: 0.4; flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168"></span></button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; font-size: 13px; color: #1b1c1d">
+              <span id="cl-weekend-label" style="flex: 1 1 auto">Show weekends</span>
+              <button type="button" role="switch" aria-checked="true" aria-labelledby="cl-weekend-label" style="flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; border-top: 1px solid #eef0f3"></div>
+    </main>
+  </div>
+</div>
+    </div>
+  </figure>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1688}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
@@ -134,8 +161,8 @@ class Component extends DCLogic {
       ['Week', 'Seven days on a time grid', 'W', false],
       ['Month', 'Weeks as rows', 'M', false],
       ['Year', 'Twelve small months', 'Y', true],
-      ['Agenda', 'Events as a chronological list', 'A', false]
-    ].map(([label, hint, key, on]) => ({ label, hint, key, on, checked: on ? 'true' : 'false', style: item + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;') }));
+      ['Agenda', 'Events as a chronological list, replaces the panel', 'A', false]
+    ].map(([label, hint, key, on]) => ({ label, hint, key, on, hasStepper: label === '4 days', checked: on ? 'true' : 'false', style: item + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;') }));
     const dow = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, i) => ({ label, style: i >= 5 ? 'color: #5e6168; opacity: 0.7' : '' }));
     // 2026: 1 January is a Thursday. Week numbering per ISO: week 1 starts Monday 29 December 2025.
     const NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

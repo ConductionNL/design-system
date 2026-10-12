@@ -17,7 +17,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <sc-if value="{{ isFolded }}" hint-placeholder-val="{{ false }}">
 <section aria-label="{{ title }}, folded" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 48px; box-sizing: border-box; min-height: 100%; display: flex; flex-direction: column; align-items: center; background: #ffffff; border-right: 1px solid #e4e6ea; overflow: hidden">
   <div style="flex: none; display: flex; align-items: center; justify-content: center; height: 52px; width: 100%; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
-    <button type="button" aria-label="Open conversation list" aria-expanded="false" title="Open conversation list" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
+    <button type="button" aria-label="Open conversation list" aria-expanded="false" title="Back to {{ title }}" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
   </div>
   <div style="flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0">
     <button type="button" aria-label="Previous conversation" title="Previous conversation" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
@@ -36,7 +36,7 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </div>
   <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 24px 10px; border-bottom: 1px solid #e4e6ea">
-    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" title="{{ c.title }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
   </div>
   <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
     <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
@@ -52,9 +52,9 @@ a{color:#3669a5}a:hover{color:#234a78}
             <span style="{{ r.subjectWide }}">{{ r.subject }}</span>
             <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.snippet }}</span>
           </span>
-          <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
-          <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
-          <span style="flex: none; width: 190px; display: flex; justify-content: flex-end">
+          <span style="flex: none; width: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 2px; color: #5e6168; font-size: 12px"><sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Has attachments"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</sc-if></span>
+          <span style="flex: none; width: 16px; display: inline-flex; align-items: center; justify-content: center"><sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if></span>
+          <span style="flex: none; width: 214px; display: flex; justify-content: flex-end">
             <sc-if value="{{ r.hasWp }}" hint-placeholder-val="{{ true }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span style="color: #3d4047">{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span style="color: #3d4047">{{ r.wpStatus }}</span></span></sc-if>
           </span>
           <span style="flex: none; width: 72px; text-align: right; {{ r.dateStyle }}">{{ r.date }}</span>
@@ -75,7 +75,7 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </div>
   <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea">
-    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" title="{{ c.title }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
   </div>
   <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
     <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
@@ -166,7 +166,9 @@ class Component extends DCLogic {
       };
     });
     const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
-    const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+    // Linked means "linked to a work package": the tooltip says it in full, the chip says it short.
+    const TIP = { 'All': 'Every conversation in this view', 'Unread': 'Only unread conversations', 'Linked': 'Linked to a work package', 'Not linked': 'Not linked to a work package' };
+    const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, title: TIP[label], on: i === 0 ? 'true' : 'false',
       style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
     return { title, count: rows.length, chips, rows, isFolded, isWide, isStd };
   }

@@ -14,170 +14,223 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1600px; overflow: hidden; position: relative">
-  <dc-import name="MlHeader" app="Administration" placeholder="Search checks, tasks or settings" hint-size="100%,68px"></dc-import>
-  <div style="display: flex; flex: 1 1 auto; min-height: 0">
-    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Health" hint-size="264px,1545px"></dc-import></div>
-    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px 32px; overflow: hidden">
-      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
-        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
-          <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Health and maintenance</h1>
-          <p style="margin: 0; color: #3d4047">How each part of the mail server is doing right now, and the jobs you can start when something has drifted.</p>
-        </div>
-        <button type="button" style="{{ btnSecondary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"></path></svg>Check again</button>
-      </div>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2380px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
-      <section aria-labelledby="ml-h-status" style="display: flex; flex-direction: column; gap: 8px">
-        <div style="display: flex; align-items: baseline; gap: 12px">
-          <h2 id="ml-h-status" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Status</h2>
-          <span style="font-size: 13px; color: #5e6168">Checked today at 07:14, every minute</span>
-        </div>
-        <div style="{{ tableWrap }}">
-          <table style="width: 100%; border-collapse: collapse; font-size: 14px">
-            <thead><tr style="{{ thRow }}">
-              <th scope="col" style="{{ th }}">Part of the server</th>
-              <th scope="col" style="{{ th }}">State</th>
-              <th scope="col" style="{{ th }}">Detail</th>
-              <th scope="col" style="{{ th }}; width: 220px">Load</th>
-            </tr></thead>
-            <tbody>
-              <sc-for list="{{ parts }}" as="p" hint-placeholder-count="7">
-                <tr style="{{ p.style }}">
-                  <td style="{{ td }}; font-weight: 500">{{ p.name }}</td>
-                  <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ p.dot }}"></span>{{ p.state }}</span></td>
-                  <td style="padding: 0 12px; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px">{{ p.detail }}</td>
-                  <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ bar }}"><span style="{{ p.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 64px">{{ p.load }}</span></span></td>
-                </tr>
-              </sc-for>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-        <section aria-labelledby="ml-h-selftest" style="{{ card }}">
-          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
-            <div style="display: flex; flex-direction: column; gap: 2px">
-              <h2 id="ml-h-selftest" style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Delivery self-test</h2>
-              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Every 15 minutes the server sends itself a message through the whole path and checks it arrives. When it does not, the alert address gets a mail.</p>
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Health, tab Status: is it working, the delivery self-test, and who is connected right now</figcaption>
+    <div style="height: 1070px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <dc-import name="MlHeader" app="Administration" placeholder="Search checks, tasks or settings" user="Ines Okafor" initials="IO" role="Workspace administrator" hint-size="100%,68px"></dc-import>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Health" hint-size="264px,1000px"></dc-import></div>
+        <main style="{{ main }}">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+              <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Health</h1>
+              <p style="margin: 0; color: #3d4047">How each part of the mail server is doing right now, the jobs you can start when something has drifted, and the log of what happened in mailboxes.</p>
             </div>
-            <button type="button" style="{{ btnSecondary }}">Run now</button>
+            <button type="button" style="{{ btnSecondary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"></path></svg>Check again</button>
           </div>
-          <dl style="margin: 0; display: grid; grid-template-columns: 112px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
-            <dt style="color: #5e6168">Last run</dt><dd style="margin: 0"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ dotOk }}"></span>Passed today at 07:00, round trip 3.8 seconds</span></dd>
-            <dt style="color: #5e6168">Last 24 hours</dt><dd style="margin: 0">96 of 96 runs passed</dd>
-            <dt style="color: #5e6168">Schedule</dt><dd style="margin: 0"><select aria-label="Self-test schedule" style="{{ selectSmall }}"><option>Every 5 minutes</option><option selected>Every 15 minutes</option><option>Every hour</option><option>Off</option></select></dd>
-            <dt style="color: #5e6168"><label for="ml-h-alert">Alert address</label></dt><dd style="margin: 0"><input id="ml-h-alert" type="text" value="ines.okafor@northwind-projects.test" style="{{ inputSmall }}"></dd>
-          </dl>
-        </section>
+          <div role="tablist" aria-label="Health" style="{{ tablist }}">
+            <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Status</button>
+            <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Maintenance</button>
+            <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Operations log</button>
+          </div>
+
+          <section aria-labelledby="ml-h-status" style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; gap: 12px">
+              <h2 id="ml-h-status" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Status</h2>
+              <span style="font-size: 13px; color: #5e6168">Checked today at 07:14, every minute</span>
+            </div>
+            <div style="{{ tableWrap }}">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+                <thead><tr style="{{ thRow }}">
+                  <th scope="col" style="{{ th }}">Part of the server</th>
+                  <th scope="col" style="{{ th }}">State</th>
+                  <th scope="col" style="{{ th }}">Detail</th>
+                  <th scope="col" style="{{ th }}; width: 220px">Load</th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ parts }}" as="p" hint-placeholder-count="7">
+                    <tr style="{{ p.style }}">
+                      <td style="{{ td }}; font-weight: 500">{{ p.name }}</td>
+                      <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ p.dot }}"></span>{{ p.state }}</span></td>
+                      <td style="padding: 0 12px; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px">{{ p.detail }}</td>
+                      <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ bar }}"><span style="{{ p.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 64px">{{ p.load }}</span></span></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section aria-labelledby="ml-h-selftest" style="{{ card }}">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <h2 id="ml-h-selftest" style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Delivery self-test</h2>
+                <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Every 15 minutes the server sends itself a message through the whole path and checks it arrives. When it does not, the alert address gets a mail.</p>
+              </div>
+              <button type="button" style="{{ btnSecondary }}">Run now</button>
+            </div>
+            <dl style="margin: 0; display: grid; grid-template-columns: 112px 1fr 112px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px; align-items: center">
+              <dt style="color: #5e6168">Last run</dt><dd style="margin: 0"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ dotOk }}"></span>Passed today at 07:00, round trip 3.8 seconds</span></dd>
+              <dt style="color: #5e6168">Schedule</dt><dd style="margin: 0"><select aria-label="Self-test schedule" style="{{ selectSmall }}"><option>Every 5 minutes</option><option selected>Every 15 minutes</option><option>Every hour</option><option>Off</option></select></dd>
+              <dt style="color: #5e6168">Last 24 hours</dt><dd style="margin: 0">96 of 96 runs passed</dd>
+              <dt style="color: #5e6168"><label for="ml-h-alert">Alert address</label></dt><dd style="margin: 0"><input id="ml-h-alert" type="text" value="ines.okafor@northwind-projects.test" style="{{ inputSmall }}"></dd>
+            </dl>
+          </section>
+
+          <section aria-labelledby="ml-h-connected" style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; gap: 12px">
+              <h2 id="ml-h-connected" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Connected right now</h2>
+              <span style="font-size: 13px; color: #5e6168">4 people, 6 connections. Cut off signs that connection out at once; the person can sign in again.</span>
+            </div>
+            <div style="{{ tableWrap }}">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
+                <thead><tr style="{{ thRow }}">
+                  <th scope="col" style="{{ th }}; width: 21%">Person</th>
+                  <th scope="col" style="{{ th }}; width: 17%">Client</th>
+                  <th scope="col" style="{{ th }}; width: 16%">From</th>
+                  <th scope="col" style="{{ th }}; width: 8%">Since</th>
+                  <th scope="col" style="{{ th }}">Doing</th>
+                  <th scope="col" style="width: 90px"><span style="{{ srOnly }}">Actions</span></th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ connections }}" as="c" hint-placeholder-count="6">
+                    <tr style="{{ c.style }}">
+                      <td style="{{ tdCut }}; font-weight: 500">{{ c.person }}</td>
+                      <td style="{{ tdCut }}">{{ c.client }}</td>
+                      <td style="{{ tdCut }}">{{ c.from }}</td>
+                      <td style="{{ tdCut }}">{{ c.since }}</td>
+                      <td style="{{ tdCut }}; color: #3d4047">{{ c.doing }}</td>
+                      <td style="padding: 0 12px; text-align: right"><button type="button" aria-label="Cut off {{ c.person }}, {{ c.client }}" style="{{ btnSmall }}">Cut off</button></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Tab Maintenance: the jobs with what each does on a second line, and the running tasks beside them</figcaption>
+    <div style="height: 760px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <main style="{{ main }}">
+        <div role="tablist" aria-label="Health" style="{{ tablist }}">
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Status</button>
+          <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Maintenance</button>
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Operations log</button>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="ml-h-maint" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 id="ml-h-maint" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Maintenance</h2>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Jobs you start by hand. Each one runs in the background and shows up under Running tasks on the right. Mail keeps working while they run.</p>
+            </div>
+            <div style="{{ tableWrap }}">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
+                <thead><tr style="{{ thRow }}">
+                  <th scope="col" style="{{ th }}">Job and what it does</th>
+                  <th scope="col" style="{{ th }}; width: 150px">Last run</th>
+                  <th scope="col" style="{{ th }}; width: 236px">Scope</th>
+                  <th scope="col" style="{{ thRight }}; width: 100px"><span style="{{ srOnly }}">Start</span></th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="8">
+                    <tr style="{{ j.style }}">
+                      <td style="padding: 8px 12px; vertical-align: top"><span style="display: block; font-weight: 500; line-height: 20px">{{ j.name }}</span><span style="display: block; font-size: 12px; color: #5e6168; line-height: 17px">{{ j.what }}</span></td>
+                      <td style="padding: 8px 12px; vertical-align: top; font-size: 13px; color: #3d4047; line-height: 20px">{{ j.last }}</td>
+                      <td style="padding: 8px 12px; vertical-align: top"><select aria-label="Scope for {{ j.name }}" style="{{ selectSmall }}; width: 212px"><option selected>{{ j.scope }}</option><option>{{ j.scopeAlt }}</option></select></td>
+                      <td style="padding: 8px 12px; vertical-align: top; text-align: right"><button type="button" style="{{ j.btn }}" aria-disabled="{{ j.disabled }}">{{ j.action }}</button></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section aria-label="Running tasks" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Running tasks</h2>
+              <span style="font-size: 13px; color: #3d4047">1 running, 1 waiting, 2 finished today</span>
+            </div>
+            <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
+              <div style="{{ t.card }}">
+                <div style="display: flex; align-items: flex-start; gap: 8px">
+                  <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <strong style="font-size: 14px; font-weight: 600; line-height: 20px">{{ t.name }}</strong>
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168; line-height: 18px"><span style="{{ t.dot }}"></span>{{ t.state }}</span>
+                  </div>
+                  <button type="button" style="{{ t.btn }}">{{ t.action }}</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px" role="progressbar" aria-label="{{ t.name }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ t.pct }}"><span style="{{ bar }}"><span style="{{ t.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 32px; text-align: right">{{ t.pctText }}</span></div>
+                <span style="font-size: 12px; color: #3d4047; line-height: 18px">{{ t.note }}</span>
+              </div>
+            </sc-for>
+            <div style="{{ noticeInfo }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #3669a5"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg><span>Tasks keep running when you leave this page. Come back here to wait for one to finish, or have a mail sent to the alert address when it does.</span></div>
+            <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 20px"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 2px 0 0; accent-color: #3669a5">Mail me when a task finishes or fails</label>
+          </section>
+        </div>
+      </main>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Tab Operations log: what happened in mailboxes, with the switch, how long it is kept, and the save row</figcaption>
+    <div style="height: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <main style="{{ main }}">
+        <div role="tablist" aria-label="Health" style="{{ tablist }}">
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Status</button>
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Maintenance</button>
+          <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Operations log</button>
+        </div>
         <section aria-labelledby="ml-h-log" style="{{ card }}">
           <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
             <div style="display: flex; flex-direction: column; gap: 2px">
               <h2 id="ml-h-log" style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px"><label for="ml-h-log-switch">Mailbox operations log</label></h2>
-              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Writes a line for every move, delete, flag and copy in every mailbox, with who did it and when. Handy when a person asks where a message went.</p>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Writes a line for every move, delete, flag and copy in every mailbox, with who did it and when. Handy when a person asks where a message went. 2,418 operations today, 1.1 MB.</p>
             </div>
-            <button id="ml-h-log-switch" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+            <div style="display: flex; align-items: center; gap: 16px">
+              <label for="ml-h-log-keep" style="font-size: 13px; color: #3d4047">Kept for</label>
+              <select id="ml-h-log-keep" style="{{ selectSmall }}"><option>7 days</option><option selected>30 days</option><option>90 days</option></select>
+              <button id="ml-h-log-switch" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+            </div>
           </div>
-          <dl style="margin: 0; display: grid; grid-template-columns: 112px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
-            <dt style="color: #5e6168">Kept for</dt><dd style="margin: 0"><select aria-label="Keep the mailbox operations log for" style="{{ selectSmall }}"><option>7 days</option><option selected>30 days</option><option>90 days</option></select></dd>
-            <dt style="color: #5e6168">Today</dt><dd style="margin: 0">2,418 operations, 1.1 MB</dd>
-            <dt style="color: #5e6168">Latest</dt><dd style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">07:13 Olivia Brandt moved "Invoice 2026-10-0193 is available" to Archive</dd>
-          </dl>
-          <div><a href="#" style="font-size: 13px; color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">Open the log</a></div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+            <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ thSmall }}">When</th><th scope="col" style="{{ thSmall }}">Who</th><th scope="col" style="{{ thSmall }}">Did what</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ ops }}" as="o" hint-placeholder-count="4">
+                <tr style="height: 34px; border-bottom: 1px solid #e4e6ea"><td style="padding: 0 8px; color: #5e6168; white-space: nowrap">{{ o.when }}</td><td style="padding: 0 8px; font-weight: 500; white-space: nowrap">{{ o.who }}</td><td style="padding: 0 8px; color: #3d4047">{{ o.what }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div><a href="#" style="font-size: 13px; color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">Open the full log</a></div>
         </section>
-      </div>
-
-      <div style="display: flex; gap: 20px; align-items: flex-start">
-      <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px">
-      <section aria-labelledby="ml-h-connected" style="display: flex; flex-direction: column; gap: 8px">
-        <div style="display: flex; align-items: baseline; gap: 12px">
-          <h2 id="ml-h-connected" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Connected right now</h2>
-          <span style="font-size: 13px; color: #5e6168">4 people, 6 connections</span>
+        <div style="{{ saveRow }}">
+          <button type="button" style="{{ btnPrimary }}">Save changes</button>
+          <button type="button" style="{{ btnSecondary }}">Discard</button>
+          <span style="font-size: 12px; color: #5e6168">Saves the self-test schedule, the alert address and how long the log is kept. Starting a job or cutting off a connection happens at once.</span>
         </div>
-        <div style="{{ tableWrap }}">
-          <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
-            <thead><tr style="{{ thRow }}">
-              <th scope="col" style="{{ th }}; width: 23%">Person</th>
-              <th scope="col" style="{{ th }}; width: 18%">Client</th>
-              <th scope="col" style="{{ th }}; width: 18%">From</th>
-              <th scope="col" style="{{ th }}; width: 8%">Since</th>
-              <th scope="col" style="{{ th }}; width: 25%">Doing</th>
-              <th scope="col" style="width: 44px"><span style="{{ srOnly }}">Actions</span></th>
-            </tr></thead>
-            <tbody>
-              <sc-for list="{{ connections }}" as="c" hint-placeholder-count="4">
-                <tr style="{{ c.style }}">
-                  <td style="{{ tdCut }}; font-weight: 500">{{ c.person }}</td>
-                  <td style="{{ tdCut }}">{{ c.client }}</td>
-                  <td style="{{ tdCut }}">{{ c.from }}</td>
-                  <td style="{{ tdCut }}">{{ c.since }}</td>
-                  <td style="{{ tdCut }}; color: #3d4047">{{ c.doing }}</td>
-                  <td style="padding: 0 6px; text-align: right"><button type="button" aria-label="Disconnect {{ c.person }}" style="{{ btnIcon }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"></path></svg></button></td>
-                </tr>
-              </sc-for>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section aria-labelledby="ml-h-maint" style="display: flex; flex-direction: column; gap: 8px">
-        <div style="display: flex; flex-direction: column; gap: 2px">
-          <h2 id="ml-h-maint" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Maintenance</h2>
-          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Jobs you start by hand. Each one runs in the background and shows up under Running tasks on the right. Mail keeps working while they run.</p>
-        </div>
-        <div style="{{ tableWrap }}">
-          <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
-            <thead><tr style="{{ thRow }}">
-              <th scope="col" style="{{ th }}; width: 22%">Job</th>
-              <th scope="col" style="{{ th }}">What it does</th>
-              <th scope="col" style="{{ th }}; width: 190px">Scope</th>
-              <th scope="col" style="{{ thRight }}; width: 90px"><span style="{{ srOnly }}">Start</span></th>
-            </tr></thead>
-            <tbody>
-              <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="8">
-                <tr style="{{ j.style }}">
-                  <td style="{{ tdCut }}; font-weight: 500">{{ j.name }}</td>
-                  <td style="{{ tdCut }}; color: #3d4047">{{ j.what }}</td>
-                  <td style="{{ td }}"><select aria-label="Scope for {{ j.name }}" style="{{ selectSmall }}; width: 166px"><option selected>{{ j.scope }}</option><option>{{ j.scopeAlt }}</option></select></td>
-                  <td style="{{ tdRight }}"><button type="button" style="{{ j.btn }}" aria-disabled="{{ j.disabled }}">{{ j.action }}</button></td>
-                </tr>
-              </sc-for>
-            </tbody>
-          </table>
-        </div>
-      </section>
-      </div>
-      <section aria-label="Running tasks" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
-      <div style="display: flex; flex-direction: column; gap: 4px">
-        <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Running tasks</h2>
-        <span style="font-size: 13px; color: #3d4047">1 running, 1 waiting, 2 finished today</span>
-      </div>
-      <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
-        <div style="{{ t.card }}">
-          <div style="display: flex; align-items: flex-start; gap: 8px">
-            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
-              <strong style="font-size: 14px; font-weight: 600; line-height: 20px">{{ t.name }}</strong>
-              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168; line-height: 18px"><span style="{{ t.dot }}"></span>{{ t.state }}</span>
-            </div>
-            <button type="button" style="{{ t.btn }}">{{ t.action }}</button>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px" role="progressbar" aria-label="{{ t.name }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ t.pct }}"><span style="{{ bar }}"><span style="{{ t.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 32px; text-align: right">{{ t.pctText }}</span></div>
-          <span style="font-size: 12px; color: #3d4047; line-height: 18px">{{ t.note }}</span>
-        </div>
-      </sc-for>
-      <div style="{{ noticeInfo }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #3669a5"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg><span>Tasks keep running when you leave this page. Come back here to wait for one to finish, or turn on a mail to the alert address when it does.</span></div>
-      <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 20px"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 2px 0 0; accent-color: #3669a5">Mail me when a task finishes or fails</label>
-      </section>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
+  </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2380}}'>
 class Component extends DCLogic {
   renderVals() {
     const dot = (bg, ring) => 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + ring;
     const D = { ok: dot('#d3f9d8', '#8ff09c'), warn: dot('#ffc078', '#ff9d2e'), busy: dot('#66d9e8', '#21c8de'), bad: dot('#fcc2d7', '#f977a6'), off: dot('#dee2e6', '#adb5bd') };
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px';
+    const main = 'flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden';
+    const tablist = 'display: flex; gap: 4px; border-bottom: 1px solid #e4e6ea';
+    const tabBase = 'display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; font: 500 14px \'Fira Sans\', sans-serif; white-space: nowrap; cursor: pointer; ';
+    const tabOn = tabBase + 'color: #1b1c1d; font-weight: 600; border-bottom-color: var(--sc-action, #3669a5)';
+    const tabOff = tabBase + 'color: #3d4047';
+    const thSmall = 'text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap';
+    const saveRow = 'margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #e4e6ea';
+    const ops = [['07:13', 'Olivia Brandt', 'Moved "Invoice 2026-10-0193 is available" from Inbox to Archive'], ['07:11', 'Tom Achterberg', 'Flagged "Scope for release 16.5" as starred'], ['07:08', 'Priya Raman', 'Deleted "Angebot Schulung Projektleiter, 12 Personen" from Customers / Kassel'], ['07:02', 'Ines Okafor', 'Copied "Rollout plan phase 2, Lyon" to Customers / Lyon on behalf of Olivia Brandt']].map(([when, who, what]) => ({ when, who, what }));
     const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
     const btnPrimary = 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
     const btnSecondary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
@@ -230,12 +283,12 @@ class Component extends DCLogic {
     ].map(([name, what, scope, scopeAlt, last, action, btn, disabled]) => ({ name, what, scope, scopeAlt, last, action, btn, disabled, style: row }));
     const tcard = 'display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff';
     const tasks = [
-      ['Rebuild search index', 'Everything', D.busy, 'Running, started 07:02 by Ines Okafor', 62, '62%', '38,120 of 61,400 messages indexed, about 9 minutes left', 'Cancel', btnSmallDanger],
-      ['Recalculate storage', 'Everything', D.off, 'Waiting for the index rebuild to finish', 0, '0%', 'Starts on its own next. Queued 07:08 by Ines Okafor', 'Remove', btnSmall],
-      ['Clean unreferenced data', 'Everything', D.ok, 'Finished 06:40, took 4 minutes', 100, '100%', '2,310 orphaned attachments and previews removed, 1.2 GB freed', 'Report', btnSmall],
-      ['Rewrite automatic replies', '18 people', D.ok, 'Finished 00:05, took 6 seconds', 100, '100%', '2 replies changed: Priya Raman starts her leave today, Tom Achterberg is back', 'Report', btnSmall]
+      ['Rebuild search index', 'Everything', D.busy, 'Running, started 07:02 by Ines Okafor', 62, '62%', '38,120 of 61,400 messages indexed, about 9 minutes left', 'Cancel task', btnSmallDanger],
+      ['Recalculate storage', 'Everything', D.off, 'Waiting for the index rebuild to finish', 0, '0%', 'Starts on its own next. Queued 07:08 by Ines Okafor', 'Remove from queue', btnSmall],
+      ['Clean unreferenced data', 'Everything', D.ok, 'Finished 06:40, took 4 minutes', 100, '100%', '2,310 orphaned attachments and previews removed, 1.2 GB freed', 'Open report', btnSmall],
+      ['Rewrite automatic replies', '18 people', D.ok, 'Finished 00:05, took 6 seconds', 100, '100%', '2 replies changed: Priya Raman starts her leave today, Tom Achterberg is back', 'Open report', btnSmall]
     ].map(([name, scope, dot, state, pct, pctText, note, action, btn]) => ({ name: name + ': ' + scope.toLowerCase(), dot, state, pct: String(pct), pctText, note, action, btn, fill: fill(pct, dot === D.ok ? '#8ff09c' : '#3669a5'), card: tcard }));
-    return { srOnly, btnPrimary, btnSecondary, btnIcon, tableWrap, thRow, th, thRight, td, tdRight, tdCut, card, switchOn, knobOn, selectSmall, inputSmall, bar, noticeInfo, dotOk: D.ok, parts, connections, jobs, tasks };
+    return { cap, main, tablist, tabOn, tabOff, thSmall, saveRow, ops, btnSmall, srOnly, btnPrimary, btnSecondary, btnIcon, tableWrap, thRow, th, thRight, td, tdRight, tdCut, card, switchOn, knobOn, selectSmall, inputSmall, bar, noticeInfo, dotOk: D.ok, parts, connections, jobs, tasks };
   }
 }
 </script>

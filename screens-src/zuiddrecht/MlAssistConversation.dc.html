@@ -14,7 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1100px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1560px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The assistant in a conversation: generated summary and suggested replies, the Written with AI badge with its tooltip, the follow-up reminder in the list. The Mark as spam tooltip is drawn as hovered</figcaption>
+    <div style="height: 1100px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1045px"></dc-import></div>
@@ -25,29 +29,28 @@ a{color:#3669a5}a:hover{color:#234a78}
         <div style="display: flex; gap: 2px; flex: none">
           <button type="button" aria-label="Fold conversation list" aria-expanded="true" title="Fold conversation list" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
           <button type="button" aria-label="Select conversations" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></button>
-          <button type="button" aria-label="Sort conversations" aria-haspopup="menu" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+          <button type="button" aria-label="Sort and view" aria-haspopup="menu" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
         </div>
       </div>
-      <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 16px 10px">
+      <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea">
         <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
-      </div>
-      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea">
-        <label for="ml-ai-listsum" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168; line-height: 16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ sparkle }}"></path></svg>Generated one-line summaries instead of the preview</label>
-        <button id="ml-ai-listsum" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
       </div>
       <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
         <li style="height: 28px; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Needs a follow-up</li>
         <li style="border-bottom: 1px solid #e4e6ea; background: #ffffff">
-          <a href="#" aria-current="false" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
-            <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: transparent"></span></span>
+          <a href="#" aria-current="false" style="display: flex; align-items: flex-start; gap: 8px; height: 98px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
+            <span style="flex: none; width: 8px; height: 80px; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: transparent"></span></span>
             <span style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: #234a78; color: #ffffff">OB</span>
             <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0">
               <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 400">To Marc Dubois</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: #5e6168">7 Oct</span></span>
               <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 400; color: #1b1c1d">Keycloak realm: two open questions</span></span>
               <span style="display: flex; align-items: center; gap: 8px; height: 20px">
                 <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #3d4047; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #ff9d2e"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>No answer after 5 days</span>
+              </span>
+              <span style="display: flex; align-items: center; gap: 8px; height: 20px">
+                <span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0">Open to write a reminder</span>
                 <span style="flex: 1 1 auto"></span>
-                <button type="button" aria-label="Dismiss the follow-up reminder" style="flex: none; height: 22px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Dismiss</button>
+                <button type="button" aria-label="Stop reminding me about this conversation" style="flex: none; height: 22px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Stop reminding me</button>
               </span>
             </span>
           </a>
@@ -78,7 +81,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
           <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
-            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
+            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg><sc-if value="{{ t.hasText }}" hint-placeholder-val="{{ false }}"><span>{{ t.label }}</span></sc-if></button><sc-if value="{{ t.tip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; left: 50%; top: 32px; transform: translateX(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 11">{{ t.label }}</span></sc-if></span></sc-for>
           </div>
           <div style="flex: none; display: flex; align-items: center; gap: 6px">
             <button type="button" aria-label="Expand all messages" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 13 5 5 5-5M7 6l5 5 5-5"></path></svg>Expand all</button>
@@ -118,7 +121,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <button type="button" aria-expanded="true" aria-label="Collapse the message" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
             <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">JK</span>
             <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
-              <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">Jana Köhler</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">jana.koehler@stadtwerke-kassel.de</span><span style="{{ genChip }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ sparkle }}"></path></svg>Written with AI</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">10 Oct 09:12</span></div>
+              <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">Jana Köhler</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">jana.koehler@stadtwerke-kassel.de</span><span style="position: relative; display: inline-flex"><span style="{{ genChip }}" tabindex="0" aria-describedby="ml-ai-badge-tip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ sparkle }}"></path></svg>Written with AI</span><span id="ml-ai-badge-tip" role="tooltip" style="position: absolute; left: 0; top: 26px; padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 11">The sender marked this message as written with AI</span></span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">10 Oct 09:12</span></div>
               <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">Olivia Brandt</span></div>
             </div>
             <button type="button" aria-label="More actions for this message" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
@@ -151,7 +154,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div style="display: flex; align-items: center; gap: 10px">
               <button id="ml-ai-label" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
-              <label for="ml-ai-label" style="font-size: 12px; color: #3d4047; line-height: 16px">Label my reply as written with AI when it starts from a suggestion. Jana sees the same label you see above.</label>
+              <label for="ml-ai-label" style="font-size: 12px; color: #3d4047; line-height: 16px">Mark my reply as written with AI when it starts from a suggestion.</label>
             </div>
           </div>
           <div style="display: flex; gap: 8px; padding: 12px 14px 14px 88px; flex-wrap: wrap">
@@ -162,9 +165,31 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </main>
   </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The list's Sort and view menu: the generated one-line summaries are a view setting here, the rows keep only the small spark</figcaption>
+    <div style="position: relative; height: 340px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="display: flex; align-items: center; gap: 8px; height: 52px; width: 410px; padding: 0 8px 0 16px; box-sizing: border-box; background: #ffffff; border-right: 1px solid #e4e6ea; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Inbox</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">12 conversations</span></div>
+        <span style="flex: 1 1 auto"></span>
+        <button type="button" aria-label="Sort and view" aria-haspopup="menu" aria-expanded="true" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+      </div>
+      <div role="menu" aria-label="Sort and view" style="position: absolute; left: 150px; top: 48px; margin-top: 4px; width: 360px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column">
+        <div style="padding: 2px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Sort</div>
+        <sc-for list="{{ sortItems }}" as="m" hint-placeholder-count="2"><button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="{{ m.style }}"><span aria-hidden="true" style="{{ m.mark }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span></button></sc-for>
+        <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
+        <div style="padding: 2px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Under the subject</div>
+        <sc-for list="{{ viewItems }}" as="m" hint-placeholder-count="2"><button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="{{ m.style }}"><span aria-hidden="true" style="{{ m.mark }}"></span><span style="flex: 1 1 auto; display: flex; align-items: center; gap: 6px"><sc-if value="{{ m.spark }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ sparkle }}"></path></svg></sc-if>{{ m.label }}</span></button></sc-for>
+        <div style="padding: 4px 10px 2px; font-size: 12px; color: #5e6168; line-height: 16px">A summary is marked Generated and can be wrong. The messages stay as they are.</div>
+      </div>
+    </div>
+  </figure>
+
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
 class Component extends DCLogic {
   renderVals() {
     const sparkle = 'm12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z';
@@ -178,9 +203,13 @@ class Component extends DCLogic {
       ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01'],
       ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'],
       ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01'],
-      ['Share this conversation', 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13'],
+      ['Share and assign', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'],
       ['More actions', 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2']
-    ].map(([label, icon]) => ({ label, icon }));
+    ].map(([label, icon], i) => ({ label, icon, hasText: i < 2, tip: i === 2, style: 'height: 28px; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ' + (i < 2 ? 'padding: 0 8px 0 6px; ' : 'width: 28px; ') + (i === 2 ? 'background: #eef0f3; color: #1b1c1d;' : 'background: transparent; color: #3d4047;') }));
+    const mi = 'display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; width: 100%; border: 0; border-radius: var(--sc-radius, 8px); text-align: left; font: 400 14px \'Fira Sans\', sans-serif; white-space: nowrap; color: #1b1c1d; ';
+    const radio = (on) => 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 8px; ' + (on ? 'border: 5px solid #3669a5; background: #ffffff' : 'border: 1px solid #c4c7cb; background: #ffffff');
+    const sortItems = [['Newest first', true], ['Unread first', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', mark: radio(on), style: mi + (on ? 'background: #eaf0f7;' : 'background: transparent;') }));
+    const viewItems = [['The first line of the mail', false, false], ['Generated one-line summaries instead of the preview', true, true]].map(([label, on, spark]) => ({ label, on: on ? 'true' : 'false', spark, mark: radio(on), style: mi + (on ? 'background: #eaf0f7;' : 'background: transparent;') }));
     const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
     const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
       style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
@@ -209,8 +238,7 @@ class Component extends DCLogic {
         dateStyle: 'flex: none; font-size: 12px; ' + (unread ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168'),
         subjectStyle: 'flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: #1b1c1d; ' + (unread ? 'font-weight: 600' : 'font-weight: 400'),
         hasChip: !!o.wp, wpType: o.wp ? o.wp[0] : '', wpNumber: o.wp ? o.wp[1] : '',
-        chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (o.wp ? TYPE[o.wp[0]] : '#3d4047')
-      };
+        chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (o.wp ? TYPE[o.wp[0]] : '#3d4047'), sortItems, viewItems };
     });
     const card = 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; width: 100%; ';
     const own = 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
@@ -223,7 +251,7 @@ class Component extends DCLogic {
       avatar: 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ' + (mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78')
     }));
     const replies = ['Thanks Jana, the offer follows by Friday.', 'Can you confirm 12 people and the Kassel venue?', 'We will include travel costs in the offer.'];
-    return { sparkle, switchOn, knobOn, genChip, quiet, tools, chips, rows, collapsed, replies };
+    return { sparkle, switchOn, knobOn, genChip, quiet, tools, chips, rows, collapsed, replies, sortItems, viewItems };
   }
 }
 </script>

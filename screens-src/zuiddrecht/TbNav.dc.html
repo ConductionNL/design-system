@@ -21,7 +21,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   <sc-for list="{{ rail }}" as="it" hint-placeholder-count="3">
     <a href="{{ it.href }}" aria-label="{{ it.label }}" title="{{ it.label }}" aria-current="{{ it.current }}" style="{{ it.style }}">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ it.icon }}"></path></svg>
-      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">{{ it.label }}</span>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">{{ it.short }}</span>
     </a>
   </sc-for>
   <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" title="Olivia Brandt" style="flex: none; margin-top: auto; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: #f5f6f8; display: inline-flex; align-items: center; justify-content: center"><span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: 'Fira Sans', system-ui, sans-serif">OB</span></button>
@@ -60,7 +60,9 @@ a{color:#3669a5}a:hover{color:#234a78}
 <script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Board"},"folded":{"editor":"text","default":""},"$preview":{"width":264,"height":945}}'>
 class Component extends DCLogic {
   renderVals() {
-    const active = this.props.active ?? 'Board';
+    // Board, List and Gantt are views of the open project, switched in the project header; the navigation marks the project.
+    const given = this.props.active ?? 'Board';
+    const active = ['Board', 'List', 'Gantt'].includes(given) ? 'Northwind rollout Lyon' : given;
     const isFolded = String(this.props.folded ?? '') === 'true';
     const isOpen = !isFolded;
     const I = {
@@ -76,20 +78,18 @@ class Component extends DCLogic {
     };
     // [label, href, icon or null, count, options]
     const raw = [
-      { title: 'Views', items: [
-        ['My day', 'TbMyDay.dc.html', I.day, 3, { strong: true }],
-        ['Board', 'TbBoard.dc.html', I.board],
-        ['List', '#', I.list]
+      { title: '', items: [
+        ['My day', 'TbMyDay.dc.html', I.day, 3, { strong: true }]
       ] },
       { title: 'Projects', items: [
-        ['Northwind rollout Lyon', 'TbBoard.dc.html', I.folder, 9, { current: true }],
+        ['Northwind rollout Lyon', 'TbBoard.dc.html', I.folder, 9],
         ['Netzausbau Nord', '#', I.folder, 4],
         ['OpenProject core', '#', I.folder, 12]
       ] },
       { title: 'Filters', items: [
         ['Assigned to me', '#', I.user, 4],
         ['Created from mail', '#', I.mail, 2],
-        ['Due this week', '#', I.calendar, 3],
+        ['Due this week', '#', I.calendar, 7],
         ['High priority', '#', I.flag, 1]
       ] },
       { title: 'Versions', items: [
@@ -114,11 +114,18 @@ class Component extends DCLogic {
         };
       })
     }));
-    // Folded rail: the three views with a label each, no counts.
+    // Folded rail: My day, the open project and the filters, a label each, no counts.
     const railBase = 'flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; ';
-    const rail = raw[0].items.map(([label, href, icon]) => ({
-      label, href, icon, current: label === active ? 'page' : 'false',
-      style: railBase + (label === active ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #3d4047;')
+    const projectOn = raw[1].items.some(([label]) => label === active);
+    const filterOn = raw[2].items.some(([label]) => label === active);
+    const rail = [
+      ['My day', 'My day', 'TbMyDay.dc.html', I.day, active === 'My day'],
+      ['Project', 'Project: Northwind rollout Lyon', 'TbBoard.dc.html', I.folder, projectOn],
+      ['Filters', 'Filters: Assigned to me, Created from mail, Due this week, High priority', '#', I.user, filterOn]
+    ].map(([short, label, href, icon, on]) => ({
+      label, href, icon, current: on ? 'page' : 'false',
+      style: railBase + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #3d4047;'),
+      short
     }));
     return { groups, rail, isFolded, isOpen };
   }

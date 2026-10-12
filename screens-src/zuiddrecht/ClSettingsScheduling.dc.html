@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar: scheduling, working hours and video calls in the settings dialog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Week" hint-size="264px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+        <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">October <span style="font-weight: 400; color: #5e6168">2026</span></h1>
+        <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Week 42</span>
+        <span style="flex: 1 1 auto"></span>
+        <div style="display: flex; align-items: center; gap: 4px; align-self: center">
+          <button type="button" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Week<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
+        </div>
+      </div>
+      <div style="flex: none; display: flex; height: 34px">
+        <div style="flex: none; width: 84px; display: flex; align-items: flex-end; padding-bottom: 6px; box-sizing: border-box; font-size: 10px; line-height: 12px; letter-spacing: 0.04em; color: #5e6168"><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right">CEST</span><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right; opacity: 0.6">UTC</span></div>
+        <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+          <div style="{{ d.headStyle }}"><span>{{ d.name }}</span><span style="{{ d.numStyle }}">{{ d.n }}</span></div>
+        </sc-for>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; border-top: 1px solid #e4e6ea">
+        <sc-for list="{{ hours }}" as="h" hint-placeholder-count="11">
+          <div style="{{ h.lineStyle }}"></div>
+          <div style="{{ h.localStyle }}">{{ h.local }}</div>
+          <div style="{{ h.utcStyle }}">{{ h.utc }}</div>
+        </sc-for>
+        <div style="position: absolute; top: 0; bottom: 0; left: 84px; right: 0; display: flex">
+          <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+            <div style="{{ d.colStyle }}">
+              <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
+                <div aria-hidden="true" style="{{ e.style }}"><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.title }}</span><span style="font-size: 11px; color: #5e6168; white-space: nowrap">{{ e.time }}</span></div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </main>
+    <aside aria-label="Context" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px; padding: 16px; background: #f5f6f8; overflow: hidden">
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Next meeting</h2>
+        <div style="font-size: 14px; font-weight: 600; line-height: 20px">Stand-up</div>
+        <div style="font-size: 12px; color: #5e6168; line-height: 16px">10:00 to 10:15, in 1 h</div>
+      </section>
+    </aside>
+  </div>
+  <div style="position: absolute; inset: 0; z-index: 20; background: rgba(27,28,29,0.45); display: flex; align-items: center; justify-content: center">
+    <div role="dialog" aria-modal="true" aria-labelledby="cl-settings-title" style="width: 960px; min-height: 680px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+      <div style="flex: 0 0 236px; width: 236px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClSettingsNav" active="Scheduling" hint-size="236px,680px"></dc-import></div>
+      <section aria-label="Scheduling" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
+        <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Scheduling</h3>
+          <button type="button" aria-label="Close settings" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+        <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 24px">
+<p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">These settings apply to every calendar. Changes are saved at once.</p>
+<div style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Working hours</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">When you are at work. Find a time shows you as busy outside these hours and suggests times inside them. Switch a day off, or change its hours in place.</p></div>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px">
+  <thead><tr style="height: 28px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Day</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Hours</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; text-align: right"></th></tr></thead>
+  <tbody>
+    <sc-for list="{{ weekdays }}" as="d" hint-placeholder-count="7">
+      <tr style="height: 36px; border-bottom: 1px solid #e4e6ea">
+        <td style="padding: 0 8px; width: 150px"><span style="display: inline-flex; align-items: center; gap: 8px"><button type="button" role="switch" aria-checked="{{ d.checked }}" aria-label="{{ d.aria }}" style="{{ d.switch }}"><span style="{{ d.knob }}"></span></button>{{ d.name }}</span></td>
+        <td style="padding: 0 8px; color: {{ d.color }}"><span style="display: inline-flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{ d.ranges }}" as="r" hint-placeholder-count="2"><span style="display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; white-space: nowrap; font-size: 12px">{{ r }}</span></sc-for></span></td>
+        <td style="padding: 0 8px; text-align: right; white-space: nowrap"><sc-if value="{{ d.on }}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="{{ d.addAria }}" style="height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 12px 'Fira Sans', sans-serif; white-space: nowrap">Add a range</button></sc-if></td>
+      </tr>
+    </sc-for>
+  </tbody>
+</table>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: #5e6168"><span style="font-size: 12px; color: #538b28; font-weight: 600">Saved</span><span>Wednesday changed to 09:00 to 13:00. Time zone Europe/Amsterdam, from the View section. An appointment schedule can narrow these hours further, never widen them.</span></div></div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea"><div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Video calls</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Talk, the video call of this workspace, is always offered. Google Meet, Microsoft Teams and Zoom appear once their account is connected. A fixed link of another video call service shows as a choice next to Talk when you add a video call to an event.</p></div>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px"><thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Service</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Link</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Offered as</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; text-align: right; width: 1%; white-space: nowrap">Actions</th></tr></thead><tbody>
+<sc-for list="{{ services }}" as="v" hint-placeholder-count="5"><tr style="height: 40px; border-bottom: 1px solid #e4e6ea"><td style="padding: 0 8px"><strong style="font-weight: 500">{{ v.name }}</strong></td><td style="padding: 0 8px"><span style="{{ v.linkStyle }}">{{ v.link }}</span></td><td style="padding: 0 8px; color: #5e6168">{{ v.how }}</td><td style="padding: 0 8px; text-align: right; white-space: nowrap"><sc-if value="{{ v.removable }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Remove {{ v.name }}" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 12px 'Fira Sans', sans-serif; white-space: nowrap">Remove</button></sc-if></td></tr></sc-for>
+</tbody></table>
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 2px"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add service</button><span style="font-size: 12px; color: #5e6168">A name and a link are enough. Invited people get the link in the event. Which service a calendar uses by default is set in that calendar.</span></div></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    // dimmed week behind the dialog, simplified from ClWeek
+    const H = 72, OFF = 14;
+    const CAL = { personal: '#3669a5', team: '#538b28', customers: '#ff9d2e' };
+    const pale = (c) => 'color-mix(in srgb, ' + c + ' 14%, #ffffff)';
+    const dark = (c) => 'color-mix(in srgb, ' + c + ' 60%, #1b1c1d)';
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmt = (t) => pad(Math.floor(t)) + ':' + pad(Math.round((t % 1) * 60));
+    const hours = [];
+    for (let i = 0; i <= 10; i++) {
+      const top = i * H + OFF;
+      hours.push({
+        local: fmt(8 + i), utc: fmt(6 + i),
+        lineStyle: 'position: absolute; left: 84px; right: 0; top: ' + top + 'px; border-top: 1px solid #eef0f3',
+        localStyle: 'position: absolute; left: 0; width: 42px; box-sizing: border-box; padding-right: 8px; top: ' + (top - 8) + 'px; font-size: 11px; line-height: 16px; color: #5e6168; text-align: right',
+        utcStyle: 'position: absolute; left: 42px; width: 42px; box-sizing: border-box; padding-right: 8px; top: ' + (top - 8) + 'px; font-size: 11px; line-height: 16px; color: #5e6168; opacity: 0.6; text-align: right'
+      });
+    }
+    const ev = (title, start, dur, cal) => {
+      const c = CAL[cal];
+      return { title, time: fmt(start) + ' to ' + fmt(start + dur), style: 'position: absolute; left: 2px; right: 4px; top: ' + ((start - 8) * H + OFF + 1) + 'px; height: ' + (dur * H - 2) + 'px; box-sizing: border-box; display: flex; flex-direction: column; padding: 4px 7px; border-radius: 4px; overflow: hidden; font-size: 12px; line-height: 15px; color: ' + dark(c) + '; background: ' + pale(c) + '; border-left: 3px solid ' + c };
+    };
+    const standup = ev('Stand-up', 10, 0.5, 'personal');
+    const perDay = [
+      [ev('Week planning', 8, 0.75, 'personal'), standup],
+      [standup, ev('Demo preparation Malmo Energi', 11, 1, 'customers')],
+      [standup, ev('Release 16.5 scope review', 9.5, 1.5, 'team')],
+      [standup, ev('Rollout review Lyon, phase 2', 14, 1, 'customers')],
+      [standup, ev('Submit October hours', 17, 0.5, 'personal')],
+      [], []
+    ];
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((name, i) => {
+      const today = i === 0, weekend = i >= 5;
+      return {
+        name, n: 12 + i, events: perDay[i],
+        headStyle: 'flex: 1 1 0; min-width: 0; display: flex; align-items: flex-end; gap: 5px; padding: 0 0 6px 8px; box-sizing: border-box; font-size: 13px; line-height: 20px; color: #5e6168; ' + (weekend ? 'background: #f5f6f8;' : ''),
+        numStyle: today ? 'display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 4px; background: #3669a5; color: #ffffff; font-weight: 600' : 'color: #1b1c1d; font-weight: 500',
+        colStyle: 'flex: 1 1 0; min-width: 0; position: relative; border-left: 1px solid #eef0f3; ' + (weekend ? 'background: #f5f6f8;' : '')
+      };
+    });
+    const weekdays = [
+      ['Monday', ['09:00 to 17:30']], ['Tuesday', ['09:00 to 17:30']], ['Wednesday', ['09:00 to 13:00']],
+      ['Thursday', ['09:00 to 17:30']], ['Friday', ['09:00 to 16:00']], ['Saturday', []], ['Sunday', []]
+    ].map(([name, ranges]) => { const on = ranges.length > 0; return { name, on, ranges: on ? ranges : ['Not working'], checked: on ? 'true' : 'false', aria: name + ' is a working day', addAria: 'Add a range on ' + name, color: on ? '#1b1c1d' : '#5e6168', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }; });
+    const services = [
+      ['Talk', 'A new conversation per event', 'Always', false, '#5e6168'],
+      ['Google Meet', 'Through the connected Google account', 'Connected', false, '#5e6168'],
+      ['Microsoft Teams', 'Through the connected Microsoft 365 account', 'Connected', false, '#5e6168'],
+      ['Zoom', 'Not connected', 'Hidden until connected', false, '#5e6168'],
+      ['Northwind Jitsi', 'https://meet.northwind-projects.test/olivia', 'Fixed link', true, '#3d4047']
+    ].map(([name, link, how, removable, linkColor]) => ({ name, link, how, removable, linkStyle: removable ? 'font-family: ui-monospace, monospace; font-size: 12px; color: ' + linkColor : 'font-size: 13px; color: ' + linkColor }));
+    return { switchOn, knobOn, switchOff, knobOff, hours, days, weekdays, services };
+  }
+}
+</script>
+</body>
+</html>

@@ -15,31 +15,37 @@ a{color:#3669a5}a:hover{color:#234a78}
 #tb-filter::placeholder{color:#5e6168}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1800px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The board with the filter panel open under the Filter button: tags are ticked here, managed in the project details</figcaption>
+    <div style="position: relative; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
   <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" hint-size="264px,945px"></dc-import></div>
     <main style="flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
-      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
-        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Northwind rollout Lyon</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">5 of 9 work packages match the filters</span></div>
-        <div role="group" aria-label="Group by" style="display: flex; align-items: center; gap: 6px; margin-left: 8px">
-          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Group by</span>
-          <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+      <div style="flex: none; display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; flex-direction: column; min-width: 0; line-height: 1.2"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout Lyon</h1><span style="font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">2 of 9 work packages shown</span></div>
+        <div role="group" aria-label="View: Board, List or Gantt" style="flex: none; display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; overflow: hidden">
+          <button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #eaf0f7; color: #234a78"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM15 3h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path></svg>Board</button>
+          <button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>List</button>
+          <button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #3d4047"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h8M7 12h10M11 18h10"></path></svg>Gantt</button>
         </div>
+        <button type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Group by: Status. Choose assignee or version" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><span style="font-weight: 400; color: #5e6168">Group by</span>Status<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
         <div style="flex: 1 1 auto"></div>
-        <div style="position: relative; display: flex; align-items: center; width: 260px">
-          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #234a78"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
-          <input id="tb-filter" type="search" placeholder="Filter cards" aria-expanded="true" aria-controls="tb-filter-panel" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; box-shadow: 0 0 0 3px #eaf0f7">
+        <button type="button" aria-pressed="true" aria-haspopup="dialog" aria-keyshortcuts="F" aria-expanded="true" aria-controls="tb-filter-panel" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>Filter: 2</button>
+        <div role="group" aria-label="Members" style="flex: none; display: flex; align-items: center">
+          <span title="Olivia Brandt" aria-label="Olivia Brandt" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #eaf0f7; color: #234a78">OB</span>
+          <span title="Tom Achterberg" aria-label="Tom Achterberg" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eaf0f7; color: #234a78">TA</span>
+          <span title="Priya Raman" aria-label="Priya Raman" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eaf0f7; color: #234a78">PR</span>
+          <span title="2 more members" aria-label="2 more members" role="img" style="width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: -8px; background: #eef0f3; color: #3d4047">+2</span>
         </div>
-        <div role="group" aria-label="Team" style="display: flex; align-items: center">
-          <sc-for list="{{ team }}" as="t" hint-placeholder-count="4"><span title="{{ t.name }}" aria-label="{{ t.name }}" role="img" style="{{ t.style }}">{{ t.initials }}</span></sc-for>
-        </div>
+        <button type="button" aria-pressed="false" aria-haspopup="dialog" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg>Project details</button>
       </div>
       <div role="group" aria-label="Active filters" style="flex: none; display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
         <span style="font-size: 12px; color: #5e6168; white-space: nowrap; margin-right: 4px">Filtered on</span>
         <sc-for list="{{ active }}" as="a" hint-placeholder-count="3"><span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 4px 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 600; white-space: nowrap"><sc-if value="{{ a.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ a.dot }}"></span></sc-if>{{ a.label }}<button type="button" aria-label="{{ a.remove }}" style="width: 20px; height: 20px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #234a78; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></sc-for>
-        <button type="button" style="height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Clear all</button>
+        <button type="button" style="height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Clear all filters</button>
         <span style="margin-left: 8px; font-size: 12px; color: #5e6168; white-space: nowrap">Click a tag on a card to filter on it</span>
       </div>
 
@@ -70,15 +76,14 @@ a{color:#3669a5}a:hover{color:#234a78}
         </sc-for>
       </div>
 
-      <div id="tb-filter-panel" role="dialog" aria-label="Filters" style="position: absolute; right: 150px; top: 60px; margin-top: 4px; width: 440px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 4px">
+      <div id="tb-filter-panel" role="dialog" aria-label="Filters" style="position: absolute; right: 262px; top: 60px; margin-top: 4px; width: 440px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 4px">
         <div style="display: flex; align-items: center; gap: 10px; padding: 4px 10px 8px; border-bottom: 1px solid #e4e6ea">
           <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Filters</h2>
-          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Press <kbd style="display: inline-block; min-width: 14px; padding: 0 5px; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; font: 600 11px 'Fira Sans', sans-serif; text-align: center; color: #3d4047">M</kbd> to show only your cards</span>
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Press <kbd style="display: inline-block; min-width: 14px; padding: 0 5px; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; font: 600 11px 'Fira Sans', sans-serif; text-align: center; color: #3d4047">M</kbd> to show only your work packages</span>
           <span style="flex: 1 1 auto"></span>
-          <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Clear all filters</button>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Tags</span><span style="font-size: 12px; color: #5e6168">tick one or more</span><span style="flex: 1 1 auto"></span><button type="button" style="height: 24px; padding: 0 6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Reset tags</button></div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Tags</span><span style="font-size: 12px; color: #5e6168">tick one or more, applied at once</span><span style="flex: 1 1 auto"></span><a href="#tags-tab" style="font-size: 12px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none; white-space: nowrap">Manage tags</a></div>
         <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
           <sc-for list="{{ tags }}" as="t" hint-placeholder-count="6">
             <li style="display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: var(--sc-radius, 8px)">
@@ -86,37 +91,20 @@ a{color:#3669a5}a:hover{color:#234a78}
               <span style="{{ t.dot }}"></span>
               <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; color: #1b1c1d">{{ t.name }}</span>
               <span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ t.count }}</span>
-              <button type="button" aria-label="Edit tag {{ t.name }}" style="flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
-              <button type="button" aria-label="Delete tag {{ t.name }}" style="flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></button>
             </li>
-            <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}"><li aria-label="Edit tag {{ t.name }}" style="display: flex; flex-direction: column; gap: 8px; margin: 2px 10px 6px 38px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #f5f6f8">
-              <div style="display: flex; align-items: center; gap: 8px">
-                <label for="tb-tag-name" style="flex: none; font-size: 12px; color: #5e6168">Name</label>
-                <input id="tb-tag-name" type="text" value="Customer" style="flex: 1 1 auto; min-width: 0; height: 30px; box-sizing: border-box; padding: 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px">
-                <span style="flex: none; font-size: 12px; color: #5e6168">Colour</span>
-                <span role="radiogroup" aria-label="Tag colour" style="display: inline-flex; gap: 6px"><sc-for list="{{ swatches }}" as="s" hint-placeholder-count="8"><button type="button" role="radio" aria-checked="{{ s.on }}" aria-label="{{ s.name }}" style="{{ s.style }}"></button></sc-for></span>
-                <span style="flex: 1 1 auto"></span>
-                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif">Cancel</button>
-                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Save tag</button>
-              </div>
-            </li></sc-if>
           </sc-for>
         </ul>
-        <div style="display: flex; align-items: center; gap: 10px; padding: 2px 10px 8px; border-bottom: 1px solid #e4e6ea">
-          <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New tag</button>
-          <span style="font-size: 12px; color: #5e6168; line-height: 16px">Every new project starts with these 6 default tags. Edit or delete them per project.</span>
-        </div>
+        <div style="padding: 2px 10px 8px; border-bottom: 1px solid #e4e6ea; font-size: 12px; color: #5e6168; line-height: 16px">Rename, recolour or delete a tag under Manage tags.</div>
 
         <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Assignee</span></div>
         <div role="radiogroup" aria-label="Assignee" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; padding: 0 10px">
           <sc-for list="{{ assignees }}" as="a" hint-placeholder-count="6"><label style="display: flex; align-items: center; gap: 8px; height: 30px; font-size: 14px; color: #1b1c1d; white-space: nowrap"><span role="radio" aria-checked="{{ a.on }}" aria-label="{{ a.label }}" style="{{ a.style }}"></span><sc-if value="{{ a.hasAvatar }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">{{ a.initials }}</span></sc-if><sc-if value="{{ a.isUnassigned }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border-radius: 10px; border: 1.5px dashed #c4c7cb"></span></sc-if>{{ a.label }}</label></sc-for>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea; margin-top: 4px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">State</span></div>
-        <div role="radiogroup" aria-label="State" style="display: flex; gap: 6px; padding: 2px 10px 6px">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea; margin-top: 4px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Open or closed</span></div>
+        <div role="radiogroup" aria-label="Open or closed" style="display: flex; align-items: center; gap: 6px; padding: 2px 10px 6px">
           <sc-for list="{{ states }}" as="s" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ s.on }}" style="{{ s.style }}">{{ s.label }}</button></sc-for>
+          <span style="margin-left: 6px; font-size: 12px; color: #5e6168; line-height: 16px">Closed work packages are hidden while Open is chosen.</span>
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Due date</span><span style="font-size: 12px; color: #5e6168">from and to, either can stay empty</span></div>
@@ -132,9 +120,64 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </main>
   </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; align-self: flex-start">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Manage tags opens the Tags tab of the project details: rename, colour and delete a tag, add one, restore the six default tags</figcaption>
+    <aside id="tags-tab" aria-label="Project details" style="width: 480px; height: 660px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Project details</span>
+        <button type="button" aria-label="Close the project details" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 12px">
+        <div style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="flex: none; width: 14px; height: 14px; border-radius: 4px; background: #3669a5"></span><h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Northwind rollout Lyon</h2></div>
+        <span style="font-size: 12px; color: #5e6168; line-height: 18px">6 members, owner Olivia Brandt. Project in OpenProject since 14 March.</span>
+      </div>
+      <div role="tablist" aria-label="Project details" style="flex: none; display: flex; gap: 12px; padding: 0 16px; border-bottom: 1px solid #e4e6ea">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ true }}"><span style="{{ t.countStyle }}">{{ t.count }}</span></sc-if></button></sc-for>
+      </div>
+      <div role="tabpanel" aria-label="Tags" style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-size: 12px; color: #5e6168; line-height: 16px">Tags of this project, used on its cards. Saved when you press Save tag.</span>
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New tag</button>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ tags }}" as="t" hint-placeholder-count="6">
+            <li style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 4px; border-bottom: 1px solid #eef0f3">
+              <span style="{{ t.dot }}"></span>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; color: #1b1c1d">{{ t.name }}</span>
+              <span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ t.count }}</span>
+              <button type="button" aria-label="Edit tag {{ t.name }}" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Edit</button>
+              <button type="button" aria-label="Delete tag {{ t.name }}" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #cc0000; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Delete</button>
+            </li>
+            <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}"><li aria-label="Edit tag {{ t.name }}" style="display: flex; flex-direction: column; gap: 8px; margin: 6px 0 8px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #f5f6f8">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <label for="tb-tag-name" style="flex: none; width: 48px; font-size: 12px; color: #5e6168">Name</label>
+                <input id="tb-tag-name" type="text" value="Customer" style="flex: 1 1 auto; min-width: 0; height: 30px; box-sizing: border-box; padding: 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="flex: none; width: 48px; font-size: 12px; color: #5e6168">Colour</span>
+                <span role="radiogroup" aria-label="Tag colour" style="display: inline-flex; gap: 6px"><sc-for list="{{ swatches }}" as="s" hint-placeholder-count="8"><button type="button" role="radio" aria-checked="{{ s.on }}" aria-label="{{ s.name }}" style="{{ s.style }}"></button></sc-for></span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif">Cancel</button>
+                <button type="button" style="height: 28px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Save tag</button>
+              </div>
+            </li></sc-if>
+          </sc-for>
+        </ul>
+        <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
+          <span style="flex: 1 1 auto; font-size: 12px; color: #5e6168; line-height: 16px">Every new project starts with these 6 default tags. Edit or delete them per project. Restoring puts the six back and keeps the tags you added.</span>
+          <button type="button" style="flex: none; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Restore the default tags</button>
+        </div>
+      </div>
+    </aside>
+  </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
@@ -166,7 +209,7 @@ class Component extends DCLogic {
     const columns = cols.map(([name, count, total]) => {
       const st = STATUS[name];
       return {
-        name, count: count + ' of ' + total, countLabel: count + ' of ' + total + ' work packages match',
+        name, count: count + ' of ' + total + ' shown', countLabel: count + ' of ' + total + ' work packages shown',
         countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea',
         dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
         cards: cards.filter((c) => c.status === name),
@@ -182,11 +225,11 @@ class Component extends DCLogic {
     }));
     const active = [
       { label: 'Tag: Lyon', remove: 'Remove the filter on tag Lyon', hasDot: true, dot: dotOf('Lyon', 8) },
-      { label: 'Open', remove: 'Remove the filter on state Open', hasDot: false, dot: '' }
+      { label: 'Open', remove: 'Remove the filter Open, show closed too', hasDot: false, dot: '' }
     ];
     const checkBase = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; padding: 0; ';
     const tags = [['Lyon', 5, true], ['Kassel', 2], ['Customer', 3, false, true], ['Internal', 2], ['Demo', 1], ['Training', 1]].map(([name, count, on, editing]) => ({
-      name, count: count + ' cards', dot: dotOf(name, 10), checked: on ? 'true' : 'false', isOn: !!on, editing: !!editing,
+      name, count: count + (count === 1 ? ' work package' : ' work packages'), dot: dotOf(name, 10), checked: on ? 'true' : 'false', isOn: !!on, editing: !!editing,
       filterLabel: 'Filter on tag ' + name,
       checkStyle: checkBase + (on ? 'border: 1.5px solid #3669a5; background: #3669a5;' : 'border: 1.5px solid #c4c7cb; background: #ffffff;')
     }));
@@ -200,7 +243,13 @@ class Component extends DCLogic {
     }));
     const states = [['Open', true], ['Closed'], ['Both']].map(([label, on]) => ({ label, on: on ? 'true' : 'false',
       style: chipBase + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
-    return { groupBy, team, active, columns, tags, swatches, assignees, states };
+    const tabBase = 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 2px; border: 0; border-bottom: 2px solid transparent; background: transparent; font: 600 11px \'Fira Sans\', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; ';
+    const tabs = [['Members', 6, false], ['Tags', 6, true], ['Files and chats', 4, false], ['Deleted items', 4, false], ['Activity', '', false]].map(([label, count, on]) => ({
+      label, count, hasCount: count !== '' && !!on, selected: on ? 'true' : 'false',
+      style: tabBase + (on ? 'color: #1b1c1d; font-weight: 700; border-bottom-color: #3669a5;' : 'color: #5e6168;'),
+      countStyle: 'font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); letter-spacing: 0; ' + (on ? 'background: #eaf0f7; color: #234a78' : 'background: #eef0f3; color: #5e6168')
+    }));
+    return { groupBy, team, active, columns, tags, swatches, assignees, states, tabs };
   }
 }
 </script>

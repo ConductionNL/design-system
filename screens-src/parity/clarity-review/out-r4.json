@@ -1,0 +1,260 @@
+{
+  "pack": "r4",
+  "screens": [
+    {
+      "board": "ClEventPopover",
+      "verdict": "mostly clear",
+      "reason": "The popover itself is clear (title, time, calendar, Save), but the frame also shows an unrelated drag of a person onto Friday, so two things seem to be happening at once.",
+      "findings": [
+        {"severity": "must", "problem": "A chip 'Tom Achterberg' floats over Friday with the hint 'Drop to plan a one-to-one with Tom Achterberg' while the New event popover is open on Monday. A first-time user cannot tell where that chip came from or whether it belongs to the event being made.", "fix": "Give the drag-a-person state its own lettered frame with a caption that says where the drag starts, and leave this frame to the popover alone."},
+        {"severity": "would", "problem": "The calendar list is open beside the popover and has a group 'Delegated to you' with the row 'Tom Achterberg, On behalf of Tom Achterberg'. Nothing says that choosing it creates the event in Tom's name.", "fix": "Change the second line to 'The event is made in Tom's name' and show the open list as a second frame so the closed popover can be read first."},
+        {"severity": "would", "problem": "There are two search fields in view: 'Search events, people or #work package' in the top bar and a plain 'Search' at the top of the right panel, with no hint how they differ.", "fix": "Keep the top bar search only, or label the panel field for what it searches (for example 'Search this week')."},
+        {"severity": "would", "problem": "The grid has two unlabeled time columns (CEST and UTC) and every hour is printed twice. A project manager who did not ask for UTC reads the second column as noise.", "fix": "Show the second column only when the user has added a second time zone, and give it a tooltip or a header that says 'second time zone'."}
+      ]
+    },
+    {
+      "board": "ClEventEditor",
+      "verdict": "mostly clear",
+      "reason": "Sections are well labelled, but the last section asks the same privacy question three times and the answers shown contradict each other.",
+      "findings": [
+        {"severity": "must", "problem": "'Availability and visibility' has three groups: 'Show me as Busy or Free', 'People you share the calendar with see: The whole event, Only that you are busy, Nothing', and 'Visibility: Public or Private'. The frame has 'The whole event' and 'Private' both chosen, so a user cannot tell who will see the event.", "fix": "Keep 'Show me as Busy or Free' and merge the other two into one question, 'Who can see this event', with the options as one list and one line under each saying who that is."},
+        {"severity": "must", "problem": "Under Save and Cancel sits a bar 'You have unsaved changes. Discard them?' with 'Keep editing' and 'Discard'. Four buttons are in view and Cancel and Discard seem to do the same thing.", "fix": "Show the unsaved changes question as its own frame, replacing the Save and Cancel row after Cancel or close was pressed."},
+        {"severity": "would", "problem": "The panel is one scroll of nine sections here and three more on ClEventExtras, and Save sits only at the very bottom. A user who changes the title has to scroll past everything to save.", "fix": "Pin Save and Cancel to the bottom of the panel and group the sections into tabs, for example Details, People, Reminders and files, Video call."},
+        {"severity": "would", "problem": "'Type' offers Event, Focus time, Out of office and Birthday, with a note that Birthday is chosen by itself from the title. A type that the app picks from a word in the title is surprising and the note is easy to miss.", "fix": "Leave Birthday out of the type row for a hand-made event, or say next to it 'set from your contacts' as ClRepeat frame c does."}
+      ]
+    },
+    {
+      "board": "ClEventExtras",
+      "verdict": "unclear",
+      "reason": "Two questions that belong to a later moment (open an outside link, give invitees access when saving) are drawn inside the form with their own buttons, so the panel has three competing save-like actions.",
+      "findings": [
+        {"severity": "must", "problem": "In Attachments the box 'Give the 4 invitees access to the attached files? Asked when you save' has the buttons 'Give access when saving' and 'Save without access', and the real Save is further down. A user cannot tell whether 'Save without access' saves the event now.", "fix": "Show this question as a dialog in its own frame after Save is pressed, or turn it into one checkbox in the section, 'Give the invitees access to these files'."},
+        {"severity": "must", "problem": "The box 'This link leads outside Nextcloud. Open https://lyon.fr/go-live-briefing in a new tab?' with 'Open the link' and 'Stay here' sits permanently between the attachment list and the add buttons, as if it were part of the form.", "fix": "Move it to its own frame as the state after a click on the outside link, and keep the section to the list and the two add buttons."},
+        {"severity": "must", "problem": "Video call shows four parallel ways at once: 'New Talk conversation', 'Attach an existing Talk conversation' with a filled-in Conversation list although it is not chosen, three provider buttons, and 'Put the link in The location' while Location already holds 'Ville de Lyon, salle 204'. 'Talk' is not explained and it is unclear whether the address is overwritten.", "fix": "Start with one choice 'Video call: none, Talk, Google Meet, Microsoft Teams, Zoom', show the Talk options only under Talk, grey the Conversation list until 'existing' is chosen, and say 'added after the address' at 'The location'."},
+        {"severity": "would", "problem": "Reminder rows carry text that reads as a specification: 'Days before at a clock time, the rule for all day events' on an event that is not all day, and 'Audio reminder, 1 hour before, Made in another client, Kept as it is'. The header line also says 'scrolled to the lower sections'.", "fix": "Write each row as the reminder itself ('2 days before, at 09:00'), replace 'Kept as it is' with 'Sound reminder from another app, cannot be changed here', and remove the scroll note from the header."}
+      ]
+    },
+    {
+      "board": "ClRepeat",
+      "verdict": "clear",
+      "reason": "Each frame shows one rule or one question, and the sentence that reads the rule back ('Every week on Monday to Friday at 10:00, 15 minutes, never ends') removes any doubt.",
+      "findings": [
+        {"severity": "must", "problem": "Frame d says 'It also skips 3 dates and ends after the 10th time; those parts are kept as stored until you save'. This reads as: pressing Save throws the skipped dates away, yet the only button offered is Save.", "fix": "Say what Save does in plain words, for example 'Saving keeps the 3 skipped dates' or 'Saving here removes the 3 skipped dates', and in the second case ask for confirmation."},
+        {"severity": "would", "problem": "Frame a: the side panel has a button 'Change' next to 'Repeats on weekdays' and a pencil at the top. It is not obvious that Change opens the repeat dialog and the pencil the event.", "fix": "Label the button 'Change the repetition'."},
+        {"severity": "would", "problem": "Frame a: 'Remove the repetition' sits in the footer as plain grey text and is easy to read as a caption instead of an action.", "fix": "Give it the same button shape as Cancel, placed at the right."}
+      ]
+    },
+    {
+      "board": "ClAttendees",
+      "verdict": "mostly clear",
+      "reason": "The people list with its counts is easy to read, but the open row menu mixes role, a switch, contact actions and two risky actions with hints that do not fit the person.",
+      "findings": [
+        {"severity": "must", "problem": "Frame a, row menu of Marc Dubois: 'Remove from the event' carries the hint 'a group goes as a whole' and 'Make organiser' the hint 'stay on as attendee, or leave'. Marc is one person, and the second hint does not say who stays or leaves.", "fix": "Show 'a group goes as a whole' only on a group row, and change the other to 'Make organiser' with the hint 'you become an attendee', asking whether to leave in the confirmation."},
+        {"severity": "would", "problem": "Frame a: 'Non-participant, is informed only' and the switch 'Reply requested' are calendar terms a project manager does not use, and the switch has no explanation at all.", "fix": "Rename them to 'For information only' and 'Ask for an answer', the second with the line 'Off: no invitation reply is asked from this person'."},
+        {"severity": "would", "problem": "Frame c: under Your answer the radio 'The whole series' has the note 'only for a repeating invitation', on an event that happens once. 'Answer from calendar: Customers' with 'This event sits on Customers and on Personal' does not say what the choice changes.", "fix": "Hide the 'This event or The whole series' choice on single events, and reword the last control to 'Keep this event in' with one calendar."},
+        {"severity": "would", "problem": "Frame a: the row status 'delegated to Lea Fontaine' and the count '1 delegated' use a word that elsewhere in this app means a person who manages your whole calendar.", "fix": "Write 'sends Lea Fontaine instead' on the row and '1 sends someone else' in the count."}
+      ]
+    },
+    {
+      "board": "ClEventMenu",
+      "verdict": "unclear",
+      "reason": "The idea of 'blocking an event on another calendar' is never explained and takes up half of the side panel and a whole submenu with two ways to set the same thing.",
+      "findings": [
+        {"severity": "must", "problem": "Frames a and b use 'Blocks on other calendars', 'Blocked on Personal, details shared', 'Block this event on another calendar' and 'Block 2 events on'. A first-time user reads 'block' as forbid or hide, not as 'also reserve this time in my other calendar'.", "fix": "Rename to 'Also keep this time busy in' followed by the calendars, with one line of explanation at the top of the submenu."},
+        {"severity": "must", "problem": "Frame b, submenu: each calendar row already shows 'details', 'busy only' or 'not blocked' at the right, and below it 'The block shows: Event details or Only busy' sets it again for all. Personal says details and Team says busy only while one radio is ticked for both.", "fix": "Keep one control: tick the calendars, then one choice 'Show the details or only busy' that applies to the ticked ones, and drop the per-row words."},
+        {"severity": "must", "problem": "Frame b: 'Switch automatic blocking off for Customers' is a setting of the calendar Customers, found in ClCalendarEdit under 'Block time on another calendar', placed here in the menu of two events.", "fix": "Replace it with a link 'Blocking settings of Customers' that opens the calendar dialog."},
+        {"severity": "would", "problem": "Frame b: in a menu headed '2 events selected', 'Copy link' and 'Make this a bookable slot' apply to 'Demo preparation only'. Frame a: the pale ghost of Release 16.5 scope review overlaps the Stand-up on Wednesday so both texts are unreadable.", "fix": "Grey the two single-event items with the hint 'select one event', and draw the ghost without its text where it overlaps another event."}
+      ]
+    },
+    {
+      "board": "ClFindTime",
+      "verdict": "mostly clear",
+      "reason": "The grid, the picked column and the green button 'Apply this time to the event' make the purpose plain; the room side repeats what the grid already shows.",
+      "findings": [
+        {"severity": "would", "problem": "The three rooms appear twice, as rows in the grid and as cards at the right, and each card has a link 'Timeline' although the timeline of that room is already in the grid. It is unclear what the link opens.", "fix": "Make the card the place to choose and add a room, and rename the link to 'Show in the grid' so it scrolls to that row, or drop it."},
+        {"severity": "would", "problem": "Labels in the grid are cut off: 'Free for al', 'Out of offic', 'Week p'. The two suggested slots are the most important thing in the grid and their label is not readable.", "fix": "Use a tick or a short word ('Free') in narrow blocks and give the full text on hover."},
+        {"severity": "would", "problem": "The Kassel card says 'No longer free: booked 14:00 to 14:30 by the Northwind team' and at the same time 'Added to the event'. The user is not told what happens to the event if they apply the time anyway.", "fix": "Add one line to the card, 'Pick another room or another time', and mark the Kassel row in the grid with the same warning."},
+        {"severity": "would", "problem": "Six filter chips sit above three room cards and one of them, 'Free at this time', looks like a button rather than a filter that is switched on.", "fix": "Put 'Free at this time' first as a tick box and fold building, floor, seats, type and equipment behind one 'Filter' button that shows the active count."}
+      ]
+    },
+    {
+      "board": "ClScheduling",
+      "verdict": "mostly clear",
+      "reason": "Four small tables with a sentence each explain themselves, but the words schedule, link, booking page and proposal are used without saying how they differ, and one table has no way to start a new item.",
+      "findings": [
+        {"severity": "must", "problem": "At the top right, 'View and edit all your links' sits next to 'New schedule' on the page that already lists all schedules and links with Edit on every row. A user cannot tell where it leads.", "fix": "Remove the link, or name its real target."},
+        {"severity": "would", "problem": "'Appointment schedules' has 'New schedule' and 'One-off links' has 'New one-off link', but 'Open meeting proposals' has no button to start a proposal.", "fix": "Add 'New proposal' at the right of that heading, in the same place as 'New one-off link'."},
+        {"severity": "would", "problem": "The difference between an appointment schedule (a standing page), a one-off link (a few times) and a proposal (a vote) has to be read from three grey sentences. The right panel opens over the page with no sign which row it belongs to other than a faint highlight.", "fix": "Put a three-line 'Which one do I need' strip under the page title, and repeat the row name in the panel header ('One-off link: Kick-off options Lyon')."},
+        {"severity": "would", "problem": "In the panel, 'Offered times' is a small week grid with the hint 'Drag free times on the calendar to offer them, or draw them here', and the same times are listed again below with 'free' and 'being added'. The words 'free' and 'being added' are not explained.", "fix": "Keep the list as the record, drop the status words or change them to 'not booked yet', and say in one line that the hatched areas are your own busy times."}
+      ]
+    },
+    {
+      "board": "ClScheduleEditor",
+      "verdict": "clear",
+      "reason": "Eight headed groups in two columns, each with one sentence that says what it controls, and one green Save.",
+      "findings": [
+        {"severity": "would", "problem": "The dialog subtitle reads 'Rollout check-in. A new schedule starts from the same form', which is a note about the design, not text for the user.", "fix": "Keep 'Rollout check-in' only."},
+        {"severity": "would", "problem": "'Location or video link' holds 'Northwind office, room Lyon, or the video room below' while the switch 'Create a video room for every booking' is on. The booker cannot tell whether the meeting is in the room or on video.", "fix": "Make it a choice 'In person, Video call, or The booker chooses' with the address field only for in person."},
+        {"severity": "would", "problem": "The background button reads 'New appointment schedule' while ClScheduling calls the same button 'New schedule'.", "fix": "Use one label in both places."}
+      ]
+    },
+    {
+      "board": "ClProposal",
+      "verdict": "mostly clear",
+      "reason": "The vote table and the visitor page are easy to read, but the panel shows the draft form and the result of the vote at once, with three actions that belong to different moments.",
+      "findings": [
+        {"severity": "must", "problem": "Frame a: the panel has 'Create the event on Thu 15, 10:00 with all participants', 'Save and send the proposal' and 'Copy the voting link' together, above them editable title, length and participants and a table with 3 of 4 answers. A user cannot tell whether the proposal was already sent.", "fix": "Split into two frames: drafting (fields, 'Send the proposal') and voting in progress (read-only summary with 'Edit', the vote table, 'Create the event' and 'Copy the voting link')."},
+        {"severity": "would", "problem": "Frame a: Length offers the buttons 30 min, 45 min, 1 h, 2 h and beside them a field '60 min, custom', so the same length is shown twice. The tag 'REQ' in the vote table is an unexplained abbreviation.", "fix": "Replace the field by a fifth button 'Other' that reveals it, and write 'required' in full."},
+        {"severity": "would", "problem": "Frame a: the same thing is called 'candidate time' in the header hint, 'proposed time' in the table and 'Proposed, held as tentative' in the legend.", "fix": "Use 'proposed time' everywhere."},
+        {"severity": "would", "problem": "Frame a: the legend box lies over the bottom of the Tuesday to Thursday columns and covers the 18:00 row.", "fix": "Place the legend under the grid or in the panel."}
+      ]
+    },
+    {
+      "board": "ClCalendarEdit",
+      "verdict": "mostly clear",
+      "reason": "The Details tab is well grouped, but a deletion countdown appears inside it without a visible Delete button, and the two tabs close in different ways.",
+      "findings": [
+        {"severity": "must", "problem": "Frame a: a red bar says 'Northwind team is deleted in 7 seconds' with 'Cancel the deletion', directly above the dialog's own Cancel and Save. No Delete button is visible in the dialog, so the user cannot tell what started it, and may press Cancel expecting it to stop the deletion.", "fix": "Show a 'Delete this calendar' button at the bottom left of the Details tab, and show the countdown as its own frame that replaces the footer buttons with the single action 'Cancel the deletion'."},
+        {"severity": "must", "problem": "Frame b: the column 'Sees confidential events' uses a word that the event editor does not offer. There the choices are 'The whole event, Only that you are busy, Nothing' and 'Public or Private'.", "fix": "Name the column after the editor's option, for example 'Sees private events', and use that one word in both places."},
+        {"severity": "would", "problem": "The Details tab ends with Cancel and Save, the Sharing tab with Done only. A user does not know whether a share is active the moment it is switched on.", "fix": "Use one footer for both tabs, or state on Sharing 'Changes here apply at once'."},
+        {"severity": "would", "problem": "Two links to the same calendar live on two tabs: 'Private link for another app' on Details and 'Public link' on Sharing. On Sharing the switch and the red 'Remove link' both take the link back.", "fix": "Move the private link to the Sharing tab under a heading 'Links', and keep the switch as the only way to take the public link back."}
+      ]
+    },
+    {
+      "board": "ClAddCalendar",
+      "verdict": "clear",
+      "reason": "One dialog, the eight ways down the left with a sentence each, and one green action per way.",
+      "findings": [
+        {"severity": "would", "problem": "'In your connected account, 3 subscriptions on the mail server' is not understandable: the settings dialog uses 'Connected accounts' for Google and Microsoft 365, and here it means the user's own mail server.", "fix": "Rename to 'From your mail account' with the line 'Calendars you follow in olivia@northwind-projects.test'."},
+        {"severity": "would", "problem": "Frame a: the Import text names 'iCalendar (.ics), jCal (.json) and xCal (.xml)' and the file rows repeat 'jCal' and 'xCal'. A project manager only needs to know the file is accepted.", "fix": "Say 'Calendar files (.ics, .json, .xml)' and show the event count only in the row."},
+        {"severity": "would", "problem": "Frame b: 'A colleague's calendar' has 'Look once' and 'Pin to my calendar list', two labels that do not say that one is temporary and the other permanent. The Import card carries the note 'The same way before any file is dropped', which is a design note.", "fix": "Label them 'Show until I close it' and 'Add to my list', and remove the note."}
+      ]
+    },
+    {
+      "board": "ClPublicCalendar",
+      "verdict": "clear",
+      "reason": "It is plainly a read-only public calendar: the header says no account is needed, and Subscribe and Download are the only actions.",
+      "findings": [
+        {"severity": "would", "problem": "Frame a: the info box in the event panel ends with 'Signed in but not allowed to edit? You get this same panel.' A visitor without an account has no use for that sentence.", "fix": "Stop the box after 'Participants and attachments are not shown on a published calendar.'"},
+        {"severity": "would", "problem": "Frame a: typing 'review' fades the events that do not match, and the field shows '2 of 24', but nothing says that the pale events are filtered out rather than past or cancelled.", "fix": "Write '2 of 24 events match' under the field, or hide the events that do not match."},
+        {"severity": "would", "problem": "Frame a: 'Subscribe' has a small arrow and 'Download .ics' sits beside it, and the event panel has 'Download this event'. A visitor may not know the difference between subscribing and downloading.", "fix": "Add a second line in the Subscribe menu, 'stays up to date', and under Download, 'a copy of today'."}
+      ]
+    },
+    {
+      "board": "ClBookingPage",
+      "verdict": "clear",
+      "reason": "Kind of appointment, date, time, details and one green button that names the exact slot; every later state says in one sentence what happened and what to do.",
+      "findings": [
+        {"severity": "would", "problem": "Frame d: 'Reschedule' and a red-outlined 'Cancel the appointment' sit at the top and a red filled 'Cancel and send the reason' at the bottom, with the reason field between. It looks as if there are two cancel buttons, and the field holds a text about rescheduling.", "fix": "Show two choices first (Reschedule, Cancel) and only after Cancel is chosen show the reason field with the one red button."},
+        {"severity": "would", "problem": "Frame a: the left column closes with 'Olivia's working hours are Monday to Friday, 09:00 to 17:00 in Amsterdam' while the times are shown in Europe/Stockholm. A visitor in another zone has to convert.", "fix": "Give the hours in the visitor's chosen time zone, or leave the line out since only open slots are shown."}
+      ]
+    },
+    {
+      "board": "ClSettingsCalendars",
+      "verdict": "mostly clear",
+      "reason": "The section is a long scroll of six unrelated groups, and one of them offers to delete the whole user account from inside the calendar settings.",
+      "findings": [
+        {"severity": "must", "problem": "The group 'Profile' has a red button 'Delete your account' that 'removes your calendars, your mail and your files'. An action that destroys everything in the workspace does not belong in the settings of one app, next to 'Change photo, name and username'.", "fix": "Replace the group with one link 'Open your account page' and leave deleting the account to that page."},
+        {"severity": "must", "problem": "'Addresses for other apps' shows 'CalDAV address' and 'Address for iOS and macOS' with fields that are cut off and show the identical text 'https://app.northwind-projects.test/remote.php/dav/'. The user cannot see how they differ, and 'CalDAV' is not explained.", "fix": "Show each address in full on its own line, and label them by use: 'For Thunderbird, Outlook and Android' and 'For iPhone, iPad and Mac'."},
+        {"severity": "would", "problem": "The section is called 'Calendars and accounts' but holds Defaults, Connected accounts, Profile, Delegates, Addresses for other apps and Trash bin, and no list of calendars. The trash bin is at the very bottom of the scroll.", "fix": "Give 'Trash bin' and 'Sharing and delegates' their own entries in the left list, and rename this section 'Defaults and accounts'."},
+        {"severity": "would", "problem": "'Delegates' says a delegate 'sees or manages all your calendars', while sharing one calendar is done in the calendar dialog. The difference between a delegate and a share is not stated.", "fix": "Add one line: 'To share one calendar only, open that calendar and choose Sharing'."}
+      ]
+    },
+    {
+      "board": "ClSettingsView",
+      "verdict": "mostly clear",
+      "reason": "Each setting has a plain label and a help line, but the first group holds settings of the whole workspace and the time zone group asks a lot of a first-time user.",
+      "findings": [
+        {"severity": "would", "problem": "'Theme', 'Interface scale', 'Language' and 'Region' are settings of the whole workspace ('Makes text and controls of the whole app larger or smaller'), shown as calendar settings. A user will not know whether changing them here changes mail and tasks too.", "fix": "Move them to the account's personal settings and leave one line with a link here, or say under the heading 'These apply to all apps'."},
+        {"severity": "would", "problem": "'A click on an event opens: The simple editor or The detailed editor' uses names that appear nowhere else. The popover calls the other one 'the full editor' and the panel is headed 'Edit event'.", "fix": "Use the names the screens themselves use, for example 'The quick popover' and 'The full editor'."},
+        {"severity": "would", "problem": "Time zones: 'Travel to another time zone for a while' shows a key cap 'Z' and the word 'Travel' at the right. It is not clear whether that is a button or only a shortcut hint.", "fix": "Make it a button 'Show another time zone for now' with the key Z as a hint beside it."},
+        {"severity": "would", "problem": "The 'Shown time zones' table lists Amsterdam, Lyon and Malmo, all at CEST 09:00, with up to six actions per row (two arrows, Rename, Replace, Make primary, Remove), while the grid on every screen shows the columns CEST and UTC.", "fix": "Use an example that matches the grid (Amsterdam and UTC), and fold Rename, Replace and Remove into one row menu so 'Make primary' stands out."}
+      ]
+    },
+    {
+      "board": "ClSettingsReminders",
+      "verdict": "mostly clear",
+      "reason": "Reminders and notifications are clear, but half of the section is working hours and a video call service, which a user would look for under Scheduling.",
+      "findings": [
+        {"severity": "must", "problem": "'Working hours' and 'Other video call service' sit under 'Reminders and notifications', while the dialog has a 'Scheduling' section and the calendar dialog has its own 'Default video call'. A user looking for working hours will open Scheduling and not find them.", "fix": "Move 'Working hours' to the Scheduling section and 'Other video call service' to a 'Video calls' group next to the default video call."},
+        {"severity": "would", "problem": "The working hours text says 'The free and busy grid shows you as busy outside these hours, and the planning assistant looks for a time inside them'. Neither name is used on the screen it refers to, which is called 'Find a time and a room'.", "fix": "Write 'Find a time shows you as busy outside these hours and suggests times inside them'."},
+        {"severity": "would", "problem": "The working hours table is read only and split over two columns, with a separate button 'Edit working hours' and no frame that shows the editing.", "fix": "Make the hours editable in place as in ClScheduleEditor ('Bookable hours per weekday'), with the same switch per day."}
+      ]
+    },
+    {
+      "board": "ClAdmin",
+      "verdict": "clear",
+      "reason": "Three cards (defaults, recommended calendars, limits), an opening sentence that explains default against limit, and one Save.",
+      "findings": [
+        {"severity": "would", "problem": "'Who may use the calendar' is explained as 'Approve the calendar for the whole organisation, or start with a few groups ... until the calendar is approved'. 'Approve' suggests a review step that is not on the page.", "fix": "Write 'Switch the calendar on for everyone, or for a few groups first', and add a 'Change groups' button beside 'Only the approved groups: Delivery, Management'."},
+        {"severity": "would", "problem": "'Block invitations to people outside the server' says 'server' where the page elsewhere says 'organisation', and its help line repeats the word.", "fix": "Write 'Block invitations to people outside the organisation' and name the mail domain it checks."},
+        {"severity": "would", "problem": "The card is called 'Recommended public calendars' while the user sees the same list under 'Suggested by your administrator' in Add calendar.", "fix": "Use one name; the help line can then say 'Shown to users under Add calendar with this same name'."},
+        {"severity": "would", "problem": "'Force new reminders to be' has 'What the user chooses' as its first option, which is the opposite of forcing.", "fix": "Rename the setting 'Kind of reminder users may add' with the options 'Any', 'Email only', 'Notification only'."}
+      ]
+    },
+    {
+      "board": "ClYear",
+      "verdict": "mostly clear",
+      "reason": "The year grid and the agenda are both easy to read, but the open view menu hides four months and the agenda exists both as a view in that menu and as the panel beside it.",
+      "findings": [
+        {"severity": "would", "problem": "'Agenda' is an entry in the view menu (key A, 'Events as a chronological list') and also the heading of the right panel that is already showing that list. A user cannot tell what choosing Agenda would add.", "fix": "Name the panel 'Coming up', or let the Agenda view replace the panel when chosen and say so in the menu line."},
+        {"severity": "would", "problem": "The view menu covers March, April and the top of July and August, and its Grid group ('Collapse the all day section', 'Show weekends') does not apply to a year view that has no all day section.", "fix": "Show the open menu as a second frame beside a full year grid, and grey the grid switches that do not apply to the current view."},
+        {"severity": "would", "problem": "In the agenda header, 'All calendars' is followed by the loose text 'or the upcoming events of one calendar', and two arrow buttons beside the heading have no label. In October some days have coloured dots that nothing explains.", "fix": "Drop the loose text (the list itself shows the choices), give the arrows the tooltips 'Earlier' and 'Later', and add 'A dot means events on that day' to the hint line above the grid."},
+        {"severity": "would", "problem": "The entry '4 days, The number of days you choose' and the row 'Days shown' with a stepper are two separate rows for one thing.", "fix": "Put the stepper on the same row as the '4 days' entry."}
+      ]
+    },
+    {
+      "board": "ClCommandMenu",
+      "verdict": "mostly clear",
+      "reason": "The command menu is clear on its own, but the frame also carries the complete shortcut list and a nine-line legend in the side panel, so three reference lists compete.",
+      "findings": [
+        {"severity": "would", "problem": "The right panel stacks 'All keyboard shortcuts' (19 rows) and 'Legend' (9 rows) while the command menu already shows a key beside each action. The same keys are on screen twice.", "fix": "Show the shortcut overview and the legend as their own frame, opened with the key '?', and leave the side panel as it is on the other screens."},
+        {"severity": "would", "problem": "The legend line 'Board card with a due date' uses a word from the Tasks app that is not explained in the calendar, and 'Free, outline only' does not say free of what.", "fix": "Write 'Task card from a board, on its due date' and 'Shows you as free: outline only'."},
+        {"severity": "would", "problem": "In the menu, 'Second time zone, UTC is shown next to CEST' names something the settings dialog calls 'Shown time zones'. The header hint '? opens this' runs into the right edge of the panel.", "fix": "Use 'Shown time zones' in both places and wrap the hint under the heading."},
+        {"severity": "would", "problem": "The Settings group has switches inside a list that is otherwise run with Enter. It is not said what Enter does on a row with a switch.", "fix": "Change the footer hint to 'Enter runs or switches'."}
+      ]
+    },
+    {
+      "board": "ClPhone",
+      "verdict": "clear",
+      "reason": "Each of the three frames has one job and one obvious action: the list, the answer bar and Save.",
+      "findings": [
+        {"severity": "would", "problem": "Frame a: every event shows two times under each other (10:00 and 08:00) and nothing says the second is UTC. The switch for it, 'Also show UTC', is inside the time zone menu.", "fix": "Put the zone as a small label on the second time ('08:00 UTC') on the first event of each day."},
+        {"severity": "would", "problem": "Frame a: the open 'Show times in' menu covers the week strip and the first three events, including the name of the meeting that the Join button belongs to.", "fix": "Show the list without the menu as frame a and the open menu as a second frame."},
+        {"severity": "would", "problem": "Frame b: the invitation has a pencil in the header although ClAttendees states that edits by an attendee stay in their own calendar and do not reach the organiser.", "fix": "Move the pencil into the three-dot menu as 'Edit my copy'."}
+      ]
+    },
+    {
+      "board": "ClWorkPackageCalendar",
+      "verdict": "mostly clear",
+      "reason": "The work package popover is clear and says where it saves, but it is drawn together with a settings panel in which 'view' means something other than Day, Week and Month.",
+      "findings": [
+        {"severity": "must", "problem": "The right panel says '2 views', 'view 1 of 2', 'Filter this view', 'Add another view of this project' and 'Remove this view'. In this app 'view' is the Day, Week, Month and Year choice, so a user will not understand that a view here is a filtered set of work packages shown as a calendar.", "fix": "Call it a 'filtered calendar' or 'selection' ('2 calendars from this project', 'Add another calendar from this project')."},
+        {"severity": "must", "problem": "The sidebar on the other screens shows the OpenProject group as 'Work package dates' and 'Milestones', while this panel shows it as three linked projects with switches. A user cannot map one onto the other.", "fix": "Show the sidebar of this screen expanded with the same rows as the panel (one row per project and per extra selection), and use that list on every screen."},
+        {"severity": "would", "problem": "The popover and the panel are open at once and belong to different tasks: editing one work package and setting up which projects are shown. The popover also covers the title of the EPIC bar.", "fix": "Draw them as two frames, a for the panel and b for the popover."},
+        {"severity": "would", "problem": "In the panel the filter says 'Date This month' and the line under it reports '3 work packages in this week'. The popover header cuts the project name to 'Northwi...' although it is repeated in full in the Project field.", "fix": "Report the count for the period of the filter, and drop the project name from the popover header."}
+      ]
+    }
+  ],
+  "across": [
+    {"severity": "must", "boards": ["ClAttendees", "ClRepeat", "ClFindTime", "ClProposal", "ClEventExtras", "ClEventMenu", "ClPhone"], "problem": "The people of an event have four names: 'People' (ClAttendees, ClPhone), 'Attendees' (panel in ClRepeat a and ClFindTime b), 'Participants' (ClProposal, 'Email all participants' in ClEventMenu) and 'invitees' (ClEventExtras).", "fix": "Choose one word, 'People' for the heading and 'invited people' in sentences, and use it on every screen."},
+    {"severity": "must", "boards": ["ClEventEditor", "ClCalendarEdit", "ClEventMenu", "ClScheduleEditor"], "problem": "Who sees what and what counts as busy is spread over seven differently worded controls: 'Show me as Busy or Free', 'People you share the calendar with see', 'Visibility Public or Private', 'Sees confidential events', 'Never counts as busy', 'Block time on another calendar' and 'Hide times that clash with events in'. 'Confidential' has no matching option in the event editor.", "fix": "Fix two terms and use only those: 'busy or free' for availability and 'private' for hidden details; rename 'block on another calendar' to 'also keep busy in'."},
+    {"severity": "must", "boards": ["ClWorkPackageCalendar", "ClEventPopover", "ClEventMenu", "ClYear"], "problem": "The OpenProject group in the sidebar holds 'Work package dates' and 'Milestones', but the OpenProject calendars panel manages linked projects with 'views'. The heading is also cut to 'OPENPROJECT, NORTHWIND R...' on every screen.", "fix": "Use one model in both places (one row per linked project, with its selections under it), and shorten the heading to 'OpenProject' so it is not cut."},
+    {"severity": "would", "boards": ["ClAttendees", "ClFindTime"], "problem": "The menu on a person row has different content on two screens: in ClAttendees a it holds Role, Reply requested, 'Send an email', 'Copy name and address', 'Make organiser', 'Remove from the event'; in ClFindTime b it holds 'Show availability', 'Send a mail', 'Open contact card', 'Remove from this event'.", "fix": "Use one menu with one wording ('Send an email', 'Remove from the event') that contains both 'Show availability' and the role choices."},
+    {"severity": "would", "boards": ["ClEventPopover", "ClEventEditor", "ClSettingsView", "ClAdmin"], "problem": "The editors have three sets of names: the popover offers 'More options' that 'opens the full editor', the panel is headed 'Edit event', and the settings and the administration page speak of 'The simple editor' and 'The detailed editor'.", "fix": "Name them once ('quick popover' and 'full editor') and use those names in the popover hint, the settings and the administration page."},
+    {"severity": "would", "boards": ["ClScheduling", "ClScheduleEditor", "ClBookingPage", "ClAdmin"], "problem": "The booking feature is called 'appointment schedule', 'schedule', 'booking page', 'booking link' and 'Appointment booking', and the example schedules differ: 'Rollout check-in' and 'Customer intro' in ClScheduling, '30 minute introduction', 'Project check-in' and 'Demo of OpenProject with Nextcloud' on the booking page.", "fix": "Use 'appointment schedule' for the thing the owner makes and 'booking page' for what the visitor sees, and show the same example schedules on all four screens."},
+    {"severity": "would", "boards": ["ClSettingsReminders", "ClCalendarEdit", "ClEventExtras", "ClScheduleEditor"], "problem": "The video call is set in four places with four wordings: 'Other video call service' in settings, 'Default video call' per calendar, the 'Video call' section of an event with 'Talk' and provider buttons, and 'Create a video room for every booking' in a schedule.", "fix": "Call it 'video call' everywhere, list the same services in the same order in each place, and explain 'Talk' once as 'Talk, the video call of this workspace'."},
+    {"severity": "would", "boards": ["ClCalendarEdit", "ClSettingsCalendars", "ClSettingsView", "ClSettingsReminders", "ClAdmin", "ClScheduleEditor"], "problem": "Dialogs close in different ways: the settings dialog has no Save at all, the calendar dialog has Cancel and Save on Details and Done on Sharing, the schedule dialog has 'Save schedule', and the administration page has Save and 'Discard changes'.", "fix": "Pick one rule (for example: dialogs with a form have Cancel and Save, the settings dialog saves at once and says 'Saved' beside the changed row) and state it where it differs."},
+    {"severity": "would", "boards": ["ClAddCalendar", "ClSettingsCalendars", "ClAdmin"], "problem": "'Connected account' means Google, iCloud and Microsoft in the settings and on the administration page ('Users may connect outside accounts'), but the user's own mail server in Add calendar ('In your connected account').", "fix": "Keep 'connected account' for outside providers only and rename the Add calendar entry 'From your mail account'."},
+    {"severity": "would", "boards": ["ClEventPopover", "ClYear", "ClCommandMenu"], "problem": "Two search fields are in view on every screen with the open side panel: the top bar search and a plain 'Search' above the panel. The left sidebar entry is 'Work packages' when open and 'Packages' when collapsed.", "fix": "Drop the panel search or give it a label that says what it searches, and keep 'Work packages' as the tooltip and short label 'Work' in the collapsed bar."},
+    {"severity": "would", "boards": ["ClEventExtras", "ClScheduleEditor", "ClAttendees", "ClAddCalendar", "ClPublicCalendar"], "problem": "Notes about the design are written as text of the product: 'scrolled to the lower sections', 'A new schedule starts from the same form', 'only for a repeating invitation', 'The same way before any file is dropped', 'Signed in but not allowed to edit? You get this same panel'.", "fix": "Move each of these to the frame caption above the screen."},
+    {"severity": "would", "boards": ["ClRepeat", "ClAttendees", "ClEventMenu", "ClEventPopover"], "problem": "The same calendar is called 'Northwind team' in the sidebar and in the calendar dialog, and 'Team' in the event panels of ClRepeat frame b, ClAttendees and ClEventMenu.", "fix": "Use 'Northwind team' everywhere."}
+  ],
+  "keep": [
+    "The sentence that reads a repeat rule back in plain words ('Every week on Monday to Friday at 10:00, 15 minutes, never ends') and the three-choice question 'Only this event, This and following events, All events in the series' with the date at the right.",
+    "Buttons that name exactly what they will do: 'Book Wednesday 14 October, 11:30', 'Apply this time to the event', 'Create the event on Thu 15, 10:00 with all participants', 'Import the remaining file'.",
+    "The Add calendar dialog: all eight ways in one list at the left with one explaining line each, and a result line per imported file.",
+    "The one-line help under each setting and the opening sentence of the administration page that explains a default against a limit.",
+    "The public booking page and its follow-up states (slot taken, check your mail, reschedule or cancel), each saying in one sentence what happened and what to do next."
+  ]
+}

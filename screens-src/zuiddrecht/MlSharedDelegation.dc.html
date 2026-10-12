@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Mail: delegation and shared text blocks in the settings dialog</title>
+<title>Mail: delegation in the settings dialog</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1306px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 940px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="264px,945px"></dc-import></div>
@@ -45,86 +45,58 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 24px">
 
-          <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 19px">Let a colleague work in your mailbox while you are away, work in a mailbox that was handed to you, and share the text blocks you type often.</p>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <label for="ml-deleg-mailbox" style="font-weight: 500; white-space: nowrap">Settings for mailbox</label>
+            <button id="ml-deleg-mailbox" type="button" aria-haspopup="listbox" style="flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Each mailbox has its own. Every change in this dialog is saved at once.</span>
+          </div>
 
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">People who can use my account</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A person you add gets full access: they read, send, file and delete mail in this mailbox as you would. Take it away at any time.</p></div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">People who have the Manager role on my mailbox</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A person with the Manager role reads, files and deletes mail in this mailbox as you would. Whether they may also send as this mailbox is a switch per person. Withdraw the role at any time.</p></div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Person</th><th scope="col" style="{{ th }}">Access</th><th scope="col" style="{{ th }}">Since</th><th scope="col" style="{{ thRight }}"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
+              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Person</th><th scope="col" style="{{ th }}">Role</th><th scope="col" style="{{ th }}; white-space: nowrap">May send as this mailbox</th><th scope="col" style="{{ th }}">Since</th><th scope="col" style="{{ thRight }}">Actions</th></tr></thead>
               <tbody>
                 <sc-for list="{{ delegates }}" as="d" hint-placeholder-count="2">
-                  <tr style="height: 40px; border-bottom: 1px solid #e4e6ea">
-                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ d.initials }}</span><span>{{ d.name }}</span><span style="color: #5e6168">{{ d.mail }}</span></span></td>
-                    <td style="padding: 0 8px">Full access</td>
+                  <tr style="height: 44px; border-bottom: 1px solid #e4e6ea">
+                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ d.initials }}</span><span style="display: flex; flex-direction: column; line-height: 16px"><span>{{ d.name }}</span><span style="font-size: 11px; color: #5e6168">{{ d.mail }}</span></span></span></td>
+                    <td style="padding: 0 8px">Manager</td>
+                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 10px"><button type="button" role="switch" aria-checked="{{ d.sendChecked }}" aria-label="{{ d.name }} may send as this mailbox" style="{{ d.switch }}"><span style="{{ d.knob }}"></span></button><sc-if value="{{ d.saved }}"><span style="font-size: 12px; color: #538b28; font-weight: 600">Saved</span></sc-if></span></td>
                     <td style="padding: 0 8px; color: #5e6168">{{ d.since }}</td>
-                    <td style="padding: 0 8px; text-align: right"><button type="button" aria-label="Take away the access of {{ d.name }}" style="{{ btnRow }}">Take away</button></td>
+                    <td style="padding: 0 8px; text-align: right"><button type="button" aria-label="Withdraw the Manager role of {{ d.name }}" style="{{ btnRow }}">Withdraw</button></td>
                   </tr>
                 </sc-for>
               </tbody>
             </table>
-            <div><button type="button" style="{{ btnSec }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a person</button></div>
+            <div><button type="button" style="{{ btnSec }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Grant the Manager role</button></div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Accounts I may act for</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Mailboxes other people handed to you. Open one and it appears in the folder list beside your own mailbox.</p></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Mailboxes where I have the Manager role</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Mailboxes other people granted you. Switch one on and it appears in the folder list beside your own mailbox. Withdraw takes the role off you; the owner can grant it again.</p></div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Account</th><th scope="col" style="{{ th }}; white-space: nowrap">Delegated by</th><th scope="col" style="{{ th }}; white-space: nowrap">Since</th><th scope="col" style="{{ thRight }}"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
+              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Mailbox</th><th scope="col" style="{{ th }}; white-space: nowrap">Granted by</th><th scope="col" style="{{ th }}; white-space: nowrap">Since</th><th scope="col" style="{{ th }}; white-space: nowrap">Shown beside my own mailbox</th><th scope="col" style="{{ thRight }}">Actions</th></tr></thead>
               <tbody>
                 <sc-for list="{{ acting }}" as="a" hint-placeholder-count="2">
                   <tr style="height: 46px; border-bottom: 1px solid #e4e6ea">
-                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ a.initials }}</span><span style="display: flex; flex-direction: column; line-height: 17px"><span>{{ a.mail }}</span><span style="font-size: 12px; color: #5e6168">{{ a.note }}</span></span></span></td>
-                    <td style="padding: 0 8px; white-space: nowrap"><span style="display: flex; flex-direction: column; line-height: 17px"><span>{{ a.by }}</span><sc-if value="{{ a.open }}" hint-placeholder-val="{{ true }}"><span><span style="{{ chipOpen }}">Open beside my own</span></span></sc-if></span></td>
+                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ a.initials }}</span><span style="display: flex; flex-direction: column; line-height: 17px; white-space: nowrap"><span>{{ a.mail }}</span><span style="font-size: 12px; color: #5e6168">{{ a.note }}</span></span></span></td>
+                    <td style="padding: 0 8px; white-space: nowrap">{{ a.by }}</td>
                     <td style="padding: 0 8px; color: #5e6168; white-space: nowrap">{{ a.since }}</td>
-                    <td style="padding: 0 8px; text-align: right; white-space: nowrap"><sc-if value="{{ a.canOpen }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Open {{ a.mail }} beside my own mailbox" style="{{ btnRow }} margin-right: 6px">Open beside my own</button></sc-if><button type="button" aria-label="Give up access to {{ a.mail }}" style="{{ btnRow }}">Give up</button></td>
+                    <td style="padding: 0 8px"><span style="display: inline-flex; align-items: center; gap: 10px"><button type="button" role="switch" aria-checked="{{ a.openChecked }}" aria-label="Show {{ a.mail }} beside my own mailbox" style="{{ a.switch }}"><span style="{{ a.knob }}"></span></button><span style="font-size: 12px; color: #5e6168">{{ a.openText }}</span></span></td>
+                    <td style="padding: 0 8px; text-align: right; white-space: nowrap"><button type="button" aria-label="Withdraw my Manager role on {{ a.mail }}" style="{{ btnRow }}">Withdraw</button></td>
                   </tr>
                 </sc-for>
               </tbody>
             </table>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">How mail from a mailbox I manage is signed</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Applies to marieke@northwind-projects.test, the mailbox shown beside your own. Mail you send from it goes out as Marieke; a new message written there shows it in the sender choice.</p></div>
             <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
-              <span style="font-size: 12px; color: #5e6168; line-height: 18px; flex: 1 1 auto">Mail you send from a delegated account goes out as that person. A new message written there shows it in the sender choice:</span>
               <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px"><label for="ml-deleg-from" style="color: #5e6168">From</label><button id="ml-deleg-from" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>Marieke de Vries, sent by Olivia Brandt</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></span>
+              <span style="font-size: 12px; color: #5e6168; line-height: 18px">The other choice, "Marieke de Vries" alone, needs "May send as this mailbox" from Marieke.</span>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">My text blocks</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Pieces of text you insert while writing. Share one and the people you name get it in their Insert menu.</p></div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Text block</th><th scope="col" style="{{ th }}">Shared with</th><th scope="col" style="{{ thRight }}"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
-              <tbody>
-                <sc-for list="{{ mine }}" as="t" hint-placeholder-count="3">
-                  <tr style="height: 40px; border-bottom: 1px solid #e4e6ea">
-                    <td style="padding: 0 8px">{{ t.name }}</td>
-                    <td style="padding: 0 8px; color: #5e6168">{{ t.shared }}</td>
-                    <td style="padding: 0 8px; text-align: right"><button type="button" aria-label="Share the text block {{ t.name }}" aria-expanded="{{ t.expanded }}" style="{{ btnRow }}">Share</button></td>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-            <div role="group" aria-label="Share the text block Demo follow-up" style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff">
-              <label for="ml-deleg-share" style="font-weight: 500">Share &quot;Demo follow-up&quot; with users, groups or a mailbox</label>
-              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
-                <sc-for list="{{ shareChips }}" as="c" hint-placeholder-count="2"><span style="{{ chipShare }}">{{ c.label }}<button type="button" aria-label="Stop sharing with {{ c.label }}" style="width: 18px; height: 18px; border: 0; border-radius: 9px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></sc-for>
-                <input id="ml-deleg-share" type="text" placeholder="Type a name, a group or a mailbox address" style="flex: 1 1 240px; height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d; background: #ffffff">
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px"><button type="button" style="{{ btnPri }}">Share</button><button type="button" style="{{ btnSec }}">Cancel</button><span style="font-size: 12px; color: #5e6168">People you share with can insert the block, not change it.</span></div>
-            </div>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Text blocks shared with me</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Insert puts the text at the cursor in the message you are writing.</p></div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 13px">
-              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="{{ th }}">Text block</th><th scope="col" style="{{ th }}">Owner</th><th scope="col" style="{{ thRight }}"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th></tr></thead>
-              <tbody>
-                <sc-for list="{{ theirs }}" as="t" hint-placeholder-count="2">
-                  <tr style="height: 40px; border-bottom: 1px solid #e4e6ea">
-                    <td style="padding: 0 8px">{{ t.name }}</td>
-                    <td style="padding: 0 8px; color: #5e6168">{{ t.owner }}</td>
-                    <td style="padding: 0 8px; text-align: right"><button type="button" aria-label="Insert the text block {{ t.name }}" style="{{ btnRow }}">Insert</button></td>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-          </div>
+          <p style="margin: 0; padding-top: 16px; border-top: 1px solid #e4e6ea; font-size: 12px; color: #5e6168; line-height: 18px">Text blocks and their sharing have their own section: <a href="MlSettingsTextBlocks.dc.html">Text blocks</a>.</p>
 
         </div>
       </section>
@@ -132,7 +104,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1306}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
 class Component extends DCLogic {
   renderVals() {
     const th = 'text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168';
@@ -144,25 +116,20 @@ class Component extends DCLogic {
     const chooser = "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; min-width: 180px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px 'Fira Sans', sans-serif; white-space: nowrap";
     const chipOpen = 'display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-size: 11px; font-weight: 600; white-space: nowrap';
     const chipShare = 'display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 4px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #1b1c1d; font-size: 13px; white-space: nowrap';
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    const sw = on => ({ switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff });
     const delegates = [
-      ['Tom Achterberg', 'TA', 'tom@northwind-projects.test', '3 September'],
-      ['Priya Raman', 'PR', 'priya@northwind-projects.test', '28 September']
-    ].map(([name, initials, mail, since]) => ({ name, initials, mail, since }));
+      ['Tom Achterberg', 'TA', 'tom@northwind-projects.test', '3 September', true, true],
+      ['Priya Raman', 'PR', 'priya@northwind-projects.test', '28 September', false, false]
+    ].map(([name, initials, mail, since, send, saved]) => ({ name, initials, mail, since, sendChecked: send ? 'true' : 'false', saved, ...sw(send) }));
     const acting = [
       ['marieke@northwind-projects.test', 'MV', 'On leave until 30 October', 'Marieke de Vries', '1 October', true],
-      ['support@northwind-projects.test', 'NS', 'Shared mailbox', 'Northwind support', '12 May', false]
-    ].map(([mail, initials, note, by, since, open]) => ({ mail, initials, note, by, since, open, canOpen: !open }));
-    const mine = [
-      ['Demo follow-up', 'Sales (group), Tom Achterberg', 'true'],
-      ['Rollout kick-off agenda', 'Not shared', 'false'],
-      ['Invoice received, thank you', 'support@northwind-projects.test', 'false']
-    ].map(([name, shared, expanded]) => ({ name, shared, expanded }));
-    const shareChips = [{ label: 'Sales (group)' }, { label: 'Tom Achterberg' }];
-    const theirs = [
-      ['Offer: standard terms and delivery', 'Tom Achterberg'],
-      ['Handover while on leave', 'Marieke de Vries']
-    ].map(([name, owner]) => ({ name, owner }));
-    return { th, thRight, btnSec, btnPri, btnRow, avatar, chooser, chipOpen, chipShare, delegates, acting, mine, shareChips, theirs };
+      ['support@northwind-projects.test', 'NS', 'Northwind support, shared mailbox', 'Ines Okafor', '12 May', false]
+    ].map(([mail, initials, note, by, since, open]) => ({ mail, initials, note, by, since, openChecked: open ? 'true' : 'false', openText: open ? 'Shown' : 'Not shown', ...sw(open) }));
+    return { th, thRight, btnSec, btnPri, btnRow, avatar, chooser, delegates, acting };
   }
 }
 </script>

@@ -45,7 +45,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 24px">
 
-          <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 19px">What the app fetches from outside, what it learns from you, and the certificates it signs and encrypts with.</p>
+          <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 19px">These settings apply to every mailbox. What the app fetches from outside, what it learns from you, and the certificates it signs and encrypts with; a certificate is chosen per address at the foot. Every change in this dialog is saved at once.</p>
 
           <div style="display: flex; flex-direction: column; gap: 10px">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
@@ -65,7 +65,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                 </sc-for>
               </tbody>
             </table>
-            <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A sender lands here when you choose Always show pictures from this sender on a message.</p>
+            <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A sender lands here when you choose Always show pictures from this sender on a message. The senders you blocked are listed under <a href="MlOrganiseSettings.dc.html">Search and clean-up</a>.</p>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
@@ -82,7 +82,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 
           <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 16px; border-top: 1px solid #e4e6ea">
             <label for="ml-priv-learning" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Learn from my behaviour</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">Off: the app keeps no record of which folders, recipients and work packages you pick. Suggestions then come only from your address book and the message itself.</span></label>
-            <button id="ml-priv-learning" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
+            <span style="font-size: 12px; color: #538b28; font-weight: 600; margin-right: 10px; margin-top: 2px">Saved</span><button id="ml-priv-learning" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
@@ -104,7 +104,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Certificate per account and alias</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Which certificate signs the mail that goes out from each address. An alias can follow its account or use one of its own.</p></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Certificate per account and alias</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Which certificate signs the mail that goes out from each address, the same addresses as under Signatures and sender addresses. An alias can follow its account or use one of its own.</p></div>
             <div style="display: grid; grid-template-columns: 1fr; gap: 0">
               <sc-for list="{{ assign }}" as="a" hint-placeholder-count="3">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 40px; border-bottom: 1px solid #e4e6ea">
@@ -145,13 +145,12 @@ class Component extends DCLogic {
     const dot = (bg, border) => 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + border;
     const certs = [
       ['Olivia Brandt', 'olivia@northwind-projects.test', 'Northwind Projects CA', '14 March 2027', dot('#538b28', '#3f6a1e'), 'color: #1b1c1d'],
-      ['Olivia Brandt', 'o.brandt@northwind.example', 'Northwind Projects CA', '2 November 2026, in 3 weeks', dot('#ff9d2e', '#c77a1f'), 'color: #1b1c1d; font-weight: 600']
+      ['Olivia Brandt, Northwind delivery', 'delivery@northwind-projects.test', 'Northwind Projects CA', '2 November 2026, in 3 weeks', dot('#ff9d2e', '#c77a1f'), 'color: #1b1c1d; font-weight: 600']
     ].map(([owner, mail, issuer, expires, dot, expiryStyle]) => ({ owner, mail, issuer, expires, dot, expiryStyle }));
     const assign = [
       ['olivia@northwind-projects.test', 'account', 'Olivia Brandt, until 14 March 2027'],
-      ['delivery@northwind-projects.test', 'alias', 'Same as the account'],
-      ['o.brandt@northwind.example', 'alias', 'Olivia Brandt, until 2 November 2026'],
-      ['noreply@northwind-projects.test', 'alias', 'No certificate, send unsigned']
+      ['delivery@northwind-projects.test', 'alias', 'Northwind delivery, until 2 November 2026'],
+      ['olivia.brandt@northwind-projects.test', 'alias', 'Same as the account']
     ].map(([address, kind, cert], i) => ({ address, kind, cert, id: 'ml-priv-assign-' + i }));
     return { th, thRight, btnSec, btnRow, btnDanger, chooser, avatar, chip, switchOn, knobOn, switchOff, knobOff, trusted, domains, certs, assign };
   }

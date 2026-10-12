@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenProject twin: backlogs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="OpHeader" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="OpNav" active="Backlogs" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" hint-size="264px,932px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Backlogs</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 14l4-4 4 4 5-6"></path></svg>Burndown</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New sprint</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #5e6168"><nav aria-label="Breadcrumb" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="OpHome.dc.html" style="color: #5e6168; text-decoration: none">Northwind rollout Lyon</a><span aria-hidden="true">/</span><span aria-current="page">Backlogs</span></nav><span aria-hidden="true">·</span><span>Sprint 21 is running, 19 story points planned, velocity last sprint 17</span></div>
+        </section>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start">
+          <sc-for list="{{ lists }}" as="l" hint-placeholder-count="2">
+            <section aria-labelledby="{{ l.hid }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3">
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><h2 id="{{ l.hid }}" style="margin: 0; font-size: 16px; font-weight: 700">{{ l.title }}</h2><span style="font-size: 13px; color: #5e6168">{{ l.meta }}</span></div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <span style="padding: 3px 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; font-weight: 600; background: #eaf0f7; color: #234a78; white-space: nowrap">{{ l.points }} points</span>
+                  <button type="button" aria-label="Actions for {{ l.title }}" aria-haspopup="menu" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: var(--sc-radius, 8px); border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
+                </div>
+              </div>
+              <sc-if value="{{ l.hasGoal }}" hint-placeholder-val="{{ true }}"><div style="padding: 12px 20px; border-bottom: 1px solid #eef0f3; background: #fafbfc; color: #3d4047"><strong>Sprint goal:</strong> {{ l.goal }}</div></sc-if>
+              <table style="border-collapse: collapse; width: 100%; font-size: 14px; line-height: 20px">
+                <thead>
+                  <tr style="text-align: left; color: #5e6168; background: #fafbfc">
+                    <th scope="col" style="padding: 12px 8px 12px 16px; width: 1%"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Drag handle</span></th>
+                    <th scope="col" style="padding: 12px 12px; font-weight: 600; white-space: nowrap">ID</th>
+                    <th scope="col" style="padding: 12px 12px; font-weight: 600">Subject</th>
+                    <th scope="col" style="padding: 12px 12px; font-weight: 600; white-space: nowrap">Status</th>
+                    <th scope="col" style="padding: 12px 16px 12px 12px; font-weight: 600; white-space: nowrap; text-align: right">Points</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ l.rows }}" as="r" hint-placeholder-count="5">
+                    <tr style="border-top: 1px solid #eef0f3">
+                      <td style="padding: 14px 4px 14px 14px; color: #c4c7cb" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"></path></svg></td>
+                      <td style="padding: 14px 12px; white-space: nowrap"><a href="{{ r.href }}" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ r.id }}</a></td>
+                      <td style="padding: 12px 12px; min-width: 0"><span style="display: flex; flex-direction: column; line-height: 1.3"><span style="font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ r.typeColor }}">{{ r.type }}</span><a href="{{ r.href }}" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ r.subject }}</a></span></td>
+                      <td style="padding: 14px 12px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 5px; background: {{ r.fill }}; box-shadow: 0 0 0 2px {{ r.ring }}"></span>{{ r.status }}</span></td>
+                      <td style="padding: 10px 16px 10px 12px; white-space: nowrap; text-align: right"><button type="button" aria-label="Story points for #{{ r.id }}: {{ r.points }}, change" style="min-width: 34px; height: 34px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">{{ r.points }}</button></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eef0f3; font-size: 14px; color: #5e6168"><span>{{ l.footer }}</span><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add story</button></div>
+            </section>
+          </sc-for>
+        </div>
+        <section aria-labelledby="h-burn" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 id="h-burn" style="margin: 0; font-size: 16px; font-weight: 700">Sprint 21 burndown</h2><span style="font-size: 13px; color: #5e6168">Day 1 of 10 · 19 points left · 2 points per day needed</span></div>
+          <svg width="100%" height="120" viewBox="0 0 1080 120" preserveAspectRatio="none" role="img" aria-label="Burndown: 19 points planned, ideal line to zero on 23 October, actual line at 19 on day 1" style="display: block">
+            <path d="M40 12H1070M40 56H1070M40 100H1070" stroke="#eef0f3" stroke-width="1"></path>
+            <path d="M40 12L1070 100" stroke="#c4c7cb" stroke-width="1.5" stroke-dasharray="6 4"></path>
+            <path d="M40 12L143 12" stroke="#3669a5" stroke-width="2.5" stroke-linecap="round"></path>
+            <circle cx="143" cy="12" r="4" fill="#3669a5"></circle>
+          </svg>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5e6168; padding: 0 2px"><span>12 Oct</span><span>14 Oct</span><span>16 Oct</span><span>19 Oct</span><span>21 Oct</span><span>23 Oct</span></div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'] };
+    const row = ([id, type, subject, status, points]) => ({ id, type, subject, status, points, typeColor: TYPE[type], fill: STATUS[status][0], ring: STATUS[status][1], href: id === 58412 ? 'OpWorkPackage.dc.html' : '#' });
+    const lists = [
+      { hid: 'h-sprint', title: 'Sprint 21', meta: '12 to 23 October · 5 stories', points: 19, hasGoal: true, goal: 'Lyon can sign in through Keycloak and the Gantt export is fixed before the review on 15 October.', footer: '5 stories, 19 points, 0 done',
+        rows: [[58440, 'TASK', 'Send OIDC client settings to Lyon', 'new', 3], [58390, 'FEATURE', 'Single sign-on through Keycloak', 'in review', 8], [58231, 'BUG', 'Gantt PDF export drops trailing columns', 'in development', 5], [58455, 'TASK', 'Prepare demo for Malmo Energi', 'new', 2], [58301, 'TASK', 'Quote for project lead training Kassel', 'needs clarification', 1]].map(row) },
+      { hid: 'h-product', title: 'Product backlog', meta: 'Ordered by priority, drag into a sprint', points: 17, hasGoal: false, goal: '', footer: '4 stories, 17 points',
+        rows: [[58412, 'FEATURE', 'Link Nextcloud project folders on rollout', 'in development', 13], [58102, 'BUG', 'Folder link breaks on rename', 'on hold', 3], [58441, 'TASK', 'Move kick-off to the afternoon', 'new', 1], [57990, 'EPIC', 'Release 16.5 scope', 'in review', '-']].map(row) }
+    ];
+    return { lists };
+  }
+}
+</script>
+</body>
+</html>

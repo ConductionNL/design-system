@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: comments and activity of a work package and its project</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#tb-filter::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1180px; overflow: hidden">
+  <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" folded="true" hint-size="64px,1125px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="flex: 0 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 8px"><h1 style="margin: 0; min-width: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northwind rollout Lyon</h1></div>
+        <div role="group" aria-label="Group by" style="flex: none; display: flex; align-items: center; gap: 6px">
+          <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <div style="flex: none; position: relative; display: flex; align-items: center; width: 150px">
+          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+          <input id="tb-filter" type="search" placeholder="Filter" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+        </div>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; position: relative; display: flex; gap: 10px; padding: 12px; overflow: hidden">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="4">
+          <section aria-label="{{ col.name }}" style="flex: 0 0 200px; width: 200px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="{{ col.dot }}"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ col.name }}</h2>
+              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span>
+            </div>
+            <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+              <a href="TbCard.dc.html" aria-label="{{ c.aria }}" aria-current="{{ c.current }}" style="{{ c.style }}">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="{{ c.typeStyle }}">{{ c.type }}</span><span style="color: #3d4047">{{ c.number }}</span></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d">{{ c.subject }}</span>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px"><span role="img" aria-label="Assignee {{ c.assignee }}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ c.initials }}</span><span style="font-size: 12px; color: #5e6168">{{ c.due }}</span></span>
+              </a>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+    </main>
+    <aside aria-label="Work package FEATURE #58412" style="flex: 0 0 480px; width: 480px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Work package</span>
+        <div style="display: flex; gap: 2px">
+          <button type="button" aria-label="Open in full width" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></button>
+          <button type="button" aria-label="Close the work package panel" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+      </div>
+      <div style="flex: none; display: flex; flex-direction: column; gap: 8px; padding: 14px 16px 12px">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 600">#58412</a><span style="flex: 1 1 auto"></span><span style="font-size: 12px; color: #5e6168">Northwind rollout Lyon</span></div>
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Link Nextcloud project folders on rollout</h2>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <button type="button" aria-label="Status: in development, change" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid #21c8de; border-radius: var(--sc-radius, 8px); background: #66d9e8; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">in development<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <span style="font-size: 12px; color: #5e6168">Tom Achterberg, due 30 Oct</span>
+        </div>
+      </div>
+      <div role="tablist" aria-label="Linked items" style="flex: none; display: flex; gap: 20px; padding: 0 16px; border-bottom: 1px solid #e4e6ea">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ true }}"><span style="{{ t.countStyle }}">{{ t.count }}</span></sc-if></button></sc-for>
+      </div>
+      <div role="tabpanel" aria-label="Activity" style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 10px; padding: 12px 16px 16px; background: #f5f6f8">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+          <div role="group" aria-label="Scope of the timeline" style="display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; overflow: hidden">
+            <sc-for list="{{ scope }}" as="s" hint-placeholder-count="2"><button type="button" aria-pressed="{{ s.on }}" style="{{ s.style }}">{{ s.label }}</button></sc-for>
+          </div>
+          <span style="flex: 1 1 auto"></span>
+          <span style="font-size: 12px; color: #5e6168">Show</span>
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3"><button type="button" aria-pressed="{{ f.on }}" style="{{ f.style }}">{{ f.label }}</button></sc-for>
+        </div>
+
+        <div style="position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 0 0 3px #eaf0f7">
+          <div role="textbox" aria-multiline="true" aria-label="Write a comment. Markdown is supported, type @ to mention someone" style="min-height: 64px; padding: 10px 12px 4px; font-size: 14px; line-height: 21px; color: #1b1c1d">Priya, the Kassel board meets on Thursday. Can the fix for <span style="font-family: ui-monospace, 'Fira Mono', monospace; font-size: 13px; padding: 0 4px; border-radius: 4px; background: #eef0f3">#58231</span> land in <strong>16.5</strong>? @Pri<span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; margin-left: 1px; vertical-align: -3px; background: #1b1c1d"></span></div>
+          <div style="display: flex; align-items: center; gap: 2px; padding: 4px 8px 8px">
+            <sc-for list="{{ fmt }}" as="f" hint-placeholder-count="4"><button type="button" aria-label="{{ f.label }}" title="{{ f.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ f.icon }}"></path></svg></button></sc-for>
+            <button type="button" aria-label="Mention a colleague" title="Mention a colleague" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg></button>
+            <span style="margin-left: 6px; font-size: 12px; color: #5e6168">Markdown: **bold**, lists, `code`</span>
+            <span style="flex: 1 1 auto"></span>
+            <button type="button" style="display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif">Comment</button>
+          </div>
+          <div role="listbox" aria-label="People matching Pri" style="position: absolute; left: 12px; top: 46px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+                        <sc-for list="{{ people }}" as="p" hint-placeholder-count="2">
+              <button type="button" role="option" aria-selected="{{ p.selected }}" style="{{ p.style }}">
+                <span style="{{ p.avatar }}">{{ p.initials }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 17px; text-align: left"><span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: #eaf0f7">Pri</span>{{ p.rest }}</span><span style="font-size: 11px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.hint }}</span></span>
+              </button>
+            </sc-for>
+                      </div>
+        </div>
+
+        <ol aria-label="Timeline, newest first" style="list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+          <li style="{{ timeline }}"><span style="{{ projectTag }}">Project</span><span><strong style="font-weight: 600; color: #3d4047">Priya Raman</strong> created BUG #58231 Gantt PDF export drops trailing columns</span><span style="flex: 1 1 auto"></span><span style="white-space: nowrap">Today 04:30</span></li>
+          <li>
+            <article aria-label="Comment from Tom Achterberg, 9 October 15:12" style="{{ comment }}">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168">
+                <span style="{{ avatarThem }}">TA</span>
+                <strong style="font-size: 13px; color: #1b1c1d">Tom Achterberg</strong>
+                <span style="flex: 1 1 auto"></span>
+                <span style="white-space: nowrap">9 Oct 15:12</span>
+              </div>
+              <div style="padding-left: 32px; font-size: 14px; line-height: 21px; color: #1b1c1d; display: flex; flex-direction: column; gap: 4px">
+                <p style="margin: 0"><span style="{{ mention }}">@Olivia Brandt</span> two things before we link the folders on the Lyon realm:</p>
+                <ul style="margin: 0; padding-left: 20px"><li><strong>Group folders</strong> need the <em>Lyon</em> group first, see the sheet.</li><li>Realm export is in <span style="font-family: ui-monospace, 'Fira Mono', monospace; font-size: 13px; padding: 0 4px; border-radius: 4px; background: #eef0f3">oidc-client-settings.xlsx</span>, tab 2.</li></ul>
+              </div>
+              <div style="display: flex; align-items: center; gap: 2px; padding-left: 26px">
+                <button type="button" style="{{ quiet }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17l-5-5 5-5M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>Reply</button>
+                <button type="button" aria-label="Copy link to this comment" style="{{ quiet }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Copy link</button>
+              </div>
+            </article>
+          </li>
+          <li style="margin-left: 32px">
+            <article aria-label="Your comment, today 08:10, a reply to Tom Achterberg" style="{{ comment }}">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168">
+                <span style="{{ avatarMe }}">OB</span>
+                <strong style="font-size: 13px; color: #1b1c1d">You</strong>
+                <span style="{{ replyChip }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17l-5-5 5-5M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>Reply to Tom Achterberg</span>
+                <span style="flex: 1 1 auto"></span>
+                <span style="white-space: nowrap">Today 08:10</span>
+              </div>
+              <p style="margin: 0; padding-left: 32px; font-size: 14px; line-height: 21px; color: #1b1c1d">Agreed. I will take the <strong>group folders</strong> part and keep the realm export in <span style="font-family: ui-monospace, 'Fira Mono', monospace; font-size: 13px; padding: 0 4px; border-radius: 4px; background: #eef0f3">oidc-client-settings.xlsx</span>.</p>
+              <div style="display: flex; align-items: center; gap: 2px; padding-left: 26px">
+                <button type="button" aria-label="Edit your comment" style="{{ quiet }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>Edit</button>
+                <button type="button" aria-label="Delete your comment" style="{{ quiet }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Delete</button>
+                <span style="margin-left: 6px; font-size: 12px; color: #5e6168">Your own comment: edit or delete it any time.</span>
+              </div>
+            </article>
+          </li>
+          <li style="{{ timeline }}"><span style="{{ wpTag }}">Work package</span><span><strong style="font-weight: 600; color: #3d4047">Tom Achterberg</strong> changed the status from new to in development</span><span style="flex: 1 1 auto"></span><span style="white-space: nowrap">9 Oct 15:12</span></li>
+          <li style="display: flex; flex-direction: column; gap: 6px; padding: 2px 0 2px 0">
+            <div style="{{ timeline }}"><span style="{{ wpTag }}">Work package</span><span><strong style="font-weight: 600; color: #3d4047">Olivia Brandt</strong> changed the description</span><span style="flex: 1 1 auto"></span><span style="white-space: nowrap">8 Oct 16:40</span></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-left: 46px">
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 17px"><span style="font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; color: #5e6168">Before</span><span style="color: #5e6168; text-decoration: line-through">Link the Nextcloud folders for Lyon by hand after go-live.</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 17px"><span style="font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; color: #5e6168">After</span><span style="color: #1b1c1d"><span style="background: #eaf0f7">Link the Nextcloud project folders during the rollout, one group folder per department, from Rollout-plan-phase-2.pdf.</span></span></div>
+            </div>
+          </li>
+          <li style="{{ timeline }}"><span style="{{ projectTag }}">Project</span><span><strong style="font-weight: 600; color: #3d4047">Olivia Brandt</strong> linked the mail Rollout plan phase 2, Lyon from Marc Dubois</span><span style="flex: 1 1 auto"></span><span style="white-space: nowrap">8 Oct 16:38</span></li>
+          <li aria-busy="true" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 36px; font-size: 12px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg>Loading older comments as you scroll, 14 more since 28 September</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const PEOPLE = { 'Tom Achterberg': 'TA', 'Olivia Brandt': 'OB', 'Priya Raman': 'PR' };
+    const data = [
+      ['TASK', '#58440', 'Send OIDC client settings to Lyon', 'new', 'Tom Achterberg', '16 Oct'],
+      ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'Olivia Brandt', '15 Oct'],
+      ['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', 'Olivia Brandt', '13 Oct'],
+      ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', 'Tom Achterberg', '30 Oct', true],
+      ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', 'Priya Raman', '14 Oct'],
+      ['FEATURE', '#58390', 'Single sign-on through Keycloak', 'in review', 'Tom Achterberg', '23 Oct'],
+      ['EPIC', '#57990', 'Release 16.5 scope', 'in review', 'Olivia Brandt', '23 Oct'],
+      ['BUG', '#58102', 'Folder link breaks on rename', 'on hold', 'Priya Raman', '9 Oct']
+    ];
+    const cardBase = 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; text-decoration: none; ';
+    const cards = data.map(([type, number, subject, status, assignee, due, sel]) => ({
+      type, number, subject, status, assignee, due, initials: PEOPLE[assignee], typeStyle: 'font-weight: 700; letter-spacing: 0.04em; color: ' + TYPE[type],
+      aria: type + ' ' + number + ', ' + subject + ', ' + status, current: sel ? 'true' : 'false',
+      style: cardBase + (sel ? 'border-color: #3669a5; box-shadow: inset 0 0 0 1px #3669a5; background: #eaf0f7;' : '')
+    }));
+    const columns = [['new', 3, ''], ['in development', 2, 'of 4'], ['in review', 2, ''], ['on hold', 1, '']].map(([name, count, limit]) => {
+      const st = STATUS[name];
+      return {
+        name, count: limit ? count + ' ' + limit : String(count),
+        countLabel: limit ? count + ' of 4 work packages, work in progress limit' : count + ' work packages',
+        countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; ' + (limit ? 'background: #ffffff; color: #234a78; border: 1px solid #3669a5' : 'background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea'),
+        dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
+        cards: cards.filter((c) => c.status === name)
+      };
+    });
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const chip = (label, on) => ({ label, on: on ? 'true' : 'false', style: chipBase + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') });
+    const groupBy = [chip('Status', true), chip('Assignee', false), chip('Version', false)];
+    const tabBase = 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 2px; border: 0; border-bottom: 2px solid transparent; background: transparent; font: 600 12px \'Fira Sans\', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; ';
+    const tabs = [['Mails', 1, false], ['Meetings', 1, false], ['Activity', 19, true]].map(([label, count, on]) => ({
+      label, count, hasCount: count !== '', selected: on ? 'true' : 'false',
+      style: tabBase + (on ? 'color: #1b1c1d; font-weight: 700; border-bottom-color: #3669a5;' : 'color: #5e6168;'),
+      countStyle: 'font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); letter-spacing: 0; ' + (on ? 'background: #eaf0f7; color: #234a78' : 'background: #eef0f3; color: #5e6168')
+    }));
+    const seg = 'height: 28px; padding: 0 12px; border: 0; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const scope = [['This work package', false], ['Whole project', true]].map(([label, on], i) => ({ label, on: on ? 'true' : 'false', style: seg + (i ? 'border-left: 1px solid #c4c7cb; ' : '') + (on ? 'background: #eaf0f7; color: #234a78' : 'background: #ffffff; color: #3d4047') }));
+    const small = 'height: 26px; padding: 0 9px; border-radius: var(--sc-radius, 8px); font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const filters = [['All', true], ['Project activity', false], ['Work package activity', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: small + (on ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const fmt = [
+      ['Bold', 'M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6zM6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z'],
+      ['Italic', 'M19 4h-9M14 20H5M15 4 9 20'],
+      ['Bulleted list', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'],
+      ['Code', 'm16 18 6-6-6-6M8 6l-6 6 6 6']
+    ].map(([label, icon]) => ({ label, icon }));
+    const av = 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ';
+    const avatarThem = av + 'background: #eaf0f7; color: #234a78';
+    const avatarMe = av + 'background: #234a78; color: #ffffff';
+    const item = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); font-family: \'Fira Sans\', system-ui, sans-serif; color: #1b1c1d; ';
+    const people = [
+      ['PR', 'ya Raman', 'priya@northwind-projects.test, assignee of BUG #58231', true],
+      ['PL', 'ya Lindqvist', 'priya.lindqvist@malmo-energi.test, member of this project', false]
+    ].map(([initials, rest, hint, selected]) => ({ initials, rest, hint, selected: selected ? 'true' : 'false', avatar: avatarThem, style: item + (selected ? 'background: #eaf0f7;' : 'background: transparent;') }));
+    const timeline = 'display: flex; align-items: center; gap: 8px; padding: 2px 8px 2px 6px; font-size: 12px; line-height: 18px; color: #5e6168';
+    const tag = 'flex: none; display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; ';
+    const projectTag = tag + 'background: #eef0f3; color: #3d4047';
+    const wpTag = tag + 'background: #ffffff; border: 1px solid #e4e6ea; color: #5e6168';
+    const comment = 'display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 10px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff';
+    const replyChip = 'display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 11px; font-weight: 600; color: #3d4047; white-space: nowrap';
+    const mention = 'display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-weight: 600; font-size: 13px; white-space: nowrap';
+    const quiet = 'display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    return { groupBy, columns, tabs, scope, filters, fmt, people, avatarThem, avatarMe, timeline, projectTag, wpTag, comment, replyChip, mention, quiet };
+  }
+}
+</script>
+</body>
+</html>

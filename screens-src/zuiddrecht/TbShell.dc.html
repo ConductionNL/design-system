@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: dashboard widget and notifications</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#tb-add::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; position: relative; display: flex; flex-direction: column; height: 800px; overflow: hidden">
+  <dc-import name="MlHeader" app="Dashboard" placeholder="Search files, mail, events and work packages" hint-size="100%,55px"></dc-import>
+  <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 20px 32px">
+    <div style="display: flex; align-items: baseline; gap: 12px"><h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Good morning, Olivia</h1><span style="font-size: 13px; color: #5e6168">Monday 12 October 2026</span></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: start">
+      <section aria-label="Tasks" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Tasks</h2>
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Upcoming work packages, assigned to you</span>
+          <button type="button" aria-label="Widget options for Tasks" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
+        </div>
+        <form style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8">
+          <label for="tb-add" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Add a work package</label>
+          <div style="position: relative; flex: 1 1 auto; display: flex; align-items: center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M12 5v14M5 12h14"></path></svg>
+            <input id="tb-add" type="text" placeholder="Add a work package to Northwind rollout Lyon" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+          </div>
+          <button type="button" aria-haspopup="menu" aria-label="Project: Northwind rollout Lyon, change" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Lyon<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <button type="button" style="flex: none; display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Add</button>
+        </form>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="5">
+            <li style="display: flex; align-items: center; gap: 10px; min-height: 56px; box-sizing: border-box; padding: 6px 16px; border-bottom: 1px solid #e4e6ea">
+              <sc-if value="{{ t.done }}" hint-placeholder-val="{{ false }}"><input type="checkbox" checked aria-label="{{ t.checkLabel }}" style="flex: none; width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></sc-if>
+              <sc-if value="{{ t.open }}" hint-placeholder-val="{{ true }}"><input type="checkbox" aria-label="{{ t.checkLabel }}" style="flex: none; width: 18px; height: 18px; margin: 0; accent-color: #3669a5"></sc-if>
+              <a href="TbCard.dc.html" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px; color: #1b1c1d; text-decoration: none">
+                <span style="{{ t.titleStyle }}">{{ t.subject }}</span>
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168"><span style="display: inline-flex; align-items: center; gap: 4px"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ t.typeColor }}">{{ t.type }}</span><span>{{ t.number }}</span><span style="{{ t.dot }}"></span></span><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t.detail }}</span></span>
+              </a>
+              <span style="{{ t.dueStyle }}">{{ t.due }}</span>
+            </li>
+          </sc-for>
+        </ol>
+        <a href="TbMyDay.dc.html" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open Tasks<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+      </section>
+      <section aria-label="Unread mail" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
+          <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Unread mail</h2>
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">5 unread</span>
+        </div>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ mails }}" as="r" hint-placeholder-count="4">
+            <li style="border-bottom: 1px solid #e4e6ea">
+              <a href="MlThread.dc.html" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none">
+                <span style="{{ r.avatar }}">{{ r.initials }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px">
+                  <span style="display: flex; align-items: center; gap: 6px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 700">{{ r.from }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.date }}</span></span>
+                  <span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: #3d4047">{{ r.subject }}</span>
+                </span>
+              </a>
+            </li>
+          </sc-for>
+        </ol>
+        <a href="#" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open the inbox<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+      </section>
+      <section aria-label="Today" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+          <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Today</h2>
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">1 meeting</span>
+        </div>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <li style="border-bottom: 1px solid #e4e6ea"><a href="ClWeek.dc.html" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none"><span style="flex: none; width: 4px; height: 32px; border-radius: 2px; background: #3669a5"></span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><span style="font-size: 14px">Stand-up</span><span style="font-size: 12px; color: #5e6168">10:00 to 10:15, video call</span></span></a></li>
+        </ol>
+        <a href="ClWeek.dc.html" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open the calendar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+      </section>
+    </div>
+  </div>
+
+  <div role="dialog" aria-label="Notifications" style="position: absolute; top: 59px; right: 100px; width: 460px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; overflow: hidden">
+    <div style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+      <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Notifications</h2>
+      <span style="font-size: 12px; color: #5e6168; white-space: nowrap">6 new</span>
+      <button type="button" style="display: inline-flex; align-items: center; height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Mark all as read</button>
+      <button type="button" aria-label="Notification settings" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+    </div>
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+      <sc-for list="{{ notes }}" as="n" hint-placeholder-count="6">
+        <li style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #e4e6ea; background: #ffffff">
+          <span style="{{ n.iconBox }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ n.icon }}"></path></svg></span>
+          <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; line-height: 18px">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap">{{ n.kind }}</span><sc-if value="{{ n.remote }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); font-size: 11px; color: #3d4047; white-space: nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>From another server</span></sc-if><span style="flex: 1 1 auto"></span><span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ n.when }}</span></span>
+            <span style="font-size: 13px; color: #1b1c1d">{{ n.text }}</span>
+            <sc-if value="{{ n.hasQuote }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #5e6168; padding-left: 8px; border-left: 2px solid #e4e6ea; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ n.quote }}</span></sc-if>
+            <sc-if value="{{ n.hasActions }}" hint-placeholder-val="{{ false }}">
+              <span style="display: flex; gap: 6px; margin-top: 2px">
+                <button type="button" style="display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">{{ n.primary }}</button>
+                <button type="button" style="display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">{{ n.secondary }}</button>
+              </span>
+            </sc-if>
+          </span>
+          <span aria-label="Unread" role="img" style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 4px; background: #3669a5"></span>
+        </li>
+      </sc-for>
+    </ol>
+    <a href="#" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All notifications<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const dot = (st) => 'flex: none; display: inline-block; width: 8px; height: 8px; box-sizing: border-box; border-radius: 4px; background: ' + STATUS[st][0] + '; border: 1.5px solid ' + STATUS[st][1];
+    const tasks = [
+      ['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', 'from the mail of Sven Lindqvist', 'Tue 13 Oct', false, true],
+      ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', 'priority high, version 16.5', 'Wed 14 Oct', false, true],
+      ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'from the mail of Marc Dubois', 'Thu 15 Oct', false, true],
+      ['TASK', '#58440', 'Send OIDC client settings to Lyon', 'closed', 'Closed just now from the dashboard', 'Fri 16 Oct', true, false],
+      ['EPIC', '#57990', 'Release 16.5 scope', 'in review', 'in review since 9 Oct', 'Fri 23 Oct', false, false]
+    ].map(([type, number, subject, status, detail, due, done, week]) => ({
+      type, number, subject, detail, due, typeColor: TYPE[type], dot: dot(status),
+      done: !!done, open: !done, checkLabel: (done ? 'Reopen ' : 'Mark as closed: ') + type + ' ' + number + ', ' + subject,
+      titleStyle: 'min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; ' + (done ? 'color: #5e6168; text-decoration: line-through' : ''),
+      dueStyle: 'flex: none; font-size: 12px; white-space: nowrap; ' + (done ? 'color: #5e6168; text-decoration: line-through' : week ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168')
+    }));
+    const avatar = (op) => 'flex: none; width: 32px; height: 32px; border-radius: ' + (op ? 'var(--sc-radius, 8px)' : '16px') + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (op ? 'background: #1b1c1d; color: #ffffff' : 'background: #eaf0f7; color: #234a78');
+    const mails = [
+      ['Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', '07:00'],
+      ['Jana Köhler', 'JK', 'Gantt export cuts off the last week', '04:00'],
+      ['OpenProject notifications', 'OP', '[Northwind - Bug #58231] Gantt PDF export drops trailing columns', '01:00'],
+      ['Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 'Yesterday']
+    ].map(([from, initials, subject, date]) => ({ from, initials, subject, date, avatar: avatar(initials === 'OP') }));
+    const box = (c) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: ' + c;
+    const I = {
+      share: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13',
+      user: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
+      at: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94',
+      overdue: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01',
+      bell: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0'
+    };
+    const notes = [
+      { kind: 'Project shared with you', icon: I.share, color: '#234a78', when: '2 min ago', text: 'Tom Achterberg shared the project OpenProject core with you, as a member.', actions: ['Open project', 'Later'] },
+      { kind: 'Project shared with you', icon: I.share, color: '#234a78', when: '25 min ago', remote: true, text: 'Jana Köhler on cloud.stadtwerke-kassel.de shared the project Netzausbau Nord with you.', actions: ['Accept', 'Decline'] },
+      { kind: 'Assigned to you', icon: I.user, color: '#234a78', when: '08:05', text: 'Tom Achterberg assigned TASK #58440 Send OIDC client settings to Lyon to you.' },
+      { kind: 'Mentioned in a comment', icon: I.at, color: '#234a78', when: 'Yesterday 15:12', text: 'Tom Achterberg mentioned you on FEATURE #58412 Link Nextcloud project folders on rollout.', quote: '@Olivia Brandt two things before we link the folders on the Lyon realm' },
+      { kind: 'Overdue', icon: I.overdue, color: '#ab0000', when: 'Since 9 Oct', text: 'BUG #58102 Folder link breaks on rename is overdue. Its due date was Friday 9 October.' },
+      { kind: 'Reminder you set', icon: I.bell, color: '#234a78', when: '08:00', text: 'Reminder: TASK #58455 Prepare demo for Malmo Energi is due tomorrow. You asked for this one day before the due date.' }
+    ].map((n) => ({ kind: n.kind, icon: n.icon, iconBox: box(n.color), when: n.when, text: n.text, remote: !!n.remote, hasQuote: !!n.quote, quote: n.quote ?? '', hasActions: !!n.actions, primary: n.actions ? n.actions[0] : '', secondary: n.actions ? n.actions[1] : '' }));
+    return { tasks, mails, notes };
+  }
+}
+</script>
+</body>
+</html>

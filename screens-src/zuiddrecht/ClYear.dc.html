@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar: year view with the view menu open and the agenda beside it</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Year" hint-size="245px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden; position: relative">
+      <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
+        <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">2026</h1>
+        <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Today, Monday 12 October</span>
+        <span style="flex: 1 1 auto"></span>
+        <div style="display: flex; align-items: center; gap: 4px; align-self: center; position: relative">
+          <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Year<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button type="button" style="height: 30px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">Today</button>
+          <button type="button" aria-label="Previous year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <button type="button" aria-label="Next year" style="width: 30px; height: 30px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+          <div role="menu" aria-label="View" style="position: absolute; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; top: 30px; right: 0; width: 336px">
+            <div style="padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">View</div>
+            <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
+              <button type="button" role="menuitemradio" aria-checked="{{ v.checked }}" style="{{ v.style }}">
+                <span style="flex: none; width: 16px; display: inline-flex; justify-content: center"><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg></sc-if></span>
+                <span style="flex: none; font-weight: 500">{{ v.label }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ v.hint }}</span>
+                <kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 11px 'Fira Sans', sans-serif; color: #1b1c1d">{{ v.key }}</kbd>
+              </button>
+            </sc-for>
+            <div style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 36px; font-size: 13px; color: #3d4047">
+              <label for="cl-days-shown" style="flex: 1 1 auto">Days shown</label>
+              <button type="button" aria-label="One day fewer" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <input id="cl-days-shown" type="text" value="4" inputmode="numeric" style="width: 34px; height: 24px; padding: 0; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 500 13px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: center; outline: none">
+              <button type="button" aria-label="One day more" style="width: 24px; height: 24px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            <div style="margin: 6px 0; border-top: 1px solid #e4e6ea"></div>
+            <div style="padding: 0 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Grid</div>
+            <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; font-size: 13px; color: #1b1c1d">
+              <span id="cl-allday-label" style="flex: 1 1 auto">Collapse the all day section</span>
+              <button type="button" role="switch" aria-checked="false" aria-labelledby="cl-allday-label" style="flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168"></span></button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; font-size: 13px; color: #1b1c1d">
+              <span id="cl-weekend-label" style="flex: 1 1 auto">Show weekends</span>
+              <button type="button" role="switch" aria-checked="true" aria-labelledby="cl-weekend-label" style="flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer"><span style="position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="flex: none; display: flex; align-items: center; gap: 10px; height: 24px; padding: 0 20px; font-size: 12px; color: #5e6168">
+        <span>Click a day number to open that day, or a week number to open that week</span>
+        <span style="flex: 1 1 auto"></span>
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span aria-hidden="true" style="width: 5px; height: 5px; border-radius: 3px; background: #3669a5"></span>Has events</span>
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span aria-hidden="true" style="width: 7px; height: 7px; background: #35c53f; transform: rotate(45deg)"></span>Milestone</span>
+      </div>
+      <div role="group" aria-label="Year 2026, twelve months" style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px 16px; padding: 4px 20px 16px; box-sizing: border-box">
+        <sc-for list="{{ months }}" as="m" hint-placeholder-count="12">
+          <section aria-label="{{ m.name }} 2026" style="{{ m.style }}">
+            <a href="#" style="display: block; height: 24px; margin-bottom: 2px; padding-left: 26px; font-size: 13px; font-weight: 600; line-height: 24px; color: #1b1c1d; text-decoration: none">{{ m.name }}</a>
+            <div style="display: grid; grid-template-columns: 26px repeat(7, 1fr); font-size: 10px; line-height: 16px; color: #5e6168; text-align: center">
+              <span aria-hidden="true" style="text-align: left; padding-left: 2px; letter-spacing: 0.04em">Wk</span>
+              <sc-for list="{{ dow }}" as="d" hint-placeholder-count="7"><span style="{{ d.style }}">{{ d.label }}</span></sc-for>
+            </div>
+            <sc-for list="{{ m.weeks }}" as="w" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 26px repeat(7, 1fr); align-items: center">
+                <a href="#" aria-label="Open week {{ w.wk }}" style="display: flex; align-items: center; height: 22px; padding-left: 2px; font-size: 10px; color: #5e6168; text-decoration: none; white-space: nowrap">{{ w.wk }}</a>
+                <sc-for list="{{ w.days }}" as="d" hint-placeholder-count="7">
+                  <a href="#" aria-label="{{ d.aria }}" aria-current="{{ d.current }}" style="{{ d.style }}">
+                    <span style="{{ d.numStyle }}">{{ d.n }}</span>
+                    <sc-if value="{{ d.hasDot }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; left: 50%; bottom: 1px; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: {{ d.dotColor }}"></span></sc-if>
+                    <sc-if value="{{ d.milestone }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; left: 50%; bottom: 1px; width: 5px; height: 5px; margin-left: -3px; background: #35c53f; transform: rotate(45deg)"></span></sc-if>
+                  </a>
+                </sc-for>
+              </div>
+            </sc-for>
+          </section>
+        </sc-for>
+      </div>
+    </main>
+    <aside aria-label="Agenda" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
+      <label style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search this calendar</span><input type="search" placeholder="Search" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 13px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
+      <section aria-labelledby="ctx-agenda" style="display: flex; flex-direction: column; gap: 8px; min-height: 0">
+        <div style="display: flex; align-items: center; gap: 4px">
+          <h2 id="ctx-agenda" style="margin: 0; flex: 1 1 auto; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Agenda</h2>
+          <button type="button" aria-label="Jump to the previous event" title="Previous event" style="width: 28px; height: 28px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button type="button" aria-label="Jump to the next event" title="Next event" style="width: 28px; height: 28px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <button type="button" aria-haspopup="menu" aria-label="Calendar shown in the agenda, All calendars" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 13px 'Fira Sans', sans-serif; white-space: nowrap">All calendars<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <span style="font-size: 12px; color: #5e6168; line-height: 15px">or the upcoming events of one calendar</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; margin: 0 -6px">
+          <sc-for list="{{ agenda }}" as="g" hint-placeholder-count="5">
+            <div style="display: flex; align-items: baseline; gap: 6px; height: 26px; margin-top: 6px; padding: 0 6px; font-size: 12px; color: #5e6168"><span style="{{ g.dayStyle }}">{{ g.day }}</span><span>{{ g.date }}</span></div>
+            <sc-for list="{{ g.items }}" as="e" hint-placeholder-count="2">
+              <a href="{{ e.href }}" aria-current="{{ e.current }}" style="{{ e.style }}">
+                <span aria-hidden="true" style="{{ e.edge }}"></span>
+                <span style="flex: none; width: 40px; font-size: 11px; color: #5e6168">{{ e.time }}</span>
+                <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 16px">
+                  <span style="{{ e.titleStyle }}">{{ e.title }}</span>
+                  <sc-if value="{{ e.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 5px; font-size: 11px; color: #5e6168"><sc-if value="{{ e.hasChip }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ e.wpColor }}">{{ e.wpType }}</span><span style="color: #3d4047">{{ e.wpNumber }}</span></sc-if><span>{{ e.meta }}</span></span></sc-if>
+                </span>
+                <sc-if value="{{ e.isNext }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #234a78">Next</span></sc-if>
+              </a>
+            </sc-for>
+          </sc-for>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const CAL = { personal: '#3669a5', team: '#538b28', customers: '#ff9d2e' };
+    const pale = (c) => 'color-mix(in srgb, ' + c + ' 14%, #ffffff)';
+    const dark = (c) => 'color-mix(in srgb, ' + c + ' 60%, #1b1c1d)';
+    const item = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); font: 500 13px \'Fira Sans\', sans-serif; text-align: left; ';
+    const views = [
+      ['Day', 'One day on a time grid', 'D', false],
+      ['4 days', 'The number of days you choose', 'X', false],
+      ['Week', 'Seven days on a time grid', 'W', false],
+      ['Month', 'Weeks as rows', 'M', false],
+      ['Year', 'Twelve small months', 'Y', true],
+      ['Agenda', 'Events as a chronological list', 'A', false]
+    ].map(([label, hint, key, on]) => ({ label, hint, key, on, checked: on ? 'true' : 'false', style: item + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;') }));
+    const dow = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, i) => ({ label, style: i >= 5 ? 'color: #5e6168; opacity: 0.7' : '' }));
+    // 2026: 1 January is a Thursday. Week numbering per ISO: week 1 starts Monday 29 December 2025.
+    const NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const LEN = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const startDow = []; // 0 = Monday
+    let d0 = 3; // Thursday
+    for (let m = 0; m < 12; m++) { startDow.push(d0); d0 = (d0 + LEN[m]) % 7; }
+    const dayOfYear = (m, n) => LEN.slice(0, m).reduce((a, b) => a + b, 0) + n; // 1-based
+    const isoWeek = (m, n) => Math.floor((dayOfYear(m, n) + 2) / 7) + 1; // 29 Dec 2025 is day -2, start of week 1
+    // days with entries: 'm-n' -> colour; test data for October, stand-ups on working days of the current month
+    const marks = {};
+    for (let n = 1; n <= 31; n++) { const dw = (startDow[9] + n - 1) % 7; if (dw < 5) marks['9-' + n] = CAL.personal; }
+    marks['9-13'] = CAL.customers; marks['9-14'] = CAL.team; marks['9-15'] = CAL.customers;
+    const milestones = { '10-2': true };
+    const months = NAMES.map((name, m) => {
+      const first = startDow[m];
+      const cells = [];
+      for (let i = 0; i < first; i++) cells.push(null);
+      for (let n = 1; n <= LEN[m]; n++) cells.push(n);
+      while (cells.length % 7) cells.push(null);
+      const weeks = [];
+      for (let r = 0; r < cells.length / 7; r++) {
+        const days = cells.slice(r * 7, r * 7 + 7);
+        const firstReal = days.find((x) => x !== null);
+        weeks.push({
+          wk: String(isoWeek(m, firstReal)),
+          days: days.map((n, ci) => {
+            if (n === null) return { n: '', aria: 'Empty', current: 'false', style: 'display: block; height: 22px', numStyle: '', hasDot: false, dotColor: '', milestone: false };
+            const today = m === 9 && n === 12;
+            const past = m < 9 || (m === 9 && n < 12);
+            const key = m + '-' + n;
+            return {
+              n: String(n), aria: 'Open ' + n + ' ' + SHORT[m], current: today ? 'date' : 'false',
+              style: 'position: relative; display: flex; align-items: center; justify-content: center; height: 22px; text-decoration: none; font-size: 11px; ' + (ci >= 5 ? 'background: #f5f6f8; ' : '') + (today ? '' : past ? 'color: #5e6168;' : 'color: #1b1c1d;'),
+              numStyle: today ? 'display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 18px; border-radius: 4px; background: #3669a5; color: #ffffff; font-weight: 600' : '',
+              hasDot: !!marks[key] && !today, dotColor: marks[key] || '', milestone: !!milestones[key]
+            };
+          })
+        });
+      }
+      return { name, weeks, style: 'min-height: 0; align-self: start; display: flex; flex-direction: column; ' + (m === 9 ? 'border-radius: var(--sc-radius, 8px); box-shadow: inset 0 0 0 1px #e4e6ea; margin: -4px -6px; padding: 4px 6px;' : '') };
+    });
+    const row = 'display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 4px 6px; border-radius: var(--sc-radius, 8px); text-decoration: none; color: #1b1c1d; ';
+    const edge = (c) => 'flex: none; align-self: stretch; width: 3px; border-radius: 2px; background: ' + c;
+    const mk = (time, title, cal, o = {}) => {
+      const c = cal === 'milestone' ? '#35c53f' : CAL[cal];
+      return {
+        time, title, href: title === 'Rollout review Lyon, phase 2' ? 'ClEvent.dc.html' : '#', current: o.next ? 'true' : 'false', isNext: !!o.next,
+        style: row + (o.next ? 'background: #eaf0f7;' : ''),
+        edge: edge(c), titleStyle: 'font-size: 13px; font-weight: 600; color: ' + dark(c) + '; white-space: nowrap; overflow: hidden; text-overflow: ellipsis',
+        hasMeta: !!(o.chip || o.meta), hasChip: !!o.chip, wpType: o.chip ? o.chip[0] : '', wpNumber: o.chip ? o.chip[1] : '', wpColor: o.chip ? TYPE[o.chip[0]] : '', meta: o.meta || ''
+      };
+    };
+    const agenda = [
+      { day: 'Today', date: 'Monday 12 October', today: true, items: [mk('10:00', 'Stand-up', 'personal', { next: true, meta: 'in 1 h, daily' })] },
+      { day: 'Tue', date: '13 October', items: [mk('10:00', 'Stand-up', 'personal'), mk('11:00', 'Demo preparation Malmo Energi', 'customers')] },
+      { day: 'Wed', date: '14 October', items: [mk('09:30', 'Release 16.5 scope review', 'team', { chip: ['EPIC', '#57990'] }), mk('10:00', 'Stand-up', 'personal')] },
+      { day: 'Thu', date: '15 October', items: [mk('10:00', 'Stand-up', 'personal'), mk('14:00', 'Rollout review Lyon, phase 2', 'customers', { chip: ['FEATURE', '#58412'], meta: 'not answered yet' })] },
+      { day: 'Fri', date: '16 October', items: [mk('10:00', 'Stand-up', 'personal'), mk('17:00', 'Submit October hours', 'personal', { meta: 'deadline' })] },
+      { day: 'Mon', date: '2 November', items: [mk('', 'Go-live Lyon phase 2', 'milestone', { meta: 'milestone' })] }
+    ].map((g) => ({ ...g, dayStyle: 'font-weight: 600; ' + (g.today ? 'color: #234a78;' : 'color: #1b1c1d;') }));
+    return { views, dow, months, agenda };
+  }
+}
+</script>
+</body>
+</html>

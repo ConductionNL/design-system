@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: how the mailbox folds</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; height: 900px; padding: 56px 72px; display: flex; flex-direction: column; gap: 40px; overflow: hidden">
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px">
+    <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">The mailbox folds around what you do</h1>
+    <p style="margin: 0; font-size: 16px; line-height: 24px; color: #3d4047">The width goes to the one thing you are doing, browsing, reading or acting, and never more than three things sit side by side.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px">
+    <sc-for list="{{ levels }}" as="l" hint-placeholder-count="3">
+      <section aria-label="{{ l.aria }}" style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: baseline; gap: 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Level {{ l.n }}</span><h2 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 28px">{{ l.name }}</h2></div>
+        <div style="display: flex; gap: 3px; height: 220px; padding: 8px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
+          <sc-for list="{{ l.cols }}" as="c" hint-placeholder-count="4">
+            <div aria-label="{{ c.aria }}" role="img" style="{{ c.style }}"><sc-if value="{{ c.hasLabel }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 600; color: #234a78; white-space: nowrap">{{ c.label }}</span></sc-if></div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 3px; padding: 0 8px; font-size: 12px; line-height: 16px; color: #5e6168">
+          <sc-for list="{{ l.cols }}" as="c" hint-placeholder-count="4"><span style="{{ c.widthStyle }}">{{ c.width }}</span></sc-for>
+        </div>
+        <p style="margin: 4px 0 0; color: #3d4047">{{ l.caption }}</p>
+      </section>
+    </sc-for>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 10px; max-width: 920px; margin-top: auto; padding-top: 28px; border-top: 1px solid #e4e6ea">
+    <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Four rules</h2>
+    <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 32px">
+      <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+        <li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ r.n }}</span><span style="color: #3d4047">{{ r.text }}</span></li>
+      </sc-for>
+    </ol>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // Columns are drawn to scale: flex-grow is the real pixel width on a 1440 px window.
+    const col = (label, px, o = {}) => {
+      const rail = px <= 72;
+      return {
+        label, aria: label + ', ' + px + ' px', hasLabel: !rail,
+        width: o.rest ? 'the rest' : o.range ? '360 to 440' : String(px),
+        style: 'flex: ' + px + ' 1 0; min-width: 0; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: center; padding-top: 10px; border-radius: 4px; ' +
+          (o.soft ? 'background: #f5f6f8; border: 1px solid #e4e6ea;' : rail ? 'background: #eaf0f7; border: 1px solid #c4c7cb;' : 'background: #eaf0f7; border: 1px solid #3669a5;'),
+        widthStyle: 'flex: ' + px + ' 1 0; min-width: 0; text-align: center; white-space: nowrap; overflow: visible'
+      };
+    };
+    const levels = [
+      { n: 0, name: 'Browse', aria: 'Level 0, browse', caption: 'No conversation open. The folders stay full and the list takes the rest, so every row gets room.',
+        cols: [col('Folders', 245), col('Conversations', 1195, { rest: true })] },
+      { n: 1, name: 'Read', aria: 'Level 1, read', caption: 'A conversation is open. The folders fold to a rail, the list stays at 410 px, the reading pane gets the rest.',
+        cols: [col('Folders', 64), col('Conversations', 410), col('Reading pane', 966, { rest: true, soft: true })] },
+      { n: 2, name: 'Act', aria: 'Level 2, act', caption: 'A right panel is open: the work package, a link, a new work package or a reply. Both lists fold to rails, the panel gets 360 to 440 px.',
+        cols: [col('Folders', 64), col('Conversations', 48), col('Reading pane', 888, { rest: true, soft: true }), col('Panel', 440, { range: true })] }
+    ];
+    const rules = [
+      'Never more than three things side by side: the rails, the content, and at most one full column next to it.',
+      'A rail is the same column, folded. The panel icon at its top opens it, and the open column folds with the same icon. Hovering a rail shows the full column over the content without moving the layout.',
+      'Any right panel folds the conversation list. The X at the top right of a panel closes it and returns you to reading; the X at the end of the subject bar closes the conversation and returns you to browsing.',
+      'The work package is a chip in the subject bar, with its status. One click opens its panel, which counts as a right panel.'
+    ].map((text, i) => ({ n: i + 1, text }));
+    return { levels, rules };
+  }
+}
+</script>
+</body>
+</html>

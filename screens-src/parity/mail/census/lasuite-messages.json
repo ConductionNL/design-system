@@ -1,0 +1,3003 @@
+{
+ "system": {
+  "key": "lasuite-messages",
+  "name": "La Suite Messages",
+  "readVersion": "536aa80",
+  "evidenceGrade": "source-read",
+  "readOn": "2026-10-12",
+  "licence": "MIT",
+  "sources": [
+   "https://github.com/suitenumerique/messages"
+  ]
+ },
+ "rows": [
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign in through an external identity provider with single sign-on",
+   "rating": "yes",
+   "evidence": "src/backend/core/authentication/backends.py:33; src/frontend/src/features/auth/index.tsx:1",
+   "surface": "screen",
+   "note": "OIDC only; no local password login in the web client"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get signed in silently when a session already exists at the identity provider",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/auth/silent-login.ts:5; src/backend/core/api/viewsets/config.py:159",
+   "surface": "background",
+   "note": "Flag FRONTEND_SILENT_LOGIN_ENABLED"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get a personal mailbox created automatically at first sign-in from the login address",
+   "rating": "yes",
+   "evidence": "src/backend/core/authentication/backends.py:199; src/frontend/src/features/layouts/components/admin/modal-create-domain/index.tsx:131",
+   "surface": "background",
+   "note": "Per-domain option oidc_autojoin"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign out of the mail client and the identity provider in one step",
+   "rating": "yes",
+   "evidence": "src/backend/core/authentication/views.py:198; src/frontend/src/features/layouts/components/main/header/authenticated.tsx:214",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign in with another address when the account has no mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/no-mailbox.tsx:23; src/frontend/src/features/layouts/components/main/index.tsx:48",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Switch between the mailboxes you have access to",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-selector/index.tsx:74; src/frontend/src/features/layouts/components/mailbox-panel/index.tsx:28",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "See the unread count of each mailbox in the mailbox switcher",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-selector/index.tsx:74; src/backend/core/api/serializers.py:396",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Change the sender name shown on outgoing mail",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/general-tab/index.tsx:85; src/backend/core/api/viewsets/mailbox.py:56",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Open one settings window per mailbox with tabs for each kind of setting",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/index.tsx:230; src/frontend/src/features/layouts/components/main/header/authenticated.tsx:284",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Create several signatures for a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-signature/index.tsx:241; src/frontend/src/features/layouts/components/mailbox-settings/signatures-view/signature-data-grid.tsx:1; src/backend/core/api/viewsets/message_template.py:43",
+   "surface": "setting",
+   "note": "Mailbox admin role; flag FEATURE_MESSAGE_TEMPLATES"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Mark one signature as the default for new messages",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-signature/index.tsx:241; src/backend/core/models.py:3453",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Switch a signature off without deleting it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/signatures-view/signature-data-grid.tsx:1; src/backend/core/models.py:3421",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Use personal variables such as name or job title inside a signature",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/inline-template-variable/index.tsx:170; src/backend/core/api/viewsets/placeholder.py:20; src/backend/core/models.py:3788",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Be locked to a signature the domain administrator made mandatory",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/signature-block/index.tsx:138; src/backend/core/models.py:3445",
+   "surface": "screen",
+   "note": "Forced signature set at domain level"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set up an automatic reply for a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-autoreply/index.tsx:148; src/backend/core/mda/autoreply.py:370; src/backend/core/mda/inbound_tasks.py:570",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Schedule an automatic reply for a date range",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-autoreply/index.tsx:148; src/frontend/src/features/layouts/components/mailbox-settings/autoreplies-view/autoreply-data-grid.tsx:35; src/backend/core/mda/autoreply.py:169",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Schedule an automatic reply that repeats every week on chosen days and hours",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-autoreply/index.tsx:150; src/frontend/src/features/layouts/components/mailbox-settings/autoreplies-view/autoreply-data-grid.tsx:55",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose the time zone an automatic reply schedule runs in",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-mailbox-autoreply/index.tsx:370",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "See in the header that an automatic reply is active",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/header/authenticated.tsx:103",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Read a version number of the app and copy it for support",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/feedback-button/index.tsx:77; src/frontend/src/features/hooks/use-app-version.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Work in a three-pane layout with folders, conversation list and reading pane",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/layout/index.tsx:1; src/frontend/src/routes/mailbox/$mailboxId/thread/$threadId.tsx:23",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the inbox of a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:67; src/backend/core/api/viewsets/thread.py:626",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a view of only unread conversations",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:77",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a view of only starred conversations",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:88",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a view of conversations where you were mentioned",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:99; src/backend/core/api/viewsets/thread.py:670",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a view of conversations assigned to you",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:111; src/backend/core/api/viewsets/thread.py:676",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a view of conversations nobody is assigned to",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:123; src/backend/core/api/viewsets/thread.py:682",
+   "surface": "screen",
+   "note": "Shown for shared mailboxes only"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the drafts folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:137",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open an outbox of messages still being delivered",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:147; src/backend/core/api/viewsets/thread.py:650",
+   "surface": "screen",
+   "note": "Folder hides itself when empty"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the sent folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:159",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the archive folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:170",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the spam folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:180",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open the trash folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:190",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See unread counters next to folders",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:218; src/backend/core/api/viewsets/thread.py:432",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Collapse and expand the inbox sub-views",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:121",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Refresh the mailbox by hand",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-actions/index.tsx:45",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Have the conversation list refresh by itself every 30 seconds",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/mailbox.tsx:264",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Copy a link that opens a specific conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:212; src/frontend/src/features/message/use-copy-deep-link.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Copy a link that opens a specific message inside a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:141; src/frontend/src/features/layouts/components/thread-view/index.tsx:302",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Reach other apps of the suite from an app launcher in the header",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/header/authenticated.tsx:212; src/frontend/src/features/ui/components/lagaufre/index.tsx:66",
+   "surface": "screen",
+   "note": "Operator setting FRONTEND_LAGAUFRE_WIDGET_CONFIG"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See a marker on the browser tab when mail arrives while the tab is in the background",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/use-unread-badge.ts:13; src/frontend/src/features/providers/unread-badge.ts:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See messages grouped into conversations",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:357; src/backend/core/mda/inbound_create.py:104",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See sender names, subject and date on each conversation row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:93; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:386",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See a text preview of the latest message on each row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:90; src/backend/core/api/viewsets/config.py:138",
+   "surface": "screen",
+   "note": "Flag FEATURE_THREAD_SNIPPET, off by default"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See how many messages a conversation holds",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:357",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See badges for draft, attachment, starred and unread mention on a row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:393; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:402; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:412",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See on a row that delivery failed or is still in progress",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:426; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:440",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See who a conversation is assigned to on its row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:454",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the labels of a conversation on its row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:519; src/frontend/src/features/ui/components/label-badge/index.tsx:52",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Filter the list by unread, starred, mentioned or assigned to me",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-filter.tsx:49; src/frontend/src/features/layouts/components/thread-panel/hooks/use-thread-panel-filters.ts:17",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Clear all active list filters in one click",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/index.tsx:154",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Select several conversations with checkboxes",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:355; src/frontend/src/features/providers/thread-selection.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Select all conversations with Ctrl or Cmd + A",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/thread-selection.tsx:153",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Extend a selection with Shift and the arrow keys",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/hooks/use-thread-listbox.ts:128",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Move through the list with arrow, Home and End keys",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/hooks/listbox-navigation.ts:26; src/frontend/src/features/layouts/components/thread-panel/hooks/use-thread-listbox.ts:116",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Mark all conversations in a view as read or unread",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:116; src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:117",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Archive, delete, star or report several selected conversations at once",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:120; src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:124; src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:128; src/backend/core/api/viewsets/flag.py:26",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Delete several drafts at once",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:323; src/backend/core/api/viewsets/thread.py:1083",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Star a conversation from its row",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:494; src/frontend/src/features/message/use-starred.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Load more conversations as you scroll",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/mailbox.tsx:304; src/frontend/src/features/layouts/components/thread-panel/index.tsx:197",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Return to the same scroll position after opening a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/scroll-restore.tsx:1; src/frontend/src/features/layouts/components/thread-panel/index.tsx:31",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See how many results or messages the current view holds",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:170; src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:197",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read a whole conversation on one page, oldest to newest",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/index.tsx:511; src/backend/core/api/viewsets/thread.py:58",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Have older read messages folded and unfold them one by one",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:155; src/frontend/src/features/providers/fold.tsx:1",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Land on the first unread message or the draft when opening a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/index.tsx:311; src/frontend/src/features/layouts/components/thread-view/index.tsx:318",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read HTML mail in an isolated frame that cannot run scripts or submit forms",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:459; src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/text_html.ts:4",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read plain-text mail with links made clickable",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/text_plain.ts:1; src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/linkify.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Have quoted earlier replies hidden behind a toggle",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:140; src/frontend/src/features/utils/unquote-message/index.ts:283",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See inline images placed inside the message body",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/text_html.ts:93",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See To, Cc and Bcc recipients of a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-recipients.tsx:31; src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-recipients.tsx:59",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See which user of a shared mailbox sent a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:66; src/backend/core/models.py:2289",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open a card for a sender or recipient with their address",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/contact-chip/index.tsx:72; src/frontend/src/features/ui/components/contact-chip/contact-popover.tsx:29",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Reply, reply all or forward from a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:115; src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:120; src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-footer.tsx:60",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Mark a conversation unread from a chosen message onward",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:131; src/backend/core/api/viewsets/flag.py:63",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Mark a conversation read up to a chosen message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:126; src/frontend/src/features/message/use-read.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Print a single message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:151; src/frontend/src/features/message/use-print.tsx:82",
+   "surface": "screen",
+   "note": "also driven 2026-10-12; hidden in the native app"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Download the raw source of a message as an .eml file",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:156; src/backend/core/api/viewsets/message.py:134",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See the delivery state of a sent message for each recipient",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/contact-chip/contact-popover.tsx:29; src/backend/core/models.py:2230",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read the server's delivery log line for a failed recipient",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/contact-chip/contact-popover.tsx:117; src/backend/core/models.py:2236",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See a notice when a message could not be parsed and still download it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:192; src/backend/core/api/viewsets/message.py:134",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See messages you sent and messages you received laid out as a chat",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/index.tsx:198",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Restore a deleted message from inside its conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:166; src/backend/core/api/viewsets/flag.py:266",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Delete a single message of a conversation",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/message.py:117; src/frontend/src/features/message/use-trash.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See the labels of the open conversation above it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-view-labels-list/index.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Write a new message in a window docked at the bottom of the screen",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:59; src/frontend/src/features/layouts/components/compose/compose-windows-layer/index.tsx:1",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Keep several messages open in separate compose windows",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/compose-windows/index.tsx:146; src/frontend/src/features/layouts/components/compose/compose-dock-overflow/index.tsx:46",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Minimise, enlarge to full screen or close a compose window",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:370; src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:383",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Open a draft in its own browser tab",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:359; src/frontend/src/routes/mailbox/$mailboxId_/draft/$draftId.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Find open compose windows again after reloading the page",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/compose-windows/persistence.ts:83",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Reply inline at the bottom of a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/message-reply-form/index.tsx:1; src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-footer.tsx:60",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Move an inline reply into a separate window",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/message-reply-form/index.tsx:69; src/frontend/src/features/message/use-open-draft-in-window.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose which mailbox a message is sent from",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:1051; src/frontend/src/features/forms/components/message-form/index.tsx:646",
+   "surface": "screen",
+   "note": "Changing sender moves the draft to the other mailbox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Add Cc and Bcc recipients",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:1087; src/frontend/src/features/forms/components/message-form/index.tsx:1105",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Format text with bold, italic, underline and strikethrough",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx:61; src/frontend/src/features/blocknote/toolbar.tsx:73",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set text colour and paragraph alignment",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx:80; src/frontend/src/features/blocknote/toolbar.tsx:84",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Use headings, lists and other block types",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx:50; docs/email-exporter.md:64",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert a link",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx:52",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert an image inside the message body",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx:51; src/backend/core/mda/inline_images.py:133",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Lay out an image next to text in two columns",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/column-layout-block/column-layout-insert-button.tsx:74; src/frontend/src/features/blocknote/custom-slash-menu.tsx:40",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert blocks from a slash menu while typing",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/custom-slash-menu.tsx:40",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have pasted content cleaned of unsafe markup",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/paste-sanitizer.ts:33",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have drafts saved automatically while writing",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:488; src/backend/core/api/viewsets/draft.py:267; src/frontend/src/features/forms/components/message-form/draft-save-status.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Delete a draft from the compose form",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:589",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose which signature to add to a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/signature-block/index.tsx:225; src/frontend/src/features/forms/components/message-composer/index.tsx:403",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert a saved message template into a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/message-template-block/index.tsx:183; src/backend/core/api/viewsets/message_template.py:181",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send and archive the conversation in one click",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:1016; src/backend/core/api/viewsets/send.py:97",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Make send and archive the default send button",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:1023",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be warned before sending when the text mentions an attachment and none is attached",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:442",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be warned before sending to an address with accented characters before the @",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:420; src/frontend/src/features/forms/components/message-form/index.tsx:447",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be stopped when a message has more recipients than the allowed maximum",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:388; src/backend/core/api/viewsets/config.py:102",
+   "surface": "screen",
+   "note": "Operator setting MAX_RECIPIENTS_PER_MESSAGE"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "See the original message quoted in a reply or forward",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/quoted-message-block/index.tsx:1; src/backend/core/mda/replies.py:269; src/backend/core/mda/replies.py:319",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Follow a message through sending with a progress toast",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/sent-box/queued-message.tsx:107; src/backend/core/api/viewsets/task.py:64",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Hear a sound when a message has been sent",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/sent-box/queued-message.tsx:81; src/frontend/src/features/utils/soundbox.ts:18",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Retry sending to recipients whose delivery failed",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/index.tsx:375; src/backend/core/api/viewsets/message.py:180",
+   "surface": "screen",
+   "note": "Within MESSAGES_MANUAL_RETRY_MAX_AGE"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Cancel deliveries that are still being retried",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/index.tsx:381; src/backend/core/api/viewsets/message.py:180",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be asked to keep or discard a draft when closing a compose window",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-window/close-confirm-modal.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files with a file picker",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/attachment-uploader.tsx:172; src/backend/core/api/viewsets/blob.py:107",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files by dragging them onto the message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/attachment-uploader.tsx:176; src/frontend/src/features/forms/components/message-form/dropzone.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Be told when attachments exceed the total size limit",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/hooks/use-attachments.tsx:97; src/backend/core/mda/draft.py:48",
+   "surface": "screen",
+   "note": "Operator setting MAX_OUTGOING_ATTACHMENT_SIZE"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach a file from the suite's file storage as a link",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/drive-attachment-picker.tsx:97; src/backend/core/api/viewsets/drive.py:72",
+   "surface": "screen",
+   "note": "Only when DRIVE is configured"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Save a received attachment to the suite's file storage",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/drive-upload-button.tsx:44; src/backend/core/api/viewsets/drive.py:135",
+   "surface": "screen",
+   "note": "Only when DRIVE is configured"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See all attachments of a message in a list with name and size",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/index.tsx:26; src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/attachment-item.tsx:98",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Download an attachment",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/attachment-item.tsx:142; src/backend/core/api/viewsets/blob.py:242",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Preview images, PDFs, audio and video attachments without downloading",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/attachment-preview-modal/index.tsx:230; src/backend/core/api/viewsets/blob.py:305; src/backend/core/enums.py:524",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Step through the attachments of a conversation inside the preview",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/attachment-preview-modal/index.tsx:226; src/frontend/src/features/providers/attachment-preview.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See which message an attachment came from and jump to it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/attachment-preview-modal/sidebar.tsx:169; src/frontend/src/features/layouts/components/thread-view/components/attachment-preview-modal/sidebar.tsx:217",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Be warned when a file's content does not match its declared type",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/attachment-preview-modal/sidebar.tsx:140; src/backend/core/api/viewsets/blob.py:345",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have attachment preview and download blocked on conversations reported as spam",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/index.tsx:35",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Remove an attachment from a draft",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/attachment-item.tsx:160",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Retry an attachment upload that failed",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/attachment-item.tsx:129; src/frontend/src/features/forms/components/message-form/attachment-uploader.tsx:90",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Forward a message together with its attachments",
+   "rating": "partial",
+   "evidence": "src/backend/core/mda/draft.py:77; src/frontend/src/features/forms/components/message-form/index.tsx:132",
+   "surface": "screen",
+   "note": "Backend re-attaches blobs of the source message; the forward form path was read in part"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search the full text of messages in a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-input/index.tsx:121; src/backend/core/api/viewsets/thread.py:691; src/backend/core/services/search/search.py:18",
+   "surface": "screen",
+   "note": "Needs OpenSearch"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search across all folders at once",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:208; src/frontend/src/features/forms/components/search-filters-form/index.tsx:82",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Limit a search to one folder",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:82; src/backend/core/services/search/parse.py:50",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by sender",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:58; src/backend/core/services/search/parse.py:43",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by recipient",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:64; src/backend/core/services/search/parse.py:44",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by subject",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:70; src/backend/core/services/search/parse.py:48",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by read or unread state",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:96; src/backend/core/services/search/parse.py:56",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search to starred conversations",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/index.tsx:100; src/backend/core/services/search/parse.py:55",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Type search operators such as from:, to:, subject:, in: and is: in the search box",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/search/parse.py:43; src/frontend/src/features/utils/search-helper/index.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Type search operators in French or Dutch",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/search/parse.py:43; src/backend/core/services/search/parse.py:51",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by Cc or Bcc address",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/search/parse.py:46; src/backend/core/services/search/parse.py:47",
+   "surface": "screen",
+   "note": "Operator only, no form field"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find an address by typing only its first letters",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/search/mapping.py:34",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find a mailbox of the same domain by name or address",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/mailbox.py:83; src/frontend/src/features/layouts/components/thread-view/components/thread-accesses-widget/index.tsx:361",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Create a label with a name and a colour",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-form-modal/index.tsx:1; src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-form-modal/components/color-palette-field/index.tsx:1; src/backend/core/api/viewsets/label.py:216",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Nest labels under a parent label",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:385; src/backend/core/api/viewsets/label.py:107",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Rename, recolour or delete a label",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:380; src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:391; src/backend/core/api/viewsets/label.py:180",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Open the conversations of a label from the sidebar",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/index.tsx:1; src/backend/core/api/viewsets/thread.py:578",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Expand or collapse the whole label tree",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/index.tsx:104",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Add or remove labels on an open conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/labels-widget/index.tsx:125; src/backend/core/api/viewsets/label.py:281; src/backend/core/api/viewsets/label.py:347",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Create a label on the fly while labelling a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/labels-widget/index.tsx:136",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Drag conversations onto a label to apply it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:125; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:290",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Apply a label and archive in one drop",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:149",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Undo a label you just applied",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-item/index.tsx:233; src/frontend/src/features/ui/components/label-badge/index.tsx:52",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Star and unstar a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:494; src/backend/core/api/viewsets/flag.py:247",
+   "surface": "screen",
+   "note": "Star is personal to each mailbox access"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a conversation read or unread",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/message/use-read.tsx:1; src/backend/core/api/viewsets/flag.py:239",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Have the same label hold several mailboxes' shared conversations separately",
+   "rating": "partial",
+   "evidence": "src/backend/core/models.py:1621",
+   "surface": "background",
+   "note": "Labels belong to one mailbox; behaviour on shared conversations not driven"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Archive and unarchive a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:117; src/backend/core/api/viewsets/flag.py:271",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move a conversation to trash and restore it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:205; src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:82; src/backend/core/api/viewsets/flag.py:266",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Report a conversation as spam and remove the report",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:141; src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:151; src/backend/core/api/viewsets/flag.py:276",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Drag conversations onto archive, spam, trash or back to the inbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:384; src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:432",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Undo an archive, spam or trash action from the confirmation toast",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:464; src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:494",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Split a conversation into two from a chosen message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:136; src/backend/core/api/viewsets/thread.py:892",
+   "surface": "screen",
+   "note": "also driven 2026-10-12; flag FEATURE_THREAD_SPLIT"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have replies threaded with their original by message headers and subject",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound_create.py:104; src/backend/core/mda/inbound_create.py:79",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have incoming spam filed in the spam folder automatically",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound_pipeline.py:293; src/mpa/README.md:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Delete a conversation permanently",
+   "rating": "partial",
+   "evidence": "src/backend/core/api/viewsets/thread.py:284",
+   "surface": "api",
+   "note": "Endpoint exists; a UI path beyond trash was not found"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have matching mail labelled automatically by an AI classifier",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-form-modal/index.tsx:185; src/backend/core/mda/inbound_create.py:634; src/backend/core/ai/thread_classifier.py:14",
+   "surface": "background",
+   "note": "Flag FEATURE_AI_AUTOLABELS; per-label switch and description"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Get address suggestions from earlier correspondents while typing a recipient",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/react-hook-form/rhf-contact-combobox.tsx:21; src/backend/core/api/viewsets/contacts.py:52",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Have addresses of people you write to or hear from collected per mailbox",
+   "rating": "yes",
+   "evidence": "src/backend/core/models.py:2183; src/backend/core/mda/inbound_create.py:186",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Enter recipients as removable chips",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/combobox/chip.tsx:1; src/frontend/src/features/forms/components/combobox/index.tsx:185",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Be told when a typed address is not valid",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:432; src/backend/core/mda/addresses.py:121",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Send to addresses with international domain names",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:421; src/backend/core/mda/addresses.py:80",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See a calendar invitation shown as an event card in the message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/index.tsx:142; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:1229",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept, tentatively accept or decline an invitation from the message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:300; src/backend/core/api/viewsets/calendar.py:89; src/backend/core/services/calendar/tasks.py:45",
+   "surface": "screen",
+   "note": "Needs a CalDAV calendar connection"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Add an invitation's event to a chosen calendar",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:1211; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/calendar-select.tsx:69; src/backend/core/api/viewsets/calendar.py:174",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See events that clash with an invitation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:174; src/backend/core/api/viewsets/calendar.py:245",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See that the organiser cancelled or marked an event tentative",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:432; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:1236",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See organiser, attendees and their response on an invitation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:600; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/calendar-helper.tsx:213",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See how often a recurring invitation repeats",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/event-display.ts:1; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/calendar-helper.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Download the invitation file",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:107",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Open the calendar app from an invitation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:238; src/backend/messages/settings.py:540",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have invitation files rebuilt safely before they are stored in a calendar",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/calendar/ics_rebuild.py:112",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a mailbox with several people",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/access-tab/index.tsx:89; src/backend/core/api/viewsets/mailbox_access.py:16",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Give each mailbox member a role of viewer, editor, sender or admin",
+   "rating": "yes",
+   "evidence": "src/backend/core/enums.py:20; src/frontend/src/hooks/use-mailbox-access-management.ts:80",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Let a member read a mailbox without being able to send from it",
+   "rating": "yes",
+   "evidence": "src/backend/core/enums.py:20; docs/permissions.md:52",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Leave a mailbox you were given access to",
+   "rating": "yes",
+   "evidence": "src/frontend/src/hooks/use-mailbox-access-management.ts:166",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Be prevented from removing the last admin of a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/hooks/use-mailbox-access-management.ts:107",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a single conversation with another mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-accesses-widget/index.tsx:350; src/backend/core/api/viewsets/thread_access.py:72",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Give a mailbox viewer or editor rights on a shared conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/share-modal-extensions/access-role-dropdown.tsx:16; src/backend/core/enums.py:46",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See which mailboxes and people a conversation is shared with",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-accesses-widget/index.tsx:336; src/backend/core/api/viewsets/thread_user.py:14",
+   "surface": "screen",
+   "note": "also driven 2026-10-12"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Leave a conversation that was shared with your mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-action-bar/index.tsx:217; src/frontend/src/features/message/use-leave-thread.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Assign a conversation to one or more people",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/assignees-widget/quick-assign-popover/index.tsx:171; src/backend/core/services/thread_events.py:317",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Unassign people from a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/assignees-widget/quick-assign-popover/index.tsx:152; src/backend/core/services/thread_events.py:373",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Be offered to raise a mailbox to editor when assigning someone who can only read",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-accesses-widget/index.tsx:305",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Write internal comments on a conversation that are never sent to the correspondent",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-event-input/index.tsx:284; src/backend/core/api/viewsets/thread_event.py:116",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Mention a colleague in an internal comment",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-event-input/index.tsx:188; src/backend/core/services/thread_events.py:436",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Edit or delete your own internal comment for a limited time",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-event/index.tsx:313; src/frontend/src/features/layouts/components/thread-view/components/thread-event/index.tsx:194; src/backend/core/models.py:2094",
+   "surface": "screen",
+   "note": "Operator setting MAX_THREAD_EVENT_EDIT_DELAY"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Copy a link to an internal comment",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-event/index.tsx:303",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See assignment changes in the conversation timeline",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-event/assignment-message.ts:1; src/frontend/src/features/layouts/components/thread-view/components/thread-event/index.tsx:428",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Have each member keep their own read and starred state on a shared mailbox's conversations",
+   "rating": "yes",
+   "evidence": "src/backend/core/models.py:1875; src/backend/core/api/viewsets/flag.py:209",
+   "surface": "background",
+   "note": "State lives on the mailbox-to-conversation access"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share message templates with everyone who uses a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-template/index.tsx:1; src/backend/core/api/viewsets/message_template.py:43",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have external images blocked until you choose to display them",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:441",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have external images fetched through a proxy that hides your address",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/image_proxy.py:87; src/backend/core/api/viewsets/image_proxy.py:117",
+   "surface": "background",
+   "note": "Flag IMAGE_PROXY_ENABLED"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be asked to confirm before following a link out of a message",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/use-link-confirmation.tsx:30; src/frontend/src/features/layouts/components/thread-view/components/thread-message/is-host-trusted.ts:3",
+   "surface": "screen",
+   "note": "Operator can list trusted domains in MESSAGE_TRUSTED_LINK_DOMAINS"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when a link's text does not match its real target",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/use-link-confirmation.tsx:27",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when a message failed sender authentication",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:178; src/backend/core/mda/inbound_auth.py:256",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when a sender's identity could not be verified",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:185; src/frontend/src/features/ui/components/contact-chip/index.tsx:86",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned on a message that is likely spam",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:207",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have outgoing mail signed with a domain key",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound.py:483; src/backend/core/mda/signing.py:59; src/backend/core/signals.py:53",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have incoming mail checked for DKIM and DMARC",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound_auth.py:256; docs/spam.md:128",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Trust mail relayed by named forwarders through ARC",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/arc.py:89; src/backend/core/mda/inbound_pipeline.py:209",
+   "surface": "background",
+   "note": "Configured in SPAM_CONFIG"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Require two-factor sign-in for a chosen mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/mailboxes-view/mailbox-data-grid.tsx:91; src/backend/core/api/viewsets/maildomain.py:482",
+   "surface": "setting",
+   "note": "Flag FEATURE_MAILDOMAIN_MANAGE_TOTP; needs Keycloak"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Reset a user's two-factor enrolment",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/mailboxes-view/mailbox-data-grid.tsx:109; src/backend/core/api/viewsets/maildomain.py:531",
+   "surface": "setting",
+   "note": "Flag FEATURE_MAILDOMAIN_MANAGE_TOTP"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have stored mail encrypted when it is moved to object storage",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/tiered_storage.py:118; docs/tiered-storage.md:129",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have server-side requests to user-supplied addresses blocked from reaching private networks",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/ssrf.py:93; src/backend/core/api/viewsets/image_proxy.py:117",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have push notifications carry no message content",
+   "rating": "yes",
+   "evidence": "src/frontend/public/sw.js:6; src/backend/core/services/push/common.py:78",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Turn on browser push notifications for new mail on a device",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/devices-view/user-devices-grid.tsx:392; src/frontend/src/features/layouts/components/mailbox-settings/devices-view/web-push.ts:286; src/backend/core/services/push/webpush.py:165",
+   "surface": "setting",
+   "note": "Flag PUSH_ENABLED with VAPID keys"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Receive push notifications on an iPhone or Android phone",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/push.ts:67; src/backend/core/services/push/apns.py:107; src/backend/core/services/push/fcm.py:87",
+   "surface": "background",
+   "note": "Needs APNs and FCM credentials"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See the list of devices that receive your notifications",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/devices-view/user-devices-grid.tsx:1; src/backend/core/api/viewsets/channel.py:311",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Rename a notification device",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/devices-view/user-devices-grid.tsx:358",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Sign a device out of notifications remotely",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/devices-view/user-devices-grid.tsx:223; src/backend/core/api/viewsets/channel.py:198",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Open the right conversation by tapping a notification",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/deep-link.ts:2; src/frontend/public/sw.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See an unread-mention marker on conversations where you were mentioned",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:412; src/backend/core/api/viewsets/thread_event.py:98",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See a header indicator while an import is running",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/header/authenticated.tsx:179",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Be told when a new version of the app is available",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/use-ota-update-toast.tsx:43",
+   "surface": "screen",
+   "note": "Native app"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import mail from another account over IMAP",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:33; src/backend/core/api/viewsets/imports.py:128; src/backend/core/services/importer/imap.py:664",
+   "surface": "screen",
+   "note": "also driven 2026-10-12; flag FEATURE_IMPORT_MESSAGES"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have the IMAP server detected from the email address",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:261; src/backend/core/services/importer/service.py:134",
+   "surface": "screen",
+   "note": "The form falls back to manual entry when detection fails; the detection logic itself was not traced"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Keep checking an old IMAP account for new mail on a schedule",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:109; src/backend/core/services/importer/channel.py:325; src/backend/core/services/importer/tasks.py:330",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Pause and resume the regular checking of an IMAP account",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:96; src/backend/core/services/importer/channel.py:383",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import mail from an MBOX archive",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:323; src/backend/core/services/importer/mbox.py:400",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import mail from an Outlook PST archive",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:323; src/backend/core/services/importer/pst.py:1541; docs/imports-pst.md:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import a single EML message file",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:323; src/backend/core/services/importer/eml.py:13",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Upload a large archive in parts with a progress bar and an abort button",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/use-bucket-upload.tsx:1; src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:360; src/backend/core/api/viewsets/imports.py:294",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Close the window while an import keeps running in the background",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:160; src/backend/core/services/importer/tasks.py:105",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Follow the progress of an import and see how many messages failed",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:1; src/backend/core/services/importer/channel.py:204",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Cancel an import and delete the messages it created",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:126; src/backend/core/api/viewsets/imports.py:185; src/backend/core/services/importer/channel.py:530",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Remove an import from the list while keeping its messages",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:116; src/backend/core/api/viewsets/imports.py:268",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have folders of the old account turned into labels on import",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/importer/imap.py:356; src/backend/core/services/importer/labels.py:119",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have Gmail labels and read or starred flags kept on import",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/utils.py:191; src/backend/core/services/importer/labels.py:119; docs/mbox.md:122",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have messages already present skipped on import",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/importer/labels.py:203; docs/imports.md:66",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have an interrupted import resume where it stopped",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/importer/tasks.py:330; docs/imports.md:45",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Export a whole mailbox to an MBOX archive and receive a download link by mail",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-mailbox-export/index.tsx:109; src/backend/core/api/viewsets/maildomain.py:593; src/backend/core/services/exporter/tasks.py:702",
+   "surface": "screen",
+   "note": "Domain admin action"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Have labels and read flags written into the exported archive",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/exporter/tasks.py:324; docs/mbox.md:16",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Forward every incoming message to a web address as a webhook",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/webhook-integration-form.tsx:352; src/backend/core/mda/dispatch_webhooks.py:1171; docs/webhooks.md:1",
+   "surface": "setting",
+   "note": "Flag FEATURE_MAILBOX_ADMIN_CHANNELS must list webhook"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Choose at which point of a message's delivery a webhook fires",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/webhook-integration-form.tsx:1; src/backend/core/enums.py:353",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Let a webhook receiver mark a message as spam, add labels, assign people or prepare a reply draft",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/dispatch_webhooks.py:361; src/backend/core/mda/inbound_pipeline.py:665; src/backend/core/mda/inbound_pipeline.py:758",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Choose the webhook payload format: full message, metadata only or raw file",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/webhook-integration-form.tsx:352; src/backend/core/mda/webhook_payload.py:41",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Secure a webhook with a signature or a static key",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/webhook-integration-form.tsx:175; src/backend/core/enums.py:370; src/backend/core/mda/dispatch_webhooks.py:799",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Regenerate the secret of an integration",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/webhook-integration-form.tsx:411; src/backend/core/api/viewsets/channel.py:249",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Pause and resume an integration",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/integrations-view/integrations-data-grid.tsx:174; src/backend/core/models.py:638",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Put a contact form on a website that delivers into a mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/widget-integration-form.tsx:1; src/backend/core/api/viewsets/inbound/widget.py:148",
+   "surface": "setting",
+   "note": "Flag FEATURE_MAILBOX_ADMIN_CHANNELS must list widget"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Have labels applied automatically to messages from a website form",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/tags-selector.tsx:1; src/backend/core/mda/inbound_pipeline.py:503",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Set the subject line used for messages from a website form",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/widget-integration-form.tsx:55; src/backend/core/api/viewsets/inbound/widget.py:237",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Create an API key to send mail from another application",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-compose-integration/index.tsx:42; src/backend/core/api/viewsets/submit.py:34; src/backend/core/enums.py:403",
+   "surface": "setting",
+   "note": "Flag FEATURE_MAILBOX_ADMIN_CHANNELS must list api_key"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Submit a ready-made raw email for sending over the API",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/submit.py:55",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Use a documented REST API with an OpenAPI description",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/openapi.json:1; src/backend/core/urls.py:63",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Create mail domains from another system over a provisioning API",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/provisioning.py:33; src/backend/core/enums.py:404",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Look up mailboxes and their users from another system",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/provisioning.py:180",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Read usage figures per domain and per mailbox over an API",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/metrics.py:39; src/backend/core/api/viewsets/metrics.py:205",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Connect a CalDAV calendar to a mailbox",
+   "rating": "partial",
+   "evidence": "src/backend/core/enums.py:256; src/backend/core/services/calendar/tasks.py:24; src/backend/messages/settings.py:528",
+   "surface": "setting",
+   "note": "Connection is a channel or a server-wide default; no user form to add one was found"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Connect the suite's file storage for attachments",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/drive.py:31; src/backend/core/urls.py:340",
+   "surface": "setting",
+   "note": "Operator setting DRIVE"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Send feedback to the operator from inside the app",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/feedback-widget/index.tsx:24; src/frontend/src/features/ui/components/feedback-button/index.tsx:39",
+   "surface": "screen",
+   "note": "Operator setting FRONTEND_FEEDBACK_WIDGET_CONFIG"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Open a domain administration area separate from the mail client",
+   "rating": "yes",
+   "evidence": "src/frontend/src/routes/domain/index.tsx:1; src/frontend/src/features/layouts/components/main/header/authenticated.tsx:297",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Add a mail domain",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-create-domain/index.tsx:96; src/backend/core/api/viewsets/maildomain.py:54",
+   "surface": "screen",
+   "note": "Flag FEATURE_MAILDOMAIN_CREATE"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Search the list of domains",
+   "rating": "yes",
+   "evidence": "src/frontend/src/routes/domain/index.tsx:143",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See the DNS records a domain needs and whether each one is correct",
+   "rating": "yes",
+   "evidence": "src/frontend/src/routes/domain/$maildomainId/dns.tsx:159; src/backend/core/api/viewsets/maildomain.py:165; src/backend/core/services/dns/check.py:680",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Copy all required DNS records at once",
+   "rating": "yes",
+   "evidence": "src/frontend/src/routes/domain/$maildomainId/dns.tsx:159",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Have DNS records created automatically at a supported DNS provider",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/dns/provisioning.py:76; src/backend/core/services/dns/providers/scaleway.py:16; src/backend/core/admin.py:360",
+   "surface": "api",
+   "note": "Scaleway only; command line and operator console"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create a personal mailbox for a user",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-create-update-mailbox/index.tsx:362; src/backend/core/api/viewsets/maildomain.py:311",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create a shared mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-create-update-mailbox/index.tsx:368; src/backend/core/api/viewsets/maildomain.py:284",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Hand over a temporary password for a new mailbox",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/mailbox-credentials/index.tsx:1; src/frontend/src/features/layouts/components/admin/modal-create-update-mailbox/mailbox-creation-success.tsx:1",
+   "surface": "screen",
+   "note": "Only for domains synced to the identity provider"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Reset the password of a mailbox user",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-mailbox-reset-password/index.tsx:49; src/backend/core/api/viewsets/maildomain.py:403",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Search mailboxes of a domain by name or address",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/mailboxes-view/page-content.tsx:40; src/backend/core/api/viewsets/maildomain.py:269",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Manage who has access to any mailbox of a domain",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-mailbox-manage-accesses/index.tsx:1; src/frontend/src/features/layouts/components/admin/mailboxes-view/mailbox-data-grid.tsx:356",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Appoint administrators for a domain",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-maildomain-manage-accesses/index.tsx:1; src/backend/core/api/viewsets/maildomain_access.py:15",
+   "surface": "screen",
+   "note": "Flag FEATURE_MAILDOMAIN_MANAGE_ACCESSES"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create signatures for a whole domain",
+   "rating": "yes",
+   "evidence": "src/frontend/src/routes/domain/$maildomainId/signatures.tsx:1; src/frontend/src/features/layouts/components/admin/modal-compose-signature/index.tsx:1; src/backend/core/api/viewsets/maildomain.py:651",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Force one signature on every message of a domain",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-compose-signature/index.tsx:265; src/backend/core/models.py:1116",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Keep user accounts in step with an identity provider",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-create-domain/index.tsx:138; src/backend/core/services/identity/keycloak.py:147; src/backend/core/signals.py:68",
+   "surface": "background",
+   "note": "Per-domain option identity_sync; Keycloak"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Add custom fields to users and domains",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/admin/modal-create-domain/index.tsx:30; docs/model-custom-attributes.md:1",
+   "surface": "setting",
+   "note": "Operator settings SCHEMA_CUSTOM_ATTRIBUTES_USER and _MAILDOMAIN"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Reserve address prefixes that personal mailboxes may not use",
+   "rating": "yes",
+   "evidence": "src/backend/messages/settings.py:405",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Decide per user who may use the product and who may administer domains from an external entitlements service",
+   "rating": "yes",
+   "evidence": "src/backend/core/authentication/backends.py:100; src/backend/core/entitlements/backends/deploycenter.py:17; docs/entitlements.md:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Manage every record from an operator console",
+   "rating": "yes",
+   "evidence": "src/backend/core/admin.py:174; src/backend/core/admin.py:452",
+   "surface": "screen",
+   "note": "Django admin"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Retry sending or reprocess a stuck message from the operator console",
+   "rating": "yes",
+   "evidence": "src/backend/core/admin.py:1310; src/backend/core/admin.py:1599",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rebuild the search index from the command line",
+   "rating": "yes",
+   "evidence": "src/backend/core/management/commands/search_reindex.py:1; src/backend/core/services/search/index.py:519",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Run an end-to-end delivery self-test on a schedule and alert when it fails",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/selfcheck.py:235; src/backend/core/mda/selfcheck_reporting.py:115; docs/selfcheck.md:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Expose server metrics for monitoring",
+   "rating": "yes",
+   "evidence": "src/backend/core/urls.py:349; src/backend/core/metrics.py:1; docs/prometheus.md:1",
+   "surface": "api",
+   "note": "Flag ENABLE_PROMETHEUS"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Switch product features on and off per installation",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/config.py:135; src/backend/messages/settings.py:1388",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Receive mail from the internet over SMTP",
+   "rating": "yes",
+   "evidence": "src/mta-in/README.md:1; src/mta-in/src/pymta/server.py:1; src/backend/core/api/viewsets/inbound/mta.py:162",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Refuse mail for unknown recipients during the SMTP conversation",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/inbound/mta.py:142; src/backend/core/mda/inbound.py:77",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Send mail straight to the recipient's mail servers",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound_direct.py:134; src/backend/core/mda/outbound.py:957",
+   "surface": "background",
+   "note": "MTA_OUT_MODE direct"
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Send mail through an outside relay server",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound.py:962; src/backend/core/mda/smtp.py:174",
+   "surface": "background",
+   "note": "MTA_OUT_MODE relay; can be set per domain"
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Route outgoing mail through proxies to control the sending address",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound_direct.py:107; src/socks-proxy/README.md:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Retry failed deliveries automatically",
+   "rating": "yes",
+   "evidence": "src/backend/messages/celery_app.py:34; src/backend/core/mda/outbound_tasks.py:125",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Deliver between local mailboxes without leaving the server",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound.py:571; src/backend/messages/settings.py:824",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Filter incoming mail through a spam engine",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/spam.py:193; src/mpa/rspamd/rspamd.conf:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Apply fixed header rules to incoming mail before the spam engine",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/spam.py:79; docs/spam.md:292",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Hold incoming mail and retry when a check is temporarily unavailable",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound_tasks.py:201; src/backend/messages/celery_app.py:44",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Limit how many outside recipients a mailbox or domain may write to per period",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/throttle.py:261; src/backend/core/mda/outbound.py:350",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Limit the size of incoming and outgoing messages",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/outbound.py:64; src/backend/messages/settings.py:152",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Store message bodies compressed",
+   "rating": "yes",
+   "evidence": "src/backend/core/models.py:2994; src/backend/messages/settings.py:698",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Store identical content only once",
+   "rating": "partial",
+   "evidence": "src/backend/core/services/tiered_storage.py:145; src/backend/core/models.py:2716",
+   "surface": "background",
+   "note": "Blobs are keyed by hash; exact dedup scope not traced"
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Move older message content from the database to object storage",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/tiered_storage_tasks.py:65; docs/tiered-storage.md:110",
+   "surface": "background",
+   "note": "Flag MESSAGES_BLOBS_OFFLOAD_ENABLED"
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Clean up stored content nothing refers to any more",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/blob_gc.py:376; src/backend/messages/celery_app.py:73",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Index mail for search as it arrives",
+   "rating": "yes",
+   "evidence": "src/backend/core/signals.py:80; src/backend/core/services/search/coalescer.py:217",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Send and receive with addresses that contain non-ASCII characters",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/addresses.py:110; src/backend/core/mda/smtp.py:331",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Check outgoing domains for a valid SPF record before sending",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/dns/check.py:630; src/backend/messages/settings.py:813",
+   "surface": "background",
+   "note": "Setting MESSAGES_SPF_CHECK_OUTGOING"
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Catch all mail for a domain regardless of recipient",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound.py:46",
+   "surface": "setting",
+   "note": "Setting MESSAGES_ACCEPT_ALL_EMAILS"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Use a native app on iPhone and Android",
+   "rating": "partial",
+   "evidence": "src/frontend/capacitor.config.ts:76; docs/mobile.md:1",
+   "surface": "screen",
+   "note": "Capacitor shells and docs are in the tree; store builds not verified"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Sign in to the mobile app through the system browser",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/auth.ts:1; src/backend/core/api/viewsets/mobile_auth.py:36; src/backend/core/authentication/views.py:58",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Install the web client as an app on a device",
+   "rating": "partial",
+   "evidence": "src/frontend/index.html:12; src/frontend/public/manifest.json:1",
+   "surface": "screen",
+   "note": "Manifest present; offline cache not found in the service worker"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Use a single-pane layout on a phone with a bottom toolbar",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mobile/thread-toolbar/index.tsx:121; src/frontend/src/features/layouts/components/mobile/bottom-bar/index.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Swipe a conversation to archive, delete or mark it read",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/thread-item-swipe.tsx:115; src/frontend/src/hooks/use-swipe-actions.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Pull down to refresh the list",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/index.tsx:57; src/frontend/src/features/native/use-pull-to-refresh.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Long-press to select conversations on a touch screen",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx:103; src/frontend/src/hooks/use-long-press.ts:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Format text from a toolbar above the phone keyboard",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/blocknote/mobile-toolbar/index.tsx:255; src/frontend/src/features/blocknote/mobile-toolbar/format-panel.tsx:182",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Share or save a downloaded attachment through the phone's share sheet",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/download.ts:43; src/frontend/src/features/native/use-native-download.tsx:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Receive app updates without going through the app store",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/native/ota.ts:13; src/backend/core/api/viewsets/config.py:236",
+   "surface": "background",
+   "note": "Setting MOBILE_OTA_MANIFEST_URL"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Stack several compose windows as cards on a phone",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-mobile-stack/index.tsx:1; src/frontend/src/features/layouts/components/compose/compose-overview/index.tsx:62",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Get an AI summary of a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-summary/index.tsx:147; src/backend/core/api/viewsets/thread.py:820; src/backend/core/ai/thread_summarizer.py:13",
+   "surface": "screen",
+   "note": "Flag FEATURE_AI_SUMMARY plus AI_API_KEY, AI_BASE_URL, AI_MODEL"
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Regenerate the summary of a conversation",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-summary/index.tsx:143; src/backend/core/api/viewsets/thread.py:848",
+   "surface": "screen",
+   "note": "Flag FEATURE_AI_SUMMARY"
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Have new conversations summarised automatically on arrival",
+   "rating": "yes",
+   "evidence": "src/backend/core/mda/inbound_create.py:624",
+   "surface": "background",
+   "note": "Flag FEATURE_AI_SUMMARY"
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Describe a label in words so the AI knows when to apply it",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-form-modal/index.tsx:185; src/backend/core/models.py:1633",
+   "surface": "setting",
+   "note": "Flag FEATURE_AI_AUTOLABELS"
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Connect any OpenAI-compatible model as the assistant",
+   "rating": "yes",
+   "evidence": "src/backend/core/services/ai_service.py:15; src/backend/messages/settings.py:1371",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Use the interface in ten languages",
+   "rating": "yes",
+   "evidence": "src/frontend/public/locales/common/nl-NL.json:1; src/frontend/public/locales/common/fr-FR.json:1; docs/internationalization.md:1",
+   "surface": "screen",
+   "note": "br, de, en, es, fr, it, nl, pt, ru, uk"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Switch the interface language from the header",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/main/language-picker.tsx:9; src/frontend/src/features/layouts/components/main/header/authenticated.tsx:224",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Have an installation forced to one default language",
+   "rating": "yes",
+   "evidence": "src/backend/core/api/viewsets/config.py:186",
+   "surface": "setting",
+   "note": "Setting FRONTEND_FORCED_DEFAULT_LANGUAGE"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Jump to the main content with a skip link",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/skip-link/index.tsx:18",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Use the conversation list as a keyboard-navigable list with screen-reader labels",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/index.tsx:167; src/frontend/src/features/layouts/components/thread-panel/hooks/use-thread-listbox.ts:108",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Have focus kept inside dialogs and returned afterwards",
+   "rating": "yes",
+   "evidence": "src/frontend/src/hooks/use-focus-trap.ts:67; src/frontend/src/hooks/use-restore-focus.ts:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Read mail with a dark colour scheme applied to message content",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:242; src/frontend/src/features/providers/theme.tsx:40",
+   "surface": "screen",
+   "note": "Dark variants exist in theme map; a user toggle was not found"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Have the installation themed with the operator's colours and logo",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/providers/theme.tsx:38; src/backend/core/api/viewsets/config.py:175; docs/theme-customization.md:1",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Open a help centre and tutorials from the app",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/feedback-button/index.tsx:85; src/frontend/src/features/ui/components/feedback-button/index.tsx:101",
+   "surface": "screen",
+   "note": "Setting FRONTEND_HELP_CENTER_URL"
+  }
+ ]
+}

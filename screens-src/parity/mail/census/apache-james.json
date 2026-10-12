@@ -1,0 +1,2814 @@
+{
+ "system": {
+  "key": "apache-james",
+  "name": "Apache James",
+  "readVersion": "james-project-3.9.1",
+  "evidenceGrade": "source-read",
+  "readOn": "2026-10-12",
+  "licence": "Apache-2.0",
+  "sources": [
+   "https://github.com/apache/james-project"
+  ]
+ },
+ "rows": [
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Find the mail service address automatically from the well-known address",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/SessionRoutes.scala:54; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/SessionRoutes.scala:98",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Read in one document what the server supports and which limits apply",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/SessionRoutes.scala:53; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:165; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/SessionRoutesContract.scala:42",
+   "surface": "api",
+   "note": "Limits listed: upload size, calls per request, objects per get and set, attachment size per mail, folder depth."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign in with a username and password",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/http/BasicAuthenticationStrategy.scala:113; server/container/guice/protocols/jmap/src/main/java/org/apache/james/jmap/rfc8621/RFC8621MethodsModule.java:187; protocols/imap/src/main/java/org/apache/james/imap/processor/LoginProcessor.java:44",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign in with a signed token instead of a password",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap/src/main/java/org/apache/james/jmap/http/JWTAuthenticationStrategy.java:40; server/container/guice/protocols/jmap/src/main/java/org/apache/james/jmap/rfc8621/RFC8621MethodsModule.java:188; server/apps/distributed-app/sample-configuration/jmap.properties:23",
+   "surface": "api",
+   "note": "JWT bearer; needs jwt.publickeypem.url in jmap.properties."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sign in to IMAP and SMTP through a single sign-on provider",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/AuthenticateProcessor.java:65; protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/esmtp/AuthCmdHandler.java:130; server/apps/distributed-app/sample-configuration/smtpserver.xml:105",
+   "surface": "setting",
+   "note": "OAUTHBEARER and XOAUTH2, switched on by an oidc block in the server configuration."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Let a trusted front proxy name the signed-in person in a request header",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap/src/main/java/org/apache/james/jmap/http/XUserAuthenticationStrategy.java:45; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:50",
+   "surface": "setting",
+   "note": "Chosen with authentication.strategy.rfc8621; meant for use behind a gateway."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Have an account created on first sign in when a token vouches for the person",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/http/UserProvisioning.scala:33; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/ProvisioningContract.scala:36",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get the standard folders created on first sign in",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/http/MailboxesProvisioner.scala:34; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/ProvisioningContract.scala:36",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Keep several sender identities, each with its own name",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/IdentitySetMethod.scala:41; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/IdentityGet.scala:34; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/IdentitySetContract.scala:44",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set a text signature and an HTML signature per sender identity",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/IdentityGet.scala:34; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/IdentitySetMethod.scala:41",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set a standard reply-to and blind copy address per sender identity",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/IdentityGet.scala:34; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/IdentitySetUpdatePerformer.scala:37",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Put sender identities in a chosen order",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:66; server/protocols/jmap-rfc-8621/doc/specs/spec/mail/identitySortOrder.mdown:1",
+   "surface": "api",
+   "note": "A server extension, urn:apache:james:params:jmap:mail:identity:sortorder."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get a sender identity automatically for every alias address you own",
+   "rating": "yes",
+   "evidence": "server/data/data-jmap/src/main/scala/org/apache/james/jmap/api/identity/CustomIdentityDAO.scala:171; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/IdentityGetMethod.scala:43",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sync only the sender identities that changed since last time",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/IdentityChangesMethod.scala:38; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/IdentityChangesContract.scala:35",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Use the full mail address as the sign-in name on every protocol",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/usersrepository.xml:25",
+   "surface": "setting",
+   "note": "enableVirtualHosting."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Connect with any standard IMAP mail client",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-imap4/src/main/java/org/apache/james/imapserver/netty/IMAPServer.java:91; server/apps/distributed-app/sample-configuration/imapserver.xml:29",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Connect with a POP3 mail client",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-pop3/src/main/java/org/apache/james/pop3server/netty/POP3Server.java:38; protocols/pop3/src/main/java/org/apache/james/protocols/pop3/core/UidlCmdHandler.java:47; protocols/pop3/src/main/java/org/apache/james/protocols/pop3/core/TopCmdHandler.java:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "See your own storage use and limit",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/QuotaGetMethod.scala:48; protocols/imap/src/main/java/org/apache/james/imap/processor/GetQuotaRootProcessor.java:58; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Quotas.scala:89",
+   "surface": "api",
+   "note": "Both message count and size, over JMAP (RFC 9245) and IMAP QUOTA."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Sync only the storage figures that changed since last time",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/QuotaChangesMethod.scala:46; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/QuotaQueryMethod.scala:42",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Create a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxSetMethod.scala:64; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxSetCreatePerformer.scala:43; protocols/imap/src/main/java/org/apache/james/imap/processor/CreateProcessor.java:42",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Create a folder inside another folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:76; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:278",
+   "surface": "api",
+   "note": "A maximum depth is advertised in the session."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Rename a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:202; protocols/imap/src/main/java/org/apache/james/imap/processor/RenameProcessor.java:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Move a folder under another parent",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:167; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxSetUpdatePerformer.scala:59",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Delete a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxSetDeletePerformer.scala:41; protocols/imap/src/main/java/org/apache/james/imap/processor/DeleteProcessor.java:48",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Delete a folder together with the messages in it",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:48; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxSetDeletePerformer.scala:91",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Subscribe to a folder or hide it from the folder list",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:178; protocols/imap/src/main/java/org/apache/james/imap/processor/SubscribeProcessor.java:42; protocols/imap/src/main/java/org/apache/james/imap/processor/UnsubscribeProcessor.java:43",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See how many messages and how many unread messages each folder holds",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:131; protocols/imap/src/main/java/org/apache/james/imap/processor/StatusProcessor.java:78",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See how many conversations each folder holds",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:133; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxFactory.scala:127",
+   "surface": "api",
+   "note": "The fields exist but are filled with the message counts: the factory passes the unseen count and the total count twice."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See the size of a folder without opening it",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/StatusProcessor.java:101",
+   "surface": "api",
+   "note": "IMAP STATUS=SIZE."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Recognise the inbox, sent, drafts, trash, spam and archive folders by their role",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:129; protocols/imap/src/main/java/org/apache/james/imap/processor/ListProcessor.java:87; protocols/imap/src/main/java/org/apache/james/imap/processor/XListProcessor.java:49",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "List folders filtered by role or name",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxQueryMethod.scala:37; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/MailboxQueryMethodContract.scala:38",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Sync only the folders that changed since last time",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxChangesMethod.scala:50; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxQueryChangesMethod.scala:38",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Get the folder list and the counts of each folder in one request",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/ListProcessor.java:85; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MailboxGetMethod.scala:74",
+   "surface": "api",
+   "note": "IMAP LIST-STATUS and LIST-EXTENDED; JMAP returns counts with Mailbox/get."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Attach notes or settings to a folder that every client can read",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/SetMetadataProcessor.java:56; protocols/imap/src/main/java/org/apache/james/imap/processor/GetMetadataProcessor.java:64; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:106",
+   "surface": "api",
+   "note": "IMAP METADATA annotations."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Leave a folder open without marking its new messages as seen",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/ExamineProcessor.java:38; protocols/imap/src/main/java/org/apache/james/imap/processor/UnselectProcessor.java:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "List the messages in a folder newest first",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailQueryMethod.scala:56; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:246",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sort the message list by received date, sent date, size, sender, recipient or subject",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:241; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:202; mailbox/opensearch/src/main/java/org/apache/james/mailbox/opensearch/query/SortConverter.java:42",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Page through a long message list",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailQueryMethod.scala:32; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:188",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Group messages into conversations",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/ThreadGetMethod.scala:68; mailbox/store/src/main/java/org/apache/james/mailbox/store/mail/SearchThreadIdGuessingAlgorithm.java:91; server/container/guice/memory/src/main/java/org/apache/james/modules/mailbox/MemoryMailboxModule.java:115",
+   "surface": "api",
+   "note": "Grouping uses Message-ID, In-Reply-To, References and subject. The JPA build binds a naive algorithm that gives every message its own conversation (JPAMailboxModule.java:111)."
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Show one row per conversation in a message list",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:189; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:3654",
+   "surface": "api",
+   "note": "collapseThreads is accepted but the test name says it is a no-op; the client has to collapse the list itself."
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sync only the conversations that changed since last time",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/ThreadChangesMethod.scala:37; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/ThreadChangesContract.scala:35",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sync only the messages that changed since last time",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailChangesMethod.scala:44; server/data/data-jmap/src/main/java/org/apache/james/jmap/api/change/EmailChangeRepository.java:28",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Get a short text preview of every message in a list",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:167; server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/event/ComputeMessageFastViewProjectionListener.java:50; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/JmapPreviewContract.scala:49",
+   "surface": "background",
+   "note": "Computed once at delivery and stored, so lists do not open message bodies."
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See in a list whether a message has attachments",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:167; server/data/data-jmap/src/main/java/org/apache/james/jmap/api/projections/MessageFastViewPrecomputedProperties.java:46",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Get fast folder listings from a precomputed view",
+   "rating": "yes",
+   "evidence": "server/data/data-jmap/src/main/java/org/apache/james/jmap/api/projections/EmailQueryView.java:32; server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/event/PopulateEmailQueryViewListener.java:67; server/apps/distributed-app/sample-configuration/jmap.properties:27",
+   "surface": "setting",
+   "note": "view.email.query.enabled; covers lists by folder sorted on sent or received date."
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read a message with its plain text and HTML bodies",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailGetMethod.scala:85; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:87; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailGetMethodContract.scala:60",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Get the structure of a message with all its parts",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:169; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailBodyPart.scala:241",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read any header of a message as text, addresses, dates, message ids or links",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:236; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:243",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Download the original message file",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/DownloadRoutes.scala:264; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/DownloadContract.scala:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open a message that arrived as an attachment without importing it",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailParseMethod.scala:50; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailParseMethodContract.scala:40",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Fetch only part of a large message",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/fetch/FetchProcessor.java:89; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:53",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Send a read receipt for a message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MDNSendMethod.scala:68; server/container/guice/protocols/jmap/src/main/java/org/apache/james/jmap/JMAPModule.java:165; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/MDNSendMethodContract.scala:54",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read the details out of a received read receipt",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/MDNParseMethod.scala:52; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/MDNParseMethodContract.scala:47",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Link an incoming read receipt to the message it is about",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/mailet/ExtractMDNOriginalJMAPMessageId.java:53",
+   "surface": "background",
+   "note": "A mailet that has to be placed in the mail processing configuration."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Save a draft with a plain text and an HTML body",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:182; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:196; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetCreatePerformer.scala:48",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have the plain text version of an HTML message written for you",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:245; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:248",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set any header on a message you compose",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:199",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Replace a saved draft in one step",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/ReplaceProcessor.java:67",
+   "surface": "api",
+   "note": "IMAP REPLACE."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send a message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:184; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:279; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailSubmissionSetMethodContract.scala:48",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Schedule a message to be sent later",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:343; server/apps/distributed-app/sample-configuration/jmap.properties:10; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/futurerelease/FutureReleaseMailParameterHook.java:47",
+   "surface": "setting",
+   "note": "Off by default (delay.sends.enabled). Works over JMAP and over SMTP FUTURERELEASE with holdFor or holdUntil."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have the sent copy moved out of drafts when the send succeeds",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSubmissionSet.scala:48; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailSubmissionSetMethodContract.scala:909",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have the draft deleted when the send succeeds",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSubmissionSet.scala:49; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSubmissionSet.scala:108",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send from any of your alias addresses",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:440; server/data/data-api/src/main/java/org/apache/james/rrt/api/CanSendFrom.java:25; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:171",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be refused when sending as an address that is not yours",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:96; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/SenderAuthIdentifyVerificationHook.java:60; server/apps/distributed-app/sample-configuration/smtpserver.xml:55",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Ask for a delivery report when a message arrives or fails",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/dsn/DSNEhloHook.java:30; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/dsn/DSNMailParameterHook.java:36; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/DSNBounce.java:135",
+   "surface": "api",
+   "note": "SMTP DSN; needs the DSN hooks and matchers in the configuration."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Mark a message as urgent so it is delivered ahead of others",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/priority/SmtpMtPriorityParameterHook.java:37; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/WithPriority.java:41; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/MailPriorityHandler.java:47",
+   "surface": "api",
+   "note": "SMTP MT-PRIORITY; needs a queue that supports priorities."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Demand that a message only travels over encrypted connections",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/tls/SmtpRequireTlsParameterHook.java:36; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/tls/SmtpRequireTlsEhloHook.java:28",
+   "surface": "api",
+   "note": "SMTP REQUIRETLS."
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Upload a file to attach to a message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/UploadRoutes.scala:77; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/UploadContract.scala:40",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Download one attachment of a message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/DownloadRoutes.scala:264; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/DownloadRoutes.scala:72",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach uploaded files to a draft",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:200; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:232",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Place an image inside the message body",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:127; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:345",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach a file that is already on the server without uploading it again",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:200; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/BlobCopyMethod.scala:68",
+   "surface": "api",
+   "note": "Attachments are named by blob id, so a part of another message can be reused; Blob/copy copies between accounts."
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have a limit on the size of one upload",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:40; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:165",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have a limit on the total attachment size of one message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:41; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:280",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have a storage limit for uploads that were not yet sent",
+   "rating": "yes",
+   "evidence": "server/data/data-jmap/src/main/java/org/apache/james/jmap/api/upload/JmapUploadQuotaConfiguration.java:22; server/data/data-jmap/src/main/java/org/apache/james/jmap/api/upload/UploadServiceDefaultImpl.java:45",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have old unused uploads cleaned up",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/JmapUploadRoutes.java:61; server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/UploadRepositoryCleanupTask.java:41",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Have attachments removed from mail and stored elsewhere",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/StripAttachment.java:99; mailet/standard/src/main/java/org/apache/james/transport/mailets/RecoverAttachment.java:67",
+   "surface": "background",
+   "note": "Mailets, placed in the processing configuration."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search across all folders at once",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:77; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:284",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Limit a search to one folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:121",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Leave chosen folders out of a search",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:122",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search by sender",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:264",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search by recipient, copy or blind copy address",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:271; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:278; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:285",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search in the subject",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:292",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search in the message body",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:308; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:1439",
+   "surface": "api",
+   "note": "Word matching differs per search backend, see the notes file."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search everywhere in a message with one term",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:247; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:6348",
+   "surface": "api",
+   "note": "The text filter covers addresses, subject, body, attachment text and attachment file names."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search the text of HTML messages without matching the markup",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:6618; mailbox/store/src/main/java/org/apache/james/mailbox/store/extractor/JsoupTextExtractor.java:38",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search inside attachments",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:254; mailbox/tika/src/main/java/org/apache/james/mailbox/tika/TikaTextExtractor.java:57; server/apps/distributed-app/sample-configuration/opensearch.properties:75",
+   "surface": "setting",
+   "note": "Needs a text extractor (Tika) and attachment indexing switched on; the contract test at EmailQueryMethodContract.scala:7316 shows a build where attachment content is ignored."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search by attachment file name",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:255; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:6665",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search to messages with or without attachments",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:174; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:146",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by date received",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:154; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailQuery.scala:123",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter a search by message size",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:183; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:194",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find the messages that carry a given label or flag",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:205; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:5483",
+   "surface": "api",
+   "note": "hasKeyword works for system flags and custom keywords; driven 2026-10-12 on the in-memory build."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find the messages that do not carry a given label or flag",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:216; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:6302",
+   "surface": "api",
+   "note": "notKeyword; driven 2026-10-12 on the in-memory build."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find one message by its message id",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:300; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:1723",
+   "surface": "api",
+   "note": "A header filter on Message-ID with a value; driven 2026-10-12 on the in-memory build."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find messages that have a given header, whatever its value",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:299; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailQueryMethodContract.scala:1581",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Combine search conditions with and, or and not",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:121; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:126; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/utils/search/MailboxFilter.scala:131",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Get highlighted fragments that show where a search matched",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/SearchSnippetGetMethod.scala:51; mailbox/lucene/src/main/java/org/apache/james/mailbox/lucene/search/LuceneSearchHighlighter.java:53; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/SearchSnippetGetMethodContract.scala:50",
+   "surface": "api",
+   "note": "Subject and preview snippets; a highlighter exists for Lucene and for OpenSearch."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search from an IMAP client by sender, subject, body, date, size, flag or header",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/SearchProcessor.java:82; protocols/imap/src/main/java/org/apache/james/imap/api/message/request/SearchKey.java:34",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search for messages newer or older than a number of days",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/SearchProcessor.java:86; protocols/imap/src/main/java/org/apache/james/imap/api/message/request/SearchKey.java:67",
+   "surface": "api",
+   "note": "IMAP WITHIN."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Get only the count or the first and last hit of a search",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/SearchProcessor.java:87; protocols/imap/src/main/java/org/apache/james/imap/processor/SearchProcessor.java:89",
+   "surface": "api",
+   "note": "IMAP ESEARCH, SEARCHRES and PARTIAL."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search by the date a message was filed in a folder",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:76; mailbox/api/src/main/java/org/apache/james/mailbox/model/SearchQuery.java:321",
+   "surface": "api",
+   "note": "IMAP SAVEDATE."
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Find all messages of one conversation",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:74; mailbox/api/src/main/java/org/apache/james/mailbox/model/SearchQuery.java:757; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/ThreadGetMethod.scala:68",
+   "surface": "api",
+   "note": "IMAP OBJECTID with THREADID and EMAILID; JMAP Thread/get."
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message as read or unread",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:44; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:137; protocols/imap/src/main/java/org/apache/james/imap/processor/StoreProcessor.java:71",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Flag a message as important",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:45; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:137",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Have a message marked as answered or forwarded",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:46; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:49",
+   "surface": "api",
+   "note": "The client sets the keyword; the server stores and syncs it."
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Put your own labels on a message",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:40; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:137; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailSetMethodContract.scala:97",
+   "surface": "api",
+   "note": "Custom keywords; driven 2026-10-12 on the in-memory build."
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "See the same labels in every client, whichever protocol it uses",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/ImapKeywordsConsistencyContract.scala:53; protocols/imap/src/main/java/org/apache/james/imap/processor/StoreProcessor.java:71",
+   "surface": "background",
+   "note": "A keyword set over JMAP shows as an IMAP flag and the other way round; driven 2026-10-12 on the in-memory build."
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Add or remove one label without resending the whole set",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:137; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:139",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Set labels on a message while saving or importing it",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailSet.scala:194; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/EmailImport.scala:42",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Have labels set on incoming mail by a rule",
+   "rating": "yes",
+   "evidence": "server/data/data-jmap/src/main/java/org/apache/james/jmap/api/filtering/Rule.java:573; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/WithStorageDirective.java:74",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move a message to another folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetUpdatePerformer.scala:174; protocols/imap/src/main/java/org/apache/james/imap/processor/MoveProcessor.java:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Copy a message to another folder",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/CopyProcessor.java:38; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/ImapSetMessagesMailboxesUpdatesCompatibilityContract.scala:47",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Delete a message for good",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetDeletePerformer.scala:39; protocols/imap/src/main/java/org/apache/james/imap/processor/ExpungeProcessor.java:61",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Filter incoming mail with server-side rules",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/Sieve.java:38; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:102; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/delivery/SieveExecutor.java:49",
+   "surface": "background",
+   "note": "Sieve scripts, run at local delivery."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "File incoming mail into a folder by rule",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/FileIntoAction.java:35",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Refuse incoming mail by rule with a message to the sender",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/RejectAction.java:56",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Forward incoming mail to another address by rule",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/RedirectAction.java:37",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Silently drop incoming mail by rule",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/DiscardAction.java:32",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Upload, list, rename, delete and switch on your own filter scripts",
+   "rating": "yes",
+   "evidence": "protocols/managesieve/src/main/java/org/apache/james/managesieve/core/CoreProcessor.java:63; protocols/managesieve/src/main/java/org/apache/james/managesieve/api/commands/PutScript.java:28; protocols/managesieve/src/main/java/org/apache/james/managesieve/api/commands/SetActive.java:28",
+   "surface": "api",
+   "note": "ManageSieve protocol."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Check a filter script for mistakes before saving it",
+   "rating": "yes",
+   "evidence": "protocols/managesieve/src/main/java/org/apache/james/managesieve/api/commands/CheckScript.java:28; protocols/managesieve/src/main/java/org/apache/james/managesieve/jsieve/Parser.java:33",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Filter incoming mail with structured rules on sender, recipient, subject, date or flag",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/mailet/filter/JMAPFiltering.java:56; server/data/data-jmap/src/main/java/org/apache/james/jmap/api/filtering/Rule.java:146; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:106",
+   "surface": "background",
+   "note": "The engine runs stored rules at delivery (move, mark read, mark important, add labels, forward, reject), but no client method that stores rules is registered in RFC8621MethodsModule.java:144-176."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Run filter rules over the mail already in a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/RunRulesOnMailboxRoutes.java:119; server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/RunRulesOnMailboxTask.java:39",
+   "surface": "api",
+   "note": "An administrator call that takes the rules in the request."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Send an automatic reply while away, between a start and an end date",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/VacationResponseSetMethod.scala:90; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/vacation/VacationResponse.scala:52; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/VacationMailet.java:57",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Write the away reply in plain text and in HTML, with its own subject",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/vacation/VacationResponse.scala:47; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/vacation/VacationResponse.scala:49",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Reply only once to each sender while away",
+   "rating": "yes",
+   "evidence": "server/data/data-api/src/main/java/org/apache/james/vacation/api/NotificationRegistry.java:31; server/data/data-api/src/main/java/org/apache/james/vacation/api/NotificationRegistry.java:29",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Forward all your mail to another address and keep a copy",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/ForwardRoutes.java:91; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/RecipientRewriteTable.java:61",
+   "surface": "api",
+   "note": "Set by an administrator call; keeping a copy means adding the own address as a destination."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Receive mail at plus addresses that file themselves into a folder",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/SubAddressing.java:77",
+   "surface": "background",
+   "note": "A mailet to place in the configuration; the sender needs the post right on the target folder."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have incoming mail checked for spam by Rspamd",
+   "rating": "yes",
+   "evidence": "third-party/rspamd/src/main/java/org/apache/james/rspamd/RspamdScanner.java:61; third-party/rspamd/README.md:1",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have incoming mail checked for spam by SpamAssassin",
+   "rating": "yes",
+   "evidence": "third-party/spamassassin/src/main/java/org/apache/james/spamassassin/SpamAssassin.java:65; third-party/spamassassin/src/main/java/org/apache/james/spamassassin/SpamAssassinHandler.java:67",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have mail marked as spam delivered into the spam folder",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/IsMarkedAsSpam.java:52; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/WithStorageDirective.java:74",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Teach the spam filter by moving messages into or out of the spam folder",
+   "rating": "yes",
+   "evidence": "third-party/rspamd/src/main/java/org/apache/james/rspamd/RspamdListener.java:62; third-party/spamassassin/src/main/java/org/apache/james/spamassassin/SpamAssassinListener.java:55",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Block mail from chosen senders or domains, per person, per domain or for everyone",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DropListRoutes.java:77; server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/IsInDropList.java:49; server/apps/distributed-app/sample-configuration/droplists.properties:3",
+   "surface": "setting",
+   "note": "Drop lists, off by default; managed through the admin API or the command line."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have messages removed when their expiry date passes",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/Expires.java:62; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/MessagesRoutes.java:92; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/MessagesRoutes.java:103",
+   "surface": "api",
+   "note": "The Expires mailet stamps a date; an administrator task deletes by that header or by age."
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Send to a group address that reaches all its members",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java:91; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java:89",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Have the recipients of sent mail collected for an address book",
+   "rating": "partial",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/ContactExtractor.java:69",
+   "surface": "background",
+   "note": "The mailet writes sender and recipients as JSON into a mail attribute; something else has to pick that up, and no consumer ships."
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Be told at once when a recipient address does not exist here",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/ValidRcptHandler.java:45; server/apps/distributed-app/sample-configuration/smtpserver.xml:119",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have calendar invitations in incoming mail recognised and read",
+   "rating": "yes",
+   "evidence": "mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICalendarParser.java:72",
+   "surface": "background",
+   "note": "Mailets only. The JMAP session lists no calendar capability (Capability.scala:58-68; driven 2026-10-12 on the in-memory build)."
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have the invitation method, id and sequence added as headers a client can read",
+   "rating": "yes",
+   "evidence": "mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICALToHeader.java:64",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have invitations passed on as structured data to another system",
+   "rating": "yes",
+   "evidence": "mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICALToJsonAttribute.java:91",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have broken calendar attachments repaired before delivery",
+   "rating": "yes",
+   "evidence": "mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICSSanitizer.java:52",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have an invitation sent as message body turned into an attachment",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/mailet/TextCalendarBodyToAttachment.java:58",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a mailbox folder with another person, with read or write rights",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:168; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Rights.scala:61; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:65",
+   "surface": "api",
+   "note": "The sharedWith property of a folder, a server extension (urn:apache:james:params:jmap:mail:shares)."
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Change one person's rights on a shared folder without resending the list",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:100; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxSet.scala:179",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See who a folder is shared with",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:138; protocols/imap/src/main/java/org/apache/james/imap/processor/GetACLProcessor.java:59",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See what you are allowed to do in a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:135; protocols/imap/src/main/java/org/apache/james/imap/processor/MyRightsProcessor.java:56; protocols/imap/src/main/java/org/apache/james/imap/processor/ListProcessor.java:86",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See folders that others shared with you, marked with their owner",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/MailboxNamespace.scala:35; protocols/imap/src/main/java/org/apache/james/imap/processor/NamespaceProcessor.java:44",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Have the parent folders of a shared folder made visible automatically",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/java/org/apache/james/jmap/event/PropagateLookupRightListener.java:50",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Manage folder rights from an IMAP client",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/SetACLProcessor.java:56; protocols/imap/src/main/java/org/apache/james/imap/processor/DeleteACLProcessor.java:56; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:96",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Grant separate rights to look up, read, mark read, change flags, add, delete and administer",
+   "rating": "yes",
+   "evidence": "mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:119; protocols/imap/src/main/java/org/apache/james/imap/processor/ListRightsProcessor.java:57",
+   "surface": "api",
+   "note": "The eleven IMAP ACL rights; JMAP exposes ten of them."
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a folder with a group or with everyone who is signed in",
+   "rating": "partial",
+   "evidence": "mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:81; mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:88",
+   "surface": "api",
+   "note": "The rights model has group, anyone and authenticated entries; how group membership is resolved was not settled by reading."
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Give another person full access to your account",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegateSetMethod.scala:41; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:67; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/DelegateSetContract.scala:45",
+   "surface": "api",
+   "note": "A server extension (urn:apache:james:params:jmap:delegation)."
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See who has access to your account and withdraw it",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegateGetMethod.scala:47; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegateSetDeletePerformer.scala:36",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See the accounts you may act for and give one up",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegatedAccountGetMethod.scala:46; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegatedAccountSetMethod.scala:40",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Open a delegated account next to your own in the same session",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/SessionSupplier.scala:44; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/SessionRoutesContract.scala:74",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Sign in to IMAP as a person who delegated their account to you",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/AbstractAuthProcessor.java:138; protocols/imap/src/main/java/org/apache/james/imap/processor/AuthenticateProcessor.java:156",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Send mail as a person who delegated their account to you",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:449; server/data/data-jmap/src/main/scala/org/apache/james/jmap/api/identity/CustomIdentityDAO.scala:188",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Get live change notices for delegated accounts",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/EventSourceRoutes.scala:165",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Grant or withdraw account access for someone as administrator",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:141; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:145; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:133",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have every connection encrypted, from the first byte or after an upgrade",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/StartTLSProcessor.java:42; protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/esmtp/StartTlsCmdHandler.java:41; protocols/pop3/src/main/java/org/apache/james/protocols/pop3/core/StlsCmdHandler.java:44",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Refuse password sign in on a connection that is not encrypted",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/imapserver.xml:49; protocols/imap/src/main/java/org/apache/james/imap/processor/LoginProcessor.java:45; server/apps/distributed-app/sample-configuration/smtpserver.xml:100",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Require sign in before mail is relayed to other servers",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/AuthRequiredToRelayRcptHook.java:28; server/apps/distributed-app/sample-configuration/smtpserver.xml:99",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Sign outgoing mail with DKIM",
+   "rating": "yes",
+   "evidence": "server/mailet/dkim/src/main/java/org/apache/james/jdkim/mailets/DKIMSign.java:105",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Check the DKIM signature of incoming mail",
+   "rating": "yes",
+   "evidence": "server/mailet/dkim/src/main/java/org/apache/james/jdkim/mailets/DKIMVerify.java:55",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Check that the sending server is allowed to send for the domain",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/SPF.java:73; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/SPFHandler.java:50",
+   "surface": "background",
+   "note": "SPF, as a mailet or already during the SMTP conversation."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Sign outgoing mail with a server-held certificate",
+   "rating": "yes",
+   "evidence": "mailet/crypto/src/main/java/org/apache/james/transport/mailets/SMIMESign.java:60",
+   "surface": "background",
+   "note": "S/MIME."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Check the S/MIME signature of incoming mail",
+   "rating": "yes",
+   "evidence": "mailet/crypto/src/main/java/org/apache/james/transport/mailets/SMIMECheckSignature.java:112",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Decrypt S/MIME mail on the server with a held key",
+   "rating": "yes",
+   "evidence": "mailet/crypto/src/main/java/org/apache/james/transport/mailets/SMIMEDecrypt.java:80",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have incoming mail scanned for viruses",
+   "rating": "yes",
+   "evidence": "third-party/clamav/src/main/java/org/apache/james/clamav/ClamAVScan.java:189",
+   "surface": "background",
+   "note": "ClamAV, as an extension jar."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Block connections from addresses with a bad reputation",
+   "rating": "yes",
+   "evidence": "third-party/crowdsec/src/main/java/org/apache/james/crowdsec/CrowdsecSMTPConnectHandler.java:34; third-party/crowdsec/src/main/java/org/apache/james/crowdsec/CrowdsecImapConnectionCheck.java:34; third-party/crowdsec/src/main/java/org/apache/james/crowdsec/CrowdsecPOP3CheckHandler.java:36",
+   "surface": "background",
+   "note": "CrowdSec decisions, on SMTP, IMAP and POP3."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Refuse mail from servers on a DNS block list",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/DNSRBLHandler.java:35; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/URIRBLHandler.java:55",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Delay first-time senders to deter spam",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/JDBCGreylistHandler.java:60",
+   "surface": "setting",
+   "note": "Greylisting; this handler needs a JDBC data source."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Refuse mail from senders whose domain does not exist",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/ValidSenderDomainHandler.java:28; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/ResolvableEhloHeloHandler.java:27",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Limit how much mail one sender may send in a period",
+   "rating": "yes",
+   "evidence": "server/mailet/rate-limiter/src/main/scala/org/apache/james/transport/mailets/PerSenderRateLimit.scala:108",
+   "surface": "setting",
+   "note": "By count, size, recipients and total size; a Redis variant shares the counters in a cluster."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Limit how much mail one recipient may receive in a period",
+   "rating": "yes",
+   "evidence": "server/mailet/rate-limiter/src/main/scala/org/apache/james/transport/mailets/PerRecipientRateLimit.scala:100; server/mailet/rate-limiter/src/main/scala/org/apache/james/transport/mailets/GlobalRateLimit.scala:112",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Stop mail that matches data leak rules, per domain",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DLPConfigurationRoutes.java:92; server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/dlp/Dlp.java:76; server/data/data-api/src/main/java/org/apache/james/dlp/api/DLPConfigurationItem.java:80",
+   "surface": "setting",
+   "note": "Regular expressions aimed at sender, recipients or content."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Keep stored mail encrypted on disk",
+   "rating": "yes",
+   "evidence": "server/blob/blob-aes/src/main/java/org/apache/james/blob/aes/AESBlobStoreDAO.java:52; server/apps/distributed-app/sample-configuration/blob.properties:35",
+   "surface": "setting",
+   "note": "AES with a key derived from a configured password; off by default."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have the object store encrypt mail with a key the server supplies",
+   "rating": "yes",
+   "evidence": "server/blob/blob-s3/src/main/java/org/apache/james/blob/objectstorage/aws/sse/S3SSECConfiguration.java:29",
+   "surface": "setting",
+   "note": "S3 SSE-C."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Store passwords hashed with a chosen algorithm",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/usersrepository.xml:24",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Refuse to accept mail from a server that did not encrypt the connection",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/tls/EnforceMtaSts.java:38",
+   "surface": "setting",
+   "note": "An SMTP hook to add to the handler chain."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Refuse messages with too many or too large headers",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/EnforceHeaderLimitationsMessageHook.java:57",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Limit connections per address and in total",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/imapserver.xml:44; server/apps/distributed-app/sample-configuration/imapserver.xml:45; server/apps/distributed-app/sample-configuration/smtpserver.xml:47",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Protect push notices from being pointed at internal addresses",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/pushsubscription/SSRFValidator.scala:37; server/apps/distributed-app/sample-configuration/jmap.properties:34",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Delete everything the server holds about a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DeleteUserDataRoutes.java:67; server/data/data-api/src/main/java/org/apache/james/user/api/DeleteUserDataTaskStep.java:27",
+   "surface": "api",
+   "note": "Runs steps for mailboxes, rewrite rules, vacation, filters, push subscriptions and delegations."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Delete everything the server holds about all people of a domain",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainsRoutes.java:113",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Keep the data of each domain apart in the database",
+   "rating": "yes",
+   "evidence": "backends-common/postgres/src/main/java/org/apache/james/backends/postgres/RowLevelSecurity.java:26",
+   "surface": "setting",
+   "note": "PostgreSQL row level security, on the Postgres build."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Cut off the live sessions of a person at once",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-protocols/src/main/java/org/apache/james/protocols/webadmin/ProtocolServerRoutes.java:135; server/data/data-api/src/main/java/org/apache/james/DisconnectorNotifier.java:31",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Protect the administration interface with a token or a password",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/webadmin.properties:40; server/apps/distributed-app/sample-configuration/webadmin.properties:66",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get live notice of changes over an open web socket",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/WebSocketRoutes.scala:162; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:62; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/WebSocketContract.scala:60",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get live notice of changes over a server-sent event stream",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/EventSourceRoutes.scala:170; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EventSourceContract.scala:54",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get push notices on a device while the client is closed",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/PushSubscriptionSetMethod.scala:42; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/pushsubscription/WebPushClient.scala:39; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/WebPushContract.scala:69",
+   "surface": "api",
+   "note": "Web Push to a URL the client registers."
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Confirm a device before it receives push notices",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/PushSubscriptionSet.scala:81; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/pushsubscription/PushListener.scala:47",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Choose which kinds of change you are notified about",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/PushSubscriptionSet.scala:82; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/EventSourceRoutes.scala:76; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/WebSocketRoutes.scala:168",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Tell a newly delivered message apart from other changes",
+   "rating": "yes",
+   "evidence": "server/container/guice/protocols/jmap/src/main/java/org/apache/james/jmap/rfc8621/RFC8621MethodsModule.java:196",
+   "surface": "api",
+   "note": "A separate EmailDelivery change type."
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Have new mail appear at once in an IMAP client",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/IdleProcessor.java:60; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:84",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a warning by mail when your storage is nearly full",
+   "rating": "yes",
+   "evidence": "mailbox/plugin/quota-mailing/src/main/java/org/apache/james/mailbox/quota/mailing/listeners/QuotaThresholdCrossingListener.java:49; mailbox/plugin/quota-mailing/src/main/java/org/apache/james/mailbox/quota/mailing/subscribers/QuotaThresholdMailer.java:42; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/QuotaMailingTest.scala:52",
+   "surface": "background",
+   "note": "A listener to register, with thresholds and a grace period."
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a notice when a message you sent could not be delivered",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/Bounce.java:126; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/DSNBounce.java:135; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:153",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Have the postmaster told about mail that failed",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/NotifyPostmaster.java:126; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/NotifySender.java:125",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import a message file into a folder",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailImportMethod.scala:104; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/EmailImportContract.scala:47",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Upload existing mail into a folder from an IMAP client",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/AppendProcessor.java:64; protocols/imap/src/main/java/org/apache/james/imap/processor/AppendProcessor.java:82",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Import a message file from the command line",
+   "rating": "yes",
+   "evidence": "server/apps/cli/src/main/java/org/apache/james/cli/type/CmdType.java:49",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Export all mail of a person as one archive file",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/service/MailboxesExportRequestToTask.java:37; mailbox/backup/src/main/java/org/apache/james/mailbox/backup/DefaultMailboxBackup.java:56; server/blob/blob-export-file/src/main/java/org/apache/james/blob/export/file/LocalFileBlobExportMechanism.java:50",
+   "surface": "api",
+   "note": "A zip, handed over by mailing a link to a named address."
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Restore mail of a person from an archive file",
+   "rating": "partial",
+   "evidence": "mailbox/backup/src/main/java/org/apache/james/mailbox/backup/ZipMailArchiveRestorer.java:45; server/container/guice/protocols/webadmin-mailbox/src/main/java/org/apache/james/modules/server/MailboxesBackupModule.java:41",
+   "surface": "api",
+   "note": "The restorer is bound but no route or command that calls it was found."
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Export deleted messages of a person from the recovery store",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox-deleted-message-vault/src/main/java/org/apache/james/webadmin/vault/routes/DeletedMessagesVaultRoutes.java:114; mailbox/plugin/deleted-messages-vault/src/main/java/org/apache/james/vault/DeletedMessageZipper.java:41",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Download a held message from a mail store as a message file",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:192",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Copy all mailboxes from one storage backend to another",
+   "rating": "partial",
+   "evidence": "server/apps/cli/src/main/java/org/apache/james/cli/type/CmdType.java:44; mailbox/tools/copier/src/main/java/org/apache/james/mailbox/tools/copier/MailboxCopierImpl.java:47",
+   "surface": "api",
+   "note": "A command line verb over JMX; which packaged builds expose the bean was not settled."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Do several operations in one request, each using the result of the one before",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/JMAPApiRoutes.scala:53; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/BackReferenceContract.scala:40",
+   "surface": "api",
+   "note": "JMAP (RFC 8620 and 8621): 33 methods registered in RFC8621MethodsModule.java:144-176."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Send requests over the same web socket that carries the notices",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/WebSocketRoutes.scala:60; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/WebSocketTransport.scala:37",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Call the mail API from a browser on another origin",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/SessionRoutes.scala:94; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/CorsHeaderAPITest.scala:32",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add your own methods and capabilities to the mail API",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/CustomMethodContract.scala:73; server/apps/distributed-app/sample-configuration/extensions.properties:10",
+   "surface": "setting",
+   "note": "Guice extension modules loaded from a jar."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Switch off parts of the mail API",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:51; server/protocols/jmap-rfc-8621-integration-tests/jmap-rfc-8621-integration-tests-common/src/main/scala/org/apache/james/jmap/rfc8621/contract/DisabledCapabilityContract.scala:36",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Echo a request to test the connection",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/CoreEchoMethod.scala:30",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Hand in mail from another mail server for local delivery",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-lmtp/src/main/java/org/apache/james/lmtpserver/netty/LMTPServer.java:50; server/protocols/protocols-lmtp/src/main/java/org/apache/james/lmtpserver/hook/MailboxDeliverToRecipientHandler.java:59",
+   "surface": "api",
+   "note": "LMTP."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Hand in a ready-made message over HTTP",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mail-over-web/src/main/java/org/apache/james/webadmin/routes/TransferEmailRoutes.java:69",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Manage the whole server through a REST interface",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/TasksRoutes.java:241; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:161; server/apps/distributed-app/sample-configuration/webadmin.properties:23",
+   "surface": "api",
+   "note": "About 200 route registrations across 16 modules."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Manage users, domains, quotas and folders from the command line",
+   "rating": "yes",
+   "evidence": "server/apps/cli/src/main/java/org/apache/james/cli/type/CmdType.java:27; server/apps/webadmin-cli/src/main/java/org/apache/james/cli/WebAdminCli.java:38",
+   "surface": "api",
+   "note": "Two tools: one over JMX with 47 verbs, one over the REST interface."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Have the headers of incoming mail posted to a web address",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/HeadersToHTTP.java:60",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Have whole incoming messages posted to a web address",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/SerialiseToHTTP.java:62",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add your own steps to the mail processing pipeline",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/mailetcontainer.xml:38; mailet/api/src/main/java/org/apache/mailet/Mailet.java:68; mailet/api/src/main/java/org/apache/mailet/Matcher.java:61",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add your own checks to the SMTP conversation",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/smtpserver.xml:118; protocols/smtp/src/main/java/org/apache/james/protocols/smtp/hook/RcptHook.java:31",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add your own reactions to mailbox events",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/listeners.xml:26; event-bus/api/src/main/java/org/apache/james/events/EventListener.java:36",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add your own administration routes",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/webadmin.properties:55",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Read server metrics from a web address",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-dropwizard-metrics/src/main/java/org/apache/james/webadmin/dropwizard/MetricsRoutes.java:66; third-party/elasticsearch/src/main/java/org/apache/james/metrics/es/v7/ESMetricReporter.java:35",
+   "surface": "api",
+   "note": "Prometheus format; an extension can also report to a search cluster."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Sit behind a load balancer and still see the real client address",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-imap4/src/main/java/org/apache/james/imapserver/netty/HAProxyMessageHandler.java:43",
+   "surface": "setting",
+   "note": "PROXY protocol, on IMAP and SMTP."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Route mail on what a company directory says about sender or recipient",
+   "rating": "yes",
+   "evidence": "server/mailet/ldap/src/main/java/org/apache/james/transport/matchers/IsInLDAPGroup.java:56; server/mailet/ldap/src/main/java/org/apache/james/transport/matchers/HasLDAPAttribute.java:87",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Tell the server which client program is connecting",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/IdProcessor.java:46",
+   "surface": "api",
+   "note": "IMAP ID."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Add, list and remove mail domains",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainsRoutes.java:133; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainsRoutes.java:141; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainsRoutes.java:129",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Make one domain an alias of another",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainsRoutes.java:156; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/DomainMappingsRoutes.java:76",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create, list and remove people",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:161; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:165; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:153",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Change the password of a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:161; server/apps/cli/src/main/java/org/apache/james/cli/type/CmdType.java:43",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Check a password without signing in",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:149; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:251",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rename a person and move all their data to the new name",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UsernameChangeRoutes.java:69; server/data/data-api/src/main/java/org/apache/james/user/api/UsernameChangeTaskStep.java:27",
+   "surface": "api",
+   "note": "A task in steps that can be resumed from a named step."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Take people from a company directory instead of a local list",
+   "rating": "yes",
+   "evidence": "server/data/data-ldap/src/main/java/org/apache/james/user/ldap/ReadOnlyUsersLDAPRepository.java:164; server/apps/distributed-app/sample-configuration/usersrepository.xml:36",
+   "surface": "setting",
+   "note": "LDAP, read only."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Admit only the members of chosen directory groups",
+   "rating": "yes",
+   "evidence": "server/data/data-ldap/src/main/java/org/apache/james/user/ldap/ReadOnlyLDAPGroupRestriction.java:51",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Name the people who are administrators",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/usersrepository.xml:27",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Give a person an extra address",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/AliasRoutes.java:90; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/AliasRoutes.java:89",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create a group address and manage its members",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java:91; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java:93; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java:87",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rewrite recipient addresses with a pattern",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/RegexMappingRoutes.java:68; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/AddressMappingRoutes.java:62; server/apps/distributed-app/sample-configuration/recipientrewritetable.xml:25",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See every rewrite rule that applies to an address",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/MappingRoutes.java:81; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/MappingRoutes.java:83",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See which sender addresses a person may use",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/UserRoutes.java:171",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set a storage quota per person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:182; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:251; protocols/imap/src/main/java/org/apache/james/imap/processor/SetQuotaProcessor.java:43",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set a limit on the number of messages per person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:279",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set a storage quota per domain",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/DomainQuotaRoutes.java:108; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/DomainQuotaRoutes.java:142",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set a standard storage quota for everyone",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/GlobalQuotaRoutes.java:94; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/GlobalQuotaRoutes.java:123",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "List the people who are close to their storage limit",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:208; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:115",
+   "surface": "api",
+   "note": "Filter on occupation ratio; on a cluster this is answered from the search index."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Recalculate storage use when the figures have drifted",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserQuotaRoutes.java:113; mailbox/tools/quota-recompute/src/main/java/org/apache/james/mailbox/quota/task/RecomputeCurrentQuotasService.java:52",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create, list and delete folders of a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:247; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:141; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:165",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See the message count and unread count of a person's folder",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:272; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:296",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Empty a person's folder",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/UserMailboxesRoutes.java:137",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Subscribe a person to all their folders",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/service/SubscribeAllRequestToTask.java:38",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rebuild the search index for everything, one person, one folder or one message",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/MailboxesRoutes.java:178; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/MessagesRoutes.java:93; mailbox/tools/indexer/src/main/java/org/apache/mailbox/tools/indexer/ReIndexerImpl.java:46",
+   "surface": "api",
+   "note": "A run can also retry only the messages that failed in an earlier run (MailboxesRoutes.java:62)."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Choose the search engine behind mail search",
+   "rating": "yes",
+   "evidence": "server/container/guice/opensearch/src/main/java/org/apache/james/SearchModuleChooser.java:64; mailbox/lucene/src/main/java/org/apache/james/mailbox/lucene/search/LuceneMessageSearchIndex.java:149; mailbox/store/src/main/java/org/apache/james/mailbox/store/search/SimpleMessageSearchIndex.java:74",
+   "surface": "setting",
+   "note": "OpenSearch, Lucene or a scan of the stored messages."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Put a filter script in place for a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/SieveScriptRoutes.java:80; server/apps/cli/src/main/java/org/apache/james/cli/type/CmdType.java:69",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Limit how much space filter scripts may take",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/SieveQuotaRoutes.java:90; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/SieveQuotaRoutes.java:122",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the away reply of a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/VacationRoutes.java:80; server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/VacationRoutes.java:79",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the sender identities of a person",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/UserIdentityRoutes.java:103; server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/UserIdentityRoutes.java:107",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Restore a person's permanently deleted messages",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox-deleted-message-vault/src/main/java/org/apache/james/webadmin/vault/routes/DeletedMessagesVaultRoutes.java:115; mailbox/plugin/deleted-messages-vault/src/main/java/org/apache/james/vault/DeletedMessageVaultHook.java:50; server/apps/distributed-app/sample-configuration/deletedMessageVault.properties:3",
+   "surface": "api",
+   "note": "The recovery store is off by default; restored mail lands in a Restored-Messages folder."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Pick which deleted messages to restore by date, sender, recipient, subject or folder",
+   "rating": "yes",
+   "evidence": "mailbox/plugin/deleted-messages-vault/src/main/java/org/apache/james/vault/search/FieldName.java:21; mailbox/plugin/deleted-messages-vault/src/main/java/org/apache/james/vault/search/CriterionFactory.java:43",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set how long deleted messages stay recoverable",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/deletedMessageVault.properties:11; server/protocols/webadmin/webadmin-mailbox-deleted-message-vault/src/main/java/org/apache/james/webadmin/vault/routes/DeletedMessagesVaultRoutes.java:134",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Remove one message from the recovery store for good",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox-deleted-message-vault/src/main/java/org/apache/james/webadmin/vault/routes/DeletedMessagesVaultRoutes.java:109",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See the mail waiting in each queue",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailqueue/src/main/java/org/apache/james/webadmin/routes/MailQueueRoutes.java:114; server/protocols/webadmin/webadmin-mailqueue/src/main/java/org/apache/james/webadmin/routes/MailQueueRoutes.java:160",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Remove waiting mail from a queue by sender, recipient or name",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailqueue/src/main/java/org/apache/james/webadmin/routes/MailQueueRoutes.java:214; server/protocols/webadmin/webadmin-mailqueue/src/main/java/org/apache/james/webadmin/routes/MailQueueRoutes.java:76",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Send delayed mail in a queue now",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailqueue/src/main/java/org/apache/james/webadmin/routes/MailQueueRoutes.java:261",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Read the mail that was set aside after an error",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:181; server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:187",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Send set-aside mail through processing again",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:332; server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:355",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Delete set-aside mail",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:297; server/protocols/webadmin/webadmin-mailrepository/src/main/java/org/apache/james/webadmin/routes/MailRepositoriesRoutes.java:328",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See the internal events that failed and deliver them again",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/EventDeadLettersRoutes.java:76; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/EventDeadLettersRoutes.java:86",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Follow, wait for and cancel long-running maintenance tasks",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/TasksRoutes.java:241; server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/TasksRoutes.java:243; server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/TasksRoutes.java:245",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Check the health of each part of the server",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/HealthCheckRoutes.java:119; server/protocols/webadmin/webadmin-core/src/main/java/org/apache/james/webadmin/routes/HealthCheckRoutes.java:120",
+   "surface": "api",
+   "note": "Some twenty checks ship, among them database, object store, queue, search, directory, and an end-to-end mail reception check."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See who is connected right now",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-protocols/src/main/java/org/apache/james/protocols/webadmin/ProtocolServerRoutes.java:170; server/protocols/webadmin/webadmin-protocols/src/main/java/org/apache/james/protocols/webadmin/ProtocolServerRoutes.java:158",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Load renewed certificates without a restart",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-protocols/src/main/java/org/apache/james/protocols/webadmin/ProtocolServerRoutes.java:115",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Clean out stored content that nothing refers to any more",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/BlobRoutes.java:89; server/blob/blob-storage-strategy/src/main/java/org/apache/james/server/blob/deduplication/BlobGCTask.java:36",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rebuild the precomputed previews and list views",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/Constants.java:25; server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/Constants.java:26",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Upgrade the database layout step by step",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-cassandra/src/main/java/org/apache/james/webadmin/routes/CassandraMigrationRoutes.java:76; server/protocols/webadmin/webadmin-cassandra/src/main/java/org/apache/james/webadmin/routes/CassandraMigrationRoutes.java:71",
+   "surface": "api",
+   "note": "Cassandra builds."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Find and repair inconsistencies in the mail store",
+   "rating": "yes",
+   "evidence": "server/protocols/webadmin/webadmin-cassandra/src/main/java/org/apache/james/webadmin/routes/SolveMailboxInconsistenciesRequestToTask.java:35; server/protocols/webadmin/webadmin-cassandra/src/main/java/org/apache/james/webadmin/routes/SolveMessageInconsistenciesRequestToTask.java:32; server/protocols/webadmin/webadmin-cassandra/src/main/java/org/apache/james/webadmin/routes/RecomputeMailboxCountersRequestToTask.java:38",
+   "surface": "api",
+   "note": "Cassandra builds."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Feed known spam and known good mail to the spam filter in bulk",
+   "rating": "yes",
+   "evidence": "third-party/rspamd/src/main/java/org/apache/james/rspamd/route/FeedMessageRoute.java:90",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Send one message to every person on the server",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/MailToAllUsers.java:49",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Keep a log of mailbox operations",
+   "rating": "yes",
+   "evidence": "mailbox/cassandra/src/main/java/org/apache/james/mailbox/cassandra/MailboxOperationLoggingListener.java:41; server/apps/distributed-app/sample-configuration/listeners.xml:26",
+   "surface": "setting",
+   "note": "Cassandra builds."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Receive mail from other mail servers",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/netty/SMTPServer.java:79; protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/RcptCmdHandler.java:55; protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/DataCmdHandler.java:55",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Accept mail from mail clients on a submission port",
+   "rating": "yes",
+   "evidence": "protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/esmtp/AuthCmdHandler.java:73; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/UsersRepositoryAuthHook.java:43; server/apps/distributed-app/sample-configuration/smtpserver.xml:94",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Deliver mail to other mail servers, retrying on failure",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/RemoteDelivery.java:156; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:87; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:88",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Send all outgoing mail through one relay server",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:77; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:75",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Encrypt outgoing connections and check the identity of the receiving server",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:79; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/remote/delivery/RemoteDeliveryConfiguration.java:80",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Treat chosen delivery errors differently",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/IsRemoteDeliveryPermanentError.java:44; server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/RemoteDeliveryFailedWithSMTPCode.java:42",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Deliver incoming mail into the mailbox of the recipient",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/LocalDelivery.java:47; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:109",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Rewrite recipient addresses through aliases, forwards and groups, with loop detection",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/RecipientRewriteTable.java:61; server/apps/distributed-app/sample-configuration/recipientrewritetable.xml:26; server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/IsSenderInRRTLoop.java:48",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Refuse mail for a mailbox that is over its quota",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/matchers/IsOverQuota.java:55; mailbox/store/src/main/java/org/apache/james/mailbox/store/quota/ListeningCurrentQuotaUpdater.java:52",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Refuse messages above a size limit",
+   "rating": "yes",
+   "evidence": "protocols/smtp/src/main/java/org/apache/james/protocols/smtp/core/esmtp/MailSizeEsmtpExtension.java:48; server/apps/distributed-app/sample-configuration/smtpserver.xml:56",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Refuse messages with too many recipients",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/fastfail/MaxRcptHandler.java:26; mailet/standard/src/main/java/org/apache/james/transport/matchers/TooManyRecipients.java:42",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Accept mail to addresses with non-Latin characters",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/smtputf8/SmtpUtf8MailHook.java:33; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/smtputf8/SmtpUtf8RcptHook.java:35",
+   "surface": "background",
+   "note": "SMTPUTF8."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Lay out mail processing as a chain of conditions and actions",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/mailetcontainer.xml:38; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:64; mailet/standard/src/main/java/org/apache/james/transport/mailets/ToProcessor.java:51",
+   "surface": "setting",
+   "note": "About 50 conditions and 60 actions ship."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Combine conditions with and, or and not in mail processing",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/mailetcontainer.xml:49; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:65",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Set failed mail aside in a named store for later inspection",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/ToRepository.java:38; server/apps/distributed-app/sample-configuration/mailetcontainer.xml:58",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Add a footer to every outgoing message",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/AddFooter.java:47",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Add a prefix to the subject of chosen messages",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/AddSubjectPrefix.java:43",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Add or remove headers on chosen messages",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/SetMimeHeader.java:46; mailet/standard/src/main/java/org/apache/james/transport/mailets/RemoveMimeHeader.java:46",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Redirect or forward chosen messages to other addresses",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/Redirect.java:304; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/Forward.java:96; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/Resend.java:300",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Keep message content in an object store",
+   "rating": "yes",
+   "evidence": "server/blob/blob-s3/src/main/java/org/apache/james/blob/objectstorage/aws/S3BlobStoreDAO.java:79; server/apps/distributed-app/sample-configuration/blob.properties:8",
+   "surface": "setting",
+   "note": "S3 compatible; also file, Cassandra, PostgreSQL or memory."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Store identical content only once",
+   "rating": "yes",
+   "evidence": "server/blob/blob-storage-strategy/src/main/scala/org/apache/james/server/blob/deduplication/DeDuplicationBlobStore.scala:40; server/apps/distributed-app/sample-configuration/blob.properties:15",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Keep small, often-read content in a fast cache",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/blob.properties:51; server/apps/distributed-app/sample-configuration/blob.properties:59",
+   "surface": "setting",
+   "note": "Distributed build."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Run on one machine without any external service",
+   "rating": "yes",
+   "evidence": "server/apps/memory-app/src/main/java/org/apache/james/MemoryJamesServerMain.java:137; server/apps/jpa-app/src/main/java/org/apache/james/JPAJamesServerMain.java:88",
+   "surface": "setting",
+   "note": "In-memory build and a build on an embedded or SQL database."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Run on a PostgreSQL database",
+   "rating": "yes",
+   "evidence": "server/apps/postgres-app/src/main/java/org/apache/james/PostgresJamesServerMain.java:191",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Run as a cluster of identical servers",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/src/main/java/org/apache/james/CassandraRabbitMQJamesServerMain.java:211; event-bus/distributed/src/main/java/org/apache/james/events/RabbitMQEventBus.java:41; server/apps/distributed-app/sample-configuration/queue.properties:1",
+   "surface": "setting",
+   "note": "Cassandra, an object store, RabbitMQ and OpenSearch."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Choose the queue that holds mail in transit",
+   "rating": "yes",
+   "evidence": "server/apps/distributed-app/sample-configuration/queue.properties:1; server/queue/queue-pulsar/src/main/scala/org/apache/james/queue/pulsar/PulsarMailQueue.scala:89; server/queue/queue-rabbitmq/src/main/java/org/apache/james/queue/rabbitmq/RabbitMQMailQueue.java:45",
+   "surface": "setting",
+   "note": "RabbitMQ, Pulsar, ActiveMQ or memory."
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Have text taken out of documents so that they can be searched",
+   "rating": "yes",
+   "evidence": "mailbox/tika/src/main/java/org/apache/james/mailbox/tika/TikaTextExtractor.java:57; server/apps/distributed-app/sample-configuration/tika.properties:20",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Slow down a client that sends too many commands",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-imap4/src/main/java/org/apache/james/imapserver/netty/IMAPCommandsThrottler.java:49; server/protocols/protocols-imap4/src/main/java/org/apache/james/imapserver/netty/ReactiveThrottler.java:43",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Detect bounces and sort them by cause",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/mailets/ClassifyBounce.java:48",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Recognise mail from mailing lists in processing",
+   "rating": "yes",
+   "evidence": "mailet/standard/src/main/java/org/apache/james/transport/matchers/IsFromMailingList.java:39",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Catch up quickly after being offline, fetching only what changed",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:90; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:94; protocols/imap/src/main/java/org/apache/james/imap/processor/EnableProcessor.java:52",
+   "surface": "api",
+   "note": "IMAP CONDSTORE and QRESYNC; JMAP changes methods do the same."
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Compress the connection on a slow network",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/processor/CompressProcessor.java:40",
+   "surface": "api",
+   "note": "IMAP COMPRESS."
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Keep an idle connection alive through routers that drop silent ones",
+   "rating": "yes",
+   "evidence": "server/protocols/protocols-imap4/src/main/java/org/apache/james/imapserver/netty/ImapHeartbeatHandler.java:33; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/JmapRfc8621Configuration.scala:44; server/apps/distributed-app/sample-configuration/imapserver.xml:46",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Move messages in one step on a weak connection",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:102; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:104",
+   "surface": "api",
+   "note": "IMAP MOVE and UIDPLUS."
+  }
+ ]
+}

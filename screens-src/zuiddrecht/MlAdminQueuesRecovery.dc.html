@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail administration: queues, set-aside mail and recovery of deleted mail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#ml-q-filter::placeholder,#ml-rc-sender::placeholder,#ml-rc-recipient::placeholder,#ml-rc-subject::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2140px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Queues tab: the mail still on its way, filtered, removed or sent now</figcaption>
+    <div style="height: 760px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <dc-import name="MlHeader" app="Administration" placeholder="Search queues, people or settings" hint-size="100%,55px"></dc-import>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Queues and recovery" hint-size="264px,704px"></dc-import></div>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Queues and recovery</h1>
+            <p style="margin: 0; color: #3d4047">Mail that is still on its way, mail set aside after an error, and deleted mail that can still be brought back.</p>
+          </div>
+          <div role="tablist" aria-label="Queues and recovery" style="{{ tablist }}">
+            <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Queues</button>
+            <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Set aside<span style="{{ badge }}">2</span></button>
+            <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Recovery</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <form role="search" style="position: relative; display: flex; align-items: center; width: 360px">
+              <label for="ml-q-filter" style="{{ srOnly }}">Filter waiting mail by sender, recipient or name</label>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+              <input id="ml-q-filter" type="search" value="stadtwerke-kassel.example" placeholder="Filter by sender, recipient or name" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+            </form>
+            <span style="font-size: 13px; color: #5e6168">3 of 14 messages waiting match</span>
+            <span style="flex: 1 1 auto"></span>
+            <button type="button" style="{{ btnDanger }}">Remove matching mail</button>
+            <button type="button" style="{{ btnPrimary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send delayed mail now</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px">
+            <sc-for list="{{ queues }}" as="q" hint-placeholder-count="3">
+              <div style="{{ q.card }}">
+                <div style="display: flex; align-items: center; gap: 8px"><span style="{{ q.dot }}"></span><strong style="font-size: 14px; font-weight: 600">{{ q.name }}</strong></div>
+                <span style="font-size: 20px; font-weight: 600; line-height: 26px">{{ q.count }}</span>
+                <span style="font-size: 12px; color: #5e6168; line-height: 18px">{{ q.note }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Waiting in Outgoing</h2>
+            <div style="{{ tableWrap }}">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+                <thead><tr style="{{ thRow }}">
+                  <th scope="col" style="{{ th }}">Sender</th>
+                  <th scope="col" style="{{ th }}">Recipient</th>
+                  <th scope="col" style="{{ th }}">Subject</th>
+                  <th scope="col" style="{{ th }}">Waiting since</th>
+                  <th scope="col" style="{{ th }}">State</th>
+                  <th scope="col" style="width: 44px"><span style="{{ srOnly }}">Actions</span></th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ waiting }}" as="m" hint-placeholder-count="6">
+                    <tr style="{{ m.style }}">
+                      <td style="{{ td }}">{{ m.from }}</td>
+                      <td style="{{ td }}">{{ m.to }}</td>
+                      <td style="padding: 0 12px; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.subject }}</td>
+                      <td style="{{ td }}">{{ m.since }}</td>
+                      <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ m.dot }}"></span>{{ m.state }}</span></td>
+                      <td style="padding: 0 6px; text-align: right"><button type="button" aria-haspopup="menu" aria-label="Actions for message to {{ m.to }}" style="{{ btnIcon }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.75"></circle><circle cx="12" cy="12" r="1.75"></circle><circle cx="19" cy="12" r="1.75"></circle></svg></button></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">The 3 marked rows match your filter. 8 more messages wait without a problem and go out within a minute.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Set aside tab: mail and internal events that failed, one message open to read in the right panel</figcaption>
+    <div style="height: 640px; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden">
+        <div role="tablist" aria-label="Queues and recovery" style="{{ tablist }}">
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Queues</button>
+          <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Set aside<span style="{{ badge }}">2</span></button>
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Recovery</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Mail set aside after an error</h2>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">The server could not deliver or process these. Read one to see what went wrong, then retry it or delete it.</p>
+            </div>
+            <button type="button" style="{{ btnSecondary }}">Retry all</button>
+          </div>
+          <div style="{{ tableWrap }}">
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="{{ thRow }}">
+                <th scope="col" style="{{ th }}">Sender</th>
+                <th scope="col" style="{{ th }}">Subject</th>
+                <th scope="col" style="{{ th }}">Error</th>
+                <th scope="col" style="{{ th }}">Set aside</th>
+                <th scope="col" style="{{ thRight }}"><span style="{{ srOnly }}">Actions</span></th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ setAside }}" as="s" hint-placeholder-count="2">
+                  <tr aria-selected="{{ s.selected }}" style="{{ s.style }}">
+                    <td style="{{ td }}">{{ s.from }}</td>
+                    <td style="padding: 0 12px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">{{ s.subject }}</a></td>
+                    <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ s.dot }}"></span>{{ s.error }}</span></td>
+                    <td style="{{ td }}">{{ s.when }}</td>
+                    <td style="padding: 0 12px; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Read</button><button type="button" style="{{ btnSmall }}">Retry sending</button><button type="button" style="{{ btnSmallDanger }}">Delete</button></span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Internal events that failed</h2>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Things the server tells other parts about, such as a new link to a work package or a rule that moves mail. Deliver one again once the cause is fixed.</p>
+            </div>
+            <button type="button" style="{{ btnSecondary }}">Deliver all again</button>
+          </div>
+          <div style="{{ tableWrap }}">
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="{{ thRow }}">
+                <th scope="col" style="{{ th }}">Event</th>
+                <th scope="col" style="{{ th }}">About</th>
+                <th scope="col" style="{{ th }}">Error</th>
+                <th scope="col" style="{{ th }}">Failed</th>
+                <th scope="col" style="{{ thRight }}"><span style="{{ srOnly }}">Actions</span></th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ events }}" as="e" hint-placeholder-count="3">
+                  <tr style="{{ e.style }}">
+                    <td style="{{ td }}">{{ e.name }}</td>
+                    <td style="padding: 0 12px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.about }}</td>
+                    <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ e.dot }}"></span>{{ e.error }}</span></td>
+                    <td style="{{ td }}">{{ e.when }}</td>
+                    <td style="padding: 0 12px; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Deliver again</button><button type="button" style="{{ btnSmallDanger }}">Discard</button></span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+      <aside aria-label="Set-aside message: Fwd: Keycloak realm export for Lyon" style="flex: 0 0 380px; width: 380px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Fwd: Keycloak realm export for Lyon</h2>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #3d4047"><span style="{{ dotBad }}"></span>Set aside today at 06:48</span>
+          </div>
+          <button type="button" aria-label="Close set-aside message" style="{{ btnClose }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+        <dl style="margin: 0; display: grid; grid-template-columns: 80px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
+          <dt style="color: #5e6168">From</dt><dd style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Tom Achterberg, tom@northwind-projects.test</dd>
+          <dt style="color: #5e6168">To</dt><dd style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">m.dubois@ville-de-lyon.example</dd>
+          <dt style="color: #5e6168">Sent</dt><dd style="margin: 0">Today at 06:47</dd>
+          <dt style="color: #5e6168">Size</dt><dd style="margin: 0">31.4 MB, one attachment</dd>
+          <dt style="color: #5e6168">Tries</dt><dd style="margin: 0">1 of 1, not retried on its own</dd>
+        </dl>
+        <div style="{{ noticeBad }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #cc0000"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg><span>The receiving server refused the message: too large for ville-de-lyon.example, which takes up to 25 MB. Retrying as it is will fail again. Ask the sender to share the file as a link, or reprocess the message with the attachment stripped.</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h3 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Message</h3>
+          <div style="padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; line-height: 19px; color: #3d4047">Marc, here is the realm export we talked about. Import it on the test environment first, the client secret still has to be rotated before 2 November.<br><br>Tom<br><br><span style="display: inline-flex; align-items: center; gap: 6px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>lyon-realm-export.json, 31.2 MB</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: auto">
+          <button type="button" style="{{ btnPrimary }}">Retry sending</button>
+          <button type="button" style="{{ btnSecondary }}">Reprocess</button>
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="{{ btnDanger }}">Delete</button>
+        </div>
+      </aside>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Recovery tab: retention at the top, then one person's deleted mail filtered and two messages chosen to restore</figcaption>
+    <div style="height: 560px; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden">
+        <div role="tablist" aria-label="Queues and recovery" style="{{ tablist }}">
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Queues</button>
+          <button type="button" role="tab" aria-selected="false" style="{{ tabOff }}">Set aside<span style="{{ badge }}">2</span></button>
+          <button type="button" role="tab" aria-selected="true" style="{{ tabOn }}">Recovery</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+          <div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0">
+            <label for="ml-rc-retention" style="font-weight: 600">Deleted mail stays recoverable for</label>
+            <span style="font-size: 12px; color: #5e6168; line-height: 18px">Mail a person deletes for good is kept this long in the recovery store, then removed. Applies to every mailbox on this server.</span>
+          </div>
+          <select id="ml-rc-retention" style="{{ select }}"><option>14 days</option><option selected>30 days</option><option>60 days</option><option>90 days</option></select>
+          <button type="button" style="{{ btnSecondary }}">Save</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Restore deleted messages</h2>
+          <div style="display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap">
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 300px"><label for="ml-rc-person" style="{{ lbl }}">Person</label><select id="ml-rc-person" style="{{ select }}"><option selected>Olivia Brandt, olivia@northwind-projects.test</option><option>Tom Achterberg</option><option>Ines Okafor</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 128px"><label for="ml-rc-from" style="{{ lbl }}">Deleted from</label><input id="ml-rc-from" type="text" value="1 Oct 2026" style="{{ input }}"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 128px"><label for="ml-rc-to" style="{{ lbl }}">Deleted to</label><input id="ml-rc-to" type="text" value="12 Oct 2026" style="{{ input }}"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 170px"><label for="ml-rc-sender" style="{{ lbl }}">Sender</label><input id="ml-rc-sender" type="text" value="Jana Köhler" placeholder="Any" style="{{ input }}"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 150px"><label for="ml-rc-recipient" style="{{ lbl }}">Recipient</label><input id="ml-rc-recipient" type="text" value="" placeholder="Any" style="{{ input }}"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 170px"><label for="ml-rc-subject" style="{{ lbl }}">Subject contains</label><input id="ml-rc-subject" type="text" value="" placeholder="Any" style="{{ input }}"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; width: 160px"><label for="ml-rc-folder" style="{{ lbl }}">Folder</label><select id="ml-rc-folder" style="{{ select }}"><option selected>Any folder</option><option>Inbox</option><option>Customers / Kassel</option><option>Customers / Lyon</option></select></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span style="font-size: 13px; color: #5e6168">4 deleted messages from Jana Köhler since 1 October, 2 selected</span>
+            <span style="flex: 1 1 auto"></span>
+            <button type="button" style="{{ btnPrimary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"></path></svg>Restore 2 selected messages</button>
+          </div>
+          <div style="{{ tableWrap }}">
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+              <thead><tr style="{{ thRow }}">
+                <th scope="col" style="width: 40px; padding: 0 12px"><input type="checkbox" aria-label="Select all deleted messages" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5"></th>
+                <th scope="col" style="{{ th }}">Sender</th>
+                <th scope="col" style="{{ th }}">Recipient</th>
+                <th scope="col" style="{{ th }}">Subject</th>
+                <th scope="col" style="{{ th }}">Was in folder</th>
+                <th scope="col" style="{{ th }}">Deleted</th>
+                <th scope="col" style="{{ th }}">Gone for good in</th>
+                <th scope="col" style="{{ thRight }}"><span style="{{ srOnly }}">Actions</span></th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ deleted }}" as="d" hint-placeholder-count="4">
+                  <tr aria-selected="{{ d.selected }}" style="{{ d.style }}">
+                    <td style="padding: 0 12px"><button type="button" role="checkbox" aria-checked="{{ d.selected }}" aria-label="Select {{ d.subject }}" style="{{ d.box }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{ d.tick }}"><path d="m5 12 5 5L20 7"></path></svg></button></td>
+                    <td style="{{ td }}">{{ d.from }}</td>
+                    <td style="{{ td }}">{{ d.to }}</td>
+                    <td style="padding: 0 12px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ d.subject }}</td>
+                    <td style="{{ td }}">{{ d.folder }}</td>
+                    <td style="{{ td }}">{{ d.when }}</td>
+                    <td style="{{ td }}">{{ d.left }}</td>
+                    <td style="padding: 0 12px; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Restore</button><button type="button" style="{{ btnSmallDanger }}">Remove for good</button></span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A restored message goes back to the folder it was in, with its date and read state. Removing one for good takes it out of the recovery store now, before the 30 days are up.</p>
+        </div>
+      </main>
+    </div>
+  </figure>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2140}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dot = (bg, ring) => 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + ring;
+    const D = { ok: dot('#d3f9d8', '#8ff09c'), warn: dot('#ffc078', '#ff9d2e'), busy: dot('#66d9e8', '#21c8de'), bad: dot('#fcc2d7', '#f977a6'), off: dot('#dee2e6', '#adb5bd') };
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px';
+    const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
+    const tablist = 'display: flex; gap: 4px; border-bottom: 1px solid #e4e6ea';
+    const tabBase = 'display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; font: 500 14px \'Fira Sans\', sans-serif; cursor: pointer; ';
+    const tabOn = tabBase + 'color: #1b1c1d; font-weight: 600; border-bottom-color: var(--sc-action, #3669a5)';
+    const tabOff = tabBase + 'color: #3d4047';
+    const badge = 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 600';
+    const btnPrimary = 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSecondary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnDanger = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmall = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmallDanger = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnIcon = 'width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center';
+    const btnClose = 'flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
+    const tableWrap = 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden';
+    const thRow = 'height: 40px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8';
+    const th = 'text-align: left; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap';
+    const thRight = th.replace('text-align: left', 'text-align: right');
+    const td = 'padding: 0 12px; white-space: nowrap';
+    const tdRight = 'padding: 0 12px; text-align: right; white-space: nowrap';
+    const row = 'height: 40px; border-bottom: 1px solid #e4e6ea; ';
+    const noticeBad = 'display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #fff0f0; font-size: 13px; line-height: 19px; color: #1b1c1d';
+    const select = 'height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d; max-width: 100%';
+    const input = 'width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d';
+    const lbl = 'font-size: 13px; font-weight: 500';
+    const card = 'display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)';
+    const boxBase = 'display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; padding: 0; box-sizing: border-box; border: 1px solid; border-radius: 4px; cursor: pointer; vertical-align: middle; ';
+    const queues = [
+      ['Outgoing', D.warn, '14 messages waiting', '3 retrying to stadtwerke-kassel.example, next try in 4 minutes'],
+      ['Incoming', D.ok, '0 messages waiting', 'Delivered to mailboxes within a second'],
+      ['Internal events', D.ok, '0 events waiting', 'Links, rules and notifications, all delivered']
+    ].map(([name, dot, count, note]) => ({ name, dot, count, note, card }));
+    const waiting = [
+      ['Olivia Brandt', 'jana.koehler@stadtwerke-kassel.example', 'Re: Gantt export cuts off the last week', '48 KB', 'Today 06:52', D.warn, 'Retrying, 3 of 8', true],
+      ['Priya Raman', 'jana.koehler@stadtwerke-kassel.example', 'Fixed build for Bug #58231, please test', '2.1 MB', 'Today 06:40', D.warn, 'Retrying, 3 of 8', true],
+      ['Olivia Brandt', 'einkauf@stadtwerke-kassel.example', 'Re: Angebot Schulung Projektleiter, 12 Personen', '31 KB', 'Today 06:31', D.warn, 'Retrying, 4 of 8', true],
+      ['Olivia Brandt', 'sven.lindqvist@malmo-energi.example', 'Re: Request for a demo, 1,200 users', '12 KB', 'Today 07:04', D.busy, 'Sending', false],
+      ['Tom Achterberg', 'm.dubois@ville-de-lyon.example', 'Re: Rollout plan phase 2, Lyon', '96 KB', 'Today 07:03', D.ok, 'Waiting', false],
+      ['People Team', '46 recipients at northwind-projects.test', 'Reminder: submit your October hours by Friday', '18 KB', 'Today 07:03', D.ok, 'Waiting', false]
+    ].map(([from, to, subject, size, since, dot, state, match]) => ({ from, to, subject, size, since, dot, state, style: row + (match ? 'background: #eaf0f7' : 'background: #ffffff') }));
+    const setAside = [
+      ['Tom Achterberg', 'm.dubois@ville-de-lyon.example', 'Fwd: Keycloak realm export for Lyon', D.bad, 'Too large for receiver', 'Today 06:48', true],
+      ['Hetzner Billing', 'olivia@northwind-projects.test', 'Invoice 2026-10-0193 is available', D.bad, 'Rule failed', '9 Oct 11:20', false]
+    ].map(([from, to, subject, dot, error, when, selected]) => ({ from, to, subject, dot, error, when, selected: selected ? 'true' : 'false', style: row + (selected ? 'background: #eaf0f7' : 'background: #ffffff') }));
+    const events = [
+      ['Work package link', 'Bug #58231, reply from Jana Köhler', D.bad, 'OpenProject not reachable', 'Today 04:02'],
+      ['Processing rule', 'Move invoices to Finance, for Hetzner Billing', D.bad, 'Folder Finance no longer exists', '9 Oct 11:20'],
+      ['Webhook', 'New mail in support@northwind-projects.test', D.bad, 'Endpoint returned an error', '8 Oct 16:45']
+    ].map(([name, about, dot, error, when]) => ({ name, about, dot, error, when, style: row + 'background: #ffffff' }));
+    const deleted = [
+      ['Jana Köhler', 'olivia@northwind-projects.test', 'Angebot Schulung Projektleiter, 12 Personen', 'Customers / Kassel', '11 Oct 17:12', '29 days', true],
+      ['Jana Köhler', 'olivia@northwind-projects.test', 'Re: Gantt export cuts off the last week', 'Inbox', '11 Oct 17:11', '29 days', true],
+      ['Jana Köhler', 'support@northwind-projects.test', 'Zugang zum Kundenportal', 'Customers / Kassel', '6 Oct 09:30', '24 days', false],
+      ['Jana Köhler', 'olivia@northwind-projects.test', 'Termin Projektstart Netzausbau Nord', 'Customers / Kassel', '2 Oct 14:05', '20 days', false]
+    ].map(([from, to, subject, folder, when, left, sel]) => ({ from, to, subject, folder, when, left, selected: sel ? 'true' : 'false', box: boxBase + (sel ? 'background: var(--sc-action, #3669a5); border-color: var(--sc-action-deep, #234a78); color: #ffffff' : 'background: #ffffff; border-color: #c4c7cb; color: transparent'), tick: sel ? 'display: block' : 'display: none', style: row + (sel ? 'background: #eaf0f7' : 'background: #ffffff') }));
+    return { cap, srOnly, tablist, tabOn, tabOff, badge, btnPrimary, btnSecondary, btnDanger, btnSmall, btnSmallDanger, btnIcon, btnClose, tableWrap, thRow, th, thRight, td, tdRight, noticeBad, select, input, lbl, dotBad: D.bad, queues, waiting, setAside, events, deleted };
+  }
+}
+</script>
+</body>
+</html>

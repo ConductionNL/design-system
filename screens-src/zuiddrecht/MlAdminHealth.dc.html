@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail administration: health and maintenance</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1600px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Administration" placeholder="Search checks, tasks or settings" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Health" hint-size="264px,1545px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px 32px; overflow: hidden">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Health and maintenance</h1>
+          <p style="margin: 0; color: #3d4047">How each part of the mail server is doing right now, and the jobs you can start when something has drifted.</p>
+        </div>
+        <button type="button" style="{{ btnSecondary }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"></path></svg>Check again</button>
+      </div>
+
+      <section aria-labelledby="ml-h-status" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <h2 id="ml-h-status" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Status</h2>
+          <span style="font-size: 13px; color: #5e6168">Checked today at 07:14, every minute</span>
+        </div>
+        <div style="{{ tableWrap }}">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+            <thead><tr style="{{ thRow }}">
+              <th scope="col" style="{{ th }}">Part of the server</th>
+              <th scope="col" style="{{ th }}">State</th>
+              <th scope="col" style="{{ th }}">Detail</th>
+              <th scope="col" style="{{ th }}; width: 220px">Load</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ parts }}" as="p" hint-placeholder-count="7">
+                <tr style="{{ p.style }}">
+                  <td style="{{ td }}; font-weight: 500">{{ p.name }}</td>
+                  <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ p.dot }}"></span>{{ p.state }}</span></td>
+                  <td style="padding: 0 12px; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px">{{ p.detail }}</td>
+                  <td style="{{ td }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="{{ bar }}"><span style="{{ p.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 64px">{{ p.load }}</span></span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+        <section aria-labelledby="ml-h-selftest" style="{{ card }}">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 id="ml-h-selftest" style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Delivery self-test</h2>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Every 15 minutes the server sends itself a message through the whole path and checks it arrives. When it does not, the alert address gets a mail.</p>
+            </div>
+            <button type="button" style="{{ btnSecondary }}">Run now</button>
+          </div>
+          <dl style="margin: 0; display: grid; grid-template-columns: 112px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
+            <dt style="color: #5e6168">Last run</dt><dd style="margin: 0"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ dotOk }}"></span>Passed today at 07:00, round trip 3.8 seconds</span></dd>
+            <dt style="color: #5e6168">Last 24 hours</dt><dd style="margin: 0">96 of 96 runs passed</dd>
+            <dt style="color: #5e6168">Schedule</dt><dd style="margin: 0"><select aria-label="Self-test schedule" style="{{ selectSmall }}"><option>Every 5 minutes</option><option selected>Every 15 minutes</option><option>Every hour</option><option>Off</option></select></dd>
+            <dt style="color: #5e6168"><label for="ml-h-alert">Alert address</label></dt><dd style="margin: 0"><input id="ml-h-alert" type="text" value="ines.okafor@northwind-projects.test" style="{{ inputSmall }}"></dd>
+          </dl>
+        </section>
+        <section aria-labelledby="ml-h-log" style="{{ card }}">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 id="ml-h-log" style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px"><label for="ml-h-log-switch">Mailbox operations log</label></h2>
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Writes a line for every move, delete, flag and copy in every mailbox, with who did it and when. Handy when a person asks where a message went.</p>
+            </div>
+            <button id="ml-h-log-switch" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+          </div>
+          <dl style="margin: 0; display: grid; grid-template-columns: 112px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
+            <dt style="color: #5e6168">Kept for</dt><dd style="margin: 0"><select aria-label="Keep the mailbox operations log for" style="{{ selectSmall }}"><option>7 days</option><option selected>30 days</option><option>90 days</option></select></dd>
+            <dt style="color: #5e6168">Today</dt><dd style="margin: 0">2,418 operations, 1.1 MB</dd>
+            <dt style="color: #5e6168">Latest</dt><dd style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">07:13 Olivia Brandt moved "Invoice 2026-10-0193 is available" to Archive</dd>
+          </dl>
+          <div><a href="#" style="font-size: 13px; color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">Open the log</a></div>
+        </section>
+      </div>
+
+      <div style="display: flex; gap: 20px; align-items: flex-start">
+      <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <section aria-labelledby="ml-h-connected" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <h2 id="ml-h-connected" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Connected right now</h2>
+          <span style="font-size: 13px; color: #5e6168">4 people, 6 connections</span>
+        </div>
+        <div style="{{ tableWrap }}">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
+            <thead><tr style="{{ thRow }}">
+              <th scope="col" style="{{ th }}; width: 23%">Person</th>
+              <th scope="col" style="{{ th }}; width: 18%">Client</th>
+              <th scope="col" style="{{ th }}; width: 18%">From</th>
+              <th scope="col" style="{{ th }}; width: 8%">Since</th>
+              <th scope="col" style="{{ th }}; width: 25%">Doing</th>
+              <th scope="col" style="width: 44px"><span style="{{ srOnly }}">Actions</span></th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ connections }}" as="c" hint-placeholder-count="4">
+                <tr style="{{ c.style }}">
+                  <td style="{{ tdCut }}; font-weight: 500">{{ c.person }}</td>
+                  <td style="{{ tdCut }}">{{ c.client }}</td>
+                  <td style="{{ tdCut }}">{{ c.from }}</td>
+                  <td style="{{ tdCut }}">{{ c.since }}</td>
+                  <td style="{{ tdCut }}; color: #3d4047">{{ c.doing }}</td>
+                  <td style="padding: 0 6px; text-align: right"><button type="button" aria-label="Disconnect {{ c.person }}" style="{{ btnIcon }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"></path></svg></button></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="ml-h-maint" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 id="ml-h-maint" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Maintenance</h2>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Jobs you start by hand. Each one runs in the background and shows up under Running tasks on the right. Mail keeps working while they run.</p>
+        </div>
+        <div style="{{ tableWrap }}">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
+            <thead><tr style="{{ thRow }}">
+              <th scope="col" style="{{ th }}; width: 22%">Job</th>
+              <th scope="col" style="{{ th }}">What it does</th>
+              <th scope="col" style="{{ th }}; width: 190px">Scope</th>
+              <th scope="col" style="{{ thRight }}; width: 90px"><span style="{{ srOnly }}">Start</span></th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="8">
+                <tr style="{{ j.style }}">
+                  <td style="{{ tdCut }}; font-weight: 500">{{ j.name }}</td>
+                  <td style="{{ tdCut }}; color: #3d4047">{{ j.what }}</td>
+                  <td style="{{ td }}"><select aria-label="Scope for {{ j.name }}" style="{{ selectSmall }}; width: 166px"><option selected>{{ j.scope }}</option><option>{{ j.scopeAlt }}</option></select></td>
+                  <td style="{{ tdRight }}"><button type="button" style="{{ j.btn }}" aria-disabled="{{ j.disabled }}">{{ j.action }}</button></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </div>
+      <section aria-label="Running tasks" style="flex: 0 0 360px; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Running tasks</h2>
+        <span style="font-size: 13px; color: #3d4047">1 running, 1 waiting, 2 finished today</span>
+      </div>
+      <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
+        <div style="{{ t.card }}">
+          <div style="display: flex; align-items: flex-start; gap: 8px">
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <strong style="font-size: 14px; font-weight: 600; line-height: 20px">{{ t.name }}</strong>
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168; line-height: 18px"><span style="{{ t.dot }}"></span>{{ t.state }}</span>
+            </div>
+            <button type="button" style="{{ t.btn }}">{{ t.action }}</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px" role="progressbar" aria-label="{{ t.name }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ t.pct }}"><span style="{{ bar }}"><span style="{{ t.fill }}"></span></span><span style="font-size: 12px; color: #5e6168; min-width: 32px; text-align: right">{{ t.pctText }}</span></div>
+          <span style="font-size: 12px; color: #3d4047; line-height: 18px">{{ t.note }}</span>
+        </div>
+      </sc-for>
+      <div style="{{ noticeInfo }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #3669a5"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg><span>Tasks keep running when you leave this page. Come back here to wait for one to finish, or turn on a mail to the alert address when it does.</span></div>
+      <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 20px"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 2px 0 0; accent-color: #3669a5">Mail me when a task finishes or fails</label>
+      </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dot = (bg, ring) => 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + ring;
+    const D = { ok: dot('#d3f9d8', '#8ff09c'), warn: dot('#ffc078', '#ff9d2e'), busy: dot('#66d9e8', '#21c8de'), bad: dot('#fcc2d7', '#f977a6'), off: dot('#dee2e6', '#adb5bd') };
+    const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
+    const btnPrimary = 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSecondary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmall = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmallOff = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #5e6168; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmallDanger = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnIcon = 'width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center';
+    const tableWrap = 'background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden';
+    const thRow = 'height: 40px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8';
+    const th = 'text-align: left; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap';
+    const thRight = th.replace('text-align: left', 'text-align: right');
+    const td = 'padding: 0 12px; white-space: nowrap';
+    const tdRight = 'padding: 0 12px; text-align: right; white-space: nowrap';
+    const tdCut = 'padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis';
+    const row = 'height: 40px; border-bottom: 1px solid #e4e6ea; background: #ffffff';
+    const card = 'display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)';
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const selectSmall = 'height: 28px; box-sizing: border-box; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px \'Fira Sans\', sans-serif; color: #1b1c1d; max-width: 100%';
+    const inputSmall = 'width: 100%; max-width: 320px; height: 28px; box-sizing: border-box; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px \'Fira Sans\', sans-serif; color: #1b1c1d';
+    const bar = 'display: inline-block; width: 120px; height: 6px; border-radius: 3px; background: #eef0f3; overflow: hidden; vertical-align: middle';
+    const fill = (pct, colour) => 'display: block; width: ' + pct + '%; height: 100%; background: ' + colour;
+    const noticeInfo = 'display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 13px; line-height: 19px; color: #1b1c1d';
+    const parts = [
+      ['Incoming mail', D.ok, 'Healthy', 'Receiving on northwind-projects.test and 2 other domains, last message 07:13', 12, '12 per minute'],
+      ['Outgoing mail', D.ok, 'Healthy', '14 messages in the queue, 3 retrying to stadtwerke-kassel.example', 22, '22 per minute'],
+      ['Mail store', D.ok, 'Healthy', '61 mailboxes, 71.5 GB used of 610 GB, last check found no inconsistencies', 12, '12% used'],
+      ['Search indexing', D.warn, '12 minutes behind', 'Indexing mail from 07:02, catching up at 340 messages per minute', 78, '78% caught up'],
+      ['Spam filter', D.ok, 'Healthy', 'Learned 1,204 spam and 9,880 good messages, last update yesterday 23:00', 4, '4 per minute'],
+      ['Sign-in and sessions', D.ok, 'Healthy', 'Signing in through Nextcloud, 6 connections open', 3, '3% of limit'],
+      ['Scheduled jobs', D.ok, 'Healthy', 'Last run 07:13, next in 45 seconds', 0, '']
+    ].map(([name, dot, state, detail, pct, load]) => ({ name, dot, state, detail, load, fill: fill(pct, dot === D.warn ? '#ff9d2e' : '#3669a5'), style: row }));
+    const connections = [
+      ['Olivia Brandt', 'Mail in the browser', '10.20.4.17, office', '06:58', 'Reading Inbox'],
+      ['Olivia Brandt', 'Phone', '83.161.9.42', '07:02', 'Idle'],
+      ['Tom Achterberg', 'Mail in the browser', '10.20.4.31, office', '07:05', 'Writing a message'],
+      ['Priya Raman', 'Mail in the browser', '145.27.88.3, home', '06:40', 'Reading Customers / Kassel'],
+      ['Ines Okafor', 'Administration', '10.20.4.2, office', '07:10', 'This page'],
+      ['support@northwind-projects.test', 'OpenProject, mail fetch', '10.20.5.8, server', '07:13', 'Fetching new mail']
+    ].map(([person, client, from, since, doing]) => ({ person, client, from, since, doing, style: row }));
+    const jobs = [
+      ['Rebuild search index', 'Builds the search index again from the stored mail. Run it when search misses recent mail.', 'Everything', 'One mailbox', 'Running since 07:02', 'Running', btnSmallOff, 'true'],
+      ['Rebuild previews', 'Makes the stored list views and message previews again. Run it after a change to the list layout.', 'Everything', 'One mailbox', '3 Oct 02:00', 'Start', btnSmall, 'false'],
+      ['Repair the mail store', 'Finds messages, folders and counts that do not agree with each other and repairs them.', 'Everything', 'One mailbox', '11 Oct 02:00, no inconsistencies', 'Start', btnSmall, 'false'],
+      ['Clean unreferenced data', 'Removes attachments, previews and index entries that no message refers to any more.', 'Everything', 'Dry run, report only', 'Today 06:40, 1.2 GB freed', 'Start', btnSmall, 'false'],
+      ['Recalculate storage', 'Counts the storage of every mailbox again when the figures have drifted from what is on disk.', 'Everything', 'One mailbox', 'Waiting to start', 'Waiting', btnSmallOff, 'true'],
+      ['Release a folder lock', 'Frees a folder that stays locked after a crashed move or copy, and clears its cache.', 'Customers / Kassel, Olivia Brandt', 'Choose a folder', 'Never', 'Release', btnSmall, 'false'],
+      ['Train the spam filter', 'Feeds known spam and known good mail to the filter in bulk, from the Spam and Inbox folders.', 'Spam and Inbox, all mailboxes', 'One mailbox', 'Yesterday 23:00', 'Start', btnSmall, 'false'],
+      ['Rewrite automatic replies', 'Writes the automatic reply again for everyone whose reply follows the absence on their profile.', '18 people follow their profile', 'One person', 'Today 00:05', 'Start', btnSmall, 'false']
+    ].map(([name, what, scope, scopeAlt, last, action, btn, disabled]) => ({ name, what, scope, scopeAlt, last, action, btn, disabled, style: row }));
+    const tcard = 'display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff';
+    const tasks = [
+      ['Rebuild search index', 'Everything', D.busy, 'Running, started 07:02 by Ines Okafor', 62, '62%', '38,120 of 61,400 messages indexed, about 9 minutes left', 'Cancel', btnSmallDanger],
+      ['Recalculate storage', 'Everything', D.off, 'Waiting for the index rebuild to finish', 0, '0%', 'Starts on its own next. Queued 07:08 by Ines Okafor', 'Remove', btnSmall],
+      ['Clean unreferenced data', 'Everything', D.ok, 'Finished 06:40, took 4 minutes', 100, '100%', '2,310 orphaned attachments and previews removed, 1.2 GB freed', 'Report', btnSmall],
+      ['Rewrite automatic replies', '18 people', D.ok, 'Finished 00:05, took 6 seconds', 100, '100%', '2 replies changed: Priya Raman starts her leave today, Tom Achterberg is back', 'Report', btnSmall]
+    ].map(([name, scope, dot, state, pct, pctText, note, action, btn]) => ({ name: name + ': ' + scope.toLowerCase(), dot, state, pct: String(pct), pctText, note, action, btn, fill: fill(pct, dot === D.ok ? '#8ff09c' : '#3669a5'), card: tcard }));
+    return { srOnly, btnPrimary, btnSecondary, btnIcon, tableWrap, thRow, th, thRight, td, tdRight, tdCut, card, switchOn, knobOn, selectSmall, inputSmall, bar, noticeInfo, dotOk: D.ok, parts, connections, jobs, tasks };
+  }
+}
+</script>
+</body>
+</html>

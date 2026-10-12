@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: conversation list, row states, filter and sort</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1800px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 24px; overflow: hidden">
+  <sc-for list="{{ lists }}" as="f" hint-placeholder-count="3">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; {{ f.place }}">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
+      <div style="height: {{ f.height }}; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+        <section aria-label="Inbox" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #e4e6ea; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
+            <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Inbox</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.countLine }}</span></div>
+            <div style="display: flex; gap: 2px; flex: none">
+              <button type="button" aria-label="Refresh the list" title="Refresh the list" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg></button>
+              <button type="button" aria-label="Filter conversations" aria-haspopup="menu" aria-expanded="{{ f.filterOpen }}" title="Filter conversations" style="{{ f.filterStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg><sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; top: 4px; right: 4px; min-width: 14px; height: 14px; border-radius: 7px; background: #3669a5; color: #ffffff; font-size: 10px; font-weight: 700; line-height: 14px; text-align: center">2</span></sc-if></button>
+              <button type="button" aria-label="Select conversations" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></button>
+              <button type="button" aria-label="Sort conversations" aria-haspopup="menu" aria-expanded="{{ f.sortOpen }}" style="{{ f.sortStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+            </div>
+          </div>
+          <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+          </div>
+          <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+            <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="10">
+              <sc-if value="{{ r.heading }}" hint-placeholder-val="{{ false }}">
+                <li aria-hidden="true" style="display: flex; align-items: center; height: 28px; padding: 0 16px; box-sizing: border-box; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ r.label }}</li>
+              </sc-if>
+              <sc-if value="{{ r.row }}" hint-placeholder-val="{{ true }}">
+                <li style="position: relative; {{ r.style }}">
+                  <a href="MlThread.dc.html" aria-current="{{ r.current }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
+                    <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="{{ r.dot }}"></span></span>
+                    <sc-if value="{{ r.avatarInitials }}" hint-placeholder-val="{{ true }}"><span style="{{ r.avatar }}">{{ r.initials }}</span></sc-if>
+                    <sc-if value="{{ r.avatarPhoto }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Photo of {{ r.from }} from the address book" style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; background: radial-gradient(circle at 50% 38%, #e8c9b0 0 30%, #4a3a30 31% 100%); box-shadow: inset 0 -9px 0 #3669a5"></span></sc-if>
+                    <sc-if value="{{ r.avatarSite }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Website icon of {{ r.site }}" style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">{{ r.initials }}</span></sc-if>
+                    <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0">
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <span style="{{ r.sender }}">{{ r.from }}</span>
+                        <sc-if value="{{ r.hasCount }}" hint-placeholder-val="{{ true }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.count }}</span></sc-if>
+                        <span style="flex: 1 1 auto"></span>
+                        <span style="{{ r.dateStyle }}">{{ r.date }}</span>
+                      </span>
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <span style="{{ r.subjectStyle }}">{{ r.subject }}</span>
+                        <sc-if value="{{ r.mention }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="You were mentioned" style="flex: none; width: 18px; height: 18px; border-radius: 9px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg></span></sc-if>
+                        <sc-if value="{{ r.encrypted }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Encrypted message" style="flex: none; color: #5e6168"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg></sc-if>
+                        <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span role="img" aria-label="Has attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
+                        <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
+                      </span>
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <sc-if value="{{ r.draft }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; line-height: 1; color: #3d4047; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>Draft</span></sc-if>
+                        <sc-if value="{{ r.failed }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; line-height: 1; color: #cc0000; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>Delivery failed</span></sc-if>
+                        <sc-if value="{{ r.sending }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; line-height: 1; color: #5e6168; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>Sending</span></sc-if>
+                        <sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span style="color: #3d4047">{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span style="color: #3d4047">{{ r.wpStatus }}</span></span></sc-if>
+                        <sc-for list="{{ r.labels }}" as="l" hint-placeholder-count="1"><span style="flex: none; display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f0f1f3; font-size: 11px; line-height: 1; color: #3d4047; white-space: nowrap"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{ l.colour }}"></span>{{ l.name }}</span></sc-for>
+                        <sc-if value="{{ r.hasAssignee }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Assigned to {{ r.assignee }}" title="Assigned to {{ r.assignee }}" style="flex: none; display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px 0 2px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; color: #3d4047; white-space: nowrap"><span style="width: 16px; height: 16px; border-radius: 8px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700">{{ r.assigneeInitials }}</span>{{ r.assignee }}</span></sc-if>
+                        <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.snippet }}</span>
+                      </span>
+                    </span>
+                  </a>
+                  <sc-if value="{{ r.hover }}" hint-placeholder-val="{{ false }}">
+                    <div role="group" aria-label="Row actions" style="position: absolute; right: 10px; top: 24px; display: flex; gap: 2px; padding: 2px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); box-shadow: 0 2px 6px rgba(27,28,29,0.12)">
+                      <button type="button" aria-label="Mark as read" title="Mark as read" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6zM22 10l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"></path></svg></button>
+                      <button type="button" aria-label="Star" title="Star" aria-pressed="false" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></button>
+                      <button type="button" aria-label="Delete" title="Delete" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                    </div>
+                  </sc-if>
+                </li>
+              </sc-if>
+            </sc-for>
+          </ol>
+          <sc-if value="{{ f.footer }}" hint-placeholder-val="{{ false }}">
+            <button type="button" style="flex: none; display: flex; align-items: center; justify-content: center; gap: 6px; height: 44px; margin: 0; padding: 0; border: 0; border-bottom: 1px solid #e4e6ea; background: #ffffff; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>Load 50 more conversations</button>
+            <div style="flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; font-size: 12px; color: #5e6168"><span>Checked for new mail at 07:12</span><button type="button" style="display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg>Check now</button></div>
+          </sc-if>
+        </section>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: #f5f6f8; text-align: center">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
+          <span style="font-size: 13px; color: #5e6168; line-height: 19px">Select a conversation to read it here.</span>
+        </main>
+
+        <sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="Filter conversations" style="position: absolute; left: 292px; top: 44px; margin-top: 4px; width: 320px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Show only</div>
+            <sc-for list="{{ filterItems }}" as="m" hint-placeholder-count="4">
+              <button type="button" role="menuitemcheckbox" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.box }}"><sc-if value="{{ m.checked }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex: 1 1 auto">{{ m.label }}</span><span style="font-size: 12px; color: #5e6168">{{ m.count }}</span></button>
+            </sc-for>
+            <span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span>
+            <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M18 6 6 18M6 6l12 12"></path></svg><span style="flex: 1 1 auto">Clear filters</span><span style="font-size: 12px; font-weight: 400; color: #5e6168">2 on</span></button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ f.sortOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="Sort conversations" style="position: absolute; left: 326px; top: 44px; margin-top: 4px; width: 320px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Order</div>
+            <sc-for list="{{ sortOrder }}" as="m" hint-placeholder-count="2">
+              <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span></button>
+            </sc-for>
+            <span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span>
+            <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Sort by</div>
+            <sc-for list="{{ sortFields }}" as="m" hint-placeholder-count="5">
+              <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 34px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span><span style="font-size: 12px; color: #5e6168">{{ m.hint }}</span></button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </figure>
+  </sc-for>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; grid-column: 1 / -1">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Priority inbox at the browse level: the same conversations split into important, favourites, follow up and other</figcaption>
+    <div style="height: 620px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <section aria-label="Priority inbox" style="width: 100%; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
+        <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 16px 0 24px; box-sizing: border-box">
+          <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Priority inbox</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">12 conversations, sorted by what needs you first</span></div>
+          <div style="display: flex; gap: 2px; flex: none">
+            <button type="button" aria-label="Refresh the list" title="Refresh the list" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg></button>
+            <button type="button" aria-label="Filter conversations" aria-haspopup="menu" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg></button>
+            <button type="button" aria-label="Select conversations" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></button>
+            <button type="button" aria-label="Sort conversations" aria-haspopup="menu" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+          </div>
+        </div>
+        <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 24px 10px; border-bottom: 1px solid #e4e6ea">
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ priority }}" as="r" hint-placeholder-count="12">
+            <sc-if value="{{ r.heading }}" hint-placeholder-val="{{ false }}">
+              <li aria-hidden="true" style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 24px; box-sizing: border-box; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.icon }}"></path></svg>{{ r.label }}<span style="font-weight: 400; letter-spacing: 0; text-transform: none">{{ r.count }}</span><span style="flex: 1 1 auto"></span><span style="font-weight: 400; letter-spacing: 0; text-transform: none">{{ r.why }}</span></li>
+            </sc-if>
+            <sc-if value="{{ r.row }}" hint-placeholder-val="{{ true }}">
+              <li style="border-bottom: 1px solid #e4e6ea; background: #ffffff">
+                <a href="MlThread.dc.html" style="display: flex; align-items: center; gap: 12px; height: 48px; box-sizing: border-box; padding: 0 24px 0 14px; color: #1b1c1d; text-decoration: none">
+                  <span style="flex: none; width: 8px; display: flex; align-items: center; justify-content: center"><span style="{{ r.dot }}"></span></span>
+                  <span style="{{ r.avatar }}">{{ r.initials }}</span>
+                  <span style="flex: 0 0 220px; min-width: 0; display: flex; align-items: center; gap: 6px">
+                    <span style="{{ r.sender }}">{{ r.from }}</span>
+                    <sc-if value="{{ r.hasCount }}" hint-placeholder-val="{{ true }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.count }}</span></sc-if>
+                  </span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 10px">
+                    <span style="{{ r.subjectWide }}">{{ r.subject }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.snippet }}</span>
+                  </span>
+                  <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
+                  <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
+                  <span style="flex: none; width: 190px; display: flex; justify-content: flex-end">
+                    <sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span style="color: #3d4047">{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span style="color: #3d4047">{{ r.wpStatus }}</span></span></sc-if>
+                  </span>
+                  <span style="flex: none; width: 72px; text-align: right; {{ r.dateStyle }}">{{ r.date }}</span>
+                </a>
+              </li>
+            </sc-if>
+          </sc-for>
+        </ol>
+      </section>
+    </div>
+  </figure>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'] };
+    const ICON = { clip: 'm21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48', image: 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M21 15l-5-5L5 21', calendar: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' };
+    const LABEL = { 'Waiting for customer': '#ff9d2e', 'Offer': '#08a5df', 'Internal': '#5e6168' };
+    const heading = (label, extra) => ({ heading: true, row: false, label, ...(extra ?? {}) });
+    // from, initials, subject, count, date, snippet, options
+    const row = (from, initials, subject, count, date, snippet, o) => {
+      o = o ?? {};
+      const unread = !!o.unread;
+      const st = o.wp ? STATUS[o.wp[2]] : null;
+      const kind = o.avatar ?? 'initials';
+      return {
+        heading: false, row: true,
+        from, initials, subject, date, snippet, count: count > 1 ? count : '', hasCount: count > 1,
+        current: 'false', style: 'border-bottom: 1px solid #e4e6ea; ' + (o.hover ? 'background: #f5f6f8;' : 'background: #ffffff;'),
+        dot: 'width: 8px; height: 8px; border-radius: 4px; background: ' + (unread ? '#3669a5' : 'transparent'),
+        avatarInitials: kind === 'initials', avatarPhoto: kind === 'photo', avatarSite: kind === 'site', site: o.site ?? '',
+        avatar: 'flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: ' + (o.op ? 'var(--sc-radius, 8px)' : '16px') + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (o.op ? 'background: #1b1c1d; color: #ffffff' : o.mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78'),
+        sender: 'min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; ' + (unread ? 'font-weight: 700' : 'font-weight: 400'),
+        dateStyle: 'flex: none; font-size: 12px; ' + (unread ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168'),
+        subjectStyle: 'flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: #1b1c1d; ' + (unread ? 'font-weight: 600' : 'font-weight: 400'),
+        subjectWide: 'flex: 0 0 auto; min-width: 0; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: #1b1c1d; ' + (unread ? 'font-weight: 600' : 'font-weight: 400'),
+        hasAttach: !!o.attach, attachIcon: o.attach ? ICON[o.attach[0]] : '', attachCount: o.attach ? o.attach[1] : '',
+        starred: !!o.starred, mention: !!o.mention, encrypted: !!o.encrypted, draft: !!o.draft, failed: !!o.failed, sending: !!o.sending, hover: !!o.hover,
+        labels: (o.labels ?? []).map((name) => ({ name, colour: LABEL[name] })),
+        hasAssignee: !!o.assignee, assignee: o.assignee ?? '', assigneeInitials: o.assignee ? o.assignee.split(' ').map((w) => w[0]).join('') : '',
+        hasChip: !!o.wp, wpType: o.wp ? o.wp[0] : '', wpNumber: o.wp ? o.wp[1] : '', wpStatus: o.wp ? o.wp[2] : '',
+        chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (o.wp ? TYPE[o.wp[0]] : '#3d4047'),
+        chipDot: 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; ' + (st ? 'background: ' + st[0] + '; border: 1.5px solid ' + st[1] : '')
+      };
+    };
+    const sven = row('Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users.', { unread: true, starred: true, avatar: 'photo', labels: ['Offer'] });
+    const marc = row('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head.', { attach: ['clip', ''], hover: true, assignee: 'Tom Achterberg', labels: ['Waiting for customer'] });
+    const jana = row('Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF, see the two screenshots.', { unread: true, attach: ['image', '2'], wp: ['BUG', '#58231', 'in development'] });
+    const opn = row('OpenProject notifications', 'OP', '[Northwind - Feature #58412] Link Nextcloud project folders on rollout', 2, '01:00', 'Tom Achterberg mentioned you: can you confirm the folder naming with Lyon?', { unread: true, op: true, mention: true });
+    const sovereign = row('Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 1, 'Yesterday', 'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { unread: true });
+    const rowsA = [
+      heading('Today'),
+      sven, marc, jana, opn,
+      row('Jana Köhler, You', 'JK', 'Re: Angebot Schulung Projektleiter, 12 Personen', 2, '07:04', 'Gerne, ich schicke Ihnen bis Mittwoch ein Angebot für die 12 Projektleiter.', { sending: true }),
+      heading('Yesterday'),
+      row('Marc Dubois, Draft', 'MD', 'Kick-off date for phase 2', 2, 'Yesterday', 'The department head asks whether the kick-off can move to the afternoon.', { draft: true }),
+      row('Mail delivery system', 'MD', 'Undelivered: Re: Quote for project lead training', 1, 'Yesterday', 'The address j.koehler@stadtwerke-kassel.test was not found on the receiving server.', { failed: true }),
+      heading('Last week'),
+      row('Tom Achterberg', 'TA', 'Fwd: Keycloak realm export for Lyon', 1, '9 Oct', 'Here is the realm export from the Lyon Keycloak. The client settings are in the attached file.', { encrypted: true, attach: ['clip', ''], labels: ['Internal'] }),
+      row('Hetzner Billing', 'H', 'Invoice 2026-10-0193 is available', 1, '9 Oct', 'Your invoice 2026-10-0193 for September is available in the customer portal.', { attach: ['clip', ''], avatar: 'site', site: 'hetzner.test' })
+    ];
+    const rowsB = [heading('Today'), sven, jana, opn, heading('Yesterday'), sovereign];
+    const marcQuiet = row('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head.', { attach: ['clip', ''], assignee: 'Tom Achterberg', labels: ['Waiting for customer'] });
+    const rowsC = [heading('Today'), sven, marcQuiet, jana, opn, heading('Yesterday'), sovereign];
+    const iconBtn = 'position: relative; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); color: #3d4047; display: inline-flex; align-items: center; justify-content: center; ';
+    const lists = [
+      { letter: 'a', caption: 'Every mark a row can carry, under date headings, one row with its actions shown', place: 'grid-column: 1; grid-row: 1 / span 2', height: '1060px', countLine: '12 conversations', rows: rowsA, footer: true, filterOpen: false, sortOpen: false, filterStyle: iconBtn + 'background: transparent;', sortStyle: iconBtn + 'background: transparent;' },
+      { letter: 'b', caption: 'The filter menu open: unread and assigned to me are on', place: 'grid-column: 2; grid-row: 1', height: '500px', countLine: '4 of 12 conversations', rows: rowsB, footer: false, filterOpen: true, sortOpen: false, filterStyle: iconBtn + 'background: #eaf0f7; color: #234a78;', sortStyle: iconBtn + 'background: transparent;' },
+      { letter: 'c', caption: 'The sort menu open: newest first, by date', place: 'grid-column: 2; grid-row: 2', height: '536px', countLine: '12 conversations', rows: rowsC, footer: false, filterOpen: false, sortOpen: true, filterStyle: iconBtn + 'background: transparent;', sortStyle: iconBtn + 'background: #eaf0f7; color: #234a78;' }
+    ];
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+      style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const boxOn = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 3px; border: 1px solid #3669a5; background: #3669a5; color: #ffffff; display: inline-flex; align-items: center; justify-content: center';
+    const boxOff = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 3px; border: 1px solid #c4c7cb; background: #ffffff';
+    const filterItems = [['Unread', true, 5], ['Starred', false, 1], ['Mentioned', false, 1], ['Assigned to me', true, 2]].map(([label, on, count]) => ({ label, count, on: on ? 'true' : 'false', checked: on, box: on ? boxOn : boxOff }));
+    const dotOn = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 8px; border: 5px solid #3669a5; background: #ffffff';
+    const dotOff = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid #c4c7cb; background: #ffffff';
+    const sortOrder = [['Newest first', true], ['Oldest first', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', dot: on ? dotOn : dotOff }));
+    const sortFields = [['Date', true, 'of the last message'], ['Size', false, ''], ['Sender', false, ''], ['Recipient', false, ''], ['Subject', false, '']].map(([label, on, hint]) => ({ label, on: on ? 'true' : 'false', hint, dot: on ? dotOn : dotOff }));
+    const P = { important: 'M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7', star: 'm12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', follow: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2', other: 'M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z' };
+    const priority = [
+      heading('Important', { icon: P.important, count: '2', why: 'people you reply to, and work packages assigned to you' }),
+      jana,
+      row('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', { attach: ['clip', ''], wp: ['FEATURE', '#58412', 'in development'] }),
+      heading('Favourites', { icon: P.star, count: '1', why: 'starred by you' }),
+      row('Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users. Could you show us the Nextcloud link?', { unread: true, starred: true }),
+      heading('Follow up', { icon: P.follow, count: '2', why: 'you were asked something and have not answered yet' }),
+      row('OpenProject notifications', 'OP', '[Northwind - Feature #58412] Link Nextcloud project folders on rollout', 1, '10 Oct', 'Tom Achterberg mentioned you: can you confirm the folder naming with Lyon?', { op: true }),
+      row('Jana Köhler', 'JK', 'Angebot Schulung Projektleiter, 12 Personen', 1, '10 Oct', 'Könnten Sie uns ein Angebot für eine Schulung für 12 Projektleiter machen, am liebsten im November?', { unread: true }),
+      heading('Other', { icon: P.other, count: '7', why: 'newsletters, notices and the rest' }),
+      row('People Team', 'PT', 'Reminder: submit your October hours by Friday', 1, 'Yesterday', 'Please submit your October hours in the time sheet by Friday 16 October.', {}),
+      sovereign,
+      row('Hetzner Billing', 'HB', 'Invoice 2026-10-0193 is available', 1, '9 Oct', 'Your invoice 2026-10-0193 for September is available in the customer portal.', { attach: ['clip', ''] })
+    ];
+    return { lists, chips, filterItems, sortOrder, sortFields, priority };
+  }
+}
+</script>
+</body>
+</html>

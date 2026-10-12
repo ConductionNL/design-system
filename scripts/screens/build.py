@@ -37,7 +37,7 @@ SCHOOLS = [
     ('esdoornveen', 'Esdoornveen, mbo college'),
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]
-DESIGN_SYSTEMS = ['conduction', 'zuiddrecht'] + [s for s, _ in SCHOOLS]
+DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject'] + [s for s, _ in SCHOOLS]
 # row key -> app id (stable, used in screen ids like portaliq/MijnZaken)
 ROW_APP = {
     'rowHuisstijl': 'huisstijl', 'rowWerkplek': 'werkplek', 'rowSite': 'portaliq', 'rowMijn': 'portaliq',

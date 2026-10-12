@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: board per status with a card mid-move</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#tb-filter::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="Board" hint-size="245px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 16px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">Northwind rollout Lyon</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">9 open work packages</span></div>
+        <div role="group" aria-label="Group by" style="display: flex; align-items: center; gap: 6px; margin-left: 8px">
+          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Group by</span>
+          <sc-for list="{{ groupBy }}" as="c" hint-placeholder-count="3"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <div style="position: relative; display: flex; align-items: center; width: 260px">
+          <label for="tb-filter" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filter cards</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+          <input id="tb-filter" type="search" placeholder="Filter cards" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 32px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+        </div>
+        <div role="group" aria-label="Team" style="display: flex; align-items: center">
+          <sc-for list="{{ team }}" as="t" hint-placeholder-count="4"><span title="{{ t.name }}" aria-label="{{ t.name }}" role="img" style="{{ t.style }}">{{ t.initials }}</span></sc-for>
+        </div>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; position: relative; display: flex; gap: 10px; padding: 12px; overflow: hidden">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
+          <section aria-label="{{ col.name }}" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; align-self: flex-start; max-height: 100%">
+            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
+              <span style="{{ col.dot }}"></span>
+              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ col.name }}</h2>
+              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span>
+              <button type="button" aria-label="New work package with status {{ col.name }}" style="flex: none; width: 22px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+            <sc-if value="{{ col.hasDrop }}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="display: flex; align-items: center; justify-content: flex-end; text-align: right; min-height: 92px; padding: 10px 10px 10px 92px; box-sizing: border-box; border: 2px dashed #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-size: 12px; font-weight: 600; line-height: 18px">Drop here to set the status to in development</div></sc-if>
+            <sc-if value="{{ col.hasGhost }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="min-height: 92px; box-sizing: border-box; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8"></div></sc-if>
+            <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+              <a href="{{ c.href }}" aria-label="{{ c.aria }}" style="{{ c.style }}">
+                <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="{{ c.typeStyle }}">{{ c.type }}</span><span style="color: #3d4047">{{ c.number }}</span><span style="flex: 1 1 auto"></span><sc-if value="{{ c.high }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9d2e" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Priority high"><path d="m6 13 6-6 6 6M6 19l6-6 6 6"></path></svg></sc-if><sc-if value="{{ c.normal }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal"><path d="M6 10h12M6 14h12"></path></svg></sc-if></span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d">{{ c.subject }}</span>
+                <sc-if value="{{ c.hasProject }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.project }}</span></sc-if>
+                <sc-if value="{{ c.hasMail }}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: #5e6168; white-space: nowrap; overflow: hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">From mail: {{ c.mailFrom }}</span></span></sc-if>
+                <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+                  <sc-if value="{{ c.hasAssignee }}" hint-placeholder-val="{{ true }}"><span title="{{ c.assignee }}" role="img" aria-label="Assignee {{ c.assignee }}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ c.initials }}</span></sc-if>
+                  <sc-if value="{{ c.hasDue }}" hint-placeholder-val="{{ true }}"><span style="{{ c.dueStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>{{ c.due }}</span></sc-if>
+                  <span style="flex: 1 1 auto"></span>
+                  <sc-for list="{{ c.counters }}" as="k" hint-placeholder-count="3"><span aria-label="{{ k.label }}" title="{{ k.label }}" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: #5e6168"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ k.icon }}"></path></svg>{{ k.n }}</span></sc-for>
+                </span>
+              </a>
+            </sc-for>
+          </section>
+        </sc-for>
+        <div aria-label="{{ drag.aria }}" style="{{ drag.style }}">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px"><span style="{{ drag.typeStyle }}">{{ drag.type }}</span><span style="color: #3d4047">{{ drag.number }}</span><span style="flex: 1 1 auto"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="2.25" stroke-linecap="round" role="img" aria-label="Priority normal"><path d="M6 10h12M6 14h12"></path></svg></span>
+          <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d">{{ drag.subject }}</span>
+          <span style="display: flex; align-items: center; gap: 6px; margin-top: 2px">
+            <span title="{{ drag.assignee }}" role="img" aria-label="Assignee {{ drag.assignee }}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ drag.initials }}</span>
+            <span style="{{ drag.dueStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>{{ drag.due }}</span>
+            <span style="flex: 1 1 auto"></span>
+            <sc-for list="{{ drag.counters }}" as="k" hint-placeholder-count="1"><span aria-label="{{ k.label }}" title="{{ k.label }}" style="flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: #5e6168"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ k.icon }}"></path></svg>{{ k.n }}</span></sc-for>
+          </span>
+        </div>
+        <div role="status" style="position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 12px rgba(27,28,29,0.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"></path></svg>Moving TASK #58440. Dropping it changes the status in OpenProject.</div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const K = {
+      mail: ['M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', 'linked mails'],
+      meeting: ['M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', 'linked meetings'],
+      attach: ['m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48', 'attachments']
+    };
+    const PEOPLE = { 'Tom Achterberg': 'TA', 'Olivia Brandt': 'OB', 'Priya Raman': 'PR' };
+    // [type, number, subject, status, assignee, due, {mail, meeting, attach, from, high, project, overdue, week, selected}]
+    const data = [
+      ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'Olivia Brandt', '15 Oct', { mail: 1, from: 'Marc Dubois', week: true }],
+      ['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', 'Olivia Brandt', '13 Oct', { mail: 1, from: 'Sven Lindqvist', week: true }],
+      ['FEATURE', '#58412', 'Link Nextcloud project folders on rollout', 'in development', 'Tom Achterberg', '30 Oct', { mail: 1, meeting: 1, attach: 2 }],
+      ['BUG', '#58231', 'Gantt PDF export drops trailing columns', 'in development', 'Priya Raman', '14 Oct', { mail: 1, attach: 2, high: true, week: true, project: 'OpenProject core' }],
+      ['FEATURE', '#58390', 'Single sign-on through Keycloak', 'in review', 'Tom Achterberg', '23 Oct', { attach: 1 }],
+      ['EPIC', '#57990', 'Release 16.5 scope', 'in review', 'Olivia Brandt', '23 Oct', { mail: 1, meeting: 1, project: 'OpenProject core' }],
+      ['BUG', '#58102', 'Folder link breaks on rename', 'on hold', 'Priya Raman', '9 Oct', { overdue: true }],
+      ['FEATURE', '#58215', 'Export work package list to Excel', 'closed', 'Tom Achterberg', '', {}]
+    ];
+    const cardBase = 'display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; text-decoration: none; ';
+    const card = ([type, number, subject, status, assignee, due, o]) => ({
+      type, number, subject, status, assignee, due, typeStyle: 'font-weight: 700; letter-spacing: 0.04em; color: ' + TYPE[type],
+      href: 'TbCard.dc.html', aria: type + ' ' + number + ', ' + subject + ', ' + status,
+      style: cardBase + (o.selected ? 'border-color: #3669a5; box-shadow: inset 0 0 0 1px #3669a5; background: #eaf0f7;' : ''),
+      high: !!o.high, normal: !o.high,
+      hasProject: !!o.project, project: o.project ?? '',
+      hasMail: !!o.from, mailFrom: o.from ?? '',
+      hasAssignee: !!assignee, initials: PEOPLE[assignee] ?? '',
+      hasDue: !!due,
+      dueStyle: 'display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; ' + (o.overdue ? 'color: #ab0000; font-weight: 600' : o.week ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168'),
+      counters: ['mail', 'meeting', 'attach'].filter((k) => o[k]).map((k) => ({ n: o[k], icon: K[k][0], label: o[k] + ' ' + K[k][1] }))
+    });
+    const cards = data.map(card);
+    const cols = [['new', 3, ''], ['in development', 3, 'of 4'], ['in review', 2, ''], ['on hold', 1, ''], ['closed', 1, '']];
+    const columns = cols.map(([name, count, limit]) => {
+      const st = STATUS[name];
+      return {
+        name, count: limit ? count + ' ' + limit : String(count),
+        countLabel: limit ? count + ' of ' + limit.slice(3) + ' work packages, work in progress limit' : count + ' work packages',
+        countStyle: 'flex: none; font-size: 12px; font-weight: 600; line-height: 20px; padding: 0 7px; border-radius: var(--sc-radius, 8px); white-space: nowrap; ' + (limit ? 'background: #ffffff; color: #234a78; border: 1px solid #3669a5' : 'background: #ffffff; color: #5e6168; border: 1px solid #e4e6ea'),
+        dot: 'flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 6px; background: ' + st[0] + '; border: 1.5px solid ' + st[1],
+        hasDrop: name === 'in development', hasGhost: name === 'new',
+        cards: cards.filter((c) => c.status === name)
+      };
+    });
+    const dragged = card(['TASK', '#58440', 'Send OIDC client settings to Lyon', 'new', 'Tom Achterberg', '16 Oct', { attach: 1 }]);
+    const drag = { ...dragged, aria: 'Moving ' + dragged.aria, style: cardBase + 'position: absolute; left: 54px; top: 66px; width: 214px; transform: rotate(1.5deg); box-shadow: 0 10px 24px rgba(27,28,29,0.22); border-color: #3669a5; cursor: grabbing; z-index: 5' };
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const groupBy = ['Status', 'Assignee', 'Version'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+      style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    const av = 'width: 30px; height: 30px; box-sizing: border-box; border-radius: 15px; border: 2px solid #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; ';
+    const team = [['Olivia Brandt', 'OB'], ['Tom Achterberg', 'TA'], ['Priya Raman', 'PR'], ['2 more team members', '+2']].map(([name, initials], i) => ({
+      name, initials, style: av + (i ? 'margin-left: -8px; ' : '') + (initials.startsWith('+') ? 'background: #eef0f3; color: #3d4047' : 'background: #eaf0f7; color: #234a78')
+    }));
+    return { groupBy, team, columns, drag };
+  }
+}
+</script>
+</body>
+</html>

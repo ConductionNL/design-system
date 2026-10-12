@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks: my day across mail, calendar and work packages</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden">
+  <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="TbNav" active="My day" hint-size="245px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 24px; box-sizing: border-box; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; align-items: baseline; gap: 10px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2; white-space: nowrap">My day</h1><span style="font-size: 14px; color: #5e6168; white-space: nowrap">Monday 12 October 2026</span></div>
+        <div style="flex: 1 1 auto"></div>
+        <span style="font-size: 13px; color: #5e6168; white-space: nowrap">8 things across Mail, Calendar and Tasks</span>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 24px; padding: 20px 24px; overflow: hidden">
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <section aria-label="{{ g.title }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+              <div style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-bottom: 1px solid #e4e6ea; background: #ffffff">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ g.icon }}"></path></svg>
+                <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</h2>
+                <span style="font-size: 12px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; color: #3d4047">{{ g.count }}</span>
+                <span style="flex: 1 1 auto"></span>
+                <span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ g.hint }}</span>
+              </div>
+              <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+                  <li style="{{ r.style }}">
+                    <span style="{{ r.lead }}">{{ r.leadText }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 1px">
+                      <span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="{{ r.titleStyle }}">{{ r.title }}</span></span>
+                      <span style="display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; color: #5e6168"><sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ true }}"><a href="TbCard.dc.html" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap; text-decoration: none; color: #3d4047"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span>{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span>{{ r.wpStatus }}</span></a></sc-if><sc-if value="{{ r.notLinked }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 11px; line-height: 20px; padding: 0 7px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); color: #5e6168; white-space: nowrap">Not linked</span></sc-if><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.detail }}</span></span>
+                    </span>
+                    <span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap; min-width: 96px; text-align: right">{{ r.when }}</span>
+                    <span style="flex: none; display: inline-flex; gap: 6px; justify-content: flex-end">
+                      <sc-if value="{{ r.hasSecond }}" hint-placeholder-val="{{ false }}"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{ r.second }}</button></sc-if>
+                      <sc-if value="{{ r.isMenu }}" hint-placeholder-val="{{ false }}"><button type="button" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">{{ r.action }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></sc-if>
+                      <sc-if value="{{ r.isPrimary }}" hint-placeholder-val="{{ true }}"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.actionIcon }}"></path></svg>{{ r.action }}</button></sc-if>
+                      <sc-if value="{{ r.isQuiet }}" hint-placeholder-val="{{ false }}"><a href="MlThread.dc.html" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.actionIcon }}"></path></svg>{{ r.action }}</a></sc-if>
+                    </span>
+                  </li>
+                </sc-for>
+                <sc-if value="{{ g.hasFooter }}" hint-placeholder-val="{{ false }}"><li style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; font-size: 13px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4l2 2"></path></svg>{{ g.footer }}<span style="flex: 1 1 auto"></span><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">Open the calendar</a></li></sc-if>
+              </ol>
+            </section>
+          </sc-for>
+        </div>
+        <aside aria-label="This week in numbers" style="flex: 0 0 320px; width: 320px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+          <section style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 16px">
+            <h2 style="margin: 0 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">This week in numbers</h2>
+            <dl style="margin: 0; display: flex; flex-direction: column">
+              <sc-for list="{{ numbers }}" as="n" hint-placeholder-count="3">
+                <div style="display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid #e4e6ea">
+                  <dd style="margin: 0; flex: none; width: 56px; font-size: 24px; font-weight: 600; line-height: 28px; color: #1b1c1d">{{ n.value }}</dd>
+                  <dt style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 14px; color: #1b1c1d">{{ n.label }}</span><span style="font-size: 12px; color: #5e6168">{{ n.detail }}</span></dt>
+                </div>
+              </sc-for>
+            </dl>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 8px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 16px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Next milestone</h2>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px"><span style="font-weight: 700; letter-spacing: 0.04em; color: #35c53f">MILESTONE</span><span style="color: #3d4047">Go-live Lyon phase 2</span></div>
+            <div style="font-size: 13px; color: #5e6168">Monday 2 November, in 3 weeks</div>
+          </section>
+          <section style="display: flex; flex-direction: column; gap: 8px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 16px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Later this week</h2>
+            <sc-for list="{{ later }}" as="l" hint-placeholder-count="3">
+              <div style="display: flex; align-items: baseline; gap: 10px; font-size: 13px; line-height: 20px"><span style="flex: none; width: 76px; color: #5e6168; white-space: nowrap">{{ l.when }}</span><span style="min-width: 0; color: #1b1c1d">{{ l.what }}</span></div>
+            </sc-for>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
+    const ICON = {
+      reply: 'M9 17l-5-5 5-5M20 18v-2a4 4 0 0 0-4-4H4',
+      join: 'M23 7l-7 5 7 5V7zM1 5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z',
+      mail: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6',
+      calendar: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',
+      flag: 'M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7'
+    };
+    const row = 'display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 8px 16px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea; ';
+    const avatar = 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ';
+    const timeLead = 'flex: none; width: 32px; font-size: 13px; font-weight: 600; color: #1b1c1d; text-align: center; ';
+    const typeLead = 'flex: none; width: 32px; height: 32px; border-radius: var(--sc-radius, 8px); background: #eef0f3; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; ';
+    // {lead, leadText, title, detail, when, wp:[type, number, status], notLinked, action, kind: primary|menu|quiet, icon, second}
+    const mk = (r, i, n) => {
+      const st = r.wp ? STATUS[r.wp[2]] : null;
+      return {
+        style: row + (i === n - 1 ? 'border-bottom: 0;' : ''),
+        lead: r.lead, leadText: r.leadText,
+        title: r.title, titleStyle: 'min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: ' + (r.bold ? '600' : '500'),
+        detail: r.detail, when: r.when,
+        hasChip: !!r.wp, notLinked: !!r.notLinked,
+        wpType: r.wp ? r.wp[0] : '', wpNumber: r.wp ? r.wp[1] : '', wpStatus: r.wp ? r.wp[2] : '',
+        chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (r.wp ? TYPE[r.wp[0]] : '#3d4047'),
+        chipDot: 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; ' + (st ? 'background: ' + st[0] + '; border: 1.5px solid ' + st[1] : ''),
+        action: r.action, actionIcon: ICON[r.icon ?? 'reply'],
+        isPrimary: (r.kind ?? 'primary') === 'primary', isMenu: r.kind === 'menu', isQuiet: r.kind === 'quiet',
+        hasSecond: !!r.second, second: r.second ?? ''
+      };
+    };
+    const raw = [
+      { title: 'Waiting for your reply', icon: ICON.mail, hint: 'Linked work packages first', rows: [
+        { lead: avatar, leadText: 'MD', title: 'Marc Dubois · Rollout plan phase 2, Lyon', bold: true, detail: 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', when: 'Today 06:00', wp: ['FEATURE', '#58412', 'in development'], action: 'Reply', icon: 'reply' },
+        { lead: avatar, leadText: 'JK', title: 'Jana Köhler · Gantt export cuts off the last week', bold: true, detail: 'The last week of the plan is missing on the PDF, see the two screenshots. We need the export for the board on Thursday.', when: 'Today 04:00', wp: ['BUG', '#58231', 'in development'], action: 'Reply', icon: 'reply' },
+        { lead: avatar, leadText: 'SL', title: 'Sven Lindqvist · Request for a demo, 1,200 users', bold: true, detail: 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users. Could you show us the Nextcloud link?', when: 'Today 07:00', notLinked: true, action: 'Reply', icon: 'reply', second: 'New work package' }
+      ] },
+      { title: 'Today', icon: ICON.calendar, hint: 'Monday 12 October', footer: 'Nothing else is planned today.', rows: [
+        { lead: timeLead, leadText: '10:00', title: 'Stand-up', detail: '10:00 to 10:15, daily, video call with the Northwind team', when: 'In 1 hour 40 min', action: 'Join', icon: 'join' }
+      ] },
+      { title: 'Due this week', icon: ICON.flag, hint: '13 to 16 October', rows: [
+        { lead: typeLead + 'color: #08a5df', leadText: 'TASK', title: 'Prepare demo for Malmo Energi', detail: 'Assigned to you · from the mail of Sven Lindqvist', when: 'Tuesday 13 Oct', wp: ['TASK', '#58455', 'new'], action: 'Set status', kind: 'menu' },
+        { lead: typeLead + 'color: #ab0000', leadText: 'BUG', title: 'Gantt PDF export drops trailing columns', detail: 'Priya Raman · priority high · version 16.5', when: 'Wednesday 14 Oct', wp: ['BUG', '#58231', 'in development'], action: 'Set status', kind: 'menu' },
+        { lead: typeLead + 'color: #08a5df', leadText: 'TASK', title: 'Move kick-off to the afternoon', detail: 'Assigned to you · from the mail of Marc Dubois', when: 'Thursday 15 Oct', wp: ['TASK', '#58441', 'new'], action: 'Set status', kind: 'menu' },
+        { lead: avatar, leadText: 'PT', title: 'Submit your October hours', detail: 'People Team · reminder mail of yesterday · deadline 17:00', when: 'Friday 16 Oct', action: 'Open mail', kind: 'quiet', icon: 'mail' }
+      ] }
+    ];
+    const groups = raw.map((g) => ({ title: g.title, icon: g.icon, hint: g.hint, count: g.rows.length, hasFooter: !!g.footer, footer: g.footer ?? '', rows: g.rows.map((r, i) => mk(r, i, g.rows.length + (g.footer ? 1 : 0))) }));
+    const numbers = [
+      { value: '9', label: 'Open work packages', detail: '4 assigned to you, 1 overdue' },
+      { value: '4', label: 'Linked conversations', detail: '3 wait for your reply' },
+      { value: '8', label: 'Meetings', detail: '5 stand-ups and 3 meetings, 1 linked to a work package' }
+    ];
+    const later = [
+      { when: 'Tue 11:00', what: 'Demo preparation Malmo Energi' },
+      { when: 'Wed 09:30', what: 'Release 16.5 scope review, EPIC #57990' },
+      { when: 'Thu 14:00', what: 'Rollout review Lyon, phase 2, FEATURE #58412' },
+      { when: 'Fri 17:00', what: 'Submit October hours' }
+    ];
+    return { groups, numbers, later };
+  }
+}
+</script>
+</body>
+</html>

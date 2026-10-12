@@ -114,3 +114,20 @@ Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header
 | badge | 16 px pill at the top right of the item, min-width 16 px, 10 px weight 700, `#3669a5` on white ink; only where a count matters |
 | when it folds | when a conversation, an event or a card is open (level 1) and while a right panel is open (level 2); a navigation that is already folded stays folded on the next board |
 | how it opens again | the open control at the top of the rail; hovering a rail shows the full column over the content without moving the layout. Never more than three things side by side: the rails, the content and one right panel, so an open navigation closes any second right panel |
+
+## Navigation, nested (`OpNav` with `open="…"` and `current="…"`)
+
+OpenProject's third level (saved queries, boards, wiki pages, settings pages) is not a second sidebar. The project menu stays; the module you are in expands in place and lists its own pages under its item, as nested items do in Nextcloud's app navigation. Without `open` the menu renders exactly as before.
+
+| part | value |
+|---|---|
+| attributes | `open` names the module whose list is shown (none by default), `current` names the child that is the current page; `items` (optional) overrides the children, `A\|B\|C` flat or `Group: A\|B; Other: C` grouped. The children of Work packages, Boards, Wiki and Project settings are built in |
+| parent row | the level one item (42 px, 15 px) as a link with `flex: 1 1 auto; padding-right: 4px`, then a 32 x 36 toggle button, `aria-expanded="true"` or `"false"`, `aria-controls` the list id, `aria-label` "Collapse work packages" or "Expand boards", chevron 16 px stroke 1.75 `#5e6168`: down (`m6 9 6 6 6-6`) when open, right (`m9 18 6-6-6-6`) when closed. Every module with a list of its own shows the toggle as soon as `open` is set |
+| parent that contains the current page | `color: #234a78; font-weight: 600`, no background, `aria-current="false"`; the module itself is `aria-current="page"` with the active pair only when none of its children is current |
+| nested list | a `ul` inside the parent's `li`, `margin: 2px 0 6px 20px; padding-left: 10px; border-left: 2px solid #e4e6ea`, column gap 2 px; level two text starts at 42 px from the item edge, aligned with the level one label. 4 px between the parent row and the list, 8 px between the list and the next level one item |
+| level two item | min-height 36 px, padding 0 10px, radius `var(--sc-radius, 8px)`, 14 px weight 500 `#1b1c1d`, no icon |
+| current child | `background: #eaf0f7; color: #234a78; font-weight: 600`, `aria-current="page"` |
+| group label in the list | 12 px weight 600, uppercase, letter-spacing 0.06em, `#5e6168`, padding 4px 10px 4px for the first, 8px 10px 4px after that (saved queries: Default, Favourites, Public, Private) |
+| new action | last row, 36 px, 14 px weight 500 `#5e6168`, 16 px plus icon, gap 8 px, transparent button: "Save this view", "New board", "New page"; a module without one (Project settings) has no row |
+| long list | more than 8 children: the first 6, then a "Show all 14" row, 36 px, 14 px weight 600 `var(--sc-link, #3669a5)`, `aria-expanded="false"`; never an inner scrollbar |
+| board height | when the open list makes the navigation taller than the 932 px row, the board's `min-height` and `$preview` height grow to fit (Work packages 1360, Boards 1040, Wiki 1100, Project settings 1140), never clipped |

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: what happens to a link</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 900px; padding: 40px 48px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <div style="display: flex; flex-direction: column; gap: 6px; max-width: 820px">
+    <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">What happens to a link</h1>
+    <p style="margin: 0; color: #3d4047">A link joins a conversation, or one message, to a work package by storing a reference: the mail stays in your mailbox, and the work package only ever points at it. This is what that means over time.</p>
+  </div>
+  <ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 20px; flex: 1 1 auto; min-height: 0">
+    <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+      <li style="display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); min-height: 0">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 13px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ c.n }}</span>
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 24px">{{ c.title }}</h2>
+          </div>
+        </div>
+        <svg width="372" height="96" viewBox="0 0 372 96" fill="none" aria-hidden="true" style="flex: none; width: 100%; height: 96px; display: block">
+          <sc-if value="{{ c.isLink }}" hint-placeholder-val="{{ true }}">
+            <rect x="14" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <path d="M24 30h100M24 42h72M24 54h88" stroke="#c4c7cb" stroke-width="2" stroke-linecap="round"></path>
+            <rect x="238" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="250" y="42" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="700" letter-spacing="0.5" fill="#538b28">FEATURE</text>
+            <text x="308" y="42" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">#58412</text>
+            <path d="M250 58h86" stroke="#c4c7cb" stroke-width="2" stroke-linecap="round"></path>
+            <path d="M134 48h104" stroke="#3669a5" stroke-width="2" stroke-dasharray="4 4"></path>
+            <circle cx="186" cy="48" r="16" fill="#eaf0f7" stroke="#3669a5" stroke-width="1.75"></circle>
+            <path d="M183 51a3.5 3.5 0 0 0 5-.3l2-2a3.5 3.5 0 0 0-5-5l-1 1M189 45a3.5 3.5 0 0 0-5 .3l-2 2a3.5 3.5 0 0 0 5 5l1-1" stroke="#234a78" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+          </sc-if>
+          <sc-if value="{{ c.isReply }}" hint-placeholder-val="{{ false }}">
+            <rect x="14" y="8" width="120" height="30" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <path d="M24 23h72" stroke="#c4c7cb" stroke-width="2" stroke-linecap="round"></path>
+            <rect x="34" y="46" width="120" height="30" rx="4" fill="#eaf0f7" stroke="#3669a5" stroke-width="1.5"></rect>
+            <path d="M44 61h40" stroke="#234a78" stroke-width="2" stroke-linecap="round"></path>
+            <text x="92" y="65" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="600" fill="#234a78">new reply</text>
+            <path d="M134 23h104M154 61h84" stroke="#3669a5" stroke-width="2" stroke-dasharray="4 4"></path>
+            <rect x="238" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="250" y="42" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="700" letter-spacing="0.5" fill="#538b28">FEATURE</text>
+            <text x="308" y="42" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">#58412</text>
+            <text x="250" y="64" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">7 messages</text>
+          </sc-if>
+          <sc-if value="{{ c.isForward }}" hint-placeholder-val="{{ false }}">
+            <rect x="14" y="8" width="120" height="30" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <path d="M24 23h72" stroke="#c4c7cb" stroke-width="2" stroke-linecap="round"></path>
+            <path d="M134 23h104" stroke="#3669a5" stroke-width="2" stroke-dasharray="4 4"></path>
+            <rect x="238" y="8" width="120" height="30" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="250" y="27" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="700" letter-spacing="0.5" fill="#538b28">FEATURE</text>
+            <text x="308" y="27" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">#58412</text>
+            <path d="M74 38v8l20 12" stroke="#5e6168" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+            <rect x="94" y="52" width="140" height="32" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="104" y="72" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">Fwd: Rollout plan</text>
+            <rect x="244" y="52" width="114" height="32" rx="4" fill="#eaf0f7" stroke="#3669a5" stroke-width="1.5"></rect>
+            <text x="254" y="72" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="600" fill="#234a78">Looks like #58412?</text>
+          </sc-if>
+          <sc-if value="{{ c.isMove }}" hint-placeholder-val="{{ false }}">
+            <path d="M14 30a3 3 0 0 1 3-3h22l6 6h40a3 3 0 0 1 3 3v34a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3z" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></path>
+            <text x="22" y="60" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">Inbox</text>
+            <path d="M104 30a3 3 0 0 1 3-3h22l6 6h40a3 3 0 0 1 3 3v34a3 3 0 0 1-3 3h-68a3 3 0 0 1-3-3z" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></path>
+            <text x="112" y="47" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">Archive</text>
+            <rect x="112" y="54" width="52" height="14" rx="3" fill="#eaf0f7" stroke="#3669a5" stroke-width="1.25"></rect>
+            <path d="M118 61h40" stroke="#234a78" stroke-width="1.5" stroke-linecap="round"></path>
+            <path d="M88 48h12m-4-4 4 4-4 4" stroke="#5e6168" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M172 47h66" stroke="#3669a5" stroke-width="2" stroke-dasharray="4 4"></path>
+            <rect x="238" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="250" y="42" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="700" letter-spacing="0.5" fill="#538b28">FEATURE</text>
+            <text x="308" y="42" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">#58412</text>
+            <text x="250" y="64" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">still linked</text>
+          </sc-if>
+          <sc-if value="{{ c.isDelete }}" hint-placeholder-val="{{ false }}">
+            <rect x="14" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5" stroke-dasharray="4 3"></rect>
+            <path d="M58 36h32M62 36v-3h24v3M64 40v26h20V40M70 44v18M78 44v18" stroke="#c4c7cb" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M134 48h104" stroke="#c4c7cb" stroke-width="2" stroke-dasharray="4 4"></path>
+            <rect x="238" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <text x="250" y="42" font-family="'Fira Sans', sans-serif" font-size="11" font-weight="700" letter-spacing="0.5" fill="#538b28">FEATURE</text>
+            <text x="308" y="42" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">#58412</text>
+            <text x="250" y="64" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">Mail deleted, 12 Oct</text>
+          </sc-if>
+          <sc-if value="{{ c.isAccess }}" hint-placeholder-val="{{ false }}">
+            <rect x="14" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <path d="M24 30h100M24 42h72" stroke="#c4c7cb" stroke-width="2" stroke-linecap="round"></path>
+            <rect x="24" y="50" width="100" height="18" rx="3" fill="#eef0f3"></rect>
+            <path d="M68 60v-3a4 4 0 0 1 8 0v3M66 60h12v7H66z" stroke="#5e6168" stroke-width="1.5" stroke-linejoin="round" fill="#ffffff"></path>
+            <path d="M134 48h104" stroke="#3669a5" stroke-width="2" stroke-dasharray="4 4"></path>
+            <rect x="238" y="20" width="120" height="56" rx="4" fill="#ffffff" stroke="#c4c7cb" stroke-width="1.5"></rect>
+            <circle cx="262" cy="48" r="12" fill="#eaf0f7" stroke="#234a78" stroke-width="1.5"></circle>
+            <text x="255" y="52" font-family="'Fira Sans', sans-serif" font-size="10" font-weight="700" fill="#234a78">TA</text>
+            <text x="282" y="44" font-family="'Fira Sans', sans-serif" font-size="11" fill="#3d4047">Tom looks</text>
+            <text x="282" y="60" font-family="'Fira Sans', sans-serif" font-size="11" fill="#5e6168">no mailbox access</text>
+          </sc-if>
+        </svg>
+        <p style="margin: 0; color: #3d4047; flex: 1 1 auto">{{ c.text }}</p>
+        <p style="margin: 0; padding-top: 10px; border-top: 1px solid #e4e6ea; font-size: 13px; line-height: 19px; color: #3d4047"><strong style="font-weight: 600; color: #1b1c1d">In OpenProject:</strong> {{ c.op }}</p>
+      </li>
+    </sc-for>
+  </ol>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const cards = [
+      ['You link', 'isLink', 'From the conversation, press Link to work package or the L key, pick the work package and choose the scope: the whole conversation or this one message. Nothing is copied, the mail stays where it is.', 'The work package gets an EMAILS tab next to FILES. It lists the conversation with sender, subject, snippet, date, message count, attachments and who linked it.'],
+      ['A reply arrives', 'isReply', 'A reply in a linked conversation is linked too, without you doing anything. If you linked one message only, a reply is not linked and shows the suggestion instead.', 'The entry on the EMAILS tab shows the new message count and the latest snippet, and the activity gets a line if you chose to log replies.'],
+      ['You forward', 'isForward', 'Forwarding starts a new conversation to new people. It does not inherit the link. The work package number in the subject is detected, so the new conversation shows "Looks like Feature #58412. Link?"', 'Nothing changes until you confirm the suggestion. Then the forwarded conversation is listed as a second entry.'],
+      ['You move or archive', 'isMove', 'Moving the conversation to another folder, or archiving it, keeps the link. The reference follows the message, not the folder.', 'The entry stays as it was. Reply still opens the conversation in your mail client, wherever it now lives.'],
+      ['You delete the mail', 'isDelete', 'Deleting the mail from your mailbox removes the content for everyone. The link is not silently dropped: it turns into a trace that says what happened and when.', 'One line remains: "Mail deleted by its owner on 12 Oct". Reply and the attachments are gone with it.'],
+      ['Someone without access looks', 'isAccess', 'A colleague who cannot read your mailbox sees that the conversation exists, not what it says. The body, the attachments and Reply stay hidden from them.', 'Subject, sender and date are shown, the body is not, with the line "Ask Olivia Brandt for access".']
+    ].map(([title, kind, text, op], i) => ({
+      n: i + 1, title, text, op,
+      isLink: kind === 'isLink', isReply: kind === 'isReply', isForward: kind === 'isForward', isMove: kind === 'isMove', isDelete: kind === 'isDelete', isAccess: kind === 'isAccess'
+    }));
+    return { cards };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail thread list</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<section aria-label="{{ title }}" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 410px; box-sizing: border-box; min-height: 100%; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e4e6ea; overflow: hidden">
+  <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
+    <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">{{ title }}</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ count }} conversations</span></div>
+    <div style="display: flex; gap: 2px; flex: none">
+      <button type="button" aria-label="Select conversations" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></button>
+      <button type="button" aria-label="Sort conversations" aria-haspopup="menu" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+    </div>
+  </div>
+  <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 6px; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea">
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+  </div>
+  <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+      <li style="{{ r.style }}">
+        <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
+          <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="{{ r.dot }}"></span></span>
+          <span style="{{ r.avatar }}">{{ r.initials }}</span>
+          <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0">
+            <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+              <span style="{{ r.sender }}">{{ r.from }}</span>
+              <sc-if value="{{ r.hasCount }}" hint-placeholder-val="{{ true }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.count }}</span></sc-if>
+              <span style="flex: 1 1 auto"></span>
+              <span style="{{ r.dateStyle }}">{{ r.date }}</span>
+            </span>
+            <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+              <span style="{{ r.subjectStyle }}">{{ r.subject }}</span>
+              <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
+              <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
+            </span>
+            <span style="display: flex; align-items: center; gap: 8px; height: 20px">
+              <sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ true }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span style="color: #3d4047">{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span style="color: #3d4047">{{ r.wpStatus }}</span></span></sc-if>
+              <sc-if value="{{ r.bundled }}" hint-placeholder-val="{{ false }}"><span style="{{ r.chipDot }}"></span></sc-if>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.snippet }}</span>
+              <sc-if value="{{ r.bundled }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; gap: 2px"><button type="button" style="height: 22px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Comment</button><button type="button" aria-haspopup="menu" style="height: 22px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px">Change status<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></span></sc-if>
+            </span>
+          </span>
+        </a>
+      </li>
+    </sc-for>
+  </ol>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"selected":{"editor":"text","default":""},"unlinked":{"editor":"text","default":""},"title":{"editor":"text","default":"Inbox"},"$preview":{"width":410,"height":1032}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const selected = String(this.props.selected ?? '');
+    const title = this.props.title ?? 'Inbox';
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'] };
+    const ICON = { clip: 'm21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48', image: 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M21 15l-5-5L5 21', calendar: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' };
+    // from, initials, subject, count, date, snippet, options {unread, starred, attach:[icon,count], wp:[type, number, status], bundled, op}
+    const data = [
+      ['Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users. Could you show us the Nextcloud link?', { unread: true, starred: true }],
+      ['Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', { attach: ['clip', ''], wp: ['FEATURE', '#58412', 'in development'] }],
+      ['Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF, see the two screenshots. We need the export for the board on Thursday.', { unread: true, attach: ['image', '2'], wp: ['BUG', '#58231', 'in development'] }],
+      ['OpenProject notifications', 'OP', '[Northwind - Bug #58231] Gantt PDF export drops trailing columns', 2, '01:00', 'Priya Raman set the status to in development', { unread: true, bundled: true, op: true, wp: ['BUG', '#58231', 'in development'] }],
+      ['People Team', 'PT', 'Reminder: submit your October hours by Friday', 1, 'Yesterday', 'Please submit your October hours in the time sheet by Friday 16 October.', {}],
+      ['Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 1, 'Yesterday', 'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { unread: true }],
+      ['Jana Köhler', 'JK', 'Angebot Schulung Projektleiter, 12 Personen', 1, '10 Oct', 'Könnten Sie uns ein Angebot für eine Schulung für 12 Projektleiter machen, am liebsten im November?', { unread: true }],
+      ['OpenProject notifications', 'OP', '[Northwind - Feature #58412] Link Nextcloud project folders on rollout', 1, '10 Oct', 'Tom Achterberg mentioned you: can you confirm the folder naming with Lyon?', { bundled: true, op: true, wp: ['FEATURE', '#58412', 'in development'] }],
+      ['Hetzner Billing', 'HB', 'Invoice 2026-10-0193 is available', 1, '9 Oct', 'Your invoice 2026-10-0193 for September is available in the customer portal.', { attach: ['clip', ''] }],
+      ['Tom Achterberg, Olivia Brandt', 'TA', 'Scope for release 16.5', 8, '9 Oct', 'Agreed, the Gantt fix goes in 16.5 and the OIDC work moves to 16.6.', { wp: ['EPIC', '#57990', 'in review'] }],
+      ['Tom Achterberg', 'TA', 'Invitation: Rollout review Lyon, phase 2', 1, '9 Oct', 'Thursday 15 October, 14:00 to 15:00. Rollout review with Marc and the Lyon team.', { attach: ['calendar', ''] }],
+      ['Tom Achterberg', 'TA', 'Fwd: Keycloak realm export for Lyon', 1, '9 Oct', 'Here is the realm export from the Lyon Keycloak. The client settings are in the attached file.', { attach: ['clip', ''] }]
+    ];
+    // unlinked: a row number whose work package chip is hidden, for boards that show the moment before linking
+    const unlinked = String(this.props.unlinked ?? '');
+    const rows = data.map(([from, initials, subject, count, date, snippet, opts], i) => {
+      const n = i + 1;
+      const o = unlinked === String(n) ? { ...opts, wp: null } : opts;
+      const on = selected === String(n);
+      const unread = !!o.unread;
+      const st = o.wp ? STATUS[o.wp[2]] : null;
+      return {
+        from, initials, subject, date, snippet, count: count > 1 ? count : '', hasCount: count > 1,
+        href: 'MlThread.dc.html', current: on ? 'page' : 'false',
+        style: 'border-bottom: 1px solid #e4e6ea; ' + (on ? 'background: #eaf0f7; box-shadow: inset 3px 0 0 #3669a5;' : 'background: #ffffff;'),
+        dot: 'width: 8px; height: 8px; border-radius: 4px; background: ' + (unread ? '#3669a5' : 'transparent'),
+        avatar: 'flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: ' + (o.op ? 'var(--sc-radius, 8px)' : '16px') + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (o.op ? 'background: #1b1c1d; color: #ffffff' : 'background: #eaf0f7; color: #234a78'),
+        sender: 'min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; ' + (unread ? 'font-weight: 700' : 'font-weight: 400'),
+        dateStyle: 'flex: none; font-size: 12px; ' + (unread ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168'),
+        subjectStyle: 'flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; ' + (unread ? 'font-weight: 600; color: #1b1c1d' : 'font-weight: 400; color: #1b1c1d'),
+        hasAttach: !!o.attach, attachIcon: o.attach ? ICON[o.attach[0]] : '', attachCount: o.attach ? o.attach[1] : '',
+        starred: !!o.starred,
+        hasChip: !!o.wp && !o.bundled, bundled: !!o.bundled,
+        wpType: o.wp ? o.wp[0] : '', wpNumber: o.wp ? o.wp[1] : '', wpStatus: o.wp ? o.wp[2] : '',
+        chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (o.wp ? TYPE[o.wp[0]] : '#3d4047'),
+        chipDot: 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; ' + (st ? 'background: ' + st[0] + '; border: 1.5px solid ' + st[1] : '')
+      };
+    });
+    const chipBase = 'height: 28px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
+      style: chipBase + (i === 0 ? 'border: 1px solid #3669a5; background: #eaf0f7; color: #234a78;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #3d4047;') }));
+    return { title, count: rows.length, chips, rows };
+  }
+}
+</script>
+</body>
+</html>

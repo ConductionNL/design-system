@@ -828,6 +828,8 @@
      "boards": [
       "ClWeek",
       "ClEvent",
+      "ClPlan",
+      "ClLinkWorkPackage",
       "ClMonth",
       "ClNav"
      ],
@@ -1246,6 +1248,7 @@
      "boards": [
       "MlInbox",
       "MlThread",
+      "MlThreadExpanded",
       "MlThreadPanel",
       "MlCompose",
       "MlSearch",
@@ -1261,7 +1264,9 @@
       "MlLinkWorkPackage",
       "MlCreateWorkPackage",
       "MlWorkPackageEmails",
-      "MlLinkLifecycle"
+      "MlLinkLifecycle",
+      "WpPickerStates",
+      "MlSearchModel"
      ],
      "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject"
     },
@@ -1284,7 +1289,8 @@
      "boards": [
       "MlHeader",
       "MlNav",
-      "MlThreadList"
+      "MlThreadList",
+      "WpPicker"
      ],
      "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject"
     },
@@ -27806,8 +27812,8 @@
    "row": "rowCalendar",
    "file": "boards/ClWeek.html",
    "thumb": "thumbs/ClWeek.webp",
-   "caps": "week-grid, work-package-bars, meeting-work-package-chip, show-switches, project-filter, drag-to-change-dates",
-   "note": "What you see: The week of 12 to 18 October. Work package bars sit in the all-day strip in their type colour, BUG #58231 shows the grab handles, and the meetings below carry their work package chip.",
+   "caps": "week-grid, two-time-zones, work-package-bars, meeting-work-package-chip, context-panel, drag-to-change-dates",
+   "note": "What you see: The week of 12 to 18 October in the calm grid: CEST and UTC columns, soft meetings, a faded past event, Thursday's rollout review dashed because it is not answered yet, BUG #58231 with grab handles in the all-day strip, and the context panel with the next meeting, this week's due work packages and the shortcuts.",
    "src": "screens-src/zuiddrecht/ClWeek.dc.html",
    "thumbs": {
     "openproject": "thumbs/openproject/ClWeek.webp"
@@ -27819,12 +27825,12 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/week-grid",
-    "design-system/work-package-bars",
-    "design-system/meeting-work-package-chip",
-    "design-system/show-switches",
-    "design-system/project-filter",
-    "design-system/drag-to-change-dates"
+    "calendar/week-grid",
+    "calendar/two-time-zones",
+    "calendar/work-package-bars",
+    "calendar/meeting-work-package-chip",
+    "calendar/context-panel",
+    "calendar/drag-to-change-dates"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -27840,7 +27846,7 @@
    "file": "boards/ClEvent.html",
    "thumb": "thumbs/ClEvent.webp",
    "caps": "event-panel, mail-origin, accept-maybe-decline, linked-work-package, log-time",
-   "note": "What you see: The Thursday rollout review selected. The panel shows the attendees, the mail the invitation came from, FEATURE #58412 and Log time on this work package with 1 h filled in.",
+   "note": "What you see: The Thursday rollout review selected. The navigation folds to the rail and the right column shows the event: time, Join, the attendees, the mail the invitation came from, Accept as the one green action, FEATURE #58412 and Log time on this work package with 1 h filled in.",
    "src": "screens-src/zuiddrecht/ClEvent.dc.html",
    "thumbs": {
     "openproject": "thumbs/openproject/ClEvent.webp"
@@ -27852,11 +27858,76 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/event-panel",
-    "design-system/mail-origin",
-    "design-system/accept-maybe-decline",
-    "design-system/linked-work-package",
-    "design-system/log-time"
+    "calendar/event-panel",
+    "calendar/mail-origin",
+    "calendar/accept-maybe-decline",
+    "calendar/linked-work-package",
+    "calendar/log-time"
+   ],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "ClPlan": {
+   "id": "calendar/ClPlan",
+   "app": "calendar",
+   "title": "Calendar: block time for a work package",
+   "w": 1440,
+   "h": 1000,
+   "set": "zuiddrecht",
+   "row": "rowCalendar",
+   "file": "boards/ClPlan.html",
+   "thumb": "thumbs/ClPlan.webp",
+   "caps": "work-package-list, grouped-by-status, assigned-to-me-filter, drag-to-block-time, linked-time-block",
+   "note": "What you see: The week with the work package list open beside the grid, grouped by status. TASK #58455 is lifted over Tuesday with a dashed target block from 14:00 to 16:00 and the hint Drop to block time for this work package.",
+   "src": "screens-src/zuiddrecht/ClPlan.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/ClPlan.webp"
+   },
+   "blurb": "een agenda voor Nextcloud met afspraken, de data van werkpakketten en mijlpalen uit OpenProject in één rooster",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [
+    "calendar/work-package-list",
+    "calendar/grouped-by-status",
+    "calendar/assigned-to-me-filter",
+    "calendar/drag-to-block-time",
+    "calendar/linked-time-block"
+   ],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "ClLinkWorkPackage": {
+   "id": "calendar/ClLinkWorkPackage",
+   "app": "calendar",
+   "title": "Calendar: link an event to a work package",
+   "w": 1440,
+   "h": 1000,
+   "set": "zuiddrecht",
+   "row": "rowCalendar",
+   "file": "boards/ClLinkWorkPackage.html",
+   "thumb": "thumbs/ClLinkWorkPackage.webp",
+   "caps": "work-package-picker, suggestions-by-reason, event-link-scope, repeating-event-scope, comment-in-activity, work-package-from-event",
+   "note": "What you see: Level 2, act. The navigation folded to the rail, Tuesday's Demo preparation Malmo Energi selected in the week, and on the right a 440 px panel Link to work package with the same picker as in mail: the field empty and the suggestions In this event, Same people and Recent. Under it the scope This event or This and following events, one checkbox to post a comment, the green Link and New work package from this event.",
+   "src": "screens-src/zuiddrecht/ClLinkWorkPackage.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/ClLinkWorkPackage.webp"
+   },
+   "blurb": "een agenda voor Nextcloud met afspraken, de data van werkpakketten en mijlpalen uit OpenProject in één rooster",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [
+    "calendar/work-package-picker",
+    "calendar/suggestions-by-reason",
+    "calendar/event-link-scope",
+    "calendar/repeating-event-scope",
+    "calendar/comment-in-activity",
+    "calendar/work-package-from-event"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -27871,8 +27942,8 @@
    "row": "rowCalendar",
    "file": "boards/ClMonth.html",
    "thumb": "thumbs/ClMonth.webp",
-   "caps": "month-grid, work-package-bars, milestone, new-from-empty-day",
-   "note": "What you see: October 2026 into November. EPIC #57990 and FEATURE #58412 span their weeks, the Go-live Lyon milestone is a diamond on 2 November, and an empty day offers New meeting and New work package.",
+   "caps": "month-grid, work-package-bars, milestone, new-from-empty-day, context-panel",
+   "note": "What you see: October 2026 into November with plain day numbers and today in a filled badge. EPIC #57990 and FEATURE #58412 span their weeks as soft bars, the Go-live Lyon milestone is a diamond on 2 November, and the hovered 28 October offers New meeting and New work package.",
    "src": "screens-src/zuiddrecht/ClMonth.dc.html",
    "thumbs": {
     "openproject": "thumbs/openproject/ClMonth.webp"
@@ -27884,10 +27955,11 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/month-grid",
-    "design-system/work-package-bars",
-    "design-system/milestone",
-    "design-system/new-from-empty-day"
+    "calendar/month-grid",
+    "calendar/work-package-bars",
+    "calendar/milestone",
+    "calendar/new-from-empty-day",
+    "calendar/context-panel"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -27897,7 +27969,7 @@
    "app": "calendar",
    "title": "Calendar: navigation",
    "w": 245,
-   "h": 774,
+   "h": 666,
    "set": "zuiddrecht",
    "row": "rowCalendar",
    "file": "boards/ClNav.html",
@@ -40089,12 +40161,12 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/three-pane-mailbox",
+    "mail/three-pane-mailbox",
     "decidiq/global-search",
-    "design-system/folders-and-labels",
-    "design-system/notifications-view",
-    "design-system/work-package-chips",
-    "design-system/bundled-notifications"
+    "mail/folders-and-labels",
+    "mail/notifications-view",
+    "mail/work-package-chips",
+    "mail/bundled-notifications"
    ],
    "matrixCapIds": [],
    "specs": [
@@ -40114,7 +40186,7 @@
    "row": "rowMailInbox",
    "file": "boards/MlThread.html",
    "thumb": "thumbs/MlThread.webp",
-   "caps": "conversation-view, attachment-list, reply-and-forward, link-another, work-package-chip",
+   "caps": "conversation-view, attachment-list, reply-and-forward, link-another, work-package-chip, expand-and-collapse",
    "note": "What you see: Level 1, read. The folders folded to a 64 px rail with labels, the list at 410 px and the Lyon rollout conversation in a wide reading pane. The linked FEATURE #58412 is a clickable chip with its status in the subject bar, next to a quiet Link another; the X at the end of the subject bar closes the conversation.",
    "src": "screens-src/zuiddrecht/MlThread.dc.html",
    "thumbs": {
@@ -40127,11 +40199,44 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/conversation-view",
-    "design-system/attachment-list",
-    "design-system/reply-and-forward",
-    "design-system/link-another",
-    "design-system/work-package-chip"
+    "mail/conversation-view",
+    "mail/attachment-list",
+    "mail/reply-and-forward",
+    "mail/link-another",
+    "mail/work-package-chip",
+    "mail/expand-and-collapse"
+   ],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "MlThreadExpanded": {
+   "id": "mail/MlThreadExpanded",
+   "app": "mail",
+   "title": "Mail: conversation with every message open",
+   "w": 1440,
+   "h": 1900,
+   "set": "zuiddrecht",
+   "row": "rowMailInbox",
+   "file": "boards/MlThreadExpanded.html",
+   "thumb": "thumbs/MlThreadExpanded.webp",
+   "caps": "expand-and-collapse, whole-message-view, quoted-text-toggle, attachment-list, reply-and-forward",
+   "note": "What you see: Level 1, read. The same Lyon conversation with all six messages open in full, each with a down chevron at the left of its header, and the subject bar button reading Collapse all. One reply shows its quoted text under Hide quoted text.",
+   "src": "screens-src/zuiddrecht/MlThreadExpanded.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/MlThreadExpanded.webp"
+   },
+   "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [
+    "mail/expand-and-collapse",
+    "mail/whole-message-view",
+    "mail/quoted-text-toggle",
+    "mail/attachment-list",
+    "mail/reply-and-forward"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40159,10 +40264,10 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/work-package-panel",
-    "design-system/status-change-in-place",
-    "design-system/work-package-from-mail",
-    "design-system/unlink"
+    "mail/work-package-panel",
+    "mail/status-change-in-place",
+    "mail/work-package-from-mail",
+    "mail/unlink"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40190,11 +40295,11 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/reply-in-panel",
-    "design-system/linked-reply",
-    "design-system/status-after-send",
-    "design-system/log-reply-in-activity",
-    "design-system/work-package-reference"
+    "mail/reply-in-panel",
+    "mail/linked-reply",
+    "mail/status-after-send",
+    "mail/log-reply-in-activity",
+    "mail/work-package-reference"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40223,10 +40328,10 @@
    ],
    "capIds": [
     "decidiq/global-search",
-    "design-system/search-filters",
-    "design-system/work-package-filter",
-    "design-system/results-per-work-package",
-    "design-system/search-highlighting"
+    "mail/search-filters",
+    "mail/work-package-filter",
+    "mail/results-per-work-package",
+    "mail/search-highlighting"
    ],
    "matrixCapIds": [],
    "specs": [
@@ -40259,10 +40364,10 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/bundled-notifications",
-    "design-system/comment-from-mail",
-    "design-system/change-status-with-comment",
-    "design-system/linked-mail"
+    "mail/bundled-notifications",
+    "mail/comment-from-mail",
+    "mail/change-status-with-comment",
+    "mail/linked-mail"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40277,8 +40382,8 @@
    "row": "rowMailWorkPackages",
    "file": "boards/MlLinkWorkPackage.html",
    "thumb": "thumbs/MlLinkWorkPackage.webp",
-   "caps": "work-package-suggestion, link-form, link-scope, attachments-to-work-package, comment-in-activity",
-   "note": "What you see: Level 2, act. Both rails folded, Jana's Gantt conversation stays readable, and the link form sits in a 440 px panel on the right: the number typed, BUG #58231 suggested from this conversation and selected, the whole conversation as scope and both options on.",
+   "caps": "work-package-picker, number-search, search-scope-chips, link-form, link-scope, attachments-to-work-package, comment-in-activity",
+   "note": "What you see: Level 2, act. Both rails folded, Jana's Gantt conversation stays readable, and the link form sits in a 440 px panel on the right. The picker has 58231 typed under its label, the scope chips for project, open only, type and assigned to me, and BUG #58231 as the exact match, selected. Below it the whole conversation as scope and both options on.",
    "src": "screens-src/zuiddrecht/MlLinkWorkPackage.dc.html",
    "thumbs": {
     "openproject": "thumbs/openproject/MlLinkWorkPackage.webp"
@@ -40290,11 +40395,13 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/work-package-suggestion",
-    "design-system/link-form",
-    "design-system/link-scope",
-    "design-system/attachments-to-work-package",
-    "design-system/comment-in-activity"
+    "mail/work-package-picker",
+    "mail/number-search",
+    "mail/search-scope-chips",
+    "mail/link-form",
+    "mail/link-scope",
+    "mail/attachments-to-work-package",
+    "mail/comment-in-activity"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40322,10 +40429,10 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/work-package-from-mail",
-    "design-system/pre-filled-fields",
-    "design-system/quoted-description",
-    "design-system/link-on-create"
+    "mail/work-package-from-mail",
+    "mail/pre-filled-fields",
+    "mail/quoted-description",
+    "mail/link-on-create"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40353,11 +40460,11 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/emails-tab",
-    "design-system/reply-from-work-package",
-    "design-system/link-an-email",
-    "design-system/unlink",
-    "design-system/mailbox-access"
+    "mail/emails-tab",
+    "mail/reply-from-work-package",
+    "mail/link-an-email",
+    "mail/unlink",
+    "mail/mailbox-access"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40385,12 +40492,80 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/link-lifecycle",
-    "design-system/link-on-reply",
-    "design-system/link-on-forward",
-    "design-system/link-on-move",
-    "design-system/link-on-delete",
-    "design-system/mailbox-access"
+    "mail/link-lifecycle",
+    "mail/link-on-reply",
+    "mail/link-on-forward",
+    "mail/link-on-move",
+    "mail/link-on-delete",
+    "mail/mailbox-access"
+   ],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "WpPickerStates": {
+   "id": "mail/WpPickerStates",
+   "app": "mail",
+   "title": "Mail: one way to find a work package",
+   "w": 1440,
+   "h": 1540,
+   "set": "zuiddrecht",
+   "row": "rowMailWorkPackages",
+   "file": "boards/WpPickerStates.html",
+   "thumb": "thumbs/WpPickerStates.webp",
+   "caps": "work-package-picker, suggestions-by-reason, number-search, word-search-with-marks, deep-search-toggle, search-scope-chips, keyboard-hint, no-match-actions, openproject-unreachable, picked-row",
+   "note": "What you see: The same 440 px picker in its seven states, each with a caption saying when you see it: the empty field with three suggestion groups, a number typed, words typed with the matches marked and grouped per project, the deep search on with a line of matching text, nothing found with its two actions, OpenProject not reachable with Try again, and the chosen row with Change.",
+   "src": "screens-src/zuiddrecht/WpPickerStates.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/WpPickerStates.webp"
+   },
+   "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [
+    "mail/work-package-picker",
+    "mail/suggestions-by-reason",
+    "mail/number-search",
+    "mail/word-search-with-marks",
+    "mail/deep-search-toggle",
+    "mail/search-scope-chips",
+    "mail/keyboard-hint",
+    "mail/no-match-actions",
+    "mail/openproject-unreachable",
+    "mail/picked-row"
+   ],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "MlSearchModel": {
+   "id": "mail/MlSearchModel",
+   "app": "mail",
+   "title": "Mail: where a search goes",
+   "w": 1440,
+   "h": 900,
+   "set": "zuiddrecht",
+   "row": "rowMailWorkPackages",
+   "file": "boards/MlSearchModel.html",
+   "thumb": "thumbs/MlSearchModel.webp",
+   "caps": "search-as-you, mark-on-the-item, list-of-links, linked-first-search",
+   "note": "What you see: Two lanes for a project manager. Left: finding a work package asks OpenProject as you, so you see what you may see there. Right: finding the mail or event of a work package reads the mark on the mail in the mailbox or on the event in the calendar, and one list of links in Nextcloud that knows who linked what. Three facts under the lanes.",
+   "src": "screens-src/zuiddrecht/MlSearchModel.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/MlSearchModel.webp"
+   },
+   "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [
+    "mail/search-as-you",
+    "mail/mark-on-the-item",
+    "mail/list-of-links",
+    "mail/linked-first-search"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40418,11 +40593,11 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/fold-in-levels",
-    "design-system/three-things-rule",
-    "design-system/navigation-rail",
-    "design-system/conversation-rail",
-    "design-system/hover-to-peek"
+    "mail/fold-in-levels",
+    "mail/three-things-rule",
+    "mail/navigation-rail",
+    "mail/conversation-rail",
+    "mail/hover-to-peek"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40450,12 +40625,12 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/user-settings-dialog",
-    "design-system/linked-openproject-account",
-    "design-system/link-suggestions",
-    "design-system/default-project-rules",
-    "design-system/link-defaults",
-    "design-system/notification-bundling"
+    "mail/user-settings-dialog",
+    "mail/linked-openproject-account",
+    "mail/link-suggestions",
+    "mail/default-project-rules",
+    "mail/link-defaults",
+    "mail/notification-bundling"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40483,10 +40658,10 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/empty-state",
-    "design-system/loading-skeleton",
-    "design-system/openproject-unreachable",
-    "design-system/openproject-sign-in"
+    "mail/empty-state",
+    "mail/loading-skeleton",
+    "mail/openproject-unreachable",
+    "mail/openproject-sign-in"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40514,10 +40689,10 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/phone-layout",
-    "design-system/work-package-chips",
-    "design-system/bottom-app-bar",
-    "design-system/link-bottom-sheet"
+    "mail/phone-layout",
+    "mail/work-package-chips",
+    "mail/bottom-app-bar",
+    "mail/link-bottom-sheet"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -40589,6 +40764,32 @@
    "src": "screens-src/zuiddrecht/MlThreadList.dc.html",
    "thumbs": {
     "openproject": "thumbs/openproject/MlThreadList.webp"
+   },
+   "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject",
+   "repo": "ConductionNL/design-system",
+   "repoUrl": "https://github.com/ConductionNL/design-system",
+   "repos": [
+    "ConductionNL/design-system"
+   ],
+   "capIds": [],
+   "matrixCapIds": [],
+   "specs": []
+  },
+  "WpPicker": {
+   "id": "mail/WpPicker",
+   "app": "mail",
+   "title": "Mail: work package picker",
+   "w": 408,
+   "h": 500,
+   "set": "zuiddrecht",
+   "row": "rowMailOnderdelen",
+   "file": "boards/WpPicker.html",
+   "thumb": "thumbs/WpPicker.webp",
+   "caps": "",
+   "note": "",
+   "src": "screens-src/zuiddrecht/WpPicker.dc.html",
+   "thumbs": {
+    "openproject": "thumbs/openproject/WpPicker.webp"
    },
    "blurb": "een nieuwe mailclient voor Nextcloud, met elke mail te koppelen aan een werkpakket in OpenProject",
    "repo": "ConductionNL/design-system",
@@ -47876,12 +48077,12 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/status-columns",
-    "design-system/work-in-progress-limit",
-    "design-system/card-from-mail",
-    "design-system/move-card-to-change-status",
-    "design-system/group-by",
-    "design-system/team-filter"
+    "tasks/status-columns",
+    "tasks/work-in-progress-limit",
+    "tasks/card-from-mail",
+    "tasks/move-card-to-change-status",
+    "tasks/group-by",
+    "tasks/team-filter"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -47909,13 +48110,13 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/work-package-panel",
-    "design-system/status-change-in-place",
-    "design-system/mails-tab",
-    "design-system/meetings-tab",
-    "design-system/activity-tab",
-    "design-system/link-a-mail",
-    "design-system/open-in-openproject"
+    "tasks/work-package-panel",
+    "tasks/status-change-in-place",
+    "tasks/mails-tab",
+    "tasks/meetings-tab",
+    "tasks/activity-tab",
+    "tasks/link-a-mail",
+    "tasks/open-in-openproject"
    ],
    "matrixCapIds": [],
    "specs": []
@@ -47943,12 +48144,12 @@
     "ConductionNL/design-system"
    ],
    "capIds": [
-    "design-system/my-day-list",
-    "design-system/reply-from-work-package",
-    "design-system/join-meeting",
-    "design-system/set-status",
-    "design-system/work-package-from-mail",
-    "design-system/week-summary"
+    "tasks/my-day-list",
+    "tasks/reply-from-work-package",
+    "tasks/join-meeting",
+    "tasks/set-status",
+    "tasks/work-package-from-mail",
+    "tasks/week-summary"
    ],
    "matrixCapIds": [],
    "specs": []

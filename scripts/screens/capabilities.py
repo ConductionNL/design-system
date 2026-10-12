@@ -51,6 +51,10 @@ APPS = [
     ('hermiq', 'hermiq', 'ConductionNL/hermiq'),
     ('versioniq', 'app-versions', 'ConductionNL/versioniq'),
 ]
+# apps that have boards but no repository of their own yet: their matrix lives in this repo,
+# at screens-src/parity/<app>/capabilities.json (same format as openspec/parity/capabilities.json)
+LOCAL_APPS = ['mail', 'calendar', 'tasks']
+APPS += [(a, None, DS_REPO) for a in LOCAL_APPS]
 APP_IDS = [a for a, _, _ in APPS]
 SCHOOLS = ['wilgenboom', 'vaartveld', 'esdoornveen', 'warmtepompacademie']
 # school boards that belong to the learning app rather than the school website
@@ -142,6 +146,25 @@ def spec_title(name, text):
 def change_title(name, text):
     head = re.sub(r'^(Proposal|Change)\s*:\s*', '', first_heading(text), flags=re.I).strip()
     return head or name
+
+
+class LocalMatrix:
+    """Stands in for a Checkout when an app's matrix lives in this repo (LOCAL_APPS)."""
+
+    def __init__(self, app):
+        self.app, self.dir, self.repo = app, REPO / 'screens-src' / 'parity' / app, DS_REPO
+        self.warning, self.ref, self.sha, self.files = None, 'working tree', '', []
+
+    def read(self, path):
+        f = self.dir / path.removeprefix('openspec/parity/')
+        return f.read_text() if path.startswith('openspec/parity/') and f.is_file() else None
+
+    def json(self, path):
+        text = self.read(path)
+        return json.loads(text) if text else None
+
+    def close(self):
+        pass
 
 
 def load_app(co):
@@ -367,7 +390,7 @@ def main():
 
     data, meta, warnings = {}, {}, []
     for app, dirname, repo in APPS:
-        co = Checkout(app, dirname, repo, not args.no_fetch, args.apps_dir.resolve())
+        co = LocalMatrix(app) if dirname is None else Checkout(app, dirname, repo, not args.no_fetch, args.apps_dir.resolve())
         data[app] = load_app(co)
         meta[app] = {'dir': dirname, 'repo': repo, 'ref': co.ref, 'sha': co.sha}
         if co.warning:

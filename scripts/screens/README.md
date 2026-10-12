@@ -47,6 +47,8 @@ For every board:
 4. **Measure.** Chrome loads the board at its width and reports the content height. Heights are kept in `scripts/screens/heights.json` and written into `screens.json`. `--no-measure` keeps the stored heights.
 5. **Thumbnail.** A headless Chrome screenshot at the board's size, scaled to 480 px wide, saved as `preview/screens/thumbs/<Key>.webp` (quality 80, lower when needed to stay under about 60 KB).
 
+6. **Styled thumbnail.** A board of an app listed under `THUMB_STYLES` in `build.py` (mail, calendar and tasks, drawn for OpenProject) gets a second thumbnail in that design system at `preview/screens/thumbs/<system>/<Key>.webp`, listed as `thumbs` in `screens.json`. The gallery shows it when that design system is chosen. The build serves the boards over http for these, because the theme is fetched.
+
 Options: `--only Key` (repeatable), `--index-only`, `--no-thumbs`, `--no-measure`, `--jobs N` (default 3). Every run rewrites its outputs, so running it twice gives the same result. It exits 1 and names the board when one fails.
 
 ## Capabilities, specs and repositories

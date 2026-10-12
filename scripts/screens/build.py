@@ -38,6 +38,8 @@ SCHOOLS = [
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]
 DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject'] + [s for s, _ in SCHOOLS]
+# design system -> apps that were drawn for it; their boards get a second thumbnail in that style
+THUMB_STYLES = {'openproject': {'mail', 'calendar', 'tasks'}}
 # row key -> app id (stable, used in screen ids like portaliq/MijnZaken)
 ROW_APP = {
     'rowHuisstijl': 'huisstijl', 'rowWerkplek': 'werkplek', 'rowSite': 'portaliq', 'rowMijn': 'portaliq',
@@ -104,6 +106,9 @@ def build_index():
                 'file': f'boards/{name}.html', 'thumb': f'thumbs/{name}.webp', 'caps': caps, 'note': note,
                 'src': f'zuiddrecht/{name}.dc.html',
             }
+            styled = {ds: f'thumbs/{ds}/{name}.webp' for ds, apps in THUMB_STYLES.items() if app in apps}
+            if styled:
+                index['boards'][name]['thumbs'] = styled
     index['sets'].append(zset)
 
     taken = set(index['boards'])
@@ -211,21 +216,24 @@ def measure_one(board):
     return int(m.group(1))
 
 
-def thumb_one(key, board):
+def thumb_one(key, board, ds=None, base=None):
+    """Thumbnail of one board. With ds and base (an http address serving preview/screens) it is drawn in that design system."""
     from PIL import Image
     html = OUT / board['file']
+    url = f'{base}/{board["file"]}?ds={ds}' if ds else html.as_uri()
     with tempfile.TemporaryDirectory() as tmp:
         png = pathlib.Path(tmp) / 'shot.png'
         subprocess.run(['timeout', '90', CHROME, '--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars',
                         f'--user-data-dir={tmp}/profile', '--no-first-run', '--mute-audio',
                         f'--window-size={board["w"]},{board["h"]}', '--virtual-time-budget=5000',
-                        f'--screenshot={png}', html.as_uri()], capture_output=True)
+                        f'--screenshot={png}', url], capture_output=True)
         if not png.exists():
             raise RuntimeError('no screenshot')
         img = Image.open(png).convert('RGB')
     h = round(img.height * THUMB_W / img.width)
     img = img.resize((THUMB_W, h), Image.LANCZOS)
-    dest = OUT / board['thumb']
+    dest = OUT / (board['thumbs'][ds] if ds else board['thumb'])
+    dest.parent.mkdir(parents=True, exist_ok=True)
     for q in (80, 70, 60, 50, 40):
         img.save(dest, 'WEBP', quality=q, method=6)
         if dest.stat().st_size <= THUMB_MAX:
@@ -297,6 +305,26 @@ def main():
                 if err:
                     failed[k] = 'thumb: ' + err
         print(f'thumbnails {len(todo) - sum(1 for k in todo if k in failed)} of {len(todo)}')
+        styled = [(k, ds) for k in todo if k not in failed for ds in index['boards'][k].get('thumbs', {})]
+        if styled:
+            # the theme is fetched, so these boards are served over http for the screenshot
+            import functools
+            import http.server
+            import threading
+            class Quiet(http.server.SimpleHTTPRequestHandler):
+                def log_message(self, *args):
+                    pass
+            handler = functools.partial(Quiet, directory=str(OUT))
+            srv = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
+            threading.Thread(target=srv.serve_forever, daemon=True).start()
+            base = f'http://127.0.0.1:{srv.server_address[1]}'
+            with cf.ThreadPoolExecutor(max_workers=max(1, a.jobs)) as pool:
+                errs = pool.map(lambda kd: _try(thumb_one, kd[0], index['boards'][kd[0]], kd[1], base), styled)
+                for (k, ds), err in zip(styled, errs):
+                    if err:
+                        failed[k] = f'thumb {ds}: ' + err
+            srv.shutdown()
+            print(f'styled thumbnails {len(styled) - sum(1 for k, _ in styled if k in failed)} of {len(styled)}')
 
     for k, err in failed.items():
         print(f'FAILED {k}: {err}', file=sys.stderr)

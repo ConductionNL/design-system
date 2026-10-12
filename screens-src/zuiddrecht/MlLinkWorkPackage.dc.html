@@ -17,65 +17,20 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1100px; overflow: hidden">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
-    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,1045px"></dc-import></div>
-    <div style="flex: 0 0 410px; width: 410px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="3" unlinked="3" hint-size="410px,1045px"></dc-import></div>
-    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: visible">
-      <div style="position: sticky; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+    <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1045px"></dc-import></div>
+    <div style="flex: 0 0 48px; width: 48px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="3" unlinked="3" folded="true" hint-size="48px,1045px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="position: sticky; top: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
         <div style="display: flex; align-items: flex-start; gap: 6px">
           <button type="button" aria-label="Star this conversation" aria-pressed="false" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></button>
           <h1 style="flex: 1 1 auto; min-width: 0; margin: 0; font-size: 18px; font-weight: 600; line-height: 28px">Gantt export cuts off the last week</h1>
+          <button type="button" aria-label="Close conversation" title="Close conversation" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; position: relative">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
           <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
             <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
           </div>
           <button type="button" aria-haspopup="menu" aria-expanded="true" aria-keyshortcuts="L" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link to work package</button>
-          <div role="dialog" aria-label="Link to work package" style="position: absolute; top: 100%; right: 0; margin-top: 4px; width: 440px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 6px; text-align: left; font-weight: 400">
-            <div style="position: relative; display: flex; align-items: center">
-              <label for="ml-wp-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search work packages by number or words</label>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
-              <input id="ml-wp-search" type="search" value="58231" placeholder="Number or words" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; outline: 2px solid #eaf0f7">
-            </div>
-            <div style="display: flex; flex-direction: column">
-              <div style="height: 28px; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Suggested</div>
-              <sc-for list="{{ suggested }}" as="s" hint-placeholder-count="3">
-                <button type="button" role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}">
-                  <span style="{{ s.typeStyle }}">{{ s.type }}</span>
-                  <span style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5)">{{ s.number }}</span>
-                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.subject }}</span>
-                  <span style="{{ s.dot }}"></span>
-                  <span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ s.source }}</span>
-                </button>
-              </sc-for>
-            </div>
-            <fieldset style="margin: 0; padding: 6px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column">
-              <legend style="padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 28px; float: left">Link</legend>
-              <sc-for list="{{ scopes }}" as="sc" hint-placeholder-count="2">
-                <label style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); cursor: pointer; clear: both">
-                  <span style="{{ sc.radio }}"><span style="{{ sc.inner }}"></span></span>
-                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ sc.label }} <span style="color: #5e6168">{{ sc.hint }}</span></span>
-                </label>
-              </sc-for>
-            </fieldset>
-            <div style="padding-top: 6px; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column">
-              <sc-for list="{{ checks }}" as="c" hint-placeholder-count="2">
-                <label style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); cursor: pointer">
-                  <span style="flex: none; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 3px; background: var(--sc-action, #3669a5); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
-                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }} <span style="color: #5e6168">{{ c.hint }}</span></span>
-                </label>
-              </sc-for>
-            </div>
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 8px 2px 2px; border-top: 1px solid #e4e6ea">
-              <button type="button" style="height: 34px; padding: 0 12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif">Cancel</button>
-              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link</button>
-            </div>
-          </div>
-        </div>
-        <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 4px 8px 4px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-left: 3px solid #ab0000; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; color: #3d4047">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg>
-          <span style="flex: 1 1 auto; min-width: 0">Looks like <span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span> <a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 600">#58231</a> Gantt PDF export drops trailing columns. Link?</span>
-          <button type="button" style="flex: none; height: 26px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 12px 'Fira Sans', sans-serif">Link</button>
-          <button type="button" aria-label="Dismiss this suggestion" style="flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
           <span style="white-space: nowrap">3 messages · Customers / Kassel · not linked</span>
@@ -124,9 +79,58 @@ a{color:#3669a5}a:hover{color:#234a78}
         </article>
       </div>
     </main>
-    <aside aria-label="Work package panel, collapsed" style="flex: 0 0 44px; width: 44px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
-      <button type="button" aria-label="Expand the work package panel" aria-expanded="false" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
-      <span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #5e6168; display: inline-flex; align-items: center; justify-content: center" title="No work package linked"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.84 12.25l1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71M5.17 11.75l-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71M8 2v3M2 8h3M16 22v-3M19 16h3"></path></svg></span>
+    <aside aria-label="Link to work package" style="flex: 0 0 440px; width: 440px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Link to work package</span>
+        <button type="button" aria-label="Close this form" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <form style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 16px">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Gantt export cuts off the last week</h2>
+        <div style="position: relative; display: flex; align-items: center">
+          <label for="ml-wp-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search work packages by number or words</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+          <input id="ml-wp-search" type="search" value="58231" placeholder="Number or words" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; outline: 2px solid #eaf0f7">
+        </div>
+        <div role="listbox" aria-label="Suggested work packages" style="display: flex; flex-direction: column; gap: 2px">
+          <div style="height: 28px; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Suggested</div>
+          <sc-for list="{{ suggested }}" as="s" hint-placeholder-count="3">
+            <button type="button" role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}">
+              <span style="{{ s.typeStyle }}">{{ s.type }}</span>
+              <span style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5)">{{ s.number }}</span>
+              <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.subject }}</span>
+              <span style="{{ s.dot }}"></span>
+              <span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ s.source }}</span>
+            </button>
+          </sc-for>
+          <a href="MlCreateWorkPackage.dc.html" style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); color: #5e6168; font: 500 13px 'Fira Sans', sans-serif; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New work package from this mail</a>
+        </div>
+        <fieldset style="margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+          <legend style="padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 28px; float: left">Link</legend>
+          <sc-for list="{{ scopes }}" as="sc" hint-placeholder-count="2">
+            <label style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); cursor: pointer; clear: both">
+              <span style="{{ sc.radio }}"><span style="{{ sc.inner }}"></span></span>
+              <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ sc.label }} <span style="color: #5e6168">{{ sc.hint }}</span></span>
+            </label>
+          </sc-for>
+        </fieldset>
+        <fieldset style="margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+          <legend style="padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 28px; float: left">Also</legend>
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="2">
+            <label style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); cursor: pointer; clear: both">
+              <span style="flex: none; width: 16px; height: 16px; box-sizing: border-box; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 3px; background: var(--sc-action, #3669a5); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }} <span style="color: #5e6168">{{ c.hint }}</span></span>
+            </label>
+          </sc-for>
+        </fieldset>
+        <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link</button>
+          <button type="button" style="height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif">Cancel</button>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 1px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <span>The link stores a reference to the conversation. The mail stays in your mailbox.</span>
+        </div>
+      </form>
     </aside>
   </div>
 </div>

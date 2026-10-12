@@ -244,7 +244,7 @@
     var b = S.boards[name];
     var href = boardHref(name);
     var scale = Math.max((b.w || 1440) / 1440, 0.42);
-    var img = el('img', { src: b.thumb, alt: '', loading: 'lazy', decoding: 'async', width: '480',
+    var img = el('img', { src: thumbFor(b), alt: '', loading: 'lazy', decoding: 'async', width: '480',
       height: String(Math.round(480 * (b.h || 900) / (b.w || 1440))), style: 'width: ' + Math.round(scale * 100) + '%' });
     var thumb = el('a', { class: 'thumb', href: href, tabindex: '-1', 'aria-hidden': 'true' }, [img]);
     img.addEventListener('error', function () {
@@ -268,6 +268,8 @@
     return art;
   }
 
+  /* a board drawn for one design system (mail in OpenProject) carries a thumbnail in that style */
+  function thumbFor(b) { return (b.thumbs && b.thumbs[dsId]) || b.thumb; }
   function dsShort(id) { return DS && DS.systems[id] ? DS.systems[id].short : id; }
 
   function renderRow(entry) {
@@ -360,6 +362,7 @@
       var href = boardHref(name);
       tl.querySelectorAll('a').forEach(function (a) { a.href = href; });
       var hn = tl.querySelector('.hint-name'); if (hn) hn.textContent = dsShort(id);
+      var im = tl.querySelector('.thumb img'); if (im && S.boards[name]) im.src = thumbFor(S.boards[name]);
     });
   }
 

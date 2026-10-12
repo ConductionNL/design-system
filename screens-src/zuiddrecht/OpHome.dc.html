@@ -14,108 +14,224 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
-  <dc-import name="OpHeader" hint-size="100%,68px"></dc-import>
-  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
-    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="OpNav" active="Overview" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" hint-size="264px,932px"></dc-import></div>
-    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
-      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
-        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
-            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Good morning, Olivia</h1>
-            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
-              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>Edit page</button>
-              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Create</button>
-            </div>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #5e6168"><span>Monday 12 October 2026</span><span aria-hidden="true">·</span><span>4 open work packages, 2 due this week, 1 mention</span></div>
-        </section>
-        <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start">
-          <section aria-labelledby="h-mine" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-mine" style="margin: 0; font-size: 16px; font-weight: 700">My work packages</h2><a href="OpWorkPackages.dc.html" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All</a></div>
-            <ul style="list-style: none; margin: 0; padding: 0">
-              <sc-for list="{{ mine }}" as="w" hint-placeholder-count="5">
-                <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 20px; border-top: 1px solid #eef0f3">
-                  <span style="flex: none; width: 10px; height: 10px; border-radius: 5px; background: {{ w.fill }}; box-shadow: 0 0 0 2px {{ w.ring }}" title="{{ w.status }}"></span>
-                  <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3">
-                    <span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ w.typeColor }}">{{ w.type }}</span><a href="{{ w.href }}" style="font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ w.id }}</a></span>
-                    <a href="{{ w.href }}" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ w.subject }}</a>
-                    <span style="font-size: 13px; color: #5e6168">{{ w.project }} · {{ w.status }}</span>
-                  </span>
-                  <span style="flex: none; font-size: 13px; color: {{ w.dueColor }}; font-weight: {{ w.dueWeight }}; white-space: nowrap">{{ w.due }}</span>
-                </li>
-              </sc-for>
-            </ul>
-          </section>
-          <section aria-labelledby="h-projects" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-projects" style="margin: 0; font-size: 16px; font-weight: 700">My projects</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All</a></div>
-            <ul style="list-style: none; margin: 0; padding: 0">
-              <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-                <li style="display: flex; flex-direction: column; gap: 8px; padding: 14px 20px; border-top: 1px solid #eef0f3">
-                  <span style="display: flex; align-items: center; gap: 10px"><span style="flex: none; width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: {{ p.bg }}; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ p.initials }}</span><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ p.name }}</a></span>
-                  <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #5e6168"><span>{{ p.open }} open</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; transform: rotate(45deg); background: #35c53f; display: inline-block"></span>{{ p.milestone }}</span></span>
-                  <div style="height: 6px; border-radius: 3px; background: #eef0f3; overflow: hidden"><div style="width: {{ p.pct }}; height: 100%; background: #3669a5"></div></div>
-                </li>
-              </sc-for>
-            </ul>
-          </section>
-          <section aria-labelledby="h-news" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-news" style="margin: 0; font-size: 16px; font-weight: 700">News</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All</a></div>
-            <ul style="list-style: none; margin: 0; padding: 0">
-              <sc-for list="{{ news }}" as="n" hint-placeholder-count="3">
-                <li style="display: flex; flex-direction: column; gap: 4px; padding: 14px 20px; border-top: 1px solid #eef0f3">
-                  <a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ n.title }}</a>
-                  <span style="color: #3d4047">{{ n.text }}</span>
-                  <span style="font-size: 13px; color: #5e6168">{{ n.meta }}</span>
-                </li>
-              </sc-for>
-            </ul>
-          </section>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1503px">
+  <dc-import name="OpHeader" current="Home" hint-size="100%,68px"></dc-import>
+  <main style="padding: 24px 28px 32px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; width: 100%">
+    <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 4px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+        <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Good morning, Olivia</h1>
+        <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>Edit page</button>
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Create work package</button>
         </div>
-        <section aria-labelledby="h-week" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
-          <h2 id="h-week" style="margin: 0; font-size: 16px; font-weight: 700">This week</h2>
-          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
-            <sc-for list="{{ week }}" as="d" hint-placeholder-count="3">
-              <div style="display: flex; gap: 12px; padding: 12px 14px; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
-                <span style="flex: none; display: flex; flex-direction: column; align-items: center; width: 44px; line-height: 1.1"><span style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #5e6168">{{ d.day }}</span><span style="font-size: 20px; font-weight: 700">{{ d.date }}</span></span>
-                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; line-height: 1.3"><strong style="font-size: 14px">{{ d.title }}</strong><span style="font-size: 13px; color: #5e6168">{{ d.meta }}</span></span>
-              </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #5e6168"><span>Monday 12 October 2026</span><span aria-hidden="true">·</span><span>5 open work packages, 3 due this week, 1 mention, 2.5 h logged today</span></div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch">
+
+      <section aria-labelledby="h-mine" style="position: relative; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 12px 12px 12px 8px; border-bottom: 1px solid #eef0f3">
+          <button type="button" aria-label="Move widget: Work packages assigned to me" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; cursor: grab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path></svg></button>
+          <h2 id="h-mine" style="flex: 1 1 auto; min-width: 0; margin: 0; font-size: 16px; font-weight: 700">Work packages assigned to me</h2>
+          <a href="OpWorkPackages.dc.html" style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All 5</a>
+          <button type="button" aria-label="Widget options" aria-haspopup="menu" aria-expanded="true" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12h.01M12 5h.01M12 19h.01"></path></svg></button>
+        </div>
+        <ul role="menu" aria-label="Widget options" style="position: absolute; right: 12px; top: 50px; z-index: 5; list-style: none; margin: 0; padding: 6px; width: 220px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 8px 24px rgba(27,28,29,0.12); display: flex; flex-direction: column; gap: 2px">
+          <sc-for list="{{ menu }}" as="m" hint-placeholder-count="5">
+            <li role="none" style="{{ m.wrap }}"><button type="button" role="menuitem" style="display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: {{ m.color }}; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ m.icon }}"></path></svg>{{ m.label }}</button></li>
+          </sc-for>
+        </ul>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ mine }}" as="w" hint-placeholder-count="5">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 20px; border-top: 1px solid #eef0f3">
+              <span style="flex: none; width: 10px; height: 10px; border-radius: 5px; background: {{ w.fill }}; box-shadow: 0 0 0 2px {{ w.ring }}" title="{{ w.status }}"></span>
+              <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3">
+                <span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ w.typeColor }}">{{ w.type }}</span><a href="{{ w.href }}" style="font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ w.id }}</a></span>
+                <a href="{{ w.href }}" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ w.subject }}</a>
+                <span style="font-size: 13px; color: #5e6168">{{ w.project }} · {{ w.status }}</span>
+              </span>
+              <span style="flex: none; font-size: 13px; color: {{ w.dueColor }}; font-weight: {{ w.dueWeight }}; white-space: nowrap">{{ w.due }}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <div style="position: absolute; right: 6px; bottom: 6px; width: 14px; height: 14px; color: #c4c7cb" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M21 15v6h-6M21 21 9 9"></path></svg></div>
+      </section>
+
+      <section aria-labelledby="h-due" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-due" style="margin: 0; font-size: 16px; font-weight: 700">Due this week</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Calendar</a></div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ due }}" as="d" hint-placeholder-count="4">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 20px; border-top: 1px solid #eef0f3">
+              <span style="flex: none; display: flex; flex-direction: column; align-items: center; width: 40px; line-height: 1.1"><span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: {{ d.dayColor }}">{{ d.day }}</span><span style="font-size: 18px; font-weight: 700; color: {{ d.dayColor }}">{{ d.date }}</span></span>
+              <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3">
+                <span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ d.typeColor }}">{{ d.type }}</span><a href="#" style="font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ d.id }}</a></span>
+                <a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ d.subject }}</a>
+                <span style="font-size: 13px; color: #5e6168">{{ d.who }}</span>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="h-projects" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-projects" style="margin: 0; font-size: 16px; font-weight: 700">My projects</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All</a></div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+            <li style="display: flex; flex-direction: column; gap: 8px; padding: 14px 20px; border-top: 1px solid #eef0f3">
+              <span style="display: flex; align-items: center; gap: 10px"><span style="flex: none; width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: {{ p.bg }}; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ p.initials }}</span><a href="{{ p.href }}" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ p.name }}</a></span>
+              <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: #5e6168"><span>{{ p.open }} open · {{ p.pct }} done</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; transform: rotate(45deg); background: #35c53f; display: inline-block"></span>{{ p.milestone }}</span></span>
+              <div style="height: 6px; border-radius: 3px; background: #eef0f3; overflow: hidden"><div style="width: {{ p.pct }}; height: 100%; background: #3669a5"></div></div>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="h-time" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-time" style="margin: 0; font-size: 16px; font-weight: 700">My time this week</h2><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Log time</button></div>
+        <div style="padding: 16px 20px 6px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 28px; font-weight: 700; line-height: 1">2.5 h</span><span style="color: #5e6168">of 40 h, Monday so far</span></div>
+          <div role="img" aria-label="Hours per day: Monday 2.5, Tuesday to Friday none yet" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-items: end; height: 72px">
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="5">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end"><div style="width: 100%; height: {{ d.h }}; border-radius: 3px 3px 0 0; background: {{ d.bg }}"></div><span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: {{ d.color }}">{{ d.day }}</span></div>
             </sc-for>
           </div>
-        </section>
-      </main>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ entries }}" as="e" hint-placeholder-count="2">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 20px; border-top: 1px solid #eef0f3">
+              <span style="flex: none; width: 44px; font-size: 14px; font-weight: 600">{{ e.hours }}</span>
+              <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3"><span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ e.typeColor }}">{{ e.type }}</span><a href="#" style="font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ e.id }}</a></span><span style="font-size: 13px; color: #5e6168">{{ e.what }}</span></span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="h-agenda" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-agenda" style="margin: 0; font-size: 16px; font-weight: 700">Today and tomorrow</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Calendar</a></div>
+        <sc-for list="{{ agenda }}" as="g" hint-placeholder-count="2">
+          <div style="padding: 12px 20px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; border-top: 1px solid #eef0f3">{{ g.title }}</div>
+          <ul style="list-style: none; margin: 0; padding: 0 20px 10px; display: flex; flex-direction: column; gap: 8px">
+            <sc-for list="{{ g.items }}" as="e" hint-placeholder-count="2">
+              <li style="display: flex; gap: 12px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; border-left: 3px solid #3669a5">
+                <span style="flex: none; width: 48px; font-size: 14px; font-weight: 600; color: #234a78">{{ e.time }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; line-height: 1.3"><strong style="font-size: 14px">{{ e.title }}</strong><span style="font-size: 13px; color: #3d4047">{{ e.meta }}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="h-news" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-news" style="margin: 0; font-size: 16px; font-weight: 700">Project news</h2><a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">All</a></div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ news }}" as="n" hint-placeholder-count="3">
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 14px 20px; border-top: 1px solid #eef0f3">
+              <a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none">{{ n.title }}</a>
+              <span style="color: #3d4047">{{ n.text }}</span>
+              <span style="font-size: 13px; color: #5e6168">{{ n.meta }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="h-welcome" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-welcome" style="margin: 0; font-size: 16px; font-weight: 700">Welcome to Northwind Projects</h2><span style="font-size: 13px; color: #5e6168">From the administrator</span></div>
+        <div style="padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 10px; color: #3d4047">
+          <p style="margin: 0">This is the shared OpenProject of Northwind Projects and its customers. Every customer rollout is a project of its own; the project folder, mail and meetings of a project live in Nextcloud and are linked to its work packages.</p>
+          <p style="margin: 0">New here? Read the <a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">working agreements</a> in the wiki and log your hours by Friday 17:00. Questions go to Tom Achterberg.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-files" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-files" style="margin: 0; font-size: 16px; font-weight: 700">Recent files</h2><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>From Nextcloud Files</span></div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ files }}" as="f" hint-placeholder-count="4">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 20px; border-top: 1px solid #eef0f3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ f.iconColor }}"><path d="{{ f.icon }}"></path></svg>
+              <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3"><a href="#" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.name }}</a><span style="font-size: 13px; color: #5e6168">{{ f.where }}</span></span>
+              <span style="flex: none; font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.when }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section aria-labelledby="h-mail" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-mail" style="margin: 0; font-size: 16px; font-weight: 700">Unread linked mail</h2><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #5e6168"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>From Nextcloud Mail</span></div>
+        <ul style="list-style: none; margin: 0; padding: 0">
+          <sc-for list="{{ mails }}" as="m" hint-placeholder-count="2">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 20px; border-top: 1px solid #eef0f3">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: {{ m.bg }}; color: {{ m.ink }}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ m.initials }}</span>
+              <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3">
+                <a href="MlInbox.dc.html" style="font-size: 15px; font-weight: 600; color: #1b1c1d; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.subject }}</a>
+                <span style="font-size: 13px; color: #5e6168">{{ m.from }} · {{ m.when }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; align-self: flex-start; padding: 2px 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); font-size: 12px; background: #ffffff"><span style="font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ m.typeColor }}">{{ m.type }}</span><span style="font-weight: 600; color: var(--sc-link, #3669a5)">#{{ m.id }}</span><span style="width: 8px; height: 8px; border-radius: 4px; background: {{ m.fill }}; box-shadow: 0 0 0 2px {{ m.ring }}"></span><span style="color: #3d4047">{{ m.status }}</span></span>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+        <div style="padding: 12px 20px; border-top: 1px solid #eef0f3; font-size: 13px; color: #5e6168">Threads linked to a work package assigned to you. Marc Dubois and Tom Achterberg are read.</div>
+      </section>
     </div>
-  </div>
+  </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1503}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
     const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'needs clarification': ['#fcc2d7', '#f977a6'] };
+    const menu = [
+      ['Move', 'M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20', '#1b1c1d'],
+      ['Resize', 'M21 3h-6M21 3v6M21 3l-7 7M3 21h6M3 21v-6M3 21l7-7', '#1b1c1d'],
+      ['Add a widget below', 'M12 5v14M5 12h14', '#1b1c1d'],
+      ['Remove from page', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', '#ab0000']
+    ].map(([label, icon, color], i) => ({ label, icon, color, wrap: i === 3 ? 'border-top: 1px solid #eef0f3; margin-top: 4px; padding-top: 4px;' : '' }));
     const mine = [
-      [58455, 'TASK', 'Prepare demo for Malmo Energi', 'new', 'Northwind rollout Lyon', 'due 13 Oct', true],
+      [58455, 'TASK', 'Prepare demo for Malmo Energi', 'new', 'Northwind rollout Lyon', 'due tomorrow', true],
       [58441, 'TASK', 'Move kick-off to the afternoon', 'new', 'Northwind rollout Lyon', 'no date', false],
+      [58301, 'TASK', 'Quote for project lead training Kassel', 'needs clarification', 'Netzausbau Nord', 'due Fri 16 Oct', true],
       [57990, 'EPIC', 'Release 16.5 scope', 'in review', 'OpenProject core', 'due 23 Oct', false],
-      [58301, 'TASK', 'Quote for project lead training Kassel', 'needs clarification', 'Netzausbau Nord', 'due 16 Oct', true],
       [58412, 'FEATURE', 'Link Nextcloud project folders on rollout', 'in development', 'Northwind rollout Lyon', 'mentioned 10 Oct', false]
     ].map(([id, type, subject, status, project, due, soon]) => ({ id, type, subject, status, project, due, typeColor: TYPE[type], fill: STATUS[status][0], ring: STATUS[status][1], href: id === 58412 ? 'OpWorkPackage.dc.html' : '#', dueColor: soon ? '#ab0000' : '#5e6168', dueWeight: soon ? 600 : 400 }));
+    const due = [
+      ['Tue', '13', 58455, 'TASK', 'Prepare demo for Malmo Energi', 'Olivia Brandt', true],
+      ['Wed', '14', 58231, 'BUG', 'Gantt PDF export drops trailing columns', 'Priya Raman · high · 16.5', false],
+      ['Fri', '16', 58440, 'TASK', 'Send OIDC client settings to Lyon', 'Tom Achterberg', false],
+      ['Fri', '16', 58301, 'TASK', 'Quote for project lead training Kassel', 'Olivia Brandt', true]
+    ].map(([day, date, id, type, subject, who, mine]) => ({ day, date, id, type, subject, who, typeColor: TYPE[type], dayColor: mine ? '#234a78' : '#5e6168' }));
     const projects = [
-      ['Northwind rollout Lyon', 9, 'Go-live Lyon phase 2, 2 Nov', '62%', '#234a78'],
-      ['Netzausbau Nord', 14, 'Phase 1 report, 30 Oct', '35%', '#005b77'],
-      ['OpenProject core', 31, 'Release 16.5, 23 Oct', '80%', '#3d4047']
-    ].map(([name, open, milestone, pct, bg]) => ({ name, open, milestone, pct, bg, initials: name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase() }));
+      ['Northwind rollout Lyon', 9, 'Go-live Lyon phase 2, 2 Nov', '62%', '#234a78', 'OpWorkPackages.dc.html'],
+      ['Netzausbau Nord', 14, 'Phase 1 report, 30 Oct', '35%', '#005b77', '#'],
+      ['OpenProject core', 31, 'Release 16.5, 23 Oct', '80%', '#3d4047', '#']
+    ].map(([name, open, milestone, pct, bg, href]) => ({ name, open, milestone, pct, bg, href, initials: name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase() }));
+    const days = [['Mon', 2.5], ['Tue', 0], ['Wed', 0], ['Thu', 0], ['Fri', 0]].map(([day, h]) => ({ day, h: h ? Math.round((h / 8) * 60) + 'px' : '3px', bg: h ? '#3669a5' : '#e4e6ea', color: h ? '#234a78' : '#5e6168' }));
+    const entries = [
+      ['1.5 h', 58412, 'FEATURE', 'Rollout plan phase 2 review with Marc Dubois'],
+      ['1 h', 58455, 'TASK', 'Demo preparation, Malmo Energi']
+    ].map(([hours, id, type, what]) => ({ hours, id, type, what, typeColor: TYPE[type] }));
+    const agenda = [
+      { title: 'Today, Monday 12 October', items: [['10:00', 'Stand-up', 'Daily, 15 minutes · Northwind rollout Lyon']] },
+      { title: 'Tomorrow, Tuesday 13 October', items: [['11:00', 'Demo preparation Malmo Energi', 'TASK #58455 · 1 hour']] }
+    ].map((g) => ({ title: g.title, items: g.items.map(([time, title, meta]) => ({ time, title, meta })) }));
     const news = [
       ['Lyon is go for 2 November', 'Marc Dubois confirmed the date this morning. The kick-off moves to the afternoon; a task is open for it.', 'Olivia Brandt · today 07:40 · Northwind rollout Lyon'],
       ['Release 16.5 scope review on Wednesday', 'The epic goes into review. Bring the Gantt export bug and the Keycloak feature to the meeting.', 'Tom Achterberg · 9 Oct · OpenProject core'],
       ['October hours by Friday', 'Submit your time entries before Friday 17:00 so the Kassel quote can be prepared.', 'People Team · yesterday']
     ].map(([title, text, meta]) => ({ title, text, meta }));
-    const week = [
-      ['Mon', '12', 'Stand-up, 10:00', 'Daily, 15 minutes'],
-      ['Wed', '14', 'Release 16.5 scope review, 09:30', 'EPIC #57990 · BUG #58231 due'],
-      ['Thu', '15', 'Rollout review Lyon, phase 2, 14:00', 'Video call · FEATURE #58412']
-    ].map(([day, date, title, meta]) => ({ day, date, title, meta }));
-    return { mine, projects, news, week };
+    const FOLDER = 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z';
+    const FILE = 'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2zM14 2v6h6';
+    const files = [
+      ['oidc-client-settings.xlsx', false, 'Northwind rollout Lyon · Tom Achterberg', 'today 09:12'],
+      ['Rollout-plan-phase-2.pdf', false, 'Northwind rollout Lyon · Marc Dubois', '8 Oct'],
+      ['lyon-realm-export.json', false, 'Northwind rollout Lyon · Tom Achterberg', '9 Oct'],
+      ['58412 Link project folders', true, 'Northwind rollout Lyon', '9 Oct']
+    ].map(([name, dir, where, when]) => ({ name, where, when, icon: dir ? FOLDER : FILE, iconColor: dir ? '#234a78' : '#5e6168' }));
+    const mails = [
+      ['Gantt export cuts off the last week', 'Jana Köhler, 3 messages', '04:00', 'JK', 58231, 'BUG', 'in development'],
+      ['[Northwind - Bug #58231] Gantt PDF export drops trailing columns', 'OpenProject notifications, 2 messages', '01:00', 'OP', 58231, 'BUG', 'in development']
+    ].map(([subject, from, when, initials, id, type, status]) => ({ subject, from, when, initials, id, type, status, typeColor: TYPE[type], fill: STATUS[status][0], ring: STATUS[status][1], bg: initials === 'OP' ? '#1b1c1d' : '#eaf0f7', ink: initials === 'OP' ? '#ffffff' : '#234a78' }));
+    return { menu, mine, due, projects, days, entries, agenda, news, files, mails };
   }
 }
 </script>

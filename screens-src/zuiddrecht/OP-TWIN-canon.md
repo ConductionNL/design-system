@@ -114,3 +114,38 @@ Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header
 | badge | 16 px pill at the top right of the item, min-width 16 px, 10 px weight 700, `#3669a5` on white ink; only where a count matters |
 | when it folds | when a conversation, an event or a card is open (level 1) and while a right panel is open (level 2); a navigation that is already folded stays folded on the next board |
 | how it opens again | the open control at the top of the rail; hovering a rail shows the full column over the content without moving the layout. Never more than three things side by side: the rails, the content and one right panel, so an open navigation closes any second right panel |
+
+## Navigation, nested (`OpNav` with `open="…"` and `current="…"`)
+
+OpenProject's third level (saved queries, boards, wiki pages, settings pages) is not a second sidebar. The project menu stays; the module you are in expands in place and lists its own pages under its item, as nested items do in Nextcloud's app navigation. Without `open` the menu renders exactly as before.
+
+| part | value |
+|---|---|
+| attributes | `open` names the module whose list is shown (none by default), `current` names the child that is the current page; `items` (optional) overrides the children, `A\|B\|C` flat or `Group: A\|B; Other: C` grouped. The children of Work packages, Boards, Wiki and Project settings are built in |
+| parent row | the level one item (42 px, 15 px) as a link with `flex: 1 1 auto; padding-right: 4px`, then a 32 x 36 toggle button, `aria-expanded="true"` or `"false"`, `aria-controls` the list id, `aria-label` "Collapse work packages" or "Expand boards", chevron 16 px stroke 1.75 `#5e6168`: down (`m6 9 6 6 6-6`) when open, right (`m9 18 6-6-6-6`) when closed. Every module with a list of its own shows the toggle as soon as `open` is set |
+| parent that contains the current page | `color: #234a78; font-weight: 600`, no background, `aria-current="false"`; the module itself is `aria-current="page"` with the active pair only when none of its children is current |
+| nested list | a `ul` inside the parent's `li`, `margin: 2px 0 6px 20px; padding-left: 10px; border-left: 2px solid #e4e6ea`, column gap 2 px; level two text starts at 42 px from the item edge, aligned with the level one label. 4 px between the parent row and the list, 8 px between the list and the next level one item |
+| level two item | min-height 36 px, padding 0 10px, radius `var(--sc-radius, 8px)`, 14 px weight 500 `#1b1c1d`, no icon |
+| current child | `background: #eaf0f7; color: #234a78; font-weight: 600`, `aria-current="page"` |
+| group label in the list | 12 px weight 600, uppercase, letter-spacing 0.06em, `#5e6168`, padding 4px 10px 4px for the first, 8px 10px 4px after that (saved queries: Default, Favourites, Public, Private) |
+| new action | last row, 36 px, 14 px weight 500 `#5e6168`, 16 px plus icon, gap 8 px, transparent button: "Save this view", "New board", "New page"; a module without one (Project settings) has no row |
+| long list | more than 8 children: the first 6, then a "Show all 14" row, 36 px, 14 px weight 600 `var(--sc-link, #3669a5)`, `aria-expanded="false"`; never an inner scrollbar |
+| board height | when the open list makes the navigation taller than the 932 px row, the board's `min-height` and `$preview` height grow to fit (Work packages 1360, Boards 1040, Wiki 1100, Project settings 1140), never clipped |
+
+## Global menu (`OpHeader`, the row of icons in the top bar)
+
+Nextcloud's positioning: the apps and modules are icons in the bar, directly after the brand block; the complete list sits behind the nine-dot button at the end of the row. The product or app name is no longer printed as text in the bar: the logo names the product, the marked icon names the app. `app` stays an accepted attribute: it is the accessible name of the current item and picks the current icon when `current` is not given (`app="Mail"` marks Mail; `app="OpenProject"` marks Home). Without `row` the bar shows the default row.
+
+| part | value |
+|---|---|
+| brand block | 264 px wide, 68 px high, `padding-left: 24px` (the sidebar's 14 px padding plus the item's 10 px, so the logo's left edge lines up with the menu's icons), logo 26 px high, a 1 px divider `rgba(255,255,255,0.35)` 28 px high as its last pixel, at x 264 on every board, the same width on boards without a sidebar; the block is a link `aria-label="Home"`; no name text |
+| row | `nav aria-label="Global menu"`, starts 16 px right of the divider (x 280), tiles 4 px apart; default row Files, Mail, Calendar, Work packages, Boards, Gantt, Meetings, then the nine-dot button; a current item outside the row takes the last place |
+| tile | link, min-width 44 px, 48 px high, padding 0 10px, radius `var(--sc-radius, 8px)`, white ink, icon 22 px stroke 1.75, `aria-label` with the name; label 11 px weight 600 under the icon, shown only on the current tile and on hover or focus (`:focus-visible` 2 px white outline inset) |
+| current tile | `background: rgba(255,255,255,0.16)`, `box-shadow: inset 0 -3px 0 #ffffff` (white on the primary bar, 5.9 to 1), label always shown, `aria-current="page"`, `aria-label="Mail, current"` |
+| nine-dot button | 44 x 44, icon 22 px, `aria-label="All apps and modules"`, `aria-haspopup="menu"`, `aria-expanded`; last in the row; pressed: `background: rgba(255,255,255,0.2)` |
+| search | `flex: 0 1 460px; min-width: 320px`, otherwise as the top bar table; about 408 px at 1440 with the default row |
+| collapsed (`row="collapsed"`, below 1240 px) | the row folds into the nine-dot button, which moves to x 280, directly after the divider; the current tile stays beside it (x 328). Between 1360 and 1240 px the account button drops the name and role and keeps the avatar and chevron; below 1240 the row collapses |
+| open list (`apps="open"`) | 640 px wide at `left: 280px; top: 72px`, arrow 20 px wide under the nine-dot button, padding 18px 20px 16px, radius `var(--sc-radius-lg, 10px)`, border `#e4e6ea`, shadow `0 8px 24px rgba(27,28,29,0.12)`, z-index 30; heading 16 px weight 700 "All apps and modules" with the note "The first seven are in the bar" 13 px `#5e6168` at the right; two columns 20 px apart, titles Nextcloud and OpenProject (12 px eyebrow); entry 44 px min-height, padding 4px 10px, 36 px icon tile `#eaf0f7`/`#234a78`, name 14 px weight 600 over one line 12 px `#5e6168`; current entry `background: #eaf0f7` with the icon tile inverted `#234a78`/`#ffffff`, `aria-current="page"`; footer after a 1 px `#eef0f3` line: keyboard hint 13 px, "Manage apps" only with `admin="true"`. A filter field is added above the columns once the map has more than 14 entries; at 12 it is not needed |
+| attributes | old: `app`, `placeholder`, `user`, `role`, `initials`, `unread`, `apps`, `current`; new, all optional: `row` ("" default, "collapsed", or `Files\|Mail\|Gantt`), `admin` ("true" shows Manage apps), `nested` (internal, see below) |
+| board page | the `OpHeader` board shows the closed bar and, below a caption, the bar with the list open: the second copy is a nested import with `nested="true" apps="open"` inside `.op-hd-demo`, hidden by default and shown only by the rule `.sc-board[data-board="OpHeader"] > .op-hd > .op-hd-demo { display: block }`, so every include stays the plain 68 px bar; board height 702 px (`heights.json` must follow) |
+| status notice | does not fit in the bar: with the default row and a 320 px search there is no calm slot left at 1440. It stays under the bar at the right, as `MlImportExport` and `MlSettingsAutoReply` draw it: 36 px high pill at `top: 76px; right: 20px`, `#ffffff` on a 1 px `#e4e6ea` border, 13 px weight 600 `#234a78`, 16 px icon, `role="status"` |

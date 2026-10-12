@@ -1,0 +1,430 @@
+{
+  "pack": "r2",
+  "screens": [
+    {
+      "board": "MlSearchAdvanced",
+      "verdict": "mostly clear",
+      "reason": "The typed search in frame a is easy to follow, but the full form in frame b mixes mail-server terms with everyday filters and does not match the query shown in the search box above it.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b: the search box reads only 'from:jana subject:gantt' while the form below has about ten filters filled in (size, attachment name, header, dates, work package, without label). A first-time user cannot tell whether the box or the form is what will be searched.",
+          "fix": "Show every active form filter as a chip in the search box, the way frame a shows from:jana, is:unread and has:attachment, so the box and the form always say the same thing."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame b: 'Header, any value' (filled with 'List-Id') and 'Message id' are mail-server terms a project manager does not know, and they sit at the same level as Size and Attachment name. 'Date filed in folder' is also unclear next to 'Date received'.",
+          "fix": "Move 'Header' and 'Message id' into a collapsed group called 'Technical details' at the bottom of the form, and rename 'Date filed in folder' to 'Moved to its folder' with a one-line hint."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: 'Project' and 'Work package' sit under the heading WHEN, and the related 'Work package link: All, Linked, Not linked' sits apart in the footer beside Clear filters and Search, where it reads as a button row and not as a filter.",
+          "fix": "Give the three their own group 'Work packages' (Project, Work package, Linked or not) and leave only Clear filters and Search in the footer."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the right-hand column 'de:, van:', 'à:, aan:', 'est:, is:' has no heading, so it reads as noise until the footnote at the bottom explains it. Frame b: the 'None of them (not)' switch sits beside separate 'Leave out folders' and 'Without label' fields, so there are two ways to exclude in one view.",
+          "fix": "Head the column 'Also in French and Dutch' in frame a, and in frame b add one line under the switch saying how it combines with the two leave-out fields."
+        }
+      ]
+    },
+    {
+      "board": "MlLabelsManage",
+      "verdict": "clear",
+      "reason": "The tree on the left and one label edited on the right make the purpose and the main action plain at once.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "Frame a: the Edit label form with Save label and Cancel is shown together with the red 'Delete Waiting for customer?' confirmation, so one frame holds two competing decisions and four buttons.",
+          "fix": "Draw the delete confirmation as its own frame, with Save label and Cancel hidden or disabled while it is open."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: in the tree 'Internal' shows a closed arrow, yet its child 'Finance' is listed under it, while 'Offer' shows an open arrow with its children. The two icon buttons beside New label (double arrows) have no label.",
+          "fix": "Draw 'Internal' with an open arrow, and give the two buttons the visible text or tooltip 'Expand all' and 'Collapse all'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: 'The assistant reads this description to suggest the label on new mail' is the first mention of an assistant on this screen, with nothing saying what it is or whether it is switched on.",
+          "fix": "Rename the field to 'When to apply this label (used for suggestions)' and add a link 'Suggestions are on, change' to the setting that controls it."
+        }
+      ]
+    },
+    {
+      "board": "MlLabelsApply",
+      "verdict": "mostly clear",
+      "reason": "Ticking labels and the Undo toast read well, but the label menu's own search and heading contradict what the list shows.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: 'Phase 2' is typed in the menu's search field, yet the list below still shows all five labels, none of which match, under the heading 'LABELS ON THIS CONVERSATION' although three of them are unticked. A user cannot tell whether the field searches or only creates.",
+          "fix": "With text typed, show only matching labels (here none, with the line 'No label called Phase 2') above 'Create label \"Phase 2\"', and rename the heading to 'Labels'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the toast '2 conversations moved to Archive' is shown while the same two conversations are still ticked and being dragged in the Inbox, so it reads as if the move already happened to the rows in hand.",
+          "fix": "Draw the earlier drop's toast in a frame of its own, or have it name different conversations than the ones being dragged."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the dragged card covers the label 'Waiting for customer' and sits on top of the hint 'Drop: add the label Offer | Hold Shift: label and archive', the one line that explains the result of the drop.",
+          "fix": "Offset the dragged card below and to the right of the pointer so the drop target and its hint stay readable."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the nested label is written 'Offer / Training' in the menu but shown as 'Training' indented under 'Offer' in Manage labels, so the same label has two spellings.",
+          "fix": "Indent nested labels in the menu the same way as the tree, or use the slash form in both places."
+        }
+      ]
+    },
+    {
+      "board": "MlOrganiseActions",
+      "verdict": "mostly clear",
+      "reason": "Each menu item says what it does, but 'Quick actions' stays unexplained until the last frame and the snooze panel is broken at its right edge.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame c: the Time field in 'Pick a date and time' runs past the right edge of the Snooze panel, so the panel looks broken and the field's end is outside its container.",
+          "fix": "Fit Date and Time inside the panel width, each taking half of the row."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: 'Quick actions' with the hint 'Kassel triage, Lyon triage' does not say what a quick action is; the explanation ('label Waiting for customer, move to Customers / Kassel, mark as read') only appears as a footnote in frame e.",
+          "fix": "Show the open Quick actions submenu in a frame, with each action's steps on a second line and a link 'Manage quick actions'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the seven toolbar icons above the menu (bin, box, shield, envelope, tag, arrow out of a tray, three dots) carry no text, and the shield and the arrow icon are not guessable. The menu adds 'Mark as important' while the star sits by the subject, so two marks look alike.",
+          "fix": "Show a tooltip on one icon in the frame to prove each has one, and write the menu item as 'Mark as important (flag)' with a hint on how it differs from the star."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: copying is offered twice, as the switch 'Copy instead of move' and as 'Shift+Enter copies', while the green button keeps saying 'Move to Customers / Lyon'. Frame a: 'Save in Files' shows 'Projects / Lyon' as a fixed target with no sign that the folder can be chosen.",
+          "fix": "Let the button text follow the switch ('Copy to Customers / Lyon'), and write 'Save in Files...' with the hint 'last used: Projects / Lyon'."
+        }
+      ]
+    },
+    {
+      "board": "MlRulesEdit",
+      "verdict": "mostly clear",
+      "reason": "The form tab reads as plain when-then sentences, but the Script tab manages all scripts of the mailbox from inside the dialog of one rule.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b: the dialog is titled 'Edit rule' and frame a says 'Both tabs edit the same rule', yet the Script tab shows the list of all scripts, upload, rename, delete and the switch that makes another script active. Switching 'out-of-office-2026' on would silently switch off all three form rules, said only in a small footnote.",
+          "fix": "Move 'Your scripts' (list, active switch, upload) to the Rules section of Settings as 'Edit as script', and show in this dialog only the script lines of the one rule being edited."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the hints in the Then block are cut off by the dialog's right edge ('Or: mark as important, flag for follow-up', 'Forward keeps a copy here, redirect ser'), which hides the difference between forward and redirect. The single tick box 'Forward or redirect to' gives no way to choose which of the two happens.",
+          "fix": "Put each hint on a second line under its control, and split the row into a choice 'Forward (keep a copy here)' or 'Redirect (keep no copy)' beside the address field."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: 'Refuse with a message to the sender' and 'Drop silently' lose mail for good but look exactly like 'Add label'. The hint 'Labels can also be set by a rule.' beside Add label says nothing the row does not already say.",
+          "fix": "Group the two under a sub-heading 'Stop the mail' with a warning line, and remove or replace the Add label hint."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: Edit rule opens as a second dialog on top of the Settings dialog, so two titles and two close crosses are stacked. Frame b: the pencil per script row could mean rename or edit, and the small green circle before 'northwind-rules' has no meaning given.",
+          "fix": "Open the rule editor inside the Settings dialog in place of the Rules list with a 'Back to rules' link, and label the row actions 'Rename' and 'Delete'."
+        }
+      ]
+    },
+    {
+      "board": "MlInvitationCard",
+      "verdict": "mostly clear",
+      "reason": "The invitation card and its six states are clear, but frame a pairs it with a second, different event being created in the right panel.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: the message already is an invitation with Accept, Maybe and Decline, and beside it the panel 'New event from this mail' creates another event ('Prepare rollout review Lyon with Marc', Wed 14 Oct) with its own green button 'Create event and send'. Two events, two calendar pickers and two main actions in one view, and nothing shows where the panel was opened from.",
+          "fix": "Give 'New event from this mail' its own frame on an ordinary message, opened from a visible item in the three-dots menu, and leave frame a to the invitation card alone."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a, right panel: 'Send as a meeting proposal' is a new term for what the rest of the screen calls an invitation. The pencil beside Title and the download icon beside 'Open in Calendar' have no label.",
+          "fix": "Rename to 'Send as an invitation', drop the pencil (the field is already editable), and label the download 'Download .ics' or give it a tooltip in the frame."
+        },
+        {
+          "severity": "would",
+          "problem": "The calendar an event lands in is offered four ways: 'Save in calendar' (frame a card), 'Calendar' (frame a panel), 'Import into' (frame f) and the fixed text 'Goes to Customers as a 5 h 38 min block' with no choice (frame g).",
+          "fix": "Use one label, 'Calendar', with the same dropdown in all four places, including frame g."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a, right panel: the 'Generated' box with 'Clear the draft' does not say what is cleared (title and description only, or the whole form), and the switch 'Make it a task instead' sits above it as the first control although it changes the whole panel.",
+          "fix": "Rename to 'Clear title and description', and turn the switch into a two-way choice 'Event | Task' in the panel heading."
+        }
+      ]
+    },
+    {
+      "board": "MlSharedAccess",
+      "verdict": "mostly clear",
+      "reason": "Both dialogs say who has access and what each level means, but a mailbox uses four named roles and a folder uses Read, Write and six tick boxes for the same idea.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a uses the roles Viewer, Editor, Sender, Admin; frame b uses Read, Write and an 'Advanced' row of Look up, Read, Mark, Add, Delete, Administer. A user sharing both a mailbox and a folder has to learn two vocabularies, and 'Look up' and 'Administer' are not self-explaining.",
+          "fix": "Use the same role names in the folder dialog (Viewer for Read, Editor for Write) and keep the six separate rights behind 'Advanced' with 'Look up' renamed to 'See the folder' and 'Administer' to 'Share with others'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the suggestion list marks 'Priya Raman, Already a viewer' and the hint below says 'Enter adds the marked person as viewer', which contradict each other. The second suggestion 'Print desk, Shared mailbox' is not a person although the field is 'Add a person'.",
+          "fix": "Grey out people who are already members and mark the first one who can be added; either leave shared mailboxes out of the list or rename the field 'Add a person or mailbox'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the roles are explained twice, in the column 'What that means' and again in the four-line legend Viewer, Editor, Sender, Admin under the table. 'Also files, labels, marks and deletes' uses 'files' as a verb, which reads as the noun.",
+          "fix": "Keep the legend, drop the column (or the other way round), and write 'Also moves to folders, labels, marks and deletes'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: 'Advanced' shows an arrow pointing down for Tom and to the right for the others without saying it opens a row, and the note 'Write is the first five together' makes the user count boxes.",
+          "fix": "Label it 'Separate rights' with the count when changed ('5 of 6'), and name the five in the note."
+        }
+      ]
+    },
+    {
+      "board": "MlSharedConversation",
+      "verdict": "mostly clear",
+      "reason": "Internal comments are unmistakably marked as never sent, but the panel and the conversation disagree on who the conversation is assigned to.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The header line and the activity line say 'Assigned to Priya Raman', while the panel's 'Assigned to' holds two people, Priya Raman and Tom Achterberg. A user cannot tell who owns the conversation.",
+          "fix": "Show both names in the header ('Assigned to Priya Raman, Tom Achterberg') and add the activity line for Tom, or draw the panel with Priya only."
+        },
+        {
+          "severity": "would",
+          "problem": "The same thing has two badge texts: 'Internal comment, never sent to Jana Köhler' on Tom's comment and 'Internal, never sent' on your own.",
+          "fix": "Use the long form 'Internal comment, never sent to Jana Köhler' on every comment."
+        },
+        {
+          "severity": "would",
+          "problem": "The panel is opened by the toolbar icon of an arrow leaving a tray, which reads as export or download, and the panel holds two jobs, sharing and assigning, under the single title 'Share this conversation'.",
+          "fix": "Title the panel 'Share and assign', and show the icon's tooltip in the frame or use a people icon like the one on the shared folder."
+        },
+        {
+          "severity": "would",
+          "problem": "'Leave this conversation' with 'It stays in Support; it leaves your own list' is hard to follow when the first box says you are an editor through the Support mailbox: it is unclear whether you can leave at all.",
+          "fix": "Write 'Hide from my list. It stays in Support and you can still open it there.'"
+        }
+      ]
+    },
+    {
+      "board": "MlAssistConversation",
+      "verdict": "clear",
+      "reason": "Every generated part carries the same 'Generated' mark, says what it was made from and can be dismissed.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "The badge 'Written with AI' on Jana's incoming message is only explained six blocks lower, in the switch 'Label my reply as written with AI ... Jana sees the same label you see above'. Until then it is unclear who put the badge there.",
+          "fix": "Give the badge a tooltip shown in the frame ('The sender marked this message as written with AI') and shorten the switch text to 'Mark my reply as written with AI'."
+        },
+        {
+          "severity": "would",
+          "problem": "The switch 'Generated one-line summaries instead of the preview' is a view setting that takes a permanent row at the top of the conversation list, above the first mail.",
+          "fix": "Move it into the list's view menu (the sort or layout icon in the list header) and keep only the small spark icon on the rows."
+        },
+        {
+          "severity": "would",
+          "problem": "Under 'Needs a follow-up' the row 'No answer after 5 days' offers only 'Dismiss'; it is not clear that clicking the row opens the sent message, or what dismissing does to it.",
+          "fix": "Rename the button to 'Stop reminding me' and add a hint line 'Open to write a reminder'."
+        }
+      ]
+    },
+    {
+      "board": "MlPhoneTouch",
+      "verdict": "clear",
+      "reason": "Each frame shows one gesture or state with a caption or an in-screen hint that names it.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "Frame g: the highlighted toolbar button looks like a numbered-list icon, and the words 'Right to left' stand as plain text at the far end of the bar, so it is unclear which control switched the line direction.",
+          "fix": "Put the text 'Right to left' on the button itself, or use a direction icon (paragraph mark with arrow) for it."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame h: saving to Files is offered twice, as the blue 'Files' tile and as the row 'Save to Files' below it. The subtitle is cut off at 'downloa…'.",
+          "fix": "Keep the 'Files' tile for the app row and drop 'Save to Files' from the list (or the other way round), and let the subtitle wrap to two lines."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame e: the three icons in the '3 selected' bar (box, bin, three dots) have no text. Frame f: the status of the card behind is cut off at 'saved 09'.",
+          "fix": "Add short text under the icons as in the swipe actions of frame d ('Archive', 'Delete', 'More'), and shorten the status to 'saved' so it fits."
+        }
+      ]
+    },
+    {
+      "board": "MlLanguageAccess",
+      "verdict": "mostly clear",
+      "reason": "The language menu and shortcut list are plain, but the header in these frames has different controls from every other screen in the pack.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frames a and b: the header shows a language button 'NL', help and a settings wheel, with no notification bell and no app grid, while every other screen in the pack shows grid, bell, help and user menu. A user would not know whether language and settings live in the header or not.",
+          "fix": "Draw the same header as elsewhere and open the language menu from where it really lives (the user menu or Help), keeping the bell and the grid in place."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame b: the Help menu is cut off by the left edge of the frame; the heading 'HULP BIJ MAIL' and the three icons touch or cross the edge.",
+          "fix": "Anchor the menu under the Help button so that it opens fully inside the frame, with its normal padding."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the left rail is only partly in step with the other screens: a folder 'Klanten' takes the place of 'Folders' and the 'Notifications' entry is missing, so it is not the same screen in another language.",
+          "fix": "Show the identical rail items as the English screens, translated ('Mappen', 'Meldingen')."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame c: the sentence 'Every control also has a label for screen readers, so the list reads as sender, count, subject and date' is a note for the design reviewer, not something the user of the Shortcuts section needs.",
+          "fix": "Take that sentence out of the screen and into the frame caption."
+        }
+      ]
+    },
+    {
+      "board": "MlSecurityMessageWarnings",
+      "verdict": "clear",
+      "reason": "Each warning says in plain words what is wrong, why, and what to do, with one or two actions.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b says links in the phishing message are switched off and shows the link struck through, but frame i shows the same Hetzner message with a link that can still be followed to an 'Open this link?' dialog. The two frames contradict each other.",
+          "fix": "Use a different, non-phishing message in frame i, for example the spam mail of frame c."
+        },
+        {
+          "severity": "would",
+          "problem": "Overruling a warning has four wordings: 'This message is safe' (b), 'Not spam' (c), 'I trust this message' (d), 'I trust this address' (g), and frame e offers no such button at all although it is the mildest warning.",
+          "fix": "Use 'I trust this message' for b and d, 'I trust this sender' for e and g, and keep 'Not spam' for c."
+        },
+        {
+          "severity": "would",
+          "problem": "Frames d and e: 'Show details' does not say what details, and no frame shows what opens.",
+          "fix": "Rename to 'Show the check results' and add one frame with the opened details in plain words."
+        }
+      ]
+    },
+    {
+      "board": "MlSecurityEncryption",
+      "verdict": "mostly clear",
+      "reason": "The notices on received messages explain themselves, but the reply panel states the message is encrypted while it also says it cannot be.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "In the reply panel 'Encrypt with S/MIME' is ticked and the footer beside Send reads 'Signed and encrypted with S/MIME', while the warning above it says 'Marc Dubois has no certificate or key. The message cannot be encrypted for him.' The user cannot tell what happens on Send.",
+          "fix": "While a recipient cannot receive encrypted mail, make the footer read 'Cannot be encrypted for Marc Dubois' and disable Send until one of the two choices in the warning is taken."
+        },
+        {
+          "severity": "must",
+          "problem": "The last received message says Marc's mail was 'Encrypted with PGP ... Your reply goes the same way', and the reply panel says Marc 'has no certificate or key'. The two statements about the same person contradict each other.",
+          "fix": "Either tick 'Encrypt with PGP through the browser extension' in the reply and drop the warning, or change the last received message to an unencrypted one."
+        },
+        {
+          "severity": "would",
+          "problem": "S/MIME, PGP, certificate and 'unknown signer' are used without explanation in the choice list, and the two lock icons beside the recipients (orange for Marc, green for Tom) have no text.",
+          "fix": "Lead with the plain meaning ('Sign, so recipients see it is from you', 'Encrypt, so only recipients can read it') with the method as the second line, and add 'can read encrypted mail' or 'no certificate' as a tooltip or text by each recipient."
+        },
+        {
+          "severity": "would",
+          "problem": "The opened 'Per message, your choice' list covers the lower part of the reply text, and the header note '4 protected' on the conversation is not explained.",
+          "fix": "Open the list above the toolbar only as high as its three rows need, and write '4 of 6 messages signed or encrypted'."
+        }
+      ]
+    },
+    {
+      "board": "MlIntegrationPlatform",
+      "verdict": "clear",
+      "reason": "Three separate places are each shown in their own frame with one obvious action.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "Frame a: the widget 'Important mail' means 'starred, linked, invitations', while inside Mail 'Mark as important' is a separate flag. The same word covers two different sets, and two rows (Sven Lindqvist, Jana Köhler) appear in both widgets.",
+          "fix": "Rename the widget to 'Needs your attention' (or 'Starred and linked mail') and keep 'important' for the flag only."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the button 'Insert a platform item' uses a word the user does not think in, and the open picker covers the sentence being written.",
+          "fix": "Rename to 'Insert a file, event or work package' and open the picker above the toolbar without covering the last typed line."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame c: 'the operator of this platform' is an unfamiliar role until the small line 'Goes to: Northwind Projects IT' further down.",
+          "fix": "Name the receiver in the first sentence and on the button: 'Send to Northwind Projects IT'."
+        }
+      ]
+    },
+    {
+      "board": "MlNotificationStates",
+      "verdict": "mostly clear",
+      "reason": "Each notice is plain on its own, but two of the frames do not show where on the screen the notice appears.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame e: the two delegation notices float in an empty frame, so it is not clear whether they are mails in the inbox, items under the bell or banners. They also speak of 'account' and then 'the folder is gone from your list' for what the sharing screen calls a shared mailbox.",
+          "fix": "Draw them inside the place they appear (the bell's list or the top of the conversation list) and use one word: 'mailbox'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the toast offers 'Take back', while the label and move toasts on the label screen offer 'Undo' for the same kind of reversal.",
+          "fix": "Use 'Undo' here too, with the seconds left as it is."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame d: the notice ends with 'Nothing more will be tried; the message is still in Sent' and gives no next step, so the user is left at a dead end.",
+          "fix": "Add one button in the notice, 'Send again', which opens the message as a new draft."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame g: the explanation of the three markers stands to the right of the list as if it were part of the product, where no user will see it.",
+          "fix": "Show one marker's tooltip on the row itself in the frame and move the three explanations into the caption."
+        }
+      ]
+    }
+  ],
+  "across": [
+    {
+      "severity": "must",
+      "boards": ["MlSharedAccess", "MlSharedConversation", "MlNotificationStates"],
+      "problem": "Access to other people's mail has four vocabularies: Viewer, Editor, Sender, Admin for a mailbox; Read, Write and six separate rights for a folder; Viewer and Editor for a conversation; and 'delegated her account' and 'access to the account' in the notices.",
+      "fix": "Use one role ladder (Viewer, Editor, Sender, Admin) on all three sharing surfaces, hide the levels that do not apply, and call the shared thing 'mailbox' in the notices."
+    },
+    {
+      "severity": "must",
+      "boards": ["MlOrganiseActions", "MlSearchAdvanced", "MlRulesEdit", "MlIntegrationPlatform", "MlAssistConversation"],
+      "problem": "Four near-synonyms mark a mail as mattering: the star, 'Mark as important' (menu), 'flag for follow-up' (rule action), and the list group 'Needs a follow-up' (no answer after 5 days). The search form merges two of them as 'Starred or important only' and the dashboard widget 'Important mail' means starred, linked and invitations.",
+      "fix": "Decide on the set (for example star and important flag) and use those two words only; rename the dashboard widget and the rule action to match, and keep 'follow-up' for the no-answer reminder alone."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlLabelsManage", "MlInvitationCard", "MlAssistConversation"],
+      "problem": "Machine-written help has three names: 'the assistant' (label descriptions, the event draft), the badge 'Generated' (summaries, suggested replies, the event draft) and 'Written with AI' (on a message).",
+      "fix": "Use 'Generated' as the mark on everything the product writes and 'the assistant' as the name of what writes it, and keep 'Written with AI' only for the label on sent and received messages."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlLanguageAccess", "MlSearchAdvanced", "MlLabelsApply", "MlOrganiseActions"],
+      "problem": "The header is not the same on every screen: the language and settings buttons appear only on MlLanguageAccess (where bell and grid are missing), and the filter icon inside the search box appears only on MlSearchAdvanced frame a and MlLanguageAccess, not in the search box of the other screens.",
+      "fix": "Draw one header everywhere: grid, search box with the filter icon, bell, help, user menu."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlLabelsApply", "MlOrganiseActions", "MlInvitationCard", "MlSharedConversation", "MlAssistConversation", "MlSecurityEncryption"],
+      "problem": "The conversation toolbar is a row of seven icons with no text on every screen, and the work package button changes between a boxed 'Link to work package' and a plain 'Link another' at the same spot.",
+      "fix": "Give the toolbar icons visible tooltips (shown once in a frame) and draw the link control as the same boxed button in both states."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlLabelsApply", "MlNotificationStates"],
+      "problem": "Reversing an action is called 'Undo' in the label and move toasts and 'Take back' in the sent toast, and the toasts sit in different places (centre of the reading pane, right of the list, foot of the reading pane).",
+      "fix": "One word ('Undo') and one position for all toasts."
+    }
+  ],
+  "keep": [
+    "The warning notices on an open message (MlSecurityMessageWarnings): one bold sentence that names the problem, one plain sentence why, and one or two actions, with red kept for the one harmful case.",
+    "The 'Internal comment, never sent to Jana Köhler' badge and the closing line 'Comments stay inside Northwind' on MlSharedConversation: nobody can mistake a comment for a reply.",
+    "The rule form's sentence structure 'When mail arrives that matches ... Then ...' with 'Test on the last 50 messages' (MlRulesEdit frame a).",
+    "Buttons that state their result: 'Move to Customers / Lyon', 'Snooze until Thu 15 Oct 13:00', 'Delete from all 14 conversations', 'Add these 5 labels'.",
+    "The 'Generated' mark with 'Made from the 3 messages below ... It can be wrong; the messages stay as they are' and a Dismiss on each generated block (MlAssistConversation)."
+  ]
+}

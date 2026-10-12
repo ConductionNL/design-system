@@ -529,7 +529,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "New project board"
+    "proof": "New project"
    },
    "provider": "openproject",
    "providerHow": "A board is a project, created with POST /projects; the project has a name but no colour, so the colour would be an app setting. Evidence: /app/lib/api/v3/projects/project_representer.rb:180-204; /app/lib/api/v3/projects/projects_api.rb:46"
@@ -581,7 +581,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Project board Keycloak pilot deleted."
+    "proof": "Moved to Deleted items"
    },
    "provider": "openproject",
    "providerHow": "DELETE /projects/{id} schedules a permanent delete job; an undo window can only be a delayed request in the app. Evidence: /app/app/services/projects/schedule_deletion_service.rb:53; /app/lib/api/v3/projects/project_representer.rb:136"
@@ -777,7 +777,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "All cards to the first column"
+    "proof": "All work packages to the first column"
    },
    "provider": "openproject",
    "providerHow": "Project copy duplicates the work packages; resetting every copy to the first status is a follow-up of status updates by the app. Evidence: /app/lib/api/v3/projects/copy/copy_api.rb:43-48; /app/app/services/projects/copy"
@@ -802,7 +802,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Restore archived cards"
+    "proof": "Restore archived work packages"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: Work packages cannot be archived in OpenProject, so there are no archived cards to restore in a clone. Evidence: no 'archiv' in /app/app/models/work_package.rb or /app/app/contracts/work_packages (grep); archive exists only for projects (/app/app/services/projects/archive_service.rb)"
@@ -902,7 +902,7 @@
     "board": [
      "TbBoardColumns"
     ],
-    "proof": "Delete column"
+    "proof": "Remove column from this board"
    },
    "provider": "openproject",
    "providerHow": "Removing a column removes its widget from the board grid; the status itself stays. Undo is a delayed request in the app. Evidence: /app/modules/grids/app/controllers/api/v3/grids/grids_api.rb:55-106"
@@ -953,7 +953,7 @@
     "board": [
      "TbBoardColumns"
     ],
-    "proof": "Mark as the closed column"
+    "proof": "Make this the closed column (now: Closed)"
    },
    "provider": "openproject",
    "providerHow": "A status carries an isClosed flag set by an administrator, so the done column is any closed status. Evidence: /app/lib/api/v3/statuses/status_representer.rb:39"
@@ -1103,7 +1103,7 @@
     "board": [
      "TbProjectTrash"
     ],
-    "proof": "Empty the deleted items"
+    "proof": "Delete all for good"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no trash bin, so there is nothing to empty. Evidence: no deleted_at/trash in /app/app/models or /app/app/services (grep); https://www.openproject.org/docs/user-guide/work-packages/duplicate-move-delete/ ('Delete permanently')"
@@ -1128,7 +1128,7 @@
     "board": [
      "TbProjectTrash"
     ],
-    "proof": "Deleted items are cleared after 30 days"
+    "proof": "keeps it for 30 days under Deleted items"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no trash bin and no retention period for deleted items. Evidence: no deleted_at/trash in /app/app/models or /app/app/services (grep); https://www.openproject.org/docs/user-guide/work-packages/duplicate-move-delete/ ('Delete permanently')"
@@ -1278,7 +1278,7 @@
     "board": [
      "TbGantt"
     ],
-    "proof": "Switch between board, list and Gantt view"
+    "proof": "View: Board, List or Gantt"
    },
    "provider": "openproject",
    "providerHow": "Both views read the same work packages; start and finish dates feed the Gantt view. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:371-376; https://www.openproject.org/docs/user-guide/gantt-chart/"
@@ -1427,7 +1427,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Group by day, status or project"
+    "proof": "Group by: Day. Choose status or project"
    },
    "provider": "openproject",
    "providerHow": "A query can be grouped by status or by project. Evidence: /app/lib/api/v3/queries (groupBy); /app/app/models/query.rb"
@@ -1527,7 +1527,7 @@
     "board": [
      "TbNewDialog"
     ],
-    "proof": "Status column"
+    "proof": "Status"
    },
    "provider": "openproject",
    "providerHow": "The create form lists the projects and statuses the user may choose. Evidence: /app/lib/api/v3/work_packages/available_projects_on_create_api.rb; /app/lib/api/v3/work_packages/create_form_api.rb"
@@ -1653,7 +1653,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Mark as done"
+    "proof": "Mark closed"
    },
    "provider": "openproject",
    "providerHow": "Done is a closed status; the app sets a closed or an open status. Evidence: /app/lib/api/v3/statuses/status_representer.rb:39; /app/lib/api/v3/work_packages/work_package_representer.rb:560"
@@ -1753,7 +1753,7 @@
     "board": [
      "TbCardFields"
     ],
-    "proof": "Percentage done"
+    "proof": "% complete"
    },
    "provider": "openproject",
    "providerHow": "Percentage done is the work package's percentageDone. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:468"
@@ -1778,7 +1778,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Show completed"
+    "proof": "Show closed"
    },
    "provider": "openproject",
    "providerHow": "The status filter separates open from closed work packages. Evidence: /app/app/models/queries/work_packages/filter/status_filter.rb"
@@ -1905,7 +1905,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Drop on a collection to make it important, due today or completed"
+    "proof": "Drop on a collection to make it important, due today or closed"
    },
    "provider": "openproject",
    "providerHow": "The drop sets the matching attribute: priority, due date or a closed status. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:376,508,560"
@@ -2133,7 +2133,7 @@
     "board": [
      "TbCardFields"
     ],
-    "proof": "1 to 3 low, 4 to 6 medium, 7 to 9 high."
+    "proof": "Priority: Low, Normal, High or Immediate"
    },
    "provider": "openproject",
    "providerHow": "OpenProject has a priority per work package, but from an admin-defined list with colours, not a 1 to 9 scale. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:508; /app/app/models/issue_priority.rb:33; /app/lib/api/v3/priorities (GET only)"
@@ -2559,7 +2559,7 @@
     "board": [
      "TbBoardCardMenu"
     ],
-    "proof": "Hidden from the board, unarchive from Archived cards only"
+    "proof": "Hidden from the board. Show it again with View, Archived cards only."
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: Work packages have no archived state in OpenProject. Evidence: no 'archiv' in /app/app/models/work_package.rb or /app/app/contracts/work_packages (grep); archive exists only for projects (/app/app/services/projects/archive_service.rb)"
@@ -2585,7 +2585,7 @@
     "board": [
      "TbBoardCardMenu"
     ],
-    "proof": "You can undo this for 10 seconds"
+    "proof": "Deleting hides it here and keeps it for 30 days under Deleted items."
    },
    "provider": "openproject",
    "providerHow": "DELETE /work_packages/{id} is permanent; an undo window can only be a delayed request in the app. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:87; https://www.openproject.org/docs/user-guide/work-packages/duplicate-move-delete/"
@@ -2610,7 +2610,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Delete all completed"
+    "proof": "Delete all closed"
    },
    "provider": "openproject",
    "providerHow": "The app deletes each closed work package of the list; the delete is permanent. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:87; /app/app/models/queries/work_packages/filter/status_filter.rb"
@@ -2763,7 +2763,7 @@
     "board": [
      "TbCardPlanning"
     ],
-    "proof": "Off: start and due have a time of day. On: whole days, the times go."
+    "proof": "Whole days, no times"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: Start and finish are dates without a time, so there is no all-day versus timed choice to store. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:371-376 (date_property, not date_time_property)"
@@ -3757,7 +3757,7 @@
     "board": [
      "TbFilters"
     ],
-    "proof": "Reset tags"
+    "proof": "Restore the default tags"
    },
    "provider": "openproject",
    "providerHow": "The app drops the category filter from the query. Evidence: /app/app/models/queries/work_packages/filter/category_filter.rb"
@@ -3832,7 +3832,7 @@
     "board": [
      "TbFilters"
     ],
-    "proof": "Remove the filter on state Open"
+    "proof": "Remove the filter Open, show closed too"
    },
    "provider": "openproject",
    "providerHow": "The status filter has open, closed and all operators. Evidence: /app/app/models/queries/work_packages/filter/status_filter.rb"
@@ -3907,7 +3907,7 @@
     "board": [
      "TbFilters"
     ],
-    "proof": "to show only your cards"
+    "proof": "to show only your work packages"
    },
    "provider": "openproject",
    "providerHow": "The assignee filter accepts the value 'me'; the single key is a shortcut of the app. Evidence: /app/app/models/queries/work_packages/filter/me_value_filter_mixin.rb; /app/app/models/queries/work_packages/filter/assigned_to_filter.rb"
@@ -4157,7 +4157,7 @@
     "board": [
      "TbActivity"
     ],
-    "proof": "Whole project"
+    "proof": "Open the project activity"
    },
    "provider": "openproject",
    "providerHow": "Project activity exists in the web interface; API v3 gives activities per work package only, so the app has to combine them. Evidence: /app/app/models/activities/work_package_activity_provider.rb; ls /app/lib/api/v3/activities (no per-project endpoint)"
@@ -4207,7 +4207,7 @@
     "board": [
      "TbActivity"
     ],
-    "proof": "Work package activity"
+    "proof": "Show: comments and changes"
    },
    "provider": "nextcloud",
    "providerHow": "Filtering the stream by app is the Nextcloud Activity app, if this app publishes events to it. Evidence: Nextcloud Activity app (OCP\\Activity\\IFilter)"
@@ -4232,7 +4232,7 @@
     "board": [
      "TbSettings"
     ],
-    "proof": "In your stream"
+    "proof": "In the bell"
    },
    "provider": "openproject",
    "providerHow": "Notification settings per reason, and per project, are in the user preferences; mail reminders follow them. Evidence: /app/lib/api/v3/user_preferences/notification_setting_representer.rb:38-42; /app/app/models/notification_setting.rb:102"
@@ -4572,7 +4572,7 @@
     "board": [
      "TbSubtasks"
     ],
-    "proof": "Drop here: becomes a child of TASK #58460 at level 3"
+    "proof": "Drop to make it a child of TASK #58460"
    },
    "provider": "openproject",
    "providerHow": "PATCH the parent; the hierarchy can be any depth. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:284,664; /app/app/models/work_package.rb:38 (Ancestors)"
@@ -4898,7 +4898,7 @@
     "board": [
      "TbSearch"
     ],
-    "proof": "Searches titles, descriptions and tags"
+    "proof": "Search titles, descriptions and tags"
    },
    "provider": "openproject",
    "providerHow": "The search filter covers subject, description and comments; category has its own filter. Evidence: /app/app/models/queries/work_packages/filter/search_filter.rb:37; /app/app/models/work_package.rb:152-156"
@@ -4948,7 +4948,7 @@
     "board": [
      "TbSearch"
     ],
-    "proof": "Type a number such as #58231 to jump to it"
+    "proof": "Type #58231 to jump to a work package"
    },
    "provider": "openproject",
    "providerHow": "Filter on id, or on subject or id. Evidence: /app/app/models/queries/work_packages/filter/subject_or_id_filter.rb; /app/app/models/queries/work_packages/filter/id_filter.rb"
@@ -5048,7 +5048,7 @@
     "board": [
      "TbSearch"
     ],
-    "proof": "Continue in all other projects"
+    "proof": "3 more matches in Netzausbau Nord and OpenProject core"
    },
    "provider": "openproject",
    "providerHow": "The same query runs on the global work package collection across projects. Evidence: /app/lib/api/v3/work_packages (global collection); /app/app/models/queries/work_packages/filter/project_filter.rb"
@@ -5170,7 +5170,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "Group, 6 people"
+    "proof": "Group from OpenProject, 6 people"
    },
    "provider": "openproject",
    "providerHow": "A group can be a project member. Evidence: /app/lib/api/v3/memberships; /app/lib/api/v3/groups"
@@ -5195,7 +5195,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "Team, 4 people"
+    "proof": "Team from Nextcloud, 4 people"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has users, groups and placeholder users, no Nextcloud teams; the app must keep the team link and expand it to members. Evidence: /app/app/models/principals/scopes/possible_assignee.rb:41-42; /app/lib/api/v3/principals"
@@ -5295,7 +5295,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "Edit off means read only"
+    "proof": "all three off is read only"
    },
    "provider": "openproject",
    "providerHow": "Choose a role with or without edit permissions for the member. Evidence: /app/lib/api/v3/roles; /app/lib/api/v3/memberships (patch)"
@@ -5346,7 +5346,7 @@
     "board": [
      "TbCardFields"
     ],
-    "proof": "Busy only shows the dates and the type, not the title."
+    "proof": "Dates and type only"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: A work package has no visibility class; every project member with view permission sees it in full. Evidence: no private/confidential attribute in /app/lib/api/v3/work_packages/work_package_representer.rb or /app/app/contracts/work_packages/base_contract.rb (grep); only comments can be internal (/app/app/models/journal.rb:163)"
@@ -5371,7 +5371,7 @@
     "board": [
      "TbCardFields"
     ],
-    "proof": "Locked for the people the board is shared with."
+    "proof": "Not at all, members of the project only"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: A work package cannot be locked for some members only; read-only is a property of a status, not of a person or task. Evidence: /app/app/models/status.rb:71-87 (readonly status, Enterprise); no per-work-package visibility in /app/lib/api/v3/work_packages/work_package_representer.rb"
@@ -5494,7 +5494,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "On another server, ville-de-lyon.test"
+    "proof": "ville-de-lyon.test. Edits work packages and columns from there"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no federation: a user on another Nextcloud server cannot be a member. Evidence: no federation or remote-user code in /app/app, /app/lib/api, /app/modules (grep 'federat|remote_user'); principals are User, Group, PlaceholderUser (/app/app/models/principals/scopes/possible_assignee.rb:41-42)"
@@ -5519,7 +5519,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "Edits cards and columns from there"
+    "proof": "Edits work packages and columns from there"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no federation between servers; a board on another server is out of its reach. Evidence: no federation or remote-user code in /app/app, /app/lib/api, /app/modules (grep 'federat|remote_user'); principals are User, Group, PlaceholderUser (/app/app/models/principals/scopes/possible_assignee.rb:41-42)"
@@ -5565,7 +5565,7 @@
     "board": [
      "TbProjectSharing"
     ],
-    "proof": "Link a Nextcloud project"
+    "proof": "Link folders and chats"
    },
    "provider": "nextcloud",
    "providerHow": "Linking a board with files and chats in a project is Nextcloud's collaboration resources. Evidence: Nextcloud Collaboration resources (OCP\\Collaboration\\Resources)"
@@ -5615,7 +5615,7 @@
     "board": [
      "TbShell"
     ],
-    "proof": "From another server"
+    "proof": "Other server"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no federation, so nothing is shared from another server. Evidence: no federation or remote-user code in /app/app, /app/lib/api, /app/modules (grep 'federat|remote_user'); principals are User, Group, PlaceholderUser (/app/app/models/principals/scopes/possible_assignee.rb:41-42)"
@@ -5790,7 +5790,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Export as JSON"
+    "proof": "Backup file (JSON)"
    },
    "provider": "openproject",
    "providerHow": "OpenProject exports CSV, XLS and PDF, not JSON; the app would write the file from the API's JSON. Evidence: https://www.openproject.org/docs/user-guide/work-packages/exporting/; /app/lib/api/v3/work_packages"
@@ -5815,7 +5815,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Export as CSV"
+    "proof": "Spreadsheet (CSV)"
    },
    "provider": "openproject",
    "providerHow": "Work package lists export to CSV. Evidence: /app/app/models/work_package/exports/csv.rb; https://www.openproject.org/docs/user-guide/work-packages/exporting/"
@@ -5840,7 +5840,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Export as iCalendar"
+    "proof": "Calendar file"
    },
    "provider": "openproject",
    "providerHow": "A calendar view of work packages has a tokenised iCalendar feed; any other list the app must write itself. Evidence: /app/modules/calendar/app/services/calendar/create_ical_service.rb:66-71; /app/modules/calendar/config/routes.rb:17"
@@ -5890,7 +5890,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Copy the CalDAV link"
+    "proof": "Calendar link for another app"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no CalDAV server, only a read-only iCalendar feed; a two-way CalDAV list needs the Nextcloud calendar server holding the tasks. Evidence: /app/modules/calendar/app/controllers/calendar/ical_controller.rb; /app/modules/calendar/config/routes.rb:17"
@@ -5915,7 +5915,7 @@
     "board": [
      "TbProjects"
     ],
-    "proof": "Import from JSON"
+    "proof": "Import a backup file"
    },
    "provider": "openproject",
    "providerHow": "OpenProject has no JSON board import (only a Jira import); the app would read the file and create project and work packages through the API. Evidence: /app/app/models/import/jira_import.rb; /app/lib/api/v3/projects/projects_api.rb:46"
@@ -6114,7 +6114,7 @@
     "board": [
      "TbShell"
     ],
-    "proof": "Add a work package to Northwind rollout Lyon"
+    "proof": "Add a work package"
    },
    "provider": "nextcloud",
    "providerHow": "The widget is the Nextcloud dashboard. Evidence: Nextcloud Dashboard (OCP\\Dashboard\\IWidget)"
@@ -6549,7 +6549,7 @@
     "board": [
      "TbAdmin"
     ],
-    "proof": "Share project boards with people on other servers"
+    "proof": "Share projects with people on other servers"
    },
    "provider": "tasks",
    "providerHow": "Nextcloud only: OpenProject has no federation to switch on or off. Evidence: no federation or remote-user code in /app/app, /app/lib/api, /app/modules (grep 'federat|remote_user'); principals are User, Group, PlaceholderUser (/app/app/models/principals/scopes/possible_assignee.rb:41-42)"
@@ -6837,7 +6837,7 @@
     "board": [
      "TbSearch"
     ],
-    "proof": "Screen readers hear this hint as the description of the field"
+    "proof": "Screen readers hear these tips as the description of the field"
    },
    "provider": "nextcloud",
    "providerHow": "Announcing the prefixes is accessibility markup of this app. Evidence: Nextcloud app accessibility (ARIA)"
@@ -6862,7 +6862,7 @@
     "board": [
      "TbList"
     ],
-    "proof": "Done. Mark as not done"
+    "proof": "Closed. Mark as open"
    },
    "provider": "nextcloud",
    "providerHow": "Announcing the checkbox state is accessibility markup of this app. Evidence: Nextcloud app accessibility (ARIA)"

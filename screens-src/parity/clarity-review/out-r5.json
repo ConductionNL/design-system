@@ -1,0 +1,525 @@
+{
+  "pack": "r5",
+  "screens": [
+    {
+      "board": "TbList",
+      "verdict": "mostly clear",
+      "reason": "The list and its day groups read at once, but the row carries three unlabelled marks (tick, star, pin) and one 'Nextcloud only' mark that points at none of them.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a, row TASK #58455: the 'Nextcloud only' mark sits between the pin and the type label, so it reads as a property of the work package itself ('this task exists only in Nextcloud'). Nothing says it is the pin (or the star) that is not stored in OpenProject.",
+          "fix": "Take the mark out of the row and put it once in the place that explains the control: on the tooltip of the pin and star, and on the 'Important' drop target, with the text 'Starring and pinning are kept in Nextcloud'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a, bottom: the drag toast 'Moving TASK #58440...' covers the line 'Closed work packages are loaded only when you show them. Loaded just now, 2 of 4 shown' and sits against 'Show 2 more', so the explanation of why only two closed rows appear cannot be read.",
+          "fix": "Anchor the drag toast to the bottom centre of the window below the list card, or draw it in a frame where the Completed group is not in view."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the navigation says 'Due this week 3' while the page heading says '7 open work packages', and the Completed group says '4' with '4 closed this week' while only 2 rows show. A first-time user cannot tell which number is the truth.",
+          "fix": "Make the navigation badge and the heading count the same thing (7), and write the Completed count as '2 of 4 shown'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the sort direction is in view twice, as the arrows button beside 'Sort: due date' and as the footer of the menu, where 'Direction: latest first' next to a link 'Earliest first' does not say which one is active and which one is the action.",
+          "fix": "Keep the arrows button as the one direction control with a visible label ('Latest first'), and drop the footer row from the menu or turn it into two radio items with a tick on the active one."
+        }
+      ]
+    },
+    {
+      "board": "TbSubtasks",
+      "verdict": "mostly clear",
+      "reason": "The tree of parents and children is easy to read, but the panel 'Children followed their parent' under the list is a log with a cryptic heading that looks like part of the list.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The block 'CHILDREN FOLLOWED THEIR PARENT' sits under the list in the same card style as the rows, with a heading that does not say what happened. A project manager reads it as four more work packages, not as a list of automatic changes that can be undone.",
+          "fix": "Rename it to 'Automatic changes to child work packages, last 10 minutes' and show it as a collapsible notice above the list, or as one toast per change with Undo."
+        },
+        {
+          "severity": "would",
+          "problem": "The header button 'Show as a tree' is drawn in the pressed style while the list already is a tree, so it is unclear whether it is the current state or the action that would switch to a tree.",
+          "fix": "Make it a two-part switch 'Tree | Flat list' with the active part highlighted, like 'In the panel | Full width' on TbCardDetails."
+        },
+        {
+          "severity": "would",
+          "problem": "The drop hint 'Drop here: becomes a child of TASK #58460 at level 3' covers the end of the title it points at, and 'level 3' is a counting term the user never sees anywhere else.",
+          "fix": "Shorten the hint to 'Drop to make it a child of TASK #58460' and place it under the row as an indented insertion line, so the title stays readable."
+        },
+        {
+          "severity": "would",
+          "problem": "Closed children are treated two ways in one view: #58461 is shown ticked and struck through under #58460, while under #58390 'two closed child work packages are hidden' behind 'Show closed children'.",
+          "fix": "Use one rule for the whole list, with one switch in the header ('Show closed children'), and remove the per-parent line."
+        }
+      ]
+    },
+    {
+      "board": "TbFilters",
+      "verdict": "mostly clear",
+      "reason": "The filter panel is well grouped (tags, assignee, state, due date), but its tags group is also the place where tags are renamed, recoloured and deleted, which does not belong in a filter.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "In the Tags group every row has a tick box to filter and, right beside it, a pencil and a bin that rename or delete the tag for the whole project, plus an open edit form and 'New tag'. A user who wants to filter is one slip away from deleting a tag, and the project details panel already has a Tags tab.",
+          "fix": "Keep only the tick boxes and counts in the filter panel, add one link 'Manage tags' that opens the Tags tab of the project details, and move rename, colour, delete, 'New tag' and the default-tags note there."
+        },
+        {
+          "severity": "must",
+          "problem": "'Reset tags' can mean 'untick the tags in this filter' or 'put the project back to the 6 default tags', and the note about default tags right below makes the destructive reading the likely one.",
+          "fix": "Rename it to 'Untick all' if it clears the filter, or move it to the Tags tab as 'Restore the default tags' with a confirmation if it resets the project."
+        },
+        {
+          "severity": "would",
+          "problem": "The 'Save tag' button sticks out past the right edge of the panel, and the panel covers the Closed column so its note reads '...rk packages are hidden by ...lter Open.'",
+          "fix": "Keep the tag edit form inside the panel width, and let the panel open under the filter field without covering the column note, or repeat that note inside the panel under State."
+        },
+        {
+          "severity": "would",
+          "problem": "Clearing is in view twice ('Clear all' in the chip row and 'Clear all filters' in the panel), and 'State: Open, Closed, Both' sits one word away from 'Status', which is the column of the board.",
+          "fix": "Keep 'Clear all filters' in one place (the chip row), and rename the group 'State' to 'Open or closed'."
+        }
+      ]
+    },
+    {
+      "board": "TbSearch",
+      "verdict": "mostly clear",
+      "reason": "Results are grouped well and each says why it matched, but the hint block on top is written for a developer and the same out-of-project results are offered through three routes.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The hint under the field lists six operators in code type and then says 'Screen readers hear this hint as the description of the field', which is a note for the builder, not for the reader. It is the first thing a project manager reads and it looks like a command line.",
+          "fix": "Cut the visible hint to one line ('Search titles, descriptions and tags. Type #58231 to jump to a work package.'), move the operators behind a link 'Search tips', and remove the screen reader sentence from the visible text."
+        },
+        {
+          "severity": "would",
+          "problem": "Results outside the project come three ways at once: the row 'Continue in all other projects, 3 more matches', the section 'Everywhere' with 'Work packages in other projects', and the footer link 'Open all results in a list'.",
+          "fix": "Keep the 'Everywhere' section and the footer link, and drop the 'Continue in all other projects' row, or make that row the heading of the 'Everywhere' section."
+        },
+        {
+          "severity": "would",
+          "problem": "The open search field is drawn over the app name and the left part of the old field, whose outline still shows to the right of it, so there seem to be two search fields in the header.",
+          "fix": "Let the field grow in place from its normal position, with nothing of the idle field showing behind it."
+        },
+        {
+          "severity": "would",
+          "problem": "'Everywhere, from the global search' uses a term the user has not met, and the Ctrl+F hint says it jumps to this field 'from anywhere on the board' although the shortcuts list names '/' for Search.",
+          "fix": "Call the section 'In other apps and projects', and show the same key here as in the shortcuts list."
+        }
+      ]
+    },
+    {
+      "board": "TbProjects",
+      "verdict": "unclear",
+      "reason": "The table itself is clear, but the open row menu holds a whole copy form, four exports and three ways to get rid of a project, and the new-project row has no visible way to confirm.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The inline row for a new project ('Malmo Energi demo', colour dots, 'Also created in OpenProject...') shows only 'Cancel'. There is no Create button in view, and the table is cut at the right edge, so a user does not know how to finish.",
+          "fix": "Put a green 'Create project' button directly after the colour dots, before Cancel, and keep both inside the table width."
+        },
+        {
+          "severity": "must",
+          "problem": "The row menu contains an unfolded form 'Copy project board' with a name field, six tick boxes and its own Copy button, between menu items. It is a dialog inside a menu, and options such as 'All cards to the first column' and 'Restore archived cards' are not understandable without more room.",
+          "fix": "Make 'Copy project...' a single menu item that opens a dialog with the name, the two card options and the 'What comes along' group, each with a one-line explanation."
+        },
+        {
+          "severity": "must",
+          "problem": "'Delete, 10 seconds to undo' and the toast 'Project board Keycloak pilot deleted' do not say whether the project in OpenProject, with all its work packages, is deleted too, while creating one says clearly 'Also created in OpenProject'.",
+          "fix": "State the reach on the menu item and in the toast ('Deletes the project and its work packages in OpenProject too' or 'Removes the board here, the project stays in OpenProject'), and ask for confirmation by name when it is the first."
+        },
+        {
+          "severity": "would",
+          "problem": "'Import from JSON', 'Export as JSON' and 'Copy the CalDAV link' use file and protocol names a project manager does not know, and the four export items take a third of the menu.",
+          "fix": "Group them under one item 'Export or subscribe...' that opens a small list with plain names ('Backup file (JSON)', 'Spreadsheet (CSV)', 'Calendar file', 'Calendar link for another app')."
+        }
+      ]
+    },
+    {
+      "board": "TbProjectSharing",
+      "verdict": "mostly clear",
+      "reason": "Adding a member and reading the three rights is clear, but the panel mixes two kinds of member group and three kinds of 'project' without telling them apart.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The members tab ends with 'Linked resources' and 'Link a Nextcloud project', showing 'Rollout Lyon, Nextcloud project'. The user is already inside a project called Northwind rollout Lyon in OpenProject, so a second thing called project, with another name, is not understandable.",
+          "fix": "Move the block to its own tab 'Files and chats', and call the thing by what it holds ('Linked folders and chats: Rollout Lyon') instead of 'Nextcloud project'."
+        },
+        {
+          "severity": "would",
+          "problem": "'Delivery team' is labelled 'Group, 6 people' and 'Rollout squad' is labelled 'Team, 4 people' with a 'Nextcloud only' mark. A project manager cannot tell a group from a team, and a group that is named team makes it worse.",
+          "fix": "Add the origin to the type line ('Group from OpenProject', 'Team from Nextcloud') and use example names that do not contain the other word."
+        },
+        {
+          "severity": "would",
+          "problem": "The blue note says members and rights come from OpenProject and are saved there, while three rows and 'Transfer ownership' carry 'Nextcloud only'. For Marc Dubois the mark sits on its own line under the name, apart from the badge 'REMOTE' it explains.",
+          "fix": "Add half a sentence to the note ('except the rows marked Nextcloud only'), and put the mark directly after the badge it belongs to on every row."
+        },
+        {
+          "severity": "would",
+          "problem": "Jana Koehler has all three switches off, which the footnote calls read only, but the row looks the same as a member who has no access at all, and the only explanation of the three columns is a sentence at the bottom.",
+          "fix": "Show 'Read only' as text in the row when all three are off, and move the one-line explanation of Edit, Share and Manage above the table."
+        }
+      ]
+    },
+    {
+      "board": "TbProjectTrash",
+      "verdict": "mostly clear",
+      "reason": "Restore and delete are clear per row, but the tab says two opposite things about when a deleted work package disappears from OpenProject.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The note on top says 'OpenProject has no trash, so a deleted work package or column is gone there at once', and the note at the bottom says 'Delete for good also removes the item in OpenProject'. One of them must be wrong, and the difference decides whether Restore brings a work package back in OpenProject.",
+          "fix": "Decide the one behaviour and say it once, on top: either 'Gone from OpenProject at once, Restore creates it again there' or 'Stays in OpenProject until you delete it for good or the 30 days pass'."
+        },
+        {
+          "severity": "would",
+          "problem": "The red button 'Empty' stands beside a paragraph and does not say what it empties, and the tab uses four words for one act: 'cleared', 'Empty', 'Delete for good' and 'clearing'.",
+          "fix": "Label the button 'Delete all for good' and use 'delete for good' in the paragraph and the footer line as well."
+        },
+        {
+          "severity": "would",
+          "problem": "The tab explains 'Nextcloud only' twice, once in its own words on top and once as the standard legend at the bottom, with different wording.",
+          "fix": "Keep the specific sentence on top and leave the generic legend off this tab."
+        }
+      ]
+    },
+    {
+      "board": "TbAdmin",
+      "verdict": "clear",
+      "reason": "Three settings, each in its own card with a plain heading, one sentence of consequence and a live figure, and one Save.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "'Keep deleted items for' carries 'Nextcloud only', and two lines lower it says 'The purge also removes the work package in OpenProject'. An administrator cannot tell whether this retention period touches OpenProject data or not.",
+          "fix": "Align the sentence with the one behaviour chosen for the Deleted items tab, and use 'deleted for good' instead of 'purged' and 'purge'."
+        },
+        {
+          "severity": "would",
+          "problem": "The intro says 'These three settings belong to this app only', but the first card says a project board 'is created here and in OpenProject at the same time', and only two of the three cards carry the mark.",
+          "fix": "Reword the intro to 'These settings are kept in this app. The first one also limits who creates projects in OpenProject from here.'"
+        }
+      ]
+    },
+    {
+      "board": "TbSettings",
+      "verdict": "mostly clear",
+      "reason": "The dialog follows one pattern with clear section names, but the section 'OpenProject' in its navigation is never drawn, so a quarter of it cannot be judged.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The navigation lists General, Notifications, OpenProject and Shortcuts, and frames a, b and c show three of them. There is no frame for 'OpenProject', and the third image of this screen is an empty strip.",
+          "fix": "Add a frame for the OpenProject section, or remove the item from the navigation if the connection is only an administrator matter."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the footnote 'A reminder goes to your stream, and to your mail when Due date moved is on by mail above' ties the mail for due reminders to a switch of another row with another meaning. Nobody would look there to stop reminder mails.",
+          "fix": "Give 'Due reminders' its own two columns 'In your stream' and 'By mail', or one switch 'Also send due reminders by mail' in this group."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: 'your stream, the bell in the header' can be read as two places or as one, and the column head says 'In your stream' while the user only knows the bell. The group 'Due reminders' also does not mention the reminders a user sets per work package.",
+          "fix": "Head the column 'In the bell' (or 'In Nextcloud') and add one line under Due reminders: 'Reminders you set on a work package itself always arrive.'"
+        },
+        {
+          "severity": "would",
+          "problem": "Frame c: the list has no key for 'show only my cards' although the filter panel advertises M, it names '/' for Search while the search field shows Ctrl+F, and the single key X archives a card.",
+          "fix": "Add M and Ctrl+F to the list so it is really 'every shortcut in the app on one page', and note next to X and D that both can be undone."
+        }
+      ]
+    },
+    {
+      "board": "TbCardPlanning",
+      "verdict": "mostly clear",
+      "reason": "Dates, repetition and reminders are three clean groups with a plain-language summary line, but the 'Nextcloud only' marks inside the repetition group point at single options and so say the wrong thing.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The whole Repetition group is marked 'Nextcloud only' in frame a, and frames b and c mark only 'On days of the month' and 'In these months' again. That makes the unmarked options beside them ('On the first Monday', 'On a weekday of those months') look as if they are stored in OpenProject.",
+          "fix": "Keep the one mark on the heading 'Repetition' and remove it from the options in frames b and c."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the standard legend 'Nextcloud only: kept in Nextcloud...' stands directly under the Reminders group, which has no mark of its own, and the footer says 'Saved to OpenProject when you press Save'. A user cannot tell whether reminders live in OpenProject or not.",
+          "fix": "Put the mark on the heading 'Reminders' if they are kept in Nextcloud, move the legend into the footer beside Save, and reword the footer to 'Dates are saved to OpenProject, repetition and reminders stay in Nextcloud'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the month calendar on the left does not say whether a click sets the start or the due date, and the due date can be set three ways in view (calendar, date field, 'Due shortcuts').",
+          "fix": "Caption the calendar 'Click a day to set the due date, drag to set start and due', or make it show only, and keep the fields and shortcuts as the way to edit."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the switch 'All day' carries the mark, but what OpenProject lacks is the time of day, and the explanation is written backwards ('Off: ... On: whole days, the times go').",
+          "fix": "Put the mark on the two time fields with 'Times are kept in Nextcloud, OpenProject stores the days', and label the switch 'Whole days, no times'."
+        }
+      ]
+    },
+    {
+      "board": "TbCardDetails",
+      "verdict": "mostly clear",
+      "reason": "Title, description, attachments and fields have clear places, but some fields are edited in place and others only through a link, and several helper lines read as documentation.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "The line after 'Unsaved changes' lists every state the editor can have ('unsaved, saving, saved, or in conflict') next to the state it is in now, and the conflict bar under it says the same again.",
+          "fix": "Show only the current state as the badge, with 'Last saved today 09:10' beside it, and drop the list of states."
+        },
+        {
+          "severity": "would",
+          "problem": "Title, status and description are edited in place, while assignee, dates, priority and tags on the right are read only behind a link 'Edit the fields'. The user cannot tell which values can be clicked.",
+          "fix": "Make each field on the right editable in place like the status, or replace the link by a clear button 'Edit fields' at the top of that column."
+        },
+        {
+          "severity": "would",
+          "problem": "In the attachments list the mark 'Nextcloud only' stands before 'Undo' on the line about a removed file, so it reads as 'Undo is Nextcloud only'. What is meant (the file stays in Files) is already in the sentence.",
+          "fix": "Remove the mark from that line, or put it after 'The file stays in Files'."
+        },
+        {
+          "severity": "would",
+          "problem": "'Insert as link' and 'Insert as image' do not say where the file is inserted, and 'Copy link' shows the raw path '/apps/tasks/wp/58412' in the button.",
+          "fix": "Rename them 'Link in description' and 'Image in description', and show only 'Copy link' on the button."
+        }
+      ]
+    },
+    {
+      "board": "TbCardFields",
+      "verdict": "mostly clear",
+      "reason": "The panel is a readable form with one Save, but two controls for what shared people see overlap, and it is not clear which actions wait for Save.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: 'Shared people see: Everything, Busy only, Nothing' and the switch 'Restricted' under it both decide what people outside the project can see of this work package. 'Busy only' is a calendar word, and 'Restricted' next to 'Nothing' leaves the user guessing which one wins.",
+          "fix": "Merge them into one group 'Visible to people the board is shared with' with three plain choices: 'Everything', 'Dates and type only', 'Not at all, members of the project only'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the footer says 'Changes go to OpenProject on Save', but the status menu says the card moves to that column, and the rows under 'Depends on' have 'Mark closed' buttons that act on other work packages. A user cannot tell whether these happen at once or on Save.",
+          "fix": "Move 'Depends on' out of the edit form into its own tab or a block below the Save bar, and say on the status field 'moves the card when you save'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: priority is nine numbered buttons with 8 and 9 outlined in another colour without a reason, while the same work package shows 'Priority: Normal' in the full-width view and the card shows a word.",
+          "fix": "Offer the words the card shows (Low, Normal, High, Immediate, as OpenProject names them) as the control, and keep the number out of view."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame c: the result 'Project lead Priya Raman, OpenProject core' puts a role before the name and a project after it without labels, and the picker is cut off at the right edge of the frame.",
+          "fix": "Show the name first with the role under it ('Priya Raman, project lead, member of OpenProject core'), and draw the picker fully inside the frame."
+        }
+      ]
+    },
+    {
+      "board": "TbBoardColumns",
+      "verdict": "mostly clear",
+      "reason": "The board and the lifted column are clear, but the column menu does not say what renaming or deleting a column does to the status in OpenProject, and one item looks ticked.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The field panel says a status is a column, so 'Rename column' and 'Delete column' on the column 'new' may rename or delete a status in OpenProject for every project. The menu says nothing about that, and 'Its cards move to the first column' is said on the first column itself.",
+          "fix": "Add one line under each item with the reach ('Renames the status in OpenProject for this project' or 'Only on this board'), and name the target column by its name."
+        },
+        {
+          "severity": "must",
+          "problem": "'Mark as the closed column' has a tick as its icon, so it reads as already switched on, while the column on the right already carries the badge 'Closed column'.",
+          "fix": "Use a neutral icon and the text 'Make this the closed column (now: Closed)', and show a tick only on the column that is it."
+        },
+        {
+          "severity": "would",
+          "problem": "Column names are cut to 'IN ...', 'IN REVI...' and 'CL...' while the badges '1 of 4' and 'Closed column' take the room, and '1 of 4' is not explained on a board with no filter in view.",
+          "fix": "Give the name the room and move the badges under the name or into a tooltip, and write the count out ('1 of 4 shown' or 'limit 4', whichever it is)."
+        },
+        {
+          "severity": "would",
+          "problem": "On the tablet frame the header shows 'Compact cards', 'Archived cards only' and who has the board open, but 'Group by' and the filter field of the other board screens are nowhere, not even behind a button.",
+          "fix": "Add a filter button and a 'Group by' button to the tablet header, and move 'Compact cards' and 'Archived cards only' into one 'View' menu."
+        }
+      ]
+    },
+    {
+      "board": "TbBoardCardMenu",
+      "verdict": "mostly clear",
+      "reason": "The menu is grouped sensibly and each item has a one-line consequence, but two 'Nextcloud only' marks float between items and the menu explains its own logic in places.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "The mark under 'Colour' stands on a line of its own between 'Colour' and 'Download as iCalendar', so it can be read with either. On 'Archive' it stands after the label, which is clear.",
+          "fix": "Put the mark on the same line as 'Colour', directly after the word, as on 'Archive'."
+        },
+        {
+          "severity": "would",
+          "problem": "'Unassign me' has the line 'You are the assignee. Assign to me shows when you are not', which describes how the menu works and not what will happen.",
+          "fix": "Replace it by the result: 'Leaves TASK #58455 without an assignee'."
+        },
+        {
+          "severity": "would",
+          "problem": "'Archive: hidden from the board, unarchive from Archived cards only' points to a switch that is not on this board header. It only appears on the tablet frame of TbBoardColumns.",
+          "fix": "Show the 'Archived cards only' switch (or a View menu holding it) in this header too, in the same place."
+        },
+        {
+          "severity": "would",
+          "problem": "The card faces end in a row of up to five small icons with numbers and, on two cards, a blue dot above the comment icon. The first icon (three lines) has no number and nothing tells what the dot means.",
+          "fix": "Give the dot a visible meaning (bold number, or 'new' beside it) and drop the description icon or pair it with a tooltip in the design notes."
+        }
+      ]
+    },
+    {
+      "board": "TbActivity",
+      "verdict": "unclear",
+      "reason": "Three rows of scope controls with near-identical names stand above the comment field, so a user cannot tell what the list below is showing.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Above the comment field stand 'This work package | Whole project', then 'Project activity' and 'Work package activity', then 'Show: All'. 'Whole project' and 'Project activity' sound the same, both chips of the second row look active, and 'Show: All' adds a third filter.",
+          "fix": "Reduce it to one row: a switch 'This work package | Whole project' and one menu 'Show: comments and changes | comments only | changes only'."
+        },
+        {
+          "severity": "must",
+          "problem": "The panel is titled 'Work package' and the tab is 'Activity 19', yet with 'Whole project' selected the list shows entries of other work packages ('Priya Raman created BUG #58231'), while the project details panel has its own Activity tab. The same list lives in two places.",
+          "fix": "Keep this tab to the work package, and replace 'Whole project' by a link 'Open the project activity' that opens the Activity tab of the project details."
+        },
+        {
+          "severity": "would",
+          "problem": "The mention list for '@Pri' covers the left part of the green 'Comment' button and the area under the field, so the main action of the screen is half hidden in the one frame that shows it.",
+          "fix": "Open the mention list above the cursor line or keep the Comment button outside its area."
+        },
+        {
+          "severity": "would",
+          "problem": "On the user's own comment the mark 'Nextcloud only' follows 'Edit' and 'Delete' without saying which of the two it covers, and the chip 'Reply to Tom Achterberg' in the head of that comment looks like a button.",
+          "fix": "Write what is meant in the line under it ('Editing and deleting a comment is kept in Nextcloud' or the true rule), and show 'in reply to Tom Achterberg' as plain grey text."
+        }
+      ]
+    },
+    {
+      "board": "TbGantt",
+      "verdict": "mostly clear",
+      "reason": "The chart, its legend, the today line and the 'Without dates' list are easy to read, but the way into this view does not match the navigation.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "The header has a switch 'Board | List | Gantt' that no other screen of the app shows, while the navigation still highlights 'Board' and lists only My day, Board and List. A user on the board has no visible way to reach the Gantt view, and here the navigation says he is somewhere else.",
+          "fix": "Add 'Gantt' under Views in the navigation and highlight it here, or show the same 'Board | List | Gantt' switch in the header of every project view and drop Board and List from the navigation."
+        },
+        {
+          "severity": "would",
+          "problem": "The hint at the right of the legend row is cut off ('...to change the dates in OpenProje'), and the week header ends in 'Wee'.",
+          "fix": "Put the drag hint on its own line under the legend, and end the chart on a whole week."
+        },
+        {
+          "severity": "would",
+          "problem": "Bars that start before the visible range carry a small '«' at the left, which is not in the legend, and three of the task bars are so short that their label is only '#5845...'.",
+          "fix": "Add 'starts earlier' to the legend beside the mark, and put the label of a short bar to the right of the bar."
+        }
+      ]
+    },
+    {
+      "board": "TbShell",
+      "verdict": "mostly clear",
+      "reason": "Both the widget and the notification list are quick to read, with a clear action per notification, but the quick-add row of the widget has a menu whose meaning is a guess.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "In the Tasks widget the field says 'Add a work package to Northwind rollout L' (cut off) and the menu beside it says 'Lyon'. It can be the project, a tag or a column, and the two controls seem to name the same thing twice.",
+          "fix": "Shorten the placeholder to 'Add a work package' and label the menu with the full project name and the word ('Project: Northwind rollout Lyon')."
+        },
+        {
+          "severity": "would",
+          "problem": "Two notifications with the same heading 'Project shared with you' offer different buttons ('Open project, Later' and 'Accept, Decline'), and 'Later' does not say what it does.",
+          "fix": "Head the second one 'Invitation from another server', and rename 'Later' to 'Dismiss' or 'Remind me tomorrow', whichever it does."
+        },
+        {
+          "severity": "would",
+          "problem": "The open notification list covers the third widget of the dashboard and the right edge of 'Unread mail', so the frame shows two things at once and neither in full.",
+          "fix": "Draw the widget and the notification list as two lettered frames."
+        }
+      ]
+    },
+    {
+      "board": "TbNewDialog",
+      "verdict": "clear",
+      "reason": "One dialog with two tabs, a line that says where it was opened from, sensible defaults and one green action per tab.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "Frame a: the green button 'Create and link' breaks over two lines because the footer note takes the room, and the note 'gets a reply with its number' in the top bar repeats the tick box 'Post a reply in the chat with the work package link' as if it were not optional.",
+          "fix": "Put the footer note above the buttons so the button stays on one line, and drop 'and gets a reply with its number' from the top bar."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: 'Opened from the smart picker in Text' uses a product term the user has not seen, and the field label 'Status column' in frame a differs from 'Status' everywhere else.",
+          "fix": "Write 'Opened from your document' and label the field 'Status'."
+        }
+      ]
+    }
+  ],
+  "across": [
+    {
+      "severity": "must",
+      "boards": ["TbProjectTrash", "TbAdmin", "TbBoardCardMenu", "TbBoardColumns", "TbProjects"],
+      "problem": "The fate of a deleted item is told five ways: 'gone from OpenProject at once' and 'Delete for good also removes the item in OpenProject' (both on TbProjectTrash), 'the purge also removes the work package in OpenProject' (TbAdmin), 'gone from OpenProject in 8 seconds' with a 10 second undo (TbBoardCardMenu), and a deleted column whose card 'moved to new' (TbBoardColumns) while the Deleted items tab shows a column that 'comes back with its work package inside'.",
+      "fix": "Write the one rule down once (what happens in OpenProject at delete, at undo, at restore, at delete for good, and where the cards of a deleted column go) and use that same sentence in the card menu, the column menu, the toasts, the Deleted items tab and the administration page."
+    },
+    {
+      "severity": "must",
+      "boards": ["TbProjects", "TbProjectSharing", "TbAdmin", "TbBoardColumns", "TbShell"],
+      "problem": "One thing has four names: 'Projects' and 'project' (page title, navigation, notifications), 'project board' (New project board, Copy project board, Who may create project boards), 'board' (shared boards, 'this board') and, for something else again, 'Nextcloud project' (Link a Nextcloud project).",
+      "fix": "Use 'project' for the thing and 'board' only for the view of it, rename the buttons to 'New project' and 'Copy project', and give the linked Nextcloud folders and chats a name without the word project."
+    },
+    {
+      "severity": "must",
+      "boards": ["TbList", "TbCardFields", "TbCardDetails", "TbSettings", "TbFilters", "TbSubtasks"],
+      "problem": "Finishing a work package is called 'Completed' (list group, 'Show completed', 'Delete all completed'), 'closed' (status, 'Mark closed', State: Closed, 'Show closed children') and 'Mark done' (shortcut D), while the field 'Done' means a percentage (60 %).",
+      "fix": "Use 'closed' for the state everywhere ('Show closed', 'Mark closed' for D) and rename the percentage field to 'Progress' or '% complete'."
+    },
+    {
+      "severity": "must",
+      "boards": ["TbGantt", "TbList", "TbSubtasks", "TbBoardCardMenu", "TbBoardColumns"],
+      "problem": "Views are switched in three different places: the navigation group Views (My day, Board, List), a header switch 'Board | List | Gantt' that exists only on the Gantt screen, and 'Show as a tree' on the list. The Gantt view is missing from the navigation, and the header of a project differs per screen (with or without 'Group by', 'Filter cards' or 'Filter', 'Compact cards').",
+      "fix": "Pick one place for the view switch and show it on every project view, and fix the order of the header controls: name, view switch, Group by, Filter, members, details."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbList", "TbProjects", "TbProjectSharing", "TbCardPlanning", "TbCardFields", "TbBoardCardMenu", "TbActivity", "TbCardDetails"],
+      "problem": "The 'Nextcloud only' mark has no fixed position: after the label (Archive, Repetition), on a line of its own under the label (Colour, Copy the CalDAV link, Completion date), before a button (Undo, Transfer ownership) or in front of a row (TbList). The legend at the bottom always says 'not stored in the work package', also where the marked thing is a member, a project share or a retention period.",
+      "fix": "Always place the mark directly after the label of the control it describes, never on its own line or in front of a row, and end the legend at 'OpenProject does not have this, so it stays in Nextcloud'."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbSubtasks", "TbProjectTrash", "TbBoardCardMenu", "TbSearch"],
+      "problem": "A work package under another one is called 'child work package' and 'children' on the list, the card menu and search, and 'subtask' on the Deleted items tab ('1 subtask', 'Subtask. Restores together with its parent').",
+      "fix": "Use 'child work package' on the Deleted items tab too."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbProjectSharing", "TbShell", "TbCardFields", "TbAdmin", "TbProjects"],
+      "problem": "A person or project from another installation is 'REMOTE' (members), 'From another server' (notification), 'On another server' (assignee picker), 'Shared from ville-de-lyon.test' (projects) and 'name@other-server' (add a member).",
+      "fix": "Use the badge 'Other server' with the server name beside it in all five places."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbFilters", "TbBoardColumns", "TbBoardCardMenu", "TbProjectSharing", "TbActivity"],
+      "problem": "The column 'in development' shows a boxed badge '1 of 4' or '2 of 4' on boards without any filter, while on the filtered board 'N of M' means matches out of cards. A user cannot tell a limit from a filter count.",
+      "fix": "Write the filter count as '2 of 3 shown' and a column limit as 'limit 4', and never use the bare 'N of M' for both."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbSearch", "TbFilters", "TbSettings"],
+      "problem": "The shortcuts page claims every shortcut of the app, but the filter panel advertises M and the search field Ctrl+F, neither of which is on it, and the page gives '/' for Search.",
+      "fix": "Make the shortcuts page the single source and show exactly its keys in the filter panel and the search field."
+    },
+    {
+      "severity": "would",
+      "boards": ["TbCardFields", "TbCardDetails", "TbCardPlanning", "TbFilters"],
+      "problem": "Saving follows different rules on neighbouring screens: the fields panel and the dates dialog wait for Save, the description saves on its own, checklist ticks and the status on the full-width view apply at once, and the tag form in the filter panel has its own 'Save tag'. Priority is 'Normal' on one screen and 'High (7)' on another for the same work package.",
+      "fix": "Say the rule in one line where it differs ('Saved as you type' or 'Saved when you press Save') and use the same example values for #58412 on every screen."
+    }
+  ],
+  "keep": [
+    "The one-line consequence under each action, which names what changes in OpenProject (drag toasts, 'Also created in OpenProject, with you as its first member', 'Another status moves the card to that column').",
+    "The plain-language summary line under the repetition rule ('Every 2 weeks on Monday from 5 October, ends on 2 November 2026...') and the small dialog that asks what to do with a reminder when its date is removed.",
+    "Search results that say why they matched (Title, Tag Lyon, Description, 'Parent, kept in view for its child') and group by where they were found.",
+    "The administration page: one card per setting, a live figure under each ('10 people may create a board today', '2 boards are shared with 1 other server'), one Save with who saved last.",
+    "The Gantt list 'Without dates' with a 'Set dates' button per row, and the type label plus number in front of every work package on every screen."
+  ]
+}

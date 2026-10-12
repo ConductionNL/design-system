@@ -1,0 +1,321 @@
+{
+  "pack": "r1",
+  "screens": [
+    {
+      "board": "MlSetupAccount",
+      "verdict": "mostly clear",
+      "reason": "Frame a is clear at once, but frame b's button says the opposite of what its own text asks and names a product the reader has not met.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b: the text says 'Sign in with the address your mail arrives on' and the address field is already filled with what looks like the user's own address, yet the button reads 'Sign in with another address'. A first-time user cannot tell whether to keep or replace the address shown.",
+          "fix": "Leave the mail address field empty with a placeholder, and rename the button to 'Connect this mailbox' so it matches frame a's 'Connect'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame b: 'workspace account' and 'signed in to Nextcloud as olivia.brandt' are used without explanation while the shell in frame a says OpenProject. A project manager does not know which account is meant.",
+          "fix": "Say 'Your sign-in olivia.brandt has no mailbox on mail.northwind-projects.test' and drop the words 'workspace account' and 'Nextcloud', or explain them in one clause."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b offers only address and password, while frame a offers Google, Microsoft and the server details by hand. It is not clear that b leads to the same options, or what to do when the mail is at Google.",
+          "fix": "Draw frame b as the same card as frame a with the notice on top, so the provider buttons and 'Enter the server details by hand' stay available."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: both server fields cut their value off ('imap.northwind-project', 'smtp.northwind-project'), so the user cannot check what was found for them.",
+          "fix": "Give the server field the full row width and put the port on the same row at a fixed narrow width, or stack incoming above outgoing."
+        }
+      ]
+    },
+    {
+      "board": "MlNavStates",
+      "verdict": "mostly clear",
+      "reason": "The navigation itself reads at once, but the folder menu mixes everyday actions with three maintenance terms a project manager will not know.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b: 'Subscribed, shown in this list', 'Clear the local copy, fetch again' and 'Repair synchronisation' sit between Rename and Delete. A project manager does not know what they do, two of them sound the same, and 'Clear the local copy' reads like deleting mail.",
+          "fix": "Move the three under one submenu 'Troubleshooting' at the foot of the menu, rename 'Subscribed' to 'Show this folder in the list', and add to 'Clear the local copy' the hint 'no mail is deleted'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame c: the two outbox cards cut off the one thing the user needs, when or why the message has not gone ('sends in 2 mi…', 'waiting for …').",
+          "fix": "Put the state on its own line under the recipient ('Sends in 2 minutes', 'Waiting for the connection') so it is never truncated."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame c: the views 'Assigned to me' and 'Unassigned' do not say what is assigned. In a mail app next to OpenProject it can mean conversations assigned to a colleague or mail about work packages assigned to me.",
+          "fix": "Name what is assigned, for example 'Conversations assigned to me' and 'Not assigned to anyone', or add a one-line hint under the VIEWS heading."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the menu covers the folder it belongs to (only a 'C' is left of 'Customers') and the plus beside FOLDERS, which the caption calls 'New folder', has no label. Frame a's open switcher also covers the whole folder list.",
+          "fix": "Open the folder menu to the right of the row so the folder name stays visible, and label the plus 'New folder' on hover and for screen readers, shown in the frame."
+        }
+      ]
+    },
+    {
+      "board": "MlListStates",
+      "verdict": "unclear",
+      "reason": "Filtering exists three times (tabs, filter menu, nav views) and frame b shows them contradicting each other.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame b: 'Unread' is ticked in the filter menu while the tab 'All' is still the active tab and a tab 'Unread' sits beside it. With Unread (5) and Assigned to me (2) both on, the list shows 4 of 12, so the user cannot tell whether the filters narrow or widen.",
+          "fix": "Keep one place per filter: tabs for All / Unread / Linked / Not linked, the menu for Starred, Mentioned and Assigned to me only, and state the rule in the menu head ('Show only conversations that match all of')."
+        },
+        {
+          "severity": "must",
+          "problem": "All frames: the tabs 'Linked' and 'Not linked' never say linked to what. A first-time user has not yet learned that mail links to work packages.",
+          "fix": "Rename to 'Linked to a work package' and 'Not linked', or 'With work package' and 'Without'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: the four header icons (refresh, filter, select, sort) and the three hover actions on the Marc Dubois row have no labels, and the hover actions cover the time and half the preview. The select icon is not recognisable as 'select several'.",
+          "fix": "Show a tooltip on one icon in the frame to establish the pattern, replace the select icon with a plain checkbox in the header, and let the hover actions replace only the time, not the preview."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame d: 'Priority inbox' appears with no control that switches to it or back, the group is called 'Favourites, starred by you' where every other screen says 'Starred', and the paperclip of the Marc Dubois row is overlapped by the FEATURE chip. In frame a the refresh icon and 'Check now' at the foot do the same thing.",
+          "fix": "Add a visible switch 'Inbox | Priority inbox' beside the title, rename the group to 'Starred', give the attachment mark its own column left of the chip, and keep only 'Check now' with its time."
+        }
+      ]
+    },
+    {
+      "board": "MlListSelection",
+      "verdict": "mostly clear",
+      "reason": "It is obvious that five conversations are selected and can be dragged, but the bulk bar is eight unlabelled icons plus a second control for the same action.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: the bulk bar has eight icons without labels (archive, delete, star, flag, two envelopes, two shields). The two envelopes and the two shields differ by a detail, and the flag is not explained anywhere in the pack.",
+          "fix": "Keep Archive, Delete and Mark as read as labelled buttons and move star, flag, mark unread, spam and not spam into one labelled 'More' menu."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: 'Mark all as read' sits at the right of the bulk bar next to a mark-as-read icon. It is not clear whether 'all' means the 5 selected or the whole inbox, and marking read is in view twice.",
+          "fix": "Take 'Mark all as read' out of the selection bar and leave it in the folder menu, where MlNavStates already has it with the count."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the warning 'Deleting a draft cannot be undone' stands alone in the empty reading pane, far from the 'Delete 2 drafts' button it belongs to.",
+          "fix": "Put the sentence in the bar next to the button, or in a confirm step after the click."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the keyboard help takes two permanent lines under the list, and the drag ghost shows the title of one conversation with a '5', which reads as one conversation with five messages.",
+          "fix": "Move the keys behind a 'Keyboard shortcuts' link in the bar, and label the ghost '5 conversations'."
+        }
+      ]
+    },
+    {
+      "board": "MlMessageMenu",
+      "verdict": "mostly clear",
+      "reason": "The menu is well grouped with helpful hints, but two three-dot menus are in view and two items are worded so their hint contradicts them.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: there is a three-dot menu in the conversation toolbar and another in the message header. A first-time user cannot tell which one deletes the conversation and which one deletes one message, and the conversation toolbar's seven icons carry no labels.",
+          "fix": "Label the toolbar menu 'Conversation' (or give it a tooltip shown in the frame) and head the open menu with 'This message, Marc Dubois, today 06:00', as the folder menu is headed 'CUSTOMERS'."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: 'Mark unread from here' carries the hint 'this message only', which contradicts 'from here'. Next to 'Mark read up to here, this and 5 earlier' the pair is hard to predict.",
+          "fix": "Rename to 'Mark this message as unread' and keep 'Mark read up to here, this and 5 earlier'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: 'View source' means nothing to a project manager, and 'Link another' at the top right does not say another what.",
+          "fix": "Rename to 'Show the original message (technical)' and 'Link another work package'."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the dialog repeats the Message-ID in the footer that is already in the text above, and its 'Download as .eml file' is the same action as 'Download the original message file' in the menu under another name.",
+          "fix": "Use one name for the action in both places and drop the Message-ID from the footer."
+        }
+      ]
+    },
+    {
+      "board": "MlMessageStates",
+      "verdict": "mostly clear",
+      "reason": "Each notice says in plain words what happened and offers two actions, but three states fall back on technical wording.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame m: for a failed and a retrying recipient the only explanation is the raw server line ('550 5.1.1 Recipient address rejected: user unkno…'), and it is cut off.",
+          "fix": "Show a plain sentence first ('This address does not exist at mairie-lyon.fr') and put the server line behind 'Show details', untruncated."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame g: 'Shown in an isolated frame, unsafe content removed' is technical, and 'Show remote images' is offered while two images are already visible, so the user cannot tell what is missing.",
+          "fix": "Write 'Some images in this message were not loaded, to protect your privacy' with the button 'Load images', and drop 'isolated frame' from the text."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: 'Unsubscribe with one click' and 'Unsubscribe by email' are two ways to do the same thing with no hint why a user would pick the second.",
+          "fix": "Show one button 'Unsubscribe' and offer the mail route only when the one-click route is absent or fails."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame n: the sender card covers the To line and the start of the message, and 'Add to a contact, choose which' next to a list titled 'Matching contacts' leaves unclear whether clicking a match opens it or adds the address to it.",
+          "fix": "Open the card below the header block, and put an explicit 'Add this address' action on each matching contact row."
+        }
+      ]
+    },
+    {
+      "board": "MlAttachmentViewer",
+      "verdict": "clear",
+      "reason": "The viewer says what file it is, where it came from and what comes next, and the two navigations are labelled.",
+      "findings": [
+        {
+          "severity": "would",
+          "problem": "Frame a and b: 'Download' and 'Save to files' sit side by side and a first-time user does not know that 'files' is the file storage of the workspace rather than the computer. Compose calls the same place 'Files' with a capital.",
+          "fix": "Name it the same everywhere, for example 'Save to Files', and add the hint 'your file storage' on first use or in the tooltip."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: per attachment the download and save actions are two icons without labels, and 'Save all to files' gives no sign of where the files go while saving one file asks for a folder.",
+          "fix": "Let 'Save all to files' open the same folder chooser, and show the tooltip of one row icon in the frame."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame b: the opened attached message has 'Reply to Julien' and a close cross in its head, close to the conversation's own reply. It is easy to answer the wrong person.",
+          "fix": "Keep the attached message read-only in place and offer 'Open as its own conversation' for replying."
+        }
+      ]
+    },
+    {
+      "board": "MlComposeWindow",
+      "verdict": "unclear",
+      "reason": "Frame a stacks a contact card, a suggestion list and an attachment list in one state, with four ways to attach a file in view at once.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: the suggestion list covers Cc, Bcc, Subject and the message, and the contact card for Marc covers the inbox, both open at once. This cannot happen in use and the reader cannot see the compose window as a whole.",
+          "fix": "Split into three frames: the plain window with attachments, the recipient suggestions open, the contact card open."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame a: a file can be attached through 'Upload', 'Add from Files', the drop zone and the paperclip beside Send, all in view. 'Send as a link' stands in the same row but does not say which file it acts on.",
+          "fix": "Keep one 'Attach' button with a menu (From this computer, From Files) plus the drop zone, remove the paperclip beside Send, and offer 'Send as a link' per file row."
+        },
+        {
+          "severity": "must",
+          "problem": "Frames a, b, c: the window head has up to four icons without labels, in a different order and with a different icon for 'move out' per frame (a: minimise, full screen, pop out, close; b: expand arrows, minimise, close).",
+          "fix": "Fix one order and one icon set for every compose window head, and show a tooltip on the pop-out icon in one frame."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame d: the send menu mixes two actions (Send and archive, Send later) with a tick box (Request a read receipt) and covers the 'Include the original attachments' row. Frame e is a sizing note with pixel values and the words 'rails' and 'browse level', not a screen. In frame a 'Save draft' stands beside 'Draft saved 09:41'.",
+          "fix": "Move the read receipt to an options row of the message, open the send menu upward clear of the attachments, mark frame e as a designer note, and drop 'Save draft' where the draft saves itself."
+        }
+      ]
+    },
+    {
+      "board": "MlComposeEditor",
+      "verdict": "mostly clear",
+      "reason": "The full screen composer reads as a believable editor, but the toolbar is unlabelled and the signature has two different controls.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frame a: beside the composer are two panel icons, an up and a down chevron and a vertical strip 'Inbox · 12 conversations', none labelled. A first-time user cannot tell what the chevrons move through or how to get the inbox back.",
+          "fix": "Replace the strip with one labelled control 'Back to Inbox' and drop the chevrons from the composer."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a and g: the signature is chosen with a 'Signature' menu in the toolbar in frame a and with a link 'Choose a signature' inside the message in frame g, whose menu opens away from the link.",
+          "fix": "Use one control in both frames, the toolbar menu, and keep in the reply only the notice that the signature was added."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: 'Text block' is not a word the reader knows before opening the menu, and 'Rich text / Plain text' stands beside a separate 'HTML source', three modes in two controls.",
+          "fix": "Rename to 'Saved texts' (or 'Templates') and make the mode one control with three options, with HTML source last."
+        },
+        {
+          "severity": "would",
+          "problem": "Frame a: the open text block menu covers the first lines of the message, and the head shows the label 'Full screen' beside a collapse icon, so it is unclear whether the click enters or leaves full screen.",
+          "fix": "Open the menu under the toolbar's right half clear of the text, and label the control 'Leave full screen'."
+        }
+      ]
+    },
+    {
+      "board": "MlComposeChecks",
+      "verdict": "mostly clear",
+      "reason": "Every check says in one sentence what is wrong and offers a fix, but the green button is the risky choice in some dialogs and the safe one in others.",
+      "findings": [
+        {
+          "severity": "must",
+          "problem": "Frames a, b, d: in a and d the green right-hand button is 'Send anyway', in b the green right-hand button is 'Attach a file' and 'Send anyway' is the plain left one. A user who learned the pattern from one dialog sends by accident in the next.",
+          "fix": "One rule for all checks: the fix ('Add a subject', 'Attach a file', 'Check the address') is the green button on the right, 'Send anyway' is the plain button on the left."
+        },
+        {
+          "severity": "must",
+          "problem": "Frame k: 'Replace the unfinished message?' says a new message replaces the open one, while MlComposeWindow shows several messages open and minimised side by side ('2 messages open').",
+          "fix": "Remove this dialog and minimise the unfinished message, or show it only when the limit of open messages is reached and say so in the text."
+        },
+        {
+          "severity": "must",
+          "problem": "Frames h, i against f, g: with an invalid or unknown address Send stays green and active, with too many recipients or too large attachments Send is off. The user cannot predict whether Send will work.",
+          "fix": "Turn Send off in h and i as well, or keep it on everywhere and stop at the click with the same notice."
+        },
+        {
+          "severity": "would",
+          "problem": "Frames l, m: the sending and sent toasts sit on top of the Send button and the draft status inside a window that should be closing, and in frame g the first line of the message is cut by the attachment list.",
+          "fix": "Show the toasts at the foot of the mail screen after the window closes, and give the message text in frame g a full line above the attachments."
+        }
+      ]
+    }
+  ],
+  "across": [
+    {
+      "severity": "must",
+      "boards": ["MlComposeWindow", "MlComposeEditor", "MlComposeChecks"],
+      "problem": "The Send button is a split button with a menu in MlComposeWindow frames a and d and a plain button in MlComposeEditor frame a and in every MlComposeChecks frame, so Send later and Send and archive appear and disappear. Cc and Bcc are empty rows in MlComposeWindow frame a and two links at the right of the To row in MlComposeEditor.",
+      "fix": "Use the split Send button and the Cc / Bcc links in every compose frame."
+    },
+    {
+      "severity": "must",
+      "boards": ["MlNavStates", "MlListStates"],
+      "problem": "Starred, Mentioned and Assigned to me exist as views in the navigation (MlNavStates frame c), as ticks in the filter menu (MlListStates frame b) and Starred again as the group 'Favourites' in the priority inbox. Three ways to the same list, under two names.",
+      "fix": "Keep them as views in the navigation only, leave the filter menu for narrowing within a view, and call it 'Starred' everywhere."
+    },
+    {
+      "severity": "must",
+      "boards": ["MlListStates", "MlListSelection", "MlMessageMenu", "MlComposeWindow", "MlAttachmentViewer"],
+      "problem": "Icon-only controls carry most of the actions (list header, bulk bar, conversation toolbar, window head, attachment rows) and no frame in the pack shows a tooltip, so the reviewer and the builder cannot tell what each is called.",
+      "fix": "Show one hovered tooltip per icon row in its frame, and give the two or three main actions of each row a text label."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlMessageStates", "MlComposeWindow"],
+      "problem": "The same thing is called 'read confirmation' when receiving (MlMessageStates frame a) and 'read receipt' when sending (MlComposeWindow frame d).",
+      "fix": "Choose one, for example 'read confirmation', in both places."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlNavStates", "MlMessageStates", "MlComposeWindow"],
+      "problem": "The shared mailbox is 'Northwind support' in the switcher, 'Support' in the message header and 'Olivia Brandt, support@…, shared mailbox' in the From menu. The person card also differs: 'About this sender' with contact matching in MlMessageStates frame n, a card with 'Open contact' and 'Earlier mail' in MlComposeWindow frame a.",
+      "fix": "Show the mailbox name 'Northwind support' in all three places, and use one person card with the same head and the same actions."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlListStates", "MlListSelection", "MlComposeWindow"],
+      "problem": "In the wide list the work package chip overlaps the attachment mark of the row before it (the Marc Dubois row in MlListStates frame d, MlListSelection frame a and behind the window in MlComposeWindow frame a).",
+      "fix": "Give the attachment mark a fixed column between the preview and the chip."
+    },
+    {
+      "severity": "would",
+      "boards": ["MlNavStates", "MlListSelection", "MlComposeWindow", "MlSetupAccount", "MlMessageStates", "MlMessageMenu"],
+      "problem": "The navigation differs per board: MlNavStates has no LABELS section while MlListSelection and MlComposeWindow do, VIEWS appear only in MlNavStates frame c, the search box says 'Search mail' on setup and 'Search mail, people or #work package' elsewhere, and the 'Message layout / Chat layout' switch of MlMessageStates frame j is absent from the reading pane in MlMessageMenu.",
+      "fix": "Draw one reference navigation (views, folders, work packages, labels) and one reading pane head, and reuse both on every board."
+    }
+  ],
+  "keep": [
+    "The right-hand hints on menu items that say what will happen before the click ('removes 14 messages', 'and the 14 messages in it', 'this and 5 earlier', 'the rest of the conversation stays').",
+    "The notice pattern above a message and in the composer: one plain sentence, then one fix and one way out (reconnect in the mailbox switcher, 'Move to Bcc', 'Send the largest as a link', 'Use the suggestion', 'Comment in BUG #58231').",
+    "The counters that explain why Send is off ('52 of 50 recipients', '28.4 of 25 MB') and the Undo with its seconds after sending.",
+    "Setup frame a: three fields are enough, the server details stay folded under 'Enter the server details by hand', and the note says what happens to the password.",
+    "The attachment viewer head and foot: file name, size, the message it came from with a link back, and which attachment comes next."
+  ]
+}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenProject twin: nested navigation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1640px; box-sizing: border-box; padding: 40px 48px">
+  <header style="display: flex; flex-direction: column; gap: 8px; max-width: 880px">
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">The project menu stays, the module opens in place</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 23px; color: #3d4047">OpenProject's third level (saved queries, boards, wiki pages, settings pages) is not a second sidebar: the module you are in expands under its own item and lists its pages there, the way nested items work in Nextcloud's app navigation. The current page gets the primary pair; its parent is marked as containing it, not as current.</p>
+  </header>
+  <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; margin-top: 32px">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px; width: 264px">
+      <div style="width: 264px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex"><dc-import name="OpNav" active="Work packages" open="Work packages" current="All open" style="display: block; width: 100%; flex: 1 1 auto" hint-size="264px,1230px"></dc-import></div>
+      <figcaption style="font-size: 14px; line-height: 20px; color: #5e6168"><strong style="display: block; color: #1b1c1d; font-weight: 600">Work packages open</strong>Saved queries, grouped as OpenProject groups them; "All open" is the current page and "Save this view" is the quiet action at the end.</figcaption>
+    </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px; width: 264px">
+      <div style="width: 264px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex"><dc-import name="OpNav" active="Boards" open="Boards" current="Status board" style="display: block; width: 100%; flex: 1 1 auto" hint-size="264px,940px"></dc-import></div>
+      <figcaption style="font-size: 14px; line-height: 20px; color: #5e6168"><strong style="display: block; color: #1b1c1d; font-weight: 600">Boards open</strong>Three boards, "Status board" current, "New board" at the end.</figcaption>
+    </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px; width: 264px">
+      <div style="width: 264px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; display: flex"><dc-import name="OpNav" active="Project settings" open="Project settings" current="General" style="display: block; width: 100%; flex: 1 1 auto" hint-size="264px,1060px"></dc-import></div>
+      <figcaption style="font-size: 14px; line-height: 20px; color: #5e6168"><strong style="display: block; color: #1b1c1d; font-weight: 600">Project settings open</strong>Seven settings pages under the bottom item, "General" current; a module without a create action has no action row.</figcaption>
+    </figure>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

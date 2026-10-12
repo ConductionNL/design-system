@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: encryption and signing while reading and writing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1100px; overflow: hidden">
+  <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1045px"></dc-import></div>
+    <div style="flex: 0 0 48px; width: 48px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="2" folded="true" hint-size="48px,1045px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+      <div style="position: sticky; top: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+        <div style="display: flex; align-items: flex-start; gap: 6px">
+          <button type="button" aria-label="Star this conversation" aria-pressed="false" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></button>
+          <h1 style="flex: 1 1 auto; min-width: 0; margin: 0; font-size: 18px; font-weight: 600; line-height: 28px">Rollout plan phase 2, Lyon</h1>
+          <button type="button" aria-label="Close conversation" title="Close conversation" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
+            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
+          </div>
+          <button type="button" aria-label="Expand all messages" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 13 5 5 5-5M7 6l5 5 5-5"></path></svg>Expand all</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
+          <span style="white-space: nowrap">1 work package</span>
+          <button type="button" aria-expanded="false" aria-label="Open work package FEATURE #58412, in development" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 400 12px 'Fira Sans', sans-serif; line-height: 1; white-space: nowrap; color: #3d4047; cursor: pointer"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span>#58412</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <span style="white-space: nowrap">6 messages · Customers / Lyon · 4 protected</span>
+        </div>
+      </div>
+      <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px">
+        <sc-for list="{{ messages }}" as="m" hint-placeholder-count="6">
+          <sc-if value="{{ m.collapsed }}" hint-placeholder-val="{{ false }}">
+            <button type="button" aria-expanded="false" aria-label="Show the whole message from {{ m.from }}, {{ m.date }}" title="Show the whole message" style="{{ m.rowStyle }}">
+              <span aria-hidden="true" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-left: -6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
+              <span style="{{ m.avatarSmall }}">{{ m.initials }}</span>
+              <span style="flex: none; font-weight: 600; white-space: nowrap">{{ m.from }}</span>
+              <span style="flex: 1 1 auto; min-width: 0; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ m.snippet }}</span>
+              <span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ m.date }}</span>
+            </button>
+          </sc-if>
+          <sc-if value="{{ m.open }}" hint-placeholder-val="{{ true }}">
+            <article aria-label="Message from {{ m.from }}, {{ m.date }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+              <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0 8px">
+                <button type="button" aria-expanded="true" aria-label="Collapse the message" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+                <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ m.initials }}</span>
+                <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+                  <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">{{ m.from }}</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.address }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">{{ m.date }}</span></div>
+                  <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">{{ m.to }}</span></div>
+                </div>
+                <button type="button" aria-label="More actions for this message" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px; margin: 10px 14px 0 88px">
+                <sc-for list="{{ m.lines }}" as="l" hint-placeholder-count="2">
+                  <div role="status" style="{{ l.style }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ l.color }}; margin-top: 2px"><path d="{{ l.icon }}"></path></svg>
+                    <span style="flex: 1 1 auto; min-width: 0"><strong style="font-weight: 600">{{ l.title }}</strong> {{ l.text }}</span>
+                    <sc-if value="{{ l.hasAction }}" hint-placeholder-val="{{ false }}"><button type="button" style="flex: none; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">{{ l.action }}</button></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="padding: 10px 14px 14px 88px; display: flex; flex-direction: column; gap: 8px; color: #3d4047">
+                <p style="margin: 0">{{ m.body }}</p>
+              </div>
+            </article>
+          </sc-if>
+        </sc-for>
+      </div>
+    </main>
+    <section aria-label="Compose: reply to Marc Dubois" style="flex: 0 0 440px; width: 440px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+      <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 8px 0 16px; background: #234a78; color: #ffffff">
+        <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Re: Rollout plan phase 2, Lyon</span>
+        <button type="button" aria-label="Close the reply" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #e4e6ea; font-size: 12px; color: #5e6168">
+        <a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 1; white-space: nowrap; text-decoration: none; color: #3d4047"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span>#58412</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span></a>
+        <span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">This reply stays linked</span>
+      </div>
+      <div style="display: flex; flex-direction: column; font-size: 13px">
+        <div style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-bottom: 1px solid #e4e6ea"><label for="cp-to" style="flex: none; width: 40px; color: #5e6168">To</label><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); background: #fff4e6; color: #1b1c1d; font-size: 12px; white-space: nowrap"><span style="width: 18px; height: 18px; border-radius: 9px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">MD</span>Marc Dubois<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="No certificate" role="img" style="color: #ff9d2e"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 9.9-1"></path></svg></span><input id="cp-to" type="text" aria-label="Add a recipient" style="flex: 1 1 auto; min-width: 0; height: 24px; border: 0; background: transparent; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d"></div>
+        <div style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-bottom: 1px solid #e4e6ea"><label for="cp-cc" style="flex: none; width: 40px; color: #5e6168">Copy</label><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #1b1c1d; font-size: 12px; white-space: nowrap"><span style="width: 18px; height: 18px; border-radius: 9px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">TA</span>Tom Achterberg<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Has a certificate" role="img" style="color: #538b28"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg></span><input id="cp-cc" type="text" aria-label="Add a copy recipient" style="flex: 1 1 auto; min-width: 0; height: 24px; border: 0; background: transparent; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d"></div>
+      </div>
+      <div aria-label="Message body" role="textbox" aria-multiline="true" contenteditable="true" style="flex: 1 1 auto; min-height: 120px; overflow: hidden; padding: 12px 16px; font-size: 14px; line-height: 21px; color: #1b1c1d; outline: 0">
+        <p style="margin: 0 0 10px">Hi Marc,</p>
+        <p style="margin: 0 0 10px">Yes, the kick-off can move to the afternoon. I propose Monday 2 November, 14:00 to 16:00, at your office. The Keycloak realm export is attached, so this one goes encrypted.</p>
+        <p style="margin: 0">Best regards,<br>Olivia</p>
+      </div>
+      <div style="position: relative; display: flex; align-items: center; gap: 2px; padding: 4px 10px; border-top: 1px solid #e4e6ea">
+        <div role="toolbar" aria-label="Formatting" style="display: flex; align-items: center; gap: 2px">
+          <sc-for list="{{ fmt }}" as="f" hint-placeholder-count="4"><button type="button" aria-label="{{ f.label }}" title="{{ f.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ f.icon }}"></path></svg></button></sc-for>
+        </div>
+        <span style="width: 1px; height: 18px; margin: 0 4px; background: #e4e6ea"></span>
+        <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg>Protect this message<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+        <div role="menu" aria-label="Protect this message" style="position: absolute; left: 10px; bottom: 100%; margin-bottom: 4px; min-width: 380px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+          <span style="display: block; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 28px">Per message, your choice</span>
+          <sc-for list="{{ protect }}" as="p" hint-placeholder-count="3">
+            <button type="button" role="menuitemcheckbox" aria-checked="{{ p.checked }}" style="display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 34px; padding: 6px 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; text-align: left">
+              <span style="{{ p.box }}"><sc-if value="{{ p.on }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
+              <span style="display: flex; flex-direction: column; min-width: 0; line-height: 20px"><span>{{ p.label }}</span><span style="font-size: 12px; color: #5e6168">{{ p.hint }}</span></span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div role="status" style="display: flex; align-items: flex-start; gap: 10px; margin: 8px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 13px; line-height: 19px; color: #1b1c1d">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #ff9d2e; margin-top: 1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg>
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <p style="margin: 0"><strong style="font-weight: 600">Marc Dubois has no certificate or key.</strong> The message cannot be encrypted for him. Tom Achterberg has a certificate.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px">
+            <button type="button" style="display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Ask Marc for his certificate</button>
+            <button type="button" style="display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Send to Marc unencrypted</button>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 10px 14px 12px; border-top: 1px solid #e4e6ea">
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send</button>
+        <button type="button" aria-label="Attach a file" style="width: 34px; height: 34px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button>
+        <span style="flex: 1 1 auto"></span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5e6168"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #538b28"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg>Signed and encrypted with S/MIME</span>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tools = [
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4'],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01'],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'],
+      ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01'],
+      ['Share this conversation', 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13'],
+      ['More actions', 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2']
+    ].map(([label, icon]) => ({ label, icon }));
+    const ICON = {
+      lock: 'M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4',
+      check: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4',
+      warn: 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01',
+      question: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5M12 17h.01',
+      puzzle: 'M19.4 13h.6a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a2 2 0 1 0-4 0v1H9a2 2 0 0 0-2 2v3H5a2 2 0 1 0 0 4h2v3a2 2 0 0 0 2 2h3v-1.6a1.6 1.6 0 1 1 3.2 0V20h3a2 2 0 0 0 2-2v-3h-.6a1.6 1.6 0 1 1 0-3.2z'
+    };
+    const KIND = { ok: ['#538b28', '#f0f7ea'], info: ['#3669a5', '#eaf0f7'], warn: ['#ff9d2e', '#fff4e6'] };
+    const line = (kind, icon, title, text, action) => ({
+      title, text, icon: ICON[icon], color: KIND[kind][0], hasAction: !!action, action: action || '',
+      style: 'display: flex; align-items: flex-start; gap: 8px; padding: 6px 10px; border: 1px solid #e4e6ea; border-left: 3px solid ' + KIND[kind][0] + '; border-radius: var(--sc-radius, 8px); background: ' + KIND[kind][1] + '; font-size: 12px; line-height: 18px; color: #1b1c1d'
+    });
+    const card = 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; width: 100%; ';
+    const own = 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
+    const messages = [
+      { from: 'Marc Dubois', initials: 'MD', address: 'marc.dubois@mairie-lyon.fr', date: '8 Oct 09:30', to: 'Olivia Brandt', open: true,
+        lines: [line('warn', 'warn', 'Signature invalid.', 'The message changed after Marc signed it, or the signature is damaged. Ask Marc to send it again before you rely on it.', 'Show certificate')],
+        body: 'Please find the rollout plan for phase 2 attached. We propose to start with the planning department.' },
+      { from: 'You', initials: 'OB', date: '8 Oct', snippet: 'Thanks Marc. Two remarks on the folder structure, see below.', collapsed: true, mine: true },
+      { from: 'Tom Achterberg', initials: 'TA', address: 'tom@northwind-projects.test', date: '9 Oct 10:05', to: 'Marc Dubois, copy Olivia Brandt', open: true,
+        lines: [
+          line('ok', 'lock', 'Encrypted with S/MIME.', 'Decrypted with your certificate on this device. Only you and the other recipients can read it.'),
+          line('ok', 'check', 'Signature valid.', 'Signed by Tom Achterberg, certificate issued by Northwind Projects CA, valid until 3 March 2027.', 'Show certificate')
+        ],
+        body: 'Attached the OIDC client settings for the Lyon realm. The client id is nextcloud-lyon, the redirect URI points at your test instance.' },
+      { from: 'Marc Dubois', initials: 'MD', address: 'marc.dubois@mairie-lyon.fr', date: '10 Oct 11:20', to: 'Olivia Brandt', open: true,
+        lines: [line('warn', 'question', 'Signed by an unknown signer.', 'The certificate of marc.dubois@mairie-lyon.fr was not issued by an authority you trust. The content is unchanged since signing.', 'Trust this certificate')],
+        body: 'Can the mail archive stay on our own server? Our data protection officer asks.' },
+      { from: 'You', initials: 'OB', date: '10 Oct', snippet: 'Not a blocker. The link stores a reference to the message, the mail itself stays in your mailbox.', collapsed: true, mine: true },
+      { from: 'Marc Dubois', initials: 'MD', address: 'marc.dubois@mairie-lyon.fr', date: 'Today 06:00', to: 'Olivia Brandt, copy Tom Achterberg', open: true,
+        lines: [line('info', 'puzzle', 'Encrypted with PGP, opened through the browser extension.', 'The extension decrypted it on your device with your PGP key. Your reply goes the same way.')],
+        body: 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?' }
+    ].map((m) => ({ open: false, collapsed: false, lines: [], address: '', to: '', body: '', snippet: '', ...m,
+      rowStyle: card + (m.mine ? own : ''),
+      avatarSmall: 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ' + (m.mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78') }));
+    const fmt = [
+      ['Bold', 'M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6zM6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z'],
+      ['Italic', 'M19 4h-9M14 20H5M15 4 9 20'],
+      ['Bulleted list', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'],
+      ['Insert a link', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71']
+    ].map(([label, icon]) => ({ label, icon }));
+    const box = (on) => 'flex: none; width: 16px; height: 16px; margin-top: 2px; box-sizing: border-box; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; ' + (on ? 'border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff' : 'border: 1px solid #c4c7cb; background: #ffffff; color: transparent');
+    const protect = [
+      ['Sign with S/MIME', 'Recipients see that the message is from you and unchanged', true],
+      ['Encrypt with S/MIME', 'Needs a certificate from every recipient', true],
+      ['Encrypt with PGP through the browser extension', 'The extension encrypts on your device with the recipients\' PGP keys', false]
+    ].map(([label, hint, on]) => ({ label, hint, on, checked: on ? 'true' : 'false', box: box(on) }));
+    return { tools, messages, fmt, protect };
+  }
+}
+</script>
+</body>
+</html>

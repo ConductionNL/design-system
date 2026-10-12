@@ -1,0 +1,2751 @@
+{
+ "system": {
+  "key": "nextcloud-mail",
+  "name": "Nextcloud Mail",
+  "readVersion": "v5.12.4",
+  "evidenceGrade": "source-read",
+  "readOn": "2026-10-12",
+  "licence": "AGPL-3.0 (COPYING is AGPL v3; file headers mix AGPL-3.0-only and AGPL-3.0-or-later)",
+  "sources": [
+   "https://github.com/nextcloud/mail"
+  ]
+ },
+ "rows": [
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Add a mail account with only name, address and password, with server settings looked up automatically",
+   "rating": "yes",
+   "evidence": "src/components/AccountForm.vue:11; lib/Controller/AutoConfigController.php:51; lib/Service/AutoConfig/IspDb.php:137",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Find server settings from the mail domain's MX records",
+   "rating": "yes",
+   "evidence": "lib/Controller/AutoConfigController.php:69; lib/Service/AutoConfig/MxRecord.php:27; src/components/AccountForm.vue:536",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Check that the discovered mail hosts are reachable before saving",
+   "rating": "yes",
+   "evidence": "lib/Controller/AutoConfigController.php:89; src/components/AccountForm.vue:563",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Add a mail account by entering IMAP and SMTP host, port, user and password by hand",
+   "rating": "yes",
+   "evidence": "src/components/AccountForm.vue:47; src/components/AccountForm.vue:68; lib/Controller/AccountsController.php:333",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose the connection security per server (none, SSL/TLS or STARTTLS)",
+   "rating": "yes",
+   "evidence": "src/components/AccountForm.vue:79; src/components/AccountForm.vue:159",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Connect a Google account by signing in with Google",
+   "rating": "yes",
+   "evidence": "src/components/AccountForm.vue:435; lib/Controller/GoogleIntegrationController.php:80; lib/Controller/PageController.php:270",
+   "surface": "screen",
+   "note": "Only offered once an administrator has stored a Google OAuth client."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Connect a Microsoft account by signing in with Microsoft",
+   "rating": "yes",
+   "evidence": "src/components/AccountForm.vue:437; lib/Controller/MicrosoftIntegrationController.php:84; lib/Controller/PageController.php:287",
+   "surface": "screen",
+   "note": "Only offered once an administrator has stored a Microsoft OAuth client."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Use several mail accounts side by side",
+   "rating": "yes",
+   "evidence": "src/components/Navigation.vue:147; src/components/AppSettingsMenu.vue:49; lib/Controller/AccountsController.php:84",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Change an account's server settings or password later",
+   "rating": "yes",
+   "evidence": "src/components/AccountSettings.vue:112; lib/Controller/AccountsController.php:125",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "See a warning when an account cannot connect and re-enter its password from there",
+   "rating": "yes",
+   "evidence": "src/components/Navigation.vue:35; src/components/Navigation.vue:39; src/views/Home.vue:91",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Remove a mail account",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:94; lib/Controller/AccountsController.php:323",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Reorder accounts in the sidebar",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:78; lib/Controller/AccountsController.php:261",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Add alias addresses to an account",
+   "rating": "yes",
+   "evidence": "src/components/AliasSettings.vue:58; lib/Controller/AliasesController.php:100",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Rename or delete an alias",
+   "rating": "yes",
+   "evidence": "src/components/AliasForm.vue:52; src/components/AliasForm.vue:62; lib/Controller/AliasesController.php:60",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set a signature per account",
+   "rating": "yes",
+   "evidence": "src/components/SignatureSettings.vue:45; lib/Controller/AccountsController.php:306",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set a separate signature per alias",
+   "rating": "yes",
+   "evidence": "src/components/SignatureSettings.vue:15; lib/Controller/AliasesController.php:121",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose plain text or rich text as the default writing mode per account",
+   "rating": "yes",
+   "evidence": "src/components/EditorSettings.vue:16; src/components/AccountSettings.vue:24; lib/Controller/AccountsController.php:258",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose which folders hold drafts, sent, deleted, archived, snoozed and junk messages",
+   "rating": "yes",
+   "evidence": "src/components/AccountDefaultsSettings.vue:9; src/components/AccountSettings.vue:36; lib/Controller/AccountsController.php:211",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Make the web client the browser's handler for mailto links",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:17; src/components/AppSettingsMenu.vue:807; lib/Controller/PageController.php:483",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "See a setup page asking to connect an account on first use",
+   "rating": "yes",
+   "evidence": "src/views/Setup.vue:16; src/router.js:46; lib/Controller/PageController.php:373",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Create or update an IMAP account from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/CreateImapAccount.php:56; lib/Command/UpdateImapAccount.php:46",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Create a JMAP account from the command line",
+   "rating": "partial",
+   "evidence": "lib/Command/CreateJmapAccount.php:43; lib/Protocol/ProtocolFactory.php:35; lib/Db/MailAccount.php:117",
+   "surface": "api",
+   "note": "The account record, a JMAP client factory and a connection test exist, but the JMAP mailbox, message and sending connectors are commented out and no screen offers JMAP."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Delete an account from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/DeleteAccount.php:36",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Test an account's connection from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/TestAccount.php:35",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See one combined inbox across all accounts",
+   "rating": "yes",
+   "evidence": "src/components/Navigation.vue:14; src/components/Navigation.vue:166; src/i18n/MailboxTranslator.js:32",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See a priority inbox split into important, favourites, follow up and other",
+   "rating": "yes",
+   "evidence": "src/components/MailboxThread.vue:39; src/components/MailboxThread.vue:151; src/util/priorityInbox.js:7",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Create a folder",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:61; lib/Controller/MailboxesController.php:296; lib/Service/MailManager.php:105",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Create a subfolder inside a folder",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:61; lib/Controller/MailboxesController.php:296",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Rename a folder",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:83; lib/Controller/MailboxesController.php:93; lib/Service/MailManager.php:577",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Move a folder under another folder",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:109; src/components/NavigationMailbox.vue:175; src/components/MoveMailboxModal.vue:12",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Delete a folder with everything in it",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:163; lib/Controller/MailboxesController.php:323; lib/Service/MailManager.php:614",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Delete all messages in a folder at once",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:154; lib/Controller/MailboxesController.php:352; lib/Service/MailManager.php:637",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Mark every message in a folder as read",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:48; lib/Controller/MailboxesController.php:227",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Subscribe to or unsubscribe from a folder",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:136; lib/Service/MailManager.php:368",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Show only subscribed folders for an account",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:55",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Collapse a long folder list and expand it again",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccountExpandCollapse.vue:37; src/components/Navigation.vue:62",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See how many messages a folder holds and how many are unread",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:337; lib/Controller/MailboxesController.php:257",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Clear the locally cached copy of a folder when it is out of step",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:122; lib/Controller/MailboxesController.php:201",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Repair a folder's synchronisation",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:118; lib/Controller/MailboxesController.php:376",
+   "surface": "screen",
+   "note": "Limited to once every ten minutes per folder (src/components/NavigationMailbox.vue:745)."
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Choose per folder whether it is synchronised in the background",
+   "rating": "yes",
+   "evidence": "src/components/NavigationMailbox.vue:144; lib/Service/MailManager.php:397",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Return to the folder that was open last time",
+   "rating": "yes",
+   "evidence": "src/init.js:60; lib/Controller/PageController.php:239",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Open a message from a link built on its message ID",
+   "rating": "yes",
+   "evidence": "appinfo/routes.php:14; lib/Controller/DeepLinkController.php:45",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Copy a direct link to a message",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:42; src/components/MenuEnvelope.vue:693",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See the outbox of pending messages in the sidebar",
+   "rating": "yes",
+   "evidence": "src/components/NavigationOutbox.vue:10; src/router.js:41; src/views/Home.vue:8",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Have drafts, sent, trash, archive and junk folders recognised automatically",
+   "rating": "yes",
+   "evidence": "lib/Listener/MailboxesSynchronizedSpecialMailboxesUpdater.php:42; lib/AppInfo/Application.php:137",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See special folders named in the interface language",
+   "rating": "yes",
+   "evidence": "src/i18n/MailboxTranslator.js:12",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See related messages grouped into one conversation",
+   "rating": "yes",
+   "evidence": "lib/IMAP/Threading/ThreadBuilder.php:17; lib/Controller/MessagesController.php:344; src/components/Thread.vue:29",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Choose the layout: list beside message, list above message, or list only",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:75; src/components/AppSettingsMenu.vue:81; lib/Controller/PreferencesController.php:56",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Switch the list to a compact density",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:96; src/components/Envelope.vue:24",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sort the list newest first or oldest first",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:100; src/components/EnvelopeList.vue:290",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Keep favourite messages at the top of every folder",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:71; src/components/MailboxThread.vue:86",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the list grouped under date headings (last hour, today, yesterday, last week, last month)",
+   "rating": "yes",
+   "evidence": "src/util/groupedEnvelopes.js:6; src/components/Mailbox.vue:623",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See a preview of the message text in each row",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:175; lib/IMAP/PreviewEnhancer.php:27",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See which messages carry attachments",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:140",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the sender's picture in each row",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:91; lib/Controller/AvatarsController.php:42",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See a message's tags in the list",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:484",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See which messages are encrypted and which are drafts",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:183; src/components/Envelope.vue:878",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Select several messages, including a whole range at once",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:554; src/components/EnvelopeList.vue:569",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Mark several selected messages read or unread",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:13; src/components/EnvelopeList.vue:21",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Mark several selected messages important or favourite",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:29; src/components/EnvelopeList.vue:53",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Move several selected conversations to a folder",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:107",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Mark several selected messages as spam or not spam",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:87; src/components/EnvelopeList.vue:95",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Edit tags for several selected messages",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:101; src/components/EnvelopeList.vue:146",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Forward several selected messages as attachments of one new message",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:113; src/components/EnvelopeList.vue:109",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Drag messages onto a folder to move them",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:8; src/directives/drag-and-drop/droppable-mailbox/droppable-mailbox.js:151",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Act on a row directly: mark read, mark important or delete without opening it",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeSingleClickActions.vue:11; src/components/EnvelopeSingleClickActions.vue:38",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Load older messages as the list is scrolled",
+   "rating": "yes",
+   "evidence": "src/components/EnvelopeList.vue:136; src/directives/infinite-scroll.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Refresh the list on demand",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageButtonHeader.vue:20; lib/Controller/MailboxesController.php:151",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Have the open folder refresh by itself every minute",
+   "rating": "yes",
+   "evidence": "src/components/Mailbox.vue:206; src/components/Mailbox.vue:608",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read formatted messages in an isolated frame with cleaned-up markup",
+   "rating": "yes",
+   "evidence": "src/components/MessageHTMLBody.vue:27; lib/Controller/MessagesController.php:665; lib/Service/HtmlPurify/TransformImageSrc.php:59",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read plain text messages with quoted text folded away",
+   "rating": "yes",
+   "evidence": "src/components/MessagePlainTextBody.vue:56",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Choose between seeing the whole conversation or only the selected message",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:64; src/components/Thread.vue:119",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Expand and collapse single messages inside a conversation",
+   "rating": "yes",
+   "evidence": "src/components/Thread.vue:29; src/components/Thread.vue:35",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Choose when an opened message counts as read: immediately, after a delay or only by hand",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:156; lib/Controller/PageController.php:244",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See all recipients of a message, including copies",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:300; src/components/ThreadEnvelope.vue:320; src/components/RecipientInfo.vue:37",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "View the raw source of a message",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:184; lib/Controller/MessagesController.php:509; src/components/ThreadEnvelope.vue:261",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Print a message from its menu or with the print shortcut",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:195; src/util/printMessage.ts:194; src/components/Thread.vue:70",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Send a read confirmation when the sender asked for one",
+   "rating": "yes",
+   "evidence": "src/components/MdnRequest.vue:12; lib/Controller/MessagesController.php:475; lib/Service/MailTransmission.php:395",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Unsubscribe from a mailing list with one click",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:120; src/components/ThreadEnvelope.vue:364; lib/Controller/ListController.php:50",
+   "surface": "screen",
+   "note": "The button shows only when the sender's domain signature validates."
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Unsubscribe from a mailing list by sending its unsubscribe email",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:381; src/components/ThreadEnvelope.vue:1139",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See flight, train and event bookings pulled out of a message as a card",
+   "rating": "yes",
+   "evidence": "src/components/Message.vue:24; src/components/itinerary/FlightReservation.vue:135; lib/Controller/MessagesController.php:275",
+   "surface": "screen",
+   "note": "Depends on the bundled itinerary extractor binary being runnable on the server."
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See a welcome screen with a start button when no message is selected",
+   "rating": "yes",
+   "evidence": "src/components/NoMessageSelected.vue:12",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Write a new message in a pop-up composer",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:276; src/components/NewMessageButtonHeader.vue:8",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Reply to the sender or to everyone",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:158; src/components/ThreadEnvelope.vue:162; src/components/ThreadEnvelope.vue:173",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Forward a message",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:27; src/components/NewMessageModal.vue:271",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Forward a message as an attachment",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:142",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Open an existing message as the start of a new one",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:152; src/components/Envelope.vue:405",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose which account or alias a message is sent from",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:19; src/components/Composer.vue:29",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Add copy and blind copy recipients",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:87; src/components/Composer.vue:127; src/components/Composer.vue:195",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Format text with headings, fonts, colours, lists, alignment, quotes and links",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:164; src/components/TextEditor.vue:182",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Switch a message between rich text and plain text while writing",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:359; src/components/Composer.vue:369; src/components/Composer.vue:1753",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Edit the HTML source of a message",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:161; src/components/TextEditor.vue:185",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Find and replace text in the message being written",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:135; src/components/TextEditor.vue:184",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert pictures into the message body from the device or from Files",
+   "rating": "yes",
+   "evidence": "src/ckeditor/image/FilesImagePlugin.ts:43; src/components/TextEditor.vue:153",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert emoji by typing a colon",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:214; src/components/TextEditor.vue:336",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Insert a saved text block from a menu or by typing an exclamation mark",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:414; src/components/TextEditor.vue:229; src/components/textBlocks/TextBlockModal.vue:12",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Create, edit and delete reusable text blocks",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:169; src/components/textBlocks/ListItem.vue:33; lib/Controller/TextBlockController.php:53",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have the draft saved automatically while writing",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:788; src/components/Composer.vue:330; lib/Controller/DraftsController.php:71",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Save a draft by hand or discard it",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:338; src/components/Composer.vue:348",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have drafts copied to the drafts folder on the mail server",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/DraftsJob.php:16; lib/Service/DraftsService.php:186",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Schedule a message to be sent later, from presets or a chosen date and time",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:426; src/components/Composer.vue:492; lib/BackgroundJob/OutboxWorkerJob.php:24",
+   "surface": "screen",
+   "note": "Switched off when the server runs background jobs in ajax mode (lib/Controller/PageController.php:304)."
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Take back a message in the first seconds after pressing send",
+   "rating": "yes",
+   "evidence": "src/store/outboxStore.js:175; src/store/outboxStore.js:181; src/components/NewMessageModal.vue:526",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "See pending messages in an outbox and send one now or delete it",
+   "rating": "yes",
+   "evidence": "src/components/OutboxMessageListItem.vue:39; src/components/OutboxMessageListItem.vue:52; lib/Controller/OutboxController.php:246",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Retry a message that failed to send",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:89; src/components/OutboxMessageListItem.vue:28",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Ask the recipient for a read receipt",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:436; src/components/Composer.vue:754",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Get a warning before sending without a subject",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:552; src/errors/SubjectMissingError.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Get a warning when the text mentions an attachment and none is attached",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:556; src/components/NewMessageModal.vue:487",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Get a hint to use blind copy when addressing many recipients",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:543; src/errors/ManyRecipientsError.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Get a warning when replying to a no-reply address",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:277; src/components/Composer.vue:787",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose whether replies start above or below the quoted text",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:163; lib/Controller/PageController.php:236",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Minimise the composer, keep working, and reopen it",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:44; src/components/ComposerSessionIndicator.vue:21",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Write in a full-screen composer",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:34",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Have the signature placed in new messages and replies automatically",
+   "rating": "yes",
+   "evidence": "src/ckeditor/signature/SignaturePlugin.js:1; src/components/AccountSettings.vue:32",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Start a message from a mailto link with recipient, subject and body filled in",
+   "rating": "yes",
+   "evidence": "lib/Controller/PageController.php:456; src/router.js:26",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Get asked before an unfinished message is replaced by a new one",
+   "rating": "yes",
+   "evidence": "src/store/mainStore/actions.js:477",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files from the device",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:385; lib/Controller/LocalAttachmentsController.php:48",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files by dropping or pasting them into the composer",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:1836; src/components/Composer.vue:1849",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files that already live in Files",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:393; src/components/ComposerAttachments.vue:194",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Send a file from Files as a share link instead of an attachment",
+   "rating": "yes",
+   "evidence": "src/components/ComposerAttachments.vue:197; src/components/ComposerAttachments.vue:370; src/service/FileSharingService.js:42",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Be stopped at a maximum total attachment size and pointed to share links",
+   "rating": "yes",
+   "evidence": "src/components/ComposerAttachments.vue:404; lib/Controller/PageController.php:231",
+   "surface": "screen",
+   "note": "The limit is the server setting app.mail.attachment-size-limit; unset means no limit."
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See upload progress and remove an attachment before sending",
+   "rating": "yes",
+   "evidence": "src/components/ComposerAttachment.vue:28; src/components/ComposerAttachments.vue:272",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Download one attachment",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachment.vue:42; lib/Controller/MessagesController.php:754",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Download all attachments of a message as one zip file",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachments.vue:68; lib/Controller/MessagesController.php:805",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Save one attachment to a chosen folder in Files",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachment.vue:53; lib/Controller/MessagesController.php:849",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Save all attachments of a message to Files",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachments.vue:57; src/components/MessageAttachments.vue:163",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Preview an attachment in the built-in viewer",
+   "rating": "yes",
+   "evidence": "src/mixins/AttachmentMixin.js:28; src/mixins/AttachmentMixin.js:40",
+   "surface": "screen",
+   "note": "Uses the Viewer app and only for the file types it supports."
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Open a message that arrived as an attachment",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachment.vue:161",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search the open folder by text",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:12; src/components/MailboxThread.vue:16; lib/Controller/MessagesController.php:116",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by subject",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:49; lib/Service/Search/FilterStringParser.php:86",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by words in the message body",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:62; lib/Service/Search/FilterStringParser.php:89",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by a date range",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:75; lib/Service/Search/FilterStringParser.php:96",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by sender",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:97; lib/Service/Search/FilterStringParser.php:74",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by recipient, copy or blind copy recipient",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:122; src/components/SearchMessages.vue:146; lib/Service/Search/FilterStringParser.php:77",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search by tag",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:194; lib/Service/Search/FilterStringParser.php:92",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search to important or favourite messages",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:235; lib/Service/Search/FilterStringParser.php:40",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search to unread messages",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:284; lib/Service/Search/FilterStringParser.php:39",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search to messages with attachments",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:262; lib/Service/Search/FilterStringParser.php:114",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search to messages that mention me",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:267; lib/Service/Search/FilterStringParser.php:109; lib/Db/MessageMapper.php:971",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Filter search to messages addressed to me with one click",
+   "rating": "yes",
+   "evidence": "src/components/SearchMessages.vue:290",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Turn body search on per account",
+   "rating": "yes",
+   "evidence": "src/components/SearchSettings.vue:13; lib/Controller/AccountsController.php:223",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Include message bodies when searching the priority inbox",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:385; lib/Controller/PageController.php:238",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search mail of all accounts from the platform-wide search box",
+   "rating": "yes",
+   "evidence": "lib/Search/FilteringProvider.php:22; lib/AppInfo/Application.php:164; lib/Service/Search/MailSearch.php:123",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Narrow the platform-wide mail search by date and by person",
+   "rating": "yes",
+   "evidence": "lib/Search/FilteringProvider.php:29; lib/Search/FilteringProvider.php:41",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Search folder names when picking a target folder",
+   "rating": "yes",
+   "evidence": "src/components/MailboxPicker.vue:12",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message as favourite",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:212; lib/Controller/MessagesController.php:921",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message as important or unimportant",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:242; src/components/MenuEnvelope.vue:19",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message read or unread",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:229; src/components/ThreadEnvelope.vue:201; lib/Service/MailManager.php:405",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Create a tag with a colour",
+   "rating": "yes",
+   "evidence": "src/components/TagModal.vue:30; lib/Controller/TagsController.php:45",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Rename a tag or change its colour",
+   "rating": "yes",
+   "evidence": "src/components/TagItem.vue:22; lib/Controller/TagsController.php:63",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Delete a tag from all messages",
+   "rating": "yes",
+   "evidence": "src/components/TagItem.vue:49; src/components/DeleteTagModal.vue:11; lib/Controller/TagsController.php:75",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Add tags to a message and take them off again",
+   "rating": "yes",
+   "evidence": "src/components/TagItem.vue:56; lib/Controller/MessagesController.php:956; lib/Controller/MessagesController.php:991",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Start from a ready-made set of tags (work, personal, to do, later)",
+   "rating": "yes",
+   "evidence": "src/components/TagModal.vue:20; lib/Db/Tag.php:36",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Have tags stored on the mail server so other mail programs see them",
+   "rating": "yes",
+   "evidence": "lib/Service/MailManager.php:514; lib/Service/MailManager.php:769",
+   "surface": "background",
+   "note": "Only when the server allows custom keywords on the folder."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Archive a message or a whole conversation",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:329; src/components/ThreadEnvelope.vue:220; src/components/Mailbox.vue:452",
+   "surface": "screen",
+   "note": "Needs an archive folder chosen in the account settings."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Delete a message or a whole conversation to the trash",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:450; lib/Controller/ThreadController.php:217; lib/Controller/MessagesController.php:1023",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move a message or a whole conversation to another folder",
+   "rating": "yes",
+   "evidence": "src/components/MoveModal.vue:10; lib/Controller/ThreadController.php:55; lib/Controller/MessagesController.php:375",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Snooze a message or conversation until a preset or chosen time",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:288; src/components/Envelope.vue:381; lib/Controller/ThreadController.php:96",
+   "surface": "screen",
+   "note": "Switched off when the server runs background jobs in ajax mode (lib/Controller/PageController.php:308)."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Bring a snoozed message back early",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:301; lib/Controller/ThreadController.php:125",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have snoozed messages return to the inbox when their time comes",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/WakeJob.php:23; lib/Service/SnoozeService.php:50",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Mark a message as spam or not spam and have it moved accordingly",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:270; lib/Listener/MoveJunkListener.php:31",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have the trash emptied of messages older than a chosen number of days",
+   "rating": "yes",
+   "evidence": "src/components/AccountSettings.vue:44; lib/BackgroundJob/TrashRetentionJob.php:47",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Build mail filters from conditions and actions without writing code",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/MailFilters.vue:37; src/components/mailFilter/UpdateModal.vue:22; lib/Controller/FilterController.php:54",
+   "surface": "screen",
+   "note": "Needs a Sieve server configured for the account."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Filter on subject, sender or recipient with exact, contains or wildcard matching",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Test.vue:137; src/components/mailFilter/Test.vue:149",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Require all or any of a filter's conditions",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Operator.vue:62",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have a filter move mail to a folder",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Action.vue:84; lib/Service/MailFilter/FilterBuilder.php:27",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have a filter mark mail or add a flag",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Action.vue:76; src/components/mailFilter/Action.vue:80",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have a filter redirect mail to another address",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Action.vue:88; src/components/mailFilter/ActionRedirect.vue:11",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Stop further filters once one has matched",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/Action.vue:92; src/components/mailFilter/ActionStop.vue:7",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Switch a filter on or off and set its priority",
+   "rating": "yes",
+   "evidence": "src/components/mailFilter/UpdateModal.vue:70; src/components/mailFilter/UpdateModal.vue:74",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Start a filter from an open message, using its subject, sender or recipient",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:222; src/components/mailFilter/CreateModal.vue:11; src/components/ThreadEnvelope.vue:290",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Edit the raw filter script by hand, with syntax feedback",
+   "rating": "yes",
+   "evidence": "src/components/SieveFilterForm.vue:20; src/components/SieveFilterForm.vue:96; lib/Controller/SieveController.php:85",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Define quick actions that run several steps on a conversation in one click",
+   "rating": "yes",
+   "evidence": "src/components/quickActions/Settings.vue:30; lib/Controller/QuickActionsController.php:55; lib/Controller/ActionStepController.php:40",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Run a quick action on a conversation from the list",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:260; src/components/Envelope.vue:1123",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Combine spam, tag, move, delete, read, important and favourite steps in a quick action",
+   "rating": "yes",
+   "evidence": "src/components/quickActions/Settings.vue:59; src/components/quickActions/Settings.vue:101",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Set an automatic reply for a period, with subject and text",
+   "rating": "yes",
+   "evidence": "src/components/OutOfOfficeForm.vue:28; src/components/OutOfOfficeForm.vue:55; lib/Controller/OutOfOfficeController.php:89",
+   "surface": "setting",
+   "note": "Needs a Sieve server configured for the account."
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have the automatic reply follow the absence set in the user profile",
+   "rating": "yes",
+   "evidence": "src/components/OutOfOfficeForm.vue:39; lib/Controller/OutOfOfficeController.php:62; lib/Listener/OutOfOfficeListener.php:40",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Get recipient suggestions from the address book while typing",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:76; lib/Controller/AutoCompleteController.php:39; lib/Service/AutoCompletion/AutoCompleteService.php:25",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Get suggestions for addresses written to before",
+   "rating": "yes",
+   "evidence": "lib/Listener/AddressCollectionListener.php:35; lib/Service/AutoCompletion/AddressCollector.php:21; lib/Service/AutoCompletion/AutoCompleteService.php:38",
+   "surface": "screen",
+   "note": "Collection can be switched off under privacy settings."
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Address a contact group or user group as recipients",
+   "rating": "yes",
+   "evidence": "lib/Service/AutoCompletion/AutoCompleteService.php:27; src/components/Composer.vue:1825",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Mention a contact with an at sign while writing",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:224",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "See which contacts match an address in a message",
+   "rating": "yes",
+   "evidence": "src/components/RecipientBubble.vue:24; lib/Controller/ContactIntegrationController.php:44",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Add an address from a message to an existing contact",
+   "rating": "yes",
+   "evidence": "src/components/RecipientBubble.vue:43; lib/Controller/ContactIntegrationController.php:55",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Create a new contact from an address in a message",
+   "rating": "yes",
+   "evidence": "src/components/RecipientBubble.vue:52; lib/Controller/ContactIntegrationController.php:65",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Copy an address from a message to the clipboard",
+   "rating": "yes",
+   "evidence": "src/components/RecipientBubble.vue:61",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "See a recipient's contact details beside the composer",
+   "rating": "yes",
+   "evidence": "src/components/NewMessageModal.vue:24; src/components/RecipientInfo.vue:27",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "See sender pictures taken from the address book, Gravatar or the sender's website icon",
+   "rating": "yes",
+   "evidence": "lib/Service/Avatar/AddressbookSource.php:18; lib/Service/Avatar/GravatarSource.php:18; lib/Service/Avatar/FaviconSource.php:19",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Have people written to counted as recent contacts across the platform",
+   "rating": "yes",
+   "evidence": "lib/Listener/InteractionListener.php:44; lib/AppInfo/Application.php:144",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See an invitation's details inside the message",
+   "rating": "yes",
+   "evidence": "src/components/Message.vue:27; src/components/Imip.vue:25; src/components/imip/EventData.vue:39",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept, decline or tentatively accept an invitation from the message",
+   "rating": "yes",
+   "evidence": "src/components/Imip.vue:81; src/components/Imip.vue:88; src/components/Imip.vue:95",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Choose the calendar an accepted invitation is saved to and add a comment",
+   "rating": "yes",
+   "evidence": "src/components/Imip.vue:50; src/components/Imip.vue:69",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See that an event was updated or cancelled by its organiser",
+   "rating": "yes",
+   "evidence": "src/components/Imip.vue:39; src/components/Imip.vue:352",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "See how an attendee answered an invitation I sent",
+   "rating": "yes",
+   "evidence": "src/components/Imip.vue:359; src/components/Imip.vue:367",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have invitation replies and cancellations applied to the calendar without opening the message",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/IMipMessageJob.php:23; lib/Service/IMipService.php:41",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have incoming invitations added to the calendar as tentative automatically",
+   "rating": "yes",
+   "evidence": "src/components/CalendarSettings.vue:13; lib/Service/IMipService.php:172",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Create a calendar event from a message, with attendees taken from it",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:271; src/components/EventModal.vue:8; src/components/EventModal.vue:51",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Answer a message with a meeting proposal",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:162; src/components/Envelope.vue:413",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Create a task from a message",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:173; src/components/TaskModal.vue:8; src/components/ThreadEnvelope.vue:275",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Import an attached calendar file into a chosen calendar",
+   "rating": "yes",
+   "evidence": "src/components/MessageAttachment.vue:33; src/components/MessageAttachment.vue:256",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Add a detected flight, train or event booking to a calendar",
+   "rating": "yes",
+   "evidence": "src/components/itinerary/CalendarImport.vue:19; src/components/itinerary/FlightReservation.vue:158",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Let another user read, send and delete mail in my account",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:46; src/components/DelegationModal.vue:55; lib/Controller/DelegationController.php:58",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See who has access to my account and take it away",
+   "rating": "yes",
+   "evidence": "src/components/DelegationModal.vue:37; lib/Controller/DelegationController.php:40; lib/Controller/DelegationController.php:96",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Work in an account delegated to me alongside my own, marked as delegated",
+   "rating": "yes",
+   "evidence": "lib/Controller/PageController.php:169; src/components/AppSettingsMenu.vue:43; lib/Service/AccountService.php:72",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Have actions taken on someone's behalf written to the log",
+   "rating": "yes",
+   "evidence": "lib/Service/DelegationService.php:186; lib/Controller/ListController.php:92",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a text block with users or groups",
+   "rating": "yes",
+   "evidence": "src/components/textBlocks/ListItem.vue:49; lib/Controller/TextBlockSharesController.php:56; lib/Service/TextBlockService.php:130",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Use text blocks that others shared with me",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:180; lib/Service/TextBlockService.php:44",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Have actions hidden on folders where the server grants me limited rights",
+   "rating": "partial",
+   "evidence": "src/util/acl.js:11; lib/Db/Mailbox.php:188; src/components/NavigationMailbox.vue:401",
+   "surface": "background",
+   "note": "Rights reported by the mail server are read and checked before actions are offered; granting or changing rights on a folder is not offered."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have remote pictures blocked until I choose to show them",
+   "rating": "yes",
+   "evidence": "src/components/BlockedContentWarning.vue:10; src/components/BlockedContentWarning.vue:17",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Always show pictures from a chosen sender or domain",
+   "rating": "yes",
+   "evidence": "src/components/BlockedContentWarning.vue:25; src/components/BlockedContentWarning.vue:33; lib/Controller/TrustedSendersController.php:39",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Review and remove trusted senders",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:194; src/components/TrustedSenders.vue:20; lib/Controller/TrustedSendersController.php:60",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have remote pictures fetched through the server rather than by the browser",
+   "rating": "yes",
+   "evidence": "lib/Service/HtmlPurify/TransformImageSrc.php:59; lib/Controller/ProxyController.php:70",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have links in messages stripped of referrer information",
+   "rating": "yes",
+   "evidence": "lib/Service/HtmlPurify/TransformNoReferrer.php:48; lib/Service/HtmlPurify/TransformHTMLLinks.php:34",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See a warning on a message that looks like phishing",
+   "rating": "yes",
+   "evidence": "src/components/Message.vue:11; src/components/PhishingWarning.vue:8; lib/Service/PhishingDetection/PhishingDetectionService.php:36",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See the links whose visible text points somewhere else",
+   "rating": "yes",
+   "evidence": "src/components/PhishingWarning.vue:18; lib/Service/PhishingDetection/PhishingDetectionService.php:82",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when the reply address differs from the sender",
+   "rating": "yes",
+   "evidence": "lib/Service/PhishingDetection/PhishingDetectionService.php:66; src/components/PhishingWarning.vue:9",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when a sender uses a known contact's name with another address",
+   "rating": "yes",
+   "evidence": "lib/Service/PhishingDetection/PhishingDetectionService.php:69; lib/Service/PhishingDetection/PhishingDetectionService.php:72",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be warned when a message is dated in the future",
+   "rating": "yes",
+   "evidence": "lib/Service/PhishingDetection/PhishingDetectionService.php:76",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "List internal addresses and domains and have all other addresses highlighted as external",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:204; src/components/InternalAddress.vue:59; lib/Controller/InternalAddressController.php:37",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Import an S/MIME certificate, as PKCS #12 or PEM with private key",
+   "rating": "yes",
+   "evidence": "src/components/smime/SmimeCertificateModal.vue:54; src/components/smime/SmimeCertificateModal.vue:75; lib/Controller/SmimeCertificatesController.php:78",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See imported certificates with their expiry date and delete one",
+   "rating": "yes",
+   "evidence": "src/components/smime/SmimeCertificateModal.vue:17; src/components/smime/SmimeCertificateModal.vue:35; lib/Controller/SmimeCertificatesController.php:61",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Assign a certificate to an account or to each alias",
+   "rating": "yes",
+   "evidence": "src/components/CertificateSettings.vue:13; src/components/CertificateSettings.vue:28; lib/Controller/AccountsController.php:504",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Sign an outgoing message with S/MIME",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:449; lib/Service/SmimeService.php:384",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Encrypt an outgoing message with S/MIME",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:457; lib/Service/SmimeService.php:617",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be told which recipients have no certificate before encrypting",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:281",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Read an S/MIME encrypted message",
+   "rating": "yes",
+   "evidence": "lib/Service/SmimeService.php:449; src/components/ThreadEnvelope.vue:745",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See whether a message's S/MIME signature is verified",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:737; src/components/ThreadEnvelope.vue:740; lib/Service/SmimeService.php:62",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Encrypt an outgoing message with PGP through the Mailvelope browser extension",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:466; src/components/Composer.vue:312; src/crypto/mailvelope.js:1",
+   "surface": "screen",
+   "note": "Needs the Mailvelope extension enabled for the domain; keys stay in the extension."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Read a PGP encrypted message through the Mailvelope browser extension",
+   "rating": "yes",
+   "evidence": "src/components/MessageEncryptedBody.vue:10; src/components/AppSettingsMenu.vue:224",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Be told which recipients have no PGP key before encrypting",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:288",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have the sender's domain signature checked on received mail",
+   "rating": "yes",
+   "evidence": "lib/Controller/MessagesController.php:298; lib/Service/DkimService.php:39; src/components/ThreadEnvelope.vue:988",
+   "surface": "background",
+   "note": "The result gates the unsubscribe button; no separate badge is shown."
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Stop the client from learning from my behaviour",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:191; lib/Controller/PageController.php:237",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Switch off sender pictures fetched from outside services",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:146; lib/Controller/PageController.php:233",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a browser notification when new mail arrives",
+   "rating": "yes",
+   "evidence": "src/service/NotificationService.js:63; src/App.vue:83",
+   "surface": "screen",
+   "note": "Only while the page is open in a browser tab."
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a notification when the mailbox is more than 90 percent full",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/QuotaJob.php:91; lib/Notification/Notifier.php:55",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a notification when an account is delegated to me or the delegation ends",
+   "rating": "yes",
+   "evidence": "lib/Notification/Notifier.php:74; lib/Service/DelegationService.php:201",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See a confirmation when a message has left, with the option to take it back",
+   "rating": "yes",
+   "evidence": "src/store/outboxStore.js:181; src/store/outboxStore.js:202",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Download a message as a file",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:203; lib/Controller/MessagesController.php:553",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Save a message as a file in Files",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:214; lib/Controller/MessagesController.php:601",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Take account settings along when a user is moved to another server",
+   "rating": "yes",
+   "evidence": "lib/UserMigration/MailAccountMigrator.php:41; lib/UserMigration/MailAccountMigrator.php:120; lib/AppInfo/Application.php:174",
+   "surface": "background",
+   "note": "Through the platform's user migration feature."
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Export a user's account settings from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/ExportAccount.php:36",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Export a conversation's structure for troubleshooting",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:234; lib/Command/ExportAccountThreads.php:43",
+   "surface": "api",
+   "note": "The menu entry is meant for debugging; the command exports all threads of an account."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "See unread mail on the platform dashboard",
+   "rating": "yes",
+   "evidence": "lib/Dashboard/UnreadMailWidget.php:29; lib/AppInfo/Application.php:162",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "See important mail on the platform dashboard",
+   "rating": "yes",
+   "evidence": "lib/Dashboard/ImportantMailWidget.php:29; lib/AppInfo/Application.php:161",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Let other apps on the platform send mail through a user's account",
+   "rating": "yes",
+   "evidence": "lib/Provider/MailProvider.php:22; lib/Provider/MailService.php:186; lib/AppInfo/Application.php:167",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "List a user's mail accounts through the API",
+   "rating": "yes",
+   "evidence": "lib/Controller/AccountApiController.php:49",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Send a message through the API",
+   "rating": "yes",
+   "evidence": "lib/Controller/MessageApiController.php:103",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Fetch a message, its raw source or one attachment through the API",
+   "rating": "yes",
+   "evidence": "appinfo/routes.php:552; lib/Controller/MessageApiController.php:239; lib/Controller/MessageApiController.php:398",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "List folders and the messages in a folder through the API",
+   "rating": "yes",
+   "evidence": "lib/Controller/MailboxesApiController.php:52; lib/Controller/MailboxesApiController.php:87",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Insert links to files, events and other platform items with the smart picker",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:407; src/components/TextEditor.vue:219; src/ckeditor/smartpicker/PickerPlugin.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Make mail available to the platform's document chat assistant",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:259; lib/ContextChat/ContextChatProvider.php:51; lib/AppInfo/Application.php:185",
+   "surface": "setting",
+   "note": "Only when the Context Chat app is installed; a per-user switch."
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Use the platform's own language models and translation service for assistance",
+   "rating": "yes",
+   "evidence": "lib/Service/AiIntegrations/AiIntegrationsService.php:391; lib/Listener/TaskProcessingListener.php:33; src/service/translationService.js:17",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create mail accounts for all users of a domain from one template",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisioningSettings.vue:17; lib/Controller/SettingsController.php:50; lib/Service/Provisioning/Manager.php:95",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Keep separate templates for different mail domains",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:96; src/components/settings/AdminSettings.vue:118",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Preview what a template produces before saving",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisionPreview.vue:13; src/components/settings/ProvisioningSettings.vue:378",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create the templated accounts for everyone now",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:105; lib/Controller/SettingsController.php:45",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Remove a template together with the accounts it created",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisioningSettings.vue:359; lib/Controller/SettingsController.php:74",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Sign templated accounts in with a master password or master user",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisioningSettings.vue:196; src/components/settings/ProvisioningSettings.vue:214",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Include filter server settings in a template",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisioningSettings.vue:238",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Create aliases from a directory attribute",
+   "rating": "yes",
+   "evidence": "src/components/settings/ProvisioningSettings.vue:322; lib/Service/Provisioning/Manager.php:157",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Have templated accounts pick up the user's password at sign-in",
+   "rating": "yes",
+   "evidence": "lib/Http/Middleware/ProvisioningMiddleware.php:36; lib/Service/Provisioning/Manager.php:402; src/components/NavigationAccount.vue:17",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Allow or forbid users to add their own mail accounts",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:127; lib/Controller/SettingsController.php:104",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Store the Google sign-in client for all users",
+   "rating": "yes",
+   "evidence": "src/components/settings/GmailAdminOauthSettings.vue:8; lib/Controller/GoogleIntegrationController.php:51",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Store the Microsoft sign-in client and tenant for all users",
+   "rating": "yes",
+   "evidence": "src/components/settings/MicrosoftAdminOauthSettings.vue:8; lib/Controller/MicrosoftIntegrationController.php:49",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Send a copy to a spam report address whenever a user marks mail as spam or not spam",
+   "rating": "yes",
+   "evidence": "src/components/settings/AntiSpamSettings.vue:20; lib/Service/AntiSpamService.php:83; lib/Listener/SpamReportListener.php:29",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Switch language model features on or off for the whole server",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:142; lib/Controller/SettingsController.php:108",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Choose whether importance sorting is on by default for new users",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:158; lib/Controller/SettingsController.php:116",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the default conversation view for users who have not chosen one",
+   "rating": "yes",
+   "evidence": "src/components/settings/AdminSettings.vue:258; lib/Controller/SettingsController.php:112",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "See server health checks for mail transport and slow mail servers",
+   "rating": "yes",
+   "evidence": "lib/SetupChecks/MailTransport.php:25; lib/SetupChecks/MailConnectionPerformance.php:35; lib/AppInfo/Application.php:171",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Limit how many recipients and messages a user may send in a period",
+   "rating": "yes",
+   "evidence": "lib/Service/AntiAbuseService.php:43; lib/Service/AntiAbuseService.php:58; lib/Service/AntiAbuseService.php:80",
+   "surface": "setting",
+   "note": "Off unless the app setting abuse_detection is on; thresholds are app settings without a screen."
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the maximum attachment size, timeouts, certificate checking and sync interval in the server configuration",
+   "rating": "yes",
+   "evidence": "lib/Controller/PageController.php:231; lib/IMAP/IMAPClientFactory.php:97; lib/BackgroundJob/SyncJob.php:52",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Synchronise an account from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/SyncAccount.php:48",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Switch on connection logging for one account",
+   "rating": "yes",
+   "evidence": "lib/Command/DebugAccount.php:37; lib/IMAP/IMAPClientFactory.php:135",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "List an account's folders and inspect one folder from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/ListMailboxes.php:35; lib/Command/InspectMailbox.php:36",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Release a stuck folder lock or clear a folder's cache from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/UnlockMailbox.php:33; lib/Command/ClearMailboxCache.php:34",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Remove orphaned data from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/CleanUp.php:31",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Train the importance model or test a prediction from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/TrainAccount.php:38; lib/Command/PredictImportance.php:43",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Repair missing default tags from the command line",
+   "rating": "yes",
+   "evidence": "lib/Command/AddMissingTags.php:37",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Rewrite automatic replies for everyone who follows their profile absence",
+   "rating": "yes",
+   "evidence": "lib/Command/UpdateSystemAutoresponders.php:29",
+   "surface": "api",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Have a user's mail data removed when the user is deleted",
+   "rating": "yes",
+   "evidence": "lib/Listener/UserDeletedListener.php:24; lib/AppInfo/Application.php:149",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Read mail from any IMAP server, kept in a local cache that is updated incrementally",
+   "rating": "yes",
+   "evidence": "lib/Service/Sync/SyncService.php:80; lib/IMAP/Sync/Synchronizer.php:25",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Keep accounts synchronised in the background when nobody is looking",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/SyncJob.php:29; lib/BackgroundJob/SyncJob.php:52",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Send mail through the account's SMTP server",
+   "rating": "yes",
+   "evidence": "lib/SMTP/SmtpClientFactory.php:58; lib/Send/SendHandler.php:23; lib/Send/Chain.php:23",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Sign in to mail servers with OAuth tokens that are renewed automatically",
+   "rating": "yes",
+   "evidence": "lib/SMTP/SmtpClientFactory.php:66; lib/Listener/OauthTokenRefreshListener.php:22",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Have a copy of every sent message stored in the sent folder",
+   "rating": "yes",
+   "evidence": "lib/Send/CopySentMessageHandler.php:20; lib/Send/Chain.php:24",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Have the original marked as answered once a reply is sent",
+   "rating": "yes",
+   "evidence": "lib/Send/FlagRepliedMessageHandler.php:22; lib/Send/Chain.php:25",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Have queued and scheduled messages sent by a background worker",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/OutboxWorkerJob.php:24; lib/Service/OutboxService.php:179",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Connect to a filter server (ManageSieve) with its own host, port and credentials",
+   "rating": "yes",
+   "evidence": "src/components/SieveAccountForm.vue:12; lib/Controller/SieveController.php:115; lib/Sieve/SieveClientFactory.php:17",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "See how much of the mailbox quota is used",
+   "rating": "yes",
+   "evidence": "src/components/NavigationAccount.vue:204; lib/Controller/AccountsController.php:484; lib/Service/MailManager.php:535",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "server-and-delivery",
+   "name": "Have orphaned cache data cleaned up daily",
+   "rating": "yes",
+   "evidence": "lib/BackgroundJob/CleanupJob.php:25; lib/Service/CleanupService.php:41",
+   "surface": "background",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Use the client on a phone-sized screen, with list and message shown one at a time",
+   "rating": "partial",
+   "evidence": "src/components/MailboxThread.vue:14; src/components/MailboxThread.vue:250",
+   "surface": "screen",
+   "note": "The layout switches on a narrow screen; nothing in the source provides offline reading or an installable app."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Have incoming mail marked important automatically by a model trained on my own behaviour",
+   "rating": "yes",
+   "evidence": "lib/Service/Classification/ImportanceClassifier.php:203; lib/Service/Classification/ImportanceClassifier.php:409; src/components/AccountSettings.vue:80",
+   "surface": "background",
+   "note": "Per account switch; trained on the server from read, replied, sent and marked-important history."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Get a written summary at the top of a long conversation",
+   "rating": "yes",
+   "evidence": "src/components/ThreadSummary.vue:14; lib/Controller/ThreadController.php:145; lib/Service/AiIntegrations/AiIntegrationsService.php:143",
+   "surface": "screen",
+   "note": "Needs language model processing enabled by the administrator and a text provider."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "See a one-line generated summary instead of the text preview in the list",
+   "rating": "yes",
+   "evidence": "src/components/Envelope.vue:179; lib/Listener/NewMessagesSummarizeListener.php:54; lib/Service/AiIntegrations/AiIntegrationsService.php:76",
+   "surface": "screen",
+   "note": "Needs language model processing enabled."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Pick from suggested short replies to a message",
+   "rating": "yes",
+   "evidence": "src/components/Message.vue:54; lib/Controller/MessagesController.php:1054; lib/Service/AiIntegrations/AiIntegrationsService.php:263",
+   "surface": "screen",
+   "note": "Needs language model processing enabled."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Be reminded of sent messages that needed an answer and got none",
+   "rating": "yes",
+   "evidence": "src/components/MailboxThread.vue:120; lib/BackgroundJob/FollowUpClassifierJob.php:24; lib/Service/AiIntegrations/AiIntegrationsService.php:341",
+   "surface": "screen",
+   "note": "Per-user switch (src/components/AppSettingsMenu.vue:389); needs language model processing enabled."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Dismiss a follow-up reminder on a message",
+   "rating": "yes",
+   "evidence": "src/components/ThreadEnvelope.vue:15; src/components/ThreadEnvelope.vue:19; lib/Controller/FollowUpController.php:45",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Have the title and description of a new event drafted from the conversation",
+   "rating": "yes",
+   "evidence": "src/components/EventModal.vue:254; lib/Controller/ThreadController.php:177; lib/Service/AiIntegrations/AiIntegrationsService.php:208",
+   "surface": "screen",
+   "note": "Needs language model processing enabled."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Translate a message into a chosen language",
+   "rating": "yes",
+   "evidence": "src/components/MenuEnvelope.vue:110; src/components/TranslationModal.vue:10; src/service/translationService.js:41",
+   "surface": "screen",
+   "note": "Needs language model processing enabled and a translation provider (lib/Controller/PageController.php:323)."
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Be offered a translation when a message is in a foreign language",
+   "rating": "yes",
+   "evidence": "src/components/NeedsTranslationInfo.vue:11; src/util/languageDetection.ts:45; src/components/MessageHTMLBody.vue:16",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "assistance",
+   "name": "Label an outgoing message as written with AI and see that label on received mail",
+   "rating": "yes",
+   "evidence": "src/components/Composer.vue:442; lib/Service/MailTransmission.php:140; src/components/ThreadEnvelope.vue:71",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Work through the list with the keyboard: next, previous, delete, archive, favourite, unread and refresh",
+   "rating": "yes",
+   "evidence": "src/components/MailboxThread.vue:271; src/components/Mailbox.vue:373",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Look up the keyboard shortcuts in the settings",
+   "rating": "yes",
+   "evidence": "src/components/AppSettingsMenu.vue:271; src/components/AppSettingsMenu.vue:283",
+   "surface": "setting",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Use the client in one of about ninety interface languages",
+   "rating": "yes",
+   "evidence": "l10n/en_GB.json:1; l10n/nl.json:1",
+   "surface": "screen",
+   "note": "88 translation files ship in l10n/."
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Write right-to-left text in the composer",
+   "rating": "yes",
+   "evidence": "src/components/TextEditor.vue:177; src/ckeditor/direction/TextDirectionPlugin.js:1",
+   "surface": "screen",
+   "note": ""
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Have controls announced by name to a screen reader",
+   "rating": "partial",
+   "evidence": "src/components/MessageHTMLBody.vue:27; src/components/ComposerAttachment.vue:28",
+   "surface": "screen",
+   "note": "About 120 labelled controls in the components; coverage was not audited by reading."
+  }
+ ]
+}

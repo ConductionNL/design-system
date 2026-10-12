@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: checks before sending and what happens after Send</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2000px; padding: 24px; display: grid; grid-template-columns: repeat(3, 448px); grid-auto-rows: max-content; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="p" hint-placeholder-count="13">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px"><span style="color: #5e6168; font-weight: 400">{{ p.letter }}</span> &nbsp;{{ p.caption }}</figcaption>
+      <div style="position: relative; height: 330px; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <section aria-label="{{ p.windowLabel }}" style="position: absolute; left: 12px; right: 12px; top: 12px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-bottom: 0; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 -4px 16px rgba(27,28,29,0.16); overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 36px; padding: 0 8px 0 14px; background: #234a78; color: #ffffff">
+            <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.title }}</span>
+            <button type="button" aria-label="Close" style="width: 24px; height: 24px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 36px; box-sizing: border-box; padding: 5px 12px; border-bottom: 1px solid #e4e6ea; font-size: 12px">
+            <span style="flex: none; width: 44px; color: #5e6168">To</span>
+            <sc-for list="{{ p.chips }}" as="c" hint-placeholder-count="2">
+              <span aria-label="{{ c.label }}" style="{{ c.style }}"><span style="{{ c.avatar }}">{{ c.initials }}</span>{{ c.name }}<sc-if value="{{ c.bad }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #ab0000"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg></sc-if></span>
+            </sc-for>
+            <sc-if value="{{ p.more }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ p.more }}</span></sc-if>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; height: 32px; box-sizing: border-box; padding: 0 12px; border-bottom: 1px solid #e4e6ea; font-size: 12px"><span style="flex: none; width: 44px; color: #5e6168">Subject</span><span style="{{ p.subjectStyle }}">{{ p.subject }}</span></div>
+          <sc-if value="{{ p.noticeTop }}" hint-placeholder-val="{{ false }}">
+            <div role="{{ p.noticeRole }}" style="{{ p.noticeStyle }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>
+              <span style="flex: 1 1 auto; min-width: 0">{{ p.noticeText }}</span>
+              <sc-if value="{{ p.noticeAction }}" hint-placeholder-val="{{ false }}"><button type="button" style="flex: none; height: 24px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">{{ p.noticeAction }}</button></sc-if>
+            </div>
+          </sc-if>
+          <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 10px 14px; font-size: 13px; line-height: 19px; color: #1b1c1d">{{ p.body }}</div>
+          <sc-if value="{{ p.files }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 2px; padding: 6px 12px; border-top: 1px solid #e4e6ea">
+              <sc-for list="{{ p.files }}" as="f" hint-placeholder-count="2">
+                <div style="display: flex; align-items: center; gap: 8px; height: 26px; font-size: 12px"><span style="{{ f.badge }}">{{ f.ext }}</span><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.name }}</span><span style="flex: none; color: #5e6168; white-space: nowrap">{{ f.meta }}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ p.noticeBottom }}" hint-placeholder-val="{{ false }}">
+            <div role="{{ p.noticeRole }}" style="{{ p.noticeStyle }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg>
+              <span style="flex: 1 1 auto; min-width: 0">{{ p.noticeText }}</span>
+              <sc-if value="{{ p.noticeAction }}" hint-placeholder-val="{{ false }}"><button type="button" style="flex: none; height: 24px; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">{{ p.noticeAction }}</button></sc-if>
+            </div>
+          </sc-if>
+          <div style="flex: none; display: flex; align-items: center; gap: 8px; padding: 8px 12px 10px; border-top: 1px solid #e4e6ea">
+            <button type="button" aria-disabled="{{ p.sendOff }}" style="{{ p.sendStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send</button>
+            <span style="flex: 1 1 auto"></span>
+            <span style="font-size: 12px; color: #5e6168">{{ p.foot }}</span>
+          </div>
+        </section>
+        <sc-if value="{{ p.dialog }}" hint-placeholder-val="{{ true }}">
+          <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27,28,29,0.4)"></div>
+          <div role="alertdialog" aria-modal="true" aria-label="{{ p.dialogTitle }}" style="position: absolute; left: 34px; right: 34px; top: 70px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 20px 20px 16px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">{{ p.dialogTitle }}</h2>
+            <p style="margin: 0; font-size: 13px; line-height: 19px; color: #3d4047">{{ p.dialogText }}</p>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; flex-wrap: wrap">
+              <sc-for list="{{ p.buttons }}" as="b" hint-placeholder-count="2"><button type="button" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ p.toast }}" hint-placeholder-val="{{ false }}">
+          <div role="status" aria-live="polite" style="position: absolute; left: 44px; right: 44px; bottom: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 10px 14px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); font-size: 13px">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <sc-if value="{{ p.spinner }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg></sc-if>
+              <sc-if value="{{ p.check }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #538b28"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4 12 14.01l-3-3"></path></svg></sc-if>
+              <span style="flex: 1 1 auto; min-width: 0; color: #1b1c1d">{{ p.toastText }}</span>
+              <sc-if value="{{ p.undo }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Undo sending, 8 seconds left" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v6h6M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>Undo<span style="font-weight: 400; color: #5e6168">8 s</span></button></sc-if>
+              <sc-if value="{{ p.cancel }}" hint-placeholder-val="{{ false }}"><button type="button" style="flex: none; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap">Cancel</button></sc-if>
+            </div>
+            <sc-if value="{{ p.progress }}" hint-placeholder-val="{{ false }}">
+              <span role="progressbar" aria-label="Sending, 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="display: block; height: 6px; border-radius: 3px; background: #eef0f3; overflow: hidden"><span style="display: block; width: 60%; height: 100%; background: var(--sc-action, #3669a5)"></span></span>
+              <span style="font-size: 12px; color: #5e6168">{{ p.progressText }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </figure>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const chipBase = 'display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); font-size: 12px; white-space: nowrap; box-sizing: border-box; ';
+    const chipOk = chipBase + 'background: #eaf0f7; color: #1b1c1d; border: 1px solid #eaf0f7';
+    const chipBad = chipBase + 'background: #ffffff; color: #ab0000; border: 1px solid #ab0000';
+    const avatar = 'width: 18px; height: 18px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; ';
+    const chip = (initials, name, bad, label) => ({ initials, name, bad: !!bad, label: label || name, style: bad ? chipBad : chipOk, avatar: avatar + (bad ? 'background: #ab0000; color: #ffffff' : 'background: #234a78; color: #ffffff') });
+    const marc = chip('MD', 'Marc Dubois'), tom = chip('TA', 'Tom Achterberg'), jana = chip('JK', 'Jana Köhler'), sven = chip('SL', 'Sven Lindqvist'), priya = chip('PR', 'Priya Raman');
+    const primary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const secondary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const danger = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #ab0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #ab0000; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const sendOn = 'display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const sendOffStyle = 'display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #eef0f3; color: #5e6168; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap; cursor: not-allowed';
+    const noticeBase = 'display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #e4e6ea; font-size: 12px; line-height: 17px; ';
+    const info = noticeBase + 'background: #eaf0f7; color: #234a78';
+    const error = noticeBase + 'background: #ffffff; color: #ab0000; border-left: 3px solid #ab0000';
+    const badge = 'flex: none; width: 34px; height: 20px; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; color: #ffffff; background: ';
+    const subj = 'color: #1b1c1d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis';
+    const base = {
+      windowLabel: 'Compose window', title: 'New message', chips: [marc], more: '', subject: 'Kick-off Lyon phase 2 moves to the afternoon', subjectStyle: subj,
+      noticeTop: false, noticeBottom: false, noticeRole: 'status', noticeStyle: info, noticeText: '', noticeAction: '',
+      body: 'Hi Marc, confirmed: the kick-off on Monday 2 November moves to 14:00 to 16:00 at your office.', files: false,
+      sendOff: 'false', sendStyle: sendOn, foot: 'Draft saved 09:41',
+      dialog: false, dialogTitle: '', dialogText: '', buttons: [],
+      toast: false, spinner: false, check: false, toastText: '', undo: false, cancel: false, progress: false, progressText: ''
+    };
+    const f = (o) => ({ ...base, ...o, windowLabel: o.title ? 'Compose window: ' + o.title : base.windowLabel });
+    const frames = [
+      f({ letter: 'a', caption: 'No subject: a question before sending', subject: 'No subject', subjectStyle: 'color: #5e6168; font-style: italic',
+        dialog: true, dialogTitle: 'Send without a subject?', dialogText: 'This message has no subject. Marc will find it harder to place and to find back later.',
+        buttons: [{ label: 'Add a subject', style: secondary }, { label: 'Send anyway', style: primary }] }),
+      f({ letter: 'b', caption: 'The text says attached, but nothing is', body: 'Hi Marc, the agenda for the kick-off is attached. Let me know what you would like to add.',
+        dialog: true, dialogTitle: 'No attachment added', dialogText: 'Your text mentions an attachment ("is attached"), but there is no file on this message.',
+        buttons: [{ label: 'Send anyway', style: secondary }, { label: 'Attach a file', style: primary }] }),
+      f({ letter: 'c', caption: 'A reply to a no-reply address', title: 'Re: [Northwind - Bug #58231] Gantt PDF export drops trailing columns', chips: [chip('OP', 'no-reply@openproject.northwind-projects.test', true)],
+        subject: 'Re: [Northwind - Bug #58231] Gantt PDF export drops trailing columns', noticeTop: true, noticeStyle: info, noticeText: 'This address does not read replies. Nobody at OpenProject notifications will see this message.', noticeAction: 'Comment in BUG #58231',
+        body: 'Priya, the fix looks good, the last week shows again in the export.', foot: 'Draft saved 10:12' }),
+      f({ letter: 'd', caption: 'Accented characters before the @', chips: [chip('RK', 'rené.koch@stadtwerke-kassel.de'), jana], subject: 'Angebot Schulung Projektleiter, 12 Personen', body: 'Guten Tag Herr Koch, anbei unser Angebot für die Schulung.',
+        dialog: true, dialogTitle: 'Accented characters in an address', dialogText: 'rené.koch@stadtwerke-kassel.de has an accented character before the @. Some mail servers reject such addresses, so the message may bounce.',
+        buttons: [{ label: 'Check the address', style: secondary }, { label: 'Send anyway', style: primary }] }),
+      f({ letter: 'e', caption: 'Many recipients: a hint to use blind copy', chips: [marc, tom, jana, sven, priya], more: 'and 4 more', subject: 'Release 16.5: what changes for you',
+        noticeTop: true, noticeStyle: info, noticeText: '9 recipients. In To and Cc they all see each other\'s addresses. Put them in Bcc?', noticeAction: 'Move to Bcc',
+        body: 'Dear all, release 16.5 arrives on 23 October. Here is what changes for your project.' }),
+      f({ letter: 'f', caption: 'More recipients than allowed: Send is off', chips: [marc, tom, jana, sven, priya], more: 'and 47 more', subject: 'Release 16.5: what changes for you',
+        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'This message has 52 recipients. Your administrator allows 50 per message. Remove 2, or send it in two messages.',
+        body: 'Dear all, release 16.5 arrives on 23 October.', sendOff: 'true', sendStyle: sendOffStyle, foot: '52 of 50 recipients' }),
+      f({ letter: 'g', caption: 'Attachments over the size limit: Send is off', chips: [priya], subject: 'Gantt exports for the Kassel case', body: 'Priya, all three exports that show the cut-off week.',
+        files: [{ ext: 'PDF', name: 'gantt-export-week-41.pdf', meta: '11.2 MB', badge: badge + '#ab0000' }, { ext: 'PDF', name: 'gantt-export-week-42.pdf', meta: '10.8 MB', badge: badge + '#ab0000' }, { ext: 'PNG', name: 'screenshot-gantt-week-42.png', meta: '6.4 MB', badge: badge + '#08a5df' }],
+        noticeBottom: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'Attachments total 28.4 MB. The limit is 25 MB per message.', noticeAction: 'Send the largest as a link',
+        sendOff: 'true', sendStyle: sendOffStyle, foot: '28.4 of 25 MB' }),
+      f({ letter: 'h', caption: 'A typed address that is not valid', chips: [chip('?', 'marc.dubois@', true, 'marc.dubois@, not a valid address')], subject: 'Kick-off Lyon phase 2 moves to the afternoon',
+        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'marc.dubois@ is not a valid address. The part after the @ is missing.', noticeAction: 'Edit' }),
+      f({ letter: 'i', caption: 'An address that does not exist here, told at once', chips: [chip('JK', 'jana.kohler@northwind-projects.test', true, 'jana.kohler@northwind-projects.test, no such mailbox')], subject: 'Gantt export: fixed in 16.5',
+        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'There is no mailbox jana.kohler@northwind-projects.test here. Did you mean jana.koehler@stadtwerke-kassel.de?', noticeAction: 'Use the suggestion',
+        body: 'Jana, the cut-off week is fixed in release 16.5.' }),
+      f({ letter: 'j', caption: 'Closing the window: keep or discard the draft', title: 'Re: Gantt export cuts off the last week', chips: [jana], subject: 'Re: Gantt export cuts off the last week', body: 'Hi Jana, thanks for the two screenshots. We can reproduce it and',
+        dialog: true, dialogTitle: 'Keep this draft?', dialogText: 'Re: Gantt export cuts off the last week is not finished. Keep it in Drafts, or discard it?',
+        buttons: [{ label: 'Discard', style: danger }, { label: 'Keep draft', style: primary }], foot: 'Draft saved 10:12' }),
+      f({ letter: 'k', caption: 'Starting a new message while one is unfinished', title: 'Re: Gantt export cuts off the last week', chips: [jana], subject: 'Re: Gantt export cuts off the last week', body: 'Hi Jana, thanks for the two screenshots. We can reproduce it and',
+        dialog: true, dialogTitle: 'Replace the unfinished message?', dialogText: 'You are still writing Re: Gantt export cuts off the last week. Save it as a draft and start the new message, or keep writing?',
+        buttons: [{ label: 'Keep writing', style: secondary }, { label: 'Discard and start', style: danger }, { label: 'Save and start', style: primary }], foot: 'Not saved yet' }),
+      f({ letter: 'l', caption: 'After Send: the sending toast with progress', chips: [marc, tom], subject: 'Kick-off Lyon phase 2 moves to the afternoon', foot: 'Sending',
+        toast: true, spinner: true, toastText: 'Sending to Marc Dubois and Tom Achterberg', cancel: true, progress: true, progressText: '2 of 3 attachments uploaded, 1.4 of 2.3 MB' }),
+      f({ letter: 'm', caption: 'Sent: the first seconds can be taken back', chips: [marc, tom], subject: 'Kick-off Lyon phase 2 moves to the afternoon', foot: 'Sent 10:16',
+        toast: true, check: true, toastText: 'Sent to Marc Dubois and Tom Achterberg', undo: true })
+    ];
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

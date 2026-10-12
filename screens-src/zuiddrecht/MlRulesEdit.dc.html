@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: edit a rule, as a form or as a script</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1900px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Edit rule over the Rules section of the settings dialog, Form tab open</figcaption>
+    <div style="position: relative; height: 1060px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,1005px"></dc-import></div>
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" wide="true" selected="" hint-size="1145px,1005px"></dc-import></div>
+      </div>
+      <div style="position: absolute; inset: 0; z-index: 20; background: rgba(27,28,29,0.45); display: flex; align-items: flex-start; justify-content: center; padding-top: 40px">
+        <div role="dialog" aria-modal="true" aria-label="Settings, Rules" style="position: relative; width: 960px; min-height: 920px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+          <div style="flex: 0 0 236px; width: 236px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlSettingsNav" active="Rules" hint-size="236px,680px"></dc-import></div>
+          <section aria-label="Rules" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
+            <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+              <h3 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Rules</h3>
+              <button type="button" aria-label="Close settings" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+            </div>
+            <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 18px 24px 24px">
+              <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Rules run on the server when mail arrives, in this order, also while the app is closed.</p>
+              <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+                <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Rule</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Does</th><th scope="col" style="text-align: right; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">On</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+                    <tr style="{{ r.style }}"><td style="padding: 0 8px; font-weight: 500">{{ r.name }}</td><td style="padding: 0 8px; color: #5e6168">{{ r.does }}</td><td style="padding: 0 8px; text-align: right"><button type="button" role="switch" aria-checked="true" aria-label="Rule {{ r.name }} is on" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button></td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <div style="display: flex; align-items: center; gap: 8px"><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add rule</button></div>
+            </div>
+          </section>
+          <div style="position: absolute; inset: 0; z-index: 2; background: rgba(27,28,29,0.25)"></div>
+        </div>
+        <div role="dialog" aria-modal="true" aria-labelledby="ml-rule-title" style="position: absolute; top: 88px; left: 50%; transform: translateX(-50%); width: 820px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+            <h3 id="ml-rule-title" style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Edit rule</h3>
+            <button type="button" aria-label="Close edit rule" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div role="tablist" aria-label="Edit as" style="flex: none; display: flex; gap: 0; padding: 0 24px; border-bottom: 1px solid #e4e6ea">
+            <button type="button" role="tab" aria-selected="true" style="height: 42px; padding: 0 14px; border: 0; border-bottom: 2px solid #3669a5; margin-bottom: -1px; background: transparent; color: #234a78; font: 600 14px 'Fira Sans', sans-serif; letter-spacing: 0.04em; text-transform: uppercase">Form</button>
+            <button type="button" role="tab" aria-selected="false" style="height: 42px; padding: 0 14px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; letter-spacing: 0.04em; text-transform: uppercase">Script</button>
+            <span style="flex: 1 1 auto"></span>
+            <span style="align-self: center; font-size: 12px; color: #5e6168">Both tabs edit the same rule.</span>
+          </div>
+          <div role="tabpanel" aria-label="Form" style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 20px">
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: #3d4047; max-width: 380px"><span>Name</span><input type="text" value="Kassel: file and label" style="height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d"></label>
+
+            <fieldset style="margin: 0; padding: 16px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 8px">
+              <legend style="padding: 0; margin: 0; float: left; width: 100%; font-weight: 600">When mail arrives that matches</legend>
+              <div role="radiogroup" aria-label="Require all or any of the conditions" style="display: flex; align-items: center; gap: 16px; font-size: 13px; margin-bottom: 2px">
+                <label style="display: flex; align-items: center; gap: 8px"><input type="radio" name="ml-rule-any" checked style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">All of these conditions</label>
+                <label style="display: flex; align-items: center; gap: 8px"><input type="radio" name="ml-rule-any" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5">Any of these conditions</label>
+                <span style="font-size: 12px; color: #5e6168">Match on subject, sender or recipient: is, contains or matches wildcard.</span>
+              </div>
+              <sc-for list="{{ conditions }}" as="c" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 150px 170px 1fr 32px; gap: 8px; align-items: center">
+                  <button type="button" aria-haspopup="listbox" aria-label="Field: {{ c.field }}" style="{{ chooser }}"><span>{{ c.field }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                  <button type="button" aria-haspopup="listbox" aria-label="How it matches: {{ c.how }}" style="{{ chooser }}"><span>{{ c.how }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                  <input type="text" value="{{ c.value }}" aria-label="Value" style="height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d">
+                  <button type="button" aria-label="Remove this condition" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                </div>
+              </sc-for>
+              <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a condition</button>
+            </fieldset>
+
+            <fieldset style="margin: 0; padding: 16px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+              <legend style="padding: 0; margin: 0 0 6px; float: left; width: 100%; font-weight: 600">Then</legend>
+              <sc-for list="{{ actions }}" as="a" hint-placeholder-count="7">
+                <div style="display: flex; align-items: center; gap: 12px; min-height: 40px; border-bottom: 1px solid #e4e6ea">
+                  <sc-if value="{{ a.on }}" hint-placeholder-val="{{ true }}"><input type="checkbox" checked aria-label="{{ a.label }}" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5"></sc-if>
+                  <sc-if value="{{ a.off }}" hint-placeholder-val="{{ false }}"><input type="checkbox" aria-label="{{ a.label }}" style="width: 16px; height: 16px; margin: 0; accent-color: #3669a5"></sc-if>
+                  <span style="flex: 0 0 230px; font-size: 13px; {{ a.labelStyle }}">{{ a.label }}</span>
+                  <sc-if value="{{ a.hasChooser }}" hint-placeholder-val="{{ false }}"><button type="button" aria-haspopup="listbox" aria-label="{{ a.label }}: {{ a.value }}" style="{{ a.chooserStyle }}"><span style="display: inline-flex; align-items: center; gap: 8px"><sc-if value="{{ a.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width: 10px; height: 10px; border-radius: 5px; background: #ff9d2e"></span></sc-if>{{ a.value }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></sc-if>
+                  <sc-if value="{{ a.hasInput }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ a.value }}" placeholder="{{ a.placeholder }}" aria-label="{{ a.label }}" style="flex: 0 0 300px; height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px 'Fira Sans', sans-serif; color: #1b1c1d"></sc-if>
+                  <span style="flex: 1 1 auto; min-width: 0; font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ a.note }}</span>
+                </div>
+              </sc-for>
+            </fieldset>
+
+            <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Save rule</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Cancel</button>
+              <span style="flex: 1 1 auto"></span>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Test on the last 50 messages</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Script tab: your own scripts on the left, the raw script on the right with the mistake underlined and named by line</figcaption>
+    <div style="position: relative; height: 700px; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: center; padding-top: 24px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27,28,29,0.45)"></div>
+      <div role="dialog" aria-modal="true" aria-label="Edit rule, Script tab" style="position: relative; z-index: 2; width: 820px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+        <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Edit rule</h3>
+          <button type="button" aria-label="Close edit rule" style="width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+        <div role="tablist" aria-label="Edit as" style="flex: none; display: flex; gap: 0; padding: 0 24px; border-bottom: 1px solid #e4e6ea">
+          <button type="button" role="tab" aria-selected="false" style="height: 42px; padding: 0 14px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; letter-spacing: 0.04em; text-transform: uppercase">Form</button>
+          <button type="button" role="tab" aria-selected="true" style="height: 42px; padding: 0 14px; border: 0; border-bottom: 2px solid #3669a5; margin-bottom: -1px; background: transparent; color: #234a78; font: 600 14px 'Fira Sans', sans-serif; letter-spacing: 0.04em; text-transform: uppercase">Script</button>
+          <span style="flex: 1 1 auto"></span>
+          <span style="align-self: center; font-size: 12px; color: #5e6168">Sieve, the filter language your mail server runs. Edit the script by hand here.</span>
+        </div>
+        <div role="tabpanel" aria-label="Script" style="flex: 1 1 auto; display: flex; min-height: 0">
+          <section aria-label="Your scripts" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 16px 24px; border-right: 1px solid #e4e6ea">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">Your scripts</h4><p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">One script is active at a time. The form rules live in northwind-rules.</p></div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+              <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Script</th><th scope="col" style="text-align: right; padding: 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Active</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ scripts }}" as="s" hint-placeholder-count="3">
+                  <tr style="{{ s.style }}">
+                    <td style="padding: 0 4px"><span style="display: flex; flex-direction: column; line-height: 16px"><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500"><sc-if value="{{ s.active }}" hint-placeholder-val="{{ false }}"><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #d3f9d8; border: 1.5px solid #8ff09c"></span></sc-if>{{ s.name }}</span><span style="font-size: 12px; color: #5e6168">{{ s.meta }}</span></span></td>
+                    <td style="padding: 0 4px; text-align: right"><span style="display: inline-flex; align-items: center; gap: 2px"><button type="button" role="switch" aria-checked="{{ s.checked }}" aria-label="Switch on {{ s.name }}" style="{{ s.switch }}"><span style="{{ s.knob }}"></span></button><button type="button" aria-label="Rename {{ s.name }}" style="width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button type="button" aria-label="Delete {{ s.name }}" style="width: 26px; height: 26px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg>Upload a script</button>
+              <span style="font-size: 12px; color: #5e6168">.sieve or .txt</span>
+            </div>
+            <p style="margin: auto 0 0; font-size: 12px; color: #5e6168; line-height: 18px">Switching a script on switches the others off. Rename and delete per row.</p>
+          </section>
+          <section aria-label="Script editor" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 16px 24px 16px 16px">
+            <div style="display: flex; align-items: center; gap: 8px"><h4 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">northwind-rules</h4><span style="font-size: 12px; color: #5e6168">edited, not saved</span></div>
+            <div role="textbox" aria-multiline="true" aria-label="Script, edit by hand" style="display: flex; flex-direction: column; box-sizing: border-box; padding: 8px 0; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px ui-monospace, 'Fira Mono', monospace; line-height: 22px; color: #1b1c1d; overflow: hidden">
+              <sc-for list="{{ lines }}" as="l" hint-placeholder-count="12">
+                <div style="{{ l.style }}"><span aria-hidden="true" style="flex: none; width: 36px; padding-right: 10px; box-sizing: border-box; text-align: right; color: #5e6168; user-select: none">{{ l.n }}</span><span style="white-space: pre; {{ l.textStyle }}">{{ l.text }}</span></div>
+              </sc-for>
+            </div>
+            <div role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #fbeaea; font-size: 13px; line-height: 19px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #cc0000"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg><span><strong style="font-weight: 600">Line 9:</strong> the folder name is not closed, a quote is missing after Kassel. Fix it before saving.</span></div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: auto">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Check script for mistakes</button>
+              <button type="button" disabled aria-disabled="true" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #eef0f3; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Save script</button>
+              <span style="font-size: 12px; color: #5e6168">Save is available once the check finds no mistakes.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    const chooser = 'display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; padding: 0 8px 0 10px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const rules = [
+      ['Kassel: file and label', 'Move to Customers / Kassel, add Waiting for customer, stop', true],
+      ['Lyon: file', 'Move to Customers / Lyon', false],
+      ['Newsletters', 'Add Newsletter, mark as read', false]
+    ].map(([name, does, on]) => ({ name, does, style: 'height: 40px; border-bottom: 1px solid #e4e6ea; ' + (on ? 'background: #eaf0f7;' : '') }));
+    const conditions = [
+      { field: 'Sender', how: 'contains', value: 'stadtwerke-kassel' },
+      { field: 'Subject', how: 'matches wildcard', value: '*Gantt*' },
+      { field: 'Recipient', how: 'is', value: 'olivia@northwind-projects.test' }
+    ];
+    // [label, on, kind, value, placeholder, note, swatch]
+    const actions = [
+      ['Move to folder', true, 'chooser', 'Customers / Kassel', '', '', false],
+      ['Add label', true, 'chooser', 'Waiting for customer', '', 'Labels can also be set by a rule.', true],
+      ['Mark or flag', true, 'chooser', 'Mark as read', '', 'Or: mark as important, flag for follow-up', false],
+      ['Forward or redirect to', false, 'input', '', 'name@example.org', 'Forward keeps a copy here, redirect sends it on as is.', false],
+      ['Refuse with a message to the sender', false, 'input', '', 'Text the sender gets back', 'The mail is not delivered.', false],
+      ['Drop silently', false, 'none', '', '', 'The mail is thrown away and the sender is not told.', false],
+      ['Stop further rules', true, 'none', '', '', 'Rules below this one do not run on this mail.', false]
+    ].map(([label, on, kind, value, placeholder, note, swatch]) => ({
+      label, value, placeholder, note, on, off: !on, hasSwatch: swatch,
+      hasChooser: kind === 'chooser', hasInput: kind === 'input',
+      chooserStyle: chooser + '; flex: 0 0 300px',
+      labelStyle: on ? 'color: #1b1c1d; font-weight: 500' : 'color: #3d4047'
+    }));
+    const scripts = [
+      ['northwind-rules', 'From the form, 3 rules, changed today', true],
+      ['out-of-office-2026', 'Uploaded 2 Jul', false],
+      ['test-filters', 'Uploaded 14 Sep', false]
+    ].map(([name, meta, active]) => ({ name, meta, active, checked: active ? 'true' : 'false', switch: active ? switchOn : switchOff, knob: active ? knobOn : knobOff, style: 'height: 48px; border-bottom: 1px solid #e4e6ea; ' + (active ? 'background: #eaf0f7;' : '') }));
+    const src = [
+      'require ["fileinto", "imap4flags"];',
+      '',
+      '# Kassel: file and label',
+      'if allof (',
+      '    address :contains "from" "stadtwerke-kassel",',
+      '    header :matches "subject" "*Gantt*",',
+      '    address :is "to" "olivia@northwind-projects.test"',
+      ') {',
+      '    fileinto "Customers/Kassel;',
+      '    addflag "Waiting for customer";',
+      '    setflag "\\\\Seen";',
+      '    stop;',
+      '}'
+    ];
+    const lines = src.map((text, i) => ({
+      n: i + 1, text: text === '' ? ' ' : text,
+      style: 'display: flex; padding: 0 12px 0 0; ' + (i === 8 ? 'background: #fbeaea;' : ''),
+      textStyle: i === 8 ? 'text-decoration: underline wavy #cc0000; text-underline-offset: 3px' : ''
+    }));
+    return { switchOn, knobOn, chooser, rules, conditions, actions, scripts, lines };
+  }
+}
+</script>
+</body>
+</html>

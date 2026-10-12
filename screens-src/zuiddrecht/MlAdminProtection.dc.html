@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail administration: spam protection, limits and connection security</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 2400px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Administration" placeholder="Search protection settings" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Protection" hint-size="264px,2345px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px 32px; overflow: hidden">
+      <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; max-width: 960px">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto">
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Protection</h1>
+          <p style="margin: 0; color: #3d4047">What the server refuses, how much it lets through, and when it insists on encryption. Changes apply to every domain on this server.</p>
+        </div>
+        <div style="position: absolute; right: 0; top: 0; display: flex; align-items: center; gap: 8px; flex: none"><span style="font-size: 12px; color: #5e6168; white-space: nowrap">Last saved 3 October by Ines Okafor</span><button type="button" style="{{ btnSecondary }}">Discard changes</button><button type="button" style="{{ btnPrimary }}">Save changes</button></div>
+      </div>
+
+      <section aria-labelledby="ml-p-incoming" style="{{ block }}">
+        <div style="{{ blockHead }}">
+          <h2 id="ml-p-incoming" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Incoming mail</h2>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Checks on the sending server before a message is accepted. Together they stop most spam before anyone sees it.</p>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-greylist" style="{{ settingLabel }}">Delay first-time senders</label><span style="{{ settingHint }}">A server we have not seen before is asked to try again in a few minutes. Real mail servers do, most spam senders do not.</span></div>
+          <button id="ml-p-greylist" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-dnsbl" style="{{ settingLabel }}">Refuse mail from servers on a block list</label><span style="{{ settingHint }}">The sending address is looked up in these DNS block lists. A listed server is refused before the message is read.</span>
+            <table style="{{ miniTable }}">
+              <thead><tr style="{{ miniThRow }}"><th scope="col" style="{{ miniTh }}">Block list</th><th scope="col" style="{{ miniTh }}">Refused today</th><th scope="col" style="width: 80px"><span style="{{ srOnly }}">Actions</span></th></tr></thead>
+              <tbody>
+                <sc-for list="{{ blocklists }}" as="b" hint-placeholder-count="2">
+                  <tr style="{{ miniRow }}"><td style="{{ miniTd }}; font-weight: 500">{{ b.name }}</td><td style="{{ miniTd }}">{{ b.count }}</td><td style="{{ miniTd }}; text-align: right"><button type="button" style="{{ btnSmall }}">Remove</button></td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div><button type="button" style="{{ btnSmall }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="margin-right: 6px"><path d="M12 5v14M5 12h14"></path></svg>Add block list</button></div>
+          </div>
+          <button id="ml-p-dnsbl" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-domain" style="{{ settingLabel }}">Refuse senders whose domain does not exist</label><span style="{{ settingHint }}">The sender address must belong to a domain that can receive mail. Forged addresses from made-up domains are refused.</span></div>
+          <button id="ml-p-domain" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><span style="{{ settingLabel }}">Trusted forwarders</span><span style="{{ settingHint }}">Lists and relays that forward mail to you and sign what they forward (ARC, the standard for that). Their mail keeps the original sender checks.</span>
+            <table style="{{ miniTable }}">
+              <thead><tr style="{{ miniThRow }}"><th scope="col" style="{{ miniTh }}">Forwarder</th><th scope="col" style="{{ miniTh }}">Forwards for</th><th scope="col" style="width: 80px"><span style="{{ srOnly }}">Actions</span></th></tr></thead>
+              <tbody>
+                <sc-for list="{{ forwarders }}" as="f" hint-placeholder-count="2">
+                  <tr style="{{ miniRow }}"><td style="{{ miniTd }}; font-weight: 500">{{ f.name }}</td><td style="{{ miniTd }}">{{ f.for }}</td><td style="{{ miniTd }}; text-align: right"><button type="button" style="{{ btnSmall }}">Remove</button></td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div><button type="button" style="{{ btnSmall }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="margin-right: 6px"><path d="M12 5v14M5 12h14"></path></svg>Add forwarder</button></div>
+          </div>
+        </div>
+        <div style="{{ settingLast }}">
+          <div style="{{ settingText }}"><label for="ml-p-report" style="{{ settingLabel }}">Send a copy when someone marks mail as spam or not spam</label><span style="{{ settingHint }}">Every marking in the mail client sends a copy of that message to the report address, so the filter can learn from it.</span>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px"><label for="ml-p-report-address" style="font-size: 13px; color: #5e6168">Report address</label><input id="ml-p-report-address" type="text" value="spam-reports@northwind-projects.test" style="{{ input }}; width: 320px"></div>
+          </div>
+          <button id="ml-p-report" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+      </section>
+
+      <section aria-labelledby="ml-p-limits" style="{{ block }}">
+        <div style="{{ blockHead }}">
+          <h2 id="ml-p-limits" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Limits</h2>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">How big, how many and how fast. A message over a limit is refused with a clear reason; a sender over a rate is asked to wait.</p>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><span style="{{ settingLabel }}">Largest message</span><span style="{{ settingHint }}">Counted with attachments. Most other servers take 25 MB, so a larger outgoing limit rarely helps.</span></div>
+          <div style="{{ fields }}">
+            <div style="{{ field }}"><label for="ml-p-size-in" style="{{ fieldLabel }}">Incoming</label><span style="{{ unitWrap }}"><input id="ml-p-size-in" type="text" value="25" style="{{ inputNum }}"><span style="{{ unit }}">MB</span></span></div>
+            <div style="{{ field }}"><label for="ml-p-size-out" style="{{ fieldLabel }}">Outgoing</label><span style="{{ unitWrap }}"><input id="ml-p-size-out" type="text" value="25" style="{{ inputNum }}"><span style="{{ unit }}">MB</span></span></div>
+          </div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-recipients" style="{{ settingLabel }}">Recipients per message</label><span style="{{ settingHint }}">A message to more addresses than this is refused. The People Team sends to 46, so keep room above that.</span></div>
+          <div style="{{ fields }}"><div style="{{ field }}"><span style="{{ fieldLabel }}">Most</span><span style="{{ unitWrap }}"><input id="ml-p-recipients" type="text" value="100" style="{{ inputNum }}"><span style="{{ unit }}">addresses</span></span></div></div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><span style="{{ settingLabel }}">Header size and count</span><span style="{{ settingHint }}">Headers are the lines above the message: sender, route, dates. Too many or too large, and the message is refused.</span></div>
+          <div style="{{ fields }}">
+            <div style="{{ field }}"><label for="ml-p-header-size" style="{{ fieldLabel }}">Largest header block</label><span style="{{ unitWrap }}"><input id="ml-p-header-size" type="text" value="64" style="{{ inputNum }}"><span style="{{ unit }}">KB</span></span></div>
+            <div style="{{ field }}"><label for="ml-p-header-count" style="{{ fieldLabel }}">Most header lines</label><span style="{{ unitWrap }}"><input id="ml-p-header-count" type="text" value="1000" style="{{ inputNum }}"><span style="{{ unit }}">lines</span></span></div>
+          </div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><span style="{{ settingLabel }}">Connections</span><span style="{{ settingHint }}">Open connections at the same time, from one address and in total. One person with a browser and a phone uses two.</span></div>
+          <div style="{{ fields }}">
+            <div style="{{ field }}"><label for="ml-p-conn-addr" style="{{ fieldLabel }}">Per address</label><span style="{{ unitWrap }}"><input id="ml-p-conn-addr" type="text" value="20" style="{{ inputNum }}"><span style="{{ unit }}">at once</span></span></div>
+            <div style="{{ field }}"><label for="ml-p-conn-total" style="{{ fieldLabel }}">In total</label><span style="{{ unitWrap }}"><input id="ml-p-conn-total" type="text" value="500" style="{{ inputNum }}"><span style="{{ unit }}">at once</span></span></div>
+          </div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-throttle" style="{{ settingLabel }}">Slow down a client that sends too many commands</label><span style="{{ settingHint }}">A client above this pace gets each answer a little later instead of being cut off.</span></div>
+          <div style="{{ fields }}"><div style="{{ field }}"><span style="{{ fieldLabel }}">More than</span><span style="{{ unitWrap }}"><input id="ml-p-throttle" type="text" value="120" style="{{ inputNum }}"><span style="{{ unit }}">commands per minute</span></span></div></div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-send-rate" style="{{ settingLabel }}">One sender address may send</label><span style="{{ settingHint }}">Counted per sender address over the period, from outside as well as from this server. Over the limit, the sender waits.</span></div>
+          <div style="{{ fields }}"><div style="{{ field }}"><span style="{{ fieldLabel }}">Most</span><span style="{{ unitWrap }}"><input id="ml-p-send-rate" type="text" value="200" style="{{ inputNum }}"><span style="{{ unit }}">messages per</span><select aria-label="Period for the sender rate" style="{{ selectSmall }}"><option>minute</option><option selected>hour</option><option>day</option></select></span></div></div>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-receive-rate" style="{{ settingLabel }}">One recipient may receive</label><span style="{{ settingHint }}">Protects one mailbox from being flooded. Mail above the limit waits in the queue until the period is over.</span></div>
+          <div style="{{ fields }}"><div style="{{ field }}"><span style="{{ fieldLabel }}">Most</span><span style="{{ unitWrap }}"><input id="ml-p-receive-rate" type="text" value="500" style="{{ inputNum }}"><span style="{{ unit }}">messages per</span><select aria-label="Period for the recipient rate" style="{{ selectSmall }}"><option>minute</option><option selected>hour</option><option>day</option></select></span></div></div>
+        </div>
+        <div style="{{ settingLast }}">
+          <div style="{{ settingText }}"><span style="{{ settingLabel }}">A signed-in user may send</span><span style="{{ settingHint }}">Counted per account, however many sender addresses it has. Stops a stolen password from turning a mailbox into a spam source.</span></div>
+          <div style="{{ fields }}">
+            <div style="{{ field }}"><label for="ml-p-user-msgs" style="{{ fieldLabel }}">Messages</label><span style="{{ unitWrap }}"><input id="ml-p-user-msgs" type="text" value="300" style="{{ inputNum }}"><span style="{{ unit }}">per day</span></span></div>
+            <div style="{{ field }}"><label for="ml-p-user-rcpts" style="{{ fieldLabel }}">Recipients</label><span style="{{ unitWrap }}"><input id="ml-p-user-rcpts" type="text" value="1000" style="{{ inputNum }}"><span style="{{ unit }}">per day</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="ml-p-connections" style="{{ block }}">
+        <div style="{{ blockHead }}">
+          <h2 id="ml-p-connections" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Connections</h2>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">When the server insists on encryption, for people signing in and for other mail servers.</p>
+        </div>
+        <fieldset style="{{ fieldsetRow }}">
+          <div style="{{ settingText }}"><legend style="{{ legend }}">Require encrypted connections</legend><span style="{{ settingHint }}">Applies to everyone who signs in: the browser, phones and other mail programs.</span></div>
+          <div style="{{ radios }}">
+            <label style="{{ radio }}"><input type="radio" name="ml-p-tls" checked style="{{ radioInput }}">From the first byte, on the encrypted ports only</label>
+            <label style="{{ radio }}"><input type="radio" name="ml-p-tls" style="{{ radioInput }}">Also after an upgrade on a plain port, the client asks for encryption first</label>
+            <label style="{{ radio }}"><input type="radio" name="ml-p-tls" style="{{ radioInput }}">Not required</label>
+          </div>
+        </fieldset>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-plain" style="{{ settingLabel }}">Refuse password sign in on an unencrypted connection</label><span style="{{ settingHint }}">A password sent in the clear can be read on the way. An old mail program set to plain text gets a clear error instead.</span></div>
+          <button id="ml-p-plain" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-peer" style="{{ settingLabel }}">Refuse mail from servers that did not encrypt the connection</label><span style="{{ settingHint }}">Strict: some small servers still deliver without encryption. Last 7 days: 3 of 6,120 messages, all from stadtwerke-kassel.example.</span></div>
+          <button id="ml-p-peer" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
+        </div>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-relay-auth" style="{{ settingLabel }}">Require sign in before mail is relayed to other servers</label><span style="{{ settingHint }}">Only signed-in people and your own network can send mail through this server to the outside. An open relay is blocked by other servers within hours.</span></div>
+          <button id="ml-p-relay-auth" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <fieldset style="{{ fieldsetRow }}">
+          <div style="{{ settingText }}"><legend style="{{ legend }}">Outgoing connections to other servers</legend><span style="{{ settingHint }}">How this server talks to the server that receives your mail.</span></div>
+          <div style="{{ radios }}">
+            <label style="{{ radio }}"><input type="radio" name="ml-p-out" checked style="{{ radioInput }}">Encrypt and check the identity of the receiving server, do not deliver when it fails</label>
+            <label style="{{ radio }}"><input type="radio" name="ml-p-out" style="{{ radioInput }}">Encrypt when the receiving server can, deliver anyway when it cannot</label>
+            <label style="{{ radio }}"><input type="radio" name="ml-p-out" style="{{ radioInput }}">Never encrypt</label>
+          </div>
+        </fieldset>
+        <div style="{{ setting }}">
+          <div style="{{ settingText }}"><label for="ml-p-relay" style="{{ settingLabel }}">Send all outgoing mail through one relay server</label><span style="{{ settingHint }}">Every outgoing message goes to the relay of your hosting provider, which has a known reputation, instead of to each receiving server.</span>
+            <div style="display: grid; grid-template-columns: auto 230px auto 70px auto 150px auto 150px; gap: 8px 10px; align-items: center; margin-top: 4px; white-space: nowrap">
+              <label for="ml-p-relay-host" style="font-size: 13px; color: #5e6168">Relay server</label><input id="ml-p-relay-host" type="text" value="smtp-relay.northwind-hosting.example" style="{{ input }}">
+              <label for="ml-p-relay-port" style="font-size: 13px; color: #5e6168">Port</label><input id="ml-p-relay-port" type="text" value="587" style="{{ input }}; width: 90px">
+              <label for="ml-p-relay-user" style="font-size: 13px; color: #5e6168">Username</label><input id="ml-p-relay-user" type="text" value="northwind-projects" style="{{ input }}">
+              <label for="ml-p-relay-pass" style="font-size: 13px; color: #5e6168">Password</label><input id="ml-p-relay-pass" type="password" value="password-here" style="{{ input }}">
+            </div>
+          </div>
+          <button id="ml-p-relay" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+        <div style="{{ settingLast }}">
+          <div style="{{ settingText }}"><label for="ml-p-private" style="{{ settingLabel }}">Block server-side requests to private network addresses</label><span style="{{ settingHint }}">What the server fetches on a person's behalf, such as remote images, may not point at addresses inside your own network.</span></div>
+          <button id="ml-p-private" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
+    const btnPrimary = 'display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSecondary = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const btnSmall = 'display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 12px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
+    const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
+    const switchOff = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid #c4c7cb; border-radius: 10px; background: #ffffff; box-sizing: border-box; cursor: pointer';
+    const knobOff = 'position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 7px; background: #5e6168';
+    const block = 'flex: none; display: flex; flex-direction: column; max-width: 960px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden';
+    const blockHead = 'display: flex; flex-direction: column; gap: 2px; padding: 11px 20px; background: #f5f6f8; border-bottom: 1px solid #e4e6ea';
+    const setting = 'display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 11px 20px; border-bottom: 1px solid #e4e6ea';
+    const settingLast = 'display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 11px 20px';
+    const fieldsetRow = 'margin: 0; padding: 11px 20px; border: 0; border-bottom: 1px solid #e4e6ea; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px';
+    const legend = 'padding: 0; margin: 0; float: left; width: 100%; font-weight: 600';
+    const settingText = 'display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0';
+    const settingLabel = 'font-weight: 600';
+    const settingHint = 'font-size: 12px; color: #5e6168; line-height: 18px; max-width: 790px';
+    const fields = 'display: flex; flex-direction: column; gap: 8px; flex: none; align-items: flex-end';
+    const field = 'display: flex; align-items: center; gap: 10px';
+    const fieldLabel = 'font-size: 13px; color: #5e6168; white-space: nowrap';
+    const unitWrap = 'display: inline-flex; align-items: center; gap: 8px';
+    const unit = 'font-size: 13px; color: #3d4047; white-space: nowrap';
+    const inputNum = 'width: 72px; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d; text-align: right';
+    const input = 'height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px \'Fira Sans\', sans-serif; color: #1b1c1d';
+    const selectSmall = 'height: 34px; box-sizing: border-box; padding: 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 13px \'Fira Sans\', sans-serif; color: #1b1c1d';
+    const radios = 'display: flex; flex-direction: column; gap: 6px; flex: 0 0 440px; width: 440px';
+    const radio = 'display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 20px';
+    const radioInput = 'width: 16px; height: 16px; margin: 2px 0 0; flex: none; accent-color: #3669a5';
+    const miniTable = 'width: 100%; max-width: 560px; border-collapse: collapse; font-size: 13px; margin-top: 6px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)';
+    const miniThRow = 'height: 32px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8';
+    const miniTh = 'text-align: left; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap';
+    const miniRow = 'height: 32px; border-bottom: 1px solid #e4e6ea';
+    const miniTd = 'padding: 0 10px; white-space: nowrap';
+    const blocklists = [
+      ['zen.spamhaus.org', '312 messages'],
+      ['bl.spamcop.net', '48 messages']
+    ].map(([name, count]) => ({ name, count }));
+    const forwarders = [
+      ['lists.ville-de-lyon.example', 'The Lyon rollout mailing list'],
+      ['mailgate.malmo-energi.example', 'Malmo Energi, forwards to their project team']
+    ].map(([name, f]) => ({ name, for: f }));
+    return { srOnly, btnPrimary, btnSecondary, btnSmall, switchOn, knobOn, switchOff, knobOff, block, blockHead, setting, settingLast, fieldsetRow, legend, settingText, settingLabel, settingHint, fields, field, fieldLabel, unitWrap, unit, inputNum, input, selectSmall, radios, radio, radioInput, miniTable, miniThRow, miniTh, miniRow, miniTd, blocklists, forwarders };
+  }
+}
+</script>
+</body>
+</html>

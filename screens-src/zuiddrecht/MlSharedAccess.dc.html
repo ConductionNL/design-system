@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1960px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2340px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
   <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="2">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
@@ -37,6 +37,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-if value="{{ g.hasMenu }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="{{ g.menuLabel }}" title="{{ g.menuLabel }}" aria-haspopup="menu" style="flex: none; width: 26px; height: 26px; margin: -5px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button></sc-if></div>
                 <sc-if value="{{ g.hasSub }}" hint-placeholder-val="{{ false }}"><div style="padding: 0 10px 6px; font-size: 12px; color: #5e6168; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ g.sub }}</div></sc-if>
                 <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center">
                   <a href="{{ it.href }}" aria-current="{{ it.current }}" aria-label="{{ it.aria }}" style="{{ it.style }}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg>
                     <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span><sc-if value="{{ it.hasOwner }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.owner }}</span></sc-if></span>
@@ -44,6 +45,18 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <sc-if value="{{ it.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
                     <sc-if value="{{ it.hasShared }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-label="Shared" role="img" style="flex: none; color: #5e6168"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg></sc-if>
                   </a>
+                  <sc-if value="{{ it.nest }}" hint-placeholder-val="{{ false }}">
+                    <button type="button" aria-expanded="true" aria-controls="{{ it.listId }}" aria-label="Collapse {{ it.label }}" title="Collapse {{ it.label }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+                    <ul id="{{ it.listId }}" style="flex: 1 1 100%; list-style: none; margin: 2px 0 6px 20px; padding: 0 0 0 10px; border-left: 2px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+                      <sc-for list="{{ it.children }}" as="c" hint-placeholder-count="3">
+                        <li>
+                          <sc-if value="{{ c.isItem }}" hint-placeholder-val="{{ true }}"><a href="#" aria-current="{{ c.current }}" aria-label="{{ c.aria }}" style="{{ c.style }}"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }}</span><sc-if value="{{ c.hasShared }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-label="Shared" role="img" style="flex: none; color: #5e6168"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg></sc-if></a></sc-if>
+                          <sc-if value="{{ c.isNew }}" hint-placeholder-val="{{ false }}"><button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>{{ c.label }}</button></sc-if>
+                        </li>
+                      </sc-for>
+                    </ul>
+                  </sc-if>
+                  </div>
                 </sc-for>
               </div>
             </sc-for>
@@ -189,7 +202,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1960}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2340}}'>
 class Component extends DCLogic {
   renderVals() {
     const I = {
@@ -206,7 +219,15 @@ class Component extends DCLogic {
       chevronRight: 'm9 18 6-6-6-6'
     };
     const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; line-height: 21px; ';
-    const item = (label, icon, count, o = {}) => ({
+    // a folder with subfolders opens in place and lists them under itself (canon: Navigation, nested; same as MlNav)
+    const childBase = 'display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 20px; ';
+    const child = (label, o = {}) => ({ isItem: true, label, hasShared: !!o.shared, aria: label + (o.shared ? ', shared' : ''), current: o.on ? 'page' : 'false',
+      style: childBase + (o.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') });
+    const item = (label, icon, count, o = {}) => {
+      const nest = !!o.children;
+      const children = nest ? [...o.children, ...(o.add ? [{ isNew: true, label: o.add }] : [])] : [];
+      const holdsCurrent = children.some((c) => c.current === 'page');
+      return {
       label, icon, href: '#',
       hasCount: count !== undefined && count !== '', count: count ?? '',
       countStyle: 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78',
@@ -214,12 +235,14 @@ class Component extends DCLogic {
       hasOwner: !!o.owner, owner: o.owner ? 'Shared by ' + o.owner : '',
       aria: label + (o.owner ? ', shared by ' + o.owner : '') + (count ? ', ' + count : ''),
       current: o.on ? 'page' : 'false',
-      style: base + (o.child ? 'padding-left: 42px; ' : '') + (o.owner ? 'min-height: 50px; ' : '') + (o.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;')
-    });
+      nest, children, listId: 'mlnav-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      style: base + (nest ? 'flex: 1 1 auto; min-width: 0; padding-right: 4px; ' : 'flex: 1 1 100%; ') + (o.owner ? 'min-height: 50px; ' : '') + (o.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : holdsCurrent ? 'color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;')
+      };
+    };
     const groups = [
       { title: 'Folders', items: [
         item('Inbox', I.inbox, 5, { strong: true, on: true }), item('Drafts', I.draft, 1), item('Sent', I.sent), item('Archive', I.archive), item('Spam', I.spam), item('Trash', I.trash),
-        item('Customers', I.folder, '', { chevron: true }), item('Lyon', I.folder, '', { child: true, shared: true }), item('Kassel', I.folder, '', { child: true })
+        item('Customers', I.folder, '', { children: [child('Lyon', { shared: true }), child('Kassel')], add: 'New subfolder' })
       ] },
       { title: 'Northwind support', sub: 'Shared mailbox, 3 members', hasMenu: true, menuLabel: 'Mailbox Northwind support: who can use it, leave', items: [
         item('Inbox', I.inbox, 3, { strong: true }), item('Sent', I.sent), item('Escalations', I.folder)
@@ -267,8 +290,8 @@ class Component extends DCLogic {
     ].map(([label, hint, on]) => ({ label, hint, on, off: !on }));
     const frame = (h) => 'position: relative; height: ' + h + 'px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden';
     const frames = [
-      { letter: 'a', caption: 'Who can use the shared mailbox Northwind support, opened from its menu in the navigation; the folder Lyon carries a shared mark and two folders of colleagues sit under Shared with you', frameStyle: frame(1000), dialogTop: 90, mailbox: true, folder: false },
-      { letter: 'b', caption: 'Who can use the folder Lyon, opened from the folder menu: the same three roles per person or group, with Advanced unfolded for Tom only', frameStyle: frame(800), dialogTop: 70, mailbox: false, folder: true }
+      { letter: 'a', caption: 'Who can use the shared mailbox Northwind support, opened from its menu in the navigation; the folder Lyon carries a shared mark and two folders of colleagues sit under Shared with you', frameStyle: frame(1090), dialogTop: 90, mailbox: true, folder: false },
+      { letter: 'b', caption: 'Who can use the folder Lyon, opened from the folder menu: the same three roles per person or group, with Advanced unfolded for Tom only', frameStyle: frame(1090), dialogTop: 70, mailbox: false, folder: true }
     ];
     return { groups, matches, members, shares, rights, frames, withdraw };
   }

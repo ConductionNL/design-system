@@ -14,11 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1260px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1400px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 24px; overflow: hidden">
   <sc-for list="{{ frames }}" as="f" hint-placeholder-count="3">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
-      <div style="height: 1160px; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <div style="height: 1300px; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
         <nav aria-label="Mailboxes" style="position: relative; flex: 0 0 264px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; background: #ffffff; border-right: 1px solid #e4e6ea">
           <div style="display: flex; align-items: center; gap: 6px">
             <button type="button" style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 15px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>New message</button>
@@ -34,14 +34,25 @@ a{color:#3669a5}a:hover{color:#234a78}
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-if value="{{ g.hasAdd }}" hint-placeholder-val="{{ false }}"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ g.addLabel }}" title="{{ g.addLabel }}" style="flex: none; width: 26px; height: 26px; margin: -5px 0; border: 0; border-radius: var(--sc-radius, 8px); background: {{ g.addBg }}; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button><sc-if value="{{ g.showAddTip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; left: 50%; top: 26px; transform: translateX(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">{{ g.addLabel }}</span></sc-if></span></sc-if></div>
               <sc-if value="{{ g.hasHint }}" hint-placeholder-val="{{ false }}"><p style="margin: -2px 0 6px; padding: 0 10px; font-size: 12px; line-height: 16px; color: #5e6168">{{ g.hint }}</p></sc-if>
               <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="6">
-                <div style="position: relative">
+                <div style="position: relative; display: flex; flex-wrap: wrap; align-items: center">
                   <a href="#" aria-current="{{ it.current }}" style="{{ it.style }}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg>
                     <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span>
                     <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ it.countStyle }}">{{ it.count }}</span></sc-if>
                     <sc-if value="{{ it.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
                   </a>
-                  <sc-if value="{{ it.hasMenuButton }}" hint-placeholder-val="{{ false }}"><button type="button" aria-haspopup="menu" aria-expanded="true" aria-label="Folder actions for {{ it.label }}" style="position: absolute; right: 4px; top: 7px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: #e4e6ea; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button></sc-if>
+                  <sc-if value="{{ it.nest }}" hint-placeholder-val="{{ false }}">
+                    <button type="button" aria-expanded="true" aria-controls="{{ it.listId }}" aria-label="Collapse {{ it.label }}" title="Collapse {{ it.label }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+                    <ul id="{{ it.listId }}" style="flex: 1 1 100%; list-style: none; margin: 2px 0 6px 20px; padding: 0 0 0 10px; border-left: 2px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+                      <sc-for list="{{ it.children }}" as="c" hint-placeholder-count="3">
+                        <li>
+                          <sc-if value="{{ c.isItem }}" hint-placeholder-val="{{ true }}"><a href="#" aria-current="{{ c.current }}" style="{{ c.style }}"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }}</span></a></sc-if>
+                          <sc-if value="{{ c.isNew }}" hint-placeholder-val="{{ false }}"><button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>{{ c.label }}</button></sc-if>
+                        </li>
+                      </sc-for>
+                    </ul>
+                  </sc-if>
+                  <sc-if value="{{ it.hasMenuButton }}" hint-placeholder-val="{{ false }}"><button type="button" aria-haspopup="menu" aria-expanded="true" aria-label="Folder actions for {{ it.label }}" style="position: absolute; right: {{ it.menuRight }}; top: 7px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: #e4e6ea; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button></sc-if>
           <sc-if value="{{ it.hasMenuButton }}" hint-placeholder-val="{{ false }}">
             <div role="menu" aria-label="Folder actions for Customers" style="position: absolute; left: calc(100% + 20px); top: 0; width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
               <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Customers</div>
@@ -116,7 +127,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1260}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
 class Component extends DCLogic {
   renderVals() {
     const I = {
@@ -147,19 +158,29 @@ class Component extends DCLogic {
       title, hasAdd: !!add, addLabel: add ?? '', showAddTip: !!(o && o.tip), addBg: (o && o.tip) ? '#e4e6ea' : 'transparent', hasHint: !!(o && o.hint), hint: (o && o.hint) ?? '',
       items: items.map(([label, icon, count, o]) => {
         o = o ?? {};
-        const on = label === active;
+        // a folder with subfolders opens in place and lists them under itself (canon: Navigation, nested; same as MlNav)
+        const nest = !!o.children;
+        const children = nest ? [
+          ...o.children.map(([c]) => ({ isItem: true, label: c, current: c === active ? 'page' : 'false',
+            style: childBase + (c === active ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') })),
+          ...(o.add ? [{ isNew: true, label: o.add }] : [])
+        ] : [];
+        const holdsCurrent = children.some((c) => c.current === 'page');
+        const on = label === active && !holdsCurrent;
         return {
           label, icon, current: on ? 'page' : 'false',
           hasCount: count !== undefined && count !== '', count: count ?? '',
           countStyle: 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78',
           hasChevron: !!o.chevron, hasMenuButton: !!o.menu, isOutbox: !!o.outbox, pending: o.outbox ?? [],
-          style: base + (o.child ? 'padding-left: 42px; ' : '') + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : o.menu ? 'background: #f5f6f8; color: #1b1c1d; font-weight: 500;' : 'color: #1b1c1d; font-weight: 500;')
+          nest, children, listId: 'mlnav-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-'), menuRight: nest ? '38px' : '4px',
+          style: base + (nest ? 'flex: 1 1 auto; min-width: 0; padding-right: 4px; ' : 'flex: 1 1 100%; ') + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : holdsCurrent ? 'color: #234a78; font-weight: 600;' : o.menu ? 'background: #f5f6f8; color: #1b1c1d; font-weight: 500;' : 'color: #1b1c1d; font-weight: 500;')
         };
       })
     });
+    const childBase = 'display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 20px; ';
     const folders = (extra) => [
       ['Inbox', I.inbox, 5, { strong: true }], ['Drafts', I.draft, 1], ...(extra ?? []), ['Sent', I.sent], ['Archive', I.archive], ['Spam', I.spam], ['Trash', I.trash],
-      ['Customers', I.folder, '', { chevron: true }], ['Lyon', I.folder, '', { child: true }], ['Kassel', I.folder, '', { child: true }]
+      ['Customers', I.folder, '', { children: [['Lyon'], ['Kassel']], add: 'New subfolder' }]
     ];
     const account = 'display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 10px; border: 0; border-radius: var(--sc-radius, 8px); color: #1b1c1d; text-align: left; font-family: \'Fira Sans\', system-ui, sans-serif; ';
     // The reference navigation (see MlNav): views, folders, work packages, labels. The same on every mail board.
@@ -173,7 +194,7 @@ class Component extends DCLogic {
         groups: [mk('Views', null, views(), ''), mk('Folders', 'New folder', folders(), 'Inbox'), wp(), labels()] },
       { letter: 'b', caption: 'The menu of one folder open beside its row, Troubleshooting unfolded at its foot; the plus beside FOLDERS hovered', switcherOpen: false,
         accountStyle: account + 'background: #f5f6f8;',
-        groups: [mk('Views', null, views(), ''), mk('Folders', 'New folder', folders().map((it) => it[0] === 'Customers' ? ['Customers', I.folder, '', { menu: true }] : it), 'Inbox', { tip: true }), wp(), labels()] },
+        groups: [mk('Views', null, views(), ''), mk('Folders', 'New folder', folders().map((it) => it[0] === 'Customers' ? ['Customers', I.folder, '', { ...it[3], menu: true }] : it), 'Inbox', { tip: true }), wp(), labels()] },
       { letter: 'c', caption: 'The views with their hint, the outbox with two messages to send', switcherOpen: false,
         accountStyle: account + 'background: #f5f6f8;',
         groups: [

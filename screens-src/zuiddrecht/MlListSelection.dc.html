@@ -14,10 +14,10 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1960px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2240px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Five conversations selected, a range among them, the selection being dragged onto the folder Lyon; the bulk bar with its labelled actions, More, and the Keyboard shortcuts link</figcaption>
-    <div style="height: 880px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+    <div style="height: 1160px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
       <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
       <div style="position: relative; display: flex; flex: 1 1 auto; min-height: 0">
         <nav aria-label="Mailboxes" style="flex: 0 0 264px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; background: #ffffff; border-right: 1px solid #e4e6ea">
@@ -34,6 +34,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: flex; flex-direction: column; gap: 2px">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span></div>
               <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="5">
+                <div style="display: flex; flex-wrap: wrap; align-items: center">
                 <a href="#" aria-current="{{ it.current }}" style="{{ it.style }}">
                   <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg></sc-if>
                   <sc-if value="{{ it.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.swatch }}"></span></sc-if>
@@ -41,6 +42,18 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ it.countStyle }}">{{ it.count }}</span></sc-if>
                   <sc-if value="{{ it.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
                 </a>
+                <sc-if value="{{ it.nest }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" aria-expanded="true" aria-controls="{{ it.listId }}" aria-label="Collapse {{ it.label }}" title="Collapse {{ it.label }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+                  <ul id="{{ it.listId }}" style="flex: 1 1 100%; list-style: none; margin: 2px 0 6px 20px; padding: 0 0 0 10px; border-left: 2px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+                    <sc-for list="{{ it.children }}" as="c" hint-placeholder-count="3">
+                      <li>
+                        <sc-if value="{{ c.isItem }}" hint-placeholder-val="{{ true }}"><a href="#" aria-current="{{ c.current }}" style="{{ c.style }}"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }}</span></a></sc-if>
+                        <sc-if value="{{ c.isNew }}" hint-placeholder-val="{{ false }}"><button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>{{ c.label }}</button></sc-if>
+                      </li>
+                    </sc-for>
+                  </ul>
+                </sc-if>
+                </div>
               </sc-for>
             </div>
           </sc-for>
@@ -199,7 +212,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1960}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2240}}'>
 class Component extends DCLogic {
   renderVals() {
     const I = {
@@ -227,19 +240,29 @@ class Component extends DCLogic {
       { title: 'Views', items: [['Starred', I.star, 3], ['Mentioned', I.at, 1], ['Assigned to me', I.user, 2]] },
       { title: 'Folders', items: [
         ['Inbox', I.inbox, 5, { strong: true, on: true }], ['Drafts', I.draft, 1], ['Sent', I.sent], ['Archive', I.archive], ['Spam', I.spam], ['Trash', I.trash],
-        ['Customers', I.folder, '', { chevron: true }], ['Lyon', I.folder, '', { child: true, target: true }], ['Kassel', I.folder, '', { child: true }]
+        // a folder with subfolders opens in place and lists them under itself (canon: Navigation, nested; same as MlNav); Lyon is the drop target
+        ['Customers', I.folder, '', { children: [['Lyon', { target: true }], ['Kassel']], add: 'New subfolder' }]
       ] },
       { title: 'Work packages', items: [['Notifications', I.bell, 2, { strong: true }]] },
       { title: 'Labels', items: [['Waiting for customer', null, '', { swatch: '#ff9d2e' }], ['Offer', null, '', { swatch: '#08a5df' }], ['Internal', null, '', { swatch: '#5e6168' }]] }
     ];
+    const childBase = 'display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 20px; ';
     const groups = raw.map((g) => ({ title: g.title, items: g.items.map(([label, icon, count, o]) => {
       o = o ?? {};
+      const nest = !!o.children;
+      const children = nest ? [
+        ...o.children.map(([c, co = {}]) => ({ isItem: true, label: c, current: co.on ? 'page' : 'false',
+          style: childBase + (co.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : co.target ? 'background: #eaf0f7; color: #234a78; font-weight: 600; outline: 2px dashed #3669a5; outline-offset: -2px;' : 'color: #1b1c1d; font-weight: 500;') })),
+        ...(o.add ? [{ isNew: true, label: o.add }] : [])
+      ] : [];
+      const holdsCurrent = children.some((c) => c.current === 'page');
       return {
         label, icon: icon ?? '', hasIcon: !!icon, hasSwatch: !!o.swatch, swatch: 'flex: none; width: 10px; height: 10px; margin: 0 5px; border-radius: 5px; background: ' + (o.swatch ?? '#5e6168'),
         hasCount: count !== undefined && count !== '', count: count ?? '',
         countStyle: 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78',
         hasChevron: !!o.chevron, current: o.on ? 'page' : 'false',
-        style: base + (o.child ? 'padding-left: 42px; ' : '') + (o.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : o.target ? 'background: #eaf0f7; color: #234a78; font-weight: 600; outline: 2px dashed #3669a5; outline-offset: -2px;' : 'color: #1b1c1d; font-weight: 500;')
+        nest, children, listId: 'mlnav-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        style: base + (nest ? 'flex: 1 1 auto; min-width: 0; padding-right: 4px; ' : 'flex: 1 1 100%; ') + (o.on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : holdsCurrent ? 'color: #234a78; font-weight: 600;' : o.target ? 'background: #eaf0f7; color: #234a78; font-weight: 600; outline: 2px dashed #3669a5; outline-offset: -2px;' : 'color: #1b1c1d; font-weight: 500;')
       };
     }) }));
     // The three most used actions carry a text label; the rest sits in More. Mark all as read belongs to the folder menu, not here.

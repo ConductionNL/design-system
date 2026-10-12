@@ -101,3 +101,16 @@ The contract for every `Op*` board. Geometry is measured from our Nextcloud boar
 ## Page frame
 
 Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header 68 px, then a row with the nav at 264 px and `main` with padding 24px 28px, column gap 20 px, max-width 1240 px. Never more than three things side by side. Icons: inline SVG, 16 or 20 px, `fill="none" stroke="currentColor" stroke-width="1.75"`.
+
+## Navigation, folded (`MlNav`, `ClNav`, `TbNav` with `folded="true"`)
+
+| part | value |
+|---|---|
+| width | 64 px (`flex: 0 0 64px` in the board), same background and `border-right` as the open navigation, padding 8px 0 16px, items centred in a column with a 2 px gap |
+| open control | first in the rail, 40 x 40 icon button, panel icon 20 px stroke 1.75, `#5e6168` on transparent, `aria-label` "Open folders", "Open calendars" or "Open views", `aria-expanded="false"`; the open column folds with the same icon |
+| primary action | second, 42 x 42 icon button with the canon primary colours (`var(--sc-action, #3669a5)`, border `var(--sc-action-deep, #234a78)`), icon 20 px, `aria-label` with the full name; calendar and tasks show the short label "New" in 10 px under it |
+| item | 56 x 48, radius `var(--sc-radius, 8px)`, icon 20 px stroke 1.75 over a 10 px label (line-height 12 px), `#3d4047`, `aria-label` with the full name and the count |
+| active item | `background: #eaf0f7; color: #234a78; font-weight: 600`, `aria-current="page"` (`aria-current="date"` for today in the calendar) |
+| badge | 16 px pill at the top right of the item, min-width 16 px, 10 px weight 700, `#3669a5` on white ink; only where a count matters |
+| when it folds | when a conversation, an event or a card is open (level 1) and while a right panel is open (level 2); a navigation that is already folded stays folded on the next board |
+| how it opens again | the open control at the top of the rail; hovering a rail shows the full column over the content without moving the layout. Never more than three things side by side: the rails, the content and one right panel, so an open navigation closes any second right panel |

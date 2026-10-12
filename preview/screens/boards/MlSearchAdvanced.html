@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mail: search box with typed operators and the full filter form</title>
+<style>html,body{margin:0;padding:0}body{background:#ffffff}.sc-board{width:1440px;position:relative}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+mark{background:var(--sc-primary-light, #eaf0f7);color:inherit;border-radius:2px;padding:0 1px}
+</style>
+<style>
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+#ml-search::placeholder{color:#ffffff;opacity:0.85}
+</style>
+<style>
+a{color:var(--sc-primary, #3669a5)}a:hover{color:var(--sc-primary-deep, #234a78)}
+</style>
+<link rel="stylesheet" href="../screens.css">
+<script src="../theme.js" defer></script>
+</head>
+<body>
+<div class="sc-board" data-board="MlSearchAdvanced">
+
+<div style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: var(--sc-work-ink, #1b1c1d); font-size: 14px; line-height: 21px; background: var(--sc-work-ground, #f5f6f8); box-sizing: border-box; width: 1440px; height: 1920px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: var(--sc-work-text, #3d4047); line-height: 16px"><span style="color: var(--sc-work-muted, #5e6168); font-weight: 400">a</span> &nbsp;Search box in focus: typed operators, one-click chips and the account choice</figcaption>
+    <div style="position: relative; height: 520px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--sc-work-ground, #f5f6f8); border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      
+
+<header style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: #ffffff; width: 100%; box-sizing: border-box; height: 55px; padding: 0 16px 0 16px; display: flex; align-items: center; gap: 16px; background: var(--sc-primary, #3669a5)">
+  <a href="MlInbox.html" style="flex: 0 0 auto; min-width: 245px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; height: 55px; color: #ffffff; text-decoration: none; min-width: 0">
+    <img src="../assets/zuiddrecht/logo-wit.svg" alt="" style="height: 26px; width: auto; max-width: 130px; flex: none" data-sc-logo="logo-wit">
+    <span style="width: 1px; height: 22px; background: rgba(255,255,255,0.35); flex: none"></span>
+    <strong style="font-size: 17px; font-weight: 600; white-space: nowrap">Mail</strong>
+  </a>
+  <form role="search" style="flex: 1 1 560px; max-width: 640px; min-width: 240px; position: relative; display: flex; align-items: center">
+    <label for="ml-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+    <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px; color: #ffffff"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+    <input id="ml-search" type="search" placeholder="Search mail, people and work packages" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 44px 0 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: rgba(255,255,255,0.12); font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; color: #ffffff">
+    <button type="button" aria-label="Search filters" aria-haspopup="menu" style="position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
+    </button>
+  </form>
+  <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: max-content">
+    <button type="button" aria-label="Help" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"></path></svg>
+    </button>
+    <button type="button" aria-label="Settings" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>
+    </button>
+    <button type="button" aria-label="Account menu of Olivia Brandt" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; margin-left: 6px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff">
+      <span style="width: 30px; height: 30px; border-radius: 15px; background: #ffffff; color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font: 700 12px var(--sc-font, 'Fira Sans'), sans-serif">OB</span>
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  </div>
+</header>
+
+      <div style="position: absolute; left: 221px; top: 9px; width: 640px; height: 36px; box-sizing: border-box; display: flex; align-items: center; gap: 0; padding: 0 44px 0 36px; border: 2px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35)">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 11px; top: 8px; color: var(--sc-work-muted, #5e6168)"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+        <span role="textbox" aria-label="Search, typed: from:jana is:unread has:attachment gantt" style="display: inline-flex; align-items: center; gap: 4px; white-space: nowrap">
+          <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font-size: 13px; font-weight: 500">from:jana</span><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font-size: 13px; font-weight: 500">is:unread</span><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font-size: 13px; font-weight: 500">has:attachment</span><span style="color: var(--sc-work-ink, #1b1c1d)">gantt</span>
+          <span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; background: var(--sc-work-ink, #1b1c1d)"></span>
+        </span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 10px; top: 8px; color: var(--sc-work-muted, #5e6168)"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
+      </div>
+      <div role="dialog" aria-label="Search suggestions" style="position: absolute; left: 221px; top: 50px; width: 640px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 4px 10px 6px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea)">
+          <span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047); white-space: nowrap">Search in</span>
+          <button type="button" aria-haspopup="listbox" aria-label="Search in: All accounts" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 30px; min-width: 200px; padding: 0 8px 0 10px; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: var(--sc-work-ink, #1b1c1d); font: 400 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap"><span>All accounts, 2 mailboxes</span><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Olivia Brandt and the shared Support mailbox</span>
+        </div>
+        <div role="group" aria-label="One-click filters" style="display: flex; align-items: center; gap: 6px; padding: 2px 10px 4px">
+          <button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"></path></svg>To me</button><button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>Mentions me</button><button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-primary, #3669a5); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78);"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>Unread</button><button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>Starred</button>
+        </div>
+        <div style="padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Operators you can type</div>
+        <ul role="listbox" aria-label="Operator suggestions" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          
+            <li role="option" aria-selected="true" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: var(--sc-primary-light, #eaf0f7);">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">from:jana</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sender name or address</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">de:, van:</span>
+            </li>
+          
+            <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: transparent;">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">to:</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Recipient, or to:me for mail addressed to you</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">à:, aan:</span>
+            </li>
+          
+            <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: transparent;">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">is:unread</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">is:unread, is:read, is:starred, is:important</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">est:, is:</span>
+            </li>
+          
+            <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: transparent;">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">has:attachment</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Mail with a file attached</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">a:, heeft:</span>
+            </li>
+          
+            <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: transparent;">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">label:</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Carries this label, -label: for mail without it</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">étiquette:, label:</span>
+            </li>
+          
+            <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); background: transparent;">
+              <code style="flex: none; width: 150px; font: 500 13px ui-monospace, 'Fira Mono', monospace; color: var(--sc-work-ink, #1b1c1d)">subject:</code>
+              <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-text, #3d4047); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Words in the subject only</span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">objet:, onderwerp:</span>
+            </li>
+          
+        </ul>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 10px 4px; border-top: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168); line-height: 18px">
+          <span style="flex: 1 1 auto">The same operators work in French and Dutch: type de:, à:, est: or van:, aan:, is: and they are read as from:, to: and is:.</span>
+          <button type="button" style="flex: none; height: 30px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, var(--sc-primary, #3669a5)); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">Open all filters</button>
+        </div>
+      </div>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden">
+
+
+<nav aria-label="Mailboxes, folded" style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: var(--sc-work-ink, #1b1c1d); font-size: 14px; line-height: 21px; width: 64px; box-sizing: border-box; min-height: 100%; padding: 8px 0 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border-right: 1px solid var(--sc-work-line, #e4e6ea)">
+  <button type="button" aria-label="Open folders" aria-expanded="false" title="Open folders" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
+  <button type="button" aria-label="New message" title="New message" style="flex: none; width: 40px; height: 40px; margin: 6px 0 8px; border: 1px solid var(--sc-action-deep, var(--sc-primary-deep, #234a78)); border-radius: var(--sc-radius, 8px); background: var(--sc-action, var(--sc-primary, #3669a5)); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button>
+  
+    
+    <a href="MlInbox.html" aria-label="Inbox, 5" title="Inbox, 5" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Inbox</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">5</span>
+    </a>
+  
+    
+    <a href="#" aria-label="Drafts, 1" title="Drafts, 1" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2zM14 2v6h6"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Drafts</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">1</span>
+    </a>
+  
+    
+    <a href="#" aria-label="Sent" title="Sent" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Sent</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Archive" title="Archive" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Archive</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Spam" title="Spam" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Spam</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Trash" title="Trash" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Trash</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Folders" title="Folders" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Folders</span>
+      
+    </a>
+  
+    <span aria-hidden="true" style="flex: none; width: 28px; height: 1px; margin: 6px 0; background: var(--sc-work-line, #e4e6ea)"></span>
+    <a href="MlNotifications.html" aria-label="Notifications, 2" title="Notifications, 2" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Notifications</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">2</span>
+    </a>
+  
+  <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" title="Olivia Brandt" style="flex: none; margin-top: auto; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: var(--sc-work-ground, #f5f6f8); display: inline-flex; align-items: center; justify-content: center"><span style="width: 28px; height: 28px; border-radius: 14px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif">OB</span></button>
+</nav>
+
+
+</div>
+        <section aria-label="Search results" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid var(--sc-work-line, #e4e6ea); overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
+            <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Results</h2><span style="font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">2 conversations, all accounts</span></div>
+          </div>
+          <div style="flex: none; box-sizing: border-box; padding: 0 16px 10px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168); line-height: 18px">Searched both mailboxes, all folders except Spam and Trash.</div>
+          <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+            
+              <li style="border-bottom: 1px solid var(--sc-work-line, #e4e6ea); background: #ffffff;">
+                <a href="MlThread.html" aria-current="false" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: var(--sc-work-ink, #1b1c1d); text-decoration: none">
+                  <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: var(--sc-primary, #3669a5)"></span></span>
+                  <span style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">JK</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 700">Jana Köhler</span><span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168)">3</span><span style="flex: none; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-chip, #f0f1f3); color: var(--sc-work-muted, #5e6168); font-size: 11px; line-height: 18px; white-space: nowrap">Inbox</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">04:00</span></span>
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">Gantt export cuts off the last week</span></span>
+                    <span style="display: flex; align-items: center; gap: 8px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The last week of the plan is still missing on the PDF, see the two screenshots.</span></span>
+                  </span>
+                </a>
+              </li>
+            
+              <li style="border-bottom: 1px solid var(--sc-work-line, #e4e6ea); background: #ffffff;">
+                <a href="MlThread.html" aria-current="false" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: var(--sc-work-ink, #1b1c1d); text-decoration: none">
+                  <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: var(--sc-primary, #3669a5)"></span></span>
+                  <span style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">JK</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 700">Jana Köhler</span><span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168)"></span><span style="flex: none; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-chip, #f0f1f3); color: var(--sc-work-muted, #5e6168); font-size: 11px; line-height: 18px; white-space: nowrap">Support</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">10 Oct</span></span>
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">Angebot Schulung Projektleiter, 12 Personen</span></span>
+                    <span style="display: flex; align-items: center; gap: 8px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Anbei unser Angebot für die Schulung der Projektleiter, wie besprochen.</span></span>
+                  </span>
+                </a>
+              </li>
+            
+          </ol>
+        </section>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: var(--sc-work-ground, #f5f6f8); text-align: center">
+          <svg width="40" height="40" viewbox="0 0 24 24" fill="none" stroke="#c4c7cb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="stroke:var(--sc-work-field, #c4c7cb)"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+          <span style="font-size: 13px; color: var(--sc-work-muted, #5e6168); line-height: 19px">Press Enter to search, or pick a conversation on the left.</span>
+        </main>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: var(--sc-work-text, #3d4047); line-height: 16px"><span style="color: var(--sc-work-muted, #5e6168); font-weight: 400">b</span> &nbsp;All filters opened to their full length, with the and, or and not switch at the top</figcaption>
+    <div style="position: relative; height: 760px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--sc-work-ground, #f5f6f8); border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      
+
+<header style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: #ffffff; width: 100%; box-sizing: border-box; height: 55px; padding: 0 16px 0 16px; display: flex; align-items: center; gap: 16px; background: var(--sc-primary, #3669a5)">
+  <a href="MlInbox.html" style="flex: 0 0 auto; min-width: 245px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; height: 55px; color: #ffffff; text-decoration: none; min-width: 0">
+    <img src="../assets/zuiddrecht/logo-wit.svg" alt="" style="height: 26px; width: auto; max-width: 130px; flex: none" data-sc-logo="logo-wit">
+    <span style="width: 1px; height: 22px; background: rgba(255,255,255,0.35); flex: none"></span>
+    <strong style="font-size: 17px; font-weight: 600; white-space: nowrap">Mail</strong>
+  </a>
+  <form role="search" style="flex: 1 1 560px; max-width: 640px; min-width: 240px; position: relative; display: flex; align-items: center">
+    <label for="ml-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+    <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px; color: #ffffff"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+    <input id="ml-search" type="search" placeholder="from:jana subject:gantt" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 44px 0 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: rgba(255,255,255,0.12); font: 400 14px var(--sc-font, 'Fira Sans'), sans-serif; color: #ffffff">
+    <button type="button" aria-label="Search filters" aria-haspopup="menu" style="position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
+    </button>
+  </form>
+  <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: max-content">
+    <button type="button" aria-label="Help" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"></path></svg>
+    </button>
+    <button type="button" aria-label="Settings" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>
+    </button>
+    <button type="button" aria-label="Account menu of Olivia Brandt" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; margin-left: 6px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff">
+      <span style="width: 30px; height: 30px; border-radius: 15px; background: #ffffff; color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font: 700 12px var(--sc-font, 'Fira Sans'), sans-serif">OB</span>
+      <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  </div>
+</header>
+
+      <div role="dialog" aria-label="Search filters, all of them" style="position: absolute; left: 221px; top: 50px; width: 720px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 4px 8px 8px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea)">
+          <span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047); white-space: nowrap">Combine the conditions</span>
+          <div role="radiogroup" aria-label="Combine the conditions: and, or, not" style="display: inline-flex; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <button type="button" role="radio" aria-checked="true" style="height: 28px; padding: 0 12px; border: 0; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">All of them (and)</button>
+            <button type="button" role="radio" aria-checked="false" style="height: 28px; padding: 0 12px; border: 0; border-left: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">Any of them (or)</button>
+            <button type="button" role="radio" aria-checked="false" style="height: 28px; padding: 0 12px; border: 0; border-left: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">None of them (not)</button>
+          </div>
+          <span style="flex: 1 1 auto"></span>
+          <span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Searching all accounts</span>
+        </div>
+        
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
+            <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">People and words</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 12px">
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">From</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Jana Köhler</span>
+                    <button type="button" aria-label="Clear From" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">To</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-muted, #5e6168); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Anyone</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Subject</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Gantt export</span>
+                    <button type="button" aria-label="Clear Subject" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Words anywhere</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">last week</span>
+                    <button type="button" aria-label="Clear Words anywhere" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+            </div>
+          </div>
+        
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
+            <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Message</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 12px">
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Size</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Larger than 1 MB</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Attachment name</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">gantt</span>
+                    <button type="button" aria-label="Clear Attachment name" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Header, any value</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">List-Id</span>
+                    <button type="button" aria-label="Clear Header, any value" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Message id</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><a1f2@stadtwerke-kassel.example></span>
+                    <button type="button" aria-label="Clear Message id" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+            </div>
+          </div>
+        
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
+            <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">When</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 12px">
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Date received</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Last 30 days</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Date filed in folder</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">After 1 Oct 2026</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Project</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-muted, #5e6168); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Any project</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Work package</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span>
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">#58231 Gantt PDF export drops trailing columns</span>
+                    <button type="button" aria-label="Clear Work package" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+            </div>
+          </div>
+        
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
+            <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Folders and labels</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 12px">
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Folder</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">All folders</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Leave out folders</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Spam, Trash, Newsletters</span>
+                    <button type="button" aria-label="Clear Leave out folders" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Label</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-muted, #5e6168); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Any label</span>
+                    
+                    <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="m6 9 6 6 6-6"></path></svg>
+                  </span>
+                </label>
+              
+                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--sc-work-text, #3d4047); min-width: 0; ">
+                  <span style="white-space: nowrap">Without label</span>
+                  <span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 13px; font-weight: 400; color: var(--sc-work-ink, #1b1c1d); min-width: 0">
+                    
+                    <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Internal</span>
+                    <button type="button" aria-label="Clear Without label" style="flex: none; width: 22px; height: 22px; margin-right: -4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+                    
+                  </span>
+                </label>
+              
+            </div>
+          </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
+          <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">State</h3>
+          <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
+            <div role="radiogroup" aria-label="Unread or read" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px"><span style="font-weight: 600; color: var(--sc-work-text, #3d4047); font-size: 12px">Unread or read</span><label style="display: flex; align-items: center; gap: 6px"><input type="radio" name="ml-sa-read" style="width: 16px; height: 16px; margin: 0; accent-color: var(--sc-primary, #3669a5)">Both</label><label style="display: flex; align-items: center; gap: 6px"><input type="radio" name="ml-sa-read" checked style="width: 16px; height: 16px; margin: 0; accent-color: var(--sc-primary, #3669a5)">Unread only</label><label style="display: flex; align-items: center; gap: 6px"><input type="radio" name="ml-sa-read" style="width: 16px; height: 16px; margin: 0; accent-color: var(--sc-primary, #3669a5)">Read only</label></div>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 0; accent-color: var(--sc-primary, #3669a5)">Starred or important only</label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap"><input type="checkbox" checked style="width: 16px; height: 16px; margin: 0; accent-color: var(--sc-primary, #3669a5)">Has attachment</label>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 8px 4px; border-top: 1px solid var(--sc-work-line, #e4e6ea); margin-top: 2px">
+          <span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047)">Work package link</span>
+          <div role="group" aria-label="Linked to a work package" style="display: inline-flex; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <button type="button" aria-pressed="true" style="height: 28px; padding: 0 12px; border: 0; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif">All</button>
+            <button type="button" aria-pressed="false" style="height: 28px; padding: 0 12px; border: 0; border-left: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif">Linked</button>
+            <button type="button" aria-pressed="false" style="height: 28px; padding: 0 12px; border: 0; border-left: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif">Not linked</button>
+          </div>
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="height: 30px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, var(--sc-primary, #3669a5)); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">Clear filters</button>
+          <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 14px; border: 1px solid var(--sc-action-deep, var(--sc-primary-deep, #234a78)); border-radius: var(--sc-radius, 8px); background: var(--sc-action, var(--sc-primary, #3669a5)); color: #ffffff; font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap">Search</button>
+        </div>
+      </div>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden">
+
+
+<nav aria-label="Mailboxes, folded" style="font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; color: var(--sc-work-ink, #1b1c1d); font-size: 14px; line-height: 21px; width: 64px; box-sizing: border-box; min-height: 100%; padding: 8px 0 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border-right: 1px solid var(--sc-work-line, #e4e6ea)">
+  <button type="button" aria-label="Open folders" aria-expanded="false" title="Open folders" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-muted, #5e6168); display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
+  <button type="button" aria-label="New message" title="New message" style="flex: none; width: 40px; height: 40px; margin: 6px 0 8px; border: 1px solid var(--sc-action-deep, var(--sc-primary-deep, #234a78)); border-radius: var(--sc-radius, 8px); background: var(--sc-action, var(--sc-primary, #3669a5)); color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button>
+  
+    
+    <a href="MlInbox.html" aria-label="Inbox, 5" title="Inbox, 5" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Inbox</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">5</span>
+    </a>
+  
+    
+    <a href="#" aria-label="Drafts, 1" title="Drafts, 1" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2zM14 2v6h6"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Drafts</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">1</span>
+    </a>
+  
+    
+    <a href="#" aria-label="Sent" title="Sent" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Sent</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Archive" title="Archive" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Archive</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Spam" title="Spam" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Spam</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Trash" title="Trash" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Trash</span>
+      
+    </a>
+  
+    
+    <a href="#" aria-label="Folders" title="Folders" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Folders</span>
+      
+    </a>
+  
+    <span aria-hidden="true" style="flex: none; width: 28px; height: 1px; margin: 6px 0; background: var(--sc-work-line, #e4e6ea)"></span>
+    <a href="MlNotifications.html" aria-label="Notifications, 2" title="Notifications, 2" aria-current="false" style="position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: var(--sc-work-text, #3d4047);">
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+      <span style="font-size: 10px; line-height: 12px; white-space: nowrap">Notifications</span>
+      <span aria-hidden="true" style="position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif; background: var(--sc-primary, #3669a5); color: #ffffff">2</span>
+    </a>
+  
+  <button type="button" aria-haspopup="menu" aria-label="Account: Olivia Brandt, olivia@northwind-projects.test" title="Olivia Brandt" style="flex: none; margin-top: auto; width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: var(--sc-work-ground, #f5f6f8); display: inline-flex; align-items: center; justify-content: center"><span style="width: 28px; height: 28px; border-radius: 14px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: var(--sc-font, 'Fira Sans'), system-ui, sans-serif">OB</span></button>
+</nav>
+
+
+</div>
+        <section aria-label="Search results" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid var(--sc-work-line, #e4e6ea); overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
+            <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">Results</h2><span style="font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">1 conversation, all accounts</span></div>
+          </div>
+          <div style="flex: none; box-sizing: border-box; padding: 0 16px 10px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168); line-height: 18px">Spam, Trash and Newsletters are left out.</div>
+          <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+            
+              <li style="border-bottom: 1px solid var(--sc-work-line, #e4e6ea); background: #ffffff;">
+                <a href="MlThread.html" aria-current="false" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: var(--sc-work-ink, #1b1c1d); text-decoration: none">
+                  <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: var(--sc-primary, #3669a5)"></span></span>
+                  <span style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78)">JK</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 700">Jana Köhler</span><span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168)">3</span><span style="flex: none; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: var(--sc-work-chip, #f0f1f3); color: var(--sc-work-muted, #5e6168); font-size: 11px; line-height: 18px; white-space: nowrap">Inbox</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">04:00</span></span>
+                    <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: var(--sc-work-ink, #1b1c1d); font-weight: 600">Gantt export cuts off the last week</span></span>
+                    <span style="display: flex; align-items: center; gap: 8px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The last week of the plan is still missing on the PDF, see the two screenshots.</span></span>
+                  </span>
+                </a>
+              </li>
+            
+          </ol>
+        </section>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: var(--sc-work-ground, #f5f6f8); text-align: center">
+          <span style="font-size: 13px; color: var(--sc-work-muted, #5e6168); line-height: 19px">Select a conversation to read it here.</span>
+        </main>
+      </div>
+    </div>
+  </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: var(--sc-work-text, #3d4047); line-height: 16px"><span style="color: var(--sc-work-muted, #5e6168); font-weight: 400">c</span> &nbsp;The search of the whole platform, narrowed to mail by date and person</figcaption>
+    <div style="position: relative; height: 480px; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: center; background: var(--sc-work-ground, #f5f6f8); border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27,28,29,0.45)"></div>
+      <div role="dialog" aria-modal="true" aria-label="Search everywhere, narrowed by date and person" style="position: relative; z-index: 2; width: 760px; margin-top: 28px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid var(--sc-work-field, #c4c7cb); border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 12px 0 16px; box-sizing: border-box; border-bottom: 1px solid var(--sc-work-line, #e4e6ea)">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: var(--sc-work-muted, #5e6168)"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+          <span role="textbox" aria-label="Search everywhere, typed: gantt export" style="flex: 1 1 auto; font-size: 16px; color: var(--sc-work-ink, #1b1c1d)">gantt export<span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; margin-left: 2px; vertical-align: -3px; background: var(--sc-work-ink, #1b1c1d)"></span></span>
+          <button type="button" aria-label="Close search" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-work-text, #3d4047); display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--sc-work-line, #e4e6ea); flex-wrap: wrap">
+          <span style="font-size: 12px; font-weight: 600; color: var(--sc-work-text, #3d4047); margin-right: 4px">Narrow by</span>
+          <button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-primary, #3669a5); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78);">Mail</button><button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);">Files</button><button type="button" aria-pressed="false" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-work-field, #c4c7cb); background: #ffffff; color: var(--sc-work-text, #3d4047);">Calendar</button><button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-primary, #3669a5); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78);">Date: last 30 days<svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button type="button" aria-pressed="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font: 600 13px var(--sc-font, 'Fira Sans'), sans-serif; white-space: nowrap; border: 1px solid var(--sc-primary, #3669a5); background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78);">Person: Jana Köhler<svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+        </div>
+        <div style="padding: 8px 16px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-work-muted, #5e6168)">Mail, 3 results from Jana Köhler in the last 30 days</div>
+        <ul style="list-style: none; margin: 0; padding: 0 8px 8px; display: flex; flex-direction: column">
+          
+            <li><a href="MlThread.html" style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 8px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); color: var(--sc-work-ink, #1b1c1d); text-decoration: none; background: var(--sc-primary-light, #eaf0f7)">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">JK</span>
+              <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px"><span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Gantt export cuts off the last week</span><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Jana Köhler, Inbox, 3 messages</span></span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">Today 04:00</span>
+            </a></li>
+          
+            <li><a href="MlThread.html" style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 8px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">JK</span>
+              <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px"><span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Re: Gantt export: reproduction on 16.4</span><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Jana Köhler, Archive</span></span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">2 Oct</span>
+            </a></li>
+          
+            <li><a href="MlThread.html" style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 8px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); color: var(--sc-work-ink, #1b1c1d); text-decoration: none; ">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: var(--sc-primary-light, #eaf0f7); color: var(--sc-primary-deep, #234a78); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">JK</span>
+              <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px"><span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Gantt PDF for the board meeting</span><span style="font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Jana Köhler, Customers / Kassel</span></span>
+              <span style="flex: none; font-size: 12px; color: var(--sc-work-muted, #5e6168); white-space: nowrap">24 Sep</span>
+            </a></li>
+          
+        </ul>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px 12px; border-top: 1px solid var(--sc-work-line, #e4e6ea); font-size: 12px; color: var(--sc-work-muted, #5e6168)">
+          <span>Files, Calendar and Contacts have no match for these filters.</span>
+          <a href="MlSearch.html" style="font-size: 13px; font-weight: 600; color: var(--sc-link, var(--sc-primary, #3669a5)); text-decoration: none">Open all 3 in Mail</a>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+</div>
+</div>
+</body>
+</html>

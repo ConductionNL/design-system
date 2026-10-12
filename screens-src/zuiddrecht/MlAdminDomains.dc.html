@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail administration: domains</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#ml-adm-search::placeholder{color:#5e6168}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
+  <dc-import name="MlHeader" app="Administration" placeholder="Search domains, mailboxes or settings" hint-size="100%,55px"></dc-import>
+  <div style="display: flex; flex: 1 1 auto; min-height: 0">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Domains" hint-size="264px,945px"></dc-import></div>
+    <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 32px; overflow: hidden">
+      <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Domains</h1>
+          <p style="margin: 0; color: #3d4047">The domains this mail server receives and sends mail for. Add one, check its DNS records and remove it when it is no longer used.</p>
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">One console for every record of the mail service, apart from the mail client: domains, mailboxes, queues, rules and integrations.</p>
+        </div>
+        <button type="button" aria-expanded="true" aria-controls="ml-adm-add" style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add domain</button>
+        <form id="ml-adm-add" aria-label="Add domain" style="position: absolute; right: 0; top: 38px; margin-top: 4px; width: 380px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+          <strong style="font-size: 14px; font-weight: 600">New domain</strong>
+          <label for="ml-adm-domain" style="font-size: 13px; font-weight: 500">Domain name</label>
+          <input id="ml-adm-domain" type="text" value="kassel-training.test" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+          <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">As soon as it is added we check the DNS records that route mail to this server and prove that mail comes from you (MX, SPF, DKIM and DMARC).</p>
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Cancel</button>
+            <button type="submit" style="display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Add domain</button>
+          </div>
+        </form>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <form role="search" style="position: relative; display: flex; align-items: center; width: 320px">
+          <label for="ml-adm-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search domains</label>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; top: 9px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+          <input id="ml-adm-search" type="search" placeholder="Search domains" style="width: 100%; height: 34px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+        </form>
+        <span style="font-size: 13px; color: #5e6168">4 domains</span>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+          <thead><tr style="height: 40px; border-bottom: 1px solid #e4e6ea; background: #f5f6f8">
+            <th scope="col" style="text-align: left; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap">Domain</th>
+            <th scope="col" style="text-align: left; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap">DNS records</th>
+            <th scope="col" style="text-align: right; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap">Mailboxes</th>
+            <th scope="col" style="text-align: left; padding: 0 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap">Storage used</th>
+            <th scope="col" style="width: 44px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actions</span></th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{ domains }}" as="d" hint-placeholder-count="4">
+              <tr aria-selected="{{ d.selected }}" style="{{ d.style }}">
+                <td style="padding: 0 12px; white-space: nowrap"><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 500">{{ d.name }}</a></td>
+                <td style="padding: 0 12px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ d.dot }}"></span>{{ d.dns }}</span></td>
+                <td style="padding: 0 12px; text-align: right; white-space: nowrap">{{ d.mailboxes }}</td>
+                <td style="padding: 0 12px; white-space: nowrap">{{ d.storage }}</td>
+                <td style="padding: 0 6px; text-align: right"><button type="button" aria-haspopup="menu" aria-label="Actions for {{ d.name }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.75"></circle><circle cx="12" cy="12" r="1.75"></circle><circle cx="19" cy="12" r="1.75"></circle></svg></button></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <aside aria-label="Domain northwind-consulting.test" style="flex: 0 0 380px; width: 380px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+      <div style="display: flex; align-items: flex-start; gap: 8px">
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">northwind-consulting.test</h2>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #3d4047"><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #ffc078; border: 1.5px solid #ff9d2e"></span>1 record missing</span>
+        </div>
+        <button type="button" aria-label="Close domain details" style="flex: none; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <dl style="margin: 0; display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; font-size: 13px; line-height: 20px">
+        <dt style="color: #5e6168">Mailboxes</dt><dd style="margin: 0"><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none">12 mailboxes</a></dd>
+        <dt style="color: #5e6168">Storage used</dt><dd style="margin: 0">8.9 GB of 100 GB</dd>
+        <dt style="color: #5e6168">Added</dt><dd style="margin: 0">14 March 2026 by Olivia Brandt</dd>
+      </dl>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h3 style="margin: 0; font-size: 14px; font-weight: 600; line-height: 21px">DNS records</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+          <thead><tr style="height: 32px; border-bottom: 1px solid #e4e6ea"><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Record</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">What it does</th><th scope="col" style="text-align: left; padding: 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">State</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ records }}" as="r" hint-placeholder-count="4">
+              <tr style="height: 40px; border-bottom: 1px solid #e4e6ea">
+                <td style="padding: 0 8px; font-weight: 500; white-space: nowrap">{{ r.name }}</td>
+                <td style="padding: 0 8px; color: #3d4047">{{ r.purpose }}</td>
+                <td style="padding: 0 8px; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{ r.dot }}"></span>{{ r.state }}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 13px; line-height: 19px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #ff9d2e"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg><span>Mail from this domain may land in spam until the sender record exists. Add this TXT record at your DNS provider: <code style="font-family: ui-monospace, monospace; font-size: 12px">v=spf1 include:mail.northwind-projects.test -all</code></span></div>
+      <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 13px; line-height: 19px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #3669a5"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg><span>A changed DNS record can take up to 48 hours to show here. Last checked today at 07:00.</span></div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px">
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Check DNS records now</button>
+        <span style="flex: 1 1 auto"></span>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Remove domain</button>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dot = (bg, ring) => 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: ' + bg + '; border: 1.5px solid ' + ring;
+    const D = { ok: dot('#d3f9d8', '#8ff09c'), warn: dot('#ffc078', '#ff9d2e'), busy: dot('#66d9e8', '#21c8de'), bad: dot('#fcc2d7', '#f977a6'), off: dot('#dee2e6', '#adb5bd') };
+    const row = 'height: 40px; border-bottom: 1px solid #e4e6ea; ';
+    const domains = [
+      ['northwind-projects.test', D.ok, 'All records found', '48', '61.4 GB of 500 GB', false],
+      ['northwind-consulting.test', D.warn, '1 record missing', '12', '8.9 GB of 100 GB', true],
+      ['lyon-rollout.test', D.busy, 'Checking, added today 07:10', '0', '0 GB of 50 GB', false],
+      ['old-northwind.test', D.bad, 'Not verified', '3', '1.2 GB of 50 GB', false]
+    ].map(([name, dot, dns, mailboxes, storage, selected]) => ({ name, dot, dns, mailboxes, storage, selected: selected ? 'true' : 'false', style: row + (selected ? 'background: #eaf0f7' : 'background: #ffffff') }));
+    const records = [
+      ['MX', 'Routes incoming mail to this server', D.ok, 'Found'],
+      ['SPF', 'Says which servers may send for you', D.warn, 'Missing'],
+      ['DKIM', 'Signs outgoing mail', D.ok, 'Found'],
+      ['DMARC', 'Tells receivers what to do with failures', D.ok, 'Found']
+    ].map(([name, purpose, dot, state]) => ({ name, purpose, dot, state }));
+    return { domains, records };
+  }
+}
+</script>
+</body>
+</html>

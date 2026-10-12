@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: where mail meets the rest of the platform</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1280px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The platform dashboard with the two mail widgets: each row opens its conversation in Mail</figcaption>
+    <div style="height: 520px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" app="Dashboard" placeholder="Search files, mail, events and work packages" hint-size="100%,55px"></dc-import>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 20px 32px">
+        <div style="display: flex; align-items: baseline; gap: 12px"><h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">Good morning, Olivia</h1><span style="font-size: 13px; color: #5e6168">Monday 12 October 2026</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; min-height: 0">
+          <sc-for list="{{ widgets }}" as="w" hint-placeholder-count="2">
+            <section aria-label="{{ w.title }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+              <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="{{ w.icon }}"></path></svg>
+                <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">{{ w.title }}</h2>
+                <span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ w.meta }}</span>
+                <button type="button" aria-label="Widget options for {{ w.title }}" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
+              </div>
+              <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                <sc-for list="{{ w.rows }}" as="r" hint-placeholder-count="5">
+                  <li style="border-bottom: 1px solid #e4e6ea">
+                    <a href="#" aria-label="Open the conversation {{ r.subject }} from {{ r.from }}" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none">
+                      <span style="{{ r.avatar }}">{{ r.initials }}</span>
+                      <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px">
+                        <span style="display: flex; align-items: center; gap: 6px"><span style="{{ r.sender }}">{{ r.from }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.date }}</span></span>
+                        <span style="display: flex; align-items: center; gap: 6px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: #3d4047">{{ r.subject }}</span><sc-if value="{{ r.hasWhy }}" hint-placeholder-val="{{ false }}"><span style="{{ r.why }}">{{ r.whyText }}</span></sc-if></span>
+                      </span>
+                    </a>
+                  </li>
+                </sc-for>
+              </ol>
+              <a href="#" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">{{ w.footer }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+            </section>
+          </sc-for>
+          <section aria-label="Today" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+              <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Today</h2>
+              <span style="font-size: 12px; color: #5e6168; white-space: nowrap">2 events</span>
+            </div>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+              <li style="border-bottom: 1px solid #e4e6ea"><a href="#" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none"><span style="flex: none; width: 4px; height: 32px; border-radius: 2px; background: #3669a5"></span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><span style="font-size: 14px">Weekly with Tom</span><span style="font-size: 12px; color: #5e6168">10:00 to 10:30, Room 2</span></span></a></li>
+              <li style="border-bottom: 1px solid #e4e6ea"><a href="#" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none"><span style="flex: none; width: 4px; height: 32px; border-radius: 2px; background: #538b28"></span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><span style="font-size: 14px">Kassel: Gantt export call</span><span style="font-size: 12px; color: #5e6168">15:00 to 15:30, video call</span></span></a></li>
+            </ol>
+            <a href="#" style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open the calendar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+          </section>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; min-width: 0">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The reply panel with the insert picker open: search files, events and other platform items, insert a link</figcaption>
+      <div style="height: 600px; box-sizing: border-box; display: flex; justify-content: flex-end; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div aria-hidden="true" style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px">
+          <span style="height: 44px; border-radius: var(--sc-radius, 8px); background: #ffffff; border: 1px solid #e4e6ea"></span>
+          <span style="height: 44px; border-radius: var(--sc-radius, 8px); background: #ffffff; border: 1px solid #e4e6ea"></span>
+          <span style="flex: 1 1 auto; border-radius: var(--sc-radius, 8px); background: #ffffff; border: 1px solid #e4e6ea"></span>
+        </div>
+        <section aria-label="Compose: reply to Marc Dubois" style="position: relative; flex: 0 0 440px; width: 440px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 8px 0 16px; background: #234a78; color: #ffffff">
+            <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Re: Rollout plan phase 2, Lyon</span>
+            <button type="button" aria-label="Close the reply" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-bottom: 1px solid #e4e6ea; font-size: 13px"><span style="flex: none; width: 40px; color: #5e6168">To</span><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #1b1c1d; font-size: 12px; white-space: nowrap"><span style="width: 18px; height: 18px; border-radius: 9px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">MD</span>Marc Dubois</span></div>
+          <div role="textbox" aria-multiline="true" aria-label="Message body" style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 12px 16px; font-size: 14px; line-height: 21px; color: #1b1c1d">
+            <p style="margin: 0 0 10px">Hi Marc,</p>
+            <p style="margin: 0 0 10px">Yes, the kick-off can move to the afternoon. The latest plan and the review invitation are here: <span style="display: inline-block; width: 1px; height: 16px; background: #1b1c1d; vertical-align: text-bottom"></span></p>
+          </div>
+          <div role="dialog" aria-label="Insert a link to a platform item" style="position: absolute; left: 14px; right: 14px; bottom: 104px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+            <label style="position: relative; display: flex; align-items: center; margin-bottom: 4px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search files, events and other platform items</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg><input type="search" value="lyon" placeholder="Search files, events, work packages, people" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 10px 0 34px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"></label>
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+              <span style="display: block; padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 24px">{{ g.title }}</span>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+                <button type="button" role="option" aria-selected="{{ it.selected }}" style="{{ it.style }}">
+                  <span style="{{ it.badge }}">{{ it.badgeText }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 17px; text-align: left"><span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span><span style="font-size: 11px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.hint }}</span></span>
+                </button>
+              </sc-for>
+            </sc-for>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e4e6ea">
+              <button type="button" style="display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif">Cancel</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 13px 'Fira Sans', sans-serif"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Insert link</button>
+            </div>
+          </div>
+          <div role="toolbar" aria-label="Formatting" style="display: flex; align-items: center; gap: 2px; padding: 4px 10px; border-top: 1px solid #e4e6ea">
+            <sc-for list="{{ fmt }}" as="f" hint-placeholder-count="3"><button type="button" aria-label="{{ f.label }}" title="{{ f.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ f.icon }}"></path></svg></button></sc-for>
+            <span style="width: 1px; height: 18px; margin: 0 4px; background: #e4e6ea"></span>
+            <button type="button" aria-haspopup="dialog" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Insert a platform item</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px 12px; border-top: 1px solid #e4e6ea">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send</button>
+            <span style="flex: 1 1 auto"></span>
+            <span style="font-size: 12px; color: #5e6168">Draft saved 09:41</span>
+          </div>
+        </section>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;The feedback dialog reached from Help, over the dimmed inbox</figcaption>
+      <div style="position: relative; height: 600px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div aria-hidden="true" style="flex: none; height: 55px; background: #3669a5"></div>
+        <div aria-hidden="true" style="flex: 1 1 auto; display: flex">
+          <div style="flex: 0 0 64px; background: #ffffff; border-right: 1px solid #e4e6ea"></div>
+          <div style="flex: 0 0 300px; background: #ffffff; border-right: 1px solid #e4e6ea; display: flex; flex-direction: column"><span style="height: 78px; border-bottom: 1px solid #e4e6ea"></span><span style="height: 78px; border-bottom: 1px solid #e4e6ea"></span><span style="height: 78px; border-bottom: 1px solid #e4e6ea"></span><span style="height: 78px; border-bottom: 1px solid #e4e6ea"></span></div>
+        </div>
+        <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; align-items: center; justify-content: center">
+          <div role="dialog" aria-modal="true" aria-labelledby="ml-feedback-title" style="width: 480px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 20px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+              <h2 id="ml-feedback-title" style="margin: 0; font-size: 18px; font-weight: 600; line-height: 24px">Send feedback</h2>
+              <button type="button" aria-label="Close" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+            </div>
+            <p style="margin: 0; font-size: 13px; line-height: 19px; color: #5e6168">Tell the operator of this platform what works and what does not. Your name, the app version and the page you were on go along. Your mail does not.</p>
+            <label style="display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #3d4047">Your feedback
+              <textarea rows="5" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; line-height: 21px; color: #1b1c1d; resize: vertical">The insert picker should remember the project I searched last time. I type Lyon ten times a day.</textarea>
+            </label>
+            <div style="display: flex; flex-direction: column; gap: 2px; font-size: 12px; line-height: 18px; color: #5e6168">
+              <span>Goes to: Northwind Projects IT, operator of this platform</span>
+              <span>Sent as: Olivia Brandt, Mail 5.2.1, page Inbox</span>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px">
+              <button type="button" style="display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Cancel</button>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send to the operator</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const avatar = (op) => 'flex: none; width: 32px; height: 32px; border-radius: ' + (op ? 'var(--sc-radius, 8px)' : '16px') + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (op ? 'background: #1b1c1d; color: #ffffff' : 'background: #eaf0f7; color: #234a78');
+    const why = (kind) => 'flex: none; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; border-radius: var(--sc-radius, 8px); font-size: 11px; line-height: 1; white-space: nowrap; ' + (kind === 'star' ? 'background: #fff4e6; color: #3d4047' : 'border: 1px solid #e4e6ea; background: #ffffff; color: #3d4047');
+    const row = ([from, initials, subject, date, unread, w]) => ({
+      from, initials, subject, date,
+      avatar: avatar(initials === 'OP'),
+      sender: 'min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; ' + (unread ? 'font-weight: 700' : 'font-weight: 400'),
+      hasWhy: !!w, whyText: w ? w[1] : '', why: w ? why(w[0]) : ''
+    });
+    const widgets = [
+      { title: 'Unread mail', meta: '5 unread', icon: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', footer: 'Open the inbox', rows: [
+        ['Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', '07:00', true],
+        ['Jana Köhler', 'JK', 'Gantt export cuts off the last week', '04:00', true],
+        ['OpenProject notifications', 'OP', '[Northwind - Bug #58231] Gantt PDF export drops trailing columns', '01:00', true],
+        ['Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 'Yesterday', true],
+        ['Jana Köhler', 'JK', 'Angebot Schulung Projektleiter, 12 Personen', '10 Oct', true]
+      ].map(row) },
+      { title: 'Important mail', meta: 'starred, linked, invitations', icon: 'm12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', footer: 'Open the Important view', rows: [
+        ['Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', '07:00', true, ['star', 'Starred']],
+        ['Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', '06:00', false, ['wp', 'FEATURE #58412']],
+        ['Jana Köhler', 'JK', 'Gantt export cuts off the last week', '04:00', true, ['wp', 'BUG #58231']],
+        ['Tom Achterberg', 'TA', 'Invitation: Rollout review Lyon, phase 2', '9 Oct', false, ['wp', 'Thu 15 Oct 14:00']],
+        ['Tom Achterberg, Olivia Brandt', 'TA', 'Scope for release 16.5', '9 Oct', false, ['wp', 'EPIC #57990']]
+      ].map(row) }
+    ];
+    const item = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); font-family: \'Fira Sans\', system-ui, sans-serif; color: #1b1c1d; ';
+    const badge = (bg, fg) => 'flex: none; width: 28px; height: 22px; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; color: ' + fg + '; background: ' + bg;
+    const groups = [
+      { title: 'Files', items: [
+        ['PDF', badge('#ab0000', '#ffffff'), 'Rollout-plan-phase-2.pdf', 'Customers / Lyon, 1.8 MB, changed 8 Oct', true],
+      ] },
+      { title: 'Events', items: [
+        ['15', badge('#eaf0f7', '#234a78'), 'Rollout review Lyon, phase 2', 'Thursday 15 October, 14:00 to 15:00', false]
+      ] },
+      { title: 'Work packages', items: [
+        ['FEA', badge('#f0f7ea', '#538b28'), 'FEATURE #58412 Link Nextcloud project folders on rollout', 'Northwind rollout Lyon, in development', false]
+      ] },
+      { title: 'People', items: [
+        ['MD', badge('#eaf0f7', '#234a78'), 'Marc Dubois', 'Ville de Lyon, marc.dubois@mairie-lyon.fr', false]
+      ] }
+    ].map((g) => ({ title: g.title, items: g.items.map(([badgeText, b, label, hint, selected]) => ({ badgeText, badge: b, label, hint, selected: selected ? 'true' : 'false', style: item + (selected ? 'background: #eaf0f7;' : 'background: transparent;') })) }));
+    const fmt = [
+      ['Bold', 'M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6zM6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z'],
+      ['Italic', 'M19 4h-9M14 20H5M15 4 9 20'],
+      ['Bulleted list', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01']
+    ].map(([label, icon]) => ({ label, icon }));
+    return { widgets, groups, fmt };
+  }
+}
+</script>
+</body>
+</html>

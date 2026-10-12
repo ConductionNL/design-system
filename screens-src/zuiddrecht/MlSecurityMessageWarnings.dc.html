@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mail: warnings and blocked pictures on an open message</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1660px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="v" hint-placeholder-count="8">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ v.letter }}</span> &nbsp;{{ v.caption }}</figcaption>
+      <div style="height: 272px; box-sizing: border-box; padding: 12px 16px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <article aria-label="Message from {{ v.from }}, {{ v.date }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+          <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+            <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ v.initials }}</span>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+              <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">{{ v.from }}</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ v.address }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">{{ v.date }}</span></div>
+              <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">Olivia Brandt</span></div>
+            </div>
+            <button type="button" aria-label="More actions for this message" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
+          </div>
+          <div role="{{ v.role }}" style="{{ v.strip }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ v.iconColor }}; margin-top: 1px"><path d="{{ v.icon }}"></path></svg>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+              <p style="margin: 0"><strong style="font-weight: 600">{{ v.title }}</strong> {{ v.text }}</p>
+              <sc-if value="{{ v.hasActions }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                  <sc-for list="{{ v.actions }}" as="a" hint-placeholder-count="2"><button type="button" style="{{ a.style }}">{{ a.label }}</button></sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="padding: 12px 14px 14px 56px; display: flex; flex-direction: column; gap: 8px; color: #3d4047">
+            <p style="margin: 0; {{ v.bodyStyle }}">{{ v.body }}</p>
+            <sc-if value="{{ v.hasPlaceholder }}" hint-placeholder-val="{{ false }}"><div aria-label="Picture not shown" role="img" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M21 15l-5-5L5 21"></path></svg>Picture not shown, 640 x 220</div></sc-if>
+            <sc-if value="{{ v.hasLink }}" hint-placeholder-val="{{ false }}"><p style="margin: 0"><span aria-disabled="true" style="color: #5e6168; text-decoration: line-through">{{ v.linkText }}</span> <span style="font-size: 12px; color: #5e6168">(link switched off)</span></p></sc-if>
+          </div>
+        </article>
+      </div>
+    </figure>
+  </sc-for>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">i</span> &nbsp;Following a link out of a message: the real target in full, and a warning when the link text names another address</figcaption>
+    <div style="position: relative; height: 272px; box-sizing: border-box; padding: 12px 16px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <article aria-hidden="true" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+        <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+          <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">HB</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+            <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">Hetzner Billing</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">billing@hetzner-invoices.test</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">Today 05:12</span></div>
+            <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">Olivia Brandt</span></div>
+          </div>
+        </div>
+        <div style="padding: 12px 14px 14px 56px; display: flex; flex-direction: column; gap: 8px; color: #3d4047">
+          <p style="margin: 0">Your invoice 2026-10-0193 is overdue. Sign in within 24 hours to keep your servers running: <a href="#" style="color: var(--sc-link, #3669a5)">hetzner.com/invoices</a></p>
+          <p style="margin: 0">Hetzner Billing</p>
+        </div>
+      </article>
+      <div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; align-items: center; justify-content: center">
+        <div role="dialog" aria-modal="true" aria-labelledby="ml-link-title" style="width: 520px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+          <h3 id="ml-link-title" style="margin: 0; font-size: 16px; font-weight: 600; line-height: 22px">Open this link?</h3>
+          <div style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 19px">
+            <span style="color: #5e6168">The link goes to</span>
+            <code style="display: block; padding: 8px 10px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font: 400 13px ui-monospace, 'Fira Mono', monospace; color: #1b1c1d; word-break: break-all">https://hetzner-invoices.test/login?account=olivia</code>
+          </div>
+          <div role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 13px; line-height: 19px; color: #1b1c1d">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #ff9d2e"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg>
+            <p style="margin: 0"><strong style="font-weight: 600">The link text names another address than its target.</strong> The text says hetzner.com, the link goes to hetzner-invoices.test. Open it only if you expected this.</p>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px">
+            <button type="button" style="display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Cancel</button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"></path></svg>Open link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1660}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const KIND = {
+      info: ['#3669a5', '#eaf0f7', 'status', 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01'],
+      warn: ['#ff9d2e', '#fff4e6', 'status', 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01'],
+      error: ['#cc0000', '#fbeaea', 'alert', 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01']
+    };
+    const strip = (k) => 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid ' + KIND[k][0] + '; border-radius: var(--sc-radius, 8px); background: ' + KIND[k][1] + '; font-size: 13px; line-height: 19px; color: #1b1c1d';
+    const btn = 'display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const list = [
+      ['a', 'Pictures from the internet are blocked until you choose to show them, once or always for this sender or domain', 'Sovereign Tech Weekly', 'ST', 'newsletter@sovereign-tech.test', 'Yesterday 18:00', 'info',
+        'Pictures from the internet are not shown.', 'The sender would see when and where you open this mail. Show them once, or always for this sender or its domain.',
+        ['Show pictures', 'Always show from this sender', 'Always show from sovereign-tech.test'],
+        'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { placeholder: true }],
+      ['b', 'Likely phishing: red, because it is very likely harmful, and the links are switched off', 'Hetzner Billing', 'HB', 'billing@hetzner-invoices.test', 'Today 05:12', 'error',
+        'This message looks like phishing.', 'It asks you to sign in on a page that is not Hetzner\'s, for an invoice you did not get. Links and attachments are switched off. Do not enter a password.',
+        ['Report and delete', 'This message is safe'],
+        'Your invoice 2026-10-0193 is overdue. Sign in within 24 hours to keep your servers running.', { link: 'hetzner.com/invoices' }],
+      ['c', 'Likely spam: the warning colour, because the message is probably unwanted but not harmful', 'Cloud Deals Team', 'CD', 'offers@cloud-deals-now.test', 'Today 03:40', 'warn',
+        'This is probably spam.', '14 people on this server marked mail from this sender as unwanted. It stayed in your inbox because you had not seen the sender before.',
+        ['Move to spam', 'Not spam'],
+        'Last chance: 70 percent off on cloud storage for your whole team, today only. Reply with your phone number and we call you back.', {}],
+      ['d', 'Failed sender authentication: the server could not prove it sends mail for that domain', 'Marc Dubois', 'MD', 'marc.dubois@mairie-lyon.fr', 'Today 06:00', 'warn',
+        'The sending server could not prove it sends mail for mairie-lyon.fr.', 'The message may come from someone else. Call Marc before you act on a request in it.',
+        ['Show details', 'I trust this message'],
+        'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', {}],
+      ['e', 'Unverified sender: first contact, no proof of identity, so doubt rather than danger', 'Sven Lindqvist', 'SL', 'sven.lindqvist@malmo-energi.test', 'Today 07:00', 'warn',
+        'The sender could not be verified.', 'This is the first mail from sven.lindqvist@malmo-energi.test and the sender\'s server gave no proof of identity. Treat links and attachments with care.',
+        ['Show details'],
+        'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users. Could you show us the Nextcloud link in a demo?', {}],
+      ['f', 'Dated in the future: a neutral fact in the information colour', 'People Team', 'PT', 'people@northwind-projects.test', '14 Oct 09:00', 'info',
+        'This message is dated two days in the future.', 'The sender\'s clock is probably wrong. It was received today at 08:14 and shows at the top of the list until 14 October.',
+        [],
+        'Please submit your October hours in the time sheet by Friday 16 October. Projects without hours are closed for the month.', {}],
+      ['g', 'Known contact name with another address: the classic lookalike', 'Tom Achterberg', 'TA', 'tom.achterberg@outlook-mail.test', 'Today 07:40', 'warn',
+        'This sender uses the name of a contact, but the address is tom.achterberg@outlook-mail.test.', 'Your contact Tom Achterberg writes from tom@northwind-projects.test.',
+        ['Open the contact', 'I trust this address'],
+        'Olivia, can you buy three gift cards for the Lyon team today? I am in a meeting, just send me the codes.', {}],
+      ['h', 'Reply address differs from the sender: check before you reply', 'Jana Köhler', 'JK', 'jana.koehler@stadtwerke-kassel.de', '10 Oct 16:20', 'warn',
+        'Replies go to j.koehler@gmx-mailer.test, not to the sender.', 'The sender is jana.koehler@stadtwerke-kassel.de. Check the address before you reply with anything confidential.',
+        ['Reply to the sender instead'],
+        'Könnten Sie uns ein Angebot für eine Schulung für 12 Projektleiter machen? Gern im November, zwei Tage in Kassel.', {}]
+    ];
+    const frames = list.map(([letter, caption, from, initials, address, date, kind, title, text, actions, body, o]) => ({
+      letter, caption, from, initials, address, date, title, text, body,
+      role: KIND[kind][2], icon: KIND[kind][3], iconColor: KIND[kind][0], strip: strip(kind),
+      hasActions: actions.length > 0, actions: actions.map((label) => ({ label, style: btn })),
+      hasPlaceholder: !!o.placeholder, hasLink: !!o.link, linkText: o.link || '',
+      bodyStyle: kind === 'error' ? 'color: #5e6168' : ''
+    }));
+    return { frames };
+  }
+}
+</script>
+</body>
+</html>

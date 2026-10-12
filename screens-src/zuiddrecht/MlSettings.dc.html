@@ -57,14 +57,8 @@ a{color:#3669a5}a:hover{color:#234a78}
     </main>
   </div>
   <div style="position: absolute; inset: 0; z-index: 20; background: rgba(27,28,29,0.45); display: flex; align-items: center; justify-content: center">
-    <div role="dialog" aria-modal="true" aria-labelledby="ml-settings-title" style="width: 900px; height: 640px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
-      <nav aria-label="Settings sections" style="flex: 0 0 220px; width: 220px; box-sizing: border-box; padding: 20px 12px; display: flex; flex-direction: column; gap: 1px; background: #f5f6f8; border-right: 1px solid #e4e6ea">
-        <h2 id="ml-settings-title" style="margin: 0 0 12px; padding: 0 10px; font-size: 20px; font-weight: 600; line-height: 1.2">Settings</h2>
-        <sc-for list="{{ sections }}" as="s" hint-placeholder-count="5">
-          <a href="#" aria-current="{{ s.current }}" style="{{ s.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ s.icon }}"></path></svg><span style="flex: 1 1 auto">{{ s.label }}</span></a>
-        </sc-for>
-        <div style="margin-top: auto; padding: 0 10px; font-size: 12px; color: #5e6168; line-height: 1.4">Changes are saved as you make them.</div>
-      </nav>
+    <div role="dialog" aria-modal="true" aria-labelledby="ml-settings-title" style="width: 960px; height: 680px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 12px 32px rgba(27,28,29,0.24); overflow: hidden">
+      <div style="flex: 0 0 236px; width: 236px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlSettingsNav" active="OpenProject" hint-size="236px,680px"></dc-import></div>
       <section aria-label="OpenProject" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
         <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 12px 0 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
           <h3 style="margin: 0; font-size: 20px; font-weight: 600; line-height: 1.2">OpenProject</h3>
@@ -129,26 +123,16 @@ class Component extends DCLogic {
       avatar: 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ' + (mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78')
     }));
     const I = {
-      user: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
-      sun: 'M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42',
-      pen: 'M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z',
-      link: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
-      keys: 'M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zM6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8',
       folder: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z',
       at: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94'
     };
-    const base = 'display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 21px; ';
-    const sections = [['Account', I.user], ['Appearance', I.sun], ['Signatures', I.pen], ['OpenProject', I.link], ['Shortcuts', I.keys]].map(([label, icon]) => {
-      const on = label === 'OpenProject';
-      return { label, icon, current: on ? 'page' : 'false', style: base + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 400;') };
-    });
     const rules = [
       { match: 'Customers / Lyon', icon: I.folder, project: 'Northwind rollout Lyon' },
       { match: '@stadtwerke-kassel.example', icon: I.at, project: 'Netzausbau Nord' }
     ];
     const switchOn = 'flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 10px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
     const knobOn = 'position: absolute; top: 2px; left: 17px; width: 14px; height: 14px; border-radius: 7px; background: #ffffff';
-    return { collapsed, sections, rules, switchOn, knobOn };
+    return { collapsed, rules, switchOn, knobOn };
   }
 }
 </script>

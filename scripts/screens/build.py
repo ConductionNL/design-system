@@ -39,7 +39,7 @@ SCHOOLS = [
 ]
 DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject'] + [s for s, _ in SCHOOLS]
 # design system -> apps that were drawn for it; their boards get a second thumbnail in that style
-THUMB_STYLES = {'openproject': {'mail', 'calendar', 'tasks'}}
+THUMB_STYLES = {'openproject': {'mail', 'calendar', 'tasks', 'openproject'}}
 # row key -> app id (stable, used in screen ids like portaliq/MijnZaken)
 ROW_APP = {
     'rowHuisstijl': 'huisstijl', 'rowWerkplek': 'werkplek', 'rowSite': 'portaliq', 'rowMijn': 'portaliq',

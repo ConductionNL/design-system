@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenProject twin: team planner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1000px">
+  <dc-import name="OpHeader" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="OpNav" active="Team planner" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" hint-size="264px,932px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <div style="flex: 1 1 320px; min-width: 0; display: flex; align-items: center; gap: 12px">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Team planner</h1>
+              <span style="display: inline-flex; gap: 4px">
+                <button type="button" aria-label="Previous two weeks" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--sc-radius, 8px); border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+                <button type="button" aria-label="Next two weeks" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--sc-radius, 8px); border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+              </span>
+              <span style="font-size: 15px; font-weight: 600; color: #3d4047">12 to 25 October 2026</span>
+            </div>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px">
+              <span style="position: relative; display: inline-flex; align-items: center"><select aria-label="Range" style="appearance: none; height: 40px; box-sizing: border-box; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Two weeks</option><option>One week</option><option>Work week</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: var(--sc-radius, 8px); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; border: 1px solid var(--sc-action-deep, #234a78); background: var(--sc-action, #3669a5); color: #ffffff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add assignee</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #5e6168"><nav aria-label="Breadcrumb" style="font-size: 14px; color: #5e6168; display: flex; gap: 8px"><a href="OpHome.dc.html" style="color: #5e6168; text-decoration: none">Northwind rollout Lyon</a><span aria-hidden="true">/</span><span aria-current="page">Team planner</span></nav><span aria-hidden="true">·</span><span>3 assignees, drag a work package to another day or person</span></div>
+        </section>
+        <div style="display: flex; gap: 20px; align-items: flex-start">
+          <div style="flex: 1 1 0; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+            <div style="display: flex; height: 44px; background: #fafbfc; border-bottom: 1px solid #eef0f3">
+              <div style="flex: 0 0 200px; width: 200px; box-sizing: border-box; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #5e6168">Assignee</div>
+              <div style="flex: 1 1 auto; display: grid; grid-template-columns: repeat(14, minmax(0, 1fr))">
+                <sc-for list="{{ days }}" as="d" hint-placeholder-count="14">
+                  <div style="border-left: 1px solid #eef0f3; background: {{ d.bg }}; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; min-width: 0"><span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #5e6168">{{ d.dow }}</span><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 11px; font-size: 13px; font-weight: 700; color: {{ d.ink }}; background: {{ d.pill }}">{{ d.num }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+            <sc-for list="{{ people }}" as="p" hint-placeholder-count="3">
+              <div style="display: flex; border-top: 1px solid #eef0f3; min-height: {{ p.height }}">
+                <div style="flex: 0 0 200px; width: 200px; box-sizing: border-box; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; border-right: 1px solid #eef0f3">
+                  <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ p.initials }}</span>
+                  <span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.3"><span style="font-size: 15px; font-weight: 600">{{ p.name }}</span><span style="font-size: 13px; color: {{ p.loadColor }}">{{ p.load }}</span></span>
+                </div>
+                <div style="flex: 1 1 auto; position: relative; background: repeating-linear-gradient(to right, #ffffff 0 calc(100% * 5 / 14), #fafbfc calc(100% * 5 / 14) calc(100% * 7 / 14)); min-width: 0">
+                  <sc-for list="{{ p.bars }}" as="b" hint-placeholder-count="3">
+                    <a href="{{ b.href }}" style="position: absolute; top: {{ b.top }}; left: {{ b.left }}; width: {{ b.width }}; box-sizing: border-box; margin: 0 3px; height: 26px; padding: 0 8px; border-radius: 4px; background: #eaf0f7; color: #1b1c1d; border-left: 3px solid {{ b.typeColor }}; font-size: 13px; line-height: 26px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none"><span style="font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ b.typeColor }}; margin-right: 6px">{{ b.type }}</span>{{ b.label }}</a>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+            <div style="display: flex; border-top: 1px solid #eef0f3; padding: 12px 16px; font-size: 14px; color: #5e6168; gap: 20px"><span>Today is Monday 12 October</span><span>Weekends are shaded</span></div>
+          </div>
+          <aside aria-labelledby="h-unscheduled" style="flex: 0 0 280px; width: 280px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #eef0f3"><h2 id="h-unscheduled" style="margin: 0; font-size: 16px; font-weight: 700">Not scheduled</h2><span style="font-size: 13px; color: #5e6168">2</span></div>
+            <p style="margin: 0; padding: 12px 20px 0; font-size: 13px; color: #5e6168">Drag a card onto a person and a day to give it dates.</p>
+            <ul style="list-style: none; margin: 0; padding: 12px 20px 20px; display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{ unscheduled }}" as="u" hint-placeholder-count="2">
+                <li style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; background: #ffffff; box-shadow: 0 1px 2px rgba(27,28,29,0.06)">
+                  <span style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ u.typeColor }}">{{ u.type }}</span><a href="#" style="font-size: 13px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">#{{ u.id }}</a></span>
+                  <span style="font-size: 15px; font-weight: 600; line-height: 1.3">{{ u.subject }}</span>
+                  <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #5e6168"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{ u.fill }}; box-shadow: 0 0 0 2px {{ u.ring }}"></span>{{ u.status }} · {{ u.assignee }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'on hold': ['#ffc078', '#ff9d2e'] };
+    const dows = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = Array.from({ length: 14 }, (_, i) => {
+      const num = 12 + i;
+      const weekend = i % 7 >= 5;
+      return { dow: dows[i % 7], num, bg: weekend ? '#fafbfc' : 'transparent', ink: i === 0 ? '#ffffff' : '#1b1c1d', pill: i === 0 ? '#3669a5' : 'transparent' };
+    });
+    const bar = (id, type, label, c, span, lane) => ({ id, type, label, typeColor: TYPE[type], href: id === 58412 ? 'OpWorkPackage.dc.html' : '#', top: (12 + lane * 32) + 'px', left: 'calc(' + (c * 100 / 14) + '% + 1px)', width: 'calc(' + (span * 100 / 14) + '% - 8px)' });
+    const people = [
+      ['Olivia Brandt', '3 work packages, 24 h planned', '#5e6168', [bar(58455, 'TASK', 'Demo Malmo', 0, 2, 0), bar(58301, 'TASK', 'Quote for project lead training Kassel', 0, 5, 1), bar(57990, 'EPIC', 'Release 16.5 scope, in review', 0, 12, 2)]],
+      ['Tom Achterberg', '3 work packages, 64 h planned, over 80 h', '#ab0000', [bar(58440, 'TASK', 'Send OIDC client settings to Lyon', 0, 5, 0), bar(58412, 'FEATURE', 'Link Nextcloud project folders on rollout', 0, 14, 1), bar(58390, 'FEATURE', 'Single sign-on through Keycloak', 7, 5, 2)]],
+      ['Priya Raman', '1 work package, 16 h planned', '#5e6168', [bar(58231, 'BUG', 'Gantt PDF export drops trailing columns, due 14 Oct', 0, 3, 0)]]
+    ].map(([name, load, loadColor, bars]) => ({ name, load, loadColor, bars, initials: name.split(' ').map((w) => w[0]).join(''), height: (24 + bars.length * 32) + 'px' }));
+    const unscheduled = [
+      [58441, 'TASK', 'Move kick-off to the afternoon', 'new', 'Olivia Brandt'],
+      [58102, 'BUG', 'Folder link breaks on rename', 'on hold', 'Priya Raman']
+    ].map(([id, type, subject, status, assignee]) => ({ id, type, subject, status, assignee, typeColor: TYPE[type], fill: STATUS[status][0], ring: STATUS[status][1] }));
+    return { days, people, unscheduled };
+  }
+}
+</script>
+</body>
+</html>

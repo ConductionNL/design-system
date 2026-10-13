@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1400px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1850px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1.6fr 1fr; grid-auto-rows: auto; gap: 24px; overflow: hidden">
   <sc-for list="{{ frames }}" as="f" hint-placeholder-count="3">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
@@ -22,7 +22,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <nav aria-label="Mailboxes" style="position: relative; flex: 0 0 264px; width: 264px; box-sizing: border-box; min-height: 100%; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; background: #ffffff; border-right: 1px solid #e4e6ea">
           <div style="display: flex; align-items: center; gap: 6px">
             <button type="button" style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 15px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>New message</button>
-            <button type="button" aria-label="Fold folders" aria-expanded="true" title="Fold folders" style="flex: none; width: 42px; height: 42px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
+            <button type="button" aria-label="Fold the folder list" aria-expanded="true" title="Fold the folder list" style="flex: none; width: 42px; height: 42px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16"></path></svg></button>
           </div>
           <button type="button" aria-haspopup="menu" aria-expanded="{{ f.switcherOpen }}" aria-label="Switch mailbox, now Olivia Brandt, olivia@northwind-projects.test" style="{{ f.accountStyle }}">
             <span style="width: 28px; height: 28px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">OB</span>
@@ -31,12 +31,13 @@ a{color:#3669a5}a:hover{color:#234a78}
           </button>
           <sc-for list="{{ f.groups }}" as="g" hint-placeholder-count="2">
             <div style="display: flex; flex-direction: column; gap: 2px">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-if value="{{ g.hasAdd }}" hint-placeholder-val="{{ false }}"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ g.addLabel }}" title="{{ g.addLabel }}" style="flex: none; width: 26px; height: 26px; margin: -5px 0; border: 0; border-radius: var(--sc-radius, 8px); background: {{ g.addBg }}; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button><sc-if value="{{ g.showAddTip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; left: 50%; top: 26px; transform: translateX(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">{{ g.addLabel }}</span></sc-if></span></sc-if></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-if value="{{ g.hasAdd }}" hint-placeholder-val="{{ false }}"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ g.addLabel }}" title="{{ g.addLabel }}" style="flex: none; width: 26px; height: 26px; margin: -5px 0; border: 0; border-radius: var(--sc-radius, 8px); background: {{ g.addBg }}; color: #1b1c1d; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button><sc-if value="{{ g.showAddTip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; right: calc(100% + 6px); top: 50%; transform: translateY(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">{{ g.addLabel }}</span></sc-if></span></sc-if></div>
               <sc-if value="{{ g.hasHint }}" hint-placeholder-val="{{ false }}"><p style="margin: -2px 0 6px; padding: 0 10px; font-size: 12px; line-height: 16px; color: #5e6168">{{ g.hint }}</p></sc-if>
               <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="6">
                 <div style="position: relative; display: flex; flex-wrap: wrap; align-items: center">
                   <a href="#" aria-current="{{ it.current }}" style="{{ it.style }}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg>
+                    <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg></sc-if>
+                    <sc-if value="{{ it.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.swatch }}"></span></sc-if>
                     <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span>
                     <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ it.countStyle }}">{{ it.count }}</span></sc-if>
                     <sc-if value="{{ it.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
@@ -70,19 +71,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
           </sc-if>
                 </div>
-                <sc-if value="{{ it.isOutbox }}" hint-placeholder-val="{{ false }}">
-                  <ul aria-label="Messages waiting in the outbox" style="list-style: none; margin: 2px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 6px">
-                    <sc-for list="{{ it.pending }}" as="p" hint-placeholder-count="2">
-                      <li style="display: flex; flex-direction: column; gap: 6px; margin-left: 32px; padding: 8px 10px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
-                        <span style="display: flex; flex-direction: column; min-width: 0; line-height: 18px"><strong style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.subject }}</strong><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">To {{ p.to }}</span><span style="font-size: 12px; font-weight: 600; color: #234a78">{{ p.line }}</span></span>
-                        <span style="display: flex; gap: 6px">
-                          <button type="button" style="display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send now</button>
-                          <button type="button" aria-label="Delete the message to {{ p.to }}" style="display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Delete</button>
-                        </span>
-                      </li>
-                    </sc-for>
-                  </ul>
-                </sc-if>
               </sc-for>
             </div>
           </sc-for>
@@ -125,9 +113,61 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </sc-for>
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; grid-column: 1 / -1">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;The outbox opened: its two messages in the conversation list like any folder, the first one open with Send now, Undo and Delete</figcaption>
+    <div style="height: 400px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <section aria-label="Messages waiting in the outbox" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #e4e6ea; overflow: hidden">
+        <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+          <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Outbox</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">2 messages waiting to be sent</span></div>
+          <button type="button" aria-label="Sort conversations" aria-haspopup="menu" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+        </div>
+        <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <sc-for list="{{ pending }}" as="m" hint-placeholder-count="2">
+            <li style="{{ m.style }}">
+              <a href="#" aria-current="{{ m.on }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 14px; color: #1b1c1d; text-decoration: none">
+                <span style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">OB</span>
+                <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+                  <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px">To {{ m.to }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ m.time }}</span></span>
+                  <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; font-weight: 600; color: #1b1c1d">{{ m.subject }}</span></span>
+                  <span style="display: flex; align-items: center; gap: 6px; height: 20px"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; line-height: 1; color: #234a78; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Outbox</span><span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.line }}</span></span>
+                </span>
+              </a>
+            </li>
+          </sc-for>
+        </ol>
+      </section>
+      <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #f5f6f8; overflow: hidden">
+        <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 34px">Re: Rollout plan phase 2, Lyon</h3>
+          <div role="status" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: #1b1c1d">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #234a78"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>
+            <span>Sends in 2 minutes. Until then you can still change your mind.</span>
+            <span style="flex: 1 1 auto"></span>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send now</button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Undo, back to drafts</button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Delete</button>
+          </div>
+        </div>
+        <article aria-label="Message to Marc Dubois, waiting to be sent" style="margin: 12px 16px; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+          <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+            <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">OB</span>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+              <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">You</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">olivia@northwind-projects.test</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">Today 09:41</span></div>
+              <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">Marc Dubois</span></div>
+            </div>
+          </div>
+          <div style="padding: 12px 14px 14px 56px; display: flex; flex-direction: column; gap: 10px; color: #3d4047; font-size: 14px">
+            <p style="margin: 0">Hi Marc,</p>
+            <p style="margin: 0">Yes, the kick-off can move to the afternoon. I propose Monday 2 November, 14:00 to 16:00, at your office. I will update the invitation and the rollout plan.</p>
+            <p style="margin: 0">Best regards,<br>Olivia</p>
+          </div>
+        </article>
+      </main>
+    </div>
+  </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1850}}'>
 class Component extends DCLogic {
   renderVals() {
     const I = {
@@ -168,7 +208,7 @@ class Component extends DCLogic {
         const holdsCurrent = children.some((c) => c.current === 'page');
         const on = label === active && !holdsCurrent;
         return {
-          label, icon, current: on ? 'page' : 'false',
+          label, icon: icon ?? '', hasIcon: !!icon, hasSwatch: !!o.swatch, swatch: 'flex: none; width: 10px; height: 10px; margin: 0 5px; border-radius: 5px; background: ' + (o.swatch ?? '#5e6168'), current: on ? 'page' : 'false',
           hasCount: count !== undefined && count !== '', count: count ?? '',
           countStyle: 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78',
           hasChevron: !!o.chevron, hasMenuButton: !!o.menu, isOutbox: !!o.outbox, pending: o.outbox ?? [],
@@ -184,10 +224,11 @@ class Component extends DCLogic {
     ];
     const account = 'display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 10px; border: 0; border-radius: var(--sc-radius, 8px); color: #1b1c1d; text-align: left; font-family: \'Fira Sans\', system-ui, sans-serif; ';
     // The reference navigation (see MlNav): views, folders, work packages, labels. The same on every mail board.
-    const views = (extra) => [['Starred', I.star, 3], ['Mentioned', I.at, 1, { strong: true }], ['Assigned to me', I.user, 2, { strong: true }], ...(extra ?? [])];
+    const views = (extra) => [['Starred', I.star, 3], ['Mentions', I.at, 1, { strong: true }], ['Assigned to me', I.user, 2, { strong: true }], ['Unassigned', I.userX, 4], ...(extra ?? [])];
     const wp = () => mk('Work packages', null, [['Notifications', I.bell, 2, { strong: true }]], '');
     const tag = (c) => 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01';
-    const labels = () => mk('Labels', 'New label', [['Waiting for customer', tag(), ''], ['Offer', tag(), ''], ['Internal', tag(), '']], '');
+    // Labels carry their colour dot, the same marker as MlNav.
+    const labels = () => mk('Labels', 'New label', [['Waiting for customer', null, '', { swatch: '#ff9d2e' }], ['Offer', null, '', { swatch: '#08a5df' }], ['Internal', null, '', { swatch: '#5e6168' }]], '');
     const frames = [
       { letter: 'a', caption: 'The mailbox switcher open: three accounts, one cannot connect', switcherOpen: true,
         accountStyle: account + 'background: #eaf0f7; box-shadow: 0 0 0 1px #3669a5 inset;',
@@ -195,14 +236,11 @@ class Component extends DCLogic {
       { letter: 'b', caption: 'The menu of one folder open beside its row, Troubleshooting unfolded at its foot; the plus beside FOLDERS hovered', switcherOpen: false,
         accountStyle: account + 'background: #f5f6f8;',
         groups: [mk('Views', null, views(), ''), mk('Folders', 'New folder', folders().map((it) => it[0] === 'Customers' ? ['Customers', I.folder, '', { ...it[3], menu: true }] : it), 'Inbox', { tip: true }), wp(), labels()] },
-      { letter: 'c', caption: 'The views with their hint, the outbox with two messages to send', switcherOpen: false,
+      { letter: 'c', caption: 'The views with their hint; the outbox is a folder with a count, its messages open in the list (frame d)', switcherOpen: false,
         accountStyle: account + 'background: #f5f6f8;',
         groups: [
-          mk('Views', null, views([['Unassigned', I.userX, 4]]), 'Assigned to me', { hint: 'Conversations you starred, that mention you, or that a colleague assigned to someone.' }),
-          mk('Folders', 'New folder', folders([['Outbox', I.outbox, 2, { strong: true, outbox: [
-            { subject: 'Re: Rollout plan phase 2, Lyon', to: 'Marc Dubois', line: 'Sends in 2 minutes, you can still undo' },
-            { subject: 'Re: Request for a demo, 1,200 users', to: 'Sven Lindqvist', line: 'Waiting for the connection' }
-          ] }]]), 'Assigned to me'), wp()
+          mk('Views', null, views(), 'Assigned to me', { hint: 'Conversations you starred, that mention you, that are assigned to you, or to nobody yet.' }),
+          mk('Folders', 'New folder', folders([['Outbox', I.outbox, 2, { strong: true }]]), 'Assigned to me'), wp()
         ] }
     ];
     const accounts = [
@@ -226,7 +264,12 @@ class Component extends DCLogic {
       ['Clear the local copy', I.database, 'no mail is deleted', { sub: true }],
       ['Repair synchronisation', I.refresh, '', { sub: true }]
     ].map((m) => m === null ? { divider: true, item: false } : { divider: false, item: true, label: m[0], icon: m[1], hint: m[2], chevron: !!(m[3] && m[3].chevron), chev: (m[3] && m[3].chevron) || '', expanded: (m[3] && m[3].expanded) || 'false', style: mi + ((m[3] && m[3].sub) ? 'padding-left: 36px; ' : '') + ((m[3] && m[3].danger) ? 'color: #cc0000;' : 'color: #1b1c1d;') });
-    return { frames, accounts, folderMenu };
+    // Frame d: the outbox opened like any folder, its messages in the conversation list with Send now and Delete.
+    const pending = [
+      { subject: 'Re: Rollout plan phase 2, Lyon', to: 'Marc Dubois', line: 'Sends in 2 minutes, you can still undo it', snippet: 'Yes, the kick-off can move to the afternoon. I propose Monday 2 November, 14:00 to 16:00.', on: true, time: '09:41' },
+      { subject: 'Re: Request for a demo, 1,200 users', to: 'Sven Lindqvist', line: 'Waiting for the connection, sends as soon as it is back', snippet: 'Thank you for your interest. We can show the Nextcloud link in a 45 minute session next week.', on: false, time: '09:38' }
+    ].map((m) => ({ ...m, style: 'border-bottom: 1px solid #e4e6ea; ' + (m.on ? 'background: #eaf0f7; box-shadow: inset 3px 0 0 #3669a5;' : 'background: #ffffff;') }));
+    return { frames, accounts, folderMenu, pending };
   }
 }
 </script>

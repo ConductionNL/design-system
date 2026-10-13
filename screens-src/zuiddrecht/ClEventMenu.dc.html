@@ -111,7 +111,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <section aria-labelledby="sel-keys" style="display: flex; flex-direction: column; gap: 2px">
             <h2 id="sel-keys" style="margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Shortcuts</h2>
             <sc-for list="{{ keys }}" as="k" hint-placeholder-count="3">
-              <div style="display: flex; align-items: center; gap: 10px; height: 32px; font-size: 14px; color: #3d4047"><kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 22px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 12px 'Fira Sans', sans-serif; color: #1b1c1d">{{ k.key }}</kbd>{{ k.label }}</div>
+              <div style="display: flex; align-items: center; gap: 10px; height: 32px; font-size: 14px; color: #3d4047"><span style="flex: none; display: inline-flex; gap: 3px"><sc-for list="{{ k.keys }}" as="kk" hint-placeholder-count="1"><kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 22px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 12px 'Fira Sans', sans-serif; color: #1b1c1d">{{ kk.key }}</kbd></sc-for></span>{{ k.label }}</div>
             </sc-for>
           </section>
         </aside>
@@ -141,14 +141,14 @@ a{color:#3669a5}a:hover{color:#234a78}
               </div>
             </sc-for>
           </div>
-          <div role="menu" aria-label="Actions for 2 selected events" style="position: absolute; top: 226px; left: 150px; min-width: 340px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column">
+          <div role="menu" aria-label="Actions for 2 selected events" style="position: absolute; top: 226px; left: 380px; min-width: 340px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column">
             <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">2 events selected</span>
             <sc-for list="{{ menu }}" as="i" hint-placeholder-count="9">
               <sc-if value="{{ i.sep }}" hint-placeholder-val="{{ false }}"><div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div></sc-if>
               <button type="button" role="menuitem" aria-haspopup="{{ i.sub }}" aria-expanded="{{ i.sub }}" style="{{ i.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ i.iconColor }}"><path d="{{ i.icon }}"></path></svg><span style="flex: 1 1 auto">{{ i.label }}</span><sc-if value="{{ i.hint }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 13px; color: #5e6168">{{ i.hintText }}</span></sc-if><sc-if value="{{ i.swatches }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; display: inline-flex; gap: 3px"><sc-for list="{{ swatches }}" as="c" hint-placeholder-count="5"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{ c }}"></span></sc-for></span></sc-if><sc-if value="{{ i.isSub }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></sc-if></button>
             </sc-for>
           </div>
-          <div role="menu" aria-label="Also keep busy in" style="position: absolute; top: 204px; left: 510px; min-width: 330px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 11; display: flex; flex-direction: column">
+          <div role="menu" aria-label="Also keep busy in" style="position: absolute; top: 204px; left: 40px; width: 336px; min-width: 330px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 11; display: flex; flex-direction: column">
             <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Also keep 2 events busy in</span><span style="padding: 0 10px 8px; font-size: 13px; color: #5e6168; line-height: 18px; white-space: normal; max-width: 300px">The same time is reserved in the ticked calendars, so people who see those calendars know you are busy.</span>
             <sc-for list="{{ cals }}" as="c" hint-placeholder-count="3"><button type="button" role="menuitemcheckbox" aria-checked="{{ c.checked }}" style="{{ item }}#1b1c1d"><span style="{{ c.box }}"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex: none; width: 10px; height: 10px; border-radius: 3px; background: {{ c.color }}"></span><span style="flex: 1 1 auto">{{ c.name }}</span></button></sc-for>
             <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
@@ -157,7 +157,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <button type="button" role="menuitemradio" aria-checked="false" style="{{ item }}#1b1c1d"><span style="flex: none; width: 16px"></span><span style="flex: 1 1 auto">Only busy, no title</span></button>
             <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
             <button type="button" role="menuitem" style="{{ item }}#1b1c1d"><span style="flex: none; width: 16px"></span><span style="flex: 1 1 auto">Remove both events from the other calendars</span></button>
-            <a href="ClCalendarEdit.dc.html" role="menuitem" style="{{ item }}var(--sc-link, #3669a5); text-decoration: none"><span style="flex: none; width: 16px"></span><span style="flex: 1 1 auto">Settings of Customers for keeping busy</span></a>
+            <a href="ClCalendarEdit.dc.html" role="menuitem" style="{{ item }}var(--sc-link, #3669a5); text-decoration: none"><span style="flex: none; width: 16px"></span><span style="flex: 1 1 auto">Settings for keeping busy, per calendar</span></a>
           </div>
         </div>
       </div>
@@ -287,7 +287,7 @@ class Component extends DCLogic {
       { title: 'Demo preparation Malmo Energi', when: 'Tuesday 13 October, 11:00 to 12:00, moving to 14:00', color: CAL.customers },
       { title: 'Release 16.5 scope review', when: 'Wednesday 14 October, 09:30 to 11:00, moving to 12:30', color: CAL.team }
     ];
-    const keys = [['Del', 'Delete the selection'], ['D', 'Duplicate'], ['Esc', 'Clear the selection']].map(([key, label]) => ({ key, label }));
+    const keys = [[['Del'], 'Delete the selection'], [['Ctrl', 'D'], 'Duplicate'], [['Esc'], 'Clear the selection']].map(([keys, label]) => ({ keys: keys.map((key) => ({ key })), label }));
     // frame b: Tuesday and Wednesday, both selected, menu open on Tuesday
     const daysB = [
       col('Tue', 13, 1, [standup(), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers', selected: true })]),

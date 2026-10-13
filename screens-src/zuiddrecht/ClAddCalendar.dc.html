@@ -65,7 +65,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <tr style="border-top: 1px solid #eef0f3; vertical-align: middle">
                       <td style="padding: 10px 16px; width: 40%"><span style="display: flex; flex-direction: column; line-height: 18px"><span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2zM14 2v6h6"></path></svg>{{ f.name }}</span><span style="padding-left: 24px; font-size: 12px; color: #5e6168; line-height: 16px">{{ f.kind }}</span></span></td>
                       <td style="padding: 7px 16px"><button type="button" aria-haspopup="listbox" aria-label="Calendar for {{ f.name }}: {{ f.target }}" style="{{ chooser }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span aria-hidden="true" style="{{ f.box }}"></span>{{ f.target }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></td>
-                      <td style="padding: 12px 16px; font-size: 13px; line-height: 18px; color: {{ f.resultColor }}">{{ f.result }}</td>
+                      <td style="padding: 12px 16px; font-size: 13px; line-height: 18px; color: {{ f.resultColor }}"><span style="display: block; line-height: 20px; white-space: nowrap">{{ f.result }}</span><sc-if value="{{ f.hasReason }}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 12px; line-height: 16px">{{ f.reason }}</span></sc-if></td>
                     </tr>
                   </sc-for>
                 </tbody>
@@ -130,10 +130,10 @@ a{color:#3669a5}a:hover{color:#234a78}
 
       <section aria-label="From your mail account" style="{{ pane }}">
         <h3 style="{{ paneTitle }}">From your mail account</h3>
-        <span style="{{ hint }}">Calendars you follow in olivia@northwind-projects.test. Show them here too.</span>
+        <span style="{{ hint }}">Calendars you follow in olivia@northwind-projects.test. Add the ones you want here too.</span>
         <div style="display: flex; flex-direction: column">
           <sc-for list="{{ seen }}" as="s" hint-placeholder-count="3">
-            <div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #e4e6ea"><span aria-hidden="true" style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 14px">{{ s.name }}</span><span style="font-size: 12px; color: #5e6168">{{ s.sub }}</span></span><button type="button" role="switch" aria-checked="{{ s.on }}" aria-label="Show {{ s.name }}" style="{{ s.switch }}"><span style="{{ s.knob }}"></span></button></div>
+            <div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #e4e6ea"><span aria-hidden="true" style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 14px">{{ s.name }}</span><span style="font-size: 12px; color: #5e6168">{{ s.sub }}</span></span><sc-if value="{{ s.done }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">Added</span></sc-if><sc-if value="{{ s.todo }}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Add {{ s.name }}" style="{{ small }}">Add</button></sc-if></div>
           </sc-for>
         </div>
       </section>
@@ -148,19 +148,18 @@ a{color:#3669a5}a:hover{color:#234a78}
 
       <section aria-label="Delegated to you" style="{{ pane }}">
         <h3 style="{{ paneTitle }}">Delegated to you</h3>
-        <span style="{{ hint }}">Calendars other people let you manage for them, grouped per person. Tick the ones to show in your list.</span>
+        <span style="{{ hint }}">Calendars other people let you manage for them, grouped per person. Add the ones to show in your list.</span>
         <div style="display: flex; flex-direction: column; gap: 8px">
           <sc-for list="{{ delegated }}" as="p" hint-placeholder-count="2">
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; align-items: center; gap: 8px; height: 30px"><span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ p.initials }}</span><span style="font-size: 13px; font-weight: 600">{{ p.name }}</span><span style="font-size: 11px; color: #5e6168">{{ p.sub }}</span></div>
               <sc-for list="{{ p.cals }}" as="c" hint-placeholder-count="2">
-                <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; padding-left: 30px; font-size: 14px"><input type="checkbox" checked style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"><span aria-hidden="true" style="{{ c.box }}"></span>{{ c.name }}</label>
+                <div style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding-left: 30px; font-size: 14px"><span aria-hidden="true" style="{{ c.box }}"></span><span style="flex: 1 1 auto; min-width: 0">{{ c.name }}</span><sc-if value="{{ c.done }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; color: #5e6168">Added</span></sc-if><sc-if value="{{ c.todo }}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Add {{ c.name }}" style="{{ small }}">Add</button></sc-if></div>
               </sc-for>
             </div>
           </sc-for>
         </div>
-        <div style="{{ paneFoot }}"><button type="button" style="{{ primary }}">Add 3 calendars</button></div>
-      </section>
+              </section>
 
       <section aria-label="Import, before files are dropped" style="{{ pane }}">
         <h3 style="{{ paneTitle }}">Import</h3>
@@ -205,9 +204,9 @@ class Component extends DCLogic {
     ].map(([label, h, icon]) => ({ label, hint: h, icon, current: label === 'Import' ? 'page' : 'false', style: wayBase + (label === 'Import' ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') }));
     const files = [
       ['northwind-team-2025.ics', '48 events', 'Northwind team', '#538b28', '48 imported', '#3d4047'],
-      ['lyon-rollout.json', '16 events', 'Customers', '#ff9d2e', '13 imported, 3 failed: no end time', '#cc0000'],
+      ['lyon-rollout.json', '16 events', 'Customers', '#ff9d2e', '13 imported, 3 failed', '#cc0000', 'no end time'],
       ['malmo-visits.xml', '7 events', 'New calendar: Malmo visits', '#08a5df', 'Waiting', '#5e6168']
-    ].map(([name, kind, target, c, result, resultColor]) => ({ name, kind, target, box: box(c), result, resultColor }));
+    ].map(([name, kind, target, c, result, resultColor, reason]) => ({ name, kind, target, box: box(c), result, resultColor, reason: reason || '', hasReason: !!reason }));
     const suggested = [
       ['Northwind company events', 'Office days, town halls', '#3669a5', false],
       ['Dutch public holidays', 'Kept by the administrator', '#5e6168', true],
@@ -217,10 +216,10 @@ class Component extends DCLogic {
       ['Hetzner maintenance windows', 'Followed in your mail account', '#5e6168', true],
       ['Stadtwerke Kassel events', 'Followed in your mail account', '#ab0000', true],
       ['Sovereign Tech conferences', 'Followed in your mail account', '#7048e8', false]
-    ].map(([name, sub, c, on]) => ({ name, sub, box: box(c), on: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }));
+    ].map(([name, sub, c, on]) => ({ name, sub, box: box(c), done: on, todo: !on }));
     const delegated = [
-      { initials: 'TA', name: 'Tom Achterberg', sub: 'since 3 October', cals: [{ name: 'Tom, work', box: box('#005b77') }, { name: 'Lyon site visits', box: box('#ff9d2e') }] },
-      { initials: 'PR', name: 'Priya Raman', sub: 'since 9 October', cals: [{ name: 'Priya, support shifts', box: box('#7048e8') }] }
+      { initials: 'TA', name: 'Tom Achterberg', sub: 'since 3 October', cals: [{ name: 'Tom, work', box: box('#005b77'), done: true, todo: false }, { name: 'Lyon site visits', box: box('#ff9d2e'), done: false, todo: true }] },
+      { initials: 'PR', name: 'Priya Raman', sub: 'since 9 October', cals: [{ name: 'Priya, support shifts', box: box('#7048e8'), done: false, todo: true }] }
     ];
     // week grid behind the dialog
     const H = 72, OFF = 14;

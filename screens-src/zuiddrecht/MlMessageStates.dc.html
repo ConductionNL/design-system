@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2540px; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2620px; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
 
   <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 16px">Notices above a message</h2>
   <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px">
@@ -137,13 +137,19 @@ a{color:#3669a5}a:hover{color:#234a78}
     </figure>
 
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">j</span> &nbsp;Chat layout: sent and received messages as a conversation, switched in the subject bar</figcaption>
-      <div style="height: 340px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">j</span> &nbsp;Chat layout: sent and received messages as a conversation, switched in the More menu of the subject bar, drawn open</figcaption>
+      <div style="height: 420px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+        <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
           <h3 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Scope for release 16.5</h3>
-          <div role="group" aria-label="Layout" style="flex: none; display: flex; gap: 2px; padding: 2px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff">
-            <button type="button" aria-pressed="false" style="height: 28px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Message layout</button>
-            <button type="button" aria-pressed="true" style="height: 28px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Chat layout</button>
+          <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
+            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>{{ t.label }}</button></sc-for>
+            <span style="position: relative; display: inline-flex"><button type="button" aria-haspopup="menu" aria-expanded="true" aria-label="More actions for this conversation" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-left: 4px; padding: 0 8px 0 12px; border: 1px solid #1b1c1d; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <div role="menu" aria-label="More actions for this conversation" style="position: absolute; right: 0; top: 38px; width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+                <sc-for list="{{ more }}" as="i" hint-placeholder-count="5">
+                  <sc-if value="{{ i.sep }}" hint-placeholder-val="{{ false }}"><div role="separator" style="height: 1px; margin: 4px 0; background: #e4e6ea"></div><div style="padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Layout</div></sc-if>
+                  <button type="button" role="{{ i.role }}" aria-checked="{{ i.checked }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: {{ i.bg }}; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><sc-if value="{{ i.isRadio }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="{{ i.dot }}"></span></sc-if><sc-if value="{{ i.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ i.icon }}"></path></svg></sc-if><span style="flex: 1 1 auto; white-space: nowrap">{{ i.label }}</span><span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ i.hint }}</span></button>
+                </sc-for>
+              </div></span>
           </div>
         </div>
         <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 12px 16px; overflow: hidden">
@@ -161,12 +167,12 @@ a{color:#3669a5}a:hover{color:#234a78}
     </figure>
 
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">k</span> &nbsp;The labels of the open conversation sit above its subject</figcaption>
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">k</span> &nbsp;The labels of the open conversation sit above its subject; the first chip hovered shows its remove x, the Label button adds one and shows its tooltip</figcaption>
       <div style="height: 230px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
         <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; background: #ffffff; border-bottom: 1px solid #e4e6ea">
           <div role="list" aria-label="Labels" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-left: 34px">
-            <sc-for list="{{ labels }}" as="l" hint-placeholder-count="2"><span role="listitem" style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 1; white-space: nowrap; color: #3d4047"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: {{ l.swatch }}"></span>{{ l.name }}<button type="button" aria-label="Remove the label {{ l.name }}" style="width: 16px; height: 16px; margin-right: -4px; border: 0; border-radius: 8px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></sc-for>
-            <button type="button" aria-label="Add a label" style="width: 22px; height: 22px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            <sc-for list="{{ labels }}" as="l" hint-placeholder-count="2"><span role="listitem" style="{{ l.style }}"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: {{ l.swatch }}"></span>{{ l.name }}<button type="button" aria-label="Remove the label {{ l.name }}" title="Remove the label {{ l.name }}" style="{{ l.x }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></sc-for>
+            <span style="position: relative; display: inline-flex"><button type="button" aria-label="Add a label" title="Add a label" style="display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px 0 6px; border: 1px dashed #c4c7cb; border-radius: var(--sc-radius, 8px); background: #eef0f3; color: #3d4047; font: 600 12px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Label</button><span role="tooltip" style="position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">Add a label</span></span>
           </div>
           <div style="display: flex; align-items: flex-start; gap: 6px">
             <button type="button" aria-label="Star this conversation" aria-pressed="false" style="flex: none; width: 34px; height: 34px; margin-top: -3px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></button>
@@ -277,7 +283,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2540}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2620}}'>
 class Component extends DCLogic {
   renderVals() {
     const av = (bg, fg) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: ' + bg + '; color: ' + fg + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700';
@@ -294,9 +300,9 @@ class Component extends DCLogic {
       ['b', 'Mailing list: one Unsubscribe button, the mail route as the fallback', 'Sovereign Tech Weekly', 'ST', theirs, 'Yesterday 08:00', 'Open source in the public sector, issue 41', 'status', info, '#5e6168',
         'This message comes from a mailing list, newsletter@sovereigntech.test. Unsubscribe takes one click; the mail route is only for a list that does not answer.', [['Unsubscribe', secondary], ['Unsubscribe by email', quiet]], 'In this issue: the Dutch sovereign workplace, procurement rules for open source, and a look at the Lyon rollout.', '#3d4047'],
       ['c', 'The message could not be parsed', 'Hetzner Billing', 'HB', theirs, '9 Oct 03:12', 'Invoice 2026-10-0193 is available', 'alert', warn, '#3d4047',
-        'This message could not be shown. Its content is in a form the mail app cannot read. You can still download it and open it elsewhere.', [['Download the message', secondary], ['Show the original message', quiet]], 'No readable content', '#5e6168'],
+        'This message could not be shown. Its content is in a form the mail app cannot read. You can still download it and open it elsewhere.', [['Download the original message file', secondary], ['Show the original message (technical)', quiet]], 'No readable content', '#5e6168'],
       ['d', 'A file whose content does not match its type', 'Jana Köhler', 'JK', theirs, 'Today 04:00', 'Gantt export cuts off the last week', 'alert', warn, '#3d4047',
-        'The content of gantt-export-cut.png does not match its type. It says PNG but looks like a PDF. Open it only if you expect it from Jana.', [['Download anyway', secondary], ['Report as spam', quiet]], 'Hello Olivia, the last week of the plan is missing in the PDF. The screen shows it, the export does not.', '#3d4047'],
+        'The content of gantt-export-cut.png does not match its type. It says PNG but looks like a PDF. Open it only if you expect it from Jana.', [['Download anyway', secondary], ['Mark as spam', quiet]], 'Hello Olivia, the last week of the plan is missing in the PDF. The screen shows it, the export does not.', '#3d4047'],
       ['e', 'Attachments blocked on a conversation reported as spam', 'Unknown sender', '?', av('#eef0f3', '#3d4047'), '11 Oct 23:40', 'Your invoice is ready, open the attached file', 'alert', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', '#3d4047',
         'Attachment preview and download are blocked because this conversation is reported as spam. Invoice-10-2026.zip stays closed.', [['Not spam', secondary], ['Delete', quiet]], 'Dear customer, your invoice is attached. Open the file to see the amount due.', '#5e6168'],
       ['f', 'A deleted message, still in its conversation', 'You', 'OB', mine, '8 Oct 14:10', 'Rollout plan phase 2, Lyon', 'status', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', '#5e6168',
@@ -316,7 +322,12 @@ class Component extends DCLogic {
       row: 'display: flex; align-items: flex-end; gap: 8px; ' + (own ? 'justify-content: flex-end' : 'justify-content: flex-start'),
       bubble: bubble + (own ? 'background: #eaf0f7; border: 1px solid #eaf0f7' : 'background: #ffffff; border: 1px solid #e4e6ea')
     }));
-    const labels = [{ name: 'Offer', swatch: '#08a5df' }, { name: 'Waiting for customer', swatch: '#ff9d2e' }];
+    // The first chip is drawn hovered: its remove x shows in full. The plus is a small labelled button with its tooltip.
+    const chipBase = 'display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 4px 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); font-size: 12px; line-height: 1; white-space: nowrap; color: #3d4047; ';
+    const xBase = 'width: 18px; height: 18px; border: 0; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; padding: 0; ';
+    const labels = [{ name: 'Offer', swatch: '#08a5df', hover: true }, { name: 'Waiting for customer', swatch: '#ff9d2e', hover: false }].map((l) => ({
+      ...l, style: chipBase + (l.hover ? 'background: #eef0f3;' : 'background: #ffffff;'), x: xBase + (l.hover ? 'background: #c4c7cb; color: #1b1c1d' : 'background: transparent; color: #5e6168')
+    }));
     const delivery = [
       ['Marc Dubois', 'Delivered', '#1b1c1d', '#538b28', '#538b28', false, '', '10 Oct 15:44'],
       ['Tom Achterberg', 'Delivered', '#1b1c1d', '#538b28', '#538b28', false, '', '10 Oct 15:44'],
@@ -327,7 +338,29 @@ class Component extends DCLogic {
       { initials: 'MD', name: 'Marc Dubois, Ville de Lyon', book: 'Customers' },
       { initials: 'MD', name: 'Marc Dubois', book: 'Personal' }
     ];
-    return { notices, chat, labels, delivery, matches };
+    // The subject bar of MlThread: four labelled actions and More; More holds the rest, with the layout choice at its foot.
+    const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
+    const tools = [
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4'],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01'],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6']
+    ].map(([label, icon]) => ({ label, icon, style: textBtn }));
+    const dotOn = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: 5px solid #3669a5; background: #ffffff';
+    const dotOff = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: 1px solid #c4c7cb; background: #ffffff';
+    const more = [
+      ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01', ''],
+      ['Share and assign', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75', 'with a mailbox or a person'],
+      ['Copy link to the conversation', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', 'for colleagues with access'],
+      ['Print the conversation', 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z', '8 messages'],
+      ['Message layout', null, 'one card per message', false, true],
+      ['Chat layout', null, 'sent and received as a chat', true, false]
+    ].map(([label, icon, hint, checked, sep]) => ({
+      label, icon: icon ?? '', hint, hasIcon: !!icon, isRadio: icon === null, sep: !!sep,
+      role: icon === null ? 'menuitemradio' : 'menuitem', checked: icon === null ? (checked ? 'true' : 'false') : 'false',
+      dot: checked ? dotOn : dotOff, bg: checked ? '#eaf0f7' : 'transparent'
+    }));
+    return { notices, chat, labels, delivery, matches, tools, more };
   }
 }
 </script>

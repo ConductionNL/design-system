@@ -93,11 +93,11 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
       <section aria-labelledby="ctx-projects" style="display: flex; flex-direction: column; gap: 2px">
         <h3 id="ctx-projects" style="margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Linked projects</h3>
-        <p style="margin: 0 0 6px; font-size: 12px; color: #5e6168; line-height: 16px">One row per linked project, its selections under it, the same list as in the navigation. Dates come from OpenProject and stay in sync.</p>
+        <p style="margin: 0 0 6px; font-size: 12px; color: #5e6168; line-height: 16px">One row per linked project, its selections under it, the same list and the same tick boxes as in the navigation. Dates come from OpenProject and stay in sync.</p>
         <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-          <div style="display: flex; align-items: center; gap: 10px; height: 36px; font-size: 14px; font-weight: 600; color: #1b1c1d"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span><button type="button" role="switch" aria-checked="{{ p.on }}" aria-label="{{ p.aria }}" style="{{ p.switch }}"><span style="{{ p.knob }}"></span></button></div>
+          <div style="display: flex; align-items: center; gap: 10px; height: 36px; font-size: 14px; font-weight: 600; color: #1b1c1d"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span><button type="button" role="checkbox" aria-checked="{{ p.on }}" aria-label="{{ p.aria }}" style="{{ p.check }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></button></div>
           <sc-for list="{{ p.sels }}" as="s" hint-placeholder-count="2">
-            <div style="{{ s.rowStyle }}"><span style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.name }}</span><button type="button" role="switch" aria-checked="{{ s.on }}" aria-label="{{ s.aria }}" style="{{ s.switch }}"><span style="{{ s.knob }}"></span></button></div>
+            <div style="{{ s.rowStyle }}"><span style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.name }}</span><button type="button" role="checkbox" aria-checked="{{ s.on }}" aria-label="{{ s.aria }}" style="{{ s.check }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></button></div>
           </sc-for>
         </sc-for>
         <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; margin-top: 4px; padding: 0 12px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Link another project</button>
@@ -300,7 +300,7 @@ class Component extends DCLogic {
         flag: !!o.flag, video: !!o.video,
         hasChip: !!o.chip, wpType: o.chip ? o.chip[0] : '', wpNumber: o.chip ? o.chip[1] : '', wpColor: o.chip ? TYPE[o.chip[0]] : '',
         style: 'position: absolute; left: 2px; right: 4px; top: ' + ((start - 8) * H + OFF + 1) + 'px; height: ' + (dur * H - 2) + 'px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0; justify-content: ' + (short ? 'center' : 'flex-start') + '; padding: ' + (short ? '0 6px' : '4px 7px') + '; border-radius: 4px; overflow: hidden; font-size: 12px; line-height: 15px; text-decoration: none; z-index: 1; color: ' + dark(c) + '; ' +
-          (pending ? 'background: #ffffff; border: 1px dashed ' + c + '; border-left: 3px solid ' + c + ';' : 'background: ' + pale(c) + '; border-left: 3px solid ' + c + ';') +
+          (pending ? 'background: #ffffff; border: 1px solid color-mix(in srgb, ' + c + ' 40%, #ffffff); border-left: 3px solid ' + c + '; opacity: 0.6;' : 'background: ' + pale(c) + '; border-left: 3px solid ' + c + ';') +
           (o.past ? ' opacity: 0.55;' : '')
       };
     };
@@ -343,13 +343,15 @@ class Component extends DCLogic {
     const swOff = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid #c4c7cb; border-radius: 12px; background: #ffffff; box-sizing: border-box; cursor: pointer';
     const knobOff = 'position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 9px; background: #5e6168';
     const box = (c) => 'flex: none; width: 12px; height: 12px; border-radius: 3px; background: ' + c;
-    const swf = (on) => ({ on: on ? 'true' : 'false', switch: on ? swOn : swOff, knob: on ? knobOn : knobOff });
+    // the same coloured checkbox as in the navigation (16 px, filled when on)
+    const chk = (on, c) => 'flex: none; width: 18px; height: 18px; padding: 0; box-sizing: border-box; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; ' + (on ? 'border: 0; background: ' + c + '; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #ffffff;');
+    const swf = (on, c) => ({ on: on ? 'true' : 'false', check: chk(on, c || '#3669a5') });
     const selRow = (active) => 'display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px 0 10px; margin-left: -10px; border-radius: var(--sc-radius, 8px); font-size: 14px; color: #1b1c1d; ' + (active ? 'background: #eaf0f7; color: #234a78;' : '');
     const projects = [
       ['Northwind rollout Lyon', true, [['Work package dates', '#5e6168', true, true], ['Milestones', '#35c53f', true, false]]],
       ['Netzausbau Nord', true, [['Work package dates', '#08a5df', true, false]]],
       ['OpenProject core', false, [['Milestones', '#005b77', false, false]]]
-    ].map(([name, on, sels]) => ({ name, aria: 'Show ' + name, ...swf(on), sels: sels.map(([sname, c, son, active]) => ({ name: sname, box: box(c), aria: sname + ' of ' + name, rowStyle: selRow(active), ...swf(son) })) }));
+    ].map(([name, on, sels]) => ({ name, aria: 'Show ' + name, ...swf(on, '#3669a5'), sels: sels.map(([sname, c, son, active]) => ({ name: sname, box: box(c), aria: sname + ' of ' + name, rowStyle: selRow(active), ...swf(son, c) })) }));
     const chip = 'display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 8px 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 500 12px \'Fira Sans\', sans-serif; white-space: nowrap';
     const filters = [
       ['Status', 'Open', 'Filter by status, now open'],

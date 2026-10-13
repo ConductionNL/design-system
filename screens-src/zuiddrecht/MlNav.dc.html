@@ -46,13 +46,40 @@ a{color:#3669a5}a:hover{color:#234a78}
     <div style="display: flex; flex-direction: column; gap: 2px">
       <sc-if value="{{ g.hasTitle }}" hint-placeholder-val="{{ true }}"><div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 6px 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-if value="{{ g.hasAdd }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="{{ g.addLabel }}" title="{{ g.addLabel }}" style="flex: none; width: 26px; height: 26px; margin: -5px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></sc-if></div></sc-if>
       <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+        <sc-if value="{{ it.plain }}" hint-placeholder-val="{{ true }}">
         <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}">
           <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg></sc-if>
           <sc-if value="{{ it.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.swatch }}"></span></sc-if>
           <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span>
           <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ it.countStyle }}">{{ it.count }}</span></sc-if>
-          <sc-if value="{{ it.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
         </a>
+        </sc-if>
+        <sc-if value="{{ it.nest }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column">
+          <div style="display: flex; align-items: center">
+            <a href="{{ it.href }}" aria-current="{{ it.current }}" style="{{ it.style }}">
+              <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ it.icon }}"></path></svg></sc-if>
+              <sc-if value="{{ it.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.swatch }}"></span></sc-if>
+              <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span>
+              <sc-if value="{{ it.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ it.countStyle }}">{{ it.count }}</span></sc-if>
+            </a>
+            <button type="button" aria-expanded="{{ it.expanded }}" aria-controls="{{ it.listId }}" aria-label="{{ it.toggleLabel }}" title="{{ it.toggleLabel }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ it.chevron }}"></path></svg>
+            </button>
+          </div>
+          <sc-if value="{{ it.open }}" hint-placeholder-val="{{ true }}">
+          <ul id="{{ it.listId }}" style="list-style: none; margin: 2px 0 6px 20px; padding: 0 0 0 10px; border-left: 2px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{ it.children }}" as="c" hint-placeholder-count="3">
+              <li>
+                <sc-if value="{{ c.isItem }}" hint-placeholder-val="{{ true }}"><a href="{{ c.href }}" aria-current="{{ c.current }}" style="{{ c.style }}"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.label }}</span><sc-if value="{{ c.hasCount }}" hint-placeholder-val="{{ false }}"><span style="{{ c.countStyle }}">{{ c.count }}</span></sc-if></a></sc-if>
+                <sc-if value="{{ c.isMore }}" hint-placeholder-val="{{ false }}"><button type="button" aria-expanded="false" style="display: flex; align-items: center; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 14px 'Fira Sans', sans-serif; text-align: left">{{ c.label }}</button></sc-if>
+                <sc-if value="{{ c.isNew }}" hint-placeholder-val="{{ false }}"><button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>{{ c.label }}</button></sc-if>
+              </li>
+            </sc-for>
+          </ul>
+          </sc-if>
+        </div>
+        </sc-if>
       </sc-for>
     </div>
   </sc-for>
@@ -96,9 +123,8 @@ class Component extends DCLogic {
         ['Archive', '#', I.archive],
         ['Spam', '#', I.spam],
         ['Trash', '#', I.trash],
-        ['Customers', '#', I.folder, '', { chevron: true }],
-        ['Lyon', '#', I.folder, '', { child: true }],
-        ['Kassel', '#', I.folder, '', { child: true }]
+        // a folder with subfolders opens in place and lists them under itself (canon: Navigation, nested); never a second sidebar
+        ['Customers', '#', I.folder, '', { children: [['Lyon', '#'], ['Kassel', '#']], add: 'New subfolder' }]
       ] },
       { title: 'Work packages', items: [
         ['Notifications', 'MlNotifications.dc.html', I.bell, 2, { strong: true }]
@@ -110,19 +136,45 @@ class Component extends DCLogic {
       ] }
     ];
     const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; line-height: 21px; ';
+    const countStyle = 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78';
+    // Nested list (canon: Navigation, nested): level two rows 36 px, 14 px weight 500, no icon; the current child carries the primary pair;
+    // more than 8 children show the first 6 and a "Show all N" row; the new row is last.
+    const SHOW = 8;
+    const FIRST = 6;
+    const childBase = 'display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 14px; line-height: 20px; ';
+    const nested = (o) => {
+      const kids = o.children ?? [];
+      const truncate = kids.length > SHOW;
+      const rows = (truncate ? kids.slice(0, FIRST) : kids).map(([label, href, count]) => {
+        const on = label === active;
+        return { isItem: true, label, href: href ?? '#', hasCount: count !== undefined && count !== '', count: count ?? '', countStyle, current: on ? 'page' : 'false',
+          style: childBase + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;') };
+      });
+      if (truncate) rows.push({ isMore: true, label: 'Show all ' + kids.length });
+      if (o.add) rows.push({ isNew: true, label: o.add });
+      return rows;
+    };
     const groups = raw.map((g) => ({
       title: g.title, hasTitle: !!g.title, hasAdd: !!g.add, addLabel: g.add ?? '',
       items: g.items.map(([label, href, icon, count, o]) => {
         o = o ?? {};
-        const on = label === active;
+        const nest = !!o.children;
+        const kids = nest ? nested(o) : [];
+        const holdsCurrent = kids.some((k) => k.isItem && k.current === 'page');
+        const on = label === active && !holdsCurrent;
         return {
           label, href, icon: icon ?? '', hasIcon: !!icon,
           hasSwatch: !!o.swatch, swatch: 'flex: none; width: 10px; height: 10px; margin: 0 5px; border-radius: 5px; background: ' + (o.swatch ?? '#5e6168'),
           hasCount: count !== undefined && count !== '', count: count ?? '',
-          countStyle: 'flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78',
-          hasChevron: !!o.chevron,
+          countStyle,
           current: on ? 'page' : 'false',
-          style: base + (o.child ? 'padding-left: 42px; ' : '') + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;')
+          style: base + (nest ? 'flex: 1 1 auto; min-width: 0; padding-right: 4px; ' : '') +
+            (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : holdsCurrent ? 'color: #234a78; font-weight: 600;' : 'color: #1b1c1d; font-weight: 500;'),
+          plain: !nest, nest, open: nest, expanded: nest ? 'true' : 'false',
+          listId: 'mlnav-' + label.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          toggleLabel: 'Collapse ' + label.toLowerCase(),
+          chevron: 'm6 9 6 6 6-6',
+          children: kids
         };
       })
     }));
@@ -134,7 +186,7 @@ class Component extends DCLogic {
       ['Spam', '#', I.spam, '', 'Spam'], ['Trash', '#', I.trash, '', 'Trash'], ['Customers', '#', I.folder, '', 'Folders'], ['Notifications', 'MlNotifications.dc.html', I.bell, 2, 'Notifications']
     ];
     const rail = railItems.map(([name, href, icon, count, label], i) => {
-      const on = name === active;
+      const on = name === active || (name === 'Customers' && ['Lyon', 'Kassel'].includes(active));
       const hasCount = count !== '';
       return {
         href, icon, label: label, gap: i === 3 || i === 10,

@@ -855,7 +855,7 @@
     "proof": "Add a column"
    },
    "provider": "openproject",
-   "providerHow": "A column is an existing status added to the board; creating a new status is admin-only and the statuses API is read-only. Evidence: /app/lib/api/v3/statuses (GET only); /app/modules/grids/app/controllers/api/v3/grids/grids_api.rb:55-106"
+   "providerHow": "Needs an OpenProject API change: A column is an existing status added to the board; creating a new status is admin-only and the statuses API is read-only. Evidence: /app/lib/api/v3/statuses (GET only); /app/modules/grids/app/controllers/api/v3/grids/grids_api.rb:55-106"
   },
   {
    "id": "boards-list-rename",
@@ -880,7 +880,7 @@
     "proof": "Rename column"
    },
    "provider": "openproject",
-   "providerHow": "Status names are global, admin-only and read-only in API v3; only free lists of a basic board can be renamed. Evidence: /app/lib/api/v3/statuses (GET only); https://www.openproject.org/docs/user-guide/agile-boards/ ('Basic board lists: Give the list any meaningful name')"
+   "providerHow": "Needs an OpenProject API change: Status names are global, admin-only and read-only in API v3; only free lists of a basic board can be renamed. Evidence: /app/lib/api/v3/statuses (GET only); https://www.openproject.org/docs/user-guide/agile-boards/ ('Basic board lists: Give the list any meaningful name')"
   },
   {
    "id": "boards-list-delete",
@@ -2186,7 +2186,7 @@
     "proof": "Lyon, Hotel de Ville, room 2.14"
    },
    "provider": "openproject",
-   "providerHow": "No built-in location; it needs a text custom field that an administrator adds to the work package type. Evidence: /app/app/models/custom_value/string_strategy.rb; /app/lib/api/v3/work_packages/work_package_representer.rb:169 (customFields link)"
+   "providerHow": "Custom field in OpenProject, set up by the plugin: No built-in location; it needs a text custom field that an administrator adds to the work package type. Evidence: /app/app/models/custom_value/string_strategy.rb; /app/lib/api/v3/work_packages/work_package_representer.rb:169 (customFields link)"
   },
   {
    "id": "cards-url",
@@ -2211,7 +2211,7 @@
     "proof": "https://cloud.ville-de-lyon.fr/f/rollout-phase-2"
    },
    "provider": "openproject",
-   "providerHow": "No built-in web address; it needs a link custom field that an administrator adds. Evidence: /app/app/models/custom_value/link_strategy.rb"
+   "providerHow": "Custom field in OpenProject, set up by the plugin: No built-in web address; it needs a link custom field that an administrator adds. Evidence: /app/app/models/custom_value/link_strategy.rb"
   },
   {
    "id": "cards-dependency-add",
@@ -2664,7 +2664,7 @@
     "proof": "Due date: Friday 30 October 2026"
    },
    "provider": "openproject",
-   "providerHow": "The finish date is set on the work package, as a date only: OpenProject keeps no time of day. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:376 (date_property)"
+   "providerHow": "The date is in OpenProject, a time of day is kept in Nextcloud: The finish date is set on the work package, as a date only: OpenProject keeps no time of day. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:376 (date_property)"
   },
   {
    "id": "dates-start-set",
@@ -2690,7 +2690,7 @@
     "proof": "Start date: Monday 5 October 2026"
    },
    "provider": "openproject",
-   "providerHow": "The start date is set on the work package, as a date only. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:371 (date_property)"
+   "providerHow": "The date is in OpenProject, a time of day is kept in Nextcloud: The start date is set on the work package, as a date only. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:371 (date_property)"
   },
   {
    "id": "dates-remove",
@@ -2741,7 +2741,7 @@
     "proof": "Later today"
    },
    "provider": "openproject",
-   "providerHow": "Shortcuts are app buttons that write a finish date; 'later today' has no meaning without a time of day. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:376"
+   "providerHow": "The date is in OpenProject, a time of day is kept in Nextcloud: Shortcuts are app buttons that write a finish date; 'later today' has no meaning without a time of day. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:376"
   },
   {
    "id": "dates-all-day",
@@ -3142,7 +3142,7 @@
     "proof": "Scale: hours, days, weeks or months"
    },
    "provider": "openproject",
-   "providerHow": "Zoom levels are days, weeks, months, quarters and years; there is no hours scale because dates have no time. Evidence: /app/app/models/query/timelines.rb:35"
+   "providerHow": "The date is in OpenProject, a time of day is kept in Nextcloud: Zoom levels are days, weeks, months, quarters and years; there is no hours scale because dates have no time. Evidence: /app/app/models/query/timelines.rb:35"
   },
   {
    "id": "gantt-drag",
@@ -3382,7 +3382,7 @@
     "proof": "Add a person or group"
    },
    "provider": "openproject",
-   "providerHow": "A work package has one assignee and one accountable; more people need a multi-select user custom field. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:566-574; /app/app/models/custom_field.rb:93,404"
+   "providerHow": "Custom field in OpenProject, set up by the plugin: A work package has one assignee and one accountable; more people need a multi-select user custom field. Evidence: /app/lib/api/v3/work_packages/work_package_representer.rb:566-574; /app/app/models/custom_field.rb:93,404"
   },
   {
    "id": "people-assign-groups",
@@ -3608,7 +3608,7 @@
     "proof": "Create the tag Folders"
    },
    "provider": "openproject",
-   "providerHow": "Categories belong to a project, but API v3 can only read them; creating one needs the web interface or an API extension. Evidence: /app/lib/api/v3/categories (GET only); /app/config/initializers/permissions.rb:456"
+   "providerHow": "Needs an OpenProject API change: Categories belong to a project, but API v3 can only read them; creating one needs the web interface or an API extension. Evidence: /app/lib/api/v3/categories (GET only); /app/config/initializers/permissions.rb:456"
   },
   {
    "id": "labels-show",
@@ -3658,7 +3658,7 @@
     "proof": "New tag"
    },
    "provider": "openproject",
-   "providerHow": "Categories have a name per project and no colour; API v3 cannot create them. Evidence: /app/app/models/category.rb:32-36; /app/lib/api/v3/categories (GET only)"
+   "providerHow": "Needs an OpenProject API change: Categories have a name per project and no colour; API v3 cannot create them. Evidence: /app/app/models/category.rb:32-36; /app/lib/api/v3/categories (GET only)"
   },
   {
    "id": "labels-edit",
@@ -3683,7 +3683,7 @@
     "proof": "Delete tag Lyon"
    },
    "provider": "openproject",
-   "providerHow": "Editing and deleting categories exists in the web interface only (manage_categories); API v3 is read-only. Evidence: /app/lib/api/v3/categories (GET only); /app/config/initializers/permissions.rb:456"
+   "providerHow": "Needs an OpenProject API change: Editing and deleting categories exists in the web interface only (manage_categories); API v3 is read-only. Evidence: /app/lib/api/v3/categories (GET only); /app/config/initializers/permissions.rb:456"
   },
   {
    "id": "labels-filter-tags",
@@ -4672,10 +4672,10 @@
     "board": [
      "TbSubtasks"
     ],
-    "proof": "its 3 child work packages were closed with it"
+    "proof": "Close the 3 open child work packages too?"
    },
    "provider": "openproject",
-   "providerHow": "OpenProject does not close children with their parent; the app sends a status update per child. Evidence: /app/app/services/work_packages/update_service.rb:79-89 (descendants follow project only)"
+   "providerHow": "The app asks first and then sends one update per work package: OpenProject does not close children with their parent; the app sends a status update per child. Evidence: /app/app/services/work_packages/update_service.rb:79-89 (descendants follow project only)"
   },
   {
    "id": "sub-reopen-parent",
@@ -4697,10 +4697,10 @@
     "board": [
      "TbSubtasks"
     ],
-    "proof": "its child TASK #58235 was reopened, so the parent is open again"
+    "proof": "Reopen the parent FEATURE #58412 too?"
    },
    "provider": "openproject",
-   "providerHow": "OpenProject does not reopen a parent; the app sends the status update for the parent. Evidence: /app/app/services/work_packages/update_service.rb:79-89; /app/app/services/work_packages/update_ancestors_service.rb"
+   "providerHow": "The app asks first and then sends one update per work package: OpenProject does not reopen a parent; the app sends the status update for the parent. Evidence: /app/app/services/work_packages/update_service.rb:79-89; /app/app/services/work_packages/update_ancestors_service.rb"
   },
   {
    "id": "sub-cancel",
@@ -4722,10 +4722,10 @@
     "board": [
      "TbSubtasks"
     ],
-    "proof": "its 2 open child work packages were cancelled with it"
+    "proof": "Cancel the 2 open child work packages too?"
    },
    "provider": "openproject",
-   "providerHow": "OpenProject does not cascade a status to children; the app sends a status update per child. Evidence: /app/app/services/work_packages/update_service.rb:79-89"
+   "providerHow": "The app asks first and then sends one update per work package: OpenProject does not cascade a status to children; the app sends a status update per child. Evidence: /app/app/services/work_packages/update_service.rb:79-89"
   },
   {
    "id": "sub-follow-list",
@@ -4747,10 +4747,10 @@
     "board": [
      "TbSubtasks"
     ],
-    "proof": "its 3 child work packages moved along to in review"
+    "proof": "Move the 3 child work packages to in review too?"
    },
    "provider": "openproject",
-   "providerHow": "Children follow their parent to another project, not to another status; the app updates each child's status. Evidence: /app/app/services/work_packages/update_service.rb:79-83; https://www.openproject.org/docs/user-guide/work-packages/duplicate-move-delete/"
+   "providerHow": "The app asks first and then sends one update per work package: Children follow their parent to another project, not to another status; the app updates each child's status. Evidence: /app/app/services/work_packages/update_service.rb:79-83; https://www.openproject.org/docs/user-guide/work-packages/duplicate-move-delete/"
   },
   {
    "id": "sub-restore",

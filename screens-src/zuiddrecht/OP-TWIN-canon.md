@@ -106,6 +106,8 @@ Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header
 
 Since 13 October (Round 7) the mail, calendar and tasks boards no longer use `OpHeader` and `OpNav` for their shell: after the first user test they returned to their own 55 px top bar (`MlHeader`) and 245 px navigation of 12 October, with a separate 400 px work package panel (`WpPanel`) on the right. The controls inside those boards still follow this canon. This section describes the folded state of those three navigations.
 
+Owner's rule for the top-left block (13 October, for `MlHeader` and, when its owner takes it up, `OpHeader`): the block is exactly as wide as the navigation, its divider sits on the navigation's edge, and it carries two lines as dossiq's `DqKop` does: the environment name small above, the app name bold below. On an OpenProject page the second line is the project name, unless the project name already stands in the left menu; then it names the active module (for example Projects).
+
 | part | value |
 |---|---|
 | width | 64 px (`flex: 0 0 64px` in the board), same background and `border-right` as the open navigation, padding 8px 0 16px, items centred in a column with a 2 px gap |

@@ -15,7 +15,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1100px; overflow: hidden">
-  <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
+  <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1045px"></dc-import></div>
     <div style="flex: 0 0 48px; width: 48px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="1" folded="true" hint-size="48px,1045px"></dc-import></div>
@@ -148,11 +148,12 @@ class Component extends DCLogic {
   renderVals() {
     const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
     const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
+    // Round 7 judgement call: beside an open right panel (work package or action panel) the conversation toolbar folds to icons with the label in the tooltip (title and aria-label); More keeps its word. MlThread keeps the labelled toolbar.
     const tools = [
-      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true],
-      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', true],
-      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', true],
-      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true]
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', false],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', false],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', false],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', false]
     ].map(([label, icon, hasLabel, tip]) => ({ label, icon, hasLabel: !!hasLabel, tip: !!tip, style: hasLabel ? textBtn : iconBtn + (tip ? '; background: #eef0f3; color: #1b1c1d' : '') }));
     return { tools };
   }

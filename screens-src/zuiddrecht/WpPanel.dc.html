@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Work package panel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<aside aria-label="Work package" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 400px; box-sizing: border-box; min-height: 100%; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
+  <div style="flex: none; display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 12px 0 16px; border-bottom: 1px solid #e4e6ea">
+    <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Work package</span>
+    <button type="button" aria-label="Collapse the work package panel" title="Collapse the work package panel" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px"><span style="{{ typeStyle }}">{{ type }}</span><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-weight: 600">{{ number }}</a><span style="flex: 1 1 auto"></span><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ project }}</span></div>
+    <h2 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">{{ title }}</h2>
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+      <button type="button" aria-label="Status: {{ status }}, change" aria-haspopup="menu" style="{{ statusStyle }}">{{ status }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+      <span style="font-size: 12px; color: #5e6168">{{ scope }}</span>
+    </div>
+    <dl style="margin: 0; display: grid; grid-template-columns: 92px 1fr; gap: 6px 12px; font-size: 13px; border-top: 1px solid #e4e6ea; padding-top: 12px">
+      <sc-for list="{{ fields }}" as="f" hint-placeholder-count="5">
+        <dt style="color: #5e6168; line-height: 24px">{{ f.label }}</dt>
+        <dd style="margin: 0; display: flex; align-items: center; gap: 6px; line-height: 24px; color: #1b1c1d"><sc-if value="{{ f.hasAvatar }}" hint-placeholder-val="{{ false }}"><span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ f.avatar }}</span></sc-if><span style="{{ f.valueStyle }}">{{ f.value }}</span></dd>
+      </sc-for>
+    </dl>
+    <div style="display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px">
+      <span style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ activityInitials }}</span>
+      <span><strong style="color: #1b1c1d">{{ activityBy }}</strong> {{ activityText }}<br><span style="color: #5e6168">{{ activityWhen }}</span></span>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+      <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Comment</button>
+      <a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"></path></svg>Open in OpenProject</a>
+    </div>
+    <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; margin-left: -10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.84 12.25l1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71M5.17 11.75l-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71M8 2v3M2 8h3M16 22v-3M19 16h3"></path></svg>Unlink</button>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 2px; margin: 0 16px; padding: 12px 0 16px; border-top: 1px solid #e4e6ea">
+    <button type="button" aria-haspopup="menu" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>{{ linkLabel }}</button>
+    <button type="button" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>{{ newLabel }}</button>
+  </div>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Link Nextcloud project folders on rollout"},"type":{"editor":"text","default":"FEATURE"},"number":{"editor":"text","default":"#58412"},"project":{"editor":"text","default":"Northwind rollout Lyon"},"status":{"editor":"text","default":"in development"},"scope":{"editor":"text","default":"Linked to the whole conversation"},"assignee":{"editor":"text","default":"Tom Achterberg"},"priority":{"editor":"text","default":"Normal"},"version":{"editor":"text","default":"16.5"},"due":{"editor":"text","default":"30 Oct 2026"},"linkedBy":{"editor":"text","default":"Olivia Brandt, 8 Oct"},"activityBy":{"editor":"text","default":"Tom Achterberg"},"activityText":{"editor":"text","default":"set the status to in development and commented: \"Folder template is ready, waiting for the Lyon realm.\""},"activityWhen":{"editor":"text","default":"9 Oct, 15:12"},"linkLabel":{"editor":"text","default":"Link another work package"},"newLabel":{"editor":"text","default":"New work package from this mail"},"$preview":{"width":400,"height":945}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // The work package panel of 12 October, shared by mail, calendar and tasks. Every word that is mail-specific is a prop with a mail default:
+    // scope ("Linked to the whole conversation"), linkedBy, newLabel ("New work package from this mail"), linkLabel.
+    const p = this.props;
+    const v = (k, d) => (p[k] === undefined || p[k] === null || p[k] === '') ? d : String(p[k]);
+    const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#005b77' };
+    const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#e4e6ea', '#c4c7cb'] };
+    const type = v('type', 'FEATURE').toUpperCase();
+    const status = v('status', 'in development');
+    const st = STATUS[status.toLowerCase()] ?? STATUS['new'];
+    const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+    const assignee = v('assignee', 'Tom Achterberg');
+    const activityBy = v('activityBy', 'Tom Achterberg');
+    const fields = [
+      { label: 'Assignee', value: assignee, hasAvatar: true, avatar: initials(assignee), valueStyle: '' },
+      { label: 'Priority', value: v('priority', 'Normal'), valueStyle: '' },
+      { label: 'Version', value: v('version', '16.5'), valueStyle: 'color: var(--sc-link, #3669a5)' },
+      { label: 'Due date', value: v('due', '30 Oct 2026'), valueStyle: '' },
+      { label: 'Linked by', value: v('linkedBy', 'Olivia Brandt, 8 Oct'), valueStyle: '' }
+    ].map((f) => ({ hasAvatar: false, avatar: '', ...f }));
+    return {
+      title: v('title', 'Link Nextcloud project folders on rollout'),
+      type, typeStyle: 'font-weight: 700; letter-spacing: 0.04em; font-size: 12px; color: ' + (TYPE[type] ?? '#3d4047'),
+      number: v('number', '#58412'),
+      project: v('project', 'Northwind rollout Lyon'),
+      status,
+      statusStyle: 'display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 1px solid ' + st[1] + '; border-radius: var(--sc-radius, 8px); background: ' + st[0] + '; color: #1b1c1d; font: 600 13px \'Fira Sans\', sans-serif; white-space: nowrap',
+      scope: v('scope', 'Linked to the whole conversation'),
+      fields,
+      activityBy, activityInitials: initials(activityBy),
+      activityText: v('activityText', 'set the status to in development and commented: "Folder template is ready, waiting for the Lyon realm."'),
+      activityWhen: v('activityWhen', '9 Oct, 15:12'),
+      linkLabel: v('linkLabel', 'Link another work package'),
+      newLabel: v('newLabel', 'New work package from this mail')
+    };
+  }
+}
+</script>
+</body>
+</html>

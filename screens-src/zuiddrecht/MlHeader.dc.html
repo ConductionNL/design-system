@@ -7,15 +7,47 @@
 </head>
 <body>
 <x-dc>
-<dc-import name="OpHeader" app="{{ app }}" placeholder="{{ placeholder }}" user="{{ user }}" initials="{{ initials }}" role="{{ role }}" current="{{ current }}" hint-size="100%,68px"></dc-import>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+#ml-search::placeholder{color:#ffffff;opacity:0.85}
+</style>
+</helmet>
+<header style="font-family: 'Fira Sans', system-ui, sans-serif; color: #ffffff; width: 100%; box-sizing: border-box; height: 55px; padding: 0 16px 0 16px; display: flex; align-items: center; gap: 16px; background: #3669a5">
+  <a href="MlInbox.dc.html" style="flex: 0 0 auto; min-width: 245px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; height: 55px; color: #ffffff; text-decoration: none">
+    <img src="/_blob/cab4a02b950055c6dcc934664d210976" alt="" style="height: 26px; width: auto; max-width: 130px; flex: none">
+    <span style="width: 1px; height: 22px; background: rgba(255,255,255,0.35); flex: none"></span>
+    <strong style="font-size: 17px; font-weight: 600; white-space: nowrap">{{ app }}</strong>
+  </a>
+  <form role="search" style="flex: 1 1 560px; max-width: 640px; min-width: 240px; position: relative; display: flex; align-items: center">
+    <label for="ml-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px; color: #ffffff"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+    <input id="ml-search" type="search" placeholder="{{ placeholder }}" style="width: 100%; height: 36px; box-sizing: border-box; padding: 0 44px 0 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: rgba(255,255,255,0.12); font: 400 14px 'Fira Sans', sans-serif; color: #ffffff">
+    <button type="button" aria-label="Search filters" aria-haspopup="menu" style="position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
+    </button>
+  </form>
+  <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: max-content">
+    <button type="button" aria-label="Help" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"></path></svg>
+    </button>
+    <button type="button" aria-label="Settings" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>
+    </button>
+    <button type="button" aria-label="Account menu of {{ user }}" aria-haspopup="menu" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; margin-left: 6px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff">
+      <span style="width: 30px; height: 30px; border-radius: 15px; background: #ffffff; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font: 700 12px 'Fira Sans', sans-serif">{{ initials }}</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+    </button>
+  </div>
+</header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Mail"},"placeholder":{"editor":"text","default":"Search mail, people or #work package"},"user":{"editor":"text","default":"Olivia Brandt"},"initials":{"editor":"text","default":"OB"},"role":{"editor":"text","default":"Delivery lead"},"$preview":{"width":1440,"height":68}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Mail"},"placeholder":{"editor":"text","default":"Search mail, people or #work package"},"user":{"editor":"text","default":"Olivia Brandt"},"initials":{"editor":"text","default":"OB"},"role":{"editor":"text","default":"Delivery lead"},"$preview":{"width":1440,"height":55}}'>
 class Component extends DCLogic {
   renderVals() {
-    // A thin wrapper: every app board imports MlHeader, and MlHeader draws the one shell top bar (OpHeader).
-    // The app name is also the current entry of the app switcher; "Administration" is passed through as it is.
-    const app = this.props.app ?? 'Mail';
-    return { app, placeholder: this.props.placeholder ?? 'Search mail, people or #work package', user: this.props.user ?? 'Olivia Brandt', initials: this.props.initials ?? 'OB', role: this.props.role ?? 'Delivery lead', current: app };
+    // The mail top bar draws its own 55 px shell (Round 7). The role prop is accepted for the boards that pass it and not drawn.
+    return { app: this.props.app ?? 'Mail', placeholder: this.props.placeholder ?? 'Search mail, people or #work package', user: this.props.user ?? 'Olivia Brandt', initials: this.props.initials ?? 'OB' };
   }
 }
 </script>

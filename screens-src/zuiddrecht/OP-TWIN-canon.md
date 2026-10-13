@@ -104,6 +104,8 @@ Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header
 
 ## Navigation, folded (`MlNav`, `ClNav`, `TbNav` with `folded="true"`)
 
+Since 13 October (Round 7) the mail, calendar and tasks boards no longer use `OpHeader` and `OpNav` for their shell: after the first user test they returned to their own 55 px top bar (`MlHeader`) and 245 px navigation of 12 October, with a separate 400 px work package panel (`WpPanel`) on the right. The controls inside those boards still follow this canon. This section describes the folded state of those three navigations.
+
 | part | value |
 |---|---|
 | width | 64 px (`flex: 0 0 64px` in the board), same background and `border-right` as the open navigation, padding 8px 0 16px, items centred in a column with a 2 px gap |

@@ -15,9 +15,15 @@ a{color:#3669a5}a:hover{color:#234a78}
 mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
-  <dc-import name="MlHeader" placeholder="#58231 gantt" hint-size="100%,68px"></dc-import>
-  <div role="dialog" aria-label="Search filters" style="position: absolute; left: 482px; top: 50px; width: 940px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1560px; padding: 24px 0; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="2">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px">
+    <figcaption style="padding: 0 16px; font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ fr.letter }}</span> &nbsp;{{ fr.caption }}</figcaption>
+    <div style="{{ fr.frame }}">
+    <div style="position: relative; display: flex; flex-direction: column; height: 1000px; background: #f5f6f8; overflow: hidden">
+  <dc-import name="MlHeader" placeholder="#58231 gantt" hint-size="100%,55px"></dc-import>
+  <sc-if value="{{ fr.filters }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-label="Search filters" style="position: absolute; left: 277px; top: 50px; width: 760px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 12px; padding: 4px 8px">
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
         <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0">
@@ -32,29 +38,31 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
       </sc-for>
       <label style="display: flex; align-items: center; gap: 8px; align-self: end; height: 40px; font-size: 14px; color: #1b1c1d; white-space: nowrap"><input type="checkbox" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Has attachment</label>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 8px 4px; border-top: 1px solid #e4e6ea; margin-top: 10px">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 8px 4px; border-top: 1px solid #e4e6ea; margin-top: 10px">
       <span style="font-size: 14px; font-weight: 600; color: #1b1c1d; white-space: nowrap">Work package link</span>
       <div role="group" aria-label="Linked to a work package" style="display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); overflow: hidden">
         <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border: 0; background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">All</button>
         <button type="button" aria-pressed="true" style="height: 34px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; background: #eaf0f7; color: #234a78; font: 600 14px 'Fira Sans', sans-serif">Linked</button>
         <button type="button" aria-pressed="false" disabled title="Not possible while a work package is chosen" style="height: 34px; padding: 0 12px; border: 0; border-left: 1px solid #c4c7cb; background: #f5f6f8; color: #c4c7cb; font: 600 14px 'Fira Sans', sans-serif">Not linked</button>
       </div>
-      <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Not linked is off while a work package is chosen</span>
-      <span style="flex: 1 1 auto"></span>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 8px 8px 4px">
       <button type="button" style="height: 34px; padding: 0 12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Clear filters</button>
       <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Search</button>
     </div>
   </div>
+  </sc-if>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="" folded="true" hint-size="64px,945px"></dc-import></div>
     <section aria-label="Search results" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e4e6ea; overflow: hidden">
       <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
-        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Results</h1><span style="font-size: 13px; color: #5e6168; white-space: nowrap">4 conversations</span></div>
-        <button type="button" aria-label="Sort results" aria-haspopup="menu" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+        <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h1 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Results</h1><span title="Searched Inbox, Sent, Archive and Customers. Spam and Trash are left out; the Folder filter includes them." style="font-size: 13px; color: #5e6168; white-space: nowrap; text-decoration: underline dotted #c4c7cb; text-underline-offset: 3px">4 conversations</span></div>
+        <div style="display: flex; gap: 2px; flex: none">
+          <button type="button" aria-label="Search filters, 2 set: From Jana Köhler, Work package #58231" title="Search filters, 2 set" aria-haspopup="dialog" aria-expanded="{{ fr.filtersAria }}" style="{{ fr.filterBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg><span aria-hidden="true" style="position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #3669a5; color: #ffffff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center">2</span></button>
+          <button type="button" aria-label="Sort results" aria-haspopup="menu" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+        </div>
       </div>
-      <div style="flex: none; box-sizing: border-box; padding: 0 16px 10px; border-bottom: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 8px">
-        <div style="font-size: 12px; color: #5e6168; line-height: 18px">Searched Inbox, Sent, Archive and Customers. Spam and Trash are left out; <a href="#" style="color: var(--sc-link, #3669a5)">include them</a>.</div>
-      </div>
+      <div style="flex: none; height: 1px; background: #e4e6ea"></div>
       <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
         <h2 style="margin: 0; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; box-sizing: border-box; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap"><span>{{ g.title }}</span><sc-if value="{{ g.hasWp }}" hint-placeholder-val="{{ true }}"><span style="color: #ab0000">BUG</span><span style="color: #3d4047; letter-spacing: 0">#58231</span></sc-if></h2>
         <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
@@ -101,12 +109,11 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
           </div>
           <div style="flex: none; display: flex; align-items: center; gap: 6px">
             <button type="button" aria-label="Expand all messages" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 13 5 5 5-5M7 6l5 5 5-5"></path></svg>Expand all</button>
-            <button type="button" aria-haspopup="menu" title="Link another work package to this conversation" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link another</button>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
           <span style="white-space: nowrap">1 work package</span>
-          <button type="button" aria-expanded="false" aria-label="Open work package BUG #58231, in development" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 400 12px 'Fira Sans', sans-serif; line-height: 1; white-space: nowrap; color: #3d4047; cursor: pointer"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span>#58231</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM15 4v16"></path></svg></button>
+          <button type="button" aria-expanded="true" aria-label="Open work package BUG #58231, in development" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 400 12px 'Fira Sans', sans-serif; line-height: 1; white-space: nowrap; color: #3d4047; cursor: pointer"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span>#58231</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM15 4v16"></path></svg></button>
           <span style="white-space: nowrap">3 messages · Inbox</span>
         </div>
       </div>
@@ -155,10 +162,15 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
         </article>
       </div>
     </main>
+    <div style="flex: 0 0 400px; width: 400px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="WpPanel" title="Gantt PDF export drops trailing columns" type="BUG" number="#58231" project="Northwind rollout Lyon" status="in development" scope="Linked to the whole conversation" assignee="Priya Raman" priority="High" version="16.5" due="14 Oct 2026" linked-by="Olivia Brandt, 9 Oct" activity-by="Priya Raman" activity-text="set the status to in development and commented: &quot;Found it: the column count is capped at the page width before the last page is rendered.&quot;" activity-when="Today, 00:52" hint-size="400px,945px"></dc-import></div>
   </div>
+    </div>
+    </div>
+  </figure>
+  </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
@@ -214,11 +226,12 @@ class Component extends DCLogic {
     ];
     const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
     const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
+    // Round 7 judgement call: beside the 400 px work package panel the reading pane is 566 px wide, so the conversation toolbar folds to icons with the label in the tooltip (title and aria-label); More keeps its word. MlThread keeps the labelled toolbar.
     const tools = [
-      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true],
-      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', true],
-      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', true],
-      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true]
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', false],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', false],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', false],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', false]
     ].map(([label, icon, hasLabel, tip]) => ({ label, icon, hasLabel: !!hasLabel, tip: !!tip, style: hasLabel ? textBtn : iconBtn + (tip ? '; background: #eef0f3; color: #1b1c1d' : '') }));
     const card = 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; width: 100%; ';
     const own = 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
@@ -242,7 +255,14 @@ class Component extends DCLogic {
       { label: 'Due date', value: '14 Oct 2026', valueStyle: '' },
       { label: 'Linked by', value: 'Olivia Brandt, 9 Oct', valueStyle: '' }
     ].map((f) => ({ hasAvatar: false, avatar: '', ...f }));
-    return { filters, groups, tools, collapsed, files, fields };
+    // Calm fix (after round 7): the filters are closed when results show (frame a) and open as the one layer in frame b, cropped to the top of the screen; the scope note is the tooltip on the result count; the disabled Not linked keeps its title only. Height 1000 -> 1560 (two frames).
+    const filterBtn = (on) => 'position: relative; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; ' + (on ? 'background: #1b1c1d; color: #ffffff' : 'background: transparent; color: #3d4047');
+    const frameBox = (h) => 'height: ' + h + 'px; box-sizing: border-box; background: #f5f6f8; border-top: 1px solid #c4c7cb; border-bottom: 1px solid #c4c7cb; overflow: hidden';
+    const frames = [
+      { letter: 'a', caption: 'Search results for "#58231 gantt": the conversations linked to the work package first, then other matches, the first result open with its work package panel; two filters are set, the filters themselves are closed', h: 1000, filters: false },
+      { letter: 'b', caption: 'The search filters, opened from the filter button in the search field or in the results head: From, To, Date range, Folder, Label, Project, Work package, attachment and the work package link; Not linked is off while a work package is chosen', h: 440, filters: true }
+    ].map((f) => ({ ...f, frame: frameBox(f.h), filterBtn: filterBtn(f.filters), filtersAria: f.filters ? 'true' : 'false' }));
+    return { filters, groups, tools, collapsed, files, fields, frames };
   }
 }
 </script>

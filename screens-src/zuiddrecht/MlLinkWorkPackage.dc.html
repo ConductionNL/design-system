@@ -12,10 +12,12 @@
 <style>
 body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
+/* Calm fix (after round 7): on this board the picker shows search and results only; the description switch, the scope chips and the key legend fold behind the Filters row and Help (?). WpPicker itself is shared with ClLinkWorkPackage and stays as it is. */
+aside[aria-label="Link to work package"] [role="switch"],aside[aria-label="Link to work package"] [role="group"][aria-label="Search scope"],aside[aria-label="Link to work package"] [id$="-hint"]{display:none!important}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1100px; overflow: hidden">
-  <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
+  <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1045px"></dc-import></div>
     <div style="flex: 0 0 48px; width: 48px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="3" unlinked="3" folded="true" hint-size="48px,1045px"></dc-import></div>
@@ -94,8 +96,12 @@ a{color:#3669a5}a:hover{color:#234a78}
         <h2 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Gantt export cuts off the last week</h2>
         <dc-import name="WpPicker" state="number" context="mail" hint-size="408px,260px"></dc-import>
         <div style="display: flex; flex-direction: column; gap: 2px; margin-top: -8px">
+          <button type="button" aria-expanded="false" aria-controls="lwp-filters" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 500 14px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg><span style="flex: none">Filters</span><span style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 400; color: #5e6168">Northwind rollout Lyon, open only</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></button>
+          <div id="lwp-filters" style="display: none; padding: 0 10px 6px; font-size: 13px; color: #5e6168">Project, Open only, Type, Assigned to me; also search in descriptions and comments.</div>
           <a href="MlCreateWorkPackage.dc.html" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px; border-radius: var(--sc-radius, 8px); color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New work package from this mail</a>
         </div>
+        <button type="button" aria-expanded="false" aria-controls="lwp-options" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; margin-top: -8px; padding: 0 10px; border: 0; border-top: 1px solid #e4e6ea; border-radius: 0; background: transparent; color: #1b1c1d; font: 500 14px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg><span style="flex: none">Options</span><span style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 400; color: #5e6168">Whole conversation, attachments and a comment</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></button>
+        <div id="lwp-options" style="display: none; flex-direction: column; gap: 16px">
         <fieldset style="margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
           <legend style="padding: 0 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; line-height: 28px; float: left">Link</legend>
           <sc-for list="{{ scopes }}" as="sc" hint-placeholder-count="2">
@@ -114,13 +120,10 @@ a{color:#3669a5}a:hover{color:#234a78}
             </label>
           </sc-for>
         </fieldset>
-        <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px">
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: -8px">
           <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link</button>
           <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif">Cancel</button>
-        </div>
-        <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 12px; color: #3d4047; line-height: 18px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168; margin-top: 1px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-          <span>The link stores a reference to the conversation. The mail stays in your mailbox.</span>
         </div>
       </form>
     </aside>
@@ -132,11 +135,13 @@ class Component extends DCLogic {
   renderVals() {
     const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
     const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
+    // Round 7 judgement call: beside an open right panel (work package or action panel) the conversation toolbar folds to icons with the label in the tooltip (title and aria-label); More keeps its word.
+    // Calm fix (after round 7): the panel shows search and result first; the picker's filters fold behind a closed Filters row, Link scope and Also behind a closed Options row (their controls stay in the HTML, display none); the footnote is gone, the key legend lives behind Help (?).
     const tools = [
-      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true],
-      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', true],
-      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', true],
-      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true]
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', false],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', false],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', false],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', false]
     ].map(([label, icon, hasLabel, tip]) => ({ label, icon, hasLabel: !!hasLabel, tip: !!tip, style: hasLabel ? textBtn : iconBtn + (tip ? '; background: #eef0f3; color: #1b1c1d' : '') }));
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
     const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'] };

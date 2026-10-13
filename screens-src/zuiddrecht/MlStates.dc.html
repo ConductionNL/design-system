@@ -90,16 +90,15 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
               <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
-                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>{{ t.label }}</button></sc-for>
+                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
                 <button type="button" aria-haspopup="menu" aria-label="More actions for this conversation" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-left: 4px; padding: 0 8px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
               </div>
-              <button type="button" aria-haspopup="menu" aria-keyshortcuts="L" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link to work package</button>
+              <sc-if value="{{ p.hasLink }}" hint-placeholder-val="{{ true }}"><button type="button" aria-haspopup="menu" aria-keyshortcuts="L" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>{{ p.linkLabel }}</button></sc-if>
             </div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
               <sc-if value="{{ p.hasChip }}" hint-placeholder-val="{{ true }}"><a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 1; white-space: nowrap; text-decoration: none; color: #3d4047"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span>#58412</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #eef0f3; border: 1.5px solid #c4c7cb"></span><span>status unknown</span></a></sc-if>
               <sc-if value="{{ p.signin }}" hint-placeholder-val="{{ false }}"><span style="white-space: nowrap">Not linked</span></sc-if>
               <span style="white-space: nowrap">6 messages · Customers / Lyon</span>
-              <sc-if value="{{ p.signin }}" hint-placeholder-val="{{ false }}"><span style="white-space: nowrap; color: #234a78">Link to work package first opens Sign in to OpenProject, shown on the right</span></sc-if>
             </div>
           </div>
           <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px">
@@ -166,8 +165,8 @@ class Component extends DCLogic {
     const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
       style: chipBase + (i === 0 ? 'border: 1px solid #1b1c1d; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;') }));
     const skeleton = [[120, 230, 300], [96, 180, 260], [150, 250, 220], [110, 200, 290]].map(([a, b, c]) => ({ sender: a + 'px', subject: b + 'px', snippet: c + 'px' }));
-    // The same subject bar as MlThread: four labelled actions and More.
-    const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
+    // The same subject bar as MlThread, beside an open panel: Round 7 folds the four actions to icons with the label in the tooltip; More keeps its word.
+    const textBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
     const tools = [
       ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
       ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4'],
@@ -185,8 +184,9 @@ class Component extends DCLogic {
       avatar: 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ' + (mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78')
     }));
     const panes = [
-      { letter: 'c', caption: 'OpenProject not reachable: the mail works, the panel says so', hasChip: true, error: true, signin: false },
-      { letter: 'd', caption: 'OpenProject not linked to this account yet', hasChip: false, error: false, signin: true }
+      // Calm fix (after round 7): a linked conversation shows no Link another in the toolbar (the panel is the home of the link), so frame c has no link button; frame d keeps Link to work package.
+      { letter: 'c', caption: 'OpenProject not reachable: the mail works, the panel says so', hasChip: true, error: true, signin: false, linkLabel: 'Link another', hasLink: false },
+      { letter: 'd', caption: 'OpenProject not linked to this account yet: Link to work package first opens Sign in to OpenProject, shown on the right', hasChip: false, error: false, signin: true, linkLabel: 'Link to work package', hasLink: true }
     ];
     return { chips, skeleton, tools, collapsed, panes };
   }

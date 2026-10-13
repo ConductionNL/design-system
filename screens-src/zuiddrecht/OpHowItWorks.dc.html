@@ -19,30 +19,20 @@ a{color:#3669a5}a:hover{color:#234a78}
     <section style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; padding-bottom: 24px">
       <div style="display: flex; flex-direction: column; gap: 4px">
         <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">How it works</span>
-        <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">One token set, two adapters, one check</h1>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">One catalogue, two standalone tools, one file between them</h1>
       </div>
-      <p style="margin: 0; max-width: 520px; color: #3d4047">An organisation keeps one design system. Nextcloud and OpenProject read it through their own adapter and come out the same. The OpenProject adapter is a proposal, not a product.</p>
+      <p style="margin: 0; max-width: 560px; color: #3d4047">Thematiq styles Nextcloud, the OpenProject plugin styles OpenProject. Nothing links them at runtime: a design system travels between them as a file, and a pixel check keeps both shells on the same canon.</p>
     </section>
 
     <div style="display: flex; justify-content: center">
-      <section aria-labelledby="h-step1" style="width: 560px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; align-items: center; gap: 16px">
-        <span style="{{ step }}">1</span>
-        <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3"><h2 id="h-step1" style="margin: 0; font-size: 16px; font-weight: 700">An admin picks or edits a design system once</h2><span style="color: #5e6168">In thematiq, for the whole installation. Both products follow.</span></span>
-        <span style="position: relative; display: inline-flex; align-items: center; flex: none"><select aria-label="Design system" style="appearance: none; height: 40px; box-sizing: border-box; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Northwind house style</option><option>OpenProject example</option><option>Zuiddrecht</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span>
-      </section>
-    </div>
-
-    <svg width="1240" height="36" viewBox="0 0 1240 36" aria-hidden="true" style="display: block"><path d="M620 0v22" stroke="#c4c7cb" stroke-width="2"></path><path d="M612 20l8 10 8-10z" fill="#c4c7cb"></path></svg>
-
-    <div style="display: flex; justify-content: center">
-      <section aria-labelledby="h-step2" style="width: 560px; box-sizing: border-box; background: #ffffff; border: 2px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
+      <section aria-labelledby="h-step1" style="width: 760px; box-sizing: border-box; background: #ffffff; border: 2px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
         <div style="display: flex; align-items: center; gap: 16px">
-          <span style="{{ step }}">2</span>
-          <span style="display: flex; flex-direction: column; flex: 1 1 auto; line-height: 1.3"><h2 id="h-step2" style="margin: 0; font-size: 16px; font-weight: 700">One token set</h2><span style="color: #5e6168">Cunningham tokens, the system behind La Suite. Colours, type, radius, spacing, logos.</span></span>
+          <span style="{{ step }}">1</span>
+          <span style="display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; line-height: 1.3"><h2 id="h-step1" style="margin: 0; font-size: 16px; font-weight: 700">One catalogue of design systems</h2><span style="color: #5e6168">Thematiq owns the mapping. The plugin ships a bundled copy generated from it, so both offer the same list.</span></span>
         </div>
-        <ul aria-label="Tokens" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; font-size: 13px">
-          <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="6">
-            <li style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="{{ t.swatch }}"></span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><strong>{{ t.name }}</strong> <span style="color: #5e6168">{{ t.sub }}</span></span></li>
+        <ul aria-label="Design systems in the catalogue" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{ systems }}" as="s" hint-placeholder-count="4">
+            <li style="display: inline-flex; align-items: center; gap: 8px; padding: 3px 10px; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600"><span style="{{ s.swatch }}"></span>{{ s.name }}</li>
           </sc-for>
         </ul>
       </section>
@@ -50,19 +40,28 @@ a{color:#3669a5}a:hover{color:#234a78}
 
     <svg width="1240" height="56" viewBox="0 0 1240 56" aria-hidden="true" style="display: block"><path d="M620 0v18H310v24M620 18h310v24" fill="none" stroke="#c4c7cb" stroke-width="2"></path><path d="M302 40l8 10 8-10z" fill="#c4c7cb"></path><path d="M922 40l8 10 8-10z" fill="#c4c7cb"></path></svg>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
-      <sc-for list="{{ adapters }}" as="a" hint-placeholder-count="2">
-        <section aria-label="{{ a.title }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: grid; grid-template-columns: 1fr 240px 1fr; gap: 20px; align-items: stretch">
+      <sc-for list="{{ tools }}" as="a" hint-placeholder-count="2">
+        <section aria-label="{{ a.title }}" style="{{ a.order }} background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
           <div style="display: flex; align-items: center; gap: 16px">
-            <span style="{{ step }}">3</span>
+            <span style="{{ step }}">2</span>
             <span style="display: flex; flex-direction: column; flex: 1 1 auto; line-height: 1.3"><h2 style="margin: 0; font-size: 16px; font-weight: 700">{{ a.title }}</h2><span style="color: #5e6168">{{ a.sub }}</span></span>
-            <span style="{{ a.tagStyle }}">{{ a.tag }}</span>
+            <span style="{{ tag }}">{{ a.tag }}</span>
           </div>
-          <ul style="margin: 0; padding: 0 0 0 18px; color: #3d4047; display: flex; flex-direction: column; gap: 2px">
-            <sc-for list="{{ a.points }}" as="p" hint-placeholder-count="3"><li>{{ p }}</li></sc-for>
+          <span style="position: relative; display: flex; align-items: center"><select aria-label="{{ a.pickerLabel }}" style="appearance: none; width: 100%; height: 40px; box-sizing: border-box; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d"><option>Northwind house style</option><option>OpenProject example</option><option>Zuiddrecht</option><option>Cunningham</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; color: #5e6168; pointer-events: none"><path d="m6 9 6 6 6-6"></path></svg></span>
+          <ul aria-label="What {{ a.title }} does" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; color: #3d4047">
+            <sc-for list="{{ a.points }}" as="p" hint-placeholder-count="4">
+              <li style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #234a78"><path d="{{ p.icon }}"></path></svg>{{ p.label }}</li>
+            </sc-for>
           </ul>
         </section>
       </sc-for>
+      <section aria-labelledby="h-file" style="order: 2; background: #eaf0f7; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #234a78"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5"></path></svg>
+        <h2 id="h-file" style="margin: 0; font-size: 16px; font-weight: 700; color: #234a78">A design system is a file</h2>
+        <span style="color: #1b1c1d; line-height: 1.4">W3C design tokens or Tokens Studio. Export on one side, import on the other. Figma reads and writes the same files.</span>
+        <svg width="120" height="20" viewBox="0 0 120 20" aria-hidden="true" style="margin-top: 4px"><path d="M4 10h112" stroke="#234a78" stroke-width="2"></path><path d="M10 4l-8 6 8 6zM110 4l8 6-8 6z" fill="#234a78"></path></svg>
+      </section>
     </div>
 
     <svg width="1240" height="36" viewBox="0 0 1240 36" aria-hidden="true" style="display: block"><path d="M310 0v22M930 0v22" stroke="#c4c7cb" stroke-width="2"></path><path d="M302 20l8 10 8-10z" fill="#c4c7cb"></path><path d="M922 20l8 10 8-10z" fill="#c4c7cb"></path></svg>
@@ -70,7 +69,7 @@ a{color:#3669a5}a:hover{color:#234a78}
     <div style="display: grid; grid-template-columns: 1fr 240px 1fr; gap: 20px; align-items: stretch">
       <sc-for list="{{ products }}" as="p" hint-placeholder-count="2">
         <section aria-label="{{ p.name }}" style="{{ p.order }} background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
-          <div style="display: flex; align-items: center; gap: 16px"><span style="{{ step }}">4</span><span style="display: flex; flex-direction: column; line-height: 1.3"><h2 style="margin: 0; font-size: 16px; font-weight: 700">{{ p.name }}</h2><span style="color: #5e6168">{{ p.sub }}</span></span></div>
+          <div style="display: flex; align-items: center; gap: 16px"><span style="{{ step }}">3</span><span style="display: flex; flex-direction: column; line-height: 1.3"><h2 style="margin: 0; font-size: 16px; font-weight: 700">{{ p.name }}</h2><span style="color: #5e6168">{{ p.sub }}</span></span></div>
           <div aria-hidden="true" style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden; background: #f5f6f8">
             <div style="height: 22px; background: #3669a5; display: flex; align-items: center; gap: 8px; padding: 0 8px"><span style="width: 36px; height: 6px; border-radius: 3px; background: #ffffff; opacity: 0.9"></span><span style="margin-left: auto; width: 120px; height: 10px; border-radius: 3px; border: 1px solid #ffffff; opacity: 0.8"></span><span style="width: 10px; height: 10px; border-radius: 5px; background: #ffffff"></span></div>
             <div style="display: flex; height: 96px">
@@ -81,9 +80,9 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </sc-for>
       <section aria-labelledby="h-check" style="order: 2; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); padding: 16px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px">
-        <span style="{{ step }}">5</span>
-        <h2 id="h-check" style="margin: 0; font-size: 16px; font-weight: 700">Pixel-diff check</h2>
-        <span style="color: #5e6168; line-height: 1.4">Shell and primitives of both products are rendered and compared on every release. A difference blocks the release until it is fixed.</span>
+        <span style="{{ step }}">4</span>
+        <h2 id="h-check" style="margin: 0; font-size: 16px; font-weight: 700">Pixel check per release</h2>
+        <span style="color: #5e6168; line-height: 1.4">For every OpenProject release the shell and primitives of both products are rendered and compared with the canon. A difference is fixed in the plugin before it ships.</span>
         <svg width="120" height="20" viewBox="0 0 120 20" aria-hidden="true" style="margin-top: 4px"><path d="M4 10h112" stroke="#c4c7cb" stroke-width="2"></path><path d="M10 4l-8 6 8 6zM110 4l8 6-8 6z" fill="#c4c7cb"></path></svg>
       </section>
     </div>
@@ -105,25 +104,25 @@ a{color:#3669a5}a:hover{color:#234a78}
 class Component extends DCLogic {
   renderVals() {
     const step = 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: #1b1c1d; color: #ffffff; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;';
-    const sw = (bg, extra) => 'flex: none; width: 18px; height: 18px; border-radius: var(--sc-radius, 8px); border: 1px solid #e4e6ea; background: ' + bg + '; ' + (extra || '');
-    const tokens = [
-      ['Primary', 'bar, links', sw('#3669a5')],
-      ['Action', 'main button', sw('var(--sc-action, #3669a5)')],
-      ['Ink', 'text', sw('#1b1c1d')],
-      ['Lines', 'borders, ground', sw('#e4e6ea')],
-      ['Type', 'family, scale', sw('#3d4047')],
-      ['Radius', 'corners', sw('#ffffff', 'border: 2px solid #3d4047')]
-    ].map(([name, sub, swatch]) => ({ name, sub, swatch }));
-    const tag = (on) => 'flex: none; padding: 3px 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; font-weight: 600; white-space: nowrap; ' + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: #f0f1f3; color: #3d4047;');
-    const adapters = [
-      { title: 'thematiq', sub: 'Nextcloud app, exists today', tag: 'Exists', tagStyle: tag(true), points: ['Reads the token set and writes Nextcloud theming variables for every app', 'Sets the logo, the primary colour and the type per installation', 'Already restyles the whole Conduction fleet'] },
-      { title: 'OpenProject plugin', sub: 'Ruby gem, proposed', tag: 'Proposal', tagStyle: tag(false), points: ['Maps the same tokens onto OpenProject\'s Primer CSS variables', 'Adds overrides for shell geometry: top bar, navigation, table, buttons, inputs', 'Reads the token set from the same place thematiq does, so one change lands in both'] }
+    const sw = (bg) => 'flex: none; width: 14px; height: 14px; border-radius: 7px; border: 1px solid #e4e6ea; background: ' + bg + ';';
+    const systems = [['Northwind house style', '#3669a5'], ['OpenProject example', '#234a78'], ['Zuiddrecht', '#538b28'], ['Cunningham', '#005b77']].map(([name, bg]) => ({ name, swatch: sw(bg) }));
+    const tag = 'flex: none; padding: 3px 10px; border-radius: var(--sc-radius, 8px); font-size: 13px; font-weight: 600; white-space: nowrap; background: #eaf0f7; color: #234a78;';
+    const I = {
+      pick: 'M20 6 9 17l-5-5',
+      edit: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z',
+      file: 'M12 3v12M7 10l5 5 5-5M4 19h16',
+      figma: 'M8 3v12M4 11l4 4 4-4M16 21V9M12 13l4-4 4 4'
+    };
+    const points = [['Picker', I.pick], ['Style editor', I.edit], ['Export and import', I.file], ['Figma upload and download', I.figma]].map(([label, icon]) => ({ label, icon }));
+    const tools = [
+      { title: 'thematiq', sub: 'Nextcloud app, standalone', tag: 'Nextcloud', pickerLabel: 'Design system in thematiq', order: 'order: 1;', points },
+      { title: 'OpenProject plugin', sub: 'Ruby gem, standalone', tag: 'OpenProject', pickerLabel: 'Design system in the OpenProject plugin', order: 'order: 3;', points }
     ];
     const products = [
-      { name: 'Nextcloud', sub: 'Files, Mail, Calendar, Tasks and the apps', order: 'order: 1;' },
-      { name: 'OpenProject', sub: 'Work packages, Gantt, boards, meetings', order: 'order: 3;' }
+      { name: 'Nextcloud', sub: 'Thematiq applies the design system to Files, Mail, Calendar, Tasks and the apps', order: 'order: 1;' },
+      { name: 'OpenProject', sub: 'The plugin applies it to work packages, Gantt, boards and meetings', order: 'order: 3;' }
     ];
-    return { step, tokens, adapters, products };
+    return { step, systems, tag, tools, products };
   }
 }
 </script>

@@ -16,7 +16,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2128px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The week at rest: calendars at the left, the grid with meetings and work package dates, nothing else open</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The week at rest: calendars at the left, the grid with meetings and work package dates, nothing else open. A bar with handles is a work package whose dates can be dragged; its tooltip says so</figcaption>
     <div style="position: relative; height: 1000px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
   <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
@@ -47,15 +47,14 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
             <a href="#" aria-label="{{ b.aria }}" style="{{ b.style }}">
               <sc-if value="{{ b.leftOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"></path></svg></sc-if>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <span style="flex: none; font-weight: 700; letter-spacing: 0.04em; color: {{ b.color }}">{{ b.type }}</span>
               <span style="flex: none; color: #3d4047">{{ b.number }}</span>
               <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d">{{ b.subject }}</span>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.rightOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"></path></svg></sc-if>
             </a>
           </sc-for>
-          <div style="position: absolute; top: 6px; left: calc(100% * 3 / 7 + 24px); height: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #5e6168; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"></path></svg>Drag an end to change the dates in OpenProject</div>
         </div>
       </div>
       <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden">
@@ -69,7 +68,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="{{ d.colStyle }}">
               <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
                 <a href="{{ e.href }}" aria-label="{{ e.aria }}" aria-current="{{ e.current }}" style="{{ e.style }}">
-                  <span style="display: flex; align-items: center; gap: 4px; min-width: 0">
+                  <span style="display: flex; align-items: flex-start; gap: 4px; min-width: 0">
                     <sc-if value="{{ e.flag }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 22V4a1 1 0 0 1 1-1h12l-2 4 2 4H5"></path></svg></sc-if>
                     <sc-if value="{{ e.video }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m22 8-6 4 6 4V8zM2 6h14v12H2z"></path></svg></sc-if>
                     <span style="{{ e.titleStyle }}">{{ e.title }}</span>
@@ -91,12 +90,12 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </figure>
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The overview opened from the title row: search this week, the next meeting, the open proposal, work packages due this week and the shortcuts</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The overview opened from the title row, the navigation folded to its rail: the next meeting, the open proposal and the work packages due this week. Searching is the search field at the top; the shortcuts are under Help</figcaption>
     <div style="position: relative; height: 1000px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
   <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
-    <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Week" hint-size="245px,945px"></dc-import></div>
+    <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="ClNav" active="Week" folded="true" hint-size="64px,945px"></dc-import></div>
     <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; background: #ffffff; overflow: hidden">
       <div style="flex: none; display: flex; align-items: baseline; gap: 10px; height: 56px; padding: 0 16px 0 20px; box-sizing: border-box">
         <h1 style="margin: 0; font-size: 22px; font-weight: 600; line-height: 56px; white-space: nowrap">October <span style="font-weight: 400; color: #5e6168">2026</span></h1>
@@ -122,15 +121,14 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
             <a href="#" aria-label="{{ b.aria }}" style="{{ b.style }}">
               <sc-if value="{{ b.leftOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"></path></svg></sc-if>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <span style="flex: none; font-weight: 700; letter-spacing: 0.04em; color: {{ b.color }}">{{ b.type }}</span>
               <span style="flex: none; color: #3d4047">{{ b.number }}</span>
               <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d">{{ b.subject }}</span>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.rightOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"></path></svg></sc-if>
             </a>
           </sc-for>
-          <div style="position: absolute; top: 6px; left: calc(100% * 3 / 7 + 24px); height: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #5e6168; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"></path></svg>Drag an end to change the dates in OpenProject</div>
         </div>
       </div>
       <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden">
@@ -144,7 +142,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="{{ d.colStyle }}">
               <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
                 <a href="{{ e.href }}" aria-label="{{ e.aria }}" aria-current="{{ e.current }}" style="{{ e.style }}">
-                  <span style="display: flex; align-items: center; gap: 4px; min-width: 0">
+                  <span style="display: flex; align-items: flex-start; gap: 4px; min-width: 0">
                     <sc-if value="{{ e.flag }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 22V4a1 1 0 0 1 1-1h12l-2 4 2 4H5"></path></svg></sc-if>
                     <sc-if value="{{ e.video }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m22 8-6 4 6 4V8zM2 6h14v12H2z"></path></svg></sc-if>
                     <span style="{{ e.titleStyle }}">{{ e.title }}</span>
@@ -162,7 +160,6 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </main>
     <aside aria-label="Overview" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px; padding: 16px; background: #f5f6f8; overflow: hidden">
-      <label style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #5e6168; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35"></path></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search this week</span><input type="search" placeholder="Search this week" style="flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font: 14px 'Fira Sans', sans-serif; color: #1b1c1d; outline: none"></label>
       <section aria-labelledby="ctx-next" style="display: flex; flex-direction: column; gap: 8px">
         <h2 id="ctx-next" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Next meeting</h2>
         <div style="font-size: 15px; font-weight: 600; line-height: 20px">Stand-up</div>
@@ -181,12 +178,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.subject }}</span>
             <span style="flex: none; font-size: 13px; color: #5e6168">{{ w.due }}</span>
           </a>
-        </sc-for>
-      </section>
-      <section aria-labelledby="ctx-keys" style="display: flex; flex-direction: column; gap: 2px">
-        <h2 id="ctx-keys" style="margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Shortcuts</h2>
-        <sc-for list="{{ keys }}" as="k" hint-placeholder-count="4">
-          <div style="display: flex; align-items: center; gap: 10px; height: 32px; font-size: 14px; color: #3d4047"><kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 22px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 12px 'Fira Sans', sans-serif; color: #1b1c1d">{{ k.key }}</kbd>{{ k.label }}</div>
         </sc-for>
       </section>
     </aside>
@@ -225,13 +216,14 @@ class Component extends DCLogic {
     const ev = (title, start, dur, o = {}) => {
       const c = CAL[o.cal ?? 'personal'];
       const short = dur <= 0.5;
+      const tiny = dur <= 0.25;
       const end = start + dur;
       const pending = !!o.pending;
       return {
         title, href: o.chip && o.chip[1] === '#58412' ? 'ClEvent.dc.html' : '#',
         aria: title + ', ' + fmt(start) + ' to ' + fmt(end) + (pending ? ', not answered yet' : '') + (o.past ? ', over' : ''), current: o.selected ? 'true' : 'false',
-        titleStyle: 'flex: 1 1 auto; min-width: 0; font-weight: 600; overflow: hidden; ' + (short ? 'white-space: nowrap; text-overflow: ellipsis;' : 'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;'),
-        time: short ? fmt(start) : fmt(start) + ' to ' + fmt(end), inlineTime: short, blockTime: !short,
+        titleStyle: 'flex: 1 1 auto; min-width: 0; font-weight: 600; overflow: hidden; ' + (tiny ? 'white-space: nowrap; text-overflow: ellipsis;' : 'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;'),
+        time: short ? fmt(start) : fmt(start) + ' to ' + fmt(end), inlineTime: tiny, blockTime: !short,
         flag: !!o.flag, video: !!o.video,
         hasChip: !!o.chip, wpType: o.chip ? o.chip[0] : '', wpNumber: o.chip ? o.chip[1] : '', wpColor: o.chip ? TYPE[o.chip[0]] : '',
         style: 'position: absolute; left: 2px; right: 4px; top: ' + ((start - 8) * H + OFF + 1) + 'px; height: ' + (dur * H - 2) + 'px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0; justify-content: ' + (short ? 'center' : 'flex-start') + '; padding: ' + (short ? '0 6px' : '4px 7px') + '; border-radius: 4px; overflow: hidden; font-size: 12px; line-height: 15px; text-decoration: none; z-index: 1; color: ' + dark(c) + '; ' +
@@ -279,8 +271,7 @@ class Component extends DCLogic {
       ['TASK', '#58455', 'Prepare demo for Malmo Energi', 'new', 'Thu 15'],
       ['TASK', '#58441', 'Move kick-off to the afternoon', 'new', 'Fri 16']
     ].map(([type, number, subject, status, d]) => ({ type, number, subject, due: d, color: TYPE[type], dot: dot(STATUS[status]) }));
-    const keys = [['T', 'Go to today'], ['W', 'Week view'], ['M', 'Month view'], ['C', 'New event']].map(([key, label]) => ({ key, label }));
-    return { hours, days, bars, nowTop, nowLabelTop, due, keys };
+    return { hours, days, bars, nowTop, nowLabelTop, due };
   }
 }
 </script>

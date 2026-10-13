@@ -143,19 +143,21 @@ class Component extends DCLogic {
     });
     const viewsIcon = 'M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6';
     const viewsCount = viewItems.reduce((n, v) => n + v[2], 0);
-    // Folded rail: the folders and the notifications, each with a short label; badges only where a count matters.
+    // Folded rail: one Views item (the four views fold under it, as in the open column), the folders and the notifications, each with a short label.
+    // Calm fix (after round 7): badges only on Inbox and Notifications, so the rail no longer stacks thirteen items with five counts beside the list.
     const railBase = 'position: relative; flex: none; width: 56px; height: 48px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; ';
+    const viewNames = viewItems.map(([label, , count]) => label + ' ' + count).join(', ');
     const railItems = [
-      ['Starred', '#', I.star, 3, 'Starred'], ['Mentions', '#', I.at, 1, 'Mentions'], ['Assigned to me', '#', I.user, 2, 'Assigned'], ['Unassigned', '#', I.userX, 4, 'Unassigned'],
-      ['Inbox', 'MlInbox.dc.html', I.inbox, 5, 'Inbox'], ['Drafts', '#', I.draft, 1, 'Drafts'], ['Sent', '#', I.sent, '', 'Sent'], ['Archive', '#', I.archive, '', 'Archive'],
+      ['Views', '#', viewsIcon, '', 'Views', 'Views: ' + viewNames],
+      ['Inbox', 'MlInbox.dc.html', I.inbox, 5, 'Inbox'], ['Drafts', '#', I.draft, '', 'Drafts', 'Drafts, 1'], ['Sent', '#', I.sent, '', 'Sent'], ['Archive', '#', I.archive, '', 'Archive'],
       ['Spam', '#', I.spam, '', 'Spam'], ['Trash', '#', I.trash, '', 'Trash'], ['Customers', '#', I.folder, '', 'Folders'], ['Notifications', 'MlNotifications.dc.html', I.bell, 2, 'Notifications']
     ];
-    const rail = railItems.map(([name, href, icon, count, label], i) => {
-      const on = name === active || (name === 'Customers' && ['Lyon', 'Kassel'].includes(active));
+    const rail = railItems.map(([name, href, icon, count, label, ariaText], i) => {
+      const on = name === active || (name === 'Customers' && ['Lyon', 'Kassel'].includes(active)) || (name === 'Views' && viewItems.some((v) => v[0] === active));
       const hasCount = count !== '';
       return {
-        href, icon, label: label, gap: i === 4 || i === 11,
-        aria: hasCount ? name + ', ' + count : name,
+        href, icon, label: label, gap: i === 1 || i === 8,
+        aria: ariaText ?? (hasCount ? name + ', ' + count : name),
         current: on ? 'page' : 'false',
         hasCount, count,
         badge: 'position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; font-family: \'Fira Sans\', system-ui, sans-serif; background: #3669a5; color: #ffffff',

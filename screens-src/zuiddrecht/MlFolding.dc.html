@@ -16,13 +16,13 @@ a{color:#3669a5}a:hover{color:#234a78}
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; height: 900px; padding: 56px 72px; display: flex; flex-direction: column; gap: 40px; overflow: hidden">
   <div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px">
-    <h1 style="margin: 0; font-size: 24px; font-weight: 600; line-height: 32px">The mailbox folds around what you do</h1>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 34px">The mailbox folds around what you do</h1>
     <p style="margin: 0; font-size: 16px; line-height: 24px; color: #3d4047">The width goes to the one thing you are doing, browsing, reading or acting, and never more than three things sit side by side.</p>
   </div>
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px">
     <sc-for list="{{ levels }}" as="l" hint-placeholder-count="3">
       <section aria-label="{{ l.aria }}" style="display: flex; flex-direction: column; gap: 12px">
-        <div style="display: flex; align-items: baseline; gap: 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Level {{ l.n }}</span><h2 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 28px">{{ l.name }}</h2></div>
+        <div style="display: flex; align-items: baseline; gap: 10px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Level {{ l.n }}</span><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 28px">{{ l.name }}</h2></div>
         <div style="display: flex; gap: 3px; height: 220px; padding: 8px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
           <sc-for list="{{ l.cols }}" as="c" hint-placeholder-count="4">
             <div aria-label="{{ c.aria }}" role="img" style="{{ c.style }}"><sc-if value="{{ c.hasLabel }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 600; color: #234a78; white-space: nowrap">{{ c.label }}</span></sc-if></div>
@@ -53,7 +53,7 @@ class Component extends DCLogic {
       const rail = px <= 72;
       return {
         label, aria: label + ', ' + px + ' px', hasLabel: !rail,
-        width: o.rest ? 'the rest' : o.range ? '360 to 440' : String(px),
+        width: o.rest ? 'the rest' : o.range ? '400 to 440' : String(px),
         style: 'flex: ' + px + ' 1 0; min-width: 0; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: center; padding-top: 10px; border-radius: 4px; ' +
           (o.soft ? 'background: #f5f6f8; border: 1px solid #e4e6ea;' : rail ? 'background: #eaf0f7; border: 1px solid #c4c7cb;' : 'background: #eaf0f7; border: 1px solid #3669a5;'),
         widthStyle: 'flex: ' + px + ' 1 0; min-width: 0; text-align: center; white-space: nowrap; overflow: visible'
@@ -64,7 +64,7 @@ class Component extends DCLogic {
         cols: [col('Folders', 264), col('Conversations', 1176, { rest: true })] },
       { n: 1, name: 'Read', aria: 'Level 1, read', caption: 'A conversation is open. The folders fold to a rail, the list stays at 410 px, the reading pane gets the rest.',
         cols: [col('Folders', 64), col('Conversations', 410), col('Reading pane', 966, { rest: true, soft: true })] },
-      { n: 2, name: 'Act', aria: 'Level 2, act', caption: 'A right panel is open: the work package, a link, a new work package or a reply. Both lists fold to rails, the panel gets 360 to 440 px.',
+      { n: 2, name: 'Act', aria: 'Level 2, act', caption: 'A right panel is open: the work package, a link, a new work package or a reply. Both lists fold to rails, the panel gets 400 to 440 px.',
         cols: [col('Folders', 64), col('Conversations', 48), col('Reading pane', 888, { rest: true, soft: true }), col('Panel', 440, { range: true })] }
     ];
     const rules = [

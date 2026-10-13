@@ -89,6 +89,10 @@ a{color:#3669a5}a:hover{color:#234a78}
         <div style="font-size: 13px; color: #5e6168; line-height: 18px">10:00 to 10:15, in 1 h</div>
         <a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 8-6 4 6 4V8zM2 6h14v12H2z"></path></svg>Join</a>
       </section>
+      <section aria-labelledby="ctx-proposal" style="display: flex; flex-direction: column; gap: 4px">
+        <h2 id="ctx-proposal" style="margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Open proposal</h2>
+        <a href="ClProposal.dc.html" style="display: flex; flex-direction: column; gap: 2px; margin: 0 -8px; padding: 6px 8px; border-radius: var(--sc-radius, 8px); text-decoration: none; color: #1b1c1d"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Kick-off Lyon phase 2</span><span style="font-size: 13px; color: #5e6168; line-height: 18px">3 proposed times, 2 of 4 voted. Waiting for Marc Dubois and Priya Raman.</span></a>
+      </section>
       <section aria-labelledby="ctx-due" style="display: flex; flex-direction: column; gap: 2px">
         <h2 id="ctx-due" style="margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Work packages due this week</h2>
         <sc-for list="{{ due }}" as="w" hint-placeholder-count="3">
@@ -148,7 +152,7 @@ class Component extends DCLogic {
         flag: !!o.flag, video: !!o.video,
         hasChip: !!o.chip, wpType: o.chip ? o.chip[0] : '', wpNumber: o.chip ? o.chip[1] : '', wpColor: o.chip ? TYPE[o.chip[0]] : '',
         style: 'position: absolute; left: 2px; right: 4px; top: ' + ((start - 8) * H + OFF + 1) + 'px; height: ' + (dur * H - 2) + 'px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0; justify-content: ' + (short ? 'center' : 'flex-start') + '; padding: ' + (short ? '0 6px' : '4px 7px') + '; border-radius: 4px; overflow: hidden; font-size: 12px; line-height: 15px; text-decoration: none; z-index: 1; color: ' + dark(c) + '; ' +
-          (pending ? 'background: #ffffff; border: 1px dashed ' + c + '; border-left: 3px solid ' + c + ';' : 'background: ' + pale(c) + '; border-left: 3px solid ' + c + ';') +
+          (pending ? 'background: #ffffff; border: 1px solid color-mix(in srgb, ' + c + ' 40%, #ffffff); border-left: 3px solid ' + c + '; opacity: 0.6;' : 'background: ' + pale(c) + '; border-left: 3px solid ' + c + ';') +
           (o.past ? ' opacity: 0.55;' : '') + (o.selected ? ' box-shadow: 0 0 0 2px #3669a5;' : '')
       };
     };

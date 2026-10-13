@@ -41,7 +41,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </form>
             <span style="font-size: 13px; color: #5e6168">3 of 14 messages waiting match</span>
             <span style="flex: 1 1 auto"></span>
-            <button type="button" style="{{ btnPrimaryCompact }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send delayed mail now</button>
+            <button type="button" style="{{ btnPrimaryCompact }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Send all 14 now</button>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px">
             <sc-for list="{{ queues }}" as="q" hint-placeholder-count="3">
@@ -118,7 +118,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <td style="padding: 14px 16px; line-height: 20px"><a href="#" style="color: var(--sc-link, #3669a5); text-decoration: none; font-size: 15px; font-weight: 600">{{ s.subject }}</a></td>
                     <td style="padding: 14px 16px; line-height: 20px"><span style="display: flex; align-items: center; gap: 6px; line-height: 20px"><span style="{{ s.dot }}"></span>{{ s.error }}</span></td>
                     <td style="{{ td }}">{{ s.when }}</td>
-                    <td style="padding: 7px 16px; line-height: 0; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Read</button><button type="button" style="{{ btnSmall }}">Retry sending</button><button type="button" style="{{ btnSmallDanger }}">Delete</button></span></td>
+                    <td style="padding: 7px 16px; line-height: 0; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Open</button><button type="button" style="{{ btnSmall }}">Try again</button><button type="button" style="{{ btnSmallDanger }}">Delete</button></span></td>
                   </tr>
                 </sc-for>
               </tbody>
@@ -149,7 +149,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <td style="padding: 14px 16px; line-height: 20px">{{ e.about }}</td>
                     <td style="padding: 14px 16px; line-height: 20px"><span style="display: flex; align-items: center; gap: 6px; line-height: 20px"><span style="{{ e.dot }}"></span>{{ e.error }}</span></td>
                     <td style="{{ td }}">{{ e.when }}</td>
-                    <td style="padding: 7px 16px; line-height: 0; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Deliver again</button><button type="button" style="{{ btnSmallDanger }}">Discard</button></span></td>
+                    <td style="padding: 7px 16px; line-height: 0; text-align: right; white-space: nowrap"><span style="display: inline-flex; gap: 6px"><button type="button" style="{{ btnSmall }}">Try again</button><button type="button" style="{{ btnSmallDanger }}">Delete</button></span></td>
                   </tr>
                 </sc-for>
               </tbody>
@@ -177,9 +177,9 @@ a{color:#3669a5}a:hover{color:#234a78}
           <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Message</h3>
           <div style="padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; line-height: 19px; color: #3d4047">Marc, here is the realm export we talked about. Import it on the test environment first, the client secret still has to be rotated before 2 November.<br><br>Tom<br><br><span style="display: inline-flex; align-items: center; gap: 6px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>lyon-realm-export.json, 31.2 MB</span></div>
         </div>
-        <p style="margin: auto 0 0; font-size: 12px; color: #5e6168; line-height: 18px">Retry sending tries the delivery again as the message is. Run through the rules again first sends it back through the processing rules, for when a rule was the problem. Delete drops it for good.</p>
+        <p style="margin: auto 0 0; font-size: 12px; color: #5e6168; line-height: 18px">Try again tries the delivery again as the message is. Run through the rules again first sends it back through the processing rules, for when a rule was the problem. Delete drops it for good.</p>
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
-          <button type="button" style="{{ btnPrimary }}">Retry sending</button>
+          <button type="button" style="{{ btnPrimary }}">Try again</button>
           <button type="button" style="{{ btnSecondary }}">Run through the rules again</button>
           <button type="button" style="{{ btnDanger }}">Delete</button>
         </div>
@@ -217,8 +217,6 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div style="display: flex; align-items: center; gap: 12px">
             <span style="font-size: 13px; color: #5e6168">4 deleted messages from Jana Köhler since 1 October, 2 selected</span>
             <span style="flex: 1 1 auto"></span>
-            <button type="button" style="{{ btnCompact }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Export deleted mail</button>
-            <select aria-label="Export format" style="{{ selectCompact }}"><option selected>All 212 of this person, as one archive file (.mbox)</option><option>The 4 shown, as .eml in a .zip</option></select>
             <button type="button" style="{{ btnPrimaryCompact }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"></path></svg>Restore 2 selected messages</button>
           </div>
           <div style="{{ tableWrap }}">
@@ -248,6 +246,11 @@ a{color:#3669a5}a:hover{color:#234a78}
                 </sc-for>
               </tbody>
             </table>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #eef0f3">
+            <label for="ml-rc-export" style="font-size: 14px; font-weight: 600">Export to a file</label>
+            <select id="ml-rc-export" style="{{ selectCompact }}"><option selected>All 212 of this person, as one archive file (.mbox)</option><option>The 4 shown, as .eml in a .zip</option></select>
+            <button type="button" style="{{ btnCompact }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Export deleted mail</button>
           </div>
           <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">A restored message goes back to the folder it was in, with its date and read state. Removing one for good takes it out of the recovery store now, before the 30 days are up. Export writes what is in the recovery store for this person to a file; restoring from a file is on the person's page under Access and recovery.</p>
         </div>

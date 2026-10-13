@@ -90,13 +90,16 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
               <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
-                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
+                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>{{ t.label }}</button></sc-for>
+                <button type="button" aria-haspopup="menu" aria-label="More actions for this conversation" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-left: 4px; padding: 0 8px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
               </div>
               <button type="button" aria-haspopup="menu" aria-keyshortcuts="L" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Link to work package</button>
             </div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
               <sc-if value="{{ p.hasChip }}" hint-placeholder-val="{{ true }}"><a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 12px; line-height: 1; white-space: nowrap; text-decoration: none; color: #3d4047"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span>#58412</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #eef0f3; border: 1.5px solid #c4c7cb"></span><span>status unknown</span></a></sc-if>
+              <sc-if value="{{ p.signin }}" hint-placeholder-val="{{ false }}"><span style="white-space: nowrap">Not linked</span></sc-if>
               <span style="white-space: nowrap">6 messages · Customers / Lyon</span>
+              <sc-if value="{{ p.signin }}" hint-placeholder-val="{{ false }}"><span style="white-space: nowrap; color: #234a78">Link to work package first opens Sign in to OpenProject, shown on the right</span></sc-if>
             </div>
           </div>
           <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px">
@@ -125,7 +128,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         <aside aria-label="Work package" style="flex: 0 0 400px; width: 400px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
           <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
             <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Work package</span>
-            <button type="button" aria-label="Collapse the work package panel" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+            <button type="button" aria-label="Close the work package panel" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
           </div>
           <sc-if value="{{ p.error }}" hint-placeholder-val="{{ true }}">
             <div role="alert" style="display: flex; flex-direction: column; gap: 10px; padding: 20px 16px">
@@ -163,12 +166,14 @@ class Component extends DCLogic {
     const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false',
       style: chipBase + (i === 0 ? 'border: 1px solid #1b1c1d; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;') }));
     const skeleton = [[120, 230, 300], [96, 180, 260], [150, 250, 220], [110, 200, 290]].map(([a, b, c]) => ({ sender: a + 'px', subject: b + 'px', snippet: c + 'px' }));
+    // The same subject bar as MlThread: four labelled actions and More.
+    const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
     const tools = [
       ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
       ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4'],
-      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'],
-      ['More actions', 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2']
-    ].map(([label, icon]) => ({ label, icon }));
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01'],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6']
+    ].map(([label, icon]) => ({ label, icon, style: textBtn }));
     const card = 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; width: 100%; ';
     const own = 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
     const collapsed = [

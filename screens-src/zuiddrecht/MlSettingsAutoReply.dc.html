@@ -16,7 +16,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1320px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,68px"></dc-import>
-  <div aria-live="polite" style="position: absolute; top: 76px; right: 20px; z-index: 25; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #234a78; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 12px rgba(27,28,29,0.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Automatic reply is on until Friday 16 October</div>
+  <div aria-live="polite" style="position: absolute; top: 76px; right: 20px; z-index: 15; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #234a78; font-size: 13px; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 12px rgba(27,28,29,0.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Automatic reply is on until Friday 16 October</div>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="264px,945px"></dc-import></div>
     <div style="flex: 0 0 410px; width: 410px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlThreadList" selected="2" hint-size="410px,945px"></dc-import></div>
@@ -54,7 +54,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 
           <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid #e4e6ea">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px">
-              <label for="ml-ar-on" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 600">Send an automatic reply</span><span style="font-size: 14px; color: #5e6168; line-height: 21px">Everyone who writes to this mailbox gets the reply below once, while the schedule is active. The header shows a reminder as long as it is on.</span></label>
+              <label for="ml-ar-on" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 600">Send an automatic reply</span><span style="font-size: 14px; color: #5e6168; line-height: 21px">Everyone who writes to this mailbox gets the reply below once, while the schedule is active.</span><span style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 13px; font-weight: 600; color: #234a78"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Automatic reply is on until Friday 16 October<span style="font-weight: 400; color: #5e6168">, the header shows this reminder as long as it is on</span></span></label>
               <button id="ml-ar-on" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
             </div>
             <div style="display: grid; grid-template-columns: 120px 1fr; gap: 12px 12px; align-items: center; font-size: 14px">
@@ -83,10 +83,11 @@ a{color:#3669a5}a:hover{color:#234a78}
             <p style="margin: -2px 0 0 28px; font-size: 14px; color: #5e6168; line-height: 21px">Sent once to everyone who writes to you between the two dates.</p>
             <div style="display: grid; grid-template-columns: 110px 190px 110px 190px; gap: 12px 12px; align-items: center; margin-left: 28px; font-size: 14px">
               <label for="ml-ar-start" style="font-weight: 600; color: #1b1c1d">Starts</label>
-              <input id="ml-ar-start" type="text" value="Mon 12 Oct 2026, 17:00" style="{{ input }}">
+              <input id="ml-ar-start" type="text" value="Mon 12 Oct 2026, 17:00" readonly aria-describedby="ml-ar-from-profile" style="{{ inputRead }}">
               <label for="ml-ar-end" style="font-weight: 600; color: #1b1c1d">Ends</label>
-              <input id="ml-ar-end" type="text" value="Fri 16 Oct 2026, 23:59" style="{{ input }}">
+              <input id="ml-ar-end" type="text" value="Fri 16 Oct 2026, 23:59" readonly aria-describedby="ml-ar-from-profile" style="{{ inputRead }}">
             </div>
+            <p id="ml-ar-from-profile" style="margin: 0 0 0 28px; font-size: 13px; color: #5e6168; line-height: 18px">From your profile while Follow the absence in my profile is on; change the dates there: <a href="#" style="font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Absence in my profile</a>. Switch it off to type dates of your own.</p>
 
             <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; margin-top: 4px"><input type="radio" name="ml-ar-when" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Weekly, on chosen days and hours</label>
             <p style="margin: -2px 0 0 28px; font-size: 14px; color: #5e6168; line-height: 21px">Not chosen. Choose it to set the days and hours; the values below are kept until then.</p>
@@ -131,13 +132,14 @@ class Component extends DCLogic {
     const switchOn = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
     const knobOn = 'position: absolute; top: 2px; left: 20px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff';
     const input = 'height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px \'Fira Sans\', sans-serif; width: 100%';
+    const inputRead = 'height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); background: #f5f6f8; color: #3d4047; font: 400 15px \'Fira Sans\', sans-serif; width: 100%';
     const dayOn = 'height: 34px; min-width: 46px; padding: 0 10px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px \'Fira Sans\', sans-serif';
     const dayOff = 'height: 34px; min-width: 46px; padding: 0 10px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif';
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(label => {
       const on = label === 'Sat' || label === 'Sun';
       return { label, pressed: on ? 'true' : 'false', style: on ? dayOn : dayOff };
     });
-    return { switchOn, knobOn, input, days };
+    return { switchOn, knobOn, input, inputRead, days };
   }
 }
 </script>

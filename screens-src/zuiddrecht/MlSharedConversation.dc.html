@@ -28,7 +28,14 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
           <div role="toolbar" aria-label="Conversation actions" style="display: flex; gap: 2px">
-            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="7"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg><sc-if value="{{ t.hasText }}" hint-placeholder-val="{{ false }}"><span>{{ t.label }}</span></sc-if></button><sc-if value="{{ t.tip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; left: 50%; top: 38px; transform: translateX(-50%); padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 11">{{ t.label }}</span></sc-if></span></sc-for>
+            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><span style="position: relative; display: inline-flex"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg><sc-if value="{{ t.hasLabel }}" hint-placeholder-val="{{ false }}">{{ t.label }}</sc-if></button><sc-if value="{{ t.tip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; left: 56px; bottom: 38px; padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">{{ t.label }}</span></sc-if></span></sc-for>
+                <span style="position: relative; display: inline-flex"><button type="button" aria-haspopup="menu" aria-expanded="true" aria-label="More actions for this conversation" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-left: 4px; padding: 0 8px 0 12px; border: 1px solid #1b1c1d; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">More<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+<div role="menu" aria-label="More actions for this conversation" style="position: absolute; right: 0; top: 38px; width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{ more }}" as="i" hint-placeholder-count="5">
+<sc-if value="{{ i.sep }}" hint-placeholder-val="{{ false }}"><div role="separator" style="height: 1px; margin: 4px 0; background: #e4e6ea"></div><div style="padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Layout</div></sc-if>
+<button type="button" role="{{ i.role }}" aria-checked="{{ i.checked }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: {{ i.bg }}; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><sc-if value="{{ i.isRadio }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="{{ i.dot }}"></span></sc-if><sc-if value="{{ i.hasIcon }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ i.icon }}"></path></svg></sc-if><span style="flex: 1 1 auto; white-space: nowrap">{{ i.label }}</span><span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ i.hint }}</span></button>
+</sc-for>
+</div></span>
           </div>
           <div style="flex: none; display: flex; align-items: center; gap: 6px">
             <button type="button" aria-label="Expand all messages" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 13 5 5 5-5M7 6l5 5 5-5"></path></svg>Expand all</button>
@@ -37,7 +44,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #5e6168">
           <span style="white-space: nowrap">1 work package</span>
-          <button type="button" aria-expanded="false" aria-label="Open work package BUG #58231, in development" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 400 12px 'Fira Sans', sans-serif; line-height: 1; white-space: nowrap; color: #3d4047; cursor: pointer"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span>#58231</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <button type="button" aria-expanded="false" aria-label="Open work package BUG #58231, in development" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font: 400 12px 'Fira Sans', sans-serif; line-height: 1; white-space: nowrap; color: #3d4047; cursor: pointer"><span style="font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span><span>#58231</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM15 4v16"></path></svg></button>
           <span style="white-space: nowrap">3 messages · Northwind support / Inbox</span>
           <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><span style="flex: none; width: 18px; height: 18px; border-radius: 9px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">PR</span><span style="flex: none; width: 18px; height: 18px; margin-left: -8px; border-radius: 9px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; border: 1.5px solid #ffffff">TA</span>Assigned to Priya Raman, Tom Achterberg</span>
         </div>
@@ -136,7 +143,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 16px; overflow: hidden">
         <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; line-height: 18px; color: #3d4047">
           <span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #1b1c1d; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">SU</span>
-          <span>Lives in the shared mailbox <strong style="font-weight: 600; color: #1b1c1d">Northwind support</strong>, support@northwind-projects.test. You have the Editor role through Northwind support.</span>
+          <span>Lives in the shared mailbox <strong style="font-weight: 600; color: #1b1c1d">Northwind support</strong>, support@northwind-projects.test. You have the Manager role through Northwind support.</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 6px">
@@ -145,7 +152,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; color: #5e6168"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16M21 21l-4.35-4.35"></path></svg>
             <input id="ml-sc-add" type="text" placeholder="Name or address of northwind-projects.test" style="width: 100%; height: 40px; padding: 0 12px 0 38px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
           </div>
-          <span style="font-size: 13px; color: #5e6168; line-height: 18px">Viewers read along, editors also reply, file and comment, managers also grant and withdraw access.</span>
+          <span style="font-size: 13px; color: #5e6168; line-height: 18px">The same three roles as on a mailbox. A Viewer reads only, cannot move, label or delete; an Editor also moves to folders, labels, marks and deletes, and here also replies and comments; a Manager also grants and withdraws access and changes roles.</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 2px">
@@ -189,15 +196,14 @@ a{color:#3669a5}a:hover{color:#234a78}
 class Component extends DCLogic {
   renderVals() {
     const toolBase = 'height: 34px; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; ';
+    const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
+    const textBtn = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; margin-right: 2px';
     const tools = [
-      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', false],
-      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', false],
-      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', false],
-      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', false],
-      ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01', false],
-      ['Share and assign', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75', true],
-      ['More actions', 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2', false]
-    ].map(([label, icon, on], i) => ({ label, icon, hasText: i < 2, tip: on, pressed: on ? 'true' : 'false', style: toolBase + (i < 2 ? 'padding: 0 10px 0 8px; ' : 'width: 34px; ') + (on ? 'background: #eaf0f7; color: #234a78' : 'background: transparent; color: #3d4047') }));
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', true],
+      ['Mark as spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', true],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true]
+    ].map(([label, icon, hasLabel, tip]) => ({ label, icon, hasLabel: !!hasLabel, tip: !!tip, style: hasLabel ? textBtn : iconBtn + (tip ? '; background: #eef0f3; color: #1b1c1d' : '') }));
     const card = 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; width: 100%; ';
     const cardOwn = card + 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
     const av = 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ';
@@ -216,7 +222,22 @@ class Component extends DCLogic {
       ['Priya Raman', 'PR', 'priya@northwind-projects.test', 'Viewer', avBox + 'background: #eaf0f7; color: #234a78'],
       ['Tom Achterberg', 'TA', 'tom@northwind-projects.test', 'Editor', avBox + 'background: #eaf0f7; color: #234a78']
     ].map(([name, initials, sub, role, avatar]) => ({ name, initials, sub, role, avatar }));
-    return { tools, card, cardOwn, avatarThem, avatarMe, avatarThemSmall, avatarMeSmall, timeline, comment, internalChip, mention, quiet, shared };
+    const dotOn = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: 5px solid #3669a5; background: #ffffff';
+    const dotOff = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: 1px solid #c4c7cb; background: #ffffff';
+    // The More menu of the subject bar, as on MlMessageStates frame j; hot = the item this board is about, drawn highlighted
+    const more = [
+      ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01', '', false, false, false],
+      ['Share and assign', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75', 'with a mailbox or a person', false, false, true],
+      ['Copy link to the conversation', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', 'for colleagues with access'],
+      ['Print the conversation', 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z', '3 messages'],
+      ['Message layout', null, 'one card per message', true, true],
+      ['Chat layout', null, 'sent and received as a chat', false, false]
+    ].map(([label, icon, hint, checked, sep, hot]) => ({
+      label, icon: icon ?? '', hint, hasIcon: !!icon, isRadio: icon === null, sep: !!sep,
+      role: icon === null ? 'menuitemradio' : 'menuitem', checked: icon === null ? (checked ? 'true' : 'false') : 'false',
+      dot: checked ? dotOn : dotOff, bg: (checked || hot) ? '#eaf0f7' : 'transparent'
+    }));
+    return { tools, more, card, cardOwn, avatarThem, avatarMe, avatarThemSmall, avatarMeSmall, timeline, comment, internalChip, mention, quiet, shared };
   }
 }
 </script>

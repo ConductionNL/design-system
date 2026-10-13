@@ -22,7 +22,7 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The search field in the header with "lyon" typed and the results open under it, grouped by where they were found</figcaption>
     <div style="position: relative; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
   <dc-import name="MlHeader" app="Tasks" placeholder="Search tasks, people or #work package" hint-size="100%,68px"></dc-import>
-  <div style="position: absolute; left: 412px; top: 10px; width: 560px; height: 46px; box-sizing: border-box; display: flex; align-items: center; gap: 0; padding: 0 44px 0 42px; border: 2px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35)">
+  <div style="position: absolute; left: 412px; top: 10px; width: 600px; height: 46px; box-sizing: border-box; display: flex; align-items: center; gap: 0; padding: 0 44px 0 42px; border: 2px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35)">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 14px; top: 13px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
     <span role="textbox" aria-label="Search this board and beyond, typed: lyon" aria-describedby="tb-search-hint" style="display: inline-flex; align-items: center; gap: 4px; white-space: nowrap">lyon<span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; background: #1b1c1d"></span></span>
     <span style="position: absolute; right: 12px; top: 13px; display: inline-flex; gap: 4px"><kbd style="display: inline-block; min-width: 14px; padding: 0 5px; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; font: 600 11px 'Fira Sans', sans-serif; line-height: 16px; text-align: center; color: #3d4047">/</kbd></span>
@@ -33,7 +33,7 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
       <a href="#tb-search-tips" aria-expanded="false" style="flex: none; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none; white-space: nowrap">Search tips</a>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">In this project, Northwind rollout Lyon</span><span style="font-size: 12px; color: #5e6168">4 matches</span></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">In this project, Northwind rollout Lyon</span><span style="font-size: 12px; color: #5e6168">7 matches</span></div>
     <ul role="listbox" aria-label="Matches in this project" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
       <sc-for list="{{ local }}" as="r" hint-placeholder-count="5">
         <li role="option" aria-selected="{{ r.selected }}" aria-label="{{ r.aria }}" style="{{ r.style }}">
@@ -45,6 +45,19 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
         </li>
       </sc-for>
     </ul>
+    <sc-for list="{{ localComments }}" as="g" hint-placeholder-count="1">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 4px 10px 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="{{ g.icon }}"></path></svg><span style="font-size: 12px; font-weight: 600; color: #3d4047">{{ g.title }}</span></div>
+      <ul role="listbox" aria-label="{{ g.title }}" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+          <li role="option" aria-selected="false" style="display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px 0 32px; border-radius: var(--sc-radius, 8px); font-size: 14px; color: #1b1c1d">
+            <sc-if value="{{ r.hasType }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; width: 112px"><span style="{{ r.typeStyle }}">{{ r.type }}</span><span style="color: #3d4047">{{ r.number }}</span></span></sc-if>
+            <sc-if value="{{ r.hasAvatar }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 11px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ r.initials }}</span></sc-if>
+            <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.before }}<mark>{{ r.mark }}</mark>{{ r.after }}</span>
+            <span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ r.where }}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </sc-for>
 
     <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px; border-top: 1px solid #e4e6ea"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">In other apps and projects</span><span style="font-size: 12px; color: #5e6168">3 more matches in Netzausbau Nord and OpenProject core</span></div>
     <sc-for list="{{ global }}" as="g" hint-placeholder-count="3">
@@ -186,7 +199,8 @@ class Component extends DCLogic {
       { type: 'TASK', number: '#58441', before: 'Move kick-off to the afternoon', mark: '', after: '', match: 'Tag Lyon', status: 'new', tag: true },
       { type: 'BUG', number: '#58102', before: 'Folder link breaks on rename', mark: '', after: '', match: 'Description: reported by Ville de Lyon', status: 'on hold' },
       { type: 'FEATURE', number: '#58412', before: 'Link Nextcloud project folders on rollout', mark: '', after: '', match: 'Parent, kept in view for its child', status: 'in development', parent: true },
-      { type: 'TASK', number: '#58460', before: 'Configure the Keycloak realm for ', mark: 'Lyon', after: '', match: 'Title, child of FEATURE #58412', status: 'in development', level: 2 }
+      { type: 'TASK', number: '#58460', before: 'Configure the Keycloak realm for ', mark: 'Lyon', after: '', match: 'Title, child of FEATURE #58412', status: 'in development', level: 2 },
+      { type: 'MILESTONE', number: '#58500', before: 'Go-live ', mark: 'Lyon', after: ' phase 2', match: 'Title, 2 Nov', status: 'new' }
     ].map((r) => {
       const st = STATUS[r.status];
       return {
@@ -208,20 +222,22 @@ class Component extends DCLogic {
     };
     const g = (r) => ({ hasType: !!r.type, type: r.type ?? '', number: r.number ?? '', typeStyle: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (TYPE[r.type] ?? '#3d4047'),
       hasAvatar: !!r.initials, initials: r.initials ?? '', before: r.before, mark: r.mark, after: r.after ?? '', where: r.where });
-    const global = [
-      { title: 'Projects', icon: I.folder, rows: [
-        { before: 'Northwind rollout ', mark: 'Lyon', where: '9 open work packages' }
-      ].map(g) },
-      { title: 'Work packages in other projects', icon: I.wp, rows: [
-        { type: 'MILESTONE', number: '#58500', before: 'Go-live ', mark: 'Lyon', after: ' phase 2', where: 'Northwind rollout Lyon, 2 Nov' },
-        { type: 'TASK', number: '#57811', before: 'Reuse the ', mark: 'Lyon', after: ' folder rule for Kiel', where: 'Netzausbau Nord' }
-      ].map(g) },
-      { title: 'Comments', icon: I.comment, rows: [
+    const localComments = [
+      { title: 'Comments in this project', icon: I.comment, rows: [
         { initials: 'TA', before: 'Tom Achterberg on FEATURE #58412: Marc confirmed 2 November for the ', mark: 'Lyon', after: ' go-live', where: 'Today 08:40' },
         { initials: 'OB', before: 'Olivia Brandt on EPIC #57990: ', mark: 'Lyon', after: ' phase 2 stays in 16.5', where: '9 Oct' }
       ].map(g) }
     ];
-    return { groupBy, team, columns, local, global };
+    const global = [
+      { title: 'Work packages in other projects', icon: I.wp, rows: [
+        { type: 'TASK', number: '#57811', before: 'Reuse the ', mark: 'Lyon', after: ' folder rule for Kiel', where: 'Netzausbau Nord' },
+        { type: 'BUG', number: '#57420', before: 'Date format wrong for the French locale, reported from ', mark: 'Lyon', after: '', where: 'OpenProject core' }
+      ].map(g) },
+      { title: 'Comments in other projects', icon: I.comment, rows: [
+        { initials: 'PR', before: 'Priya Raman on BUG #57420: the ', mark: 'Lyon', after: ' team sends dates as 02/11/2026', where: 'OpenProject core, 8 Oct' }
+      ].map(g) }
+    ];
+    return { groupBy, team, columns, local, localComments, global };
   }
 }
 </script>

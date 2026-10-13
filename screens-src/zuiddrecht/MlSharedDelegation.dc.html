@@ -48,7 +48,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div style="display: flex; align-items: center; gap: 12px">
             <label for="ml-deleg-mailbox" style="font-weight: 600; white-space: nowrap">Settings for mailbox</label>
             <button id="ml-deleg-mailbox" type="button" aria-haspopup="listbox" style="flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 180px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
-            <span style="font-size: 14px; color: #5e6168; line-height: 21px">Each mailbox has its own. Every change in this dialog is saved at once.</span>
+            <span style="font-size: 14px; color: #5e6168; line-height: 21px">Each mailbox has its own.</span>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
@@ -71,17 +71,16 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
-            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Mailboxes where I have the Manager role</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Mailboxes other people granted you. Switch one on and it appears in the folder list beside your own mailbox. Withdraw takes the role off you; the owner can grant it again.</p></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Mailboxes where I have the Manager role</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Mailboxes other people granted you. Switch one on and it appears in the folder list beside your own mailbox. Leave this mailbox takes the role off you; the owner can grant it again.</p></div>
             <div style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; overflow: hidden"><table style="width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; line-height: 20px">
-              <thead><tr style="background: #fafbfc"><th scope="col" style="{{ th }}">Mailbox</th><th scope="col" style="{{ th }}; box-sizing: border-box; width: 104px">Granted by</th><th scope="col" style="{{ th }}; box-sizing: border-box; width: 92px">Since</th><th scope="col" style="{{ th }}; box-sizing: border-box; width: 128px">Shown beside my own mailbox</th><th scope="col" style="{{ thRight }}; box-sizing: border-box; width: 120px">Actions</th></tr></thead>
+              <thead><tr style="background: #fafbfc"><th scope="col" style="{{ th }}">Mailbox</th><th scope="col" style="{{ th }}; box-sizing: border-box; width: 150px">Granted by, since</th><th scope="col" style="{{ th }}; box-sizing: border-box; width: 112px">Shown beside my own mailbox</th><th scope="col" style="{{ thRight }}; box-sizing: border-box; width: 166px">Actions</th></tr></thead>
               <tbody>
                 <sc-for list="{{ acting }}" as="a" hint-placeholder-count="2">
                   <tr style="border-top: 1px solid #eef0f3">
-                    <td style="padding: 14px 16px"><span style="display: flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ a.initials }}</span><span style="display: flex; flex-direction: column; line-height: 20px; min-width: 0; overflow-wrap: anywhere"><span style="font-size: 15px; font-weight: 600">{{ a.mail }}</span><span style="font-size: 12px; color: #5e6168">{{ a.note }}</span></span></span></td>
-                    <td style="padding: 14px 16px">{{ a.by }}</td>
-                    <td style="padding: 14px 16px; color: #5e6168">{{ a.since }}</td>
+                    <td style="padding: 14px 16px"><span style="display: flex; align-items: center; gap: 8px"><span style="{{ avatar }}">{{ a.initials }}</span><span style="display: flex; flex-direction: column; line-height: 20px; min-width: 0; overflow-wrap: anywhere"><span style="font-size: 14px; font-weight: 600">{{ a.mail }}</span><span style="font-size: 12px; color: #5e6168">{{ a.note }}</span></span></span></td>
+                    <td style="padding: 14px 16px"><span style="display: flex; flex-direction: column; line-height: 20px"><span>{{ a.by }}</span><span style="font-size: 12px; color: #5e6168">{{ a.since }}</span></span></td>
                     <td style="padding: 12px 16px"><span style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px"><button type="button" role="switch" aria-checked="{{ a.openChecked }}" aria-label="Show {{ a.mail }} beside my own mailbox" style="{{ a.switch }}"><span style="{{ a.knob }}"></span></button><span style="font-size: 12px; color: #5e6168">{{ a.openText }}</span></span></td>
-                    <td style="padding: 7px 16px; text-align: right"><button type="button" aria-label="Withdraw my Manager role on {{ a.mail }}" style="{{ btnRow }}">Withdraw</button></td>
+                    <td style="padding: 7px 16px; text-align: right"><button type="button" aria-label="Leave the mailbox {{ a.mail }}, giving up my Manager role" style="{{ btnRow }}">Leave this mailbox</button></td>
                   </tr>
                 </sc-for>
               </tbody>

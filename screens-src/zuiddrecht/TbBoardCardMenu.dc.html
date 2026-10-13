@@ -143,8 +143,8 @@ class Component extends DCLogic {
       dueStyle: 'display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; ' + (o.overdue ? 'color: #ab0000; font-weight: 600' : o.week ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168'),
       hasDesc: !!o.desc, tip: !!o.tip, hasChecklist: !!o.checklist, checklist: o.checklist ?? '',
       checkStyle: 'flex: none; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; white-space: nowrap; ' + (o.checklist && o.checklist.split(' of ')[0] === o.checklist.split(' of ')[1] ? 'color: #538b28; font-weight: 600' : 'color: #5e6168'),
-      hasComments: !!o.comments, comments: o.comments ?? '', unread: !!o.unread, commentsLabel: (o.comments ?? 0) + ' comments' + (o.unread ? ', 1 unread' : ''),
-      counters: ['mail', 'attach'].filter((k) => o[k]).map((k) => ({ n: o[k], icon: K[k][0], label: o[k] + ' ' + K[k][1] })),
+      hasComments: !!o.comments, comments: o.comments ?? '', unread: !!o.unread, commentsLabel: (o.comments ?? 0) + ' comments' + (o.unread ? ', 1 new' : ''),
+      counters: ['mail', 'attach'].filter((k) => o[k]).map((k) => ({ n: o[k], icon: K[k][0], label: o[k] + ' ' + (o[k] === 1 ? K[k][1].replace(/s$/, '') : K[k][1]) })),
       hasMenu: !!o.menu, menuOpen: o.menu ? 'true' : 'false',
       menuButton: 'flex: none; width: 28px; height: 28px; margin: -6px -8px -6px 0; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; ' + (o.menu ? 'background: #eaf0f7; color: #234a78' : 'background: transparent; color: #5e6168')
     }));

@@ -56,8 +56,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <span><strong style="font-weight: 600">Automatic reply is on until Friday 16 October.</strong> It is set under <a href="MlSettingsAutoReply.dc.html">Automatic reply</a>; nothing about it is changed here.</span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-            <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; align-self: start">
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); background: #ffffff">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; min-height: 32px">
                 <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Forward all mail</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Every new message goes on to another address as it arrives.</p></div>
                 <button type="button" role="switch" aria-checked="true" aria-label="Forward all mail on or off" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
@@ -68,13 +67,11 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <button id="ml-rl-fwd-copy" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
               </div>
               <p style="margin: 0; padding-top: 10px; border-top: 1px solid #e4e6ea; font-size: 14px; color: #5e6168; line-height: 21px">Forwarding runs before the rules below, so a forwarded copy still gets sorted here.</p>
-            </div>
-            <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 19px; align-self: start">Every change in this dialog is saved at once. Quick actions, the steps you start by hand from the toolbar, have their own section: <a href="MlSettingsQuickActions.dc.html">Quick actions</a>.</p>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px">
-              <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Rules for incoming mail</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Run from top to bottom on every new message. Drag a rule to change its priority; switch one off to keep it without running it.</p></div>
+              <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Rules for incoming mail</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Run from top to bottom on every new message. Drag a rule to change its priority; switch one off to keep it without running it. Click a rule to edit it as a form or as a script.</p><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Quick actions, the steps you start by hand from the toolbar, have their own section: <a href="MlSettingsQuickActions.dc.html">Quick actions</a>.</p></div>
               <div style="flex: none; display: flex; align-items: center; gap: 8px">
                 <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New rule</button>
               </div>
@@ -92,7 +89,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
                   <tr style="border-top: 1px solid #eef0f3; color: {{ r.color }}">
                     <td style="padding: 10px 4px 10px 12px"><button type="button" aria-label="Drag to change the priority of {{ r.name }}" style="width: 20px; height: 28px; padding: 0; border: 0; background: transparent; color: #5e6168; cursor: grab; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"></path></svg></button></td>
-                    <td style="padding: 14px 16px"><a href="#" style="color: var(--sc-link, #3669a5); font-size: 15px; font-weight: 600; text-decoration: none">{{ r.name }}</a></td>
+                    <td style="padding: 14px 16px"><a href="MlRulesEdit.dc.html" style="color: var(--sc-link, #3669a5); font-size: 15px; font-weight: 600; text-decoration: none">{{ r.name }}</a></td>
                     <td style="padding: 14px 16px; overflow-wrap: anywhere"><span title="{{ r.whenHint }}">{{ r.when }}</span></td>
                     <td style="padding: 14px 16px">{{ r.then }}</td>
                     <td style="padding: 12px 16px; text-align: right"><button type="button" role="switch" aria-checked="{{ r.checked }}" aria-label="Switch rule {{ r.name }} on or off" style="{{ r.switch }}"><span style="{{ r.knob }}"></span></button></td>
@@ -118,11 +115,12 @@ class Component extends DCLogic {
     const input = 'height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px \'Fira Sans\', sans-serif; width: 100%';
     const th = 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; white-space: nowrap;';
     const linkBtn = 'height: 34px; padding: 0 8px; border: 0; background: transparent; color: var(--sc-link, #3669a5); font: 600 14px \'Fira Sans\', sans-serif; cursor: pointer;';
+    // The same four rules, in the same words, on MlRules, MlRulesScripts and MlRulesEdit (Kassel is the rule MlRulesEdit opens).
     const rules = [
-      ['Lyon to its folder', 'From ends with @lyon.fr', 'Move to Customers / Lyon, add label Waiting for customer', true],
-      ['Kassel to its folder', 'From ends with @stadtwerke-kassel.de', 'Move to Customers / Kassel', true],
+      ['Kassel: file and label', 'Sender contains stadtwerke-kassel, subject matches *Gantt*, sent to olivia@northwind-projects.test', 'Move to Customers / Kassel, add label Waiting for customer, mark as read, stop further rules', true],
+      ['Lyon: file', 'From ends with @lyon.fr', 'Move to Customers / Lyon', true],
       ['OpenProject notifications', 'From is notifications@openproject.northwind-projects.test', 'Mark as read, keep in Inbox', true],
-      ['Newsletters', 'Is a newsletter or mailing list', 'Move to Archive, add label Internal', false]
+      ['Newsletters', 'Is a newsletter or mailing list', 'Add label Newsletter, mark as read, move to Archive', false]
     ].map(([name, when, then, on]) => ({ name, when, then, whenHint: name === 'Newsletters' ? 'Checked on the mail server as: header List-Unsubscribe is present' : '', checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff, color: on ? '#1b1c1d' : '#5e6168' }));
     return { switchOn, knobOn, input, th, linkBtn, rules };
   }

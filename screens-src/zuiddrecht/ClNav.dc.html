@@ -54,7 +54,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       <a href="{{ e.href }}" aria-current="{{ e.current }}" style="{{ e.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ e.icon }}"></path></svg><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.label }}</span><sc-if value="{{ e.hasCount }}" hint-placeholder-val="{{ false }}"><span style="flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; background: #eaf0f7; color: #234a78">{{ e.count }}</span></sc-if></a>
     </sc-for>
   </div>
-  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
     <div style="display: flex; flex-direction: column; gap: 2px">
       <div style="{{ g.titleStyle }}">{{ g.title }}</div>
       <sc-if value="{{ g.plain }}" hint-placeholder-val="{{ true }}">
@@ -68,17 +68,18 @@ a{color:#3669a5}a:hover{color:#234a78}
       </sc-if>
       <sc-if value="{{ g.hasProject }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; align-items: center">
-        <a href="#" aria-current="false" style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 4px 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; font-weight: 500; line-height: 21px; color: #1b1c1d">
+        <a href="#" aria-current="false" style="flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 4px 0 10px; border-radius: var(--sc-radius, 8px); text-decoration: none; font-size: 15px; font-weight: 500; line-height: 21px; color: #1b1c1d; {{ g.projectStyle }}">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
           <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ g.project }}</span>
         </a>
-        <button type="button" aria-expanded="true" aria-controls="{{ g.listId }}" aria-label="Collapse {{ g.project }}" title="Collapse {{ g.project }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+        <button type="button" aria-expanded="{{ g.expandedAttr }}" aria-controls="{{ g.listId }}" aria-label="{{ g.toggleLabel }}" title="{{ g.toggleLabel }}" style="flex: none; width: 32px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ g.chevron }}"></path></svg></button>
       </div>
+      <sc-if value="{{ g.expanded }}" hint-placeholder-val="{{ true }}">
       <ul id="{{ g.listId }}" style="list-style: none; margin: 2px 0 6px 20px; padding: 0 0 0 10px; border-left: 2px solid #e4e6ea; display: flex; flex-direction: column; gap: 2px">
         <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
           <li>
             <label style="display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 14px; font-weight: 500; line-height: 20px; color: #1b1c1d; cursor: pointer">
-              <input type="checkbox" checked aria-label="{{ it.aria }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">
+              <sc-if value="{{ it.on }}" hint-placeholder-val="{{ true }}"><input type="checkbox" checked aria-label="{{ it.aria }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"></sc-if><sc-if value="{{ it.off }}" hint-placeholder-val="{{ false }}"><input type="checkbox" aria-label="{{ it.aria }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"></sc-if>
               <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.label }}</span>
               <span aria-hidden="true" style="{{ it.check }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
             </label>
@@ -86,6 +87,7 @@ a{color:#3669a5}a:hover{color:#234a78}
         </sc-for>
         <li><button type="button" style="display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 500 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 5v14M5 12h14"></path></svg>Add another selection</button></li>
       </ul>
+      </sc-if>
       </sc-if>
     </div>
   </sc-for>
@@ -126,18 +128,27 @@ class Component extends DCLogic {
     const titleStyle = (upper) => 'padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ' + (upper ? 'text-transform: uppercase;' : 'letter-spacing: 0;');
     // a coloured checkbox at the right end of a nested 36 px row (canon: Navigation, nested)
     const check = (c) => 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; background: ' + c + '; color: #ffffff; display: inline-flex; align-items: center; justify-content: center';
+    const checkOff = 'flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; border: 1px solid #c4c7cb; background: #ffffff; color: #ffffff; display: inline-flex; align-items: center; justify-content: center';
     const project = 'Northwind rollout Lyon';
     const groups = [
-      { title: 'olivia@northwind-projects.test', titleStyle: titleStyle(false), project: '', hasProject: false, plain: true, listId: '', items: [
+      { title: 'olivia@northwind-projects.test', titleStyle: titleStyle(false), project: '', hasProject: false, plain: true, listId: '', projectStyle: '', items: [
         { label: 'Personal', box: box('#3669a5') },
         { label: 'Northwind team', box: box('#538b28') },
         { label: 'Customers', box: box('#ff9d2e') }
       ] },
       // one row per linked project, opened in place with its selections nested under it; never a second sidebar
-      { title: 'OpenProject', titleStyle: titleStyle(true), project, hasProject: true, plain: false, listId: 'clnav-' + project.toLowerCase().replace(/[^a-z0-9]+/g, '-'), items: [
-        { label: 'Work package dates', aria: 'Work package dates of ' + project, check: check('#5e6168') },
-        { label: 'Milestones', aria: 'Milestones of ' + project, check: check('#35c53f') }
-      ] }
+      // one row per linked project, opened in place with its selections nested under it; a switched-off project stays listed, greyed
+      ...[
+        [project, true, [['Work package dates', '#5e6168', true], ['Milestones', '#35c53f', true]]],
+        ['Netzausbau Nord', true, [['Work package dates', '#08a5df', true]]],
+        ['OpenProject core', false, [['Milestones', '#005b77', false]]]
+      ].map(([name, on, sels], i) => ({
+        title: i === 0 ? 'OpenProject' : '', titleStyle: i === 0 ? titleStyle(true) : 'display: none', project: name, hasProject: true, plain: false,
+        listId: 'clnav-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        projectStyle: on ? '' : 'color: #5e6168; opacity: 0.6',
+        expanded: i === 0, collapsed: i !== 0, chevron: i === 0 ? 'm6 9 6 6 6-6' : 'm9 18 6-6-6-6', expandedAttr: i === 0 ? 'true' : 'false', toggleLabel: (i === 0 ? 'Collapse ' : 'Expand ') + name,
+        items: sels.map(([label, c, son]) => ({ label, aria: label + ' of ' + name, on: son, off: !son, check: son ? check(c) : checkOff }))
+      }))
     ];
     return { active, dow, weeks, entries, groups, isFolded, isOpen };
   }

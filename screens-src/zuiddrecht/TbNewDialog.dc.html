@@ -54,8 +54,15 @@ a{color:#3669a5}a:hover{color:#234a78}
             <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #1b1c1d">Title
               <input type="text" value="Move kick-off to the afternoon" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
             </label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px">
-              <sc-for list="{{ selects }}" as="s" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 16px">
+              <sc-for list="{{ projectSelect }}" as="s" hint-placeholder-count="1">
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #1b1c1d; min-width: 0">{{ s.label }}
+                  <button type="button" aria-haspopup="listbox" aria-label="{{ s.label }}: {{ s.value }}" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 40px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis"><sc-if value="{{ s.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ s.dot }}"></span></sc-if><sc-if value="{{ s.hasType }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df; font-size: 12px">TASK</span></sc-if><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ s.value }}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+              <sc-for list="{{ selects }}" as="s" hint-placeholder-count="2">
                 <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #1b1c1d; min-width: 0">{{ s.label }}
                   <button type="button" aria-haspopup="listbox" aria-label="{{ s.label }}: {{ s.value }}" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 40px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis"><sc-if value="{{ s.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ s.dot }}"></span></sc-if><sc-if value="{{ s.hasType }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 700; letter-spacing: 0.04em; color: #08a5df; font-size: 12px">TASK</span></sc-if><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis">{{ s.value }}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
                 </div>
@@ -163,8 +170,10 @@ class Component extends DCLogic {
     const tab = (label, on) => ({ label, selected: on ? 'true' : 'false', style: tabBase + (on ? 'background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700;' : '') });
     const tabsA = [tab('New work package', true), tab('Find a work package', false)];
     const tabsB = [tab('New work package', false), tab('Find a work package', true)];
+    const projectSelect = [
+      { label: 'Project', value: 'Northwind rollout Lyon', hasDot: false, hasType: false, dot: '' }
+    ];
     const selects = [
-      { label: 'Project', value: 'Northwind rollout Lyon', hasDot: false, hasType: false, dot: '' },
       { label: 'Status', value: 'new', hasDot: true, hasType: false, dot: dot('new') },
       { label: 'Type', value: 'Task', hasDot: false, hasType: true, dot: '' }
     ];
@@ -181,7 +190,7 @@ class Component extends DCLogic {
       ['TASK', '#58301', 'Quote for project lead ', 'training', ' Kassel', 'needs clarification', 'Olivia Brandt, created from the mail of Jana Köhler', true],
       ['TASK', '#58470', 'Plan the ', 'training', ' day for the Lyon project leads', 'new', 'Tom Achterberg, due 29 Oct', false]
     ].map(([type, number, pre, hit, post, status, hint, selected]) => ({ type, number, pre, hit, post, status, hint, typeColor: TYPE[type], dot: dot(status), selected: selected ? 'true' : 'false', style: item + (selected ? 'background: #eaf0f7;' : 'background: transparent;') }));
-    return { chat, tabsA, tabsB, selects, previews, scope, results };
+    return { chat, tabsA, tabsB, projectSelect, selects, previews, scope, results };
   }
 }
 </script>

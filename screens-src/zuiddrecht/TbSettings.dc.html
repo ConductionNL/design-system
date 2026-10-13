@@ -285,7 +285,7 @@ class Component extends DCLogic {
     const filters = [
       ['Assigned to me', I.user, '4', 'Visible'],
       ['Created from mail', I.mail, '2', 'Only when it has items'],
-      ['Due this week', I.calendar, '3', 'Visible'],
+      ['Due this week', I.calendar, '8', 'Visible'],
       ['High priority', I.flag, '1', 'Only when it has items'],
       ['Closed this week', I.check, '0', 'Hidden']
     ].map(([name, icon, count, chosen]) => ({ name, icon, count, options: options(VIS, chosen) }));
@@ -295,7 +295,7 @@ class Component extends DCLogic {
       ['The status of your work package changes', '', true, false],
       ['Someone comments or mentions you', '', true, true],
       ['A due date moves', 'on a work package of yours', true, false],
-      ['A work package moves to another status', 'in a project you are a member of', false, false],
+      ['Any other work package in your projects changes status', '', false, false],
       ['A member joins or leaves a project', '', true, false]
     ].map(([name, hint, stream, mail]) => ({ name, hint, stream: sw(stream), mail: sw(mail) }));
     const SCOPE = ['All work packages', 'Only mine', 'None'];
@@ -311,7 +311,7 @@ class Component extends DCLogic {
         [['N'], 'New work package'], [['F'], 'Filter'], [['M'], 'Show only my work packages'], [['G'], 'Group by'], [['/'], 'Search'], [['1'], 'Jump to a column, 1 to 5'], [['P'], 'Project details']
       ] },
       { title: 'On a card', hint: 'With a work package card in focus.', keys: [
-        [['Enter'], 'Open the card'], [['E'], 'Edit the subject'], [['A'], 'Assign to me'], [['S'], 'Set the status'], [['X'], 'Archive, can be undone'], [['D'], 'Mark closed, can be undone']
+        [['Enter'], 'Open the card'], [['E'], 'Edit the subject'], [['A'], 'Assign to me'], [['S'], 'Set the status'], [['X'], 'Archive (hide from the board, kept in OpenProject), can be undone'], [['D'], 'Mark closed, can be undone']
       ] },
       { title: 'Arrow keys', hint: 'Move the focus, or the card itself.', keys: [
         [['←', '→'], 'Move between columns'], [['↑', '↓'], 'Move between cards'], [['Shift', '←'], 'Card one column left'], [['Shift', '→'], 'Card one column right'], [['Esc'], 'Close the card'], [['?'], 'Show this list']

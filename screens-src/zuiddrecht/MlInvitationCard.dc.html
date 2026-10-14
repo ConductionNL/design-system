@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1760px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2740px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The invitation from Tom open as an event card: answer it, pick the calendar, open or download it</figcaption>
@@ -196,9 +196,53 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px">
+    <sc-for list="{{ more }}" as="v" hint-placeholder-count="4">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ v.letter }}</span> &nbsp;{{ v.caption }}</figcaption>
+        <div style="height: 430px; box-sizing: border-box; padding: 12px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+          <article aria-label="{{ v.aria }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ v.initials }}</span>
+              <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+                <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">{{ v.from }}</strong><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">{{ v.date }}</span></div>
+                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ v.subject }}</div>
+              </div>
+            </div>
+            <section aria-label="{{ v.cardLabel }}" style="margin: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="flex: none; width: 28px; height: 28px; border-radius: 14px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ v.icon }}"></path></svg></span>
+                <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ v.cardLabel }}</span>
+              </div>
+              <sc-if value="{{ v.hasNotice }}" hint-placeholder-val="{{ true }}">
+                <div role="status" style="{{ v.noticeStyle }}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: {{ v.noticeColor }}"><path d="{{ v.noticeIcon }}"></path></svg>
+                  <span>{{ v.notice }}</span>
+                </div>
+              </sc-if>
+              <div style="display: flex; align-items: center; gap: 8px"><strong style="flex: 1 1 auto; min-width: 0; font-size: 15px; font-weight: 600; line-height: 20px">{{ v.title }}</strong><a href="{{ v.openHref }}" style="flex: none; font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none; white-space: nowrap">{{ v.openLabel }}</a></div>
+              <dl style="margin: 0; display: grid; grid-template-columns: 72px 1fr; gap: 4px 12px; font-size: 14px; line-height: 20px">
+                <sc-for list="{{ v.rows }}" as="r" hint-placeholder-count="2"><dt style="color: #5e6168">{{ r.k }}</dt><dd style="margin: 0; {{ r.style }}">{{ r.v }}</dd></sc-for>
+              </dl>
+              <sc-if value="{{ v.hasComment }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid #e4e6ea">
+                  <label for="ml-inv-comment" style="font-size: 14px; font-weight: 600">Add a comment to your answer</label>
+                  <textarea id="ml-inv-comment" rows="2" placeholder="Optional, the organiser sees it with your answer" style="width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); font: 400 14px/20px 'Fira Sans', sans-serif; color: #1b1c1d; resize: none">I join from the train until 14:20, camera off.</textarea>
+                </div>
+              </sc-if>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+                <sc-for list="{{ v.buttons }}" as="b" hint-placeholder-count="2"><button type="button" style="{{ b.style }}">{{ b.label }}</button></sc-for>
+              </div>
+            </section>
+          </article>
+        </div>
+      </figure>
+    </sc-for>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1760}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2740}}'>
 class Component extends DCLogic {
   renderVals() {
     const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
@@ -247,7 +291,32 @@ class Component extends DCLogic {
         noticeStyle: notice('#538b28', '#f5f6f8'), noticeColor: '#538b28', noticeIcon: I.check, notice: 'Marc Dubois accepted your invitation. Tom Achterberg accepted too, Priya Raman has not answered yet.',
         title: 'Prepare rollout review Lyon with Marc', titleStyle: '', when: 'Wednesday 14 October 2026, 15:00 to 15:30, organised by you', buttons: [{ label: 'See all answers', style: secondary }] }
     ];
-    return { tools, switchOff, knobOff, genChip, sparkle, attendees, invitees, variants };
+    const cal = 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z';
+    const task = 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11';
+    const kv = (k, v, style) => ({ k, v, style: style || '' });
+    const more = [
+      { letter: 'h', caption: 'Accept pressed: a comment field opens under the invitation, sent to the organiser with the answer', from: 'Tom Achterberg', initials: 'TA', date: '9 Oct 09:40', subject: 'Invitation: Rollout review Lyon, phase 2', aria: 'Invitation from Tom Achterberg, answering with a comment',
+        cardLabel: 'Invitation from Tom Achterberg', icon: cal, hasNotice: false, noticeStyle: '', noticeColor: '', noticeIcon: '', notice: '',
+        title: 'Rollout review Lyon, phase 2', openHref: 'ClEvent.dc.html', openLabel: 'Open in Calendar',
+        rows: [kv('When', 'Thursday 15 October 2026, 14:00 to 15:00'), kv('Where', 'Video call')],
+        hasComment: true, buttons: [{ label: 'Send: accept', style: primary }, { label: 'Back', style: secondary }] },
+      { letter: 'i', caption: 'An attendee proposed a new time for an event you organise: accept it, which moves the event for everyone, or decline it', from: 'Marc Dubois', initials: 'MD', date: 'Today 09:10', subject: 'New time proposed: Prepare rollout review Lyon with Marc', aria: 'New time proposed by Marc Dubois for your event',
+        cardLabel: 'Proposal from Marc Dubois', icon: cal, hasNotice: true, noticeStyle: notice('#3669a5', '#eaf0f7'), noticeColor: '#3669a5', noticeIcon: I.info, notice: 'Marc Dubois proposed a new time: Wednesday 14 October, 16:00 to 16:30. "The 15:00 slot clashes with the department head."',
+        title: 'Prepare rollout review Lyon with Marc', openHref: 'ClEvent.dc.html', openLabel: 'Open in Calendar',
+        rows: [kv('Now', 'Wednesday 14 October 2026, 15:00 to 15:30', 'text-decoration: line-through; color: #5e6168'), kv('Proposed', 'Wednesday 14 October 2026, 16:00 to 16:30')],
+        hasComment: false, buttons: [{ label: 'Accept the new time', style: primary }, { label: 'Decline', style: secondary }] },
+      { letter: 'j', caption: 'Someone who was not invited answered an invitation that was forwarded to them: add them to the event or decline', from: 'Nina Hoffmann', initials: 'NH', date: 'Today 09:32', subject: 'Accepted: Prepare rollout review Lyon with Marc', aria: 'Answer from Nina Hoffmann, who was not invited',
+        cardLabel: 'Answer from Nina Hoffmann', icon: cal, hasNotice: true, noticeStyle: notice('#ff9d2e', '#f5f6f8'), noticeColor: '#ff9d2e', noticeIcon: I.clock, notice: 'Nina Hoffmann accepted, but is not on the list of people. Marc Dubois forwarded the invitation to her.',
+        title: 'Prepare rollout review Lyon with Marc', openHref: 'ClEvent.dc.html', openLabel: 'Open in Calendar',
+        rows: [kv('When', 'Wednesday 14 October 2026, 15:00 to 15:30'), kv('People', 'Marc Dubois, Tom Achterberg, Priya Raman')],
+        hasComment: false, buttons: [{ label: 'Add to the event', style: primary }, { label: 'Decline', style: secondary }] },
+      { letter: 'k', caption: 'A task assigned to you by mail, as a card in the message: due date and priority, answered from the message', from: 'Tom Achterberg', initials: 'TA', date: 'Today 08:05', subject: 'Task: Prepare the OIDC client settings for Lyon', aria: 'Task assignment from Tom Achterberg',
+        cardLabel: 'Task from Tom Achterberg', icon: task, hasNotice: false, noticeStyle: '', noticeColor: '', noticeIcon: '', notice: '',
+        title: 'Prepare the OIDC client settings for Lyon', openHref: '#', openLabel: 'Open in Tasks',
+        rows: [kv('Due', 'Friday 16 October 2026'), kv('Priority', 'High')],
+        hasComment: false, buttons: [{ label: 'Accept the task', style: primary }, { label: 'Decline', style: secondary }] }
+    ];
+    return { tools, switchOff, knobOff, genChip, sparkle, attendees, invitees, variants, more };
   }
 }
 </script>

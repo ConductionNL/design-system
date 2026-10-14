@@ -14,8 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2500px; padding: 24px; display: grid; grid-template-columns: repeat(3, 448px); grid-auto-rows: max-content; gap: 24px; overflow: hidden">
-  <sc-for list="{{ frames }}" as="p" hint-placeholder-count="13">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3490px; padding: 24px; display: grid; grid-template-columns: repeat(3, 448px); grid-auto-rows: max-content; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="p" hint-placeholder-count="19">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px"><span style="color: #5e6168; font-weight: 400">{{ p.letter }}</span> &nbsp;{{ p.caption }}</figcaption>
       <div style="position: relative; height: 430px; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
@@ -32,6 +32,9 @@ a{color:#3669a5}a:hover{color:#234a78}
             <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.title }}</span>
             <button type="button" aria-label="Close" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
           </div>
+          <sc-if value="{{ p.from }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; align-items: center; gap: 6px; height: 40px; box-sizing: border-box; padding: 0 12px; border-bottom: 1px solid #e4e6ea; font-size: 14px"><span style="flex: none; width: 56px; color: #5e6168">From</span><span style="color: #5e6168; text-decoration: line-through; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.from }}</span><span style="flex: none; font-size: 12px; color: #ab0000; font-weight: 600">Account turned off</span></div>
+          </sc-if>
           <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 40px; box-sizing: border-box; padding: 7px 12px; border-bottom: 1px solid #e4e6ea; font-size: 14px">
             <span style="flex: none; width: 56px; color: #5e6168">To</span>
             <sc-for list="{{ p.chips }}" as="c" hint-placeholder-count="2">
@@ -81,6 +84,16 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
           </div>
         </sc-if>
+        <sc-if value="{{ p.leave }}" hint-placeholder-val="{{ false }}">
+          <div role="alertdialog" aria-modal="true" aria-label="Leave site?" style="position: absolute; left: 50%; transform: translateX(-50%); top: 0; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 12px; background: #ffffff; border: 1px solid #c4c7cb; border-top: 0; border-radius: 0 0 var(--sc-radius, 8px) var(--sc-radius, 8px); box-shadow: 0 6px 20px rgba(27,28,29,0.2); font-size: 13px; line-height: 18px; color: #1b1c1d">
+            <strong style="font-size: 14px; font-weight: 600">Leave site?</strong>
+            <span style="color: #3d4047">{{ p.leaveText }}</span>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px">
+              <button type="button" style="height: 30px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: 6px; background: #ffffff; color: #1b1c1d; font: 500 13px system-ui, sans-serif">Leave</button>
+              <button type="button" style="height: 30px; padding: 0 14px; border: 1px solid #3669a5; border-radius: 6px; background: #3669a5; color: #ffffff; font: 500 13px system-ui, sans-serif">Stay</button>
+            </div>
+          </div>
+        </sc-if>
         <sc-if value="{{ p.toast }}" hint-placeholder-val="{{ false }}">
           <div role="status" aria-live="polite" style="position: absolute; left: 50%; transform: translateX(-50%); width: 380px; bottom: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 10px 14px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); font-size: 14px">
             <div style="display: flex; align-items: center; gap: 10px">
@@ -101,7 +114,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3490}}'>
 class Component extends DCLogic {
   renderVals() {
     const chipBase = 'display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); font-size: 12px; white-space: nowrap; box-sizing: border-box; ';
@@ -127,7 +140,7 @@ class Component extends DCLogic {
       sendOff: 'false', sendStyle: sendOn, foot: 'Draft saved 09:41',
       dialog: false, dialogTitle: '', dialogText: '', buttons: [],
       toast: false, spinner: false, check: false, toastText: '', undo: false, cancel: false, progress: false, progressText: '',
-      screen: false, window: true, rows: []
+      screen: false, window: true, rows: [], from: false, leave: false, leaveText: ''
     };
     // One rule for every check: the fix is the green button on the right, Send anyway is the plain button on the left.
     // Calm fix (after round 7): one wrong address is said twice at most (red chip and the inline notice), the footer keeps the draft line; the no-reply notice is one line with the comment button as its only action.
@@ -170,7 +183,29 @@ class Component extends DCLogic {
       f({ letter: 'l', caption: 'After Send the window closes: the sending toast with progress at the foot of the reading pane', screen: true, window: false, rows,
         toast: true, spinner: true, toastText: 'Sending to Marc Dubois and Tom Achterberg', cancel: true, progress: true, progressText: '2 of 3 attachments uploaded, 1.4 of 2.3 MB' }),
       f({ letter: 'm', caption: 'Sent: the toast at the foot of the reading pane, the first seconds can be undone', screen: true, window: false, rows,
-        toast: true, check: true, toastText: 'Sent to Marc Dubois and Tom Achterberg', undo: true })
+        toast: true, check: true, toastText: 'Sent to Marc Dubois and Tom Achterberg', undo: true }),
+      // Round 8: the checks OX App Suite has and we had not drawn.
+      f({ letter: 'n', caption: 'Replying to a message from a mailing list: the list or only the sender', title: 'Re: Kick-off agenda, 2 November', chips: [chip('RL', 'rollout-lyon@lists.ville-de-lyon.example')], subject: 'Re: Kick-off agenda, 2 November',
+        body: 'Marc, the afternoon works for us. 14:00 at your office.', foot: 'Draft saved 10:20',
+        dialog: true, dialogTitle: 'Reply to the list or only to the sender?', dialogText: 'This message came through the mailing list rollout-lyon@lists.ville-de-lyon.example. Marc Dubois sent it.',
+        buttons: [{ label: 'Only to Marc Dubois', style: secondary }, { label: 'Reply to the list', style: primary }] }),
+      f({ letter: 'o', caption: 'Forwarding a message whose external pictures were blocked: with or without them', title: 'Fwd: Release 16.5: what changes for you', chips: [tom], subject: 'Fwd: Release 16.5: what changes for you',
+        body: 'Tom, the release notes for the Kassel team, see below.', foot: 'Draft saved 10:24',
+        dialog: true, dialogTitle: 'Forward with the blocked pictures?', dialogText: 'This message has external pictures that you have not loaded. Forward it with the pictures, so Tom sees them, or without.',
+        buttons: [{ label: 'Without the pictures', style: secondary }, { label: 'Forward with the pictures', style: primary }] }),
+      f({ letter: 'p', caption: 'The From address belongs to an account that is turned off: Send is off until another sender is picked', from: 'support@kassel-training.test', chips: [jana], subject: 'Training dates for November',
+        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'The account support@kassel-training.test is turned off. This message cannot be sent from it.', noticeAction: 'Pick another sender',
+        body: 'Hi Jana, here are the three dates we can offer for the project lead training.', sendOff: 'true', sendStyle: sendOffStyle, foot: 'Draft saved 10:31' }),
+      f({ letter: 'q', caption: 'The same draft was saved from another tab or browser: keep this version or load the other', title: 'Re: Gantt export cuts off the last week', chips: [jana], subject: 'Re: Gantt export cuts off the last week', body: 'Hi Jana, thanks for the two screenshots. We can reproduce it and',
+        dialog: true, dialogTitle: 'This draft was changed in another tab', dialogText: 'Re: Gantt export cuts off the last week was saved from another tab or browser at 10:14. Which version do you want to keep writing?',
+        buttons: [{ label: 'Keep this version', style: secondary }, { label: 'Load the other version', style: primary }], foot: 'Draft saved 10:12' }),
+      f({ letter: 'r', caption: 'Closing the browser tab while the message is still sending: the browser asks before leaving; the toast behind it is the one from frame l', screen: true, window: false, rows,
+        toast: true, spinner: true, toastText: 'Sending to Marc Dubois and Tom Achterberg', cancel: true, progress: true, progressText: '2 of 3 attachments uploaded, 1.4 of 2.3 MB',
+        leave: true, leaveText: 'This message is still being sent. If you leave now, it may not go out.' }),
+      f({ letter: 's', caption: 'An attached file is empty: a question before sending', body: 'Hi Marc, the agenda for the kick-off is attached. Let me know what you would like to add.',
+        files: [{ ext: 'DOCX', name: 'kickoff-agenda.docx', meta: '0 bytes', badge: badge + '#ab0000' }],
+        dialog: true, dialogTitle: 'kickoff-agenda.docx is empty', dialogText: 'The file has no content (0 bytes). Marc would receive an empty attachment.',
+        buttons: [{ label: 'Send anyway', style: secondary }, { label: 'Remove the file', style: primary }] })
     ];
     return { frames };
   }

@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1528px; overflow: hidden">
+<div style="flex: none; display: flex; flex-direction: column; height: 1000px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,945px"></dc-import></div>
@@ -81,8 +82,36 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </div>
 </div>
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
+  <div style="display: flex; gap: 24px">
+    <figure style="{{ r8.fig }}; flex: 0 0 calc(50% - 12px)">
+      <figcaption style="{{ r8.cap2 }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Sounds, the rest of the section: a sound for new mail, with the sound chosen from a list and a button to hear it</figcaption>
+      <div style="{{ r8.box }}; height: 440px">
+        <div aria-hidden="true" style="{{ r8.dim }}"></div>
+        <section aria-label="Notifications, sounds" style="{{ r8.pane }}">
+          <div style="{{ r8.paneHead }}"><h3 style="{{ r8.paneTitle }}">Notifications</h3><button type="button" aria-label="Close settings" style="{{ r8.closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+          <div style="{{ r8.paneBody }}">
+            <h4 style="{{ r8.h4 }}">Sounds</h4>
+            <div style="{{ r8.row }}">
+              <label for="ml-notif-sound" style="{{ r8.lbl }}"><span style="font-weight: 600">Play a sound for new mail</span><span style="{{ r8.desc }}">For mail in the inbox, on this device only.</span></label>
+              <button id="ml-notif-sound" type="button" role="switch" aria-checked="true" style="{{ r8.switchOn }}"><span style="{{ r8.knobOn }}"></span></button>
+            </div>
+            <div style="{{ r8.row }}; align-items: center">
+              <label for="ml-notif-sound-pick" style="{{ r8.lbl }}"><span style="font-weight: 600">Sound</span></label>
+              <span style="display: inline-flex; align-items: center; gap: 6px">
+                <button id="ml-notif-sound-pick" type="button" aria-haspopup="listbox" style="{{ r8.select }}"><span>Soft chime</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+                <button type="button" aria-label="Play the sound Soft chime" title="Play the sound Soft chime" style="{{ r8.iconBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg></button>
+              </span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </figure>
+  </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1528}}'>
 class Component extends DCLogic {
   renderVals() {
     const th = 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168';
@@ -107,7 +136,44 @@ class Component extends DCLogic {
       ['Mail app on iPhone', I.phone, 'Yesterday 22:40', false, 'true'],
       ['Chrome on the meeting room PC', I.desktop, '2 October', false, 'false']
     ].map(([name, icon, seen, current, expanded]) => ({ name, icon, seen, current, expanded }));
-    return { th, thRight, btnSec, btnPri, btnRow, chipThis, kinds, devices };
+    // Round 8 frames: shared styles (dimmed screen, cropped settings pane, dialogs, strips).
+    const r8 = {
+      cap: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px',
+      cap2: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; min-height: 32px',
+      fig: 'margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px',
+      box: 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden',
+      dim: 'position: absolute; inset: 0; background: rgba(27,28,29,0.45)',
+      pane: 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden',
+      paneHead: 'flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea',
+      paneTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      closeBtn: 'flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      paneBody: 'flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 24px',
+      h4: 'margin: 0; font-size: 16px; font-weight: 700; line-height: 24px',
+      row: 'display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px',
+      lbl: 'display: flex; flex-direction: column; gap: 2px; min-width: 0',
+      desc: 'font-size: 14px; color: #5e6168; line-height: 21px',
+      switchOn: 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer',
+      knobOn: 'position: absolute; top: 2px; left: 20px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff',
+      dlg: 'box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28)',
+      dlgTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      dlgFoot: 'display: flex; justify-content: flex-end; gap: 8px; margin: 4px -24px 0; padding: 16px 24px 0; border-top: 1px solid #eef0f3',
+      btnPri: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnSec: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnDanger: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnRow: "display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      iconBtn: 'flex: none; width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      input: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; width: 100%",
+      select: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 180px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap",
+      select34: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 150px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      field: 'display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #3d4047',
+      legend: 'padding: 0; margin: 0 0 2px; font-size: 14px; font-weight: 600; color: #3d4047',
+      article: 'display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)',
+      avatar: 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700',
+      stripInfo: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      stripWarn: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      th: 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; white-space: nowrap;'
+    };
+    return { th, thRight, btnSec, btnPri, btnRow, chipThis, kinds, devices, r8 };
   }
 }
 </script>

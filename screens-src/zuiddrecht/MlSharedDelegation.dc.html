@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1340px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1988px; overflow: hidden">
+<div style="flex: none; display: flex; flex-direction: column; height: 1340px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,945px"></dc-import></div>
@@ -102,8 +103,57 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </div>
 </div>
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
+  <div style="display: flex; gap: 24px">
+    <figure style="{{ r8.fig }}">
+      <figcaption style="{{ r8.cap2 }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Grant a role on my inbox: the person, then the role select the mailbox sharing uses, drawn open with Viewer, Editor, Author and Manager and what each may do</figcaption>
+      <div style="{{ r8.box }}; height: 560px; display: flex; align-items: flex-start; justify-content: center; padding-top: 20px">
+        <div aria-hidden="true" style="{{ r8.dim }}"></div>
+        <div role="dialog" aria-modal="true" aria-labelledby="ml-grant-title" style="{{ r8.dlg }}; position: relative; width: 560px">
+          <h3 id="ml-grant-title" style="{{ r8.dlgTitle }}">Grant a role on my inbox</h3>
+          <label style="{{ r8.field }}">Person<input type="text" value="Priya Raman, priya@northwind-projects.test" style="{{ r8.input }}"></label>
+          <div style="{{ r8.field }}">
+            <label for="ml-grant-role">Role</label>
+            <button id="ml-grant-role" type="button" aria-haspopup="listbox" aria-expanded="true" aria-controls="ml-grant-roles" aria-label="Role: Editor" title="Viewer: reads only, cannot move, label or delete. Editor: also moves to folders, labels, marks and deletes. Author: also writes and sends as me. Manager: also grants and withdraws roles on my inbox." style="{{ r8.select }}; border-color: #3669a5; box-shadow: 0 0 0 2px #eaf0f7"><span>Editor</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <div id="ml-grant-roles" role="listbox" aria-label="Role" style="display: flex; flex-direction: column; gap: 2px; padding: 6px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+              <sc-for list="{{ roleOptions }}" as="o" hint-placeholder-count="4"><div role="option" aria-selected="{{ o.on }}" style="{{ o.style }}"><span style="flex: none; font-weight: 600; min-width: 72px">{{ o.label }}</span><span style="font-size: 13px; font-weight: 400; color: #5e6168">{{ o.hint }}</span></div></sc-for>
+            </div>
+          </div>
+          <div style="{{ r8.dlgFoot }}">
+            <button type="button" style="{{ r8.btnSec }}">Cancel</button>
+            <button type="button" style="{{ r8.btnPri }}">Grant the role</button>
+          </div>
+        </div>
+      </div>
+    </figure>
+    <figure style="{{ r8.fig }}">
+      <figcaption style="{{ r8.cap2 }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;In Sent, a message a deputy sent on your behalf: the hint names Tom, who has the Author role on your inbox, as the one who sent it</figcaption>
+      <div style="{{ r8.box }}; height: 560px; padding: 12px 16px">
+        <article aria-label="Message from Olivia Brandt, sent by Tom Achterberg, yesterday 16:20" style="{{ r8.article }}">
+          <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
+            <span style="{{ r8.avatar }}">OB</span>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
+              <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">Olivia Brandt</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">olivia@northwind-projects.test</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">Yesterday 16:20</span></div>
+              <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">Marc Dubois</span></div>
+            </div>
+          </div>
+          <div role="status" style="{{ r8.stripInfo }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg>
+            <p style="margin: 0; flex: 1 1 auto; min-width: 0"><strong style="font-weight: 600">Sent on your behalf by Tom Achterberg.</strong> Tom has the Author role on your inbox. Marc sees you as sender and Tom as the one who sent it.</p>
+          </div>
+          <div style="padding: 12px 14px 14px 56px; display: flex; flex-direction: column; gap: 8px; color: #3d4047">
+            <p style="margin: 0">Dear Marc,</p>
+            <p style="margin: 0">The kick-off on 2 November moves to 14:00, as the department head asked. The agenda stays as sent; the room is booked until 17:00.</p>
+            <p style="margin: 0">Kind regards,<br>Olivia Brandt</p>
+          </div>
+        </article>
+      </div>
+    </figure>
+  </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1340}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1988}}'>
 class Component extends DCLogic {
   renderVals() {
     const th = 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168';
@@ -128,7 +178,45 @@ class Component extends DCLogic {
       ['marieke@northwind-projects.test', 'MV', 'On leave until 30 October', 'Marieke de Vries', '1 October', true],
       ['support@northwind-projects.test', 'NS', 'Northwind support, shared mailbox', 'Ines Okafor', '12 May', false]
     ].map(([mail, initials, note, by, since, open]) => ({ mail, initials, note, by, since, openChecked: open ? 'true' : 'false', openText: open ? 'Shown' : 'Not shown', ...sw(open) }));
-    return { th, thRight, btnSec, btnPri, btnRow, avatar, chooser, delegates, acting };
+    // Round 8 frames: shared styles (dimmed screen, cropped settings pane, dialogs, strips).
+    const r8 = {
+      cap: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px',
+      cap2: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; min-height: 32px',
+      fig: 'margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px',
+      box: 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden',
+      dim: 'position: absolute; inset: 0; background: rgba(27,28,29,0.45)',
+      pane: 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden',
+      paneHead: 'flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea',
+      paneTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      closeBtn: 'flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      paneBody: 'flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 24px',
+      h4: 'margin: 0; font-size: 16px; font-weight: 700; line-height: 24px',
+      row: 'display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px',
+      lbl: 'display: flex; flex-direction: column; gap: 2px; min-width: 0',
+      desc: 'font-size: 14px; color: #5e6168; line-height: 21px',
+      switchOn: 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer',
+      knobOn: 'position: absolute; top: 2px; left: 20px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff',
+      dlg: 'box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28)',
+      dlgTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      dlgFoot: 'display: flex; justify-content: flex-end; gap: 8px; margin: 4px -24px 0; padding: 16px 24px 0; border-top: 1px solid #eef0f3',
+      btnPri: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnSec: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnDanger: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnRow: "display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      iconBtn: 'flex: none; width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      input: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; width: 100%",
+      select: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 180px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap",
+      select34: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 150px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      field: 'display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #3d4047',
+      legend: 'padding: 0; margin: 0 0 2px; font-size: 14px; font-weight: 600; color: #3d4047',
+      article: 'display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)',
+      avatar: 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700',
+      stripInfo: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      stripWarn: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      th: 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; white-space: nowrap;'
+    };
+    const roleOptions = [['Viewer', 'reads only, cannot move, label or delete', false], ['Editor', 'also moves to folders, labels, marks and deletes', true], ['Author', 'also writes and sends as me', false], ['Manager', 'also grants and withdraws roles on my inbox', false]].map(([label, hint, on]) => ({ label, hint, on: on ? 'true' : 'false', style: 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 14px; ' + (on ? 'background: #eaf0f7; color: #234a78' : 'color: #1b1c1d') }));
+    return { th, thRight, btnSec, btnPri, btnRow, avatar, chooser, delegates, acting, r8, roleOptions };
   }
 }
 </script>

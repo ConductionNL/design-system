@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2280px; padding: 28px 24px; display: grid; grid-template-columns: repeat(4, 330px); grid-template-rows: auto auto auto; gap: 24px; justify-content: center; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3028px; padding: 28px 24px; display: grid; grid-template-columns: repeat(4, 330px); grid-template-rows: auto auto auto auto; gap: 24px; justify-content: center; overflow: hidden">
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; width: 330px">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Native app: sign in through the system browser (the app never sees your password; Help says so)</figcaption>
@@ -313,9 +313,44 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </div>
   </figure>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; grid-column: 1 / -1; min-width: 0">
+    <figcaption style="{{ r8.cap }}"><span style="color: #5e6168; font-weight: 400">j</span> &nbsp;Hand over to a phone: on the desktop, Continue on your phone shows a code; the phone scans it and is signed in as you, no password typed</figcaption>
+    <div style="position: relative; height: 700px; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="flex: 1 1 auto; position: relative; display: flex; align-items: center; justify-content: center; border-right: 1px solid #c4c7cb">
+        <div aria-hidden="true" style="{{ r8.dim }}"></div>
+        <div role="dialog" aria-modal="true" aria-labelledby="ml-qr-title" style="{{ r8.dlg }}; position: relative; width: 560px; align-items: center; text-align: center">
+          <h3 id="ml-qr-title" style="{{ r8.dlgTitle }}">Continue on your phone</h3>
+          <p style="margin: 0; font-size: 14px; line-height: 21px; color: #3d4047">Open Mail on your phone and scan this code with Scan the code in its menu. It signs you in there as Olivia Brandt without a password; the code works for 2 minutes.</p>
+          <svg role="img" aria-label="Sign-in code for your phone" width="236" height="236" viewBox="-1 -1 31 31" shape-rendering="crispEdges" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)"><sc-for list="{{ qr }}" as="q" hint-placeholder-count="260"><rect x="{{ q.x }}" y="{{ q.y }}" width="1" height="1" fill="#1b1c1d"></rect></sc-for></svg>
+          <span style="font-size: 12px; color: #5e6168">Code valid until 09:14</span>
+          <div style="{{ r8.dlgFoot }}; align-self: stretch">
+            <button type="button" style="{{ r8.btnSec }}">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div style="flex: none; width: 378px; display: flex; align-items: center; justify-content: center">
+        <div style="{{ phone }} height: 660px; background: #1b1c1d; color: #ffffff">
+          <header style="flex: none; height: 55px; padding: 0 8px 0 4px; display: flex; align-items: center; gap: 4px">
+            <button type="button" aria-label="Back" style="width: 40px; height: 40px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <strong style="flex: 1 1 auto; font-size: 17px; font-weight: 600">Scan the code</strong>
+          </header>
+          <div style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center">
+            <div aria-hidden="true" style="width: 230px; height: 230px; box-sizing: border-box; border: 2px solid #ffffff; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06)">
+              <svg width="160" height="160" viewBox="-1 -1 31 31" shape-rendering="crispEdges" style="background: #ffffff; border-radius: 4px; transform: rotate(-4deg)"><sc-for list="{{ qr }}" as="q" hint-placeholder-count="260"><rect x="{{ q.x }}" y="{{ q.y }}" width="1" height="1" fill="#1b1c1d"></rect></sc-for></svg>
+            </div>
+          </div>
+          <div role="status" style="flex: none; display: flex; flex-direction: column; gap: 4px; padding: 16px 20px 28px; text-align: center">
+            <strong style="font-size: 15px">Code found</strong>
+            <span style="font-size: 13px; line-height: 18px; color: #c4c7cb">Signing you in as Olivia Brandt on mail.northwind-projects.test</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2280}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3028}}'>
 class Component extends DCLogic {
   renderVals() {
     const phone = 'position: relative; width: 330px; height: 700px; box-sizing: border-box; display: flex; flex-direction: column; border: 1px solid #c4c7cb; border-radius: 24px; overflow: hidden;';
@@ -389,7 +424,52 @@ class Component extends DCLogic {
       ['Copy', 'M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'],
       ['Print', 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z']
     ].map(([label, icon], i) => ({ label, icon, style: act + (i > 0 ? 'border-top: 1px solid #e4e6ea;' : '') }));
-    return { phone, rows, swipeRows, selRows, selTools, tabs, fmt, keys, shareTargets, shareActions };
+    // Round 8 frames: shared styles (dimmed screen, cropped settings pane, dialogs, strips).
+    const r8 = {
+      cap: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px',
+      cap2: 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; min-height: 32px',
+      fig: 'margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px',
+      box: 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden',
+      dim: 'position: absolute; inset: 0; background: rgba(27,28,29,0.45)',
+      pane: 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden',
+      paneHead: 'flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea',
+      paneTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      closeBtn: 'flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      paneBody: 'flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 24px',
+      h4: 'margin: 0; font-size: 16px; font-weight: 700; line-height: 24px',
+      row: 'display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px',
+      lbl: 'display: flex; flex-direction: column; gap: 2px; min-width: 0',
+      desc: 'font-size: 14px; color: #5e6168; line-height: 21px',
+      switchOn: 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer',
+      knobOn: 'position: absolute; top: 2px; left: 20px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff',
+      dlg: 'box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28)',
+      dlgTitle: 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px',
+      dlgFoot: 'display: flex; justify-content: flex-end; gap: 8px; margin: 4px -24px 0; padding: 16px 24px 0; border-top: 1px solid #eef0f3',
+      btnPri: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnSec: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnDanger: "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      btnRow: "display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      iconBtn: 'flex: none; width: 40px; height: 40px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; display: inline-flex; align-items: center; justify-content: center',
+      input: "height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; width: 100%",
+      select: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 180px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap",
+      select34: "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 150px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap",
+      field: 'display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #3d4047',
+      legend: 'padding: 0; margin: 0 0 2px; font-size: 14px; font-weight: 600; color: #3d4047',
+      article: 'display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)',
+      avatar: 'flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700',
+      stripInfo: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #3669a5; border-radius: var(--sc-radius, 8px); background: #eaf0f7; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      stripWarn: 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d',
+      th: 'text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; white-space: nowrap;'
+    };
+    const qr = (() => {
+      const n = 29; let s = 7; const rnd = () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
+      const cells = [];
+      const finder = (fx, fy) => { for (let y = 0; y < 7; y++) for (let x = 0; x < 7; x++) { const edge = x === 0 || y === 0 || x === 6 || y === 6; const core = x >= 2 && x <= 4 && y >= 2 && y <= 4; if (edge || core) cells.push({ x: fx + x, y: fy + y }); } };
+      finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const inF = (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8); if (!inF && rnd() < 0.45) cells.push({ x, y }); }
+      return cells;
+    })();
+    return { phone, rows, swipeRows, selRows, selTools, tabs, fmt, keys, shareTargets, shareActions, r8, qr };
   }
 }
 </script>

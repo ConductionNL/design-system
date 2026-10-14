@@ -1675,6 +1675,826 @@
    "evidence": "src/components/Controls.vue:73; src/components/Controls.vue:79",
    "surface": "screen",
    "note": ""
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Create a public list that everyone in the organisation can see",
+   "rating": "partial",
+   "evidence": "src/components/board/SharingTabSidebar.vue:93; lib/Sharing/DeckShareProvider.php",
+   "surface": "screen",
+   "note": "Boards share with users, groups and teams; no org-wide public flag, everyone only via an all-users group",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Hide a list from the navigation and show it again",
+   "rating": "partial",
+   "evidence": "src/stores/board.js:136; src/router.js:67",
+   "surface": "screen",
+   "note": "Archiving a board removes it from the main navigation and an Archived boards view shows it again, but archive also makes it read-only; no plain hide",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Show or hide the pane of lists next to the tasks",
+   "rating": "yes",
+   "evidence": "src/store/main.js:84; src/App.vue:117",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Resize the pane of lists and have its width remembered",
+   "rating": "no",
+   "evidence": "grep resiz over src/ lib/: no hits; NcAppNavigation used without resize in src/components/navigation/AppNavigation.vue:7",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Fall back to the default list when the open list is gone or access was withdrawn",
+   "rating": "partial",
+   "evidence": "src/components/board/Board.vue:18; src/router.js:165",
+   "surface": "background",
+   "note": "Shows a Board not found state; the pinned default board is used only on the main route, no fallback when the open board vanishes",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See an empty state when a list holds no tasks",
+   "rating": "yes",
+   "evidence": "src/components/board/Board.vue:24; src/components/board/GanttView.vue:18",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Choose a task list layout with or without selection checkboxes",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue (only bigger card view, card ID badge, calendar toggle); no selection checkboxes in src/components/cards/CardItem.vue",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Open a tasks side panel next to mail, calendar and other apps",
+   "rating": "no",
+   "evidence": "Searched src/ for a cross-app side panel: only Dashboard widgets (src/views/DashboardUpcoming.vue) and Talk/picker hooks, no panel next to mail or calendar",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See side panel tasks grouped as highest priority, overdue, scheduled, unscheduled and recently completed",
+   "rating": "no",
+   "evidence": "No side panel; the in-app Upcoming overview groups by overdue/today/tomorrow/next 7 days/later/no due (src/components/overview/Overview.vue:60) without priority or recently completed",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See completed tasks in the side panel grouped by year of completion",
+   "rating": "no",
+   "evidence": "No side panel; no grouping by completion year in src/components/overview/Overview.vue or src/views/Dashboard*.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Edit, delete or tick a task done from its row in the side panel",
+   "rating": "no",
+   "evidence": "No side panel; dashboard widget passes a no-op markDone (src/views/DashboardUpcoming.vue:14)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Select all tasks in a list",
+   "rating": "no",
+   "evidence": "grep selectAll/bulk/selectedCards over src/: only a contenteditable selectAllChildren in CardItem.vue:265",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Mark several tasks as done or undone at once",
+   "rating": "partial",
+   "evidence": "src/stores/stack.js:114; src/stores/stack.js:122",
+   "surface": "screen",
+   "note": "Marking a list as the done column marks all its open cards done; no multi-select done/undone",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Delete several tasks at once",
+   "rating": "no",
+   "evidence": "grep bulk/select over src/components/cards and src/stores: only per-card delete in CardMenuEntries.vue:78; per-list delete exists",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Start a new task from inside other apps",
+   "rating": "yes",
+   "evidence": "src/init-talk.js:24; src/init-reference.js:100",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Start a new task from the side panel",
+   "rating": "no",
+   "evidence": "No side panel; closest is the New card button in the dashboard widget src/views/DashboardUpcoming.vue:24",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Be offered the default list when creating a task in a list you cannot write to",
+   "rating": "partial",
+   "evidence": "src/views/CreateNewCardCustomPicker.vue:228",
+   "surface": "screen",
+   "note": "The picker lists only writable, non-archived boards; no default list is proposed",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Keep a task unsaveable until it has a title",
+   "rating": "yes",
+   "evidence": "src/components/board/Stack.vue:136; lib/Validators/CardServiceValidator.php:16",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Edit a task in a floating window while using the rest of the suite",
+   "rating": "partial",
+   "evidence": "src/App.vue:14; src/components/DeckAppSettings.vue:13",
+   "surface": "screen",
+   "note": "Card details can open in a modal inside Deck; not a floating window over other apps",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Expand the task form step by step for dates, status, attachments and details",
+   "rating": "no",
+   "evidence": "src/components/card/CardSidebarTabDetails.vue: all fields shown in sidebar tabs, no stepwise expanding form",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Confirm before discarding unsaved changes to a task",
+   "rating": "no",
+   "evidence": "grep discard/unsaved/beforeunload over src/: none; card fields save immediately",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Load the latest copy of a task when it changed elsewhere before editing",
+   "rating": "partial",
+   "evidence": "src/sessions.js:51; lib/NotifyPushEvents.php",
+   "surface": "background",
+   "note": "With notify_push, changes elsewhere reload the board's stacks; no check before editing without push",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Recover an unsaved task form after the browser reloads",
+   "rating": "no",
+   "evidence": "grep localStorage over src/: only nav, compact mode, cover and default board keys (src/store/main.js:33, src/router.js:165)",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Open a task in its own window by double-clicking it",
+   "rating": "no",
+   "evidence": "grep dblclick over src/: none; cards open in the sidebar or modal by click",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Open a task in a detail popup from a widget, side panel or category browser",
+   "rating": "partial",
+   "evidence": "src/views/CardReferenceWidget.vue; src/init-reference.js:44",
+   "surface": "screen",
+   "note": "Other apps render a card preview widget; full details open in Deck",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "See a progress bar on each task in the list",
+   "rating": "partial",
+   "evidence": "src/components/cards/CardBadges.vue:23",
+   "surface": "screen",
+   "note": "Shows a todo items count from description checklists, no progress bar",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record estimated and actual duration on a task",
+   "rating": "no",
+   "evidence": "grep duration over src/ lib/ (card fields in lib/Db/Card.php, CardSidebarTabDetails.vue): not present",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record estimated and actual costs with a currency on a task",
+   "rating": "no",
+   "evidence": "grep costs over src/ lib/ (card fields in lib/Db/Card.php, CardSidebarTabDetails.vue): not present",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record a travel distance on a task",
+   "rating": "no",
+   "evidence": "grep distance over src/ lib/ (card fields in lib/Db/Card.php, CardSidebarTabDetails.vue): not present",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record billing information on a task",
+   "rating": "no",
+   "evidence": "grep billing over src/ lib/ (card fields in lib/Db/Card.php, CardSidebarTabDetails.vue): not present",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record the companies a task relates to",
+   "rating": "no",
+   "evidence": "grep companies over src/ lib/ (card fields in lib/Db/Card.php, CardSidebarTabDetails.vue): not present",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Be stopped when the start date is after the due date",
+   "rating": "no",
+   "evidence": "grep startdate/duedate comparisons over src/ lib/: only GanttView.vue:210; StartDateSelector.vue and CardService.php:249 do no order check",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Be offered to move the start date when a new due date falls before it",
+   "rating": "no",
+   "evidence": "src/components/card/DueDateSelector.vue and StartDateSelector.vue: no start date shift offer",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Have start and due dates filled in when a task is made repeating",
+   "rating": "no",
+   "evidence": "grep recur/repeat/rrule over src/ lib/: no recurring cards",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "See how far away a start or due date is in words",
+   "rating": "yes",
+   "evidence": "src/components/cards/badges/DueDate.vue:13; src/components/cards/badges/DueDate.vue:24",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Have the completion date recorded automatically when a task is done",
+   "rating": "yes",
+   "evidence": "lib/Service/CardService.php:565; src/components/card/DueDateSelector.vue:62",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Keep the sort order and the done filter per list",
+   "rating": "no",
+   "evidence": "src/stores/board.js:29: one board-wide filter in memory, not saved per board; no sort option",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Add users, groups, contacts or external addresses to a task as participants",
+   "rating": "partial",
+   "evidence": "src/components/card/AssignmentSelector.vue:20; lib/Service/AssignmentService.php",
+   "surface": "screen",
+   "note": "Assigns users, groups and teams; no contacts or external addresses",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Accept, tentatively accept or decline a task you were added to",
+   "rating": "no",
+   "evidence": "lib/Service/AssignmentService.php and src/components/card/: assignment has no accept/decline",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See the confirmation status of each participant on a task",
+   "rating": "no",
+   "evidence": "src/components/cards/AvatarList.vue: avatars only, no confirmation status",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See tasks delegated to you alongside your own",
+   "rating": "yes",
+   "evidence": "src/components/overview/Overview.vue:111; lib/Service/OverviewService.php",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Open the contact card of a task participant",
+   "rating": "no",
+   "evidence": "src/components/cards/AvatarList.vue:19 and :52 set disable-menu, so the contact menu is off",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Edit a task you were added to as a participant",
+   "rating": "partial",
+   "evidence": "lib/Service/PermissionService.php",
+   "surface": "screen",
+   "note": "Assigned users edit through board edit permission, not through being assigned",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See in the list which tasks have participants",
+   "rating": "yes",
+   "evidence": "src/components/cards/AvatarList.vue; src/components/cards/CardItem.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Have external participants offered as new contacts",
+   "rating": "no",
+   "evidence": "grep contact over lib/: no contact creation for assignees",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "Find tasks with a category in a browser shared across apps",
+   "rating": "partial",
+   "evidence": "lib/Search/FilterStringParser.php:85",
+   "surface": "screen",
+   "note": "Unified search filters by tag across boards; tags are board-local and not shared with other apps",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See the priority of a task as an icon in lists",
+   "rating": "no",
+   "evidence": "grep priority over src/ lib/: only Activity filter priority",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See the status of each task as a coloured badge",
+   "rating": "partial",
+   "evidence": "src/components/cards/CardBadges.vue:9; src/components/cards/badges/DueDate.vue",
+   "surface": "screen",
+   "note": "Due/done badge only; status is the column, no coloured status badge",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See which tasks are private in the list",
+   "rating": "no",
+   "evidence": "grep private/confidential over src/: none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "comments-and-activity",
+   "name": "Leave a comment when accepting or declining a task",
+   "rating": "no",
+   "evidence": "No accept/decline flow (lib/Service/AssignmentService.php); comments are general (src/components/card/CommentForm.vue)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "comments-and-activity",
+   "name": "Read the comments participants left on their replies",
+   "rating": "no",
+   "evidence": "No reply comments; see lib/Service/AssignmentService.php",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "attachments",
+   "name": "Act on all attachments of a task at once",
+   "rating": "no",
+   "evidence": "grep download all/zip over src/ lib/: none; src/components/card/AttachmentList.vue acts per attachment",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "attachments",
+   "name": "See the upload progress of attachments",
+   "rating": "yes",
+   "evidence": "src/components/card/AttachmentList.vue:30; src/mixins/attachmentUpload.js:41",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "search",
+   "name": "Limit a task search to a date range",
+   "rating": "yes",
+   "evidence": "lib/Search/FilterStringParser.php:62; lib/Search/FilterStringParser.php:74",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "sharing-and-permissions",
+   "name": "Subscribe to and unsubscribe from lists shared with you",
+   "rating": "partial",
+   "evidence": "lib/Controller/BoardController.php:69; src/components/DeckAppSettings.vue:23",
+   "surface": "screen",
+   "note": "You can leave a shared board and toggle boards in calendar; no subscribe/unsubscribe",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Snooze a task reminder to a later time",
+   "rating": "no",
+   "evidence": "lib/Notification/Notifier.php: no snooze action; relies on core notifications",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Dismiss a task reminder",
+   "rating": "yes",
+   "evidence": "lib/Notification/Notifier.php:111; lib/Notification/NotificationHelper.php",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Get notified of task invitations and answer them from the notification",
+   "rating": "partial",
+   "evidence": "lib/Notification/Notifier.php:183",
+   "surface": "screen",
+   "note": "Notifies when a board is shared or a card assigned; no answer from the notification",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Have the notification area open by itself for new reminders",
+   "rating": "no",
+   "evidence": "Not in Deck: lib/Notification/, src/: no notification area behaviour",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Choose to receive email when participants accept or decline a task",
+   "rating": "no",
+   "evidence": "No accept/decline replies; lib/Activity/SettingChanges.php:57 covers activity mail only",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Import an iCalendar file into a list",
+   "rating": "no",
+   "evidence": "lib/Service/Importer/Systems: Deck JSON, Trello JSON/API only; lib/DAV/CalendarObject.php:58 is read-only",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Skip tasks that already exist when importing",
+   "rating": "no",
+   "evidence": "lib/Service/Importer/BoardImportService.php: creates a new board, no duplicate check",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Print one or several tasks",
+   "rating": "partial",
+   "evidence": "src/components/cards/CardItem.vue:526; src/components/cards/CardBadges.vue:171",
+   "surface": "screen",
+   "note": "Print stylesheets for browser print of a board; no print action for selected cards",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Turn an email into a task reminder with subject, note and time",
+   "rating": "no",
+   "evidence": "grep mail over src/ lib/: only share email type and activity mail settings; no email-to-card code in Deck",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Continue a task made from an email in the full task form",
+   "rating": "no",
+   "evidence": "grep mail over src/ lib/: only share email type and activity mail settings; no email-to-card code in Deck",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Jump from a task back to the email it was made from",
+   "rating": "no",
+   "evidence": "grep mail over src/ lib/: only share email type and activity mail settings; no email-to-card code in Deck",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "See and answer a task invitation inside the email that carries it",
+   "rating": "no",
+   "evidence": "grep mail over src/ lib/: only share email type and activity mail settings; no email-to-card code in Deck",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Extend task screens and actions through extension points",
+   "rating": "yes",
+   "evidence": "src/main.js:104; src/init-reference.js:100",
+   "surface": "api",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn the tasks app on or off per user",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue:27: Deck has no per-user toggle; app group restriction is core, not Deck",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Allow or withhold task delegation per user",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue and lib/Service/ConfigService.php: no assignment setting",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn task attachments on or off",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue and lib/Service/ConfigService.php: no attachment toggle",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn categories on or off",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue and lib/Service/ConfigService.php: no tag toggle",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Configure the currencies offered for task costs",
+   "rating": "no",
+   "evidence": "No cost fields; lib/Service/ConfigService.php",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn the tasks side panel on or off",
+   "rating": "no",
+   "evidence": "No side panel; lib/Service/ConfigService.php",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Allow users to create public lists",
+   "rating": "partial",
+   "evidence": "src/components/DeckAppSettings.vue:32",
+   "surface": "setting",
+   "note": "Admin limits board creation to groups; no public-board permission",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "mobile-and-offline",
+   "name": "Select several tasks on a phone through an edit mode",
+   "rating": "no",
+   "evidence": "No multi-select in src/components/cards/ or src/components/board/Stack.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Delete selected tasks with the Delete key",
+   "rating": "no",
+   "evidence": "src/components/DeckAppSettings.vue:46-61 shortcut list has no Delete key",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Hear each task title, status, due date, participants and progress read out in the list",
+   "rating": "partial",
+   "evidence": "src/components/cards/CardItem.vue:12; src/components/cards/CardBadges.vue:83",
+   "surface": "screen",
+   "note": "Cards are focusable with labelled badges; no single announcement of title, status, due date, assignees and progress",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Move between list and detail regions as labelled landmarks",
+   "rating": "partial",
+   "evidence": "src/App.vue:9; src/components/board/Stack.vue:11",
+   "surface": "screen",
+   "note": "Uses NcAppContent/NcAppSidebar regions and labelled stacks; no explicit landmark labels",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Use the side panel with screen reader labels for each task and group",
+   "rating": "no",
+   "evidence": "No side panel",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Open context help for the tasks screens",
+   "rating": "partial",
+   "evidence": "src/components/DeckAppSettings.vue:46; src/components/KeyboardShortcuts.vue",
+   "surface": "screen",
+   "note": "Shortcut help on ?; no context help pages",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Keep the tasks screens checked by automated accessibility tests",
+   "rating": "no",
+   "evidence": "grep axe/a11y over cypress/ tests/ package.json: none",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
   }
  ]
 }

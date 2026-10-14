@@ -2809,6 +2809,1306 @@
    "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:102; protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:104",
    "surface": "api",
    "note": "IMAP MOVE and UIDPLUS."
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose a mail provider from a list when adding an account",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set how often a POP3 account is fetched and whether mail stays on the server",
+   "rating": "partial",
+   "evidence": "server/protocols/fetchmail/src/main/java/org/apache/james/fetchmail/FetchScheduler.java:115; server/protocols/fetchmail/src/main/java/org/apache/james/fetchmail/ParsedConfiguration.java:334",
+   "surface": "setting",
+   "note": "FetchMail fetches remote POP3/IMAP accounts with an interval and leaveonserver, but only as admin XML config, not per user",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Disable an account and enable it again without removing it",
+   "rating": "no",
+   "evidence": "searched server/protocols/webadmin/webadmin-data/.../UserRoutes.java and users data API for disable/enabled: users can only be added or deleted",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Be warned before saving an account that cannot connect securely",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Pick the default sender address among your aliases",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/IdentitySet.scala:47; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:66",
+   "surface": "setting",
+   "note": "JMAP identities carry a sortOrder (James extension) a client can use as ordering, no explicit default flag",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get the settings to connect a phone or desktop mail program, also by QR code",
+   "rating": "no",
+   "evidence": "no autoconfig/autodiscover or QR in server/protocols or webadmin routes; client-side only",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Find a mail setting by searching the settings",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See the standard folders listed first in the folder tree",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:71; protocols/imap/src/main/java/org/apache/james/imap/processor/ListProcessor.java:87",
+   "surface": "screen",
+   "note": "JMAP gives role-based default sortOrder (inbox, archive, drafts, sent, trash first) and IMAP SPECIAL-USE; listing them first is the client's job",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Pin folders to a favourites section",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Jump to the inbox, sent or drafts folder with a keyboard shortcut",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Open a view of the attachments of all messages as files",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See statistics for a folder, such as top correspondents and mail by weekday and hour",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sort scheduled messages by their planned send date",
+   "rating": "no",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:241 sort options are receivedAt, sentAt, size, from, to, subject; no planned send date",
+   "surface": "screen",
+   "note": "Scheduled sends are EmailSubmission holdFor/holdUntil with no queryable sort",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Show or hide selection checkboxes in the list",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Show full date and time instead of relative dates in the list",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the size of each message in the list",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:83; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:241",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See on a row whether a message was answered or forwarded",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:46; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala:49",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the priority of a message on its row",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:87",
+   "surface": "screen",
+   "note": "Priority/Importance headers are readable via JMAP header:* properties; no parsed priority property",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See which account and folder a message came from in combined views",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:83",
+   "surface": "screen",
+   "note": "JMAP Email mailboxIds tells the folder of each message; combined views are a client matter",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Open a context menu on a message with its actions",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See when the list was last refreshed",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open a message in its own window",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Have the newest message opened automatically on start",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See new mail appear at once, pushed from the server without polling",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/EventSourceRoutes.scala; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/routes/WebSocketRoutes.scala",
+   "surface": "background",
+   "note": "also Web Push via server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/pushsubscription/WebPushClient.scala and IMAP IDLE",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See a summary with actions when several messages are selected",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Step to the previous or next message from the reading pane",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See when a message was sent on behalf of someone else",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:84",
+   "surface": "screen",
+   "note": "JMAP exposes the Sender header separately from From; showing it is the client's job",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show HTML messages as plain text",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:277",
+   "surface": "setting",
+   "note": "Server converts HTML bodies to plain text for textBody values (htmlTextExtractor); the setting is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have insecure external images loaded over a secure connection",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show quoted lines in colour",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read plain text messages in a fixed-width font",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Set the font size for plain text messages",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show a truncated large message in full on request",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Email.scala:559",
+   "surface": "screen",
+   "note": "maxBodyValueBytes truncation with isTruncated lets a client fetch again in full; the UI is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open links to suite items such as appointments, files or contacts inside the suite",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Click an address in the text to start a new message to it",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Click dates and times mentioned in a message",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Retry loading a message whose content failed to load",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See a banner with the planned send time on a scheduled message",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Preview an attached XRechnung electronic invoice",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose whether forwarded messages go inline or as an attachment",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose whether replies include the original text",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be asked whether to reply to all or only the sender when replying to a mailing list",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Reply or forward with or without the blocked external images",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Continue editing a saved draft",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Mailbox.scala:74; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSetMethod.scala",
+   "surface": "screen",
+   "note": "Drafts role and $draft keyword stored; editing is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Write a new message to everyone on a message except yourself",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send with only the address, without a display name",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set the priority of a message to high, normal or low",
+   "rating": "partial",
+   "evidence": "server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/priority/SmtpMtPriorityMessageHook.java; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/WithPriority.java:41",
+   "surface": "screen",
+   "note": "Supports SMTP MT-PRIORITY delivery priority, not the message priority header a client sets",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set a default font, size and colour for new messages",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Pick a send time from quick choices such as tomorrow morning",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:74; server/protocols/protocols-smtp/src/main/java/org/apache/james/smtpserver/futurerelease/FutureReleaseMailParameterHook.java",
+   "surface": "screen",
+   "note": "Delayed send via holdFor/holdUntil and SMTP FUTURERELEASE; quick choices are client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Cancel or edit a scheduled message, moving it back to drafts",
+   "rating": "no",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala: only create is handled (line 239), no update/undoStatus cancel of a held submission",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be stopped from sending from an address of a disabled account",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:440; server/data/data-library/src/main/java/org/apache/james/rrt/lib/CanSendFromImpl.java",
+   "surface": "screen",
+   "note": "Server rejects From/envelope addresses the user may not send from; no disabled-account concept",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Restore a draft that was changed in another tab or browser",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailChangesMethod.scala",
+   "surface": "screen",
+   "note": "JMAP state and Email/changes let a client detect a draft changed elsewhere; restore UI is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach your own contact card to a message",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Show or hide the formatting toolbar",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "See the size of the message while writing",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See a hint on mail a deputy sent on your behalf",
+   "rating": "no",
+   "evidence": "searched server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala and DelegateSetMethod.scala: no Sender header or marker added for delegated sends",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Resize attached images to a smaller size before sending",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Check spelling while writing",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be warned when closing the browser while a message is still sending",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Place the signature above or below the quoted text",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Design a signature from a template with contact details, social links, colours and an image",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send a message with a keyboard shortcut",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files from the selected message or recently opened messages",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Start a new message carrying the attachments of selected messages",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Set an expiry date, password and automatic deletion on attachment download links",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Get notified when shared attachment links are downloaded, opened or expire",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Be warned before sending an empty attachment",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See attachments as a list or as preview tiles",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See thumbnail previews of office documents attached to a draft",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Drag an attachment out of the browser onto the desktop",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "See active search filters as removable chips",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Choose which fields a plain search looks in",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message with one of ten colours",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/mail/Keyword.scala",
+   "surface": "screen",
+   "note": "Arbitrary JMAP keywords / IMAP flags can store a colour flag; no colour semantics on the server",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Browse everything with a category across mail and other apps",
+   "rating": "no",
+   "evidence": "James is mail only; no cross-app categories in server/ or mailbox/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Delete messages permanently instead of moving them to the trash",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Still delete mail when the quota is full, after a warning that it skips the trash",
+   "rating": "partial",
+   "evidence": "mailbox/store/src/main/java/org/apache/james/mailbox/store/quota/QuotaChecker.java",
+   "surface": "screen",
+   "note": "Quota is checked on append/copy only, so permanent delete still works when full; the warning flow is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Create a rule while moving so future mail from that sender goes to the same folder",
+   "rating": "partial",
+   "evidence": "server/data/data-jmap/src/main/java/org/apache/james/jmap/api/filtering/Rule.java:146; server/protocols/webadmin/webadmin-jmap/src/main/java/org/apache/james/webadmin/data/jmap/RunRulesOnMailboxRoutes.java:119",
+   "surface": "screen",
+   "note": "Server-side JMAP filter rules (from -> appendInMailboxes) exist; creating one while moving is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Archive all messages in a folder older than a set number of days",
+   "rating": "partial",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/service/ExpireMailboxService.java:72; server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/routes/MessagesRoutes.java:92",
+   "surface": "screen",
+   "note": "Admin WebAdmin task deletes messages olderThan a duration; it expires rather than archives, and is not user-facing",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move all messages of one folder to another folder",
+   "rating": "partial",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:102",
+   "surface": "screen",
+   "note": "IMAP MOVE and JMAP Email/set mailboxIds move messages in bulk; a one-click move-all is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Clean up a folder by removing messages marked as deleted",
+   "rating": "yes",
+   "evidence": "protocols/imap/src/main/java/org/apache/james/imap/api/ImapConstants.java:104 (UIDPLUS / UID EXPUNGE); protocols/imap/src/main/java/org/apache/james/imap/processor/ExpungeProcessor.java",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have messages marked as deleted removed automatically",
+   "rating": "partial",
+   "evidence": "server/protocols/webadmin/webadmin-mailbox/src/main/java/org/apache/james/webadmin/service/ExpireMailboxService.java:72; mailet/standard/src/main/java/org/apache/james/transport/mailets/Expires.java:62",
+   "surface": "background",
+   "note": "Admin-run expiry by age or Expires header; no automatic removal of \\Deleted messages",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have incoming mail sorted into inbox category tabs",
+   "rating": "no",
+   "evidence": "searched mailets and JMAP for category/tab classification: none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Rename inbox tabs, choose their icons and turn categories on or off",
+   "rating": "no",
+   "evidence": "searched mailets and JMAP for category/tab classification: none",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move or drag messages to another inbox tab, optionally with all past mail from that sender",
+   "rating": "no",
+   "evidence": "searched mailets and JMAP for category/tab classification: none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "See the unread count on each inbox tab",
+   "rating": "no",
+   "evidence": "searched mailets and JMAP for category/tab classification: none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Filter on message size, sent date, current date or envelope address",
+   "rating": "partial",
+   "evidence": "server/mailet/mailets/src/main/resources/sieveConfig.xml:116 (size), :126 (envelope); server/data/data-jmap/src/main/java/org/apache/james/jmap/api/filtering/Rule.java:155 (SENT_DATE)",
+   "surface": "setting",
+   "note": "Sieve size and envelope tests and JMAP rule sentDate exist; no Sieve date/currentdate extension",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Match only part of an address in a filter: local part, domain, user or detail",
+   "rating": "partial",
+   "evidence": "server/mailet/mailets/src/main/resources/sieveConfig.xml:88 (address test, RFC 5228 :localpart/:domain)",
+   "surface": "setting",
+   "note": "No subaddress extension (:user/:detail) registered in sieveConfig.xml",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Get a readable name suggested for a new filter from its contents",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Choose the sender and extra addresses the away reply answers for",
+   "rating": "yes",
+   "evidence": "server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/VacationAction.java:62; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/jsieve/VacationAction.java:89",
+   "surface": "setting",
+   "note": "Through Sieve vacation :from/:addresses; JMAP VacationResponse has no addresses",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "See a banner in the list while automatic forwarding is active",
+   "rating": "partial",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/ForwardRoutes.java",
+   "surface": "screen",
+   "note": "Forwards are queryable server-side (WebAdmin, JMAP filter forward); the banner is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Pick recipients from the address book in a dialog",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/); ContactExtractor only emits recipients as an attribute",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Save all participants of a message as a distribution list",
+   "rating": "partial",
+   "evidence": "server/protocols/webadmin/webadmin-data/src/main/java/org/apache/james/webadmin/routes/GroupsRoutes.java",
+   "surface": "screen",
+   "note": "Server address groups exist (admin only); no address book distribution lists",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Add contact cards attached to a message to the address book",
+   "rating": "no",
+   "evidence": "searched mailets and JMAP for vcard/contact import; mailet/standard/.../ContactExtractor.java:69 extracts recipients only",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "See recent messages exchanged with a person on their card",
+   "rating": "partial",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailQueryMethod.scala",
+   "surface": "screen",
+   "note": "JMAP Email/query filter on from/to gives mail exchanged with an address; the card view is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Add a comment when answering an invitation",
+   "rating": "no",
+   "evidence": "no calendar in James; mailet/icalendar only parses",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Apply an organiser update, cancellation or attendee reply from the message to the calendar",
+   "rating": "partial",
+   "evidence": "mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICalendarParser.java; mailet/icalendar/src/main/java/org/apache/james/transport/mailets/ICALToJsonAttribute.java:91",
+   "surface": "screen",
+   "note": "Mailets parse iTIP parts and hand them to an external calendar (e.g. via AMQP); James has no calendar itself",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept or reject a new time an attendee proposed",
+   "rating": "no",
+   "evidence": "no calendar in James; mailet/icalendar only parses",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept or reject an uninvited participant who replied",
+   "rating": "no",
+   "evidence": "no calendar in James; mailet/icalendar only parses",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Answer a task assignment from the message",
+   "rating": "no",
+   "evidence": "no tasks in James",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have the invitation message deleted automatically after answering",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Add a folder someone shared with you by mail to your own folders",
+   "rating": "partial",
+   "evidence": "mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:122; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/core/Capability.scala:65",
+   "surface": "screen",
+   "note": "IMAP ACL and JMAP shares let a shared folder be subscribed; no share-by-mail invitation",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a mail folder with users in other contexts of the installation",
+   "rating": "partial",
+   "evidence": "mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:129",
+   "surface": "setting",
+   "note": "ACL sharing works across users and domains of one server; there are no contexts",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Give a deputy viewer, editor or author rights to your inbox",
+   "rating": "partial",
+   "evidence": "mailbox/api/src/main/java/org/apache/james/mailbox/model/MailboxACL.java:131; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegateSetMethod.scala",
+   "surface": "screen",
+   "note": "Per-mailbox IMAP ACL rights give read/write/insert levels; JMAP delegation is whole-account",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Allow a deputy to send mail on your behalf",
+   "rating": "yes",
+   "evidence": "server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/DelegateSetMethod.scala; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:449",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See the real sending domain when it differs from the From address",
+   "rating": "partial",
+   "evidence": "server/mailet/dkim/src/main/java/org/apache/james/jdkim/mailets/DKIMVerify.java:55; server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/SPF.java:73",
+   "surface": "screen",
+   "note": "Server verifies DKIM/SPF and can add result headers; showing the real domain is client-side",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have links and images disabled in suspicious mail and enable them on request",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Allow connections to mail servers with untrusted certificates, or inspect the certificate",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Recover the stored passwords of external accounts after a login password change",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Encrypt incoming mail or check PGP signatures through mail rules",
+   "rating": "partial",
+   "evidence": "mailet/crypto/src/main/java/org/apache/james/transport/mailets/SMIMEDecrypt.java:80; mailet/crypto/src/main/java/org/apache/james/transport/mailets/SMIMECheckSignature.java:112",
+   "surface": "setting",
+   "note": "S/MIME signature check and decrypt mailets, no PGP and not user rules",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Play a sound for new mail and choose the sound",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See an unread count on the app icon and the installed app badge",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a notice linking to the scheduled folder after scheduling a message",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Save a message as a PDF file in the file storage",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add a message to the portal start page",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Open the calendar, tasks or other tools in a side panel while reading or writing",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Extend the mail screens with plugins through extension points",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "api",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Lock individual mail settings so users cannot change them",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Limit sending to the addresses of the primary account",
+   "rating": "yes",
+   "evidence": "server/data/data-library/src/main/java/org/apache/james/rrt/lib/CanSendFromImpl.java; server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/EmailSubmissionSetMethod.scala:440",
+   "surface": "setting",
+   "note": "Sending restricted to the user's own address and its aliases",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Choose colour flags or star flags for the whole installation",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Name folders whose mail always has links disabled",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the size threshold, expiry choices and forced expiry for attachment download links",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Customise the buttons of the compose editor toolbar",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the image resize presets and limits for attachments",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the default level of sender authenticity warnings",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Show users upgrade offers when the mail quota runs low",
+   "rating": "partial",
+   "evidence": "mailbox/plugin/quota-mailing/src/main/java/org/apache/james/mailbox/quota/mailing/subscribers/QuotaThresholdNotice.java:55",
+   "surface": "screen",
+   "note": "Quota threshold notice mails warn users; no upgrade offers",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Use a phone toolbar with reply, move, flag, print and other actions",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Hand over a desktop session to a phone by QR code",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Choose a Gmail or Outlook keyboard shortcut preset, or turn shortcuts off",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Move between folder tree, list and message with Enter and Escape",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Hear recipient and attachment changes announced to a screen reader while writing",
+   "rating": "no",
+   "evidence": "client-side only, nothing in James; searched JMAP methods (server/protocols/jmap-rfc-8621/src/main/scala/org/apache/james/jmap/method/), WebAdmin routes (server/protocols/webadmin/*Routes.java), mailets (server/mailet, mailet/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
   }
  ]
 }

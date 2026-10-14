@@ -28,7 +28,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </nav>
 </sc-if>
 <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
-<nav aria-label="Tasks" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 245px; box-sizing: border-box; min-height: 100%; padding: 16px 12px; display: flex; flex-direction: column; gap: 18px; background: #ffffff; border-right: 1px solid #e4e6ea">
+<nav aria-label="Tasks" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: {{ navWidth }}px; box-sizing: border-box; min-height: 100%; padding: 16px 12px; display: flex; flex-direction: column; gap: 18px; background: #ffffff; border-right: 1px solid #e4e6ea">
   <div style="display: flex; align-items: center; gap: 4px">
     <button type="button" style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New work package
@@ -56,7 +56,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </nav>
 </sc-if>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Board"},"folded":{"editor":"text","default":""},"$preview":{"width":245,"height":945}}'>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Board"},"folded":{"editor":"text","default":""},"width":{"editor":"text","default":""},"$preview":{"width":245,"height":945}}'>
 class Component extends DCLogic {
   renderVals() {
     // Board, List and Gantt are views of the open project, switched in the project header. The Filters group is not per project,
@@ -67,6 +67,8 @@ class Component extends DCLogic {
     const active = viewOpen ? 'Northwind rollout Lyon' : given;
     const isFolded = String(this.props.folded ?? '') === 'true';
     const isOpen = !isFolded;
+    // Round 8: the open column can be dragged wider (boards-list-pane-resize); a board passes width="320" for that frame, the rest keeps 245.
+    const navWidth = parseInt(this.props.width, 10) || 245;
     const I = {
       day: 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10',
       board: 'M5 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM15 3h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z',
@@ -131,7 +133,7 @@ class Component extends DCLogic {
       style: railBase + (on ? 'background: #eaf0f7; color: #234a78; font-weight: 600;' : 'color: #3d4047;'),
       short
     }));
-    return { groups, rail, isFolded, isOpen };
+    return { groups, rail, isFolded, isOpen, navWidth };
   }
 }
 </script>

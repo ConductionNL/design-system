@@ -982,6 +982,826 @@
    "evidence": "src/components/TaskCheckbox.vue:78; src/components/TaskCheckbox.vue:84",
    "surface": "screen",
    "note": ""
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Create a public list that everyone in the organisation can see",
+   "rating": "partial",
+   "evidence": "src/components/AppNavigation/CalendarShare.vue:87; src/components/AppNavigation/CalendarSharee.vue:44",
+   "surface": "screen",
+   "note": "A list can be shared with users or groups (an all-users group works), but there is no 'public to the organisation' list type",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Hide a list from the navigation and show it again",
+   "rating": "partial",
+   "evidence": "src/components/AppNavigation/AppNavigationSettings.vue:52; src/views/AppNavigation.vue:26",
+   "surface": "screen",
+   "note": "Only the smart collections can be hidden/shown (Hidden/Visible/Automatic); user lists (calendars) cannot be hidden, see src/components/AppNavigation/ListItemCalendar.vue:62-91",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Show or hide the pane of lists next to the tasks",
+   "rating": "yes",
+   "evidence": "src/views/AppNavigation.vue:23 (NcAppNavigation provides the toggle); src/App.vue:125",
+   "surface": "screen",
+   "note": "Toggle comes from the nextcloud-vue NcAppNavigation component",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Resize the pane of lists and have its width remembered",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'resize|width' in src/views/AppNavigation.vue and settings; only NotesItem textarea resizes, no pane width setting in lib/Service/SettingsService.php",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Fall back to the default list when the open list is gone or access was withdrawn",
+   "rating": "no",
+   "evidence": "src/views/AppContent/Calendar.vue:25 renders nothing (v-if=\"calendar\") when the open list is gone; no redirect in src/router.js or src/utils/router.js",
+   "surface": "background",
+   "note": "getDefaultCalendar (src/store/calendars.js:323-329) falls back only for the default-list setting, not for the open list",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See an empty state when a list holds no tasks",
+   "rating": "no",
+   "evidence": "src/views/AppContent/General.vue, Calendar.vue, Week.vue: no NcEmptyContent or 'no tasks' string; empty content exists only in Dashboard (src/views/Dashboard.vue:26) and Trash bin",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Choose a task list layout with or without selection checkboxes",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for layout/selection settings; settings are defaultCalendarId, showHidden, sortOrder, sortDirection, allDay, initialRoute (lib/Service/SettingsService.php:67-72)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Open a tasks side panel next to mail, calendar and other apps",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See side panel tasks grouped as highest priority, overdue, scheduled, unscheduled and recently completed",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "See completed tasks in the side panel grouped by year of completion",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "boards-and-lists",
+   "name": "Edit, delete or tick a task done from its row in the side panel",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "The dashboard widget has a Mark as done action (src/views/Dashboard.vue:40-48), but it is not a side panel",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Select all tasks in a list",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'selectAll|select all|selected': no multi-select of tasks in src/components/TaskDragContainer.vue or TaskBody.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Mark several tasks as done or undone at once",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'bulk|selected': no multi-task done/undone; checkbox is per task (src/components/TaskBody.vue:43)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Delete several tasks at once",
+   "rating": "partial",
+   "evidence": "src/components/DeleteCompletedModal.vue:30; src/components/DeleteCompletedModal.vue:152",
+   "surface": "screen",
+   "note": "Only 'delete all completed tasks' of a list; no free selection of several tasks to delete",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Start a new task from inside other apps",
+   "rating": "yes",
+   "evidence": "src/talk.js:42; src/views/Dashboard.vue:63",
+   "surface": "screen",
+   "note": "Create a task from a Talk message and from the dashboard widget",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Start a new task from the side panel",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Be offered the default list when creating a task in a list you cannot write to",
+   "rating": "partial",
+   "evidence": "src/store/calendars.js:326; src/components/HeaderBar.vue:24",
+   "surface": "screen",
+   "note": "In collections the default falls back to the first writable list silently; in a read-only list the add field is hidden instead of offering the default list",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Keep a task unsaveable until it has a title",
+   "rating": "no",
+   "evidence": "src/components/HeaderBar.vue:134-149 and src/components/TaskCreateDialog.vue:186-195 create without any empty-summary check; no disabled state on empty title",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Edit a task in a floating window while using the rest of the suite",
+   "rating": "no",
+   "evidence": "Editing happens only in the docked NcAppSidebar (src/views/AppSidebar.vue:23); grep -ri over src/, lib/, appinfo/, templates/, tests/ for floating/window: none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Expand the task form step by step for dates, status, attachments and details",
+   "rating": "no",
+   "evidence": "src/views/AppSidebar.vue:160-276 shows all fields in fixed Details/Notes tabs; no step-by-step expanding form",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Confirm before discarding unsaved changes to a task",
+   "rating": "no",
+   "evidence": "Edits save immediately via updateTask (src/store/tasks.js:1116); grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'discard|unsaved': only alarm/delete contexts",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Load the latest copy of a task when it changed elsewhere before editing",
+   "rating": "partial",
+   "evidence": "src/store/tasks.js:1124-1134; src/store/tasks.js:1623",
+   "surface": "background",
+   "note": "Conflict is detected on save (HTTP 412) and the user clicks to refresh, discarding local changes; the latest copy is not loaded before editing",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Recover an unsaved task form after the browser reloads",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'localStorage|sessionStorage|draft|beforeunload': no hits",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Open a task in its own window by double-clicking it",
+   "rating": "no",
+   "evidence": "Double-click on a task edits its summary (src/components/TaskBody.vue:51); grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'window.open': none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Open a task in a detail popup from a widget, side panel or category browser",
+   "rating": "partial",
+   "evidence": "src/views/Dashboard.vue:36",
+   "surface": "screen",
+   "note": "Dashboard widget items link into the Tasks app (opens the sidebar there), not a detail popup; no side panel or category browser",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "See a progress bar on each task in the list",
+   "rating": "yes",
+   "evidence": "src/components/TaskBody.vue:89-94; src/components/NcProgressBar.vue:27",
+   "surface": "screen",
+   "note": "Circular progress indicator, shown when percent complete > 0",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record estimated and actual duration on a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'duration|estimat': only alarm/trash/sync durations; no task duration field in src/views/AppSidebar.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record estimated and actual costs with a currency on a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'cost|currency': no hits",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record a travel distance on a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'distance': no hits",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record billing information on a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'billing': no hits",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Record the companies a task relates to",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'compan': no hits",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Be stopped when the start date is after the due date",
+   "rating": "partial",
+   "evidence": "src/store/tasks.js:644-656; src/store/tasks.js:676-686",
+   "surface": "screen",
+   "note": "Start after due is never stored: the other date is shifted automatically, but the user is not stopped or warned",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Be offered to move the start date when a new due date falls before it",
+   "rating": "partial",
+   "evidence": "src/store/tasks.js:644-656",
+   "surface": "screen",
+   "note": "The start date is moved automatically to keep the start-due gap; the user is not offered the choice",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Have start and due dates filled in when a task is made repeating",
+   "rating": "no",
+   "evidence": "src/store/tasks.js:1675-1730 (setRecurrenceRule) and src/components/AppSidebar/RecurrenceItem.vue:180 set only the RRULE; start/due are not filled",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "See how far away a start or due date is in words",
+   "rating": "partial",
+   "evidence": "src/utils/dateStrings.js:37-45; src/utils/dateStrings.js:98-106",
+   "surface": "screen",
+   "note": "Words only for today/tomorrow/yesterday ('Due tomorrow', 'Started yesterday'); other dates show as a calendar date, no 'in 5 days'",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "planning-and-dates",
+   "name": "Have the completion date recorded automatically when a task is done",
+   "rating": "yes",
+   "evidence": "src/models/task.js:351-358; src/models/task.js:396-398",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "cards-and-tasks",
+   "name": "Keep the sort order and the done filter per list",
+   "rating": "partial",
+   "evidence": "lib/Service/SettingsService.php:68-70; src/components/SortorderDropdown.vue:102",
+   "surface": "setting",
+   "note": "Sort order, direction and showHidden are remembered, but globally per user, not per list",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Add users, groups, contacts or external addresses to a task as participants",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Accept, tentatively accept or decline a task you were added to",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See the confirmation status of each participant on a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See tasks delegated to you alongside your own",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Open the contact card of a task participant",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Edit a task you were added to as a participant",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "See in the list which tasks have participants",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling; list icons in src/components/TaskBody.vue:65-95 have no participant marker",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "assignment-and-people",
+   "name": "Have external participants offered as new contacts",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "Find tasks with a category in a browser shared across apps",
+   "rating": "partial",
+   "evidence": "src/components/FilterDropdown.vue:34; src/components/TaskBody.vue:59",
+   "surface": "screen",
+   "note": "Tags filter tasks inside the Tasks app only; no browser shared across apps",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See the priority of a task as an icon in lists",
+   "rating": "yes",
+   "evidence": "src/components/TaskCheckbox.vue:32; src/components/TaskBody.vue:145",
+   "surface": "screen",
+   "note": "Checkbox and star are coloured by priority class",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See the status of each task as a coloured badge",
+   "rating": "partial",
+   "evidence": "src/components/TaskCheckbox.vue:33; src/components/TaskCheckbox.vue:77",
+   "surface": "screen",
+   "note": "Checkbox distinguishes completed and cancelled; no coloured badge for needs-action/in-process; status chosen only in sidebar (src/views/AppSidebar.vue:181)",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "labels-and-filters",
+   "name": "See which tasks are private in the list",
+   "rating": "no",
+   "evidence": "src/components/TaskBody.vue:65-95 list icons (subtasks, start, recurring, pinned, note, date, progress, reminders) have no classification marker; classification only in sidebar (src/views/AppSidebar.vue:173)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "comments-and-activity",
+   "name": "Leave a comment when accepting or declining a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "comments-and-activity",
+   "name": "Read the comments participants left on their replies",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "attachments",
+   "name": "Act on all attachments of a task at once",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attach|upload': only src/store/tasks.js mentions ATTACH (not a UI); no attachment component in src/components/AppSidebar/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "attachments",
+   "name": "See the upload progress of attachments",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attach|upload': only src/store/tasks.js mentions ATTACH (not a UI); no attachment component in src/components/AppSidebar/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "search",
+   "name": "Limit a task search to a date range",
+   "rating": "no",
+   "evidence": "src/models/task.js:926-956 matches summary/note/tags only; search via unified search (src/App.vue:73); no date-range filter in src/components/FilterDropdown.vue",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "sharing-and-permissions",
+   "name": "Subscribe to and unsubscribe from lists shared with you",
+   "rating": "partial",
+   "evidence": "src/components/AppNavigation/ListItemCalendar.vue:91",
+   "surface": "screen",
+   "note": "Lists shared with you appear automatically and can be removed via Unshare; no subscribe/unsubscribe or re-subscribe flow",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Snooze a task reminder to a later time",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'snooze': no hits; app only stores VALARMs (src/components/AppSidebar/Alarm/AlarmListItem.vue:30-53), notifications are not handled in app code",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Dismiss a task reminder",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'dismiss|INotifier|Notification': no notifier in lib/; any reminder notification comes from the server's CalDAV service, not this app",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Get notified of task invitations and answer them from the notification",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling; no INotifier in lib/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Have the notification area open by itself for new reminders",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for notification settings: none; settings list in lib/Service/SettingsService.php:67-72",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "notifications",
+   "name": "Choose to receive email when participants accept or decline a task",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling; no mail setting in lib/Service/SettingsService.php",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Import an iCalendar file into a list",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'import' in t() strings and 'upload': no import UI; only Export (src/components/AppNavigation/ListItemCalendar.vue:80, src/views/AppSidebar.vue:124)",
+   "surface": "screen",
+   "note": "Pasting multiple lines creates multiple tasks (src/components/HeaderBar.vue:40), not an iCalendar import",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Skip tasks that already exist when importing",
+   "rating": "no",
+   "evidence": "No import exists (see import-ics)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "import-and-export",
+   "name": "Print one or several tasks",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'print': only src/models/alarm.js (unrelated); no print action in src/views/AppSidebar.vue:82-150",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Turn an email into a task reminder with subject, note and time",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'mail|message-id': only Talk integration exists (src/talk.js:42)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Continue a task made from an email in the full task form",
+   "rating": "no",
+   "evidence": "No mail integration (see integ-mail-create)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Jump from a task back to the email it was made from",
+   "rating": "no",
+   "evidence": "No mail integration; sidebar links only to Calendar and Deck (src/views/AppSidebar.vue:100,109)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "See and answer a task invitation inside the email that carries it",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'attendee|participant|organizer|PARTSTAT|delegat': no hits; task model src/models/task.js has no attendee handling",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "integrations-and-api",
+   "name": "Extend task screens and actions through extension points",
+   "rating": "no",
+   "evidence": "src/main.js:69 exposes OCA.Tasks.App only; grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'register|extension': no extension API (lib/AppInfo/Application.php:47 registers only a template listener)",
+   "surface": "api",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn the tasks app on or off per user",
+   "rating": "partial",
+   "evidence": "appinfo/info.xml (no restriction); lib/AppInfo/Application.php",
+   "surface": "setting",
+   "note": "No code in the app; Nextcloud's generic app management can limit any app to groups, not per user",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Allow or withhold task delegation per user",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php; and no delegation feature",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn task attachments on or off",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php; and no attachments",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn categories on or off",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php; tags cannot be turned off",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Configure the currencies offered for task costs",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php; and no costs",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Turn the tasks side panel on or off",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php; and no side panel",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "administration",
+   "name": "Allow users to create public lists",
+   "rating": "no",
+   "evidence": "no admin settings: appinfo/info.xml has no <settings>, lib/Service/SettingsService.php:66-89 holds only per-user prefs, routes in appinfo/routes.php",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "mobile-and-offline",
+   "name": "Select several tasks on a phone through an edit mode",
+   "rating": "no",
+   "evidence": "No multi-select (see cards-select-all); src/components/TaskBody.vue:728-1048 has only responsive layout, src/components/TaskDragContainer.vue:27 only touch drag",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Delete selected tasks with the Delete key",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'keydown|keyup|keyCode|event.key|hotkey': only Enter/Esc in inputs (src/views/AppNavigation.vue:388, src/components/HeaderBar.vue:38-39); no Delete key handler and no selection",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Hear each task title, status, due date, participants and progress read out in the list",
+   "rating": "partial",
+   "evidence": "src/components/TaskCheckbox.vue:30; src/components/TaskBody.vue:92",
+   "surface": "screen",
+   "note": "Checkbox aria-label gives status and the progress ring has an aria-label; due date and summary are plain text, no participants, no row-level label",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Move between list and detail regions as labelled landmarks",
+   "rating": "partial",
+   "evidence": "src/App.vue:23-28; src/views/AppNavigation.vue:23; src/views/AppSidebar.vue:23",
+   "surface": "screen",
+   "note": "nav/main/aside come from nextcloud-vue NcAppNavigation/NcAppContent/NcAppSidebar; the app adds no labels of its own",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Use the side panel with screen reader labels for each task and group",
+   "rating": "no",
+   "evidence": "no side panel exists: grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'side panel|sidebar.*app|panel'; only the in-app NcAppSidebar (src/views/AppSidebar.vue:23) and a Nextcloud dashboard widget (lib/Dashboard/TasksWidget.php:85, src/views/Dashboard.vue:24)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Open context help for the tasks screens",
+   "rating": "no",
+   "evidence": "grep -ri over src/, lib/, appinfo/, templates/, tests/ for 'help|documentation' in UI: only README/info.xml doc links; no in-app help action",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
+  },
+  {
+   "domain": "tasks",
+   "area": "accessibility-and-language",
+   "name": "Keep the tasks screens checked by automated accessibility tests",
+   "rating": "no",
+   "evidence": "package.json and tests/: no axe/pa11y/playwright; tests/javascript/unit holds jest unit specs only",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:tasks:ox"
   }
  ]
 }

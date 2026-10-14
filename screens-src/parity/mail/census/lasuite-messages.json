@@ -2998,6 +2998,1306 @@
    "evidence": "src/frontend/src/features/ui/components/feedback-button/index.tsx:85; src/frontend/src/features/ui/components/feedback-button/index.tsx:101",
    "surface": "screen",
    "note": "Setting FRONTEND_HELP_CENTER_URL"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Choose a mail provider from a list when adding an account",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:385 (provider detected from the address domain by regex for the IMAP import only; no provider list, and no external accounts beyond import)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Set how often a POP3 account is fetched and whether mail stays on the server",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:109; src/backend/core/services/importer/channel.py:332",
+   "surface": "setting",
+   "note": "IMAP import can poll regularly and be paused, but the interval is a global MESSAGES_IMPORT_IMAP_POLL_INTERVAL, not per account; no POP3 and no keep-on-server choice",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Disable an account and enable it again without removing it",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/imports-data-grid.tsx:96 (Pause polling / resume)",
+   "surface": "setting",
+   "note": "only an IMAP polling import can be paused and resumed; there are no external sending accounts to disable",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Be warned before saving an account that cannot connect securely",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx:282 (plain 'Use SSL' checkbox, no warning when off); en-US locale strings",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Pick the default sender address among your aliases",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:209 (sender defaults to the current mailbox or draft sender; no default-sender setting); settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Get the settings to connect a phone or desktop mail program, also by QR code",
+   "rating": "no",
+   "evidence": "searched for IMAP/SMTP client settings and QR codes (grep qrcode, imap/smtp in src/backend/core/urls.py, src/frontend/src/features/layouts/components/admin/mailbox-credentials); devices view is push notifications only (src/frontend/src/features/layouts/components/mailbox-settings/devices-view/user-devices-grid.tsx)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Find a mail setting by searching the settings",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json); no search field in the settings modal",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See the standard folders listed first in the folder tree",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:68 (Inbox, Drafts, Outbox, Sent, Archives, Spam, Trash fixed at top; labels in a separate section below)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Pin folders to a favourites section",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx and mailbox-labels/ (no pin or favourites section; grep favourite empty)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "Jump to the inbox, sent or drafts folder with a keyboard shortcut",
+   "rating": "no",
+   "evidence": "grep useHotkeys/hotkey/key handlers in src/frontend/src/ (only listbox arrows/Home/End, Escape in compose and selection); no go-to-folder shortcuts",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Open a view of the attachments of all messages as files",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/providers/attachment-preview.tsx:21 (preview modal aggregates the current thread's attachments)",
+   "surface": "screen",
+   "note": "scoped to one thread, no view of attachments across all messages",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "folders-and-navigation",
+   "name": "See statistics for a folder, such as top correspondents and mail by weekday and hour",
+   "rating": "no",
+   "evidence": "grep statistic in src/frontend/src/ (none) and src/frontend/src/features/layouts/components/mailbox-panel/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Sort scheduled messages by their planned send date",
+   "rating": "no",
+   "evidence": "no scheduled send: grep send_at/scheduled_at in src/backend/core/ (none), 'schedul' in frontend only hits auto-reply schedules",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Show or hide selection checkboxes in the list",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:355 (Select threads toggles selection mode with checkboxes)",
+   "surface": "setting",
+   "note": "a per-session toggle, not a persistent show/hide setting",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Show full date and time instead of relative dates in the list",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx (DateHelper.formatDate only); settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the size of each message in the list",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx (row shows senders, count, date, subject, draft/attachment/star badges, labels; no size)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See on a row whether a message was answered or forwarded",
+   "rating": "no",
+   "evidence": "src/backend/core/models.py:2281 Message has no answered/forwarded flag; thread-item badges have none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See the priority of a message on its row",
+   "rating": "no",
+   "evidence": "no priority field in src/backend/core/models.py Message; grep priority in frontend only hits editor internals",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See which account and folder a message came from in combined views",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx (no folder or mailbox shown on the row in the All messages view)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "Open a context menu on a message with its actions",
+   "rating": "no",
+   "evidence": "grep onContextMenu/ContextMenu in src/frontend/src/: only the send button (src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:121) and filter button (src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-filter.tsx:158); thread rows have none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See when the list was last refreshed",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:200 (pull-to-refresh feedback replaces the count briefly)",
+   "surface": "screen",
+   "note": "shows a transient refresh result, not a last-refreshed time",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open a message in its own window",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/compose/compose-window/index.tsx:178 (drafts pop out to their own tab); thread rows are router Links to /mailbox/$id/thread/$id",
+   "surface": "screen",
+   "note": "no explicit open-message-in-window action; only drafts pop out, a thread can be opened in a new tab via its link",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Have the newest message opened automatically on start",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See new mail appear at once, pushed from the server without polling",
+   "rating": "partial",
+   "evidence": "src/frontend/public/sw.js:121; src/frontend/src/features/providers/use-unread-badge.ts:65; src/frontend/src/features/providers/mailbox.tsx:264",
+   "surface": "background",
+   "note": "Web Push raises OS notifications and the badge, but the list itself still updates by 30 s polling, push is only a nudge",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "conversation-list",
+   "name": "See a summary with actions when several messages are selected",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-selection-placeholder.tsx:14; src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-header.tsx:440",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Step to the previous or next message from the reading pane",
+   "rating": "no",
+   "evidence": "grep previous/next thread in src/frontend/src/features/layouts/components/thread-view/ and thread-action-bar (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See when a message was sent on behalf of someone else",
+   "rating": "no",
+   "evidence": "src/backend/core/models.py:2289 sender_user is set only for mail sent from this instance; no parsing of an incoming Sender header (grep in src/backend/core/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show HTML messages as plain text",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have insecure external images loaded over a secure connection",
+   "rating": "yes",
+   "evidence": "src/backend/messages/settings.py:213 (IMAGE_PROXY_ENABLED); src/backend/core/api/viewsets/image_proxy.py:1; src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/text_html.ts:123",
+   "surface": "background",
+   "note": "external images are fetched through the server proxy when the deployment enables it",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show quoted lines in colour",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:219 (quotes get fixed grey bars, no setting)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Read plain text messages in a fixed-width font",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:183 (plain text uses the base font, pre-wrap; no setting)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Set the font size for plain text messages",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Show a truncated large message in full on request",
+   "rating": "no",
+   "evidence": "grep truncat/too large in src/frontend/src/features/layouts/components/thread-view/components/thread-message/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Open links to suite items such as appointments, files or contacts inside the suite",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:384 (http links open in a new tab after confirmation; no in-suite routing)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Click an address in the text to start a new message to it",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:384 (mailto: links fall through to the browser default handler, not the app's composer)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Click dates and times mentioned in a message",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/renderers/linkify.ts:12 (linkifies http/www URLs only)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "Retry loading a message whose content failed to load",
+   "rating": "partial",
+   "evidence": "src/frontend/src/routes/mailbox/$mailboxId_/draft/$draftId.tsx:57; src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:1064",
+   "surface": "screen",
+   "note": "retry exists for drafts and calendar invites; an unreadable message body shows a banner without retry (thread-message-header.tsx:192)",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "reading",
+   "name": "See a banner with the planned send time on a scheduled message",
+   "rating": "no",
+   "evidence": "no scheduled send in backend or frontend (grep send_at/scheduled_at)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Preview an attached XRechnung electronic invoice",
+   "rating": "no",
+   "evidence": "grep xrechnung/zugferd in src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose whether forwarded messages go inline or as an attachment",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:200 (forward always quotes inline and carries attachments); settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Choose whether replies include the original text",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/blocknote/quoted-message-block/index.tsx; settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be asked whether to reply to all or only the sender when replying to a mailing list",
+   "rating": "no",
+   "evidence": "grep list-post/list-id in src/frontend/src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Reply or forward with or without the blocked external images",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/ and quoted-message-block (no external image choice on reply/forward)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Continue editing a saved draft",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/compose-draft-placeholder/index.tsx:56; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx (draft-only thread opens in compose window)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Write a new message to everyone on a message except yourself",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:234 (reply all excluding own address)",
+   "surface": "screen",
+   "note": "available as reply all only, not as a fresh new message to all participants",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send with only the address, without a display name",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/general-tab/index.tsx:85 (sender name is per mailbox; no send-without-name option)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set the priority of a message to high, normal or low",
+   "rating": "no",
+   "evidence": "grep priority/X-Priority in src/frontend/src/features/forms and src/backend/core/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Set a default font, size and colour for new messages",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx (bold/italic/colour/align only); settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Pick a send time from quick choices such as tomorrow morning",
+   "rating": "no",
+   "evidence": "no scheduled send (grep send_at/scheduled_at/schedul)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Cancel or edit a scheduled message, moving it back to drafts",
+   "rating": "no",
+   "evidence": "no scheduled send (grep send_at/scheduled_at/schedul)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be stopped from sending from an address of a disabled account",
+   "rating": "no",
+   "evidence": "no external sending accounts to disable; src/frontend/src/features/forms/components/message-form/index.tsx:203 only filters by thread access",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Restore a draft that was changed in another tab or browser",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/providers/compose-windows/broadcast.ts:1 (BroadcastChannel sync of draft updates between tabs)",
+   "surface": "screen",
+   "note": "same-browser tab sync only; no conflict detection or restore across browsers",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach your own contact card to a message",
+   "rating": "no",
+   "evidence": "grep vcard in src/frontend/src/ (none); backend only maps text/vcard extension (src/backend/core/services/attachments.py:73)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Show or hide the formatting toolbar",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/blocknote/mobile-toolbar/index.tsx:218 (Formatting options toggle on mobile)",
+   "surface": "screen",
+   "note": "desktop toolbar is BlockNote's selection-triggered toolbar, no show/hide toggle",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "See the size of the message while writing",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/forms/components/message-form/attachment-uploader.tsx:77 (total attachment size)",
+   "surface": "screen",
+   "note": "attachment total only, not the message size",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "See a hint on mail a deputy sent on your behalf",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/ui/components/contact-chip/contact-popover.tsx:84; src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:71",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Resize attached images to a smaller size before sending",
+   "rating": "no",
+   "evidence": "grep resize in src/frontend/src/ (only panel and iframe resizing)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Check spelling while writing",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/blocknote/ (BlockNote contenteditable, browser native spellcheck; explicitly off only in src/frontend/src/features/blocknote/inline-template-variable/index.tsx:39)",
+   "surface": "screen",
+   "note": "relies on the browser's built-in spellcheck, no app-level checker",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Be warned when closing the browser while a message is still sending",
+   "rating": "no",
+   "evidence": "grep beforeunload in src/frontend/src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Place the signature above or below the quoted text",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/blocknote/signature-block/; src/frontend/src/features/layouts/components/mailbox-settings/signatures-view/ (no position option)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accounts-and-setup",
+   "name": "Design a signature from a template with contact details, social links, colours and an image",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/blocknote/custom-slash-menu.tsx:40 (2 columns, image + text); src/frontend/public/locales/placeholders/en-US.json (name variables)",
+   "surface": "setting",
+   "note": "rich signature editor with image/text columns and name variables; no template gallery, social links or contact-detail fields",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "composing",
+   "name": "Send a message with a keyboard shortcut",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:932 (Enter only suppressed; no Ctrl+Enter); grep Mod-Enter none",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Attach files from the selected message or recently opened messages",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/ (local files and Drive picker only, drive-attachment-picker.tsx)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Start a new message carrying the attachments of selected messages",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/forms/components/message-form/index.tsx:285 (forward carries the parent's attachments)",
+   "surface": "screen",
+   "note": "one message at a time through forward, not from a selection",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Set an expiry date, password and automatic deletion on attachment download links",
+   "rating": "no",
+   "evidence": "no attachment download links; grep expir/password in src/frontend/src/features/forms (none relevant)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Get notified when shared attachment links are downloaded, opened or expire",
+   "rating": "no",
+   "evidence": "no attachment download links (see att-link-options)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Be warned before sending an empty attachment",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/message-form/ (no zero-size check; only size limit and forgotten-attachment warnings, index.tsx:443)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See attachments as a list or as preview tiles",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/attachment-item.tsx:108 (icon list only)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "See thumbnail previews of office documents attached to a draft",
+   "rating": "no",
+   "evidence": "grep thumbnail in src/frontend/src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "attachments",
+   "name": "Drag an attachment out of the browser onto the desktop",
+   "rating": "no",
+   "evidence": "grep DownloadURL/dragstart in src/frontend/src/features/layouts/components/thread-view/components/thread-attachment-list/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "See active search filters as removable chips",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/components/thread-panel-filter.tsx:119 (Active filters summary label); src/frontend/src/features/layouts/components/thread-panel/index.tsx:154 (Clear filters)",
+   "surface": "screen",
+   "note": "filters are summarised and cleared together, not shown as individually removable chips",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "search",
+   "name": "Choose which fields a plain search looks in",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/forms/components/search-filters-form/ (From/To/Subject/Contains/In fields; no default-field setting)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Mark a message with one of ten colours",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-labels/components/label-form-modal/components/color-palette-field/index.tsx:7",
+   "surface": "screen",
+   "note": "colour comes from labels on threads (20-colour palette); no per-message colour flag",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "labels-and-flags",
+   "name": "Browse everything with a category across mail and other apps",
+   "rating": "no",
+   "evidence": "labels are mail-only (src/backend/core/models.py:1600 Label); no cross-app category view",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Delete messages permanently instead of moving them to the trash",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Still delete mail when the quota is full, after a warning that it skips the trash",
+   "rating": "no",
+   "evidence": "grep quota in src/frontend/src/ and src/backend/core/ (no mailbox quota)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Create a rule while moving so future mail from that sender goes to the same folder",
+   "rating": "no",
+   "evidence": "no mail rules/filters: grep sieve/rule in src/backend/core/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Archive all messages in a folder older than a set number of days",
+   "rating": "no",
+   "evidence": "grep 'older than' in frontend: none for archiving; src/frontend/src/features/layouts/components/mailbox-panel/",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move all messages of one folder to another folder",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx (no folder-level move-all action)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Clean up a folder by removing messages marked as deleted",
+   "rating": "no",
+   "evidence": "no IMAP deleted-flag model; grep expunge in src/frontend/src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have messages marked as deleted removed automatically",
+   "rating": "no",
+   "evidence": "no IMAP deleted-flag model; trash model only",
+   "surface": "background",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Have incoming mail sorted into inbox category tabs",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-panel/components/mailbox-list/index.tsx:78 (Unread/Starred/Mentioned/Assigned are filters, not category tabs)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Rename inbox tabs, choose their icons and turn categories on or off",
+   "rating": "no",
+   "evidence": "no inbox category tabs (see org-inbox-tabs)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Move or drag messages to another inbox tab, optionally with all past mail from that sender",
+   "rating": "no",
+   "evidence": "no inbox category tabs (see org-inbox-tabs)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "See the unread count on each inbox tab",
+   "rating": "no",
+   "evidence": "no inbox category tabs (see org-inbox-tabs)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Filter on message size, sent date, current date or envelope address",
+   "rating": "no",
+   "evidence": "no mail filter rules: grep sieve/rule in src/backend/core/ and src/frontend/src/ (only AI auto-labeling by label description)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Match only part of an address in a filter: local part, domain, user or detail",
+   "rating": "no",
+   "evidence": "no mail filter rules (see org-filter-size-date)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Get a readable name suggested for a new filter from its contents",
+   "rating": "no",
+   "evidence": "no mail filter rules (see org-filter-size-date)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "Choose the sender and extra addresses the away reply answers for",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/autoreplies-view/ (auto-reply per mailbox with schedule; no address choice)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "organising",
+   "name": "See a banner in the list while automatic forwarding is active",
+   "rating": "no",
+   "evidence": "no automatic forwarding ('Simple redirect (Coming soon)' in en-US locale strings)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Pick recipients from the address book in a dialog",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/ui/components/suggestion-input/ (autocomplete only, no address book dialog)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Save all participants of a message as a distribution list",
+   "rating": "no",
+   "evidence": "no distribution lists; src/backend/core/api/viewsets/contacts.py",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "Add contact cards attached to a message to the address book",
+   "rating": "no",
+   "evidence": "grep vcard in src/frontend/src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "contacts-and-recipients",
+   "name": "See recent messages exchanged with a person on their card",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/ui/components/contact-chip/contact-popover.tsx (name, address, sent-by, delivery status only)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Add a comment when answering an invitation",
+   "rating": "no",
+   "evidence": "src/backend/core/api/viewsets/calendar.py:103 (RSVP takes response and calendar only)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Apply an organiser update, cancellation or attendee reply from the message to the calendar",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx:762 (CANCEL shown as banner); index.tsx:1211 (Add to calendar)",
+   "surface": "screen",
+   "note": "updated invites can be added again and cancellations are shown, but cancellations and attendee replies are not applied to the calendar",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept or reject a new time an attendee proposed",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx (no COUNTER handling); src/backend/core/api/viewsets/calendar.py",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Accept or reject an uninvited participant who replied",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/calendar-invite/index.tsx; src/backend/core/api/viewsets/calendar.py",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Answer a task assignment from the message",
+   "rating": "no",
+   "evidence": "grep VTODO in src/ (none)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "invitations-in-mail",
+   "name": "Have the invitation message deleted automatically after answering",
+   "rating": "no",
+   "evidence": "settings modal tabs (src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/: general, access, autoreplies, imports, integrations, templates, signatures) and notifications modal; en-US locale strings (src/frontend/public/locales/common/en-US.json)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Add a folder someone shared with you by mail to your own folders",
+   "rating": "no",
+   "evidence": "no folder sharing by mail; sharing is per thread/mailbox (src/frontend/src/features/layouts/components/thread-view/components/share-modal-extensions/)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Share a mail folder with users in other contexts of the installation",
+   "rating": "no",
+   "evidence": "src/backend/core/api/viewsets/user.py:77 (user search scoped to a maildomain for non-superusers); no folder-level sharing",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Give a deputy viewer, editor or author rights to your inbox",
+   "rating": "yes",
+   "evidence": "src/backend/core/enums.py:17 (viewer/editor/sender/admin mailbox roles); src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/access-tab/index.tsx",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "sharing-and-delegation",
+   "name": "Allow a deputy to send mail on your behalf",
+   "rating": "yes",
+   "evidence": "src/backend/core/enums.py:22 (SENDER role); src/frontend/src/features/layouts/components/mailbox-settings/modal-mailbox-settings/access-tab/index.tsx",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "See the real sending domain when it differs from the From address",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-header.tsx:178 (authentication failure banner only, no sending-domain display)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Have links and images disabled in suspicious mail and enable them on request",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-body.tsx:81; thread-message-body.tsx:210",
+   "surface": "screen",
+   "note": "links are disabled in spam threads and attachments blocked, but cannot be enabled on request",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Allow connections to mail servers with untrusted certificates, or inspect the certificate",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/imports-view/step-form.tsx (no certificate options)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Recover the stored passwords of external accounts after a login password change",
+   "rating": "no",
+   "evidence": "no stored external account passwords beyond one-off imports",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "security-and-privacy",
+   "name": "Encrypt incoming mail or check PGP signatures through mail rules",
+   "rating": "no",
+   "evidence": "grep pgp/gpg in src/ frontend and backend core (none); no mail rules",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Play a sound for new mail and choose the sound",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/utils/soundbox.ts:9 used only for the sent sound (src/frontend/src/features/providers/sent-box/queued-message.tsx:35); no new-mail sound or choice",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "See an unread count on the app icon and the installed app badge",
+   "rating": "yes",
+   "evidence": "src/frontend/public/sw.js:121 (setAppBadge from unread count); src/frontend/src/features/providers/use-unread-badge.ts:65",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "notifications",
+   "name": "Get a notice linking to the scheduled folder after scheduling a message",
+   "rating": "no",
+   "evidence": "no scheduled send (grep send_at/scheduled_at/schedul)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "import-and-export",
+   "name": "Save a message as a PDF file in the file storage",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/components/thread-message/thread-message-actions.tsx:151 (Print)",
+   "surface": "screen",
+   "note": "print only (PDF via the browser); no save-as-PDF into Drive",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Add a message to the portal start page",
+   "rating": "no",
+   "evidence": "no portal; grep widget only hits the inbound website widget integration",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Open the calendar, tasks or other tools in a side panel while reading or writing",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/thread-view/ and compose/ (no side panel for calendar or tasks)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "integrations-and-api",
+   "name": "Extend the mail screens with plugins through extension points",
+   "rating": "no",
+   "evidence": "no frontend extension points; integrations are server webhooks and widgets (src/frontend/src/features/layouts/components/mailbox-settings/integrations-view/)",
+   "surface": "api",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Lock individual mail settings so users cannot change them",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/mailbox-settings/ (Forced signature, en-US locale strings)",
+   "surface": "setting",
+   "note": "only the signature can be forced; no general locking of settings",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Limit sending to the addresses of the primary account",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/admin/ (no sending restriction setting)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Choose colour flags or star flags for the whole installation",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/admin/ (star only, no flag mode)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Name folders whose mail always has links disabled",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/layouts/components/admin/ and src/backend/messages/settings.py",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the size threshold, expiry choices and forced expiry for attachment download links",
+   "rating": "no",
+   "evidence": "no attachment download links; src/backend/messages/settings.py",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Customise the buttons of the compose editor toolbar",
+   "rating": "no",
+   "evidence": "src/frontend/src/features/blocknote/toolbar.tsx (fixed buttons); src/backend/messages/settings.py",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the image resize presets and limits for attachments",
+   "rating": "no",
+   "evidence": "no image resize; src/backend/messages/settings.py",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Set the default level of sender authenticity warnings",
+   "rating": "no",
+   "evidence": "src/backend/messages/settings.py (no authenticity warning level setting found)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "administration",
+   "name": "Show users upgrade offers when the mail quota runs low",
+   "rating": "no",
+   "evidence": "no quota (grep quota in frontend and backend core)",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Use a phone toolbar with reply, move, flag, print and other actions",
+   "rating": "yes",
+   "evidence": "src/frontend/src/features/layouts/components/mobile/thread-toolbar/index.tsx:121 (reply, reply all, forward, labels, star, read, archive, spam, delete)",
+   "surface": "screen",
+   "note": "no print in the native shell",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "mobile-and-offline",
+   "name": "Hand over a desktop session to a phone by QR code",
+   "rating": "no",
+   "evidence": "grep qrcode in src/frontend/src/ (none); src/backend/core/api/viewsets/mobile_auth.py is OIDC deep-link only",
+   "surface": "screen",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Choose a Gmail or Outlook keyboard shortcut preset, or turn shortcuts off",
+   "rating": "no",
+   "evidence": "no keyboard shortcut system (grep useHotkeys/hotkey in src/frontend/src/)",
+   "surface": "setting",
+   "note": "",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Move between folder tree, list and message with Enter and Escape",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/layouts/components/thread-panel/hooks/listbox-navigation.ts:10; src/frontend/src/features/layouts/components/thread-panel/components/thread-item/index.tsx (Enter opens a thread)",
+   "surface": "screen",
+   "note": "arrow keys and Enter in the list; no Escape back from message to list",
+   "backfill": "backfill:mail:ox"
+  },
+  {
+   "domain": "mail",
+   "area": "accessibility-and-language",
+   "name": "Hear recipient and attachment changes announced to a screen reader while writing",
+   "rating": "partial",
+   "evidence": "src/frontend/src/features/forms/components/message-form/draft-save-status.tsx:56 (aria-live draft save)",
+   "surface": "screen",
+   "note": "only draft saving is announced; recipient and attachment changes are not",
+   "backfill": "backfill:mail:ox"
   }
  ]
 }

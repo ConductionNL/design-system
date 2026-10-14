@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1700px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 3160px; overflow: hidden">
+  <div style="position: relative; flex: none; height: 1700px; display: flex; flex-direction: column; overflow: hidden">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,945px"></dc-import></div>
@@ -120,9 +121,154 @@ a{color:#3669a5}a:hover{color:#234a78}
       </section>
     </div>
   </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 28px 24px 0">
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The Server and sign-in block for a POP3 mailbox: how often it is fetched, and whether fetched mail stays on the server</figcaption>
+      <div style="height: 380px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <label for="ml-acct-mailbox-pop" style="font-weight: 600; white-space: nowrap">Settings for mailbox</label>
+          <button id="ml-acct-mailbox-pop" type="button" aria-haspopup="listbox" style="{{ chooser }}"><span>Support, support@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Server and sign-in</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">A POP3 mailbox is fetched on a schedule; the server keeps no folders of its own.</p></div>
+          <dl style="margin: 0; display: grid; grid-template-columns: 140px 1fr; gap: 6px 12px; font-size: 14px; line-height: 20px">
+            <dt style="color: #5e6168">Incoming server</dt><dd style="margin: 0">pop.northwind-projects.test, port 995, encrypted, POP3</dd>
+            <dt style="color: #5e6168">Outgoing server</dt><dd style="margin: 0">smtp.northwind-projects.test, port 465, encrypted</dd>
+            <dt style="color: #5e6168; line-height: 34px">Fetch new mail</dt><dd style="margin: 0"><button id="ml-acct-pop-every" type="button" aria-haspopup="listbox" aria-label="Fetch new mail: every 15 minutes" style="{{ chooserSmall }}"><span>Every 15 minutes</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></dd>
+          </dl>
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px">
+            <label for="ml-acct-pop-keep" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 600">Leave a copy on the server</span><span style="font-size: 14px; color: #5e6168; line-height: 21px">Fetched mail stays on the server, so another mail program can fetch it too.</span></label>
+            <button id="ml-acct-pop-keep" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Turning an account off keeps it: the switch sits next to Remove account, and the mailbox chooser, drawn open, lists the turned-off mailbox greyed with Turn on again</figcaption>
+      <div style="position: relative; height: 380px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <label for="ml-acct-mailbox-open" style="font-weight: 600; white-space: nowrap">Settings for mailbox</label>
+          <div style="position: relative; display: flex">
+            <button id="ml-acct-mailbox-open" type="button" aria-haspopup="listbox" aria-expanded="true" style="{{ chooser }}"><span>Olivia Brandt, olivia@northwind-projects.test</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m18 15-6-6-6 6"></path></svg></button>
+            <div role="listbox" aria-label="Mailbox" style="position: absolute; left: 0; top: 44px; width: 420px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+              <div role="option" aria-selected="true" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--sc-radius, 8px); background: #eaf0f7"><span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #234a78; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">OB</span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 16px"><span style="font-size: 14px">Olivia Brandt</span><span style="font-size: 12px; color: #5e6168">olivia@northwind-projects.test</span></span></div>
+              <div role="option" aria-selected="false" aria-label="Support mailbox, turned off" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--sc-radius, 8px); color: #5e6168"><span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #eef0f3; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">SU</span><span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 16px"><span style="font-size: 14px">Support mailbox, turned off</span><span style="font-size: 12px">support@northwind-projects.test</span></span><button type="button" style="{{ btnRow }}">Turn on again</button></div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Server and sign-in</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Change these when your provider moves the server or when you set a new password.</p></div>
+          <dl style="margin: 0; display: grid; grid-template-columns: 140px 1fr; gap: 6px 12px; font-size: 14px; line-height: 20px">
+            <dt style="color: #5e6168">Incoming server</dt><dd style="margin: 0">imap.northwind-projects.test, port 993, encrypted</dd>
+            <dt style="color: #5e6168">Outgoing server</dt><dd style="margin: 0">smtp.northwind-projects.test, port 465, encrypted</dd>
+          </dl>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px">
+            <button type="button" style="{{ btn }}">Edit server settings</button>
+            <button type="button" style="{{ btn }}">Change password</button>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px">
+            <label for="ml-acct-off" style="display: inline-flex; align-items: center; gap: 10px; font-weight: 600; white-space: nowrap">Turn this account off<button id="ml-acct-off" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button></label>
+            <button type="button" style="{{ btnDanger }}">Remove account</button>
+          </div>
+          <p style="margin: 0; font-size: 13px; color: #5e6168; line-height: 19px; text-align: right">Turned off: no mail is fetched or sent and the mailbox leaves the list, but its settings and rules are kept. Removing takes it out of the app.</p>
+        </div>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Connect a phone or mail program, opened from the Server and sign-in block: the server names, ports and sign-in name to copy, and a QR code that sets up a phone in one scan</figcaption>
+      <div style="height: 460px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(27,28,29,0.45); border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <section role="dialog" aria-modal="true" aria-labelledby="ml-acct-device-title" style="width: 640px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 20px 24px; background: #ffffff; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28)">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+            <h3 id="ml-acct-device-title" style="margin: 0; font-size: 20px; font-weight: 700; line-height: 24px">Connect a phone or mail program</h3>
+            <button type="button" aria-label="Close" style="flex: none; width: 40px; height: 40px; margin: -8px -8px -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display: flex; gap: 24px">
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+              <p style="margin: 0 0 4px; font-size: 14px; color: #5e6168; line-height: 21px">Type these into the mail program, or copy them one by one.</p>
+              <sc-for list="{{ device }}" as="d" hint-placeholder-count="5">
+                <div style="display: flex; align-items: center; gap: 8px; min-height: 40px; border-bottom: 1px solid #eef0f3; font-size: 14px; line-height: 20px">
+                  <span style="flex: none; width: 120px; color: #5e6168">{{ d.label }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ d.value }}</span>
+                  <button type="button" aria-label="Copy {{ d.label }}" title="Copy" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+              </sc-for>
+              <p style="margin: 4px 0 0; font-size: 13px; color: #5e6168; line-height: 19px">Password: your account password, or an app password from Privacy and security if you use two-step sign-in.</p>
+            </div>
+            <div style="flex: none; width: 196px; display: flex; flex-direction: column; align-items: center; gap: 8px">
+              <svg role="img" aria-label="QR code with the mail settings for a phone" viewBox="0 0 29 29" width="176" height="176" shape-rendering="crispEdges" style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 6px; box-sizing: content-box; background: #ffffff"><path fill="#1b1c1d" d="{{ qr }}"></path></svg>
+              <span style="font-size: 13px; line-height: 18px; color: #5e6168; text-align: center">Scan with the phone's camera to set up Mail in one step.</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; padding-top: 4px"><button type="button" style="{{ btn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Copy all settings</button><span style="flex: 1 1 auto"></span><button type="button" style="{{ btn }}">Close</button></div>
+        </section>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">e</span> &nbsp;Finding a setting: the search field above the section list of the settings dialog, "signature" typed, and the matching settings listed with their section</figcaption>
+      <div style="height: 460px; box-sizing: border-box; display: flex; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div role="search" style="flex: 0 0 300px; width: 300px; box-sizing: border-box; display: flex; flex-direction: column; padding: 16px 12px; border-right: 1px solid #e4e6ea; background: #fafbfc">
+          <div style="position: relative; display: flex; align-items: center">
+            <label for="ml-settings-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the settings</label>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
+            <input id="ml-settings-search" type="search" value="signature" placeholder="Search the settings" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 40px 0 36px; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d; outline: 2px solid #3669a5; outline-offset: 1px">
+            <button type="button" aria-label="Clear the search" style="position: absolute; right: 4px; width: 32px; height: 32px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <span role="status" style="padding: 12px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">4 settings match</span>
+          <ol role="listbox" aria-label="Matching settings" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{ matches }}" as="m" hint-placeholder-count="4">
+              <li role="option" aria-selected="{{ m.on }}" style="{{ m.style }}"><span style="font-size: 14px; line-height: 18px; color: #1b1c1d">{{ m.setting }}</span><span style="font-size: 12px; line-height: 16px; color: #5e6168">{{ m.section }}</span></li>
+            </sc-for>
+          </ol>
+          <span style="margin-top: auto; padding: 0 10px; font-size: 13px; color: #5e6168">Enter opens the first match. Esc shows the sections again.</span>
+        </div>
+        <section aria-label="Signatures and sender names" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 16px 20px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 24px">Signatures and sender names</h3>
+            <button type="button" aria-label="Close settings" style="flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px; background: #fff3cd; align-self: flex-start; padding: 0 4px; margin-left: -4px">Signature in replies</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Where the signature goes when you reply or forward.</p></div>
+            <label style="display: flex; align-items: center; gap: 10px; min-height: 32px"><input type="radio" name="ml-sig-pos" checked style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Above the quoted text</label>
+            <label style="display: flex; align-items: center; gap: 10px; min-height: 32px"><input type="radio" name="ml-sig-pos" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">Below the quoted text</label>
+          </div>
+        </section>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">f</span> &nbsp;An untrusted certificate: the Server and sign-in block reports it, Show certificate is unfolded with issuer, validity and fingerprint, and Trust this certificate allows the connection</figcaption>
+      <div style="height: 420px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Server and sign-in</h4><p style="margin: 0; font-size: 14px; color: #5e6168; line-height: 21px">Change these when your provider moves the server or when you set a new password.</p></div>
+        <div role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff8ee; font-size: 14px; line-height: 20px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #c77a1f"><path d="m10.29 3.86-8.6 14.86A2 2 0 0 0 3.4 21.7h17.2a2 2 0 0 0 1.71-2.98L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg><span><strong style="font-weight: 600">The certificate of imap.northwind-projects.test is not trusted.</strong> It was issued by Northwind IT, not by a known authority. No mail is fetched until you trust it or your administrator replaces it. Trust it only if your administrator confirms the fingerprint.</span></div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px">
+          <button type="button" style="{{ btn }}">Trust this certificate</button>
+          <button type="button" aria-expanded="true" aria-controls="ml-acct-cert" style="{{ btn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg>Show certificate</button>
+          <span style="flex: 1 1 auto"></span>
+          <button type="button" style="{{ btn }}">Edit server settings</button>
+        </div>
+        <dl id="ml-acct-cert" style="margin: 4px 0 0; display: grid; grid-template-columns: 140px 1fr 140px 1fr; gap: 6px 12px; padding: 12px 14px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #fafbfc; font-size: 14px; line-height: 20px">
+          <dt style="color: #5e6168">Issued to</dt><dd style="margin: 0">imap.northwind-projects.test</dd>
+          <dt style="color: #5e6168">Issued by</dt><dd style="margin: 0">Northwind IT internal CA</dd>
+          <dt style="color: #5e6168">Valid from</dt><dd style="margin: 0">1 October 2026</dd>
+          <dt style="color: #5e6168">Valid until</dt><dd style="margin: 0">30 September 2027</dd>
+          <dt style="color: #5e6168">Fingerprint</dt><dd style="margin: 0; grid-column: 2 / -1; display: flex; align-items: center; gap: 8px"><code style="font: 13px/20px ui-monospace, 'DejaVu Sans Mono', monospace; color: #1b1c1d; word-break: break-all">SHA-256 7F:2A:9C:41:B8:0D:E3:5C:66:1A:F4:90:2B:7D:C8:13:55:AE:04:9F:D2:6B:38:E1:0C:47:A9:B5:62:F0:1D:8E</code><button type="button" aria-label="Copy the fingerprint" title="Copy" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button></dd>
+        </dl>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px; margin-top: 4px">
+          <label for="ml-acct-untrusted" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 600">Allow untrusted certificates for this mailbox</span><span style="font-size: 14px; color: #5e6168; line-height: 21px">Connects even when the certificate changes again. Only for a test server.</span></label>
+          <button id="ml-acct-untrusted" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
+        </div>
+      </div>
+    </figure>
+
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3160}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
@@ -144,7 +290,38 @@ class Component extends DCLogic {
       ['Customers / Lyon', I.folder, 'Today 07:02', true],
       ['Customers / Kassel', I.folder, '9 Oct, when opened', false]
     ].map(([folder, icon, fetched, on]) => ({ folder, icon, fetched, checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }));
-    return { switchOn, knobOn, special, sync };
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px';
+    const btn = "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap";
+    const btnDanger = "display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap";
+    const btnRow = "display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap";
+    const chooser = "flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 180px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap";
+    const chooserSmall = "display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 170px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap";
+    const device = [
+      ['Incoming server', 'imap.northwind-projects.test'],
+      ['Incoming port', '993, SSL/TLS, IMAP'],
+      ['Outgoing server', 'smtp.northwind-projects.test'],
+      ['Outgoing port', '465, SSL/TLS, SMTP'],
+      ['Sign-in name', 'olivia@northwind-projects.test']
+    ].map(([label, value]) => ({ label, value }));
+    // A QR-like pattern drawn as 1x1 cells on a 29 x 29 grid: three finder squares and a fixed pseudo-random body, the same on every build.
+    const cells = [];
+    const finder = (x, y) => { for (let i = 0; i < 7; i++) for (let j = 0; j < 7; j++) { const edge = i === 0 || i === 6 || j === 0 || j === 6; const core = i >= 2 && i <= 4 && j >= 2 && j <= 4; if (edge || core) cells.push([x + i, y + j]); } };
+    finder(0, 0); finder(22, 0); finder(0, 22);
+    let seed = 7;
+    for (let y = 0; y < 29; y++) for (let x = 0; x < 29; x++) {
+      const inFinder = (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20);
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      if (!inFinder && (seed >>> 16) % 7 < 3) cells.push([x, y]);
+    }
+    const qr = cells.map(([x, y]) => 'M' + x + ' ' + y + 'h1v1h-1z').join('');
+    const matchRow = 'display: flex; flex-direction: column; gap: 1px; padding: 8px 10px; border-radius: var(--sc-radius, 8px); cursor: pointer; ';
+    const matches = [
+      ['Signature in replies', 'Signatures and sender names', true],
+      ['Signatures per mailbox', 'Signatures and sender names', false],
+      ['Add the signature to a new message', 'Signatures and sender names', false],
+      ['Default writing mode', 'Account, the signature follows the mode', false]
+    ].map(([setting, section, on]) => ({ setting, section, on: on ? 'true' : 'false', style: matchRow + (on ? 'background: #eaf0f7' : 'background: transparent') }));
+    return { switchOn, knobOn, switchOff, knobOff, special, sync, cap, btn, btnDanger, btnRow, chooser, chooserSmall, device, qr, matches };
   }
 }
 </script>

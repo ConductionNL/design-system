@@ -33,6 +33,10 @@ a{color:#3669a5}a:hover{color:#234a78}
     </button>
   </form>
   <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: max-content">
+    <button type="button" aria-label="{{ alertsLabel }}" aria-haspopup="dialog" aria-expanded="{{ alertsExpanded }}" style="position: relative; width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: {{ bellBackground }}; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      <sc-if value="{{ hasAlerts }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; box-sizing: border-box; padding: 0 4px; border-radius: 8px; background: #cf222e; color: #ffffff; font: 700 10px/16px 'Fira Sans', sans-serif; text-align: center">{{ alerts }}</span></sc-if>
+    </button>
     <button type="button" aria-label="Help" style="width: 36px; height: 36px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"></path></svg>
     </button>
@@ -46,11 +50,15 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"env":{"editor":"text","default":"OpenProject"},"app":{"editor":"text","default":"Mail"},"placeholder":{"editor":"text","default":"Search mail, people or #work package"},"user":{"editor":"text","default":"Olivia Brandt"},"initials":{"editor":"text","default":"OB"},"role":{"editor":"text","default":"Delivery lead"},"$preview":{"width":1440,"height":55}}'>
+<script type="text/x-dc" data-dc-script data-props='{"env":{"editor":"text","default":"OpenProject"},"app":{"editor":"text","default":"Mail"},"placeholder":{"editor":"text","default":"Search mail, people or #work package"},"alerts":{"editor":"text","default":"2"},"alertsOpen":{"editor":"text","default":"false"},"user":{"editor":"text","default":"Olivia Brandt"},"initials":{"editor":"text","default":"OB"},"role":{"editor":"text","default":"Delivery lead"},"$preview":{"width":1440,"height":55}}'>
 class Component extends DCLogic {
   renderVals() {
     // The mail top bar draws its own 55 px shell (Round 7). The role prop is accepted for the boards that pass it and not drawn.
-    return { env: this.props.env || 'OpenProject', app: this.props.app ?? 'Mail', placeholder: this.props.placeholder ?? 'Search mail, people or #work package', user: this.props.user ?? 'Olivia Brandt', initials: this.props.initials ?? 'OB' };
+    // The Nextcloud notifications bell is the first control at the right; alerts is its count, an empty string or 0 hides the badge.
+    const alerts = String(this.props.alerts ?? '2').trim();
+    const hasAlerts = alerts !== '' && alerts !== '0';
+    const alertsOpen = String(this.props.alertsOpen ?? 'false') === 'true';
+    return { env: this.props.env || 'OpenProject', app: this.props.app ?? 'Mail', placeholder: this.props.placeholder ?? 'Search mail, people or #work package', user: this.props.user ?? 'Olivia Brandt', initials: this.props.initials ?? 'OB', alerts, hasAlerts, alertsLabel: hasAlerts ? 'Notifications, ' + alerts + ' new' : 'Notifications', alertsExpanded: alertsOpen ? 'true' : 'false', bellBackground: alertsOpen ? 'rgba(255,255,255,0.18)' : 'transparent' };
   }
 }
 </script>

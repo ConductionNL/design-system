@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 2940px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 3860px; overflow: hidden">
 <div style="flex: none; display: flex; flex-direction: column; height: 1500px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
@@ -124,12 +124,13 @@ a{color:#3669a5}a:hover{color:#234a78}
 
 <div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
 
-  <div style="display: flex; gap: 24px">
-    <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
-      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Message list, the rest of the group: selection checkboxes, full dates and times, and the message size, with one row as it looks with these choices</figcaption>
-      <div style="{{ box }}; height: 440px">
+  <figure style="margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Message list, the rest of the group: selection checkboxes, full dates and times, and the message size, with one row as it looks with these choices. The same settings dialog as above; frames b to f show its other sections scrolled into view</figcaption>
+      <div style="{{ box }}; height: 800px">
         <div aria-hidden="true" style="{{ dim }}"></div>
-        <section aria-label="Appearance and behaviour, message list" style="{{ pane }}">
+        <div role="dialog" aria-modal="true" aria-label="Settings, appearance and behaviour" style="{{ paneWide }}">
+        <div style="flex: 0 0 236px; width: 236px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlSettingsNav" active="Appearance and behaviour" hint-size="236px,752px"></dc-import></div>
+        <section aria-label="Appearance and behaviour, message list" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow: hidden">
           <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Appearance and behaviour</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
           <div style="{{ paneBody }}">
             <h4 style="{{ h4 }}">Message list</h4>
@@ -156,12 +157,14 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
           </div>
         </section>
+        </div>
       </div>
-    </figure>
+  </figure>
 
+  <div style="display: flex; gap: 24px">
     <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
       <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Layout, with the switch under the three choices that opens the newest message when the app starts</figcaption>
-      <div style="{{ box }}; height: 440px">
+      <div style="{{ box }}; height: 470px">
         <div aria-hidden="true" style="{{ dim }}"></div>
         <section aria-label="Appearance and behaviour, layout" style="{{ pane }}">
           <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Appearance and behaviour</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
@@ -189,12 +192,10 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </div>
     </figure>
-  </div>
 
-  <div style="display: flex; gap: 24px">
     <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
-      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Reading: HTML mail as plain text, coloured quote levels, a fixed-width font and the font size for plain text messages</figcaption>
-      <div style="{{ box }}; height: 430px">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Reading: HTML mail as plain text, coloured quote levels and a fixed-width font; the font size is a sub-choice that only shows while the fixed-width font is on</figcaption>
+      <div style="{{ box }}; height: 470px">
         <div aria-hidden="true" style="{{ dim }}"></div>
         <section aria-label="Appearance and behaviour, reading" style="{{ pane }}">
           <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Appearance and behaviour</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
@@ -212,10 +213,10 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div style="{{ row }}">
               <label for="ml-app-mono" style="{{ lbl }}"><span style="font-weight: 600">Use a fixed-width font for plain text messages</span><span style="{{ desc }}">Tables and code line up as the sender typed them.</span></label>
-              <button id="ml-app-mono" type="button" role="switch" aria-checked="false" style="{{ switchOff }}"><span style="{{ knobOff }}"></span></button>
+              <button id="ml-app-mono" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
             </div>
-            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 32px">
-              <legend style="float: left; padding: 0; margin: 0; font-weight: 600; line-height: 21px">Font size for plain text messages</legend>
+            <fieldset style="margin: -4px 0 0; padding: 0 0 0 16px; border: 0; border-left: 2px solid #e4e6ea; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 28px">
+              <legend style="float: left; padding: 0; margin: 0; font-weight: 400; color: #3d4047; line-height: 21px">Font size for plain text messages</legend>
               <span style="display: inline-flex; gap: 16px; flex: none">
                 <label style="display: inline-flex; align-items: center; gap: 8px"><input type="radio" name="ml-app-plainsize" style="{{ radio }}">Small</label>
                 <label style="display: inline-flex; align-items: center; gap: 8px"><input type="radio" name="ml-app-plainsize" checked style="{{ radio }}">Normal</label>
@@ -226,7 +227,9 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </div>
     </figure>
+  </div>
 
+  <div style="display: flex; gap: 24px">
     <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
       <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Writing and sending: how a forwarded message travels, and whether a reply quotes the original text</figcaption>
       <div style="{{ box }}; height: 430px">
@@ -249,12 +252,10 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </div>
     </figure>
-  </div>
 
-  <div style="display: flex; gap: 24px">
     <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
       <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">e</span> &nbsp;Writing and sending: the default font, size and colour for new messages, with a sample line</figcaption>
-      <div style="{{ box }}; height: 350px">
+      <div style="{{ box }}; height: 380px">
         <div aria-hidden="true" style="{{ dim }}"></div>
         <section aria-label="Appearance and behaviour, default font" style="{{ pane }}">
           <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Appearance and behaviour</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
@@ -274,10 +275,12 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </div>
     </figure>
+  </div>
 
+  <div style="display: flex; gap: 24px">
     <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
       <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">f</span> &nbsp;Calendar, the rest of the group: the invitation message can be deleted once it has been answered</figcaption>
-      <div style="{{ box }}; height: 350px">
+      <div style="{{ box }}; height: 380px">
         <div aria-hidden="true" style="{{ dim }}"></div>
         <section aria-label="Appearance and behaviour, calendar" style="{{ pane }}">
           <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Appearance and behaviour</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
@@ -295,12 +298,13 @@ a{color:#3669a5}a:hover{color:#234a78}
         </section>
       </div>
     </figure>
+    <div aria-hidden="true" style="flex: 1 1 0; min-width: 0"></div>
   </div>
 
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2940}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3860}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
@@ -320,7 +324,8 @@ class Component extends DCLogic {
     const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px';
     const box = 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden';
     const dim = 'position: absolute; inset: 0; background: rgba(27,28,29,0.45)';
-    const pane = 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden';
+    const pane = 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 24px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden';
+    const paneWide = 'position: absolute; left: 50%; transform: translateX(-50%); width: 960px; top: 24px; bottom: 24px; box-sizing: border-box; display: flex; background: #ffffff; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden';
     const paneHead = 'flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea';
     const paneTitle = 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px';
     const closeBtn = 'flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
@@ -332,7 +337,7 @@ class Component extends DCLogic {
     const desc = 'font-size: 14px; color: #5e6168; line-height: 21px';
     const radio = 'width: 18px; height: 18px; margin: 0; accent-color: #3669a5';
     const select = 'display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px \'Fira Sans\', sans-serif; white-space: nowrap';
-    return { switchOn, knobOn, switchOff, knobOff, layouts, cap, box, dim, pane, paneHead, paneTitle, closeBtn, paneBody, h4, legend, row, lbl, desc, radio, select };
+    return { switchOn, knobOn, switchOff, knobOff, layouts, cap, box, dim, pane, paneWide, paneHead, paneTitle, closeBtn, paneBody, h4, legend, row, lbl, desc, radio, select };
   }
 }
 </script>

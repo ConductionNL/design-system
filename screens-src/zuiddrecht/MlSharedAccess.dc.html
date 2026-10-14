@@ -212,7 +212,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
     <figure style="{{ r8.fig }}">
-      <figcaption style="{{ r8.cap2 }}"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Sharing the folder Lyon with someone in another organisation of this installation: the search finds Jana at Stadtwerke Kassel, marked with her organisation</figcaption>
+      <figcaption style="{{ r8.cap2 }}"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;Sharing the folder Lyon with someone in another organisation of this installation: the search finds Jana at Stadtwerke Kassel, marked with her organisation (its tooltip says: another organisation on this installation); Enter grants the Viewer role</figcaption>
       <div style="{{ r8.box }}; height: 560px; display: flex; align-items: flex-start; justify-content: center; padding-top: 20px">
         <div aria-hidden="true" style="{{ r8.dim }}"></div>
         <div role="dialog" aria-modal="true" aria-labelledby="ml-share-x-title" style="{{ r8.dlg }}; position: relative; width: 620px">
@@ -223,9 +223,9 @@ a{color:#3669a5}a:hover{color:#234a78}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; color: #5e6168"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16M21 21l-4.35-4.35"></path></svg>
               <input id="ml-share-x-add" type="text" value="Jana" aria-expanded="true" aria-controls="ml-share-x-list" style="width: 100%; height: 40px; padding: 0 12px 0 38px; box-sizing: border-box; border: 1px solid #3669a5; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d; outline: 0; box-shadow: 0 0 0 2px #eaf0f7">
             </div>
-            <div id="ml-share-x-list" role="listbox" aria-label="People found" style="display: flex; flex-direction: column; gap: 2px; padding: 6px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+            <div id="ml-share-x-list" role="listbox" aria-label="People found" style="display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
               <sc-for list="{{ crossMatches }}" as="m" hint-placeholder-count="2">
-                <div role="option" aria-selected="{{ m.selected }}" style="{{ m.style }}"><span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ m.initials }}</span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0; flex: 1 1 auto"><span style="font-weight: 600; color: #1b1c1d">{{ m.name }}</span><span style="font-size: 12px; color: #5e6168">{{ m.addr }}</span></span><sc-if value="{{ m.hasOrg }}" hint-placeholder-val="{{ true }}"><span style="{{ orgChip }}">{{ m.org }}</span></sc-if><span style="flex: none; font-size: 12px; color: #5e6168; white-space: nowrap">{{ m.note }}</span></div>
+                <div role="option" aria-selected="{{ m.selected }}" style="{{ m.style }}"><span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">{{ m.initials }}</span><span style="display: flex; flex-direction: column; gap: 2px; line-height: 18px; min-width: 0; flex: 1 1 auto"><span style="font-weight: 600; color: #1b1c1d">{{ m.name }}</span><span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.addr }}</span><sc-if value="{{ m.hasOrg }}" hint-placeholder-val="{{ true }}"><span style="{{ orgChip }}" title="{{ m.note }}">{{ m.org }}</span></sc-if></span></span></div>
               </sc-for>
             </div>
           </div>
@@ -383,8 +383,8 @@ class Component extends DCLogic {
     const orgChip = 'flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600; white-space: nowrap';
     const crossMatches = [
       ['JK', 'Jana Köhler', 'jana.koehler@stadtwerke-kassel.de', 'Stadtwerke Kassel', 'another organisation on this installation', true],
-      ['JW', 'Jan Willemsen', 'jan@northwind-projects.test', '', 'Enter grants Viewer', false]
-    ].map(([initials, name, addr, org, note, selected]) => ({ initials, name, addr, org, hasOrg: org !== '', note, selected: selected ? 'true' : 'false', style: 'display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--sc-radius, 8px); font-size: 14px; ' + (selected ? 'background: #eaf0f7' : '') }));
+      ['JW', 'Jan Willemsen', 'jan@northwind-projects.test', '', '', false]
+    ].map(([initials, name, addr, org, note, selected]) => ({ initials, name, addr, org, hasOrg: org !== '', note, selected: selected ? 'true' : 'false', style: 'display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 10px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); font-size: 14px; ' + (selected ? 'background: #eaf0f7' : '') }));
     const crossShares = [['TA', 'Tom Achterberg', 'tom@northwind-projects.test', 'Editor'], ['PR', 'Priya Raman', 'priya@northwind-projects.test', 'Manager']].map(([initials, name, addr, role]) => ({ initials, name, addr, role }));
     return { groups, matches, members, shares, rights, frames, withdraw, r8, orgChip, crossMatches, crossShares };
   }

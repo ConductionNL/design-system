@@ -15,7 +15,11 @@ a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
-  <label for="{{ fieldId }}" style="font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: -2px">Work package</label>
+  <div style="display: flex; align-items: center; gap: 8px; min-height: 34px; margin: -7px 0 -4px">
+    <label for="{{ fieldId }}" style="font-size: 14px; font-weight: 600; line-height: 20px">Work package</label>
+    <span style="flex: 1 1 auto"></span>
+    <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}"><button type="button" aria-expanded="{{ filtersAria }}" aria-controls="{{ fieldId }}-filters" title="{{ filtersTitle }}" style="{{ filtersStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>Filters<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ filtersChev }}"></path></svg></button></sc-if>
+  </div>
   <sc-if value="{{ isPicked }}" hint-placeholder-val="{{ false }}">
     <div style="display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff">
       <div style="display: flex; align-items: center; gap: 8px; min-width: 0">
@@ -35,6 +39,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       <input id="{{ fieldId }}" type="search" value="{{ typed }}" placeholder="Number or words" aria-describedby="{{ fieldId }}-hint" style="{{ fieldStyle }}">
       <sc-if value="{{ hasTyped }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="Clear the search" style="position: absolute; right: 6px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></sc-if>
     </div>
+    <div id="{{ fieldId }}-filters" style="{{ filtersBlock }}">
     <button type="button" role="switch" aria-checked="{{ deepAria }}" style="display: flex; align-items: center; gap: 10px; height: 28px; margin: -2px 0 0; padding: 0; border: 0; background: transparent; color: {{ deepColor }}; font: 400 14px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap">
       <span aria-hidden="true" style="{{ switchStyle }}"><span style="{{ knobStyle }}"></span></span>
       <span>Also search in descriptions and comments</span>
@@ -45,6 +50,10 @@ a{color:#3669a5}a:hover{color:#234a78}
       <button type="button" aria-pressed="true" style="{{ chipOn }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 6 9 17l-5-5"></path></svg>Open only</button>
       <button type="button" aria-haspopup="menu" style="{{ chipOff }}">Type<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button>
       <button type="button" aria-pressed="false" style="{{ chipOff }}">Assigned to me</button>
+    </div>
+    <div id="{{ fieldId }}-hint" style="display: flex; align-items: center; gap: 6px; height: 24px; padding: 0; font-size: 12px; color: #5e6168; white-space: nowrap">
+      <kbd style="{{ kbd }}">&#8593;</kbd><kbd style="{{ kbd }}">&#8595;</kbd><span>to move</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Enter</kbd><span>to pick</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Esc</kbd><span>to close</span>
+    </div>
     </div>
     <sc-if value="{{ hasGroups }}" hint-placeholder-val="{{ true }}">
       <div role="listbox" aria-label="{{ listLabel }}" style="display: flex; flex-direction: column; gap: 2px; margin: 2px 0 0">
@@ -65,9 +74,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             </button>
           </sc-for>
         </sc-for>
-        <div id="{{ fieldId }}-hint" style="display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; font-size: 12px; color: #5e6168; white-space: nowrap">
-          <kbd style="{{ kbd }}">&#8593;</kbd><kbd style="{{ kbd }}">&#8595;</kbd><span>to move</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Enter</kbd><span>to pick</span><span aria-hidden="true" style="margin: 0 2px">·</span><kbd style="{{ kbd }}">Esc</kbd><span>to close</span>
-        </div>
       </div>
     </sc-if>
     <sc-if value="{{ isNone }}" hint-placeholder-val="{{ false }}">
@@ -89,12 +95,14 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"text","default":"suggest"},"context":{"editor":"text","default":"mail"},"$preview":{"width":408,"height":660}}'>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"text","default":"suggest"},"context":{"editor":"text","default":"mail"},"filters":{"editor":"text","default":""},"$preview":{"width":408,"height":660}}'>
 class Component extends DCLogic {
   renderVals() {
     const state = this.props.state || 'suggest';
     const ctx = this.props.context === 'event' ? 'event' : 'mail';
     const fieldId = 'wp-picker-' + state + '-' + ctx;
+    // filters="open" draws the description switch, the scope chips and the key hint; at rest they fold behind the Filters button of the head (display: none, the labels stay in the HTML).
+    const filtersOpen = (this.props.filters || '') === 'open';
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
     const STATUS = { 'new': ['#c3fae8', '#7bf4cc'], 'in development': ['#66d9e8', '#21c8de'], 'in review': ['#d3f9d8', '#8ff09c'], 'on hold': ['#ffc078', '#ff9d2e'], 'needs clarification': ['#fcc2d7', '#f977a6'], 'closed': ['#dee2e6', '#adb5bd'] };
     const LYON = 'Northwind rollout Lyon';
@@ -202,6 +210,10 @@ class Component extends DCLogic {
       isPicked, isOpen, picked,
       deepOn, deepAria: deepOn ? 'true' : 'false', deepColor: deepOn ? '#1b1c1d' : '#5e6168', switchStyle, knobStyle,
       chipOn, chipOff, kbd,
+      filtersAria: filtersOpen ? 'true' : 'false', filtersChev: filtersOpen ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6',
+      filtersTitle: 'Filters: ' + project + ', open only' + (deepOn ? ', also in descriptions and comments' : ''),
+      filtersStyle: 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; ' + (filtersOpen ? 'background: #eaf0f7; color: #234a78' : 'background: transparent; color: #5e6168'),
+      filtersBlock: 'flex-direction: column; gap: 8px; display: ' + (filtersOpen ? 'flex' : 'none'),
       hasGroups: groups.length > 0, groups, listLabel,
       isNone: state === 'none', isOffline: state === 'offline'
     };

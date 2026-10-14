@@ -53,11 +53,12 @@ input::placeholder{color:#5e6168;opacity:1}
       <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 10px; padding: 12px; overflow: hidden">
         <sc-for list="{{ columns }}" as="col" hint-placeholder-count="5">
           <section aria-label="{{ col.name }}" style="flex: 0 0 226px; width: 226px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 6px; border-radius: var(--sc-radius, 8px); background: #eef0f3; align-self: flex-start; max-height: 100%">
-            <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 6px">
-              <span style="{{ col.dot }}"></span>
-              <h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ col.name }}</h2>
-              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span>
+            <div style="display: flex; flex-direction: column; gap: 4px; padding: 4px 4px 0 6px">
+              <div style="display: flex; align-items: center; gap: 8px; min-height: 20px"><span style="{{ col.dot }}"></span><h2 style="margin: 0; flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; line-height: 14px; text-transform: uppercase">{{ col.name }}</h2></div>
+              <div style="display: flex; align-items: center; gap: 8px; height: 28px">
+              <span aria-label="{{ col.countLabel }}" style="{{ col.countStyle }}">{{ col.count }}</span><span style="flex: 1 1 auto"></span>
               <button type="button" aria-label="New work package with status {{ col.name }}" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+              </div>
             </div>
             <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
               <div aria-label="{{ c.aria }}" style="{{ c.style }}">
@@ -77,14 +78,13 @@ input::placeholder{color:#5e6168;opacity:1}
         </sc-for>
       </div>
 
-      <div id="tb-filter-panel" role="dialog" aria-label="Filters" style="position: absolute; right: 16px; top: 60px; margin-top: 4px; width: 440px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 4px">
+      <div id="tb-filter-panel" role="dialog" aria-label="Filters" style="position: absolute; right: 0; top: 60px; bottom: 0; width: 440px; padding: 8px; box-sizing: border-box; background: #ffffff; border-left: 1px solid #c4c7cb; box-shadow: -4px 0 12px rgba(27,28,29,0.08); z-index: 10; display: flex; flex-direction: column; gap: 4px">
         <div style="display: flex; align-items: center; gap: 10px; padding: 4px 10px 8px; border-bottom: 1px solid #e4e6ea">
-          <h2 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Filters</h2>
-          <span style="font-size: 12px; color: #5e6168; white-space: nowrap">Press <kbd style="display: inline-block; min-width: 14px; padding: 0 5px; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; font: 600 11px 'Fira Sans', sans-serif; text-align: center; color: #3d4047">M</kbd> to show only your work packages</span>
+          <h2 title="Press M to show only your work packages" aria-keyshortcuts="M" style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Filters</h2>
           <span style="flex: 1 1 auto"></span>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Tags</span><span style="font-size: 12px; color: #5e6168">tick one or more, applied at once</span><span style="flex: 1 1 auto"></span><a href="#tags-tab" style="font-size: 12px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none; white-space: nowrap">Manage tags</a></div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Tags</span><span style="flex: 1 1 auto"></span><a href="#tags-tab" style="font-size: 12px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none; white-space: nowrap">Manage tags</a></div>
         <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
           <sc-for list="{{ tags }}" as="t" hint-placeholder-count="6">
             <li style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; border-radius: var(--sc-radius, 8px)">
@@ -95,7 +95,7 @@ input::placeholder{color:#5e6168;opacity:1}
             </li>
           </sc-for>
         </ul>
-        <div style="padding: 2px 10px 8px; border-bottom: 1px solid #e4e6ea; font-size: 12px; color: #5e6168; line-height: 16px">Rename, recolour or delete a tag under Manage tags.</div>
+        <div style="padding: 0 10px 6px; border-bottom: 1px solid #e4e6ea"></div>
 
         <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Assignee</span></div>
         <div role="radiogroup" aria-label="Assignee" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; padding: 0 10px">
@@ -105,16 +105,16 @@ input::placeholder{color:#5e6168;opacity:1}
         <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea; margin-top: 4px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Open or closed</span></div>
         <div role="radiogroup" aria-label="Open or closed" style="display: flex; align-items: center; gap: 6px; padding: 2px 10px 6px">
           <sc-for list="{{ states }}" as="s" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ s.on }}" style="{{ s.style }}">{{ s.label }}</button></sc-for>
-          <span style="margin-left: 6px; font-size: 12px; color: #5e6168; line-height: 16px">Closed work packages are hidden while Open is chosen.</span>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Due date</span><span style="font-size: 12px; color: #5e6168">from and to, either can stay empty</span></div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 2px; border-top: 1px solid #e4e6ea"><span title="A date range: from and to, either can stay empty" style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Due date</span></div>
         <div style="display: flex; align-items: center; gap: 8px; padding: 2px 10px 8px">
           <label for="tb-due-from" style="font-size: 14px; font-weight: 600">From</label>
           <input id="tb-due-from" type="text" placeholder="from" style="width: 118px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
           <label for="tb-due-to" style="font-size: 14px; font-weight: 600">to</label>
           <input id="tb-due-to" type="text" placeholder="to" style="width: 118px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
-          <span style="flex: 1 1 auto"></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 0 10px 8px">
           <button type="button" style="height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">This week</button>
           <button type="button" style="height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Overdue</button>
         </div>
@@ -140,9 +140,13 @@ input::placeholder{color:#5e6168;opacity:1}
       </div>
       <div role="tabpanel" aria-label="Tags" style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px; overflow: hidden">
         <div style="display: flex; align-items: center; gap: 10px">
-          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 8px"><h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Tags of this project</h3><span role="img" title="Works once OpenProject's API allows this change. Drawn as we propose it." aria-label="Works once OpenProject's API allows this change. Drawn as we propose it." style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #5e6168; font: 600 11px 'Fira Sans', sans-serif; line-height: 16px; letter-spacing: 0; text-transform: none; white-space: nowrap; vertical-align: middle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"></path></svg>Needs OpenProject</span></span><span style="font-size: 13px; color: #5e6168; line-height: 18px">Used on its cards. Saved when you press Save tag.</span></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="display: inline-flex; align-items: center; gap: 8px"><h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 24px">Tags of this project</h3><span role="img" title="Works once OpenProject's API allows this change. Drawn as we propose it." aria-label="Works once OpenProject's API allows this change. Drawn as we propose it." style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #5e6168; font: 600 11px 'Fira Sans', sans-serif; line-height: 16px; letter-spacing: 0; text-transform: none; white-space: nowrap; vertical-align: middle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"></path></svg>Needs OpenProject</span></span></span>
           <span style="flex: 1 1 auto"></span>
-          <button type="button" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New tag</button>
+          <button type="button" aria-haspopup="menu" aria-expanded="false" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New tag<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <ul role="menu" aria-label="New tag" style="display: none; list-style: none; margin: 0; padding: 4px">
+            <li role="menuitem" style="height: 36px; padding: 0 12px; display: flex; align-items: center">New tag</li>
+            <li role="menuitem" title="Every new project starts with these 6 default tags. Edit or delete them per project. Restoring puts the six back and keeps the tags you added." style="height: 36px; padding: 0 12px; display: flex; align-items: center">Restore the default tags</li>
+          </ul>
         </div>
         <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
           <sc-for list="{{ tags }}" as="t" hint-placeholder-count="6">
@@ -150,8 +154,7 @@ input::placeholder{color:#5e6168;opacity:1}
               <span style="{{ t.dot }}"></span>
               <span style="flex: 1 1 auto; min-width: 0; font-size: 15px; font-weight: 600; color: #1b1c1d">{{ t.name }}</span>
               <span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ t.count }}</span>
-              <button type="button" aria-label="Edit tag {{ t.name }}" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Edit</button>
-              <button type="button" aria-label="Delete tag {{ t.name }}" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Delete</button>
+              <button type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More for tag {{ t.name }}" title="Edit tag {{ t.name }}, Delete tag {{ t.name }}" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
             </li>
             <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}"><li aria-label="Edit tag {{ t.name }}" style="display: flex; flex-direction: column; gap: 8px; margin: 6px 0 8px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #f5f6f8">
               <div style="display: flex; align-items: center; gap: 8px">
@@ -169,10 +172,6 @@ input::placeholder{color:#5e6168;opacity:1}
             </li></sc-if>
           </sc-for>
         </ul>
-        <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; padding: 10px 12px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8">
-          <span style="flex: 1 1 auto; font-size: 13px; color: #5e6168; line-height: 18px">Every new project starts with these 6 default tags. Edit or delete them per project. Restoring puts the six back and keeps the tags you added.</span>
-          <button type="button" style="flex: none; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Restore the default tags</button>
-        </div>
       </div>
     </aside>
   </figure>

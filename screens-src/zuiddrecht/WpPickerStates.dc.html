@@ -12,6 +12,9 @@
 <style>
 body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
+/* Calm fix (after round 7), this board only: in frame 7 the picked subject wraps instead of truncating. The filters of the picker open through its own filters prop (frame 1). */
+div[style*="repeat(3, 440px)"]>div:nth-child(7) span[style*="text-overflow: ellipsis"][style*="font-weight: 600"]{white-space:normal!important;overflow:visible!important}
+div[style*="repeat(3, 440px)"]>div:nth-child(7) span[style*="text-overflow: ellipsis"][style*="font-weight: 600"]+button{align-self:flex-start}
 </style>
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; min-height: 1640px; padding: 32px 36px 40px">
@@ -22,7 +25,7 @@ a{color:#3669a5}a:hover{color:#234a78}
       <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
         <div style="display: flex; align-items: baseline; gap: 8px; min-height: 36px; padding: 0 2px; font-size: 13px; line-height: 18px; color: #5e6168"><span style="flex: none; font-weight: 600; color: #1b1c1d">{{ p.n }}</span><span>{{ p.caption }}</span></div>
         <div style="width: 440px; box-sizing: border-box; padding: 16px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
-          <dc-import name="WpPicker" state="{{ p.state }}" context="{{ p.context }}" hint-size="408px,300px"></dc-import>
+          <dc-import name="WpPicker" state="{{ p.state }}" context="{{ p.context }}" filters="{{ p.filters }}" hint-size="408px,300px"></dc-import>
         </div>
       </div>
     </sc-for>
@@ -33,14 +36,14 @@ a{color:#3669a5}a:hover{color:#234a78}
 class Component extends DCLogic {
   renderVals() {
     const panels = [
-      ['suggest', 'mail', 'The field is empty. Three groups suggest what you probably mean, each row with its reason.'],
+      ['suggest', 'mail', 'The field is empty, first use: three groups suggest what you probably mean. Filters is open this once: search also in descriptions, the scope chips and the keys.'],
       ['number', 'mail', 'You type a number. The exact work package comes first, then numbers that start with it.'],
       ['words', 'mail', 'You type words. Matches in the subject as you type, marked, grouped per project.'],
       ['deep', 'mail', 'The toggle is on. Descriptions and comments are searched too, and a line of the match is shown.'],
       ['none', 'mail', 'Nothing found in this project. Widen the search, or make the work package now.'],
       ['offline', 'mail', 'OpenProject does not answer. The picker says so and guesses nothing.'],
-      ['picked', 'mail', 'A work package is picked. The picker folds to the chosen row, and the panel continues below it.']
-    ].map(([state, context, caption], i) => ({ state, context, caption, n: String(i + 1) }));
+      ['picked', 'mail', 'A work package is picked. The picker folds to the chosen row, its subject wrapping to two lines, and the panel continues below it.']
+    ].map(([state, context, caption], i) => ({ state, context, caption, filters: i === 0 ? 'open' : '', n: String(i + 1) }));
     return { panels };
   }
 }

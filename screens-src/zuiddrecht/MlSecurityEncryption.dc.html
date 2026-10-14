@@ -14,7 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1160px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2450px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="2">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
+    <div style="height: 1160px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1105px"></dc-import></div>
@@ -58,7 +62,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                 <button type="button" aria-expanded="true" aria-label="Collapse the message" style="flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
                 <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ m.initials }}</span>
                 <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: #5e6168; line-height: 18px">
-                  <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">{{ m.from }}</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.address }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">{{ m.date }}</span></div>
+                  <div style="display: flex; align-items: baseline; gap: 8px"><strong style="font-size: 14px; color: #1b1c1d; white-space: nowrap">{{ m.from }}</strong><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.address }}</span><sc-if value="{{ m.hasSec }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="{{ m.secLabel }}" title="{{ m.secTitle }}" style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 6px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: {{ m.secColor }}; font: 600 11px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ m.secIcon }}"></path></svg>{{ m.secLabel }}</button></sc-if><span style="flex: 1 1 auto"></span><span style="flex: none; color: #1b1c1d">{{ m.date }}</span></div>
                   <div style="display: flex; gap: 6px"><span style="flex: none; width: 34px">To</span><span style="color: #1b1c1d">{{ m.to }}</span></div>
                 </div>
                 <button type="button" aria-label="More actions for this message" aria-haspopup="menu" style="flex: none; width: 28px; height: 28px; margin: -4px -6px 0 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2M5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path></svg></button>
@@ -103,8 +107,8 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ fmt }}" as="f" hint-placeholder-count="4"><button type="button" aria-label="{{ f.label }}" title="{{ f.label }}" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ f.icon }}"></path></svg></button></sc-for>
         </div>
         <span style="width: 1px; height: 18px; margin: 0 4px; background: #e4e6ea"></span>
-        <button type="button" aria-haspopup="menu" aria-expanded="true" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg>Protect this message<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
-        <div role="menu" aria-label="Protect this message" style="position: absolute; left: 10px; bottom: 100%; margin-bottom: 4px; min-width: 380px; padding: 6px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
+        <button type="button" aria-haspopup="menu" aria-expanded="{{ f.popoverOpen }}" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: {{ f.protectBg }}; color: {{ f.protectColor }}; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg>Protect this message<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+        <div role="menu" aria-label="Protect this message" style="display: {{ f.popover }}; position: absolute; left: 10px; right: 10px; bottom: 100%; margin-bottom: 4px; width: auto; padding: 6px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10">
           <button type="button" role="menuitemcheckbox" aria-checked="true" style="{{ menuRow }}">
             <span style="{{ boxOn }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
             <span style="display: flex; flex-direction: column; min-width: 0; line-height: 20px"><span>Sign, so recipients see it is from you and unchanged</span><span style="font-size: 13px; color: #5e6168">Sign with S/MIME, using your certificate</span></span>
@@ -120,7 +124,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
         </div>
       </div>
-      <div role="status" style="display: flex; align-items: flex-start; gap: 10px; margin: 8px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d">
+      <div role="status" style="display: {{ f.banner }}; align-items: flex-start; gap: 10px; margin: 8px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #ff9d2e; margin-top: 1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg>
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
           <p style="margin: 0"><strong style="font-weight: 600">Marc Dubois has no certificate or key.</strong> The message cannot be encrypted for him, so Send waits until you choose. Tom Achterberg has a certificate.</p>
@@ -145,9 +149,12 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </section>
   </div>
+    </div>
+  </figure>
+  </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2450}}'>
 class Component extends DCLogic {
   renderVals() {
     const iconBtn = 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
@@ -176,23 +183,22 @@ class Component extends DCLogic {
     const own = 'margin-left: 32px; width: calc(100% - 32px); background: #f5f6f8; ';
     const messages = [
       { from: 'Marc Dubois', initials: 'MD', address: 'marc.dubois@mairie-lyon.fr', date: '8 Oct 09:30', to: 'Olivia Brandt', open: true,
-        lines: [line('info', 'mail', 'Plain mail, not signed or encrypted.', 'Like most mail. Nothing proves who sent it or that it was not changed on the way.')],
+        lines: [],
         body: 'Please find the rollout plan for phase 2 attached. We propose to start with the planning department.' },
       { from: 'Tom Achterberg', initials: 'TA', address: 'tom@northwind-projects.test', date: '9 Oct 10:05', to: 'Marc Dubois, copy Olivia Brandt', open: true,
-        lines: [
-          line('ok', 'lock', 'Encrypted with S/MIME.', 'Decrypted with your certificate on this device. Only you and the other recipients can read it.'),
-          line('ok', 'check', 'Signature valid.', 'Signed by Tom Achterberg, certificate issued by Northwind Projects CA, valid until 3 March 2027.', 'Show certificate')
-        ],
+        lines: [], sec: ['ok', 'lock', 'Encrypted and signed', 'Encrypted with S/MIME. Decrypted with your certificate on this device; only you and the other recipients can read it. Signature valid. Signed by Tom Achterberg, certificate issued by Northwind Projects CA, valid until 3 March 2027. Open to show the certificate.'],
         body: 'Attached the OIDC client settings for the Lyon realm. The client id is nextcloud-lyon, the redirect URI points at your test instance.' },
       { from: 'Marc Dubois', initials: 'MD', date: '10 Oct', snippet: 'Can the mail archive stay on our own server? Our data protection officer asks.', collapsed: true },
       { from: 'You', initials: 'OB', date: '10 Oct', snippet: 'Not a blocker. The link stores a reference to the message, the mail itself stays in your mailbox.', collapsed: true, mine: true },
       { from: 'Tom Achterberg', initials: 'TA', address: 'tom@northwind-projects.test', date: '10 Oct 15:40', to: 'Olivia Brandt', open: true,
-        lines: [line('info', 'puzzle', 'Encrypted with PGP, opened through the browser extension.', 'The extension decrypted it on your device with your PGP key. A reply to Tom can go the same way.')],
+        lines: [], sec: ['info', 'puzzle', 'Encrypted with PGP', 'Encrypted with PGP, opened through the browser extension. The extension decrypted it on your device with your PGP key. A reply to Tom can go the same way.'],
         body: 'Here is the Keycloak realm export for Lyon. It holds client secrets, so this one is PGP-encrypted for you only.' },
       { from: 'Marc Dubois', initials: 'MD', address: 'marc.dubois@mairie-lyon.fr', date: 'Today 06:00', to: 'Olivia Brandt, copy Tom Achterberg', open: true,
         lines: [],
         body: 'Good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?' }
+    // Calm fix (after round 7): plain mail carries no banner; signed and encrypted states fold into one small lock or puzzle mark in the message header, whose tooltip holds the details.
     ].map((m) => ({ open: false, collapsed: false, lines: [], address: '', to: '', body: '', snippet: '', ...m,
+      hasSec: !!m.sec, secColor: m.sec ? KIND[m.sec[0]][0] : '', secIcon: m.sec ? ICON[m.sec[1]] : '', secLabel: m.sec ? m.sec[2] : '', secTitle: m.sec ? m.sec[3] : '',
       rowStyle: card + (m.mine ? own : ''),
       avatarSmall: 'flex: none; width: 24px; height: 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; ' + (m.mine ? 'background: #234a78; color: #ffffff' : 'background: #eaf0f7; color: #234a78') }));
     const fmt = [
@@ -210,7 +216,11 @@ class Component extends DCLogic {
       ['Encrypt, so only the recipients can read it', 'Encrypt with S/MIME, needs a certificate from every recipient', true],
       ['Encrypt with PGP instead, through the browser extension', 'The extension encrypts on your device with the recipients\' PGP keys', false]
     ].map(([label, hint, on]) => ({ label, hint, on, checked: on ? 'true' : 'false', radio: radio(on) }));
-    return { tools, messages, fmt, menuRow, boxOn, encrypt };
+    const frames = [
+      { letter: 'a', caption: 'The reply to Marc at rest: plain mail shows no banner, Tom\'s messages carry one small mark (encrypted and signed, encrypted with PGP) whose tooltip holds the details; the composer shows the one warning that Marc has no certificate', popover: 'none', popoverOpen: 'false', protectBg: 'transparent', protectColor: '#3d4047', banner: 'flex' },
+      { letter: 'b', caption: 'Protect this message opened from the formatting row: the popover is the one layer, inside the panel; the warning is hidden while it is open', popover: 'block', popoverOpen: 'true', protectBg: '#eaf0f7', protectColor: '#234a78', banner: 'none' }
+    ];
+    return { tools, messages, fmt, menuRow, boxOn, encrypt, frames };
   }
 }
 </script>

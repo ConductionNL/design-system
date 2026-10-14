@@ -16,7 +16,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1968px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The command menu opened with Ctrl K over the week: actions, go to and settings, each with its key, while the grid shows a free, a tentative and a cancelled event, your own unanswered, maybe and declined invitations, bells for reminders, a ticked task and a task card on its due date</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The command menu opened with Ctrl K over a normal week: actions, go to and settings, each with its key; what an action does is its tooltip</figcaption>
     <div style="position: relative; height: 1000px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
   <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
@@ -93,22 +93,15 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div role="group" aria-label="{{ g.label }}" style="display: flex; flex-direction: column">
               <div style="padding: 6px 10px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.label }}</div>
               <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
-                <button type="button" aria-current="{{ it.current }}" style="{{ it.style }}">
+                <button type="button" aria-current="{{ it.current }}" title="{{ it.hint }}" style="{{ it.style }}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ it.icon }}"></path></svg>
-                  <span style="flex: none; font-weight: 500">{{ it.label }}</span>
-                  <span style="flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left">{{ it.hint }}</span>
+                  <span style="flex: 1 1 auto; min-width: 0; font-weight: 500; text-align: left">{{ it.label }}</span>
                   <sc-if value="{{ it.hasSwitch }}" hint-placeholder-val="{{ false }}"><span role="switch" aria-checked="{{ it.on }}" aria-label="{{ it.label }}" style="{{ it.switch }}"><span style="{{ it.knob }}"></span></span></sc-if>
                   <sc-if value="{{ it.hasKey }}" hint-placeholder-val="{{ true }}"><kbd style="flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 11px 'Fira Sans', sans-serif; color: #1b1c1d">{{ it.key }}</kbd></sc-if>
                 </button>
               </sc-for>
             </div>
           </sc-for>
-        </div>
-        <div style="display: flex; align-items: center; gap: 14px; height: 36px; padding: 0 16px; box-sizing: border-box; border-top: 1px solid #e4e6ea; background: #f5f6f8; font-size: 12px; color: #5e6168">
-          <span style="display: inline-flex; align-items: center; gap: 6px"><kbd style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 4px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 10px 'Fira Sans', sans-serif; color: #1b1c1d">Up</kbd><kbd style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 4px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 10px 'Fira Sans', sans-serif; color: #1b1c1d">Down</kbd>move</span>
-          <span style="display: inline-flex; align-items: center; gap: 6px"><kbd style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 4px; box-sizing: border-box; border: 1px solid #c4c7cb; border-bottom-width: 2px; border-radius: 4px; background: #ffffff; font: 600 10px 'Fira Sans', sans-serif; color: #1b1c1d">Enter</kbd>runs or switches</span>
-          <span style="flex: 1 1 auto"></span>
-          <span>Opened with Ctrl K or Cmd K</span>
         </div>
       </div>
     </main>
@@ -213,11 +206,11 @@ class Component extends DCLogic {
     };
     const standup = (past, bell) => ev('Stand-up', 10, 0.25, { cal: 'personal', past, bell });
     const perDay = [
-      [ev('Week planning', 8, 0.75, { cal: 'personal', past: true }), standup(false, true), ev('Release notes 16.5', 13, 1.5, { cal: 'personal', status: 'free' })],
-      [standup(false), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers', status: 'tentative' }), ev('Lunch with Priya', 12.5, 1, { cal: 'personal', status: 'cancelled' }), ev('Keycloak realm walkthrough', 15, 1, { cal: 'team', invite: 'tentative' })],
-      [standup(false), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team', chip: ['EPIC', '#57990', 'in review'], bell: true })],
-      [standup(false), ev('Rollout review Lyon, phase 2', 14, 1, { cal: 'customers', chip: ['FEATURE', '#58412', 'in development'], video: true, invite: 'pending' })],
-      [standup(false), ev('Team drinks', 16, 1, { cal: 'team', invite: 'declined' }), ev('Submit October hours', 17, 0.5, { cal: 'personal', flag: true, bell: true })],
+      [ev('Week planning', 8, 0.75, { cal: 'personal', past: true }), standup(false)],
+      [standup(false), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers' })],
+      [standup(false), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team', chip: ['EPIC', '#57990', 'in review'] })],
+      [standup(false), ev('Rollout review Lyon, phase 2', 14, 1, { cal: 'customers', chip: ['FEATURE', '#58412', 'in development'], video: true })],
+      [standup(false), ev('Submit October hours', 17, 0.5, { cal: 'personal', flag: true })],
       [], []
     ];
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((name, i) => {
@@ -233,11 +226,11 @@ class Component extends DCLogic {
     // all-day strip: tasks and a board card. [kind, type, number, subject, lane, startCol, endCol, tail]
     const barBase = (c, s, e, lane) => 'position: absolute; top: ' + (6 + lane * 24) + 'px; left: calc(100% * ' + s + ' / 7 + 2px); width: calc(100% * ' + (e - s + 1) + ' / 7 - 6px); height: 20px; box-sizing: border-box; display: flex; align-items: center; gap: 6px; padding: 0 6px; border-left: 3px solid ' + c + '; border-radius: 4px; background: ' + pale(c) + '; font-size: 11px; line-height: 1; white-space: nowrap; text-decoration: none; color: #1b1c1d; overflow: hidden';
     const bars = [
-      { kind: 'done', type: 'TASK', number: '#58440', subject: 'Send OIDC client settings to Lyon', lane: 0, s: 0, e: 1, tail: '100%', color: TYPE.TASK, aria: 'Completed task, Send OIDC client settings to Lyon, 100% done' },
-      { kind: 'open', type: 'TASK', number: '#58455', subject: 'Prepare demo for Malmo Energi', lane: 1, s: 0, e: 1, tail: '40%', color: TYPE.TASK, aria: 'Task, Prepare demo for Malmo Energi, 40% done' },
-      { kind: 'card', type: 'TASK', number: '#58441', subject: 'Move kick-off to the afternoon', lane: 2, s: 0, e: 1, tail: 'Due Fri 16', color: TYPE.TASK, aria: 'Board card, TASK #58441 Move kick-off to the afternoon, due Friday 16 October' }
+      { kind: 'open', type: 'FEATURE', number: '#58412', subject: 'Link Nextcloud project folders on rollout, 5 to 30 Oct', lane: 0, s: 0, e: 6, tail: '', color: TYPE.FEATURE, aria: 'FEATURE #58412, Link Nextcloud project folders on rollout' },
+      { kind: 'open', type: 'EPIC', number: '#57990', subject: 'Release 16.5 scope, 28 Sep to 23 Oct', lane: 1, s: 0, e: 6, tail: '', color: TYPE.EPIC, aria: 'EPIC #57990, Release 16.5 scope' },
+      { kind: 'open', type: 'BUG', number: '#58231', subject: 'Gantt PDF export drops trailing columns', lane: 2, s: 0, e: 2, tail: '', color: TYPE.BUG, aria: 'BUG #58231, Gantt PDF export drops trailing columns' }
     ].map((b) => ({
-      ...b, done: b.kind === 'done', open: b.kind === 'open', card: b.kind === 'card', hasType: true, hasTail: true,
+      ...b, done: b.kind === 'done', open: b.kind === 'open', card: b.kind === 'card', hasType: true, hasTail: b.tail !== '',
       tailColor: b.kind === 'done' ? dark(TYPE.TASK) : '#5e6168',
       subjectStyle: 'flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d; ' + (b.kind === 'done' ? 'text-decoration: line-through; color: #5e6168;' : ''),
       style: barBase(b.color, b.s, b.e, b.lane) + (b.kind === 'card' ? '; border: 1px solid #e4e6ea; border-left: 3px solid ' + b.color + '; background: #ffffff' : '') + (b.kind === 'done' ? '; opacity: 0.7' : '')

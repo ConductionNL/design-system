@@ -14,7 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1200px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3780px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="3">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
+    <div style="height: 1200px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 64px; width: 64px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" folded="true" hint-size="64px,1145px"></dc-import></div>
@@ -95,6 +99,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <div style="display: flex; gap: 8px; padding: 12px 14px 14px 88px; flex-wrap: wrap">
             <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17l-5-5 5-5M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>Reply</button>
             <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 17l5-5-5-5M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>Forward</button>
+            <button type="button" title="Write an internal comment, @ to mention a colleague. Comments stay inside Northwind, Jana Köhler never sees them." style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Comment</button>
           </div>
         </article>
 
@@ -117,27 +122,22 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
         </article>
 
-        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px">
-          <span style="{{ avatarMeSmall }}">OB</span>
-          <div style="flex: 1 1 auto; position: relative; display: flex; align-items: center">
-            <input type="text" aria-label="Write an internal comment" placeholder="Write an internal comment, @ to mention a colleague" style="width: 100%; height: 40px; padding: 0 44px 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
-            <button type="button" aria-label="Mention a colleague" style="position: absolute; right: 6px; width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg></button>
-          </div>
-          <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Comment</button>
-        </div>
-        <span style="padding-left: 32px; font-size: 13px; color: #5e6168; line-height: 18px">Comments stay inside Northwind. Jana Köhler never sees them.</span>
       </div>
     </main>
 
+    <sc-if value="{{ f.panel }}" hint-placeholder-val="{{ true }}">
     <aside aria-label="Share and assign" style="flex: 0 0 440px; width: 440px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-left: 1px solid #e4e6ea; overflow: hidden">
       <div style="display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
-        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Share and assign</span>
+        <div role="tablist" aria-label="Share and assign" style="display: flex; gap: 2px">
+          <button type="button" role="tab" aria-selected="{{ f.shareTab }}" style="{{ f.shareTabStyle }}">Share</button>
+          <button type="button" role="tab" aria-selected="{{ f.assignTab }}" style="{{ f.assignTabStyle }}">Assign</button>
+        </div>
         <button type="button" aria-label="Close the panel" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       </div>
-      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 16px; overflow: hidden">
-        <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #f5f6f8; font-size: 13px; line-height: 18px; color: #3d4047">
+      <div role="tabpanel" aria-label="Share" style="flex: 1 1 auto; min-height: 0; display: {{ f.shareDisplay }}; flex-direction: column; gap: 14px; padding: 16px; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 18px; color: #5e6168">
           <span style="flex: none; width: 24px; height: 24px; border-radius: 12px; background: #1b1c1d; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">SU</span>
-          <span>Lives in the shared mailbox <strong style="font-weight: 600; color: #1b1c1d">Northwind support</strong>, support@northwind-projects.test. You have the Manager role through Northwind support.</span>
+          <span title="Lives in the shared mailbox Northwind support, support@northwind-projects.test. You have the Manager role through Northwind support.">In <strong style="font-weight: 600; color: #1b1c1d">Northwind support</strong>, you are Manager</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 6px">
@@ -146,7 +146,6 @@ a{color:#3669a5}a:hover{color:#234a78}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; color: #5e6168"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16M21 21l-4.35-4.35"></path></svg>
             <input id="ml-sc-add" type="text" placeholder="Name or address of northwind-projects.test" style="width: 100%; height: 40px; padding: 0 12px 0 38px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
           </div>
-          <span style="font-size: 13px; color: #5e6168; line-height: 18px">The same three roles as on a mailbox. A Viewer reads only, cannot move, label or delete; an Editor also moves to folders, labels, marks and deletes, and here also replies and comments; a Manager also grants and withdraws access and changes roles.</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 2px">
@@ -155,17 +154,17 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: flex; align-items: center; gap: 10px; height: 48px; border-top: 1px solid #eef0f3">
               <span style="{{ s.avatar }}">{{ s.initials }}</span>
               <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.name }}</span><span style="font-size: 12px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.sub }}</span></span>
-              <button type="button" aria-haspopup="listbox" aria-label="Role of {{ s.name }}: {{ s.role }}" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 100px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap"><span>{{ s.role }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+              <button type="button" aria-haspopup="listbox" aria-label="Role of {{ s.name }}: {{ s.role }}" title="A Viewer reads only, cannot move, label or delete; an Editor also moves to folders, labels, marks and deletes, and here also replies and comments; a Manager also grants and withdraws access and changes roles." style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 34px; min-width: 100px; padding: 0 10px 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; white-space: nowrap"><span>{{ s.role }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
               <button type="button" aria-label="Withdraw the access of {{ s.name }}" style="flex: none; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap">Withdraw</button>
             </div>
           </sc-for>
           <div style="display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid #eef0f3">
-            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; margin-left: -12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>Leave this conversation</button>
-            <span style="font-size: 13px; color: #5e6168; line-height: 18px">Hide from my list. It stays in Northwind support and you can still open it there.</span>
+            <button type="button" title="Hide from my list. It stays in Northwind support and you can still open it there." style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; margin-left: -12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>Leave this conversation</button>
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+      </div>
+      <div role="tabpanel" aria-label="Assign" style="flex: 1 1 auto; min-height: 0; display: {{ f.assignDisplay }}; flex-direction: column; gap: 8px; padding: 16px; overflow: hidden">
           <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Assigned to</span>
           <div style="display: flex; flex-wrap: wrap; gap: 6px">
             <span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 13px; white-space: nowrap"><span style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">PR</span>Priya Raman<button type="button" aria-label="Unassign Priya Raman" title="Unassign Priya Raman" style="flex: none; width: 20px; height: 20px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span>
@@ -179,14 +178,17 @@ a{color:#3669a5}a:hover{color:#234a78}
               <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Keep as Viewer</button>
             </div>
           </div>
-          <span style="font-size: 13px; color: #5e6168; line-height: 18px">Assignments show in the list row and as a line in the conversation.</span>
-        </div>
       </div>
     </aside>
+    </sc-if>
+    <sc-if value="{{ f.wp }}" hint-placeholder-val="{{ false }}"><div style="flex: 0 0 400px; width: 400px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="WpPanel" title="Gantt PDF export drops trailing columns" type="BUG" number="#58231" project="Northwind rollout Lyon" status="in development" scope="Linked to the whole conversation" assignee="Priya Raman" priority="High" version="16.5" hint-size="400px,1145px"></dc-import></div></sc-if>
   </div>
+    </div>
+  </figure>
+  </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3780}}'>
 class Component extends DCLogic {
   renderVals() {
     const toolBase = 'height: 34px; border: 0; border-radius: var(--sc-radius, 8px); display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; ';
@@ -232,7 +234,15 @@ class Component extends DCLogic {
       role: icon === null ? 'menuitemradio' : 'menuitem', checked: icon === null ? (checked ? 'true' : 'false') : 'false',
       dot: checked ? dotOn : dotOff, bg: (checked || hot) ? '#eaf0f7' : 'transparent'
     }));
-    return { tools, more, card, cardOwn, avatarThem, avatarMe, avatarThemSmall, avatarMeSmall, timeline, comment, internalChip, mention, quiet, shared };
+    const tabOn = 'height: 34px; padding: 0 12px; border: 0; border-bottom: 2px solid var(--sc-action, #3669a5); background: transparent; color: #1b1c1d; font: 700 14px \'Fira Sans\', sans-serif';
+    const tabOff = 'height: 34px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #5e6168; font: 600 14px \'Fira Sans\', sans-serif';
+    // Calm fix (after round 7): Share and Assign are two tabs of one panel; the roles live in the Role select's tooltip; the Grant Editor question shows only after the assign action; after Assign the right column returns to the work package panel; the comment box folds behind Comment next to Reply and Forward.
+    const frames = [
+      { letter: 'a', caption: 'Share and assign, opened from More, on its Share tab: who has the conversation, a role select per member (the roles in its tooltip), Withdraw, and Leave this conversation', panel: true, wp: false, shareTab: 'true', assignTab: 'false', shareTabStyle: tabOn, assignTabStyle: tabOff, shareDisplay: 'flex', assignDisplay: 'none' },
+      { letter: 'b', caption: 'The Assign tab, right after assigning Priya: the assignees, the field for more people, and the one question that follows the action, since Priya is a Viewer here (assignments show in the list row and as a line in the conversation)', panel: true, wp: false, shareTab: 'false', assignTab: 'true', shareTabStyle: tabOff, assignTabStyle: tabOn, shareDisplay: 'none', assignDisplay: 'flex' },
+      { letter: 'c', caption: 'After Assign (or Withdraw) the panel closes and the right column returns to the work package; the conversation keeps its assignment lines and internal comments, and a new comment starts from Comment next to Reply and Forward', panel: false, wp: true, shareTab: 'false', assignTab: 'false', shareTabStyle: tabOff, assignTabStyle: tabOff, shareDisplay: 'none', assignDisplay: 'none' }
+    ];
+    return { tools, more, card, cardOwn, avatarThem, avatarMe, avatarThemSmall, avatarMeSmall, timeline, comment, internalChip, mention, quiet, shared, frames };
   }
 }
 </script>

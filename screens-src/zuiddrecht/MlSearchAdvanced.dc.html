@@ -15,10 +15,10 @@ a{color:#3669a5}a:hover{color:#234a78}
 mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2300px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2080px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Search box in focus: typed operators, one-click chips and the account choice</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Search box in focus: the account choice and the one-click chips; the operator list is folded behind "Operators you can type" (its tooltip names the French and Dutch forms, Help explains them)</figcaption>
     <div style="position: relative; height: 600px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
       <dc-import name="MlHeader" placeholder=" " hint-size="100%,55px"></dc-import>
       <div style="position: absolute; left: 277px; top: 9px; width: 640px; height: 36px; box-sizing: border-box; display: flex; align-items: center; gap: 0; padding: 0 44px 0 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35)">
@@ -38,8 +38,12 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
         <div role="group" aria-label="One-click filters" style="display: flex; align-items: center; gap: 6px; padding: 2px 10px 4px">
           <sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><button type="button" aria-pressed="{{ q.on }}" style="{{ q.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ q.icon }}"></path></svg>{{ q.label }}</button></sc-for>
         </div>
-        <div style="display: flex; align-items: center; padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168"><span style="flex: 1 1 auto">Operators you can type</span><span style="flex: none; text-transform: none; letter-spacing: 0; font-weight: 600">Also in French and Dutch</span></div>
-        <ul role="listbox" aria-label="Operator suggestions" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        <button type="button" aria-expanded="false" aria-controls="ml-sa-ops" title="The same operators work in French and Dutch: type de:, à:, est: or van:, aan:, is: and they are read as from:, to: and is:." style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; margin: 2px 0 0; padding: 0 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg>
+          <span style="flex: none">Operators you can type</span>
+          <span style="flex: 1 1 auto; min-width: 0; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">from:, to:, is:, has:, label:, subject:</span>
+        </button>
+        <ul id="ml-sa-ops" role="listbox" aria-label="Operator suggestions" style="list-style: none; margin: 0; padding: 0; display: none; flex-direction: column">
           <sc-for list="{{ ops }}" as="o" hint-placeholder-count="6">
             <li role="option" aria-selected="{{ o.on }}" style="{{ o.style }}">
               <code style="flex: none; width: 150px; font: 500 14px ui-monospace, 'Fira Mono', monospace; color: #1b1c1d">{{ o.op }}</code>
@@ -48,8 +52,8 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
             </li>
           </sc-for>
         </ul>
-        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 10px 4px; border-top: 1px solid #e4e6ea; font-size: 12px; color: #5e6168; line-height: 18px">
-          <span style="flex: 1 1 auto">The same operators work in French and Dutch: type de:, à:, est: or van:, aan:, is: and they are read as from:, to: and is:.</span>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 10px 4px; border-top: 1px solid #e4e6ea">
+          <span style="flex: 1 1 auto"></span>
           <button type="button" style="flex: none; height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Open all filters</button>
         </div>
       </div>
@@ -85,21 +89,21 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
   </figure>
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;All filters opened to their full length, with the and, or and not switch at the top</figcaption>
-    <div style="position: relative; height: 1040px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;The filter form is the one layer: the search box keeps its first three chips and "+12 filters"; and, or and not at the top ("None of them" turns every filter into a leave-out; "Leave out folders" and "Without label" are always left out); Technical details stays folded</figcaption>
+    <div style="position: relative; height: 820px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
       <dc-import name="MlHeader" placeholder=" " hint-size="100%,55px"></dc-import>
-      <div style="position: absolute; left: 277px; top: 9px; width: 640px; box-sizing: border-box; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 4px 44px 4px 36px; min-height: 36px; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); z-index: 11">
+      <div style="position: absolute; left: 277px; top: 9px; width: 640px; height: 36px; box-sizing: border-box; display: flex; align-items: center; gap: 4px; padding: 0 44px 0 36px; overflow: hidden; white-space: nowrap; border: 1px solid #ffffff; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); z-index: 11">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px; color: #5e6168"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"></path></svg>
-        <span role="textbox" aria-label="Search, every filter of the form below as a chip" style="display: contents"></span>
-        <sc-for list="{{ typedB }}" as="t" hint-placeholder-count="14"><span style="{{ t.style }}">{{ t.text }}</span></sc-for>
+        <span role="textbox" aria-label="Search, every filter of the form below as a chip: from:jana subject:gantt \"last week\" and 12 more" style="display: contents"></span>
+        <sc-for list="{{ typedB }}" as="t" hint-placeholder-count="3"><span style="{{ t.style }}">{{ t.text }}</span></sc-for><span title="larger:1MB, attachment:gantt, received:30d, moved:after:2026-10-01, wp:#58231, -folder:Spam,Trash,Newsletters, -label:Internal, is:unread, is:starred, has:attachment, header:List-Id, msgid" style="display: inline-flex; align-items: center; height: 22px; padding: 0 6px; border-radius: var(--sc-radius, 8px); border: 1px solid #c4c7cb; color: #3d4047; font-size: 13px; font-weight: 500">+12 filters</span>
         <span aria-hidden="true" style="display: inline-block; width: 1px; height: 18px; background: #1b1c1d"></span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 10px; top: 10px; color: #234a78"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"></path></svg>
       </div>
-      <div role="dialog" aria-label="Search filters, all of them" style="position: absolute; left: 277px; top: 122px; width: 800px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 8px">
+      <div role="dialog" aria-label="Search filters, all of them" style="position: absolute; left: 277px; top: 50px; width: 900px; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 8px">
         <div style="display: flex; flex-direction: column; gap: 6px; padding: 4px 8px 8px; border-bottom: 1px solid #e4e6ea">
           <div style="display: flex; align-items: center; gap: 12px">
             <span style="font-size: 14px; font-weight: 600; color: #3d4047; white-space: nowrap">Combine the conditions</span>
-            <div role="radiogroup" aria-label="Combine the conditions: and, or, not" style="display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <div role="radiogroup" aria-label="Combine the conditions: and, or, not" style="flex: none; display: inline-flex; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); overflow: hidden">
               <button type="button" role="radio" aria-checked="true" style="height: 34px; padding: 0 14px; border: 0; background: #eaf0f7; color: #234a78; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">All of them (and)</button>
               <button type="button" role="radio" aria-checked="false" style="height: 34px; padding: 0 14px; border: 0; border-left: 1px solid #c4c7cb; background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Any of them (or)</button>
               <button type="button" role="radio" aria-checked="false" style="height: 34px; padding: 0 14px; border: 0; border-left: 1px solid #c4c7cb; background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">None of them (not)</button>
@@ -108,7 +112,6 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
             <span style="font-size: 14px; font-weight: 600; color: #3d4047; white-space: nowrap">Search in</span>
             <button type="button" aria-haspopup="listbox" aria-label="Search in: All accounts" style="display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; min-width: 220px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif; white-space: nowrap"><span>All accounts, 2 mailboxes</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
           </div>
-          <span style="font-size: 13px; color: #5e6168; line-height: 18px">The search box above shows the same filters as chips. "None of them" turns every filter below into a leave-out. "Leave out folders" and "Without label" are always left out, whichever you choose here.</span>
         </div>
         <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
           <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
@@ -116,7 +119,7 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
             <div style="display: grid; grid-template-columns: {{ s.cols }}; gap: 8px 12px">
               <sc-for list="{{ s.fields }}" as="f" hint-placeholder-count="4">
                 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0; {{ f.span }}">
-                  <span style="white-space: nowrap">{{ f.label }}</span>
+                  <span style="display: flex; align-items: center; gap: 4px; white-space: nowrap">{{ f.label }}<sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="About {{ f.label }}" title="{{ f.hint }}" style="flex: none; width: 20px; height: 20px; border: 0; border-radius: 10px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg></button></sc-if></span>
                   <sc-if value="{{ f.isField }}" hint-placeholder-val="{{ true }}"><span style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 15px; font-weight: 400; color: {{ f.color }}; min-width: 0">
                     <sc-if value="{{ f.hasType }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: #ab0000">BUG</span></sc-if>
                     <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ f.value }}</span>
@@ -128,7 +131,6 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
                     <button type="button" aria-pressed="false" style="height: 38px; padding: 0 14px; border: 0; border-left: 1px solid #c4c7cb; background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Linked</button>
                     <button type="button" aria-pressed="false" style="height: 38px; padding: 0 14px; border: 0; border-left: 1px solid #c4c7cb; background: #ffffff; color: #3d4047; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Not linked</button>
                   </span></sc-if>
-                  <sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 400; font-size: 13px; color: #5e6168; white-space: normal; line-height: 18px">{{ f.hint }}</span></sc-if>
                 </label>
               </sc-for>
             </div>
@@ -144,15 +146,14 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 8px">
-          <button type="button" aria-expanded="true" aria-controls="ml-sa-technical" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg>
+          <button type="button" aria-expanded="false" aria-controls="ml-sa-technical" title="For mail that a system sent: a header name, or the id of one message." style="display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f5f6f8; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg>
             <span style="flex: none">Technical details</span>
             <span style="flex: 1 1 auto; min-width: 0; font-weight: 400; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">2 set: mailing list mail, one specific message</span>
-            <span style="flex: none; font-weight: 400; color: #5e6168">For mail that a system sent.</span>
           </button>
-          <div id="ml-sa-technical" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; padding: 4px 0 2px">
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0"><span style="white-space: nowrap">Header, any value</span><span style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 15px; font-weight: 400; color: #1b1c1d; min-width: 0"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">List-Id</span><button type="button" aria-label="Clear Header, any value" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span><span style="font-weight: 400; font-size: 13px; color: #5e6168; white-space: normal; line-height: 18px">A header name the mail must carry, whatever its value. List-Id marks mail from a mailing list.</span></label>
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0"><span style="white-space: nowrap">Message id</span><span style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 15px; font-weight: 400; color: #1b1c1d; min-width: 0"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">&lt;a1f2@stadtwerke-kassel.example&gt;</span><button type="button" aria-label="Clear Message id" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span><span style="font-weight: 400; font-size: 13px; color: #5e6168; white-space: normal; line-height: 18px">The id of one specific message, as another system reported it.</span></label>
+          <div id="ml-sa-technical" style="display: none; grid-template-columns: 1fr 1fr; gap: 8px 12px; padding: 4px 0 2px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0"><span style="display: flex; align-items: center; gap: 4px; white-space: nowrap">Header, any value<button type="button" aria-label="About Header, any value" title="A header name the mail must carry, whatever its value. List-Id marks mail from a mailing list." style="flex: none; width: 20px; height: 20px; border: 0; border-radius: 10px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg></button></span><span style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 15px; font-weight: 400; color: #1b1c1d; min-width: 0"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">List-Id</span><button type="button" aria-label="Clear Header, any value" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: #1b1c1d; min-width: 0"><span style="display: flex; align-items: center; gap: 4px; white-space: nowrap">Message id<button type="button" aria-label="About Message id" title="The id of one specific message, as another system reported it." style="flex: none; width: 20px; height: 20px; border: 0; border-radius: 10px; background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 16v-4M12 8h.01"></path></svg></button></span><span style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font-size: 15px; font-weight: 400; color: #1b1c1d; min-width: 0"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">&lt;a1f2@stadtwerke-kassel.example&gt;</span><button type="button" aria-label="Clear Message id" style="flex: none; width: 28px; height: 28px; margin-right: -6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span></label>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 12px; padding: 8px 8px 4px; border-top: 1px solid #e4e6ea; margin-top: 2px">
@@ -162,7 +163,7 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
         </div>
       </div>
       <div style="display: flex; flex: 1 1 auto; min-height: 0">
-        <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="" hint-size="245px,985px"></dc-import></div>
+        <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="" hint-size="245px,765px"></dc-import></div>
         <section aria-label="Search results" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e4e6ea; overflow: hidden">
           <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
             <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Results</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">1 conversation, all accounts</span></div>
@@ -240,7 +241,7 @@ mark{background:#eaf0f7;color:inherit;border-radius:2px;padding:0 1px}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2080}}'>
 class Component extends DCLogic {
   renderVals() {
     const tok = 'display: inline-flex; align-items: center; height: 22px; padding: 0 6px; border-radius: var(--sc-radius, 8px); background: #eaf0f7; color: #234a78; font-size: 13px; font-weight: 500';
@@ -306,10 +307,8 @@ class Component extends DCLogic {
         F('Without label', 'Internal', { hasClear: true })
       ] }
     ].map(S);
-    const typedB = [
-      'from:jana', 'subject:gantt', '"last week"', 'larger:1MB', 'attachment:gantt', 'received:30d', 'moved:after:2026-10-01',
-      'wp:#58231', '-folder:Spam,Trash,Newsletters', '-label:Internal', 'is:unread', 'is:starred', 'has:attachment', 'header:List-Id', 'msgid:&lt;a1f2@stadtwerke-kassel.example&gt;'
-    ].map((text) => ({ text, style: tok }));
+    // Calm fix (after round 7): while the form is open the search box keeps one row, its first three chips and a "+12 filters" count (the rest in its tooltip), so the form is the only layer.
+    const typedB = ['from:jana', 'subject:gantt', '"last week"'].map((text) => ({ text, style: tok }));
     // The dark fill marks the chosen type only; Date and Person are dropdown filters, outlined with their chevron.
     const narrow = [
       ['Mail', true, false], ['Files', false, false], ['Calendar', false, false],

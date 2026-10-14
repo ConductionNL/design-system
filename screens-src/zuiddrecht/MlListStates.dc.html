@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2040px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2260px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 24px; overflow: hidden">
   <sc-for list="{{ lists }}" as="f" hint-placeholder-count="4">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; {{ f.place }}">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
@@ -24,9 +24,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2; white-space: nowrap">{{ f.title }}</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.countLine }}</span></div>
             <div style="display: flex; gap: 2px; flex: none">
               <button type="button" aria-label="Fold the conversation list" aria-expanded="true" title="Fold the conversation list" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16M15 4v16"></path></svg></button>
-              <button type="button" aria-label="Filter conversations" title="Filter conversations" aria-haspopup="menu" aria-expanded="{{ f.filterOpen }}" style="{{ f.filterStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg><sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; top: 4px; right: 4px; min-width: 14px; height: 14px; border-radius: 7px; background: #3669a5; color: #ffffff; font-size: 10px; font-weight: 700; line-height: 14px; text-align: center">1</span></sc-if></button>
-              <button type="button" aria-label="Select conversations" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></button>
-              <button type="button" aria-label="Sort conversations" title="Sort conversations" aria-haspopup="menu" aria-expanded="{{ f.sortOpen }}" style="{{ f.sortStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
+              <button type="button" aria-label="More for this list" title="More" aria-haspopup="menu" aria-expanded="{{ f.moreOpen }}" style="{{ f.moreStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg><sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; top: 4px; right: 4px; min-width: 14px; height: 14px; border-radius: 7px; background: #3669a5; color: #ffffff; font-size: 10px; font-weight: 700; line-height: 14px; text-align: center">1</span></sc-if></button>
             </div>
           </div>
           <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 8px; padding: 0 16px 12px; border-bottom: 1px solid #e4e6ea">
@@ -39,7 +37,7 @@ a{color:#3669a5}a:hover{color:#234a78}
               </sc-if>
               <sc-if value="{{ r.row }}" hint-placeholder-val="{{ true }}">
                 <li style="position: relative; {{ r.style }}">
-                  <a href="MlThread.dc.html" aria-current="{{ r.current }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
+                  <a href="MlThread.dc.html" aria-current="{{ r.current }}" title="{{ r.rowTitle }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
                     <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="{{ r.dot }}"></span></span>
                     <sc-if value="{{ r.avatarInitials }}" hint-placeholder-val="{{ true }}"><span style="{{ r.avatar }}">{{ r.initials }}</span></sc-if>
                     <sc-if value="{{ r.avatarPhoto }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Photo of {{ r.from }} from the address book" style="flex: none; width: 32px; height: 32px; margin-top: 2px; border-radius: 16px; background: radial-gradient(circle at 50% 38%, #e8c9b0 0 30%, #4a3a30 31% 100%); box-shadow: inset 0 -9px 0 #3669a5"></span></sc-if>
@@ -55,7 +53,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                         <span style="{{ r.subjectStyle }}">{{ r.subject }}</span>
                         <sc-if value="{{ r.mention }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="You were mentioned" style="flex: none; width: 18px; height: 18px; border-radius: 9px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg></span></sc-if>
                         <sc-if value="{{ r.encrypted }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Encrypted message" style="flex: none; color: #5e6168"><path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4"></path></svg></sc-if>
-                        <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span role="img" aria-label="Has attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
+                        <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span role="img" aria-label="Has attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px{{ r.hideOnHover }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
                         <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
                       </span>
                       <span style="display: flex; align-items: center; gap: 6px; height: 20px">
@@ -91,20 +89,22 @@ a{color:#3669a5}a:hover{color:#234a78}
           <p style="margin: 0; max-width: 220px; font-size: 14px; color: #5e6168">Pick one from the list to read it here.</p>
         </main>
 
-        <sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}">
-          <div role="menu" aria-label="Filter conversations" style="position: absolute; left: 416px; top: 46px; margin-top: 4px; width: 262px; min-width: 262px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+        <sc-if value="{{ f.moreOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="More for this list" style="position: absolute; left: 416px; top: 46px; margin-top: 4px; width: 262px; min-width: 262px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="{{ f.filterOpen }}" style="{{ f.groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg><span style="flex: 1 1 auto">Filter conversations</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ f.filterChev }}"></path></svg></button>
+            <sc-if value="{{ f.filterOpen }}" hint-placeholder-val="{{ false }}">
             <div style="padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Narrow this view</div>
-            <p style="margin: 0 0 6px; padding: 0 10px; font-size: 12px; line-height: 16px; color: #5e6168">Only conversations that match every choice below are shown.</p>
             <sc-for list="{{ filterItems }}" as="m" hint-placeholder-count="6">
               <sc-if value="{{ m.group }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span><div style="padding: 4px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ m.label }}</div></sc-if>
               <sc-if value="{{ m.item }}" hint-placeholder-val="{{ true }}"><button type="button" role="menuitemcheckbox" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.box }}"><sc-if value="{{ m.checked }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex: 1 1 auto">{{ m.label }}</span><span style="font-size: 12px; color: #5e6168">{{ m.count }}</span></button></sc-if>
             </sc-for>
             <span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span>
             <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M18 6 6 18M6 6l12 12"></path></svg><span style="flex: 1 1 auto">Clear filters</span><span style="font-size: 12px; font-weight: 400; color: #5e6168">1 on</span></button>
-          </div>
-        </sc-if>
-        <sc-if value="{{ f.sortOpen }}" hint-placeholder-val="{{ false }}">
-          <div role="menu" aria-label="Sort conversations" style="position: absolute; left: 416px; top: 46px; margin-top: 4px; width: 262px; min-width: 262px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span>
+            </sc-if>
+            <button type="button" role="menuitem" style="{{ f.groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span style="flex: 1 1 auto">Select conversations</span></button>
+            <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="{{ f.sortOpen }}" style="{{ f.groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg><span style="flex: 1 1 auto">Sort conversations</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="{{ f.sortChev }}"></path></svg></button>
+            <sc-if value="{{ f.sortOpen }}" hint-placeholder-val="{{ false }}">
             <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Order</div>
             <sc-for list="{{ sortOrder }}" as="m" hint-placeholder-count="2">
               <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span></button>
@@ -119,6 +119,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             <sc-for list="{{ showAs }}" as="m" hint-placeholder-count="2">
               <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span><span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ m.hint }}</span></button>
             </sc-for>
+            </sc-if>
           </div>
         </sc-if>
       </div>
@@ -126,7 +127,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2040}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2260}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
@@ -152,9 +153,13 @@ class Component extends DCLogic {
         dateStyle: 'flex: none; font-size: 12px; ' + (unread ? 'color: #1b1c1d; font-weight: 600' : 'color: #5e6168') + (o.hover ? '; visibility: hidden' : ''),
         subjectStyle: 'flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; color: #1b1c1d; ' + (unread ? 'font-weight: 600' : 'font-weight: 400'),
         hasAttach: !!o.attach, attachIcon: o.attach ? ICON[o.attach[0]] : '', attachCount: o.attach ? o.attach[1] : '',
+        // Calm fix: the hovered row hides its time and attachment mark so the row actions replace them cleanly.
+        hideOnHover: o.hover ? '; visibility: hidden' : '',
+        // Calm fix: one chip per row, the work package chip first; labels beside a chip and the assignee move to the row's tooltip and to the reading pane.
+        rowTitle: [from + ', ' + subject].concat(o.assignee ? ['Assigned to ' + o.assignee] : [], (o.wp && o.labels && o.labels.length) ? ['Labels: ' + o.labels.join(', ')] : []).join('. '),
         starred: !!o.starred, mention: !!o.mention, encrypted: !!o.encrypted, draft: !!o.draft, failed: !!o.failed, sending: !!o.sending, hover: !!o.hover,
-        labels: (o.labels ?? []).map((name) => ({ name, colour: LABEL[name] })),
-        hasAssignee: !!o.assignee, assignee: o.assignee ?? '', assigneeInitials: o.assignee ? o.assignee.split(' ').map((w) => w[0]).join('') : '',
+        labels: (o.wp ? [] : (o.labels ?? []).slice(0, 1)).map((name) => ({ name, colour: LABEL[name] })),
+        hasAssignee: false, assignee: o.assignee ?? '', assigneeInitials: o.assignee ? o.assignee.split(' ').map((w) => w[0]).join('') : '',
         hasChip: !!o.wp, wpType: o.wp ? o.wp[0] : '', wpNumber: o.wp ? o.wp[1] : '', wpStatus: o.wp ? o.wp[2] : '',
         chipType: 'font-weight: 700; letter-spacing: 0.04em; color: ' + (o.wp ? TYPE[o.wp[0]] : '#3d4047'),
         chipDot: 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; ' + (st ? 'background: ' + st[0] + '; border: 1.5px solid ' + st[1] : '')
@@ -196,6 +201,8 @@ class Component extends DCLogic {
       row('People Team', 'PT', 'Reminder: submit your October hours by Friday', 1, 'Yesterday', 'Please submit your October hours in the time sheet by Friday 16 October.', {}),
       sovereign
     ];
+    const groupStyle = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 500 14px \'Fira Sans\', sans-serif; text-align: left; white-space: nowrap';
+    const DOWN = 'm6 9 6 6 6-6', RIGHT = 'm9 18 6-6-6-6';
     const iconBtn = 'position: relative; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); color: #3d4047; display: inline-flex; align-items: center; justify-content: center; ';
     // The chips of MlThreadList, same strings. Linked means "linked to a work package": the tooltip says it in full.
     const chipBase = 'display: inline-flex; align-items: center; height: 38px; padding: 0 14px; box-sizing: border-box; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; ';
@@ -203,10 +210,10 @@ class Component extends DCLogic {
     const chips = ['All', 'Unread', 'Linked', 'Not linked'].map((label, i) => ({ label, title: TIP[label], on: i === 0 ? 'true' : 'false',
       style: chipBase + (i === 0 ? 'border: 1px solid #1b1c1d; background: #1b1c1d; color: #ffffff;' : 'border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d;') }));
     const lists = [
-      { letter: 'a', caption: 'Every mark a row can carry, under date headings; one row hovered shows its actions in place of its time', place: 'grid-column: 1; grid-row: 1 / span 2', height: '1080px', title: 'Inbox', countLine: '12 conversations', rows: rowsA, footer: true, filterOpen: false, sortOpen: false, filterStyle: iconBtn + 'background: transparent;', sortStyle: iconBtn + 'background: transparent;' },
-      { letter: 'b', caption: 'The filter menu open beside the list: With attachments is on, so the view narrows to 4 of 12', place: 'grid-column: 2; grid-row: 1', height: '480px', title: 'Inbox', countLine: '4 of 12 conversations', rows: rowsB, footer: false, filterOpen: true, sortOpen: false, filterStyle: iconBtn + 'background: #eaf0f7; color: #234a78;', sortStyle: iconBtn + 'background: transparent;' },
-      { letter: 'c', caption: 'The sort menu open beside the list: newest first, by date; at its foot the choice between the plain inbox and the priority inbox', place: 'grid-column: 2; grid-row: 2', height: '600px', title: 'Inbox', countLine: '12 conversations', rows: rowsC, footer: false, filterOpen: false, sortOpen: true, filterStyle: iconBtn + 'background: transparent;', sortStyle: iconBtn + 'background: #eaf0f7; color: #234a78;' },
-      { letter: 'd', caption: 'The priority inbox: the same list under four headings, important first (people you reply to and work packages assigned to you), then starred, follow up (asked and not answered) and the rest', place: 'grid-column: 1 / -1; grid-row: 3', height: '780px', title: 'Priority inbox', countLine: '12 conversations', rows: rowsD, footer: false, filterOpen: false, sortOpen: false, filterStyle: iconBtn + 'background: transparent;', sortStyle: iconBtn + 'background: transparent;' }
+      { letter: 'a', caption: 'The marks a row can carry, under date headings, one chip per row (the work package chip first; a label beside it and the assignee sit in the row tooltip and the reading pane); one row hovered shows its actions in place of its time and attachment mark', place: 'grid-column: 1; grid-row: 1 / span 2', height: '1080px', title: 'Inbox', countLine: '12 conversations', rows: rowsA, footer: true, filterOpen: false, sortOpen: false, moreOpen: false, groupStyle, filterChev: RIGHT, sortChev: RIGHT, moreStyle: iconBtn + 'background: transparent;' },
+      { letter: 'b', caption: 'The list menu (…) open beside the list, its Filter group unfolded: With attachments is on, so the view narrows to 4 of 12', place: 'grid-column: 2; grid-row: 1', height: '560px', title: 'Inbox', countLine: '4 of 12 conversations', rows: rowsB, footer: false, filterOpen: true, sortOpen: false, moreOpen: true, groupStyle, filterChev: DOWN, sortChev: RIGHT, moreStyle: iconBtn + 'background: #eaf0f7; color: #234a78;' },
+      { letter: 'c', caption: 'The list menu (…) open beside the list, its Sort group unfolded: newest first, by date; at its foot the choice between the plain inbox and the priority inbox', place: 'grid-column: 2; grid-row: 2', height: '740px', title: 'Inbox', countLine: '12 conversations', rows: rowsC, footer: false, filterOpen: false, sortOpen: true, moreOpen: true, groupStyle, filterChev: RIGHT, sortChev: DOWN, moreStyle: iconBtn + 'background: #eaf0f7; color: #234a78;' },
+      { letter: 'd', caption: 'The priority inbox: the same list under four headings, important first (people you reply to and work packages assigned to you), then starred, follow up (asked and not answered) and the rest', place: 'grid-column: 1 / -1; grid-row: 3', height: '780px', title: 'Priority inbox', countLine: '12 conversations', rows: rowsD, footer: false, filterOpen: false, sortOpen: false, moreOpen: false, groupStyle, filterChev: RIGHT, sortChev: RIGHT, moreStyle: iconBtn + 'background: transparent;' }
     ];
     const boxOn = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 3px; border: 1px solid #3669a5; background: #3669a5; color: #ffffff; display: inline-flex; align-items: center; justify-content: center';
     const boxOff = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 3px; border: 1px solid #c4c7cb; background: #ffffff';

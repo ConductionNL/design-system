@@ -109,11 +109,9 @@ a{color:#3669a5}a:hover{color:#234a78}
               </tr>
             </tbody>
           </table>
-          <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #5e6168; line-height: 18px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4l3 2"></path></svg><span>The three times are held as tentative entries in your calendar until you decide. Deciding removes the other two.</span></div>
+          <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #5e6168; line-height: 18px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4l3 2"></path></svg><span>Proposed, held as tentative in your calendar until you decide.</span></div>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">In the grid</span><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; font-size: 13px; color: #3d4047">
-          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="3"><span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><span style="{{ l.swatch }}"></span>{{ l.label }}</span></sc-for>
-        </div></div>
+        <label style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; line-height: 20px"><span>Show when the others are busy</span><button type="button" role="switch" aria-checked="false" aria-label="Show when the others are busy" title="Their busy time is drawn hatched in the grid" style="flex: none; position: relative; width: 42px; height: 24px; padding: 0; border: 1px solid #c4c7cb; border-radius: 12px; background: #ffffff"><span style="position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 9px; background: #5e6168"></span></button></label>
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; padding-top: 16px; border-top: 1px solid #e4e6ea">
           <button type="button" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px/20px 'Fira Sans', sans-serif; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 6 9 17l-5-5"></path></svg>Create the event on Thu 15, 10:00 with all invited people</button>
           <button type="button" style="height: 40px; padding: 0 12px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Copy the voting link</button>
@@ -185,7 +183,6 @@ a{color:#3669a5}a:hover{color:#234a78}
       <div style="display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 16px; border-top: 1px solid #e4e6ea">
         <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Send the proposal</button>
         <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Cancel</button>
-        <span style="font-size: 13px; color: #5e6168">The 3 proposed times are held as tentative in your calendar.</span>
       </div>
     </form>
   </div>
@@ -238,11 +235,11 @@ class Component extends DCLogic {
     const busy = (who, start, dur) => ev(who + ' busy', start, dur, { busy: true });
     const prop = (start, selected) => ev('Kick-off Lyon phase 2, proposed', start, 1, { cal: 'customers', pending: true, proposed: true, selected });
     const perDay = [
-      [ev('Week planning', 8, 0.75, { cal: 'personal', past: true }), standup(false), busy('Tom Achterberg', 13, 2)],
-      [standup(false), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers' }), busy('Marc Dubois', 9, 1.5), prop(15, false), busy('Priya Raman', 16.5, 1.5)],
-      [standup(false), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team' }), busy('Jana Köhler', 14, 2)],
-      [standup(false), prop(10, true), busy('Marc Dubois', 12, 1), ev('Rollout review Lyon, phase 2', 14, 1, { cal: 'customers', pending: true })],
-      [standup(false), busy('Tom Achterberg', 11, 1.5), prop(14, false), ev('Submit October hours', 17, 0.5, { cal: 'personal' })],
+      [ev('Week planning', 8, 0.75, { cal: 'personal', past: true }), standup(false)],
+      [standup(false), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers' }), prop(15, false)],
+      [standup(false), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team' })],
+      [standup(false), prop(10, true), ev('Rollout review Lyon, phase 2', 14, 1, { cal: 'customers', pending: true })],
+      [standup(false), prop(14, false), ev('Submit October hours', 17, 0.5, { cal: 'personal' })],
       [], []
     ];
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((name, i) => {

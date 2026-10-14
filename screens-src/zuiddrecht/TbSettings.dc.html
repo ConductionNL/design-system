@@ -14,9 +14,9 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3660px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 6684px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
-  <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="4">
+  <sc-for list="{{ frames }}" as="fr" hint-placeholder-count="7">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ fr.letter }}</span> &nbsp;{{ fr.caption }}</figcaption>
       <div style="{{ fr.frameStyle }}">
@@ -98,6 +98,12 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <label for="tb-set-badge" style="{{ switchLabel }}"><span style="font-weight: 600">Show the number on every card</span><span style="{{ hint }}">The work package number, like #58412, sits before the subject so you can say it aloud or search for it.</span></label>
                     <button id="tb-set-badge" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
                   </div>
+                  <sc-if value="{{ fr.hasCheckRow }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ switchRow }}">
+                    <label for="tb-set-checks" style="{{ switchLabel }}"><span style="font-weight: 600">Show selection checkboxes in the list</span><span style="{{ hint }}">A checkbox at the start of every row of the List view. Off selects with a click on the row while holding Ctrl, or with Shift for a range.</span></label>
+                    <span style="display: inline-flex; align-items: center; gap: 10px"><span style="font-size: 13px; color: #538b28; font-weight: 600">Saved</span><button id="tb-set-checks" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button></span>
+                  </div>
+                  </sc-if>
                   <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e6ea">
                     <div style="display: flex; flex-direction: column; gap: 2px"><h4 style="{{ h4 }}">Navigation filters</h4><p style="{{ hint }}">Which filters show under Filters in the navigation, and when.</p></div>
                     <div style="{{ tableWrap }}"><table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px">
@@ -124,9 +130,9 @@ a{color:#3669a5}a:hover{color:#234a78}
                     <div style="{{ tableWrap }}"><table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px">
                       <thead><tr style="background: #fafbfc"><th scope="col" style="{{ th }}">Kind of activity</th><th scope="col" style="{{ th }} text-align: center; width: 120px">In the bell</th><th scope="col" style="{{ th }} text-align: center; width: 120px">By mail</th></tr></thead>
                       <tbody>
-                        <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="6">
+                        <sc-for list="{{ fr.kinds }}" as="k" hint-placeholder-count="6">
                           <tr style="border-top: 1px solid #eef0f3">
-                            <td style="padding: 14px 16px"><span style="display: block; font-size: 15px; font-weight: 600; line-height: 20px">{{ k.name }}<span style="font-size: 13px; font-weight: 400; color: #5e6168"> {{ k.hint }}</span></span></td>
+                            <td style="padding: 14px 16px"><span style="display: block; font-size: 15px; font-weight: 600; line-height: 20px">{{ k.name }}<sc-if value="{{ k.nco }}" hint-placeholder-val="{{ false }}"> <span role="img" title="Kept in Nextcloud. OpenProject does not have this." aria-label="Kept in Nextcloud. OpenProject does not have this." style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #5e6168; font: 600 11px 'Fira Sans', sans-serif; line-height: 16px; letter-spacing: 0; text-transform: none; white-space: nowrap; vertical-align: middle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>Nextcloud only</span></sc-if><span style="font-size: 13px; font-weight: 400; color: #5e6168"> {{ k.hint }}</span></span></td>
                             <td style="padding: 12px 16px; text-align: center; line-height: 0"><button type="button" role="switch" aria-checked="{{ k.stream.checked }}" aria-label="{{ k.name }} in the bell" style="{{ k.stream.switch }}"><span style="{{ k.stream.knob }}"></span></button></td>
                             <td style="padding: 12px 16px; text-align: center; line-height: 0"><button type="button" role="switch" aria-checked="{{ k.mail.checked }}" aria-label="{{ k.name }} by mail" style="{{ k.mail.switch }}"><span style="{{ k.mail.knob }}"></span></button></td>
                           </tr>
@@ -152,6 +158,12 @@ a{color:#3669a5}a:hover{color:#234a78}
                       <button id="tb-set-due-mail" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
                     </div>
                     <p style="{{ hint }}">Reminders you set on a work package itself always arrive.</p>
+                    <sc-if value="{{ fr.hasAutoOpen }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ switchRow }}; padding-top: 4px">
+                      <label for="tb-set-auto-open" style="{{ switchLabel }}"><span style="font-weight: 600">Open the notification area by itself for a new reminder</span><span style="{{ hint }}">When a due reminder or a reminder you set arrives, the notification area opens from the bell. Off only counts it on the bell.</span></label>
+                      <span style="display: inline-flex; align-items: center; gap: 10px"><span style="font-size: 13px; color: #538b28; font-weight: 600">Saved</span><button id="tb-set-auto-open" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button></span>
+                    </div>
+                    </sc-if>
                   </div>
                 </sc-if>
 
@@ -191,7 +203,7 @@ a{color:#3669a5}a:hover{color:#234a78}
                   <div role="status" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #ff9d2e; border-radius: var(--sc-radius, 8px); background: #fff4e6; font-size: 14px; line-height: 20px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px; color: #ff9d2e"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"></path></svg><span>Keyboard shortcuts are switched off for your account. The keys below do nothing until you switch them on under Accessibility in your account settings. <a href="#" style="color: var(--sc-link, #3669a5)">Open account settings</a></span></div>
                   <p style="margin: 0; font-size: 14px; color: #3d4047; line-height: 21px">Every shortcut in the app on one page. Single keys, without a modifier, when no field has the focus. The filter panel and the search field show the same keys.</p>
                   <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; align-items: start">
-                    <sc-for list="{{ keyGroups }}" as="g" hint-placeholder-count="3">
+                    <sc-for list="{{ fr.keyGroups }}" as="g" hint-placeholder-count="3">
                       <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
                         <h4 style="{{ h4 }}">{{ g.title }}</h4>
                         <p style="{{ hint }}">{{ g.hint }}</p>
@@ -214,7 +226,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3660}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6684}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df', MILESTONE: '#35c53f' };
@@ -297,7 +309,9 @@ class Component extends DCLogic {
       ['A due date moves', 'on a work package of yours', true, false],
       ['Any other work package in your projects changes status', '', false, false],
       ['A member joins or leaves a project', '', true, false]
-    ].map(([name, hint, stream, mail]) => ({ name, hint, stream: sw(stream), mail: sw(mail) }));
+    ].map(([name, hint, stream, mail]) => ({ name, hint, nco: false, stream: sw(stream), mail: sw(mail) }));
+    // Frame f: the row for an invitation answered by mail (Nextcloud only, the invitation lives in Mail), after the assignment row.
+    const kinds2 = [kinds[0], { name: 'An assignee accepts or declines your work package', hint: '', nco: true, stream: sw(true), mail: sw(true) }, ...kinds.slice(1)];
     const SCOPE = ['All work packages', 'Only mine', 'None'];
     const swatch = (c) => 'flex: none; width: 12px; height: 12px; border-radius: 3px; background: ' + c;
     const projects = [
@@ -317,13 +331,18 @@ class Component extends DCLogic {
         [['←', '→'], 'Move between columns'], [['↑', '↓'], 'Move between cards'], [['Shift', '←'], 'Card one column left'], [['Shift', '→'], 'Card one column right'], [['Esc'], 'Close the card'], [['?'], 'Show this list']
       ] }
     ].map((g) => ({ title: g.title, hint: g.hint, keys: g.keys.map(([keys, label]) => ({ keys, label })) }));
+    // Frame g: the Delete key on the selected work packages, under On a card; the same 30 day rule as the menu.
+    const keyGroups2 = keyGroups.map((g) => g.title !== 'On a card' ? g : ({ ...g, hint: 'With a work package card in focus, or one or more selected.', keys: [...g.keys, { keys: ['Delete'], label: 'Delete the selected work packages, can be undone' }] }));
 
     const frames = [
       { letter: 'a', title: 'General', caption: 'General: the default column for new work packages, reopen where you left, the number on every card, the navigation filters, and the language line', isGeneral: true, isNotify: false, isKeys: false },
       { letter: 'b', title: 'Notifications', caption: 'Notifications: which kinds of project activity reach the bell and your mail, and per project which work packages send a due reminder, by mail too or not', isGeneral: false, isNotify: true, isKeys: false },
       { letter: 'c', title: 'OpenProject', caption: 'OpenProject: the signed-in account, whether work packages open here or there, the comment on linking, time logging and the project for work packages made from a mail', isGeneral: false, isNotify: false, isKeys: false, isOp: true },
-      { letter: 'd', title: 'Keyboard shortcuts', caption: 'Shortcuts: the keys on the board, on a card and the arrow keys, with the notice that shortcuts are switched off for this account', isGeneral: false, isNotify: false, isKeys: true }
-    ].map((f) => ({ ...f, isOp: !!f.isOp, saved: f.isKeys ? '' : 'Changes are saved at once', frameStyle: 'position: relative; height: ' + ({ a: 880, b: 940, c: 800, d: 840 }[f.letter]) + 'px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden' }));
+      { letter: 'd', title: 'Keyboard shortcuts', caption: 'Shortcuts: the keys on the board, on a card and the arrow keys, with the notice that shortcuts are switched off for this account', isGeneral: false, isNotify: false, isKeys: true },
+      { letter: 'e', title: 'General', caption: 'General after switching on selection checkboxes in the list: the new row sits under the card number, saved at once; the List view then shows a checkbox at the start of every row', isGeneral: true, isNotify: false, isKeys: false, hasCheckRow: true },
+      { letter: 'f', title: 'Notifications', caption: 'Notifications with two more rows: an assignee accepting or declining your work package reaches the bell and your mail, and a new reminder opens the notification area by itself. The mark Nextcloud only means kept in Nextcloud, OpenProject does not have it', isGeneral: false, isNotify: true, isKeys: false, hasAutoOpen: true, kinds: kinds2 },
+      { letter: 'g', title: 'Keyboard shortcuts', caption: 'Shortcuts with the Delete key under On a card: it deletes the selected work packages, to Deleted items for 30 days, and can be undone', isGeneral: false, isNotify: false, isKeys: true, keyGroups: keyGroups2 }
+    ].map((f) => ({ ...f, isOp: !!f.isOp, hasCheckRow: !!f.hasCheckRow, hasAutoOpen: !!f.hasAutoOpen, kinds: f.kinds ?? kinds, keyGroups: f.keyGroups ?? keyGroups, saved: f.isKeys ? '' : 'Changes are saved at once', frameStyle: 'position: relative; height: ' + ({ a: 880, b: 940, c: 800, d: 840, e: 880, f: 1120, g: 880 }[f.letter]) + 'px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden' }));
     const dotOk = 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #d3f9d8; box-shadow: 0 0 0 2px #8ff09c';
     const btnSmall = 'display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
     const swatchLyon = 'display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #3669a5';

@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2634px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3440px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Two events selected and dragged together, 3 h later: the pale ghosts stay where they were, the lifted blocks show their new time, the lower edge of a block is a resize handle</figcaption>
     <div style="position: relative; height: 1000px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
@@ -226,9 +226,85 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </div>
+  <div style="display: grid; grid-template-columns: 840px 1fr; gap: 24px">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">e</span> &nbsp;The menu of one selected event you organise: Print in detail or as a compact list, and Create a follow-up, a copy one week later at the same time with the same people</figcaption>
+      <div style="position: relative; height: 740px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div style="flex: none; display: flex; height: 34px; border-bottom: 1px solid #eef0f3">
+          <div style="flex: none; width: 84px; display: flex; align-items: flex-end; padding-bottom: 6px; box-sizing: border-box; font-size: 10px; line-height: 12px; letter-spacing: 0.04em; color: #5e6168"><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right">CEST</span><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right; opacity: 0.6">UTC</span></div>
+          <sc-for list="{{ daysE }}" as="d" hint-placeholder-count="2"><div style="{{ d.headStyle }}"><span>{{ d.name }}</span><span style="{{ d.numStyle }}">{{ d.n }}</span></div></sc-for>
+        </div>
+        <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden">
+          <sc-for list="{{ hours }}" as="h" hint-placeholder-count="11"><div style="{{ h.lineStyle }}"></div><div style="{{ h.localStyle }}">{{ h.local }}</div><div style="{{ h.utcStyle }}">{{ h.utc }}</div></sc-for>
+          <div style="position: absolute; top: 0; bottom: 0; left: 84px; right: 0; display: flex">
+            <sc-for list="{{ daysE }}" as="d" hint-placeholder-count="2">
+              <div style="{{ d.colStyle }}">
+                <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
+                  <a href="{{ e.href }}" aria-label="{{ e.aria }}" aria-current="{{ e.current }}" style="{{ e.style }}">
+                    <span style="display: flex; align-items: center; gap: 4px; min-width: 0"><span style="{{ e.titleStyle }}">{{ e.title }}</span><sc-if value="{{ e.inlineTime }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 11px; font-weight: 400; color: #5e6168">{{ e.time }}</span></sc-if></span>
+                    <sc-if value="{{ e.blockTime }}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; color: #5e6168; white-space: nowrap">{{ e.time }}</span></sc-if>
+                    <sc-if value="{{ e.hasChip }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; height: 16px; margin-top: 3px; padding: 0 5px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 10px; line-height: 1; white-space: nowrap; align-self: flex-start"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ e.wpColor }}">{{ e.wpType }}</span><span style="color: #3d4047">{{ e.wpNumber }}</span></span></sc-if>
+                  </a>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <div role="menu" aria-label="Actions for Demo preparation Malmo Energi" style="position: absolute; top: 150px; left: 380px; min-width: 340px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column">
+            <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Demo preparation Malmo Energi</span>
+            <sc-for list="{{ menuE }}" as="i" hint-placeholder-count="10">
+              <sc-if value="{{ i.sep }}" hint-placeholder-val="{{ false }}"><div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div></sc-if>
+              <button type="button" role="menuitem" aria-haspopup="{{ i.sub }}" title="{{ i.title }}" style="{{ i.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ i.iconColor }}"><path d="{{ i.icon }}"></path></svg><span style="flex: 1 1 auto">{{ i.label }}</span><sc-if value="{{ i.hint }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 13px; color: #5e6168">{{ i.hintText }}</span></sc-if><sc-if value="{{ i.isSub }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></sc-if></button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">f</span> &nbsp;Deleting an event you organise: the reason goes into the cancellation mail to the invited people</figcaption>
+      <div style="position: relative; height: 740px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div aria-hidden="true" style="flex: none; display: flex; height: 34px; border-bottom: 1px solid #eef0f3">
+          <div style="flex: none; width: 84px; display: flex; align-items: flex-end; padding-bottom: 6px; box-sizing: border-box; font-size: 10px; line-height: 12px; letter-spacing: 0.04em; color: #5e6168"><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right">CEST</span><span style="width: 42px; box-sizing: border-box; padding-right: 8px; text-align: right; opacity: 0.6">UTC</span></div>
+          <sc-for list="{{ daysE }}" as="d" hint-placeholder-count="2"><div style="{{ d.headStyle }}"><span>{{ d.name }}</span><span style="{{ d.numStyle }}">{{ d.n }}</span></div></sc-for>
+        </div>
+        <div aria-hidden="true" style="flex: 1 1 auto; min-height: 0; position: relative; z-index: 0; overflow: hidden">
+          <sc-for list="{{ hours }}" as="h" hint-placeholder-count="11"><div style="{{ h.lineStyle }}"></div><div style="{{ h.localStyle }}">{{ h.local }}</div><div style="{{ h.utcStyle }}">{{ h.utc }}</div></sc-for>
+          <div style="position: absolute; top: 0; bottom: 0; left: 84px; right: 0; display: flex">
+            <sc-for list="{{ daysE }}" as="d" hint-placeholder-count="2">
+              <div style="{{ d.colStyle }}">
+                <sc-for list="{{ d.events }}" as="e" hint-placeholder-count="2">
+                  <a href="{{ e.href }}" aria-label="{{ e.aria }}" aria-current="{{ e.current }}" style="{{ e.style }}">
+                    <span style="display: flex; align-items: center; gap: 4px; min-width: 0"><span style="{{ e.titleStyle }}">{{ e.title }}</span><sc-if value="{{ e.inlineTime }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 11px; font-weight: 400; color: #5e6168">{{ e.time }}</span></sc-if></span>
+                    <sc-if value="{{ e.blockTime }}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; color: #5e6168; white-space: nowrap">{{ e.time }}</span></sc-if>
+                    <sc-if value="{{ e.hasChip }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; height: 16px; margin-top: 3px; padding: 0 5px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 10px; line-height: 1; white-space: nowrap; align-self: flex-start"><span style="font-weight: 700; letter-spacing: 0.04em; color: {{ e.wpColor }}">{{ e.wpType }}</span><span style="color: #3d4047">{{ e.wpNumber }}</span></span></sc-if>
+                  </a>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="position: absolute; inset: 0; z-index: 20; background: rgba(27,28,29,0.4); display: flex; align-items: center; justify-content: center">
+          <div role="dialog" aria-modal="true" aria-labelledby="del-title-f" style="width: 460px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12)">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <h2 id="del-title-f" style="margin: 0; font-size: 20px; font-weight: 700; line-height: 28px">Delete Demo preparation Malmo Energi?</h2>
+              <span style="font-size: 14px; color: #5e6168; line-height: 20px">You organise it. Marc Dubois and Priya Raman get a cancellation by mail and the event leaves their calendars.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="del-reason" style="font-size: 14px; font-weight: 600">Reason for the cancellation</label>
+              <textarea id="del-reason" rows="3" style="padding: 9px 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 15px/21px 'Fira Sans', sans-serif; color: #1b1c1d; resize: none; outline: none">Malmo Energi moved the demo to November. A new invitation follows once they confirm the date.</textarea>
+              <span style="font-size: 13px; color: #5e6168; line-height: 18px">Optional. The reason is the first line of the cancellation mail.</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px">
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #a30000; border-radius: var(--sc-radius, 8px); background: #cc0000; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Delete and send the cancellation</button>
+              <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2634}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3440}}'>
 class Component extends DCLogic {
   renderVals() {
     const H = 72; // one hour in px, 08:00 to 18:00
@@ -339,7 +415,27 @@ class Component extends DCLogic {
     const cals = [
       ['Personal', CAL.personal, true, ''], ['Northwind team', CAL.team, true, ''], ['Customers', CAL.customers, false, '']
     ].map(([name, color, on, hint]) => ({ name, color, on, hint, checked: on ? 'true' : 'false', box: on ? boxOn : boxOff }));
-    return { hours, days, bars, nowTop, nowLabelTop, selected, keys, daysB, daysC, item, menu, swatches, cals };
+    // frame e and f: Tuesday and Wednesday, the demo preparation selected, Olivia organises it
+    const daysE = [
+      col('Tue', 13, 1, [standup(), ev('Demo preparation Malmo Energi', 11, 1, { cal: 'customers', selected: true })]),
+      col('Wed', 14, 2, [standup(), ev('Release 16.5 scope review', 9.5, 1.5, { cal: 'team', chip: ['EPIC', '#57990', 'in review'] })])
+    ];
+    const menuE = [
+      ['Open', 'M15 3h6v6M14 10l7-7M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6', false, 'Enter', false, false, ''],
+      ['Duplicate', 'M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1', false, 'after the original', false, false, ''],
+      ['Create a follow-up one week later', 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM12 14v4M10 16h4', false, 'Tue 20 Oct, 11:00', false, false, 'A new event on Tuesday 20 October, 11:00 to 12:00, with the same people, place and video call; it opens for you to change before the invitations go out'],
+      ['Copy link', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71', true, '', false, false, ''],
+      ['Export as a file', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3', false, '.ics', false, false, ''],
+      ['Print in detail', 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z', false, 'one page per event', false, false, 'Title, time, place, people with their answers, description and files'],
+      ['Print as a compact list', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01', false, 'one line per event', false, false, 'Time and title only, several events on one page'],
+      ['Email all invited people', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true, '2 people, opens Mail', false, false, ''],
+      ['Also keep busy in', 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', false, '', true, false, ''],
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true, 'asks for a reason', false, true, '']
+    ].map(([label, icon, sep, hintText, isSub, danger, title]) => ({
+      label, icon, sep, hintText, hint: hintText !== '', isSub, sub: isSub ? 'true' : 'false', title,
+      style: item + (danger ? '#cc0000' : '#1b1c1d'), iconColor: danger ? '#cc0000' : '#5e6168'
+    }));
+    return { hours, days, bars, nowTop, nowLabelTop, selected, keys, daysB, daysC, item, menu, swatches, cals, daysE, menuE };
   }
 }
 </script>

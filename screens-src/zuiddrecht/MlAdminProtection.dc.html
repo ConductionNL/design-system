@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 2760px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 3410px; overflow: hidden">
+<div style="flex: none; display: flex; flex-direction: column; height: 2760px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" app="Administration" placeholder="Search protection settings" user="Ines Okafor" initials="IO" role="Workspace administrator" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Protection" hint-size="245px,2705px"></dc-import></div>
@@ -200,8 +201,46 @@ a{color:#3669a5}a:hover{color:#234a78}
     </main>
   </div>
 </div>
+
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Incoming mail, the rest of the block: the folders whose mail always has its links switched off, and the default level of the sender authenticity warning that people see above a message; both apply to every mailbox on this server</figcaption>
+    <div style="{{ box }}; height: 560px">
+      <div style="position: absolute; left: 24px; right: 24px; top: 24px; display: flex; flex-direction: column">
+        <section aria-labelledby="ml-p-incoming-b" style="{{ block }}">
+          <div style="{{ blockHead }}">
+            <h2 id="ml-p-incoming-b" style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Incoming mail</h2>
+            <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Checks on the sending server before a message is accepted. Together they stop most spam before anyone sees it.</p>
+          </div>
+          <div style="{{ setting }}">
+            <div style="{{ settingText }}"><span style="{{ settingLabel }}">Folders where links are always switched off</span><span style="{{ settingHint }}">Mail that lands in one of these folders opens with every link disabled, whatever the person's own settings say. Spam and Quarantine are always on this list.</span>
+              <div style="{{ miniWrap }}"><table style="{{ miniTable }}">
+                <thead><tr style="{{ miniThRow }}"><th scope="col" style="{{ miniTh }}">Folder</th><th scope="col" style="{{ miniTh }}">Applies to</th><th scope="col" style="width: 80px"><span style="{{ srOnly }}">Actions</span></th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ linkFolders }}" as="f" hint-placeholder-count="3">
+                    <tr style="{{ miniRow }}"><td style="{{ miniTd }}; font-size: 15px; font-weight: 600">{{ f.name }}</td><td style="{{ miniTd }}">{{ f.scope }}</td><td style="padding: 7px 16px; line-height: 0; text-align: right"><sc-if value="{{ f.fixed }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #5e6168; line-height: 20px">Always</span></sc-if><sc-if value="{{ f.removable }}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Remove {{ f.name }} from the list" style="{{ btnSmall }}">Remove</button></sc-if></td></tr>
+                  </sc-for>
+                </tbody>
+              </table></div>
+              <div><button type="button" style="{{ btnSmall }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="margin-right: 6px"><path d="M12 5v14M5 12h14"></path></svg>Add folder</button></div>
+            </div>
+          </div>
+          <fieldset style="{{ fieldsetRow }}; border-bottom: 0">
+            <div style="{{ settingText }}"><legend style="{{ legend }}">Default level of sender authenticity warnings</legend><span style="{{ settingHint }}">The warning above a message whose sender could not be confirmed (SPF, DKIM and DMARC, the three checks). A person can pick a stricter level for their own mailbox, never a weaker one.</span></div>
+            <div style="{{ radios }}">
+              <label style="{{ radio }}"><input type="radio" name="ml-p-auth" style="{{ radioInput }}">Off, no warning above the message</label>
+              <label style="{{ radio }}"><input type="radio" name="ml-p-auth" checked style="{{ radioInput }}">Only when a check failed</label>
+              <label style="{{ radio }}"><input type="radio" name="ml-p-auth" style="{{ radioInput }}">Whenever the sender is doubtful, failed or unchecked</label>
+            </div>
+          </fieldset>
+        </section>
+      </div>
+    </div>
+  </figure>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2760}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3410}}'>
 class Component extends DCLogic {
   renderVals() {
     const srOnly = 'position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)';
@@ -246,7 +285,15 @@ class Component extends DCLogic {
       ['lists.ville-de-lyon.example', 'The Lyon rollout mailing list'],
       ['mailgate.malmo-energi.example', 'Malmo Energi, forwards to their project team']
     ].map(([name, f]) => ({ name, for: f }));
-    return { srOnly, btnPrimary, btnSecondary, btnSmall, switchOn, knobOn, switchOff, knobOff, block, blockHead, setting, settingLast, fieldsetRow, legend, settingText, settingLabel, settingHint, fields, field, fieldLabel, unitWrap, unit, inputNum, input, selectSmall, radios, radio, radioInput, miniWrap, miniTable, miniThRow, miniTh, miniRow, miniTd, blocklists, forwarders };
+    // Round 8 frame a: the Incoming mail block cropped to its two remaining settings.
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px';
+    const box = 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden';
+    const linkFolders = [
+      ['Spam', 'Every mailbox', true],
+      ['Quarantine', 'Every mailbox', true],
+      ['Unknown senders', 'Mailboxes that have the folder', false]
+    ].map(([name, scope, fixed]) => ({ name, scope, fixed, removable: !fixed }));
+    return { srOnly, btnPrimary, btnSecondary, btnSmall, switchOn, knobOn, switchOff, knobOff, block, blockHead, setting, settingLast, fieldsetRow, legend, settingText, settingLabel, settingHint, fields, field, fieldLabel, unitWrap, unit, inputNum, input, selectSmall, radios, radio, radioInput, miniWrap, miniTable, miniThRow, miniTh, miniRow, miniTd, blocklists, forwarders, cap, box, linkFolders };
   }
 }
 </script>

@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1040px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1750px; overflow: hidden">
+<div style="flex: none; display: flex; flex-direction: column; height: 1040px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" app="Administration" placeholder="Search domains, mailboxes or settings" user="Ines Okafor" initials="IO" role="Workspace administrator" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Mail server" hint-size="245px,985px"></dc-import></div>
@@ -77,15 +78,75 @@ a{color:#3669a5}a:hover{color:#234a78}
     </main>
   </div>
 </div>
+
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Uploads, the rest of the section: from which size an attachment becomes a download link, which expiry choices a person is offered, and whether a link must expire</figcaption>
+    <div style="height: 620px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+      <dc-import name="MlHeader" app="Administration" placeholder="Search domains, mailboxes or settings" user="Ines Okafor" initials="IO" role="Workspace administrator" hint-size="100%,55px"></dc-import>
+      <div style="display: flex; flex: 1 1 auto; min-height: 0">
+        <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlAdminNav" active="Mail server" hint-size="245px,565px"></dc-import></div>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px 28px; overflow: hidden">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Mail server</h1>
+              <p style="margin: 0; color: #3d4047">What this server holds for uploads, how it talks to other servers and how folder listings are served. Changes apply as soon as you save, nobody is signed out.</p>
+            </div>
+            <span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; font-size: 13px; color: #3d4047"><span style="{{ dotOk }}"></span>Reachable, checked today at 07:00</span>
+          </div>
+          <form aria-label="Mail server settings, uploads" style="display: flex; flex-direction: column; gap: 16px">
+            <section aria-labelledby="ml-srv-limits-a" style="width: 800px; max-width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 20px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <h2 id="ml-srv-limits-a" style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Uploads</h2>
+                <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">What the server keeps for a person while a message is being written, and when an attachment travels as a download link instead of inside the message.</p>
+              </div>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+                <label for="ml-srv-pending-a" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Storage for uploads not yet sent</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">Per person. Attachments in drafts and in messages still being written count against this.</span></label>
+                <span style="flex: none; display: inline-flex; align-items: center; gap: 8px"><input id="ml-srv-pending-a" type="number" value="2" style="{{ num }}"><span style="font-size: 13px; color: #3d4047; width: 24px">GB</span></span>
+              </div>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+                <label for="ml-srv-linksize" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Send attachments as a link from this size</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">Attachments at or above this size are kept on the server and the message carries a download link. Smaller ones travel inside the message.</span></label>
+                <span style="flex: none; display: inline-flex; align-items: center; gap: 8px"><input id="ml-srv-linksize" type="number" value="10" style="{{ num }}"><span style="font-size: 13px; color: #3d4047; width: 24px">MB</span></span>
+              </div>
+              <fieldset style="margin: 0; padding: 14px 0 0; border: 0; border-top: 1px solid #e4e6ea; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+                <legend style="float: left; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Expiry choices offered</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">What a person can pick for a link when sending.</span></legend>
+                <span style="flex: none; display: inline-flex; flex-wrap: wrap; gap: 6px 14px; max-width: 300px; justify-content: flex-end">
+                  <label style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><input type="checkbox" checked style="{{ check }}">1 day</label>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><input type="checkbox" checked style="{{ check }}">1 week</label>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><input type="checkbox" checked style="{{ check }}">1 month</label>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><input type="checkbox" style="{{ check }}">3 months</label>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; color: #5e6168"><input type="checkbox" disabled style="{{ check }}">Never</label>
+                </span>
+              </fieldset>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-top: 14px; border-top: 1px solid #e4e6ea">
+                <label for="ml-srv-linkexpiry" style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">Links must expire</span><span style="font-size: 12px; color: #5e6168; line-height: 18px">A person has to pick one of the expiry choices; Never cannot be offered.</span></label>
+                <button id="ml-srv-linkexpiry" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+              </div>
+            </section>
+            <section aria-labelledby="ml-srv-config-a" style="width: 800px; max-width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); padding: 20px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <h2 id="ml-srv-config-a" style="margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Server configuration</h2>
+                <p style="margin: 0; font-size: 12px; color: #5e6168; line-height: 18px">Timing for every connection this server makes to another server.</p>
+              </div>
+            </section>
+          </form>
+        </main>
+      </div>
+    </div>
+  </figure>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1750}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
     const knobOn = 'position: absolute; top: 2px; left: 20px; width: 18px; height: 18px; border-radius: 9px; background: #ffffff';
     const num = 'width: 88px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px \'Fira Sans\', sans-serif; color: #1b1c1d; text-align: right';
     const dotOk = 'display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #d3f9d8; box-shadow: 0 0 0 2px #8ff09c';
-    return { switchOn, knobOn, num, dotOk };
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px';
+    const check = 'width: 18px; height: 18px; margin: 0; accent-color: #3669a5';
+    return { switchOn, knobOn, num, dotOk, cap, check };
   }
 }
 </script>

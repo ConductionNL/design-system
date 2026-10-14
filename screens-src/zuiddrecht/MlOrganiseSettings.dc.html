@@ -14,7 +14,8 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 1200px; overflow: hidden; position: relative">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 2240px; overflow: hidden">
+<div style="flex: none; display: flex; flex-direction: column; height: 1200px; overflow: hidden; position: relative">
   <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
   <div style="display: flex; flex: 1 1 auto; min-height: 0">
     <div style="flex: 0 0 245px; width: 245px; display: flex; align-items: stretch; overflow: hidden"><dc-import name="MlNav" active="Inbox" hint-size="245px,945px"></dc-import></div>
@@ -108,8 +109,91 @@ a{color:#3669a5}a:hover{color:#234a78}
     </div>
   </div>
 </div>
+
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 24px">
+
+  <div style="display: flex; gap: 24px">
+    <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Search, the rest of the group: which fields a plain search looks in; the message body is off by default because it is the slow one</figcaption>
+      <div style="{{ box }}; height: 400px">
+        <div aria-hidden="true" style="{{ dim }}"></div>
+        <section aria-label="Search and clean-up, search fields" style="{{ pane }}">
+          <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Search and clean-up</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+          <div style="{{ paneBody }}">
+            <h4 style="{{ h4 }}">Search</h4>
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 4px">
+              <legend style="padding: 0; margin: 0 0 2px; float: left; width: 100%; font-weight: 600; line-height: 21px">A plain search looks in</legend>
+              <p style="{{ desc }}; margin: 0 0 6px">A search without a field in front of it, such as Lyon, is looked for here. From: or Subject: in the search box always looks in that one field.</p>
+              <sc-for list="{{ searchFields }}" as="s" hint-placeholder-count="4">
+                <label style="display: flex; align-items: center; gap: 10px; min-height: 32px"><sc-if value="{{ s.on }}" hint-placeholder-val="{{ true }}"><input type="checkbox" checked style="{{ check }}"></sc-if><sc-if value="{{ s.off }}" hint-placeholder-val="{{ false }}"><input type="checkbox" style="{{ check }}"></sc-if><span>{{ s.label }}</span><span style="font-size: 12px; color: #5e6168">{{ s.hint }}</span></label>
+              </sc-for>
+            </fieldset>
+          </div>
+        </section>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+      <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Trash, the rest of the group: the switch that deletes for good instead of moving to Trash, with its warning shown once the switch is on</figcaption>
+      <div style="{{ box }}; height: 400px">
+        <div aria-hidden="true" style="{{ dim }}"></div>
+        <section aria-label="Search and clean-up, trash" style="{{ pane }}">
+          <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Search and clean-up</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+          <div style="{{ paneBody }}">
+            <h4 style="{{ h4 }}">Trash</h4>
+            <div style="{{ row }}">
+              <label for="ml-org-trash-b" style="{{ lbl }}"><span style="font-weight: 600">Empty the trash of old messages</span><span style="{{ desc }}">Runs every night. A message you put back before then is safe.</span></label>
+              <button id="ml-org-trash-b" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+            </div>
+            <div style="{{ row }}; padding-top: 12px; border-top: 1px solid #e4e6ea">
+              <label for="ml-org-skip" style="{{ lbl }}"><span style="font-weight: 600">Delete messages permanently, skipping the trash</span><span style="{{ desc }}">Delete removes the message from the server at once instead of moving it to Trash.</span></label>
+              <button id="ml-org-skip" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+            </div>
+            <div role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid #cc0000; border-radius: var(--sc-radius, 8px); background: #fbeaea; font-size: 14px; line-height: 21px; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px; color: #cc0000"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01"></path></svg><span>A message deleted this way cannot be brought back, not by you and not by your administrator. Undo in the toast still works for ten seconds.</span></div>
+          </div>
+        </section>
+      </div>
+    </figure>
+  </div>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="{{ cap }}"><span style="color: #5e6168; font-weight: 400">c</span> &nbsp;Automatic folders: incoming mail is sorted into Social, Offers and Newsletters under Inbox by a rule the server runs, never into tabs; each folder can be renamed, get another icon or be switched off, and the rules learn from the mail you move</figcaption>
+    <div style="{{ box }}; height: 500px">
+      <div aria-hidden="true" style="{{ dim }}"></div>
+      <section aria-label="Search and clean-up, automatic folders" style="{{ pane }}">
+        <div style="{{ paneHead }}"><h3 style="{{ paneTitle }}">Search and clean-up</h3><button type="button" aria-label="Close settings" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+        <div style="{{ paneBody }}">
+          <h4 style="{{ h4 }}">Automatic folders</h4>
+          <div style="{{ row }}">
+            <label for="ml-org-auto" style="{{ lbl }}"><span style="font-weight: 600">Sort incoming mail into folders automatically</span><span style="{{ desc }}">Three folders under Inbox, filled by a rule on the server, so your phone and every other mail program see the same folders. Mail from people stays in Inbox.</span></label>
+            <button id="ml-org-auto" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+          </div>
+          <div style="border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; overflow: hidden"><table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px">
+            <thead><tr style="background: #fafbfc"><th scope="col" style="{{ th }}">Folder</th><th scope="col" style="{{ th }}">Icon</th><th scope="col" style="{{ th }}">Server rule</th><th scope="col" style="{{ th }} text-align: right">Sort into it</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ autoFolders }}" as="f" hint-placeholder-count="3">
+                <tr style="border-top: 1px solid #eef0f3">
+                  <td style="padding: 10px 16px"><input type="text" value="{{ f.name }}" aria-label="Folder name for {{ f.key }}" style="width: 180px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px 'Fira Sans', sans-serif"></td>
+                  <td style="padding: 10px 16px"><button type="button" aria-haspopup="listbox" aria-label="Icon for {{ f.key }}: {{ f.iconName }}" style="{{ select }}; width: 150px"><span style="display: inline-flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #3d4047"><path d="{{ f.icon }}"></path></svg>{{ f.iconName }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button></td>
+                  <td style="padding: 14px 16px; color: #3d4047">{{ f.rule }}</td>
+                  <td style="padding: 12px 16px; text-align: right"><button type="button" role="switch" aria-checked="{{ f.checked }}" aria-label="Sort into {{ f.key }}" style="{{ f.switch }}"><span style="{{ f.knob }}"></span></button></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table></div>
+          <div style="{{ row }}">
+            <label for="ml-org-learn" style="{{ lbl }}"><span style="font-weight: 600">Learn from the mail I move</span><span style="{{ desc }}">A message you move out of an automatic folder, or into one, teaches the rule where that sender belongs.</span></label>
+            <button id="ml-org-learn" type="button" role="switch" aria-checked="true" style="{{ switchOn }}"><span style="{{ knobOn }}"></span></button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </figure>
+
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2240}}'>
 class Component extends DCLogic {
   renderVals() {
     const switchOn = 'flex: none; position: relative; width: 42px; height: 24px; margin-top: 0; padding: 0; border: 1px solid var(--sc-action-deep, #234a78); border-radius: 12px; background: var(--sc-action, #3669a5); box-sizing: border-box; cursor: pointer';
@@ -127,7 +211,34 @@ class Component extends DCLogic {
       ['@seo-growth-hacks.test', 'Whole domain', '28 September'],
       ['no-reply@webinar-blast.test', 'Sender', '14 September']
     ].map(([value, kind, added]) => ({ value, kind, added }));
-    return { switchOn, knobOn, th, linkBtn, accounts, blocked };
+    // Round 8 frames: the settings section cropped to one group, over the dimmed screen (same tokens as MlSettingsAppearance).
+    const cap = 'font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px';
+    const box = 'position: relative; box-sizing: border-box; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden';
+    const dim = 'position: absolute; inset: 0; background: rgba(27,28,29,0.45)';
+    const pane = 'position: absolute; left: 24px; right: 24px; top: 24px; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden';
+    const paneHead = 'flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; box-sizing: border-box; border-bottom: 1px solid #e4e6ea';
+    const paneTitle = 'margin: 0; font-size: 20px; font-weight: 700; line-height: 24px';
+    const closeBtn = 'flex: none; width: 40px; height: 40px; margin: -8px 0; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center';
+    const paneBody = 'flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 24px';
+    const h4 = 'margin: 0; font-size: 16px; font-weight: 700; line-height: 24px';
+    const row = 'display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; min-height: 32px';
+    const lbl = 'display: flex; flex-direction: column; gap: 2px; min-width: 0';
+    const desc = 'font-size: 14px; color: #5e6168; line-height: 21px';
+    const check = 'width: 18px; height: 18px; margin: 0; accent-color: #3669a5';
+    const select = 'display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding: 0 10px 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; color: #1b1c1d; font: 400 15px \'Fira Sans\', sans-serif; white-space: nowrap';
+    const searchFields = [
+      ['Subject', true, ''],
+      ['Sender', true, 'name and address'],
+      ['Recipients', true, 'To and Copy'],
+      ['Message body', false, 'slower on large mailboxes; the per-mailbox switch above still applies']
+    ].map(([label, on, hint]) => ({ label, hint, on, off: !on }));
+    // The three automatic folders: a server rule each; the owner decided on folders under Inbox, never tabs.
+    const autoFolders = [
+      ['Social', 'Social', 'People', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75', 'Mail from social networks and community sites, by sender domain and list headers', true],
+      ['Offers', 'Offers', 'Tag', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01', 'Promotions and shop mailings, by the unsubscribe header and the sender', true],
+      ['Newsletters', 'Newsletters', 'News', 'M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2M18 14h-8M15 18h-5M10 6h8v4h-8z', 'Mailing lists and newsletters you signed up for, by list headers', false]
+    ].map(([key, name, iconName, icon, rule, on]) => ({ key, name, iconName, icon, rule, checked: on ? 'true' : 'false', switch: on ? switchOn : switchOff, knob: on ? knobOn : knobOff }));
+    return { switchOn, knobOn, th, linkBtn, accounts, blocked, cap, box, dim, pane, paneHead, paneTitle, closeBtn, paneBody, h4, row, lbl, desc, check, select, searchFields, autoFolders };
   }
 }
 </script>

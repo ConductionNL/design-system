@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2260px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 3680px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto auto; gap: 24px; overflow: hidden">
   <sc-for list="{{ lists }}" as="f" hint-placeholder-count="4">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; {{ f.place }}">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
@@ -125,9 +125,96 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </sc-for>
+
+  <sc-for list="{{ lists2 }}" as="f" hint-placeholder-count="4">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; {{ f.place }}">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px"><span style="color: #5e6168; font-weight: 400">{{ f.letter }}</span> &nbsp;{{ f.caption }}</figcaption>
+      <div style="height: {{ f.height }}; box-sizing: border-box; display: flex; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden; position: relative">
+        <section aria-label="{{ f.title }}" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e4e6ea; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box">
+            <div style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2; white-space: nowrap">{{ f.title }}</h2><span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ f.countLine }}</span></div>
+            <div style="display: flex; gap: 2px; flex: none">
+              <button type="button" aria-label="Fold the conversation list" aria-expanded="true" title="Fold the conversation list" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 4v16M15 4v16"></path></svg></button>
+              <button type="button" aria-label="More for this list" title="More" aria-haspopup="menu" aria-expanded="{{ f.moreOpen }}" style="{{ f.moreStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
+            </div>
+          </div>
+          <div role="group" aria-label="Filter" style="flex: none; display: flex; gap: 8px; padding: 0 16px 12px; border-bottom: 1px solid #e4e6ea">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" title="{{ c.title }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+          </div>
+          <ol style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+            <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
+              <sc-if value="{{ r.heading }}" hint-placeholder-val="{{ false }}">
+                <li aria-hidden="true" style="display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 16px; box-sizing: border-box; background: #f5f6f8; border-bottom: 1px solid #e4e6ea; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ r.label }}</li>
+              </sc-if>
+              <sc-if value="{{ r.row }}" hint-placeholder-val="{{ true }}">
+                <li style="position: relative; {{ r.style }}">
+                  <a href="MlThread.dc.html" aria-current="false" title="{{ r.rowTitle }}" style="display: flex; align-items: flex-start; gap: 8px; height: 78px; box-sizing: border-box; padding: 9px 14px 9px 6px; color: #1b1c1d; text-decoration: none">
+                    <span style="flex: none; width: 8px; height: 60px; display: flex; align-items: center; justify-content: center"><span style="{{ r.dot }}"></span></span>
+                    <span style="{{ r.avatar }}">{{ r.initials }}</span>
+                    <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0">
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <span style="{{ r.sender }}">{{ r.from }}</span>
+                        <sc-if value="{{ r.hasCount }}" hint-placeholder-val="{{ true }}"><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.count }}</span></sc-if>
+                        <span style="flex: 1 1 auto"></span>
+                        <span style="{{ r.dateStyle }}">{{ r.date }}</span>
+                      </span>
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <span style="{{ r.subjectStyle }}">{{ r.subject }}</span>
+                        <sc-if value="{{ r.prioHigh }}" hint-placeholder-val="{{ false }}"><span style="position: relative; display: inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="High priority, set by the sender" style="flex: none; color: #cc0000"><path d="M12 19V5M5 12l7-7 7 7"></path></svg><sc-if value="{{ r.tip }}" hint-placeholder-val="{{ false }}"><span role="tooltip" style="position: absolute; right: -6px; bottom: 24px; padding: 4px 8px; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #ffffff; font-size: 12px; line-height: 16px; white-space: nowrap; z-index: 5">High priority, set by the sender</span></sc-if></span></sc-if>
+                        <sc-if value="{{ r.prioLow }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Low priority, set by the sender" style="flex: none; color: #5e6168"><path d="M12 5v14M19 12l-7 7-7-7"></path></svg></sc-if>
+                        <sc-if value="{{ r.hasAttach }}" hint-placeholder-val="{{ true }}"><span role="img" aria-label="Has attachments" style="flex: none; display: inline-flex; align-items: center; gap: 2px; color: #5e6168; font-size: 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ r.attachIcon }}"></path></svg>{{ r.attachCount }}</span></sc-if>
+                        <sc-if value="{{ r.starred }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff9d2e" stroke="#ff9d2e" stroke-width="1.75" stroke-linejoin="round" aria-label="Starred" role="img" style="flex: none"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></sc-if>
+                      </span>
+                      <span style="display: flex; align-items: center; gap: 6px; height: 20px">
+                        <sc-if value="{{ r.scheduled }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; font-weight: 600; line-height: 1; color: #234a78; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2"></path></svg>Scheduled</span></sc-if>
+                        <sc-if value="{{ r.hasMailbox }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #f0f1f3; font-size: 11px; line-height: 1; color: #3d4047; white-space: nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>{{ r.mailbox }}</span></sc-if>
+                        <sc-if value="{{ r.hasChip }}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; font-size: 11px; line-height: 1; white-space: nowrap"><span style="{{ r.chipType }}">{{ r.wpType }}</span><span style="color: #3d4047">{{ r.wpNumber }}</span><span style="{{ r.chipDot }}"></span><span style="color: #3d4047">{{ r.wpStatus }}</span></span></sc-if>
+                        <span style="flex: 1 1 auto; min-width: 0; font-size: 13px; color: #5e6168; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.snippet }}</span>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              </sc-if>
+            </sc-for>
+          </ol>
+        </section>
+        <main style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: #f5f6f8; text-align: center">
+          <span style="width: 64px; height: 64px; border-radius: 32px; background: #ffffff; border: 1px solid #e4e6ea; display: inline-flex; align-items: center; justify-content: center; color: #5e6168; margin-bottom: 8px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg></span>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3">{{ f.emptyTitle }}</h3>
+          <p style="margin: 0; max-width: 220px; font-size: 14px; color: #5e6168">{{ f.emptyText }}</p>
+        </main>
+
+        <sc-if value="{{ f.sortOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="More for this list" style="position: absolute; left: 416px; top: 46px; margin-top: 4px; width: 262px; min-width: 262px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false" style="{{ groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg><span style="flex: 1 1 auto">Filter conversations</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></button>
+            <button type="button" role="menuitem" style="{{ groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span style="flex: 1 1 auto">Select conversations</span></button>
+            <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="true" style="{{ groupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg><span style="flex: 1 1 auto">Sort conversations</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Order</div>
+            <sc-for list="{{ sortOrderSched }}" as="m" hint-placeholder-count="2">
+              <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span></button>
+            </sc-for>
+            <span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span>
+            <div style="padding: 4px 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Sort by</div>
+            <sc-for list="{{ sortFieldsSched }}" as="m" hint-placeholder-count="5">
+              <button type="button" role="menuitemradio" aria-checked="{{ m.on }}" style="display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #1b1c1d; font: 400 14px 'Fira Sans', sans-serif; text-align: left"><span aria-hidden="true" style="{{ m.dot }}"></span><span style="flex: 1 1 auto">{{ m.label }}</span><span style="font-size: 12px; color: #5e6168; white-space: nowrap">{{ m.hint }}</span></button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ f.contextOpen }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="Actions for Rollout plan phase 2, Lyon" style="position: absolute; left: 176px; top: 214px; width: 250px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{ contextItems }}" as="i" hint-placeholder-count="9">
+              <sc-if value="{{ i.sep }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="height: 1px; margin: 4px 0; background: #e4e6ea"></span></sc-if>
+              <button type="button" role="menuitem" aria-haspopup="{{ i.popup }}" style="{{ i.style }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ i.iconColor }}"><path d="{{ i.icon }}"></path></svg><span style="flex: 1 1 auto">{{ i.label }}</span><sc-if value="{{ i.hasChevron }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #5e6168"><path d="m9 18 6-6-6-6"></path></svg></sc-if></button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </figure>
+  </sc-for>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2260}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3680}}'>
 class Component extends DCLogic {
   renderVals() {
     const TYPE = { EPIC: '#005b77', FEATURE: '#538b28', BUG: '#ab0000', TASK: '#08a5df' };
@@ -224,7 +311,75 @@ class Component extends DCLogic {
     const sortOrder = [['Newest first', true], ['Oldest first', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', dot: on ? dotOn : dotOff }));
     const sortFields = [['Date', true, 'of the last message'], ['Size', false, ''], ['Sender', false, ''], ['Recipient', false, ''], ['Subject', false, '']].map(([label, on, hint]) => ({ label, on: on ? 'true' : 'false', hint, dot: on ? dotOn : dotOff }));
     const showAs = [['Inbox', true, 'one list'], ['Priority inbox', false, 'what needs you first']].map(([label, on, hint]) => ({ label, on: on ? 'true' : 'false', hint, dot: on ? dotOn : dotOff }));
-    return { lists, chips, filterItems, sortOrder, sortFields, showAs };
+    // Round 8 frames e to h: the Scheduled folder sorted by its send time, priority marks, the mailbox on each row of All inboxes, and the row context menu.
+    const row2 = (from, initials, subject, count, date, snippet, o) => {
+      const r = row(from, initials, subject, count, date, snippet, o);
+      o = o ?? {};
+      return { ...r,
+        style: 'border-bottom: 1px solid #e4e6ea; ' + (o.context ? 'background: #eaf0f7;' : 'background: #ffffff;'),
+        prioHigh: o.prio === 'high', prioLow: o.prio === 'low', tip: !!o.tip,
+        scheduled: !!o.scheduled, hasMailbox: !!o.mailbox, mailbox: o.mailbox ?? '',
+        rowTitle: from + ', ' + subject + (o.prio === 'high' ? '. High priority, set by the sender' : o.prio === 'low' ? '. Low priority, set by the sender' : '') + (o.mailbox ? '. In ' + o.mailbox : '')
+      };
+    };
+    const rowsE = [
+      heading('Thursday 15 October'),
+      row2('To Marc Dubois', 'OB', 'Re: Rollout plan phase 2, Lyon', 1, 'Thu 15 Oct 09:00', 'The afternoon works for us. I will send a new invitation for the kick-off.', { mine: true, scheduled: true }),
+      heading('Friday 16 October'),
+      row2('To Sven Lindqvist', 'OB', 'Re: Request for a demo, 1,200 users', 1, 'Fri 16 Oct 08:30', 'Thank you for your interest. We can show the Nextcloud link in a 45 minute session next week.', { mine: true, scheduled: true }),
+      heading('Monday 19 October'),
+      row2('To Jana Köhler', 'OB', 'Angebot Schulung Projektleiter, 12 Personen', 1, 'Mon 19 Oct 07:00', 'Sehr geehrte Frau Köhler, anbei unser Angebot für die Schulung der 12 Projektleiter.', { mine: true, scheduled: true, attach: ['clip', ''] })
+    ];
+    const rowsF = [
+      heading('Today'),
+      row2('Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users.', { unread: true, starred: true, prio: 'high', tip: true }),
+      row2('Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF, see the two screenshots.', { unread: true, attach: ['image', '2'], prio: 'high' }),
+      row2('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head.', { attach: ['clip', ''] }),
+      heading('Yesterday'),
+      row2('People Team', 'PT', 'Reminder: submit your October hours by Friday', 1, 'Yesterday', 'Please submit your October hours in the time sheet by Friday 16 October.', { prio: 'low' }),
+      row2('Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 1, 'Yesterday', 'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { unread: true, prio: 'low' })
+    ];
+    const rowsG = [
+      heading('Today'),
+      row2('Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users.', { unread: true, starred: true, mailbox: 'Support / Inbox' }),
+      row2('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November.', { attach: ['clip', ''], mailbox: 'Olivia Brandt / Inbox' }),
+      row2('Website form', 'WF', 'Demo request from Malmö Energi', 1, '05:40', 'Name: Sven Lindqvist. Company: Malmö Energi. Users: about 1,200.', { unread: true, mailbox: 'Support / Inbox' }),
+      row2('Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF.', { unread: true, attach: ['image', '2'], mailbox: 'Olivia Brandt / Inbox' }),
+      heading('Yesterday'),
+      row2('People Team', 'PT', 'Reminder: submit your October hours by Friday', 1, 'Yesterday', 'Please submit your October hours in the time sheet by Friday 16 October.', { mailbox: 'Olivia Brandt / Inbox' }),
+      row2('Stadtwerke Kassel, Support', 'SK', 'Zugang zum Kundenportal', 2, 'Yesterday', 'Könnten Sie den Zugang für unsere zwei neuen Kollegen freischalten?', { mailbox: 'Support / Inbox' })
+    ];
+    const rowsH = [
+      heading('Today'),
+      row2('Sven Lindqvist', 'SL', 'Request for a demo, 1,200 users', 1, '07:00', 'We are evaluating OpenProject for all of Malmö Energi, about 1,200 users.', { unread: true, starred: true }),
+      row2('Marc Dubois', 'MD', 'Rollout plan phase 2, Lyon', 6, '06:00', 'Good. Then we are go for 2 November. One more request from the department head.', { attach: ['clip', ''], context: true, wp: ['FEATURE', '#58412', 'in development'] }),
+      row2('Jana Köhler', 'JK', 'Gantt export cuts off the last week', 3, '04:00', 'The last week of the plan is missing on the PDF, see the two screenshots.', { unread: true, attach: ['image', '2'], wp: ['BUG', '#58231', 'in development'] }),
+      row2('OpenProject notifications', 'OP', '[Northwind - Feature #58412] Link Nextcloud project folders on rollout', 2, '01:00', 'Tom Achterberg mentioned you: can you confirm the folder naming with Lyon?', { unread: true, op: true }),
+      heading('Yesterday'),
+      row2('Sovereign Tech Weekly', 'ST', 'Open source in the public sector, issue 41', 1, 'Yesterday', 'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { unread: true })
+    ];
+    const emptyOn = { emptyTitle: 'Select a conversation', emptyText: 'Pick one from the list to read it here.' };
+    const lists2 = [
+      { letter: 'e', caption: 'The Scheduled folder, where a message written with Send later waits: the list menu open with its Sort group, by planned send date, soonest first, and every row carrying its send time where the date usually sits', place: 'grid-column: 1; grid-row: 4', height: '640px', title: 'Scheduled', countLine: '3 messages waiting for their time', rows: rowsE, sortOpen: true, contextOpen: false, moreOpen: 'true', moreStyle: iconBtn + 'background: #eaf0f7; color: #234a78;', emptyTitle: 'Select a message', emptyText: 'Pick one from the list to read it here. Edit or cancel it before its time.' },
+      { letter: 'f', caption: 'The priority a sender set on a message, as a mark after the subject: a red arrow up for high, a grey arrow down for low; the mark on the hovered row shows its tooltip, and the row title names it for screen readers', place: 'grid-column: 2; grid-row: 4', height: '640px', title: 'Inbox', countLine: '12 conversations', rows: rowsF, sortOpen: false, contextOpen: false, moreOpen: 'false', moreStyle: iconBtn + 'background: transparent;', ...emptyOn },
+      { letter: 'g', caption: 'All inboxes, the combined view of both mailboxes under the account row: each row names the mailbox and folder it came from on its third line, in front of the snippet', place: 'grid-column: 1; grid-row: 5', height: '640px', title: 'All inboxes', countLine: '14 conversations', rows: rowsG, sortOpen: false, contextOpen: false, moreOpen: 'false', moreStyle: iconBtn + 'background: transparent;', ...emptyOn },
+      { letter: 'h', caption: 'The context menu of a row, opened with a right click or the menu key on the Marc Dubois conversation: reply, forward, archive, move, label, mark and delete, the same actions as the toolbar of the open conversation', place: 'grid-column: 2; grid-row: 5', height: '640px', title: 'Inbox', countLine: '12 conversations', rows: rowsH, sortOpen: false, contextOpen: true, moreOpen: 'false', moreStyle: iconBtn + 'background: transparent;', ...emptyOn }
+    ];
+    const sortOrderSched = [['Soonest first', true], ['Latest first', false]].map(([label, on]) => ({ label, on: on ? 'true' : 'false', dot: on ? dotOn : dotOff }));
+    const sortFieldsSched = [['Planned send date', true, 'when it goes out'], ['Date', false, 'of writing'], ['Size', false, ''], ['Recipient', false, ''], ['Subject', false, '']].map(([label, on, hint]) => ({ label, on: on ? 'true' : 'false', hint, dot: on ? dotOn : dotOff }));
+    const ctxItem = 'display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; box-sizing: border-box; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; font: 400 14px \'Fira Sans\', sans-serif; text-align: left; white-space: nowrap; color: ';
+    const contextItems = [
+      ['Reply', 'M9 17l-5-5 5-5M4 12h11a5 5 0 0 1 5 5v2', false, false, false],
+      ['Reply all', 'M7 17l-5-5 5-5M12 17l-5-5 5-5M7 12h8a5 5 0 0 1 5 5v2', false, false, false],
+      ['Forward', 'm15 17 5-5-5-5M4 18v-2a4 4 0 0 1 4-4h12', false, false, false],
+      ['Archive', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4', true, false, false],
+      ['Move to folder', 'm15 10 5 5-5 5M4 4v7a4 4 0 0 0 4 4h12', false, true, false],
+      ['Add a label', 'M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01', false, true, false],
+      ['Mark as unread', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6', true, false, false],
+      ['Star', 'm12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', false, false, false],
+      ['Delete', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', true, false, true]
+    ].map(([label, icon, sep, sub, danger]) => ({ label, icon, sep, hasChevron: sub, popup: sub ? 'menu' : 'false', style: ctxItem + (danger ? '#cc0000' : '#1b1c1d'), iconColor: danger ? '#cc0000' : '#5e6168' }));
+    return { lists, chips, filterItems, sortOrder, sortFields, showAs, lists2, groupStyle, sortOrderSched, sortFieldsSched, contextItems };
   }
 }
 </script>

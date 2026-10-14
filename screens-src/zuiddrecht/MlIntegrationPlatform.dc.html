@@ -14,7 +14,7 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1480px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2090px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The platform dashboard with the two mail widgets: each row opens its conversation in Mail</figcaption>
@@ -143,9 +143,70 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </div>
+
+  <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px; height: 32px"><span style="color: #5e6168; font-weight: 400">d</span> &nbsp;A message added to the start page with Add to the start page from its message menu: it sits as its own tile beside the mail widgets, opens the conversation in Mail, and leaves the page again from the cross in its header</figcaption>
+    <div style="height: 540px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" app="Dashboard" placeholder="Search files, mail, events and work packages" hint-size="100%,55px"></dc-import>
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 20px 32px">
+        <div style="display: flex; align-items: baseline; gap: 12px"><h1 style="margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Good morning, Olivia</h1><span style="font-size: 14px; color: #5e6168">Monday 12 October 2026</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; min-height: 0">
+          <sc-for list="{{ widgetsD }}" as="w" hint-placeholder-count="1">
+            <section aria-label="{{ w.title }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+              <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px; border-bottom: 1px solid #e4e6ea">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="{{ w.icon }}"></path></svg>
+                <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">{{ w.title }}</h2>
+                <span style="font-size: 13px; color: #5e6168; white-space: nowrap">{{ w.meta }}</span>
+              </div>
+              <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                <sc-for list="{{ w.rows }}" as="r" hint-placeholder-count="5">
+                  <li style="border-bottom: 1px solid #e4e6ea">
+                    <a href="#" aria-label="Open the conversation {{ r.subject }} from {{ r.from }}" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none">
+                      <span style="{{ r.avatar }}">{{ r.initials }}</span>
+                      <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 18px">
+                        <span style="display: flex; align-items: center; gap: 6px"><span style="{{ r.sender }}">{{ r.from }}</span><span style="flex: 1 1 auto"></span><span style="flex: none; font-size: 12px; color: #5e6168">{{ r.date }}</span></span>
+                        <span style="display: flex; align-items: center; gap: 6px"><span style="min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: #3d4047">{{ r.subject }}</span></span>
+                      </span>
+                    </a>
+                  </li>
+                </sc-for>
+              </ol>
+              <a href="#" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">{{ w.footer }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+            </section>
+          </sc-for>
+          <section aria-label="Added to the start page from Mail: Rollout plan phase 2, Lyon" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #e4e6ea">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
+              <h2 style="flex: 1 1 auto; min-width: 0; margin: 0; font-size: 16px; font-weight: 700; line-height: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Rollout plan phase 2, Lyon</h2>
+              <span style="font-size: 13px; color: #5e6168; white-space: nowrap">from Mail</span>
+              <button type="button" aria-label="Remove from the start page" title="Remove from the start page" style="flex: none; width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #5e6168; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+            </div>
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 14px 16px">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">MD</span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><strong style="font-size: 14px; font-weight: 600">Marc Dubois</strong><span style="font-size: 12px; color: #5e6168">10 Oct 08:30, to you and Tom Achterberg</span></span></div>
+              <p style="margin: 0; font-size: 14px; line-height: 21px; color: #3d4047; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden">One question from our data protection officer before we sign off: can the mail archive stay on our own server? She wants to be sure that linking a mail to a work package does not copy it anywhere else.</p>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5e6168"><span style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #3d4047"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span>#58412</span><span style="display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; background: #66d9e8; border: 1.5px solid #21c8de"></span><span>in development</span></span><span>6 messages, 2 files</span></div>
+            </div>
+            <a href="#" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; border-top: 1px solid #e4e6ea; font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open in Mail<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+          </section>
+          <section aria-label="Today" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px); overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px; border-bottom: 1px solid #e4e6ea">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #3669a5"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+              <h2 style="flex: 1 1 auto; margin: 0; font-size: 16px; font-weight: 700; line-height: 22px">Today</h2>
+              <span style="font-size: 13px; color: #5e6168; white-space: nowrap">2 events</span>
+            </div>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+              <li style="border-bottom: 1px solid #e4e6ea"><a href="#" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none"><span style="flex: none; width: 4px; height: 32px; border-radius: 2px; background: #3669a5"></span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><span style="font-size: 14px">Weekly with Tom</span><span style="font-size: 12px; color: #5e6168">10:00 to 10:30, Room 2</span></span></a></li>
+              <li style="border-bottom: 1px solid #e4e6ea"><a href="#" style="display: flex; align-items: center; gap: 10px; height: 56px; box-sizing: border-box; padding: 0 16px; color: #1b1c1d; text-decoration: none"><span style="flex: none; width: 4px; height: 32px; border-radius: 2px; background: #538b28"></span><span style="display: flex; flex-direction: column; line-height: 18px; min-width: 0"><span style="font-size: 14px">Kassel: Gantt export call</span><span style="font-size: 12px; color: #5e6168">15:00 to 15:30, video call</span></span></a></li>
+            </ol>
+            <a href="#" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 600; color: var(--sc-link, #3669a5); text-decoration: none">Open the calendar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a>
+          </section>
+        </div>
+      </div>
+    </div>
+  </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1480}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2090}}'>
 class Component extends DCLogic {
   renderVals() {
     const avatar = (op) => 'flex: none; width: 32px; height: 32px; border-radius: ' + (op ? 'var(--sc-radius, 8px)' : '16px') + '; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (op ? 'background: #1b1c1d; color: #ffffff' : 'background: #eaf0f7; color: #234a78');
@@ -192,7 +253,9 @@ class Component extends DCLogic {
       ['Italic', 'M19 4h-9M14 20H5M15 4 9 20'],
       ['Bulleted list', 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01']
     ].map(([label, icon]) => ({ label, icon }));
-    return { widgets, groups, fmt };
+    // Round 8 frame d: the dashboard again, with the Unread mail widget beside a message tile added from the message menu.
+    const widgetsD = [widgets[0]];
+    return { widgets, groups, fmt, widgetsD };
   }
 }
 </script>

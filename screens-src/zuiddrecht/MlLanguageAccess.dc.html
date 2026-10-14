@@ -15,7 +15,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 #ml-search-nl::placeholder,#ml-search-nl2::placeholder{color:#ffffff;opacity:0.85}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1800px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2400px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
 
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;Dutch interface with the dark colour scheme: a conversation open, its message content follows the scheme, and the account menu open in the header with the language and the scheme switch</figcaption>
@@ -302,9 +302,79 @@ a{color:#3669a5}a:hover{color:#234a78}
       </div>
     </figure>
   </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; min-width: 0">
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">f</span> &nbsp;The Shortcuts section further down, in the dark scheme: the key set to use (this app, Gmail, Outlook, or none), the Go to keys for the folders and the Writing keys for sending and closing</figcaption>
+      <div lang="nl" style="height: 500px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 24px 28px; background: #26282c; color: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Sneltoetsen</h2>
+          <p style="margin: 0; font-size: 14px; line-height: 21px; color: #c4c7cb">Losse toetsen werken als geen tekstveld de focus heeft.</p>
+        </div>
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 2px">
+          <legend style="padding: 0; margin: 0 0 4px; float: left; width: 100%; font-size: 14px; font-weight: 600; line-height: 24px">Toetsenset</legend>
+          <div role="radiogroup" aria-label="Toetsenset" style="display: flex; gap: 8px; flex-wrap: wrap">
+            <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4"><label style="{{ p.style }}"><input type="radio" name="ml-keyset" checked="{{ p.checked }}" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5">{{ p.label }}</label></sc-for>
+          </div>
+        </fieldset>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px">
+          <sc-for list="{{ shortcutGroupsNl }}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column">
+              <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #c4c7cb; line-height: 28px; border-bottom: 1px solid #3d4047">{{ g.title }}</span>
+              <sc-for list="{{ g.items }}" as="s" hint-placeholder-count="3">
+                <div style="display: flex; align-items: center; gap: 12px; height: 40px; border-bottom: 1px solid #3d4047; font-size: 14px">
+                  <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.action }}</span>
+                  <span style="flex: none; display: inline-flex; align-items: center; gap: 4px">
+                    <sc-for list="{{ s.parts }}" as="k" hint-placeholder-count="3"><sc-if value="{{ k.isKey }}" hint-placeholder-val="{{ true }}"><kbd style="display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; padding: 0 7px; box-sizing: border-box; border: 1px solid #5e6168; border-bottom-width: 2px; border-radius: 4px; background: #1b1c1d; font: 600 13px 'Fira Sans', sans-serif; color: #f5f6f8">{{ k.label }}</kbd></sc-if><sc-if value="{{ k.isText }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #c4c7cb; padding: 0 2px">{{ k.label }}</span></sc-if></sc-for>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </figure>
+
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">g</span> &nbsp;Writing with a screen reader: a recipient and an attachment were just added, and the strip under the window shows what the live region announced for them (it is spoken, not shown, in the app)</figcaption>
+      <div lang="nl" style="height: 500px; box-sizing: border-box; display: flex; flex-direction: column; background: #1b1c1d; color: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+        <section aria-label="Nieuw bericht: Agenda kick-off Lyon" style="flex: 1 1 auto; min-height: 0; margin: 16px 16px 0; box-sizing: border-box; display: flex; flex-direction: column; background: #26282c; border: 1px solid #3d4047; border-radius: var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px) 0 0; overflow: hidden">
+          <div style="flex: none; display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 8px 0 16px; background: #234a78; color: #ffffff">
+            <span style="flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Agenda kick-off Lyon</span>
+            <button type="button" aria-label="Minimaliseren" title="Minimaliseren" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+            <button type="button" aria-label="Sluiten" title="Sluiten" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #ffffff; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display: flex; flex-direction: column; font-size: 14px">
+            <div style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-bottom: 1px solid #3d4047"><label for="ml-a11y-to" style="flex: none; width: 70px; color: #c4c7cb">Aan</label><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 3px; border-radius: var(--sc-radius, 8px); background: #234a78; color: #ffffff; font-size: 12px; white-space: nowrap; outline: 2px solid #ffffff; outline-offset: 1px"><span style="width: 18px; height: 18px; border-radius: 9px; background: #ffffff; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700">MD</span>Marc Dubois</span><input id="ml-a11y-to" type="text" aria-label="Aan, ontvanger toevoegen" style="flex: 1 1 auto; min-width: 0; height: 24px; border: 0; background: transparent; font: 400 14px 'Fira Sans', sans-serif; color: #f5f6f8"></div>
+            <div style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-bottom: 1px solid #3d4047"><label for="ml-a11y-subject" style="flex: none; width: 70px; color: #c4c7cb">Onderwerp</label><input id="ml-a11y-subject" type="text" value="Agenda kick-off Lyon" style="flex: 1 1 auto; min-width: 0; height: 24px; border: 0; background: transparent; font: 400 14px 'Fira Sans', sans-serif; color: #f5f6f8"></div>
+          </div>
+          <div aria-label="Berichttekst" role="textbox" aria-multiline="true" contenteditable="true" style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 14px 16px; font-size: 14px; line-height: 21px; color: #e4e6ea; outline: 0">
+            <p style="margin: 0 0 10px">Hoi Marc,</p>
+            <p style="margin: 0">Hierbij de agenda voor de kick-off op 2 november. Zeg het als er iets ontbreekt.</p>
+          </div>
+          <div style="flex: none; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-top: 1px solid #3d4047">
+            <span style="font-size: 12px; font-weight: 600; color: #c4c7cb; white-space: nowrap">1 bijlage</span>
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 4px 0 8px; border: 1px solid #3d4047; border-radius: var(--sc-radius, 8px); background: #1b1c1d; font-size: 13px; white-space: nowrap"><span style="flex: none; width: 30px; height: 20px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; color: #ffffff; background: #3669a5">DOCX</span>kickoff-agenda.docx<span style="color: #c4c7cb">48 kB</span><button type="button" aria-label="Bijlage kickoff-agenda.docx verwijderen" style="width: 24px; height: 24px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #c4c7cb; display: inline-flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span>
+          </div>
+          <div style="flex: none; display: flex; align-items: center; gap: 8px; padding: 10px 16px 12px; border-top: 1px solid #3d4047">
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid var(--sc-action-deep, #234a78); border-radius: var(--sc-radius, 8px); background: var(--sc-action, #3669a5); color: #ffffff; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"></path></svg>Verzenden</button>
+            <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: 1px solid #5e6168; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #f5f6f8; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>Bijlage</button>
+            <button type="button" aria-label="Opmaak" title="Opmaak" aria-pressed="false" style="width: 40px; height: 40px; border: 1px solid #5e6168; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #f5f6f8; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M9.5 4h5l5 12h-2.6l-1.2-3H8.3l-1.2 3H4.5zM9.1 11h5.8L12 5.7z"></path></svg></button>
+            <span style="flex: 1 1 auto"></span>
+            <span style="font-size: 12px; color: #c4c7cb; white-space: nowrap">Concept opgeslagen 10:04</span>
+          </div>
+        </section>
+        <div role="log" aria-label="Schermlezer" style="flex: none; margin: 0 16px 16px; display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; box-sizing: border-box; background: #000000; border: 1px solid #3d4047; border-top: 0; border-radius: 0 0 var(--sc-radius-lg, 10px) var(--sc-radius-lg, 10px); font: 13px/18px ui-monospace, 'DejaVu Sans Mono', monospace; color: #8fd04c">
+          <span style="font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #c4c7cb">Schermlezer</span>
+          <span>Marc Dubois toegevoegd aan Aan</span>
+          <span>kickoff-agenda.docx bijgevoegd, 48 kB</span>
+        </div>
+      </div>
+    </figure>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
 class Component extends DCLogic {
   renderVals() {
     // Round 7: the Dutch dark frames draw the 55 px top bar of MlHeader by hand (229 px logo mark + OpenProject/Mail stack, divider at 245 px, 40 px Alle apps button, search centred at min(640px, 44vw); frame b is 640 px wide, so its search flexes between the apps button and the controls instead, bell with its count, help, settings, avatar) because the shared part is English and light; same sizes, same order.
@@ -389,7 +459,23 @@ class Component extends DCLogic {
         ['Archive', 'e'], ['Delete', '#'], ['Reply', 'r'], ['Link to work package', 'L'], ['New message', 'c'], ['Show this list', '?']
       ].map(([action, keys]) => ({ action, keys: k(keys) })) }
     ];
-    return { gear, languages, rail, railTop, chips, rows, rowsTop, rowsFocus, tools, help, shortcutGroups };
+    // Round 8 (f, g): Dutch dark frames, as the rest of this board.
+    const presetRow = 'display: inline-flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px 0 12px; box-sizing: border-box; border-radius: var(--sc-radius, 8px); font-size: 14px; cursor: pointer; ';
+    const presets = [['Deze app', true], ['Gmail', false], ['Outlook', false], ['Sneltoetsen uit', false]].map(([label, on]) => ({ label, checked: on ? 'checked' : null, style: presetRow + (on ? 'border: 1px solid #8fb4e3; background: #234a78' : 'border: 1px solid #5e6168; background: #1b1c1d') }));
+    const parts = (list) => list.map(([label, isText]) => ({ label, isKey: !isText, isText: !!isText }));
+    const shortcutGroupsNl = [
+      { title: 'Ga naar', items: [
+        ['Naar Postvak IN', parts([['g'], ['dan', true], ['i']])],
+        ['Naar Verzonden', parts([['g'], ['dan', true], ['s']])],
+        ['Naar Concepten', parts([['g'], ['dan', true], ['d']])]
+      ].map(([action, parts]) => ({ action, parts })) },
+      { title: 'Schrijven', items: [
+        ['Bericht verzenden', parts([['Ctrl'], ['of', true], ['Cmd'], ['+', true], ['Enter']])],
+        ['Venster sluiten', parts([['Esc']])],
+        ['Concept opslaan', parts([['Ctrl'], ['of', true], ['Cmd'], ['+', true], ['S']])]
+      ].map(([action, parts]) => ({ action, parts })) }
+    ];
+    return { gear, languages, rail, railTop, chips, rows, rowsTop, rowsFocus, tools, help, shortcutGroups, presets, shortcutGroupsNl };
   }
 }
 </script>

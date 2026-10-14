@@ -16,7 +16,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 </helmet>
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 2180px; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The OpenProject panel: one row per linked project with its selections under it, the same list the navigation shows, and the selected selection Work package dates with the date it uses, its filter, Add another selection and Remove this selection</figcaption>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;The settings of one selection, opened from its row under the project in the navigation: the date the calendar uses, its filter, another selection from the project, removal; the project list itself stays in the navigation. Link another project is the one link at the end</figcaption>
     <div style="position: relative; height: 1100px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; display: flex; flex-direction: column; height: 100%; overflow: hidden">
   <dc-import name="MlHeader" app="Calendar" placeholder="Search events, people or #work package" hint-size="100%,55px"></dc-import>
@@ -47,16 +47,15 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
             <a href="#" aria-label="{{ b.aria }}" aria-current="{{ b.current }}" style="{{ b.style }}">
               <sc-if value="{{ b.leftOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"></path></svg></sc-if>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.milestone }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Milestone" style="flex: none; width: 8px; height: 8px; margin: 0 3px 0 1px; background: #35c53f; transform: rotate(45deg)"></span></sc-if>
               <span style="flex: none; font-weight: 700; letter-spacing: 0.04em; color: {{ b.color }}">{{ b.type }}</span>
               <span style="flex: none; color: #3d4047">{{ b.number }}</span>
               <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d">{{ b.subject }}</span>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.rightOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"></path></svg></sc-if>
             </a>
           </sc-for>
-          <div style="position: absolute; top: 6px; left: calc(100% * 3 / 7 + 24px); height: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #5e6168; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"></path></svg>Drag an end to change the dates in OpenProject</div>
         </div>
       </div>
       <div style="flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden">
@@ -87,27 +86,15 @@ a{color:#3669a5}a:hover{color:#234a78}
         <div aria-hidden="true" style="position: absolute; left: 0; width: 42px; box-sizing: border-box; padding-right: 8px; top: {{ nowLabelTop }}px; font-size: 11px; line-height: 16px; font-weight: 600; color: #1b1c1d; background: #ffffff; text-align: right; z-index: 3">09:00</div>
       </div>
     </main>
-    <aside aria-labelledby="ctx-op" style="flex: 0 0 400px; width: 400px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
+    <aside aria-labelledby="ctx-op" style="flex: 0 0 340px; width: 340px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #f5f6f8; overflow: hidden">
       <div style="display: flex; align-items: center; gap: 8px">
-        <h2 id="ctx-op" style="margin: 0; flex: 1 1 auto; font-size: 16px; font-weight: 600; line-height: 22px">OpenProject in this calendar</h2>
+        <h2 id="ctx-op" style="margin: 0; flex: 1 1 auto; font-size: 16px; font-weight: 600; line-height: 22px">Work package dates</h2>
         <button type="button" aria-label="Close the settings" style="width: 28px; height: 28px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       </div>
-      <section aria-labelledby="ctx-projects" style="display: flex; flex-direction: column; gap: 2px">
-        <h3 id="ctx-projects" style="margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Linked projects</h3>
-        <p style="margin: 0 0 6px; font-size: 12px; color: #5e6168; line-height: 16px">One row per linked project, its selections under it, the same list and the same tick boxes as in the navigation. Dates come from OpenProject and stay in sync.</p>
-        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-          <div style="display: flex; align-items: center; gap: 10px; height: 36px; font-size: 14px; font-weight: 600; color: #1b1c1d"><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ p.name }}</span><button type="button" role="checkbox" aria-checked="{{ p.on }}" aria-label="{{ p.aria }}" style="{{ p.check }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></button></div>
-          <sc-for list="{{ p.sels }}" as="s" hint-placeholder-count="2">
-            <div style="{{ s.rowStyle }}"><span style="{{ s.box }}"></span><span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.name }}</span><button type="button" role="checkbox" aria-checked="{{ s.on }}" aria-label="{{ s.aria }}" style="{{ s.check }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></button></div>
-          </sc-for>
-        </sc-for>
-        <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; margin-top: 4px; padding: 0 12px 0 8px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Link another project</button>
-      </section>
       <section aria-labelledby="ctx-view" style="display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
         <div style="display: flex; align-items: center; gap: 8px">
           <span style="flex: none; width: 12px; height: 12px; border-radius: 3px; background: #5e6168"></span>
-          <h3 id="ctx-view" style="margin: 0; flex: 1 1 auto; font-size: 14px; font-weight: 600; line-height: 20px">Work package dates</h3>
-          <span style="font-size: 11px; color: #5e6168; white-space: nowrap">Northwind rollout Lyon</span>
+          <h3 id="ctx-view" style="margin: 0; flex: 1 1 auto; font-size: 14px; font-weight: 600; line-height: 20px">Northwind rollout Lyon</h3>
         </div>
         <div role="radiogroup" aria-labelledby="ctx-date" style="display: flex; flex-direction: column; gap: 2px">
           <span id="ctx-date" style="font-size: 12px; font-weight: 600; color: #3d4047; line-height: 20px">Date the calendar uses</span>
@@ -124,11 +111,10 @@ a{color:#3669a5}a:hover{color:#234a78}
         </div>
         <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #e4e6ea">
           <button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; text-align: left; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span style="flex: 1 1 auto">Add another selection from this project</span></button>
-          <span style="font-size: 12px; color: #5e6168; line-height: 16px">For example just the work packages assigned to you. Each selection gets its own row and switch above, and in the navigation.</span>
           <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #cc0000; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"></path></svg>Remove this selection</button>
-          <span style="font-size: 12px; color: #5e6168; line-height: 16px">Removing a selection only takes it out of the calendar. Nothing changes in OpenProject.</span>
         </div>
       </section>
+      <a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border-radius: var(--sc-radius, 8px); color: var(--sc-link, #3669a5); font: 600 14px 'Fira Sans', sans-serif; text-decoration: none; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Link another project</a>
     </aside>
   </div>
 </div>
@@ -166,16 +152,15 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
             <a href="#" aria-label="{{ b.aria }}" aria-current="{{ b.current }}" style="{{ b.style }}">
               <sc-if value="{{ b.leftOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"></path></svg></sc-if>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.milestone }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Milestone" style="flex: none; width: 8px; height: 8px; margin: 0 3px 0 1px; background: #35c53f; transform: rotate(45deg)"></span></sc-if>
               <span style="flex: none; font-weight: 700; letter-spacing: 0.04em; color: {{ b.color }}">{{ b.type }}</span>
               <span style="flex: none; color: #3d4047">{{ b.number }}</span>
               <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1b1c1d">{{ b.subject }}</span>
-              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
+              <sc-if value="{{ b.handles }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" title="Drag an end to change the dates in OpenProject" style="flex: none; width: 7px; height: 12px; box-sizing: border-box; border-left: 2px solid {{ b.color }}; border-right: 2px solid {{ b.color }}; cursor: ew-resize"></span></sc-if>
               <sc-if value="{{ b.rightOpen }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: {{ b.color }}; opacity: 0.7"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"></path></svg></sc-if>
             </a>
           </sc-for>
-          <div style="position: absolute; top: 6px; left: calc(100% * 3 / 7 + 24px); height: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #5e6168; white-space: nowrap"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"></path></svg>Drag an end to change the dates in OpenProject</div>
           <div role="dialog" aria-labelledby="cl-wp-title" style="position: absolute; margin-top: 4px; min-width: 320px; padding: 8px; box-sizing: border-box; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); box-shadow: 0 4px 12px rgba(27,28,29,0.12); z-index: 10; top: 52px; left: calc(100% * 1 / 7 + 8px); width: 400px; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px">
             <div style="display: flex; align-items: center; gap: 8px">
               <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; line-height: 1"><span style="font-weight: 700; letter-spacing: 0.04em; color: #538b28">FEATURE</span><span style="color: #3d4047">#58412</span></span>

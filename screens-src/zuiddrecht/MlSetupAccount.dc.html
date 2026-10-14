@@ -14,11 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1180px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 900px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 24px; overflow: hidden">
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;First use: no mailbox yet, the manual part unfolded</figcaption>
-    <div style="height: 1080px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
-      <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
+    <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">a</span> &nbsp;First use: no mailbox yet; the server details stay folded until autodetect fails or they are asked for</figcaption>
+    <div style="height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" placeholder="Search mail" hint-size="100%,55px"></dc-import>
       <main style="flex: 1 1 auto; min-height: 0; display: flex; align-items: flex-start; justify-content: center; padding: 36px 24px; overflow: hidden">
         <form aria-labelledby="ml-setup-title" style="width: 600px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 28px 32px; background: #ffffff; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px)">
           <div style="display: flex; flex-direction: column; gap: 4px">
@@ -35,8 +35,8 @@ a{color:#3669a5}a:hover{color:#234a78}
             <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #3d4047">Mail address<input type="email" value="olivia@northwind-projects.test" style="height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"></label>
             <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; color: #3d4047">Password<input type="password" value="northwind2026" style="height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"></label>
           </div>
-          <button type="button" aria-expanded="true" aria-controls="ml-setup-manual" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>Enter the server details by hand</button>
-          <div id="ml-setup-manual" style="display: grid; grid-template-columns: 1fr; gap: 16px; padding: 16px; background: #f5f6f8; border-radius: var(--sc-radius, 8px)">
+          <button type="button" aria-expanded="false" aria-controls="ml-setup-manual" title="Opens the incoming and outgoing server fields; it opens by itself when the settings cannot be found" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>Enter the server details by hand</button>
+          <div id="ml-setup-manual" style="display: none; grid-template-columns: 1fr; gap: 16px; padding: 16px; background: #f5f6f8; border-radius: var(--sc-radius, 8px)">
             <sc-for list="{{ servers }}" as="s" hint-placeholder-count="2">
               <fieldset style="margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: 10px">
                 <legend style="padding: 0; margin: 0 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ s.title }}</legend>
@@ -63,8 +63,8 @@ a{color:#3669a5}a:hover{color:#234a78}
   </figure>
   <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
     <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">b</span> &nbsp;Your sign-in has no mailbox yet: the same card with the notice on top, the server details folded</figcaption>
-    <div style="height: 1080px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
-      <dc-import name="MlHeader" hint-size="100%,55px"></dc-import>
+    <div style="height: 800px; box-sizing: border-box; display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <dc-import name="MlHeader" placeholder="Search mail" hint-size="100%,55px"></dc-import>
       <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 36px 24px; overflow: hidden">
         <section role="status" aria-labelledby="ml-nomailbox-title" style="width: 600px; box-sizing: border-box; display: flex; gap: 14px; padding: 16px 20px; background: #eaf0f7; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px)">
           <span style="flex: none; width: 36px; height: 36px; border-radius: 18px; background: #ffffff; color: #234a78; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg></span>
@@ -100,7 +100,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
     const dotOn = 'flex: none; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: 5px solid #3669a5; background: #ffffff';

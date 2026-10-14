@@ -14,11 +14,11 @@ body{margin:0}
 a{color:#3669a5}a:hover{color:#234a78}
 </style>
 </helmet>
-<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1780px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 24px; overflow: hidden">
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; font-size: 14px; line-height: 21px; background: #f5f6f8; box-sizing: border-box; width: 1440px; height: 1815px; padding: 28px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 24px; overflow: hidden">
   <sc-for list="{{ frames }}" as="v" hint-placeholder-count="9">
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">{{ v.letter }}</span> &nbsp;{{ v.caption }}</figcaption>
-      <div style="height: 296px; box-sizing: border-box; padding: 12px 16px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
+      <div style="height: {{ v.height }}px; box-sizing: border-box; padding: 12px 16px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
         <article aria-label="Message from {{ v.from }}, {{ v.date }}" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
           <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
             <span style="flex: none; width: 32px; height: 32px; border-radius: 16px; background: #eaf0f7; color: #234a78; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{ v.initials }}</span>
@@ -34,7 +34,7 @@ a{color:#3669a5}a:hover{color:#234a78}
               <p style="margin: 0"><strong style="font-weight: 600">{{ v.title }}</strong> {{ v.text }}</p>
               <sc-if value="{{ v.hasActions }}" hint-placeholder-val="{{ true }}">
                 <div style="display: flex; flex-wrap: wrap; gap: 6px">
-                  <sc-for list="{{ v.actions }}" as="a" hint-placeholder-count="2"><button type="button" style="{{ a.style }}">{{ a.label }}</button></sc-for>
+                  <sc-for list="{{ v.actions }}" as="a" hint-placeholder-count="2"><button type="button" title="{{ a.title }}" style="{{ a.style }}">{{ a.label }}<sc-if value="{{ a.menu }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-left: 6px"><path d="m6 9 6 6 6-6"></path></svg></sc-if></button></sc-for>
                 </div>
               </sc-if>
               <sc-if value="{{ v.hasDetails }}" hint-placeholder-val="{{ false }}">
@@ -91,7 +91,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </figure>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1780}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1815}}'>
 class Component extends DCLogic {
   renderVals() {
     const KIND = {
@@ -102,10 +102,10 @@ class Component extends DCLogic {
     const strip = (k) => 'display: flex; align-items: flex-start; gap: 10px; margin: 12px 14px 0; padding: 10px 12px; border: 1px solid #e4e6ea; border-left: 3px solid ' + KIND[k][0] + '; border-radius: var(--sc-radius, 8px); background: ' + KIND[k][1] + '; font-size: 14px; line-height: 20px; color: #1b1c1d';
     const btn = 'display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap';
     const list = [
-      ['a', 'Pictures from the internet are blocked until you choose to show them, once or always for this sender or domain', 'Sovereign Tech Weekly', 'ST', 'newsletter@sovereign-tech.test', 'Yesterday 18:00', 'info',
+      ['a', 'Pictures from the internet are blocked until you choose to show them: Show pictures once, or the two Always show choices in a small menu on the second button', 'Sovereign Tech Weekly', 'ST', 'newsletter@sovereign-tech.test', 'Yesterday 18:00', 'info',
         'Pictures from the internet are not shown.', 'The sender would see when and where you open this mail. Show them once, or always for this sender or its domain.',
-        ['Show pictures', 'Always show from this sender', 'Always show from sovereign-tech.test'],
-        'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { placeholder: true }],
+        ['Show pictures', ['Always show', 'Always show from this sender, or always show from sovereign-tech.test']],
+        'In this issue: the Dutch sovereign workplace, procurement in Germany and three new releases.', { placeholder: true, height: 330 }],
       ['b', 'Likely phishing: red, because it is very likely harmful, and the links are switched off', 'Hetzner Billing', 'HB', 'billing@hetzner-invoices.test', 'Today 05:12', 'error',
         'This message looks like phishing.', 'It asks you to sign in on a page that is not Hetzner\'s, for an invoice you did not get. Links and attachments are switched off. Do not enter a password.',
         ['Report and delete', 'Trust this message only'],
@@ -147,7 +147,8 @@ class Component extends DCLogic {
     const frames = list.map(([letter, caption, from, initials, address, date, kind, title, text, actions, body, o]) => ({
       letter, caption, from, initials, address, date, title, text, body,
       role: KIND[kind][2], icon: KIND[kind][3], iconColor: KIND[kind][0], strip: strip(kind),
-      hasActions: actions.length > 0, actions: actions.map((label) => ({ label, style: btn })),
+      hasActions: actions.length > 0, actions: actions.map((a) => Array.isArray(a) ? { label: a[0], title: a[1], menu: true, style: btn } : { label: a, title: '', menu: false, style: btn }),
+      height: o.height || 296,
       hasPlaceholder: !!o.placeholder, hasLink: !!o.link, linkText: o.link || '',
       hasDetails: !!o.details, bodyWrap: o.details ? 'display: none' : '',
       details: (o.details || []).map(([k, v, ok]) => ({ k, v, dot: 'flex: none; display: inline-block; width: 10px; height: 10px; box-sizing: border-box; border-radius: 5px; ' + (ok ? 'background: #d3f9d8; border: 1.5px solid #8ff09c' : 'background: #ffc078; border: 1.5px solid #ff9d2e') })),

@@ -84,7 +84,7 @@ a{color:#3669a5}a:hover{color:#234a78}
               <button type="button" aria-label="Gesprekken sorteren" aria-haspopup="menu" style="width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #c4c7cb; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"></path></svg></button>
             </div>
           </div>
-          <div role="group" aria-label="Filter" style="flex: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 12px; border-bottom: 1px solid #3d4047">
+          <div role="group" aria-label="Filter" style="flex: none; display: flex; flex-wrap: nowrap; overflow: hidden; gap: 6px; padding: 0 12px 12px; border-bottom: 1px solid #3d4047">
             <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
           </div>
           <ol aria-label="Gesprekken, gebruik de pijltoetsen om door de lijst te gaan" style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
@@ -112,7 +112,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
               <div role="toolbar" aria-label="Gespreksacties" style="display: flex; gap: 2px">
-                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>{{ t.label }}</button></sc-for>
+                <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4"><button type="button" aria-label="{{ t.label }}" title="{{ t.label }}" style="{{ t.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ t.icon }}"></path></svg></button></sc-for>
                 <button type="button" aria-haspopup="menu" aria-label="Meer acties voor dit gesprek" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-left: 4px; padding: 0 8px 0 12px; border: 1px solid #5e6168; border-radius: var(--sc-radius, 8px); background: #1b1c1d; color: #f5f6f8; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Meer<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
               </div>
               <div style="flex: none; margin-left: auto; display: flex; align-items: center; gap: 6px">
@@ -188,7 +188,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           </nav>
           <section aria-label="Postvak IN" style="flex: 0 0 410px; width: 410px; box-sizing: border-box; display: flex; flex-direction: column; background: #26282c; border-right: 1px solid #3d4047; overflow: hidden">
             <div style="flex: none; display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 16px; box-sizing: border-box"><h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">Postvak IN</h2><span style="font-size: 13px; color: #c4c7cb; white-space: nowrap">12 gesprekken</span></div>
-            <div role="group" aria-label="Filter" style="flex: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 12px; border-bottom: 1px solid #3d4047">
+            <div role="group" aria-label="Filter" style="flex: none; display: flex; flex-wrap: nowrap; overflow: hidden; gap: 6px; padding: 0 12px 12px; border-bottom: 1px solid #3d4047">
               <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button type="button" aria-pressed="{{ c.on }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
             </div>
             <ol aria-label="Gesprekken" style="flex: none; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
@@ -311,6 +311,7 @@ class Component extends DCLogic {
     const railBase = 'position: relative; width: 56px; height: 52px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: var(--sc-radius, 8px); text-decoration: none; ';
     const railItem = ([aria, label, icon, count, on, gap]) => ({ aria, label, icon, count, gap: !!gap, hasCount: count > 0, current: on ? 'page' : 'false', style: railBase + (on ? 'background: #234a78; color: #ffffff' : 'color: #c4c7cb') });
     const railData = [
+      ['Weergaven: Met ster 3, Vermeld 1, Aan mij toegewezen 2, Niet toegewezen', 'Weergaven', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6', 0, false],
       ['Postvak IN, 5 ongelezen', 'Postvak IN', 'M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z', 5, true],
       ['Concepten, 1', 'Concepten', 'M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z', 1, false],
       ['Verzonden', 'Verzonden', 'm22 2-7 20-4-9-9-4ZM22 2 11 13', 0, false],
@@ -318,12 +319,10 @@ class Component extends DCLogic {
       ['Spam', 'Spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', 0, false],
       ['Prullenbak', 'Prullenbak', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', 0, false],
       ['Meldingen, 2', 'Meldingen', 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0', 2, false, true],
-      ['Met ster, 3', 'Met ster', 'm12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', 3, false, true],
-      ['Vermeld, 1', 'Vermeld', 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94', 1, false],
-      ['Aan mij toegewezen, 2', 'Aan mij', 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8', 2, false]
+      // Calm fix (after round 7): as the English rail, Met ster, Vermeld, Aan mij toegewezen and Niet toegewezen fold under one Weergaven item (names and counts in its label).
     ];
     const rail = railData.map(railItem);
-    const railTop = railData.slice(0, 3).map(railItem);
+    const railTop = railData.slice(0, 4).map(railItem);
     const chipBase = 'height: 38px; padding: 0 14px; border-radius: 19px; font: 600 14px \'Fira Sans\', sans-serif; white-space: nowrap; ';
     const chips = ['Alles', 'Ongelezen', 'Gekoppeld', 'Niet gekoppeld'].map((label, i) => ({ label, on: i === 0 ? 'true' : 'false', style: chipBase + (i === 0 ? 'border: 1px solid #f5f6f8; background: #f5f6f8; color: #1b1c1d;' : 'border: 1px solid #5e6168; background: transparent; color: #f5f6f8;') }));
     const TYPE = { EPIC: '#4fb3d1', FEATURE: '#8fd04c', BUG: '#ff7b7b', TASK: '#4fc3f7' };
@@ -369,7 +368,8 @@ class Component extends DCLogic {
       ['Archiveren', 'M21 8v13H3V8M1 3h22v5H1zM10 12h4'],
       ['Markeren als spam', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01'],
       ['Markeren als ongelezen', 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6']
-    ].map(([label, icon]) => ({ label, icon, style: textBtn }));
+    // Calm fix (after round 7): the icon toolbar of the English boards, the Dutch label in title and aria-label, so the row fits beside the open menu.
+    ].map(([label, icon]) => ({ label, icon, style: 'width: 34px; height: 34px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: #f5f6f8; display: inline-flex; align-items: center; justify-content: center' }));
     const help = [
       { label: 'Helpcentrum', hint: 'Handleiding en veelgestelde vragen', icon: 'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z', external: true },
       { label: 'Tutorials', hint: 'Korte video\'s, van je eerste koppeling tot regels', icon: 'M23 7l-7 5 7 5V7zM1 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H1z', external: true },

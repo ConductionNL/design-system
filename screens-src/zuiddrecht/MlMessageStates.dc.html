@@ -32,7 +32,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </div>
             <div role="{{ n.role }}" style="display: flex; flex-direction: column; gap: 8px; margin: 12px 14px 0 14px; padding: 10px 12px; border-radius: var(--sc-radius, 8px); background: #eef0f3; font-size: 13px; line-height: 19px; color: #3d4047">
               <div style="display: flex; align-items: flex-start; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px; color: {{ n.iconColor }}"><path d="{{ n.icon }}"></path></svg><span>{{ n.text }}</span></div>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-left: 24px">
+              <div style="display: flex; align-items: center; gap: 6px; padding-left: 24px">
                 <sc-for list="{{ n.actions }}" as="a" hint-placeholder-count="2"><button type="button" style="{{ a.style }}">{{ a.label }}</button></sc-for>
               </div>
             </div>
@@ -212,7 +212,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
 
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">m</span> &nbsp;A sent message shows its delivery per recipient: a plain sentence per problem, the server's line behind Show details</figcaption>
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">m</span> &nbsp;A sent message shows one delivery line (1 failed, 1 retrying, 2 delivered) with Retry failed recipients; Show details opens the table per recipient with a plain sentence per problem, the server's line and Cancel retries</figcaption>
       <div style="height: 620px; box-sizing: border-box; padding: 12px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
         <article aria-label="Message from you, 10 October" style="display: flex; flex-direction: column; background: #f5f6f8; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
           <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
@@ -225,6 +225,12 @@ a{color:#3669a5}a:hover{color:#234a78}
           </div>
           <div style="padding: 10px 14px 0 56px; font-size: 13px; line-height: 19px; color: #3d4047; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Not a blocker. The link stores a reference to the message, the mail itself stays in your mailbox.</div>
           <section aria-label="Delivery per recipient" style="margin: 12px 14px 14px 56px; padding-top: 10px; border-top: 1px solid #e4e6ea; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: #3d4047">
+              <span style="flex: 1 1 auto; min-width: 0; white-space: nowrap"><strong style="color: #cc0000">1 failed</strong>, 1 retrying, 2 delivered</span>
+              <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg>Retry failed recipients</button>
+              <button type="button" aria-expanded="false" aria-controls="ml-delivery-details" style="display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 8px 0 6px; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; color: var(--sc-link, #3669a5); font: 600 13px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>Show details</button>
+            </div>
+            <div id="ml-delivery-details" style="display: none; flex-direction: column; gap: 6px">
             <div style="display: flex; align-items: center; justify-content: space-between"><span style="font-size: 12px; font-weight: 600; color: #5e6168">Delivery per recipient</span><span style="font-size: 12px; color: #5e6168">2 delivered, 1 failed, 1 retrying</span></div>
             <table style="border-collapse: collapse; width: 100%; font-size: 14px; line-height: 20px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
               <thead><tr><th scope="col" style="text-align: left; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; padding: 12px 12px; background: #fafbfc">Recipient</th><th scope="col" style="text-align: left; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; padding: 12px 12px; background: #fafbfc">State</th><th scope="col" style="text-align: right; font-size: 14px; font-weight: 600; line-height: 20px; color: #5e6168; padding: 12px 12px; background: #fafbfc">When</th></tr></thead>
@@ -238,13 +244,14 @@ a{color:#3669a5}a:hover{color:#234a78}
               <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"></path></svg>Retry failed recipients</button>
               <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap">Cancel retries</button>
             </div>
+            </div>
           </section>
         </article>
       </div>
     </figure>
 
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">n</span> &nbsp;The sender card, opened from a name in the header, below the header block; the same head and actions as the card in the composer</figcaption>
+      <figcaption style="font-size: 13px; font-weight: 600; color: #3d4047; line-height: 16px"><span style="color: #5e6168; font-weight: 400">n</span> &nbsp;The sender card, opened from a name in the header, below the header block: the sender and three actions, the same head as the card in the composer; Add to contacts opens the matching contacts (two to add this address to, or a new contact)</figcaption>
       <div style="height: 620px; box-sizing: border-box; padding: 12px; background: #f5f6f8; border: 1px solid #c4c7cb; border-radius: var(--sc-radius-lg, 10px); overflow: hidden">
         <article aria-label="Message from Marc Dubois, today 06:00" style="position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius, 8px)">
           <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px 0">
@@ -268,6 +275,8 @@ a{color:#3669a5}a:hover{color:#234a78}
               
             </div>
             <div style="display: flex; gap: 8px; padding: 0 10px 10px"><a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none">Open contact</a><a href="#" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; text-decoration: none">Earlier mail</a><button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Copy address</button></div>
+            <div style="padding: 0 10px 8px"><button type="button" aria-expanded="false" aria-controls="ml-sender-matches" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: var(--sc-radius, 8px); background: #ffffff; color: #1b1c1d; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6"></path></svg>Add to contacts</button></div>
+            <div id="ml-sender-matches" style="display: none; flex-direction: column">
             <div role="separator" style="height: 1px; margin: 2px 0 6px; background: #e4e6ea"></div>
             <div style="padding: 2px 10px 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">Matching contacts</div>
             <p style="margin: 0 0 4px; padding: 0 10px; font-size: 12px; line-height: 16px; color: #5e6168">This address is not saved yet. Add it to one of these, or make a new contact.</p>
@@ -276,6 +285,7 @@ a{color:#3669a5}a:hover{color:#234a78}
             </sc-for>
             <div role="separator" style="height: 1px; margin: 6px 0; background: #e4e6ea"></div>
             <button type="button" style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; width: 100%; border: 0; border-radius: var(--sc-radius, 8px); background: transparent; text-align: left; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; color: #5e6168"><path d="M12 5v14M5 12h14"></path></svg><span style="flex: 1 1 auto">New contact with this address</span><span style="flex: none; font-size: 12px; color: #5e6168">in Customers</span></button>
+            </div>
           </div>
         </article>
       </div>
@@ -297,14 +307,14 @@ class Component extends DCLogic {
     const notices = [
       ['a', 'Read confirmation requested', 'Marc Dubois', 'MD', theirs, 'Today 06:00', 'Rollout plan phase 2, Lyon', 'status', info, '#5e6168',
         'Marc Dubois asked to be told when you read this message.', [['Send read confirmation', primary], ['Not now', quiet]], 'Hi Olivia, good. Then we are go for 2 November. One more request from the department head: can the kick-off move to the afternoon?', '#3d4047'],
-      ['b', 'Mailing list: one Unsubscribe button, the mail route as the fallback', 'Sovereign Tech Weekly', 'ST', theirs, 'Yesterday 08:00', 'Open source in the public sector, issue 41', 'status', info, '#5e6168',
-        'This message comes from a mailing list, newsletter@sovereigntech.test. Unsubscribe takes one click; the mail route is only for a list that does not answer.', [['Unsubscribe', secondary], ['Unsubscribe by email', quiet]], 'In this issue: the Dutch sovereign workplace, procurement rules for open source, and a look at the Lyon rollout.', '#3d4047'],
-      ['c', 'The message could not be parsed', 'Hetzner Billing', 'HB', theirs, '9 Oct 03:12', 'Invoice 2026-10-0193 is available', 'alert', warn, '#3d4047',
-        'This message could not be shown. Its content is in a form the mail app cannot read. You can still download it and open it elsewhere.', [['Download the original message file', secondary], ['Show the original message (technical)', quiet]], 'No readable content', '#5e6168'],
-      ['d', 'A file whose content does not match its type', 'Jana Köhler', 'JK', theirs, 'Today 04:00', 'Gantt export cuts off the last week', 'alert', warn, '#3d4047',
-        'The content of gantt-export-cut.png does not match its type. It says PNG but looks like a PDF. Open it only if you expect it from Jana.', [['Download anyway', secondary], ['Mark as spam', quiet]], 'Hello Olivia, the last week of the plan is missing in the PDF. The screen shows it, the export does not.', '#3d4047'],
-      ['e', 'Attachments blocked on a conversation reported as spam', 'Unknown sender', '?', av('#eef0f3', '#3d4047'), '11 Oct 23:40', 'Your invoice is ready, open the attached file', 'alert', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', '#3d4047',
-        'Attachment preview and download are blocked because this conversation is reported as spam. Invoice-10-2026.zip stays closed.', [['Not spam', secondary], ['Delete', quiet]], 'Dear customer, your invoice is attached. Open the file to see the amount due.', '#5e6168'],
+      ['b', 'Mailing list (newsletter@sovereigntech.test): one Unsubscribe button, the mail route only for a list that does not answer', 'Sovereign Tech Weekly', 'ST', theirs, 'Yesterday 08:00', 'Open source in the public sector, issue 41', 'status', info, '#5e6168',
+        'This message comes from a mailing list. Unsubscribe takes one click.', [['Unsubscribe', secondary], ['Unsubscribe by email', quiet]], 'In this issue: the Dutch sovereign workplace, procurement rules for open source, and a look at the Lyon rollout.', '#3d4047'],
+      ['c', 'The message could not be parsed: its content is in a form the mail app cannot read; the technical view stays in the message menu', 'Hetzner Billing', 'HB', theirs, '9 Oct 03:12', 'Invoice 2026-10-0193 is available', 'alert', warn, '#3d4047',
+        'This message could not be shown; download it and open it elsewhere.', [['Download the original message file', secondary]], 'No readable content', '#5e6168'],
+      ['d', 'A file whose content does not match its type: it says PNG but looks like a PDF', 'Jana Köhler', 'JK', theirs, 'Today 04:00', 'Gantt export cuts off the last week', 'alert', warn, '#3d4047',
+        'The content of gantt-export-cut.png does not match its type.', [['Download anyway', secondary], ['Mark as spam', quiet]], 'Hello Olivia, the last week of the plan is missing in the PDF. The screen shows it, the export does not.', '#3d4047'],
+      ['e', 'Attachments blocked on a conversation reported as spam: preview and download of Invoice-10-2026.zip stay closed', 'Unknown sender', '?', av('#eef0f3', '#3d4047'), '11 Oct 23:40', 'Your invoice is ready, open the attached file', 'alert', 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01', '#3d4047',
+        'Attachments are blocked because this conversation is reported as spam.', [['Not spam', secondary], ['Delete', quiet]], 'Dear customer, your invoice is attached. Open the file to see the amount due.', '#5e6168'],
       ['f', 'A deleted message, still in its conversation', 'You', 'OB', mine, '8 Oct 14:10', 'Rollout plan phase 2, Lyon', 'status', 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', '#5e6168',
         'You deleted this message. It is in the trash for 30 more days.', [['Restore', secondary], ['Delete for good', quiet]], 'Thanks Marc. Two remarks on the folder structure, see below.', '#5e6168']
     ].map(([letter, caption, from, initials, avatar, date, subject, role, icon, iconColor, text, actions, body, bodyColor]) => ({

@@ -130,6 +130,7 @@ class Component extends DCLogic {
       screen: false, window: true, rows: []
     };
     // One rule for every check: the fix is the green button on the right, Send anyway is the plain button on the left.
+    // Calm fix (after round 7): one wrong address is said twice at most (red chip and the inline notice), the footer keeps the draft line; the no-reply notice is one line with the comment button as its only action.
     const rows = [['SL', 'Sven Lindqvist', 'Request for a demo, 1,200 users'], ['MD', 'Marc Dubois', 'Rollout plan phase 2, Lyon'], ['JK', 'Jana Köhler', 'Gantt export cuts off the last week'], ['OP', 'OpenProject notifications', '[Northwind - Bug #58231] Gantt PDF export drops trailing columns'], ['PT', 'People Team', 'Reminder: submit your October hours by Friday']].map(([initials, from, subject]) => ({ initials, from, subject }));
     const f = (o) => ({ ...base, ...o, windowLabel: o.title ? 'Compose window: ' + o.title : base.windowLabel });
     const frames = [
@@ -140,7 +141,7 @@ class Component extends DCLogic {
         dialog: true, dialogTitle: 'No attachment added', dialogText: 'Your text mentions an attachment ("is attached"), but there is no file on this message.',
         buttons: [{ label: 'Send anyway', style: secondary }, { label: 'Attach a file', style: primary }] }),
       f({ letter: 'c', caption: 'A reply to a no-reply address', title: 'Re: [Northwind - Bug #58231] Gantt PDF export drops trailing columns', chips: [chip('OP', 'no-reply@openproject.northwind-projects.test', true)],
-        subject: 'Re: [Northwind - Bug #58231] Gantt PDF export drops trailing columns', noticeTop: true, noticeStyle: info, noticeText: 'This address does not read replies. Nobody at OpenProject notifications will see this message.', noticeAction: 'Comment in BUG #58231',
+        subject: 'Re: [Northwind - Bug #58231] Gantt PDF export drops trailing columns', noticeTop: true, noticeStyle: info, noticeText: 'This address does not read replies.', noticeAction: 'Comment in BUG #58231',
         body: 'Priya, the fix looks good, the last week shows again in the export.', foot: 'Draft saved 10:12' }),
       f({ letter: 'd', caption: 'Accented characters before the @', chips: [chip('RK', 'rené.koch@stadtwerke-kassel.de'), jana], subject: 'Angebot Schulung Projektleiter, 12 Personen', body: 'Guten Tag Herr Koch, anbei unser Angebot für die Schulung.',
         dialog: true, dialogTitle: 'Accented characters in an address', dialogText: 'rené.koch@stadtwerke-kassel.de has an accented character before the @. Some mail servers reject such addresses, so the message may bounce.',
@@ -156,10 +157,10 @@ class Component extends DCLogic {
         noticeBottom: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'Attachments total 28.4 MB. The limit is 25 MB per message.', noticeAction: 'Send the largest as a link',
         sendOff: 'true', sendStyle: sendOffStyle, foot: '28.4 of 25 MB' }),
       f({ letter: 'h', caption: 'A typed address that is not valid: Send is off until it is fixed', chips: [chip('?', 'marc.dubois@', true, 'marc.dubois@, not a valid address')], subject: 'Kick-off Lyon phase 2 moves to the afternoon',
-        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'marc.dubois@ is not a valid address. The part after the @ is missing.', noticeAction: 'Edit', sendOff: 'true', sendStyle: sendOffStyle, foot: '1 address to fix' }),
+        noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'marc.dubois@ is not a valid address. The part after the @ is missing.', noticeAction: 'Edit', sendOff: 'true', sendStyle: sendOffStyle, foot: 'Draft saved 09:41' }),
       f({ letter: 'i', caption: 'An address that does not exist here, told at once: Send is off', chips: [chip('JK', 'jana.kohler@northwind-projects.test', true, 'jana.kohler@northwind-projects.test, no such mailbox')], subject: 'Gantt export: fixed in 16.5',
         noticeTop: true, noticeRole: 'alert', noticeStyle: error, noticeText: 'There is no mailbox jana.kohler@northwind-projects.test here. Did you mean jana.koehler@stadtwerke-kassel.de?', noticeAction: 'Use the suggestion',
-        body: 'Jana, the cut-off week is fixed in release 16.5.', sendOff: 'true', sendStyle: sendOffStyle, foot: '1 address to fix' }),
+        body: 'Jana, the cut-off week is fixed in release 16.5.', sendOff: 'true', sendStyle: sendOffStyle, foot: 'Draft saved 10:12' }),
       f({ letter: 'j', caption: 'Closing the window: keep or discard the draft', title: 'Re: Gantt export cuts off the last week', chips: [jana], subject: 'Re: Gantt export cuts off the last week', body: 'Hi Jana, thanks for the two screenshots. We can reproduce it and',
         dialog: true, dialogTitle: 'Keep this draft?', dialogText: 'Re: Gantt export cuts off the last week is not finished. Keep it in Drafts, or discard it?',
         buttons: [{ label: 'Keep writing', style: secondary }, { label: 'Discard', style: danger }, { label: 'Keep draft', style: primary }], foot: 'Draft saved 10:12' }),

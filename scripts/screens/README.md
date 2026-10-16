@@ -51,6 +51,16 @@ For every board:
 
 Options: `--only Key` (repeatable), `--index-only`, `--no-thumbs`, `--no-measure`, `--jobs N` (default 3). Every run rewrites its outputs, so running it twice gives the same result. It exits 1 and names the board when one fails.
 
+## Build status
+
+`build_status.py` writes `preview/screens/build-status.json`: per board how far it is built in its app and how well it matches the board. The gallery shows a badge per screen and a progress line per row, and `board.html` a Bouwstatus panel. Without the file both pages work as before.
+
+```
+python3 scripts/screens/build_status.py ~/memcap-work/screens/round6/INV-*/inventory*.tsv ~/memcap-work/screens/round6/LIVE-*/inventory.tsv
+```
+
+Each input is a TSV with the header `board kind route status mismatchPct notes`. Rows from a file in a `LIVE-*` directory (live verdicts on builder branches) win over every other row for the same board. A board without a row is shown as not measured yet. The script's docstring has the rules for `layoutMatch` and `measuredOn`.
+
 ## Capabilities, specs and repositories
 
 `capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. Run it after `build.py`, because `build.py` rewrites `screens.json` without these fields.

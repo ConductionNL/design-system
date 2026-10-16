@@ -103,3 +103,22 @@ body.sc-chrome { padding: 0; background: var(--c-cobalt-50); }
 .sc-sys[data-v="partial"] { color: var(--conduction-color-status-warning-ink); background: var(--conduction-color-status-warning-tint); }
 .sc-sys[data-v="no"] { color: var(--c-cobalt-700); background: var(--c-cobalt-100); }
 .sc-sys[data-v="unknown"] { color: var(--c-cobalt-400); background: white; border-color: var(--c-cobalt-200); }
+
+/* ---------- Build status: how far a screen is built in its app ----------
+   Shared by index.html (tiles, row lines) and board.html (sidebar).
+   Data from build-status.json, read through build-status.js. */
+.sc-bs {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font-size: 12px; font-weight: 600; line-height: 1.3;
+  padding: 2px 8px; border-radius: 999px; border: 1px solid transparent;
+  color: var(--c-cobalt-700); background: var(--c-cobalt-50);
+}
+.sc-bs::before { content: ""; width: 8px; height: 9px; flex: none; clip-path: var(--hex-pointy-top); background: currentColor; }
+.sc-bs[data-bs="match"] { color: var(--conduction-color-status-success-ink); background: var(--conduction-color-status-success-tint); }
+.sc-bs[data-bs="differs"] { color: var(--conduction-color-status-info-ink); background: var(--conduction-color-status-info-tint); border-color: var(--c-cobalt-200); }
+.sc-bs[data-bs="partial"] { color: var(--conduction-color-status-warning-ink); background: var(--conduction-color-status-warning-tint); }
+.sc-bs[data-bs="missing"] { color: var(--conduction-color-status-error-ink); background: var(--conduction-color-status-error-tint); }
+.sc-bs[data-bs="stateOf"] { color: var(--c-cobalt-700); background: white; border-color: var(--c-cobalt-400); border-style: dashed; }
+.sc-bs[data-bs="none"] { color: var(--c-cobalt-700); background: white; border-color: var(--c-cobalt-200); font-weight: 400; }
+.sc-bs[data-bs="none"]::before { background: var(--c-cobalt-200); }
+.sc-bs-pct { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-700); white-space: nowrap; }

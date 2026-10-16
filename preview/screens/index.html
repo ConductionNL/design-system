@@ -79,6 +79,14 @@
   .sc-tile .caps { font-size: 12px; color: var(--c-cobalt-700); line-height: 1.4; margin: 0; }
   .sc-tile .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 4px; }
   .sc-tile .size { font-family: var(--conduction-typography-font-family-code); font-size: 11px; color: var(--c-cobalt-400); }
+  .sc-tile .bs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+  .sc-row > summary .rt .bs-line { display: block; font-size: 13px; font-weight: 500; color: var(--c-cobalt-900); margin-top: 4px; line-height: 1.4; }
+  .sc-row > summary .rt .bs-bar { display: flex; height: 6px; max-width: 360px; margin-top: 6px; border-radius: 3px; overflow: hidden; background: var(--c-cobalt-100); }
+  .sc-row > summary .rt .bs-bar span { display: block; height: 100%; }
+  .sc-row > summary .rt .bs-bar [data-bs="match"] { background: var(--conduction-color-status-success); }
+  .sc-row > summary .rt .bs-bar [data-bs="differs"] { background: var(--conduction-color-status-info); }
+  .sc-row > summary .rt .bs-bar [data-bs="partial"] { background: var(--conduction-color-status-warning); }
+  .sc-row > summary .rt .bs-bar [data-bs="missing"] { background: var(--conduction-color-status-error); }
 
   .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
   [hidden] { display: none !important; }
@@ -113,6 +121,8 @@
       <input type="search" id="q" autocomplete="off" placeholder="Search by title, id or capability" data-i18n-attr="placeholder:screens.search.placeholder">
       <label class="label" for="filter" data-i18n="screens.filter.label">Show</label>
       <select id="filter"></select>
+      <label class="label" for="bs-filter" hidden data-i18n="screens.bs.filterLabel">Build status</label>
+      <select id="bs-filter" hidden></select>
       <div class="links">
         <button type="button" id="open-all" data-i18n="screens.rows.openAll">Open all</button>
         <button type="button" id="close-all" data-i18n="screens.rows.closeAll">Close all</button>
@@ -132,6 +142,7 @@
 </div>
 
 <script src="theme.js"></script>
+<script src="build-status.js"></script>
 <script>
 (function () {
   'use strict';
@@ -192,6 +203,8 @@
   /* ---------- state ---------- */
   var S = null;            /* screens.json */
   var DS = null;           /* design-systems.json */
+  var BS = null;           /* build-status.json, optional */
+  var BSX = window.screensBuildStatus;
   var dsId = null;
   var rowsByKey = {};      /* key -> { set, row, el, rendered } */
   var anchorToBoard = {};  /* "portaliq-MijnZaken" -> board name */
@@ -262,10 +275,67 @@
       el('div', { class: 'meta' }, [
         el('a', { class: 'title', href: href, text: b.title || name }),
         b.caps ? el('p', { class: 'caps', text: shortCaps(b.caps), title: b.caps }) : null,
+        bsTile(name),
         el('div', { class: 'foot' }, [idChip(b.id || name), el('span', { class: 'size', text: (b.w || '?') + ' × ' + (b.h || '?') })])
       ])
     ]);
     return art;
+  }
+
+  /* ---------- build status: badge per tile, progress line per row ---------- */
+  function bsKind(name) { return BSX.kind(BS.boards[name]); }
+
+  function bsTile(name) {
+    if (!BS) return null;
+    var row = BS.boards[name];
+    var k = BSX.kind(row);
+    var kids = [el('span', { class: 'sc-bs', 'data-bs': k, text: BSX.label(k, row, t) })];
+    if (row && row.mismatchPct != null) {
+      kids.push(el('span', { class: 'sc-bs-pct', text: t('screens.bs.pctShort', '{pct} off', { pct: BSX.pct(row.mismatchPct, LANG) }) }));
+    }
+    return el('div', { class: 'bs' }, kids);
+  }
+
+  function bsCounts(names) {
+    var c = { n: 0, measured: 0, match: 0, built: 0, partial: 0, missing: 0 };
+    names.forEach(function (n) {
+      if (!S.boards[n]) return;
+      c.n += 1;
+      var k = bsKind(n);
+      if (k === 'none') return;
+      c.measured += 1;
+      if (k === 'match') { c.match += 1; c.built += 1; }
+      else if (k === 'differs') c.built += 1;
+      else if (k === 'partial') c.partial += 1;
+      else if (k === 'missing') c.missing += 1;
+    });
+    return c;
+  }
+
+  /* "12 van 74 schermen kloppen, 24 gebouwd, 30 deels, 14 ontbreken", with a bar in the same order */
+  function bsRowLine(row) {
+    if (!BS) return null;
+    var c = bsCounts(row.boards);
+    if (!c.measured) return null;
+    var text = t('screens.bs.rowLine', '{match} of {n} screens match, {built} built, {partial} partly, {missing} missing', c);
+    var bar = el('span', { class: 'bs-bar', 'aria-hidden': 'true' });
+    [['match', c.match], ['differs', c.built - c.match], ['partial', c.partial], ['missing', c.missing]].forEach(function (p) {
+      if (!p[1]) return;
+      var s = el('span', { 'data-bs': p[0] }); s.style.width = (100 * p[1] / c.n) + '%'; bar.appendChild(s);
+    });
+    return el('span', null, [el('span', { class: 'bs-line', text: text }), bar]);
+  }
+
+  function buildBsFilter() {
+    var sel = document.getElementById('bs-filter');
+    if (!BS) return;
+    sel.hidden = false;
+    document.querySelector('label[for="bs-filter"]').hidden = false;
+    sel.appendChild(el('option', { value: '', text: t('screens.bs.filterAll', 'Any build status') }));
+    BSX.KINDS.forEach(function (k) {
+      var lbl = k === 'stateOf' ? t('screens.bs.stateOfAny', 'State of another screen') : BSX.label(k, null, t);
+      sel.appendChild(el('option', { value: k, text: lbl }));
+    });
   }
 
   /* a board drawn for one design system (mail in OpenProject) carries a thumbnail in that style */
@@ -305,7 +375,7 @@
         var chev = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         chev.setAttribute('viewBox', '0 0 24 24'); chev.setAttribute('class', 'chev'); chev.setAttribute('aria-hidden', 'true');
         chev.innerHTML = '<path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
-        var summary = el('summary', null, [chev, el('span', { class: 'rt' }, [document.createTextNode(row.title), row.blurb ? el('span', { class: 'blurb', text: row.blurb }) : null]),
+        var summary = el('summary', null, [chev, el('span', { class: 'rt' }, [document.createTextNode(row.title), row.blurb ? el('span', { class: 'blurb', text: row.blurb }) : null, bsRowLine(row)]),
           el('span', { class: 'app', text: row.app || set.id }),
           el('span', { class: 'n', text: t('screens.row.count', '{n} screens', { n: count }) })]);
         var det = el('details', { class: 'sc-row', id: 'row-' + set.id + '-' + row.id, 'data-key': key, 'data-app': row.app || set.id }, [summary, el('div', { class: 'tiles' })]);
@@ -377,6 +447,7 @@
   function applyFilters(fromRender) {
     var q = document.getElementById('q').value.trim().toLowerCase();
     var f = document.getElementById('filter').value;
+    var bf = BS ? document.getElementById('bs-filter').value : '';
     var shown = {};
     S.sets.forEach(function (set) {
       var setShown = 0;
@@ -384,17 +455,17 @@
       set.rows.forEach(function (row) {
         var entry = rowsByKey[rowKey(set.id, row.id)];
         var rowOk = setOk && (f.indexOf('row:') !== 0 || f === 'row:' + rowKey(set.id, row.id));
-        var hits = rowOk ? row.boards.filter(function (n) { return S.boards[n] && matches(n, q); }) : [];
+        var hits = rowOk ? row.boards.filter(function (n) { return S.boards[n] && matches(n, q) && (!bf || bsKind(n) === bf); }) : [];
         var show = rowOk && hits.length > 0;
         entry.el.hidden = !show;
         if (show) { setShown += 1; hits.forEach(function (n) { shown[n] = true; }); }
-        if (!fromRender && show && (q || f.indexOf('row:') === 0) && !entry.el.open) { entry.el.open = true; }
-        if (!fromRender && !q && f.indexOf('row:') !== 0) { entry.el.open = !!rowState[rowKey(set.id, row.id)]; }
+        if (!fromRender && show && (q || bf || f.indexOf('row:') === 0) && !entry.el.open) { entry.el.open = true; }
+        if (!fromRender && !q && !bf && f.indexOf('row:') !== 0) { entry.el.open = !!rowState[rowKey(set.id, row.id)]; }
         if (entry.rendered) {
           var hitSet = {}; hits.forEach(function (n) { hitSet[n] = true; });
           entry.el.querySelectorAll('.sc-tile').forEach(function (tl) { tl.hidden = !hitSet[tl.getAttribute('data-board')]; });
         }
-        entry.el.querySelector('.n').textContent = q
+        entry.el.querySelector('.n').textContent = q || bf
           ? t('screens.row.countOf', '{n} of {m} screens', { n: hits.length, m: row.boards.length })
           : t('screens.row.count', '{n} screens', { n: row.boards.length });
       });
@@ -408,6 +479,7 @@
     clearTimeout(qTimer); qTimer = setTimeout(function () { applyFilters(false); }, 140);
   });
   document.getElementById('filter').addEventListener('change', function () { applyFilters(false); });
+  document.getElementById('bs-filter').addEventListener('change', function () { applyFilters(false); });
   document.getElementById('open-all').addEventListener('click', function () {
     Object.keys(rowsByKey).forEach(function (k) { var e = rowsByKey[k]; if (!e.el.hidden) { e.el.open = true; rowState[k] = true; } });
     saveRows(rowState);
@@ -452,13 +524,15 @@
   Promise.all([
     fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
     window.screensTheme.ready,
-    dictReady
+    dictReady,
+    BSX ? BSX.load() : null
   ]).then(function (res) {
-    S = res[0]; DS = res[1];
+    S = res[0]; DS = res[1]; BS = res[3];
     Object.keys(S.boards).forEach(function (n) { S.boards[n].name = n; });
     dsId = window.screensTheme.get() || (DS && DS.default) || 'conduction';
     if (DS) buildSeg();
     buildFilter();
+    buildBsFilter();
     buildSets();
     applyFilters(true);
     Object.keys(rowsByKey).forEach(function (k) { if (rowsByKey[k].el.open) renderRow(rowsByKey[k]); });

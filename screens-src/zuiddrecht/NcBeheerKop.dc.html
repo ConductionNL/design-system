@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Nextcloud: beheerinstellingen van een app, kop en tabbladen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; display: flex; flex-direction: column; gap: 20px">
+  <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+      <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">{{ title }}</h1>
+      <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #1b1c1d; border: 1px solid #c4c7cb; padding: 0 14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg>Documentatie</button></div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; color: #5e6168"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="#">Beheerinstellingen</a><span aria-hidden="true">/</span><sc-if value="{{ hasSection }}"><a href="#">{{ app }}</a><span aria-hidden="true">/</span><span aria-current="page">{{ section }}</span></sc-if><sc-if value="{{ noSection }}"><span aria-current="page">{{ app }}</span></sc-if></nav><span aria-hidden="true">·</span><span>{{ scope }}</span></div>
+  </section>
+  <sc-if value="{{ hasTabs }}">
+    <div role="tablist" aria-label="{{ tabsLabel }}" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #e4e6ea"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasCount }}"><span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">{{ t.count }}</span></sc-if></button></sc-for></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"title":{"editor":"text","default":""},"section":{"editor":"text","default":""},"scope":{"editor":"text","default":"alleen voor beheerders, elke sectie slaat apart op"},"tabs":{"editor":null,"default":[]},"$preview":{"width":1184,"height":140}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // The head of an app's admin page (CnAdminSettingsShell): the title, Documentatie, the breadcrumb
+    // Beheerinstellingen / App / Section with the scope line, and an underline tab strip when the page has tabs.
+    // tabs is a list of [label, count]; the tab whose label equals `section` is open.
+    const app = this.props.app || 'Dossiq';
+    const section = this.props.section || '';
+    const tab = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 9px; border: 0; background: transparent; white-space: nowrap; ' +
+      (on ? "border-bottom: 3px solid #3669a5; font: 700 14px 'Fira Sans', sans-serif; color: #1b1c1d" : "border-bottom: 3px solid transparent; font: 500 14px 'Fira Sans', sans-serif; color: #3d4047");
+    const raw = Array.isArray(this.props.tabs) ? this.props.tabs : [];
+    const tabs = raw.map((t) => {
+      const [label, count] = Array.isArray(t) ? t : [t, ''];
+      const on = label === section;
+      return { label, count: count || '', hasCount: !!count, selected: on ? 'true' : 'false', style: tab(on) };
+    });
+    return {
+      app, title: this.props.title || app, section, hasSection: !!section, noSection: !section,
+      scope: this.props.scope || 'alleen voor beheerders, elke sectie slaat apart op',
+      hasTabs: tabs.length > 0, tabs, tabsLabel: 'Onderdelen van het ' + app + '-beheer'
+    };
+  }
+}
+</script>
+</body>
+</html>

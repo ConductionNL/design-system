@@ -88,12 +88,11 @@
 
   .side .bs .bs-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
   .side .bs .bs-head a { font-size: 13px; color: var(--c-blue-cobalt); }
-  .side .bs dl { margin: 0; display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 6px 12px; font-size: 13px; line-height: 1.45; }
-  .side .bs dt { color: var(--c-cobalt-700); }
-  .side .bs dd { margin: 0; color: var(--c-cobalt-900); overflow-wrap: anywhere; min-width: 0; }
+  .side .bs dl { margin: 0; display: flex; flex-direction: column; font-size: 13px; line-height: 1.45; }
+  .side .bs dt { font-size: 12px; color: var(--c-cobalt-700); }
+  .side .bs dd { margin: 0 0 8px; color: var(--c-cobalt-900); overflow-wrap: anywhere; min-width: 0; }
+  .side .bs dd:last-child { margin-bottom: 0; }
   .side .bs dd code { font-family: var(--conduction-typography-font-family-code); font-size: 12px; }
-  .side .bs dt.wide, .side .bs dd.wide { grid-column: 1 / -1; }
-  .side .bs dd.wide { margin-top: -2px; }
   .side .bs .gen { font-size: 12px; color: var(--c-cobalt-700); margin: 0; }
   .missing { max-width: 640px; margin: 96px auto; text-align: center; color: var(--c-cobalt-700); }
   @media (max-width: 1100px) {
@@ -521,10 +520,10 @@
       head.appendChild(el('a', { href: hrefFor(row.stateOf), text: t('screens.bs.openParent', 'Open {board}', { board: row.stateOf }) }));
     }
     var dl = document.getElementById('bs-facts'); dl.innerHTML = '';
-    function fact(label, value, wide) {
+    function fact(label, value) {
       if (value == null || value === '') return;
-      dl.appendChild(el('dt', { class: wide ? 'wide' : '', text: label }));
-      dl.appendChild(el('dd', { class: wide ? 'wide' : '' }, [value]));
+      dl.appendChild(el('dt', { text: label }));
+      dl.appendChild(el('dd', null, [value]));
     }
     if (row) {
       fact(t('screens.bs.route', 'Route on the test instance'), row.route ? el('code', { text: row.route }) : t('screens.bs.noRoute', 'none'));
@@ -532,7 +531,7 @@
       fact(t('screens.bs.layout', 'Layout'), row.layoutMatch === true ? t('screens.bs.layoutYes', 'matches the board')
         : row.layoutMatch === false ? t('screens.bs.layoutNo', 'differs from the board') : t('screens.bs.layoutUnknown', 'not judged yet'));
       fact(t('screens.bs.measuredOn', 'Measured on'), el('code', { text: row.measuredOn || 'development' }));
-      fact(t('screens.bs.notes', 'What differs'), row.notes, true);
+      fact(t('screens.bs.notes', 'What differs'), row.notes);
     }
     document.getElementById('bs-gen').textContent = t('screens.bs.generated', 'Status generated {date}', { date: BSX.date(BS.generated, LANG) });
   }

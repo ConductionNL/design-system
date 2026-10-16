@@ -2,16 +2,24 @@
 
 The contract for every `Op*` board. Geometry is measured from our Nextcloud boards (`DqKop`, `AppZijbalk`, `DqZijbalk`, `DqPostvak`, `DqTaak`, `DqBerichtVersturen`). Colour, type and radius come from the active design system through `var(--sc-*)`: under `?ds=openproject` the Cunningham example theme sets them. Use the literals from `token-rules.md` and nothing near them. Where the measured OpenProject size differs (header 55 px, row 40 px, button 34 px, nav 245 px), our Nextcloud size wins, because both products must be identical.
 
-## Top bar (`OpHeader.dc.html`, measured from `DqKop.dc.html`)
+Decided 15 October 2026, after the plugin was built: OpenProject follows Nextcloud. The top bar is the Zuiddrecht workplace bar (`DqKop`), the sign-in page is the Zuiddrecht login board (`NcLogin`), the account menu is Nextcloud's dropdown, and the sizes are Nextcloud's: primary button 48 px (was 40), table row 44 px (was 48), body text 15 px (was 14). The header row stays 44 px.
+
+## Top bar (`OpHeader.dc.html`, the Zuiddrecht workplace bar `DqKop.dc.html` plus quick add)
+
+Decided 15 October 2026: OpenProject's top bar is the dossiq bar, not a primary-filled bar of its own. `OpHeader` copies `DqKop` part for part, with the icons `DqKop` uses, and adds one button the dossiq bar lacks: quick add, a round plus before the bell, which the plugin kept.
 
 | part | value |
 |---|---|
-| height | 68 px, full width, `background: #3669a5` (primary), white ink, no bottom border |
-| brand block | 237 px wide, logo `data-sc-logo="logo-wit"` 26 px high, 1 px divider, app name 18 px weight 700 |
-| app switcher | 40 x 40 button, grid icon 20 px, `aria-label="All apps"`, popover 640 px wide at left 160 px, top 70 px |
-| search | `flex: 0 1 560px`, 44 px high, padding 0 14px 0 42px, 1 px white border, `background: rgba(255,255,255,0.12)`, radius `var(--sc-radius-lg, 10px)`, 15 px text |
-| icon buttons | 44 x 44, icon 22 px, radius `var(--sc-radius, 8px)`; notification badge 9 px dot `#cc0000` with 2 px white ring |
-| account | 48 px high button, avatar 38 px round `#ffffff` on `#234a78`, name 15 px weight 700, role 13 px, chevron 16 px |
+| bar | min-height 68 px, full width, `background: #ffffff`, `border-bottom: 1px solid #e4e6ea`, padding 0 20px 0 14px, ink `#1b1c1d`, column gap 16 px |
+| brand block | 237 px wide link, emblem 34 px high (`emblem` blob, as `DqKop`), two lines: "Gemeente Zuiddrecht" 13 px `#5e6168` above the product or module name 18 px weight 700 (the `app` attribute); then a 1 px divider `#e4e6ea` 28 px high |
+| all apps | 40 x 40 button, `background: #f5f6f8`, radius 8 px, grid icon 20 px, `aria-label="All apps"`, `aria-haspopup="menu"`; pressed: `background: #eaf0f7`. Opens the complete list (see Global menu) |
+| search | `flex: 0 1 560px; min-width: 240px`, 44 px high, padding 0 14px 0 42px, `border: 1px solid #e4e6ea`, `border-radius: 22px`, `background: #f5f6f8`, 15 px text, glass 18 px `#5e6168` at left 14 px |
+| quick add | 44 x 44 round button (`border-radius: 22px`), transparent, plus icon 22 px stroke 1.75, `aria-label="Quick add"`, `aria-haspopup="menu"`; first in the right group, before the bell |
+| icon buttons | 44 x 44 round, transparent, icon 22 px `#1b1c1d`; notifications with a 9 px dot `#cc0000` with a 2 px white ring; then contacts; then a 1 px divider with 6 px margins |
+| account | 48 px high button, `border-radius: 24px`, padding 0 8px 0 4px, avatar 38 px round `#eaf0f7`/`#234a78` initials 14 px weight 700, name 15 px weight 700 over role 13 px `#5e6168`, chevron 16 px; `aria-haspopup="menu"`, `aria-expanded`; pressed: `background: #f5f6f8` |
+| narrow (`row="collapsed"`, below 1240 px) | the account button keeps the avatar and chevron and drops the name and role; the search shrinks to its 240 px minimum. The bar is `flex-wrap: nowrap` (the one place it differs from `DqKop`, which wraps its search under the brand block at this width; at 1440 both are identical) |
+| hover and focus | icon buttons and list entries `background: #f5f6f8`; focus `outline: 2px solid #3669a5; outline-offset: -2px` |
+| attributes | `app` (second line of the brand block), `placeholder`, `user`, `role`, `initials`, `unread`, `apps` ("open"), `account` ("open"), `current` (the current entry in the open list, falls back to `app`), `row` ("collapsed" only; a custom icon row no longer exists and is ignored), `admin` ("true" shows Manage apps), `nested` (internal) |
 
 ## Navigation (`OpNav.dc.html`, measured from `AppZijbalk.dc.html` and `DqZijbalk.dc.html`)
 
@@ -31,7 +39,7 @@ The contract for every `Op*` board. Geometry is measured from our Nextcloud boar
 |---|---|
 | frame | `background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px)`, overflow hidden |
 | header row | `background: #fafbfc`, th padding 12px 16px, 14 px weight 600 `#5e6168`, line-height 20 px: 44 px high; sort caret 14 px `#c4c7cb` |
-| row | td padding 14px 16px, 14 px line-height 20 px: 48 px high for one line; `border-top: 1px solid #eef0f3`; no zebra |
+| row | td padding 12px 16px, 15 px line-height 20 px: 44 px high for one line (decided 15 October 2026, was 48); `border-top: 1px solid #eef0f3`; no zebra. Cell wrappers are `display: flex`, not `inline-flex`, so the baseline does not add height; an avatar in a row is 20 px; a compact 34 px button sits in a cell with padding 5px 16px. A row with two lines (name over email, type over subject) is as tall as its two lines |
 | row title | 15 px weight 600 `#1b1c1d`; secondary line 14 px `#5e6168` |
 | selection | checkbox 18 px, `accent-color: #3669a5` |
 | footer | padding 12px 16px, `border-top: 1px solid #eef0f3`, 14 px `#5e6168`, pagination 34 px |
@@ -41,8 +49,8 @@ The contract for every `Op*` board. Geometry is measured from our Nextcloud boar
 
 | kind | value |
 |---|---|
-| primary (the one main action) | 40 px high, padding 0 14px, radius `var(--sc-radius, 8px)`, `background: var(--sc-action, #3669a5)`, border 1 px `var(--sc-action-deep, #234a78)`, white 14 px weight 600, icon 16 px |
-| secondary | 40 px high, padding 0 14px, `border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d`, 14 px weight 600 |
+| primary (the one main action) | 48 px high (decided 15 October 2026, was 40), padding 0 16px, radius `var(--sc-radius, 8px)`, `background: var(--sc-action, #3669a5)`, border 1 px `var(--sc-action-deep, #234a78)`, white 15 px weight 600, icon 16 px |
+| secondary | 40 px high, padding 0 14px, `border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d`, 14 px weight 600; beside a primary (a toolbar, a dialog footer) it takes the primary's 48 px, padding 0 16px and 15 px text, so the row lines up |
 | compact (in a row) | 34 px high, otherwise secondary |
 | icon only | 40 x 40, `aria-label`, icon 20 px |
 | filter chip | 38 px high pill (`border-radius: 19px`), pressed: `background: #1b1c1d; color: #ffffff`; with a count pill 12 px |
@@ -89,7 +97,7 @@ The contract for every `Op*` board. Geometry is measured from our Nextcloud boar
 
 | role | value |
 |---|---|
-| body | 14 px, line-height 21 px, `#1b1c1d`; muted `#5e6168`; secondary `#3d4047` |
+| body | 15 px, line-height 22 px (decided 15 October 2026, was 14 px / 21 px), `#1b1c1d`; muted `#5e6168`; secondary `#3d4047`. Table cells 15 px on a 20 px line; labels, breadcrumbs and toolbar text stay 14 px |
 | page title | 28 px weight 700, line-height 1.2 |
 | section title | 20 px weight 700 |
 | widget title | 16 px weight 700 |
@@ -100,13 +108,13 @@ The contract for every `Op*` board. Geometry is measured from our Nextcloud boar
 
 ## Page frame
 
-Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header 68 px, then a row with the nav at 264 px and `main` with padding 24px 28px, column gap 20 px, max-width 1240 px. Never more than three things side by side. Icons: inline SVG, 16 or 20 px, `fill="none" stroke="currentColor" stroke-width="1.75"`.
+Board root: `display: flex; flex-direction: column; background: #f5f6f8`. Header 68 px (white, 1 px line under it), then a row with the nav at 264 px and `main` with padding 24px 28px, column gap 20 px, max-width 1240 px. Never more than three things side by side. Icons: inline SVG, 16 or 20 px, `fill="none" stroke="currentColor" stroke-width="1.75"`.
 
 ## Navigation, folded (`MlNav`, `ClNav`, `TbNav` with `folded="true"`)
 
 Since 13 October (Round 7) the mail, calendar and tasks boards no longer use `OpHeader` and `OpNav` for their shell: after the first user test they returned to their own 55 px top bar (`MlHeader`) and 245 px navigation of 12 October, with a separate 400 px work package panel (`WpPanel`) on the right. The controls inside those boards still follow this canon. This section describes the folded state of those three navigations.
 
-Owner's rule for the top-left block (13 October, for `MlHeader` and, when its owner takes it up, `OpHeader`): the block is exactly as wide as the navigation, its divider sits on the navigation's edge, and it carries two lines as dossiq's `DqKop` does: the environment name small above, the app name bold below. On an OpenProject page the second line is the project name, unless the project name already stands in the left menu; then it names the active module (for example Projects).
+Owner's rule for the top-left block (13 October, for `MlHeader`; taken up by `OpHeader` on 15 October through the dossiq bar): the block is exactly as wide as the navigation, its divider sits on the navigation's edge, and it carries two lines as dossiq's `DqKop` does: the environment name small above, the app name bold below. On an OpenProject page the second line is the project name, unless the project name already stands in the left menu; then it names the active module (for example Projects).
 
 | part | value |
 |---|---|
@@ -136,20 +144,46 @@ OpenProject's third level (saved queries, boards, wiki pages, settings pages) is
 | long list | more than 8 children: the first 6, then a "Show all 14" row, 36 px, 14 px weight 600 `var(--sc-link, #3669a5)`, `aria-expanded="false"`; never an inner scrollbar |
 | board height | when the open list makes the navigation taller than the 932 px row, the board's `min-height` and `$preview` height grow to fit (Work packages 1360, Boards 1040, Wiki 1100, Project settings 1140), never clipped |
 
-## Global menu (`OpHeader`, the row of icons in the top bar)
+## Global menu (`OpHeader`, the list behind the all apps button)
 
-Nextcloud's positioning: the apps and modules are icons in the bar, directly after the brand block; the complete list sits behind the nine-dot button at the end of the row. The product or app name is no longer printed as text in the bar: the logo names the product, the marked icon names the app. `app` stays an accepted attribute: it is the accessible name of the current item and picks the current icon when `current` is not given (`app="Mail"` marks Mail; `app="OpenProject"` marks Home). Without `row` the bar shows the default row.
+Since 15 October 2026 the bar carries no row of app icons: that was OpenProject's own positioning, and the bar is now the dossiq bar. Where you are is said by the brand block's second line (`app`); the complete list of apps and modules sits behind the 40 x 40 all apps button after the brand block, where Nextcloud and dossiq keep it (`AppMenu`). `current` marks the current entry in the list and falls back to `app`.
 
 | part | value |
 |---|---|
-| brand block | 264 px wide, 68 px high, `padding-left: 24px` (the sidebar's 14 px padding plus the item's 10 px, so the logo's left edge lines up with the menu's icons), logo 26 px high, a 1 px divider `rgba(255,255,255,0.35)` 28 px high as its last pixel, at x 264 on every board, the same width on boards without a sidebar; the block is a link `aria-label="Home"`; no name text |
-| row | `nav aria-label="Global menu"`, starts 16 px right of the divider (x 280), tiles 4 px apart; default row Files, Mail, Calendar, Work packages, Boards, Gantt, Meetings, then the nine-dot button; a current item outside the row takes the last place |
-| tile | link, min-width 44 px, 48 px high, padding 0 10px, radius `var(--sc-radius, 8px)`, white ink, icon 22 px stroke 1.75, `aria-label` with the name; label 11 px weight 600 under the icon, shown only on the current tile and on hover or focus (`:focus-visible` 2 px white outline inset) |
-| current tile | `background: rgba(255,255,255,0.16)`, `box-shadow: inset 0 -3px 0 #ffffff` (white on the primary bar, 5.9 to 1), label always shown, `aria-current="page"`, `aria-label="Mail, current"` |
-| nine-dot button | 44 x 44, icon 22 px, `aria-label="All apps and modules"`, `aria-haspopup="menu"`, `aria-expanded`; last in the row; pressed: `background: rgba(255,255,255,0.2)` |
-| search | `flex: 0 1 460px; min-width: 320px`, otherwise as the top bar table; about 408 px at 1440 with the default row |
-| collapsed (`row="collapsed"`, below 1240 px) | the row folds into the nine-dot button, which moves to x 280, directly after the divider; the current tile stays beside it (x 328). Between 1360 and 1240 px the account button drops the name and role and keeps the avatar and chevron; below 1240 the row collapses |
-| open list (`apps="open"`) | 640 px wide at `left: 280px; top: 72px`, arrow 20 px wide under the nine-dot button, padding 18px 20px 16px, radius `var(--sc-radius-lg, 10px)`, border `#e4e6ea`, shadow `0 8px 24px rgba(27,28,29,0.12)`, z-index 30; heading 16 px weight 700 "All apps and modules" with the note "The first seven are in the bar" 13 px `#5e6168` at the right; two columns 20 px apart, titles Nextcloud and OpenProject (12 px eyebrow); entry 44 px min-height, padding 4px 10px, 36 px icon tile `#eaf0f7`/`#234a78`, name 14 px weight 600 over one line 12 px `#5e6168`; current entry `background: #eaf0f7` with the icon tile inverted `#234a78`/`#ffffff`, `aria-current="page"`; footer after a 1 px `#eef0f3` line: keyboard hint 13 px, "Manage apps" only with `admin="true"`. A filter field is added above the columns once the map has more than 14 entries; at 12 it is not needed |
-| attributes | old: `app`, `placeholder`, `user`, `role`, `initials`, `unread`, `apps`, `current`; new, all optional: `row` ("" default, "collapsed", or `Files\|Mail\|Gantt`), `admin` ("true" shows Manage apps), `nested` (internal, see below) |
-| board page | the `OpHeader` board shows the closed bar and, below a caption, the bar with the list open: the second copy is a nested import with `nested="true" apps="open"` inside `.op-hd-demo`, hidden by default and shown only by the rule `.sc-board[data-board="OpHeader"] > .op-hd > .op-hd-demo { display: block }`, so every include stays the plain 68 px bar; board height 702 px (`heights.json` must follow) |
-| status notice | does not fit in the bar: with the default row and a 320 px search there is no calm slot left at 1440. It stays under the bar at the right, as `MlImportExport` and `MlSettingsAutoReply` draw it: 36 px high pill at `top: 76px; right: 20px`, `#ffffff` on a 1 px `#e4e6ea` border, 13 px weight 600 `#234a78`, 16 px icon, `role="status"` |
+| open list (`apps="open"`) | 800 px wide at `left: 160px; top: 72px` (as `AppMenu`), arrow 20 px wide centred under the all apps button (x 296), padding 18px 20px 16px, radius `var(--sc-radius-lg, 10px)`, border `#e4e6ea`, shadow `0 8px 24px rgba(27,28,29,0.12)`, z-index 30; heading 16 px weight 700 "All apps", no subtitle; the groups stack 16 px apart, Nextcloud then OpenProject, each with a 12 px eyebrow title shown only when there is more than one group, and each group's entries flow in a grid of three columns (`repeat(3, minmax(0, 1fr))`, gap 4px 12px), as the plugin ships it; entry 44 px min-height, padding 4px 10px, 36 px icon tile `#eaf0f7`/`#234a78`, name 14 px weight 600 over one line 12 px `#5e6168` (short enough not to wrap in a 240 px column); current entry `background: #eaf0f7` with the icon tile inverted `#234a78`/`#ffffff`, `aria-current="page"`; footer after a 1 px `#eef0f3` line: keyboard hint 13 px, "Manage apps" only with `admin="true"` |
+| board page | the `OpHeader` board shows the closed bar, then (after a caption) the bar with the list open, then the bar with the account menu open; the two open copies are nested imports with `nested="true"` inside `.op-hd-demo`, shown only by the rule `.sc-board[data-board="OpHeader"] > .op-hd > .op-hd-demo { display: block }`, so every include stays the plain 68 px bar; board height 1176 px (`heights.json` must follow) |
+| status notice | does not fit in the bar. It stays under the bar at the right, as `MlImportExport` and `MlSettingsAutoReply` draw it: 36 px high pill at `top: 76px; right: 20px`, `#ffffff` on a 1 px `#e4e6ea` border, 13 px weight 600 `#234a78`, 16 px icon, `role="status"` |
+
+## Account menu (`OpHeader` with `account="open"`)
+
+A dropdown under the avatar, as Nextcloud draws it. No Zuiddrecht board draws the open account menu, so it follows the open app list in style and size.
+
+| part | value |
+|---|---|
+| panel | 300 px wide at `right: 20px; top: 72px`, arrow 20 px wide under the avatar, padding 10 px, radius `var(--sc-radius-lg, 10px)`, border `#e4e6ea`, shadow `0 8px 24px rgba(27,28,29,0.12)`, z-index 30, `role="menu" aria-label="Account menu"` |
+| head | avatar 48 px round `#eaf0f7`/`#234a78` 16 px weight 700, name 15 px weight 700 over role 13 px `#5e6168`, padding 6px 10px 10px |
+| status | first item: 12 px dot `#538b28` in a 20 px slot, "Online" 15 px weight 500 over "Set status" 13 px `#5e6168` |
+| items | 44 px min-height, padding 0 10px, radius `var(--sc-radius, 8px)`, icon 20 px stroke 1.75 `#5e6168`, text 15 px weight 500; Settings, Appearance and accessibility, Help, Manage apps (only with `admin="true"`), then after a 1 px `#eef0f3` line Log out (to `OpSignIn`); 1 px lines have 4 px margins |
+| trigger | the account button gets `aria-expanded="true"` and `background: #f5f6f8` |
+
+## Sign in (`OpSignIn.dc.html`, the Zuiddrecht login board `NcLogin.dc.html` without a top bar)
+
+| part | value |
+|---|---|
+| page | `background: #f5f6f8`, min-height 1020 px, content centred with a 28 px gap, padding 48px 16px; the grey emblem (`emblem-grijs` blob) 720 px high at right -90 px, bottom -120 px, opacity 0.07; no top bar |
+| logo | the wordmark (`logo` blob) 56 px high, `alt="Gemeente Zuiddrecht"` |
+| card | max-width 420 px, `#ffffff`, `border: 1px solid #e4e6ea`, radius 12 px, shadow `0 2px 12px rgba(27,28,29,0.06)`; a 5 px bar on top in `#cc0000` 6, `#3669a5` 3, `#cc0000` 1; padding 32 px, column gap 18 px |
+| copy | title 24 px weight 700 "Sign in to the workplace", line 15 px `#5e6168` "For employees of Gemeente Zuiddrecht. One account for Nextcloud and OpenProject." |
+| single sign-on | primary link 48 px (the canon primary; `NcLogin` drew 46 before the 15 October sizes), `var(--sc-action, #3669a5)`, "Sign in with your municipal account"; then an "or" line |
+| fields | labels 14 px weight 600, inputs 44 px, padding 0 12px, `border: 1px solid #c4c7cb` (`NcLogin` uses `#8a929e`, which is not a token literal), radius `var(--sc-radius, 8px)`, 15 px; User name or email, Password |
+| secondary | "Sign in" 48 px, `border: 1px solid #c4c7cb; background: #ffffff`, 15 px weight 600; "Forgot password?" 14 px link centred under it |
+| foot | 13 px `#5e6168` "Gemeente Zuiddrecht · OpenProject on the workplace" |
+
+## Create work package (`OpCreateWorkPackage.dc.html`, the dialog)
+
+What the plugin does now (15 October 2026): Type and Parent side by side, Subject, Description, Assignee and Priority side by side, Start date and Finish date side by side, then a disabled Nextcloud folder line. The dialog follows the Dialog table above; the footer is Cancel then Create work package, both 48 px.
+
+| part | value |
+|---|---|
+| folder line | label "Nextcloud folder" 14 px weight 600 `#5e6168`; a disabled input 40 px with a 18 px folder icon at left 12 px, padding-left 38 px, `border: 1px solid #e4e6ea; background: #f0f1f3; color: #5e6168`, value "Northwind rollout Lyon / Work packages"; note 13 px `#5e6168` "Folders are linked through the project's file storage. Change it under Project settings, File storages.", linked with `aria-describedby` |
+

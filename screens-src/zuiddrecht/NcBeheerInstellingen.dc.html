@@ -17,22 +17,10 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 900px">
   <dc-import name="DqKop" app="Beheerinstellingen" placeholder="Zoek apps, bestanden of instellingen" role="{{ role }}" user="{{ user }}" initials="{{ initials }}" hint-size="100%,68px"></dc-import>
   <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
-    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch">
-      <nav aria-label="Instellingen" style="width: 100%; box-sizing: border-box; background: #ffffff; border-right: 1px solid #e4e6ea; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px">
-        <sc-for list="{{ side }}" as="g" hint-placeholder-count="2">
-          <div style="display: flex; flex-direction: column; gap: 2px"><span style="padding: 0 10px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5e6168">{{ g.title }}</span><sc-for list="{{ g.items }}" as="i" hint-placeholder-count="4"><a href="#" aria-current="{{ i.current }}" style="{{ i.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex: none" aria-hidden="true"><path d="{{ i.icon }}"></path></svg>{{ i.label }}</a></sc-for></div>
-        </sc-for>
-      </nav>
-    </div>
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="NcBeheerZijbalk" app="{{ app }}" app-icon="{{ appIcon }}" apps="{{ apps }}" hint-size="264px,832px"></dc-import></div>
     <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
       <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1000px; box-sizing: border-box; width: 100%">
-        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
-            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">{{ app }}</h1>
-            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; border-radius: 8px; font: 600 14px 'Fira Sans', sans-serif; white-space: nowrap; background: #ffffff; color: #1b1c1d; border: 1px solid #c4c7cb; padding: 0 14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"></path></svg>Documentatie</button></div>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; color: #5e6168"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="#">Beheerinstellingen</a><span aria-hidden="true">/</span><span aria-current="page">{{ app }}</span></nav><span aria-hidden="true">·</span><span>{{ scope }}</span></div>
-        </section>
+        <dc-import name="NcBeheerKop" app="{{ app }}" title="{{ title }}" section="{{ section }}" scope="{{ scope }}" tabs="{{ tabs }}" hint-size="100%,96px"></dc-import>
         <sc-for list="{{ cards }}" as="s" hint-placeholder-count="3">
           <section aria-labelledby="{{ s.id }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px">
             <h2 id="{{ s.id }}" style="margin: 0; font-size: 18px; font-weight: 700; line-height: 1.3">{{ s.name }}</h2>
@@ -81,13 +69,16 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"appIcon":{"editor":"text","default":""},"apps":{"editor":null,"default":[]},"scope":{"editor":"text","default":"alleen voor beheerders, elke sectie slaat apart op"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"role":{"editor":"text","default":"Functioneel beheerder"},"sections":{"editor":null,"default":[]},"$preview":{"width":1440,"height":1400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"appIcon":{"editor":"text","default":""},"apps":{"editor":null,"default":[]},"title":{"editor":"text","default":""},"section":{"editor":"text","default":""},"tabs":{"editor":null,"default":[]},"scope":{"editor":"text","default":"alleen voor beheerders, elke sectie slaat apart op"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"role":{"editor":"text","default":"Functioneel beheerder"},"sections":{"editor":null,"default":[]},"$preview":{"width":1440,"height":1400}}'>
 class Component extends DCLogic {
   renderVals() {
     // The Nextcloud admin settings page of one app (/settings/admin/<app>), in the frame the other admin boards
     // draw (PtBeheerinstellingen, ShInstellingen, VqInstellingen): Beheerinstellingen in the top bar, Persoonlijk and
     // Beheer on the left with the app's section selected, the app's NcSettingsSections as cards on the right.
     // sections takes the same rows as NcAppInstellingen; a buttons row whose first button is primary sits right.
+    // The left navigation is NcBeheerZijbalk, the head with the breadcrumb and the optional tab strip is NcBeheerKop:
+    // pass `tabs` ([label, count] pairs) and `section` (the open tab) for an admin page with tabs, `title` for an h1
+    // other than the app name.
     const P = {
       person: 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M12,13C14.67,13 20,14.33 20,17V20H4V17C4,14.33 9.33,13 12,13M12,14.9C9.03,14.9 5.9,16.36 5.9,17V18.1H18.1V17C18.1,16.36 14.97,14.9 12,14.9Z',
       lock: 'M12,17C10.89,17 10,16.1 10,15C10,13.89 10.89,13 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M18,20V10H6V20H18M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V10C4,8.89 4.89,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z',
@@ -138,7 +129,8 @@ class Component extends DCLogic {
     };
     const raw = Array.isArray(this.props.sections) ? this.props.sections : [];
     const cards = raw.map((s, i) => ({ id: 'nbi-s' + i, name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
-    return { app, scope: this.props.scope || 'alleen voor beheerders, elke sectie slaat apart op', user: this.props.user || 'Pieter Jansen', initials: this.props.initials || 'PJ', role: this.props.role || 'Functioneel beheerder', side, cards };
+    return { app, appIcon: this.props.appIcon || '', apps: Array.isArray(this.props.apps) ? this.props.apps : [], title: this.props.title || '', section: this.props.section || '', tabs: Array.isArray(this.props.tabs) ? this.props.tabs : [],
+      scope: this.props.scope || 'alleen voor beheerders, elke sectie slaat apart op', user: this.props.user || 'Pieter Jansen', initials: this.props.initials || 'PJ', role: this.props.role || 'Functioneel beheerder', cards };
   }
 }
 </script>

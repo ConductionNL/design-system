@@ -61,6 +61,23 @@ python3 scripts/screens/build_status.py ~/memcap-work/screens/round6/INV-*/inven
 
 Each input is a TSV with the header `board kind route status mismatchPct notes`. Rows from a file in a `LIVE-*` directory (live verdicts on builder branches) win over every other row for the same board. A board without a row is shown as not measured yet. The script's docstring has the rules for `layoutMatch` and `measuredOn`.
 
+## Components used in the app, and the match per component
+
+`app_components.py` writes `preview/screens/app-components.json`: per board which nextcloud-vue components the live app renders on the board's route, next to what the drawn board is built from (`components.json`). `board.html` shows both lists in its components panel and flags what is on one side only; `components.html` lists per component every screen that uses it, grouped by app, with a badge per screen (board, app, or both). Without the file both pages show the board side only.
+
+```
+python3 scripts/screens/app_components.py                # every app with a checkout next to this repo
+python3 scripts/screens/app_components.py --app dossiq   # one app
+```
+
+It reads the board's route from `build-status.json`, matches it to a page in the app's `src/manifest.json` plus `src/manifest.d/*.json`, and maps the page to components through the nextcloud-vue checkout (`../nextcloud-vue`): `pageTypes.js` for the page type, the page component's registered children filtered by the page config (`CHILD_RULES` in the script), the widget catalogue for every widget type, and the app's `src/registry.js` for custom pages, slots and sidebar tabs. The app checkout directory may carry the old app name (`APP_DIRS` in the script); `--apps-dir` points elsewhere. Every board of the app gets an entry, with `reason` when it has no route or no page matches. A `via` per component says how it gets there, `appComponents` lists the app's own components on the page, and `unresolved` names widget types and components the script could not place.
+
+`component_status.py` writes `preview/screens/component-status.json`: per component how well the live component matches the board that draws its specimen, from the COMP lane's TSV (`component specimenBoard mismatchPct verdict notes`). Both pages colour it as a dot: green matches, blue differs, grey not measured yet. A missing or empty TSV still writes a valid file.
+
+```
+python3 scripts/screens/component_status.py ~/memcap-work/screens/round6/COMP/components.tsv
+```
+
 ## Capabilities, specs and repositories
 
 `capabilities.py` adds to the gallery what each screen delivers, which OpenSpec specs define it and which repository it lives in. Run it after `build.py`, because `build.py` rewrites `screens.json` without these fields.

@@ -16,7 +16,10 @@
       element (the organisation line beside the app name), and
       puts its headerStyle ("default" when it names none) on
       <html data-sc-header>, which screens.css reads for the
-      header variants, such as the lint bar.
+      header variants, such as the lint bar, and its look
+      ("default" when it names none) on <html data-sc-look>,
+      which screens.css reads for an element layer such as
+      NL Design System's squared controls and underlined links.
 
    Boards only use the variables for the Zuiddrecht set, where
    build.py replaced the colour literals with var(--sc-role,
@@ -85,6 +88,7 @@
       el.textContent = sys.orgName || el.getAttribute('data-sc-org-default');
     });
     root.setAttribute('data-sc-header', sys.headerStyle || 'default');
+    root.setAttribute('data-sc-look', sys.look || 'default');
     root.setAttribute('data-sc-ds', current);
     window.dispatchEvent(new CustomEvent('screens-theme', { detail: { id: current, system: sys } }));
   }

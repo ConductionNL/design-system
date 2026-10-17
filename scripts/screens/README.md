@@ -67,7 +67,7 @@ python3 scripts/screens/i18n.py stats                                 # per app:
 python3 scripts/screens/i18n_merge.py chunk_*.json                    # merge translated work chunks into the catalogues
 ```
 
-`extract` keeps existing translations, adds new strings with `""` and drops strings no longer on the board, so run it again after a board changes and translate what is new. A translator gets a chunk file (`[{"board", "field", "nl", "en"}]`), fills `en` and `i18n_merge.py` puts it back. Commit the catalogues, `_common.json` and `index.json`.
+`extract` keeps existing translations, adds new strings with `""` and drops strings no longer on the board, so run it again after a board changes and translate what is new. A string in `_common.json` that means something else on one board gets an override: add it to that board's catalogue by hand and `extract` keeps it there; the board's value wins, and `""` keeps the Dutch (a token-set name in a picker, for example). A translator gets a chunk file (`[{"board", "field", "nl", "en"}]`), fills `en` and `i18n_merge.py` puts it back. Commit the catalogues, `_common.json` and `index.json`.
 
 ## Build status
 

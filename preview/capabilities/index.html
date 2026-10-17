@@ -129,6 +129,7 @@
   [hidden] { display: none !important; }
   @media (max-width: 720px) { .sc-toolbar { position: static; } table.ft > tbody > tr.fd > td { padding-left: 12px; } }
 </style>
+<script src="../lang.js"></script>
 </head>
 <body class="sc-chrome">
 
@@ -204,7 +205,7 @@
 
   /* ---------- i18n: same contract as ../i18n.js, plus t() ---------- */
   var params = new URLSearchParams(location.search);
-  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var LANG = (window.kitLang ? window.kitLang.lang : (params.get('lang') || 'nl')).toLowerCase();
   var NL = LANG !== 'en';
   var DICT = null;
   function lookup(key) {
@@ -236,6 +237,7 @@
     fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
   function withLang(url) {
+    if (window.kitLang) return window.kitLang.withLang(url);
     if (!params.get('lang')) return url;
     var i = url.indexOf('#');
     var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);

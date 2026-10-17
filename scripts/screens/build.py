@@ -37,7 +37,7 @@ SCHOOLS = [
     ('esdoornveen', 'Esdoornveen, mbo college'),
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]
-DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject'] + [s for s, _ in SCHOOLS]
+DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject', 'rijkshuisstijl'] + [s for s, _ in SCHOOLS]
 # app id -> a set of its own with its own gallery page; its boards are drawn and tokenized
 # like Zuiddrecht (same source dir, same theme) but listed apart from the Zuiddrecht set.
 # `gallery` is the page relative to preview/screens/; the /screens gallery hides these sets

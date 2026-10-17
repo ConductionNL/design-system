@@ -105,3 +105,135 @@
     }
   };
 })();
+
+/* ============================================================
+   Screens language runtime
+   ------------------------------------------------------------
+   The boards are drawn in Dutch. In English the gallery overlays
+   screens.json with i18n/en/_gallery.json (set and row titles,
+   app blurbs) and each board document is translated from its
+   catalogue in i18n/en/<Key>.json plus i18n/en/_common.json:
+   every text node and placeholder, title, aria-label and alt
+   whose Dutch text is a key in the catalogue gets its English
+   value. Names, addresses and dates have no entry and stay as
+   drawn. A board without a catalogue stays Dutch; the gallery
+   marks it.
+
+   The language comes from lang.js when it is loaded (gallery
+   pages), else from ?lang=, else from the same stored choice
+   ("kit.lang"), else nl. Board documents sit in an iframe and
+   load only this file, so the last three carry it there.
+
+   API: window.screensI18n.lang, .applyGallery(screens, overlay),
+   .translateBoard(key) (resolves to the catalogue coverage, or
+   null when the board has none).
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var LANG_KEY = 'kit.lang';
+  var script = document.currentScript;
+  var base = new URL('.', script ? script.src : window.location.href);
+
+  function readLang() {
+    if (window.kitLang && window.kitLang.lang) return window.kitLang.lang;
+    var q = null;
+    try { q = new URLSearchParams(window.location.search).get('lang'); } catch (e) { /* ignore */ }
+    if (q) return String(q).toLowerCase();
+    try { return window.localStorage.getItem(LANG_KEY) || 'nl'; } catch (e) { return 'nl'; }
+  }
+  var lang = readLang();
+
+  function fetchJson(name) {
+    return fetch(new URL(name, base).href, { credentials: 'omit' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  /* Overlay set titles, row titles and app blurbs (G, _gallery.json) and board
+     titles and notes (IDX, index.json, written from the catalogues) in place. */
+  function applyGallery(S, G, IDX) {
+    if (!S) return S;
+    G = G || {};
+    (S.sets || []).forEach(function (set) {
+      if (G.sets && G.sets[set.id]) set.title = G.sets[set.id];
+      (set.rows || []).forEach(function (row) {
+        var k = set.id + '/' + row.id;
+        if (G.rows && G.rows[k]) row.title = G.rows[k];
+        if (row.blurb && G.blurbs && G.blurbs[row.blurb]) row.blurb = G.blurbs[row.blurb];
+      });
+    });
+    Object.keys(S.boards || {}).forEach(function (name) {
+      var b = S.boards[name];
+      if (b.blurb && G.blurbs && G.blurbs[b.blurb]) b.blurb = G.blurbs[b.blurb];
+      var t = IDX && IDX.boards && IDX.boards[name];
+      if (t) {
+        if (t.title) b.title = t.title;
+        if (t.note) b.note = t.note;
+      }
+    });
+    return S;
+  }
+
+  var ATTRS = ['placeholder', 'title', 'aria-label', 'alt'];
+  function norm(s) { return s.replace(/\s+/g, ' ').trim(); }
+
+  function applyCatalogue(dict) {
+    var hits = 0, total = 0;
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentNode && n.parentNode.nodeName;
+        if (p === 'SCRIPT' || p === 'STYLE') return NodeFilter.FILTER_REJECT;
+        return /[A-Za-z]{2}/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (n) {
+      var key = norm(n.nodeValue);
+      total++;
+      var v = dict[key];
+      if (typeof v === 'string' && v) {
+        /* keep the surrounding whitespace so inline layout does not shift */
+        n.nodeValue = n.nodeValue.replace(/^(\s*)[\s\S]*?(\s*)$/, '$1' + v.replace(/\$/g, '$$$$') + '$2');
+        hits++;
+      }
+    });
+    ATTRS.forEach(function (a) {
+      document.querySelectorAll('[' + a + ']').forEach(function (el) {
+        var key = norm(el.getAttribute(a) || '');
+        if (!/[A-Za-z]{2}/.test(key)) return;
+        total++;
+        var v = dict[key];
+        if (typeof v === 'string' && v) { el.setAttribute(a, v); hits++; }
+      });
+    });
+    return { hits: hits, total: total };
+  }
+
+  function translateBoard(key) {
+    if (lang !== 'en' || !key) return Promise.resolve(null);
+    return Promise.all([fetchJson('i18n/en/_common.json'), fetchJson('i18n/en/' + encodeURIComponent(key) + '.json')])
+      .then(function (res) {
+        if (!res[1]) return null;
+        var dict = {};
+        [res[0], res[1]].forEach(function (d) { if (d) Object.keys(d).forEach(function (k) { if (k.charAt(0) !== '_') dict[k] = d[k]; }); });
+        var r = applyCatalogue(dict);
+        document.documentElement.setAttribute('lang', 'en');
+        return r;
+      });
+  }
+
+  window.screensI18n = { lang: lang, applyGallery: applyGallery, translateBoard: translateBoard, fetchJson: fetchJson };
+
+  /* Inside a board document (no gallery script present) translate on load. */
+  function boardKey() {
+    var m = /\/boards\/([^\/?#]+)\.html(?:[?#]|$)/.exec(window.location.pathname + window.location.search);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  var key = boardKey();
+  if (key && lang === 'en') {
+    var run = function () { translateBoard(key).then(function (r) { window.dispatchEvent(new CustomEvent('screens-i18n', { detail: r })); }); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  }
+})();

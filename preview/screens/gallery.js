@@ -32,7 +32,7 @@
 
   /* ---------- i18n: same contract as ../i18n.js, plus t() for runtime text ---------- */
   var params = new URLSearchParams(location.search);
-  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var LANG = (window.kitLang ? window.kitLang.lang : (params.get('lang') || 'nl')).toLowerCase();
   var DICT = null;
   function lookup(key) {
     if (!DICT) return null;
@@ -70,6 +70,7 @@
         .catch(function () { return null; })
         .then(function (d) { DICT = d; applyStatic(); });
   function withLang(url) {
+    if (window.kitLang) return window.kitLang.withLang(url);
     if (!params.get('lang')) return url;
     var i = url.indexOf('#');
     var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
@@ -204,12 +205,14 @@
     ['differs', 'screens.bs.segDiffers', '{n} built, layout differs'],
     ['partial', 'screens.bs.segPartial', '{n} partly built'],
     ['missing', 'screens.bs.segMissing', '{n} missing'],
+    ['stateOf', 'screens.bs.segStateOf', '{n} state of another screen'],
     ['none', 'screens.bs.segNone', '{n} not measured yet']
   ];
 
   function bsSegments(c) {
     var counts = { match: c.match, differs: c.built - c.match, partial: c.partial, missing: c.missing };
-    counts.none = Math.max(0, c.n - counts.match - counts.differs - counts.partial - counts.missing);
+    counts.stateOf = Math.max(0, c.measured - counts.match - counts.differs - counts.partial - counts.missing);
+    counts.none = Math.max(0, c.n - c.measured);
     return BS_SEGS.map(function (s) { return { kind: s[0], n: counts[s[0]], text: t(s[1], s[2], { n: counts[s[0]] }) }; });
   }
 
@@ -226,7 +229,7 @@
     segs.forEach(function (s) { if (s.n) line.appendChild(bsSeg(s.kind, s.text)); });
     var bar = el('span', { class: 'bs-bar', 'aria-hidden': 'true' });
     segs.forEach(function (s) {
-      if (!s.n || s.kind === 'none') return;
+      if (!s.n || s.kind === 'none' || s.kind === 'stateOf') return;
       var b = el('span', { 'data-bs': s.kind }); b.style.width = (100 * s.n / c.n) + '%'; bar.appendChild(b);
     });
     return el('span', null, [line, bar]);
@@ -238,7 +241,7 @@
     var host = document.querySelector('.meta');
     if (!host || document.querySelector('.bs-legend')) return;
     var box = el('div', { class: 'bs-legend' }, [el('span', { class: 'bs-seg', text: t('screens.bs.legendLead', 'Build status colours:') })]);
-    [['match', 'screens.bs.match', 'Built, layout matches'], ['differs', 'screens.bs.differs', 'Built, differs'], ['partial', 'screens.bs.partial', 'Partly'], ['missing', 'screens.bs.missing', 'Missing'], ['none', 'screens.bs.none', 'Not measured yet']].forEach(function (k) {
+    [['match', 'screens.bs.match', 'Built, layout matches'], ['differs', 'screens.bs.differs', 'Built, differs'], ['partial', 'screens.bs.partial', 'Partly'], ['missing', 'screens.bs.missing', 'Missing'], ['stateOf', 'screens.bs.stateOfAny', 'State of another screen'], ['none', 'screens.bs.none', 'Not measured yet']].forEach(function (k) {
       box.appendChild(bsSeg(k[0], t(k[1], k[2])));
     });
     host.parentNode.insertBefore(box, host.nextSibling);
@@ -474,9 +477,13 @@
     fetch(BASE + 'screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
     window.screensTheme.ready,
     dictReady,
-    BSX ? BSX.load() : null
+    BSX ? BSX.load() : null,
+    /* English gallery titles and board titles; screensI18n (theme.js) reads them next to itself */
+    LANG === 'en' && window.screensI18n ? window.screensI18n.fetchJson('i18n/en/_gallery.json') : null,
+    LANG === 'en' && window.screensI18n ? window.screensI18n.fetchJson('i18n/en/index.json') : null
   ]).then(function (res) {
     S = res[0]; DS = res[1]; BS = res[3];
+    if (window.screensI18n) window.screensI18n.applyGallery(S, res[4], res[5]);
     Object.keys(S.boards).forEach(function (n) { S.boards[n].name = n; });
     SETS = pickSets();
     dsId = window.screensTheme.get() || (DS && DS.default) || 'conduction';

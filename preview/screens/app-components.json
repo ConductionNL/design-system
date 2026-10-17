@@ -4,12 +4,12 @@
   "nextcloud-vue": {
    "path": "/home/rubenlinde/memcap-work/screens/round6/DS-STATUS/nextcloud-vue",
    "ref": "HEAD",
-   "sha": "38236966b209951929f4e193877f2b742b1e775f"
+   "sha": "fd345ca63239de37d340bbddab6a221d549473bb"
   },
   "dossiq": {
    "path": "/home/rubenlinde/memcap-work/screens/round6/DS-STATUS/dossiq",
    "ref": "HEAD",
-   "sha": "4a3acaddf31baebfc700934fbbe9e1ac8d986019",
+   "sha": "1c466ed844b97b61d306f29bded80c12cebed611",
    "manifest": [
     "src/manifest.json",
     "src/manifest.d/37-mail-intake.json",
@@ -19,6 +19,7 @@
     "src/manifest.d/72-field-inspection.json",
     "src/manifest.d/86-woo-reports.json",
     "src/manifest.d/88-postvak.json",
+    "src/manifest.d/89-search.json",
     "src/manifest.d/_placeholder.json"
    ]
   }
@@ -47,9 +48,9 @@
  "apps": {
   "dossiq": {
    "boards": 73,
-   "resolved": 70,
+   "resolved": 71,
    "noRoute": 2,
-   "noPage": 1
+   "noPage": 0
   }
  },
  "components": {
@@ -98,7 +99,8 @@
     "dossiq/DqZaaktype",
     "dossiq/DqZaaktypeOverzicht",
     "dossiq/DqZaaktypeVelden",
-    "dossiq/DqZijbalk"
+    "dossiq/DqZijbalk",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnActionsBar": {
@@ -119,7 +121,8 @@
     "dossiq/DqWooVerzoeken",
     "dossiq/DqZaaktypen",
     "dossiq/DqZaken",
-    "dossiq/DqZakenKaart"
+    "dossiq/DqZakenKaart",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnActionsMenu": {
@@ -209,7 +212,8 @@
     "dossiq/DqZaaktypen",
     "dossiq/DqZaken",
     "dossiq/DqZakenKaart",
-    "dossiq/DqZijbalk"
+    "dossiq/DqZijbalk",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnAuditTrailTab": {
@@ -349,7 +353,8 @@
     "dossiq/DqZaaktypen",
     "dossiq/DqZaken",
     "dossiq/DqZakenKaart",
-    "dossiq/DqZijbalk"
+    "dossiq/DqZijbalk",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnChartWidget": {
@@ -505,7 +510,8 @@
     "dossiq/DqTeamwachtrij",
     "dossiq/DqWooVerzoeken",
     "dossiq/DqZaaktypen",
-    "dossiq/DqZaken"
+    "dossiq/DqZaken",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnDateRangePicker": {
@@ -649,6 +655,13 @@
     "dossiq/DqFunctionaliteiten"
    ]
   },
+  "CnFeaturesAndRoadmapView": {
+   "name": "CnFeaturesAndRoadmapView",
+   "source": "https://github.com/ConductionNL/nextcloud-vue/blob/development/src/components/CnFeaturesAndRoadmapView/CnFeaturesAndRoadmapView.vue",
+   "screens": [
+    "dossiq/DqFunctionaliteiten"
+   ]
+  },
   "CnFlowBoard": {
    "name": "CnFlowBoard",
    "source": "https://github.com/ConductionNL/nextcloud-vue/blob/development/src/components/CnFlowsPage/CnFlowBoard.vue",
@@ -703,13 +716,6 @@
     "dossiq/DqZaakMeer",
     "dossiq/DqZaakSamenwerken",
     "dossiq/DqZaakTaken"
-   ]
-  },
-  "CnFlowSidebar": {
-   "name": "CnFlowSidebar",
-   "source": "https://github.com/ConductionNL/nextcloud-vue/blob/development/src/components/CnFlowDetail/CnFlowSidebar.vue",
-   "screens": [
-    "dossiq/DqFlow"
    ]
   },
   "CnFolderSidebar": {
@@ -772,7 +778,8 @@
     "dossiq/DqWooVerzoeken",
     "dossiq/DqZaaktypen",
     "dossiq/DqZaken",
-    "dossiq/DqZakenKaart"
+    "dossiq/DqZakenKaart",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnIndexSidebar": {
@@ -1038,7 +1045,8 @@
     "dossiq/DqWooVerzoeken",
     "dossiq/DqZaaktypen",
     "dossiq/DqZaken",
-    "dossiq/DqZakenKaart"
+    "dossiq/DqZakenKaart",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnPagination": {
@@ -1057,7 +1065,8 @@
     "dossiq/DqTeamwachtrij",
     "dossiq/DqWooVerzoeken",
     "dossiq/DqZaaktypen",
-    "dossiq/DqZaken"
+    "dossiq/DqZaken",
+    "dossiq/DqZoekresultaten"
    ]
   },
   "CnQuickFilterBar": {
@@ -2496,19 +2505,15 @@
     "CnAppNav",
     "CnFlowEditorPage",
     "CnFlowBoard",
-    "CnFlowDetail",
-    "CnFlowSidebar"
+    "CnFlowDetail"
    ],
    "via": {
     "CnAppNav": "app chrome (CnAppRoot)",
     "CnFlowEditorPage": "page type flow",
     "CnFlowBoard": "mounted by CnFlowEditorPage",
-    "CnFlowDetail": "mounted by CnFlowEditorPage",
-    "CnFlowSidebar": "sidebarComponent FlowDetailSidebar via FlowDetailSidebar"
+    "CnFlowDetail": "mounted by CnFlowEditorPage"
    },
-   "appComponents": {
-    "FlowDetailSidebar": "sidebarComponent FlowDetailSidebar (src/views/flows/FlowDetailSidebar.vue)"
-   },
+   "appComponents": {},
    "unresolved": [],
    "reason": null
   },
@@ -2519,22 +2524,22 @@
    "route": "/apps/dossiq/features-roadmap",
    "page": {
     "id": "FeaturesRoadmap",
-    "type": "custom",
+    "type": "roadmap",
     "route": "/features-roadmap",
-    "component": "FeaturesRoadmapView",
+    "component": "CnFeaturesAndRoadmapPage",
     "source": "src/manifest.json"
    },
    "components": [
     "CnAppNav",
-    "CnFeaturesAndRoadmapPage"
+    "CnFeaturesAndRoadmapPage",
+    "CnFeaturesAndRoadmapView"
    ],
    "via": {
     "CnAppNav": "app chrome (CnAppRoot)",
-    "CnFeaturesAndRoadmapPage": "custom page component FeaturesRoadmapView via FeaturesRoadmapView"
+    "CnFeaturesAndRoadmapPage": "page type roadmap",
+    "CnFeaturesAndRoadmapView": "mounted by CnFeaturesAndRoadmapPage"
    },
-   "appComponents": {
-    "FeaturesRoadmapView": "custom page component FeaturesRoadmapView (src/views/FeaturesRoadmapView.vue)"
-   },
+   "appComponents": {},
    "unresolved": [],
    "reason": null
   },
@@ -6013,12 +6018,39 @@
    "app": "dossiq",
    "kind": "page",
    "route": "/apps/dossiq/search?q=Lindelaan",
-   "page": null,
-   "components": [],
-   "via": {},
+   "page": {
+    "id": "SearchResults",
+    "type": "index",
+    "route": "/search",
+    "component": "CnIndexPage",
+    "source": "src/manifest.d/89-search.json"
+   },
+   "components": [
+    "CnAppNav",
+    "CnIndexPage",
+    "CnActionButtons",
+    "CnActionsBar",
+    "CnBuildiqEditButton",
+    "CnDataTable",
+    "CnPageHeader",
+    "CnPagination"
+   ],
+   "via": {
+    "CnAppNav": "app chrome (CnAppRoot)",
+    "CnIndexPage": "page type index, view mode table",
+    "CnActionButtons": "mounted by CnIndexPage from its config",
+    "CnActionsBar": "mounted by CnIndexPage",
+    "CnBuildiqEditButton": "mounted by CnIndexPage",
+    "CnDataTable": "mounted by CnIndexPage from its config",
+    "CnPageHeader": "mounted by CnIndexPage",
+    "CnPagination": "mounted by CnIndexPage from its config"
+   },
    "appComponents": {},
    "unresolved": [],
-   "reason": "no page matches /search"
+   "reason": null,
+   "query": {
+    "q": "Lindelaan"
+   }
   }
  }
 }

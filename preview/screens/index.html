@@ -571,10 +571,11 @@
     window.screensTheme.ready,
     dictReady,
     BSX ? BSX.load() : null,
-    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/_gallery.json') : null
+    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/_gallery.json') : null,
+    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/index.json') : null
   ]).then(function (res) {
     S = res[0]; DS = res[1]; BS = res[3];
-    window.screensI18n.applyGallery(S, res[4]);
+    window.screensI18n.applyGallery(S, res[4], res[5]);
     Object.keys(S.boards).forEach(function (n) { S.boards[n].name = n; });
     dsId = window.screensTheme.get() || (DS && DS.default) || 'conduction';
     if (DS) buildSeg();

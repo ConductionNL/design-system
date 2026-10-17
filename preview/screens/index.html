@@ -87,6 +87,13 @@
   .sc-row > summary .rt .bs-bar [data-bs="differs"] { background: var(--conduction-color-status-info); }
   .sc-row > summary .rt .bs-bar [data-bs="partial"] { background: var(--conduction-color-status-warning); }
   .sc-row > summary .rt .bs-bar [data-bs="missing"] { background: var(--conduction-color-status-error); }
+  .bs-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin: 0 4px 0 0; vertical-align: middle; background: var(--c-cobalt-100); }
+  .bs-dot[data-bs="match"] { background: var(--conduction-color-status-success); }
+  .bs-dot[data-bs="differs"] { background: var(--conduction-color-status-info); }
+  .bs-dot[data-bs="partial"] { background: var(--conduction-color-status-warning); }
+  .bs-dot[data-bs="missing"] { background: var(--conduction-color-status-error); }
+  .bs-seg { white-space: nowrap; margin-right: 12px; }
+  .bs-legend { margin-top: 8px; font-size: 13px; color: var(--c-cobalt-700, inherit); }
 
   .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
   [hidden] { display: none !important; }
@@ -313,18 +320,50 @@
     return c;
   }
 
-  /* "12 van 74 schermen kloppen, 24 gebouwd, 30 deels, 14 ontbreken", with a bar in the same order */
+  /* one segment per colour, each with its dot, then a bar in the same order */
+  var BS_SEGS = [
+    ['match', 'screens.bs.segMatch', '{n} match the board'],
+    ['differs', 'screens.bs.segDiffers', '{n} built, layout differs'],
+    ['partial', 'screens.bs.segPartial', '{n} partly built'],
+    ['missing', 'screens.bs.segMissing', '{n} missing'],
+    ['none', 'screens.bs.segNone', '{n} not measured yet']
+  ];
+
+  function bsSegments(c) {
+    var counts = { match: c.match, differs: c.built - c.match, partial: c.partial, missing: c.missing };
+    counts.none = Math.max(0, c.n - counts.match - counts.differs - counts.partial - counts.missing);
+    return BS_SEGS.map(function (s) { return { kind: s[0], n: counts[s[0]], text: t(s[1], s[2], { n: counts[s[0]] }) }; });
+  }
+
+  function bsSeg(kind, text) {
+    return el('span', { class: 'bs-seg' }, [el('span', { class: 'bs-dot', 'data-bs': kind, 'aria-hidden': 'true' }), el('span', { text: text })]);
+  }
+
   function bsRowLine(row) {
     if (!BS) return null;
     var c = bsCounts(row.boards);
     if (!c.measured) return null;
-    var text = t('screens.bs.rowLine', '{match} of {n} screens match, {built} built, {partial} partly, {missing} missing', c);
+    var segs = bsSegments(c);
+    var line = el('span', { class: 'bs-line' }, [el('span', { class: 'bs-seg', text: t('screens.bs.rowLead', '{n} screens:', { n: c.n }) })]);
+    segs.forEach(function (s) { if (s.n) line.appendChild(bsSeg(s.kind, s.text)); });
     var bar = el('span', { class: 'bs-bar', 'aria-hidden': 'true' });
-    [['match', c.match], ['differs', c.built - c.match], ['partial', c.partial], ['missing', c.missing]].forEach(function (p) {
-      if (!p[1]) return;
-      var s = el('span', { 'data-bs': p[0] }); s.style.width = (100 * p[1] / c.n) + '%'; bar.appendChild(s);
+    segs.forEach(function (s) {
+      if (!s.n || s.kind === 'none') return;
+      var b = el('span', { 'data-bs': s.kind }); b.style.width = (100 * s.n / c.n) + '%'; bar.appendChild(b);
     });
-    return el('span', null, [el('span', { class: 'bs-line', text: text }), bar]);
+    return el('span', null, [line, bar]);
+  }
+
+  /* the colours explained once, under the page lede */
+  function bsLegend() {
+    if (!BS) return;
+    var host = document.querySelector('.meta');
+    if (!host || document.querySelector('.bs-legend')) return;
+    var box = el('div', { class: 'bs-legend' }, [el('span', { class: 'bs-seg', text: t('screens.bs.legendLead', 'Build status colours:') })]);
+    [['match', 'screens.bs.match', 'Built, layout matches'], ['differs', 'screens.bs.differs', 'Built, differs'], ['partial', 'screens.bs.partial', 'Partly'], ['missing', 'screens.bs.missing', 'Missing'], ['none', 'screens.bs.none', 'Not measured yet']].forEach(function (k) {
+      box.appendChild(bsSeg(k[0], t(k[1], k[2])));
+    });
+    host.parentNode.insertBefore(box, host.nextSibling);
   }
 
   function buildBsFilter() {
@@ -534,6 +573,7 @@
     if (DS) buildSeg();
     buildFilter();
     buildBsFilter();
+    bsLegend();
     buildSets();
     applyFilters(true);
     Object.keys(rowsByKey).forEach(function (k) { if (rowsByKey[k].el.open) renderRow(rowsByKey[k]); });

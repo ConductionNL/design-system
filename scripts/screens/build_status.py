@@ -5,7 +5,9 @@
 
 Every argument is a measurement TSV with the header
     board  kind  route  status  mismatchPct  notes
-status is built, partial, missing, accepted or "state-of <Board>"; mismatchPct is a number or "-".
+status is built, partial, missing, accepted, measured (or done) or "state-of <Board>"; mismatchPct is a number or "-".
+A "measured" row is a live verdict: it marks the board built (or keeps it partial while the layout does not
+match) and carries the new number and notes. Other statuses, such as baseline or invalid, are left out.
 
 A file in a directory whose name starts with LIVE- holds live verdicts on builder branches. Its rows win
 over every other row for the same board, whatever the argument order. Among files of the same kind the
@@ -65,6 +67,8 @@ def parse_row(row):
     if status.startswith('state-of'):
         state_of = status[len('state-of'):].strip() or None
         status = 'state-of'
+    elif status in ('measured', 'done'):
+        status = 'measured'
     elif status not in STATUSES:
         return None
     return {
@@ -111,6 +115,10 @@ def main():
         sources.append({'file': source_name(path), 'rows': len(rows), 'live': live})
         for name, r in rows.items():
             app = screens[name]['app'] if name in screens else None
+            if r['status'] == 'measured':
+                # A live verdict: the board is built and measured. Keep a partial status until the layout matches.
+                prev = boards.get(name, {}).get('status')
+                r = {**r, 'status': 'partial' if prev == 'partial' and not r['layoutMatch'] else 'built'}
             boards[name] = {'app': app, **r, 'source': source_name(path)}
 
     unknown = sorted(b for b in boards if b not in screens)

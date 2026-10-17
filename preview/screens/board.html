@@ -401,7 +401,8 @@
     sp.href = prev.href; sp.title = prev.title;
     sn.href = next.href; sn.title = next.title;
     document.getElementById('full').href = fileHref();
-    var back = 'index.html' + (set.themable && dsId ? '?ds=' + encodeURIComponent(dsId) : '');
+    /* a set with a gallery page of its own (OpenProject) takes the reader back there */
+    var back = (set.gallery || 'index.html') + (set.themable && dsId ? '?ds=' + encodeURIComponent(dsId) : '');
     document.getElementById('back').href = withLang(back) + '#' + anchorOf(board, name);
     document.getElementById('pos').textContent = t('screens.board.pos', '{i} of {n}', { i: i + 1, n: n });
   }
@@ -819,7 +820,7 @@
 
     var where = document.getElementById('where');
     where.textContent = row.title === set.title ? '' : set.title + ' · ';
-    where.appendChild(el('a', { href: withLang('index.html') + '#row-' + set.id + '-' + row.id, text: row.title }));
+    where.appendChild(el('a', { href: withLang(set.gallery || 'index.html') + '#row-' + set.id + '-' + row.id, text: row.title }));
 
     var themable = !!(set.themable && DS);
     document.getElementById('ds-seg').hidden = !themable;

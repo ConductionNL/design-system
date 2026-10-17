@@ -401,7 +401,7 @@ def main():
     boards = index['boards']
     by_name = {}
     for key, b in boards.items():
-        if b['set'] == 'zuiddrecht':
+        if b['src'].startswith('zuiddrecht/'):  # the Zuiddrecht and OpenProject sets; school keys may carry a prefix
             by_name[key] = b['id']
 
     caps = {}

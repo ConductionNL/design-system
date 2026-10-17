@@ -12,6 +12,18 @@
 /* Board documents: a swapped logo keeps its own proportions. */
 img[data-sc-logo] { object-fit: contain; object-position: left center; }
 
+/* Board documents: the lint header (design systems with headerStyle
+   "lint", set on <html data-sc-header> by theme.js). The app header
+   gets a vertical bar in the primary colour on the far left, the full
+   header height and a little below it, with the white emblem near its
+   top; the header's own logo image gives way to it. */
+html[data-sc-header="lint"] header[data-sc-header="app"] { position: relative; z-index: 20; padding-left: 74px !important; }
+html[data-sc-header="lint"] header[data-sc-header="app"]::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 56px; height: calc(100% + 22px);
+  background: var(--sc-primary, #154273) url(assets/rijkshuisstijl/emblem-wit.svg) no-repeat center 12px / 36px auto;
+}
+html[data-sc-header="lint"] header[data-sc-header="app"] img[data-sc-logo] { display: none; }
+
 /* ---------- Gallery chrome ---------- */
 body.sc-chrome { padding: 0; background: var(--c-cobalt-50); }
 .sc-chrome [hidden] { display: none !important; }

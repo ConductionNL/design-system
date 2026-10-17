@@ -10,6 +10,8 @@ It is an example, not an official theme. The Rijksoverheid logo, the wordmark an
 - `rijkshuisstijl.css`: the same values as CSS variables under `.cunningham-theme--rijkshuisstijl`, for a page that does not run the Cunningham build.
 - `../logos/`: the logo set used by the screens gallery: a plain crown of our own (a band, three points, a dot on each) in lintblauw, white and grey. It is not the Rijksoverheid logo and not the state coat of arms, which only the central government may use.
 
+In the gallery the app header wears the lint: a lintblauw bar on the far left with the white crown near its top, and beside it the organisation and the app name. The organisation is the fictional Ministerie van Voorbeeldzaken, never the Rijksoverheid.
+
 ## Use it
 
 ```ts

@@ -51,6 +51,20 @@ For every board:
 
 Options: `--only Key` (repeatable), `--index-only`, `--no-thumbs`, `--no-measure`, `--jobs N` (default 3). Every run rewrites its outputs, so running it twice gives the same result. It exits 1 and names the board when one fails.
 
+## English
+
+The boards are drawn in Dutch. In English (`?lang=en`, or the NL/EN switch, kept in localStorage) `theme.js` translates a board document in the browser from a catalogue: `preview/screens/i18n/en/<Key>.json` maps every Dutch string on the board to its English text, and `_common.json` holds the strings that three or more boards share (menus, buttons, footer). An empty value, or no catalogue, leaves the Dutch; the board page then shows a Nederlands badge. Names, addresses, dates and amounts have no translation by decision: the demo municipality is Dutch. Set and row titles and app blurbs are in `_gallery.json`; a board's English title and capability note come from its catalogue (`_title`, `_note`) through `index.json`. The fixed English for government and UI terms is in `screens-src/i18n/glossary.json`; use it so every board says the same thing.
+
+```
+python3 scripts/screens/i18n.py extract --app dossiq --app portaliq   # write or refresh the catalogues of these apps
+python3 scripts/screens/i18n.py index                                 # index.json: titles, notes and coverage per board
+python3 scripts/screens/i18n.py check                                 # keys on the board, valid JSON, no em-dashes
+python3 scripts/screens/i18n.py stats                                 # per app: boards, strings, chars, done
+python3 scripts/screens/i18n_merge.py chunk_*.json                    # merge translated work chunks into the catalogues
+```
+
+`extract` keeps existing translations, adds new strings with `""` and drops strings no longer on the board, so run it again after a board changes and translate what is new. A translator gets a chunk file (`[{"board", "field", "nl", "en"}]`), fills `en` and `i18n_merge.py` puts it back. Commit the catalogues, `_common.json` and `index.json`.
+
 ## Build status
 
 `build_status.py` writes `preview/screens/build-status.json`: per board how far it is built in its app and how well it matches the board. The gallery shows a badge per screen and a progress line per row, and `board.html` a Bouwstatus panel. Without the file both pages work as before.

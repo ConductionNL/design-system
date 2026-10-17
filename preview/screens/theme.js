@@ -150,9 +150,11 @@
       .catch(function () { return null; });
   }
 
-  /* Overlay set titles, row titles, app blurbs and board titles in place. */
-  function applyGallery(S, G) {
-    if (!S || !G) return S;
+  /* Overlay set titles, row titles and app blurbs (G, _gallery.json) and board
+     titles and notes (IDX, index.json, written from the catalogues) in place. */
+  function applyGallery(S, G, IDX) {
+    if (!S) return S;
+    G = G || {};
     (S.sets || []).forEach(function (set) {
       if (G.sets && G.sets[set.id]) set.title = G.sets[set.id];
       (set.rows || []).forEach(function (row) {
@@ -164,7 +166,7 @@
     Object.keys(S.boards || {}).forEach(function (name) {
       var b = S.boards[name];
       if (b.blurb && G.blurbs && G.blurbs[b.blurb]) b.blurb = G.blurbs[b.blurb];
-      var t = G.boards && G.boards[name];
+      var t = IDX && IDX.boards && IDX.boards[name];
       if (t) {
         if (t.title) b.title = t.title;
         if (t.note) b.note = t.note;

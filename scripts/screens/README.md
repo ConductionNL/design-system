@@ -45,6 +45,8 @@ For every board:
 
    Every other colour (for example buildiq orange #e2611a) stays as drawn. The school sets are not tokenized.
 
+   A system built on an NL Design System token set does not type its variables: `python3 scripts/screens/sc_from_thematiq.py <system>` reads thematiq's `css/tokens/<set>.css` (the system's `set`, from the development branch or a path you pass) and writes the roles above from the `--nldesign-*` tokens with the mapping thematiq's `overrides.css` uses for a Nextcloud page; the script records the source under `source` in `design-systems.json`. Such a system also sets `"look": "nldesign"`, which `theme.js` puts on `<html data-sc-look>` and `screens.css` turns into the element layer (squared controls, bold button labels, a visible field edge, underlined prose links, a black focus ring). The Rijkshuisstijl example is the first.
+
    Two more hooks are written in the source, not by the build: `data-sc-org` on the element that shows the organisation name (the line above the app name in `DqKop.dc.html`), which `theme.js` fills with the design system's `orgName`, and `data-sc-header="app"` on the app header, which `screens.css` restyles for a system with a `headerStyle` (the Rijkshuisstijl example wears `lint`: a bar in the primary colour on the far left with the white emblem in it).
 4. **Measure.** Chrome loads the board at its width and reports the content height. Heights are kept in `scripts/screens/heights.json` and written into `screens.json`. `--no-measure` keeps the stored heights.
 5. **Thumbnail.** A headless Chrome screenshot at the board's size, scaled to 480 px wide, saved as `preview/screens/thumbs/<Key>.webp` (quality 80, lower when needed to stay under about 60 KB).

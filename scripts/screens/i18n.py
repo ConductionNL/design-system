@@ -18,7 +18,9 @@ extract  reads the flattened boards (`preview/screens/boards/<Key>.html`) of
          translations are kept, new strings are added with "", strings no
          longer on the board are dropped. `_common.json` is rebuilt from every
          board of every set: a string that occurs on at least COMMON_MIN boards
-         lives there and is left out of the per-board files. Each catalogue
+         lives there and is left out of the per-board files, unless a board
+         catalogue already holds it: then it is an override for that board
+         (its value wins over _common.json, "" keeps the Dutch). Each catalogue
          also carries `_title` and `_note`: the board's title and capability
          note from screens.json, translated the same way.
 index    writes `preview/screens/i18n/en/index.json`: per board with a
@@ -171,8 +173,10 @@ def cmd_extract(args):
         board = data['boards'][key]
         if apps is not None and board['app'] not in apps:
             continue
-        own = [s for s in strings if s not in common]
         old = load_json(catalogue_path(key), {})
+        # A common string that a board catalogue already holds is an override:
+        # that board means something else by it, so it keeps its own value.
+        own = [s for s in strings if s not in common or s in old]
         cat = {
             '_board': key,
             '_app': board['app'],

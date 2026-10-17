@@ -54,6 +54,22 @@
   .km-card .tags { display: flex; flex-wrap: wrap; gap: 4px; }
   .km-card .tag { font-family: var(--conduction-typography-font-family-code); font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: var(--c-cobalt-50); border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); white-space: nowrap; }
   .km-card .tag.lib-pq { background: white; border-style: dashed; }
+  .km-card .tag.cs { display: inline-flex; align-items: center; gap: 5px; }
+  .km-card .tag.cs::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c-cobalt-200); }
+  .km-card .tag.cs[data-cs="match"] { color: var(--conduction-color-status-success-ink); background: var(--conduction-color-status-success-tint); border-color: transparent; }
+  .km-card .tag.cs[data-cs="match"]::before { background: var(--conduction-color-status-success-ink); }
+  .km-card .tag.cs[data-cs="differs"] { color: var(--conduction-color-status-info-ink); background: var(--conduction-color-status-info-tint); border-color: transparent; }
+  .km-card .tag.cs[data-cs="differs"]::before { background: var(--conduction-color-status-info-ink); }
+  .km-card .match { font-size: 13px; line-height: 1.45; color: var(--c-cobalt-700); margin: 0; overflow-wrap: anywhere; }
+  .km-card .match code { font-family: var(--conduction-typography-font-family-code); font-size: 11.5px; }
+  .km-card .scr .app { margin-top: 6px; }
+  .km-card .scr .app h5 { font-size: 12px; font-weight: 600; color: var(--c-cobalt-700); margin: 0 0 3px; }
+  .km-card .scr .app h5 .n { font-weight: 400; color: var(--c-cobalt-400); font-family: var(--conduction-typography-font-family-code); font-size: 11px; }
+  .km-card .scr .w { font-size: 10.5px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--c-cobalt-100); color: var(--c-cobalt-700); white-space: nowrap; }
+  .km-card .scr .w[data-w="both"] { background: var(--c-cobalt-50); }
+  .km-card .scr .w[data-w="app"] { border-color: var(--c-orange-knvb); }
+  .km-card .scr .w[data-w="board"] { border-style: dashed; }
+  .km-card .scr .lg { font-size: 11.5px; color: var(--c-cobalt-400); margin: 4px 0 0; }
   .km-card .purpose { font-size: 14px; line-height: 1.5; color: var(--c-cobalt-900); margin: 0; }
   .km-card .purpose.none { color: var(--c-cobalt-400); }
   .km-card .links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
@@ -84,6 +100,8 @@
     <span><span data-i18n="comp.meta.nc">nextcloud-vue</span><strong id="m-nc">&nbsp;</strong></span>
     <span><span data-i18n="comp.meta.pq">portaliq site widgets</span><strong id="m-pq">&nbsp;</strong></span>
     <span><span data-i18n="comp.meta.screens">Screens with components</span><strong id="m-screens">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.apps">Screens with app data</span><strong id="m-apps">&nbsp;</strong></span>
+    <span><span data-i18n="comp.meta.measured">Measured components</span><strong id="m-measured">&nbsp;</strong></span>
     <span><span data-i18n="comp.meta.generated">Mapped on</span><strong id="m-gen">&nbsp;</strong></span>
     <span><span data-i18n="screens.meta.caps">What the screens deliver</span><strong><a href="../capabilities/index.html" data-keep-lang data-i18n="screens.link.caps">Capabilities</a></strong></span>
   </div>
@@ -112,6 +130,7 @@
       <span class="f"><label class="label" for="f-family" data-i18n="comp.f.family">Family</label><select id="f-family"></select></span>
       <span class="f"><label class="label" for="f-lib" data-i18n="comp.f.lib">Library</label><select id="f-lib"></select></span>
       <span class="f"><label class="label" for="f-use" data-i18n="comp.f.use">Used</label><select id="f-use"></select></span>
+      <span class="f"><label class="label" for="f-match" data-i18n="comp.f.match">Match</label><select id="f-match"></select></span>
       <input type="search" id="q" autocomplete="off" placeholder="Search by name, purpose or screen id" data-i18n-attr="placeholder:comp.f.search,aria-label:screens.search.label" aria-label="Search">
       <span class="count" id="count" aria-live="polite"></span>
     </div>
@@ -194,11 +213,19 @@
   };
   function famLabel(f) { var m = FAMILY[f]; return m ? t(m[0], m[1]) : (f || t('comp.fam.other', 'other')); }
   var SHOWN = 8;
+  function matchLabel(k) {
+    return k === 'match' ? t('comp.match.match', 'Matches its specimen') : k === 'differs' ? t('comp.match.differs', 'Differs from its specimen') : t('comp.match.none', 'Not measured yet');
+  }
+  function pct(n) { try { return n.toLocaleString(LANG === 'en' ? 'en' : 'nl', { maximumFractionDigits: 1 }) + '%'; } catch (e) { return n + '%'; } }
+  var NAME_TO_ID = {};
+  function specimenId(boardName) { return NAME_TO_ID[boardName] || boardName; }
 
-  var K, S, LIST = [], TITLES = {};
+  var K, S, A, CS, LIST = [], TITLES = {};
+  var APPS_WITH_DATA = {};
   var fFamily = document.getElementById('f-family');
   var fLib = document.getElementById('f-lib');
   var fUse = document.getElementById('f-use');
+  var fMatch = document.getElementById('f-match');
   var q = document.getElementById('q');
   var grid = document.getElementById('grid');
 
@@ -224,7 +251,8 @@
     var n = famCounts(), order = famOrder(n);
     opts(fFamily, [['', t('comp.f.all', 'All')]].concat(order.map(function (f) { return [f, famLabel(f) + ' (' + n[f] + ')']; })));
     opts(fLib, [['', t('comp.f.all', 'All')], ['nc', 'nextcloud-vue'], ['pq', t('comp.meta.pq', 'portaliq site widgets')]]);
-    opts(fUse, [['', t('comp.f.all', 'All')], ['yes', t('comp.f.used', 'On at least one screen')], ['no', t('comp.f.unused', 'On no screen')]]);
+    opts(fUse, [['', t('comp.f.all', 'All')], ['yes', t('comp.f.used', 'On at least one screen')], ['board', t('comp.f.usedBoard', 'On a board')], ['app', t('comp.f.usedApp', 'In an app')], ['no', t('comp.f.unused', 'On no screen')]]);
+    opts(fMatch, [['', t('comp.f.all', 'All')], ['match', t('comp.f.matchMatch', 'Matches')], ['differs', t('comp.f.matchDiffers', 'Differs')], ['none', t('comp.f.matchNone', 'Not measured yet')]]);
 
     var bar = document.getElementById('fams'); bar.innerHTML = '';
     [''].concat(order).forEach(function (f) {
@@ -237,16 +265,34 @@
     });
   }
 
-  function screenList(ids) {
-    var ul = el('ul');
+  function whereLabel(w) {
+    return w === 'both' ? t('comp.used.both', 'board and app') : w === 'app' ? t('comp.used.app', 'app') : t('comp.used.board', 'board');
+  }
+  /* Screens of one component grouped by app. `uses` is {id: 'board'|'app'|'both'}; the badge
+     is shown only when app data exists for that app, so a page without it reads as before. */
+  function screenGroups(ids, uses) {
+    var byApp = {}, order = [];
     ids.forEach(function (id) {
-      var tt = TITLES[id];
-      ul.appendChild(el('li', null, [
-        el('a', { href: boardHref(id), text: tt || id }),
-        tt ? el('code', { text: id }) : null
+      var app = id.indexOf('/') === -1 ? '' : id.split('/')[0];
+      if (!byApp[app]) { byApp[app] = []; order.push(app); }
+      byApp[app].push(id);
+    });
+    var wrap = el('div');
+    order.forEach(function (app) {
+      var ul = el('ul');
+      byApp[app].forEach(function (id) {
+        var tt = TITLES[id];
+        ul.appendChild(el('li', null, [
+          el('a', { href: boardHref(id), text: tt || id }),
+          tt ? el('code', { text: id }) : null,
+          APPS_WITH_DATA[app] ? el('span', { class: 'w', 'data-w': uses[id] || 'board', text: whereLabel(uses[id] || 'board') }) : null
+        ]));
+      });
+      wrap.appendChild(el('div', { class: 'app' }, [
+        el('h5', null, [app || '?', ' ', el('span', { class: 'n', text: '(' + byApp[app].length + ')' })]), ul
       ]));
     });
-    return ul;
+    return wrap;
   }
 
   function card(c) {
@@ -254,42 +300,57 @@
       el('h3', null, [c.source ? el('a', { href: c.source, target: '_blank', rel: 'noopener', text: c.name }) : c.name]),
       el('span', { class: 'tags' }, [
         el('span', { class: 'tag', text: famLabel(c.family) }),
-        el('span', { class: 'tag' + (c.pq ? ' lib-pq' : ''), text: c.pq ? 'portaliq' : 'nextcloud-vue' })
+        el('span', { class: 'tag' + (c.pq ? ' lib-pq' : ''), text: c.pq ? 'portaliq' : 'nextcloud-vue' }),
+        CS ? el('span', { class: 'tag cs', 'data-cs': c.cs, text: matchLabel(c.cs) }) : null
       ])
     ]);
     var purpose = el('p', { class: 'purpose' + (c.purpose ? '' : ' none'), text: c.purpose || t('comp.noPurpose', 'No purpose written yet.') });
+    var match = null;
+    if (c.status) {
+      var bits = [];
+      if (c.status.specimenBoard) bits.push(el('span', null, [t('comp.match.specimen', 'Specimen on {board}', { board: '' }), el('a', { href: boardHref(specimenId(c.status.specimenBoard)), text: c.status.specimenBoard })]));
+      if (c.status.mismatchPct != null) bits.push(t('comp.match.pct', '{pct} mismatch', { pct: pct(c.status.mismatchPct) }));
+      if (c.status.notes) bits.push(c.status.notes);
+      match = el('p', { class: 'match' });
+      bits.forEach(function (b, i) { if (i) match.appendChild(document.createTextNode(' · ')); match.appendChild(typeof b === 'string' ? document.createTextNode(b) : b); });
+    } else if (!c.screens.length && c.appScreens.length) {
+      match = el('p', { class: 'match', text: t('comp.appOnly', 'Seen in the app only, on no board') });
+    }
     var links = el('div', { class: 'links' }, [
       c.source ? el('a', { href: c.source, target: '_blank', rel: 'noopener', text: t('comp.source', 'Source on GitHub') }) : null,
       c.docs ? el('a', { href: c.docs, target: '_blank', rel: 'noopener', text: t('comp.docs', 'Documentation') }) : null
     ]);
-    var scr = el('div', { class: 'scr' }, [el('h4', { text: t('comp.screens', 'Screens ({n})', { n: c.screens.length }) })]);
-    if (!c.screens.length) scr.appendChild(el('p', { class: 'zero', text: t('comp.noScreens', 'No screen uses this component yet.') }));
+    var scr = el('div', { class: 'scr' }, [el('h4', { text: t(A ? 'comp.usedOn' : 'comp.screens', A ? 'Used on ({n})' : 'Screens ({n})', { n: c.all.length }) })]);
+    if (!c.all.length) scr.appendChild(el('p', { class: 'zero', text: t('comp.noScreens', 'No screen uses this component yet.') }));
     else {
-      scr.appendChild(screenList(c.screens.slice(0, SHOWN)));
-      if (c.screens.length > SHOWN) {
-        var d = el('details', null, [el('summary', { text: t('comp.more', '+{n} more', { n: c.screens.length - SHOWN }) }), screenList(c.screens.slice(SHOWN))]);
+      scr.appendChild(screenGroups(c.all.slice(0, SHOWN), c.uses));
+      if (c.all.length > SHOWN) {
+        var d = el('details', null, [el('summary', { text: t('comp.more', '+{n} more', { n: c.all.length - SHOWN }) }), screenGroups(c.all.slice(SHOWN), c.uses)]);
         scr.appendChild(d);
       }
+      if (A && c.appScreens.length) scr.appendChild(el('p', { class: 'lg', text: t('comp.usedLegend', 'Per screen: on the drawn board, in the app, or both.') }));
     }
-    var art = el('article', { class: 'km-card', id: 'c-' + c.key.replace(/[^A-Za-z0-9_-]/g, '-') }, [top, purpose, links, scr]);
+    var art = el('article', { class: 'km-card', id: 'c-' + c.key.replace(/[^A-Za-z0-9_-]/g, '-') }, [top, purpose, match, links, scr]);
     c.node = art;
     return art;
   }
 
   function hay(c) {
-    return [c.key, c.name, c.purpose, c.family, famLabel(c.family)].concat(c.screens).concat(c.screens.map(function (id) { return TITLES[id] || ''; })).join('\n').toLowerCase();
+    return [c.key, c.name, c.purpose, c.family, famLabel(c.family), c.cs, matchLabel(c.cs)].concat(c.all).concat(c.all.map(function (id) { return TITLES[id] || ''; })).join('\n').toLowerCase();
   }
 
   function apply() {
-    var fam = fFamily.value, lib = fLib.value, use = fUse.value;
+    var fam = fFamily.value, lib = fLib.value, use = fUse.value, mt = fMatch.value;
     var terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
     var shown = 0, scr = {};
     LIST.forEach(function (c) {
       var ok = (!fam || c.family === fam) && (!lib || (lib === 'pq') === c.pq) &&
-        (!use || (use === 'yes') === (c.screens.length > 0)) &&
+        (!use || (use === 'yes' && c.all.length > 0) || (use === 'no' && !c.all.length) ||
+          (use === 'board' && c.screens.length > 0) || (use === 'app' && c.appScreens.length > 0)) &&
+        (!mt || c.cs === mt) &&
         terms.every(function (w) { return c.hay.indexOf(w) !== -1; });
       c.node.hidden = !ok;
-      if (ok) { shown++; c.screens.forEach(function (id) { scr[id] = 1; }); }
+      if (ok) { shown++; c.all.forEach(function (id) { scr[id] = 1; }); }
     });
     document.querySelectorAll('#fams button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-f') === fam)); });
     document.getElementById('count').textContent = t('comp.count', '{n} of {m} components, on {s} screens', { n: shown, m: LIST.length, s: Object.keys(scr).length });
@@ -298,6 +359,7 @@
     if (fam) h.push('family=' + encodeURIComponent(fam));
     if (lib) h.push('lib=' + lib);
     if (use) h.push('use=' + use);
+    if (mt) h.push('match=' + mt);
     if (q.value) h.push('q=' + encodeURIComponent(q.value));
     history.replaceState(null, '', location.pathname + location.search + (h.length ? '#' + h.join('&') : ''));
   }
@@ -313,12 +375,25 @@
 
   function render() {
     var comps = K.components || {};
-    LIST = Object.keys(comps).map(function (k) {
+    var appComps = A && A.components ? A.components : {};
+    var csComps = CS && CS.components ? CS.components : {};
+    var keys = Object.keys(comps);
+    Object.keys(appComps).forEach(function (k) { if (!comps[k]) keys.push(k); });
+    Object.keys(csComps).forEach(function (k) { if (!comps[k] && !appComps[k]) keys.push(k); });
+    LIST = keys.map(function (k) {
       var c = comps[k] || {};
-      return { key: k, name: c.name || k.replace(/^portaliq:/, ''), purpose: c.purpose || '', source: c.source || '',
-        docs: c.docs || '', family: c.family || 'other', pq: isPq(k), screens: (c.screens || []).slice() };
+      var ac = appComps[k] || {};
+      var screens = (c.screens || []).slice(), appScreens = (ac.screens || []).slice();
+      var uses = {}, all = [];
+      screens.forEach(function (id) { uses[id] = 'board'; all.push(id); });
+      appScreens.forEach(function (id) { if (uses[id]) uses[id] = 'both'; else { uses[id] = 'app'; all.push(id); } });
+      all.sort(function (a, b) { var x = a.split('/')[0], y = b.split('/')[0]; return x < y ? -1 : x > y ? 1 : 0; });
+      var st = csComps[k] || null;
+      return { key: k, name: c.name || ac.name || k.replace(/^portaliq:/, ''), purpose: c.purpose || '', source: c.source || ac.source || '',
+        docs: c.docs || '', family: c.family || 'other', pq: isPq(k), screens: screens, appScreens: appScreens, uses: uses, all: all,
+        status: st, cs: st && st.kind ? st.kind : 'none' };
     });
-    LIST.sort(function (a, b) { return b.screens.length - a.screens.length || a.name.localeCompare(b.name); });
+    LIST.sort(function (a, b) { return b.all.length - a.all.length || a.name.localeCompare(b.name); });
     LIST.forEach(function (c) { c.hay = hay(c); });
 
     var screens = K.screens || {};
@@ -329,6 +404,9 @@
     document.getElementById('m-pq').textContent = String(LIST.filter(function (c) { return c.pq; }).length);
     document.getElementById('m-screens').textContent = t('comp.meta.ofScreens', '{n} of {m}', { n: withC.length, m: Object.keys(screens).length });
     document.getElementById('m-gen').textContent = K.generated || '';
+    var appScreens = A && A.screens ? Object.keys(A.screens).filter(function (id) { return A.screens[id].page; }) : [];
+    document.getElementById('m-apps').textContent = A ? String(appScreens.length) : '0';
+    document.getElementById('m-measured').textContent = CS && CS.counts ? String((CS.counts.match || 0) + (CS.counts.differs || 0)) : '0';
 
     if (without.length) {
       document.getElementById('none-wrap').hidden = false;
@@ -351,6 +429,7 @@
       if (h.family) fFamily.value = h.family;
       if (h.lib) fLib.value = h.lib;
       if (h.use) fUse.value = h.use;
+      if (h.match) fMatch.value = h.match;
       if (h.q) q.value = h.q;
     }
     apply();
@@ -360,17 +439,20 @@
     }
   }
 
-  [fFamily, fLib, fUse].forEach(function (s) { s.addEventListener('change', apply); });
+  [fFamily, fLib, fUse, fMatch].forEach(function (s) { s.addEventListener('change', apply); });
   var tm = null;
   q.addEventListener('input', function () { clearTimeout(tm); tm = setTimeout(apply, 120); });
 
   Promise.all([
     fetch('components.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
     fetch('screens.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
-    dictReady
+    dictReady,
+    fetch('app-components.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    fetch('component-status.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
   ]).then(function (res) {
-    K = res[0]; S = res[1];
-    if (S && S.boards) Object.keys(S.boards).forEach(function (n) { var b = S.boards[n]; TITLES[b.id || n] = b.title || ''; });
+    K = res[0]; S = res[1]; A = res[3]; CS = res[4];
+    if (S && S.boards) Object.keys(S.boards).forEach(function (n) { var b = S.boards[n]; TITLES[b.id || n] = b.title || ''; NAME_TO_ID[n] = b.id || n; });
+    if (A && A.screens) Object.keys(A.screens).forEach(function (id) { if (A.screens[id].page) APPS_WITH_DATA[id.split('/')[0]] = 1; });
     render();
   }).catch(function (err) {
     grid.innerHTML = '';

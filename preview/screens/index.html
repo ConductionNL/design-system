@@ -98,6 +98,7 @@
   .sc-empty { padding: var(--space-8); text-align: center; color: var(--c-cobalt-700); }
   [hidden] { display: none !important; }
 </style>
+<script src="../lang.js"></script>
 </head>
 <body class="sc-chrome">
 
@@ -157,7 +158,7 @@
 
   /* ---------- i18n: same contract as ../i18n.js, plus t() for runtime text ---------- */
   var params = new URLSearchParams(location.search);
-  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var LANG = (window.kitLang ? window.kitLang.lang : (params.get('lang') || 'nl')).toLowerCase();
   var DICT = null;
   function lookup(key) {
     if (!DICT) return null;
@@ -195,6 +196,7 @@
         .catch(function () { return null; })
         .then(function (d) { DICT = d; applyStatic(); });
   function withLang(url) {
+    if (window.kitLang) return window.kitLang.withLang(url);
     if (!params.get('lang')) return url;
     var i = url.indexOf('#');
     var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
@@ -565,9 +567,11 @@
     fetch('screens.json', { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
     window.screensTheme.ready,
     dictReady,
-    BSX ? BSX.load() : null
+    BSX ? BSX.load() : null,
+    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/_gallery.json') : null
   ]).then(function (res) {
     S = res[0]; DS = res[1]; BS = res[3];
+    window.screensI18n.applyGallery(S, res[4]);
     Object.keys(S.boards).forEach(function (n) { S.boards[n].name = n; });
     dsId = window.screensTheme.get() || (DS && DS.default) || 'conduction';
     if (DS) buildSeg();

@@ -10,8 +10,9 @@
      1. Pages mark translatable text with data-i18n="some.key"
         on the element. The element's textContent is the EN
         default; it shows on first paint with no JS.
-     2. This script reads ?lang=… from the URL (default 'nl' for
-        kit pages, since NL is the brand default).
+     2. This script asks lang.js which language is chosen: ?lang=…
+        in the URL, else the stored choice, else 'nl' (the brand
+        default). lang.js also draws the NL/EN switch.
      3. If lang !== 'en' it loads /preview/i18n.<lang>.json and
         replaces every data-i18n element's textContent with the
         matching translation. Missing keys fall back to the
@@ -32,7 +33,10 @@
   const DEFAULT_LANG = 'nl';
   const FALLBACK_LANG = 'en';
 
+  /* lang.js (loaded first on every page) resolves ?lang=, the stored choice
+     and the default in one place; without it the query param still works. */
   function readLang() {
+    if (window.kitLang && window.kitLang.lang) return window.kitLang.lang;
     try {
       const params = new URLSearchParams(window.location.search);
       return (params.get('lang') || DEFAULT_LANG).toLowerCase();

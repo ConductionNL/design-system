@@ -44,6 +44,8 @@ For every board:
    | site-ground | #f4f6f9 | | |
 
    Every other colour (for example buildiq orange #e2611a) stays as drawn. The school sets are not tokenized.
+
+   Two more hooks are written in the source, not by the build: `data-sc-org` on the element that shows the organisation name (the line above the app name in `DqKop.dc.html`), which `theme.js` fills with the design system's `orgName`, and `data-sc-header="app"` on the app header, which `screens.css` restyles for a system with a `headerStyle` (the Rijkshuisstijl example wears `lint`: a bar in the primary colour on the far left with the white emblem in it).
 4. **Measure.** Chrome loads the board at its width and reports the content height. Heights are kept in `scripts/screens/heights.json` and written into `screens.json`. `--no-measure` keeps the stored heights.
 5. **Thumbnail.** A headless Chrome screenshot at the board's size, scaled to 480 px wide, saved as `preview/screens/thumbs/<Key>.webp` (quality 80, lower when needed to stay under about 60 KB).
 

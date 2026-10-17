@@ -12,6 +12,11 @@
       Google Fonts and sets --sc-font / --sc-font-heading.
    4. Swaps the src of every <img data-sc-logo="logo|logo-wit|
       emblem|emblem-grijs"> to that system's logo file.
+   5. Writes the system's orgName into every [data-sc-org]
+      element (the organisation line beside the app name), and
+      puts its headerStyle ("default" when it names none) on
+      <html data-sc-header>, which screens.css reads for the
+      header variants, such as the lint bar.
 
    Boards only use the variables for the Zuiddrecht set, where
    build.py replaced the colour literals with var(--sc-role,
@@ -75,6 +80,11 @@
       var role = img.getAttribute('data-sc-logo');
       if (logos[role]) img.src = new URL(logos[role], base).href;
     });
+    document.querySelectorAll('[data-sc-org]').forEach(function (el) {
+      if (!el.hasAttribute('data-sc-org-default')) el.setAttribute('data-sc-org-default', el.textContent);
+      el.textContent = sys.orgName || el.getAttribute('data-sc-org-default');
+    });
+    root.setAttribute('data-sc-header', sys.headerStyle || 'default');
     root.setAttribute('data-sc-ds', current);
     window.dispatchEvent(new CustomEvent('screens-theme', { detail: { id: current, system: sys } }));
   }

@@ -189,7 +189,7 @@ def catalogues():
     if not os.path.isdir(OUT):
         return out
     for name in sorted(os.listdir(OUT)):
-        if not name.endswith('.json') or name.startswith('_'):
+        if not name.endswith('.json') or name.startswith('_') or name == 'index.json':
             continue
         out[name[:-5]] = load_json(os.path.join(OUT, name), {})
     return out

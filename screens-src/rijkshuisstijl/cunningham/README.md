@@ -8,8 +8,7 @@ It is an example, not an official theme. The Rijksoverheid logo, the wordmark an
 
 - `rijkshuisstijl.ts`: the theme as a Cunningham config. Merge it into your `cunningham.ts`.
 - `rijkshuisstijl.css`: the same values as CSS variables under `.cunningham-theme--rijkshuisstijl`, for a page that does not run the Cunningham build.
-
-The screens gallery has no logo set for this style: every screen keeps the logo of the demo municipality Zuiddrecht.
+- `../logos/`: the logo set used by the screens gallery: a plain crown of our own (a band, three points, a dot on each) in lintblauw, white and grey. It is not the Rijksoverheid logo and not the state coat of arms, which only the central government may use.
 
 ## Use it
 

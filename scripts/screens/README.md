@@ -27,7 +27,7 @@ No npm packages.
 
 For every board:
 
-1. **Index.** `preview/screens/screens.json` lists the sets, rows and boards. Every board has a stable id `<app>/<Name>`, for example `portaliq/MijnZaken` or `wilgenboom/Home`. A school board whose name is also used elsewhere gets its set as a prefix in its key and file name (`wilgenboom-Home`), never in its id.
+1. **Index.** `preview/screens/screens.json` lists the sets, rows and boards. Every board has a stable id `<app>/<Name>`, for example `portaliq/MijnZaken` or `wilgenboom/Home`. A school board whose name is also used elsewhere gets its set as a prefix in its key and file name (`wilgenboom-Home`), never in its id. An app listed under `OWN_SETS` in `build.py` (OpenProject) is drawn and tokenized like Zuiddrecht but becomes a set of its own with a `gallery` page: `preview/openproject/` shows it through the same `gallery.js` (`data-set="openproject"`), `/screens` hides it and sends its old anchors there, and `board.html` links back to it.
 2. **Flatten.** `flatten.py` runs `renderVals()` in node and expands holes, `sc-for`, `sc-if` and `dc-import` into a standalone document at `preview/screens/boards/<Key>.html`. Links to other boards point at their flattened file. Canvas images map to `preview/screens/assets/<set>/`.
 3. **Tokenize (Zuiddrecht only).** Every Zuiddrecht colour in CSS becomes `var(--sc-<role>, <literal>)`, the body font becomes `var(--sc-font, 'Fira Sans')`, and each logo gets `data-sc-logo="logo|logo-wit|emblem|emblem-grijs"`. Each board loads `../screens.css` and `../theme.js`, which set those variables and logos from `?ds=` or the stored choice. Visible text such as a hex code on a token board is left alone. The roles:
 

@@ -129,8 +129,12 @@ def board_strings(board):
 
 
 def all_strings(data):
+    """Strings per board. A set with a gallery page of its own (OpenProject) is drawn in English and gets no catalogue."""
+    skip = {s['id'] for s in data.get('sets', []) if s.get('gallery')}
     per = {}
     for key, board in data['boards'].items():
+        if board.get('set') in skip:
+            continue
         strings = board_strings(board)
         if strings is not None:
             per[key] = strings

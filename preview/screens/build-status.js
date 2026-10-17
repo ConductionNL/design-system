@@ -46,8 +46,12 @@
     catch (e) { return iso; }
   }
 
+  /* the file sits next to this script, whatever page loads it */
+  var script = document.currentScript;
+  var dataUrl = new URL('build-status.json', script ? script.src : window.location.href).href;
+
   function load() {
-    return fetch('build-status.json', { credentials: 'omit' })
+    return fetch(dataUrl, { credentials: 'omit' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; })
       .then(function (d) { return d && d.boards ? d : null; });

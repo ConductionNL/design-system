@@ -38,6 +38,17 @@ SCHOOLS = [
     ('warmtepompacademie', 'Warmtepompacademie'),
 ]
 DESIGN_SYSTEMS = ['conduction', 'zuiddrecht', 'openproject', 'rijkshuisstijl'] + [s for s, _ in SCHOOLS]
+# app id -> a set of its own with its own gallery page; its boards are drawn and tokenized
+# like Zuiddrecht (same source dir, same theme) but listed apart from the Zuiddrecht set.
+# `gallery` is the page relative to preview/screens/; the /screens gallery hides these sets
+# and sends old anchors for their boards there.
+OWN_SETS = {'openproject': {'title': 'OpenProject', 'gallery': '../openproject/'}}
+# set id -> the screens-src directory its boards live in, when it is not the set's own
+SOURCE_SET = {app: 'zuiddrecht' for app in OWN_SETS}
+
+
+def source_set(set_id):
+    return SOURCE_SET.get(set_id, set_id)
 # design system -> apps that were drawn for it; their boards get a second thumbnail in that style
 THUMB_STYLES = {'openproject': {'mail', 'calendar', 'tasks', 'openproject'}}
 # row key -> app id (stable, used in screen ids like portaliq/MijnZaken)
@@ -90,13 +101,16 @@ def build_index():
 
     index = {'generated': datetime.date.today().isoformat(), 'designSystems': DESIGN_SYSTEMS, 'sets': [], 'boards': {}}
     zset = {'id': 'zuiddrecht', 'title': 'Zuiddrecht', 'themable': True, 'rows': []}
+    own_sets = {app: {'id': app, 'title': own['title'], 'themable': True, 'gallery': own['gallery'], 'rows': []}
+                for app, own in OWN_SETS.items()}
     for key, title, columns, *rest in rows:
         app = row_app.get(key, key.removeprefix('row').lower())
+        set_id = app if app in own_sets else 'zuiddrecht'
         names = [b[:-8] for col in columns for b in col]
         row = {'id': key, 'app': app, 'title': title, 'boards': names}
         if rest and rest[0]:
             row['blurb'] = rest[0]
-        zset['rows'].append(row)
+        (own_sets[app] if set_id == app else zset)['rows'].append(row)
         for name in names:
             if name in index['boards']:
                 continue  # a shared component copied into a second row keeps its first row
@@ -108,7 +122,7 @@ def build_index():
                 note = note or (f'Wat je ziet: {n2}' if n2 else '')
             index['boards'][name] = {
                 'id': f'{app}/{name}', 'app': app, 'title': meta.get('title', name),
-                'w': meta.get('w', 1440), 'h': meta.get('h', 1200), 'set': 'zuiddrecht', 'row': key,
+                'w': meta.get('w', 1440), 'h': meta.get('h', 1200), 'set': set_id, 'row': key,
                 'file': f'boards/{name}.html', 'thumb': f'thumbs/{name}.webp', 'caps': caps, 'note': note,
                 'src': f'zuiddrecht/{name}.dc.html',
             }
@@ -116,6 +130,7 @@ def build_index():
             if styled:
                 index['boards'][name]['thumbs'] = styled
     index['sets'].append(zset)
+    index['sets'].extend(s for s in own_sets.values() if s['rows'])
 
     taken = set(index['boards'])
     school_names = {s: [b[:-8] for b in load(SRC / s / 'canvas.json')['order']] for s, _ in SCHOOLS}
@@ -178,11 +193,15 @@ def copy_assets():
 def flatteners(index):
     """One Flattener per set, with board-name -> output-key mapping for internal links."""
     out = {}
-    for s in ['zuiddrecht'] + [s for s, _ in SCHOOLS]:
-        src = SRC / s
+    for s in ['zuiddrecht'] + list(OWN_SETS) + [s for s, _ in SCHOOLS]:
+        d = source_set(s)
+        if d in out:
+            out[s] = out[d]  # a set drawn in another set's source dir shares its flattener
+            continue
+        src = SRC / d
         blobs = load(src / 'blobs.json')
-        keymap = {b['src'].split('/')[1][:-8]: k for k, b in index['boards'].items() if b['set'] == s}
-        out[s] = Flattener(src, blobs, f'../assets/{s}/', tokenize=(s == 'zuiddrecht'),
+        keymap = {b['src'].split('/')[1][:-8]: k for k, b in index['boards'].items() if source_set(b['set']) == d}
+        out[s] = Flattener(src, blobs, f'../assets/{d}/', tokenize=(d == 'zuiddrecht'),
                            link_name=lambda n, m=keymap: m.get(n, n))
     return out
 
@@ -192,7 +211,7 @@ THEME_HEAD = '<link rel="stylesheet" href="../screens.css">\n<script src="../the
 
 def flatten_one(fl, key, board):
     name = board['src'].split('/')[1][:-8]
-    extra = THEME_HEAD if board['set'] == 'zuiddrecht' else ''
+    extra = THEME_HEAD if source_set(board['set']) == 'zuiddrecht' else ''
     html = fl.document(name, board['title'], board['w'], extra_head=extra)
     (OUT / board['file']).write_text(html)
 

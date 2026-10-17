@@ -54,6 +54,7 @@
     .specimen-ds { grid-template-columns: 1fr; }
   }
 </style>
+<script src="../lang.js"></script>
 </head>
 <body class="sc-chrome">
 
@@ -331,8 +332,8 @@
   'use strict';
   /* i18n: same contract as ../i18n.js, path relative so it works at any site root */
   var params = new URLSearchParams(location.search);
-  var LANG = (params.get('lang') || 'nl').toLowerCase();
-  if (params.get('lang')) {
+  var LANG = (window.kitLang ? window.kitLang.lang : (params.get('lang') || 'nl')).toLowerCase();
+  if (window.kitLang ? window.kitLang.fromUrl : params.get('lang')) {
     document.querySelectorAll('a[data-keep-lang]').forEach(function (a) {
       var h = a.getAttribute('href'); var i = h.indexOf('#');
       var path = i === -1 ? h : h.slice(0, i), frag = i === -1 ? '' : h.slice(i);

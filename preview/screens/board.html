@@ -126,6 +126,7 @@
     .bar .hint { display: none; }
   }
 </style>
+<script src="../lang.js"></script>
 </head>
 <body class="sc-chrome">
 
@@ -147,6 +148,8 @@
       <span class="label" id="ds-label" data-i18n="screens.ds.label">Design system</span>
       <div class="sc-seg" id="ds-seg" role="group" aria-labelledby="ds-label"></div>
       <span class="sc-badge" id="own" hidden data-i18n="screens.badge.own">Own house style</span>
+      <span class="sc-badge" id="lang-nl" hidden lang="nl" title="This screen has no English catalogue yet">Nederlands</span>
+      <span class="hint" id="lang-note" hidden>Names, addresses and dates are those of the Dutch demo municipality and stay in Dutch.</span>
       <span class="hint" data-i18n="screens.board.keys"><kbd>&larr;</kbd> and <kbd>&rarr;</kbd> step through all screens, <kbd>Home</kbd> and <kbd>End</kbd> jump to the first and last</span>
     </div>
   </div>
@@ -222,7 +225,7 @@
 
   /* ---------- i18n (same contract as ../i18n.js) ---------- */
   var params = new URLSearchParams(location.search);
-  var LANG = (params.get('lang') || 'nl').toLowerCase();
+  var LANG = (window.kitLang ? window.kitLang.lang : (params.get('lang') || 'nl')).toLowerCase();
   var DICT = null;
   function lookup(key) {
     if (!DICT) return null;
@@ -253,12 +256,14 @@
     fetch('../i18n.' + LANG + '.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; }).then(function (d) { DICT = d; applyStatic(); });
   function withLang(url) {
+    if (window.kitLang) return window.kitLang.withLang(url);
     if (!params.get('lang')) return url;
     var i = url.indexOf('#');
     var path = i === -1 ? url : url.slice(0, i), frag = i === -1 ? '' : url.slice(i);
     return path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(LANG) + frag;
   }
 
+  var EN_BOARDS = null;   /* i18n/en/index.json: boards with an English catalogue */
   var DS_REPO = 'ConductionNL/design-system';
   var LIVE = 'https://identity.conduction.nl/screens/board?id=';
   var SCHOOLS = { wilgenboom: 1, vaartveld: 1, esdoornveen: 1, warmtepompacademie: 1 };
@@ -315,7 +320,10 @@
     return withLang(u);
   }
   function fileHref() {
-    return board.file + (set.themable ? '?ds=' + encodeURIComponent(dsId) : '');
+    var q = [];
+    if (set.themable) q.push('ds=' + encodeURIComponent(dsId));
+    if (LANG === 'en') q.push('lang=en');
+    return board.file + (q.length ? '?' + q.join('&') : '');
   }
 
   function fit() {
@@ -825,6 +833,9 @@
     document.getElementById('ds-seg').hidden = !themable;
     document.getElementById('ds-label').hidden = !themable;
     document.getElementById('own').hidden = themable;
+    var hasEn = !!(EN_BOARDS && EN_BOARDS[name]);
+    document.getElementById('lang-nl').hidden = !(LANG === 'en' && !hasEn);
+    document.getElementById('lang-note').hidden = !(LANG === 'en' && hasEn);
 
     renderSide();
     links();
@@ -870,9 +881,13 @@
     fetch('components.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
     BSX ? BSX.load() : null,
     fetch('app-components.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
-    fetch('component-status.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    fetch('component-status.json', { credentials: 'omit' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/_gallery.json') : null,
+    LANG === 'en' ? window.screensI18n.fetchJson('i18n/en/index.json') : null
   ]).then(function (res) {
     S = res[0]; DS = res[1]; C = res[3]; K = res[4]; BS = res[5]; A = res[6]; CS = res[7];
+    window.screensI18n.applyGallery(S, res[8]);
+    EN_BOARDS = res[9] && res[9].boards ? res[9].boards : null;
     buildOrder();
     var n = findBoard();
     if (!n && params.get('start') === 'first') n = ORDER[0];

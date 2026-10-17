@@ -43,7 +43,9 @@ THUMB_STYLES = {'openproject': {'mail', 'calendar', 'tasks', 'openproject'}}
 # row key -> app id (stable, used in screen ids like portaliq/MijnZaken)
 ROW_APP = {
     'rowHuisstijl': 'huisstijl', 'rowWerkplek': 'werkplek', 'rowSite': 'portaliq', 'rowMijn': 'portaliq',
-    'rowBeheer': 'portaliq', 'rowDossiq': 'dossiq', 'rowPipelinq': 'pipelinq', 'rowAlgemeen': 'pipelinq',
+    'rowBeheer': 'portaliq', 'rowDossiq': 'dossiq', 'rowAlgemeen': 'pipelinq',
+    'rowPqKlantcontact': 'pipelinq', 'rowPqAcquisitie': 'pipelinq', 'rowPqKassa': 'pipelinq',
+    'rowPqMarketing': 'pipelinq', 'rowPqGedeeld': 'pipelinq',
     'rowAnalyse': 'analyse', 'rowOpencatalogi': 'opencatalogi', 'rowLearniq': 'learniq',
     'rowLearniqRollen': 'learniq', 'rowDecidiq': 'decidiq', 'rowThematiq': 'thematiq', 'rowBuildiq': 'buildiq',
     'rowKeepiq': 'keepiq', 'rowOnderdelen2': 'werkplek',
@@ -76,6 +78,7 @@ def build_index():
     rows = load(z / 'rows1.json')['rows'] + load(z / 'rows2.json')['rows']
     # One registration file per app (screens-src/zuiddrecht/apps/<app>.json) so parallel work on
     # different apps never edits the same file: {"rows": [[key, title, columns]], "boards": {...}, "notes": {...}}
+    # A row may carry a fourth element: its own blurb, shown instead of the app's line.
     row_app = dict(ROW_APP)
     for frag in sorted((z / 'apps').glob('*.json')):
         f = load(frag)
@@ -87,10 +90,13 @@ def build_index():
 
     index = {'generated': datetime.date.today().isoformat(), 'designSystems': DESIGN_SYSTEMS, 'sets': [], 'boards': {}}
     zset = {'id': 'zuiddrecht', 'title': 'Zuiddrecht', 'themable': True, 'rows': []}
-    for key, title, columns in rows:
+    for key, title, columns, *rest in rows:
         app = row_app.get(key, key.removeprefix('row').lower())
         names = [b[:-8] for col in columns for b in col]
-        zset['rows'].append({'id': key, 'app': app, 'title': title, 'boards': names})
+        row = {'id': key, 'app': app, 'title': title, 'boards': names}
+        if rest and rest[0]:
+            row['blurb'] = rest[0]
+        zset['rows'].append(row)
         for name in names:
             if name in index['boards']:
                 continue  # a shared component copied into a second row keeps its first row
@@ -140,7 +146,7 @@ def build_index():
     blurbs = load(SRC / 'app-blurbs.json')
     for st in index['sets']:
         for row in st['rows']:
-            if blurbs.get(row['app']):
+            if blurbs.get(row['app']) and not row.get('blurb'):
                 row['blurb'] = blurbs[row['app']]
     for b in index['boards'].values():
         if blurbs.get(b['app']):

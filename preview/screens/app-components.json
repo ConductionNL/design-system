@@ -9,7 +9,7 @@
   "dossiq": {
    "path": "/home/rubenlinde/memcap-work/screens/round6/DS-STATUS/dossiq",
    "ref": "HEAD",
-   "sha": "9964e2c2be4966f543b53b755de563dfebca90f1",
+   "sha": "349d994295213dc4ad8c65034c28e638e9500d34",
    "manifest": [
     "src/manifest.json",
     "src/manifest.d/37-mail-intake.json",
@@ -50,9 +50,9 @@
  "apps": {
   "dossiq": {
    "boards": 73,
-   "resolved": 72,
+   "resolved": 73,
    "noRoute": 0,
-   "noPage": 1
+   "noPage": 0
   }
  },
  "components": {
@@ -67,6 +67,7 @@
     "dossiq/DqBezwaar",
     "dossiq/DqCatalogus",
     "dossiq/DqContact",
+    "dossiq/DqContracten",
     "dossiq/DqDashboard",
     "dossiq/DqDocumentGenereren",
     "dossiq/DqDocumentenBeheer",
@@ -76,6 +77,7 @@
     "dossiq/DqOrganisatie",
     "dossiq/DqOverdragen",
     "dossiq/DqPostvak",
+    "dossiq/DqPrivacy",
     "dossiq/DqPubliceren",
     "dossiq/DqSociaalDomein",
     "dossiq/DqSubsidie",
@@ -171,6 +173,7 @@
     "dossiq/DqHandhaving",
     "dossiq/DqInspectie",
     "dossiq/DqKlachten",
+    "dossiq/DqLakken",
     "dossiq/DqMijnTeam",
     "dossiq/DqMijnWerk",
     "dossiq/DqNieuweZaak",
@@ -658,6 +661,7 @@
    "source": "https://github.com/ConductionNL/nextcloud-vue/blob/development/src/components/CnFactsWidget/CnFactsWidget.vue",
    "screens": [
     "dossiq/DqContact",
+    "dossiq/DqHandhaving",
     "dossiq/DqOrganisatie",
     "dossiq/DqTaak",
     "dossiq/DqTenant"
@@ -1111,7 +1115,8 @@
     "dossiq/DqContact",
     "dossiq/DqInspectie",
     "dossiq/DqOrganisatie",
-    "dossiq/DqProcesanalyse"
+    "dossiq/DqProcesanalyse",
+    "dossiq/DqTenant"
    ]
   },
   "CnRowActions": {
@@ -1700,7 +1705,7 @@
   "dossiq/DqBeheerinstellingen": {
    "board": "DqBeheerinstellingen",
    "app": "dossiq",
-   "kind": "page",
+   "kind": "settings",
    "route": "/settings/admin/dossiq?tab=general",
    "page": {
     "id": "admin-settings",
@@ -1964,7 +1969,7 @@
   "dossiq/DqBezwaar": {
    "board": "DqBezwaar",
    "app": "dossiq",
-   "kind": "detail",
+   "kind": "page",
    "route": "/apps/dossiq/cases/5b74c485-8ca7-4fc6-8fd1-f2ee5ed7a494",
    "page": {
     "id": "CaseDetail",
@@ -2206,6 +2211,7 @@
    "components": [
     "CnAppNav",
     "CnIndexPage",
+    "CnActionButtons",
     "CnActionsBar",
     "CnBuildiqEditButton",
     "CnDataTable",
@@ -2217,6 +2223,7 @@
    "via": {
     "CnAppNav": "app chrome (CnAppRoot)",
     "CnIndexPage": "page type index, view mode table",
+    "CnActionButtons": "mounted by CnIndexPage from its config",
     "CnActionsBar": "mounted by CnIndexPage",
     "CnBuildiqEditButton": "mounted by CnIndexPage",
     "CnDataTable": "mounted by CnIndexPage from its config",
@@ -2607,6 +2614,7 @@
     "CnDetailWidgetHost",
     "CnObjectSidebar",
     "CnTabs",
+    "CnFactsWidget",
     "CnChartWidget",
     "CnObjectDataWidget",
     "CnAuditTrailTab"
@@ -2621,6 +2629,7 @@
     "CnDetailWidgetHost": "mounted by CnDetailPage from its config",
     "CnObjectSidebar": "config.sidebar (CnAppRoot)",
     "CnTabs": "config.sidebar.tabs",
+    "CnFactsWidget": "widget facts (config.widgets)",
     "CnChartWidget": "widget chart (config.widgets)",
     "CnObjectDataWidget": "widget data (config.widgets)",
     "CnAuditTrailTab": "widget audit (sidebar tab audit)"
@@ -2836,7 +2845,7 @@
   "dossiq/DqInstellingenAlgemeen": {
    "board": "DqInstellingenAlgemeen",
    "app": "dossiq",
-   "kind": "page",
+   "kind": "settings",
    "route": "/settings/admin/dossiq?tab=general",
    "page": {
     "id": "admin-settings",
@@ -2971,12 +2980,25 @@
    "app": "dossiq",
    "kind": "page",
    "route": "/apps/dossiq/cases/a8964be4-42f7-4028-969c-13edd6bedac8/redact",
-   "page": null,
-   "components": [],
-   "via": {},
-   "appComponents": {},
+   "page": {
+    "id": "CaseRedaction",
+    "type": "custom",
+    "route": "/cases/:id/redact",
+    "component": "CaseRedactionView",
+    "source": "src/manifest.json"
+   },
+   "components": [
+    "CnAppNav"
+   ],
+   "via": {
+    "CnAppNav": "app chrome (CnAppRoot)"
+   },
+   "appComponents": {
+    "CaseRedactionView": "custom page component CaseRedactionView (src/views/cases/CaseRedactionView.vue)",
+    "DocumentRedactionDialog": "inside CaseRedactionView"
+   },
    "unresolved": [],
-   "reason": "no page matches /cases/a8964be4-42f7-4028-969c-13edd6bedac8/redact"
+   "reason": null
   },
   "dossiq/DqMijnTeam": {
    "board": "DqMijnTeam",
@@ -3428,6 +3450,7 @@
    "components": [
     "CnAppNav",
     "CnIndexPage",
+    "CnActionButtons",
     "CnActionsBar",
     "CnBuildiqEditButton",
     "CnDataTable",
@@ -3440,6 +3463,7 @@
    "via": {
     "CnAppNav": "app chrome (CnAppRoot)",
     "CnIndexPage": "page type index, view mode table",
+    "CnActionButtons": "mounted by CnIndexPage from its config",
     "CnActionsBar": "mounted by CnIndexPage",
     "CnBuildiqEditButton": "mounted by CnIndexPage",
     "CnDataTable": "mounted by CnIndexPage from its config",
@@ -3847,7 +3871,7 @@
   "dossiq/DqTeamwachtrij": {
    "board": "DqTeamwachtrij",
    "app": "dossiq",
-   "kind": "page",
+   "kind": "list",
    "route": "/apps/dossiq/queue",
    "page": {
     "id": "Queue",
@@ -3908,6 +3932,7 @@
     "CnDetailWidgetHost",
     "CnStatusBadge",
     "CnTabsWidget",
+    "CnRecordListWidget",
     "CnFactsWidget",
     "CnObjectListWidget"
    ],
@@ -3921,6 +3946,7 @@
     "CnDetailWidgetHost": "mounted by CnDetailPage from its config",
     "CnStatusBadge": "mounted by CnDetailPage from its config",
     "CnTabsWidget": "widget tabs (config.widgets)",
+    "CnRecordListWidget": "widget record-list (config.widgets)",
     "CnFactsWidget": "widget facts (config.widgets)",
     "CnObjectListWidget": "widget object-list (config.widgets)"
    },

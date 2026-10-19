@@ -114,7 +114,8 @@ window.__compdiffExtract = function () {
 	}
 
 	const headingIn = (card, cr) => {
-		const hs = [...card.querySelectorAll('h1, h2, h3, h4, h5, h6, [role=heading], legend')].filter((h) => ownedBy(h, card) && visible(h) && h.textContent.trim())
+		// Skip visually hidden headings (NcDialog's 1px h2.dialog__name): measure the title people see.
+		const hs = [...card.querySelectorAll('h1, h2, h3, h4, h5, h6, [role=heading], legend')].filter((h) => ownedBy(h, card) && visible(h) && h.textContent.trim() && h.getBoundingClientRect().width > 4 && h.getBoundingClientRect().height > 4)
 		const top = hs.find((h) => h.getBoundingClientRect().top - cr.top < Math.max(90, cr.height * 0.4))
 		if (top) return top
 		// No heading element: a bold run of text at the top of the card serves as its title.
@@ -300,7 +301,7 @@ window.__compdiffExtract = function () {
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...container.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
-			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || b.closest('[role=tablist]')) return false
+			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || b.closest('[role=tablist]') || b.closest('nav, [class*=breadcrumb]')) return false
 			// Only the title's own row: a status stepper or chip row under the title is not a header action.
 			const br = b.getBoundingClientRect(), hr = h1.getBoundingClientRect()
 			if (br.top + br.height / 2 > hr.bottom + 24 || br.bottom < hr.top - 24) return false
@@ -454,6 +455,7 @@ window.__compdiffExtract = function () {
 				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				icon: !!el.querySelector('svg, img, .material-design-icon, [class*="icon"]'),
+				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
 			},

@@ -168,8 +168,7 @@ function pairButtons (b, l) {
 	}
 	// Icon-only buttons (app launchers, overflow menus) have no reliable counterpart: only labelled ones pair by order.
 	restB.splice(0, restB.length, ...restB.filter((x) => norm(x.label))); restL.splice(0, restL.length, ...restL.filter((x) => norm(x.label)))
-	restB.reverse(); restL.reverse()
-	for (let i = 0; i < Math.min(restB.length, restL.length); i++) { const { label, ...vx } = restB[i]; const { label: _l, ...vy } = restL[i]; bb.btn[`unlabelled${i}`] = vx; lb.btn[`unlabelled${i}`] = vy }
+	// Buttons with different labels are different buttons: they only count, they are not compared with each other.
 	return [bb, lb]
 }
 
@@ -245,6 +244,8 @@ export function pairElements (B = [], L = [], H = 2000) {
 	for (const b of gb) {
 		for (const l of gl) {
 			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind]) continue
+			// Two lone elements with different labels are two different controls, not one control restyled.
+			if (b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
 			if (cost <= 0.12) cand.push({ b, l, cost })
 		}
@@ -271,7 +272,11 @@ export function compareElement (b, l, by = 'label') {
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props
 	if (b.kind !== l.kind) add('kind', b.kind, l.kind, (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
+	// An icon-only button shows no text: its font, text colour and inline padding (often browser defaults) do not show.
+	const iconOnly = (e) => e.props.text === false || (e.props.text === undefined && Math.abs(e.props.fontSize - 13.3333) < 0.01 && e.props.paddingLeft === 6)
+	const textless = iconOnly(b) || iconOnly(l)
 	for (const k of ['h', 'borderRadius', 'paddingLeft', 'paddingRight', 'gapNext']) {
+		if (textless && (k === 'paddingLeft' || k === 'paddingRight')) continue
 		if (pb[k] === null || pl[k] === null || pb[k] === undefined || pl[k] === undefined) continue
 		// A label paired by order (different text) changes the width, never the paddings, radius or height.
 		add(k, pb[k], pl[k], Math.abs(pl[k] - pb[k]) > THRESHOLDS.spacing ? (k === 'borderRadius' ? 'shape' : 'spacing') : null)
@@ -279,9 +284,11 @@ export function compareElement (b, l, by = 'label') {
 	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
 	add('background', pb.background, pl.background, !semantic && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
-	add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
-	add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
-	add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
+	if (!textless) {
+		add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
+		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
+		add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
+	}
 	add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
 	add('badge', pb.badge, pl.badge, pb.badge !== pl.badge ? `badge ${pb.badge ? 'absent' : 'extra'} on live` : null)
 	return rows

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Onderdeel: zijpaneel van een overzicht (zoeken, kolommen, filters)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<aside aria-label="{{ paneelLabel }}" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; width: 100%; min-height: 100%; box-sizing: border-box; background: #ffffff; border-left: 1px solid #e4e6ea; display: flex; flex-direction: column">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 20px 20px 0">
+    <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2">{{ title }}</h2>
+      <span style="font-size: 14px; color: #5e6168">{{ count }}</span>
+    </div>
+    <button type="button" aria-label="Zijpaneel sluiten" style="flex: none; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 18px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+  </div>
+  <div role="tablist" aria-label="Zijpaneel" style="display: flex; gap: 4px; padding: 14px 12px 0; border-bottom: 1px solid #e4e6ea">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+      <button type="button" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ t.icon }}"></path></svg>{{ t.label }}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isZoeken }}" hint-placeholder-val="{{ true }}">
+  <div role="tabpanel" aria-label="Zoeken" style="display: flex; flex-direction: column; gap: 22px; padding: 20px">
+    <form role="search" style="position: relative">
+      <label for="zp-zoek" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Zoeken in deze lijst</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true" style="position: absolute; left: 12px; top: 11px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+      <input id="zp-zoek" type="search" placeholder="{{ placeholder }}" style="width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px 0 38px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 14px 'Fira Sans', sans-serif; color: #1b1c1d">
+    </form>
+
+    <sc-if value="{{ sortInSidebar }}" hint-placeholder-val="{{ true }}">
+    <section aria-labelledby="zp-sort-kop" style="display: flex; flex-direction: column; gap: 12px">
+      <h3 id="zp-sort-kop" style="margin: 0; font-size: 15px; font-weight: 700">Sorteren</h3>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+        <label for="zp-sort-veld" style="font-size: 14px; font-weight: 600">Sorteren op</label>
+        <div style="position: relative"><select id="zp-sort-veld" style="appearance: none; -webkit-appearance: none; box-sizing: border-box; width: 100%; height: 40px; padding: 0 36px 0 12px; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d"><sc-for list="{{ sortFields }}" as="f" hint-placeholder-count="6"><option selected="{{ f.selected }}">{{ f.label }}</option></sc-for></select><span aria-hidden="true" style="position: absolute; right: 10px; top: 11px; color: #3d4047; pointer-events: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></span></div>
+      </div>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+        <legend style="padding: 0 0 6px; font-size: 14px; font-weight: 600">Richting</legend>
+        <div role="group" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; background: #eceef1">
+          <sc-for list="{{ directions }}" as="d" hint-placeholder-count="2">
+            <label style="{{ d.style }}"><input type="radio" name="zp-richting" checked="{{ d.checked }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ d.icon }}"></path></svg>{{ d.label }}</label>
+          </sc-for>
+        </div>
+      </fieldset>
+      <p style="margin: 0; font-size: 13px; color: #5e6168">{{ sortNow }}</p>
+    </section>
+    </sc-if>
+    <sc-if value="{{ sortInTable }}" hint-placeholder-val="{{ false }}">
+    <section aria-labelledby="zp-sort-kop" style="display: flex; flex-direction: column; gap: 6px">
+      <h3 id="zp-sort-kop" style="margin: 0; font-size: 15px; font-weight: 700">Sorteren</h3>
+      <p style="margin: 0; font-size: 13px; color: #5e6168">In de tabel sorteert u met de kolomkoppen. {{ sortNow }}</p>
+    </section>
+    </sc-if>
+
+    <section aria-labelledby="zp-filter-kop" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+        <h3 id="zp-filter-kop" style="margin: 0; font-size: 15px; font-weight: 700">Filters</h3>
+        <a href="#" style="font-size: 14px; font-weight: 600">Alles wissen</a>
+      </div>
+      <sc-for list="{{ facets }}" as="fc" hint-placeholder-count="3">
+        <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 4px">
+          <legend style="padding: 0 0 6px; font-size: 14px; font-weight: 600">{{ fc.label }}</legend>
+          <sc-for list="{{ fc.options }}" as="o" hint-placeholder-count="4">
+            <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 14px"><input type="checkbox" checked="{{ o.checked }}" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"><span style="flex: 1">{{ o.label }}</span><span style="font-size: 13px; color: #5e6168">{{ o.count }}</span></label>
+          </sc-for>
+        </fieldset>
+      </sc-for>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isKolommen }}" hint-placeholder-val="{{ false }}">
+  <div role="tabpanel" aria-label="Kolommen" style="display: flex; flex-direction: column; gap: 22px; padding: 20px">
+    <section aria-labelledby="zp-kol-kop" style="display: flex; flex-direction: column; gap: 10px">
+      <h3 id="zp-kol-kop" style="margin: 0; font-size: 15px; font-weight: 700">Zichtbare kolommen</h3>
+      <sc-for list="{{ columns }}" as="c" hint-placeholder-count="7">
+        <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 14px"><input type="checkbox" checked="{{ c.checked }}" style="width: 18px; height: 18px; margin: 0; accent-color: #3669a5"><span style="flex: 1">{{ c.label }}</span></label>
+      </sc-for>
+    </section>
+    <section aria-labelledby="zp-vol-kop" style="display: flex; flex-direction: column; gap: 10px">
+      <h4 id="zp-vol-kop" style="margin: 0; font-size: 14px; font-weight: 700">Volgorde en vastzetten</h4>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{ ordered }}" as="c" hint-placeholder-count="5">
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 36px; padding: 0 4px 0 10px; border-radius: 8px; background: #f5f6f8; font-size: 14px"><span style="flex: 1">{{ c.label }}</span><button type="button" aria-label="{{ c.up }}" style="width: 30px; height: 30px; border: 0; border-radius: 15px; background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"></path></svg></button><button type="button" aria-label="{{ c.down }}" style="width: 30px; height: 30px; border: 0; border-radius: 15px; background: transparent; color: #3d4047; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z"></path></svg></button><button type="button" aria-label="{{ c.pin }}" aria-pressed="{{ c.pinned }}" style="{{ c.pinStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"></path></svg></button></li>
+        </sc-for>
+      </ol>
+      <button type="button" style="align-self: flex-start; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font: 600 14px 'Fira Sans', sans-serif; color: #234a78">Kolommen herstellen</button>
+    </section>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isFilters }}" hint-placeholder-val="{{ false }}">
+  <div role="tabpanel" aria-label="Filters" style="display: flex; flex-direction: column; gap: 22px; padding: 20px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Filter opslaan</button>
+      <p style="margin: 0; font-size: 13px; color: #5e6168">Bewaart de zoekterm, de filters en de sortering van nu onder een naam.</p>
+    </div>
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+      <section aria-labelledby="{{ g.id }}" style="display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 0 0 4px">
+          <h3 id="{{ g.id }}" style="margin: 0; font-size: 15px; font-weight: 700">{{ g.title }}</h3>
+          <sc-if value="{{ g.readOnly }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"></path></svg>Alleen lezen</span></sc-if>
+        </div>
+        <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><p style="margin: 0 0 4px; font-size: 13px; color: #5e6168">{{ g.note }}</p></sc-if>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+          <sc-for list="{{ g.items }}" as="f" hint-placeholder-count="3">
+            <li style="display: flex; flex-direction: column; position: relative">
+              <div style="{{ f.rowStyle }}">
+                <button type="button" aria-pressed="{{ f.active }}" style="flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 0; border: 0; background: transparent; text-align: left; font: inherit; color: inherit"><span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600"><sc-if value="{{ f.inMenu }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color: #234a78"><title>In het menu</title><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"></path></svg></sc-if>{{ f.name }}</span><span style="font-size: 13px; color: #5e6168">{{ f.meta }}</span></button>
+                <span style="flex: none; min-width: 26px; padding: 2px 8px; border-radius: 11px; background: #e4e6ea; color: #3d4047; font-size: 12px; font-weight: 600; text-align: center">{{ f.count }}</span>
+                <button type="button" aria-haspopup="menu" aria-expanded="{{ f.menuOpen }}" aria-label="{{ f.manageLabel }}" style="flex: none; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 17px; background: transparent; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z"></path></svg></button>
+              </div>
+              <sc-if value="{{ f.showMenu }}" hint-placeholder-val="{{ false }}">
+              <div role="menu" aria-label="{{ f.manageLabel }}" style="position: absolute; right: 8px; top: 46px; z-index: 2; width: 264px; padding: 6px; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 10px; box-shadow: 0 8px 24px rgba(27,28,29,0.16); display: flex; flex-direction: column">
+                <sc-for list="{{ f.menu }}" as="m" hint-placeholder-count="6">
+                  <sc-if value="{{ m.divider }}" hint-placeholder-val="{{ false }}"><hr style="margin: 4px 6px; border: 0; border-top: 1px solid #eef0f3"></sc-if>
+                  <sc-if value="{{ m.item }}" hint-placeholder-val="{{ true }}"><button type="button" role="menuitem" style="{{ m.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex: none"><path d="{{ m.icon }}"></path></svg><span style="display: flex; flex-direction: column; align-items: flex-start; gap: 1px"><span>{{ m.label }}</span><sc-if value="{{ m.hasHint }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 400; color: #5e6168">{{ m.hint }}</span></sc-if></span></button></sc-if>
+                </sc-for>
+              </div>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </sc-for>
+  </div>
+  </sc-if>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Alle zaken"},"count":{"editor":"text","default":"48 zaken, 8 op deze pagina"},"tab":{"editor":"text","default":"Zoeken"},"view":{"editor":"text","default":"Tabel"},"menu":{"editor":"text","default":""},"pinned":{"editor":"text","default":"Termijn deze week"},"active":{"editor":"text","default":""},"placeholder":{"editor":"text","default":"Zoek op zaak, nummer of verzoeker"},"$preview":{"width":360,"height":1052}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const title = p.title ?? 'Alle zaken';
+    const count = p.count ?? '48 zaken, 8 op deze pagina';
+    const tab = p.tab ?? 'Zoeken';
+    const view = p.view ?? 'Tabel';
+    const menu = p.menu ?? '';
+    const pinned = String(p.pinned ?? 'Termijn deze week').split(',').map((s) => s.trim()).filter(Boolean);
+    const active = p.active ?? '';
+    const placeholder = p.placeholder ?? 'Zoek op zaak, nummer of verzoeker';
+    const I = {
+      search: 'M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z',
+      columns: 'M4,5V19H9V5H4M10,5V19H15V5H10M16,5V19H21V5H16Z',
+      filter: 'M6,13H18V11H6M3,6V8H21V6M10,18H14V16H10V18Z',
+      up: 'M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z',
+      down: 'M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z',
+      pencil: 'M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z',
+      refresh: 'M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z',
+      share: 'M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z',
+      copy: 'M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z',
+      pin: 'M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z',
+      pinOff: 'M2,5.27L3.28,4L20,20.72L18.73,22L12.8,16.07V22H11.2V16H6V14L8,12V11.27L2,5.27M16,12L18,14V16H17.82L8,6.18V4H7V2H17V4H16V12Z',
+      bin: 'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z'
+    };
+    const tabStyle = (on) => 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 10px; border: 0; border-bottom: 2px solid ' + (on ? '#3669a5' : 'transparent') + '; margin-bottom: -1px; background: transparent; font: 600 14px \'Fira Sans\', sans-serif; color: ' + (on ? '#234a78' : '#3d4047') + '; cursor: pointer';
+    const tabs = [['Zoeken', I.search], ['Kolommen', I.columns], ['Filters', I.filter]].map(([label, icon]) => ({ label, icon, selected: label === tab ? 'true' : 'false', style: tabStyle(label === tab) }));
+
+    // Sorting: the table sorts through its column headers; list, cards, board and map sort here.
+    const sortInTable = view === 'Tabel';
+    const sortInSidebar = !sortInTable;
+    const sortFields = ['Termijn', 'Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Laatst gewijzigd'].map((label, i) => ({ label, selected: i === 0 }));
+    const dirStyle = (on) => 'flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; position: relative; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
+    const directions = [['Oplopend', I.up, true], ['Aflopend', I.down, false]].map(([label, icon, on]) => ({ label, icon, checked: on, style: dirStyle(on) }));
+    const sortNow = 'Nu: op termijn, oplopend. De sortering bewaart u mee in een filter.';
+
+    const facets = [
+      ['Team', [['Woo en informatie', 19, true], ['Vergunningen', 12, false], ['Sociaal domein', 9, false], ['Handhaving', 8, false]]],
+      ['Status', [['Ontvangen', 11, false], ['In behandeling', 20, true], ['Wacht op inwoner', 4, false], ['Besluit', 6, false], ['Afgehandeld', 7, false]]],
+      ['Zaaktype', [['Woo-verzoek', 19, false], ['Bezwaar', 8, false], ['Omgevingsvergunning', 10, false], ['Melding', 6, false], ['Subsidie', 5, false]]]
+    ].map(([label, options]) => ({ label, options: options.map(([l, count, checked]) => ({ label: l, count, checked })) }));
+
+    const columns = ['Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Termijn', 'Verzoeker', 'Ontvangen op', 'Laatst gewijzigd'].map((label, i) => ({ label, checked: i < 5 }));
+    const pinStyle = (on) => 'width: 30px; height: 30px; border: 0; border-radius: 15px; display: inline-flex; align-items: center; justify-content: center; ' + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #3d4047;');
+    const ordered = ['Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Termijn'].map((label, i) => ({ label, up: label + ' omhoog', down: label + ' omlaag', pin: i === 0 ? label + ' losmaken' : label + ' vastzetten', pinned: i === 0 ? 'true' : 'false', pinStyle: pinStyle(i === 0) }));
+
+    const itemStyle = (danger) => 'display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; text-align: left; font: 600 14px \'Fira Sans\', sans-serif; color: ' + (danger ? '#a30000' : '#1b1c1d') + '; cursor: pointer';
+    const item = (label, icon, hint, danger) => ({ item: true, divider: false, label, icon, hint: hint ?? '', hasHint: !!hint, style: itemStyle(!!danger) });
+    const divider = { item: false, divider: true };
+    const menuFor = (f, access) => {
+      const inMenu = pinned.includes(f.name);
+      const pinItem = inMenu ? item('Uit menu halen', I.pinOff, 'Verdwijnt uit het menu links, het filter blijft bestaan') : item('Toevoegen aan menu', I.pin, 'Komt onder Mijn filters in het menu links');
+      if (access === 'owner') {
+        return [item('Bewerken', I.pencil, 'Naam, zoekterm, filters en sortering'), item('Bijwerken met huidige filters', I.refresh), item('Delen', I.share, 'Met personen en groepen'), item('Kopie opslaan', I.copy), pinItem, divider, item('Verwijderen', I.bin, 'Ook bij wie het is gedeeld', true)];
+      }
+      return [item('Kopie opslaan', I.copy, 'Een eigen filter dat u kunt bewerken en delen'), pinItem];
+    };
+    const rowStyle = (on) => 'display: flex; align-items: center; gap: 8px; padding: 2px 4px 2px 10px; border-radius: 8px; ' + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;');
+    const row = (access) => ([name, meta, count]) => ({
+      name, meta, count,
+      inMenu: pinned.includes(name),
+      active: name === active ? 'true' : 'false',
+      rowStyle: rowStyle(name === active),
+      menuOpen: name === menu ? 'true' : 'false',
+      showMenu: name === menu,
+      manageLabel: 'Beheer ' + name,
+      menu: menuFor({ name }, access)
+    });
+    const groups = [
+      { id: 'zp-mijn', title: 'Mijn filters', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 3], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 4], ['Opgeschort', 'Status opgeschort, alle teams', 15]].map(row('owner')) },
+      { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 19]].map(row('read')) },
+      { id: 'zp-standaard', title: 'Standaardfilters', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 14], ['Alle lopende zaken', 'Status niet afgehandeld', 41], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 2]].map(row('default')) }
+    ];
+    return {
+      paneelLabel: 'Zoeken, kolommen en filters van ' + title.toLowerCase(),
+      title, count, placeholder, tabs,
+      isZoeken: tab === 'Zoeken', isKolommen: tab === 'Kolommen', isFilters: tab === 'Filters',
+      sortInTable, sortInSidebar, sortFields, directions, sortNow, facets, columns, ordered, groups
+    };
+  }
+}
+</script>
+</body>
+</html>

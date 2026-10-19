@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>dossiq: persoonlijke instellingen, zaaktypen in mijn menu</title>
+<title>dossiq: persoonlijke instellingen, weergaven in mijn menu</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -18,7 +18,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
   <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="DqDashboard" hint-size="100%,1220px"></dc-import></div>
   <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
-    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Zaaktypen in mijn menu" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
+    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Weergaven in mijn menu" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
   </div>
 </div>
 </x-dc>
@@ -26,17 +26,16 @@ a{color:#3669a5}a:hover{color:#234a78}
 class Component extends DCLogic {
   renderVals() {
     // Dossiq's own settings dialog (NcAppSettingsDialog), opened from Persoonlijke instellingen in the navigation and
-    // from the pencil next to Mijn zaaktypen (DqZijbalk). Replaces the Dossiq section of Nextcloud's personal settings
+    // from the pencil next to Mijn weergaven (DqZijbalk). Replaces the Dossiq section of Nextcloud's personal settings
     // (/settings/user/dossiq, decision 11 Oct 2026). The five Vue apps of src/personalSettings.js become sections here,
     // next to what CnAppRoot adds by default: Meldingen, Inloggegevens and Rondleiding.
     const sections = [
-      { name: 'Zaaktypen in mijn menu', desc: 'Deze zaaktypen staan in je menu onder Mijn zaaktypen, in deze volgorde. Sleep een regel of gebruik de pijltjestoetsen.', rows: [
+      { name: 'Weergaven in mijn menu', desc: 'Deze opgeslagen weergaven staan onderaan je menu onder Mijn weergaven, in deze volgorde. Sleep een regel of gebruik de pijltjestoetsen. Een weergave zet je in het menu met Toevoegen aan menu in het zijpaneel van een lijst.', rows: [
         { items: [
-          ['Woo-verzoeken', 'Zaaktype Woo-verzoek · 19 open zaken', 'Verwijderen'],
-          ['Bezwaarschriften', 'Zaaktype Bezwaar · 7 open zaken', 'Verwijderen'],
-          ['Klachten', 'Zaaktype Klacht · 4 open zaken', 'Verwijderen']
+          ['Woo-verzoeken', 'Zaaktype Woo-verzoek, status open · 19 zaken', 'Uit menu halen'],
+          ['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen · 3 zaken', 'Uit menu halen']
         ] },
-        { select: 'Zaaktype toevoegen', value: 'Kies een zaaktype', hint: 'Je ziet de zaaktypen waarin je team zaken behandelt. Een nieuw zaaktype komt onderaan.' }
+        { select: 'Weergave toevoegen', value: 'Kies een opgeslagen weergave', hint: 'Je ziet je eigen weergaven, de weergaven die met je zijn gedeeld en de standaardweergaven. Een nieuwe weergave komt onderaan.' }
       ] },
       { name: 'Meldingen', desc: 'Kies per soort melding waar je hem krijgt. Je organisatie bepaalt welke verplicht zijn.', rows: [
         { select: 'Meldingsdomein', value: 'Zaken' },

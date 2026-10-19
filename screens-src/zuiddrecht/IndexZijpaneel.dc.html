@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>Onderdeel: zijpaneel van een overzicht (zoeken, kolommen, filters)</title>
+<title>Onderdeel: zijpaneel van een overzicht (zoeken, kolommen, weergaven)</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -99,9 +99,9 @@ a{color:#3669a5}a:hover{color:#234a78}
   </sc-if>
 
   <sc-if value="{{ isFilters }}" hint-placeholder-val="{{ false }}">
-  <div role="tabpanel" aria-label="Filters" style="display: flex; flex-direction: column; gap: 22px; padding: 20px">
+  <div role="tabpanel" aria-label="Weergaven" style="display: flex; flex-direction: column; gap: 22px; padding: 20px">
     <div style="display: flex; flex-direction: column; gap: 8px">
-      <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Filter opslaan</button>
+      <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"></path></svg>Weergave opslaan</button>
       <p style="margin: 0; font-size: 13px; color: #5e6168">Bewaart de zoekterm, de filters en de sortering van nu onder een naam.</p>
     </div>
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
@@ -163,7 +163,7 @@ class Component extends DCLogic {
       bin: 'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z'
     };
     const tabStyle = (on) => 'display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 10px; border: 0; border-bottom: 2px solid ' + (on ? '#3669a5' : 'transparent') + '; margin-bottom: -1px; background: transparent; font: 600 14px \'Fira Sans\', sans-serif; color: ' + (on ? '#234a78' : '#3d4047') + '; cursor: pointer';
-    const tabs = [['Zoeken', I.search], ['Kolommen', I.columns], ['Filters', I.filter]].map(([label, icon]) => ({ label, icon, selected: label === tab ? 'true' : 'false', style: tabStyle(label === tab) }));
+    const tabs = [['Zoeken', I.search], ['Kolommen', I.columns], ['Weergaven', I.filter]].map(([label, icon]) => ({ label, icon, selected: label === tab ? 'true' : 'false', style: tabStyle(label === tab) }));
 
     // Sorting: the table sorts through its column headers; list, cards, board and map sort here.
     const sortInTable = view === 'Tabel';
@@ -171,7 +171,7 @@ class Component extends DCLogic {
     const sortFields = ['Termijn', 'Zaak', 'Zaaktype', 'Status', 'Behandelaar', 'Laatst gewijzigd'].map((label, i) => ({ label, selected: i === 0 }));
     const dirStyle = (on) => 'flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; position: relative; ' + (on ? 'background: #ffffff; color: #1b1c1d; box-shadow: 0 1px 2px rgba(27,28,29,0.12);' : 'background: transparent; color: #3d4047;');
     const directions = [['Oplopend', I.up, true], ['Aflopend', I.down, false]].map(([label, icon, on]) => ({ label, icon, checked: on, style: dirStyle(on) }));
-    const sortNow = 'Nu: op termijn, oplopend. De sortering bewaart u mee in een filter.';
+    const sortNow = 'Nu: op termijn, oplopend. De sortering bewaart u mee in een weergave.';
 
     const facets = [
       ['Team', [['Woo en informatie', 19, true], ['Vergunningen', 12, false], ['Sociaal domein', 9, false], ['Handhaving', 8, false]]],
@@ -188,11 +188,11 @@ class Component extends DCLogic {
     const divider = { item: false, divider: true };
     const menuFor = (f, access) => {
       const inMenu = pinned.includes(f.name);
-      const pinItem = inMenu ? item('Uit menu halen', I.pinOff, 'Verdwijnt uit het menu links, het filter blijft bestaan') : item('Toevoegen aan menu', I.pin, 'Komt onder Mijn filters in het menu links');
+      const pinItem = inMenu ? item('Uit menu halen', I.pinOff, 'Verdwijnt uit het menu links, de weergave blijft bestaan') : item('Toevoegen aan menu', I.pin, 'Komt onder Mijn weergaven in het menu links');
       if (access === 'owner') {
         return [item('Bewerken', I.pencil, 'Naam, zoekterm, filters en sortering'), item('Bijwerken met huidige filters', I.refresh), item('Delen', I.share, 'Met personen en groepen'), item('Kopie opslaan', I.copy), pinItem, divider, item('Verwijderen', I.bin, 'Ook bij wie het is gedeeld', true)];
       }
-      return [item('Kopie opslaan', I.copy, 'Een eigen filter dat u kunt bewerken en delen'), pinItem];
+      return [item('Kopie opslaan', I.copy, 'Een eigen weergave die u kunt bewerken en delen'), pinItem];
     };
     const rowStyle = (on) => 'display: flex; align-items: center; gap: 8px; padding: 2px 4px 2px 10px; border-radius: 8px; ' + (on ? 'background: #eaf0f7; color: #234a78;' : 'background: transparent; color: #1b1c1d;');
     const row = (access) => ([name, meta, count]) => ({
@@ -206,14 +206,14 @@ class Component extends DCLogic {
       menu: menuFor({ name }, access)
     });
     const groups = [
-      { id: 'zp-mijn', title: 'Mijn filters', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 3], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 4], ['Opgeschort', 'Status opgeschort, alle teams', 15]].map(row('owner')) },
+      { id: 'zp-mijn', title: 'Mijn weergaven', readOnly: false, hasNote: false, note: '', items: [['Termijn deze week', 'Mijn zaken, termijn binnen 7 dagen', 3], ['Wacht op inwoner', 'Status wacht op inwoner, gedeeld met team Woo', 4], ['Opgeschort', 'Status opgeschort, alle teams', 15]].map(row('owner')) },
       { id: 'zp-gedeeld', title: 'Gedeeld met mij', readOnly: false, hasNote: true, note: 'Van collega\'s. U kunt ze gebruiken en een kopie opslaan.', items: [['Woo-verzoeken team', 'Door Anouk Bakker, team Woo en informatie', 19]].map(row('read')) },
-      { id: 'zp-standaard', title: 'Standaardfilters', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 14], ['Alle lopende zaken', 'Status niet afgehandeld', 41], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 2]].map(row('default')) }
+      { id: 'zp-standaard', title: 'Standaardweergaven', readOnly: true, hasNote: true, note: 'Geleverd door dossiq. Een nieuwe versie werkt ze bij.', items: [['Mijn zaken', 'Behandelaar is ik', 14], ['Alle lopende zaken', 'Status niet afgehandeld', 41], ['Termijn verstreken', 'Termijn voor vandaag, niet afgehandeld', 2]].map(row('default')) }
     ];
     return {
-      paneelLabel: 'Zoeken, kolommen en filters van ' + title.toLowerCase(),
+      paneelLabel: 'Zoeken, kolommen en weergaven van ' + title.toLowerCase(),
       title, count, placeholder, tabs,
-      isZoeken: tab === 'Zoeken', isKolommen: tab === 'Kolommen', isFilters: tab === 'Filters',
+      isZoeken: tab === 'Zoeken', isKolommen: tab === 'Kolommen', isFilters: tab === 'Weergaven',
       sortInTable, sortInSidebar, sortFields, directions, sortNow, facets, columns, ordered, groups
     };
   }

@@ -34,7 +34,7 @@ const width = 1440
 const settle = Number(args.settle || 8000)
 // An element crop above this mismatch % with no property flagged is reported as visually different.
 const CROP_FLAG = Number(args['crop-flag'] || 30)
-const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, count: e.count, rect: e.rect })
+const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inRow: e.inRow, count: e.count, repeated: e.repeated, rect: e.rect })
 const user = process.env.COMPDIFF_USER, password = process.env.COMPDIFF_PASSWORD
 if (!board || !args.url || !user || !password) {
 	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir]')

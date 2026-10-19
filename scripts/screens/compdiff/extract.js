@@ -442,6 +442,7 @@ window.__compdiffExtract = function () {
 		const te = textEl(el)
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
+			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
 			kind, label, inControl: rec === 'rep' ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),
 			props: {

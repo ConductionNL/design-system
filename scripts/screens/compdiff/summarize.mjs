@@ -5,7 +5,7 @@
 //   boards.md / boards.tsv   per board: components flagged, the 3 worst components with their flagged deltas
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows } from './compare.mjs'
+import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows, isRepeated } from './compare.mjs'
 
 const dir = process.argv[2]
 const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f)).sort()
@@ -96,8 +96,8 @@ function renderTable (r) {
 		for (const x of e.rows) L.push(`| ${x.prop} | ${fmt(x.board)} | ${fmt(x.live)} | ${x.delta ?? ''} | ${x.flag ? 'FLAG ' + x.flag : ''} |`)
 		L.push('')
 	}
-	if ((r.missingElements || []).length) L.push('## Elements missing on live', '', ...r.missingElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}`), '')
-	if ((r.extraElements || []).length) L.push('## Elements extra on live', '', ...r.extraElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}`), '')
+	if ((r.missingElements || []).length) L.push('## Elements missing on live', '', ...r.missingElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}${isRepeated(e) ? ' (data-dependent, not counted)' : ''}`), '')
+	if ((r.extraElements || []).length) L.push('## Elements extra on live', '', ...r.extraElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}${isRepeated(e) ? ' (data-dependent, not counted)' : ''}`), '')
 	L.push(r.notMeasured ? `## Not measured: ${r.notMeasured.length}` : '## Not measured: unknown (run without the element inventory)', '', ...(r.notMeasured || []).map((u) => `- ${u.tag} "${u.text}" at ${u.rect.x},${u.rect.y} ${u.rect.w}x${u.rect.h}`), '')
 	if (r.extraOnLive.length) L.push('## Extra on live', '', ...r.extraOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
 	return L.join('\n')

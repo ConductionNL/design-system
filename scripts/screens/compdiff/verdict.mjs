@@ -11,7 +11,7 @@
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy, addPage, elementRows } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -63,19 +63,20 @@ for (const f of files) {
 		const reasons = elementRows(e).filter((x) => x.flag).map((x) => x.prop === 'pixels' ? `visually differs ${x.live}%, property not identified` : `${x.prop} ${fmt(x.board)}>${fmt(x.live)}`)
 		if (reasons.length) failing.push({ comp: elabel(e.board), reasons })
 	}
-	for (const e of r.missingElements || []) failing.push({ comp: elabel(e), reasons: ['missing on live'] })
-	for (const e of r.extraElements || []) failing.push({ comp: elabel(e), reasons: ['extra on live'] })
+	for (const e of (r.missingElements || []).filter((x) => !isRepeated(x))) failing.push({ comp: elabel(e), reasons: ['missing on live'] })
+	for (const e of (r.extraElements || []).filter((x) => !isRepeated(x))) failing.push({ comp: elabel(e), reasons: ['extra on live'] })
+	const dataUnpaired = [...(r.missingElements || []), ...(r.extraElements || [])].filter((x) => isRepeated(x)).length
 	for (const e of r.extraOnLive) failing.push({ comp: label(e), reasons: ['extra on live'] })
 	const notMeasured = r.notMeasured ? r.notMeasured.length : null
-	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0 && notMeasured === 0, failing, notMeasured, components: r.components.length + r.missingOnLive.length + (r.elements || []).length + (r.missingElements || []).length })
+	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0 && notMeasured === 0, failing, notMeasured, dataUnpaired, components: r.components.length + r.missingOnLive.length + (r.elements || []).length + (r.missingElements || []).length })
 }
 
 const matched = verdicts.filter((v) => v.match).length
-const tsv = ['board\tverdict\tfailing\tcomponents\tnot_measured\tfailing_detail']
+const tsv = ['board\tverdict\tfailing\tcomponents\tnot_measured\tdata_unpaired\tfailing_detail']
 const md = [`# Component-measured layout verdicts`, '', `${matched} of ${verdicts.length} boards match. A board matches only when every component pairs, sits within ${POS}px (x, y from the content origin) and ${WIDTH}px (width), and passes every styling threshold.`, '', '| board | verdict | failing / components | not measured | failing components |', '|---|---|---|---|---|']
 for (const v of verdicts) {
 	const detail = v.failing.map((x) => `${x.comp}: ${x.reasons.slice(0, 4).join(', ')}${x.reasons.length > 4 ? ` (+${x.reasons.length - 4})` : ''}`)
-	tsv.push([v.board, v.match ? 'MATCH' : 'NO-MATCH', v.failing.length, v.components, v.notMeasured ?? 'unknown', detail.join(' | ')].join('\t'))
+	tsv.push([v.board, v.match ? 'MATCH' : 'NO-MATCH', v.failing.length, v.components, v.notMeasured ?? 'unknown', v.dataUnpaired, detail.join(' | ')].join('\t'))
 	md.push(`| ${v.board} | ${v.match ? 'MATCH' : 'NO-MATCH'} | ${v.failing.length} / ${v.components} | ${v.notMeasured ?? 'unknown'} | ${detail.join('<br>')} |`)
 }
 fs.writeFileSync(path.join(dir, 'verdicts.tsv'), tsv.join('\n') + '\n')

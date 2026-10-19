@@ -59,6 +59,7 @@ export function pairComponents (board, live, H) {
 		for (const l of live) {
 			if (usedL.has(l) || group(b) !== group(l)) continue
 			let cost = pos(b, l)
+			if (!!b.record !== !!l.record) cost += 0.15
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
 			if (cost <= 0.2) cand.push({ b, l, cost })
 		}
@@ -135,7 +136,7 @@ export function compareProps (b, l) {
 		} else if (k === 'shadow') {
 			if ((vb === 'none') !== (vl === 'none')) flag = 'shadow' + (vb === 'none' ? ' extra on live' : ' absent on live')
 		} else if (k === 'structure') {
-			if (vb !== vl) flag = 'structure differs'
+			if (foldStructure(vb) !== foldStructure(vl)) flag = 'structure differs'
 		} else if (k === 'placement') {
 			if (vb !== vl) flag = 'chrome placement'
 		} else if (k === 'category') {
@@ -257,12 +258,15 @@ export function pairElements (B = [], L = [], H = 2000) {
 	}
 	return {
 		pairs,
-		missing: gb.filter((g) => !ub.has(g)).map((g) => ({ ...g.rep, count: g.count })),
-		extra: gl.filter((g) => !ul.has(g)).map((g) => ({ ...g.rep, count: g.count })),
+		missing: gb.filter((g) => !ub.has(g)).map((g) => ({ ...g.rep, count: g.count, repeated: isRepeated(g.rep, g.count) })),
+		extra: gl.filter((g) => !ul.has(g)).map((g) => ({ ...g.rep, count: g.count, repeated: isRepeated(g.rep, g.count) })),
 	}
 }
 
-export function compareElement (b, l) {
+export function compareElement (b, l, by = 'label') {
+	// A status tag paired by group, not by label, takes its colour from its value (Aanwezig green, Afwezig amber):
+	// compare its shape, size and type, not its colours.
+	const semantic = by !== 'label' && (b.kind === 'pill' || b.kind === 'badge') && (l.kind === 'pill' || l.kind === 'badge')
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props
@@ -274,8 +278,8 @@ export function compareElement (b, l) {
 	}
 	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
-	add('background', pb.background, pl.background, colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
-	add('color', pb.color, pl.color, colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
+	add('background', pb.background, pl.background, !semantic && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
+	add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
 	add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
 	add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
 	add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
@@ -291,8 +295,30 @@ function colourDiff (a, b, t) {
 
 // Element rows from a stored element pair: the property rules again, plus the stored pixel signal when no rule fired.
 export function elementRows (e) {
-	const rows = compareElement(e.board, e.live)
+	const rows = compareElement(e.board, e.live, e.matchedBy)
 	const px = (e.rows || []).find((x) => x.prop === 'pixels')
 	if (px && !rows.some((x) => x.flag)) rows.push(px)
 	return rows
+}
+
+// An element that lives in a repeated structure (a list row, a record card, a run of same-style siblings) comes and
+// goes with the data; when it has no counterpart it is reported as data-dependent, not as missing or extra chrome.
+export function isRepeated (e, count = e.count || 1) {
+	// A count badge nested in a control ("2" next to a group name) is a data value as well.
+	return !!(e.repeated || count >= 2 || e.inControl === 'record card' || e.kind === 'row' || e.inRow || (e.inControl && /^\d+$/.test((e.label || '').trim())))
+}
+
+// A card's structure with repeated blocks folded (a list of rows inside a card), so row counts do not count.
+export function foldStructure (s) {
+	if (!s) return s
+	let t = s.split(' / ')
+	for (let changed = true; changed;) {
+		changed = false
+		for (let n = 1; n <= 4 && !changed; n++) {
+			for (let i = 0; i + 2 * n <= t.length; i++) {
+				if (t.slice(i, i + n).join('|') === t.slice(i + n, i + 2 * n).join('|')) { t.splice(i + n, n); changed = true; break }
+			}
+		}
+	}
+	return t.join(' / ')
 }

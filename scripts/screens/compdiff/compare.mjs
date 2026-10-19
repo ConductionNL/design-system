@@ -187,7 +187,7 @@ export function normalizeLegacy (r) {
 		}
 		h.quickActions = { separate: false }
 	}
-	const near = (h, t) => t.role === 'toolbar' && t.rect.y >= h.rect.y - 10 && t.rect.y <= h.rect.y + h.rect.h + 60
+	const near = (h, t) => t.role === 'toolbar' && t.rect.y < h.rect.y + h.rect.h && t.rect.y + t.rect.h > h.rect.y
 	if (r.extraOnLive.some((t) => near(ph.live, t))) {
 		r.extraOnLive = r.extraOnLive.filter((t) => !near(ph.live, t))
 		ph.live.quickActions = { separate: true }

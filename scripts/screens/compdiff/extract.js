@@ -324,7 +324,7 @@ window.__compdiffExtract = function () {
 		const hb = headerBox.getBoundingClientRect()
 		for (const el of used) {
 			const r = el.getBoundingClientRect()
-			if (r.top > hb.bottom + 60 || r.bottom < hb.top) continue
+			if (r.top >= hb.bottom || r.bottom <= hb.top) continue
 			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !b.closest('[role=tablist]') && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
 			ph.buttons.push(...qb.map(headerButton))
 			ph.header.actions = ph.buttons.length

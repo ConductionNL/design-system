@@ -233,6 +233,10 @@ window.__compdiffExtract = function () {
 		if (c.role !== 'dialog' && dialogs.some((d) => Math.abs(d.rect.x - c.rect.x) < 3 && Math.abs(d.rect.y - c.rect.y) < 3 && Math.abs(d.rect.w - c.rect.w) < 3)) components.splice(i, 1)
 	}
 
+	const headerButton = (b) => {
+		const bcs = getComputedStyle(b)
+		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: px(bcs.borderTopLeftRadius), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
+	}
 	// 3. Page header: the first visible h1 and the buttons on its line.
 	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]'))
 	if (h1) {
@@ -245,7 +249,8 @@ window.__compdiffExtract = function () {
 		window.__compdiffPageHeader = container
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...container.querySelectorAll('button, a')].filter((b) => {
-			if (!visible(b) || h1.contains(b)) return false
+			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
+			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || b.closest('[role=tablist]')) return false
 			const bcs = getComputedStyle(b)
 			return b.tagName === 'BUTTON' || opaque(bcs.backgroundColor) || nBorders(b) >= 3
 		})
@@ -254,10 +259,8 @@ window.__compdiffExtract = function () {
 			role: 'pageHeader', title: h1.textContent.trim().replace(/\s+/g, ' ').slice(0, 80), rect: rect(container),
 			header: { ...font(textEl(h1)), titleX: tb.x, titleY: tb.y, actions: btns.length },
 			subtitle: sub ? { ...font(sub), gapBelowTitle: round(sub.getBoundingClientRect().top - (tb.y + tb.h)) } : null,
-			buttons: btns.map((b) => {
-				const bcs = getComputedStyle(b)
-				return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: px(bcs.borderTopLeftRadius), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
-			}),
+			buttons: btns.map(headerButton),
+			quickActions: { separate: false },
 		})
 	}
 
@@ -313,6 +316,22 @@ window.__compdiffExtract = function () {
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
 		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), controlBorder: borders(c0cs).top, controlBorderColor: c0cs.borderTopColor, controlFontSize: px(c0cs.fontSize) })
+	}
+	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
+	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.
+	const ph = components.find((c) => c.role === 'pageHeader')
+	if (ph && headerBox) {
+		const hb = headerBox.getBoundingClientRect()
+		for (const el of used) {
+			const r = el.getBoundingClientRect()
+			if (r.top > hb.bottom + 60 || r.bottom < hb.top) continue
+			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !b.closest('[role=tablist]') && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
+			ph.buttons.push(...qb.map(headerButton))
+			ph.header.actions = ph.buttons.length
+			ph.quickActions = { separate: true, offsetTop: round(r.top - ph.header.titleY), offsetRight: round(window.innerWidth - r.right) }
+			const i = components.findIndex((c) => c.role === 'toolbar' && Math.abs(c.rect.x - r.x) < 1 && Math.abs(c.rect.y - r.y) < 1)
+			if (i >= 0) components.splice(i, 1)
+		}
 	}
 	// The component's own classes (and its nearest cn-* ancestor), used to tell a library defect from an app one.
 	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => /^cn-|^nc-|^app-content|^modal|^dialog/.test(k)); if (c) { lib = c; break } } return lib }

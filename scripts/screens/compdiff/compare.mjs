@@ -69,7 +69,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass)$|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$/
+const SKIP = /^(role|title|depth|frame|cls|libClass)$|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -77,6 +77,7 @@ const DATA = /^rect\.h$|^cell\.background$|^head\.background$/
 const STRUCTURAL = /^props\.(padding\.|gap$|margin\.)|^header\.rowBorderBottom$/
 
 function kind (p) {
+	if (/^quickActions\.separate$/.test(p)) return 'placement'
 	if (/(^|\.)(actions|tabCount|controls|buttons)$/.test(p)) return 'chrome'
 	if (/[cC]olor$|background/.test(p)) return 'color'
 	if (/boxShadow/.test(p)) return 'shadow'
@@ -124,6 +125,8 @@ export function compareProps (b, l) {
 			}
 		} else if (k === 'shadow') {
 			if ((vb === 'none') !== (vl === 'none')) flag = 'shadow' + (vb === 'none' ? ' extra on live' : ' absent on live')
+		} else if (k === 'placement') {
+			if (vb !== vl) flag = 'chrome placement'
 		} else if (k === 'category') {
 			if (String(vb).toLowerCase() !== String(vl).toLowerCase()) flag = 'style'
 		} else if (CARDLIKE.has(role) && STRUCTURAL.test(p)) {

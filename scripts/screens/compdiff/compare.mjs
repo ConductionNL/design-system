@@ -1,6 +1,9 @@
+import { pageComponent } from './pagebg.mjs'
+
 // Pairing and property comparison for compdiff. Pure functions over the extractor's output.
 
-export const THRESHOLDS = { spacing: 2, font: 0.5, size: 8, color: 12, weight: 100 }
+// Backgrounds use a tighter colour threshold: the work-ground grey #f5f6f8 against white is a channel delta of 10.
+export const THRESHOLDS = { spacing: 2, font: 0.5, size: 8, color: 12, background: 4, weight: 100 }
 
 const CARDLIKE = new Set(['card', 'dialog-card', 'dialog'])
 const group = (c) => (CARDLIKE.has(c.role) ? 'card' : c.role)
@@ -123,7 +126,7 @@ export function compareProps (b, l) {
 			const cb = rgba(vb), cl = rgba(vl)
 			if (cb && cl) {
 				const transparentB = cb[3] < 0.05, transparentL = cl[3] < 0.05
-				if (!(transparentB && transparentL) && (transparentB !== transparentL || Math.max(...[0, 1, 2].map((i) => Math.abs(cb[i] - cl[i]))) > THRESHOLDS.color || Math.abs(cb[3] - cl[3]) > 0.15)) flag = 'color'
+				if (!(transparentB && transparentL) && (transparentB !== transparentL || Math.max(...[0, 1, 2].map((i) => Math.abs(cb[i] - cl[i]))) > (/background/i.test(p) ? THRESHOLDS.background : THRESHOLDS.color) || Math.abs(cb[3] - cl[3]) > 0.15)) flag = 'color'
 			}
 		} else if (k === 'shadow') {
 			if ((vb === 'none') !== (vl === 'none')) flag = 'shadow' + (vb === 'none' ? ' extra on live' : ' absent on live')
@@ -197,5 +200,13 @@ export function normalizeLegacy (r) {
 		r.missingOnLive = r.missingOnLive.filter((t) => !near(ph.board, t))
 		ph.board.legacyQuickActions = true
 	}
+	return r
+}
+
+// Adds the page background, when measured, as a component of its own (once).
+export function addPage (r) {
+	if (!r.page || (r.components || []).some((c) => c.role === 'page')) return r
+	const c = pageComponent(r.page, r.height)
+	if (c) r.components.push(c)
 	return r
 }

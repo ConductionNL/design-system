@@ -11,7 +11,7 @@
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -29,15 +29,17 @@ const label = (c) => `${c.role}${c.title && !['tabs', 'table', 'toolbar'].includ
 
 const verdicts = []
 for (const f of files) {
-	const r = normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
+	const r = addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))))
 	// A board that draws only the app's top bar or navigation has no component in scope: no verdict.
-	if (!r.components || (r.components.length === 0 && r.missingOnLive.length === 0)) continue
+	if (!r.components || (r.components.filter((c) => c.role !== 'page').length === 0 && r.missingOnLive.length === 0)) continue
 	const ob = origin(r, 'board'), ol = origin(r, 'live')
 	const failing = []
 	for (const c of r.components) {
 		const reasons = []
 		// The page header defines the origin; its own position is its title's, already compared as titleX/titleY.
-		if (c.role !== 'pageHeader' && c.role !== 'dialog' && c.role !== 'dialog-card') {
+		if (c.role === 'page') {
+			// The page itself has no position; only its styling counts.
+		} else if (c.role !== 'pageHeader' && c.role !== 'dialog' && c.role !== 'dialog-card') {
 			const dx = Math.round(((c.live.rect.x - ol.x) - (c.board.rect.x - ob.x)) * 10) / 10
 			const dy = Math.round(((c.live.rect.y - ol.y) - (c.board.rect.y - ob.y)) * 10) / 10
 			if (Math.abs(dx) > POS) reasons.push(`x ${dx > 0 ? '+' : ''}${dx}`)

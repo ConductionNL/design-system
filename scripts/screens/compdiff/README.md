@@ -61,7 +61,7 @@ It applies the current comparison rules to the stored measurements again. After 
 
 - every board component pairs with one on live, and live has no extra components
 - every pair sits within 4 px in x and y of its board position, measured from the content area, and within 8 px in width. Height is data, so it does not count
-- no pair has a flagged styling property
+- no pair has a flagged styling property, and the page background behind the cards is the same colour (channel delta 4 or less)
 
 It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one row per board to a screens inventory, with notes that start with `layout match: component-measured` or `no layout match: component-measured`. The status and the page mismatch % come from the board's last row there.
 

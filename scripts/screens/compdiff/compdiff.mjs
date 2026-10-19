@@ -16,6 +16,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent } from './compare.mjs'
+import { pageBackground } from './pagebg.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -123,6 +124,7 @@ try {
 		})
 	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: pairs.map((p) => ({ br: p.board.rect, lr: p.live.rect })) })
 
+	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
 	const results = pairs.map((p, i) => {
 		const rows = compareProps(p.board, p.live)
 		return { name: p.name, role: p.board.role, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crops[i], rows, flagged: rows.filter((r) => r.flag).length, score: scoreComponent(rows) }
@@ -130,6 +132,7 @@ try {
 	const report = {
 		board, url: args.url, height: boardHeight, measuredAt: new Date().toISOString(),
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
+		page: pageBg,
 		components: results,
 		missingOnLive: missing.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 		blockedWrites: blocked,

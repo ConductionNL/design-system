@@ -11,7 +11,7 @@
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage, elementRows, isRepeated, markListElements } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -29,7 +29,7 @@ const label = (c) => `${c.role}${c.title && !['tabs', 'table', 'toolbar'].includ
 
 const verdicts = []
 for (const f of files) {
-	const r = addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))))
+	const r = markListElements(addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))))
 	// A board that draws only the app's top bar or navigation has no component in scope: no verdict.
 	if (!r.components || (r.components.filter((c) => c.role !== 'page').length === 0 && r.missingOnLive.length === 0)) continue
 	const ob = origin(r, 'board'), ol = origin(r, 'live')

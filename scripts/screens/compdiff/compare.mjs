@@ -234,9 +234,13 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = list && list.find((x) => !usedL.has(x))
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// A style that repeats three or more times on the page (one action button per list row, one tag per record) is a
+	// list's element: its copies form one group page-wide, however the rows nest their containers.
 	const groups = (list, used) => {
+		const freq = new Map()
+		for (const e of list) freq.set(styleKey(e), (freq.get(styleKey(e)) || 0) + 1)
 		const g = new Map()
-		for (const e of list) { if (used.has(e)) continue; const k = `${e.container}|${styleKey(e)}`; if (!g.has(k)) g.set(k, []); g.get(k).push(e) }
+		for (const e of list) { if (used.has(e)) continue; const k = freq.get(styleKey(e)) >= 3 ? `*|${styleKey(e)}` : `${e.container}|${styleKey(e)}`; if (!g.has(k)) g.set(k, []); g.get(k).push(e) }
 		return [...g.values()].map((m) => ({ rep: m.sort((a, b) => a.rect.y - b.rect.y || a.rect.x - b.rect.x)[0], count: m.length, members: m }))
 	}
 	const gb = groups(B, usedB), gl = groups(L, usedL)
@@ -328,4 +332,17 @@ export function foldStructure (s) {
 		}
 	}
 	return t.join(' / ')
+}
+
+// Stored runs keep only one representative per unpaired group, without its styling. A kind and height that repeat
+// five or more times among a side's unpaired elements mark a list's elements (one per row) as data-dependent.
+export function markListElements (r) {
+	for (const key of ['missingElements', 'extraElements']) {
+		const list = r[key] || []
+		const freq = new Map()
+		const k = (e) => `${e.kind}|${Math.round(e.rect.h)}`
+		for (const e of list) freq.set(k(e), (freq.get(k(e)) || 0) + 1)
+		for (const e of list) if (freq.get(k(e)) >= 5) e.repeated = true
+	}
+	return r
 }

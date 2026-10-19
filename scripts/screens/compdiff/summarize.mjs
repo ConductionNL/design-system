@@ -5,7 +5,7 @@
 //   boards.md / boards.tsv   per board: components flagged, the 3 worst components with their flagged deltas
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows, isRepeated } from './compare.mjs'
+import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows, isRepeated, markListElements } from './compare.mjs'
 
 const dir = process.argv[2]
 const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f)).sort()
@@ -22,7 +22,7 @@ const source = (c) => {
 	return 'dossiq (' + (cls || 'unclassed') + ')'
 }
 for (const f of files) {
-	const r = addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))))
+	const r = markListElements(addPage(normalizeLegacy(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))))
 	// A toolbar row that holds a tab strip is the tab strip's row, already compared as 'tabs'.
 	const inside = (o, i) => i.x >= o.x - 2 && i.y >= o.y - 2 && i.x + i.w <= o.x + o.w + 2 && i.y + i.h <= o.y + o.h + 2
 	const tabsB = (r.components || []).filter((c) => c.role === 'tabs')

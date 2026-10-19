@@ -301,6 +301,9 @@ window.__compdiffExtract = function () {
 		const btns = [...container.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
 			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || b.closest('[role=tablist]')) return false
+			// Only the title's own row: a status stepper or chip row under the title is not a header action.
+			const br = b.getBoundingClientRect(), hr = h1.getBoundingClientRect()
+			if (br.top + br.height / 2 > hr.bottom + 24 || br.bottom < hr.top - 24) return false
 			const bcs = getComputedStyle(b)
 			return b.tagName === 'BUTTON' || opaque(bcs.backgroundColor) || nBorders(b) >= 3
 		})

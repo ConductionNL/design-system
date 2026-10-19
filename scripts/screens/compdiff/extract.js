@@ -211,6 +211,56 @@ window.__compdiffExtract = function () {
 	const components = []
 	for (const c of cards) components.push(describeCard(c.el, c.el.closest('[role=dialog]') ? 'dialog-card' : 'card'))
 
+	// Record cards: a card with two or more siblings of about its width (a deck or card grid). The count follows the
+	// data, so one representative per deck is compared, with the order and placement of its parts as its structure.
+	const PILLISH = (el) => { const cs = getComputedStyle(el), r = el.getBoundingClientRect(); return r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim() && ((opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(el.parentElement)) || nBorders(el) >= 3) }
+	const DATE = /\b\d{1,2}\s(jan|feb|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)|vandaag|morgen|gisteren|\bdag(en)?\b|\bweken?\b|over \d|nog \d|verlopen|termijn/i
+	const NUMBER = /^[A-Z]{1,6}-?\d{2,}|^\d{4}[-/]\d+|^#?\d{3,}$|^ZK|^Z-\d/
+	const structureOf = (card) => {
+		const cr = card.getBoundingClientRect()
+		const parts = []
+		const seen = new Set()
+		for (const el of card.querySelectorAll('*')) {
+			if (!visible(el) || !ownedBy(el, card)) continue
+			if ([...seen].some((s) => s.contains(el))) continue
+			const r = el.getBoundingClientRect()
+			const ecs = getComputedStyle(el)
+			if (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4)) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
+			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, x: r.left }); seen.add(el); continue }
+		}
+		const range = document.createRange()
+		const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)
+		const texts = []
+		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+			const t = n.textContent.trim()
+			if (!t || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card) || [...seen].some((s) => s.contains(n.parentElement))) continue
+			range.selectNodeContents(n)
+			const q = range.getBoundingClientRect()
+			const ecs = getComputedStyle(n.parentElement)
+			texts.push({ t, y: q.top, x: q.left, fs: px(ecs.fontSize), fw: Number(ecs.fontWeight) })
+		}
+		const maxFs = Math.max(0, ...texts.filter((x) => x.fw >= 600).map((x) => x.fs))
+		for (const x of texts) parts.push({ t: NUMBER.test(x.t) ? 'number' : DATE.test(x.t) ? 'deadline' : x.fw >= 600 && x.fs >= maxFs ? 'title' : 'meta', y: x.y, x: x.x })
+		parts.sort((a, b) => a.y - b.y || a.x - b.x)
+		const rows = []
+		for (const p of parts) {
+			const row = rows.find((r) => Math.abs(r.y - p.y) <= 6)
+			if (row) { if (row.items[row.items.length - 1] !== p.t) row.items.push(p.t) } else rows.push({ y: p.y, items: [p.t] })
+		}
+		const out = []
+		for (const r of rows) { const k = r.items.join(' '); if (out[out.length - 1] !== k) out.push(k) }
+		return out.join(' / ')
+	}
+	const deckOf = new Map()
+	for (const c of components) {
+		if (c.role !== 'card' || !c.el.parentElement) continue
+		const sibs = [...c.el.parentElement.children].filter((s) => cardEls.has(s) && Math.abs(s.getBoundingClientRect().width - c.rect.w) < c.rect.w * 0.1)
+		if (sibs.length < 3) continue
+		if (!deckOf.has(c.el.parentElement)) deckOf.set(c.el.parentElement, deckOf.size + 1)
+		c.record = { deck: deckOf.get(c.el.parentElement), index: sibs.indexOf(c.el), count: sibs.length }
+		if (c.record.index === 0) c.structure = structureOf(c.el)
+	}
+
 	// 2. Dialogs: the visible dialog box (a full-screen role=dialog mask is narrowed to its framed child).
 	for (const d of document.querySelectorAll('[role=dialog], [role=alertdialog]')) {
 		if (!visible(d)) continue
@@ -334,7 +384,95 @@ window.__compdiffExtract = function () {
 		}
 	}
 	// The component's own classes (and its nearest cn-* ancestor), used to tell a library defect from an app one.
+	// 7. Every visible UI element, not a whitelist: controls, fields, toggles, chips and pills, badges and tags, list
+	// rows. Each carries its own styling; compare.mjs pairs them by label, then by repeated group and order.
+	const containerIds = new Map()
+	const containerOf = (el) => {
+		for (let e = el.parentElement; e && e !== document.body; e = e.parentElement) {
+			if (cardEls.has(e) || e.matches('ul, ol, [role=list], [role=listbox], tbody, [role=grid], [role=toolbar], [role=group], nav, form') || /flex|grid/.test(getComputedStyle(e).display) && e.children.length >= 3) {
+				if (!containerIds.has(e)) containerIds.set(e, containerIds.size + 1)
+				return containerIds.get(e)
+			}
+		}
+		return 0
+	}
+	const FIELD = 'input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea, [role=combobox], [role=searchbox]'
+	const TOGGLE = 'input[type=checkbox], input[type=radio], [role=checkbox], [role=switch], [role=radio]'
+	const kindOf = (el, cs, r) => {
+		if (el.matches(FIELD)) return 'field'
+		if (el.matches(TOGGLE)) return 'toggle'
+		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
+		const boxed = ownBg || nBorders(el) >= 3
+		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
+		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 ? 'pill' : 'badge'
+		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
+		return null
+	}
+	const elements = []
+	const elementEls = new Set()
+	const recordRep = new Set(components.filter((c) => c.record && c.record.index === 0).map((c) => c.el))
+	const recordOther = new Set(components.filter((c) => c.record && c.record.index > 0).map((c) => c.el))
+	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) { if (recordRep.has(e)) return 'rep'; if (recordOther.has(e)) return 'other' } return null }
+	// An element's own label, without the text of a count badge or tag nested inside it.
+	const ownLabel = (el) => {
+		const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+		const parts = []
+		for (let n = w.nextNode(); n; n = w.nextNode()) {
+			let nested = false
+			for (let e = n.parentElement; e && e !== el; e = e.parentElement) if (PILLISH(e)) { nested = true; break }
+			if (!nested && n.textContent.trim()) parts.push(n.textContent.trim())
+		}
+		return (el.getAttribute('aria-label') || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
+	}
+	for (const el of all) {
+		if (!visible(el) || outOfScope(el) || el.closest('[role=tablist]') || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
+		const rec = inRecord(el)
+		if (rec === 'other') continue
+		const r = el.getBoundingClientRect()
+		if (r.width < 6 || r.height < 6) continue
+		const cs = getComputedStyle(el)
+		const kind = kindOf(el, cs, r)
+		if (!kind) continue
+		// Inner parts of a control (the input inside a combobox, a button inside a button) are the control itself.
+		if ([...elementEls].some((e) => e !== el && e.contains(el) && (e.matches(FIELD) || ((kind === 'button' || kind === 'field') && e.matches('button, [role=button], a'))))) continue
+		elementEls.add(el)
+		const parentCtl = el.parentElement && el.parentElement.closest('button, [role=button], a')
+		const label = ownLabel(el)
+		const next = el.nextElementSibling && visible(el.nextElementSibling) ? el.nextElementSibling.getBoundingClientRect() : null
+		const te = textEl(el)
+		const tcs = te ? getComputedStyle(te) : cs
+		elements.push({
+			kind, label, inControl: rec === 'rep' ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
+			container: containerOf(el), rect: rect(el),
+			props: {
+				h: round(r.height), borderRadius: px(cs.borderTopLeftRadius), border: Object.values(borders(cs)).filter((v) => v > 0).length >= 3 ? borders(cs).top : 0,
+				borderColor: Object.values(borders(cs)).filter((v) => v > 0).length >= 3 ? cs.borderTopColor : null,
+				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
+				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
+				icon: !!el.querySelector('svg, img, .material-design-icon, [class*="icon"]'),
+				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
+				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,
+			},
+		})
+	}
+
+	// Coverage: board elements with a box of their own (ground, border or rounded ground) that no component or element
+	// above accounts for. Reported as "not measured", never read as "no differences".
+	const measuredEls = new Set([...cardEls, ...elementEls])
+	const unmeasured = []
+	for (const el of all) {
+		if (!visible(el) || outOfScope(el) || measuredEls.has(el) || inRecord(el) === 'other') continue
+		const r = el.getBoundingClientRect()
+		if (r.width < 8 || r.height < 8 || r.width >= VW * 0.75) continue
+		const cs = getComputedStyle(el)
+		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
+		if (!ownBg && nBorders(el) < 3) continue
+		if (el.closest('[role=tablist], table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
+		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
+		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
+	}
+
 	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => /^cn-|^nc-|^app-content|^modal|^dialog/.test(k)); if (c) { lib = c; break } } return lib }
 	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = clsOf(c.rect) }
-	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c) }
+	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
 }

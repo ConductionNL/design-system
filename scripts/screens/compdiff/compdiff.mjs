@@ -15,7 +15,7 @@ import { createRequire } from 'node:module'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { pairComponents, compareProps, scoreComponent } from './compare.mjs'
+import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -32,6 +32,9 @@ const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
 const width = 1440
 const settle = Number(args.settle || 8000)
+// An element crop above this mismatch % with no property flagged is reported as visually different.
+const CROP_FLAG = Number(args['crop-flag'] || 30)
+const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, count: e.count, rect: e.rect })
 const user = process.env.COMPDIFF_USER, password = process.env.COMPDIFF_PASSWORD
 if (!board || !args.url || !user || !password) {
 	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir]')
@@ -102,6 +105,7 @@ try {
 	const L = await measure(lpage)
 
 	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
+	const ep = pairElements(B.elements, L.elements, boardHeight)
 
 	// Per-pair pixel mismatch: the live crop is scaled to the board crop's size. Secondary to the properties.
 	const dpage = await bctx.newPage()
@@ -122,9 +126,16 @@ try {
 			for (let p = 0; p < da.length; p += 4) if (Math.max(Math.abs(da[p] - db[p]), Math.abs(da[p + 1] - db[p + 1]), Math.abs(da[p + 2] - db[p + 2])) > 24) n++
 			return Math.round(n / (w * h) * 1000) / 10
 		})
-	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: pairs.map((p) => ({ br: p.board.rect, lr: p.live.rect })) })
+	}, { a: b64(boardPng), b: b64(livePng), H: boardHeight, list: [...pairs, ...ep.pairs].map((p) => ({ br: p.board.rect, lr: p.live.rect })) })
 
 	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
+	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified.
+	const elementResults = ep.pairs.map((p, i) => {
+		const rows = compareElement(p.board, p.live)
+		const crop = crops[pairs.length + i]
+		if (!rows.some((r) => r.flag) && p.by === 'label' && crop !== null && crop > CROP_FLAG) rows.push({ prop: 'pixels', board: null, live: crop, delta: null, flag: 'visually differs, property not identified' })
+		return { kind: p.board.kind, label: p.board.label || p.live.label, inControl: p.board.inControl, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crop, rows, flagged: rows.filter((r) => r.flag).length }
+	})
 	const results = pairs.map((p, i) => {
 		const rows = compareProps(p.board, p.live)
 		return { name: p.name, role: p.board.role, matchedBy: p.by, board: p.board, live: p.live, cropMismatchPct: crops[i], rows, flagged: rows.filter((r) => r.flag).length, score: scoreComponent(rows) }
@@ -134,6 +145,10 @@ try {
 		counts: { boardComponents: B.components.length, liveComponents: L.components.length, paired: pairs.length, missingOnLive: missing.length, extraOnLive: extra.length, flaggedComponents: results.filter((r) => r.flagged).length },
 		page: pageBg,
 		components: results,
+		elements: elementResults,
+		missingElements: ep.missing.map(slim),
+		extraElements: ep.extra.map(slim),
+		notMeasured: B.unmeasured || [],
 		missingOnLive: missing.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 		blockedWrites: blocked,
 		extraOnLive: extra.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),

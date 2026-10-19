@@ -11,7 +11,7 @@
 // The status and page mismatch % are carried over from the board's last valid row there.
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, normalizeLegacy, addPage } from './compare.mjs'
+import { compareProps, normalizeLegacy, addPage, elementRows } from './compare.mjs'
 
 const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
@@ -58,17 +58,25 @@ for (const f of files) {
 		if (reasons.length) failing.push({ comp: label(c.board), reasons, positionOnly: reasons.every((s) => /^[xy] /.test(s)) })
 	}
 	for (const m of r.missingOnLive) failing.push({ comp: label(m), reasons: ['missing on live'] })
+	const elabel = (e) => `${e.kind} "${(e.label || '').slice(0, 30)}"${e.inControl ? ` in "${e.inControl.slice(0, 20)}"` : ''}`
+	for (const e of r.elements || []) {
+		const reasons = elementRows(e).filter((x) => x.flag).map((x) => x.prop === 'pixels' ? `visually differs ${x.live}%, property not identified` : `${x.prop} ${fmt(x.board)}>${fmt(x.live)}`)
+		if (reasons.length) failing.push({ comp: elabel(e.board), reasons })
+	}
+	for (const e of r.missingElements || []) failing.push({ comp: elabel(e), reasons: ['missing on live'] })
+	for (const e of r.extraElements || []) failing.push({ comp: elabel(e), reasons: ['extra on live'] })
 	for (const e of r.extraOnLive) failing.push({ comp: label(e), reasons: ['extra on live'] })
-	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0, failing, components: r.components.length + r.missingOnLive.length })
+	const notMeasured = r.notMeasured ? r.notMeasured.length : null
+	verdicts.push({ board: r.board, route: r.url, match: failing.length === 0 && notMeasured === 0, failing, notMeasured, components: r.components.length + r.missingOnLive.length + (r.elements || []).length + (r.missingElements || []).length })
 }
 
 const matched = verdicts.filter((v) => v.match).length
-const tsv = ['board\tverdict\tfailing\tcomponents\tfailing_detail']
-const md = [`# Component-measured layout verdicts`, '', `${matched} of ${verdicts.length} boards match. A board matches only when every component pairs, sits within ${POS}px (x, y from the content origin) and ${WIDTH}px (width), and passes every styling threshold.`, '', '| board | verdict | failing / components | failing components |', '|---|---|---|---|']
+const tsv = ['board\tverdict\tfailing\tcomponents\tnot_measured\tfailing_detail']
+const md = [`# Component-measured layout verdicts`, '', `${matched} of ${verdicts.length} boards match. A board matches only when every component pairs, sits within ${POS}px (x, y from the content origin) and ${WIDTH}px (width), and passes every styling threshold.`, '', '| board | verdict | failing / components | not measured | failing components |', '|---|---|---|---|---|']
 for (const v of verdicts) {
 	const detail = v.failing.map((x) => `${x.comp}: ${x.reasons.slice(0, 4).join(', ')}${x.reasons.length > 4 ? ` (+${x.reasons.length - 4})` : ''}`)
-	tsv.push([v.board, v.match ? 'MATCH' : 'NO-MATCH', v.failing.length, v.components, detail.join(' | ')].join('\t'))
-	md.push(`| ${v.board} | ${v.match ? 'MATCH' : 'NO-MATCH'} | ${v.failing.length} / ${v.components} | ${detail.join('<br>')} |`)
+	tsv.push([v.board, v.match ? 'MATCH' : 'NO-MATCH', v.failing.length, v.components, v.notMeasured ?? 'unknown', detail.join(' | ')].join('\t'))
+	md.push(`| ${v.board} | ${v.match ? 'MATCH' : 'NO-MATCH'} | ${v.failing.length} / ${v.components} | ${v.notMeasured ?? 'unknown'} | ${detail.join('<br>')} |`)
 }
 fs.writeFileSync(path.join(dir, 'verdicts.tsv'), tsv.join('\n') + '\n')
 fs.writeFileSync(path.join(dir, 'verdicts.md'), md.join('\n') + '\n')
@@ -86,8 +94,8 @@ if (inv) {
 		const prev = last[v.board]
 		if (!prev) continue
 		const note = v.match
-			? `layout match: component-measured: all ${v.components} components pair within ${POS}px and pass the styling thresholds`
-			: `no layout match: component-measured: ${v.failing.length} components: ${v.failing.map((x) => `${x.comp} (${x.reasons.slice(0, 3).join(', ')})`).join('; ')}`
+			? `layout match: component-measured: all ${v.components} components and elements pair within ${POS}px and pass the styling thresholds, not measured: 0`
+			: `no layout match: component-measured: ${v.failing.length} components${v.notMeasured === null ? '' : `, not measured: ${v.notMeasured}`}: ${v.failing.map((x) => `${x.comp} (${x.reasons.slice(0, 3).join(', ')})`).join('; ')}`
 		out.push([v.board, prev[1], prev[2], prev[3], prev[4] ?? '', `${note.replace(/[\t\n]/g, ' ')}${tag ? ` [${tag}]` : ''}`].join('\t'))
 	}
 	if (out.length) fs.appendFileSync(inv, out.join('\n') + '\n')

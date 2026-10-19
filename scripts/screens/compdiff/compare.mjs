@@ -24,6 +24,9 @@ function titleSimilarity (a, b) {
 const TITLED = (c) => CARDLIKE.has(c.role) && c.title
 
 export function pairComponents (board, live, H) {
+	// One representative per record-card deck: the number of cards follows the data.
+	board = board.filter((c) => !c.record || c.record.index === 0)
+	live = live.filter((c) => !c.record || c.record.index === 0)
 	const pairs = []
 	const usedB = new Set(), usedL = new Set()
 	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
@@ -72,7 +75,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions)$|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -81,6 +84,7 @@ const STRUCTURAL = /^props\.(padding\.|gap$|margin\.)|^header\.rowBorderBottom$/
 
 function kind (p) {
 	if (/^quickActions\.separate$/.test(p)) return 'placement'
+	if (p === 'structure') return 'structure'
 	if (/(^|\.)(actions|tabCount|controls|buttons)$/.test(p)) return 'chrome'
 	if (/[cC]olor$|background/.test(p)) return 'color'
 	if (/boxShadow/.test(p)) return 'shadow'
@@ -130,6 +134,8 @@ export function compareProps (b, l) {
 			}
 		} else if (k === 'shadow') {
 			if ((vb === 'none') !== (vl === 'none')) flag = 'shadow' + (vb === 'none' ? ' extra on live' : ' absent on live')
+		} else if (k === 'structure') {
+			if (vb !== vl) flag = 'structure differs'
 		} else if (k === 'placement') {
 			if (vb !== vl) flag = 'chrome placement'
 		} else if (k === 'category') {
@@ -209,4 +215,84 @@ export function addPage (r) {
 	const c = pageComponent(r.page, r.height)
 	if (c) r.components.push(c)
 	return r
+}
+
+// ---- Elements: every visible control, field, chip, badge and list row -------------------------------------------
+const EGROUP = { button: 'ctl', pill: 'ctl', badge: 'ctl', field: 'field', toggle: 'toggle', row: 'row' }
+const ekey = (e) => `${EGROUP[e.kind]}|${norm(e.inControl || '')}|${norm(e.label)}`
+const styleKey = (e) => [e.kind, Math.round(e.props.h / 4), e.props.borderRadius, e.props.background, e.props.border, e.props.fontSize].join('|')
+
+// Pairs elements: by label (within control, field, toggle or row), then repeated groups (same container and style)
+// by kind and order, so row and chip counts that follow the data do not count as missing or extra.
+export function pairElements (B = [], L = [], H = 2000) {
+	const pairs = [], usedB = new Set(), usedL = new Set()
+	const byKey = new Map()
+	for (const l of L) { if (!norm(l.label)) continue; const k = ekey(l); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(l) }
+	for (const b of B) {
+		if (!norm(b.label)) continue
+		const list = byKey.get(ekey(b))
+		const l = list && list.find((x) => !usedL.has(x))
+		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
+	}
+	const groups = (list, used) => {
+		const g = new Map()
+		for (const e of list) { if (used.has(e)) continue; const k = `${e.container}|${styleKey(e)}`; if (!g.has(k)) g.set(k, []); g.get(k).push(e) }
+		return [...g.values()].map((m) => ({ rep: m.sort((a, b) => a.rect.y - b.rect.y || a.rect.x - b.rect.x)[0], count: m.length, members: m }))
+	}
+	const gb = groups(B, usedB), gl = groups(L, usedL)
+	const cand = []
+	for (const b of gb) {
+		for (const l of gl) {
+			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind]) continue
+			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
+			if (cost <= 0.12) cand.push({ b, l, cost })
+		}
+	}
+	cand.sort((x, y) => x.cost - y.cost)
+	const ub = new Set(), ul = new Set()
+	for (const { b, l } of cand) {
+		if (ub.has(b) || ul.has(l)) continue
+		ub.add(b); ul.add(l)
+		pairs.push({ board: b.rep, live: l.rep, by: b.count > 1 || l.count > 1 ? `group ${b.count}/${l.count}` : 'position' })
+	}
+	return {
+		pairs,
+		missing: gb.filter((g) => !ub.has(g)).map((g) => ({ ...g.rep, count: g.count })),
+		extra: gl.filter((g) => !ul.has(g)).map((g) => ({ ...g.rep, count: g.count })),
+	}
+}
+
+export function compareElement (b, l) {
+	const rows = []
+	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
+	const pb = b.props, pl = l.props
+	if (b.kind !== l.kind) add('kind', b.kind, l.kind, (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
+	for (const k of ['h', 'borderRadius', 'paddingLeft', 'paddingRight', 'gapNext']) {
+		if (pb[k] === null || pl[k] === null || pb[k] === undefined || pl[k] === undefined) continue
+		// A label paired by order (different text) changes the width, never the paddings, radius or height.
+		add(k, pb[k], pl[k], Math.abs(pl[k] - pb[k]) > THRESHOLDS.spacing ? (k === 'borderRadius' ? 'shape' : 'spacing') : null)
+	}
+	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
+	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
+	add('background', pb.background, pl.background, colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
+	add('color', pb.color, pl.color, colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
+	add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)
+	add('fontWeight', pb.fontWeight, pl.fontWeight, Math.abs(pl.fontWeight - pb.fontWeight) >= THRESHOLDS.weight ? 'weight' : null)
+	add('icon', pb.icon, pl.icon, pb.icon !== pl.icon ? `icon ${pb.icon ? 'absent' : 'extra'} on live` : null)
+	add('badge', pb.badge, pl.badge, pb.badge !== pl.badge ? `badge ${pb.badge ? 'absent' : 'extra'} on live` : null)
+	return rows
+}
+function colourDiff (a, b, t) {
+	const ca = rgba(a), cb = rgba(b)
+	if (!ca || !cb) return false
+	if (ca[3] < 0.05 && cb[3] < 0.05) return false
+	return Math.max(...[0, 1, 2].map((i) => Math.abs(ca[i] - cb[i]))) > t || Math.abs(ca[3] - cb[3]) > 0.15
+}
+
+// Element rows from a stored element pair: the property rules again, plus the stored pixel signal when no rule fired.
+export function elementRows (e) {
+	const rows = compareElement(e.board, e.live)
+	const px = (e.rows || []).find((x) => x.prop === 'pixels')
+	if (px && !rows.some((x) => x.flag)) rows.push(px)
+	return rows
 }

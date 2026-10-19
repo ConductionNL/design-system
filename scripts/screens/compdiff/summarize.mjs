@@ -5,16 +5,17 @@
 //   boards.md / boards.tsv   per board: components flagged, the 3 worst components with their flagged deltas
 import fs from 'node:fs'
 import path from 'node:path'
-import { compareProps, scoreComponent, normalizeLegacy, addPage } from './compare.mjs'
+import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows } from './compare.mjs'
 
 const dir = process.argv[2]
 const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f)).sort()
 const groups = new Map()
 const perBoard = []
-const roleGroup = (c) => (c.role === 'card' && c.board.title ? (c.board.depth ? 'card (nested, titled)' : 'widget/card (titled)') : c.role === 'card' ? (c.board.depth ? 'card (nested)' : 'card/tile (untitled)') : c.role)
+const roleGroup = (c) => (c.role.startsWith('element') ? c.role : c.role === 'card' && c.board.title ? (c.board.depth ? 'card (nested, titled)' : 'widget/card (titled)') : c.role === 'card' ? (c.board.depth ? 'card (nested)' : 'card/tile (untitled)') : c.role)
 // Generic property name: page-header button keys collapse to "btn.*".
 const genericProp = (p) => p.replace(/^btn\.[^.]+\./, 'btn.*.')
 const source = (c) => {
+	if (c.role.startsWith('element')) return 'element (not attributed)'
 	const lc = c.live.libClass || '', cls = c.live.cls || ''
 	if (/^cn-|^nc-|^modal|^dialog/.test(cls) || /^cn-/.test(lc)) return 'library (nextcloud-vue ' + (cls.match(/cn-[a-z-]+/)?.[0] || lc) + ')'
 	if (/^nc-|^modal|^dialog/.test(lc)) return 'library (' + lc + ')'
@@ -34,9 +35,15 @@ for (const f of files) {
 		c.score = scoreComponent(c.rows)
 		if (c.live.title && c.board.title && c.live.title !== c.board.title && !['tabs', 'table', 'toolbar'].includes(c.role)) c.name = `${c.board.title} ~ ${c.live.title}`
 	}
+	const els = (r.elements || []).map((e) => {
+		const rows = elementRows(e)
+		return { ...e, role: `element ${e.kind}`, name: `${e.kind} "${e.label || ''}"${e.inControl ? ` in "${e.inControl}"` : ''}`, rows, flagged: rows.filter((x) => x.flag).length, score: scoreComponent(rows) }
+	})
+	r.elements = els
 	r.counts.flaggedComponents = comps.filter((c) => c.flagged).length
+	r.counts.flaggedElements = els.filter((e) => e.flagged).length
 	fs.writeFileSync(path.join(dir, f.replace(/\.json$/, '.md')), renderTable(r))
-	for (const c of comps) {
+	for (const c of [...comps, ...els]) {
 		for (const row of c.rows) {
 			if (!row.flag) continue
 			let dir
@@ -55,8 +62,8 @@ for (const f of files) {
 			if (typeof row.delta === 'number') g.deltas.push(row.delta)
 		}
 	}
-	const worst = [...comps].sort((a, b) => b.score - a.score).slice(0, 3).filter((c) => c.score > 0)
-	perBoard.push({ board: r.board, paired: r.counts.paired, flagged: r.counts.flaggedComponents, missing: r.missingOnLive.length, extra: r.extraOnLive.length, worst })
+	const worst = [...comps, ...els].sort((a, b) => b.score - a.score).slice(0, 3).filter((c) => c.score > 0)
+	perBoard.push({ board: r.board, paired: r.counts.paired, flagged: r.counts.flaggedComponents + (r.counts.flaggedElements || 0), missing: r.missingOnLive.length + (r.missingElements || []).length, extra: r.extraOnLive.length + (r.extraElements || []).length, notMeasured: r.notMeasured ? r.notMeasured.length : null, worst })
 }
 const top = (m, n = 2) => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([k, v]) => `${k} (${v})`).join('; ')
 const median = (a) => { if (!a.length) return ''; const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)] }
@@ -66,11 +73,11 @@ const lines = [`# Component diff: fleet summary (${files.length} boards)`, '', '
 for (const g of list) lines.push(`| ${g.role} | ${g.prop} | ${g.dir} | ${g.comps} | ${g.boards.size} | ${median(g.deltas)} | ${top(g.pairs)} | ${top(g.sources, 1)} |`)
 fs.writeFileSync(path.join(dir, 'fleet-summary.md'), lines.join('\n') + '\n')
 
-const bl = ['# Per board', '', '| board | paired | flagged | missing on live | extra on live | worst components (flagged deltas) |', '|---|---|---|---|---|---|']
+const bl = ['# Per board', '', '| board | paired | flagged | missing on live | extra on live | not measured | worst components (flagged deltas) |', '|---|---|---|---|---|---|---|']
 const tsv = ['board\tpaired\tflagged\tmissing\textra\tworst']
 for (const b of perBoard) {
 	const w = b.worst.map((c) => `**${c.role}: ${c.name}** (${c.rows.filter((r) => r.flag).slice(0, 5).map((r) => `${r.prop} ${fmt(r.board)}→${fmt(r.live)}`).join(', ')})`).join('<br>')
-	bl.push(`| ${b.board} | ${b.paired} | ${b.flagged} | ${b.missing} | ${b.extra} | ${w} |`)
+	bl.push(`| ${b.board} | ${b.paired} | ${b.flagged} | ${b.missing} | ${b.extra} | ${b.notMeasured ?? 'unknown'} | ${w} |`)
 	tsv.push([b.board, b.paired, b.flagged, b.missing, b.extra, b.worst.map((c) => `${c.role}:${c.name}[${c.rows.filter((r) => r.flag).slice(0, 4).map((r) => `${r.prop} ${fmt(r.board)}>${fmt(r.live)}`).join('; ')}]`).join(' || ')].join('\t'))
 }
 fs.writeFileSync(path.join(dir, 'boards.md'), bl.join('\n') + '\n')
@@ -84,6 +91,14 @@ function renderTable (r) {
 		L.push('')
 	}
 	if (r.missingOnLive.length) L.push('## Missing on live', '', ...r.missingOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
+	for (const e of (r.elements || []).filter((x) => x.flagged).sort((a, b) => b.score - a.score)) {
+		L.push(`## ${e.name}  [${e.matchedBy}]  flags ${e.flagged}, crop mismatch ${e.cropMismatchPct ?? 'n/a'}%`, '', '| property | board | live | delta | flag |', '|---|---|---|---|---|')
+		for (const x of e.rows) L.push(`| ${x.prop} | ${fmt(x.board)} | ${fmt(x.live)} | ${x.delta ?? ''} | ${x.flag ? 'FLAG ' + x.flag : ''} |`)
+		L.push('')
+	}
+	if ((r.missingElements || []).length) L.push('## Elements missing on live', '', ...r.missingElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}`), '')
+	if ((r.extraElements || []).length) L.push('## Elements extra on live', '', ...r.extraElements.map((e) => `- ${e.kind} "${e.label}"${e.inControl ? ` in "${e.inControl}"` : ''}${e.count > 1 ? ` (group of ${e.count})` : ''}`), '')
+	L.push(r.notMeasured ? `## Not measured: ${r.notMeasured.length}` : '## Not measured: unknown (run without the element inventory)', '', ...(r.notMeasured || []).map((u) => `- ${u.tag} "${u.text}" at ${u.rect.x},${u.rect.y} ${u.rect.w}x${u.rect.h}`), '')
 	if (r.extraOnLive.length) L.push('## Extra on live', '', ...r.extraOnLive.map((c) => `- ${c.role}: ${c.title || '(untitled)'} at ${c.rect.x},${c.rect.y} ${c.rect.w}x${c.rect.h}`), '')
 	return L.join('\n')
 }

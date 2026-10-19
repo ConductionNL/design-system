@@ -69,6 +69,14 @@ It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one ro
 
 `track.sh <statedir> <specs.tsv>` measures everything again when the build in `COMPDIFF_STAMP_FILE` has changed. It then updates `<statedir>/findings.md`. A finding is `open` while a run still shows it, `fixed` once a run no longer shows it, and `verified` after two runs without it.
 
+## Elements and coverage
+
+Besides the components, the extractor lists every visible UI element in the page: buttons, links styled as buttons, fields, toggles, chips and pills, badges and tags, and list rows. Elements pair by label first. A label leaves out the text of a nested count badge, so "Filter" pairs with "Filter". The rest pair as repeated groups (same container, same style) in order, because the number of rows or chips follows the data. Per pair it compares radius, border, background, text colour, font size and weight, padding, height, icon, badge and the gap to the next sibling. An element whose crop differs by more than 30% while no property fired gets the flag "visually differs, property not identified". Board elements with no counterpart are listed as missing. Live elements with no counterpart, such as an extra sort select, are listed as extra.
+
+A deck of record cards (three or more cards of the same width side by side) counts as one component. Its first card is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline).
+
+Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
+
 ## What it compares
 
 It compares look and feel only:

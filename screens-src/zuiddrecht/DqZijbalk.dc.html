@@ -36,10 +36,12 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </nav>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Dashboard"},"$preview":{"width":264,"height":801}}'>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Dashboard"},"filter":{"editor":"text","default":""},"$preview":{"width":264,"height":801}}'>
 class Component extends DCLogic {
   renderVals() {
     const active = this.props.active ?? 'Dashboard';
+    // A saved filter the employee added to the menu (Toevoegen aan menu in the filters tab of the side panel).
+    const filter = this.props.filter ?? '';
     const I = {
       home: 'M12 5.69L17 10.19V18H15V12H9V18H7V10.19L12 5.69M12 3L2 12H5V20H11V14H13V20H19V12H22',
       dashboard: 'M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z',
@@ -53,6 +55,7 @@ class Component extends DCLogic {
       org: 'M18,15H16V17H18M18,11H16V13H18M20,19H12V17H14V15H12V13H14V11H12V9H20M10,7H8V5H10M10,11H8V9H10M10,15H8V13H10M10,19H8V17H10M6,7H4V5H6M6,11H4V9H6M6,15H4V13H6M6,19H4V17H6M12,7V3H2V21H22V7H12Z',
       bin: 'M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z',
       gavel: 'M2.3,20.28L11.9,10.68L10.5,9.26L9.78,9.97C9.39,10.36 8.76,10.36 8.37,9.97L7.66,9.26C7.27,8.87 7.27,8.24 7.66,7.85L13.32,2.19C13.71,1.8 14.34,1.8 14.73,2.19L15.44,2.9C15.83,3.29 15.83,3.92 15.44,4.31L14.73,5L16.15,6.43C16.54,6.04 17.17,6.04 17.56,6.43C17.95,6.82 17.95,7.46 17.56,7.85L18.97,9.26L19.68,8.55C20.07,8.16 20.71,8.16 21.1,8.55L21.8,9.26C22.19,9.65 22.19,10.29 21.8,10.68L16.15,16.33C15.76,16.72 15.12,16.72 14.73,16.33L14.03,15.63C13.63,15.24 13.63,14.6 14.03,14.21L14.73,13.5L13.32,12.09L3.71,21.7C3.32,22.09 2.69,22.09 2.3,21.7C1.91,21.31 1.91,20.67 2.3,20.28M20,19A2,2 0 0,1 22,21V22H12V21A2,2 0 0,1 14,19H20Z',
+      filter: 'M6,13H18V11H6M3,6V8H21V6M10,18H14V16H10V18Z',
       complaint: 'M20,2H4C2.9,2 2,2.9 2,4V22L6,18H20C21.1,18 22,17.1 22,16V4C22,2.9 21.1,2 20,2M13,14H11V12H13V14M13,10H11V6H13V10Z'
     };
     // The case types each employee picks in Persoonlijke instellingen (DqPersoonlijkeInstellingen), in their own order.
@@ -60,6 +63,7 @@ class Component extends DCLogic {
       { title: '', items: [['Dashboard', 'DqDashboard.dc.html', I.dashboard], ['Mijn werk', 'DqZaken.dc.html', I.inbox, 6], ['Wachtrij', 'DqZaken.dc.html', I.queue, 3]] },
       { title: 'Zaken', items: [['Alle zaken', 'DqZaken.dc.html', I.cases], ['Werkbord', 'DqWerkbord.dc.html', I.board], ['Taken', 'DqDashboard.dc.html', I.tasks]] },
       { title: 'Mijn zaaktypen', edit: ['DqPersoonlijkeInstellingen.dc.html', 'Zaaktypen in mijn menu aanpassen'], items: [['Woo-verzoeken', 'DqWooVerzoeken.dc.html', I.woo], ['Bezwaarschriften', '#', I.gavel], ['Klachten', '#', I.complaint]] },
+      ...(filter ? [{ title: 'Mijn filters', edit: ['DqFilterInMenu.dc.html', 'Filters in mijn menu aanpassen'], items: [[filter, 'DqFilterInMenu.dc.html', I.filter]] }] : []),
       { title: 'Relaties', items: [['Contacten', '#', I.contacts], ['Organisaties', '#', I.org]] }
     ];
     const base = 'display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 10px; border-radius: 8px; text-decoration: none; font-size: 15px; ';

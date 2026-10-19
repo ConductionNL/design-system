@@ -69,7 +69,7 @@ function flatten (obj, prefix = '', out = {}) {
 	for (const [k, v] of Object.entries(obj)) flatten(v, prefix ? `${prefix}.${k}` : k, out)
 	return out
 }
-const SKIP = /^(role|title|depth|frame|cls|libClass)$|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
+const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions)$|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
 const DATA = /^rect\.h$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
@@ -95,6 +95,8 @@ export function compareProps (b, l) {
 	const [bb, lb] = pairButtons(b, l)
 	const fb = flatten(bb), fl = flatten(lb)
 	const rows = []
+	// A legacy measurement whose quick actions sat in a separate row has no button count for them: skip the count.
+	if (b.legacyQuickActions || l.legacyQuickActions) { delete fb.buttons; delete fl.buttons }
 	// Chrome presence: a title row on one side only.
 	if (CARDLIKE.has(role) && !!b.header !== !!l.header) rows.push({ prop: 'header (title row)', board: b.header ? 'present' : 'absent', live: l.header ? 'present' : 'absent', delta: null, flag: 'chrome' })
 	const keys = [...new Set([...Object.keys(fb), ...Object.keys(fl)])]
@@ -169,4 +171,31 @@ export function scoreComponent (rows) {
 		else s += 1 + Math.min(Math.abs(r.delta || 0) / 8, 2)
 	}
 	return Math.round(s * 10) / 10
+}
+
+// Measurements taken before the header-count fixes: tab buttons inside the header area were counted as header
+// buttons, and a quick-actions row next to the page header came out as a missing or extra toolbar. Correct both
+// from the stored data. Measurements that carry quickActions are already right and pass unchanged.
+export function normalizeLegacy (r) {
+	const ph = (r.components || []).find((c) => c.role === 'pageHeader')
+	if (!ph || ph.board.quickActions || ph.live.quickActions) return r
+	const within = (o, i) => i.x >= o.x - 2 && i.y >= o.y - 2 && i.x + i.w <= o.x + o.w + 2 && i.y + i.h <= o.y + o.h + 2
+	for (const side of ['board', 'live']) {
+		const h = ph[side]
+		for (const t of r.components.filter((c) => c.role === 'tabs')) {
+			if (within(h.rect, t[side].rect) && Array.isArray(h.buttons) && h.buttons.length >= t[side].tabCount) h.buttons = h.buttons.slice(0, h.buttons.length - t[side].tabCount)
+		}
+		h.quickActions = { separate: false }
+	}
+	const near = (h, t) => t.role === 'toolbar' && t.rect.y >= h.rect.y - 10 && t.rect.y <= h.rect.y + h.rect.h + 60
+	if (r.extraOnLive.some((t) => near(ph.live, t))) {
+		r.extraOnLive = r.extraOnLive.filter((t) => !near(ph.live, t))
+		ph.live.quickActions = { separate: true }
+		ph.live.legacyQuickActions = true
+	}
+	if (r.missingOnLive.some((t) => near(ph.board, t))) {
+		r.missingOnLive = r.missingOnLive.filter((t) => !near(ph.board, t))
+		ph.board.legacyQuickActions = true
+	}
+	return r
 }

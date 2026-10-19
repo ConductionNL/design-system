@@ -55,6 +55,16 @@ It applies the current comparison rules to the stored measurements again. After 
 | `COMPDIFF_SLICE` | runs each browser in that systemd user slice, capped at 2 GB |
 | `COMPDIFF_SKIP_FIRST_RUN` | suppresses the first-run dialogs of these app ids, except on `/settings/` routes |
 
+## Layout verdict
+
+`node verdict.mjs <rundir> [--inventory <inventory.tsv> --tag "<branch and build>"]` decides per board: MATCH or NO-MATCH. A board matches only when all of these hold:
+
+- every board component pairs with one on live, and live has no extra components
+- every pair sits within 4 px in x and y of its board position, measured from the content area, and within 8 px in width. Height is data, so it does not count
+- no pair has a flagged styling property
+
+It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one row per board to a screens inventory, with notes that start with `layout match: component-measured` or `no layout match: component-measured`. The status and the page mismatch % come from the board's last row there.
+
 ## Track findings across builds
 
 `track.sh <statedir> <specs.tsv>` measures everything again when the build in `COMPDIFF_STAMP_FILE` has changed. It then updates `<statedir>/findings.md`. A finding is `open` while a run still shows it, `fixed` once a run no longer shows it, and `verified` after two runs without it.

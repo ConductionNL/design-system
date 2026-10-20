@@ -38,7 +38,7 @@ Decided 15 October 2026: OpenProject's top bar is the dossiq bar, not a primary-
 | part | value |
 |---|---|
 | frame | `background: #ffffff; border: 1px solid #e4e6ea; border-radius: var(--sc-radius-lg, 10px)`, overflow hidden |
-| header row | `background: #fafbfc`, th padding 12px 16px, 14 px weight 600 `#5e6168`, line-height 20 px: 44 px high; sort caret 14 px `#c4c7cb` |
+| header row | `background: #fafbfc`, th padding 12px 16px, 14 px weight 600 `#5e6168`, line-height 20 px: 44 px high; sort caret 14 px `#828a95` |
 | row | td padding 12px 16px, 15 px line-height 20 px: 44 px high for one line (decided 15 October 2026, was 48); `border-top: 1px solid #eef0f3`; no zebra. Cell wrappers are `display: flex`, not `inline-flex`, so the baseline does not add height; an avatar in a row is 20 px; a compact 34 px button sits in a cell with padding 5px 16px. A row with two lines (name over email, type over subject) is as tall as its two lines |
 | row title | 15 px weight 600 `#1b1c1d`; secondary line 14 px `#5e6168` |
 | selection | checkbox 18 px, `accent-color: #3669a5` |
@@ -50,7 +50,7 @@ Decided 15 October 2026: OpenProject's top bar is the dossiq bar, not a primary-
 | kind | value |
 |---|---|
 | primary (the one main action) | 48 px high (decided 15 October 2026, was 40), padding 0 16px, radius `var(--sc-radius, 8px)`, `background: var(--sc-action, #3669a5)`, border 1 px `var(--sc-action-deep, #234a78)`, white 15 px weight 600, icon 16 px |
-| secondary | 40 px high, padding 0 14px, `border: 1px solid #c4c7cb; background: #ffffff; color: #1b1c1d`, 14 px weight 600; beside a primary (a toolbar, a dialog footer) it takes the primary's 48 px, padding 0 16px and 15 px text, so the row lines up |
+| secondary | 40 px high, padding 0 14px, `border: 1px solid #828a95; background: #ffffff; color: #1b1c1d`, 14 px weight 600; beside a primary (a toolbar, a dialog footer) it takes the primary's 48 px, padding 0 16px and 15 px text, so the row lines up |
 | compact (in a row) | 34 px high, otherwise secondary |
 | icon only | 40 x 40, `aria-label`, icon 20 px |
 | filter chip | 38 px high pill (`border-radius: 19px`), pressed: `background: #1b1c1d; color: #ffffff`; with a count pill 12 px |
@@ -59,12 +59,12 @@ Decided 15 October 2026: OpenProject's top bar is the dossiq bar, not a primary-
 
 | part | value |
 |---|---|
-| input | 40 px high, padding 0 12px, `border: 1px solid #c4c7cb`, radius `var(--sc-radius-lg, 10px)`, `background: #ffffff`, 15 px text (14 px in a toolbar) |
+| input | 40 px high, padding 0 12px, `border: 1px solid #828a95`, radius `var(--sc-radius-lg, 10px)`, `background: #ffffff`, 15 px text (14 px in a toolbar) |
 | search input | the same with a 18 px glass at left 12px and padding-left 38px |
 | select | the same height and border, `appearance: none`, padding-right 36px, chevron 16 px at right 12px |
 | label | 14 px weight 600, 6 px above the field |
 | switch | 42 x 24, knob 18 px, on: `#3669a5` |
-| radio | 18 px circle, `border: 1px solid #c4c7cb`, selected: 2 px ring `#3669a5` with a 8 px dot |
+| radio | 18 px circle, `border: 1px solid #828a95`, selected: 2 px ring `#3669a5` with a 8 px dot |
 | textarea | the input with padding 9px 12px and a 21 px line, minimum three lines |
 
 ## Dialog (measured from `DqBerichtVersturen.dc.html`)
@@ -80,9 +80,9 @@ Decided 15 October 2026: OpenProject's top bar is the dossiq bar, not a primary-
 
 | part | value |
 |---|---|
-| tab | min-height 34 px, padding 8px 12px, 14 px, `border: 1px solid #c4c7cb; border-bottom: none`, radius `var(--sc-radius, 8px) var(--sc-radius, 8px) 0 0`, `background: #eef0f3`, margin-bottom -1px |
+| tab | min-height 34 px, padding 8px 12px, 14 px, `border: 1px solid #828a95; border-bottom: none`, radius `var(--sc-radius, 8px) var(--sc-radius, 8px) 0 0`, `background: #eef0f3`, margin-bottom -1px |
 | active tab | `background: #ffffff; border-bottom: 1px solid #ffffff; font-weight: 700`, `aria-selected="true"` |
-| strip | `border-bottom: 1px solid #c4c7cb`, gap 4 px, panel below on white |
+| strip | `border-bottom: 1px solid #828a95`, gap 4 px, panel below on white |
 
 ## Badge, status and type (from `DqPostvak.dc.html` and `token-rules.md`)
 
@@ -175,8 +175,8 @@ A dropdown under the avatar, as Nextcloud draws it. No Zuiddrecht board draws th
 | card | max-width 420 px, `#ffffff`, `border: 1px solid #e4e6ea`, radius 12 px, shadow `0 2px 12px rgba(27,28,29,0.06)`; a 5 px bar on top in `#cc0000` 6, `#3669a5` 3, `#cc0000` 1; padding 32 px, column gap 18 px |
 | copy | title 24 px weight 700 "Sign in to the workplace", line 15 px `#5e6168` "For employees of Gemeente Zuiddrecht. One account for Nextcloud and OpenProject." |
 | single sign-on | primary link 48 px (the canon primary; `NcLogin` drew 46 before the 15 October sizes), `var(--sc-action, #3669a5)`, "Sign in with your municipal account"; then an "or" line |
-| fields | labels 14 px weight 600, inputs 44 px, padding 0 12px, `border: 1px solid #c4c7cb` (`NcLogin` uses `#8a929e`, which is not a token literal), radius `var(--sc-radius, 8px)`, 15 px; User name or email, Password |
-| secondary | "Sign in" 48 px, `border: 1px solid #c4c7cb; background: #ffffff`, 15 px weight 600; "Forgot password?" 14 px link centred under it |
+| fields | labels 14 px weight 600, inputs 44 px, padding 0 12px, `border: 1px solid #828a95` (`NcLogin` uses `#828a95`, which is not a token literal), radius `var(--sc-radius, 8px)`, 15 px; User name or email, Password |
+| secondary | "Sign in" 48 px, `border: 1px solid #828a95; background: #ffffff`, 15 px weight 600; "Forgot password?" 14 px link centred under it |
 | foot | 13 px `#5e6168` "Gemeente Zuiddrecht · OpenProject on the workplace" |
 
 ## Create work package (`OpCreateWorkPackage.dc.html`, the dialog)

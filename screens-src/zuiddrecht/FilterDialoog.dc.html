@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Onderdeel: de dialogen van een opgeslagen weergave (delen, bewerken, verwijderen)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="position: absolute; inset: 0; background: rgba(27,28,29,0.45); display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 120px 16px 24px; box-sizing: border-box; font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d">
+  <div role="dialog" aria-modal="true" aria-labelledby="fd-kop" style="{{ dialogStyle }}">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 4px">
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 700; color: #234a78">Opgeslagen weergave</span><h2 id="fd-kop" style="margin: 0; font-size: 20px; font-weight: 700">{{ heading }}</h2><span style="font-size: 14px; color: #5e6168">{{ intro }}</span></div>
+      <button type="button" aria-label="Sluiten" style="flex: none; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 18px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+    </div>
+
+    <sc-if value="{{ isDelen }}" hint-placeholder-val="{{ true }}">
+    <form style="display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 22px">
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+        <label for="fd-wie" style="font-size: 14px; font-weight: 600">Delen met</label>
+        <div style="position: relative">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#5e6168" aria-hidden="true" style="position: absolute; left: 12px; top: 11px"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+          <input id="fd-wie" type="text" value="han" aria-expanded="true" aria-controls="fd-suggesties" aria-autocomplete="list" placeholder="Zoek een persoon of groep" style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px 0 38px; border: 1px solid #3669a5; border-radius: 8px 8px 0 0; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
+          <ul id="fd-suggesties" role="listbox" aria-label="Gevonden personen en groepen" style="margin: 0; padding: 6px; list-style: none; border: 1px solid #828a95; border-top: 0; border-radius: 0 0 8px 8px; background: #ffffff; display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
+              <li role="option" aria-selected="{{ s.selected }}" style="{{ s.style }}"><span style="{{ s.avatarStyle }}">{{ s.initials }}</span><span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-size: 14px; font-weight: 600">{{ s.name }}</span><span style="font-size: 13px; color: #5e6168">{{ s.meta }}</span></span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: #f0f1f3; color: #3d4047; font-size: 12px; font-weight: 600">{{ s.kind }}</span></li>
+            </sc-for>
+          </ul>
+        </div>
+        <span style="font-size: 13px; color: #5e6168">Personen en groepen uit uw Nextcloud, zoals bij het delen van een bestand.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 14px; font-weight: 600">Gedeeld met</span>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+          <sc-for list="{{ shares }}" as="s" hint-placeholder-count="2">
+            <li style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 4px 4px 4px 8px; border-radius: 8px; background: #f5f6f8">
+              <span style="{{ s.avatarStyle }}">{{ s.initials }}</span>
+              <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1"><span style="font-size: 14px; font-weight: 600">{{ s.name }}</span><span style="font-size: 13px; color: #5e6168">{{ s.meta }}</span></span>
+              <label for="{{ s.id }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{ s.rightsLabel }}</label>
+              <div style="position: relative"><select id="{{ s.id }}" style="appearance: none; -webkit-appearance: none; box-sizing: border-box; height: 36px; padding: 0 32px 0 10px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 13px 'Fira Sans', sans-serif; color: #1b1c1d"><option selected="{{ s.read }}">Mag gebruiken</option><option selected="{{ s.write }}">Mag bijwerken</option></select><span aria-hidden="true" style="position: absolute; right: 8px; top: 9px; color: #3d4047; pointer-events: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg></span></div>
+              <button type="button" aria-label="{{ s.removeLabel }}" style="flex: none; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 17px; background: transparent; color: #3d4047"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
+            </li>
+          </sc-for>
+        </ul>
+        <span style="font-size: 13px; color: #5e6168">Mag gebruiken: ziet de weergave onder Gedeeld met mij. Mag bijwerken: kan ook de criteria vervangen. Verwijderen en delen blijven bij u.</span>
+      </div>
+    </form>
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Annuleren</button>
+      <button type="button" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Delen opslaan</button>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isBewerken }}" hint-placeholder-val="{{ false }}">
+    <form style="display: flex; flex-direction: column; gap: 16px; padding: 18px 24px 22px">
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+        <label for="fd-naam" style="font-size: 14px; font-weight: 600">Naam</label>
+        <input id="fd-naam" type="text" value="{{ name }}" required style="box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 400 15px 'Fira Sans', sans-serif; color: #1b1c1d">
+      </div>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="padding: 0 0 6px; font-size: 14px; font-weight: 600">Criteria</legend>
+        <label style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #828a95; border-radius: 8px; font-size: 14px"><input type="radio" name="fd-criteria" checked style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: #3669a5"><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 600">Behouden wat opgeslagen is</span><span style="color: #5e6168">{{ savedCriteria }}</span></span></label>
+        <label style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid #828a95; border-radius: 8px; font-size: 14px"><input type="radio" name="fd-criteria" style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: #3669a5"><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 600">Vervangen door de huidige zoekterm, filters en sortering</span><span style="color: #5e6168">{{ currentCriteria }}</span></span></label>
+      </fieldset>
+      <span style="font-size: 13px; color: #5e6168">Wie de weergave met u deelt, ziet de wijziging meteen.</span>
+    </form>
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Annuleren</button>
+      <button type="button" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Opslaan</button>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isVerwijderen }}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 24px 22px; font-size: 14px">
+      <p style="margin: 0; line-height: 1.5">De weergave <strong>{{ name }}</strong> verdwijnt uit uw lijst en uit het menu links. {{ sharedLine }}</p>
+      <p style="margin: 0; color: #5e6168; line-height: 1.5">De zaken zelf blijven staan. Dit kunt u niet ongedaan maken.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef0f3">
+      <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #828a95; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Annuleren</button>
+      <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #a30000; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path></svg>Weergave verwijderen</button>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"text","default":"delen"},"filter":{"editor":"text","default":"Wacht op inwoner"},"$preview":{"width":1440,"height":1120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const kind = this.props.kind ?? 'delen';
+    const name = this.props.filter ?? 'Wacht op inwoner';
+    const headings = {
+      delen: ['Weergave delen: ' + name, 'Wie de weergave krijgt, ziet hem onder Gedeeld met mij. Hij is van u en blijft dat.'],
+      bewerken: ['Weergave bewerken: ' + name, 'Geef de weergave een andere naam, of vervang de criteria door wat nu in de lijst staat.'],
+      verwijderen: ['Weergave verwijderen?', name]
+    };
+    const [heading, intro] = headings[kind] ?? headings.delen;
+    const dialogStyle = 'width: 100%; max-width: ' + (kind === 'verwijderen' ? '520px' : '640px') + '; background: #ffffff; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); display: flex; flex-direction: column';
+    const avatar = (group) => 'flex: none; width: 32px; height: 32px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; ' + (group ? 'background: #e4e6ea; color: #3d4047;' : 'background: #eaf0f7; color: #234a78;');
+    const optStyle = (on) => 'display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 8px; border-radius: 8px; cursor: pointer; ' + (on ? 'background: #eaf0f7;' : 'background: transparent;');
+    const suggestions = [
+      ['Hanna de Groot', 'Vergunningen', 'HG', 'Persoon', false, true],
+      ['Handhaving', '8 personen', 'HA', 'Groep', true, false],
+      ['Johan Hanssen', 'Sociaal domein', 'JH', 'Persoon', false, false]
+    ].map(([n, meta, initials, k, group, on]) => ({ name: n, meta, initials, kind: k, selected: on ? 'true' : 'false', style: optStyle(on), avatarStyle: avatar(group) }));
+    const shares = [
+      ['Woo en informatie', 'Groep, 6 personen', 'WI', true, 'read'],
+      ['Anouk Bakker', 'Persoon, team Woo en informatie', 'AB', false, 'write']
+    ].map(([n, meta, initials, group, mode], i) => ({ id: 'fd-rechten-' + i, name: n, meta, initials, avatarStyle: avatar(group), read: mode === 'read', write: mode === 'write', rightsLabel: 'Rechten van ' + n, removeLabel: 'Delen met ' + n + ' stoppen' }));
+    return {
+      heading, intro, dialogStyle, name,
+      isDelen: kind === 'delen', isBewerken: kind === 'bewerken', isVerwijderen: kind === 'verwijderen',
+      suggestions, shares,
+      savedCriteria: 'Status: wacht op inwoner. Team: Woo en informatie. Gesorteerd op termijn, oplopend.',
+      currentCriteria: 'Zoekterm "parkeer". Status: wacht op inwoner. Team: Woo en informatie. Gesorteerd op termijn, aflopend.',
+      sharedLine: 'Het is gedeeld met de groep Woo en informatie en met Anouk Bakker. Ook bij hen verdwijnt het.'
+    };
+  }
+}
+</script>
+</body>
+</html>

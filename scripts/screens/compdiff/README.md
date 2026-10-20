@@ -26,12 +26,13 @@ Options:
 - `--fills "<sel>=><value>||..."` types values into fields.
 - `--settle 8000` sets how many milliseconds to wait before measuring.
 - `--wait-for "<css>"` waits for an element.
+- `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
 
 It writes `<Board>.json` with every measurement and `<Board>.md` with a table per component: property, board, live, delta, flag. It also writes `<Board>-board.png` and `<Board>-live.png`.
 
 ## Measure a set of boards
 
-`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Then summarise:
+`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, and its steps as `--steps`. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
 
 ```sh
 scripts/screens/compdiff/runall.sh /tmp/compdiff specs.tsv
@@ -105,7 +106,7 @@ Flags fire when a value goes past one of these limits:
 - a colour channel more than 12 apart
 - a font weight 100 or more apart
 
-Colours are read by `colour.mjs`, in the page and in the comparison alike. It reads every form `getComputedStyle` returns: `rgb()`/`rgba()`, and the CSS Color 4 forms Chrome keeps for a `color-mix()` or a wide-gamut colour (`color(srgb ...)` and the other predefined spaces, `oklch()`, `oklab()`, `lab()`, `lch()`), all converted to sRGB 0-255. A colour it cannot read is no colour, never a guess. Run its tests with `node --test scripts/screens/compdiff/colour.test.mjs`.
+Colours are read by `colour.mjs`, in the page and in the comparison alike. It reads every form `getComputedStyle` returns: `rgb()`/`rgba()`, and the CSS Color 4 forms Chrome keeps for a `color-mix()` or a wide-gamut colour (`color(srgb ...)` and the other predefined spaces, `oklch()`, `oklab()`, `lab()`, `lch()`), all converted to sRGB 0-255. A colour it cannot read is no colour, never a guess. Run its tests with `node --test scripts/screens/compdiff/colour.test.mjs`; the steps' with `node --test scripts/screens/compdiff/steps.test.mjs`.
 
 ## Read-only
 

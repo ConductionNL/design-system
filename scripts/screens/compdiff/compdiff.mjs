@@ -4,6 +4,8 @@
 // node compdiff.mjs --board DqMijnWerk --url '/apps/dossiq/?view=mine' --out <dir>
 //   [--base http://localhost:8080] [--boards <dir with Board.html>] [--skip-first-run dossiq]
 //   [--click "<css>"] [--clicks "a|b"] [--fills "<sel>=><value>||..."] [--settle 8000] [--wait-for "<css>"]
+//   [--steps '<JSON array>' | --steps @<file.json>]   ordered click/fill/type/press/wait steps (steps.mjs), played
+//   after --click, --clicks and --fills; REVIEW/boards.json keeps the same list per board
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -18,6 +20,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
+import { parseSteps, playSteps } from './steps.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -39,6 +42,13 @@ const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inR
 const user = process.env.COMPDIFF_USER, password = process.env.COMPDIFF_PASSWORD
 if (!board || !args.url || !user || !password) {
 	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir]')
+	process.exit(2)
+}
+let steps = []
+try {
+	steps = args.steps ? parseSteps(args.steps) : []
+} catch (e) {
+	console.error(`bad --steps: ${e.message}`)
 	process.exit(2)
 }
 const boardFile = path.join(BOARDS, `${board}.html`)
@@ -102,6 +112,7 @@ try {
 			await lpage.waitForTimeout(500)
 		}
 	}
+	await playSteps(lpage, steps)
 	await lpage.waitForTimeout(settle)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# runall.sh <outdir> <specs.tsv>
+# runall.sh <outdir> <specs.tsv | boards.json>
 # Runs compdiff.mjs for every row of specs.tsv: board<TAB>route[<TAB>--flag<TAB>value]...
+# Given a REVIEW boards.json, it writes <outdir>/specs.tsv from it (specs-from-boards.mjs) and runs that.
 # Optional environment:
 #   COMPDIFF_HEALTH      command that must succeed before a board is measured (waits up to 30 min)
 #   COMPDIFF_STAMP_FILE  file whose first line names the build on the live instance; a board measured
@@ -11,6 +12,11 @@
 set -u
 out=$1; specs=$2; mkdir -p "$out"
 HERE="$(cd "$(dirname "$0")" && pwd)"
+# A REVIEW boards.json in place of a specs file: its rows are written first, each board with its steps in order.
+if [[ "$specs" == *.json ]]; then
+	node "$HERE/specs-from-boards.mjs" "$specs" > "$out/specs.tsv" || exit 2
+	specs="$out/specs.tsv"
+fi
 stamp() { [ -n "${COMPDIFF_STAMP_FILE:-}" ] && head -1 "$COMPDIFF_STAMP_FILE" 2>/dev/null; }
 healthy() {
 	[ -z "${COMPDIFF_HEALTH:-}" ] && return 0

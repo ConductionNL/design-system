@@ -8,7 +8,7 @@ import path from 'node:path'
 import { compareProps, scoreComponent, normalizeLegacy, addPage, elementRows, isRepeated, markListElements } from './compare.mjs'
 
 const dir = process.argv[2]
-const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f)).sort()
+const files = fs.readdirSync(dir).filter((f) => /^[A-Z][A-Za-z0-9]+\.json$/.test(f)).sort()
 const groups = new Map()
 const perBoard = []
 const roleGroup = (c) => (c.role.startsWith('element') ? c.role : c.role === 'card' && c.board.title ? (c.board.depth ? 'card (nested, titled)' : 'widget/card (titled)') : c.role === 'card' ? (c.board.depth ? 'card (nested)' : 'card/tile (untitled)') : c.role)

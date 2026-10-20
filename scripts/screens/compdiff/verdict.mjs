@@ -17,7 +17,7 @@ const POS = 4, WIDTH = 8
 const argv = process.argv.slice(2)
 const dir = argv[0]
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null }
-const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f) || /^[A-Z][a-z]+[A-Z].*\.json$/.test(f)).filter((f) => !/^(verdicts|results)/.test(f)).sort()
+const files = fs.readdirSync(dir).filter((f) => /^Dq.*\.json$/.test(f) || /^[A-Z][A-Za-z0-9]+\.json$/.test(f)).filter((f) => !/^(verdicts|results)/.test(f)).sort()
 
 const origin = (r, side) => {
 	const ph = r.components.find((c) => c.role === 'pageHeader')

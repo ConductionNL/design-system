@@ -27,13 +27,19 @@ measure() {
 	local cmd=(timeout 600 node "$HERE/compdiff.mjs" "$@")
 	[ -n "${COMPDIFF_SLICE:-}" ] && cmd=(systemd-run --user --scope --quiet --slice="$COMPDIFF_SLICE" -p MemoryMax=2G "${cmd[@]}")
 	if [ -z "${COMPDIFF_LOCK_DIR:-}" ]; then "${cmd[@]}"; return; fi
+	# Both slots busy: queue on one slot for 1 s, then the other. A queued flock is woken the moment the slot is
+	# released, so a run that waits gets the slot before a run that only polls it between boards.
+	local turn=1
 	while true; do
 		for slot in 1 2; do
 			exec 9>"$COMPDIFF_LOCK_DIR/pixel-$slot.lock"
 			if flock -n 9; then "${cmd[@]}"; local rc=$?; flock -u 9; return $rc; fi
 			exec 9>&-
 		done
-		sleep 5
+		exec 9>"$COMPDIFF_LOCK_DIR/pixel-$turn.lock"
+		if flock -w 1 9; then "${cmd[@]}"; local rc=$?; flock -u 9; return $rc; fi
+		exec 9>&-
+		turn=$((3 - turn))
 	done
 }
 while IFS=$'\t' read -r b u rest; do

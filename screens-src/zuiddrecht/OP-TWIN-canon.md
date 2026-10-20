@@ -175,7 +175,7 @@ A dropdown under the avatar, as Nextcloud draws it. No Zuiddrecht board draws th
 | card | max-width 420 px, `#ffffff`, `border: 1px solid #e4e6ea`, radius 12 px, shadow `0 2px 12px rgba(27,28,29,0.06)`; a 5 px bar on top in `#cc0000` 6, `#3669a5` 3, `#cc0000` 1; padding 32 px, column gap 18 px |
 | copy | title 24 px weight 700 "Sign in to the workplace", line 15 px `#5e6168` "For employees of Gemeente Zuiddrecht. One account for Nextcloud and OpenProject." |
 | single sign-on | primary link 48 px (the canon primary; `NcLogin` drew 46 before the 15 October sizes), `var(--sc-action, #3669a5)`, "Sign in with your municipal account"; then an "or" line |
-| fields | labels 14 px weight 600, inputs 44 px, padding 0 12px, `border: 1px solid #828a95` (`NcLogin` uses `#8a929e`, which is not a token literal), radius `var(--sc-radius, 8px)`, 15 px; User name or email, Password |
+| fields | labels 14 px weight 600, inputs 44 px, padding 0 12px, `border: 1px solid #828a95` (`NcLogin` uses `#828a95`, which is not a token literal), radius `var(--sc-radius, 8px)`, 15 px; User name or email, Password |
 | secondary | "Sign in" 48 px, `border: 1px solid #828a95; background: #ffffff`, 15 px weight 600; "Forgot password?" 14 px link centred under it |
 | foot | 13 px `#5e6168` "Gemeente Zuiddrecht · OpenProject on the workplace" |
 

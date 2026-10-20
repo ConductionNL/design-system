@@ -1,3 +1,4 @@
+import { parseColour } from './colour.mjs'
 import { pageComponent } from './pagebg.mjs'
 
 // Pairing and property comparison for compdiff. Pure functions over the extractor's output.
@@ -96,7 +97,7 @@ function kind (p) {
 	if (/^rect\.(w|h)$/.test(p)) return 'size'
 	return 'spacing'
 }
-const rgba = (c) => { const m = (c || '').match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[\s,/]+/).filter(Boolean).map(Number); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1] }
+const rgba = parseColour
 
 export function compareProps (b, l) {
 	const role = b.role

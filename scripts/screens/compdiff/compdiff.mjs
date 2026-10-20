@@ -17,6 +17,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
+import { parseColour } from './colour.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -46,7 +47,9 @@ if (!fs.existsSync(boardFile)) {
 	process.exit(2)
 }
 fs.mkdirSync(out, { recursive: true })
-const EXTRACT = fs.readFileSync(path.join(HERE, 'extract.js'), 'utf8')
+// The extractor runs in the page, so it gets the colour parser as source ahead of it (a function declaration, so a
+// second injection into the same page does not throw).
+const EXTRACT = `${parseColour.toString()}\n` + fs.readFileSync(path.join(HERE, 'extract.js'), 'utf8')
 const measure = async (page) => {
 	await page.evaluate(() => document.fonts.ready)
 	await page.addScriptTag({ content: EXTRACT })

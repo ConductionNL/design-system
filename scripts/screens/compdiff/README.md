@@ -105,6 +105,8 @@ Flags fire when a value goes past one of these limits:
 - a colour channel more than 12 apart
 - a font weight 100 or more apart
 
+Colours are read by `colour.mjs`, in the page and in the comparison alike. It reads every form `getComputedStyle` returns: `rgb()`/`rgba()`, and the CSS Color 4 forms Chrome keeps for a `color-mix()` or a wide-gamut colour (`color(srgb ...)` and the other predefined spaces, `oklch()`, `oklab()`, `lab()`, `lch()`), all converted to sRGB 0-255. A colour it cannot read is no colour, never a guess. Run its tests with `node --test scripts/screens/compdiff/colour.test.mjs`.
+
 ## Read-only
 
 On the live side the script only reads. It answers every request except GET, HEAD, OPTIONS and the login POST with a 403 and does not pass it to the server. Each `<Board>.json` lists those blocked requests under `blockedWrites`. Nothing is written to the instance, and the script never switches or builds the app under test.

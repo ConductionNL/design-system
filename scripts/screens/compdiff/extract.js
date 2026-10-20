@@ -5,12 +5,10 @@ window.__compdiffExtract = function () {
 	const VW = window.innerWidth
 	const px = (v) => parseFloat(v) || 0
 	const round = (v) => Math.round(v * 10) / 10
-	const rgba = (c) => {
-		const m = (c || '').match(/rgba?\(([^)]+)\)/)
-		if (!m) return null
-		const p = m[1].split(/[\s,/]+/).filter(Boolean).map(Number)
-		return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1]
-	}
+	// colour.mjs's parseColour, injected ahead of this file by compdiff.mjs: it also reads the CSS Color 4 forms
+	// (color(srgb ...), oklch(...)) that a color-mix() computes to. Without it every such colour read as transparent.
+	if (typeof parseColour !== 'function') throw new Error('compdiff: parseColour is not injected (load extract.js through compdiff.mjs)')
+	const rgba = parseColour
 	const opaque = (c) => { const v = rgba(c); return !!v && v[3] > 0.05 }
 	const visible = (el) => {
 		const r = el.getBoundingClientRect()

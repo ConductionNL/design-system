@@ -10,10 +10,13 @@ window.__compdiffExtract = function () {
 	if (typeof parseColour !== 'function') throw new Error('compdiff: parseColour is not injected (load extract.js through compdiff.mjs)')
 	const rgba = parseColour
 	const opaque = (c) => { const v = rgba(c); return !!v && v[3] > 0.05 }
+	// Visible means people can see it: a screen-reader-only element (a 1px box that clips its content, such as
+	// NcDialog's h2.dialog__name) is not, though it has a box.
 	const visible = (el) => {
 		const r = el.getBoundingClientRect()
 		if (r.width < 1 || r.height < 1) return false
 		const cs = getComputedStyle(el)
+		if ((r.width <= 2 || r.height <= 2) && (cs.clipPath !== 'none' || (cs.clip && cs.clip !== 'auto') || cs.overflow === 'hidden')) return false
 		return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05
 	}
 	const rect = (el) => { const r = el.getBoundingClientRect(); return { x: round(r.x), y: round(r.y), w: round(r.width), h: round(r.height) } }
@@ -111,24 +114,35 @@ window.__compdiffExtract = function () {
 		return out
 	}
 
-	const headingIn = (card, cr) => {
+	const headingIn = (card, cr, role) => {
 		// Skip visually hidden headings (NcDialog's 1px h2.dialog__name): measure the title people see.
 		const hs = [...card.querySelectorAll('h1, h2, h3, h4, h5, h6, [role=heading], legend')].filter((h) => ownedBy(h, card) && visible(h) && h.textContent.trim() && h.getBoundingClientRect().width > 4 && h.getBoundingClientRect().height > 4)
-		const top = hs.find((h) => h.getBoundingClientRect().top - cr.top < Math.max(90, cr.height * 0.4))
+		// A dialog's title sits at its top: a section heading further down is not it, however tall the dialog.
+		const top = hs.find((h) => h.getBoundingClientRect().top - cr.top < (role === 'dialog' ? 90 : Math.max(90, cr.height * 0.4)))
 		if (top) return top
-		// No heading element: a bold run of text at the top of the card serves as its title.
+		// No heading element: a bold run of text at the top of the card serves as its title. In a dialog the top can
+		// hold an eyebrow over the title, so there the largest bold line near the top is the title. A card keeps the
+		// first one: its second line is often a bigger value (a KPI), not a title.
 		const range = document.createRange()
 		const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT)
+		let first = null, best = null, bestSize = 0
 		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
 			if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement) || !ownedBy(n, card)) continue
 			range.selectNodeContents(n)
 			const q = range.getBoundingClientRect()
-			if (q.top - cr.top > 64) break
+			if (first === null) {
+				if (q.top - cr.top > 64) break
+				first = q.top
+			} else if (q.top - first > 40) break
 			const cs = getComputedStyle(n.parentElement)
-			if (Number(cs.fontWeight) >= 600 && px(cs.fontSize) >= 13 && !n.parentElement.closest(INTERACTIVE)) return n.parentElement
-			break
+			if (Number(cs.fontWeight) < 600 || px(cs.fontSize) < 13 || n.parentElement.closest(INTERACTIVE)) {
+				if (best === null) break
+				continue
+			}
+			if (px(cs.fontSize) > bestSize) { best = n.parentElement; bestSize = px(cs.fontSize) }
+			if (role !== 'dialog') break
 		}
-		return null
+		return best
 	}
 
 	const describeCard = (card, role) => {
@@ -142,7 +156,7 @@ window.__compdiffExtract = function () {
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
 		const leaves = leavesOf(card)
-		const title = headingIn(card, cr)
+		const title = headingIn(card, cr, role)
 		let headerRow = null, titleBox = null
 		if (title) {
 			comp.title = title.textContent.trim().replace(/\s+/g, ' ').slice(0, 80)
@@ -452,7 +466,7 @@ window.__compdiffExtract = function () {
 				borderColor: Object.values(borders(cs)).filter((v) => v > 0).length >= 3 ? cs.borderTopColor : null,
 				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
-				icon: !!el.querySelector('svg, img, .material-design-icon, [class*="icon"]'),
+				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,

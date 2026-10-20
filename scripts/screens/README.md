@@ -40,7 +40,7 @@ For every board:
    | accent-deep | #a30000 | work-soft | #eef0f3 |
    | site-ink | #1a1a1a | work-ground | #f5f6f8 |
    | site-muted | #4a4a4a | work-chip | #f0f1f3 |
-   | site-border | #d3d8df | work-field | #c4c7cb |
+   | site-border | #d3d8df | work-field | #828a95 |
    | site-ground | #f4f6f9 | | |
 
    Every other colour (for example buildiq orange #e2611a) stays as drawn. The school sets are not tokenized.

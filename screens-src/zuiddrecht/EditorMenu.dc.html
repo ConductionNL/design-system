@@ -51,7 +51,7 @@ a{color:#3669a5}a:hover{color:#234a78}
           <sc-for list="{{ items }}" as="it" hint-placeholder-count="7">
             <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 8px 0; border-bottom: 1px solid #e6e9ee">
               <label for="{{ it.id }}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Naam</label>
-              <input id="{{ it.id }}" type="text" value="{{ it.name }}" style="flex: 0 1 320px; min-width: 160px; box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #8a929e; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; color: #1a1a1a">
+              <input id="{{ it.id }}" type="text" value="{{ it.name }}" style="flex: 0 1 320px; min-width: 160px; box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #828a95; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; color: #1a1a1a">
               <code style="flex: 1 1 200px; min-width: 0; font-size: 13px; color: #3d4047; background: #f0f1f3; padding: 3px 6px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ it.link }}</code>
               <span style="display: inline-flex; gap: 2px; flex: none">
                 <button type="button" aria-label="{{ it.upLabel }}" aria-disabled="{{ it.upDis }}" style="{{ it.upStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"></path></svg></button>
@@ -64,9 +64,9 @@ a{color:#3669a5}a:hover{color:#234a78}
         <form style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 6px; background: #f4f6f9; max-width: 520px">
           <h3 style="margin: 0 0 4px; font-size: 17px; font-weight: 700">Een menu-item toevoegen</h3>
           <label for="mn-naam" style="font-size: 15px; font-weight: 600">Naam</label>
-          <input id="mn-naam" type="text" value="Contact" style="box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #8a929e; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; background: #ffffff">
+          <input id="mn-naam" type="text" value="Contact" style="box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #828a95; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; background: #ffffff">
           <label for="mn-link" style="font-size: 15px; font-weight: 600">Link</label>
-          <input id="mn-link" type="text" placeholder="/over-ons/contact" style="box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #8a929e; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; background: #ffffff">
+          <input id="mn-link" type="text" placeholder="/over-ons/contact" style="box-sizing: border-box; height: 40px; padding: 0 10px; border: 1px solid #828a95; border-radius: 4px; font: 400 15px 'Fira Sans', sans-serif; background: #ffffff">
           <button type="submit" style="align-self: flex-start; margin-top: 4px; height: 40px; padding: 0 14px; border: 1px solid #3669a5; border-radius: 4px; background: #ffffff; color: #234a78; font: 600 15px 'Fira Sans', sans-serif">Toevoegen</button>
         </form>
         <button type="button" style="align-self: flex-start; height: 44px; padding: 0 20px; border: 0; border-radius: 4px; background: #3669a5; color: #ffffff; font: 600 16px 'Fira Sans', sans-serif">Menu opslaan</button>
@@ -80,7 +80,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 class Component extends DCLogic {
   renderVals() {
     const base = 'width: 36px; height: 36px; border: 0; border-radius: 4px; background: transparent; display: inline-flex; align-items: center; justify-content: center; ';
-    const on = base + 'color: #234a78;', off = base + 'color: #8a929e;';
+    const on = base + 'color: #234a78;', off = base + 'color: #828a95;';
     const raw = [['Home', '/'], ['Wonen en leven', '/wonen-en-leven'], ['Afval', '/afval'], ['Parkeren', '/parkeren'], ['Ondernemen', '/ondernemen'], ['Woo-publicaties', '/woo-publicaties'], ['Bestuur en organisatie', '/bestuur-en-organisatie']];
     const items = raw.map(([name, link], i) => ({ id: 'mn-' + i, name, link, upLabel: name + ' omhoog', downLabel: name + ' omlaag', upStyle: i === 0 ? off : on, downStyle: i === raw.length - 1 ? off : on, upDis: i === 0 ? 'true' : 'false', downDis: i === raw.length - 1 ? 'true' : 'false' }));
     return { items, crumbs: [{ label: 'Home' }, { label: 'Werk in uitvoering' }] };

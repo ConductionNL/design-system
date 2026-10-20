@@ -76,6 +76,8 @@ Besides the components, the extractor lists every visible UI element in the page
 
 A deck of record cards (three or more cards of the same width side by side) counts as one component. Its first card is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline).
 
+A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them).
+
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 
 ## What it compares

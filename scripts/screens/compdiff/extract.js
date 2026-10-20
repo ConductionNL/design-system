@@ -355,7 +355,10 @@ window.__compdiffExtract = function () {
 	// 5. Tables (and ARIA grids).
 	for (const t of document.querySelectorAll('table, [role=table], [role=grid]')) {
 		if (!visible(t) || outOfScope(t)) continue
-		const th = t.querySelector('th, [role=columnheader]')
+		// The head is read from the first header cell with a label: a selection column's empty cell takes no weight
+		// of its own (a board's falls back to the browser's bold th), so it does not stand for the head's type.
+		const heads = [...t.querySelectorAll('th, [role=columnheader]')]
+		const th = heads.find((h) => visible(h) && h.textContent.trim()) || heads[0]
 		const td = t.querySelector('tbody td, [role=row] [role=cell], [role=gridcell]')
 		const hr = th && (th.closest('tr, [role=row]') || th)
 		const dr = td && (td.closest('tr, [role=row]') || td)
@@ -367,17 +370,43 @@ window.__compdiffExtract = function () {
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
+	// The items of a drawn line (below): their own rows are part of that toolbar, not toolbars of their own.
+	const lineItems = new Set()
+	// A wrapping flex row whose row wrappers are `display: contents` (CnActionsBar's board layout) draws its first
+	// line as one toolbar, though no element boxes that line: the line spans the container's width and holds the
+	// flattened items whose boxes overlap the first item's vertically.
+	const flatItems = (el) => [...el.children].flatMap((c) => (getComputedStyle(c).display === 'contents' ? flatItems(c) : [c]))
+	const firstLine = (el) => {
+		const items = flatItems(el).filter(visible)
+		if (!items.length) return null
+		const top = Math.min(...items.map((i) => i.getBoundingClientRect().top))
+		const first = items.filter((i) => i.getBoundingClientRect().top === top)
+		const bottom = Math.max(...first.map((i) => i.getBoundingClientRect().bottom))
+		const line = items.filter((i) => i.getBoundingClientRect().top < bottom)
+		return { items: line, top, bottom: Math.max(...line.map((i) => i.getBoundingClientRect().bottom)) }
+	}
 	for (const el of all) {
 		if (!visible(el) || outOfScope(el) || el.closest('[role=tablist], table, thead')) continue
 		const cs = getComputedStyle(el)
 		if (!/flex|grid/.test(cs.display)) continue
 		const r = el.getBoundingClientRect()
+		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
+			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
+			const line = firstLine(el)
+			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && c.getBoundingClientRect().height >= 24) : []
+			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
+				line.items.forEach((i) => lineItems.add(i))
+				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
+				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), controlBorder: borders(c0cs).top, controlBorderColor: c0cs.borderTopColor, controlFontSize: px(c0cs.fontSize) })
+				continue
+			}
+		}
 		if (r.height > 72 || r.width < 300) continue
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (el.querySelector('[role=tablist]')) continue
-		if ([...used].some((u) => u.contains(el))) continue
+		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)

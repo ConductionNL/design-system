@@ -23,14 +23,16 @@ export function routeOf(url) {
 }
 
 /**
- * The specs rows for the boards, then the kept rows of boards not among them.
+ * The specs rows for the boards, then the kept rows of boards not among them. A board without a liveUrl has no live
+ * page to measure (a sheet of dialogs side by side) and gets no row.
  *
  * @param {Array<{board: string, liveUrl: string, steps?: Array<object>}>} boards The boards.json entries.
  * @param {Array<string>} [keep] Rows of an existing specs file.
  * @return {Array<string>} The rows.
  */
 export function specRows(boards, keep = []) {
-	const rows = boards.map((entry) => {
+	const measured = boards.filter((entry) => entry.liveUrl)
+	const rows = measured.map((entry) => {
 		const steps = (entry.steps || []).map((step, i) => {
 			normaliseStep(step, i)
 			return step

@@ -93,3 +93,11 @@ test('writes a specs row per board with its steps, the route without origin or /
 	assert.deepEqual(rows.slice(3), ['DqExtra\t/apps/dossiq/extra\t--clicks\ta'])
 	assert.equal(routeOf('/apps/dossiq/tasks'), '/apps/dossiq/tasks')
 })
+
+test('writes no row for a board without a live page', () => {
+	const rows = specRows([
+		{ board: 'DqZaakDialogen', liveUrl: null, steps: [] },
+		{ board: 'DqZaken', liveUrl: 'http://localhost:8080/index.php/apps/dossiq/cases', steps: [] },
+	], ['DqZaakDialogen\t/old'])
+	assert.deepEqual(rows, ['DqZaken\t/apps/dossiq/cases'])
+})

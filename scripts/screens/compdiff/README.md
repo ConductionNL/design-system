@@ -32,7 +32,7 @@ It writes `<Board>.json` with every measurement and `<Board>.md` with a table pe
 
 ## Measure a set of boards
 
-`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, and its steps as `--steps`. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
+`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, and its steps as `--steps`; a board with no `liveUrl` (a sheet with no live page) gets no row. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
 
 ```sh
 scripts/screens/compdiff/runall.sh /tmp/compdiff specs.tsv

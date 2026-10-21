@@ -187,13 +187,27 @@ window.__compdiffExtract = function () {
 		return best
 	}
 
+	// The padding people see: a card that pads its header and body rows (cn-widget-wrapper) instead of itself has its
+	// top from the first row, its bottom from the last, and its sides from the rows that span its full width.
+	const cardPadding = (card, cs) => {
+		const own = box(cs, 'padding')
+		const cr = card.getBoundingClientRect()
+		const rows = [...card.children].filter((c) => visible(c) && !/absolute|fixed/.test(getComputedStyle(c).position))
+		const inner = cr.width - own.left - own.right - px(cs.borderLeftWidth) - px(cs.borderRightWidth)
+		if (!rows.length || rows.some((c) => c.getBoundingClientRect().width < inner - 1)) return own
+		const pad = rows.map((c) => box(getComputedStyle(c), 'padding'))
+		return {
+			top: own.top || pad[0].top, bottom: own.bottom || pad[pad.length - 1].bottom,
+			left: own.left || Math.min(...pad.map((p) => p.left)), right: own.right || Math.min(...pad.map((p) => p.right)),
+		}
+	}
 	const describeCard = (card, role) => {
 		const cs = getComputedStyle(card)
 		const cr = card.getBoundingClientRect()
 		const comp = { el: card, role, rect: rect(card), frame: framed(card, cs), depth: 0 }
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
-			padding: box(cs, 'padding'), margin: box(cs, 'margin'), border: borders(cs), borderColor: cs.borderTopColor,
+			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: borders(cs), borderColor: cs.borderTopColor,
 			borderRadius: px(cs.borderTopLeftRadius), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
@@ -345,15 +359,23 @@ window.__compdiffExtract = function () {
 	// 3. Page header: the first visible h1 and the buttons on its line.
 	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]'))
 	if (h1) {
-		let container = h1
+		let container = h1, scope = null
 		for (let p = h1.parentElement; p && p !== document.body; p = p.parentElement) {
 			const pr = p.getBoundingClientRect()
-			if (pr.height > 150 || cardEls.has(p)) break
+			if (pr.height > 150 || cardEls.has(p)) {
+				// A header block that also holds the chips and the status stepper under the title (CnDetailPage) is
+				// taller than one line, but the buttons on the title's line are still the header's.
+				for (let q = p; q && q !== document.body && q.getBoundingClientRect().height <= 300 && !cardEls.has(q); q = q.parentElement) {
+					if (q.matches('header, [class*=header]')) scope = q
+				}
+				break
+			}
 			container = p
 		}
+		scope = scope || container
 		window.__compdiffPageHeader = container
 		const tb = textRect(h1) || rect(h1)
-		const btns = [...container.querySelectorAll('button, a')].filter((b) => {
+		const btns = [...scope.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
 			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
 			// Only the title's own row: a status stepper or chip row under the title is not a header action.
@@ -423,8 +445,10 @@ window.__compdiffExtract = function () {
 		const td = t.querySelector('tbody td, [role=row] [role=cell], [role=gridcell]')
 		const hr = th && (th.closest('tr, [role=row]') || th)
 		const dr = td && (td.closest('tr, [role=row]') || td)
+		// A `display: contents` row (an ARIA grid row) has no box: its height is that of its tallest cell.
+		const rowH = (row) => { const h = row.getBoundingClientRect().height; return round(h || Math.max(0, ...[...row.children].map((c) => c.getBoundingClientRect().height))) }
 		const cell = (c) => { if (!c) return null; const ccs = getComputedStyle(c); return { ...font(c), paddingLeft: px(ccs.paddingLeft), paddingTop: px(ccs.paddingTop), borderBottom: borders(ccs).bottom || (c.parentElement ? borders(getComputedStyle(c.parentElement)).bottom : 0), background: bgBehind(c) } }
-		components.push({ role: 'table', title: 'table', rect: rect(t), head: cell(th), headRowHeight: hr ? round(hr.getBoundingClientRect().height) : null, cell: cell(td), rowHeight: dr ? round(dr.getBoundingClientRect().height) : null })
+		components.push({ role: 'table', title: 'table', rect: rect(t), head: cell(th), headRowHeight: hr ? rowH(hr) : null, cell: cell(td), rowHeight: dr ? rowH(dr) : null })
 	}
 
 	// 6. Toolbars: a row (not a card header, not the page header) that holds 2+ controls.
@@ -527,6 +551,27 @@ window.__compdiffExtract = function () {
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
 	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) if (recordEls.has(e)) return true; return false }
+	// A field's name from its markup: aria-labelledby, then a <label for> or a wrapping <label>. A textarea's text is
+	// its value, not its name.
+	const fieldLabel = (el) => {
+		if (!el.matches(FIELD)) return ''
+		const by = (el.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
+		const named = by.length ? by : [...(el.labels || [])]
+		// Only the label's own visible text: a wrapping label also holds the control and the value it shows.
+		const text = (l) => {
+			const w = document.createTreeWalker(l, NodeFilter.SHOW_TEXT)
+			const parts = []
+			for (let n = w.nextNode(); n; n = w.nextNode()) {
+				const p = n.parentElement
+				let inControl = false
+				for (let e = p; e && e !== l; e = e.parentElement) if (e.contains(el) || e.matches(FIELD)) { inControl = true; break }
+				if (n.textContent.trim() && p && !inControl && visible(p)) parts.push(n.textContent.trim())
+			}
+			return parts.join(' ')
+		}
+		// NcSelect inside a wrapping label carries a second, inner label with the same name.
+		return [...new Set(named.map(text).filter(Boolean))].join(' ')
+	}
 	// An element's own label, without the text of a count badge or tag nested inside it.
 	const ownLabel = (el) => {
 		const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
@@ -536,7 +581,7 @@ window.__compdiffExtract = function () {
 			for (let e = n.parentElement; e && e !== el; e = e.parentElement) if (PILLISH(e)) { nested = true; break }
 			if (!nested && n.textContent.trim()) parts.push(n.textContent.trim())
 		}
-		return (el.getAttribute('aria-label') || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
+		return (el.getAttribute('aria-label') || fieldLabel(el) || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
 	for (const el of all) {
 		if (!visible(el) || outOfScope(el) || inTabStrip(el) || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue

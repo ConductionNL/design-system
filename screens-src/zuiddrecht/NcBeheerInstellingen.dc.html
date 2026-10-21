@@ -19,7 +19,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
     <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="NcBeheerZijbalk" app="{{ app }}" app-icon="{{ appIcon }}" apps="{{ apps }}" hint-size="264px,832px"></dc-import></div>
     <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
-      <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1000px; box-sizing: border-box; width: 100%">
+      <main style="{{ mainStyle }}">
         <dc-import name="NcBeheerKop" app="{{ app }}" title="{{ title }}" section="{{ section }}" scope="{{ scope }}" tabs="{{ tabs }}" hint-size="100%,96px"></dc-import>
         <sc-for list="{{ cards }}" as="s" hint-placeholder-count="3">
           <section aria-labelledby="{{ s.id }}" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px">
@@ -69,7 +69,7 @@ a{color:#3669a5}a:hover{color:#234a78}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"appIcon":{"editor":"text","default":""},"apps":{"editor":null,"default":[]},"title":{"editor":"text","default":""},"section":{"editor":"text","default":""},"tabs":{"editor":null,"default":[]},"scope":{"editor":"text","default":"alleen voor beheerders, elke sectie slaat apart op"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"role":{"editor":"text","default":"Functioneel beheerder"},"sections":{"editor":null,"default":[]},"$preview":{"width":1440,"height":1400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"maxWidth":{"editor":"text","default":"1000px"},"appIcon":{"editor":"text","default":""},"apps":{"editor":null,"default":[]},"title":{"editor":"text","default":""},"section":{"editor":"text","default":""},"tabs":{"editor":null,"default":[]},"scope":{"editor":"text","default":"alleen voor beheerders, elke sectie slaat apart op"},"user":{"editor":"text","default":"Pieter Jansen"},"initials":{"editor":"text","default":"PJ"},"role":{"editor":"text","default":"Functioneel beheerder"},"sections":{"editor":null,"default":[]},"$preview":{"width":1440,"height":1400}}'>
 class Component extends DCLogic {
   renderVals() {
     // The Nextcloud admin settings page of one app (/settings/admin/<app>), in the frame the other admin boards
@@ -129,7 +129,7 @@ class Component extends DCLogic {
     };
     const raw = Array.isArray(this.props.sections) ? this.props.sections : [];
     const cards = raw.map((s, i) => ({ id: 'nbi-s' + i, name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
-    return { app, appIcon: this.props.appIcon || '', apps: Array.isArray(this.props.apps) ? this.props.apps : [], title: this.props.title || '', section: this.props.section || '', tabs: Array.isArray(this.props.tabs) ? this.props.tabs : [],
+    return { app, mainStyle: `padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: ${this.props.maxWidth || '1000px'}; box-sizing: border-box; width: 100%`, appIcon: this.props.appIcon || '', apps: Array.isArray(this.props.apps) ? this.props.apps : [], title: this.props.title || '', section: this.props.section || '', tabs: Array.isArray(this.props.tabs) ? this.props.tabs : [],
       scope: this.props.scope || 'alleen voor beheerders, elke sectie slaat apart op', user: this.props.user || 'Pieter Jansen', initials: this.props.initials || 'PJ', role: this.props.role || 'Functioneel beheerder', cards };
   }
 }

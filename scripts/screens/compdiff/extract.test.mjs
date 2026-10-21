@@ -210,3 +210,31 @@ test('a wrapping label is named by its own text, not by the value its control sh
 			<div class="select"><span>Laatste 12 maanden</span><input id="p" type="search" style="width:200px"><label for="p">Periode</label></div></label></div>`)
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'field').map((e) => e.label), ['Periode'])
 })
+
+test('a pager row is a pager on both sides, never a toolbar or a tab strip', { skip }, async () => {
+	const link = (t, cur) => `<a href="#"${cur ? ' aria-current="page"' : ''} style="display:inline-flex;min-width:34px;height:34px">${t}</a>`
+	const board = await measure(`<div style="position:absolute;left:293px;top:600px;width:1118px;box-sizing:border-box;display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee">
+		<span>8 van 23</span><nav aria-label="Paginering" style="display:flex;gap:6px">${link('1', true)}${link('2')}${link('Volgende')}</nav></div>`)
+	const live = await measure(`<div class="cn-pagination" style="position:absolute;left:293px;top:600px;width:1118px;box-sizing:border-box;display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee">
+		<span>8 van 23</span><nav aria-label="Pagination" style="display:flex;gap:6px">${btn('1')}${btn('2')}${btn('3')}${btn('Volgende')}</nav></div>`)
+	for (const r of [board, live]) {
+		const roles = r.components.map((c) => c.role)
+		assert.deepEqual(roles, ['pager'], JSON.stringify(roles))
+		assert.equal(r.components[0].rect.w, 1118)
+		assert.equal(r.components[0].borderTop, 1)
+	}
+})
+
+test('a native radio stretched by its row is measured as the glyph it draws', { skip }, async () => {
+	const r = await measure(`<label style="position:absolute;left:300px;top:200px;display:flex;align-items:stretch;height:36px;width:400px">
+		<input type="radio" name="a" style="margin:0"><span>Opschorten</span></label>`)
+	const t = r.elements.find((e) => e.kind === 'toggle')
+	assert.equal(t.rect.h, 36)
+	assert.equal(t.props.h, t.rect.w)
+})
+
+test('a radius is read as drawn: 50%, 18px and 999px on a 36px circle all read 18', { skip }, async () => {
+	const b = (rad) => `<button style="width:36px;height:36px;border:1px solid #888;border-radius:${rad}">x</button>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:40px">${b('50%')}${b('18px')}${b('999px')}</div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.props.borderRadius), [18, 18, 18])
+})

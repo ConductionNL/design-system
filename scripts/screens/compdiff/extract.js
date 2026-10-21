@@ -49,6 +49,16 @@ window.__compdiffExtract = function () {
 		return { width: 0, color: null }
 	}
 	const box = (cs, prop) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), px(cs[prop + s])]))
+	// The top-left corner radius as drawn: a percentage resolves against the box, and radii larger than the box
+	// shrink the way CSS shrinks them, so 50%, 18px and 999px on a 36px circle all read 18.
+	const radius = (el, cs) => {
+		const r = el.getBoundingClientRect()
+		const len = (v, side) => (/%$/.test(v) ? (parseFloat(v) / 100) * side : px(v))
+		const corner = (c) => { const [h, v = h] = cs['border' + c + 'Radius'].split(' '); return [len(h, r.width), len(v, r.height)] }
+		const [tl, tr, br, bl] = ['TopLeft', 'TopRight', 'BottomRight', 'BottomLeft'].map(corner)
+		const f = Math.min(1, ...[[r.width, tl[0] + tr[0]], [r.width, bl[0] + br[0]], [r.height, tl[1] + bl[1]], [r.height, tr[1] + br[1]]].map(([side, sum]) => (sum > 0 ? side / sum : 1)))
+		return round(Math.min(tl[0], tl[1]) * f)
+	}
 	const lineHeight = (cs) => (cs.lineHeight === 'normal' ? round(px(cs.fontSize) * 1.2) : px(cs.lineHeight))
 	const font = (el) => {
 		const cs = getComputedStyle(el)
@@ -88,7 +98,7 @@ window.__compdiffExtract = function () {
 	const tabItems = (s) => [...s.querySelectorAll(s.matches('[role=tablist]') ? '[role=tab]' : 'a, [role=link]')].filter(visible)
 	const isPageTabs = (n) => {
 		if (n.closest('[role=tablist]') || n.querySelector('[role=tablist]') || outOfScope(n)) return false
-		if (/breadcrumb|kruimel/i.test(`${n.className} ${n.getAttribute('aria-label') || ''}`)) return false
+		if (/breadcrumb|kruimel|paginat|paginer|pager/i.test(`${n.className} ${n.getAttribute('aria-label') || ''}`)) return false
 		const items = tabItems(n)
 		if (!items.length) return false
 		const top = items[0].getBoundingClientRect().top
@@ -208,7 +218,7 @@ window.__compdiffExtract = function () {
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: borders(cs), borderColor: cs.borderTopColor,
-			borderRadius: px(cs.borderTopLeftRadius), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
+			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
 		const leaves = leavesOf(card)
@@ -354,7 +364,7 @@ window.__compdiffExtract = function () {
 
 	const headerButton = (b) => {
 		const bcs = getComputedStyle(b)
-		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: px(bcs.borderTopLeftRadius), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
+		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: radius(b, bcs), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
 	}
 	// 3. Page header: the first visible h1 and the buttons on its line.
 	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]'))
@@ -407,7 +417,7 @@ window.__compdiffExtract = function () {
 			const pseudo = [after, before].find((p) => p.content !== 'none' && p.content !== 'normal' && opaque(p.backgroundColor) && px(p.height) <= 6)
 			return {
 				...font(textEl(t)),
-				h: round(t.getBoundingClientRect().height), padding: box(tcs, 'padding'), borderRadius: px(tcs.borderTopLeftRadius),
+				h: round(t.getBoundingClientRect().height), padding: box(tcs, 'padding'), borderRadius: radius(t, tcs),
 				background: tcs.backgroundColor, indicator: borders(tcs).bottom || (pseudo ? px(pseudo.height) : 0) || (/inset 0px -\d/.test(tcs.boxShadow) ? Number(tcs.boxShadow.match(/inset 0px -(\d+)/)[1]) : 0),
 			}
 		}
@@ -460,6 +470,24 @@ window.__compdiffExtract = function () {
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
+	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
+	// pager on both sides, never as a toolbar: a board draws its pages as links, the library as buttons.
+	const PAGER = 'nav[aria-label], [class*=paginat], [class*=pager]'
+	for (const nav of document.querySelectorAll(PAGER)) {
+		if (!visible(nav) || outOfScope(nav) || !/paginat|paginer|pager/i.test(`${nav.className} ${nav.getAttribute('aria-label') || ''}`)) continue
+		if ([...used].some((u) => u.contains(nav))) continue
+		let row = nav
+		for (let p = nav.parentElement; p && p !== document.body && !cardEls.has(p); p = p.parentElement) {
+			const pr = p.getBoundingClientRect()
+			if (pr.height > 80 || pr.width < row.getBoundingClientRect().width) break
+			row = p
+		}
+		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && c.getBoundingClientRect().height >= 20)
+		if (!links.length) continue
+		used.add(row)
+		const rcs = getComputedStyle(row), ncs = getComputedStyle(nav), c0 = links[0], c0cs = getComputedStyle(c0)
+		components.push({ role: 'pager', title: 'pager', rect: rect(row), padding: box(rcs, 'padding'), borderTop: borders(rcs).top, gap: px(ncs.columnGap), pages: links.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), controlFontSize: px(c0cs.fontSize) })
+	}
 	// The items of a drawn line (below): their own rows are part of that toolbar, not toolbars of their own.
 	const lineItems = new Set()
 	// A wrapping flex row whose row wrappers are `display: contents` (CnActionsBar's board layout) draws its first
@@ -487,7 +515,7 @@ window.__compdiffExtract = function () {
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
-				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 				continue
 			}
 		}
@@ -500,7 +528,7 @@ window.__compdiffExtract = function () {
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 	}
 	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
 	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.
@@ -537,8 +565,8 @@ window.__compdiffExtract = function () {
 		if (el.matches(TOGGLE)) return 'toggle'
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		const boxed = ownBg || nBorders(el) >= 3
-		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
-		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 ? 'pill' : 'badge'
+		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
+		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null
 	}
@@ -547,6 +575,8 @@ window.__compdiffExtract = function () {
 		const three = Object.values(borders(cs)).filter((v) => v > 0).length >= 3
 		return { border: three ? borders(cs).top : 0, borderColor: three ? cs.borderTopColor : null }
 	}
+	// A native checkbox or radio draws a square glyph centred in its box: a box stretched by its row is not the switch.
+	const drawnHeight = (el, kind, cs, r) => (kind === 'toggle' && el.matches('input') && cs.appearance !== 'none' ? Math.min(r.width, r.height) : r.height)
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
@@ -603,7 +633,7 @@ window.__compdiffExtract = function () {
 			kind, label, inControl: inRecord(el) ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),
 			props: {
-				h: round(r.height), borderRadius: px(cs.borderTopLeftRadius), ...elementBorder(el, kind, cs),
+				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
 				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),

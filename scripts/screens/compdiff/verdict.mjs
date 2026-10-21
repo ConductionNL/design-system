@@ -25,7 +25,7 @@ const origin = (r, side) => {
 	const rects = r.components.map((c) => c[side].rect).concat(side === 'board' ? r.missingOnLive.map((c) => c.rect) : r.extraOnLive.map((c) => c.rect))
 	return { x: Math.min(...rects.map((q) => q.x)), y: Math.min(...rects.map((q) => q.y)) }
 }
-const label = (c) => `${c.role}${c.title && !['tabs', 'table', 'toolbar'].includes(c.role) ? ' "' + c.title.slice(0, 40) + '"' : ''}`
+const label = (c) => `${c.role}${c.title && !['tabs', 'table', 'toolbar', 'pager'].includes(c.role) ? ' "' + c.title.slice(0, 40) + '"' : ''}`
 
 const verdicts = []
 for (const f of files) {

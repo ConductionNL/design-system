@@ -60,6 +60,8 @@ test('cards with different titles, or a titled and an untitled card far apart, d
 	assert.equal(choice.pairs.length, 0)
 	const near = pairComponents([card(undefined, 300, 120)], [card('Zaakgegevens', 340, 160)], 1500)
 	assert.equal(near.pairs.length, 1)
+	const column = pairComponents([card('In behandeling19', 420, 772, 576, 268)], [card('Beoordeling ontvankelijkheid1', 468.5, 234, 576, 268)], 1500)
+	assert.equal(column.pairs.length, 1)
 })
 
 test('a lone pager pairs with the lone pager, wherever the list above it ends', () => {

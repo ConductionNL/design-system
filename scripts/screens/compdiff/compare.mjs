@@ -64,11 +64,12 @@ export function pairComponents (board, live, H) {
 			let cost = pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
-			// Two cards with different titles are a pair only as near neighbours; a titled card and an untitled one
-			// only within a card's height of each other.
+			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
+			// titled by its data); a titled card and an untitled one only within a card's height of each other.
 			if (CARDLIKE.has(b.role) && (b.title || l.title)) {
 				const dy = Math.abs(b.rect.y - l.rect.y)
-				if (b.title && l.title ? dy > 48 : dy > Math.max(48, b.rect.h, l.rect.h)) continue
+				const slot = Math.abs(b.rect.x - l.rect.x) <= 4 && Math.abs(b.rect.w - l.rect.w) <= 2
+				if (b.title && l.title ? dy > 48 && !slot : dy > Math.max(48, b.rect.h, l.rect.h)) continue
 			}
 			if (cost <= 0.2) cand.push({ b, l, cost })
 		}

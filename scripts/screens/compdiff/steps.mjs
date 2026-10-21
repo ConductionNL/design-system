@@ -52,6 +52,20 @@ export function normaliseStep(step, index = 0) {
 }
 
 /**
+ * Read a --width argument: the viewport both pages are measured at, so a phone board (MobielZaak, 390px) is compared
+ * with the live page at a phone's width. Unset, 1440, the width every desktop board is drawn at.
+ *
+ * @param {string|undefined} arg The argument.
+ * @return {number} The width in pixels.
+ */
+export function parseWidth(arg) {
+	if (arg === undefined) return 1440
+	const width = Number(arg)
+	if (!Number.isInteger(width) || width < 320 || width > 2560) throw new Error('--width must be a whole number from 320 to 2560')
+	return width
+}
+
+/**
  * Read a --steps argument: a JSON array, or `@<file>` holding one.
  *
  * @param {string} arg The argument.

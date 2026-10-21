@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url'
 import { pairComponents, compareProps, scoreComponent, pairElements, compareElement } from './compare.mjs'
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
-import { parseSteps, playSteps } from './steps.mjs'
+import { parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { accountFor, markIgnored, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -37,13 +37,19 @@ const BOARDS = args.boards || path.join(HERE, '..', '..', '..', 'preview', 'scre
 const base = args.base || 'http://localhost:8080'
 const board = args.board
 const out = args.out || path.join(process.cwd(), 'compdiff-out')
-const width = 1440
+let width
+try {
+	width = parseWidth(args.width)
+} catch (e) {
+	console.error(e.message)
+	process.exit(2)
+}
 const settle = Number(args.settle || 8000)
 // An element crop above this mismatch % with no property flagged is reported as visually different.
 const CROP_FLAG = Number(args['crop-flag'] || 30)
 const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inRow: e.inRow, count: e.count, repeated: e.repeated, rect: e.rect, props: e.props })
 if (!board || !args.url) {
-	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir]')
+	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir] [--width px]')
 	process.exit(2)
 }
 let account

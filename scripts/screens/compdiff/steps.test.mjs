@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
-import { normaliseStep, parseSteps, playSteps } from './steps.mjs'
+import { normaliseStep, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { routeOf, specRows } from './specs-from-boards.mjs'
 
 /**
@@ -110,4 +110,15 @@ test('passes a board\'s login and ignored elements to compdiff', () => {
 	assert.deepEqual(rows[0].split('\t'), ['Home', '/apps/portaliq/site/zuiddrecht', '--login', 'none', '--ignore', 'button:has-text("Deze site bewerken")'])
 	assert.deepEqual(rows[1].split('\t'), ['Contact', '/apps/portaliq/site/zuiddrecht/contact', '--steps', '[{"wait":100}]', '--login', 'viewer'])
 	assert.throws(() => specRows([{ board: 'X', liveUrl: '/a', ignore: 'a\tb' }]), /tab or a newline/)
+})
+
+test('a phone board is measured at its own width, a desktop board at 1440', () => {
+	assert.equal(parseWidth(undefined), 1440)
+	assert.equal(parseWidth('390'), 390)
+	assert.throws(() => parseWidth('100'), /320 to 2560/)
+	assert.throws(() => parseWidth('390px'), /whole number/)
+	const [row] = specRows([
+		{ board: 'MobielZaak', liveUrl: 'http://localhost:8080/index.php/apps/portaliq/site/mijn/cases', steps: [], width: 390 },
+	])
+	assert.equal(row, 'MobielZaak\t/apps/portaliq/site/mijn/cases\t--width\t390')
 })

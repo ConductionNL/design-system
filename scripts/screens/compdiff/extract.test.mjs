@@ -299,3 +299,11 @@ test('a list row drawn by the full-width button inside it is measured on that bu
 		assert.equal(rows[0].props.paddingLeft, 10)
 	}
 })
+
+test('a button hidden from assistive tech (NcSelect chevron) is not an element or a control', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:600px;display:flex;gap:8px;align-items:center">
+		${btn('Filter')}<div class="v-select" style="display:flex;align-items:center;border:1px solid #888;height:36px;width:240px">
+		<input type="search" aria-label="Zaaktype" style="border:0;flex:1"><button type="button" class="vs__open-indicator-button" aria-hidden="true" tabindex="-1" style="width:20px;height:20px">v</button></div>
+		<span aria-hidden="true"><button style="height:30px">x</button></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'button' || e.kind === 'pill').map((e) => e.label), ['Filter'])
+})

@@ -19,6 +19,8 @@ window.__compdiffExtract = function () {
 		if ((r.width <= 2 || r.height <= 2) && (cs.clipPath !== 'none' || (cs.clip && cs.clip !== 'auto') || cs.overflow === 'hidden')) return false
 		return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05
 	}
+	// Hidden from assistive tech (NcSelect's chevron button, aria-hidden with tabindex -1): decoration, not a control.
+	const ariaHidden = (el) => !!el.closest('[aria-hidden="true"]')
 	const rect = (el) => { const r = el.getBoundingClientRect(); return { x: round(r.x), y: round(r.y), w: round(r.width), h: round(r.height) } }
 	const bgBehind = (el) => {
 		for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (opaque(c)) return c }
@@ -397,7 +399,7 @@ window.__compdiffExtract = function () {
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...scope.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
-			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
+			if (!visible(b) || ariaHidden(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
 			// Only the title's own row: a status stepper or chip row under the title is not a header action.
 			const br = b.getBoundingClientRect(), hr = h1.getBoundingClientRect()
 			if (br.top + br.height / 2 > hr.bottom + 24 || br.bottom < hr.top - 24) return false
@@ -495,7 +497,7 @@ window.__compdiffExtract = function () {
 			if (pr.height > 80 || pr.width < row.getBoundingClientRect().width) break
 			row = p
 		}
-		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && c.getBoundingClientRect().height >= 20)
+		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 20)
 		if (!links.length) continue
 		used.add(row)
 		pagerRows.push(row)
@@ -525,7 +527,7 @@ window.__compdiffExtract = function () {
 		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
 			const line = firstLine(el)
-			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && c.getBoundingClientRect().height >= 24) : []
+			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24) : []
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
@@ -534,7 +536,7 @@ window.__compdiffExtract = function () {
 			}
 		}
 		if (r.height > 72 || r.width < 300) continue
-		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && c.getBoundingClientRect().height >= 24)
+		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
@@ -552,7 +554,7 @@ window.__compdiffExtract = function () {
 		for (const el of used) {
 			const r = el.getBoundingClientRect()
 			if (r.top >= hb.bottom || r.bottom <= hb.top) continue
-			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !inTabStrip(b) && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
+			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !ariaHidden(b) && !inTabStrip(b) && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
 			ph.buttons.push(...qb.map(headerButton))
 			ph.header.actions = ph.buttons.length
 			ph.quickActions = { separate: true, offsetTop: round(r.top - ph.header.titleY), offsetRight: round(window.innerWidth - r.right) }
@@ -650,7 +652,7 @@ window.__compdiffExtract = function () {
 	}
 	for (const el0 of all) {
 		if (drawnBy.has(el0)) continue
-		if (!visible(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
+		if (!visible(el0) || ariaHidden(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
 		const r0 = el0.getBoundingClientRect()
 		if (r0.width < 6 || r0.height < 6) continue
 		const cs0 = getComputedStyle(el0)

@@ -485,6 +485,7 @@ window.__compdiffExtract = function () {
 	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
 	// pager on both sides, never as a toolbar: a board draws its pages as links, the library as buttons.
 	const PAGER = 'nav[aria-label], [class*=paginat], [class*=pager]'
+	const pagerRows = []
 	for (const nav of document.querySelectorAll(PAGER)) {
 		if (!visible(nav) || outOfScope(nav) || !/paginat|paginer|pager/i.test(`${nav.className} ${nav.getAttribute('aria-label') || ''}`)) continue
 		if ([...used].some((u) => u.contains(nav))) continue
@@ -497,6 +498,7 @@ window.__compdiffExtract = function () {
 		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && c.getBoundingClientRect().height >= 20)
 		if (!links.length) continue
 		used.add(row)
+		pagerRows.push(row)
 		const rcs = getComputedStyle(row), ncs = getComputedStyle(nav), c0 = links[0], c0cs = getComputedStyle(c0)
 		components.push({ role: 'pager', title: 'pager', rect: rect(row), padding: box(rcs, 'padding'), borderTop: borders(rcs).top, gap: px(ncs.columnGap), pages: links.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), controlFontSize: px(c0cs.fontSize) })
 	}
@@ -650,7 +652,8 @@ window.__compdiffExtract = function () {
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
 			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
-			kind, label, inControl: inRecord(el) ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
+			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
+			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),
 			props: {
 				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),

@@ -37,6 +37,9 @@ export function pairComponents (board, live, H) {
 	// 1. The page header pairs with the page header.
 	const bh = board.find((c) => c.role === 'pageHeader'), lh = live.find((c) => c.role === 'pageHeader')
 	if (bh && lh) take(bh, lh, 'role')
+	// A lone pager pairs with the lone pager: it sits under a list whose length follows the data.
+	const bp = board.filter((c) => c.role === 'pager'), lp = live.filter((c) => c.role === 'pager')
+	if (bp.length === 1 && lp.length === 1) take(bp[0], lp[0], 'role')
 	// 2. Title text, exact then fuzzy; ties broken by position.
 	for (const minSim of [1, 0.5]) {
 		const cand = []

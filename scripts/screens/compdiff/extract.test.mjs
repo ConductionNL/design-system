@@ -222,6 +222,7 @@ test('a pager row is a pager on both sides, never a toolbar or a tab strip', { s
 		assert.deepEqual(roles, ['pager'], JSON.stringify(roles))
 		assert.equal(r.components[0].rect.w, 1118)
 		assert.equal(r.components[0].borderTop, 1)
+		assert.ok(r.elements.filter((e) => e.label === '2').every((e) => e.inControl === 'pager'))
 	}
 })
 

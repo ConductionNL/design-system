@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Build preview/screens/build-status.json: how far each screen is built in its app and how well it matches.
 
-    python3 scripts/screens/build_status.py INV-Dq/inventory.tsv LIVE-Dq/inventory.tsv ...
+    python3 scripts/screens/build_status.py INV-Dq/inventory.tsv LIVE-Dq/inventory.tsv ... \
+        --compdiff COMPDIFF/runs/r19b --compdiff COMPDIFF/runs/dd1 ...
 
-Every argument is a measurement TSV with the header
+Every positional argument is a measurement TSV with the header
     board  kind  route  status  mismatchPct  notes
 status is built, partial, missing, accepted, measured (or done) or "state-of <Board>"; mismatchPct is a number or "-".
 A "measured" row is a live verdict: it marks the board built (or keeps it partial while the layout does not
@@ -17,6 +18,20 @@ the board as not measured yet.
 layoutMatch is true for status accepted or notes starting with "layout match", false for notes starting
 with "no layout match" or "layout differs", and null otherwise. measuredOn is the branch named in the
 notes ("[feature/x abc123]", "[round 2: branches]", "[branch]"), else development.
+
+A --compdiff argument is a COMPDIFF run directory (scripts/screens/compdiff): its verdicts.tsv with the
+header  board  verdict  failing  components  not_measured  data_unpaired  failing_detail  and one
+<Board>.json per board (route and measuredAt). A run's date is the latest measuredAt of its boards, or
+the mtime of verdicts.tsv. Runs are applied after every TSV, oldest first, so the newest run that
+measured a board wins. A component verdict marks the board built (partial stays partial until it
+matches), sets layoutMatch from MATCH or NO-MATCH, and records verdict, failing, components,
+notMeasured, run and runDate. Its mismatchPct is the share of compared items that fail:
+failing / (components + items extra on live), so it is a component share, not a pixel share
+(mismatchBasis "components"). Boards not in screens.json are left out of a run with a warning.
+
+The output's "compdiff" block holds per run and per app: boards measured, boards matching, failing
+items, the last run, and the trend against the latest earlier run that measured some of the same
+boards (counted over those shared boards only), plus the totals over all apps.
 
 The app of a board and the number of boards per app come from preview/screens/screens.json.
 """
@@ -33,7 +48,7 @@ REPO = pathlib.Path(__file__).resolve().parents[2]
 SCREENS = REPO / 'preview' / 'screens'
 OUT = SCREENS / 'build-status.json'
 
-PREFIX = re.compile(r'^([A-Z][a-z]+)(?=[A-Z])')
+PREFIX = re.compile(r'^([A-Z][a-z])(?=[A-Z])')
 BRANCH = re.compile(r'\[(?:round \d+: )?([^\]=]*(?:/|branch)[^\]=]*)\]')
 STATUSES = ('built', 'partial', 'missing', 'accepted')
 
@@ -95,17 +110,128 @@ def read_tsv(path):
     return rows
 
 
+NOTE_ITEMS = 12
+
+
+def extra_count(detail):
+    return sum(1 for item in detail.split(' | ') if item.strip().endswith(': extra on live'))
+
+
+def read_compdiff(rundir):
+    """One COMPDIFF run: (run id, run date, {board: row}). Rows carry the board's verdict and counts."""
+    rundir = pathlib.Path(rundir)
+    tsv = rundir / 'verdicts.tsv'
+    rows, dates = {}, []
+    with open(tsv, newline='', encoding='utf-8') as fh:
+        for row in csv.reader(fh, delimiter='\t', quoting=csv.QUOTE_NONE):
+            if not row or row[0].strip() in ('', 'board') or len(row) < 4:
+                continue
+            board, verdict, failing, components = (c.strip() for c in row[:4])
+            not_measured = row[4].strip() if len(row) > 4 else ''
+            detail = row[6].strip() if len(row) > 6 else ''
+            if verdict not in ('MATCH', 'NO-MATCH'):
+                continue
+            failing, components = int(failing or 0), int(components or 0)
+            compared = components + extra_count(detail)
+            meta = {}
+            try:
+                meta = json.loads((rundir / f'{board}.json').read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                pass
+            if meta.get('measuredAt'):
+                dates.append(meta['measuredAt'])
+            items = [i for i in detail.split(' | ') if i]
+            shown = '; '.join(items[:NOTE_ITEMS]) + (f'; and {len(items) - NOTE_ITEMS} more' if len(items) > NOTE_ITEMS else '')
+            rows[board] = {
+                'route': meta.get('url') or None,
+                'verdict': verdict,
+                'layoutMatch': verdict == 'MATCH',
+                'failing': failing,
+                'components': components,
+                'notMeasured': int(not_measured) if not_measured.isdigit() else None,
+                'mismatchPct': round(100 * failing / compared, 1) if compared else (0.0 if verdict == 'MATCH' else None),
+                'mismatchBasis': 'components',
+                'notes': (f'layout match: component-measured in run {rundir.name}, all {components} items pass'
+                          if verdict == 'MATCH' else
+                          f'no layout match: component-measured in run {rundir.name}, {failing} of {compared} items fail: {shown}'),
+            }
+    if dates:
+        date = max(dates)
+    else:
+        date = datetime.datetime.fromtimestamp(tsv.stat().st_mtime, datetime.timezone.utc).isoformat(timespec='seconds')
+    return rundir.name, date, rows
+
+
+def run_info(rundir):
+    try:
+        line = (pathlib.Path(rundir) / 'RUN-INFO').read_text(encoding='utf-8').strip().splitlines()[0]
+        return line.replace(str(pathlib.Path.home()), '~')[:400]
+    except (OSError, IndexError):
+        return None
+
+
+def tally(rows):
+    rows = list(rows)
+    return {'measured': len(rows), 'match': sum(1 for r in rows if r['verdict'] == 'MATCH'),
+            'failing': sum(r['failing'] for r in rows)}
+
+
+def compdiff_summary(runs, boards, screens):
+    """Per app and overall: the current COMPDIFF state, the last run and the trend between runs."""
+    by_app = collections.defaultdict(list)
+    for run in runs:
+        for name in run['rows']:
+            by_app[screens[name]['app']].append(run)
+    drawn = collections.Counter(s.get('app') for s in screens.values())
+    apps = {}
+    for app in sorted(by_app):
+        seen, app_runs = set(), []
+        for run in by_app[app]:
+            if run['id'] not in seen:
+                seen.add(run['id'])
+                app_runs.append(run)
+        current = [b for b in boards.values() if b.get('app') == app and b.get('verdict')]
+        a = {'app': app, 'boards': drawn[app], **tally(current), 'lastRun': {'id': app_runs[-1]['id'], 'date': app_runs[-1]['date']},
+             'runs': [], 'trend': None}
+        for run in app_runs:
+            own = {n: r for n, r in run['rows'].items() if screens[n]['app'] == app}
+            a['runs'].append({'id': run['id'], 'date': run['date'], **tally(own.values())})
+        last = app_runs[-1]
+        last_rows = {n: r for n, r in last['rows'].items() if screens[n]['app'] == app}
+        for prev in reversed(app_runs[:-1]):
+            shared = sorted(set(last_rows) & set(prev['rows']))
+            if shared:
+                was, now = tally(prev['rows'][n] for n in shared), tally(last_rows[n] for n in shared)
+                a['trend'] = {'from': prev['id'], 'fromDate': prev['date'], 'to': last['id'], 'toDate': last['date'],
+                              'boards': len(shared), 'matchFrom': was['match'], 'matchTo': now['match'],
+                              'failingFrom': was['failing'], 'failingTo': now['failing']}
+                break
+        apps[app] = a
+    total = {'boards': sum(a['boards'] for a in apps.values()),
+             **{k: sum(a[k] for a in apps.values()) for k in ('measured', 'match', 'failing')}}
+    return {
+        'runs': [{'id': r['id'], 'date': r['date'], 'info': r['info'], 'apps': sorted({screens[n]['app'] for n in r['rows']}), **tally(r['rows'].values())} for r in runs],
+        'apps': apps,
+        'total': total,
+    }
+
+
 def source_name(path):
     return f'{path.parent.name}/{path.name}'
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('tsv', nargs='+', type=pathlib.Path, help='measurement TSV files')
+    ap.add_argument('tsv', nargs='*', type=pathlib.Path, help='measurement TSV files')
+    ap.add_argument('--compdiff', action='append', type=pathlib.Path, default=[], metavar='RUNDIR',
+                    help='a COMPDIFF run directory with verdicts.tsv; repeat for more runs')
+    ap.add_argument('--screens', type=pathlib.Path, default=SCREENS / 'screens.json', help=argparse.SUPPRESS)
     ap.add_argument('--out', type=pathlib.Path, default=OUT)
     args = ap.parse_args()
 
-    screens = json.loads((SCREENS / 'screens.json').read_text(encoding='utf-8'))['boards']
+    if not args.tsv and not args.compdiff:
+        ap.error('give at least one TSV or --compdiff run')
+    screens = json.loads(args.screens.read_text(encoding='utf-8'))['boards']
 
     files = sorted(args.tsv, key=lambda p: p.resolve().parent.name.startswith('LIVE-'))
     boards, sources = {}, []
@@ -120,6 +246,24 @@ def main():
                 prev = boards.get(name, {}).get('status')
                 r = {**r, 'status': 'partial' if prev == 'partial' and not r['layoutMatch'] else 'built'}
             boards[name] = {'app': app, **r, 'source': source_name(path)}
+
+    runs = []
+    for rundir in args.compdiff:
+        run_id, date, rows = read_compdiff(rundir)
+        for name in sorted(n for n in rows if n not in screens):
+            print(f'warning: {name} in run {run_id} is not a board in screens.json, left out', file=sys.stderr)
+        rows = {n: r for n, r in rows.items() if n in screens}
+        runs.append({'id': run_id, 'date': date, 'info': run_info(rundir), 'rows': rows})
+        sources.append({'file': f'compdiff/{run_id}', 'rows': len(rows), 'live': True, 'date': date})
+    runs.sort(key=lambda r: r['date'])
+    for run in runs:
+        for name, r in run['rows'].items():
+            prev = boards.get(name, {})
+            status = 'partial' if prev.get('status') == 'partial' and not r['layoutMatch'] else 'built'
+            boards[name] = {'app': screens[name]['app'], 'kind': prev.get('kind'), **r,
+                            'route': r['route'] or prev.get('route'), 'status': status,
+                            'measuredOn': f'compdiff {run["id"]}', 'stateOf': None,
+                            'run': run['id'], 'runDate': run['date'], 'source': f'compdiff/{run["id"]}'}
 
     unknown = sorted(b for b in boards if b not in screens)
     for name in unknown:
@@ -153,9 +297,14 @@ def main():
         'boards': dict(sorted(boards.items())),
         'apps': apps,
     }
+    if runs:
+        out['compdiff'] = compdiff_summary(runs, boards, screens)
     args.out.write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print(f'{args.out.relative_to(REPO) if args.out.is_relative_to(REPO) else args.out}: {len(boards)} boards, '
           + ', '.join(f"{p} {a['layoutMatch']}/{a['boards']} match, {a['built']} built, {a['missing']} missing" for p, a in apps.items()))
+    for app, a in out.get('compdiff', {}).get('apps', {}).items():
+        print(f"compdiff {app}: {a['match']}/{a['measured']} match of {a['boards']} drawn, {a['failing']} failing, last run {a['lastRun']['id']}"
+              + (f", trend {a['trend']['from']}->{a['trend']['to']} failing {a['trend']['failingFrom']}->{a['trend']['failingTo']}" if a['trend'] else ''))
 
 
 if __name__ == '__main__':

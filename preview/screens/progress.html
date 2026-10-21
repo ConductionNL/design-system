@@ -1,234 +1,286 @@
-<title>Screens Round 11 Tracker</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Bouwvoortgang, Conduction Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../preview.css">
+<link rel="stylesheet" href="screens.css">
+<script src="../lang.js"></script>
 <style>
-/* Layout: a single reading column; status lanes as rows with a coloured state chip, merged work as a ledger table. */
-:root{
-  --bg:#f6f7f9;--panel:#ffffff;--fg:#1b2230;--muted:#5d6779;--line:#dde2ea;
-  --accent:#2a5bd7;--ok:#1f8a4c;--run:#b26b00;--wait:#7a4fd0;--hold:#b3261e;
-  --ok-bg:#e5f4ec;--run-bg:#fbf0de;--wait-bg:#efe8fb;--hold-bg:#fbe7e5;
-  --display:"Fraunces",Georgia,serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#12151b;--panel:#1a1f28;--fg:#e6e9ef;--muted:#9aa3b2;--line:#2c3340;--accent:#7ea2ff;
-  --ok:#5fd394;--run:#f0b252;--wait:#b99bff;--hold:#ff8a80;
-  --ok-bg:#16301f;--run-bg:#33260f;--wait-bg:#251c3b;--hold-bg:#3a1a18;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12151b;--panel:#1a1f28;--fg:#e6e9ef;--muted:#9aa3b2;--line:#2c3340;--accent:#7ea2ff;
-  --ok:#5fd394;--run:#f0b252;--wait:#b99bff;--hold:#ff8a80;
-  --ok-bg:#16301f;--run-bg:#33260f;--wait-bg:#251c3b;--hold-bg:#3a1a18;color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
-.wrap{max-width:980px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
-h1{font-family:var(--display);font-size:30px;margin:0;text-wrap:balance}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;font-weight:600}
-.sub{color:var(--muted);margin:4px 0 0}
-.stamp{font-family:var(--mono);font-size:13px;color:var(--muted)}
-.sum{display:flex;flex-wrap:wrap;gap:10px}
-.sum div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px;min-width:120px}
-.sum b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
-.sum span{font-size:12px;color:var(--muted)}
-.lanes{display:grid;gap:8px}
-.lane{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:120px 1fr;gap:4px 14px;align-items:start}
-.lane .who{font-weight:600}
-.lane p{margin:0;min-width:0}
-.lane .meta{grid-column:2;font-size:13px;color:var(--muted)}
-.chip{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:99px;margin-top:4px}
-.ok{color:var(--ok);background:var(--ok-bg)}.run{color:var(--run);background:var(--run-bg)}.wait{color:var(--wait);background:var(--wait-bg)}.hold{color:var(--hold);background:var(--hold-bg)}
-.tbl{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;color:var(--muted);font-weight:600}
-tr:last-child td{border-bottom:0}
-td.n{font-family:var(--mono);white-space:nowrap}
-a{color:var(--accent)}
-ul{margin:0;padding-left:20px;display:grid;gap:6px}
-.prog{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
-.bar{display:grid;gap:4px}
-.bar .top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.bar .top b{font-variant-numeric:tabular-nums;font-size:18px}
-.track{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
-.fill{height:100%;background:var(--accent);border-radius:99px}
-.bar .why{font-size:13px;color:var(--muted)}
-.items{list-style:none;padding:0;display:grid;gap:4px;font-size:14px}
-.items li{display:flex;gap:8px;align-items:baseline}
-.items .chip{margin:0;flex:none;min-width:58px;text-align:center}
-.apps td.n{text-align:right}
-@media (max-width:560px){.lane{grid-template-columns:1fr}.lane .meta{grid-column:1}}
+  /* Page tokens on the kit's semantic tokens, so dark mode follows tokens.css. */
+  .pg {
+    --pg-bg: var(--conduction-color-background-muted);
+    --pg-panel: var(--conduction-color-surface-card);
+    --pg-fg: var(--conduction-color-text-default);
+    --pg-strong: var(--conduction-color-text-strong);
+    --pg-muted: var(--conduction-color-text-muted);
+    --pg-line: var(--conduction-color-border-default);
+  }
+  body.sc-chrome.pg { background: var(--pg-bg); color: var(--pg-fg); }
+  .pg .hero { background: var(--c-blue-cobalt); }
+  .sc-chrome.pg main.sc-wrap { display: grid; gap: 40px; padding-top: 40px; padding-bottom: 40px; }
+  .sc-chrome.pg main.sc-wrap > section { min-width: 0; }
+  .pg tbody th, .pg tfoot th { font-size: 14px; color: var(--pg-fg); font-weight: 600; white-space: normal; }
+  .pg h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--pg-muted); margin: 0 0 var(--space-3); font-weight: 600; }
+  .pg .note { font-size: 14px; color: var(--pg-muted); margin: var(--space-3) 0 0; max-width: 72ch; }
+  .pg .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+  .pg .tile-n { background: var(--pg-panel); border: 1px solid var(--pg-line); border-radius: var(--radius-md); padding: var(--space-4); }
+  .pg .tile-n b { display: block; font-size: 28px; font-weight: 700; color: var(--pg-strong); font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .pg .tile-n span { font-size: 13px; color: var(--pg-muted); }
+  .pg .tbl { overflow-x: auto; background: var(--pg-panel); border: 1px solid var(--pg-line); border-radius: var(--radius-md); }
+  .pg table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .pg th, .pg td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--pg-line); vertical-align: top; }
+  .pg th { font-size: 12px; color: var(--pg-muted); font-weight: 600; white-space: nowrap; }
+  .pg tbody tr:last-child td, .pg tfoot td { border-bottom: 0; }
+  .pg tfoot td { font-weight: 600; border-top: 2px solid var(--pg-line); }
+  .pg td.n, .pg th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pg code, .pg .mono { font-family: var(--conduction-typography-font-family-code); font-size: 13px; }
+  .pg a { color: var(--pg-fg); }
+  .pg a:focus-visible, .pg summary:focus-visible { outline: 2px solid var(--conduction-color-focus-ring); outline-offset: 2px; }
+  .pg .bar { height: 8px; min-width: 80px; border-radius: 99px; background: var(--pg-line); overflow: hidden; margin-top: 6px; }
+  .pg .bar i { display: block; height: 100%; background: var(--conduction-color-status-success); }
+  .pg .chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .pg .up { color: var(--conduction-color-status-success-ink); background: var(--conduction-color-status-success-tint); }
+  .pg .down { color: var(--conduction-color-status-error-ink); background: var(--conduction-color-status-error-tint); }
+  .pg .flat { color: var(--conduction-color-status-info-ink); background: var(--conduction-color-status-info-tint); }
+  .pg .yes { color: var(--conduction-color-status-success-ink); background: var(--conduction-color-status-success-tint); }
+  .pg .no { color: var(--conduction-color-status-warning-ink); background: var(--conduction-color-status-warning-tint); }
+  .pg .muted { color: var(--pg-muted); }
+  .pg .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .pg details { background: var(--pg-panel); border: 1px solid var(--pg-line); border-radius: var(--radius-md); }
+  .pg details + details { margin-top: var(--space-3); }
+  .pg summary { cursor: pointer; padding: 12px 14px; font-weight: 600; }
+  .pg details .tbl { border: 0; border-top: 1px solid var(--pg-line); border-radius: 0 0 var(--radius-md) var(--radius-md); }
+  .pg .empty { background: var(--pg-panel); border: 1px dashed var(--pg-line); border-radius: var(--radius-md); padding: var(--space-4); color: var(--pg-muted); }
+  .pg .hub-footer, .pg .hub-footer a { color: var(--pg-muted); }
+  @media (max-width: 720px) {
+    .sc-chrome .sc-wrap { padding: 0 16px; }
+    .pg .hero { padding: 48px 16px 32px; }
+    .sc-chrome .hero h1 { font-size: 40px; }
+    .sc-chrome.pg main.sc-wrap { padding-top: 24px; gap: 32px; }
+    .pg .hub-footer { padding: 0 16px; flex-direction: column; gap: 8px; }
+  }
 </style>
-<div class="wrap">
-<header>
-  <h1>Pixel coverage tracker</h1>
-  <p class="sub">Every drawn board gets a live page that matches it. Tonight's goal: every dossiq and pipelinq board at layout match; the other apps follow after. Local green plus admin merge; no CI wait.</p>
-  <p class="stamp" id="stamp"></p>
-</header>
+</head>
+<body class="sc-chrome pg">
 
-<section>
-  <h2>How far are we</h2>
-  <div class="prog">
-    <div class="bar"><div class="top"><span>Now: dossiq at layout match</span><b id="p-goal">0%</b></div><div class="track"><div class="fill" id="f-goal"></div></div>
-      <div class="why" id="w-goal"></div></div>
-    <div class="bar"><div class="top"><span>Inventory: boards mapped and measured so far</span><b id="p-inv">0%</b></div><div class="track"><div class="fill" id="f-inv"></div></div>
-      <div class="why" id="w-inv"></div></div>
-    <div class="bar"><div class="top"><span>Since we started, 9 Oct: boards measured live</span><b id="p-prog">0%</b></div><div class="track"><div class="fill" id="f-prog"></div></div>
-      <div class="why" id="w-prog"></div></div>
-    <div class="bar"><div class="top"><span>Earlier tonight: release, repairs and reds</span><b id="p-early">0%</b></div><div class="track"><div class="fill" id="f-early"></div></div>
-      <div class="why" id="w-early"></div></div>
+<div class="hero">
+  <div class="crumb"><a href="../index.html" data-keep-lang data-t="crumbSystem">Design system</a> &nbsp;/&nbsp; <a href="index.html" data-keep-lang data-t="crumbScreens">Screens</a> &nbsp;/&nbsp; <span data-t="crumbHere">Bouwvoortgang</span></div>
+  <h1 data-t="title">Bouwvoortgang.</h1>
+  <p data-t="lede">Hoe ver de pagina's in de apps kloppen met hun getekende boards. Elk onderdeel van een board wordt gemeten tegen de live pagina: positie, maat en opmaak. Een board klopt pas als elk onderdeel klopt.</p>
+  <div class="meta">
+    <span><span data-t="metaGenerated">Bijgewerkt</span><strong id="m-generated">&nbsp;</strong></span>
+    <span><span data-t="metaLastRun">Laatste meting</span><strong id="m-run">&nbsp;</strong></span>
+    <span><span data-t="metaSource">Bron</span><strong><code>build-status.json</code></strong></span>
   </div>
-</section>
+</div>
 
-<section>
-  <h2>Boards per app</h2>
-  <div class="tbl"><table class="apps">
-    <tr><th>App</th><th>Tonight</th><th class="n">Boards</th><th class="n">Inventoried</th><th class="n">Measured</th><th class="n">Layout match</th><th class="n">Missing page</th><th class="n">&lt;5%</th><th class="n">5-10%</th><th class="n">&gt;10%</th></tr>
-    <tbody id="apps"></tbody>
-  </table></div>
-  <p class="why" style="font-size:13px;color:var(--muted)">Pixel perfect, as you set it: same regions, components, order, spacing and copy as the board, with the mismatch % recorded; what is left must be down to demo data. dossiq and pipelinq count when a board is at layout match; the other seven count when measured.</p>
-</section>
+<main class="sc-wrap">
+  <section aria-labelledby="h-total">
+    <h2 id="h-total" data-t="hTotal">Alle gemeten apps</h2>
+    <div class="tiles" id="tiles"></div>
+    <p class="note" data-t="noteTotal">Gemeten met compdiff: elk getekend onderdeel moet op de live pagina staan, binnen een paar pixels en met dezelfde opmaak. Afwijkende onderdelen telt alles wat verschilt, ontbreekt of extra op de live pagina staat.</p>
+  </section>
 
-<section>
-  <h2>Since midnight</h2>
-  <ul>
-    <li>WSL crashed at 21:34 on memory; builds and tests now run in capped memory pools (no crash since, runaway commands are killed on their own).</li>
-    <li>All lanes paused on an API usage limit at about 23:55 and resumed at 00:03; no work was lost.</li>
-    <li>Board status now shows on identity.conduction.nl/screens for every board (badge, mismatch, what differs), refreshed with each batch of verdicts.</li>
-    <li>Settings boards for dossiq and pipelinq redrawn as admin pages (design-system #242, #244).</li>
-    <li>Merged: OpenRegister nested-field filter (#4670), nextcloud-vue #1691 and #1697, dossiq and pipelinq on 2.91.0. In the merge queue: #1693 to #1696.</li>
-  </ul>
-</section>
+  <section aria-labelledby="h-apps">
+    <h2 id="h-apps" data-t="hApps">Per app</h2>
+    <div class="tbl"><table>
+      <caption class="sr-only" data-t="capApps">Boards per app: getekend, gemeten, kloppend, afwijkende onderdelen, laatste meting en trend</caption>
+      <thead><tr>
+        <th scope="col" data-t="colApp">App</th>
+        <th scope="col" class="n" data-t="colMatch">Klopt</th>
+        <th scope="col" class="n" data-t="colMeasured">Gemeten</th>
+        <th scope="col" class="n" data-t="colDrawn">Getekend</th>
+        <th scope="col" class="n" data-t="colFailing">Afwijkende onderdelen</th>
+        <th scope="col" data-t="colLastRun">Laatste meting</th>
+        <th scope="col" data-t="colTrend">Trend</th>
+      </tr></thead>
+      <tbody id="apps"></tbody>
+      <tfoot id="apps-total"></tfoot>
+    </table></div>
+    <p class="note" data-t="noteTrend">De trend vergelijkt de laatste meting met de vorige meting van dezelfde boards, alleen over de boards die in allebei zitten.</p>
+  </section>
 
-<section>
-  <h2>Library work the boards wait on</h2>
-  <p style="font-size:13px;color:var(--muted)">Builders found these gaps in the shared nextcloud-vue widgets. Boards that need them reach layout match only after the next library release. One release bundles them all.</p>
-  <div class="tbl"><table>
-    <tr><th>Lane</th><th>Items</th></tr>
-    <tr><td>Library 1</td><td>Breadcrumb line on list, dashboard and settings pages; per-case-type list look (title, count, chips, add button, chart below); side cards per case type; sibling tabs, info band, masked values, latest-date total; chips generated per case type; departments from Nextcloud groups and users</td></tr>
-    <tr><td>Library 2</td><td>Board dialog header exported to apps; dates on a table's second line; features and roadmap page; modules page</td></tr>
-    <tr><td>Library 3</td><td>Case page: 5 tabs plus the rest in the Acties menu; "nog 4 dagen"; bar-list chart; progress track under rows</td></tr>
-    <tr><td>Library 4</td><td>Reports page; store page; kanban columns from a pipeline's stages; collapsible record cards</td></tr>
-    <tr><td>Flows</td><td>Flows list with last run and runs this week; flow canvas and editor; run view</td></tr>
-    <tr><td>Admin and links</td><td>Register mapping (and fetch only the app's registers, now 9 MB); section action buttons and labels above fields; integrations as status cards; link cards with status</td></tr>
-    <tr><td>Shillinq</td><td>Chips inside a tab (reminder rounds); OpenRegister nested-field filter</td></tr>
-    <tr><td>Top bar</td><td>Search placeholder and role line, about 8% of every page</td></tr>
-    <tr><td>Design</td><td>Settings boards redrawn as admin pages (your decision); dossiq first</td></tr>
-  </table></div>
-</section>
+  <section aria-labelledby="h-runs">
+    <h2 id="h-runs" data-t="hRuns">Metingen</h2>
+    <div class="tbl"><table>
+      <caption class="sr-only" data-t="capRuns">Alle metingen, nieuwste eerst</caption>
+      <thead><tr>
+        <th scope="col" data-t="colRun">Meting</th>
+        <th scope="col" data-t="colDate">Datum</th>
+        <th scope="col" data-t="colApp">App</th>
+        <th scope="col" class="n" data-t="colMatch">Klopt</th>
+        <th scope="col" class="n" data-t="colMeasured">Gemeten</th>
+        <th scope="col" class="n" data-t="colFailing">Afwijkende onderdelen</th>
+      </tr></thead>
+      <tbody id="runs"></tbody>
+    </table></div>
+  </section>
 
-<section>
-  <h2>Earlier tonight</h2>
-  <ul class="items" id="items">
-    <li data-s="done"><span class="chip ok">done</span>shillinq required-field toggle (#2040) and provider payouts (#2042)</li>
-    <li data-s="done"><span class="chip ok">done</span>nextcloud-vue 2.90.0: declared settings only (#1683), lazy admin tabs (#1684)</li>
-    <li data-s="done"><span class="chip ok">done</span>Demo data: shillinq bank accounts to ADM-001; 6 dossiq cases repaired, nothing deleted</li>
-    <li data-s="done"><span class="chip ok">done</span>Gates 64 and 102 fixed (.github #856, #857, #858)</li>
-    <li data-s="done"><span class="chip ok">done</span>dossiq development gates green (#4019); humaniq customary salary 404 (#682)</li>
-    <li data-s="done"><span class="chip ok">done</span>portaliq (#1638) and launchpad (#878, with lazy admin tabs) on 2.90.0</li>
-    <li data-s="done"><span class="chip ok">done</span>pipelinq (#2532), dossiq (#4021), larpinq (#875), shillinq (#2044) on 2.90.0</li>
-    <li data-s="blocked"><span class="chip hold">later</span>humaniq and decidiq on 2.90.0 (after dossiq and pipelinq)</li>
-    <li data-s="done"><span class="chip ok">done</span>OpenRegister filter on nested fields (#4670) and chips inside a tab (nextcloud-vue #1691)</li>
-    <li data-s="blocked"><span class="chip hold">later</span>shillinq reminder rounds and paused flag (design agreed, draft in SHDM/item3; after dossiq and pipelinq)</li>
-    <li data-s="done"><span class="chip ok">done</span>Settings guard on detail host, index widgets, sidebar; dialog export (nextcloud-vue 2.91.0)</li>
-    <li data-s="open"><span class="chip run">open</span>decidiq translation parity</li>
-    <li data-s="blocked"><span class="chip hold">blocked</span>shillinq schema changes live on :8080 (needs occ upgrade, needs disk room)</li>
-  </ul>
-</section>
+  <section aria-labelledby="h-boards">
+    <h2 id="h-boards" data-t="hBoards">Boards per app</h2>
+    <div id="boards"></div>
+    <p class="note" data-t="noteBoards">Gesorteerd op het aantal afwijkende onderdelen, de meeste eerst. Open een board voor wat er precies verschilt.</p>
+  </section>
+</main>
+
+<div class="hub-footer">
+  <span data-t="footer">Bijwerken: scripts/screens/build_status.py met --compdiff per meting</span>
+  <span><a href="index.html" data-keep-lang data-t="back">&larr; Terug naar screens</a></span>
+</div>
 
 <script>
-(function(){
-  var D=/*DATA*/{"apps": [{"name": "dossiq", "prefix": "Dq", "build": true, "boards": 75, "inventoried": 75, "measured": 71, "match": 22, "missing": 0, "partial": 0, "under5": 0, "b5to10": 45, "over10": 26}, {"name": "pipelinq", "prefix": "Pq", "build": false, "boards": 107, "inventoried": 107, "measured": 75, "match": 6, "missing": 5, "partial": 81, "under5": 13, "b5to10": 42, "over10": 20}, {"name": "decidiq", "prefix": "Dc", "build": false, "boards": 87, "inventoried": 87, "measured": 42, "match": 0, "missing": 6, "partial": 37, "under5": 0, "b5to10": 37, "over10": 5}, {"name": "portaliq", "prefix": "Pt", "build": false, "boards": 51, "inventoried": 51, "measured": 24, "match": 0, "missing": 14, "partial": 19, "under5": 0, "b5to10": 16, "over10": 8}, {"name": "humaniq", "prefix": "Hu", "build": false, "boards": 46, "inventoried": 46, "measured": 21, "match": 0, "missing": 2, "partial": 40, "under5": 0, "b5to10": 12, "over10": 9}, {"name": "thematiq", "prefix": "Tq", "build": false, "boards": 35, "inventoried": 35, "measured": 0, "match": 0, "missing": 0, "partial": 35, "under5": 0, "b5to10": 0, "over10": 0}, {"name": "shillinq", "prefix": "Sh", "build": false, "boards": 32, "inventoried": 32, "measured": 24, "match": 3, "missing": 3, "partial": 11, "under5": 0, "b5to10": 17, "over10": 7}, {"name": "larpinq", "prefix": "Lr", "build": false, "boards": 30, "inventoried": 5, "measured": 5, "match": 0, "missing": 0, "partial": 2, "under5": 0, "b5to10": 4, "over10": 1}, {"name": "launchpad", "prefix": "Lp", "build": false, "boards": 29, "inventoried": 7, "measured": 7, "match": 0, "missing": 0, "partial": 4, "under5": 0, "b5to10": 4, "over10": 3}], "goalDone": 22, "goalAll": 75, "stamp": "19 Oct 2026, 06:49"}/*END*/;
-  var MEASURED_BEFORE=121;
-  function set(k,pct,why){document.getElementById('p-'+k).textContent=pct+'%';document.getElementById('f-'+k).style.width=Math.min(100,pct)+'%';document.getElementById('w-'+k).textContent=why}
-  document.getElementById('stamp').textContent='Updated '+D.stamp+' (Amsterdam).';
-  set('goal',Math.round(100*D.goalDone/D.goalAll),D.goalDone+' of '+D.goalAll+' dossiq boards at layout match. Ruben focused on dossiq on 17 Oct; pipelinq and the rest follow after.');
-  var inv=0,meas=0,rows='';
-  D.apps.forEach(function(a){inv+=a.inventoried;meas+=a.measured;
-    rows+='<tr><td>'+a.name+'</td><td>'+(a.build?'<span class="chip wait">build + match</span>':'<span class="chip hold">later</span>')+'</td><td class="n">'+a.boards+'</td><td class="n">'+a.inventoried+'</td><td class="n">'+a.measured+'</td><td class="n">'+a.match+'</td><td class="n">'+a.missing+'</td><td class="n">'+a.under5+'</td><td class="n">'+a.b5to10+'</td><td class="n">'+a.over10+'</td></tr>'});
-  document.getElementById('apps').innerHTML=rows;
-  var invB=0;D.apps.forEach(function(a){if(a.build)invB+=a.inventoried});set('inv',Math.round(100*invB/D.goalAll),invB+' of '+D.goalAll+' dossiq boards mapped to a route or marked missing.');
-  var m=Math.max(meas,MEASURED_BEFORE);
-  set('prog',Math.round(100*m/D.goalAll),m+' of '+D.goalAll+' boards have their live page measured against the drawing (121 before tonight\'s inventory).');
-  var li=[].slice.call(document.querySelectorAll('#items li'));
-  var done=li.filter(function(x){return x.dataset.s==='done'}).length;
-  set('early',Math.round(100*done/li.length),done+' of '+li.length+' items from before the refocus.');
+(function () {
+  'use strict';
+  var LANG = window.kitLang ? window.kitLang.lang : 'nl';
+  var EN = {
+    crumbSystem: 'Design system', crumbScreens: 'Screens', crumbHere: 'Build progress',
+    title: 'Build progress.',
+    lede: 'How far the pages in the apps match their drawn boards. Every component of a board is measured against the live page: position, size and styling. A board matches only when every component does.',
+    metaGenerated: 'Updated', metaLastRun: 'Last run', metaSource: 'Source',
+    hTotal: 'All measured apps',
+    noteTotal: 'Measured with compdiff: every drawn component must be on the live page, within a few pixels and with the same styling. Failing items counts everything that differs, is missing or is extra on the live page.',
+    hApps: 'Per app', capApps: 'Boards per app: drawn, measured, matching, failing items, last run and trend',
+    colApp: 'App', colMatch: 'Match', colMeasured: 'Measured', colDrawn: 'Drawn', colFailing: 'Failing items',
+    colLastRun: 'Last run', colTrend: 'Trend', colRun: 'Run', colDate: 'Date',
+    noteTrend: 'The trend compares the last run with the previous run of the same boards, counted only over the boards in both.',
+    hRuns: 'Runs', capRuns: 'All runs, newest first',
+    hBoards: 'Boards per app',
+    noteBoards: 'Sorted by failing items, most first. Open a board to see exactly what differs.',
+    footer: 'Refresh: scripts/screens/build_status.py with --compdiff per run',
+    back: '← Back to screens'
+  };
+  var T = {
+    tMatch: ['boards kloppen', 'boards match'],
+    tMeasured: ['boards gemeten, van {n} getekend', 'boards measured, of {n} drawn'],
+    tFailing: ['afwijkende onderdelen', 'failing items'],
+    tRuns: ['metingen', 'runs'],
+    total: ['Totaal', 'Total'],
+    none: ['nog geen tweede meting', 'no second run yet'],
+    trend: ['{from} naar {to}: {mf} naar {mt} kloppend, {ff} naar {ft} afwijkend ({b} boards)', '{from} to {to}: {mf} to {mt} matching, {ff} to {ft} failing ({b} boards)'],
+    better: ['beter', 'better'], worse: ['slechter', 'worse'], same: ['gelijk', 'unchanged'],
+    yes: ['klopt', 'match'], no: ['wijkt af', 'differs'],
+    board: ['Board', 'Board'], run: ['Meting', 'Run'], verdict: ['Oordeel', 'Verdict'], failing: ['Afwijkend', 'Failing'], share: ['Aandeel', 'Share'],
+    boardsOf: ['{app}: {m} van {n} kloppen', '{app}: {m} of {n} match'],
+    empty: ['Nog geen compdiff-meting in build-status.json. Draai build_status.py met --compdiff.', 'No compdiff run in build-status.json yet. Run build_status.py with --compdiff.'],
+    loadError: ['build-status.json kon niet worden geladen.', 'build-status.json could not be loaded.']
+  };
+  function t(key, vars) {
+    var s = T[key] ? T[key][LANG === 'en' ? 1 : 0] : key;
+    Object.keys(vars || {}).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  }
+  if (LANG === 'en') {
+    document.documentElement.lang = 'en';
+    document.title = 'Build progress, Conduction Design System';
+    [].forEach.call(document.querySelectorAll('[data-t]'), function (el) { var v = EN[el.getAttribute('data-t')]; if (v) el.textContent = v; });
+  }
+
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { if (c != null) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function num(n) { try { return n.toLocaleString(LANG === 'en' ? 'en' : 'nl'); } catch (e) { return String(n); } }
+  function when(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return iso || '';
+    try { return d.toLocaleString(LANG === 'en' ? 'en-GB' : 'nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' }); }
+    catch (e) { return iso; }
+  }
+  function link(href) { return window.kitLang ? window.kitLang.withLang(href) : href; }
+  function td(text, cls) { return el('td', cls ? { 'class': cls, text: text } : { text: text }); }
+  function pctOf(a, b) { return b ? Math.round(100 * a / b) : 0; }
+
+  function trendCell(tr) {
+    if (!tr) return el('td', { 'class': 'muted', text: t('none') });
+    var better = tr.matchTo > tr.matchFrom || (tr.matchTo === tr.matchFrom && tr.failingTo < tr.failingFrom);
+    var worse = tr.matchTo < tr.matchFrom || (tr.matchTo === tr.matchFrom && tr.failingTo > tr.failingFrom);
+    var k = better ? 'better' : worse ? 'worse' : 'same';
+    return el('td', null, [
+      el('span', { 'class': 'chip ' + (better ? 'up' : worse ? 'down' : 'flat'), text: t(k) }), ' ',
+      el('span', { 'class': 'muted', text: t('trend', { from: tr.from, to: tr.to, mf: num(tr.matchFrom), mt: num(tr.matchTo), ff: num(tr.failingFrom), ft: num(tr.failingTo), b: num(tr.boards) }) })
+    ]);
+  }
+
+  function render(D) {
+    document.getElementById('m-generated').textContent = when(D.generated);
+    var C = D.compdiff;
+    if (!C || !C.runs || !C.runs.length) {
+      document.getElementById('tiles').appendChild(el('p', { 'class': 'empty', text: t('empty') }));
+      return;
+    }
+    var last = C.runs[C.runs.length - 1];
+    document.getElementById('m-run').textContent = last.id + ', ' + when(last.date);
+
+    var tot = C.total;
+    var tiles = document.getElementById('tiles');
+    [[num(tot.match) + ' / ' + num(tot.measured), t('tMatch')],
+     [num(tot.measured), t('tMeasured', { n: num(tot.boards) })],
+     [num(tot.failing), t('tFailing')],
+     [num(C.runs.length), t('tRuns')]].forEach(function (x) {
+      tiles.appendChild(el('div', { 'class': 'tile-n' }, [el('b', { text: x[0] }), el('span', { text: x[1] })]));
+    });
+
+    var apps = Object.keys(C.apps).sort().map(function (k) { return C.apps[k]; });
+    var body = document.getElementById('apps');
+    apps.forEach(function (a) {
+      var share = pctOf(a.match, a.measured);
+      var bar = el('div', { 'class': 'bar', role: 'img', 'aria-label': share + '%' }, [el('i', { style: 'width:' + share + '%' })]);
+      body.appendChild(el('tr', null, [
+        el('th', { scope: 'row', text: a.app }),
+        el('td', { 'class': 'n' }, [num(a.match), bar]),
+        td(num(a.measured), 'n'), td(num(a.boards), 'n'), td(num(a.failing), 'n'),
+        el('td', null, [el('code', { text: a.lastRun.id }), el('div', { 'class': 'muted', text: when(a.lastRun.date) })]),
+        trendCell(a.trend)
+      ]));
+    });
+    document.getElementById('apps-total').appendChild(el('tr', null, [
+      el('th', { scope: 'row', text: t('total') }), td(num(tot.match), 'n'), td(num(tot.measured), 'n'), td(num(tot.boards), 'n'),
+      td(num(tot.failing), 'n'), td(last.id + ', ' + when(last.date)), td('')
+    ]));
+
+    var runs = document.getElementById('runs');
+    C.runs.slice().reverse().forEach(function (r) {
+      var tr = el('tr', null, [el('th', { scope: 'row' }, [el('code', { text: r.id })]), td(when(r.date)), td(r.apps.join(', ')),
+        td(num(r.match), 'n'), td(num(r.measured), 'n'), td(num(r.failing), 'n')]);
+      if (r.info) tr.title = r.info;
+      runs.appendChild(tr);
+    });
+
+    var wrap = document.getElementById('boards');
+    apps.forEach(function (a) {
+      var rows = Object.keys(D.boards).filter(function (n) { return D.boards[n].app === a.app && D.boards[n].verdict; })
+        .map(function (n) { return [n, D.boards[n]]; })
+        .sort(function (x, y) { return y[1].failing - x[1].failing || (x[0] < y[0] ? -1 : 1); });
+      var tb = el('tbody');
+      rows.forEach(function (x) {
+        var b = x[1], ok = b.verdict === 'MATCH';
+        tb.appendChild(el('tr', null, [
+          el('th', { scope: 'row' }, [el('a', { href: link('board.html?id=' + encodeURIComponent(a.app + '/' + x[0])), text: x[0] })]),
+          el('td', null, [el('span', { 'class': 'chip ' + (ok ? 'yes' : 'no'), text: t(ok ? 'yes' : 'no') })]),
+          td(num(b.failing), 'n'),
+          td(b.mismatchPct == null ? '' : num(b.mismatchPct) + '%', 'n'),
+          el('td', null, [el('code', { text: b.run })])
+        ]));
+      });
+      var table = el('table', null, [
+        el('thead', null, [el('tr', null, [el('th', { scope: 'col', text: t('board') }), el('th', { scope: 'col', text: t('verdict') }),
+          el('th', { scope: 'col', 'class': 'n', text: t('failing') }), el('th', { scope: 'col', 'class': 'n', text: t('share') }),
+          el('th', { scope: 'col', text: t('run') })])]),
+        tb]);
+      wrap.appendChild(el('details', null, [el('summary', { text: t('boardsOf', { app: a.app, m: num(a.match), n: num(a.measured) }) }), el('div', { 'class': 'tbl' }, [table])]));
+    });
+  }
+
+  fetch('build-status.json', { credentials: 'omit' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function () { document.getElementById('tiles').appendChild(el('p', { 'class': 'empty', role: 'alert', text: t('loadError') })); });
 })();
 </script>
-
-<section class="sum">
-  <div><b>2.90.0</b><span>nextcloud-vue on npm</span></div>
-  <div><b>2.91.0</b><span>dossiq and pipelinq library</span></div>
-  <div><b>65</b><span>programme PRs and repairs today</span></div>
-  <div><b>24</b><span>lanes running</span></div>
-  <div><b>36 GB</b><span>free on C: (rule: 50)</span></div>
-</section>
-
-<section>
-  <h2>Lanes now</h2>
-  <div class="lanes">
-    <div class="lane"><div><div class="who">LIVE</div><span class="chip run">measuring</span></div>
-      <p>Two live lanes own the dossiq and pipelinq checkouts on :8080. In rounds they merge the builders' branches, build once and measure every queued board against its drawing, then tell each builder what still differs.</p>
-      <div class="meta">dossiq round 2, pipelinq round 3.</div></div>
-    <div class="lane"><div><div class="who">BUILD</div><span class="chip run">building</span></div>
-      <p>Twelve builders: dossiq in 5 areas (case page, work lists, case actions, domain views and contacts, catalogue and admin), pipelinq in 7 (tickets and KCC, relations, sales, kassa and bookings, marketing, home and reports, admin and flows).</p>
-      <div class="meta">A board counts when its live lane records layout match.</div></div>
-    <div class="lane"><div><div class="who">LIBRARY</div><span class="chip run">building</span></div>
-      <p>Eight nextcloud-vue lanes build the shared widgets the boards need (list pages, detail pages, dialogs, charts, reports and store, flows, admin and links, dashboard and mobile, list-page polish), plus one for the top bar. Each PR merges on its three required checks through the merge queue; releases bundle them.</p>
-      <div class="meta">Most remaining boards wait on these.</div></div>
-    <div class="lane"><div><div class="who">MACHINE</div><span class="chip ok">guarded</span></div>
-      <p>Builds and tests run in capped memory pools (heavy 9 GB, two at a time; live builds 8 GB, one at a time; pixel checks 3 GB, two at a time). A watchdog alerts on low memory or any WSL-wide out-of-memory event.</p>
-      <div class="meta">No crash since 21:34.</div></div>
-  </div>
-</section>
-
-<section>
-  <h2>Waiting on you</h2>
-  <ul>
-    <li><span class="chip wait">design</span> The boards draw four different roadmap pages (openregister: a table with votes; larpinq: a vote-ranked list; stackiq: an extra plug-ins tab and a timeline). dossiq and pipelinq get one shared look tonight; harmonising the rest is a design question for you.</li>
-    <li><span class="chip wait">copy</span> decidiq's English source strings hold 1,206 em-dashes (old copy); the new translations have none.</li>
-    <li><span class="chip wait">gates</span> Apps lock hydra gates v1.18.0 while CI runs the latest; a new tag plus a lock bump in all apps would make local and CI agree.</li>
-    <li><span class="chip ok">data</span> Builders created about 45 sample records on :8080 to make pages measurable. Your call: keep them and add the same samples to each app's example data in the repo (in progress). No further writes.</li>
-    <li><span class="chip wait">design</span> The top bar's role line under the user's name differs between boards for the same user: dossiq boards say "Woo-coördinator", pipelinq boards "Klantcontactmedewerker". One profile value cannot match both; pick one for the boards, or accept the difference.</li>
-    <li><span class="chip wait">access</span> DqPubliceren can't be measured: publishing a Woo case needs the case's assignee, and the Zuiddrecht cast's Woo coordinator is thomas, while lanes log in as pieter only. Pick one: add pieter to the openregister Zuiddrecht cast, or let a lane measure as thomas.</li>
-    <li><span class="chip wait">openregister</span> :8080's OpenRegister checkout is 106 commits behind development, so tonight's OpenRegister work (organisation usage, linked-record filter, flow step logs) isn't live there yet. Moving it means a branch switch plus probably an occ upgrade, which stays held while C: is under 50 GB. DqSubsidie's decision tabs wait on it.</li>
-    <li><span class="chip wait">design</span> Border colour: under the Zuiddrecht theme control and tab borders are #8A929E (NL Design System border-dark, chosen for 3:1 input contrast), while the boards draw them lighter (#c4c7cb, #d6d9de). Keep the accessible border and accept the difference, or lighten the boards' controls only where contrast allows.</li>
-    <li><span class="chip hold">disk</span> Free space on C: (compact the docker and WSL vhdx files). Every occ upgrade and re-import is held until C: is above 50 GB; the shillinq schema changes only show live after that.</li>
-  </ul>
-</section>
-
-<section>
-  <h2>nextcloud-vue releases today</h2>
-  <div class="tbl"><table>
-    <tr><th>Version</th><th>What it brought</th></tr>
-    <tr><td class="n">2.86.0</td><td>Capacity widgets (#1653 to #1655)</td></tr>
-    <tr><td class="n">2.87.0</td><td>#1658 to #1661</td></tr>
-    <tr><td class="n">2.88.0</td><td>Card grid without inner frame, underline admin tabs, translations in admin shell, title second line, boxed stat tiles, stacked tab header links</td></tr>
-    <tr><td class="n">2.89.0</td><td>Admin shell remembers the last tab</td></tr>
-    <tr><td class="n">2.89.1</td><td>Dashboard form button label translated; menu counts follow changes</td></tr>
-    <tr><td class="n">2.89.2</td><td>Dashboard cell that grows after load no longer overflows the stack (portaliq tabs back)</td></tr>
-    <tr><td class="n">2.91.0</td><td>Dialog shell exported to apps; detail pages, list widgets and sidebar pass only declared settings (#1687, #1688)</td></tr>
-    <tr><td class="n">2.90.0</td><td>Dashboard widgets receive only the settings they declare (#1683); admin shell can mount only the open tab (#1684).</td></tr>
-  </table></div>
-</section>
-
-<section>
-  <h2>App PRs merged today</h2>
-  <div class="tbl"><table>
-    <tr><th>App</th><th>PRs</th><th>Note</th></tr>
-    <tr><td>pipelinq</td><td class="n">#2528 #2530 #2532 #2534</td><td>Submit label workaround removed</td></tr>
-    <tr><td>dossiq</td><td class="n">#3994 #3995 #3997 #3999 #4013 #4017 #4019 #4021 #4023</td><td>Workflow board retired; development gates green</td></tr>
-    <tr><td>decidiq</td><td class="n">#1759 #1761 #1763</td><td>Calendar registers meeting type</td></tr>
-    <tr><td>shillinq</td><td class="n">#2027 #2029 #2031 #2033 #2035 #2037 #2038 #2040 #2042 #2044</td><td>Bank cards, buffer status, store, required-field toggle, provider payouts</td></tr>
-    <tr><td>portaliq</td><td class="n">#1619 #1634 #1636 #1638</td><td>Portal detail tabs back</td></tr>
-    <tr><td>humaniq</td><td class="n">#676 #678 #680 #682</td><td>Customary salary 404 gone</td></tr>
-    <tr><td>larpinq</td><td class="n">#865 #867 #869 #871 #873 #875</td><td>Skill tree, store</td></tr>
-    <tr><td>launchpad</td><td class="n">#870 #872 #874 #876 #878</td><td>Admin tabs on the shared shell, lazy</td></tr>
-  </table></div>
-</section>
-
-<section>
-  <h2>Known and logged, not in tonight's scope</h2>
-  <ul>
-    <li>Tests: vitest exits 1 in every app on a missing @vue/tsconfig (inherited).</li>
-    <li>Hydra gates: every app locks an old gate version (v1.18.0, 10 Sep) while CI runs the latest, so local gate runs can fail what CI passes. Fix: tag a new gate version and bump all apps. Your call; not started.</li>
-    <li>Local only: the vitest red comes from the Nextcloud server checkout around the apps, not from the apps; CI is unaffected.</li>
-  </ul>
-</section>
-</div>
+</body>
+</html>

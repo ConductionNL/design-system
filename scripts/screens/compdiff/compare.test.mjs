@@ -3,7 +3,7 @@
 // compared where both sides draw that border.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { compareProps, pairComponents, pairElements } from './compare.mjs'
+import { compareElement, compareProps, pairComponents, pairElements } from './compare.mjs'
 
 const card = (title, y, record) => ({ role: 'card', title, rect: { x: 292, y, w: 800, h: 100 }, depth: 0, header: { fontSize: 18 }, ...(record ? { record } : {}) })
 
@@ -43,4 +43,11 @@ test('a button in a deck card pairs by label with the same button outside a deck
 	const { pairs } = pairElements([el('record card')], [el(null)], 1400)
 	assert.equal(pairs.length, 1)
 	assert.equal(pairs[0].by, 'label')
+})
+
+test('a pill paired with a button is told apart by radius and height, not by its kind as well', () => {
+	const el = (kind, h, borderRadius) => ({ kind, props: { h, borderRadius, border: 0, background: 'rgb(255, 255, 255)', color: 'rgb(0, 0, 0)', fontSize: 14, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon: true, text: false, badge: false, gapNext: null } })
+	const rows = compareElement(el('pill', 36, 18), el('button', 34, 8))
+	assert.equal(rows.find((r) => r.prop === 'kind').flag, null)
+	assert.equal(rows.find((r) => r.prop === 'borderRadius').flag, 'shape')
 })

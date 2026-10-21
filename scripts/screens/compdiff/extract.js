@@ -575,8 +575,16 @@ window.__compdiffExtract = function () {
 		const three = Object.values(borders(cs)).filter((v) => v > 0).length >= 3
 		return { border: three ? borders(cs).top : 0, borderColor: three ? cs.borderTopColor : null }
 	}
-	// A native checkbox or radio draws a square glyph centred in its box: a box stretched by its row is not the switch.
-	const drawnHeight = (el, kind, cs, r) => (kind === 'toggle' && el.matches('input') && cs.appearance !== 'none' ? Math.min(r.width, r.height) : r.height)
+	// The switch people see. A native checkbox or radio draws a square glyph centred in its box, so a box stretched by
+	// its row is not the switch; an unstyled input stretched over its label (NcCheckboxRadioSwitch) is drawn by the
+	// icon beside it.
+	const drawnHeight = (el, kind, cs, r) => {
+		if (kind !== 'toggle' || !el.matches('input')) return r.height
+		if (cs.appearance !== 'none') return Math.min(r.width, r.height)
+		const host = el.closest('label, [class*=checkbox], [class*=switch]')
+		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
+		return icon ? icon.getBoundingClientRect().height : r.height
+	}
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))

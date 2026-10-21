@@ -238,3 +238,11 @@ test('a radius is read as drawn: 50%, 18px and 999px on a 36px circle all read 1
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:40px">${b('50%')}${b('18px')}${b('999px')}</div>`)
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'pill').map((e) => e.props.borderRadius), [18, 18, 18])
 })
+
+test('an unstyled input stretched over its label is measured as the icon that draws the switch', { skip }, async () => {
+	const r = await measure(`<span class="checkbox-radio-switch" style="position:absolute;left:300px;top:200px;width:300px;height:36px;display:flex;align-items:center">
+		<input type="checkbox" style="appearance:none;position:absolute;inset:0;margin:0;width:100%;height:36px;border:0">
+		<span class="checkbox-content__icon" style="display:inline-flex"><svg width="18" height="18"><rect width="18" height="18"/></svg></span><span>Openbaar</span></span>`)
+	const t = r.elements.find((e) => e.kind === 'toggle')
+	assert.equal(t.props.h, 18)
+})

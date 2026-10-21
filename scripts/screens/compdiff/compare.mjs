@@ -290,7 +290,9 @@ export function compareElement (b, l, by = 'label') {
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props
-	if (b.kind !== l.kind) add('kind', b.kind, l.kind, (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
+	// Pill and button differ only by radius and height, which the rows below compare: the kind does not count twice.
+	const shapeOnly = (b.kind === 'pill' && l.kind === 'button') || (b.kind === 'button' && l.kind === 'pill')
+	if (b.kind !== l.kind) add('kind', b.kind, l.kind, shapeOnly ? null : (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
 	// An icon-only button shows no text: its font, text colour and inline padding (often browser defaults) do not show.
 	const iconOnly = (e) => e.props.text === false || (e.props.text === undefined && Math.abs(e.props.fontSize - 13.3333) < 0.01 && e.props.paddingLeft === 6)
 	const textless = iconOnly(b) || iconOnly(l)

@@ -216,13 +216,14 @@ test('a pager row is a pager on both sides, never a toolbar or a tab strip', { s
 	const board = await measure(`<div style="position:absolute;left:293px;top:600px;width:1118px;box-sizing:border-box;display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee">
 		<span>8 van 23</span><nav aria-label="Paginering" style="display:flex;gap:6px">${link('1', true)}${link('2')}${link('Volgende')}</nav></div>`)
 	const live = await measure(`<div class="cn-pagination" style="position:absolute;left:293px;top:600px;width:1118px;box-sizing:border-box;display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee">
-		<span>8 van 23</span><nav aria-label="Pagination" style="display:flex;gap:6px">${btn('1')}${btn('2')}${btn('3')}${btn('Volgende')}</nav></div>`)
+		<span>8 van 23</span><nav aria-label="Pagination" style="display:flex;gap:16px"><span style="display:flex;gap:6px">${btn('1')}${btn('2')}${btn('3')}${btn('Volgende')}</span></nav></div>`)
 	for (const r of [board, live]) {
 		const roles = r.components.map((c) => c.role)
 		assert.deepEqual(roles, ['pager'], JSON.stringify(roles))
 		assert.equal(r.components[0].rect.w, 1118)
 		assert.equal(r.components[0].borderTop, 1)
 		assert.ok(r.elements.filter((e) => e.label === '2').every((e) => e.inControl === 'pager'))
+		assert.equal(r.components[0].gap, 6)
 	}
 })
 

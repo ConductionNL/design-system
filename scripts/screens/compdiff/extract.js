@@ -499,8 +499,8 @@ window.__compdiffExtract = function () {
 		if (!links.length) continue
 		used.add(row)
 		pagerRows.push(row)
-		const rcs = getComputedStyle(row), ncs = getComputedStyle(nav), c0 = links[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'pager', title: 'pager', rect: rect(row), padding: box(rcs, 'padding'), borderTop: borders(rcs).top, gap: px(ncs.columnGap), pages: links.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), controlFontSize: px(c0cs.fontSize) })
+		const rcs = getComputedStyle(row), c0 = links[0], c0cs = getComputedStyle(c0)
+		components.push({ role: 'pager', title: 'pager', rect: rect(row), padding: box(rcs, 'padding'), borderTop: borders(rcs).top, gap: links[1] ? round(links[1].getBoundingClientRect().left - links[0].getBoundingClientRect().right) : null, pages: links.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), controlFontSize: px(c0cs.fontSize) })
 	}
 	// The items of a drawn line (below): their own rows are part of that toolbar, not toolbars of their own.
 	const lineItems = new Set()

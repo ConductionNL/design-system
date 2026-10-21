@@ -605,8 +605,11 @@ window.__compdiffExtract = function () {
 	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) if (recordEls.has(e)) return true; return false }
 	// A field's name from its markup: aria-labelledby, then a <label for> or a wrapping <label>. A textarea's text is
 	// its value, not its name.
+	// A checkbox or radio takes the first line of its label (an option's title, not its description): it has no
+	// value text of its own, and its value attribute ("on", "ending:archive") is not a name.
 	const fieldLabel = (el) => {
-		if (!el.matches(FIELD)) return ''
+		const toggle = el.matches(TOGGLE)
+		if (!toggle && !el.matches(FIELD)) return ''
 		const by = (el.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
 		const named = by.length ? by : [...(el.labels || [])]
 		// Only the label's own visible text: a wrapping label also holds the control and the value it shows.
@@ -616,10 +619,10 @@ window.__compdiffExtract = function () {
 			for (let n = w.nextNode(); n; n = w.nextNode()) {
 				const p = n.parentElement
 				let inControl = false
-				for (let e = p; e && e !== l; e = e.parentElement) if (e.contains(el) || e.matches(FIELD)) { inControl = true; break }
+				for (let e = p; e && e !== l; e = e.parentElement) if ((!toggle && e.contains(el)) || e.matches(FIELD)) { inControl = true; break }
 				if (n.textContent.trim() && p && !inControl && visible(p)) parts.push(n.textContent.trim())
 			}
-			return parts.join(' ')
+			return toggle ? parts[0] || '' : parts.join(' ')
 		}
 		// NcSelect inside a wrapping label carries a second, inner label with the same name.
 		return [...new Set(named.map(text).filter(Boolean))].join(' ')
@@ -635,13 +638,27 @@ window.__compdiffExtract = function () {
 		}
 		return (el.getAttribute('aria-label') || fieldLabel(el) || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
-	for (const el of all) {
-		if (!visible(el) || outOfScope(el) || inTabStrip(el) || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
-		const r = el.getBoundingClientRect()
-		if (r.width < 6 || r.height < 6) continue
-		const cs = getComputedStyle(el)
-		const kind = kindOf(el, cs, r)
+	// A list row drawn by the control inside it (cn-folder-tree: an unstyled li around a full-width button) is measured
+	// on that control, which is then not an element of its own.
+	const drawnBy = new Set()
+	const rowDrawer = (row, rcs, rr) => {
+		if (opaque(rcs.backgroundColor) || nBorders(row) || px(rcs.paddingLeft) || px(rcs.borderTopLeftRadius)) return null
+		return [...row.querySelectorAll('button, a, [role=button]')].find((c) => {
+			const q = c.getBoundingClientRect()
+			return visible(c) && q.width >= rr.width * 0.9 && q.top - rr.top < 4 && c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
+		}) || null
+	}
+	for (const el0 of all) {
+		if (drawnBy.has(el0)) continue
+		if (!visible(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
+		const r0 = el0.getBoundingClientRect()
+		if (r0.width < 6 || r0.height < 6) continue
+		const cs0 = getComputedStyle(el0)
+		const kind = kindOf(el0, cs0, r0)
 		if (!kind) continue
+		const drawer = kind === 'row' ? rowDrawer(el0, cs0, r0) : null
+		if (drawer) drawnBy.add(drawer)
+		const el = drawer || el0, cs = drawer ? getComputedStyle(drawer) : cs0, r = drawer ? drawer.getBoundingClientRect() : r0
 		// Inner parts of a control (the input inside a combobox, a button inside a button) are the control itself.
 		if ([...elementEls].some((e) => e !== el && e.contains(el) && (e.matches(FIELD) || ((kind === 'button' || kind === 'field') && e.matches('button, [role=button], a'))))) continue
 		elementEls.add(el)
@@ -651,7 +668,7 @@ window.__compdiffExtract = function () {
 		const te = textEl(el)
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
-			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
+			inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr') && !el0.matches('li, [role=row], [role=listitem], [role=option]'),
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),

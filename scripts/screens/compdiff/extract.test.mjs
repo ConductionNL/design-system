@@ -278,3 +278,24 @@ test('a control border under a card title is not a separator', { skip }, async (
 	assert.equal(card.header.separator, 0)
 	assert.ok(!/divider/.test(card.structure || ''), card.structure)
 })
+
+test('a checkbox or radio is named by the first line of its label, not by its value', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:560px">
+		<label style="display:flex;flex-direction:column;padding:12px"><span style="display:flex;gap:12px"><input type="radio" name="ls" value="gesture:suspend"><span style="display:flex;flex-direction:column"><strong>Opschorten</strong><span>De termijn staat stil</span></span></span></label>
+		<span class="checkbox-radio-switch"><input id="pub" type="checkbox" value="deels_openbaar"><label for="pub" class="checkbox-radio-switch__content"><span>Deels openbaar</span></label></span>
+		<label><input type="checkbox"> Ontvangstbevestiging sturen</label></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'toggle').map((e) => e.label), ['Opschorten', 'Deels openbaar', 'Ontvangstbevestiging sturen'])
+})
+
+test('a list row drawn by the full-width button inside it is measured on that button', { skip }, async () => {
+	const board = await measure(`<ul style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li style="display:flex;padding:8px 10px;border-radius:8px;font-size:14px;height:20px"><span>Fysiek domein</span></li></ul>`)
+	const live = await measure(`<ul style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li class="cn-folder-tree__node"><button class="cn-folder-tree__item" style="display:flex;width:100%;height:36px;padding:8px 10px;border:0;border-radius:8px;background:transparent;font-size:14px">Fysiek domein</button></li></ul>`)
+	for (const r of [board, live]) {
+		const rows = r.elements.filter((e) => e.label === 'Fysiek domein')
+		assert.deepEqual(rows.map((e) => e.kind), ['row'])
+		assert.equal(rows[0].props.borderRadius, 8)
+		assert.equal(rows[0].props.paddingLeft, 10)
+	}
+})

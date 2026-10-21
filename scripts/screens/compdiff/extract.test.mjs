@@ -164,3 +164,42 @@ test("the board's tablist pairs with live's page-tab nav and is compared propert
 	assert.equal(rows.find((r) => r.prop === 'active.fontWeight').live, 600)
 	assert.equal(rows.find((r) => r.prop === 'active.indicator').flag, null)
 })
+
+test('a field named by <label for> or a wrapping label carries that name, not its text', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:600px">
+		<label for="reden">Reden</label><textarea id="reden" rows="2" style="width:500px">Besluit gepubliceerd</textarea>
+		<label>Antwoord <input type="text" style="width:300px"></label>
+		<span id="lb">Zoeken</span><input type="search" aria-labelledby="lb" style="width:300px"></div>`)
+	const fields = r.elements.filter((e) => e.kind === 'field').map((e) => e.label)
+	assert.deepEqual(fields.sort(), ['Antwoord', 'Reden', 'Zoeken'])
+})
+
+test('the buttons on the title line of a tall header block are header buttons', { skip }, async () => {
+	const r = await measure(`<main style="position:absolute;left:290px;top:90px;width:1120px">
+		<div class="detail__header" style="display:flex;justify-content:space-between;height:180px">
+			<div class="detail__header-left"><h1 style="margin:0;font-size:28px">Verlichting fietspad</h1>
+				<div style="margin-top:12px"><span>Woo-verzoek</span></div>
+				<div style="margin-top:40px;height:40px">stepper</div></div>
+			<div style="display:flex;gap:8px;align-items:flex-start">${btn('Document')}${btn('Bewerken')}${btn('Meer')}</div>
+		</div></main>`)
+	const ph = r.components.find((c) => c.role === 'pageHeader')
+	assert.deepEqual(ph.buttons.map((b) => b.label), ['Document', 'Bewerken', 'Meer'])
+})
+
+test('an ARIA table with display: contents rows reads its row heights from the cells', { skip }, async () => {
+	const r = await measure(`<div role="table" style="position:absolute;left:300px;top:200px;width:600px;display:grid;grid-template-columns:1fr 1fr">
+		<div role="row" style="display:contents"><div role="columnheader" style="height:40px">Naam</div><div role="columnheader" style="height:40px">Fase</div></div>
+		<div role="row" style="display:contents"><div role="cell" style="height:52px">Pieter</div><div role="cell" style="height:52px">Advies</div></div></div>`)
+	const table = r.components.find((c) => c.role === 'table')
+	assert.equal(table.headRowHeight, 40)
+	assert.equal(table.rowHeight, 52)
+})
+
+test('a card that pads its header and body rows instead of itself reports that padding', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
+		<section style="border:1px solid #ccc;border-radius:12px;padding:0">
+			<div style="padding:20px 22px 0"><h3 style="margin:0">Locaties</h3></div>
+			<div style="padding:10px 22px 20px">Nog geen locaties</div></section></div>`)
+	const card = r.components.find((c) => c.title === 'Locaties')
+	assert.deepEqual(card.props.padding, { top: 20, right: 22, bottom: 20, left: 22 })
+})

@@ -3,7 +3,7 @@
 // compared where both sides draw that border.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { compareProps, pairComponents, pairElements } from './compare.mjs'
+import { compareElement, compareProps, pairComponents, pairElements } from './compare.mjs'
 
 const card = (title, y, record) => ({ role: 'card', title, rect: { x: 292, y, w: 800, h: 100 }, depth: 0, header: { fontSize: 18 }, ...(record ? { record } : {}) })
 
@@ -43,4 +43,39 @@ test('a button in a deck card pairs by label with the same button outside a deck
 	const { pairs } = pairElements([el('record card')], [el(null)], 1400)
 	assert.equal(pairs.length, 1)
 	assert.equal(pairs[0].by, 'label')
+})
+
+test('a pill paired with a button is told apart by radius and height, not by its kind as well', () => {
+	const el = (kind, h, borderRadius) => ({ kind, props: { h, borderRadius, border: 0, background: 'rgb(255, 255, 255)', color: 'rgb(0, 0, 0)', fontSize: 14, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon: true, text: false, badge: false, gapNext: null } })
+	const rows = compareElement(el('pill', 36, 18), el('button', 34, 8))
+	assert.equal(rows.find((r) => r.prop === 'kind').flag, null)
+	assert.equal(rows.find((r) => r.prop === 'borderRadius').flag, 'shape')
+})
+
+test('cards with different titles, or a titled and an untitled card far apart, do not pair by position', () => {
+	const card = (title, y, h, x = 424, w = 592) => ({ role: 'dialog-card', title, rect: { x, y, w, h } })
+	const grey = pairComponents([card(undefined, 1000, 59)], [card('Beoordeel eerst deze documenten.', 567, 208)], 1500)
+	assert.equal(grey.pairs.length, 0)
+	const choice = pairComponents([card('Daarna alleen lezen', 824, 95)], [card('Bewaring volgens het zaaktype', 770, 672, 440, 560)], 1500)
+	assert.equal(choice.pairs.length, 0)
+	const near = pairComponents([card(undefined, 300, 120)], [card('Zaakgegevens', 340, 160)], 1500)
+	assert.equal(near.pairs.length, 1)
+	const column = pairComponents([card('In behandeling19', 420, 772, 576, 268)], [card('Beoordeling ontvankelijkheid1', 468.5, 234, 576, 268)], 1500)
+	assert.equal(column.pairs.length, 1)
+})
+
+test('a lone pager pairs with the lone pager, wherever the list above it ends', () => {
+	const pager = (y) => ({ role: 'pager', title: 'pager', rect: { x: 293, y, w: 1118, h: 61 } })
+	const r = pairComponents([pager(1084)], [pager(1646.5)], 1170)
+	assert.equal(r.pairs.length, 1)
+	assert.equal(r.missing.length + r.extra.length, 0)
+})
+
+test('page links pair in order inside the pager, and the page count is data', () => {
+	const link = (label, x, inControl = 'pager') => ({ kind: 'button', label, inControl, container: 1, rect: { x, y: 1000, w: 36, h: 36 }, props: { h: 36, borderRadius: 8, background: 'rgb(255, 255, 255)', border: 1, fontSize: 14 } })
+	const r = pairElements([link('1', 1186), link('2', 1226), link('3', 1268)], [link('1', 1037), link('2', 1077), link('3', 1119), link('4', 1161), link('13', 1268), { ...link('Open AI chat', 1340, null), props: { h: 60, borderRadius: 0, background: 'rgb(255, 255, 255)', border: 0, fontSize: 14 } }], 1170)
+	const pagerPairs = r.pairs.filter((p) => p.by === 'pager')
+	assert.deepEqual(pagerPairs.map((p) => [p.board.label, p.live.label]), [['1', '1'], ['2', '2'], ['3', '3']])
+	assert.ok(!r.pairs.some((p) => p.live.label === 'Open AI chat'))
+	assert.ok(!(r.extra || []).some((e) => e.inControl === 'pager'))
 })

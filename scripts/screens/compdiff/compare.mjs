@@ -29,7 +29,7 @@ export function pairComponents (board, live, H) {
 	// past a deck's first that find no counterpart are left out: how many cards a deck holds follows the data.
 	const pairs = []
 	const usedB = new Set(), usedL = new Set()
-	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
+	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' && b.role !== 'pager' && b.role !== 'map' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
 	const pos = (b, l) => {
 		const cx = (r) => r.x + r.w / 2
 		return Math.abs(cx(b.rect) - cx(l.rect)) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H + Math.abs(b.rect.w - l.rect.w) / 1440 + 0.2 * Math.abs((b.depth || 0) - (l.depth || 0))
@@ -37,6 +37,9 @@ export function pairComponents (board, live, H) {
 	// 1. The page header pairs with the page header.
 	const bh = board.find((c) => c.role === 'pageHeader'), lh = live.find((c) => c.role === 'pageHeader')
 	if (bh && lh) take(bh, lh, 'role')
+	// A lone pager pairs with the lone pager: it sits under a list whose length follows the data.
+	const bp = board.filter((c) => c.role === 'pager'), lp = live.filter((c) => c.role === 'pager')
+	if (bp.length === 1 && lp.length === 1) take(bp[0], lp[0], 'role')
 	// 2. Title text, exact then fuzzy; ties broken by position.
 	for (const minSim of [1, 0.5]) {
 		const cand = []
@@ -61,6 +64,13 @@ export function pairComponents (board, live, H) {
 			let cost = pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
+			// Two cards with different titles are a pair only as near neighbours or in the same grid slot (a board column
+			// titled by its data); a titled card and an untitled one only within a card's height of each other.
+			if (CARDLIKE.has(b.role) && (b.title || l.title)) {
+				const dy = Math.abs(b.rect.y - l.rect.y)
+				const slot = Math.abs(b.rect.x - l.rect.x) <= 4 && Math.abs(b.rect.w - l.rect.w) <= 2
+				if (b.title && l.title ? dy > 48 && !slot : dy > Math.max(48, b.rect.h, l.rect.h)) continue
+			}
 			if (cost <= 0.2) cand.push({ b, l, cost })
 		}
 	}
@@ -79,7 +89,7 @@ function flatten (obj, prefix = '', out = {}) {
 }
 const SKIP = /^(role|title|depth|frame|cls|libClass|legacyQuickActions)$|^record\.|content\.centred|^rect\.(x|y)$|firstRowFont|rowPadding|header\.rowHeight|separatorColor|subtitle\.(color|lineHeight)$|\.label$|^quickActions\.offset/
 // Properties whose value follows the data (row counts, text length), reported but never flagged.
-const DATA = /^rect\.h$|^cell\.background$|^head\.background$/
+const DATA = /^rect\.h$|^pages$|^cell\.background$|^head\.background$/
 // Card padding and gap depend on where the DOM puts its padding (card vs header vs body); the effective insets
 // (header.titleInset*, content.*Inset*, content.gapBelowTitle) measure what the eye sees and carry the flags.
 const STRUCTURAL = /^props\.(padding\.|gap$|margin\.)|^header\.rowBorderBottom$/
@@ -249,6 +259,12 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = list && list.find((x) => !usedL.has(x))
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// Page links pair in order inside the pager; how many pages there are follows the data, so the rest is neither
+	// missing nor extra.
+	const pagerOf = (list, used) => list.filter((e) => e.inControl === 'pager' && !used.has(e)).sort((a, b) => a.rect.x - b.rect.x)
+	const pb = pagerOf(B, usedB), pl = pagerOf(L, usedL)
+	pb.forEach((b, i) => { if (pl[i]) pairs.push({ board: b, live: pl[i], by: 'pager' }) })
+	pb.forEach((e) => usedB.add(e)); pl.forEach((e) => usedL.add(e))
 	// A style that repeats three or more times on the page (one action button per list row, one tag per record) is a
 	// list's element: its copies form one group page-wide, however the rows nest their containers.
 	const groups = (list, used) => {
@@ -290,7 +306,9 @@ export function compareElement (b, l, by = 'label') {
 	const rows = []
 	const add = (prop, vb, vl, flag) => rows.push({ prop, board: vb, live: vl, delta: typeof vb === 'number' && typeof vl === 'number' ? Math.round((vl - vb) * 10) / 10 : null, flag })
 	const pb = b.props, pl = l.props
-	if (b.kind !== l.kind) add('kind', b.kind, l.kind, (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
+	// Pill and button differ only by radius and height, which the rows below compare: the kind does not count twice.
+	const shapeOnly = (b.kind === 'pill' && l.kind === 'button') || (b.kind === 'button' && l.kind === 'pill')
+	if (b.kind !== l.kind) add('kind', b.kind, l.kind, shapeOnly ? null : (b.kind === 'pill') !== (l.kind === 'pill') ? 'shape' : 'style')
 	// An icon-only button shows no text: its font, text colour and inline padding (often browser defaults) do not show.
 	const iconOnly = (e) => e.props.text === false || (e.props.text === undefined && Math.abs(e.props.fontSize - 13.3333) < 0.01 && e.props.paddingLeft === 6)
 	const textless = iconOnly(b) || iconOnly(l)

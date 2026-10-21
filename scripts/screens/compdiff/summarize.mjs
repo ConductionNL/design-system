@@ -33,7 +33,7 @@ for (const f of files) {
 		c.rows = compareProps(c.board, c.live)
 		c.flagged = c.rows.filter((x) => x.flag).length
 		c.score = scoreComponent(c.rows)
-		if (c.live.title && c.board.title && c.live.title !== c.board.title && !['tabs', 'table', 'toolbar'].includes(c.role)) c.name = `${c.board.title} ~ ${c.live.title}`
+		if (c.live.title && c.board.title && c.live.title !== c.board.title && !['tabs', 'table', 'toolbar', 'pager', 'map'].includes(c.role)) c.name = `${c.board.title} ~ ${c.live.title}`
 	}
 	const els = (r.elements || []).map((e) => {
 		const rows = elementRows(e)

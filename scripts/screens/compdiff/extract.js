@@ -49,6 +49,16 @@ window.__compdiffExtract = function () {
 		return { width: 0, color: null }
 	}
 	const box = (cs, prop) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), px(cs[prop + s])]))
+	// The top-left corner radius as drawn: a percentage resolves against the box, and radii larger than the box
+	// shrink the way CSS shrinks them, so 50%, 18px and 999px on a 36px circle all read 18.
+	const radius = (el, cs) => {
+		const r = el.getBoundingClientRect()
+		const len = (v, side) => (/%$/.test(v) ? (parseFloat(v) / 100) * side : px(v))
+		const corner = (c) => { const [h, v = h] = cs['border' + c + 'Radius'].split(' '); return [len(h, r.width), len(v, r.height)] }
+		const [tl, tr, br, bl] = ['TopLeft', 'TopRight', 'BottomRight', 'BottomLeft'].map(corner)
+		const f = Math.min(1, ...[[r.width, tl[0] + tr[0]], [r.width, bl[0] + br[0]], [r.height, tl[1] + bl[1]], [r.height, tr[1] + br[1]]].map(([side, sum]) => (sum > 0 ? side / sum : 1)))
+		return round(Math.min(tl[0], tl[1]) * f)
+	}
 	const lineHeight = (cs) => (cs.lineHeight === 'normal' ? round(px(cs.fontSize) * 1.2) : px(cs.lineHeight))
 	const font = (el) => {
 		const cs = getComputedStyle(el)
@@ -77,6 +87,8 @@ window.__compdiffExtract = function () {
 	// mark more chrome to leave out (compdiff --ignore), such as an editor's own button on a public site.
 	const outOfScope = (el) => {
 		if (el.closest('header[data-sc-header], #header, #app-navigation, #app-navigation-vue, .app-navigation, #appmenu, [data-compdiff-ignore]')) return true
+		// A map's attribution is the tile provider's credit, not part of the page.
+		if (el.closest('.leaflet-control-attribution, .maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib, .ol-attribution')) return true
 		if (modals.length && !modals.some((m) => m.contains(el))) return true
 		const r = el.getBoundingClientRect()
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
@@ -88,7 +100,7 @@ window.__compdiffExtract = function () {
 	const tabItems = (s) => [...s.querySelectorAll(s.matches('[role=tablist]') ? '[role=tab]' : 'a, [role=link]')].filter(visible)
 	const isPageTabs = (n) => {
 		if (n.closest('[role=tablist]') || n.querySelector('[role=tablist]') || outOfScope(n)) return false
-		if (/breadcrumb|kruimel/i.test(`${n.className} ${n.getAttribute('aria-label') || ''}`)) return false
+		if (/breadcrumb|kruimel|paginat|paginer|pager/i.test(`${n.className} ${n.getAttribute('aria-label') || ''}`)) return false
 		const items = tabItems(n)
 		if (!items.length) return false
 		const top = items[0].getBoundingClientRect().top
@@ -98,6 +110,7 @@ window.__compdiffExtract = function () {
 	const pageTabs = [...document.querySelectorAll('nav[aria-label], [class*=page-tabs]')].filter((n) => visible(n) && isPageTabs(n))
 	const tabStrips = [...document.querySelectorAll('[role=tablist]'), ...pageTabs.filter((n) => !pageTabs.some((o) => o !== n && o.contains(n)))]
 	const inTabStrip = (el) => tabStrips.some((s) => s.contains(el))
+	const CONTROL_BOX = 'button, [role=button], input, select, textarea'
 	const INTERACTIVE = 'button, input, select, textarea, a, label, [role=button], [role=tab], [role=option], [role=combobox], [role=checkbox], [role=switch]'
 
 	// 1. Cards: a framed box (3+ borders, a shadow, or a background unlike what is behind it), big enough to hold content.
@@ -109,11 +122,17 @@ window.__compdiffExtract = function () {
 		if (opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)) return 'background'
 		return null
 	}
+	// A map: a map library's container, or a drawn placeholder (role=img named as a map). It is measured for its place
+	// and size only: tiles, a placeholder's tint and its corners are not styling to compare.
+	const MAPLIB = '.leaflet-container, .maplibregl-map, .mapboxgl-map, .ol-viewport'
+	const isMap = (el) => el.matches(MAPLIB) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
+	const maps = all.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !all.some((o) => o !== el && o.contains(el) && isMap(o)))
+	const inMap = (el) => maps.some((m) => m.contains(el))
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>); other controls are not.
 		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
-		if (!visible(el) || outOfScope(el)) continue
+		if (!visible(el) || outOfScope(el) || inMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
 		const cs = getComputedStyle(el)
@@ -208,7 +227,7 @@ window.__compdiffExtract = function () {
 		for (let e = ownerCard(card); e; e = ownerCard(e)) comp.depth++
 		comp.props = {
 			padding: cardPadding(card, cs), margin: box(cs, 'margin'), border: borders(cs), borderColor: cs.borderTopColor,
-			borderRadius: px(cs.borderTopLeftRadius), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
+			borderRadius: radius(card, cs), background: bgBehind(card), boxShadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
 			gap: /flex|grid/.test(cs.display) ? px(cs.rowGap) : null,
 		}
 		const leaves = leavesOf(card)
@@ -259,7 +278,8 @@ window.__compdiffExtract = function () {
 			let sep = null
 			for (const el of [card, ...card.querySelectorAll('*')]) {
 				if (el !== card && !ownedBy(el, card)) continue
-				if (!visible(el)) continue
+				// A control's own border (a dashed "Toon meer" button under the title) is not a separator.
+				if (!visible(el) || (el !== card && el.closest(CONTROL_BOX))) continue
 				// A list row's own border is not a header separator: skip boxes holding some but not all of the body.
 				if (el !== card && content.length) { const n = content.filter((l) => el.contains(l.node)).length; if (n > 0 && n < content.length) continue }
 				const r = el.getBoundingClientRect()
@@ -294,7 +314,7 @@ window.__compdiffExtract = function () {
 			if ([...seen].some((s) => s.contains(el))) continue
 			const r = el.getBoundingClientRect()
 			const ecs = getComputedStyle(el)
-			if (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4)) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
+			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
 			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, x: r.left }); seen.add(el); continue }
 		}
 		const range = document.createRange()
@@ -354,7 +374,7 @@ window.__compdiffExtract = function () {
 
 	const headerButton = (b) => {
 		const bcs = getComputedStyle(b)
-		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: px(bcs.borderTopLeftRadius), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
+		return { label: b.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), h: round(b.getBoundingClientRect().height), borderRadius: radius(b, bcs), paddingLeft: px(bcs.paddingLeft), paddingRight: px(bcs.paddingRight), fontSize: px(bcs.fontSize), fontWeight: Number(bcs.fontWeight), background: bgBehind(b), border: borders(bcs).top, color: bcs.color }
 	}
 	// 3. Page header: the first visible h1 and the buttons on its line.
 	const h1 = [...document.querySelectorAll('h1')].find((h) => visible(h) && !outOfScope(h) && !h.closest('[role=dialog]'))
@@ -407,7 +427,7 @@ window.__compdiffExtract = function () {
 			const pseudo = [after, before].find((p) => p.content !== 'none' && p.content !== 'normal' && opaque(p.backgroundColor) && px(p.height) <= 6)
 			return {
 				...font(textEl(t)),
-				h: round(t.getBoundingClientRect().height), padding: box(tcs, 'padding'), borderRadius: px(tcs.borderTopLeftRadius),
+				h: round(t.getBoundingClientRect().height), padding: box(tcs, 'padding'), borderRadius: radius(t, tcs),
 				background: tcs.backgroundColor, indicator: borders(tcs).bottom || (pseudo ? px(pseudo.height) : 0) || (/inset 0px -\d/.test(tcs.boxShadow) ? Number(tcs.boxShadow.match(/inset 0px -(\d+)/)[1]) : 0),
 			}
 		}
@@ -435,6 +455,8 @@ window.__compdiffExtract = function () {
 		components.push({ role: 'tabs', title: 'tabs', rect: rect(tl), tabCount: tabs.length, gap: gaps.length ? gaps.sort((a, b) => a - b)[Math.floor(gaps.length / 2)] : null, borderBottom: underline(), active: tabProps(active), inactive: tabProps(inactive) })
 	}
 
+	for (const m of maps) components.push({ el: m, role: 'map', title: 'map', rect: rect(m) })
+
 	// 5. Tables (and ARIA grids).
 	for (const t of document.querySelectorAll('table, [role=table], [role=grid]')) {
 		if (!visible(t) || outOfScope(t)) continue
@@ -460,6 +482,26 @@ window.__compdiffExtract = function () {
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
+	// Pager rows: the row around a pagination nav (its page links or buttons and the count beside them). Measured as a
+	// pager on both sides, never as a toolbar: a board draws its pages as links, the library as buttons.
+	const PAGER = 'nav[aria-label], [class*=paginat], [class*=pager]'
+	const pagerRows = []
+	for (const nav of document.querySelectorAll(PAGER)) {
+		if (!visible(nav) || outOfScope(nav) || !/paginat|paginer|pager/i.test(`${nav.className} ${nav.getAttribute('aria-label') || ''}`)) continue
+		if ([...used].some((u) => u.contains(nav))) continue
+		let row = nav
+		for (let p = nav.parentElement; p && p !== document.body && !cardEls.has(p); p = p.parentElement) {
+			const pr = p.getBoundingClientRect()
+			if (pr.height > 80 || pr.width < row.getBoundingClientRect().width) break
+			row = p
+		}
+		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && c.getBoundingClientRect().height >= 20)
+		if (!links.length) continue
+		used.add(row)
+		pagerRows.push(row)
+		const rcs = getComputedStyle(row), c0 = links[0], c0cs = getComputedStyle(c0)
+		components.push({ role: 'pager', title: 'pager', rect: rect(row), padding: box(rcs, 'padding'), borderTop: borders(rcs).top, gap: links[1] ? round(links[1].getBoundingClientRect().left - links[0].getBoundingClientRect().right) : null, pages: links.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), controlFontSize: px(c0cs.fontSize) })
+	}
 	// The items of a drawn line (below): their own rows are part of that toolbar, not toolbars of their own.
 	const lineItems = new Set()
 	// A wrapping flex row whose row wrappers are `display: contents` (CnActionsBar's board layout) draws its first
@@ -487,7 +529,7 @@ window.__compdiffExtract = function () {
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
-				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 				continue
 			}
 		}
@@ -500,7 +542,7 @@ window.__compdiffExtract = function () {
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
+		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: radius(c0, c0cs), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 	}
 	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
 	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.
@@ -537,8 +579,8 @@ window.__compdiffExtract = function () {
 		if (el.matches(TOGGLE)) return 'toggle'
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		const boxed = ownBg || nBorders(el) >= 3
-		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
-		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return px(cs.borderTopLeftRadius) >= r.height / 2 - 1 ? 'pill' : 'badge'
+		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
+		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null
 	}
@@ -546,6 +588,16 @@ window.__compdiffExtract = function () {
 		if (kind === 'field') { const b = fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
 		const three = Object.values(borders(cs)).filter((v) => v > 0).length >= 3
 		return { border: three ? borders(cs).top : 0, borderColor: three ? cs.borderTopColor : null }
+	}
+	// The switch people see. A native checkbox or radio draws a square glyph centred in its box, so a box stretched by
+	// its row is not the switch; an unstyled input stretched over its label (NcCheckboxRadioSwitch) is drawn by the
+	// icon beside it.
+	const drawnHeight = (el, kind, cs, r) => {
+		if (kind !== 'toggle' || !el.matches('input')) return r.height
+		if (cs.appearance !== 'none') return Math.min(r.width, r.height)
+		const host = el.closest('label, [class*=checkbox], [class*=switch]')
+		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
+		return icon ? icon.getBoundingClientRect().height : r.height
 	}
 	const elements = []
 	const elementEls = new Set()
@@ -600,10 +652,11 @@ window.__compdiffExtract = function () {
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
 			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
-			kind, label, inControl: inRecord(el) ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
+			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
+			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),
 			props: {
-				h: round(r.height), borderRadius: px(cs.borderTopLeftRadius), ...elementBorder(el, kind, cs),
+				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
 				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
@@ -630,7 +683,11 @@ window.__compdiffExtract = function () {
 		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
 	}
 
-	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => /^cn-|^nc-|^app-content|^modal|^dialog/.test(k)); if (c) { lib = c; break } } return lib }
-	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = clsOf(c.rect) }
+	const LIBCLS = /^cn-|^nc-|^app-content|^app-sidebar|^modal|^dialog/
+	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) { lib = c; break } } return lib }
+	// The library class of the component itself or the nearest ancestor that has one; a point probe at the corner only
+	// when the component has no element of its own (it can land on an icon inside it).
+	const ownLib = (el) => { for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) return c } return null }
+	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = (c.el && ownLib(c.el)) || clsOf(c.rect) }
 	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
 }

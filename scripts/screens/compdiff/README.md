@@ -27,12 +27,16 @@ Options:
 - `--settle 8000` sets how many milliseconds to wait before measuring.
 - `--wait-for "<css>"` waits for an element.
 - `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
+- `--login none` measures the live page without logging in, as a visitor sees it. `--login viewer` logs in as `COMPDIFF_VIEWER_USER` and `COMPDIFF_VIEWER_PASSWORD` (any role name works the same way), for a page that looks different to an editor, such as a site that shows "Deze site bewerken" to its editors.
+- `--ignore "<sel>|<sel>"` leaves elements out on both sides, as chrome.
+
+After the settle the script waits, up to 20 seconds, until every table's head has as many columns as its first row and has held still for a second, so a selection column that renders late is in the measurement.
 
 It writes `<Board>.json` with every measurement and `<Board>.md` with a table per component: property, board, live, delta, flag. It also writes `<Board>-board.png` and `<Board>-live.png`.
 
 ## Measure a set of boards
 
-`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, and its steps as `--steps`; a board with no `liveUrl` (a sheet with no live page) gets no row. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
+`runall.sh <outdir> <specs.tsv>` measures one board per row. A row is `board<TAB>route`, optionally followed by `<TAB>--flag<TAB>value` pairs. Given a REVIEW `boards.json` in place of the specs file, it first writes `<outdir>/specs.tsv` from it with `specs-from-boards.mjs`: one row per board, its route without the origin and `/index.php`, its steps as `--steps`, and its `login` and `ignore` as `--login` and `--ignore`; a board with no `liveUrl` (a sheet with no live page) gets no row. `node specs-from-boards.mjs <boards.json> --keep <specs.tsv>` also keeps the rows of boards the list does not hold. Then summarise:
 
 ```sh
 scripts/screens/compdiff/runall.sh /tmp/compdiff specs.tsv
@@ -74,9 +78,13 @@ It writes `verdicts.tsv` and `verdicts.md`. With `--inventory` it appends one ro
 
 Besides the components, the extractor lists every visible UI element in the page: buttons, links styled as buttons, fields, toggles, chips and pills, badges and tags, and list rows. Elements pair by label first. A label leaves out the text of a nested count badge, so "Filter" pairs with "Filter". The rest pair as repeated groups (same container, same style) in order, because the number of rows or chips follows the data. Per pair it compares radius, border, background, text colour, font size and weight, padding, height, icon, badge and the gap to the next sibling. An element whose crop differs by more than 30% while no property fired gets the flag "visually differs, property not identified". Board elements with no counterpart are listed as missing. Live elements with no counterpart, such as an extra sort select, are listed as extra.
 
-A deck of record cards (three or more cards of the same width side by side) counts as one component. Its first card is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline).
+A deck is three or more sibling cards of the same width: a row of record cards, or a column of widgets. Every card of a deck pairs and is compared, including its structure: the order and rows of its parts (pill, number, title, meta, divider, deadline). A card past a deck's first that finds no counterpart is not reported as missing or extra, because how many cards a deck holds follows the data.
 
-A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them).
+With a modal dialog open (`aria-modal="true"`, on the dialog box or on the mask around it), only what is inside the dialog is measured. The page under the scrim is ignored on both sides.
+
+A tab strip's underline is read where it is drawn: on the tablist or on a bar around it whose bottom is the strip's bottom (such as `.cn-tabs__bar`), as a border, a thin pseudo-element or an inset shadow. A field's border is the one people see: its own, a `box-shadow` ring, or that of a wrapper that hugs it (NcInputField, NcSelect).
+
+A toolbar is a row of two or more controls. A wrapping flex bar whose row wrappers are `display: contents` (the board layout of CnActionsBar) draws its first line as a toolbar though no element boxes that line: the line takes the bar's width and holds the items on it. A table's head is read from its first header cell with a label, so an empty selection column does not stand for the head's type. Run the extractor's tests with `node --test scripts/screens/compdiff/extract.test.mjs` and the live side's with `live.test.mjs` (they need `PLAYWRIGHT_MODULE` and Chrome, and skip without them). The pairing rules' tests are `compare.test.mjs`.
 
 Every board element with a box of its own that nothing above accounts for is listed under "not measured", with a count in `verdicts.tsv`. A board with unmeasured elements never counts as a match.
 
@@ -105,7 +113,7 @@ Flags fire when a value goes past one of these limits:
 - font size more than 0.5 px apart
 - a border drawn on one side only
 - a width more than 8 px apart
-- a colour channel more than 12 apart
+- a colour channel more than 12 apart. A border colour counts only where both sides draw that border
 - a font weight 100 or more apart
 
 Colours are read by `colour.mjs`, in the page and in the comparison alike. It reads every form `getComputedStyle` returns: `rgb()`/`rgba()`, and the CSS Color 4 forms Chrome keeps for a `color-mix()` or a wide-gamut colour (`color(srgb ...)` and the other predefined spaces, `oklch()`, `oklab()`, `lab()`, `lch()`), all converted to sRGB 0-255. A colour it cannot read is no colour, never a guess. Run its tests with `node --test scripts/screens/compdiff/colour.test.mjs`; the steps' with `node --test scripts/screens/compdiff/steps.test.mjs`.

@@ -25,9 +25,8 @@ function titleSimilarity (a, b) {
 const TITLED = (c) => CARDLIKE.has(c.role) && c.title
 
 export function pairComponents (board, live, H) {
-	// One representative per record-card deck: the number of cards follows the data.
-	board = board.filter((c) => !c.record || c.record.index === 0)
-	live = live.filter((c) => !c.record || c.record.index === 0)
+	// Every card pairs, including each card of a deck (a column of same-width widgets is a deck too). Only the cards
+	// past a deck's first that find no counterpart are left out: how many cards a deck holds follows the data.
 	const pairs = []
 	const usedB = new Set(), usedL = new Set()
 	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
@@ -67,7 +66,8 @@ export function pairComponents (board, live, H) {
 	}
 	cand.sort((x, y) => x.cost - y.cost)
 	for (const { b, l } of cand) if (!usedB.has(b) && !usedL.has(l)) take(b, l, 'position')
-	return { pairs, missing: board.filter((c) => !usedB.has(c)), extra: live.filter((c) => !usedL.has(c)) }
+	const counted = (c) => !c.record || c.record.index === 0
+	return { pairs, missing: board.filter((c) => !usedB.has(c) && counted(c)), extra: live.filter((c) => !usedL.has(c) && counted(c)) }
 }
 
 function flatten (obj, prefix = '', out = {}) {
@@ -154,9 +154,21 @@ export function compareProps (b, l) {
 	for (const r of rows) if (/^content\./.test(r.prop) && ((typeof r.board === 'number' && r.board < -4) || (typeof r.live === 'number' && r.live < -4))) r.flag = null
 	// Content insets mean nothing when either side centres its content (empty state): report, do not flag.
 	if (fb['content.centred'] || fl['content.centred']) for (const r of rows) if (/^content\.(firstRowInsetLeft|minInsetLeft|gapBelowTitle|insetTop)$/.test(r.prop)) r.flag = null
-	// Border colour only matters where both sides draw the border.
-	for (const r of rows) if (r.prop === 'props.borderColor' && r.flag && !(fb['props.border.top'] > 0 && fl['props.border.top'] > 0)) r.flag = null
+	// A border colour only matters where both sides draw that border: a zero-width border has no colour to see.
+	for (const r of rows) {
+		if (!r.flag || !/[bB]orderColor$/.test(r.prop)) continue
+		const width = borderWidthKey(r.prop, fb, fl)
+		if (!width || !(fb[width] > 0 && fl[width] > 0)) r.flag = null
+	}
 	return rows
+}
+// The width that goes with a border colour property: props.borderColor -> props.border.top, controlBorderColor ->
+// controlBorder, x.borderColor -> x.border.
+function borderWidthKey (prop, fb, fl) {
+	const stem = prop.replace(/[cC]olor$/, '')
+	const capital = stem.endsWith('Border')
+	for (const k of capital ? [stem] : [`${stem}.top`, stem, `${stem}Top`]) if (k in fb || k in fl) return k
+	return null
 }
 // Page-header buttons pair by label (labels are only used to pair, never compared), the rest by order from the right.
 function pairButtons (b, l) {
@@ -220,7 +232,9 @@ export function addPage (r) {
 
 // ---- Elements: every visible control, field, chip, badge and list row -------------------------------------------
 const EGROUP = { button: 'ctl', pill: 'ctl', badge: 'ctl', field: 'field', toggle: 'toggle', row: 'row' }
-const ekey = (e) => `${EGROUP[e.kind]}|${norm(e.inControl || '')}|${norm(e.label)}`
+// Sitting in a record card is not a control: a widget's button pairs by its label whether or not its column of widgets
+// reads as a deck on one side.
+const ekey = (e) => `${EGROUP[e.kind]}|${e.inControl === 'record card' ? '' : norm(e.inControl || '')}|${norm(e.label)}`
 const styleKey = (e) => [e.kind, Math.round(e.props.h / 4), e.props.borderRadius, e.props.background, e.props.border, e.props.fontSize].join('|')
 
 // Pairs elements: by label (within control, field, toggle or row), then repeated groups (same container and style)

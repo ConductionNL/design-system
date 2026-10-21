@@ -101,3 +101,13 @@ test('writes no row for a board without a live page', () => {
 	], ['DqZaakDialogen\t/old'])
 	assert.deepEqual(rows, ['DqZaken\t/apps/dossiq/cases'])
 })
+
+test('passes a board\'s login and ignored elements to compdiff', () => {
+	const rows = specRows([
+		{ board: 'Home', liveUrl: 'http://localhost:8080/index.php/apps/portaliq/site/zuiddrecht', login: 'none', ignore: 'button:has-text("Deze site bewerken")' },
+		{ board: 'Contact', liveUrl: 'http://localhost:8080/apps/portaliq/site/zuiddrecht/contact', steps: [{ wait: 100 }], login: 'viewer' },
+	])
+	assert.deepEqual(rows[0].split('\t'), ['Home', '/apps/portaliq/site/zuiddrecht', '--login', 'none', '--ignore', 'button:has-text("Deze site bewerken")'])
+	assert.deepEqual(rows[1].split('\t'), ['Contact', '/apps/portaliq/site/zuiddrecht/contact', '--steps', '[{"wait":100}]', '--login', 'viewer'])
+	assert.throws(() => specRows([{ board: 'X', liveUrl: '/a', ignore: 'a\tb' }]), /tab or a newline/)
+})

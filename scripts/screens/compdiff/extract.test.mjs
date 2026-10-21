@@ -246,3 +246,33 @@ test('an unstyled input stretched over its label is measured as the icon that dr
 	const t = r.elements.find((e) => e.kind === 'toggle')
 	assert.equal(t.props.h, 18)
 })
+
+test('a map is measured as a map, for place and size only, and its attribution is left out', { skip }, async () => {
+	const board = await measure(`<div style="position:absolute;left:700px;top:300px;width:344px">
+		<div role="img" aria-label="Kaart met een pin op de Lindelaan" style="height:120px;border-radius:8px;background:#e3f1f3"></div></div>`)
+	const live = await measure(`<div style="position:absolute;left:700px;top:300px;width:344px">
+		<div class="leaflet-container" style="position:relative;height:260px;background:#edeff2">
+			<div class="leaflet-control-attribution" style="position:absolute;right:0;bottom:0;padding:0 5px;background:rgba(255,255,255,.8);border:1px solid #ccc;border-radius:4px;font-size:11px">Leaflet | © OpenStreetMap contributors</div></div></div>`)
+	for (const r of [board, live]) {
+		assert.deepEqual(r.components.map((c) => c.role), ['map'])
+		assert.deepEqual(Object.keys(r.components[0]).sort(), ['libClass', 'rect', 'role', 'title'].concat(r.components[0].cls ? ['cls'] : []).sort())
+	}
+	assert.equal(live.elements.length, 0, JSON.stringify(live.elements.map((e) => e.label)))
+})
+
+test('a card is named by its own library class, not by an icon in its corner', { skip }, async () => {
+	const r = await measure(`<aside class="app-sidebar" style="position:absolute;left:1050px;top:68px;width:388px;height:600px;background:#f5f6f8">
+		<div class="cn-index-sidebar__header-icon" style="position:absolute;left:0;top:0;width:40px;height:40px"></div>
+		<h2 style="margin:0;padding:13px 21px">Alle zaken</h2><p style="padding:0 21px">Filters</p></aside>`)
+	const card = r.components.find((c) => c.title === 'Alle zaken')
+	assert.equal(card.libClass, 'app-sidebar')
+})
+
+test('a control border under a card title is not a separator', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:860px;top:420px;width:268px;background:#eceef1;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px">
+		<h2 style="margin:0;font-size:15px">Besluit</h2>
+		<button style="height:34px;border:1px dashed #828a95;border-radius:8px;background:transparent">Toon 7 meer</button></section>`)
+	const card = r.components.find((c) => c.title === 'Besluit')
+	assert.equal(card.header.separator, 0)
+	assert.ok(!/divider/.test(card.structure || ''), card.structure)
+})

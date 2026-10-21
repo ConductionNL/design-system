@@ -87,6 +87,8 @@ window.__compdiffExtract = function () {
 	// mark more chrome to leave out (compdiff --ignore), such as an editor's own button on a public site.
 	const outOfScope = (el) => {
 		if (el.closest('header[data-sc-header], #header, #app-navigation, #app-navigation-vue, .app-navigation, #appmenu, [data-compdiff-ignore]')) return true
+		// A map's attribution is the tile provider's credit, not part of the page.
+		if (el.closest('.leaflet-control-attribution, .maplibregl-ctrl-attrib, .mapboxgl-ctrl-attrib, .ol-attribution')) return true
 		if (modals.length && !modals.some((m) => m.contains(el))) return true
 		const r = el.getBoundingClientRect()
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
@@ -108,6 +110,7 @@ window.__compdiffExtract = function () {
 	const pageTabs = [...document.querySelectorAll('nav[aria-label], [class*=page-tabs]')].filter((n) => visible(n) && isPageTabs(n))
 	const tabStrips = [...document.querySelectorAll('[role=tablist]'), ...pageTabs.filter((n) => !pageTabs.some((o) => o !== n && o.contains(n)))]
 	const inTabStrip = (el) => tabStrips.some((s) => s.contains(el))
+	const CONTROL_BOX = 'button, [role=button], input, select, textarea'
 	const INTERACTIVE = 'button, input, select, textarea, a, label, [role=button], [role=tab], [role=option], [role=combobox], [role=checkbox], [role=switch]'
 
 	// 1. Cards: a framed box (3+ borders, a shadow, or a background unlike what is behind it), big enough to hold content.
@@ -119,11 +122,17 @@ window.__compdiffExtract = function () {
 		if (opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)) return 'background'
 		return null
 	}
+	// A map: a map library's container, or a drawn placeholder (role=img named as a map). It is measured for its place
+	// and size only: tiles, a placeholder's tint and its corners are not styling to compare.
+	const MAPLIB = '.leaflet-container, .maplibregl-map, .mapboxgl-map, .ol-viewport'
+	const isMap = (el) => el.matches(MAPLIB) || (el.matches('[role=img]') && /^kaart\b|\bmap\b/i.test(el.getAttribute('aria-label') || ''))
+	const maps = all.filter((el) => visible(el) && !outOfScope(el) && isMap(el) && !all.some((o) => o !== el && o.contains(el) && isMap(o)))
+	const inMap = (el) => maps.some((m) => m.contains(el))
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>); other controls are not.
 		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
-		if (!visible(el) || outOfScope(el)) continue
+		if (!visible(el) || outOfScope(el) || inMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
 		const cs = getComputedStyle(el)
@@ -269,7 +278,8 @@ window.__compdiffExtract = function () {
 			let sep = null
 			for (const el of [card, ...card.querySelectorAll('*')]) {
 				if (el !== card && !ownedBy(el, card)) continue
-				if (!visible(el)) continue
+				// A control's own border (a dashed "Toon meer" button under the title) is not a separator.
+				if (!visible(el) || (el !== card && el.closest(CONTROL_BOX))) continue
 				// A list row's own border is not a header separator: skip boxes holding some but not all of the body.
 				if (el !== card && content.length) { const n = content.filter((l) => el.contains(l.node)).length; if (n > 0 && n < content.length) continue }
 				const r = el.getBoundingClientRect()
@@ -304,7 +314,7 @@ window.__compdiffExtract = function () {
 			if ([...seen].some((s) => s.contains(el))) continue
 			const r = el.getBoundingClientRect()
 			const ecs = getComputedStyle(el)
-			if (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4)) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
+			if (!el.closest(CONTROL_BOX) && (el.tagName === 'HR' || (r.height <= 2 && r.width > cr.width * 0.5 && opaque(ecs.backgroundColor)) || (borders(ecs).top > 0 && r.width > cr.width * 0.6 && r.top > cr.top + 4))) { parts.push({ t: 'divider', y: el.tagName === 'HR' || r.height <= 2 ? r.top : r.top, x: r.left }); if (el.tagName === 'HR' || r.height <= 2) continue }
 			if (PILLISH(el)) { parts.push({ t: DATE.test(el.textContent) ? 'pill:deadline' : 'pill', y: r.top, x: r.left }); seen.add(el); continue }
 		}
 		const range = document.createRange()
@@ -444,6 +454,8 @@ window.__compdiffExtract = function () {
 		const gaps = tabs.slice(1).map((t, i) => round(t.getBoundingClientRect().left - tabs[i].getBoundingClientRect().right))
 		components.push({ role: 'tabs', title: 'tabs', rect: rect(tl), tabCount: tabs.length, gap: gaps.length ? gaps.sort((a, b) => a - b)[Math.floor(gaps.length / 2)] : null, borderBottom: underline(), active: tabProps(active), inactive: tabProps(inactive) })
 	}
+
+	for (const m of maps) components.push({ el: m, role: 'map', title: 'map', rect: rect(m) })
 
 	// 5. Tables (and ARIA grids).
 	for (const t of document.querySelectorAll('table, [role=table], [role=grid]')) {
@@ -668,7 +680,11 @@ window.__compdiffExtract = function () {
 		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
 	}
 
-	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => /^cn-|^nc-|^app-content|^modal|^dialog/.test(k)); if (c) { lib = c; break } } return lib }
-	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = clsOf(c.rect) }
+	const LIBCLS = /^cn-|^nc-|^app-content|^app-sidebar|^modal|^dialog/
+	const clsOf = (r) => { const el = document.elementFromPoint(r.x + Math.min(8, r.w / 2), r.y + Math.min(8, r.h / 2)); let lib = null; for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) { lib = c; break } } return lib }
+	// The library class of the component itself or the nearest ancestor that has one; a point probe at the corner only
+	// when the component has no element of its own (it can land on an icon inside it).
+	const ownLib = (el) => { for (let e = el; e; e = e.parentElement) { const c = [...(e.classList || [])].find((k) => LIBCLS.test(k)); if (c) return c } return null }
+	for (const c of components) { if (c.el) c.cls = [...(c.el.classList || [])].slice(0, 2).join('.') || c.el.tagName.toLowerCase(); c.libClass = (c.el && ownLib(c.el)) || clsOf(c.rect) }
 	return { viewport: { w: VW, h: window.innerHeight }, scroll: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, components: components.map(({ el, ...c }) => c), elements, unmeasured }
 }

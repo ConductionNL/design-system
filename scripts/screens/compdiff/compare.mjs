@@ -29,7 +29,7 @@ export function pairComponents (board, live, H) {
 	// past a deck's first that find no counterpart are left out: how many cards a deck holds follows the data.
 	const pairs = []
 	const usedB = new Set(), usedL = new Set()
-	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' && b.role !== 'pager' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
+	const take = (b, l, by) => { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by, name: b.title && b.role !== 'tabs' && b.role !== 'table' && b.role !== 'toolbar' && b.role !== 'pager' && b.role !== 'map' ? b.title : `${b.role}@${Math.round(b.rect.x)},${Math.round(b.rect.y)}` }) }
 	const pos = (b, l) => {
 		const cx = (r) => r.x + r.w / 2
 		return Math.abs(cx(b.rect) - cx(l.rect)) / 1440 + 0.5 * Math.abs(b.rect.y - l.rect.y) / H + Math.abs(b.rect.w - l.rect.w) / 1440 + 0.2 * Math.abs((b.depth || 0) - (l.depth || 0))
@@ -61,6 +61,12 @@ export function pairComponents (board, live, H) {
 			let cost = pos(b, l)
 			if (!!b.record !== !!l.record) cost += 0.15
 			if (b.title && l.title && CARDLIKE.has(b.role)) cost += 0.12
+			// Two cards with different titles are a pair only as near neighbours; a titled card and an untitled one
+			// only within a card's height of each other.
+			if (CARDLIKE.has(b.role) && (b.title || l.title)) {
+				const dy = Math.abs(b.rect.y - l.rect.y)
+				if (b.title && l.title ? dy > 48 : dy > Math.max(48, b.rect.h, l.rect.h)) continue
+			}
 			if (cost <= 0.2) cand.push({ b, l, cost })
 		}
 	}

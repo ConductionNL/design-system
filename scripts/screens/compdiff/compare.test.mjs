@@ -51,3 +51,13 @@ test('a pill paired with a button is told apart by radius and height, not by its
 	assert.equal(rows.find((r) => r.prop === 'kind').flag, null)
 	assert.equal(rows.find((r) => r.prop === 'borderRadius').flag, 'shape')
 })
+
+test('cards with different titles, or a titled and an untitled card far apart, do not pair by position', () => {
+	const card = (title, y, h, x = 424, w = 592) => ({ role: 'dialog-card', title, rect: { x, y, w, h } })
+	const grey = pairComponents([card(undefined, 1000, 59)], [card('Beoordeel eerst deze documenten.', 567, 208)], 1500)
+	assert.equal(grey.pairs.length, 0)
+	const choice = pairComponents([card('Daarna alleen lezen', 824, 95)], [card('Bewaring volgens het zaaktype', 770, 672, 440, 560)], 1500)
+	assert.equal(choice.pairs.length, 0)
+	const near = pairComponents([card(undefined, 300, 120)], [card('Zaakgegevens', 340, 160)], 1500)
+	assert.equal(near.pairs.length, 1)
+})

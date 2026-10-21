@@ -640,14 +640,16 @@ window.__compdiffExtract = function () {
 		}
 		return (el.getAttribute('aria-label') || fieldLabel(el) || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
-	// A list row drawn by the control inside it (cn-folder-tree: an unstyled li around a full-width button) is measured
-	// on that control, which is then not an element of its own.
+	// A list row drawn by a full-width box inside it (cn-folder-tree: an unstyled li around a button; cn-menu-tree: a
+	// treeitem around a padded row div) is measured on that box, which is then not an element of its own.
 	const drawnBy = new Set()
+	const styled = (cs) => opaque(cs.backgroundColor) || Object.values(borders(cs)).some((v) => v > 0) || px(cs.paddingLeft) > 0 || px(cs.borderTopLeftRadius) > 0
 	const rowDrawer = (row, rcs, rr) => {
-		if (opaque(rcs.backgroundColor) || nBorders(row) || px(rcs.paddingLeft) || px(rcs.borderTopLeftRadius)) return null
-		return [...row.querySelectorAll('button, a, [role=button]')].find((c) => {
+		if (styled(rcs)) return null
+		return [...row.querySelectorAll('*')].find((c) => {
 			const q = c.getBoundingClientRect()
-			return visible(c) && q.width >= rr.width * 0.9 && q.top - rr.top < 4 && c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
+			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && visible(c) && styled(getComputedStyle(c))
+				&& c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
 		}) || null
 	}
 	for (const el0 of all) {

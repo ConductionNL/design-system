@@ -292,7 +292,9 @@ test('a list row drawn by the full-width button inside it is measured on that bu
 		<li style="display:flex;padding:8px 10px;border-radius:8px;font-size:14px;height:20px"><span>Fysiek domein</span></li></ul>`)
 	const live = await measure(`<ul style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
 		<li class="cn-folder-tree__node"><button class="cn-folder-tree__item" style="display:flex;width:100%;height:36px;padding:8px 10px;border:0;border-radius:8px;background:transparent;font-size:14px">Fysiek domein</button></li></ul>`)
-	for (const r of [board, live]) {
+	const menu = await measure(`<ul role="tree" style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li role="treeitem" class="cn-menu-tree-node"><div class="cn-menu-tree-node__row" style="padding:8px 10px;border-radius:8px"><a href="#" style="display:block">Fysiek domein</a></div></li></ul>`)
+	for (const r of [board, live, menu]) {
 		const rows = r.elements.filter((e) => e.label === 'Fysiek domein')
 		assert.deepEqual(rows.map((e) => e.kind), ['row'])
 		assert.equal(rows[0].props.borderRadius, 8)

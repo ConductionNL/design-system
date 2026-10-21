@@ -82,6 +82,22 @@ window.__compdiffExtract = function () {
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
 	}
 	const all = [...document.body.querySelectorAll('*')].filter((el) => !['SCRIPT', 'STYLE', 'LINK', 'META', 'svg', 'path', 'TR', 'TD', 'TH', 'THEAD', 'TBODY', 'BR', 'OPTION'].includes(el.tagName))
+	// Tab strips: a tablist, or a nav of page links whose current page carries aria-current (nc-vue's page tabs, which
+	// navigate and so are links, not role=tab) laid out on one row. A breadcrumb trail is not a tab strip.
+	const isCurrent = (e) => e.getAttribute('aria-selected') === 'true' || /^(page|true|location)$/.test(e.getAttribute('aria-current') || '')
+	const tabItems = (s) => [...s.querySelectorAll(s.matches('[role=tablist]') ? '[role=tab]' : 'a, [role=link]')].filter(visible)
+	const isPageTabs = (n) => {
+		if (n.closest('[role=tablist]') || n.querySelector('[role=tablist]') || outOfScope(n)) return false
+		if (/breadcrumb|kruimel/i.test(`${n.className} ${n.getAttribute('aria-label') || ''}`)) return false
+		const items = tabItems(n)
+		if (!items.length) return false
+		const top = items[0].getBoundingClientRect().top
+		if (items.some((i) => Math.abs(i.getBoundingClientRect().top - top) > 4)) return false
+		return /page-tabs/.test(n.className) || (n.matches('nav[aria-label]') && items.length >= 2 && items.some(isCurrent))
+	}
+	const pageTabs = [...document.querySelectorAll('nav[aria-label], [class*=page-tabs]')].filter((n) => visible(n) && isPageTabs(n))
+	const tabStrips = [...document.querySelectorAll('[role=tablist]'), ...pageTabs.filter((n) => !pageTabs.some((o) => o !== n && o.contains(n)))]
+	const inTabStrip = (el) => tabStrips.some((s) => s.contains(el))
 	const INTERACTIVE = 'button, input, select, textarea, a, label, [role=button], [role=tab], [role=option], [role=combobox], [role=checkbox], [role=switch]'
 
 	// 1. Cards: a framed box (3+ borders, a shadow, or a background unlike what is behind it), big enough to hold content.
@@ -96,7 +112,7 @@ window.__compdiffExtract = function () {
 	let cards = []
 	for (const el of all) {
 		// Links can be cards (a KPI tile is often one big <a>); other controls are not.
-		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('[role=tablist], table, ul[role=listbox]')) continue
+		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
 		if (!visible(el) || outOfScope(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
@@ -339,7 +355,7 @@ window.__compdiffExtract = function () {
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...container.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
-			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || b.closest('[role=tablist]') || b.closest('nav, [class*=breadcrumb]')) return false
+			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
 			// Only the title's own row: a status stepper or chip row under the title is not a header action.
 			const br = b.getBoundingClientRect(), hr = h1.getBoundingClientRect()
 			if (br.top + br.height / 2 > hr.bottom + 24 || br.bottom < hr.top - 24) return false
@@ -357,11 +373,11 @@ window.__compdiffExtract = function () {
 	}
 
 	// 4. Tab strips.
-	for (const tl of document.querySelectorAll('[role=tablist]')) {
+	for (const tl of tabStrips) {
 		if (!visible(tl) || outOfScope(tl)) continue
-		const tabs = [...tl.querySelectorAll('[role=tab]')].filter(visible)
+		const tabs = tabItems(tl)
 		if (!tabs.length) continue
-		const active = tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0]
+		const active = tabs.find(isCurrent) || tabs[0]
 		const inactive = tabs.find((t) => t !== active)
 		const tabProps = (t) => {
 			if (!t) return null
@@ -436,7 +452,7 @@ window.__compdiffExtract = function () {
 		return { items: line, top, bottom: Math.max(...line.map((i) => i.getBoundingClientRect().bottom)) }
 	}
 	for (const el of all) {
-		if (!visible(el) || outOfScope(el) || el.closest('[role=tablist], table, thead')) continue
+		if (!visible(el) || outOfScope(el) || inTabStrip(el) || el.closest('table, thead')) continue
 		const cs = getComputedStyle(el)
 		if (!/flex|grid/.test(cs.display)) continue
 		const r = el.getBoundingClientRect()
@@ -455,7 +471,7 @@ window.__compdiffExtract = function () {
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
-		if (el.querySelector('[role=tablist]')) continue
+		if (tabStrips.some((s) => el.contains(s))) continue
 		if ([...used].some((u) => u.contains(el)) || [...lineItems].some((u) => u.contains(el))) continue
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
 		used.add(el)
@@ -470,7 +486,7 @@ window.__compdiffExtract = function () {
 		for (const el of used) {
 			const r = el.getBoundingClientRect()
 			if (r.top >= hb.bottom || r.bottom <= hb.top) continue
-			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !b.closest('[role=tablist]') && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
+			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !inTabStrip(b) && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
 			ph.buttons.push(...qb.map(headerButton))
 			ph.header.actions = ph.buttons.length
 			ph.quickActions = { separate: true, offsetTop: round(r.top - ph.header.titleY), offsetRight: round(window.innerWidth - r.right) }
@@ -523,7 +539,7 @@ window.__compdiffExtract = function () {
 		return (el.getAttribute('aria-label') || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
 	for (const el of all) {
-		if (!visible(el) || outOfScope(el) || el.closest('[role=tablist]') || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
+		if (!visible(el) || outOfScope(el) || inTabStrip(el) || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 6 || r.height < 6) continue
 		const cs = getComputedStyle(el)
@@ -564,7 +580,7 @@ window.__compdiffExtract = function () {
 		const cs = getComputedStyle(el)
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		if (!ownBg && nBorders(el) < 3) continue
-		if (el.closest('[role=tablist], table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
+		if (inTabStrip(el) || el.closest('table, [role=dialog] > *:first-child:empty') || [...elementEls].some((e) => e.contains(el)) || [...cardEls].some((c) => c === el)) continue
 		if (el.matches('svg, svg *, img, canvas, [role=progressbar], progress, hr') || (!el.textContent.trim() && r.height <= 16)) continue
 		unmeasured.push({ tag: el.tagName.toLowerCase(), text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 40), rect: rect(el) })
 	}

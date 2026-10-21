@@ -10,6 +10,7 @@ import path from 'node:path'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { parseColour } from './colour.mjs'
+import { compareProps, pairComponents } from './compare.mjs'
 
 const require = createRequire(import.meta.url)
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -122,4 +123,44 @@ test('every card of a deck is measured, with its elements', { skip }, async () =
 test('a spec can leave elements out (data-compdiff-ignore)', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:700px">${btn('Zoeken')}<button data-compdiff-ignore style="height:48px">Deze site bewerken</button></div>`)
 	assert.deepEqual(r.elements.map((e) => e.label), ['Zoeken'])
+})
+
+test('a nav of page links marked aria-current is a tab strip, measured like a tablist', { skip }, async () => {
+	const link = (label, current) => `<a href="#${label}"${current ? ' aria-current="page"' : ''} style="display:inline-block;height:44px;line-height:44px;padding:0 12px;${current ? 'font-weight:600;border-bottom:2px solid #234a78' : ''}">${label}</a>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">
+		<nav aria-label="Pagina's" class="cn-index-page__page-tabs" style="display:flex;gap:4px;border-bottom:1px solid #e4e6ea">${link('Contracten', true)}${link('Leveranciers')}${link('Archief')}</nav>
+		<div style="height:400px"></div></div>`)
+	const tabs = r.components.filter((c) => c.role === 'tabs')
+	assert.equal(tabs.length, 1)
+	assert.equal(tabs[0].tabCount, 3)
+	assert.equal(tabs[0].borderBottom, 1)
+	assert.equal(tabs[0].gap, 4)
+	assert.equal(tabs[0].active.fontWeight, 600)
+	assert.equal(tabs[0].active.indicator, 2)
+	assert.equal(tabs[0].inactive.indicator, 0)
+	// The links are the strip's items, not elements or a toolbar of their own.
+	assert.deepEqual(r.elements.map((e) => e.label), [])
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+})
+
+test('a breadcrumb nav or a vertical nav is not a tab strip', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">
+		<nav aria-label="Kruimelpad" class="breadcrumbs" style="display:flex;gap:8px"><a href="#a">Zaken</a><a href="#b" aria-current="page">Zaak 12</a></nav>
+		<nav aria-label="Secties" style="display:flex;flex-direction:column"><a href="#c" aria-current="true">Een</a><a href="#d">Twee</a></nav></div>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'tabs'), [])
+})
+
+test("the board's tablist pairs with live's page-tab nav and is compared property by property", { skip }, async () => {
+	const style = (on) => `height:44px;padding:0 12px;border:0;background:none;font:${on ? 600 : 400} 14px sans-serif${on ? ';border-bottom:2px solid #234a78' : ''}`
+	const board = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px"><div role="tablist" style="display:flex;gap:4px;border-bottom:1px solid #e4e6ea">
+		<button role="tab" aria-selected="true" style="${style(true)}">Contracten</button><button role="tab" style="${style(false)}">Leveranciers</button></div></div>`)
+	const live = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px"><nav aria-label="Pagina's" style="display:flex;gap:4px;border-bottom:1px solid #e4e6ea">
+		<a href="#c" aria-current="page" style="display:inline-block;line-height:44px;${style(true)}">Contracten</a><a href="#l" style="display:inline-block;line-height:44px;${style(false)}">Leveranciers</a></nav></div>`)
+	const { pairs, missing, extra } = pairComponents(board.components, live.components, 900)
+	assert.deepEqual([missing, extra], [[], []])
+	const pair = pairs.find((p) => p.board.role === 'tabs')
+	assert.ok(pair)
+	const rows = compareProps(pair.board, pair.live)
+	assert.equal(rows.find((r) => r.prop === 'active.fontWeight').live, 600)
+	assert.equal(rows.find((r) => r.prop === 'active.indicator').flag, null)
 })

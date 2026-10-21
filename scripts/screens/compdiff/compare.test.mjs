@@ -70,3 +70,12 @@ test('a lone pager pairs with the lone pager, wherever the list above it ends', 
 	assert.equal(r.pairs.length, 1)
 	assert.equal(r.missing.length + r.extra.length, 0)
 })
+
+test('page links pair in order inside the pager, and the page count is data', () => {
+	const link = (label, x, inControl = 'pager') => ({ kind: 'button', label, inControl, container: 1, rect: { x, y: 1000, w: 36, h: 36 }, props: { h: 36, borderRadius: 8, background: 'rgb(255, 255, 255)', border: 1, fontSize: 14 } })
+	const r = pairElements([link('1', 1186), link('2', 1226), link('3', 1268)], [link('1', 1037), link('2', 1077), link('3', 1119), link('4', 1161), link('13', 1268), { ...link('Open AI chat', 1340, null), props: { h: 60, borderRadius: 0, background: 'rgb(255, 255, 255)', border: 0, fontSize: 14 } }], 1170)
+	const pagerPairs = r.pairs.filter((p) => p.by === 'pager')
+	assert.deepEqual(pagerPairs.map((p) => [p.board.label, p.live.label]), [['1', '1'], ['2', '2'], ['3', '3']])
+	assert.ok(!r.pairs.some((p) => p.live.label === 'Open AI chat'))
+	assert.ok(!(r.extra || []).some((e) => e.inControl === 'pager'))
+})

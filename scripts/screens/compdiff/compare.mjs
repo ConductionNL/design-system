@@ -259,6 +259,12 @@ export function pairElements (B = [], L = [], H = 2000) {
 		const l = list && list.find((x) => !usedL.has(x))
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
+	// Page links pair in order inside the pager; how many pages there are follows the data, so the rest is neither
+	// missing nor extra.
+	const pagerOf = (list, used) => list.filter((e) => e.inControl === 'pager' && !used.has(e)).sort((a, b) => a.rect.x - b.rect.x)
+	const pb = pagerOf(B, usedB), pl = pagerOf(L, usedL)
+	pb.forEach((b, i) => { if (pl[i]) pairs.push({ board: b, live: pl[i], by: 'pager' }) })
+	pb.forEach((e) => usedB.add(e)); pl.forEach((e) => usedL.add(e))
 	// A style that repeats three or more times on the page (one action button per list row, one tag per record) is a
 	// list's element: its copies form one group page-wide, however the rows nest their containers.
 	const groups = (list, used) => {

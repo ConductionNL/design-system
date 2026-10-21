@@ -278,3 +278,34 @@ test('a control border under a card title is not a separator', { skip }, async (
 	assert.equal(card.header.separator, 0)
 	assert.ok(!/divider/.test(card.structure || ''), card.structure)
 })
+
+test('a checkbox or radio is named by the first line of its label, not by its value', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:560px">
+		<label style="display:flex;flex-direction:column;padding:12px"><span style="display:flex;gap:12px"><input type="radio" name="ls" value="gesture:suspend"><span style="display:flex;flex-direction:column"><strong>Opschorten</strong><span>De termijn staat stil</span></span></span></label>
+		<span class="checkbox-radio-switch"><input id="pub" type="checkbox" value="deels_openbaar"><label for="pub" class="checkbox-radio-switch__content"><span>Deels openbaar</span></label></span>
+		<label><input type="checkbox"> Ontvangstbevestiging sturen</label></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'toggle').map((e) => e.label), ['Opschorten', 'Deels openbaar', 'Ontvangstbevestiging sturen'])
+})
+
+test('a list row drawn by the full-width button inside it is measured on that button', { skip }, async () => {
+	const board = await measure(`<ul style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li style="display:flex;padding:8px 10px;border-radius:8px;font-size:14px;height:20px"><span>Fysiek domein</span></li></ul>`)
+	const live = await measure(`<ul style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li class="cn-folder-tree__node"><button class="cn-folder-tree__item" style="display:flex;width:100%;height:36px;padding:8px 10px;border:0;border-radius:8px;background:transparent;font-size:14px">Fysiek domein</button></li></ul>`)
+	const menu = await measure(`<ul role="tree" style="position:absolute;left:300px;top:200px;width:300px;list-style:none;margin:0;padding:0">
+		<li role="treeitem" class="cn-menu-tree-node"><div class="cn-menu-tree-node__row" style="padding:8px 10px;border-radius:8px"><a href="#" style="display:block">Fysiek domein</a></div></li></ul>`)
+	for (const r of [board, live, menu]) {
+		const rows = r.elements.filter((e) => e.label === 'Fysiek domein')
+		assert.deepEqual(rows.map((e) => e.kind), ['row'])
+		assert.equal(rows[0].props.borderRadius, 8)
+		assert.equal(rows[0].props.paddingLeft, 10)
+	}
+})
+
+test('a button hidden from assistive tech (NcSelect chevron) is not an element or a control', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:600px;display:flex;gap:8px;align-items:center">
+		${btn('Filter')}<div class="v-select" style="display:flex;align-items:center;border:1px solid #888;height:36px;width:240px">
+		<input type="search" aria-label="Zaaktype" style="border:0;flex:1"><button type="button" class="vs__open-indicator-button" aria-hidden="true" tabindex="-1" style="width:20px;height:20px">v</button></div>
+		<span aria-hidden="true"><button style="height:30px">x</button></span></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'button' || e.kind === 'pill').map((e) => e.label), ['Filter'])
+})

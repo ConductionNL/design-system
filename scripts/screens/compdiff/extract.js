@@ -19,6 +19,8 @@ window.__compdiffExtract = function () {
 		if ((r.width <= 2 || r.height <= 2) && (cs.clipPath !== 'none' || (cs.clip && cs.clip !== 'auto') || cs.overflow === 'hidden')) return false
 		return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05
 	}
+	// Hidden from assistive tech (NcSelect's chevron button, aria-hidden with tabindex -1): decoration, not a control.
+	const ariaHidden = (el) => !!el.closest('[aria-hidden="true"]')
 	const rect = (el) => { const r = el.getBoundingClientRect(); return { x: round(r.x), y: round(r.y), w: round(r.width), h: round(r.height) } }
 	const bgBehind = (el) => {
 		for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (opaque(c)) return c }
@@ -397,7 +399,7 @@ window.__compdiffExtract = function () {
 		const tb = textRect(h1) || rect(h1)
 		const btns = [...scope.querySelectorAll('button, a')].filter((b) => {
 			// Tabs drawn inside the header area are a tab strip, compared as 'tabs', not header buttons.
-			if (!visible(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
+			if (!visible(b) || ariaHidden(b) || h1.contains(b) || b.matches('[role=tab]') || inTabStrip(b) || b.closest('nav, [class*=breadcrumb]')) return false
 			// Only the title's own row: a status stepper or chip row under the title is not a header action.
 			const br = b.getBoundingClientRect(), hr = h1.getBoundingClientRect()
 			if (br.top + br.height / 2 > hr.bottom + 24 || br.bottom < hr.top - 24) return false
@@ -495,7 +497,7 @@ window.__compdiffExtract = function () {
 			if (pr.height > 80 || pr.width < row.getBoundingClientRect().width) break
 			row = p
 		}
-		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && c.getBoundingClientRect().height >= 20)
+		const links = [...nav.querySelectorAll('a, button')].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 20)
 		if (!links.length) continue
 		used.add(row)
 		pagerRows.push(row)
@@ -525,7 +527,7 @@ window.__compdiffExtract = function () {
 		if (r.width >= 300 && /flex/.test(cs.display) && cs.flexWrap === 'wrap' && [...el.children].some((c) => getComputedStyle(c).display === 'contents')
 			&& ![...used].some((u) => u.contains(el)) && !(headerBox && (headerBox.contains(el) || el.contains(headerBox)))) {
 			const line = firstLine(el)
-			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && c.getBoundingClientRect().height >= 24) : []
+			const lctrls = line ? line.items.flatMap((i) => (i.matches(ctrl) ? [i] : [...i.querySelectorAll(ctrl)])).filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24) : []
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
@@ -534,7 +536,7 @@ window.__compdiffExtract = function () {
 			}
 		}
 		if (r.height > 72 || r.width < 300) continue
-		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && c.getBoundingClientRect().height >= 24)
+		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue
 		if (tabStrips.some((s) => el.contains(s))) continue
@@ -552,7 +554,7 @@ window.__compdiffExtract = function () {
 		for (const el of used) {
 			const r = el.getBoundingClientRect()
 			if (r.top >= hb.bottom || r.bottom <= hb.top) continue
-			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !inTabStrip(b) && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
+			const qb = [...el.querySelectorAll('button, a')].filter((b) => visible(b) && !ariaHidden(b) && !inTabStrip(b) && (b.tagName === 'BUTTON' || opaque(getComputedStyle(b).backgroundColor) || nBorders(b) >= 3))
 			ph.buttons.push(...qb.map(headerButton))
 			ph.header.actions = ph.buttons.length
 			ph.quickActions = { separate: true, offsetTop: round(r.top - ph.header.titleY), offsetRight: round(window.innerWidth - r.right) }
@@ -605,8 +607,11 @@ window.__compdiffExtract = function () {
 	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) if (recordEls.has(e)) return true; return false }
 	// A field's name from its markup: aria-labelledby, then a <label for> or a wrapping <label>. A textarea's text is
 	// its value, not its name.
+	// A checkbox or radio takes the first line of its label (an option's title, not its description): it has no
+	// value text of its own, and its value attribute ("on", "ending:archive") is not a name.
 	const fieldLabel = (el) => {
-		if (!el.matches(FIELD)) return ''
+		const toggle = el.matches(TOGGLE)
+		if (!toggle && !el.matches(FIELD)) return ''
 		const by = (el.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
 		const named = by.length ? by : [...(el.labels || [])]
 		// Only the label's own visible text: a wrapping label also holds the control and the value it shows.
@@ -616,10 +621,10 @@ window.__compdiffExtract = function () {
 			for (let n = w.nextNode(); n; n = w.nextNode()) {
 				const p = n.parentElement
 				let inControl = false
-				for (let e = p; e && e !== l; e = e.parentElement) if (e.contains(el) || e.matches(FIELD)) { inControl = true; break }
+				for (let e = p; e && e !== l; e = e.parentElement) if ((!toggle && e.contains(el)) || e.matches(FIELD)) { inControl = true; break }
 				if (n.textContent.trim() && p && !inControl && visible(p)) parts.push(n.textContent.trim())
 			}
-			return parts.join(' ')
+			return toggle ? parts[0] || '' : parts.join(' ')
 		}
 		// NcSelect inside a wrapping label carries a second, inner label with the same name.
 		return [...new Set(named.map(text).filter(Boolean))].join(' ')
@@ -635,13 +640,29 @@ window.__compdiffExtract = function () {
 		}
 		return (el.getAttribute('aria-label') || fieldLabel(el) || parts.join(' ') || el.getAttribute('placeholder') || el.value || '').trim().replace(/\s+/g, ' ').slice(0, 50)
 	}
-	for (const el of all) {
-		if (!visible(el) || outOfScope(el) || inTabStrip(el) || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
-		const r = el.getBoundingClientRect()
-		if (r.width < 6 || r.height < 6) continue
-		const cs = getComputedStyle(el)
-		const kind = kindOf(el, cs, r)
+	// A list row drawn by a full-width box inside it (cn-folder-tree: an unstyled li around a button; cn-menu-tree: a
+	// treeitem around a padded row div) is measured on that box, which is then not an element of its own.
+	const drawnBy = new Set()
+	const styled = (cs) => opaque(cs.backgroundColor) || Object.values(borders(cs)).some((v) => v > 0) || px(cs.paddingLeft) > 0 || px(cs.borderTopLeftRadius) > 0
+	const rowDrawer = (row, rcs, rr) => {
+		if (styled(rcs)) return null
+		return [...row.querySelectorAll('*')].find((c) => {
+			const q = c.getBoundingClientRect()
+			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && visible(c) && styled(getComputedStyle(c))
+				&& c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
+		}) || null
+	}
+	for (const el0 of all) {
+		if (drawnBy.has(el0)) continue
+		if (!visible(el0) || ariaHidden(el0) || outOfScope(el0) || inTabStrip(el0) || el0.matches('[role=tab], th, td, tr') || cardEls.has(el0)) continue
+		const r0 = el0.getBoundingClientRect()
+		if (r0.width < 6 || r0.height < 6) continue
+		const cs0 = getComputedStyle(el0)
+		const kind = kindOf(el0, cs0, r0)
 		if (!kind) continue
+		const drawer = kind === 'row' ? rowDrawer(el0, cs0, r0) : null
+		if (drawer) drawnBy.add(drawer)
+		const el = drawer || el0, cs = drawer ? getComputedStyle(drawer) : cs0, r = drawer ? drawer.getBoundingClientRect() : r0
 		// Inner parts of a control (the input inside a combobox, a button inside a button) are the control itself.
 		if ([...elementEls].some((e) => e !== el && e.contains(el) && (e.matches(FIELD) || ((kind === 'button' || kind === 'field') && e.matches('button, [role=button], a'))))) continue
 		elementEls.add(el)
@@ -651,7 +672,7 @@ window.__compdiffExtract = function () {
 		const te = textEl(el)
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
-			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
+			inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr') && !el0.matches('li, [role=row], [role=listitem], [role=option]'),
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),

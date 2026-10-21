@@ -13,6 +13,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import threading
 from html.parser import HTMLParser
 
 VOID = {'meta', 'link', 'img', 'input', 'br', 'hr', 'source', 'col', 'wbr'}
@@ -41,6 +42,7 @@ ROLES = {
 HEX = re.compile(r'(?<![\w-])#(' + '|'.join(h[1:] for h in ROLES) + r')(?![0-9a-fA-F])', re.I)
 FONT = re.compile(r"""(?<!var\(--sc-font, )(['"])Fira Sans\1""")
 SVG_PAINT = ('fill', 'stroke', 'stop-color')
+AI_CHAT_BUTTON = 'AiChatKnop'  # the shared part document() adds to every board inside Nextcloud
 
 
 def tokenize_css(css):
@@ -131,6 +133,7 @@ class Flattener:
         self.tokenize = tokenize
         self.link_name = link_name or (lambda board: board)  # board name -> output file stem
         self.cache = {}
+        self.local = threading.local()  # build.py flattens boards in threads; each tracks its own imports
 
     # -- renderVals in node -------------------------------------------------
     def vals(self, file, props):
@@ -173,6 +176,7 @@ class Flattener:
         if node.tag == 'dc-import':
             props = {re.sub(r'-(\w)', lambda m: m.group(1).upper(), k): raw(v, ctx)
                      for k, v in node.attrs if k not in ('name', 'hint-size')}
+            self.local.imports.add(a['name'])
             return self.page(a['name'] + '.dc.html', props, head)
         parts, extra_style, logo = [], [], None
         for k, v in node.attrs:
@@ -222,10 +226,19 @@ class Flattener:
         t.close()
         return self.render(t.root, v, head)
 
+    def has_ai_chat_button(self, body):
+        """Inside Nextcloud (the board draws the top bar) hermiq's AI chat button floats over every page,
+        except while the chat panel is open."""
+        return ('DqKop' in self.local.imports and 'data-sc-ai-chat="open"' not in body
+                and (self.src / (AI_CHAT_BUTTON + '.dc.html')).exists())
+
     def document(self, board, title, width, extra_head=''):
         """A complete standalone HTML document for one board."""
         head = []
+        self.local.imports = set()  # the shared parts this board pulls in
         body = self.page(board + '.dc.html', {}, head)
+        if self.has_ai_chat_button(body):
+            body += self.page(AI_CHAT_BUTTON + '.dc.html', {}, head).strip() + '\n'
         seen = set()
 
         def once(m):  # every helmet repeats the font link and body{margin:0}; keep the first

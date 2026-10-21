@@ -26,6 +26,28 @@ window.__compdiffExtract = function () {
 	}
 	const SIDES = ['Top', 'Right', 'Bottom', 'Left']
 	const borders = (cs) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), cs['border' + s + 'Style'] === 'none' || cs['border' + s + 'Style'] === 'hidden' || !opaque(cs['border' + s + 'Color']) ? 0 : px(cs['border' + s + 'Width'])]))
+	// A box-shadow ring (0 0 0 <spread> <colour>) draws a border without a border property.
+	const ring = (cs) => {
+		for (const m of cs.boxShadow.matchAll(/((?:rgba?|color|oklch|oklab|lab|lch)\([^)]*\)|#[0-9a-f]{3,8})\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+([\d.]+)px\s+([\d.]+)px/gi)) {
+			if (+m[2] === 0 && +m[3] === 0 && +m[4] === 0 && +m[5] > 0 && opaque(m[1])) return { width: +m[5], color: m[1] }
+		}
+		return null
+	}
+	// The border people see around a field: its own (3+ sides) or ring, else that of a wrapper that hugs it (NcInputField
+	// and NcSelect draw theirs on a wrapper, not on the inner input).
+	const fieldBorder = (el) => {
+		const r0 = el.getBoundingClientRect()
+		for (let e = el, i = 0; e && e !== document.body && i < 5; e = e.parentElement, i++) {
+			const r = e.getBoundingClientRect()
+			if (i > 0 && (r.height > r0.height + 12 || r.width > r0.width + 64 || r.left > r0.left + 1 || r.top > r0.top + 1 || r.right < r0.right - 1 || r.bottom < r0.bottom - 1)) break
+			const cs = getComputedStyle(e)
+			const b = borders(cs)
+			if (Object.values(b).filter((v) => v > 0).length >= 3) return { width: b.top || b.bottom || b.left, color: cs.borderTopColor }
+			const g = ring(cs)
+			if (g) return g
+		}
+		return { width: 0, color: null }
+	}
 	const box = (cs, prop) => Object.fromEntries(SIDES.map((s) => [s.toLowerCase(), px(cs[prop + s])]))
 	const lineHeight = (cs) => (cs.lineHeight === 'normal' ? round(px(cs.fontSize) * 1.2) : px(cs.lineHeight))
 	const font = (el) => {
@@ -49,9 +71,13 @@ window.__compdiffExtract = function () {
 		}
 		return r && { x: round(r.x), y: round(r.y), w: round(r.r - r.x), h: round(r.b - r.y) }
 	}
-	// The app top bar and the left navigation are chrome around every page; they are not page components.
+	// An open modal dialog covers the page with its scrim: only what is inside the dialog is in view.
+	const modals = [...document.querySelectorAll('[aria-modal=true]')].filter(visible)
+	// The app top bar and the left navigation are chrome around every page; they are not page components. A spec can
+	// mark more chrome to leave out (compdiff --ignore), such as an editor's own button on a public site.
 	const outOfScope = (el) => {
-		if (el.closest('header[data-sc-header], #header, #app-navigation, #app-navigation-vue, .app-navigation, #appmenu')) return true
+		if (el.closest('header[data-sc-header], #header, #app-navigation, #app-navigation-vue, .app-navigation, #appmenu, [data-compdiff-ignore]')) return true
+		if (modals.length && !modals.some((m) => m.contains(el))) return true
 		const r = el.getBoundingClientRect()
 		return (r.x < 250 && r.right < 300) || r.bottom <= 70
 	}
@@ -224,8 +250,8 @@ window.__compdiffExtract = function () {
 	const components = []
 	for (const c of cards) components.push(describeCard(c.el, c.el.closest('[role=dialog]') ? 'dialog-card' : 'card'))
 
-	// Record cards: a card with two or more siblings of about its width (a deck or card grid). The count follows the
-	// data, so one representative per deck is compared, with the order and placement of its parts as its structure.
+	// Record cards: a card with two or more siblings of about its width (a deck, a card grid or a column of widgets).
+	// Each is compared, with the order and placement of its parts as its structure; the count follows the data.
 	const PILLISH = (el) => { const cs = getComputedStyle(el), r = el.getBoundingClientRect(); return r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim() && ((opaque(cs.backgroundColor) && cs.backgroundColor !== bgBehind(el.parentElement)) || nBorders(el) >= 3) }
 	const DATE = /\b\d{1,2}\s(jan|feb|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)|vandaag|morgen|gisteren|\bdag(en)?\b|\bweken?\b|over \d|nog \d|verlopen|termijn/i
 	const NUMBER = /^[A-Z]{1,6}-?\d{2,}|^\d{4}[-/]\d+|^#?\d{3,}$|^ZK|^Z-\d/
@@ -271,7 +297,7 @@ window.__compdiffExtract = function () {
 		if (sibs.length < 3) continue
 		if (!deckOf.has(c.el.parentElement)) deckOf.set(c.el.parentElement, deckOf.size + 1)
 		c.record = { deck: deckOf.get(c.el.parentElement), index: sibs.indexOf(c.el), count: sibs.length }
-		if (c.record.index === 0) c.structure = structureOf(c.el)
+		c.structure = structureOf(c.el)
 	}
 
 	// 2. Dialogs: the visible dialog box (a full-screen role=dialog mask is narrowed to its framed child).
@@ -347,9 +373,28 @@ window.__compdiffExtract = function () {
 				background: tcs.backgroundColor, indicator: borders(tcs).bottom || (pseudo ? px(pseudo.height) : 0) || (/inset 0px -\d/.test(tcs.boxShadow) ? Number(tcs.boxShadow.match(/inset 0px -(\d+)/)[1]) : 0),
 			}
 		}
+		// The line under the strip, as drawn: on the tablist or on a bar around it (such as .cn-tabs__bar) whose bottom
+		// is the strip's bottom, as a border, a thin pseudo-element or an inset shadow.
+		const underline = () => {
+			const tr = tl.getBoundingClientRect()
+			for (let e = tl; e && e !== document.body; e = e.parentElement) {
+				const r = e.getBoundingClientRect()
+				if (r.height > tr.height + 16 || Math.abs(r.bottom - tr.bottom) > 4) break
+				const ecs = getComputedStyle(e)
+				if (borders(ecs).bottom) return borders(ecs).bottom
+				for (const which of ['::after', '::before']) {
+					const p = getComputedStyle(e, which)
+					if (p.content === 'none' || p.content === 'normal') continue
+					if (opaque(p.backgroundColor) && px(p.height) > 0 && px(p.height) <= 3 && px(p.width) >= r.width * 0.6) return px(p.height)
+					if (borders(p).bottom && px(p.width) >= r.width * 0.6) return borders(p).bottom
+				}
+				const inset = ecs.boxShadow.match(/inset 0px -(\d+(?:\.\d+)?)px 0px 0px/) || ecs.boxShadow.match(/0px -(\d+(?:\.\d+)?)px 0px 0px [^,]*inset/)
+				if (inset) return Number(inset[1])
+			}
+			return 0
+		}
 		const gaps = tabs.slice(1).map((t, i) => round(t.getBoundingClientRect().left - tabs[i].getBoundingClientRect().right))
-		const tcs = getComputedStyle(tl)
-		components.push({ role: 'tabs', title: 'tabs', rect: rect(tl), tabCount: tabs.length, gap: gaps.length ? gaps.sort((a, b) => a - b)[Math.floor(gaps.length / 2)] : null, borderBottom: borders(tcs).bottom || borders(getComputedStyle(tl.parentElement)).bottom, active: tabProps(active), inactive: tabProps(inactive) })
+		components.push({ role: 'tabs', title: 'tabs', rect: rect(tl), tabCount: tabs.length, gap: gaps.length ? gaps.sort((a, b) => a - b)[Math.floor(gaps.length / 2)] : null, borderBottom: underline(), active: tabProps(active), inactive: tabProps(inactive) })
 	}
 
 	// 5. Tables (and ARIA grids).
@@ -367,6 +412,11 @@ window.__compdiffExtract = function () {
 	}
 
 	// 6. Toolbars: a row (not a card header, not the page header) that holds 2+ controls.
+	const FIELD = 'input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea, [role=combobox], [role=searchbox]'
+	const controlBorder = (c) => {
+		const b = c.matches(FIELD) ? fieldBorder(c) : { width: borders(getComputedStyle(c)).top, color: getComputedStyle(c).borderTopColor }
+		return { controlBorder: b.width, controlBorderColor: b.color }
+	}
 	const ctrl = 'button, input:not([type=hidden]), select, [role=combobox], [role=searchbox]'
 	const headerBox = window.__compdiffPageHeader
 	const used = new Set()
@@ -397,7 +447,7 @@ window.__compdiffExtract = function () {
 			if (line && lctrls.length >= 2 && line.bottom - line.top <= 72) {
 				line.items.forEach((i) => lineItems.add(i))
 				const c0 = lctrls[0], c0cs = getComputedStyle(c0)
-				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), controlBorder: borders(c0cs).top, controlBorderColor: c0cs.borderTopColor, controlFontSize: px(c0cs.fontSize) })
+				components.push({ role: 'toolbar', title: 'toolbar', rect: { x: round(r.x), y: round(line.top), w: round(r.width), h: round(line.bottom - line.top) }, gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: lctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 				continue
 			}
 		}
@@ -410,7 +460,7 @@ window.__compdiffExtract = function () {
 		if (headerBox && (headerBox.contains(el) || el.contains(headerBox))) continue
 		used.add(el)
 		const c0 = ctrls[0], c0cs = getComputedStyle(c0)
-		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), controlBorder: borders(c0cs).top, controlBorderColor: c0cs.borderTopColor, controlFontSize: px(c0cs.fontSize) })
+		components.push({ role: 'toolbar', title: 'toolbar', rect: rect(el), gap: px(cs.columnGap), padding: box(cs, 'padding'), controls: ctrls.length, controlHeight: round(c0.getBoundingClientRect().height), controlRadius: px(c0cs.borderTopLeftRadius), ...controlBorder(c0), controlFontSize: px(c0cs.fontSize) })
 	}
 	// A quick-actions row drawn as its own element beside or just under the page header (CnDetailPage) belongs to the
 	// header: its buttons count toward the header's buttons, and its offset from the title is reported on its own.
@@ -441,7 +491,6 @@ window.__compdiffExtract = function () {
 		}
 		return 0
 	}
-	const FIELD = 'input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea, [role=combobox], [role=searchbox]'
 	const TOGGLE = 'input[type=checkbox], input[type=radio], [role=checkbox], [role=switch], [role=radio]'
 	const kindOf = (el, cs, r) => {
 		if (el.matches(FIELD)) return 'field'
@@ -453,11 +502,15 @@ window.__compdiffExtract = function () {
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
 		return null
 	}
+	const elementBorder = (el, kind, cs) => {
+		if (kind === 'field') { const b = fieldBorder(el); return { border: b.width, borderColor: b.width ? b.color : null } }
+		const three = Object.values(borders(cs)).filter((v) => v > 0).length >= 3
+		return { border: three ? borders(cs).top : 0, borderColor: three ? cs.borderTopColor : null }
+	}
 	const elements = []
 	const elementEls = new Set()
-	const recordRep = new Set(components.filter((c) => c.record && c.record.index === 0).map((c) => c.el))
-	const recordOther = new Set(components.filter((c) => c.record && c.record.index > 0).map((c) => c.el))
-	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) { if (recordRep.has(e)) return 'rep'; if (recordOther.has(e)) return 'other' } return null }
+	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
+	const inRecord = (el) => { for (let e = el; e; e = e.parentElement) if (recordEls.has(e)) return true; return false }
 	// An element's own label, without the text of a count badge or tag nested inside it.
 	const ownLabel = (el) => {
 		const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
@@ -471,8 +524,6 @@ window.__compdiffExtract = function () {
 	}
 	for (const el of all) {
 		if (!visible(el) || outOfScope(el) || el.closest('[role=tablist]') || el.matches('[role=tab], th, td, tr') || cardEls.has(el)) continue
-		const rec = inRecord(el)
-		if (rec === 'other') continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 6 || r.height < 6) continue
 		const cs = getComputedStyle(el)
@@ -488,11 +539,10 @@ window.__compdiffExtract = function () {
 		const tcs = te ? getComputedStyle(te) : cs
 		elements.push({
 			inRow: !!el.closest('li, [role=row], [role=listitem], [role=option], tr') && !el.matches('li, [role=row], [role=listitem], [role=option]'),
-			kind, label, inControl: rec === 'rep' ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
+			kind, label, inControl: inRecord(el) ? 'record card' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
 			container: containerOf(el), rect: rect(el),
 			props: {
-				h: round(r.height), borderRadius: px(cs.borderTopLeftRadius), border: Object.values(borders(cs)).filter((v) => v > 0).length >= 3 ? borders(cs).top : 0,
-				borderColor: Object.values(borders(cs)).filter((v) => v > 0).length >= 3 ? cs.borderTopColor : null,
+				h: round(r.height), borderRadius: px(cs.borderTopLeftRadius), ...elementBorder(el, kind, cs),
 				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
@@ -508,7 +558,7 @@ window.__compdiffExtract = function () {
 	const measuredEls = new Set([...cardEls, ...elementEls])
 	const unmeasured = []
 	for (const el of all) {
-		if (!visible(el) || outOfScope(el) || measuredEls.has(el) || inRecord(el) === 'other') continue
+		if (!visible(el) || outOfScope(el) || measuredEls.has(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 8 || r.height < 8 || r.width >= VW * 0.75) continue
 		const cs = getComputedStyle(el)

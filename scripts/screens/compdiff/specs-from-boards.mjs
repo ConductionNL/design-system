@@ -4,7 +4,8 @@
 //
 // node specs-from-boards.mjs <boards.json> [--keep <specs.tsv>] > specs.tsv
 //
-// A row is board<TAB>route[<TAB>--steps<TAB><JSON>]. The route is the liveUrl without its origin and without
+// A row is board<TAB>route[<TAB>--steps<TAB><JSON>][<TAB>--login<TAB><role>][<TAB>--ignore<TAB><selectors>]. A board's
+// `login` (none, or a role such as viewer) and `ignore` (selectors joined by |) pass to compdiff as they are. The route is the liveUrl without its origin and without
 // Nextcloud's /index.php front controller, the form runall.sh matches a /settings/ route by. With --keep, the
 // rows of an existing specs file whose board boards.json does not list are kept after the generated ones.
 import fs from 'node:fs'
@@ -26,7 +27,7 @@ export function routeOf(url) {
  * The specs rows for the boards, then the kept rows of boards not among them. A board without a liveUrl has no live
  * page to measure (a sheet of dialogs side by side) and gets no row.
  *
- * @param {Array<{board: string, liveUrl: string, steps?: Array<object>}>} boards The boards.json entries.
+ * @param {Array<{board: string, liveUrl: string, steps?: Array<object>, login?: string, ignore?: string}>} boards The boards.json entries.
  * @param {Array<string>} [keep] Rows of an existing specs file.
  * @return {Array<string>} The rows.
  */
@@ -37,10 +38,13 @@ export function specRows(boards, keep = []) {
 			normaliseStep(step, i)
 			return step
 		})
-		const route = routeOf(entry.liveUrl)
 		const json = JSON.stringify(steps)
-		if (json.includes('\t') || json.includes('\n')) throw new Error(`${entry.board}: a step holds a tab or a newline`)
-		return steps.length ? [entry.board, route, '--steps', json].join('\t') : [entry.board, route].join('\t')
+		const cells = [entry.board, routeOf(entry.liveUrl)]
+		if (steps.length) cells.push('--steps', json)
+		if (entry.login) cells.push('--login', entry.login)
+		if (entry.ignore) cells.push('--ignore', entry.ignore)
+		if (cells.some((c) => /[\t\n]/.test(c))) throw new Error(`${entry.board}: a step, login or ignore holds a tab or a newline`)
+		return cells.join('\t')
 	})
 	const listed = new Set(boards.map((entry) => entry.board))
 	return [...rows, ...keep.filter((row) => row.trim() !== '' && !listed.has(row.split('\t')[0]))]

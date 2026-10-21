@@ -6,6 +6,8 @@
 //   [--click "<css>"] [--clicks "a|b"] [--fills "<sel>=><value>||..."] [--settle 8000] [--wait-for "<css>"]
 //   [--steps '<JSON array>' | --steps @<file.json>]   ordered click/fill/type/press/wait steps (steps.mjs), played
 //   after --click, --clicks and --fills; REVIEW/boards.json keeps the same list per board
+//   [--login none|<role>]   measure without a login, or as COMPDIFF_<ROLE>_USER (live.mjs accountFor)
+//   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -21,6 +23,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, playSteps } from './steps.mjs'
+import { accountFor, markIgnored, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -39,9 +42,15 @@ const settle = Number(args.settle || 8000)
 // An element crop above this mismatch % with no property flagged is reported as visually different.
 const CROP_FLAG = Number(args['crop-flag'] || 30)
 const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inRow: e.inRow, count: e.count, repeated: e.repeated, rect: e.rect, props: e.props })
-const user = process.env.COMPDIFF_USER, password = process.env.COMPDIFF_PASSWORD
-if (!board || !args.url || !user || !password) {
+if (!board || !args.url) {
 	console.error('usage: COMPDIFF_USER=... COMPDIFF_PASSWORD=... node compdiff.mjs --board <Name> --url </apps/...> [--out dir]')
+	process.exit(2)
+}
+let account
+try {
+	account = accountFor(args.login, process.env)
+} catch (e) {
+	console.error(e.message)
 	process.exit(2)
 }
 let steps = []
@@ -75,6 +84,7 @@ try {
 	const boardHeight = await bpage.evaluate(() => Math.ceil((document.querySelector('[data-board]') || document.body).getBoundingClientRect().height) || 1070)
 	await bpage.setViewportSize({ width, height: boardHeight })
 	await bpage.waitForTimeout(300)
+	await markIgnored(bpage, args.ignore)
 	const boardPng = path.join(out, `${board}-board.png`)
 	await bpage.screenshot({ path: boardPng, clip: { x: 0, y: 0, width, height: boardHeight } })
 	const B = await measure(bpage)
@@ -97,10 +107,12 @@ try {
 		blocked.push(`${m} ${route.request().url().replace(base, '')}`)
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})
-	await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
-	await lpage.fill('#user', user)
-	await lpage.fill('#password', password)
-	await Promise.all([lpage.waitForNavigation({ timeout: 180000 }).catch(() => {}), lpage.press('#password', 'Enter')])
+	if (account) {
+		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
+		await lpage.fill('#user', account.user)
+		await lpage.fill('#password', account.password)
+		await Promise.all([lpage.waitForNavigation({ timeout: 180000 }).catch(() => {}), lpage.press('#password', 'Enter')])
+	}
 	await lpage.goto(/^https?:\/\//.test(args.url) ? args.url : base + args.url, { waitUntil: 'networkidle', timeout: 240000 }).catch(() => {})
 	if (args['wait-for']) await lpage.waitForSelector(args['wait-for'], { timeout: 180000 })
 	if (args.click) { await lpage.click(args.click, { timeout: 60000 }); await lpage.waitForTimeout(1500) }
@@ -114,6 +126,9 @@ try {
 	}
 	await playSteps(lpage, steps)
 	await lpage.waitForTimeout(settle)
+	// A table's selection column can render after the settle: measure the head once it holds every column.
+	if (!(await waitForTables(lpage))) console.error('tables did not settle; measuring as they are')
+	await markIgnored(lpage, args.ignore)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })
 	const L = await measure(lpage)

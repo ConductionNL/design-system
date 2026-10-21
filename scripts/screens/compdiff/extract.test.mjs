@@ -70,3 +70,56 @@ test('a table head is read from its first labelled header cell', { skip }, async
 	const table = r.components.find((c) => c.role === 'table')
 	assert.equal(table.head.fontWeight, 600)
 })
+
+test('with a modal dialog open, only what is inside it is measured', { skip }, async () => {
+	const page = `<div style="position:absolute;left:300px;top:100px;width:800px">
+		<h1>Zaak</h1>
+		<section style="border:1px solid #ccc;padding:20px;height:120px"><h2>Zaakgegevens</h2>${btn('Bewerken')}</section></div>`
+	const scrim = (inner) => `<div style="position:fixed;inset:0;background:rgba(0,0,0,.45)">${inner}</div>`
+	const dialog = `<div role="dialog" aria-modal="true" style="position:absolute;left:400px;top:90px;width:600px;background:#fff;border-radius:12px;padding:20px">
+		<h2>Locatie toevoegen</h2><input style="height:40px;width:400px">${btn('Opslaan')}</div>`
+	// The board puts aria-modal on the dialog box; NcModal puts it on the full-screen mask.
+	for (const body of [page + scrim(dialog), page + `<div aria-modal="true" role="dialog" style="position:fixed;inset:0;background:rgba(0,0,0,.45)">${dialog.replace(' role="dialog" aria-modal="true"', '')}</div>`]) {
+		const r = await measure(body)
+		assert.deepEqual(r.components.filter((c) => c.role !== 'dialog').map((c) => c.title), [])
+		assert.equal(r.components.filter((c) => c.role === 'dialog').length, 1)
+		assert.deepEqual(r.elements.map((e) => e.label).sort(), ['', 'Opslaan'])
+	}
+})
+
+test('the tab underline is read where it is drawn, on a bar around the tablist', { skip }, async () => {
+	const tabs = '<div role="tablist" style="display:flex;gap:4px"><button role="tab" aria-selected="true" style="height:44px">Een</button><button role="tab" style="height:44px">Twee</button></div>'
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px">
+		<div class="cn-tabs__bar" style="border-bottom:1px solid #e4e6ea"><div class="strip"><div class="nav">${tabs}</div></div></div>
+		<div style="height:400px"></div></div>`)
+	assert.equal(r.components.find((c) => c.role === 'tabs').borderBottom, 1)
+	// A border far below the strip (the page around it) is not the strip's underline.
+	const far = await measure(`<div style="position:absolute;left:300px;top:200px;width:900px;border-bottom:1px solid #000">${tabs}<div style="height:400px"></div></div>`)
+	assert.equal(far.components.find((c) => c.role === 'tabs').borderBottom, 0)
+})
+
+test('a field border drawn as a ring or on a wrapper is the field border', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:700px">
+		<input aria-label="Ring" style="height:40px;width:400px;border:0;border-radius:8px;box-shadow:0 0 0 1px rgb(138, 146, 158)">
+		<div style="margin-top:40px;border:2px solid rgb(35, 74, 120);border-radius:8px;width:440px"><input aria-label="Wrapped" style="height:36px;width:400px;border:0;outline:0"></div>
+		<div style="margin-top:40px;border:1px solid #000;padding:40px"><input aria-label="Bare" style="height:36px;width:400px;border:0"></div></div>`)
+	const f = (label) => r.elements.find((e) => e.label === label).props
+	assert.deepEqual([f('Ring').border, f('Ring').borderColor], [1, 'rgb(138, 146, 158)'])
+	assert.deepEqual([f('Wrapped').border, f('Wrapped').borderColor], [2, 'rgb(35, 74, 120)'])
+	// A box around more than the field (a card, a form section) is not the field's border.
+	assert.equal(f('Bare').border, 0)
+})
+
+test('every card of a deck is measured, with its elements', { skip }, async () => {
+	const sec = (t) => `<section style="border:1px solid #ccc;padding:20px;height:100px"><h2 style="margin:0">${t}</h2>${btn(t + ' bewerken')}</section>`
+	const r = await measure(`<div style="position:absolute;left:300px;top:100px;width:800px;display:flex;flex-direction:column;gap:20px">${sec('Het verzoek')}${sec('Zaakgegevens')}${sec('Zaakplan')}</div>`)
+	const cards = r.components.filter((c) => c.role === 'card')
+	assert.deepEqual(cards.map((c) => c.record.index), [0, 1, 2])
+	assert.ok(cards.every((c) => c.structure))
+	assert.deepEqual(r.elements.map((e) => e.label), ['Het verzoek bewerken', 'Zaakgegevens bewerken', 'Zaakplan bewerken'])
+})
+
+test('a spec can leave elements out (data-compdiff-ignore)', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:700px">${btn('Zoeken')}<button data-compdiff-ignore style="height:48px">Deze site bewerken</button></div>`)
+	assert.deepEqual(r.elements.map((e) => e.label), ['Zoeken'])
+})

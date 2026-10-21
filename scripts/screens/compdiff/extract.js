@@ -557,7 +557,20 @@ window.__compdiffExtract = function () {
 		if (!el.matches(FIELD)) return ''
 		const by = (el.getAttribute('aria-labelledby') || '').split(/\s+/).map((id) => id && document.getElementById(id)).filter(Boolean)
 		const named = by.length ? by : [...(el.labels || [])]
-		return named.map((l) => l.textContent.trim()).join(' ')
+		// Only the label's own visible text: a wrapping label also holds the control and the value it shows.
+		const text = (l) => {
+			const w = document.createTreeWalker(l, NodeFilter.SHOW_TEXT)
+			const parts = []
+			for (let n = w.nextNode(); n; n = w.nextNode()) {
+				const p = n.parentElement
+				let inControl = false
+				for (let e = p; e && e !== l; e = e.parentElement) if (e.contains(el) || e.matches(FIELD)) { inControl = true; break }
+				if (n.textContent.trim() && p && !inControl && visible(p)) parts.push(n.textContent.trim())
+			}
+			return parts.join(' ')
+		}
+		// NcSelect inside a wrapping label carries a second, inner label with the same name.
+		return [...new Set(named.map(text).filter(Boolean))].join(' ')
 	}
 	// An element's own label, without the text of a count badge or tag nested inside it.
 	const ownLabel = (el) => {

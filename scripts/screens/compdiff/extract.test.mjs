@@ -203,3 +203,10 @@ test('a card that pads its header and body rows instead of itself reports that p
 	const card = r.components.find((c) => c.title === 'Locaties')
 	assert.deepEqual(card.props.padding, { top: 20, right: 22, bottom: 20, left: 22 })
 })
+
+test('a wrapping label is named by its own text, not by the value its control shows', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:600px">
+		<label><span>Periode</span><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Periode</span>
+			<div class="select"><span>Laatste 12 maanden</span><input id="p" type="search" style="width:200px"><label for="p">Periode</label></div></label></div>`)
+	assert.deepEqual(r.elements.filter((e) => e.kind === 'field').map((e) => e.label), ['Periode'])
+})

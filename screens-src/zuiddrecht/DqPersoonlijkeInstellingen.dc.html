@@ -18,7 +18,7 @@ a{color:#3669a5}a:hover{color:#234a78}
 <div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: grid; height: 900px; overflow: hidden">
   <div class="nai-achter" aria-hidden="true" inert style="grid-area: 1 / 1; display: flex; flex-direction: column"><dc-import name="DqDashboard" hint-size="100%,1220px"></dc-import></div>
   <div style="grid-area: 1 / 1; position: relative; z-index: 20; background: rgba(27,28,29,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 88px 16px 24px; box-sizing: border-box">
-    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Weergaven in mijn menu" height="760" sections="{{ sections }}" hint-size="900px,760px"></dc-import>
+    <dc-import name="NcAppInstellingen" app="Dossiq" version="0.4.47" active="Weergaven in mijn menu" height="760" sections="{{ sections }}" nc-links="{{ ncLinks }}" hint-size="900px,760px"></dc-import>
   </div>
 </div>
 </x-dc>
@@ -66,7 +66,9 @@ class Component extends DCLogic {
         { buttons: [['Verder met de rondleiding', 'primary'], ['Opnieuw beginnen', '']] }
       ] }
     ];
-    return { sections };
+    // Nextcloud's own personal settings, linked above Dossiq's entry (dossiq App.vue userSettingsNextcloudLinks).
+    const ncLinks = ['Persoonlijke info', 'Beveiliging', 'Notificaties', 'Mobiel en desktop', 'Delen', 'Uiterlijk en toegankelijkheid', 'Beschikbaarheid', 'Privacy'];
+    return { sections, ncLinks };
   }
 }
 </script>

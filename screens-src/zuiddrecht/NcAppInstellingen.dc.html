@@ -16,9 +16,15 @@ body{margin:0}
 <div role="dialog" aria-modal="true" aria-labelledby="nai-titel" style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; position: relative; width: 100%; max-width: 900px; min-height: 440px; max-height: {{ height }}px; box-sizing: border-box; display: flex; background: #eaf0f7; border-radius: 12px; box-shadow: 0 16px 48px rgba(27,28,29,0.28); overflow: hidden">
   <nav aria-label="Onderdelen van de instellingen" style="flex: 0 0 200px; width: 200px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; padding: 0 4px 12px; overflow: hidden">
     <h2 id="nai-titel" style="margin: 0; padding: 14px 10px 12px; font-size: 20px; font-weight: 700; line-height: 1.25">{{ title }}</h2>
+    <sc-for list="{{ ncLinks }}" as="l" hint-placeholder-count="0">
+      <a href="#" style="{{ l.style }}"><span style="overflow: hidden; text-overflow: ellipsis">{{ l.label }}</span></a>
+    </sc-for>
+    <sc-if value="{{ hasGroup }}"><span style="padding: 10px 10px 2px; font-size: 15px; font-weight: 600">{{ app }}</span></sc-if>
+    <div style="{{ navGroup }}">
     <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
       <a href="#" aria-current="{{ n.current }}" style="{{ n.style }}"><span style="{{ n.bar }}" aria-hidden="true"></span><span style="overflow: hidden; text-overflow: ellipsis">{{ n.label }}</span></a>
     </sc-for>
+    </div>
   </nav>
   <div style="flex: 1 1 auto; min-width: 0; box-sizing: border-box; background: #ffffff; border-left: 1px solid #e4e6ea; border-radius: 8px 0 0 8px; padding: 20px 64px 20px 24px; overflow: hidden; display: flex; flex-direction: column; gap: 32px">
     <sc-for list="{{ shown }}" as="s" hint-placeholder-count="2">
@@ -64,18 +70,19 @@ body{margin:0}
         </div>
       </section>
     </sc-for>
-    <sc-if value="{{ showVersion }}"><p style="margin: 0; font-size: 14px; color: #5e6168">{{ app }} {{ version }}</p></sc-if>
+    <p style="margin: 0; font-size: 14px; color: #5e6168">{{ savedNote }}</p>
   </div>
   <button type="button" aria-label="Sluiten" style="position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 22px; background: transparent; color: #3d4047"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg></button>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"version":{"editor":"text","default":"0.4.47"},"title":{"editor":"text","default":"Persoonlijke instellingen"},"active":{"editor":"text","default":""},"height":{"editor":"text","default":"720"},"sections":{"editor":null,"default":[]},"$preview":{"width":900,"height":720}}'>
+<script type="text/x-dc" data-dc-script data-props='{"app":{"editor":"text","default":"Dossiq"},"version":{"editor":"text","default":"0.4.47"},"title":{"editor":"text","default":"Persoonlijke instellingen"},"active":{"editor":"text","default":""},"height":{"editor":"text","default":"720"},"sections":{"editor":null,"default":[]},"ncLinks":{"editor":null,"default":[]},"$preview":{"width":900,"height":720}}'>
 class Component extends DCLogic {
   renderVals() {
     // Nextcloud's NcAppSettingsDialog (@nextcloud/vue 9), as the apps open it from "Persoonlijke instellingen"
     // in the navigation. Left: the dialog name and one link per section on a primary tint, the open section
-    // with a stronger tint and a 3px bar. Right: the sections on white, scrolled to the open one, and at the
-    // bottom the app name and version. There is no footer: every change is saved at once.
+    // with a stronger tint and a 3px bar; with ncLinks, Nextcloud's own personal settings come first and the
+    // sections follow under the app's name. Right: the sections on white, scrolled to the open one, and at the
+    // bottom "Wijzigingen worden meteen bewaard · <app>". There is no footer: every change is saved at once.
     // height is the most the dialog grows to (Nextcloud caps a large dialog at the window); shorter content
     // gives a shorter dialog, longer content is cut off as if scrolled.
     // sections: [{ name, desc, rows: [row] }]. A row is one of:
@@ -91,6 +98,10 @@ class Component extends DCLogic {
     const at = Math.max(0, raw.findIndex((s) => s.name === active));
     const link = (on) => 'position: relative; display: flex; align-items: center; height: 36px; padding: 0 10px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; color: #1b1c1d; white-space: nowrap; ' + (on ? 'background: color-mix(in srgb, #3669a5 16%, #eaf0f7);' : '');
     const bar = (on) => on ? 'position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: #3669a5' : 'display: none';
+    // ncLinks: Nextcloud's own personal settings, listed first as plain links (CnAppRoot userSettingsNextcloudLinks);
+    // with any, the app's sections follow under one entry named after the app.
+    const ncRaw = Array.isArray(this.props.ncLinks) ? this.props.ncLinks : [];
+    const ncLinks = ncRaw.map((label) => ({ label, style: link(false) }));
     const nav = raw.map((s, i) => ({ label: s.name, current: i === at ? 'true' : 'false', style: link(i === at), bar: bar(i === at) }));
     const track = (on) => 'flex: none; display: inline-flex; align-items: center; width: 38px; height: 22px; border-radius: 11px; margin-top: 1px; ' + (on ? 'background: #3669a5; justify-content: flex-end' : 'background: #828a95; justify-content: flex-start');
     const box = (on) => 'flex: none; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; box-sizing: border-box; border-radius: 4px; margin-top: 1px; vertical-align: middle; ' + (on ? 'background: #3669a5; border: 2px solid #3669a5' : 'background: #ffffff; border: 2px solid #5e6168');
@@ -118,7 +129,10 @@ class Component extends DCLogic {
       return blank;
     };
     const shown = raw.slice(at).map((s, i) => ({ id: 'nai-s' + (at + i), name: s.name, desc: s.desc || '', hasDesc: !!s.desc, rows: (s.rows || []).map(row) }));
-    return { title: this.props.title || 'Persoonlijke instellingen', app: this.props.app || '', version: this.props.version || '', showVersion: !!this.props.version, height: this.props.height || '720', nav, shown };
+    const app = this.props.app || '';
+    // Under the sections, as live draws it: every change is saved at once, so there is no footer.
+    const savedNote = 'Wijzigingen worden meteen bewaard' + (app ? ' · ' + app : '');
+    return { title: this.props.title || 'Persoonlijke instellingen', app, height: this.props.height || '720', nav, shown, ncLinks, hasGroup: ncLinks.length > 0 && !!app, navGroup: ncLinks.length > 0 ? 'display: flex; flex-direction: column; gap: 2px; padding-left: 10px' : 'display: flex; flex-direction: column; gap: 2px', savedNote };
   }
 }
 </script>

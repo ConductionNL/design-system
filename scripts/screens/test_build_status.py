@@ -103,6 +103,14 @@ class BuildStatusTest(unittest.TestCase):
         d, _ = self.run_script('--compdiff', self.new)
         self.assertIsNone(d['compdiff']['apps']['dossiq']['trend'])
 
+    def test_each_board_keeps_its_history_oldest_first(self):
+        d, _ = self.run_script(self.tsv, '--compdiff', self.new, '--compdiff', self.old)
+        self.assertEqual(d['boards']['DqZaak']['history'], [
+            {'run': 'r1', 'date': '2026-10-19T20:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 8},
+            {'run': 'r2', 'date': '2026-10-21T01:00:00.000Z', 'verdict': 'NO-MATCH', 'failing': 5},
+        ])
+        self.assertNotIn('history', d['boards']['DqTaken'], 'a board no run measured has no history')
+
 
 if __name__ == '__main__':
     unittest.main()

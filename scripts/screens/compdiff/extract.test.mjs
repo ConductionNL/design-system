@@ -366,3 +366,13 @@ test('a link that wrapped under the title in a narrow card is still a header act
 	const card = r.components.find((c) => c.title === 'Vastgelopen zaken')
 	assert.equal(card.header.actions, 1)
 })
+
+test('a heading block with a subtitle under the title still makes the row with its actions the header', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:292px;top:200px;width:800px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px">
+		<div class="cn-timeline-manage__header" style="display:flex;justify-content:space-between;align-items:flex-start">
+			<div class="cn-timeline-manage__heading"><h3 style="margin:0;font-size:17px">Historie van de zaak</h3><p style="margin:4px 0 0;font-size:13px">Alles wat er met deze zaak is gebeurd</p></div>
+			<div style="display:flex;gap:8px">${btn('Een notitie toevoegen')}${btn('Exporteren')}</div></div>
+		<ul style="margin:16px 0 0;padding:0;list-style:none"><li>Zaak aangemaakt</li><li>Status gewijzigd</li></ul></section>`)
+	const card = r.components.find((c) => c.title === 'Historie van de zaak')
+	assert.equal(card.header.actions, 2)
+})

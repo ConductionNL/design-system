@@ -247,7 +247,11 @@ window.__compdiffExtract = function () {
 				// A wrapping header row whose actions wrapped under the title in a narrow card is still the header row.
 				const wraps = getComputedStyle(p).flexWrap === 'wrap'
 				const inAction = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; return !!(e && e.closest('a, button, [role=button]')) }
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4 && !(wraps && inAction(l)))) break
+				// A subtitle set right under the title in the same heading block (CnTimelineManage's title + description)
+				// belongs to the title, so the row with the heading's actions is still the header row.
+				const titleSize = px(getComputedStyle(textEl(title)).fontSize)
+				const subtitle = (l) => l.text && l.y <= titleBox.y + titleBox.h + 32 && px(getComputedStyle(l.node.nodeType === 1 ? l.node : l.node.parentElement).fontSize) < titleSize
+				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4 && !(wraps && inAction(l)) && !subtitle(l))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)

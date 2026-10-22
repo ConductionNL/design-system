@@ -656,7 +656,8 @@ window.__compdiffExtract = function () {
 		if (styled(rcs)) return null
 		return [...row.querySelectorAll('*')].find((c) => {
 			const q = c.getBoundingClientRect()
-			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && visible(c) && styled(getComputedStyle(c))
+			// The box must hold the row: a step bar at its top, or a link on its first line above a meta line, does not.
+			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && q.height >= rr.height * 0.8 && c.textContent.trim() && visible(c) && styled(getComputedStyle(c))
 				&& c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
 		}) || null
 	}

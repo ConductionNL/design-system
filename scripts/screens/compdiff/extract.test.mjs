@@ -346,3 +346,14 @@ test('a bordered or filled label (a choice card) is a card', { skip }, async () 
 	assert.equal(r.components.filter((c) => c.role === 'card').length, 2, JSON.stringify(r.components.map((c) => c.role)))
 	assert.ok(!r.unmeasured.some((u) => u.tag === 'label' || /^label/.test(u.tag || u.el || '')), JSON.stringify(r.unmeasured))
 })
+
+test('a row is not measured on a bar or a first-line link that does not hold the whole row', { skip }, async () => {
+	const r = await measure(`<ol style="position:absolute;left:300px;top:200px;width:660px;display:flex;gap:8px;list-style:none;margin:0;padding:0">
+		<li style="flex:1;display:flex;flex-direction:column;gap:6px;height:40px"><span style="height:6px;background:#cc0000;border-radius:3px"></span><span>Beoordeling</span></li></ol>
+		<ul style="position:absolute;left:300px;top:400px;width:600px;list-style:none;margin:0;padding:0">
+		<li style="height:63px"><a href="#" style="display:block;padding:0 12px;border-radius:8px;background:#eaf0f7;height:34px">Advies verlichting fietspad</a><span>PDF · 1,2 MB</span></li></ul>`)
+	const step = r.elements.find((e) => e.label === 'Beoordeling')
+	assert.equal(step.props.h, 40)
+	const file = r.elements.find((e) => e.kind === 'row' && /Advies/.test(e.label))
+	assert.equal(file.props.h, 63)
+})

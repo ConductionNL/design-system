@@ -581,6 +581,8 @@ window.__compdiffExtract = function () {
 		if (el.matches(TOGGLE)) return 'toggle'
 		const ownBg = opaque(cs.backgroundColor) && el.parentElement && cs.backgroundColor !== bgBehind(el.parentElement)
 		const boxed = ownBg || nBorders(el) >= 3
+		// A pager's boxed items are its page links, including a disabled "Volgende" drawn as a span.
+		if (boxed && pagerRows.some((p) => p.contains(el))) return 'button'
 		if (el.matches('button, [role=button]') || (el.tagName === 'A' && boxed)) return radius(el, cs) >= r.height / 2 - 1 && r.height <= 44 ? 'pill' : 'button'
 		if (boxed && r.height >= 12 && r.height <= 44 && r.width <= 320 && el.textContent.trim()) return radius(el, cs) >= r.height / 2 - 1 ? 'pill' : 'badge'
 		if (el.matches('li, [role=listitem], [role=option], [role=row]') && !el.closest('table') && r.height >= 24 && r.height <= 160) return 'row'
@@ -675,6 +677,7 @@ window.__compdiffExtract = function () {
 			inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr') && !el0.matches('li, [role=row], [role=listitem], [role=option]'),
 			// Page links pair with page links: a lone "2" elsewhere on the page is not the pager's.
 			kind, label, inControl: inRecord(el) ? 'record card' : pagerRows.some((p) => p.contains(el)) ? 'pager' : parentCtl && parentCtl !== el && !cardEls.has(parentCtl) ? ownLabel(parentCtl) : null,
+			interactive: el.matches('button, a[href], [role=button], [role=link], [role=tab], [role=menuitem]'),
 			container: containerOf(el), rect: rect(el),
 			props: {
 				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),

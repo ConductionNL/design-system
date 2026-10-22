@@ -79,3 +79,28 @@ test('page links pair in order inside the pager, and the page count is data', ()
 	assert.ok(!r.pairs.some((p) => p.live.label === 'Open AI chat'))
 	assert.ok(!(r.extra || []).some((e) => e.inControl === 'pager'))
 })
+
+const pill = (label, x, y, h, extra = {}) => ({ kind: 'pill', label, inControl: null, interactive: false, container: 1, rect: { x, y, w: 80, h }, props: { h, borderRadius: h / 2, background: 'rgb(234, 240, 247)', border: 0, fontSize: 13 }, ...extra })
+
+test('a chip does not pair with a count nested in another chip, nor the reverse', () => {
+	const chip = pairElements([pill('Alle typen', 292, 318, 38, { interactive: true })], [pill('142', 345, 389, 16, { inControl: 'Alles' })], 1200)
+	assert.equal(chip.pairs.length, 0)
+	const count = pairElements([pill('11', 380, 329, 16, { inControl: 'Alle typen' })], [pill('Mijn zaken', 292, 380, 38, { interactive: true })], 1200)
+	assert.equal(count.pairs.length, 0)
+})
+
+test('a status tag does not pair with the "Volgen" button, and a filter count not with a filter chip', () => {
+	const status = pairElements([pill('In behandeling', 397, 158, 21)], [pill('Volgen', 292, 169, 28, { interactive: true })], 1200)
+	assert.equal(status.pairs.length, 0)
+	const filter = pairElements([pill('2', 1199, 198, 20, { inControl: 'Filter' })], [pill('Opgeschort', 1071, 184, 38, { interactive: true })], 1200)
+	assert.equal(filter.pairs.length, 0)
+	const remove = pairElements([pill('Filter Type: Woo-verzoek verwijderen', 1175, 300, 22, { interactive: true })], [pill('1 actief', 1199, 332, 20, { inControl: 'Filter' })], 1200)
+	assert.equal(remove.pairs.length, 0)
+})
+
+test('a tag that repeats on every card pairs with the nearest one of the same label', () => {
+	const tag = (x, y) => pill('Woo-verzoek', x, y, 21, { inControl: 'record card' })
+	const r = pairElements([tag(603, 527), tag(319, 684)], [tag(319, 763), tag(319, 937), tag(603, 781)], 1500)
+	const byBoardX = Object.fromEntries(r.pairs.map((p) => [p.board.rect.x, p.live.rect.x]))
+	assert.deepEqual(byBoardX, { 603: 603, 319: 319 })
+})

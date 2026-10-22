@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, tableShape, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -72,4 +72,42 @@ test('marks the elements a spec leaves out', { skip }, async () => {
 		assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('[data-compdiff-ignore]')].map((e) => e.textContent)), ['Deze site bewerken'])
 		assert.equal(await markIgnored(page, undefined), 0)
 	})
+})
+
+test('a quiet page is measured within seconds, not after the full settle', { skip }, async () => {
+	await withPage('<main><p>Klaar</p></main>', async (page) => {
+		const r = await waitForQuiet(page, trackRequests(page), { min: 300, max: 8000, quiet: 500 })
+		assert.equal(r.quiet, true)
+		assert.ok(r.waited < 2000, `waited ${r.waited} ms`)
+	})
+})
+
+test('a page that keeps changing its layout waits the full maximum', { skip }, async () => {
+	await withPage('<main><div id="g" style="height:10px"></div></main><script>let h = 10; setInterval(() => { h += 5; document.getElementById("g").style.height = h + "px" }, 200)</script>', async (page) => {
+		const r = await waitForQuiet(page, trackRequests(page), { min: 300, max: 2500, quiet: 500 })
+		assert.equal(r.quiet, false)
+		assert.ok(r.waited >= 2500)
+	})
+})
+
+test('a request in flight keeps the page busy, a long poll does not', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage()
+		// A slow data call answers after 1.5 s; the push call never answers.
+		await page.route('http://compdiff.test/**', (route) => {
+			const u = route.request().url()
+			if (u.endsWith('/push')) return
+			if (u.endsWith('/data')) return setTimeout(() => route.fulfill({ status: 200, body: '{}' }).catch(() => {}), 1500)
+			return route.fulfill({ status: 200, contentType: 'text/html', body: '<main>Laden</main><script>fetch("/push"); setTimeout(() => fetch("/data"), 100)</script>' })
+		})
+		const requests = trackRequests(page, { longPoll: 2500 })
+		await page.goto('http://compdiff.test/', { waitUntil: 'load' })
+		const r = await waitForQuiet(page, requests, { min: 200, max: 6000, quiet: 500 })
+		assert.equal(r.quiet, true)
+		assert.ok(r.waited >= 1500, `measured after ${r.waited} ms, before the data call answered`)
+		assert.ok(r.waited < 5000, `waited ${r.waited} ms for a long poll`)
+	} finally {
+		await browser.close()
+	}
 })

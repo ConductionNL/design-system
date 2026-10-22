@@ -24,12 +24,15 @@ Options:
 - `--base http://localhost:8080` sets the live instance.
 - `--click "<css>"` and `--clicks "a|b"` open a menu or a dialog before the measurement.
 - `--fills "<sel>=><value>||..."` types values into fields.
-- `--settle 8000` sets how many milliseconds to wait before measuring.
+- `--settle 8000` sets the longest wait before measuring. The page is measured as soon as no request is in flight (long polls aside) and its layout has held still for 1.5 seconds. `--settle-mode fixed` waits the full time instead.
+- `--storage <path>` keeps the login in `<path>-<user>.json`, so the boards of a batch log in once. `runall.sh` sets it to a private directory that it removes when the batch ends.
 - `--wait-for "<css>"` waits for an element.
 - `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
 - `--login none` measures the live page without logging in, as a visitor sees it. `--login viewer` logs in as `COMPDIFF_VIEWER_USER` and `COMPDIFF_VIEWER_PASSWORD` (any role name works the same way), for a page that looks different to an editor, such as a site that shows "Deze site bewerken" to its editors.
 - `--ignore "<sel>|<sel>"` leaves elements out on both sides, as chrome.
 - `--width <px>` measures both the board and the live page at that viewport width (320 to 2560, default 1440), for a phone board such as MobielZaak at 390.
+
+The live page is opened at its load event, not at network idle: Nextcloud keeps polling, so the network rarely goes idle and that wait ran into its timeout on most pages. Each report holds a `timings` object with the time spent per phase.
 
 After the settle the script waits, up to 20 seconds, until every table's head has as many columns as its first row and has held still for a second, so a selection column that renders late is in the measurement.
 
@@ -57,7 +60,8 @@ It applies the current comparison rules to the stored measurements again. After 
 |---|---|
 | `COMPDIFF_HEALTH` | runs a command that must succeed before each board, and waits up to 30 minutes for it |
 | `COMPDIFF_STAMP_FILE` | reads a file whose first line names the live build. A board measured while it changed is measured again |
-| `COMPDIFF_LOCK_DIR` | shares two run slots (`pixel-1.lock`, `pixel-2.lock`) with other screen runs |
+| `COMPDIFF_LOCK_DIR` | shares the run slots (`pixel-1.lock`, `pixel-2.lock`, ...) with other screen runs |
+| `COMPDIFF_SLOTS` | how many slots there are (default 2). Three are safe on a 24 GB box, but the live instance is the limit: each board then loads more slowly |
 | `COMPDIFF_SLICE` | runs each browser in that systemd user slice, capped at 2 GB |
 | `COMPDIFF_SKIP_FIRST_RUN` | suppresses the first-run dialogs of these app ids, except on `/settings/` routes |
 

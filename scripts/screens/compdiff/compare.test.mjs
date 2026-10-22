@@ -104,3 +104,9 @@ test('a tag that repeats on every card pairs with the nearest one of the same la
 	const byBoardX = Object.fromEntries(r.pairs.map((p) => [p.board.rect.x, p.live.rect.x]))
 	assert.deepEqual(byBoardX, { 603: 603, 319: 319 })
 })
+
+test('a native toggle is not compared on background', () => {
+	const tog = (background, native) => ({ kind: 'toggle', props: { h: 13, borderRadius: 0, border: 0, background, color: 'rgb(0, 0, 0)', fontSize: 13, fontWeight: 400, paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null, native } })
+	const rows = compareElement(tog('rgb(255, 255, 255)', true), tog('rgb(229, 229, 229)', true))
+	assert.equal(rows.find((r) => r.prop === 'background').flag, null)
+})

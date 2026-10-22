@@ -328,3 +328,21 @@ test('a settings-section description beside its title is part of the header, as 
 	const inset = (r) => r.components.find((c) => c.title === 'Koppelingen').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('a native radio or checkbox has no background to compare, checked, disabled or not', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">
+		<label><input type="radio" name="a" checked> Openbaar</label><label><input type="checkbox" disabled> Deels</label>
+		<label><input type="checkbox" style="appearance:none;width:18px;height:18px;background:#3669a5"> Eigen</label></div>`)
+	const t = Object.fromEntries(r.elements.filter((e) => e.kind === 'toggle').map((e) => [e.label, e.props]))
+	assert.equal(t.Openbaar.background, null)
+	assert.equal(t.Deels.background, null)
+	assert.notEqual(t.Eigen.background, null)
+})
+
+test('a bordered or filled label (a choice card) is a card', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:400px;top:200px;width:592px;display:flex;flex-direction:column;gap:12px">
+		<label style="display:flex;gap:12px;padding:12px 14px;border:1px solid #828a95;border-radius:10px"><input type="radio" name="s"><span><strong>Opschorten</strong><br>De termijn staat stil</span></label>
+		<label style="display:flex;gap:12px;padding:12px 14px;min-height:52px;border-radius:10px;background:#eaf0f7"><input type="checkbox"><span>Sanne de Vries laten weten dat de zaak is overgedragen</span></label></div>`)
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 2, JSON.stringify(r.components.map((c) => c.role)))
+	assert.ok(!r.unmeasured.some((u) => u.tag === 'label' || /^label/.test(u.tag || u.el || '')), JSON.stringify(r.unmeasured))
+})

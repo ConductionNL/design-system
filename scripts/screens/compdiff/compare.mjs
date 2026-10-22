@@ -327,7 +327,7 @@ export function compareElement (b, l, by = 'label') {
 	}
 	add('border', pb.border, pl.border, (pb.border > 0) !== (pl.border > 0) ? `border ${pb.border > 0 ? 'absent' : 'extra'} on live` : Math.abs(pl.border - pb.border) > 0.5 ? 'border' : null)
 	if (pb.border > 0 && pl.border > 0) add('borderColor', pb.borderColor, pl.borderColor, colourDiff(pb.borderColor, pl.borderColor, THRESHOLDS.color) ? 'color' : null)
-	add('background', pb.background, pl.background, !semantic && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
+	add('background', pb.background, pl.background, !semantic && !pb.native && !pl.native && colourDiff(pb.background, pl.background, THRESHOLDS.background) ? 'color' : null)
 	if (!textless) {
 		add('color', pb.color, pl.color, !semantic && colourDiff(pb.color, pl.color, THRESHOLDS.color) ? 'color' : null)
 		add('fontSize', pb.fontSize, pl.fontSize, Math.abs(pl.fontSize - pb.fontSize) > THRESHOLDS.font ? 'font' : null)

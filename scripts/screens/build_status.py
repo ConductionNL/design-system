@@ -256,14 +256,19 @@ def main():
         runs.append({'id': run_id, 'date': date, 'info': run_info(rundir), 'rows': rows})
         sources.append({'file': f'compdiff/{run_id}', 'rows': len(rows), 'live': True, 'date': date})
     runs.sort(key=lambda r: r['date'])
+    history = collections.defaultdict(list)
     for run in runs:
         for name, r in run['rows'].items():
+            history[name].append({'run': run['id'], 'date': run['date'], 'verdict': r['verdict'], 'failing': r['failing']})
             prev = boards.get(name, {})
             status = 'partial' if prev.get('status') == 'partial' and not r['layoutMatch'] else 'built'
             boards[name] = {'app': screens[name]['app'], 'kind': prev.get('kind'), **r,
                             'route': r['route'] or prev.get('route'), 'status': status,
                             'measuredOn': f'compdiff {run["id"]}', 'stateOf': None,
                             'run': run['id'], 'runDate': run['date'], 'source': f'compdiff/{run["id"]}'}
+    # Every run that measured a board, oldest first, so the page can show the board's own trend.
+    for name, h in history.items():
+        boards[name]['history'] = h
 
     unknown = sorted(b for b in boards if b not in screens)
     for name in unknown:

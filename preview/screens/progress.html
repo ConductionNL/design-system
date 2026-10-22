@@ -122,7 +122,7 @@
   <section aria-labelledby="h-boards">
     <h2 id="h-boards" data-t="hBoards">Boards per app</h2>
     <div id="boards"></div>
-    <p class="note" data-t="noteBoards">Gesorteerd op het aantal afwijkende onderdelen, de meeste eerst. Open een board voor wat er precies verschilt.</p>
+    <p class="note" data-t="noteBoards">Gesorteerd op het aantal afwijkende onderdelen, de meeste eerst. De trend vergelijkt elk board met de vorige meting die het mat. Open een board voor wat er precies verschilt.</p>
   </section>
 </main>
 
@@ -148,7 +148,7 @@
     noteTrend: 'The trend compares the last run with the previous run of the same boards, counted only over the boards in both.',
     hRuns: 'Runs', capRuns: 'All runs, newest first',
     hBoards: 'Boards per app',
-    noteBoards: 'Sorted by failing items, most first. Open a board to see exactly what differs.',
+    noteBoards: 'Sorted by failing items, most first. The trend compares each board with the previous run that measured it. Open a board to see exactly what differs.',
     footer: 'Refresh: scripts/screens/build_status.py with --compdiff per run',
     back: '← Back to screens'
   };
@@ -162,7 +162,8 @@
     trend: ['{from} naar {to}: {mf} naar {mt} kloppend, {ff} naar {ft} afwijkend ({b} boards)', '{from} to {to}: {mf} to {mt} matching, {ff} to {ft} failing ({b} boards)'],
     better: ['beter', 'better'], worse: ['slechter', 'worse'], same: ['gelijk', 'unchanged'],
     yes: ['klopt', 'match'], no: ['wijkt af', 'differs'],
-    board: ['Board', 'Board'], run: ['Meting', 'Run'], verdict: ['Oordeel', 'Verdict'], failing: ['Afwijkend', 'Failing'], share: ['Aandeel', 'Share'],
+    board: ['Board', 'Board'], run: ['Laatste meting', 'Last run'], verdict: ['Oordeel', 'Verdict'], failing: ['Afwijkend', 'Failing'], share: ['Aandeel', 'Share'],
+    boardTrend: ['Trend', 'Trend'], firstRun: ['eerste meting', 'first run'], since: ['{run}: {from} naar {to}', '{run}: {from} to {to}'],
     boardsOf: ['{app}: {m} van {n} kloppen', '{app}: {m} of {n} match'],
     empty: ['Nog geen compdiff-meting in build-status.json. Draai build_status.py met --compdiff.', 'No compdiff run in build-status.json yet. Run build_status.py with --compdiff.'],
     loadError: ['build-status.json kon niet worden geladen.', 'build-status.json could not be loaded.']
@@ -206,6 +207,17 @@
     ]);
   }
 
+  function boardTrendCell(b) {
+    var h = b.history || [];
+    if (h.length < 2) return el('td', { 'class': 'muted', text: t('firstRun') });
+    var p = h[h.length - 2], c = h[h.length - 1];
+    var better = (c.verdict === 'MATCH' && p.verdict !== 'MATCH') || (c.verdict === p.verdict && c.failing < p.failing);
+    var worse = (p.verdict === 'MATCH' && c.verdict !== 'MATCH') || (c.verdict === p.verdict && c.failing > p.failing);
+    return el('td', null, [
+      el('span', { 'class': 'chip ' + (better ? 'up' : worse ? 'down' : 'flat'), text: t(better ? 'better' : worse ? 'worse' : 'same') }), ' ',
+      el('span', { 'class': 'muted', text: t('since', { run: p.run, from: num(p.failing), to: num(c.failing) }) })
+    ]);
+  }
   function render(D) {
     document.getElementById('m-generated').textContent = when(D.generated);
     var C = D.compdiff;
@@ -263,16 +275,19 @@
           el('th', { scope: 'row' }, [el('a', { href: link('board.html?id=' + encodeURIComponent(a.app + '/' + x[0])), text: x[0] })]),
           el('td', null, [el('span', { 'class': 'chip ' + (ok ? 'yes' : 'no'), text: t(ok ? 'yes' : 'no') })]),
           td(num(b.failing), 'n'),
+          boardTrendCell(b),
           td(b.mismatchPct == null ? '' : num(b.mismatchPct) + '%', 'n'),
-          el('td', null, [el('code', { text: b.run })])
+          el('td', null, [el('code', { text: b.run }), el('div', { 'class': 'muted', text: when(b.runDate) })])
         ]));
       });
       var table = el('table', null, [
         el('thead', null, [el('tr', null, [el('th', { scope: 'col', text: t('board') }), el('th', { scope: 'col', text: t('verdict') }),
-          el('th', { scope: 'col', 'class': 'n', text: t('failing') }), el('th', { scope: 'col', 'class': 'n', text: t('share') }),
+          el('th', { scope: 'col', 'class': 'n', text: t('failing') }), el('th', { scope: 'col', text: t('boardTrend') }), el('th', { scope: 'col', 'class': 'n', text: t('share') }),
           el('th', { scope: 'col', text: t('run') })])]),
         tb]);
-      wrap.appendChild(el('details', null, [el('summary', { text: t('boardsOf', { app: a.app, m: num(a.match), n: num(a.measured) }) }), el('div', { 'class': 'tbl' }, [table])]));
+      var det = el('details', null, [el('summary', { text: t('boardsOf', { app: a.app, m: num(a.match), n: num(a.measured) }) }), el('div', { 'class': 'tbl' }, [table])]);
+      if (a.lastRun.id === last.id) det.open = true;
+      wrap.appendChild(det);
     });
   }
 

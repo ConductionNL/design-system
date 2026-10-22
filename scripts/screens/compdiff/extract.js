@@ -548,6 +548,8 @@ window.__compdiffExtract = function () {
 			}
 		}
 		if (r.height > 72 || r.width < 300) continue
+		// A list row with its open button and its row menu (the saved-views list) is a row, not a toolbar.
+		if (el.matches('li, [role=listitem], [role=row], [role=option], tr')) continue
 		const ctrls = [...el.querySelectorAll(ctrl)].filter((c) => visible(c) && !ariaHidden(c) && c.getBoundingClientRect().height >= 24)
 		if (ctrls.length < 2) continue
 		if ([...el.querySelectorAll('h1, h2, h3, h4, [role=heading]')].some(visible)) continue

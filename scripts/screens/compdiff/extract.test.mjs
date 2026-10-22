@@ -376,3 +376,10 @@ test('a heading block with a subtitle under the title still makes the row with i
 	const card = r.components.find((c) => c.title === 'Historie van de zaak')
 	assert.equal(card.header.actions, 2)
 })
+
+test('a list row holding its open button and row menu is not a toolbar', { skip }, async () => {
+	const row = (name) => `<li style="display:flex;align-items:center;gap:4px;height:40px">${btn(name).replace('height:38px', 'height:34px;flex:1')}<button aria-label="Acties" style="width:34px;height:34px">…</button></li>`
+	const r = await measure(`<section style="position:absolute;left:1100px;top:200px;width:310px"><ul style="list-style:none;margin:0;padding:0">
+		${row('Aan mij toegewezen')}${row('AVG-verzoeken')}${row('Mijn zaken, deze week')}</ul></section>`)
+	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+})

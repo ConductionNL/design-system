@@ -132,8 +132,9 @@ window.__compdiffExtract = function () {
 	const inMap = (el) => maps.some((m) => m.contains(el))
 	let cards = []
 	for (const el of all) {
-		// Links can be cards (a KPI tile is often one big <a>); other controls are not.
-		if ((el.matches(INTERACTIVE) && el.tagName !== 'A') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
+		// Links can be cards (a KPI tile is often one big <a>), and so can a framed label (a choice card, a checkbox
+		// box); other controls are not.
+		if ((el.matches(INTERACTIVE) && el.tagName !== 'A' && el.tagName !== 'LABEL') || el.matches('table, ul[role=listbox]') || tabStrips.includes(el)) continue
 		if (!visible(el) || outOfScope(el) || inMap(el)) continue
 		const r = el.getBoundingClientRect()
 		if (r.width < 140 || r.height < 48) continue
@@ -607,6 +608,7 @@ window.__compdiffExtract = function () {
 		const icon = host && [...host.querySelectorAll('svg, [class*=icon]')].find((i) => visible(i) && i.getBoundingClientRect().height <= 40)
 		return icon ? icon.getBoundingClientRect().height : r.height
 	}
+	const nativeToggle = (el, kind, cs) => kind === 'toggle' && el.matches('input') && cs.appearance !== 'none'
 	const elements = []
 	const elementEls = new Set()
 	const recordEls = new Set(components.filter((c) => c.record).map((c) => c.el))
@@ -654,7 +656,8 @@ window.__compdiffExtract = function () {
 		if (styled(rcs)) return null
 		return [...row.querySelectorAll('*')].find((c) => {
 			const q = c.getBoundingClientRect()
-			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && visible(c) && styled(getComputedStyle(c))
+			// The box must hold the row: a step bar at its top, or a link on its first line above a meta line, does not.
+			return q.width >= rr.width * 0.9 && q.top - rr.top < 4 && q.height >= rr.height * 0.8 && c.textContent.trim() && visible(c) && styled(getComputedStyle(c))
 				&& c.closest('li, [role=treeitem], [role=listitem], [role=option], [role=row]') === row
 		}) || null
 	}
@@ -685,7 +688,9 @@ window.__compdiffExtract = function () {
 			container: containerOf(el), rect: rect(el),
 			props: {
 				h: round(drawnHeight(el, kind, cs, r)), borderRadius: radius(el, cs), ...elementBorder(el, kind, cs),
-				background: bgBehind(el), color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
+				// A native checkbox or radio draws its own glyph: its computed background (grey when disabled, the accent
+				// when checked) is not painted anywhere, so it has none to compare.
+				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
 				icon: [...el.querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),

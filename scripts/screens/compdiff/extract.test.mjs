@@ -328,3 +328,32 @@ test('a settings-section description beside its title is part of the header, as 
 	const inset = (r) => r.components.find((c) => c.title === 'Koppelingen').content.firstRowInsetLeft
 	assert.equal(inset(live), inset(board))
 })
+
+test('a native radio or checkbox has no background to compare, checked, disabled or not', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;display:flex;gap:20px">
+		<label><input type="radio" name="a" checked> Openbaar</label><label><input type="checkbox" disabled> Deels</label>
+		<label><input type="checkbox" style="appearance:none;width:18px;height:18px;background:#3669a5"> Eigen</label></div>`)
+	const t = Object.fromEntries(r.elements.filter((e) => e.kind === 'toggle').map((e) => [e.label, e.props]))
+	assert.equal(t.Openbaar.background, null)
+	assert.equal(t.Deels.background, null)
+	assert.notEqual(t.Eigen.background, null)
+})
+
+test('a bordered or filled label (a choice card) is a card', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:400px;top:200px;width:592px;display:flex;flex-direction:column;gap:12px">
+		<label style="display:flex;gap:12px;padding:12px 14px;border:1px solid #828a95;border-radius:10px"><input type="radio" name="s"><span><strong>Opschorten</strong><br>De termijn staat stil</span></label>
+		<label style="display:flex;gap:12px;padding:12px 14px;min-height:52px;border-radius:10px;background:#eaf0f7"><input type="checkbox"><span>Sanne de Vries laten weten dat de zaak is overgedragen</span></label></div>`)
+	assert.equal(r.components.filter((c) => c.role === 'card').length, 2, JSON.stringify(r.components.map((c) => c.role)))
+	assert.ok(!r.unmeasured.some((u) => u.tag === 'label' || /^label/.test(u.tag || u.el || '')), JSON.stringify(r.unmeasured))
+})
+
+test('a row is not measured on a bar or a first-line link that does not hold the whole row', { skip }, async () => {
+	const r = await measure(`<ol style="position:absolute;left:300px;top:200px;width:660px;display:flex;gap:8px;list-style:none;margin:0;padding:0">
+		<li style="flex:1;display:flex;flex-direction:column;gap:6px;height:40px"><span style="height:6px;background:#cc0000;border-radius:3px"></span><span>Beoordeling</span></li></ol>
+		<ul style="position:absolute;left:300px;top:400px;width:600px;list-style:none;margin:0;padding:0">
+		<li style="height:63px"><a href="#" style="display:block;padding:0 12px;border-radius:8px;background:#eaf0f7;height:34px">Advies verlichting fietspad</a><span>PDF · 1,2 MB</span></li></ul>`)
+	const step = r.elements.find((e) => e.label === 'Beoordeling')
+	assert.equal(step.props.h, 40)
+	const file = r.elements.find((e) => e.kind === 'row' && /Advies/.test(e.label))
+	assert.equal(file.props.h, 63)
+})

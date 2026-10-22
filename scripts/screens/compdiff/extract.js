@@ -244,7 +244,10 @@ window.__compdiffExtract = function () {
 			for (let p = title.parentElement; p && p !== card && card.contains(p); p = p.parentElement) {
 				const pr = p.getBoundingClientRect()
 				if (pr.height > titleBox.h + 56) break
-				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4)) break
+				// A wrapping header row whose actions wrapped under the title in a narrow card is still the header row.
+				const wraps = getComputedStyle(p).flexWrap === 'wrap'
+				const inAction = (l) => { const e = l.node.nodeType === 1 ? l.node : l.node.parentElement; return !!(e && e.closest('a, button, [role=button]')) }
+				if (leaves.some((l) => p.contains(l.node) && l.y > titleBox.y + titleBox.h + 4 && !(wraps && inAction(l)))) break
 				headerRow = p
 			}
 			const hcs = getComputedStyle(headerRow)

@@ -357,3 +357,12 @@ test('a row is not measured on a bar or a first-line link that does not hold the
 	const file = r.elements.find((e) => e.kind === 'row' && /Advies/.test(e.label))
 	assert.equal(file.props.h, 63)
 })
+
+test('a link that wrapped under the title in a narrow card is still a header action', { skip }, async () => {
+	const r = await measure(`<section style="position:absolute;left:300px;top:200px;width:316px;background:#fff;border:1px solid #e4e6ea;border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+		<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px 16px"><div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:3px"><h2 style="margin:0;font-size:17px;font-weight:700">Vastgelopen zaken</h2></div>
+		<div style="flex:none;display:flex;flex-wrap:wrap;gap:8px"><a href="#" style="font-size:14px;font-weight:600">Alles bekijken</a></div></div>
+		<ul style="margin:0;padding:0;list-style:none"><li>Zaak 1</li><li>Zaak 2</li></ul></section>`)
+	const card = r.components.find((c) => c.title === 'Vastgelopen zaken')
+	assert.equal(card.header.actions, 1)
+})

@@ -309,3 +309,22 @@ test('a button hidden from assistive tech (NcSelect chevron) is not an element o
 		<span aria-hidden="true"><button style="height:30px">x</button></span></div>`)
 	assert.deepEqual(r.elements.filter((e) => e.kind === 'button' || e.kind === 'pill').map((e) => e.label), ['Filter'])
 })
+
+test('a disabled "Volgende" drawn as a span in a pager is a page link, not a badge', { skip }, async () => {
+	const r = await measure(`<div class="cn-pagination" style="position:absolute;left:293px;top:600px;width:1118px;box-sizing:border-box;display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee">
+		<span>1 van 1</span><nav aria-label="Pagination" style="display:flex;gap:6px">${btn('1')}
+		<span aria-disabled="true" style="display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid #e4e6ea;border-radius:8px;background:#fff">Volgende</span></nav></div>`)
+	const v = r.elements.find((e) => e.label === 'Volgende')
+	assert.equal(v.kind, 'button')
+	assert.equal(r.elements.find((e) => e.label === '1').interactive, true)
+})
+
+test('a settings-section description beside its title is part of the header, as it is in a wrapper', { skip }, async () => {
+	const table = '<table style="width:100%"><tr><td style="padding:0 12px">Bron</td></tr></table>'
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+		<div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0">Koppelingen</h2><span>Een koppeling staat uit.</span></div>${table}</section>`)
+	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0 0 2px">Koppelingen</h2><p class="settings-section__desc" style="margin:0 0 14px">Een koppeling staat uit.</p>${table}</div>`)
+	const inset = (r) => r.components.find((c) => c.title === 'Koppelingen').content.firstRowInsetLeft
+	assert.equal(inset(live), inset(board))
+})

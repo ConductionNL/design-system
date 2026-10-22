@@ -249,6 +249,11 @@ const styleKey = (e) => [e.kind, Math.round(e.props.h / 4), e.props.borderRadius
 
 // Pairs elements: by label (within control, field, toggle or row), then repeated groups (same container and style)
 // by kind and order, so row and chip counts that follow the data do not count as missing or extra.
+// Elements pair by order or position only when they play the same part: a count nested in a chip does not stand for
+// a chip, and a control (the "Volgen" button) does not stand for a status tag. Stored runs without the flag pass.
+const nested = (e) => !!e.inControl && e.inControl !== 'record card'
+const sameRole = (b, l) => nested(b) === nested(l) && (b.interactive === undefined || l.interactive === undefined || b.interactive === l.interactive)
+
 export function pairElements (B = [], L = [], H = 2000) {
 	const pairs = [], usedB = new Set(), usedL = new Set()
 	const byKey = new Map()
@@ -256,7 +261,9 @@ export function pairElements (B = [], L = [], H = 2000) {
 	for (const b of B) {
 		if (!norm(b.label)) continue
 		const list = byKey.get(ekey(b))
-		const l = list && list.find((x) => !usedL.has(x))
+		// Of the live elements with the same label, the nearest: in a deck of cards the same tag repeats on every card.
+		const near = (x) => Math.abs(x.rect.x - b.rect.x) + Math.abs(x.rect.y - b.rect.y)
+		const l = list && list.filter((x) => !usedL.has(x)).sort((x, y) => near(x) - near(y))[0]
 		if (l) { usedB.add(b); usedL.add(l); pairs.push({ board: b, live: l, by: 'label' }) }
 	}
 	// Page links pair in order inside the pager; how many pages there are follows the data, so the rest is neither
@@ -278,7 +285,7 @@ export function pairElements (B = [], L = [], H = 2000) {
 	const cand = []
 	for (const b of gb) {
 		for (const l of gl) {
-			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind]) continue
+			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep)) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
 			if (b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)

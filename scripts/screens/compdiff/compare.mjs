@@ -288,6 +288,8 @@ export function pairElements (B = [], L = [], H = 2000) {
 			if (EGROUP[b.rep.kind] !== EGROUP[l.rep.kind] || !sameRole(b.rep, l.rep)) continue
 			// Two lone elements with different labels are two different controls, not one control restyled.
 			if (b.count === 1 && l.count === 1 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
+			// Nor do two buttons with different labels, unless both are a list's per-row action (three or more copies).
+			if (b.rep.kind === 'button' && l.rep.kind === 'button' && Math.min(b.count, l.count) < 3 && norm(b.rep.label) && norm(l.rep.label) && norm(b.rep.label) !== norm(l.rep.label)) continue
 			const cost = Math.abs(b.rep.rect.x - l.rep.rect.x) / 1440 + 0.5 * Math.abs(b.rep.rect.y - l.rep.rect.y) / H + (b.rep.kind === l.rep.kind ? 0 : 0.05)
 			if (cost <= 0.12) cand.push({ b, l, cost })
 		}

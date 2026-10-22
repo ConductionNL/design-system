@@ -110,3 +110,12 @@ test('a native toggle is not compared on background', () => {
 	const rows = compareElement(tog('rgb(255, 255, 255)', true), tog('rgb(229, 229, 229)', true))
 	assert.equal(rows.find((r) => r.prop === 'background').flag, null)
 })
+
+test('buttons with different labels do not pair by position or group, unless they are per-row actions', () => {
+	const button = (label, x, y) => ({ kind: 'button', label, inControl: null, container: 1, rect: { x, y, w: 160, h: 34 }, props: { h: 34, borderRadius: 8, background: 'rgb(255, 255, 255)', border: 1, fontSize: 14 } })
+	const r = pairElements([button('Testen met een zaak', 900, 300), button('Opslaan', 1080, 300)], [button('Stappen automatisch ordenen', 905, 302), button('Bewaren', 1080, 400), button('Annuleren', 1080, 440)], 1200)
+	assert.equal(r.pairs.length, 0, JSON.stringify(r.pairs.map((p) => [p.board.label, p.live.label])))
+	const rows = (n, y0) => Array.from({ length: n }, (_, i) => button(`Acties voor zaak ${i}`, 1300, y0 + i * 50))
+	const listed = pairElements(rows(4, 300), rows(5, 320), 1200)
+	assert.ok(listed.pairs.length >= 1)
+})

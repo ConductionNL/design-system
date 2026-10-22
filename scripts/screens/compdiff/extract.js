@@ -258,7 +258,11 @@ window.__compdiffExtract = function () {
 			}
 		}
 		const below = titleBox ? titleBox.y + titleBox.h - 1 : -Infinity
-		const content = leaves.filter((l) => !(headerRow && headerRow.contains(l.node)) && l.y >= below)
+		// A description set beside the title rather than in a wrapper with it (NcSettingsSection's flat
+		// h2 + .settings-section__desc) belongs to the header, as it does when a wrapper holds both.
+		const desc = headerRow && headerRow.nextElementSibling && headerRow.nextElementSibling.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') ? headerRow.nextElementSibling : null
+		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
+		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {
 			const top = Math.min(...content.map((l) => l.y))
 			const firstRow = content.filter((l) => l.y <= top + 6)

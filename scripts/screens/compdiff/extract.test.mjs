@@ -318,3 +318,13 @@ test('a disabled "Volgende" drawn as a span in a pager is a page link, not a bad
 	assert.equal(v.kind, 'button')
 	assert.equal(r.elements.find((e) => e.label === '1').interactive, true)
 })
+
+test('a settings-section description beside its title is part of the header, as it is in a wrapper', { skip }, async () => {
+	const table = '<table style="width:100%"><tr><td style="padding:0 12px">Bron</td></tr></table>'
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+		<div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0">Koppelingen</h2><span>Een koppeling staat uit.</span></div>${table}</section>`)
+	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 22px">
+		<h2 style="margin:0 0 2px">Koppelingen</h2><p class="settings-section__desc" style="margin:0 0 14px">Een koppeling staat uit.</p>${table}</div>`)
+	const inset = (r) => r.components.find((c) => c.title === 'Koppelingen').content.firstRowInsetLeft
+	assert.equal(inset(live), inset(board))
+})

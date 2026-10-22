@@ -6,7 +6,8 @@
 #   COMPDIFF_HEALTH      command that must succeed before a board is measured (waits up to 30 min)
 #   COMPDIFF_STAMP_FILE  file whose first line names the build on the live instance; a board measured
 #                        while it changed is measured again (max 3 tries)
-#   COMPDIFF_LOCK_DIR    directory with slot locks <dir>/pixel-1.lock and pixel-2.lock, shared with other runs
+#   COMPDIFF_LOCK_DIR    directory with slot locks <dir>/pixel-N.lock, shared with other runs
+#   COMPDIFF_SLOTS       how many run slots share COMPDIFF_LOCK_DIR (default 2)
 #   COMPDIFF_SLICE       systemd user slice to run each browser in, capped at 2G
 #   COMPDIFF_SKIP_FIRST_RUN  app ids whose first-run dialogs to suppress (default: none), not on /settings/ routes
 set -u
@@ -17,29 +18,36 @@ if [[ "$specs" == *.json ]]; then
 	node "$HERE/specs-from-boards.mjs" "$specs" > "$out/specs.tsv" || exit 2
 	specs="$out/specs.tsv"
 fi
+# One login per batch: the boards reuse it from a private directory that is removed when the batch ends.
+auth=$(mktemp -d); trap 'rm -rf "$auth"' EXIT
+slots=${COMPDIFF_SLOTS:-2}
 stamp() { [ -n "${COMPDIFF_STAMP_FILE:-}" ] && head -1 "$COMPDIFF_STAMP_FILE" 2>/dev/null; }
 healthy() {
 	[ -z "${COMPDIFF_HEALTH:-}" ] && return 0
 	for _ in $(seq 1 30); do bash -c "$COMPDIFF_HEALTH" >/dev/null 2>&1 && return 0; echo "$(date +%T) waiting for health" >> "$out/run.log"; sleep 60; done
 	return 1
 }
-measure() {
-	local cmd=(timeout 600 node "$HERE/compdiff.mjs" "$@")
+run() {
+	local cmd=(timeout 600 node "$HERE/compdiff.mjs" "$@" --storage "$auth/login")
 	[ -n "${COMPDIFF_SLICE:-}" ] && cmd=(systemd-run --user --scope --quiet --slice="$COMPDIFF_SLICE" -p MemoryMax=2G "${cmd[@]}")
-	if [ -z "${COMPDIFF_LOCK_DIR:-}" ]; then "${cmd[@]}"; return; fi
+	"${cmd[@]}"
+}
+measure() {
+	local slot=1
+	if [ -z "${COMPDIFF_LOCK_DIR:-}" ]; then run "$@"; return; fi
 	# Both slots busy: queue on one slot for 1 s, then the other. A queued flock is woken the moment the slot is
 	# released, so a run that waits gets the slot before a run that only polls it between boards.
 	local turn=1
 	while true; do
-		for slot in 1 2; do
+		for slot in $(seq 1 "$slots"); do
 			exec 9>"$COMPDIFF_LOCK_DIR/pixel-$slot.lock"
-			if flock -n 9; then "${cmd[@]}"; local rc=$?; flock -u 9; return $rc; fi
+			if flock -n 9; then run "$@"; local rc=$?; flock -u 9; return $rc; fi
 			exec 9>&-
 		done
 		exec 9>"$COMPDIFF_LOCK_DIR/pixel-$turn.lock"
-		if flock -w 1 9; then "${cmd[@]}"; local rc=$?; flock -u 9; return $rc; fi
+		if flock -w 1 9; then slot=$turn; run "$@"; local rc=$?; flock -u 9; return $rc; fi
 		exec 9>&-
-		turn=$((3 - turn))
+		turn=$((turn % slots + 1))
 	done
 }
 while IFS=$'\t' read -r b u rest; do

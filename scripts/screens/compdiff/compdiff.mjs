@@ -8,6 +8,9 @@
 //   after --click, --clicks and --fills; REVIEW/boards.json keeps the same list per board
 //   [--login none|<role>]   measure without a login, or as COMPDIFF_<ROLE>_USER (live.mjs accountFor)
 //   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
+//   [--storage <path>]   keep the login in <path>-<user>.json and reuse it, so a batch logs in once
+//   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
+//   --settle ms; fixed: wait the full --settle, as before
 // Environment: COMPDIFF_USER and COMPDIFF_PASSWORD (the board user), CHROME (browser binary),
 // PLAYWRIGHT_MODULE (path to a playwright package when it is not resolvable from here).
 //
@@ -23,7 +26,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
-import { accountFor, markIgnored, waitForTables } from './live.mjs'
+import { accountFor, markIgnored, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -45,6 +48,7 @@ try {
 	process.exit(2)
 }
 const settle = Number(args.settle || 8000)
+const settleMode = args['settle-mode'] || 'quiet'
 // An element crop above this mismatch % with no property flagged is reported as visually different.
 const CROP_FLAG = Number(args['crop-flag'] || 30)
 const slim = (e) => ({ kind: e.kind, label: e.label, inControl: e.inControl, inRow: e.inRow, count: e.count, repeated: e.repeated, rect: e.rect, props: e.props })
@@ -81,8 +85,13 @@ const measure = async (page) => {
 	return page.evaluate(() => window.__compdiffExtract())
 }
 
+// Phase timings (ms), written to the report so a run can be profiled.
+const t0 = Date.now(), timings = {}
+let tLast = t0
+const lap = (name) => { const t = Date.now(); timings[name] = (timings[name] || 0) + (t - tLast); tLast = t }
 const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/google/chrome/chrome', headless: true, args: ['--no-sandbox', '--hide-scrollbars'] })
 try {
+	lap('launch')
 	const bctx = await browser.newContext({ viewport: { width, height: 1200 }, deviceScaleFactor: 1 })
 	const bpage = await bctx.newPage()
 	await bpage.goto('file://' + boardFile, { waitUntil: 'load' })
@@ -94,9 +103,15 @@ try {
 	const boardPng = path.join(out, `${board}-board.png`)
 	await bpage.screenshot({ path: boardPng, clip: { x: 0, y: 0, width, height: boardHeight } })
 	const B = await measure(bpage)
+	lap('board')
 
-	const lctx = await browser.newContext({ viewport: { width, height: boardHeight }, deviceScaleFactor: 1, locale: 'nl-NL' })
+	// A login kept from an earlier board of the batch is reused; a stale one is replaced below.
+	const storage = account && args.storage ? `${args.storage}-${account.user.replace(/[^A-Za-z0-9_-]/g, '_')}.json` : null
+	let kept = null
+	try { kept = storage && fs.existsSync(storage) ? JSON.parse(fs.readFileSync(storage, 'utf8')) : null } catch { kept = null }
+	const lctx = await browser.newContext({ viewport: { width, height: boardHeight }, deviceScaleFactor: 1, locale: 'nl-NL', ...(kept ? { storageState: kept } : {}) })
 	const lpage = await lctx.newPage()
+	const requests = trackRequests(lpage)
 	if (args['skip-first-run']) {
 		const apps = args['skip-first-run'].split(',')
 		await lctx.addInitScript((list) => {
@@ -113,13 +128,27 @@ try {
 		blocked.push(`${m} ${route.request().url().replace(base, '')}`)
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})
-	if (account) {
+	const target = /^https?:\/\//.test(args.url) ? args.url : base + args.url
+	const onLogin = () => /\/login(\?|$)/.test(new URL(lpage.url()).pathname + new URL(lpage.url()).search)
+	const login = async () => {
 		await lpage.goto(base + '/login', { waitUntil: 'domcontentloaded', timeout: 180000 })
 		await lpage.fill('#user', account.user)
 		await lpage.fill('#password', account.password)
-		await Promise.all([lpage.waitForNavigation({ timeout: 180000 }).catch(() => {}), lpage.press('#password', 'Enter')])
+		// Logged in once the browser leaves /login; the app it lands on need not finish loading.
+		await Promise.all([lpage.waitForURL((u) => !/\/login(\?|$)/.test(u.pathname + u.search), { waitUntil: 'commit', timeout: 180000 }), lpage.press('#password', 'Enter')])
+		// Written whole and renamed into place: parallel slots of a batch may read it at any moment.
+		if (storage) { const tmp = `${storage}.${process.pid}`; fs.writeFileSync(tmp, JSON.stringify(await lctx.storageState())); fs.renameSync(tmp, storage) }
 	}
-	await lpage.goto(/^https?:\/\//.test(args.url) ? args.url : base + args.url, { waitUntil: 'networkidle', timeout: 240000 }).catch(() => {})
+	if (account && !kept) await login()
+	lap('login')
+	// The page has loaded at its load event; what renders after is waited for below. Nextcloud keeps polling, so the
+	// network is never idle for long and a networkidle wait runs into its timeout.
+	await lpage.goto(target, { waitUntil: 'load', timeout: 180000 }).catch(() => {})
+	if (account && onLogin()) {
+		await login()
+		await lpage.goto(target, { waitUntil: 'load', timeout: 180000 }).catch(() => {})
+	}
+	await waitForQuiet(lpage, requests, { min: 1000, max: 30000, quiet: 1500 })
 	if (args['wait-for']) await lpage.waitForSelector(args['wait-for'], { timeout: 180000 })
 	if (args.click) { await lpage.click(args.click, { timeout: 60000 }); await lpage.waitForTimeout(1500) }
 	if (args.clicks) for (const sel of args.clicks.split('|')) { await lpage.click(sel.trim(), { timeout: 60000 }); await lpage.waitForTimeout(1500) }
@@ -130,14 +159,21 @@ try {
 			await lpage.waitForTimeout(500)
 		}
 	}
+	lap('load')
 	await playSteps(lpage, steps)
-	await lpage.waitForTimeout(settle)
+	lap('steps')
+	if (settleMode === 'fixed') await lpage.waitForTimeout(settle)
+	else await waitForQuiet(lpage, requests, { min: 1500, max: settle, quiet: 1500 })
+	lap('settle')
 	// A table's selection column can render after the settle: measure the head once it holds every column.
 	if (!(await waitForTables(lpage))) console.error('tables did not settle; measuring as they are')
+	lap('tables')
 	await markIgnored(lpage, args.ignore)
 	const livePng = path.join(out, `${board}-live.png`)
 	await lpage.screenshot({ path: livePng, clip: { x: 0, y: 0, width, height: boardHeight } })
+	lap('screenshot')
 	const L = await measure(lpage)
+	lap('extract')
 
 	const { pairs, missing, extra } = pairComponents(B.components, L.components, boardHeight)
 	const ep = pairElements(B.elements, L.elements, boardHeight)
@@ -165,6 +201,7 @@ try {
 
 	const pageBg = { board: await pageBackground(dpage, boardPng, fs), live: await pageBackground(dpage, livePng, fs) }
 	// Element pairs: properties first; a crop that differs while no property fired is flagged as unidentified.
+	lap('compare')
 	const elementResults = ep.pairs.map((p, i) => {
 		const rows = compareElement(p.board, p.live)
 		const crop = crops[pairs.length + i]
@@ -190,7 +227,11 @@ try {
 	}
 	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))
 	fs.writeFileSync(path.join(out, `${board}.md`), renderTable(report))
-	console.log(JSON.stringify({ board, ...report.counts }))
+	lap('write')
+	timings.total = Date.now() - t0
+	report.timings = timings
+	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))
+	console.log(JSON.stringify({ board, ...report.counts, ms: timings.total }))
 } catch (e) {
 	console.error('compdiff error:', e.stack || e.message)
 	process.exitCode = 2

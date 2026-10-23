@@ -380,6 +380,25 @@ test('a heading block with a subtitle under the title still makes the row with i
 test('a list row holding its open button and row menu is not a toolbar', { skip }, async () => {
 	const row = (name) => `<li style="display:flex;align-items:center;gap:4px;height:40px">${btn(name).replace('height:38px', 'height:34px;flex:1')}<button aria-label="Acties" style="width:34px;height:34px">…</button></li>`
 	const r = await measure(`<section style="position:absolute;left:1100px;top:200px;width:310px"><ul style="list-style:none;margin:0;padding:0">
-		${row('Aan mij toegewezen')}${row('AVG-verzoeken')}${row('Mijn zaken, deze week')}</ul></section>`)
+		${row('Aan mij toegewezen')}${row('AVG-verzoeken')}${row('Mijn zaken, deze week')}</ul>
+		<ul style="list-style:none;margin:0;padding:0"><li style="display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:8px;width:300px">${btn('Wacht op inwoner')}<button aria-label="Beheer" style="width:34px;height:34px">…</button></div></li></ul></section>`)
 	assert.deepEqual(r.components.filter((c) => c.role === 'toolbar'), [])
+})
+
+test('a select field has the chevron its wrapper draws beside the input as its icon', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
+		<div class="v-select" style="display:flex;align-items:center;width:360px;height:40px;border:1px solid #828a95;border-radius:8px">
+		<input role="combobox" aria-label="Register" style="flex:1;border:0;height:36px">
+		<span class="vs__actions" style="display:flex"><svg width="20" height="20"><path d="M7 10l5 5 5-5z"/></svg></span></div></div>`)
+	assert.equal(r.elements.find((e) => e.label === 'Register').props.icon, true)
+})
+
+test('a switch whose real input is hidden is measured on the icon that draws it', { skip }, async () => {
+	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
+		<span class="checkbox-radio-switch" style="position:relative;display:flex;align-items:center;gap:8px">
+		<input id="besluit" type="checkbox" style="position:absolute;opacity:0;width:1px;height:1px;margin:0">
+		<label for="besluit" style="display:flex;gap:8px;align-items:center"><span class="checkbox-content__icon"><svg width="20" height="20"><rect width="20" height="20"/></svg></span><span>Dit is een besluit</span></label></span></div>`)
+	const t = r.elements.filter((e) => e.kind === 'toggle')
+	assert.deepEqual(t.map((e) => e.label), ['Dit is een besluit'])
+	assert.equal(t[0].props.h, 20)
 })

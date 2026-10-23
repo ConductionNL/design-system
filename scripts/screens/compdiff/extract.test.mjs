@@ -406,3 +406,14 @@ test('a switch whose real input is hidden is measured on the icon that draws it'
 	// The glyph is the switch itself, as a native checkbox is: it has no icon of its own.
 	assert.equal(t[0].props.icon, false)
 })
+
+test('a plain line of smaller text right under a card title is its description on both sides', { skip }, async () => {
+	const field = '<div style="margin-top:10px"><span>Register</span><div role="combobox" aria-label="Register" style="height:40px;border:1px solid #888"></div></div>'
+	const board = await measure(`<section style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px;display:flex;flex-direction:column;gap:6px">
+		<h2 style="margin:0;font-size:17px">Configuratie</h2><p style="margin:0;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</section>`)
+	const live = await measure(`<div class="settings-section" style="position:absolute;left:300px;top:200px;width:700px;border:1px solid #ddd;padding:20px 24px">
+		<h2 style="margin:0 0 6px;font-size:17px">Configuratie</h2><p class="settings-section__desc" style="margin:0;padding-bottom:6px;font-size:14px">In welk register Dossiq zaken bewaart.</p>${field}</div>`)
+	const gap = (r) => r.components.find((c) => c.title === 'Configuratie').content.gapBelowTitle
+	assert.ok(gap(board) > 30, `board gap ${gap(board)}`)
+	assert.ok(Math.abs(gap(board) - gap(live)) <= 4, `board ${gap(board)} vs live ${gap(live)}`)
+})

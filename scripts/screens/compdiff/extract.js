@@ -280,7 +280,14 @@ window.__compdiffExtract = function () {
 		const below = titleBox ? titleBox.y + titleBox.h - 1 : -Infinity
 		// A description set beside the title rather than in a wrapper with it (NcSettingsSection's flat
 		// h2 + .settings-section__desc) belongs to the header, as it does when a wrapper holds both.
-		const desc = headerRow && headerRow.nextElementSibling && headerRow.nextElementSibling.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') ? headerRow.nextElementSibling : null
+		// So is a plain line of smaller text set right under the title (a board's h2 + p): a description, not content.
+		const next = headerRow && headerRow.nextElementSibling
+		const plainLine = (e) => {
+			if (!e || !visible(e) || !e.textContent.trim() || e.querySelector(INTERACTIVE + ', [role=combobox], table, ul, ol, img, svg')) return false
+			const top = e.getBoundingClientRect().top - (titleBox.y + titleBox.h)
+			return top >= -1 && top <= 12 && px(getComputedStyle(e).fontSize) < px(getComputedStyle(textEl(title)).fontSize)
+		}
+		const desc = next && (next.matches('.settings-section__desc, [class*="__desc"], [class*="subtitle"], [class*="description"]') || plainLine(next)) ? next : null
 		const inHeader = (n) => (headerRow && headerRow.contains(n)) || (desc && desc.contains(n))
 		const content = leaves.filter((l) => !inHeader(l.node) && l.y >= below)
 		if (content.length) {

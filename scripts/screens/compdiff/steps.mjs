@@ -9,11 +9,14 @@
 //   { "press": "<selector>", "key": "<key>" }        one key, such as Enter or ArrowDown
 //   { "wait": <milliseconds> }
 //   { "waitFor": "<selector>" }
+//   { "goto": "<route>" }                            opens a route of the live instance, such as /apps/keepiq/lock
+// A fill or type value of the form ${NAME} is read from the environment variable NAME when the step plays, so a
+// secret such as a vault password stays out of boards.json.
 // Nothing here writes: compdiff refuses every write request to the live instance, and a step that would submit a
 // form only meets that refusal.
 import fs from 'node:fs'
 
-const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor']
+const KINDS = ['click', 'fill', 'type', 'press', 'wait', 'waitFor', 'goto']
 
 /**
  * Check one step and return it in its plain form.
@@ -37,6 +40,10 @@ export function normaliseStep(step, index = 0) {
 		return { kind, ms }
 	}
 	const selector = step[kind]
+	if (kind === 'goto') {
+		if (typeof selector !== 'string' || !selector.startsWith('/')) throw new Error(`step ${index + 1}: goto needs a route starting with /`)
+		return { kind, route: selector }
+	}
 	if (typeof selector !== 'string' || selector.trim() === '') {
 		throw new Error(`step ${index + 1}: ${kind} needs a selector`)
 	}
@@ -49,6 +56,20 @@ export function normaliseStep(step, index = 0) {
 		return { kind, selector, key: step.key }
 	}
 	return { kind, selector }
+}
+
+/**
+ * A step value, or the environment variable it names as ${NAME}.
+ *
+ * @param {string} value The step value.
+ * @param {object} env The environment.
+ * @return {string} The value to type.
+ */
+export function fromEnv(value, env) {
+	const m = /^\$\{([A-Z0-9_]+)\}$/.exec(value)
+	if (!m) return value
+	if (env[m[1]] === undefined) throw new Error(`step value needs the environment variable ${m[1]}`)
+	return env[m[1]]
 }
 
 /**
@@ -87,8 +108,14 @@ export function parseSteps(arg) {
  * @param {(message: string) => void} [warn] Where a skipped fill is reported.
  * @return {Promise<void>}
  */
-export async function playSteps(page, steps, warn = (m) => console.error(m)) {
-	for (const step of steps) {
+export async function playSteps(page, steps, warn = (m) => console.error(m), { base = '', env = process.env } = {}) {
+	for (let step of steps) {
+		if (step.kind === 'goto') {
+			await page.goto(base + step.route, { waitUntil: 'load', timeout: 180000 }).catch(() => {})
+			await page.waitForTimeout(1500)
+			continue
+		}
+		if (step.kind === 'fill' || step.kind === 'type') step = { ...step, value: fromEnv(step.value, env) }
 		if (step.kind === 'click') {
 			await page.click(step.selector, { timeout: 60000 })
 			await page.waitForTimeout(1500)

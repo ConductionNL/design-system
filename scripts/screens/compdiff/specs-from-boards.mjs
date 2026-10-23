@@ -5,6 +5,8 @@
 // node specs-from-boards.mjs <boards.json> [--keep <specs.tsv>] > specs.tsv
 //
 // A row is board<TAB>route[<TAB>--steps<TAB><JSON>][<TAB>--login<TAB><role>][<TAB>--ignore<TAB><selectors>][<TAB>--width<TAB><px>].
+// A board's `preSteps` (played before the page opens), `user` (a named login) and `allowWrites` (`METHOD /path`
+// entries, the only writes let through) pass as --pre-steps, --user and --allow-write.
 // A board's `login` (none, or a role such as viewer), `ignore` (selectors joined by |) and `width` (a phone board's
 // viewport) pass to compdiff as they are. The route is the liveUrl without its origin and without
 // Nextcloud's /index.php front controller, the form runall.sh matches a /settings/ route by. With --keep, the
@@ -40,9 +42,16 @@ export function specRows(boards, keep = []) {
 			return step
 		})
 		const json = JSON.stringify(steps)
+		const preSteps = (entry.preSteps || []).map((step, i) => {
+			normaliseStep(step, i)
+			return step
+		})
 		const cells = [entry.board, routeOf(entry.liveUrl)]
 		if (steps.length) cells.push('--steps', json)
+		if (preSteps.length) cells.push('--pre-steps', JSON.stringify(preSteps))
 		if (entry.login) cells.push('--login', entry.login)
+		if (entry.user) cells.push('--user', entry.user)
+		if (entry.allowWrites && entry.allowWrites.length) cells.push('--allow-write', entry.allowWrites.join('|'))
 		if (entry.ignore) cells.push('--ignore', entry.ignore)
 		if (entry.width) cells.push('--width', String(entry.width))
 		if (cells.some((c) => /[\t\n]/.test(c))) throw new Error(`${entry.board}: a step, login or ignore holds a tab or a newline`)

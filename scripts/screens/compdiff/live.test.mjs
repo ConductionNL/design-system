@@ -5,7 +5,8 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { test } from 'node:test'
-import { accountFor, markIgnored, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, allowedWrite, markIgnored, tableShape, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { parseSteps, playSteps } from './steps.mjs'
 
 const require = createRequire(import.meta.url)
 const CHROME = process.env.CHROME || '/opt/google/chrome/chrome'
@@ -107,6 +108,34 @@ test('a request in flight keeps the page busy, a long poll does not', { skip }, 
 		assert.equal(r.quiet, true)
 		assert.ok(r.waited >= 1500, `measured after ${r.waited} ms, before the data call answered`)
 		assert.ok(r.waited < 5000, `waited ${r.waited} ms for a long poll`)
+	} finally {
+		await browser.close()
+	}
+})
+
+test('a named user logs in with the password from COMPDIFF_PASSWORD_<USER>', () => {
+	assert.deepEqual(accountFor(undefined, { COMPDIFF_PASSWORD_DAAN_VERBEEK: 'x' }, 'daan.verbeek'), { user: 'daan.verbeek', password: 'x' })
+	assert.throws(() => accountFor(undefined, {}, 'daan.verbeek'), /COMPDIFF_PASSWORD_DAAN_VERBEEK/)
+	assert.equal(accountFor('none', {}, 'daan.verbeek'), null)
+})
+
+test('only a write on the allowlist goes through, with * as one path segment', () => {
+	const allow = ['POST /apps/launchpad/api/dashboards/*/lock']
+	assert.equal(allowedWrite('POST', 'http://localhost:8080/index.php/apps/launchpad/api/dashboards/0b4c-11/lock', allow), true)
+	assert.equal(allowedWrite('POST', 'http://localhost:8080/apps/launchpad/api/dashboards/0b4c-11/unlock', allow), false)
+	assert.equal(allowedWrite('DELETE', 'http://localhost:8080/apps/launchpad/api/dashboards/0b4c-11/lock', allow), false)
+	assert.equal(allowedWrite('POST', 'http://localhost:8080/apps/launchpad/api/dashboards/a/b/lock', allow), false)
+	assert.equal(allowedWrite('POST', 'http://localhost:8080/apps/launchpad/api/dashboards/1/lock', []), false)
+})
+
+test('pre-steps open a route, fill from the environment and press a key, in order', { skip }, async () => {
+	const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox'] })
+	try {
+		const page = await browser.newPage()
+		await page.route('http://compdiff.test/**', (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<form onsubmit="event.preventDefault(); document.title = this.p.value"><input name="p" type="password"></form>' }))
+		await playSteps(page, parseSteps('[{"goto":"/apps/keepiq/lock"},{"fill":"input[name=p]","value":"${KQ_VAULT}"},{"press":"input[name=p]","key":"Enter"}]'), undefined, { base: 'http://compdiff.test', env: { KQ_VAULT: 'geheim' } })
+		assert.equal(await page.title(), 'geheim')
+		assert.equal(new URL(page.url()).pathname, '/apps/keepiq/lock')
 	} finally {
 		await browser.close()
 	}

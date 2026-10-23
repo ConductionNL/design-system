@@ -391,12 +391,14 @@ test('a select field has the chevron its wrapper draws beside the input as its i
 		<input role="combobox" aria-label="Register" style="flex:1;border:0;height:36px">
 		<span class="vs__actions" style="display:flex"><svg width="20" height="20"><path d="M7 10l5 5 5-5z"/></svg></span></div></div>`)
 	assert.equal(r.elements.find((e) => e.label === 'Register').props.icon, true)
+	const native = await measure(`<label style="position:absolute;left:300px;top:200px">Soort bericht <select style="width:280px;height:40px"><option>Bericht</option></select></label>`)
+	assert.equal(native.elements.find((e) => e.kind === 'field').props.icon, true)
 })
 
 test('a switch whose real input is hidden is measured on the icon that draws it', { skip }, async () => {
 	const r = await measure(`<div style="position:absolute;left:300px;top:200px;width:400px">
 		<span class="checkbox-radio-switch" style="position:relative;display:flex;align-items:center;gap:8px">
-		<input id="besluit" type="checkbox" style="position:absolute;opacity:0;width:1px;height:1px;margin:0">
+		<input id="besluit" class="checkbox-radio-switch__input" type="checkbox" style="position:absolute;opacity:0;width:20px;height:34px;margin:0">
 		<label for="besluit" style="display:flex;gap:8px;align-items:center"><span class="checkbox-content__icon"><svg width="20" height="20"><rect width="20" height="20"/></svg></span><span>Dit is een besluit</span></label></span></div>`)
 	const t = r.elements.filter((e) => e.kind === 'toggle')
 	assert.deepEqual(t.map((e) => e.label), ['Dit is een besluit'])

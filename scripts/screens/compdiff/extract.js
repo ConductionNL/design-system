@@ -685,7 +685,7 @@ window.__compdiffExtract = function () {
 	}
 	// A checkbox or switch whose real input is hidden (NcCheckboxRadioSwitch) is drawn by its icon: measure that.
 	const toggleIcon = (input) => {
-		const host = input.closest('.checkbox-radio-switch, label, [class*="checkbox"], [class*="switch"]')
+		const host = input.parentElement && input.parentElement.closest('.checkbox-radio-switch, label, [class*="checkbox"], [class*="switch"]')
 		const fits = (i) => visible(i) && i.getBoundingClientRect().height >= 8 && i.getBoundingClientRect().height <= 40
 		return host ? [...host.querySelectorAll('svg')].find(fits) || [...host.querySelectorAll('[class*="icon"]')].find(fits) || null : null
 	}
@@ -732,7 +732,8 @@ window.__compdiffExtract = function () {
 				// when checked) is not painted anywhere, so it has none to compare.
 				background: nativeToggle(el, kind, cs) ? null : bgBehind(el), native: nativeToggle(el, kind, cs) || undefined, color: tcs.color, fontSize: px(tcs.fontSize), fontWeight: Number(tcs.fontWeight),
 				paddingLeft: px(cs.paddingLeft), paddingRight: px(cs.paddingRight),
-				icon: [...(kind === 'field' ? fieldBox(el) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
+				// A native select draws its own arrow.
+				icon: (el.matches('select') && cs.appearance !== 'none') || [...(kind === 'field' ? fieldBox(el) : el).querySelectorAll('svg, img, .material-design-icon, [class*="icon"]')].some((i) => visible(i) && i.getBoundingClientRect().width >= 6),
 				text: !!(te && te !== el ? te.textContent.trim() : [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())),
 				badge: !!(kind === 'button' || kind === 'pill') && [...el.querySelectorAll('*')].some((c) => c !== te && visible(c) && c.textContent.trim() && opaque(getComputedStyle(c).backgroundColor) && getComputedStyle(c).backgroundColor !== bgBehind(el) && c.getBoundingClientRect().height < r.height),
 				gapNext: next && Math.abs(next.top - r.top) < 6 && next.left >= r.right ? round(next.left - r.right) : null,

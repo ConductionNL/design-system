@@ -22,8 +22,10 @@
    switch. A page written in one language only keeps that language;
    the switch then still shows which one is chosen.
 
-   The switch is a fixed pill in the top right corner. A page that
-   draws its own switch (data-lang-pill="off" on <body>) gets none.
+   The switch is a fixed pill in the top right corner. A page whose
+   own chrome sits there marks an element with data-lang-slot and the
+   pill goes inside it, in the flow. A page that draws its own switch
+   (data-lang-pill="off" on <body>) gets none.
    ============================================================ */
 (function () {
   'use strict';
@@ -87,6 +89,7 @@
     '.kit-lang button:hover{background:var(--conduction-color-surface-subtle,#eef2fb);}',
     '.kit-lang button[aria-pressed="true"]{background:var(--c-blue-cobalt,#1f4fd8);color:#fff;cursor:default;}',
     '.kit-lang button:focus-visible{outline:2px solid var(--c-orange-knvb,#f36f21);outline-offset:1px;}',
+    '.kit-lang.in-slot{position:static;box-shadow:none;}',
     '@media print{.kit-lang{display:none}}'
   ].join('');
 
@@ -112,7 +115,9 @@
       b.addEventListener('click', function () { if (code !== lang) set(code); });
       wrap.appendChild(b);
     });
-    document.body.appendChild(wrap);
+    var slot = document.querySelector('[data-lang-slot]');
+    if (slot) wrap.className += ' in-slot';
+    (slot || document.body).appendChild(wrap);
   }
 
   if (document.readyState === 'loading') {

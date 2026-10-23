@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Mijn Wilgenboom: verlof aanvragen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2f6b4a}a:hover{color:#1f4a33}
+</style>
+</helmet>
+<div style="font-family: 'Lexend', system-ui, sans-serif; color: #1a1a1a; background: #ffffff">
+  <dc-import name="Kop" active="" signed-in="{{ true }}" crumbs="{{ crumbs }}" hint-size="100%,200px"></dc-import>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 44px; align-items: flex-start">
+    <div style="flex: 1 1 260px; max-width: 300px">
+      <dc-import name="MijnMenu" active="Afwezigheid" hint-size="100%,760px"></dc-import>
+    </div>
+    <main id="inhoud" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 680px">
+        <h1 style="margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -0.015em">Verlof aanvragen</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #4a4a4a">Wilt u uw kind buiten de schoolvakanties een dag thuishouden, voor een bruiloft of een andere gebeurtenis? Vraag het vooraf aan. De directeur beslist binnen vijf schooldagen.</p>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+        <form aria-labelledby="v-form" style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 26px; padding: 28px 28px 32px; border: 1px solid #d3d8df; border-radius: 14px">
+          <h2 id="v-form" style="margin: 0; font-size: 26px; font-weight: 700">Nieuwe aanvraag</h2>
+
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+            <legend style="font-size: 19px; font-weight: 700; margin-bottom: 10px">Kind</legend>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px">
+              <sc-for list="{{ kids }}" as="o" hint-placeholder-count="2">
+                <label style="{{ o.card }}"><input type="radio" name="kind" checked="{{ o.on }}" style="flex: none; width: 24px; height: 24px; accent-color: #2f6b4a"><span style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 600">{{ o.label }}</span><span style="font-size: 15px; color: #4a4a4a">{{ o.sub }}</span></span></label>
+              </sc-for>
+            </div>
+          </fieldset>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 20px 32px">
+            <sc-for list="{{ dates }}" as="d" hint-placeholder-count="2">
+              <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px">
+                <legend style="font-size: 19px; font-weight: 700; margin-bottom: 8px">{{ d.label }}</legend>
+                <div style="display: flex; gap: 10px">
+                  <sc-for list="{{ d.parts }}" as="p" hint-placeholder-count="3">
+                    <label style="display: flex; flex-direction: column; gap: 4px; font-size: 15px; color: #4a4a4a">{{ p.name }}<input type="text" value="{{ p.value }}" inputmode="numeric" style="{{ p.style }}"></label>
+                  </sc-for>
+                </div>
+              </fieldset>
+            </sc-for>
+          </div>
+
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+            <legend style="font-size: 19px; font-weight: 700; margin-bottom: 10px">Waarvoor vraagt u verlof?</legend>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px">
+              <sc-for list="{{ kinds }}" as="o" hint-placeholder-count="6">
+                <label style="{{ o.card }}"><input type="radio" name="soort" checked="{{ o.on }}" style="flex: none; width: 24px; height: 24px; accent-color: #2f6b4a"><span style="font-size: 17px; font-weight: 600">{{ o.label }}</span></label>
+              </sc-for>
+            </div>
+          </fieldset>
+
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="v-uitleg" style="font-size: 19px; font-weight: 700">Vertel kort wat er is</label>
+            <span style="font-size: 16px; color: #4a4a4a">De directeur leest dit om te beslissen.</span>
+            <textarea id="v-uitleg" rows="3" style="box-sizing: border-box; padding: 12px 14px; border: 2px solid #5c6470; border-radius: 10px; font: 400 17px/1.5 'Lexend', sans-serif; resize: vertical">Mijn zus trouwt in Utrecht. Het feest begint vrijdag om 11.00 uur.</textarea>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 19px; font-weight: 700">Bijlage <span style="font-weight: 400; font-size: 16px; color: #4a4a4a">(hoeft niet)</span></span>
+            <span style="font-size: 16px; color: #4a4a4a">Bijvoorbeeld de uitnodiging. Een foto met uw telefoon is goed genoeg.</span>
+            <button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px; border: 2px solid #2f6b4a; border-radius: 10px; background: #ffffff; color: #2f6b4a; font: 600 17px 'Lexend', sans-serif"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Bestand kiezen</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <div style="padding: 16px 18px; border-radius: 10px; background: #e8f1eb; border: 1px solid #b9d4c3; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #1f4a33">U vraagt</span>
+              <span style="font-size: 17px; line-height: 1.5">Verlof voor Vera op vrijdag 6 november. Dat is 1 schooldag. De school beslist uiterlijk vrijdag 16 oktober.</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center">
+              <button type="submit" style="height: 56px; padding: 0 28px; border: 0; border-radius: 10px; background: #2f6b4a; color: #ffffff; font: 600 18px 'Lexend', sans-serif">Aanvraag versturen</button>
+              <a href="MijnLijst.dc.html" style="display: flex; align-items: center; min-height: 48px; font-size: 17px; font-weight: 600">Annuleren</a>
+            </div>
+          </div>
+        </form>
+
+        <aside aria-labelledby="v-regels" style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px; background: #f4f6f9">
+          <h2 id="v-regels" style="margin: 0; font-size: 20px; font-weight: 700">Goed om te weten</h2>
+          <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 17px; font-weight: 600">{{ r.title }}</strong><span style="font-size: 16px; line-height: 1.55; color: #4a4a4a">{{ r.text }}</span></div>
+          </sc-for>
+        </aside>
+      </div>
+
+      <section aria-labelledby="v-lijst" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 id="v-lijst" style="margin: 0; font-size: 26px; font-weight: 700">Uw aanvragen</h2>
+        <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ requests }}" as="r" hint-placeholder-count="3">
+            <li style="display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-start; padding: 20px 24px; border: 1px solid #d3d8df; border-radius: 14px">
+              <span style="flex: none; width: 64px; height: 64px; border-radius: 10px; background: #e8f1eb; color: #1f4a33; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05"><strong style="font-size: 24px; font-weight: 700">{{ r.day }}</strong><span style="font-size: 14px">{{ r.month }}</span></span>
+              <span style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 4px">
+                <strong style="font-size: 19px; font-weight: 600">{{ r.child }} · {{ r.kind }}</strong>
+                <span style="font-size: 16px; color: #4a4a4a">{{ r.when }}</span>
+                <sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><span style="margin-top: 6px; padding: 12px 14px; border-left: 4px solid #5c6470; background: #f4f6f9; font-size: 16px; line-height: 1.55">{{ r.note }}</span></sc-if>
+              </span>
+              <span style="flex: 0 1 260px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+                <span style="{{ r.pill }}">{{ r.status }}</span>
+                <span style="font-size: 15px; color: #4a4a4a">{{ r.by }}</span>
+                <sc-if value="{{ r.canWithdraw }}" hint-placeholder-val="{{ false }}"><a href="#" style="font-size: 15px; font-weight: 600">Aanvraag intrekken</a></sc-if>
+              </span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <dc-import name="Voet" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const card = (on) => 'display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 8px 16px; box-sizing: border-box; border-radius: 10px; border: 2px solid ' + (on ? '#2f6b4a; background: #e8f1eb' : '#5c6470; background: #ffffff');
+    const opt = (label, sub, on) => ({ label, sub, on, card: card(on) + '; flex: 1 1 220px' });
+    const kids = [opt('Vera', 'Groep 7 · Meester Daan', true), opt('Sami', 'Groep 4 · Juf Esra', false)];
+    const box = (w) => 'box-sizing: border-box; width: ' + w + 'px; height: 52px; padding: 0 12px; border: 2px solid #5c6470; border-radius: 10px; font: 400 18px \'Lexend\', sans-serif; color: #1a1a1a';
+    const parts = (d, m, y) => [{ name: 'Dag', value: d, style: box(72) }, { name: 'Maand', value: m, style: box(72) }, { name: 'Jaar', value: y, style: box(104) }];
+    const dates = [{ label: 'Eerste dag', parts: parts('6', '11', '2026') }, { label: 'Laatste dag', parts: parts('6', '11', '2026') }];
+    const kinds = [['Bruiloft', false], ['Begrafenis', false], ['Religieuze feestdag', false], ['Familieomstandigheden', true], ['Vakantie buiten de schoolvakanties', false], ['Iets anders', false]].map(([label, on]) => ({ label, on, card: card(on) }));
+    const rules = [
+      { title: 'Vraag het op tijd aan', text: 'Liefst acht weken van tevoren. De directeur beslist binnen vijf schooldagen en u leest het besluit hier.' },
+      { title: 'Meer dan tien schooldagen?', text: 'Dan beslist de leerplichtambtenaar van Zuiddrecht, niet de school. De school stuurt uw aanvraag door en u hoort wie u belt.' },
+      { title: 'Ziek of naar de dokter?', text: 'Dat is geen verlof. Meld het op de dag zelf bij Afwezig melden.' }
+    ];
+    const pill = (bg, fg) => 'padding: 4px 12px; border-radius: 14px; font-size: 15px; font-weight: 600; background: ' + bg + '; color: ' + fg;
+    const requests = [
+      { day: '6', month: 'nov', child: 'Vera', kind: 'Familieomstandigheden', when: 'Vrijdag 6 november, 1 schooldag. Aangevraagd vandaag om 9.40 uur', hasNote: false, note: '', status: 'Ingediend', pill: pill('#fdf3d7', '#6b4a00'), by: 'De school beslist uiterlijk vrijdag 16 oktober', canWithdraw: true },
+      { day: '30', month: 'mrt', child: 'Sami', kind: 'Religieuze feestdag', when: 'Maandag 30 maart 2026, 1 schooldag', hasNote: false, note: '', status: 'Toegestaan', pill: pill('#e7f3ea', '#1e6b2a'), by: 'Hanneke Postma, directeur, 12 maart 2026', canWithdraw: false },
+      { day: '9', month: 'feb', child: 'Vera', kind: 'Vakantie buiten de schoolvakanties', when: 'Maandag 9 tot en met vrijdag 13 februari 2026, 5 schooldagen', hasNote: true, note: 'Verlof voor een vakantie kan alleen als u door uw werk in geen enkele schoolvakantie weg kunt. Daarvoor hebben wij een verklaring van uw werkgever nodig. Bent u het er niet mee eens? U kunt binnen zes weken bezwaar maken bij de directeur.', status: 'Afgewezen', pill: pill('#fcedec', '#a30000'), by: 'Hanneke Postma, directeur, 21 januari 2026', canWithdraw: false }
+    ];
+    return { kids, dates, kinds, rules, requests, crumbs: [{ label: 'Home', href: 'Home.dc.html' }, { label: 'Mijn Wilgenboom', href: 'MijnOverzicht.dc.html' }, { label: 'Afwezigheid', href: 'MijnLijst.dc.html' }, { label: 'Verlof aanvragen' }] };
+  }
+}
+</script>
+</body>
+</html>

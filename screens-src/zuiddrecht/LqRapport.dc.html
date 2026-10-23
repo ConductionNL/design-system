@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>learniq: rapportperiode samenstellen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3669a5}a:hover{color:#234a78}
+</style>
+</helmet>
+<div style="font-family: 'Fira Sans', system-ui, sans-serif; color: #1b1c1d; background: #f5f6f8; display: flex; flex-direction: column; min-height: 1100px">
+  <dc-import name="DqKop" app="Learniq" placeholder="Zoek leerlingen, groepen of lessen" role="Docent" hint-size="100%,68px"></dc-import>
+  <div style="display: flex; flex-wrap: wrap; flex: 1 1 auto">
+    <div style="flex: 0 0 264px; width: 264px; display: flex; align-items: stretch"><dc-import name="AppZijbalk" style="display: block; width: 100%; min-height: 100%; flex: 1 1 auto" app="learniq" sub="Voor docenten" primary="Aanwezigheid invullen" active="Cijfers" groups="{{ nav }}" hint-size="264px,1100px"></dc-import></div>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; box-sizing: border-box; width: 100%">
+        <section style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0 8px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px">
+            <h1 style="flex: 1 1 320px; min-width: 0; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2">Rapport periode 1</h1>
+            <div style="flex: none; display: flex; flex-wrap: wrap; gap: 10px"><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; box-sizing: border-box; border: 1px solid #c4c7cb; border-radius: 8px; background: #ffffff; font: 600 14px 'Fira Sans', sans-serif; color: #1b1c1d">Periode wijzigen</button><button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 8px; background: #3669a5; color: #ffffff; font: 600 14px 'Fira Sans', sans-serif">Rapporten samenstellen</button></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-width: 0; font-size: 14px; color: #5e6168"><nav aria-label="Kruimelpad" style="display: flex; gap: 8px"><a href="LqCijfers.dc.html">Cijfers</a><span aria-hidden="true">/</span><span aria-current="page">Rapport periode 1</span></nav><span aria-hidden="true">·</span><span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 12px; background: #f0f1f3; color: #3d4047; font-size: 13px; font-weight: 600">Vastgezet</span><span>schooljaar 2026-2027 · 31 augustus tot en met 16 oktober · cijfers vastgezet op vrijdag 16 oktober</span></div>
+        </section>
+
+        <div role="status" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; border-radius: 10px; background: #eaf0f7; color: #234a78; font-size: 14px; line-height: 1.45"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex: none; margin-top: 1px"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg><span>De cijfers staan sinds vrijdag vast. De mentoren kregen daar een melding van. Samenstellen maakt per leerling één rapport met de vakken en secties van het sjabloon van zijn groep.</span></div>
+
+        <section aria-labelledby="rp-groepen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; overflow: hidden">
+          <div style="padding: 18px 22px 10px"><h2 id="rp-groepen" style="margin: 0; font-size: 18px; font-weight: 700">Groepen in deze periode</h2></div>
+          <table style="border-collapse: collapse; width: 100%; font-size: 14px">
+            <thead><tr style="text-align: left; color: #5e6168; background: #fafbfc"><th style="padding: 10px 22px; font-weight: 600">Groep</th><th style="padding: 10px 12px; font-weight: 600">Sjabloon</th><th style="padding: 10px 12px; font-weight: 600">Vakken</th><th style="padding: 10px 12px; font-weight: 600">Rapporten</th><th style="padding: 10px 12px; font-weight: 600">PDF</th><th style="padding: 10px 22px 10px 12px; font-weight: 600">Actie</th></tr></thead>
+            <tbody><sc-for list="{{ groups }}" as="g" hint-placeholder-count="4"><tr style="border-top: 1px solid #eef0f3; vertical-align: top">
+              <th scope="row" style="padding: 12px 22px; text-align: left"><a href="#" style="font-weight: 600">{{ g.name }}</a><span style="display: block; font-size: 12px; font-weight: 400; color: #5e6168">{{ g.mentor }}</span></th>
+              <td style="padding: 12px">{{ g.tpl }}</td><td style="padding: 12px">{{ g.subjects }}</td>
+              <td style="padding: 12px"><span style="{{ g.pill }}">{{ g.state }}</span></td>
+              <td style="padding: 12px; font-size: 13px; color: #3d4047">{{ g.pdf }}</td>
+              <td style="padding: 12px 22px 12px 12px"><sc-if value="{{ g.hasAction }}" hint-placeholder-val="{{ true }}"><a href="{{ g.href }}" style="{{ g.btn }}">{{ g.action }}</a></sc-if></td>
+            </tr></sc-for></tbody>
+          </table>
+        </section>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section aria-labelledby="rp-sjabloon" style="flex: 999 1 520px; min-width: 0; background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><h2 id="rp-sjabloon" style="margin: 0; font-size: 18px; font-weight: 700">Sjabloon: rapport bovenbouw havo</h2><a href="#" style="font-size: 14px; font-weight: 600">Sjabloon bewerken</a></div>
+            <span style="font-size: 13px; color: #5e6168">Toegewezen aan 3HV-A en 3HV-B voor periode 1. Elke sectie heeft een soort en een schaal.</span>
+            <sc-for list="{{ sections }}" as="s" hint-placeholder-count="5">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #eef0f3"><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px">{{ s.name }}</strong><span style="font-size: 12px; color: #5e6168">{{ s.meta }}</span></span><span style="{{ s.pill }}">{{ s.scale }}</span></div>
+            </sc-for>
+          </section>
+
+          <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section aria-labelledby="rp-dagen" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px">
+              <h2 id="rp-dagen" style="margin: 0; font-size: 18px; font-weight: 700">Vakanties en studiedagen</h2>
+              <sc-for list="{{ days }}" as="d" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-top: 1px solid #eef0f3; font-size: 14px"><span>{{ d.what }}</span><span style="color: #3d4047">{{ d.when }}</span></div></sc-for>
+            </section>
+            <section aria-labelledby="rp-p2" style="background: #ffffff; border: 1px solid #e4e6ea; border-radius: 12px; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px">
+              <h2 id="rp-p2" style="margin: 0; font-size: 18px; font-weight: 700">Rapport periode 2</h2>
+              <span style="font-size: 14px; color: #3d4047">19 oktober tot en met 22 januari</span>
+              <button type="button" disabled aria-describedby="rp-p2-why" style="align-self: flex-start; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #eef0f3; color: #5e6168; font: 600 14px 'Fira Sans', sans-serif">Rapporten samenstellen</button>
+              <span id="rp-p2-why" style="font-size: 13px; color: #5e6168; line-height: 1.45">Kan vanaf vrijdag 22 januari, als de cijfers vastgezet zijn. Een cijfer dat ouders nog niet mogen zien, houdt het publiceren tegen.</span>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { title: '', items: [['Vandaag', 'home'], ['Mijn leren', 'cert'], ['Groepen', 'people']] },
+      { title: 'Onderwijs', items: [['Mijn rooster', 'cal'], ['Lessen en opdrachten', 'book'], ['Cijfers', 'chart']] },
+      { title: 'Leerlingen', items: [['Leerlingen', 'people'], ['Aanwezigheid', 'queue'], ['Voortgang', 'trend'], ['Zorg en dossier', 'heart']] }
+    ];
+    const pill = (bg, fg) => 'display: inline-block; white-space: nowrap; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.35; background: ' + bg + '; color: ' + fg;
+    const btn = (prim) => 'display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; ' + (prim ? 'background: #3669a5; color: #ffffff' : 'background: #eaf0f7; color: #234a78');
+    const groups = [
+      { name: '3HV-B', mentor: 'Mentor: Pieter Jansen', tpl: 'Rapport bovenbouw havo', subjects: '11 vakken', state: '27 samengesteld', pill: pill('#e8e6f6', '#4a3f8f'), pdf: '25 klaar, 2 nog niet gemaakt', hasAction: true, action: 'Naar de rapportvergadering', href: 'LqRapportvergadering.dc.html', btn: btn(false) },
+      { name: '3HV-A', mentor: 'Mentor: Sanne Kramer', tpl: 'Rapport bovenbouw havo', subjects: '11 vakken', state: 'Nog niet samengesteld', pill: pill('#f0f1f3', '#3d4047'), pdf: '', hasAction: true, action: 'Samenstellen', href: '#', btn: btn(true) },
+      { name: '1A', mentor: 'Mentor: Ilse de Groot', tpl: 'Rapport onderbouw', subjects: '9 vakken', state: 'Nog niet samengesteld', pill: pill('#f0f1f3', '#3d4047'), pdf: '', hasAction: true, action: 'Samenstellen', href: '#', btn: btn(true) },
+      { name: '2B', mentor: 'Mentor: Tim Bakker', tpl: 'Geen sjabloon, standaardrapport', subjects: '10 vakken', state: 'Nog niet samengesteld', pill: pill('#f0f1f3', '#3d4047'), pdf: '', hasAction: true, action: 'Samenstellen', href: '#', btn: btn(true) }
+    ];
+    const sections = [
+      { name: 'Cijfers per vak', meta: 'Gemiddelde van periode 1 per vak, met de opmerking van de docent', scale: 'Cijfer 1 tot 10', pill: pill('#f0f1f3', '#3d4047') },
+      { name: 'Werkhouding', meta: 'Door de mentor ingevuld per leerling', scale: 'Onvoldoende, voldoende, goed', pill: pill('#f0f1f3', '#3d4047') },
+      { name: 'Aanwezigheid', meta: 'Afwezig, te laat en zonder toestemming in de periode', scale: 'Aantallen', pill: pill('#f0f1f3', '#3d4047') },
+      { name: 'Methodetoetsen', meta: 'Uit de import van toetsen van het soort "methodetoets". Nog geen gegevens: de sectie blijft leeg', scale: 'Niveau A tot E', pill: pill('#fff4de', '#7a4f00') },
+      { name: 'Mentoropmerking', meta: 'Verplicht voordat een rapport wordt vastgesteld', scale: 'Tekst', pill: pill('#f0f1f3', '#3d4047') }
+    ];
+    const days = [{ what: 'Studiedag', when: 'vrijdag 9 oktober' }, { what: 'Herfstvakantie', when: '19 tot en met 23 oktober' }, { what: 'Studiedag', when: 'maandag 16 november' }];
+    return { nav, groups, sections, days };
+  }
+}
+</script>
+</body>
+</html>

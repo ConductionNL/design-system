@@ -403,4 +403,6 @@ test('a switch whose real input is hidden is measured on the icon that draws it'
 	const t = r.elements.filter((e) => e.kind === 'toggle')
 	assert.deepEqual(t.map((e) => e.label), ['Dit is een besluit'])
 	assert.equal(t[0].props.h, 20)
+	// The glyph is the switch itself, as a native checkbox is: it has no icon of its own.
+	assert.equal(t[0].props.icon, false)
 })

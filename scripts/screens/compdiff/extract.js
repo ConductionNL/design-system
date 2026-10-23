@@ -699,7 +699,7 @@ window.__compdiffExtract = function () {
 			elements.push({
 				inRow: !!el0.closest('li, [role=row], [role=listitem], [role=option], tr'), kind: 'toggle', label: ownLabel(el0), inControl: inRecord(el0) ? 'record card' : null,
 				interactive: true, container: containerOf(hiddenToggle), rect: rect(hiddenToggle),
-				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: true, text: false, badge: false, gapNext: null },
+				props: { h: round(ir.height), borderRadius: radius(hiddenToggle, getComputedStyle(hiddenToggle)), border: 0, borderColor: null, background: null, color: getComputedStyle(hiddenToggle).color, fontSize: px(getComputedStyle(hiddenToggle).fontSize), fontWeight: Number(getComputedStyle(hiddenToggle).fontWeight), paddingLeft: 0, paddingRight: 0, icon: false, text: false, badge: false, gapNext: null },
 			})
 			continue
 		}

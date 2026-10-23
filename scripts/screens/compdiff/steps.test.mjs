@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
-import { normaliseStep, parseSteps, parseWidth, playSteps } from './steps.mjs'
+import { fromEnv, normaliseStep, parseSteps, parseWidth, playSteps } from './steps.mjs'
 import { routeOf, specRows } from './specs-from-boards.mjs'
 
 /**
@@ -121,4 +121,25 @@ test('a phone board is measured at its own width, a desktop board at 1440', () =
 		{ board: 'MobielZaak', liveUrl: 'http://localhost:8080/index.php/apps/portaliq/site/mijn/cases', steps: [], width: 390 },
 	])
 	assert.equal(row, 'MobielZaak\t/apps/portaliq/site/mijn/cases\t--width\t390')
+})
+
+test('a goto step opens a route, and a ${NAME} value is read from the environment when it plays', () => {
+	assert.deepEqual(normaliseStep({ goto: '/apps/keepiq/lock' }), { kind: 'goto', route: '/apps/keepiq/lock' })
+	assert.throws(() => normaliseStep({ goto: 'apps/keepiq' }), /route starting with \//)
+	assert.equal(fromEnv('${KQ_VAULT}', { KQ_VAULT: 'geheim' }), 'geheim')
+	assert.equal(fromEnv('gewoon', {}), 'gewoon')
+	assert.throws(() => fromEnv('${KQ_VAULT}', {}), /KQ_VAULT/)
+})
+
+test('pre-steps, a named user and a write allowlist pass from boards.json to the spec row', () => {
+	const [row] = specRows([{
+		board: 'KqKluisInstellen', liveUrl: 'http://localhost:8080/index.php/apps/keepiq/settings', user: 'daan.verbeek',
+		preSteps: [{ goto: '/apps/keepiq/lock' }, { fill: 'input[type=password]', value: '${KQ_VAULT}' }, { press: 'input[type=password]', key: 'Enter' }],
+		allowWrites: ['POST /apps/launchpad/api/dashboards/*/lock'],
+	}])
+	const cells = row.split('\t')
+	assert.equal(cells[cells.indexOf('--user') + 1], 'daan.verbeek')
+	assert.equal(JSON.parse(cells[cells.indexOf('--pre-steps') + 1]).length, 3)
+	assert.equal(cells[cells.indexOf('--allow-write') + 1], 'POST /apps/launchpad/api/dashboards/*/lock')
+	assert.ok(!row.includes('geheim'))
 })

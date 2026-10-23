@@ -7,6 +7,10 @@
 //   [--steps '<JSON array>' | --steps @<file.json>]   ordered click/fill/type/press/wait steps (steps.mjs), played
 //   after --click, --clicks and --fills; REVIEW/boards.json keeps the same list per board
 //   [--login none|<role>]   measure without a login, or as COMPDIFF_<ROLE>_USER (live.mjs accountFor)
+//   [--user <name>]   log in as that user, with the password in COMPDIFF_PASSWORD_<NAME> (live.mjs accountFor)
+//   [--pre-steps '<JSON array>']   steps played after the login and before the page opens, such as unlocking a vault
+//   with {"goto": "/apps/keepiq/lock"}, a fill from ${ENV_VAR} and a press of Enter
+//   [--allow-write "<METHOD /path>|..."]   the only write requests let through, `*` for one path segment
 //   [--ignore "<sel>|<sel>"]   elements on either side to leave out, like the app's own chrome
 //   [--storage <path>]   keep the login in <path>-<user>.json and reuse it, so a batch logs in once
 //   [--settle-mode quiet|fixed]   quiet (default): measure once requests and layout hold still for 1.5 s, at most
@@ -26,7 +30,7 @@ import { pairComponents, compareProps, scoreComponent, pairElements, compareElem
 import { pageBackground } from './pagebg.mjs'
 import { parseColour } from './colour.mjs'
 import { parseSteps, parseWidth, playSteps } from './steps.mjs'
-import { accountFor, markIgnored, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
+import { accountFor, allowedWrite, markIgnored, trackRequests, waitForQuiet, waitForTables } from './live.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -58,13 +62,15 @@ if (!board || !args.url) {
 }
 let account
 try {
-	account = accountFor(args.login, process.env)
+	account = accountFor(args.login, process.env, args.user)
 } catch (e) {
 	console.error(e.message)
 	process.exit(2)
 }
-let steps = []
+let steps = [], preSteps = []
+const allowWrites = (args['allow-write'] || '').split('|').map((x) => x.trim()).filter(Boolean)
 try {
+	preSteps = args['pre-steps'] ? parseSteps(args['pre-steps']) : []
 	steps = args.steps ? parseSteps(args.steps) : []
 } catch (e) {
 	console.error(`bad --steps: ${e.message}`)
@@ -119,12 +125,13 @@ try {
 		}, apps)
 		for (const a of apps) await lctx.route(new RegExp(`/apps/${a}/api/setup/status`), (route) => route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"skip-first-run"}' }))
 	}
-	const blocked = []
+	const blocked = [], allowed = []
 	// Read-only: refuse any write request to the live instance (login is the one allowed POST).
 	const origin = new URL(base).origin
 	await lctx.route((u) => u.origin === origin, (route) => {
 		const m = route.request().method()
 		if (m === 'GET' || m === 'HEAD' || m === 'OPTIONS' || /\/login(\?|$)/.test(route.request().url())) return route.fallback()
+		if (allowedWrite(m, route.request().url(), allowWrites)) { allowed.push(`${m} ${route.request().url().replace(base, '')}`); return route.fallback() }
 		blocked.push(`${m} ${route.request().url().replace(base, '')}`)
 		return route.fulfill({ status: 403, contentType: 'application/json', body: '{"message":"compdiff is read-only"}' })
 	})
@@ -140,12 +147,14 @@ try {
 		if (storage) { const tmp = `${storage}.${process.pid}`; fs.writeFileSync(tmp, JSON.stringify(await lctx.storageState())); fs.renameSync(tmp, storage) }
 	}
 	if (account && !kept) await login()
+	if (preSteps.length) await playSteps(lpage, preSteps, undefined, { base })
 	lap('login')
 	// The page has loaded at its load event; what renders after is waited for below. Nextcloud keeps polling, so the
 	// network is never idle for long and a networkidle wait runs into its timeout.
 	await lpage.goto(target, { waitUntil: 'load', timeout: 180000 }).catch(() => {})
 	if (account && onLogin()) {
 		await login()
+		if (preSteps.length) await playSteps(lpage, preSteps, undefined, { base })
 		await lpage.goto(target, { waitUntil: 'load', timeout: 180000 }).catch(() => {})
 	}
 	await waitForQuiet(lpage, requests, { min: 1000, max: 30000, quiet: 1500 })
@@ -160,7 +169,7 @@ try {
 		}
 	}
 	lap('load')
-	await playSteps(lpage, steps)
+	await playSteps(lpage, steps, undefined, { base })
 	lap('steps')
 	if (settleMode === 'fixed') await lpage.waitForTimeout(settle)
 	else await waitForQuiet(lpage, requests, { min: 1500, max: settle, quiet: 1500 })
@@ -223,6 +232,7 @@ try {
 		notMeasured: B.unmeasured || [],
 		missingOnLive: missing.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 		blockedWrites: blocked,
+		allowedWrites: allowed,
 		extraOnLive: extra.map((c) => ({ role: c.role, title: c.title || null, rect: c.rect })),
 	}
 	fs.writeFileSync(path.join(out, `${board}.json`), JSON.stringify(report, null, 1))

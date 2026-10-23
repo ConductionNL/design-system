@@ -30,6 +30,11 @@ Options:
 - `--steps '<JSON array>'` (or `--steps @file.json`) plays steps in their order, after the options above: `{"click": sel}`, `{"fill": sel, "value": text}`, `{"type": sel, "value": text}` (key by key, for a field that searches as you type), `{"press": sel, "key": "Enter"}`, `{"wait": ms}` and `{"waitFor": sel}`. A step can rest on the one before it: type a team into a search, then click the option it found. `--clicks` and `--fills` cannot, because every click runs before every fill. A failed click stops the run; a failed fill is reported and skipped.
 - `--login none` measures the live page without logging in, as a visitor sees it. `--login viewer` logs in as `COMPDIFF_VIEWER_USER` and `COMPDIFF_VIEWER_PASSWORD` (any role name works the same way), for a page that looks different to an editor, such as a site that shows "Deze site bewerken" to its editors.
 - `--ignore "<sel>|<sel>"` leaves elements out on both sides, as chrome.
+- `--pre-steps '<JSON array>'` plays steps after the login and before the page opens, such as unlocking a vault. A step `{"goto": "/apps/keepiq/lock"}` opens a route. A `fill` or `type` value written as `${NAME}` is read from the environment variable `NAME` when the step plays, so a secret never sits in `boards.json`.
+- `--user <name>` logs in as that user, with the password in `COMPDIFF_PASSWORD_<NAME>`: `daan.verbeek` reads `COMPDIFF_PASSWORD_DAAN_VERBEEK`.
+- `--allow-write "<METHOD /path>|..."` lets those write requests through and keeps refusing every other one. `*` stands for one path segment, so `POST /apps/launchpad/api/dashboards/*/lock` allows only launchpad's edit lock. The report lists them under `allowedWrites`.
+
+In a REVIEW `boards.json`, the keys `preSteps`, `user` and `allowWrites` (a list) become these options.
 - `--width <px>` measures both the board and the live page at that viewport width (320 to 2560, default 1440), for a phone board such as MobielZaak at 390.
 
 The live page is opened at its load event, not at network idle: Nextcloud keeps polling, so the network rarely goes idle and that wait ran into its timeout on most pages. Each report holds a `timings` object with the time spent per phase.

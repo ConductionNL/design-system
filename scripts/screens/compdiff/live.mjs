@@ -7,10 +7,18 @@
  *
  * @param {string|undefined} login The --login value.
  * @param {object} env The environment.
+ * @param {string} [named] A named user (--user), whose password is COMPDIFF_PASSWORD_<USER>.
  * @return {{user: string, password: string}|null} The account, or null for no login.
  */
-export function accountFor(login, env) {
+export function accountFor(login, env, named) {
 	if (login === 'none') return null
+	// A named user (--user daan.verbeek) logs in with the password in COMPDIFF_PASSWORD_<USER>, so a board that needs
+	// a particular person keeps only the name in boards.json and the secret in the environment.
+	if (named) {
+		const key = `COMPDIFF_PASSWORD_${named.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`
+		if (!env[key]) throw new Error(`no password for ${named}: set ${key}`)
+		return { user: named, password: env[key] }
+	}
 	const prefix = login ? `COMPDIFF_${login.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}_` : 'COMPDIFF_'
 	const user = env[`${prefix}USER`], password = env[`${prefix}PASSWORD`]
 	if (!user || !password) throw new Error(`no account: set ${prefix}USER and ${prefix}PASSWORD`)
@@ -126,4 +134,25 @@ export async function waitForQuiet(page, requests, { min = 1000, max = 8000, qui
 		await page.waitForTimeout(interval)
 	}
 	return { quiet: false, waited: Date.now() - start }
+}
+
+/**
+ * Whether a write request is on a board's allowlist (--allow-write). An entry is `METHOD /path`, where the path is
+ * matched against the request's path without the origin and without /index.php, and `*` stands for one path segment
+ * (an id or uuid). Nothing else is allowed: a measurement stays read-only apart from these named requests, such as
+ * launchpad's `POST /apps/launchpad/api/dashboards/{*}/lock` that edit mode needs.
+ *
+ * @param {string} method The request method.
+ * @param {string} url The request URL.
+ * @param {Array<string>} allow The allowlist entries.
+ * @return {boolean} Whether the request may go through.
+ */
+export function allowedWrite(method, url, allow = []) {
+	const path = new URL(url, 'http://localhost').pathname.replace(/^\/index\.php(?=\/)/, '')
+	return allow.some((entry) => {
+		const m = /^([A-Z]+)\s+(\/\S*)$/.exec(entry.trim())
+		if (!m || m[1] !== method.toUpperCase()) return false
+		const pattern = new RegExp('^' + m[2].split('*').map((part) => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+') + '$')
+		return pattern.test(path)
+	})
 }
